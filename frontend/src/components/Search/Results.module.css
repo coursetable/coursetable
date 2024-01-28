@@ -1,49 +1,8 @@
-.results_container {
-  border-radius: 8px;
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-}
-
-.results_container_max_width {
+.resultsContainerMaxWidth {
   width: 100%;
-}
-
-.results_header_row {
-  user-select: none;
-}
-
-.one_line {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.up_btn:hover {
-  cursor: pointer;
-  color: rgb(180, 180, 180);
-  transform: scale(1.1);
-}
-
-.list_grid_toggle {
-  position: absolute;
-  left: 5px;
-  z-index: 2;
 }
 
 .icon {
   width: 18px;
   display: block;
-}
-
-.prof_icon {
-  width: 16px;
-  display: block;
-}
-
-:global(.sticky) {
-  z-index: 1;
-}
-:global(.ReactVirtualized__Grid),
-:global(.ReactVirtualized__Grid__innerScrollContainer) {
-  overflow: visible !important;
 }

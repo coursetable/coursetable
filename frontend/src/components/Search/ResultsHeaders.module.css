@@ -1,0 +1,16 @@
+.resultsHeaderRow {
+  user-select: none;
+}
+
+.listGridToggle {
+  position: absolute;
+  left: 5px;
+  z-index: 2;
+}
+
+.oneLine {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

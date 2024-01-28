@@ -163,10 +163,10 @@ function EvaluationResponses({
         }}
       />
       <Row
-        className={clsx(styles.sort_by, 'mx-auto mb-2 justify-content-center')}
+        className={clsx(styles.sortBy, 'mx-auto mb-2 justify-content-center')}
       >
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
-        <div className={styles.sort_options}>
+        <div className={styles.sortOptions}>
           <StyledSortOption
             active={sortOrder === 'length'}
             onClick={() => setSortOrder('length')}
@@ -194,7 +194,7 @@ function EvaluationResponses({
         {/* Recommend Question */}
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">
-            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 Would you recommend this course to another student? Please
                 explain.
@@ -206,7 +206,7 @@ function EvaluationResponses({
         {/* Knowledge/Skills Question */}
         {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
-            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 What knowledge, skills, and insights did you develop by taking
                 this course?
@@ -218,7 +218,7 @@ function EvaluationResponses({
         {/* Strengths/Weaknesses Question */}
         {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
-            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 What are the strengths and weaknesses of this course and how
                 could it be improved?
@@ -230,7 +230,7 @@ function EvaluationResponses({
         {/* Summarize Question */}
         {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
-            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 How would you summarize this course? Would you recommend it to
                 another student? Why or why not?

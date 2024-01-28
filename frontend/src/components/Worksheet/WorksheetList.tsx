@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
 import { sortCourses } from '../../utilities/course';
@@ -11,13 +11,11 @@ import Results from '../Search/Results';
  */
 
 function WorksheetList() {
-  const [isListView, setIsListView] = useState(true);
   const { courses, worksheetLoading } = useWorksheet();
 
   const {
     filters: { selectSortBy, sortOrder },
     numFriends,
-    isLoggedIn,
   } = useSearch();
 
   const WorksheetData = useMemo(
@@ -38,11 +36,8 @@ function WorksheetList() {
           <div className="d-flex justify-content-center">
             <Results
               data={WorksheetData}
-              isListView={isListView}
-              setIsListView={setIsListView}
               loading={worksheetLoading}
               multiSeasons={false}
-              isLoggedIn={isLoggedIn}
               numFriends={numFriends}
               page="worksheet"
             />

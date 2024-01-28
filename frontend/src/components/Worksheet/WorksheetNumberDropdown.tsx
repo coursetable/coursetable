@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import './DropdownShared.css';
 
 function WorksheetNumDropdown() {
   const { changeWorksheet, worksheetNumber } = useWorksheet();

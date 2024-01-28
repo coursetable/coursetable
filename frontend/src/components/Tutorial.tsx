@@ -4,6 +4,7 @@ import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import './reactour-override.css';
 
 // Next button for tutorial
 const NextButton = styled(Button)`
@@ -309,7 +310,7 @@ function Tutorial({
       startAt={0}
       accentColor={globalTheme.primaryHover}
       rounded={6}
-      showCloseButton={currentStep === 0}
+      showCloseButton
       disableDotsNavigation
       showNavigation={shownTutorial && currentStep !== 10}
       closeWithMask={shownTutorial}

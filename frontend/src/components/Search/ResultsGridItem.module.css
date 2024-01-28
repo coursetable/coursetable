@@ -6,23 +6,23 @@
   cursor: pointer;
 }
 
-.item_container:focus,
-.item_container:active {
+.itemContainer:focus,
+.itemContainer:active {
   border: none;
   outline: none;
 }
 
-.item_container {
+.itemContainer {
   border-radius: 8px;
 }
 
-.season_tag {
+.seasonTag {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   margin-right: 27px;
 }
 
-.course_codes {
+.courseCodes {
   font-weight: 500;
   color: rgb(38, 131, 185);
 }
@@ -31,11 +31,11 @@
   font-weight: 550;
 }
 
-.small_text {
+.smallText {
   font-weight: 500;
 }
 
-.one_line {
+.oneLine {
   display: block;
   width: 100%;
   white-space: nowrap;
@@ -47,13 +47,13 @@
   font-weight: bold;
 }
 
-.worksheet_btn {
+.worksheetBtn {
   position: absolute;
   top: 4px;
   right: 18px;
 }
 
-.conflict_error {
+.conflictError {
   position: absolute;
   top: -7px;
   right: 0px;
@@ -77,7 +77,7 @@
   display: block;
 }
 
-.prof_icon {
+.profIcon {
   width: 15px;
   display: block;
 }

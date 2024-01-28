@@ -1,24 +1,24 @@
-.faq_header {
+.faqHeader {
   font-weight: 600;
   font-size: 25px;
   text-align: center;
 }
 
-.faq_description {
+.faqDescription {
   font-weight: 500;
   font-size: 15px;
   text-align: center;
 }
 
-.accordion_hover_header {
+.accordionHoverHeader {
   font-weight: 550;
 }
 
-.accordion_arrow {
+.accordionArrow {
   transition: transform 0.4s ease;
 }
 
-.accordion_arrow_active {
+.accordionArrowActive {
   transform: rotateZ(90deg);
 }
 

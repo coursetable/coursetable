@@ -140,7 +140,7 @@ function CourseModal() {
               return prev;
             });
           }}
-          dialogClassName="modal-custom-width"
+          dialogClassName={styles.dialog}
           animation={false}
           centered
         >

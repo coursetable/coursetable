@@ -4,10 +4,10 @@ import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
 
-import './WorksheetCalendar.css';
 import CalendarEvent, { type CourseEvent } from './CalendarEvent';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import './react-big-calendar-override.css';
 
 // Calendar for worksheet
 const StyledCalendar = styled(Calendar<CourseEvent>)`

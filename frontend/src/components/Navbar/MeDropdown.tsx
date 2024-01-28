@@ -19,20 +19,15 @@ type Props = {
   readonly setIsComponentVisible: (visible: boolean) => void;
   readonly isLoggedIn: boolean;
   readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-/**
- * Renders the dropdown when clicking on the profile dropdown in the navbar
- * @prop profileExpanded - is dropdown visible?
- * @prop setIsComponentVisible - function that changes dropdown visibility
- * @prop isLoggedIn - is user logged in?
- * @prop setIsTutorialOpen - opens tutorial
- */
 function MeDropdown({
   profileExpanded,
   setIsComponentVisible,
   isLoggedIn,
   setIsTutorialOpen,
+  setShownTutorial,
 }: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
@@ -40,7 +35,7 @@ function MeDropdown({
   return (
     <SurfaceComponent
       layer={1}
-      className={styles.collapse_container}
+      className={styles.collapseContainer}
       onClick={() => {
         setIsComponentVisible(true);
       }}
@@ -62,7 +57,7 @@ function MeDropdown({
                   <TextComponent type={1}>
                     <NavLink
                       to="/about"
-                      className={styles.collapse_text}
+                      className={styles.collapseText}
                       onClick={scrollToTop}
                     >
                       <StyledHoverText>About</StyledHoverText>
@@ -79,7 +74,7 @@ function MeDropdown({
                   <TextComponent type={1}>
                     <NavLink
                       to="/faq"
-                      className={styles.collapse_text}
+                      className={styles.collapseText}
                       onClick={scrollToTop}
                     >
                       <StyledHoverText>FAQ</StyledHoverText>
@@ -100,7 +95,7 @@ function MeDropdown({
                   href="https://feedback.coursetable.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.collapse_text}
+                  className={styles.collapseText}
                   onClick={scrollToTop}
                 >
                   <StyledHoverText>Feedback</StyledHoverText>
@@ -118,11 +113,12 @@ function MeDropdown({
                 <TextComponent type={1}>
                   <NavLink
                     to="/catalog"
-                    className={styles.collapse_text}
+                    className={styles.collapseText}
                     onClick={(e) => {
                       e.stopPropagation();
                       scrollToTop(e);
                       setIsTutorialOpen(true);
+                      setShownTutorial(false);
                     }}
                   >
                     <StyledHoverText>Tutorial</StyledHoverText>
@@ -142,7 +138,7 @@ function MeDropdown({
                 <TextComponent
                   type={1}
                   onClick={logout}
-                  className={styles.collapse_text}
+                  className={styles.collapseText}
                 >
                   <StyledHoverText>Sign Out</StyledHoverText>
                 </TextComponent>
@@ -157,7 +153,7 @@ function MeDropdown({
                 />
                 <a
                   href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
-                  className={styles.collapse_text}
+                  className={styles.collapseText}
                 >
                   <TextComponent type={1}>
                     <StyledHoverText>Sign In</StyledHoverText>

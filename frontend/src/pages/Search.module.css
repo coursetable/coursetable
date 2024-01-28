@@ -1,27 +1,9 @@
-.search_base {
+.searchBase {
   width: 100%;
   min-height: calc(100vh - 56px);
 }
 
-.results_col {
+.resultsCol {
   background-color: transparent;
   z-index: 0;
-}
-
-.results_col_mobile {
-  background-color: transparent;
-  z-index: 0;
-}
-
-:global .rc-slider-track {
-  background-color: #78b5ff !important;
-}
-
-:global .rc-slider-handle {
-  border: solid 2px #78b5ff !important;
-  background: white !important;
-}
-
-:global .rc-slider-rail {
-  left: 0 !important;
 }

@@ -1,9 +1,10 @@
 import React from 'react';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import clsx from 'clsx';
 import { withTheme, type DefaultTheme } from 'styled-components';
 
-import './WorksheetToggleButton.css';
+import styles from './WorksheetToggleButton.module.css';
 
 /**
  * Render the course hide button in the Worksheet List
@@ -36,19 +37,19 @@ function WorksheetHideButton({
       <Button
         variant="toggle"
         onClick={toggleCourse}
-        className="p-1 d-flex align-items-center"
+        className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
       >
         {hidden ? (
           <BsEyeSlash
             color={theme.hidden}
             size={buttonSize}
-            className="scale_icon"
+            className={styles.scaleIcon}
           />
         ) : (
           <BsEye
             color={theme.text[0]}
             size={buttonSize}
-            className="scale_icon"
+            className={styles.scaleIcon}
           />
         )}
       </Button>

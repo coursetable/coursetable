@@ -52,7 +52,7 @@ function ContextAwareToggle({
       className={clsx(
         isCurrentEventKey && 'active',
         'd-flex justify-content-between py-3 px-3',
-        styles.accordion_hover_header,
+        styles.accordionHoverHeader,
       )}
       onClick={decoratedOnClick}
     >
@@ -60,9 +60,9 @@ function ContextAwareToggle({
       <FaChevronRight
         // Rotate arrow when active
         className={clsx(
-          isCurrentEventKey && styles.accordion_arrow_active,
+          isCurrentEventKey && styles.accordionArrowActive,
           'my-auto',
-          styles.accordion_arrow,
+          styles.accordionArrow,
         )}
       />
     </StyledHoverText>
@@ -295,10 +295,10 @@ function FAQ() {
 
   return (
     <StyledContainer className="mx-auto">
-      <h1 className={clsx(styles.faq_header, 'mt-5 mb-1')}>
+      <h1 className={clsx(styles.faqHeader, 'mt-5 mb-1')}>
         Frequently Asked Questions
       </h1>
-      <p className={clsx(styles.faq_description, 'mb-3')}>
+      <p className={clsx(styles.faqDescription, 'mb-3')}>
         <TextComponent type={1}>Have another question?</TextComponent>{' '}
         <a href="https://feedback.coursetable.com">Contact us</a>.
       </p>

@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -28,6 +27,7 @@ import {
   getNumFriends,
   getOverallRatings,
   getWorkloadRatings,
+  getProfessorRatings,
   isGraduate,
   isDiscussionSection,
   sortCourses,
@@ -125,17 +125,12 @@ type Store = {
   filters: {
     [K in keyof Filters]: FilterHandle<K>;
   };
-  canReset: boolean;
   coursesLoading: boolean;
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
   numFriends: { [seasonCodeCrn: string]: string[] };
-  resetKey: number;
   duration: number;
-  setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
-  handleResetFilters: () => void;
-  setResetKey: React.Dispatch<React.SetStateAction<number>>;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
 };
 
@@ -148,9 +143,10 @@ export type Filters = {
   selectSkillsAreas: Option[];
   overallBounds: [number, number];
   workloadBounds: [number, number];
+  professorBounds: [number, number];
   selectSeasons: Option<Season>[];
   selectDays: Option<Weekdays>[];
-  timeBounds: [string, string];
+  timeBounds: [number, number];
   enrollBounds: [number, number];
   numBounds: [number, number];
   selectSchools: Option[];
@@ -172,9 +168,10 @@ export const defaultFilters: Filters = {
   selectSkillsAreas: [],
   overallBounds: [1, 5],
   workloadBounds: [1, 5],
+  professorBounds: [1, 5],
   selectSeasons: [{ value: CUR_SEASON, label: toSeasonString(CUR_SEASON) }],
   selectDays: [],
-  timeBounds: ['7:00', '22:00'],
+  timeBounds: [toRangeTime('7:00'), toRangeTime('22:00')],
   enrollBounds: [1, 528],
   numBounds: [0, 1000],
   selectSchools: [],
@@ -221,6 +218,7 @@ export function SearchProvider({
   const selectSkillsAreas = useFilterState('selectSkillsAreas');
   const overallBounds = useFilterState('overallBounds');
   const workloadBounds = useFilterState('workloadBounds');
+  const professorBounds = useFilterState('professorBounds');
   const selectSeasons = useFilterState('selectSeasons');
   const selectDays = useFilterState('selectDays');
   const timeBounds = useFilterState('timeBounds');
@@ -241,13 +239,6 @@ export function SearchProvider({
   /* Sorting */
   const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
-
-  /* Resetting */
-
-  // State to determine if user can reset or not
-  const [canReset, setCanReset] = useSessionStorageState('canReset', false);
-  // State to cause components to reload when filters are reset
-  const [resetKey, setResetKey] = useState(0);
 
   /* Search speed */
   const [startTime, setStartTime] = useState(Date.now());
@@ -315,11 +306,12 @@ export function SearchProvider({
     () => (workloadBounds.hasChanged ? workloadBounds.value : null),
     [workloadBounds],
   );
+  const processedProfessorBounds = useMemo(
+    () => (professorBounds.hasChanged ? professorBounds.value : null),
+    [professorBounds],
+  );
   const processedTimeBounds = useMemo(
-    () =>
-      timeBounds.hasChanged
-        ? (timeBounds.value.map(toRangeTime) as [number, number])
-        : null,
+    () => (timeBounds.hasChanged ? timeBounds.value : null),
     [timeBounds],
   );
   const processedEnrollBounds = useMemo(
@@ -374,6 +366,17 @@ export function SearchProvider({
         if (
           rounded < processedWorkloadBounds[0] ||
           rounded > processedWorkloadBounds[1]
+        )
+          return false;
+      }
+
+      if (processedProfessorBounds !== null) {
+        const professorRate = getProfessorRatings(listing, 'stat');
+        if (professorRate === null) return false;
+        const rounded = Math.round(professorRate * 10) / 10;
+        if (
+          rounded < processedProfessorBounds[0] ||
+          rounded > processedProfessorBounds[1]
         )
           return false;
       }
@@ -515,6 +518,7 @@ export function SearchProvider({
     courseData,
     processedOverallBounds,
     processedWorkloadBounds,
+    processedProfessorBounds,
     processedTimeBounds,
     processedEnrollBounds,
     processedNumBounds,
@@ -541,6 +545,7 @@ export function SearchProvider({
       selectSkillsAreas,
       overallBounds,
       workloadBounds,
+      professorBounds,
       selectSeasons,
       selectDays,
       timeBounds,
@@ -564,6 +569,7 @@ export function SearchProvider({
       selectSkillsAreas,
       overallBounds,
       workloadBounds,
+      professorBounds,
       selectSeasons,
       selectDays,
       timeBounds,
@@ -583,64 +589,34 @@ export function SearchProvider({
     ],
   );
 
-  // For resetting all filters and sorts
-  const handleResetFilters = useCallback(() => {
-    Object.values(filters).forEach((filter) => filter.reset());
-
-    setResetKey(resetKey + 1);
-
-    setCanReset(false);
-    setStartTime(Date.now());
-  }, [resetKey, filters, setCanReset]);
-
   // Check if can or can't reset
   useEffect(() => {
-    if (
-      Object.entries(filters)
-        .filter(([k]) => !['sortOrder', 'selectSortBy'].includes(k))
-        .some(([, filter]) => filter.hasChanged)
-    )
-      setCanReset(true);
-    else setCanReset(false);
     if (!coursesLoading) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
       setDuration(durInSecs);
     }
-  }, [filters, coursesLoading, searchData, startTime, setCanReset]);
+  }, [filters, coursesLoading, searchData, startTime]);
 
   // Store object returned in context provider
   const store = useMemo(
     () => ({
-      // Context state.
-      canReset,
       filters,
       coursesLoading,
       searchData,
       multiSeasons,
       isLoggedIn,
       numFriends,
-      resetKey,
       duration,
-
-      // Update methods.
-      setCanReset,
-      handleResetFilters,
-      setResetKey,
       setStartTime,
     }),
     [
-      canReset,
       filters,
       coursesLoading,
       searchData,
       multiSeasons,
       isLoggedIn,
       numFriends,
-      resetKey,
       duration,
-      setCanReset,
-      handleResetFilters,
-      setResetKey,
       setStartTime,
     ],
   );

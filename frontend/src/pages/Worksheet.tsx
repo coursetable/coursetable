@@ -12,9 +12,9 @@ import {
   SurfaceComponent,
   StyledExpandBtn,
 } from '../components/StyledComponents';
-import WorksheetNumDropdown from '../components/Navbar/WorksheetNumberDropdown';
-import SeasonDropdown from '../components/Search/SeasonDropdown';
-import FriendsDropdown from '../components/Navbar/FriendsDropdown';
+import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
+import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
+import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
 
 import styles from './Worksheet.module.css';
 
@@ -81,7 +81,7 @@ function Worksheet() {
     return (
       <div style={{ height: '93vh' }}>
         <Spinner
-          className={styles.loading_spinner}
+          className={styles.loadingSpinner}
           animation="border"
           role="status"
         >
@@ -99,7 +99,7 @@ function Worksheet() {
     <div className={styles.container}>
       {!isMobile ? (
         /* Desktop View */
-        <div className={styles.desktop_container}>
+        <div className={styles.desktopContainer}>
           <Row className={worksheetView.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
             {/* Calendar Component */}
             <Col
@@ -121,17 +121,17 @@ function Worksheet() {
             >
               <StyledCalendarContainer
                 layer={0}
-                className={styles.calendar_style_container}
+                className={styles.calendarStyleContainer}
               >
                 <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
-                  className={clsx(styles.expand_btn, styles.top_right)}
+                  className={clsx(styles.expandBtn, styles.topRight)}
                 >
                   {worksheetView.view === 'calendar' &&
                   worksheetView.mode !== 'expanded' ? (
                     <FaExpandAlt
-                      className={styles.expand_icon}
+                      className={styles.expandIcon}
                       size={expandBtnSize}
                       style={{ display: 'block' }}
                       onClick={() => {
@@ -144,7 +144,7 @@ function Worksheet() {
                     />
                   ) : (
                     <FaCompressAlt
-                      className={styles.expand_icon}
+                      className={styles.expandIcon}
                       size={expandBtnSize}
                       onClick={() => {
                         // Compress calendar
@@ -194,8 +194,8 @@ function Worksheet() {
         <div>
           <Row className={clsx(styles.accordion, 'm-0 p-3')}>
             <Col className="p-0">
-              <div className="mobile-calendar-container">
-                <div className="mobile-dropdowns">
+              <div>
+                <div>
                   <WorksheetNumDropdown />
                   <Row className={clsx(styles.dropdowns, 'mx-auto')}>
                     <Col xs={6} className="m-0 p-0">
@@ -206,10 +206,10 @@ function Worksheet() {
                     </Col>
                   </Row>
                 </div>
-                <div className="mobile-calendar">
+                <div className={styles.mobileCalendar}>
                   <WorksheetCalendar />
                 </div>
-                <div className="mobile-list">
+                <div>
                   <WorksheetCalendarList />
                 </div>
               </div>

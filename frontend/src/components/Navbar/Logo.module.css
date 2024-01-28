@@ -1,22 +1,17 @@
-.coursetable_logo {
+.coursetableLogo {
   font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman,
     serif;
   display: inline-block;
   line-height: 1rem;
 }
 
-.coursetable_logo_img {
+.coursetableLogoImg {
   height: 1em;
   width: auto;
 }
 
-.coursetable_logo_wordmark {
+.coursetableLogoWordmark {
   height: 0.6em;
   width: auto;
   margin-top: -0.1em;
-}
-
-.dark_mode_btn {
-  height: 1.5em;
-  width: auto;
 }

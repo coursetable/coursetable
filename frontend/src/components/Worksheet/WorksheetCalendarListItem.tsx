@@ -86,7 +86,7 @@ function WorksheetCalendarListItem({
         >
           <strong>{course.course_code}</strong>
           <br />
-          <span className={styles.course_title}>{course.title}</span>
+          <span className={styles.courseTitle}>{course.title}</span>
         </StyledCol>
         {/* Hide Button */}
         <div className={clsx('mr-1 my-auto', hidden ? 'visible' : 'hidden')}>

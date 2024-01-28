@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import clsx from 'clsx';
@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import styles from './MobileSearchForm.module.css';
 import Toggle from './Toggle';
 import CustomSelect from './CustomSelect';
-import SortByReactSelect from './SortByReactSelect';
+import SortBySelect from './SortBySelect';
 import {
   SurfaceComponent,
   StyledInput,
@@ -30,26 +30,34 @@ export default function MobileSearchForm({
   readonly onSubmit: (event: React.FormEvent) => void;
 }) {
   // Get search context data
+  const { filters, coursesLoading, searchData } = useSearch();
   const {
-    filters: {
-      searchText,
-      selectSubjects,
-      selectSkillsAreas,
-      overallBounds,
-      workloadBounds,
-      selectSeasons,
-      selectSchools,
-    },
-    coursesLoading,
-    searchData,
-    resetKey,
-    handleResetFilters,
-  } = useSearch();
+    searchText,
+    selectSubjects,
+    selectSkillsAreas,
+    overallBounds,
+    workloadBounds,
+    professorBounds,
+    selectSeasons,
+    selectSchools,
+  } = filters;
+  // These are exactly the same as the filters, except they update responsively
+  // without triggering searching
+  const [overallRangeValue, setOverallRangeValue] = useState(
+    overallBounds.value,
+  );
+  const [workloadRangeValue, setWorkloadRangeValue] = useState(
+    workloadBounds.value,
+  );
+  const [professorRangeValue, setProfessorRangeValue] = useState(
+    professorBounds.value,
+  );
+
   return (
-    <Col className={clsx('p-3', styles.search_col_mobile)}>
+    <Col className={clsx('p-3', styles.searchColMobile)}>
       <SurfaceComponent
         layer={0}
-        className={clsx('ml-1', styles.search_container)}
+        className={clsx('ml-1', styles.searchContainer)}
       >
         <Form className="px-0" onSubmit={onSubmit}>
           <Row className="mx-auto pt-4 px-4">
@@ -57,13 +65,18 @@ export default function MobileSearchForm({
             {/* TODO */}
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <small
-              className={clsx(styles.reset_filters_btn, 'mr-auto')}
-              onClick={handleResetFilters}
+              className={clsx(styles.resetFiltersBtn, 'mr-auto')}
+              onClick={() => {
+                setOverallRangeValue(defaultFilters.overallBounds);
+                setWorkloadRangeValue(defaultFilters.workloadBounds);
+                setProfessorRangeValue(defaultFilters.professorBounds);
+                Object.values(filters).forEach((filter) => filter.reset());
+              }}
             >
               Reset Filters
             </small>
             {/* Number of results shown text */}
-            <small className={clsx(styles.num_results, 'ml-auto')}>
+            <small className={clsx(styles.numResults, 'ml-auto')}>
               <TextComponent type={2}>
                 {coursesLoading
                   ? 'Searching ...'
@@ -73,8 +86,8 @@ export default function MobileSearchForm({
           </Row>
           {/* Search Bar */}
           <Row className="mx-auto pt-1 pb-2 px-4">
-            <div className={styles.search_bar}>
-              <InputGroup className={styles.search_input}>
+            <div className={styles.searchBar}>
+              <InputGroup className={styles.searchInput}>
                 <StyledInput
                   type="text"
                   value={searchText.value}
@@ -88,12 +101,12 @@ export default function MobileSearchForm({
           </Row>
           {/* Sort by option and order */}
           <Row className="mx-auto py-0 px-4">
-            <SortByReactSelect key={resetKey} />
+            <SortBySelect />
           </Row>
           <StyledHr />
-          <Row className={clsx('mx-auto py-0 px-4', styles.multi_selects)}>
+          <Row className={clsx('mx-auto py-0 px-4', styles.multiSelects)}>
             {/* Seasons Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option<Season>, true>
                 isMulti
                 value={selectSeasons.value}
@@ -107,7 +120,7 @@ export default function MobileSearchForm({
               />
             </div>
             {/* Skills/Areas Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
                 isMulti
                 value={selectSkillsAreas.value}
@@ -122,7 +135,7 @@ export default function MobileSearchForm({
               />
             </div>
             {/* Yale Subjects Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
                 isMulti
                 value={selectSubjects.value}
@@ -137,7 +150,7 @@ export default function MobileSearchForm({
               />
             </div>
             {/* Yale Schools Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
                 isMulti
                 value={selectSchools.value}
@@ -160,15 +173,17 @@ export default function MobileSearchForm({
                   min={defaultFilters.overallBounds[0]}
                   max={defaultFilters.overallBounds[1]}
                   step={0.1}
-                  key={resetKey}
-                  defaultValue={overallBounds.value}
+                  value={overallRangeValue}
+                  onChange={(value) => {
+                    setOverallRangeValue(value as [number, number]);
+                  }}
                   onAfterChange={(value) => {
                     overallBounds.set(value as [number, number]);
                   }}
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.overall_tooltip)}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -176,7 +191,7 @@ export default function MobileSearchForm({
                   className={styles.slider}
                 />
               </Container>
-              <div className={clsx('text-center', styles.filter_title)}>
+              <div className={clsx('text-center', styles.filterTitle)}>
                 Overall rating
               </div>
             </Col>
@@ -187,15 +202,17 @@ export default function MobileSearchForm({
                   min={defaultFilters.workloadBounds[0]}
                   max={defaultFilters.workloadBounds[1]}
                   step={0.1}
-                  key={resetKey}
-                  defaultValue={workloadBounds.value}
+                  value={workloadRangeValue}
+                  onChange={(value) => {
+                    setWorkloadRangeValue(value as [number, number]);
+                  }}
                   onAfterChange={(value) => {
                     workloadBounds.set(value as [number, number]);
                   }}
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.workload_tooltip)}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -203,8 +220,37 @@ export default function MobileSearchForm({
                   className={styles.slider}
                 />
               </Container>
-              <div className={clsx('text-center', styles.filter_title)}>
+              <div className={clsx('text-center', styles.filterTitle)}>
                 Workload
+              </div>
+            </Col>
+            {/* Professor Rating Slider */}
+            <Col>
+              <Container>
+                <Range
+                  min={defaultFilters.professorBounds[0]}
+                  max={defaultFilters.professorBounds[1]}
+                  step={0.1}
+                  value={professorRangeValue}
+                  onChange={(value) => {
+                    setProfessorRangeValue(value as [number, number]);
+                  }}
+                  onAfterChange={(value) => {
+                    professorBounds.set(value as [number, number]);
+                  }}
+                  handle={({ value, dragging, ...e }) => (
+                    // @ts-expect-error: TODO upgrade rc-slider
+                    <Handle {...e} key={e.className}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
+                        {value}
+                      </div>
+                    </Handle>
+                  )}
+                  className={styles.slider}
+                />
+              </Container>
+              <div className={clsx('text-center', styles.filterTitle)}>
+                Professor
               </div>
             </Col>
           </Row>
@@ -212,7 +258,7 @@ export default function MobileSearchForm({
           <Row
             className={clsx(
               'mx-auto pt-1 px-4 justify-content-left',
-              styles.light_bg,
+              styles.lightBg,
             )}
           >
             <Toggle handle="searchDescription" />
@@ -222,7 +268,7 @@ export default function MobileSearchForm({
             <Toggle handle="hideGraduateCourses" />
             <Toggle handle="hideDiscussionSections" />
           </Row>
-          <div className={styles.useless_btn}>
+          <div className={styles.uselessBtn}>
             {/* The form requires a button with type submit in order to
           process events when someone hits enter to submit. We want
           this functionality so we can scroll to the results on mobile

@@ -1,0 +1,37 @@
+.worksheetDropdown:hover {
+  opacity: 1 !important;
+}
+
+.scaleIcon {
+  transition: 0.1s !important;
+}
+
+.scaleIcon:hover {
+  transform: scale(1.15);
+}
+
+.disabledButton {
+  cursor: not-allowed !important;
+  background-color: transparent !important;
+  border-width: 0 !important;
+}
+
+.disabledButtonIcon {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.disabledButton:active,
+.disabledButton:focus {
+  box-shadow: none !important;
+}
+
+.toggleButton {
+  gap: 1rem;
+  background-color: transparent;
+  border-width: 0;
+}
+
+.toggleButton:active,
+.toggleButton:focus {
+  box-shadow: none !important;
+}

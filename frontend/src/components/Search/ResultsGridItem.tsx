@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import type chroma from 'chroma-js';
 import * as Sentry from '@sentry/react';
 import { AiOutlineStar } from 'react-icons/ai';
 import { IoPersonOutline } from 'react-icons/io5';
@@ -25,6 +26,7 @@ import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
+  getProfessorRatings,
   toSeasonString,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
@@ -46,22 +48,40 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
   }
 `;
 
+function RatingCell({
+  rating,
+  colormap,
+  children,
+}: {
+  readonly rating: number | null;
+  readonly colormap: chroma.Scale;
+  readonly children?: React.ReactNode;
+}) {
+  return (
+    <div
+      className={clsx(styles.rating, 'mr-1')}
+      style={{
+        color: rating ? colormap(rating).darken().saturate().css() : '#cccccc',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 /**
  * Renders a grid item for a search result
  * @prop course data for the current course
- * @prop isLoggedIn is the user logged in?
  * @prop numCols integer that holds how many columns in grid view
  * @prop multiSeasons are we displaying courses across multiple seasons
  */
 
 function ResultsGridItem({
   course,
-  isLoggedIn,
   numCols,
   multiSeasons,
 }: {
   readonly course: Listing;
-  readonly isLoggedIn: boolean;
   readonly numCols: number;
   readonly multiSeasons: boolean;
 }) {
@@ -106,7 +126,7 @@ function ResultsGridItem({
             return prev;
           });
         }}
-        className={clsx(styles.one_line, styles.item_container, 'px-3 pb-3')}
+        className={clsx(styles.oneLine, styles.itemContainer, 'px-3 pb-3')}
         tabIndex={0}
         inWorksheet={courseInWorksheet}
       >
@@ -114,7 +134,7 @@ function ResultsGridItem({
           {/* Course Code */}
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
-              <small className={styles.course_codes}>
+              <small className={styles.courseCodes}>
                 {course.course_code && (
                   <>
                     <OverlayTrigger
@@ -158,7 +178,7 @@ function ResultsGridItem({
                 >
                   <div
                     className={clsx(
-                      styles.season_tag,
+                      styles.seasonTag,
                       'ml-auto px-1 pb-0',
                       tagStyles[seasons[(season - 1) as 0 | 1 | 2]],
                     )}
@@ -177,7 +197,7 @@ function ResultsGridItem({
         </Row>
         {/* Course Title */}
         <Row className="m-auto">
-          <strong className={styles.one_line}>{course.title}</strong>
+          <strong className={styles.oneLine}>{course.title}</strong>
         </Row>
         <Row className="m-auto justify-content-between">
           <Col xs={7} className="p-0">
@@ -185,7 +205,7 @@ function ResultsGridItem({
             <Row className="m-auto">
               <TextComponent
                 type={1}
-                className={clsx(styles.one_line, styles.professors)}
+                className={clsx(styles.oneLine, styles.professors)}
               >
                 {course.professor_names.length > 0
                   ? course.professor_names.join(' • ')
@@ -194,7 +214,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Times */}
             <Row className="m-auto">
-              <small className={clsx(styles.one_line, styles.small_text)}>
+              <small className={clsx(styles.oneLine, styles.smallText)}>
                 <TextComponent type={1}>
                   {course.times_summary === 'TBA'
                     ? 'Times: TBA'
@@ -204,7 +224,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Location */}
             <Row className="m-auto">
-              <small className={clsx(styles.one_line, styles.small_text)}>
+              <small className={clsx(styles.oneLine, styles.smallText)}>
                 <TextComponent type={1}>
                   {course.locations_summary === 'TBA'
                     ? 'Location: TBA'
@@ -214,7 +234,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Skills and Areas */}
             <Row className="m-auto">
-              <div className={tagStyles.skills_areas}>
+              <div className={tagStyles.skillsAreas}>
                 {course.skills.map((skill) => (
                   <SkillBadge skill={skill} key={skill} />
                 ))}
@@ -240,20 +260,12 @@ function ResultsGridItem({
                 )}
               >
                 <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={clsx(styles.rating, 'mr-1')}
-                    style={{
-                      color: getOverallRatings(course, 'stat')
-                        ? ratingColormap(getOverallRatings(course, 'stat'))
-                            .darken()
-                            .saturate()
-                            .css()
-                        : '#cccccc',
-                    }}
+                  <RatingCell
+                    rating={getOverallRatings(course, 'stat')}
+                    colormap={ratingColormap}
                   >
                     {getOverallRatings(course, 'display')}
-                  </div>
+                  </RatingCell>
                   <StyledIcon>
                     <AiOutlineStar className={styles.icon} />
                   </StyledIcon>
@@ -269,25 +281,14 @@ function ResultsGridItem({
                 )}
               >
                 <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={clsx(styles.rating, 'mr-1')}
-                    style={{
-                      color:
-                        course.average_professor && isLoggedIn
-                          ? ratingColormap(course.average_professor)
-                              .darken()
-                              .saturate()
-                              .css()
-                          : '#cccccc',
-                    }}
+                  <RatingCell
+                    rating={getProfessorRatings(course, 'stat')}
+                    colormap={ratingColormap}
                   >
-                    {course.average_professor && isLoggedIn
-                      ? course.average_professor.toFixed(1)
-                      : 'N/A'}
-                  </div>
+                    {getProfessorRatings(course, 'display')}
+                  </RatingCell>
                   <StyledIcon>
-                    <IoPersonOutline className={styles.prof_icon} />
+                    <IoPersonOutline className={styles.profIcon} />
                   </StyledIcon>
                 </Row>
               </OverlayTrigger>
@@ -301,21 +302,12 @@ function ResultsGridItem({
                 )}
               >
                 <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={clsx(styles.rating, 'mr-1')}
-                    style={{
-                      color:
-                        isLoggedIn && getWorkloadRatings(course, 'stat')
-                          ? workloadColormap(getWorkloadRatings(course, 'stat'))
-                              .darken()
-                              .saturate()
-                              .css()
-                          : '#cccccc',
-                    }}
+                  <RatingCell
+                    rating={getWorkloadRatings(course, 'stat')}
+                    colormap={workloadColormap}
                   >
-                    {isLoggedIn && getWorkloadRatings(course, 'display')}
-                  </div>
+                    {getWorkloadRatings(course, 'display')}
+                  </RatingCell>
                   <StyledIcon>
                     <BiBookOpen className={styles.icon} />
                   </StyledIcon>
@@ -326,7 +318,7 @@ function ResultsGridItem({
         </Row>
       </StyledGridItem>
       {/* Add/remove from worksheet button */}
-      <div className={styles.worksheet_btn}>
+      <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
           crn={course.crn}
           seasonCode={course.season_code}
@@ -335,7 +327,7 @@ function ResultsGridItem({
         />
       </div>
       {/* Render conflict icon */}
-      <div className={styles.conflict_error}>
+      <div className={styles.conflictError}>
         <CourseConflictIcon course={course} />
       </div>
     </Col>

@@ -1,14 +1,14 @@
-.question_header {
+.questionHeader {
   color: inherit;
   font-weight: 600;
   font-size: 14px;
 }
 
-.sort_by {
+.sortBy {
   font-size: 15px;
 }
 
-.sort_options {
+.sortOptions {
   border-radius: 5px;
   overflow: hidden;
 }

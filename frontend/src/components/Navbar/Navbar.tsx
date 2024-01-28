@@ -95,6 +95,7 @@ const NavLogo = styled(Nav)`
 type Props = {
   readonly isLoggedIn: boolean;
   readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 //  Wrapper for nav collapse for # of results shown text
@@ -115,12 +116,11 @@ function NavCollapseWrapper({
   return <>{children}</>;
 }
 
-/**
- * Renders the navbar
- * @prop isLoggedIn - is user logged in?
- * @prop setIsTutorialOpen - opens tutorial
- */
-function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
+export default function CourseTableNavbar({
+  isLoggedIn,
+  setIsTutorialOpen,
+  setShownTutorial,
+}: Props) {
   const location = useLocation();
   // Is navbar expanded in mobile view?
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
@@ -183,7 +183,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   }, []);
 
   return (
-    <div className={styles.sticky_navbar}>
+    <div className={styles.stickyNavbar}>
       <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
           <Navbar
@@ -215,7 +215,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                 }
               >
                 {/* Condense logo if on home page */}
-                <span className={styles.nav_logo}>
+                <span className={styles.navLogo}>
                   <Logo icon={false} />
                 </span>
               </NavLink>
@@ -254,7 +254,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                   {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <div
                     className={clsx(
-                      styles.navbar_dark_mode_btn,
+                      styles.navbarDarkModeBtn,
                       'd-flex',
                       !isMobile && 'ml-auto',
                     )}
@@ -298,10 +298,10 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                       !isMobile && 'align-self-end',
                     )}
                   >
-                    <div className={styles.navbar_me}>
+                    <div className={styles.navbarMe}>
                       <StyledMeIcon
                         ref={elemRef}
-                        className={clsx(styles.icon_circle, 'm-auto')}
+                        className={clsx(styles.iconCircle, 'm-auto')}
                         onClick={() =>
                           setIsComponentVisible(!isComponentVisible)
                         }
@@ -348,10 +348,9 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
           setIsTutorialOpen={setIsTutorialOpen}
+          setShownTutorial={setShownTutorial}
         />
       </div>
     </div>
   );
 }
-
-export default CourseTableNavbar;

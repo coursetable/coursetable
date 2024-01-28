@@ -4,8 +4,6 @@ import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../utilities/common';
 
-import './DropdownShared.css';
-
 function DropdownItem({
   person,
   text,
