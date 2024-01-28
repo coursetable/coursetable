@@ -5,6 +5,7 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { StyledPopover } from '../StyledComponents';
 import type { Listing } from '../../utilities/common';
 import { truncatedText } from '../../utilities/course';
+import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -59,7 +60,7 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
             basedOn="words"
           />
         </span>
-        <small className="location_text">{event.location}</small>
+        <small className={styles.location_text}>{event.location}</small>
       </div>
     </OverlayTrigger>
   );

@@ -10,6 +10,7 @@ import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useSearch } from '../contexts/searchContext';
+import './rc-slider-override.css';
 
 function Search() {
   // Fetch current device

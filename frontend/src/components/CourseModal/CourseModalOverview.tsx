@@ -18,7 +18,6 @@ import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
 import clsx from 'clsx';
 
-import '../Search/MultiToggle.css';
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import {
@@ -47,6 +46,7 @@ import {
   type Listing,
   type Weekdays,
 } from '../../utilities/common';
+import './react-multi-toggle-override.css';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
