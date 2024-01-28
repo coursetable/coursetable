@@ -1,2 +1,3 @@
 frontend/src/generated/
 frontend/build
+frontend/build-ssr
