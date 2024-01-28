@@ -112,7 +112,6 @@ export default defineConfig({
         entryFileNames: 'assets/entry-[name]-[hash:10].js',
       },
     },
-    cssCodeSplit: false,
   },
   server: {
     port: Number(process.env.PORT) || 3000,
