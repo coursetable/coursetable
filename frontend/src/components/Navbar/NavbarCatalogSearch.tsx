@@ -170,11 +170,9 @@ export function NavbarCatalogSearch() {
   const {
     filters,
     duration,
-    resetKey,
     searchData,
     coursesLoading,
     handleResetFilters,
-    setResetKey,
     setStartTime,
   } = useSearch();
 
@@ -412,7 +410,6 @@ export function NavbarCatalogSearch() {
                   max={defaultFilters.overallBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
-                  key={resetKey}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
@@ -443,7 +440,6 @@ export function NavbarCatalogSearch() {
                   max={defaultFilters.workloadBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
-                  key={resetKey}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
@@ -475,7 +471,6 @@ export function NavbarCatalogSearch() {
                     max={defaultFilters.professorBounds[1]}
                     step={0.1}
                     isTablet={isTablet}
-                    key={resetKey}
                     handleStyle={rangeHandleStyle}
                     railStyle={rangeRailStyle}
                     trackStyle={[rangeRailStyle]}
@@ -554,7 +549,6 @@ export function NavbarCatalogSearch() {
                 setNumValueLabels(defaultFilters.numBounds);
                 setProfessorValueLabels(defaultFilters.professorBounds);
                 setStartTime(Date.now());
-                setResetKey(resetKey + 1);
               }}
               selectedOptions={
                 [
@@ -678,7 +672,6 @@ export function NavbarCatalogSearch() {
                         228: '7pm',
                         264: '10pm',
                       }}
-                      key={resetKey}
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
@@ -712,7 +705,6 @@ export function NavbarCatalogSearch() {
                       max={Math.round(toLinear(defaultFilters.enrollBounds[1]))}
                       step={10}
                       marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
-                      key={resetKey}
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
@@ -758,7 +750,6 @@ export function NavbarCatalogSearch() {
                         min={defaultFilters.professorBounds[0]}
                         max={defaultFilters.professorBounds[1]}
                         step={0.1}
-                        key={resetKey}
                         handleStyle={rangeHandleStyle}
                         railStyle={rangeRailStyle}
                         trackStyle={[rangeRailStyle]}
@@ -807,7 +798,6 @@ export function NavbarCatalogSearch() {
                         900: '900',
                         1000: '1000+',
                       }}
-                      key={resetKey}
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
@@ -867,7 +857,6 @@ export function NavbarCatalogSearch() {
                   </AdvancedLabel>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_gut_rating}
-                    key={resetKey}
                   />
                 </Row>
                 <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">

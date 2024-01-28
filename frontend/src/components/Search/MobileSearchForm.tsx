@@ -43,7 +43,6 @@ export default function MobileSearchForm({
     },
     coursesLoading,
     searchData,
-    resetKey,
     handleResetFilters,
   } = useSearch();
   return (
@@ -89,7 +88,7 @@ export default function MobileSearchForm({
           </Row>
           {/* Sort by option and order */}
           <Row className="mx-auto py-0 px-4">
-            <SortBySelect key={resetKey} />
+            <SortBySelect />
           </Row>
           <StyledHr />
           <Row className={clsx('mx-auto py-0 px-4', styles.multiSelects)}>
@@ -161,7 +160,6 @@ export default function MobileSearchForm({
                   min={defaultFilters.overallBounds[0]}
                   max={defaultFilters.overallBounds[1]}
                   step={0.1}
-                  key={resetKey}
                   defaultValue={overallBounds.value}
                   onAfterChange={(value) => {
                     overallBounds.set(value as [number, number]);
@@ -188,7 +186,6 @@ export default function MobileSearchForm({
                   min={defaultFilters.workloadBounds[0]}
                   max={defaultFilters.workloadBounds[1]}
                   step={0.1}
-                  key={resetKey}
                   defaultValue={workloadBounds.value}
                   onAfterChange={(value) => {
                     workloadBounds.set(value as [number, number]);
@@ -215,7 +212,6 @@ export default function MobileSearchForm({
                   min={defaultFilters.professorBounds[0]}
                   max={defaultFilters.professorBounds[1]}
                   step={0.1}
-                  key={resetKey}
                   defaultValue={professorBounds.value}
                   onAfterChange={(value) => {
                     professorBounds.set(value as [number, number]);

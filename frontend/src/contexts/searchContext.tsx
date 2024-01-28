@@ -123,10 +123,8 @@ type Store = {
   multiSeasons: boolean;
   isLoggedIn: boolean;
   numFriends: { [seasonCodeCrn: string]: string[] };
-  resetKey: number;
   duration: number;
   handleResetFilters: () => void;
-  setResetKey: React.Dispatch<React.SetStateAction<number>>;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
 };
 
@@ -230,11 +228,6 @@ export function SearchProvider({
   /* Sorting */
   const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
-
-  /* Resetting */
-
-  // State to cause components to reload when filters are reset
-  const [resetKey, setResetKey] = useState(0);
 
   /* Search speed */
   const [startTime, setStartTime] = useState(Date.now());
@@ -576,10 +569,8 @@ export function SearchProvider({
   // For resetting all filters and sorts
   const handleResetFilters = useCallback(() => {
     Object.values(filters).forEach((filter) => filter.reset());
-
-    setResetKey(resetKey + 1);
     setStartTime(Date.now());
-  }, [resetKey, filters]);
+  }, [filters]);
 
   // Check if can or can't reset
   useEffect(() => {
@@ -598,11 +589,9 @@ export function SearchProvider({
       multiSeasons,
       isLoggedIn,
       numFriends,
-      resetKey,
       duration,
 
       handleResetFilters,
-      setResetKey,
       setStartTime,
     }),
     [
@@ -612,10 +601,8 @@ export function SearchProvider({
       multiSeasons,
       isLoggedIn,
       numFriends,
-      resetKey,
       duration,
       handleResetFilters,
-      setResetKey,
       setStartTime,
     ],
   );

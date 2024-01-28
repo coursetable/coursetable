@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import ResultsColumnSort from './ResultsColumnSort';
 import { SurfaceComponent } from '../StyledComponents';
 
-import { useSearch, sortByOptions } from '../../contexts/searchContext';
+import { sortByOptions } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { breakpoints } from '../../utilities/display';
 import styles from './ResultsHeaders.module.css';
@@ -77,9 +77,6 @@ function ResultsHeaders(
   },
   ref: React.Ref<HTMLDivElement>,
 ) {
-  // Fetch resetKey from search context
-  const { resetKey } = useSearch();
-
   const { isTablet, isLgDesktop, isSmDesktop } = useWindowDimensions();
 
   // Column width styles
@@ -183,18 +180,12 @@ function ResultsHeaders(
                 >
                   <span className={styles.oneLine}>Code</span>
                 </OverlayTrigger>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.course_code}
-                  key={resetKey}
-                />
+                <ResultsColumnSort selectOption={sortByOptions.course_code} />
               </ResultsHeader>
               {/* Course Name */}
               <ResultsHeader style={titleStyle}>
                 <span className={styles.oneLine}>Title</span>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.title}
-                  key={resetKey}
-                />
+                <ResultsColumnSort selectOption={sortByOptions.title} />
               </ResultsHeader>
               <div className="d-flex">
                 {/* Overall Rating */}
@@ -217,7 +208,6 @@ function ResultsHeaders(
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_rating}
-                    key={resetKey}
                   />
                 </ResultsHeader>
                 {/* Workload Rating */}
@@ -239,7 +229,6 @@ function ResultsHeaders(
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_workload}
-                    key={resetKey}
                   />
                 </ResultsHeader>
                 {/* Professor Rating & Course Professors */}
@@ -261,7 +250,6 @@ function ResultsHeaders(
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_professor}
-                    key={resetKey}
                   />
                 </ResultsHeader>
               </div>
@@ -294,7 +282,6 @@ function ResultsHeaders(
                 </OverlayTrigger>
                 <ResultsColumnSort
                   selectOption={sortByOptions.last_enrollment}
-                  key={resetKey}
                 />
               </ResultsHeader>
               {/* Skills/Areas */}
@@ -317,17 +304,13 @@ function ResultsHeaders(
                 >
                   <span className={styles.oneLine}>Meets</span>
                 </OverlayTrigger>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.times_by_day}
-                  key={resetKey}
-                />
+                <ResultsColumnSort selectOption={sortByOptions.times_by_day} />
               </ResultsHeader>
               {/* Location */}
               <ResultsHeader style={locStyle}>
                 <span className={styles.oneLine}>Location</span>
                 <ResultsColumnSort
                   selectOption={sortByOptions.locations_summary}
-                  key={resetKey}
                 />
               </ResultsHeader>
               <ResultsHeader style={friendsStyle}>
@@ -341,10 +324,7 @@ function ResultsHeaders(
                 >
                   <span className={styles.oneLine}>#F</span>
                 </OverlayTrigger>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.friend}
-                  key={resetKey}
-                />
+                <ResultsColumnSort selectOption={sortByOptions.friend} />
               </ResultsHeader>
             </>
           ) : (
