@@ -140,7 +140,7 @@ function ResultsHeaders(
           className={clsx(
             'mx-auto pl-4 pr-2',
             isLgDesktop ? 'py-2' : 'py-1',
-            styles.results_header_row,
+            styles.resultsHeaderRow,
             'justify-content-between',
           )}
           data-tutorial="catalog-5"
@@ -148,7 +148,7 @@ function ResultsHeaders(
           {/* View Toggle */}
           <div
             className={clsx(
-              styles.list_grid_toggle,
+              styles.listGridToggle,
               'd-flex ml-auto my-auto p-0',
             )}
           >
@@ -181,7 +181,7 @@ function ResultsHeaders(
                     </Tooltip>
                   )}
                 >
-                  <span className={styles.one_line}>Code</span>
+                  <span className={styles.oneLine}>Code</span>
                 </OverlayTrigger>
                 <ResultsColumnSort
                   selectOption={sortByOptions.course_code}
@@ -190,7 +190,7 @@ function ResultsHeaders(
               </ResultsHeader>
               {/* Course Name */}
               <ResultsHeader style={titleStyle}>
-                <span className={styles.one_line}>Title</span>
+                <span className={styles.oneLine}>Title</span>
                 <ResultsColumnSort
                   selectOption={sortByOptions.title}
                   key={resetKey}
@@ -213,7 +213,7 @@ function ResultsHeaders(
                       </Tooltip>
                     )}
                   >
-                    <span className={styles.one_line}>Overall</span>
+                    <span className={styles.oneLine}>Overall</span>
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_rating}
@@ -235,7 +235,7 @@ function ResultsHeaders(
                       </Tooltip>
                     )}
                   >
-                    <span className={styles.one_line}>Work</span>
+                    <span className={styles.oneLine}>Work</span>
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_workload}
@@ -257,7 +257,7 @@ function ResultsHeaders(
                       </Tooltip>
                     )}
                   >
-                    <span className={styles.one_line}>Professors</span>
+                    <span className={styles.oneLine}>Professors</span>
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_professor}
@@ -290,7 +290,7 @@ function ResultsHeaders(
                     </Tooltip>
                   )}
                 >
-                  <span className={styles.one_line}>#</span>
+                  <span className={styles.oneLine}>#</span>
                 </OverlayTrigger>
                 <ResultsColumnSort
                   selectOption={sortByOptions.last_enrollment}
@@ -299,7 +299,7 @@ function ResultsHeaders(
               </ResultsHeader>
               {/* Skills/Areas */}
               <ResultsHeader style={saStyle}>
-                <span className={styles.one_line}>Skills/Areas</span>
+                <span className={styles.oneLine}>Skills/Areas</span>
               </ResultsHeader>
               {/* Course Meeting Days & Times */}
               <ResultsHeader style={meetStyle}>
@@ -315,7 +315,7 @@ function ResultsHeaders(
                     </Tooltip>
                   )}
                 >
-                  <span className={styles.one_line}>Meets</span>
+                  <span className={styles.oneLine}>Meets</span>
                 </OverlayTrigger>
                 <ResultsColumnSort
                   selectOption={sortByOptions.times_by_day}
@@ -324,7 +324,7 @@ function ResultsHeaders(
               </ResultsHeader>
               {/* Location */}
               <ResultsHeader style={locStyle}>
-                <span className={styles.one_line}>Location</span>
+                <span className={styles.oneLine}>Location</span>
                 <ResultsColumnSort
                   selectOption={sortByOptions.locations_summary}
                   key={resetKey}
@@ -339,7 +339,7 @@ function ResultsHeaders(
                     </Tooltip>
                   )}
                 >
-                  <span className={styles.one_line}>#F</span>
+                  <span className={styles.oneLine}>#F</span>
                 </OverlayTrigger>
                 <ResultsColumnSort
                   selectOption={sortByOptions.friend}

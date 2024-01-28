@@ -46,10 +46,10 @@ export default function MobileSearchForm({
     handleResetFilters,
   } = useSearch();
   return (
-    <Col className={clsx('p-3', styles.search_col_mobile)}>
+    <Col className={clsx('p-3', styles.searchColMobile)}>
       <SurfaceComponent
         layer={0}
-        className={clsx('ml-1', styles.search_container)}
+        className={clsx('ml-1', styles.searchContainer)}
       >
         <Form className="px-0" onSubmit={onSubmit}>
           <Row className="mx-auto pt-4 px-4">
@@ -57,13 +57,13 @@ export default function MobileSearchForm({
             {/* TODO */}
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <small
-              className={clsx(styles.reset_filters_btn, 'mr-auto')}
+              className={clsx(styles.resetFiltersBtn, 'mr-auto')}
               onClick={handleResetFilters}
             >
               Reset Filters
             </small>
             {/* Number of results shown text */}
-            <small className={clsx(styles.num_results, 'ml-auto')}>
+            <small className={clsx(styles.numResults, 'ml-auto')}>
               <TextComponent type={2}>
                 {coursesLoading
                   ? 'Searching ...'
@@ -73,8 +73,8 @@ export default function MobileSearchForm({
           </Row>
           {/* Search Bar */}
           <Row className="mx-auto pt-1 pb-2 px-4">
-            <div className={styles.search_bar}>
-              <InputGroup className={styles.search_input}>
+            <div className={styles.searchBar}>
+              <InputGroup className={styles.searchInput}>
                 <StyledInput
                   type="text"
                   value={searchText.value}
@@ -91,9 +91,9 @@ export default function MobileSearchForm({
             <SortByReactSelect key={resetKey} />
           </Row>
           <StyledHr />
-          <Row className={clsx('mx-auto py-0 px-4', styles.multi_selects)}>
+          <Row className={clsx('mx-auto py-0 px-4', styles.multiSelects)}>
             {/* Seasons Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option<Season>, true>
                 isMulti
                 value={selectSeasons.value}
@@ -107,7 +107,7 @@ export default function MobileSearchForm({
               />
             </div>
             {/* Skills/Areas Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
                 isMulti
                 value={selectSkillsAreas.value}
@@ -122,7 +122,7 @@ export default function MobileSearchForm({
               />
             </div>
             {/* Yale Subjects Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
                 isMulti
                 value={selectSubjects.value}
@@ -137,7 +137,7 @@ export default function MobileSearchForm({
               />
             </div>
             {/* Yale Schools Multi-Select */}
-            <div className={clsx('col-md-12 p-0', styles.selector_container)}>
+            <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
                 isMulti
                 value={selectSchools.value}
@@ -168,7 +168,7 @@ export default function MobileSearchForm({
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.overall_tooltip)}>
+                      <div className={clsx('shadow', styles.overallTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -176,7 +176,7 @@ export default function MobileSearchForm({
                   className={styles.slider}
                 />
               </Container>
-              <div className={clsx('text-center', styles.filter_title)}>
+              <div className={clsx('text-center', styles.filterTitle)}>
                 Overall rating
               </div>
             </Col>
@@ -195,7 +195,7 @@ export default function MobileSearchForm({
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.workload_tooltip)}>
+                      <div className={clsx('shadow', styles.workloadTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -203,7 +203,7 @@ export default function MobileSearchForm({
                   className={styles.slider}
                 />
               </Container>
-              <div className={clsx('text-center', styles.filter_title)}>
+              <div className={clsx('text-center', styles.filterTitle)}>
                 Workload
               </div>
             </Col>
@@ -212,7 +212,7 @@ export default function MobileSearchForm({
           <Row
             className={clsx(
               'mx-auto pt-1 px-4 justify-content-left',
-              styles.light_bg,
+              styles.lightBg,
             )}
           >
             <Toggle handle="searchDescription" />
@@ -222,7 +222,7 @@ export default function MobileSearchForm({
             <Toggle handle="hideGraduateCourses" />
             <Toggle handle="hideDiscussionSections" />
           </Row>
-          <div className={styles.useless_btn}>
+          <div className={styles.uselessBtn}>
             {/* The form requires a button with type submit in order to
           process events when someone hits enter to submit. We want
           this functionality so we can scroll to the results on mobile

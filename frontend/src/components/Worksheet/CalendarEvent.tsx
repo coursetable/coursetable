@@ -31,7 +31,7 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
       // Course info that appears on hover
       placement="right"
       overlay={(props) => (
-        <StyledPopover {...props} id="title_popover">
+        <StyledPopover {...props} id="title-popover">
           <Popover.Title>
             <strong>{course.title}</strong>
             <span className="d-block">{course.times_summary}</span>
@@ -60,7 +60,7 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
             basedOn="words"
           />
         </span>
-        <small className={styles.location_text}>{event.location}</small>
+        <small className={styles.locationText}>{event.location}</small>
       </div>
     </OverlayTrigger>
   );

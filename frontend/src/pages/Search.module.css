@@ -1,14 +1,9 @@
-.search_base {
+.searchBase {
   width: 100%;
   min-height: calc(100vh - 56px);
 }
 
-.results_col {
-  background-color: transparent;
-  z-index: 0;
-}
-
-.results_col_mobile {
+.resultsCol {
   background-color: transparent;
   z-index: 0;
 }

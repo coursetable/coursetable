@@ -393,7 +393,7 @@ function Challenge() {
           // Loading spinner while fetching questions
           <Row className="mx-auto py-5 my-5">
             <Spinner
-              className={styles.loading_spinner}
+              className={styles.loadingSpinner}
               animation="border"
               role="status"
             >

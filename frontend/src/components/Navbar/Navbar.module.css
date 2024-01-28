@@ -1,40 +1,27 @@
-.sticky_navbar {
+.stickyNavbar {
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-.nav_logo {
+.navLogo {
   font-size: 1.6rem;
 }
 
-.navbar_me {
+.navbarMe {
   /* padding-left: 1rem; */
   height: 40px;
   display: flex;
 }
 
-.navbar_dark_mode_btn {
+.navbarDarkModeBtn {
   padding-right: 1rem !important;
   transition: 0.1s;
 }
 
-.icon_circle {
+.iconCircle {
   width: 30px;
   height: 30px;
   border-radius: 15px;
   display: flex;
 }
-
-/* .search_bar_mid {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  width: calc(120px + 30vw);
-}
-
-.search_bar_relative {
-  margin: 0 1rem;
-  width: 30vw; 
-  width: 26vw;
-} */

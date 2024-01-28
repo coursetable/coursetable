@@ -197,9 +197,9 @@ function WorksheetToggleButton({
         {modal ? (
           <>
             {inWorksheet ? (
-              <FaMinus size={25} className={styles.scale_icon} />
+              <FaMinus size={25} className={styles.scaleIcon} />
             ) : (
-              <FaPlus size={25} className={styles.scale_icon} />
+              <FaPlus size={25} className={styles.scaleIcon} />
             )}
             {/* Render the worksheet dropdown */}
             <StyledSelect

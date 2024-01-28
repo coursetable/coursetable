@@ -3,7 +3,7 @@
   margin-bottom: 3rem;
 }
 
-.loading_spinner {
+.loadingSpinner {
   position: fixed;
   top: calc(50% - 16px);
   left: calc(50% - 16px);

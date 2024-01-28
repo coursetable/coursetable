@@ -2,11 +2,11 @@
   opacity: 1 !important;
 }
 
-.scale_icon {
+.scaleIcon {
   transition: 0.1s !important;
 }
 
-.scale_icon:hover {
+.scaleIcon:hover {
   transform: scale(1.15);
 }
 

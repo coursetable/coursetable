@@ -81,7 +81,7 @@ function Worksheet() {
     return (
       <div style={{ height: '93vh' }}>
         <Spinner
-          className={styles.loading_spinner}
+          className={styles.loadingSpinner}
           animation="border"
           role="status"
         >
@@ -99,7 +99,7 @@ function Worksheet() {
     <div className={styles.container}>
       {!isMobile ? (
         /* Desktop View */
-        <div className={styles.desktop_container}>
+        <div className={styles.desktopContainer}>
           <Row className={worksheetView.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
             {/* Calendar Component */}
             <Col
@@ -121,17 +121,17 @@ function Worksheet() {
             >
               <StyledCalendarContainer
                 layer={0}
-                className={styles.calendar_style_container}
+                className={styles.calendarStyleContainer}
               >
                 <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
-                  className={clsx(styles.expand_btn, styles.top_right)}
+                  className={clsx(styles.expandBtn, styles.topRight)}
                 >
                   {worksheetView.view === 'calendar' &&
                   worksheetView.mode !== 'expanded' ? (
                     <FaExpandAlt
-                      className={styles.expand_icon}
+                      className={styles.expandIcon}
                       size={expandBtnSize}
                       style={{ display: 'block' }}
                       onClick={() => {
@@ -144,7 +144,7 @@ function Worksheet() {
                     />
                   ) : (
                     <FaCompressAlt
-                      className={styles.expand_icon}
+                      className={styles.expandIcon}
                       size={expandBtnSize}
                       onClick={() => {
                         // Compress calendar
@@ -206,7 +206,7 @@ function Worksheet() {
                     </Col>
                   </Row>
                 </div>
-                <div className={styles.mobile_calendar}>
+                <div className={styles.mobileCalendar}>
                   <WorksheetCalendar />
                 </div>
                 <div>
