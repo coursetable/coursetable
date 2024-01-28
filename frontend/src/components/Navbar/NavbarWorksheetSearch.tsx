@@ -228,6 +228,7 @@ export function NavbarWorksheetSearch() {
             {/* Worksheet Choice Filter Dropdown */}
             <Popout
               buttonText="Worksheet"
+              displayOptionLabel
               selectedOptions={selectedWorksheet}
               clearIcon={false}
             >
@@ -246,6 +247,7 @@ export function NavbarWorksheetSearch() {
             {/* Friends' Courses Dropdown */}
             <Popout
               buttonText="Friends' courses"
+              displayOptionLabel
               selectedOptions={selectedPerson}
               onReset={() => {
                 handlePersonChange('me');
