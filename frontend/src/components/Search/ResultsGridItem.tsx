@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import type chroma from 'chroma-js';
 import * as Sentry from '@sentry/react';
 import { AiOutlineStar } from 'react-icons/ai';
 import { IoPersonOutline } from 'react-icons/io5';
@@ -25,6 +26,7 @@ import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
+  getProfessorRatings,
   toSeasonString,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
@@ -45,6 +47,27 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
     background-color: ${({ theme }) => theme.selectHover};
   }
 `;
+
+function RatingCell({
+  rating,
+  colormap,
+  children,
+}: {
+  readonly rating: number | null;
+  readonly colormap: chroma.Scale;
+  readonly children?: React.ReactNode;
+}) {
+  return (
+    <div
+      className={clsx(styles.rating, 'mr-1')}
+      style={{
+        color: rating ? colormap(rating).darken().saturate().css() : '#cccccc',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 /**
  * Renders a grid item for a search result
@@ -237,20 +260,12 @@ function ResultsGridItem({
                 )}
               >
                 <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={clsx(styles.rating, 'mr-1')}
-                    style={{
-                      color: getOverallRatings(course, 'stat')
-                        ? ratingColormap(getOverallRatings(course, 'stat'))
-                            .darken()
-                            .saturate()
-                            .css()
-                        : '#cccccc',
-                    }}
+                  <RatingCell
+                    rating={getOverallRatings(course, 'stat')}
+                    colormap={ratingColormap}
                   >
                     {getOverallRatings(course, 'display')}
-                  </div>
+                  </RatingCell>
                   <StyledIcon>
                     <AiOutlineStar className={styles.icon} />
                   </StyledIcon>
@@ -266,22 +281,12 @@ function ResultsGridItem({
                 )}
               >
                 <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={clsx(styles.rating, 'mr-1')}
-                    style={{
-                      color: course.average_professor
-                        ? ratingColormap(course.average_professor)
-                            .darken()
-                            .saturate()
-                            .css()
-                        : '#cccccc',
-                    }}
+                  <RatingCell
+                    rating={getProfessorRatings(course, 'stat')}
+                    colormap={ratingColormap}
                   >
-                    {course.average_professor
-                      ? course.average_professor.toFixed(1)
-                      : 'N/A'}
-                  </div>
+                    {getProfessorRatings(course, 'display')}
+                  </RatingCell>
                   <StyledIcon>
                     <IoPersonOutline className={styles.profIcon} />
                   </StyledIcon>
@@ -297,20 +302,12 @@ function ResultsGridItem({
                 )}
               >
                 <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={clsx(styles.rating, 'mr-1')}
-                    style={{
-                      color: getWorkloadRatings(course, 'stat')
-                        ? workloadColormap(getWorkloadRatings(course, 'stat'))
-                            .darken()
-                            .saturate()
-                            .css()
-                        : '#cccccc',
-                    }}
+                  <RatingCell
+                    rating={getWorkloadRatings(course, 'stat')}
+                    colormap={workloadColormap}
                   >
                     {getWorkloadRatings(course, 'display')}
-                  </div>
+                  </RatingCell>
                   <StyledIcon>
                     <BiBookOpen className={styles.icon} />
                   </StyledIcon>

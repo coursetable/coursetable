@@ -191,6 +191,7 @@ export function NavbarCatalogSearch() {
     selectSkillsAreas,
     overallBounds,
     workloadBounds,
+    professorBounds,
     selectSeasons,
     selectDays,
     timeBounds,
@@ -210,6 +211,7 @@ export function NavbarCatalogSearch() {
   // Active state for range filters
   const [activeOverall, setActiveOverall] = useState(false);
   const [activeWorkload, setActiveWorkload] = useState(false);
+  const [activeProfessor, setActiveProfessor] = useState(false);
   const [activeTime, setActiveTime] = useState(false);
   const [activeEnrollment, setActiveEnrollment] = useState(false);
   const [activeNumber, setActiveNumber] = useState(false);
@@ -221,6 +223,9 @@ export function NavbarCatalogSearch() {
   );
   const [workloadValueLabels, setWorkloadValueLabels] = useState(
     workloadBounds.value,
+  );
+  const [professorValueLabels, setProfessorValueLabels] = useState(
+    professorBounds.value,
   );
   const [timeValueLabels, setTimeValueLabels] = useState(timeBounds.value);
   const [enrollValueLabels, setEnrollValueLabels] = useState(
@@ -234,6 +239,7 @@ export function NavbarCatalogSearch() {
   useEffect(() => {
     setActiveOverall(canReset && overallBounds.hasChanged);
     setActiveWorkload(canReset && workloadBounds.hasChanged);
+    setActiveProfessor(canReset && professorBounds.hasChanged);
     setActiveTime(canReset && timeBounds.hasChanged);
     setActiveEnrollment(canReset && enrollBounds.hasChanged);
     setActiveNumber(canReset && numBounds.hasChanged);
@@ -241,6 +247,7 @@ export function NavbarCatalogSearch() {
     canReset,
     overallBounds,
     workloadBounds,
+    professorBounds,
     timeBounds,
     enrollBounds,
     numBounds,
@@ -283,7 +290,9 @@ export function NavbarCatalogSearch() {
   // Consolidate all advanced filters' selected options
   const advancedOptions = useMemo(
     (): {
-      [key: string]: { [key: string]: Option<string | number>[] | boolean };
+      [key: string]: {
+        [key: string]: Option<string | number>[] | boolean | [number, number];
+      };
     } => ({
       selects: {
         selectDays: selectDays.value,
@@ -294,6 +303,7 @@ export function NavbarCatalogSearch() {
         selectSkillsAreas: isTablet && selectSkillsAreas.value,
       },
       ranges: {
+        professorBounds: isTablet && professorBounds.value,
         activeTime,
         activeEnrollment,
         activeNumber,
@@ -311,6 +321,7 @@ export function NavbarCatalogSearch() {
       },
     }),
     [
+      professorBounds,
       selectDays,
       selectSchools,
       selectCredits,
@@ -536,6 +547,39 @@ export function NavbarCatalogSearch() {
                   }}
                 />
               </Col>
+
+              {!isTablet && (
+                <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+                  <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                    <RangeValueLabel>{professorValueLabels[0]}</RangeValueLabel>
+                    <RangeLabel
+                      className="flex-grow-1 text-center"
+                      style={activeStyle(activeProfessor)}
+                    >
+                      Professor
+                    </RangeLabel>
+                    <RangeValueLabel>{professorValueLabels[1]}</RangeValueLabel>
+                  </div>
+                  <StyledRange
+                    min={defaultFilters.professorBounds[0]}
+                    max={defaultFilters.professorBounds[1]}
+                    step={0.1}
+                    isTablet={isTablet}
+                    key={resetKey}
+                    handleStyle={rangeHandleStyle}
+                    railStyle={rangeRailStyle}
+                    trackStyle={[rangeRailStyle]}
+                    defaultValue={professorBounds.value}
+                    onChange={(value) => {
+                      setProfessorValueLabels(value as [number, number]);
+                    }}
+                    onAfterChange={(value) => {
+                      professorBounds.set(value as [number, number]);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Col>
+              )}
             </div>
             {/* Season Filter Dropdown */}
             {!isTablet && (
@@ -759,6 +803,43 @@ export function NavbarCatalogSearch() {
                     />
                   </AdvancedRangeGroup>
                 </Row>
+                {/* Professor Range */}
+
+                {isTablet && (
+                  <Row className="align-items-center justify-content-between mx-3 mt-3">
+                    <AdvancedLabel style={activeStyle(activeProfessor)}>
+                      Professor:
+                    </AdvancedLabel>
+                    <AdvancedRangeGroup>
+                      {/* Professor Rating Range */}
+                      <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                        <RangeValueLabel>
+                          {professorValueLabels[0]}
+                        </RangeValueLabel>
+                        <RangeValueLabel>
+                          {professorValueLabels[1]}
+                        </RangeValueLabel>
+                      </div>
+                      <AdvancedRange
+                        min={defaultFilters.professorBounds[0]}
+                        max={defaultFilters.professorBounds[1]}
+                        step={0.1}
+                        key={resetKey}
+                        handleStyle={rangeHandleStyle}
+                        railStyle={rangeRailStyle}
+                        trackStyle={[rangeRailStyle]}
+                        defaultValue={professorBounds.value}
+                        onChange={(value) => {
+                          setProfessorValueLabels(value as [number, number]);
+                        }}
+                        onAfterChange={(value) => {
+                          professorBounds.set(value as [number, number]);
+                          setStartTime(Date.now());
+                        }}
+                      />
+                    </AdvancedRangeGroup>
+                  </Row>
+                )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <AdvancedLabel style={activeStyle(activeNumber)}>
                     Course #:

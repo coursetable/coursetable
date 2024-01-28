@@ -37,6 +37,7 @@ export default function MobileSearchForm({
       selectSkillsAreas,
       overallBounds,
       workloadBounds,
+      professorBounds,
       selectSeasons,
       selectSchools,
     },
@@ -168,7 +169,7 @@ export default function MobileSearchForm({
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.overallTooltip)}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -195,7 +196,7 @@ export default function MobileSearchForm({
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.workloadTooltip)}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -205,6 +206,33 @@ export default function MobileSearchForm({
               </Container>
               <div className={clsx('text-center', styles.filterTitle)}>
                 Workload
+              </div>
+            </Col>
+            {/* Professor Rating Slider */}
+            <Col>
+              <Container>
+                <Range
+                  min={defaultFilters.professorBounds[0]}
+                  max={defaultFilters.professorBounds[1]}
+                  step={0.1}
+                  key={resetKey}
+                  defaultValue={professorBounds.value}
+                  onAfterChange={(value) => {
+                    professorBounds.set(value as [number, number]);
+                  }}
+                  handle={({ value, dragging, ...e }) => (
+                    // @ts-expect-error: TODO upgrade rc-slider
+                    <Handle {...e} key={e.className}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
+                        {value}
+                      </div>
+                    </Handle>
+                  )}
+                  className={styles.slider}
+                />
+              </Container>
+              <div className={clsx('text-center', styles.filterTitle)}>
+                Professor
               </div>
             </Col>
           </Row>

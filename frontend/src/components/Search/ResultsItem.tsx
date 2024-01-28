@@ -30,6 +30,7 @@ import {
   getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
+  getProfessorRatings,
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
@@ -305,12 +306,10 @@ function ResultsItem({
           <div style={profStyle} className="d-flex align-items-center">
             <div style={rateProfStyle} className="mr-2 h-100">
               <RatingCell
-                rating={course.average_professor}
+                rating={getProfessorRatings(course, 'stat')}
                 colormap={ratingColormap}
               >
-                {course.average_professor
-                  ? course.average_professor.toFixed(1)
-                  : 'N/A'}
+                {getProfessorRatings(course, 'display')}
               </RatingCell>
             </div>
             <div className={styles.ellipsisText}>

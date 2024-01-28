@@ -95,7 +95,11 @@ type Props = {
   readonly clearIcon?: boolean;
   readonly selectOptions?:
     | Option<string | number>[]
-    | { [key: string]: { [key: string]: Option<string | number>[] | boolean } }
+    | {
+        [key: string]: {
+          [key: string]: Option<string | number>[] | boolean | [number, number];
+        };
+      }
     | Option<string | number>
     | null;
   readonly className?: string;

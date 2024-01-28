@@ -185,6 +185,24 @@ export function getWorkloadRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
+// Get average professor rating for a course
+export function getProfessorRatings(
+  course: Listing,
+  usage: 'stat',
+): number | null;
+export function getProfessorRatings(course: Listing, usage: 'display'): string;
+export function getProfessorRatings(
+  course: Listing,
+  usage: 'stat' | 'display',
+): string | number | null {
+  if (course.average_professor) {
+    return usage === 'stat'
+      ? course.average_professor
+      : course.average_professor.toFixed(1);
+  }
+  return usage === 'stat' ? null : 'N/A';
+}
+
 // Get start and end times
 export function getDayTimes(
   course: Listing,
