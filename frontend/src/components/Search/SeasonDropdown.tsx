@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
-import '../Navbar/DropdownShared.css';
 import { toSeasonString } from '../../utilities/course';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Season } from '../../utilities/common';

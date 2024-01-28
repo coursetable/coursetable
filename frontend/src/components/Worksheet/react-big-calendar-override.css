@@ -26,10 +26,6 @@
   border: none !important;
 }
 
-.location_text {
-  font-weight: 500;
-}
-
 /* .rbc-event {
   transition: transform 0.1s, background-color 0.1s, opacity 0.1s;
 } */
@@ -48,19 +44,7 @@
 }
 
 @media only screen and (max-width: 767px) {
-  .mobile-calendar {
-    height: 75vh;
-  }
-
   .rbc-calendar {
     margin: 1rem 0 0.5rem 0;
-  }
-
-  .location_text {
-    display: none;
-  }
-
-  .mobile-view {
-    margin: 1rem 0.75rem;
   }
 }
