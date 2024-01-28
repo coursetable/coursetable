@@ -140,7 +140,7 @@ export type Filters = {
   professorBounds: [number, number];
   selectSeasons: Option<Season>[];
   selectDays: Option<Weekdays>[];
-  timeBounds: [string, string];
+  timeBounds: [number, number];
   enrollBounds: [number, number];
   numBounds: [number, number];
   selectSchools: Option[];
@@ -164,7 +164,7 @@ export const defaultFilters: Filters = {
   professorBounds: [1, 5],
   selectSeasons: [{ value: CUR_SEASON, label: toSeasonString(CUR_SEASON) }],
   selectDays: [],
-  timeBounds: ['7:00', '22:00'],
+  timeBounds: [toRangeTime('7:00'), toRangeTime('22:00')],
   enrollBounds: [1, 528],
   numBounds: [0, 1000],
   selectSchools: [],
@@ -296,10 +296,7 @@ export function SearchProvider({
     [professorBounds],
   );
   const processedTimeBounds = useMemo(
-    () =>
-      timeBounds.hasChanged
-        ? (timeBounds.value.map(toRangeTime) as [number, number])
-        : null,
+    () => (timeBounds.hasChanged ? timeBounds.value : null),
     [timeBounds],
   );
   const processedEnrollBounds = useMemo(

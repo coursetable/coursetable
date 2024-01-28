@@ -30,7 +30,6 @@ import {
 import { breakpoints } from '../../utilities/display';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
 import {
-  toRangeTime,
   toRealTime,
   to12HourTime,
   toLinear,
@@ -201,20 +200,20 @@ export function NavbarCatalogSearch() {
 
   // These are exactly the same as the filters, except they update responsively
   // without triggering searching
-  const [overallValueLabels, setOverallValueLabels] = useState(
+  const [overallRangeValue, setOverallRangeValue] = useState(
     overallBounds.value,
   );
-  const [workloadValueLabels, setWorkloadValueLabels] = useState(
+  const [workloadRangeValue, setWorkloadRangeValue] = useState(
     workloadBounds.value,
   );
-  const [professorValueLabels, setProfessorValueLabels] = useState(
+  const [professorRangeValue, setProfessorRangeValue] = useState(
     professorBounds.value,
   );
-  const [timeValueLabels, setTimeValueLabels] = useState(timeBounds.value);
-  const [enrollValueLabels, setEnrollValueLabels] = useState(
-    enrollBounds.value,
+  const [timeRangeValue, setTimeRangeValue] = useState(timeBounds.value);
+  const [enrollRangeValue, setEnrollRangeValue] = useState(
+    enrollBounds.value.map(toLinear).map(Math.round) as [number, number],
   );
-  const [numValueLabels, setNumValueLabels] = useState(numBounds.value);
+  const [numRangeValue, setNumRangeValue] = useState(numBounds.value);
 
   const globalTheme = useTheme();
 
@@ -396,14 +395,14 @@ export function NavbarCatalogSearch() {
               <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                 {/* Overall Rating Range */}
                 <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                  <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
+                  <RangeValueLabel>{overallRangeValue[0]}</RangeValueLabel>
                   <RangeLabel
                     className="flex-grow-1 text-center"
                     style={activeStyle(overallBounds.hasChanged)}
                   >
                     Overall
                   </RangeLabel>
-                  <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
+                  <RangeValueLabel>{overallRangeValue[1]}</RangeValueLabel>
                 </div>
                 <StyledRange
                   min={defaultFilters.overallBounds[0]}
@@ -413,9 +412,9 @@ export function NavbarCatalogSearch() {
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
-                  defaultValue={overallBounds.value}
+                  value={overallRangeValue}
                   onChange={(value) => {
-                    setOverallValueLabels(value as [number, number]);
+                    setOverallRangeValue(value as [number, number]);
                   }}
                   onAfterChange={(value) => {
                     overallBounds.set(value as [number, number]);
@@ -426,14 +425,14 @@ export function NavbarCatalogSearch() {
               <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                 {/* Workload Rating Range */}
                 <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                  <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
+                  <RangeValueLabel>{workloadRangeValue[0]}</RangeValueLabel>
                   <RangeLabel
                     className="flex-grow-1 text-center"
                     style={activeStyle(workloadBounds.hasChanged)}
                   >
                     Workload
                   </RangeLabel>
-                  <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
+                  <RangeValueLabel>{workloadRangeValue[1]}</RangeValueLabel>
                 </div>
                 <StyledRange
                   min={defaultFilters.workloadBounds[0]}
@@ -443,9 +442,9 @@ export function NavbarCatalogSearch() {
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
-                  defaultValue={workloadBounds.value}
+                  value={workloadRangeValue}
                   onChange={(value) => {
-                    setWorkloadValueLabels(value as [number, number]);
+                    setWorkloadRangeValue(value as [number, number]);
                   }}
                   onAfterChange={(value) => {
                     workloadBounds.set(value as [number, number]);
@@ -457,14 +456,14 @@ export function NavbarCatalogSearch() {
               {!isTablet && (
                 <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                   <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                    <RangeValueLabel>{professorValueLabels[0]}</RangeValueLabel>
+                    <RangeValueLabel>{professorRangeValue[0]}</RangeValueLabel>
                     <RangeLabel
                       className="flex-grow-1 text-center"
                       style={activeStyle(professorBounds.hasChanged)}
                     >
                       Professor
                     </RangeLabel>
-                    <RangeValueLabel>{professorValueLabels[1]}</RangeValueLabel>
+                    <RangeValueLabel>{professorRangeValue[1]}</RangeValueLabel>
                   </div>
                   <StyledRange
                     min={defaultFilters.professorBounds[0]}
@@ -474,9 +473,9 @@ export function NavbarCatalogSearch() {
                     handleStyle={rangeHandleStyle}
                     railStyle={rangeRailStyle}
                     trackStyle={[rangeRailStyle]}
-                    defaultValue={professorBounds.value}
+                    value={professorRangeValue}
                     onChange={(value) => {
-                      setProfessorValueLabels(value as [number, number]);
+                      setProfessorRangeValue(value as [number, number]);
                     }}
                     onAfterChange={(value) => {
                       professorBounds.set(value as [number, number]);
@@ -544,10 +543,16 @@ export function NavbarCatalogSearch() {
                 ).forEach((k) => filters[k].reset());
                 if (selectSortBy.value.value === 'average_gut_rating')
                   selectSortBy.reset();
-                setTimeValueLabels(defaultFilters.timeBounds);
-                setEnrollValueLabels(defaultFilters.enrollBounds);
-                setNumValueLabels(defaultFilters.numBounds);
-                setProfessorValueLabels(defaultFilters.professorBounds);
+                setTimeRangeValue(defaultFilters.timeBounds);
+                setEnrollRangeValue(
+                  defaultFilters.enrollBounds.map(toLinear).map(Math.round) as [
+                    number,
+                    number,
+                  ],
+                );
+                setNumRangeValue(defaultFilters.numBounds);
+                if (isTablet)
+                  setProfessorRangeValue(defaultFilters.professorBounds);
                 setStartTime(Date.now());
               }}
               selectedOptions={
@@ -654,15 +659,15 @@ export function NavbarCatalogSearch() {
                     {/* Time Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
                       <RangeValueLabel>
-                        {to12HourTime(timeValueLabels[0])}
+                        {to12HourTime(toRealTime(timeRangeValue[0]))}
                       </RangeValueLabel>
                       <RangeValueLabel>
-                        {to12HourTime(timeValueLabels[1])}
+                        {to12HourTime(toRealTime(timeRangeValue[1]))}
                       </RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={toRangeTime(defaultFilters.timeBounds[0])}
-                      max={toRangeTime(defaultFilters.timeBounds[1])}
+                      min={defaultFilters.timeBounds[0]}
+                      max={defaultFilters.timeBounds[1]}
                       step={1}
                       marks={{
                         84: '7am',
@@ -675,16 +680,12 @@ export function NavbarCatalogSearch() {
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={timeBounds.value.map(toRangeTime)}
+                      value={timeRangeValue}
                       onChange={(value) => {
-                        setTimeValueLabels(
-                          value.map(toRealTime) as [string, string],
-                        );
+                        setTimeRangeValue(value as [number, number]);
                       }}
                       onAfterChange={(value) => {
-                        timeBounds.set(
-                          value.map(toRealTime) as [string, string],
-                        );
+                        timeBounds.set(value as [number, number]);
                         setStartTime(Date.now());
                       }}
                     />
@@ -697,8 +698,12 @@ export function NavbarCatalogSearch() {
                   <AdvancedRangeGroup>
                     {/* Enrollment Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
-                      <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
+                      <RangeValueLabel>
+                        {Math.round(toExponential(enrollRangeValue[0]))}
+                      </RangeValueLabel>
+                      <RangeValueLabel>
+                        {Math.round(toExponential(enrollRangeValue[1]))}
+                      </RangeValueLabel>
                     </div>
                     <AdvancedRange
                       min={Math.round(toLinear(defaultFilters.enrollBounds[0]))}
@@ -708,14 +713,9 @@ export function NavbarCatalogSearch() {
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={enrollBounds.value.map(toLinear)}
+                      value={enrollRangeValue}
                       onChange={(value) => {
-                        setEnrollValueLabels(
-                          value.map(toExponential).map(Math.round) as [
-                            number,
-                            number,
-                          ],
-                        );
+                        setEnrollRangeValue(value as [number, number]);
                       }}
                       onAfterChange={(value) => {
                         enrollBounds.set(
@@ -740,10 +740,10 @@ export function NavbarCatalogSearch() {
                       {/* Professor Rating Range */}
                       <div className="d-flex align-items-center justify-content-between mb-1 w-100">
                         <RangeValueLabel>
-                          {professorValueLabels[0]}
+                          {professorRangeValue[0]}
                         </RangeValueLabel>
                         <RangeValueLabel>
-                          {professorValueLabels[1]}
+                          {professorRangeValue[1]}
                         </RangeValueLabel>
                       </div>
                       <AdvancedRange
@@ -753,9 +753,9 @@ export function NavbarCatalogSearch() {
                         handleStyle={rangeHandleStyle}
                         railStyle={rangeRailStyle}
                         trackStyle={[rangeRailStyle]}
-                        defaultValue={professorBounds.value}
+                        value={professorRangeValue}
                         onChange={(value) => {
-                          setProfessorValueLabels(value as [number, number]);
+                          setProfessorRangeValue(value as [number, number]);
                         }}
                         onAfterChange={(value) => {
                           professorBounds.set(value as [number, number]);
@@ -773,12 +773,12 @@ export function NavbarCatalogSearch() {
                     {/* Course Number Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
                       <RangeValueLabel>
-                        {numValueLabels[0].toString().padStart(3, '0')}
+                        {numRangeValue[0].toString().padStart(3, '0')}
                       </RangeValueLabel>
                       <RangeValueLabel>
-                        {numValueLabels[1] === 1000
+                        {numRangeValue[1] === 1000
                           ? '1000+'
-                          : numValueLabels[1].toString().padStart(3, '0')}
+                          : numRangeValue[1].toString().padStart(3, '0')}
                       </RangeValueLabel>
                     </div>
                     <AdvancedRange
@@ -801,9 +801,9 @@ export function NavbarCatalogSearch() {
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={numBounds.value}
+                      value={numRangeValue}
                       onChange={(value) => {
-                        setNumValueLabels(value as [number, number]);
+                        setNumRangeValue(value as [number, number]);
                       }}
                       onAfterChange={(value) => {
                         numBounds.set(value as [number, number]);
@@ -874,7 +874,20 @@ export function NavbarCatalogSearch() {
           {/* Reset Filters & Sorting Button */}
           <StyledButton
             variant="danger"
-            onClick={resetAllFilters}
+            onClick={() => {
+              setOverallRangeValue(defaultFilters.overallBounds);
+              setWorkloadRangeValue(defaultFilters.workloadBounds);
+              setTimeRangeValue(defaultFilters.timeBounds);
+              setEnrollRangeValue(
+                defaultFilters.enrollBounds.map(toLinear).map(Math.round) as [
+                  number,
+                  number,
+                ],
+              );
+              setNumRangeValue(defaultFilters.numBounds);
+              setProfessorRangeValue(defaultFilters.professorBounds);
+              resetAllFilters();
+            }}
             // Cannot reset if no filters have changed
             disabled={Object.values(filters).every((x) => !x.hasChanged)}
           >
