@@ -30,21 +30,17 @@ export default function MobileSearchForm({
   readonly onSubmit: (event: React.FormEvent) => void;
 }) {
   // Get search context data
+  const { filters, coursesLoading, searchData } = useSearch();
   const {
-    filters: {
-      searchText,
-      selectSubjects,
-      selectSkillsAreas,
-      overallBounds,
-      workloadBounds,
-      professorBounds,
-      selectSeasons,
-      selectSchools,
-    },
-    coursesLoading,
-    searchData,
-    resetAllFilters,
-  } = useSearch();
+    searchText,
+    selectSubjects,
+    selectSkillsAreas,
+    overallBounds,
+    workloadBounds,
+    professorBounds,
+    selectSeasons,
+    selectSchools,
+  } = filters;
   // These are exactly the same as the filters, except they update responsively
   // without triggering searching
   const [overallRangeValue, setOverallRangeValue] = useState(
@@ -71,10 +67,10 @@ export default function MobileSearchForm({
             <small
               className={clsx(styles.resetFiltersBtn, 'mr-auto')}
               onClick={() => {
-                resetAllFilters();
                 setOverallRangeValue(defaultFilters.overallBounds);
                 setWorkloadRangeValue(defaultFilters.workloadBounds);
                 setProfessorRangeValue(defaultFilters.professorBounds);
+                Object.values(filters).forEach((filter) => filter.reset());
               }}
             >
               Reset Filters

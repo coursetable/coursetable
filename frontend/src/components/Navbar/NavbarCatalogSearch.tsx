@@ -166,14 +166,8 @@ export function NavbarCatalogSearch() {
   const searchTextInput = useRef<HTMLInputElement>(null);
 
   // Get search context data
-  const {
-    filters,
-    duration,
-    searchData,
-    coursesLoading,
-    resetAllFilters,
-    setStartTime,
-  } = useSearch();
+  const { filters, duration, searchData, coursesLoading, setStartTime } =
+    useSearch();
 
   const {
     searchText,
@@ -886,7 +880,8 @@ export function NavbarCatalogSearch() {
               );
               setNumRangeValue(defaultFilters.numBounds);
               setProfessorRangeValue(defaultFilters.professorBounds);
-              resetAllFilters();
+              Object.values(filters).forEach((filter) => filter.reset());
+              setStartTime(Date.now());
             }}
             // Cannot reset if no filters have changed
             disabled={Object.values(filters).every((x) => !x.hasChanged)}

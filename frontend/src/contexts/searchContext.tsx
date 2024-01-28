@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -124,7 +123,6 @@ type Store = {
   isLoggedIn: boolean;
   numFriends: { [seasonCodeCrn: string]: string[] };
   duration: number;
-  resetAllFilters: () => void;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
 };
 
@@ -563,12 +561,6 @@ export function SearchProvider({
     ],
   );
 
-  // For resetting all filters and sorts
-  const resetAllFilters = useCallback(() => {
-    Object.values(filters).forEach((filter) => filter.reset());
-    setStartTime(Date.now());
-  }, [filters]);
-
   // Check if can or can't reset
   useEffect(() => {
     if (!coursesLoading) {
@@ -587,8 +579,6 @@ export function SearchProvider({
       isLoggedIn,
       numFriends,
       duration,
-
-      resetAllFilters,
       setStartTime,
     }),
     [
@@ -599,7 +589,6 @@ export function SearchProvider({
       isLoggedIn,
       numFriends,
       duration,
-      resetAllFilters,
       setStartTime,
     ],
   );
