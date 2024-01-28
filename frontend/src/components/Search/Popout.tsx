@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
@@ -88,63 +88,72 @@ const UpIcon = styled(IoMdArrowDropup)`
 type Props = {
   readonly children: React.ReactNode;
   readonly buttonText: string;
-  readonly type: string;
-  readonly isDisabled?: boolean;
   readonly onReset?: () => void;
   readonly arrowIcon?: boolean;
   readonly clearIcon?: boolean;
-  readonly selectOptions?:
+  readonly selectedOptions?:
+    | number
     | Option<string | number>[]
-    | {
-        [key: string]: {
-          [key: string]: Option<string | number>[] | boolean | [number, number];
-        };
-      }
     | Option<string | number>
     | null;
+  readonly maxDisplayOptions?: number;
+  readonly displayOptionLabel?: boolean;
   readonly className?: string;
   readonly dataTutorial?: number;
-  readonly disabledButtonText?: string;
 };
 
-/**
- * Popout component for filters in the navbar search
- * @prop children
- * @prop buttonText - default placeholder for popout button
- * @prop type - type of filter
- * @prop isDisabled - whether or not popout is disabled
- * @prop onReset - reset filter function
- * @prop arrowIcon - whether there is an arrow icon in the popout button
- * @prop clearIcon - whether there is an clear icon in the popout button
- * @prop selectOptions - selected option(s) for filter
- * @prop className - additional styles for popout button
- * @prop dataTutorial - tutorial step number
- * @prop disabledButtonText - default placeholder for disabled popout button
- */
+function getText(
+  selectedOptions: Props['selectedOptions'],
+  maxDisplayOptions: number,
+  displayOptionLabel: boolean | undefined,
+): undefined | string | JSX.Element[] {
+  if (!selectedOptions) return undefined;
+  if (Array.isArray(selectedOptions)) {
+    if (selectedOptions.length === 0) return undefined;
+    const topOptions = selectedOptions.slice(0, maxDisplayOptions);
+    const text = topOptions.map((option, index) => {
+      const optionLabel = displayOptionLabel ? option.label : option.value;
+      const span = <span style={{ color: option.color }}>{optionLabel}</span>;
+      if (index < topOptions.length - 1)
+        return <React.Fragment key={index}>{span}, </React.Fragment>;
+      if (
+        index === topOptions.length - 1 &&
+        selectedOptions.length > maxDisplayOptions
+      ) {
+        return (
+          <React.Fragment key={index}>
+            {span} + {selectedOptions.length - maxDisplayOptions}
+          </React.Fragment>
+        );
+      }
+      return <React.Fragment key={index}>{span}</React.Fragment>;
+    });
+    return text;
+  } else if (isOption(selectedOptions)) {
+    return displayOptionLabel
+      ? selectedOptions.label
+      : String(selectedOptions.value);
+  }
+  return selectedOptions !== 0 ? `Advanced: ${selectedOptions}` : undefined;
+}
+
 export function Popout({
   children,
   buttonText,
-  type,
-  isDisabled = false,
   onReset,
   arrowIcon = true,
   clearIcon = true,
-  selectOptions,
+  selectedOptions,
+  maxDisplayOptions = 3,
+  displayOptionLabel,
   className,
   dataTutorial,
-  disabledButtonText,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLDivElement>(false);
   const theme = useTheme();
-
-  // Dynamic text state for active popout button
-  const [toggleText, setToggleText] = useState<string | JSX.Element[]>(
-    buttonText,
-  );
-  // Active state
-  const [active, setActive] = useState(false);
+  const text = getText(selectedOptions, maxDisplayOptions, displayOptionLabel);
 
   // Popout button styles for open and active states
   const buttonStyles = (open: boolean) => {
@@ -154,84 +163,13 @@ export function Popout({
         color: theme.primaryHover,
       };
     }
-    if (active) {
+    if (text) {
       return {
         color: theme.primaryHover,
       };
     }
     return undefined;
   };
-
-  // Dynamically set popout button text based on selected options
-  useEffect(() => {
-    if (isDisabled && disabledButtonText) {
-      setToggleText(disabledButtonText);
-      setActive(false);
-    } else if (!selectOptions) {
-      setToggleText(buttonText);
-      setActive(false);
-    } else if (Array.isArray(selectOptions)) {
-      if (selectOptions.length === 0) {
-        setToggleText(buttonText);
-        setActive(false);
-      } else {
-        const maxOptions = type === 'season' ? 1 : 3;
-        const topOptions = selectOptions.slice(0, maxOptions);
-        const text = topOptions.map((option, index) => {
-          const optionLabel = type === 'season' ? option.label : option.value;
-          const colorStyle =
-            type === 'skills/areas' ? { color: option.color } : undefined;
-          const span = (
-            <span style={colorStyle} key={optionLabel}>
-              {optionLabel}
-            </span>
-          );
-          if (topOptions.length > 1 && index < maxOptions - 1)
-            return <React.Fragment key={index}>{span}, </React.Fragment>;
-          if (selectOptions.length > maxOptions) {
-            return (
-              <React.Fragment key={index}>
-                {span} + {selectOptions.length - maxOptions}
-              </React.Fragment>
-            );
-          }
-          return span;
-        });
-        setToggleText(text);
-        setActive(true);
-      }
-    } else if (isOption(selectOptions)) {
-      setToggleText(selectOptions.label);
-      setActive(true);
-    } else if (type === 'advanced') {
-      let activeFilters = 0;
-      for (const [key, value] of Object.entries(selectOptions)) {
-        for (const optionValue of Object.values(value)) {
-          if (
-            key === 'selects' &&
-            Array.isArray(optionValue) &&
-            optionValue.length > 0
-          )
-            activeFilters++;
-          else if (key === 'ranges' && optionValue) activeFilters++;
-          else if (
-            key === 'toggles' &&
-            typeof optionValue === 'boolean' &&
-            optionValue
-          )
-            activeFilters++;
-          else if (key === 'sorts' && optionValue) activeFilters++;
-        }
-      }
-      const text =
-        activeFilters > 0 ? `Advanced: ${activeFilters}` : buttonText;
-      setToggleText(text);
-      setActive(activeFilters > 0);
-    } else {
-      setToggleText(buttonText);
-      setActive(false);
-    }
-  }, [selectOptions, buttonText, type, disabledButtonText, isDisabled]);
 
   return (
     <PopoutWrapper
@@ -245,8 +183,8 @@ export function Popout({
         className={className}
         data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
       >
-        {toggleText}
-        {active && clearIcon ? (
+        {text ?? buttonText}
+        {text && clearIcon ? (
           <ClearIcon
             className="ml-1"
             onClick={(e) => {

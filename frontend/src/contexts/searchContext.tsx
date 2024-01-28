@@ -118,7 +118,6 @@ type Store = {
   filters: {
     [K in keyof Filters]: FilterHandle<K>;
   };
-  canReset: boolean;
   coursesLoading: boolean;
   searchData: Listing[];
   multiSeasons: boolean;
@@ -126,7 +125,6 @@ type Store = {
   numFriends: { [seasonCodeCrn: string]: string[] };
   resetKey: number;
   duration: number;
-  setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   handleResetFilters: () => void;
   setResetKey: React.Dispatch<React.SetStateAction<number>>;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
@@ -235,8 +233,6 @@ export function SearchProvider({
 
   /* Resetting */
 
-  // State to determine if user can reset or not
-  const [canReset, setCanReset] = useSessionStorageState('canReset', false);
   // State to cause components to reload when filters are reset
   const [resetKey, setResetKey] = useState(0);
 
@@ -582,31 +578,20 @@ export function SearchProvider({
     Object.values(filters).forEach((filter) => filter.reset());
 
     setResetKey(resetKey + 1);
-
-    setCanReset(false);
     setStartTime(Date.now());
-  }, [resetKey, filters, setCanReset]);
+  }, [resetKey, filters]);
 
   // Check if can or can't reset
   useEffect(() => {
-    if (
-      Object.entries(filters)
-        .filter(([k]) => !['sortOrder', 'selectSortBy'].includes(k))
-        .some(([, filter]) => filter.hasChanged)
-    )
-      setCanReset(true);
-    else setCanReset(false);
     if (!coursesLoading) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
       setDuration(durInSecs);
     }
-  }, [filters, coursesLoading, searchData, startTime, setCanReset]);
+  }, [filters, coursesLoading, searchData, startTime]);
 
   // Store object returned in context provider
   const store = useMemo(
     () => ({
-      // Context state.
-      canReset,
       filters,
       coursesLoading,
       searchData,
@@ -616,14 +601,11 @@ export function SearchProvider({
       resetKey,
       duration,
 
-      // Update methods.
-      setCanReset,
       handleResetFilters,
       setResetKey,
       setStartTime,
     }),
     [
-      canReset,
       filters,
       coursesLoading,
       searchData,
@@ -632,7 +614,6 @@ export function SearchProvider({
       numFriends,
       resetKey,
       duration,
-      setCanReset,
       handleResetFilters,
       setResetKey,
       setStartTime,

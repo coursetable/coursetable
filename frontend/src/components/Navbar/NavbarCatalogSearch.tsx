@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -174,7 +168,6 @@ export function NavbarCatalogSearch() {
 
   // Get search context data
   const {
-    canReset,
     filters,
     duration,
     resetKey,
@@ -208,14 +201,6 @@ export function NavbarCatalogSearch() {
     selectSortBy,
   } = filters;
 
-  // Active state for range filters
-  const [activeOverall, setActiveOverall] = useState(false);
-  const [activeWorkload, setActiveWorkload] = useState(false);
-  const [activeProfessor, setActiveProfessor] = useState(false);
-  const [activeTime, setActiveTime] = useState(false);
-  const [activeEnrollment, setActiveEnrollment] = useState(false);
-  const [activeNumber, setActiveNumber] = useState(false);
-
   // These are exactly the same as the filters, except they update responsively
   // without triggering searching
   const [overallValueLabels, setOverallValueLabels] = useState(
@@ -234,24 +219,6 @@ export function NavbarCatalogSearch() {
   const [numValueLabels, setNumValueLabels] = useState(numBounds.value);
 
   const globalTheme = useTheme();
-
-  // Handle active state for range filters
-  useEffect(() => {
-    setActiveOverall(canReset && overallBounds.hasChanged);
-    setActiveWorkload(canReset && workloadBounds.hasChanged);
-    setActiveProfessor(canReset && professorBounds.hasChanged);
-    setActiveTime(canReset && timeBounds.hasChanged);
-    setActiveEnrollment(canReset && enrollBounds.hasChanged);
-    setActiveNumber(canReset && numBounds.hasChanged);
-  }, [
-    canReset,
-    overallBounds,
-    workloadBounds,
-    professorBounds,
-    timeBounds,
-    enrollBounds,
-    numBounds,
-  ]);
 
   // Active styles for range filters
   const activeStyle = useCallback(
@@ -286,61 +253,6 @@ export function NavbarCatalogSearch() {
       }
     },
   };
-
-  // Consolidate all advanced filters' selected options
-  const advancedOptions = useMemo(
-    (): {
-      [key: string]: {
-        [key: string]: Option<string | number>[] | boolean | [number, number];
-      };
-    } => ({
-      selects: {
-        selectDays: selectDays.value,
-        selectSchools: selectSchools.value,
-        selectCredits: selectCredits.value,
-        selectSubjects: isTablet && selectSubjects.value,
-        selectSeasons: isTablet && selectSeasons.value,
-        selectSkillsAreas: isTablet && selectSkillsAreas.value,
-      },
-      ranges: {
-        professorBounds: isTablet && professorBounds.value,
-        activeTime,
-        activeEnrollment,
-        activeNumber,
-      },
-      toggles: {
-        searchDescription: searchDescription.value,
-        hideCancelled: hideCancelled.value,
-        hideConflicting: hideConflicting.value,
-        hideFirstYearSeminars: hideFirstYearSeminars.value,
-        hideGraduateCourses: hideGraduateCourses.value,
-        hideDiscussionSections: hideDiscussionSections.value,
-      },
-      sorts: {
-        average_gut_rating: selectSortBy.value.value === 'average_gut_rating',
-      },
-    }),
-    [
-      professorBounds,
-      selectDays,
-      selectSchools,
-      selectCredits,
-      selectSubjects,
-      selectSeasons,
-      selectSkillsAreas,
-      activeTime,
-      activeEnrollment,
-      activeNumber,
-      searchDescription,
-      hideCancelled,
-      hideConflicting,
-      hideFirstYearSeminars,
-      hideGraduateCourses,
-      hideDiscussionSections,
-      selectSortBy,
-      isTablet,
-    ],
-  );
 
   // Styles for active search bar
   const searchbarStyle = useMemo(() => {
@@ -436,12 +348,11 @@ export function NavbarCatalogSearch() {
                 {/* Yale Subjects Filter Dropdown */}
                 <Popout
                   buttonText="Subject"
-                  type="subject"
                   onReset={() => {
                     selectSubjects.reset();
                     setStartTime(Date.now());
                   }}
-                  selectOptions={selectSubjects.value}
+                  selectedOptions={selectSubjects.value}
                   dataTutorial={2}
                 >
                   <PopoutSelect<Option, true>
@@ -458,12 +369,11 @@ export function NavbarCatalogSearch() {
                 {/* Areas/Skills Filter Dropdown */}
                 <Popout
                   buttonText="Areas/Skills"
-                  type="skills/areas"
                   onReset={() => {
                     selectSkillsAreas.reset();
                     setStartTime(Date.now());
                   }}
-                  selectOptions={selectSkillsAreas.value}
+                  selectedOptions={selectSkillsAreas.value}
                   className="mr-0"
                 >
                   <PopoutSelect<Option, true>
@@ -491,7 +401,7 @@ export function NavbarCatalogSearch() {
                   <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
                   <RangeLabel
                     className="flex-grow-1 text-center"
-                    style={activeStyle(activeOverall)}
+                    style={activeStyle(overallBounds.hasChanged)}
                   >
                     Overall
                   </RangeLabel>
@@ -522,7 +432,7 @@ export function NavbarCatalogSearch() {
                   <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
                   <RangeLabel
                     className="flex-grow-1 text-center"
-                    style={activeStyle(activeWorkload)}
+                    style={activeStyle(workloadBounds.hasChanged)}
                   >
                     Workload
                   </RangeLabel>
@@ -554,7 +464,7 @@ export function NavbarCatalogSearch() {
                     <RangeValueLabel>{professorValueLabels[0]}</RangeValueLabel>
                     <RangeLabel
                       className="flex-grow-1 text-center"
-                      style={activeStyle(activeProfessor)}
+                      style={activeStyle(professorBounds.hasChanged)}
                     >
                       Professor
                     </RangeLabel>
@@ -585,12 +495,13 @@ export function NavbarCatalogSearch() {
             {!isTablet && (
               <Popout
                 buttonText="Season"
-                type="season"
+                displayOptionLabel
+                maxDisplayOptions={1}
                 onReset={() => {
                   selectSeasons.reset();
                   setStartTime(Date.now());
                 }}
-                selectOptions={selectSeasons.value}
+                selectedOptions={selectSeasons.value}
               >
                 <PopoutSelect<Option, true>
                   isMulti
@@ -609,20 +520,23 @@ export function NavbarCatalogSearch() {
             <Popout
               buttonText="Advanced"
               arrowIcon={false}
-              type="advanced"
               onReset={() => {
                 if (isTablet) {
                   (
                     [
                       'selectSubjects',
-                      'selectSeasons',
                       'selectSkillsAreas',
+                      'selectSeasons',
+                      'professorBounds',
                     ] as const
                   ).forEach((k) => filters[k].reset());
                 }
                 (
                   [
                     'selectDays',
+                    'timeBounds',
+                    'enrollBounds',
+                    'numBounds',
                     'selectSchools',
                     'selectCredits',
                     'searchDescription',
@@ -631,18 +545,38 @@ export function NavbarCatalogSearch() {
                     'hideFirstYearSeminars',
                     'hideGraduateCourses',
                     'hideDiscussionSections',
-                    'timeBounds',
-                    'enrollBounds',
-                    'numBounds',
                   ] as const
                 ).forEach((k) => filters[k].reset());
+                if (selectSortBy.value.value === 'average_gut_rating')
+                  selectSortBy.reset();
                 setTimeValueLabels(defaultFilters.timeBounds);
                 setEnrollValueLabels(defaultFilters.enrollBounds);
                 setNumValueLabels(defaultFilters.numBounds);
+                setProfessorValueLabels(defaultFilters.professorBounds);
                 setStartTime(Date.now());
                 setResetKey(resetKey + 1);
               }}
-              selectOptions={advancedOptions}
+              selectedOptions={
+                [
+                  isTablet && selectSubjects.hasChanged,
+                  isTablet && selectSkillsAreas.hasChanged,
+                  isTablet && selectSeasons.hasChanged,
+                  selectDays.hasChanged,
+                  timeBounds.hasChanged,
+                  enrollBounds.hasChanged,
+                  isTablet && professorBounds.hasChanged,
+                  numBounds.hasChanged,
+                  selectSchools.hasChanged,
+                  selectCredits.hasChanged,
+                  selectSortBy.value.value === 'average_gut_rating',
+                  searchDescription.value,
+                  hideCancelled.value,
+                  hideConflicting.value,
+                  hideFirstYearSeminars.value,
+                  hideGraduateCourses.value,
+                  hideDiscussionSections.value,
+                ].filter(Boolean).length
+              }
               dataTutorial={4}
             >
               <AdvancedWrapper>
@@ -719,7 +653,7 @@ export function NavbarCatalogSearch() {
                   />
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel style={activeStyle(activeTime)}>
+                  <AdvancedLabel style={activeStyle(timeBounds.hasChanged)}>
                     Time:
                   </AdvancedLabel>
                   <AdvancedRangeGroup>
@@ -764,7 +698,7 @@ export function NavbarCatalogSearch() {
                   </AdvancedRangeGroup>
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel style={activeStyle(activeEnrollment)}>
+                  <AdvancedLabel style={activeStyle(enrollBounds.hasChanged)}>
                     # Enrolled:
                   </AdvancedLabel>
                   <AdvancedRangeGroup>
@@ -803,11 +737,11 @@ export function NavbarCatalogSearch() {
                     />
                   </AdvancedRangeGroup>
                 </Row>
-                {/* Professor Range */}
-
                 {isTablet && (
                   <Row className="align-items-center justify-content-between mx-3 mt-3">
-                    <AdvancedLabel style={activeStyle(activeProfessor)}>
+                    <AdvancedLabel
+                      style={activeStyle(professorBounds.hasChanged)}
+                    >
                       Professor:
                     </AdvancedLabel>
                     <AdvancedRangeGroup>
@@ -841,7 +775,7 @@ export function NavbarCatalogSearch() {
                   </Row>
                 )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel style={activeStyle(activeNumber)}>
+                  <AdvancedLabel style={activeStyle(numBounds.hasChanged)}>
                     Course #:
                   </AdvancedLabel>
                   <AdvancedRangeGroup>
@@ -952,7 +886,10 @@ export function NavbarCatalogSearch() {
           <StyledButton
             variant="danger"
             onClick={handleResetFilters}
-            disabled={!canReset}
+            // Cannot reset if no filters have changed
+            disabled={Object.entries(filters)
+              .filter(([k]) => !['sortOrder', 'selectSortBy'].includes(k))
+              .every(([, filter]) => !filter.hasChanged)}
           >
             Reset
           </StyledButton>
