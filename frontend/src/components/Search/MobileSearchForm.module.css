@@ -68,8 +68,7 @@
   padding: 1rem;
 }
 
-.overallTooltip,
-.workloadTooltip {
+.sliderTooltip {
   font-size: 0.75rem;
   width: 1.5rem;
   color: white;

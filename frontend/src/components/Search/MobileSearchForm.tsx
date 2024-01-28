@@ -169,7 +169,7 @@ export default function MobileSearchForm({
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.overallTooltip)}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -196,7 +196,7 @@ export default function MobileSearchForm({
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.workloadTooltip)}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -223,7 +223,7 @@ export default function MobileSearchForm({
                   handle={({ value, dragging, ...e }) => (
                     // @ts-expect-error: TODO upgrade rc-slider
                     <Handle {...e} key={e.className}>
-                      <div className={clsx('shadow', styles.workload_tooltip)}>
+                      <div className={clsx('shadow', styles.sliderTooltip)}>
                         {value}
                       </div>
                     </Handle>
@@ -231,7 +231,7 @@ export default function MobileSearchForm({
                   className={styles.slider}
                 />
               </Container>
-              <div className={clsx('text-center', styles.filter_title)}>
+              <div className={clsx('text-center', styles.filterTitle)}>
                 Professor
               </div>
             </Col>
