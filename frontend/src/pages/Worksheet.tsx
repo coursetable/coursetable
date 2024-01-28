@@ -12,9 +12,9 @@ import {
   SurfaceComponent,
   StyledExpandBtn,
 } from '../components/StyledComponents';
-import WorksheetNumDropdown from '../components/Navbar/WorksheetNumberDropdown';
-import SeasonDropdown from '../components/Search/SeasonDropdown';
-import FriendsDropdown from '../components/Navbar/FriendsDropdown';
+import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
+import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
+import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
 
 import styles from './Worksheet.module.css';
 

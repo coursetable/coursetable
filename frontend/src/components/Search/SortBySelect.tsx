@@ -7,7 +7,7 @@ import {
 } from 'react-icons/fc';
 import styled from 'styled-components';
 import clsx from 'clsx';
-import styles from './SortbyReactSelect.module.css';
+import styles from './SortBySelect.module.css';
 import CustomSelect from './CustomSelect';
 import {
   isOption,
@@ -22,7 +22,7 @@ const StyledSortBtn = styled.div`
   }
 `;
 
-function SortByReactSelect() {
+export default function SortBySelect() {
   const {
     filters: { selectSortBy, sortOrder },
   } = useSearch();
@@ -62,5 +62,3 @@ function SortByReactSelect() {
     </>
   );
 }
-
-export default SortByReactSelect;

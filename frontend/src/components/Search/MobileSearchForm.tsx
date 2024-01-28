@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import styles from './MobileSearchForm.module.css';
 import Toggle from './Toggle';
 import CustomSelect from './CustomSelect';
-import SortByReactSelect from './SortByReactSelect';
+import SortBySelect from './SortBySelect';
 import {
   SurfaceComponent,
   StyledInput,
@@ -89,7 +89,7 @@ export default function MobileSearchForm({
           </Row>
           {/* Sort by option and order */}
           <Row className="mx-auto py-0 px-4">
-            <SortByReactSelect key={resetKey} />
+            <SortBySelect key={resetKey} />
           </Row>
           <StyledHr />
           <Row className={clsx('mx-auto py-0 px-4', styles.multiSelects)}>
