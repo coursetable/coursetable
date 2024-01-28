@@ -134,7 +134,7 @@ export type ComputedListingInfo = Omit<
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
   (props) => (
-    <StyledPopover {...props} id="title_popover" className="d-none d-md-block">
+    <StyledPopover {...props} id="title-popover" className="d-none d-md-block">
       <Popover.Title>
         <Row className="mx-auto">
           {/* Professor Name */}
@@ -440,7 +440,7 @@ function CourseModalOverview({
           {hasEvals ? (
             <StyledCol
               xs={5}
-              className={clsx(styles.rating_bubble, 'px-0 mr-3 text-center')}
+              className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
               onClick={() => {
                 // Temp dictionary that stores listing info
                 const temp = { ...offering };
@@ -461,7 +461,7 @@ function CourseModalOverview({
             <StyledColUnclickable
               xs={5}
               className={clsx(
-                styles.rating_bubble_unclickable,
+                styles.ratingBubbleUnclickable,
                 'px-0 mr-3 text-center',
               )}
               style={{ flex: 'none', color: '#b5b5b5' }}
@@ -484,7 +484,7 @@ function CourseModalOverview({
             <StyledRating
               rating={offering.rating}
               colormap={ratingColormap}
-              className={styles.rating_cell}
+              className={styles.ratingCell}
             >
               {offering.rating !== -1 ? offering.rating.toFixed(1) : 'N/A'}
             </StyledRating>
@@ -497,7 +497,7 @@ function CourseModalOverview({
             <StyledRating
               rating={offering.professor_rating}
               colormap={ratingColormap}
-              className={styles.rating_cell}
+              className={styles.ratingCell}
             >
               {offering.professor_rating !== -1
                 ? offering.professor_rating.toFixed(1)
@@ -512,7 +512,7 @@ function CourseModalOverview({
             <StyledRating
               rating={offering.workload}
               colormap={workloadColormap}
-              className={styles.rating_cell}
+              className={styles.ratingCell}
             >
               {offering.workload !== -1 ? offering.workload.toFixed(1) : 'N/A'}
             </StyledRating>
@@ -588,7 +588,7 @@ function CourseModalOverview({
           {/* Course Syllabus */}
           <Row className="m-auto pt-4 pb-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.lable_bubble}>Syllabus</span>
+              <span className={styles.labelBubble}>Syllabus</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
@@ -615,7 +615,7 @@ function CourseModalOverview({
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span
                   role="button"
-                  className={styles.toggle_bubble}
+                  className={styles.toggleBubble}
                   onClick={() => setShowPastSyllabi(!showPastSyllabi)}
                 >
                   Past syllabi ({pastSyllabi.length}){' '}
@@ -652,7 +652,7 @@ function CourseModalOverview({
           {/* Course Professors */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.lable_bubble}>Professor</span>
+              <span className={styles.labelBubble}>Professor</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
@@ -679,7 +679,7 @@ function CourseModalOverview({
           {/* Course Times */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.lable_bubble}>Meets</span>
+              <span className={styles.labelBubble}>Meets</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
@@ -699,7 +699,7 @@ function CourseModalOverview({
           {/* Course Location */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.lable_bubble}>Location</span>
+              <span className={styles.labelBubble}>Location</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
@@ -727,7 +727,7 @@ function CourseModalOverview({
           {/* Course Section */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.lable_bubble}>Section</span>
+              <span className={styles.labelBubble}>Section</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
@@ -741,7 +741,7 @@ function CourseModalOverview({
           {listing.flag_info.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.lable_bubble}>Info</span>
+                <span className={styles.labelBubble}>Info</span>
               </Col>
               <Col
                 sm={12 - COL_LEN_LEFT}
@@ -749,7 +749,7 @@ function CourseModalOverview({
                 className={styles.metadata}
               >
                 {listing.flag_info.length ? (
-                  <ul className={styles.flag_info}>
+                  <ul className={styles.flagInfo}>
                     {listing.flag_info.map((text) => (
                       <li key={text}>{text}</li>
                     ))}
@@ -763,7 +763,7 @@ function CourseModalOverview({
           {/* Course Enrollment */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.lable_bubble}>Enrollment</span>
+              <span className={styles.labelBubble}>Enrollment</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
@@ -776,7 +776,7 @@ function CourseModalOverview({
           {/* Credits */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.lable_bubble}>Credits</span>
+              <span className={styles.labelBubble}>Credits</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
@@ -790,7 +790,7 @@ function CourseModalOverview({
           {listing.classnotes && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.lable_bubble}>Class Notes</span>
+                <span className={styles.labelBubble}>Class Notes</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.classnotes}
@@ -801,7 +801,7 @@ function CourseModalOverview({
           {listing.regnotes && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.lable_bubble}>Registrar Notes</span>
+                <span className={styles.labelBubble}>Registrar Notes</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.regnotes}
@@ -812,7 +812,7 @@ function CourseModalOverview({
           {listing.rp_attr && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.lable_bubble}>Reading Period</span>
+                <span className={styles.labelBubble}>Reading Period</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.rp_attr}
@@ -823,7 +823,7 @@ function CourseModalOverview({
           {listing.final_exam && listing.final_exam !== 'HTBA' && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.lable_bubble}>Final Exam</span>
+                <span className={styles.labelBubble}>Final Exam</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.final_exam}
@@ -834,7 +834,7 @@ function CourseModalOverview({
           {alsoTaking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.lable_bubble}>Friends</span>
+                <span className={styles.labelBubble}>Friends</span>
               </Col>
               <Col
                 sm={12 - COL_LEN_LEFT}
@@ -855,7 +855,7 @@ function CourseModalOverview({
           {/* Filter Select */}
           <Row
             className={clsx(
-              styles.filter_container,
+              styles.filterContainer,
               'm-auto justify-content-center',
             )}
             onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -871,23 +871,23 @@ function CourseModalOverview({
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}
-              className={clsx(styles.evaluations_filter, 'mb-2')}
+              className={clsx(styles.evaluationsFilter, 'mb-2')}
             />
           </Row>
           {/* Course Evaluations Header */}
           {overlapSections[filter].length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
-                <span className={styles.evaluation_header}>Season</span>
+                <span className={styles.evaluationHeader}>Season</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluation_header}>Class</span>
+                <span className={styles.evaluationHeader}>Class</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluation_header}>Prof</span>
+                <span className={styles.evaluationHeader}>Prof</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluation_header}>Work</span>
+                <span className={styles.evaluationHeader}>Work</span>
               </Col>
             </Row>
           )}

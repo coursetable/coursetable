@@ -16,43 +16,7 @@
   color: rgb(255, 98, 98);
 }
 
-:global .modal-custom-width {
+.dialog {
   max-width: 800px !important;
   /* max-width: none !important; */
-}
-
-:global .modal-content {
-  border: none !important;
-  border-radius: 8px !important;
-  /* max-height: 80% !important;
-  min-height: 80% !important; */
-  height: 90% !important;
-}
-
-:global .modal-title {
-  font-weight: 550;
-  line-height: 1.2 !important;
-}
-
-:global .modal-title-mobile {
-  font-weight: 550;
-  font-size: 18px !important;
-}
-
-:global .modal-header {
-  display: flex !important;
-  padding: 1rem 1rem 0.5rem 1rem !important;
-}
-
-:global .modal-dialog {
-  transition: transform 0.1s ease-out !important;
-
-  @media only screen and (min-width: 576px) and (max-width: 800px) {
-    margin: 1.75rem 0.5rem;
-  }
-}
-:global .modal-top {
-  @media only screen and (max-width: 767px) {
-    flex-direction: column !important;
-  }
 }

@@ -21,19 +21,17 @@ function Logo({ icon = true, wordmark = true }: Props) {
 
   return (
     <span
-      className={styles.coursetable_logo}
+      className={styles.coursetableLogo}
       style={{
         display: 'block',
       }}
     >
-      {icon && (
-        <img src={logo} alt="" className={styles.coursetable_logo_img} />
-      )}{' '}
+      {icon && <img src={logo} alt="" className={styles.coursetableLogoImg} />}{' '}
       {wordmark && (
         <img
           src={theme.theme === 'dark' ? wordmarkOutlinesDark : wordmarkOutlines}
           alt="CourseTable"
-          className={styles.coursetable_logo_wordmark}
+          className={styles.coursetableLogoWordmark}
         />
       )}
     </span>

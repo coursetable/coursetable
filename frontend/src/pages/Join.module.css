@@ -3,25 +3,16 @@
   margin-bottom: 3rem;
 }
 
-.join_header {
+.joinHeader {
   font-weight: 600;
   font-size: 25px;
   text-align: center;
 }
 
-.join_description {
+.joinDescription {
   font-weight: 500;
   font-size: 15px;
   text-align: center;
-}
-
-.form_label {
-  font-weight: 500;
-}
-
-.form_secondary_label {
-  color: rgb(153, 153, 153);
-  font-size: 14px;
 }
 
 @media (max-width: 768px) {

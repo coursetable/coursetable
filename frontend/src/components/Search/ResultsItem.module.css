@@ -1,13 +1,8 @@
-.first_search_result_item {
+.firstSearchResultItem {
   border-top: 1px solid transparent !important;
 }
 
-.search_result_item:focus,
-.search_result_item:active {
-  outline: none;
-}
-
-.ellipsis_text {
+.ellipsisText {
   display: block;
   width: 100%;
   white-space: nowrap;
@@ -15,7 +10,7 @@
   text-overflow: ellipsis;
 }
 
-:global(#title_popover) {
+#title-popover {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
@@ -38,78 +33,24 @@
   display: inline;
 }
 
-.skills_areas {
+.skillsAreas {
   display: inline-flex;
   white-space: nowrap;
   overflow: hidden;
-}
-
-.course_section {
-  display: inline;
-  color: rgba(1, 1, 1, 0.4);
-}
-
-.extra_info {
-  background-color: #e23e57;
-  color: white;
-  border-radius: 4px;
-  width: max-content;
-  padding: 0.2rem 0.4rem;
-  font-weight: 600;
-  font-size: 0.75rem;
-}
-
-.icon_ratings {
-  font-size: 0.75rem;
-}
-
-.workload_icon_empty,
-.workload_icon_full {
-  padding: 1px;
-}
-
-.workload_icon_empty {
-  color: #e8e8e8;
-}
-
-.rating_icon_empty,
-.rating_icon_full {
-  padding: 1px;
-}
-
-.rating_icon_empty {
-  color: #e8e8e8;
-}
-
-.online_tag {
-  font-weight: 600 !important;
-  padding: 3px 4px !important;
-  border-radius: 6px !important;
-  width: max-content;
-  background: rgba(0, 0, 0, 0.1);
 }
 
 .none {
   background-color: rgb(102, 102, 102) !important;
 }
 
-.friends_count {
-  display: flex;
-  align-items: center;
-}
-
-.expanded_card {
-  background-color: white;
-}
-
-.worksheet_btn {
+.worksheetBtn {
   position: absolute;
   left: 8px;
   height: 100%;
   display: flex;
 }
 
-.conflict_error {
+.conflictError {
   position: absolute;
   top: 0px;
   left: -10px;
@@ -121,10 +62,10 @@
   padding-left: 2px;
 }
 
-.cancelled_text {
+.cancelledText {
   color: rgb(255, 98, 98);
 }
 
-.cancelled_class {
+.cancelledClass {
   background-color: rgba(255, 98, 98, 0.3) !important;
 }

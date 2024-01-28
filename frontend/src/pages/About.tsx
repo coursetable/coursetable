@@ -322,7 +322,7 @@ function About() {
     <div className={clsx(styles.container, 'mx-auto')}>
       <StyledH1 className="mt-5 mb-1">About Us</StyledH1>
       <TextComponent type={1}>
-        <p className={clsx(styles.about_description, 'mb-3 mx-auto')}>
+        <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find
           the courses they want, bringing together course information, student
           evaluations, and course demand statistics in an intuitive interface.

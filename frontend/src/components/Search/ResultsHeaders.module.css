@@ -1,14 +1,14 @@
-.results_header_row {
+.resultsHeaderRow {
   user-select: none;
 }
 
-.list_grid_toggle {
+.listGridToggle {
   position: absolute;
   left: 5px;
   z-index: 2;
 }
 
-.one_line {
+.oneLine {
   display: block;
   white-space: nowrap;
   overflow: hidden;

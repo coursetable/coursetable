@@ -46,7 +46,7 @@ function Search() {
 
   // TODO: add state if courseLoadError is present
   return (
-    <div className={styles.search_base}>
+    <div className={styles.searchBase}>
       <Row
         className={clsx(
           'p-0 m-0',
@@ -61,8 +61,8 @@ function Search() {
           className={clsx(
             'm-0',
             isMobile
-              ? ['p-3', styles.results_col_mobile]
-              : ['px-0 pb-3', styles.results_col],
+              ? ['p-3', styles.resultsCol]
+              : ['px-0 pb-3', styles.resultsCol],
           )}
         >
           <Element name="catalog" className="d-flex justify-content-center">

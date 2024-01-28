@@ -3,20 +3,17 @@
   border: none;
 }
 
-.desktop_container {
+.desktopContainer {
   min-height: 92vh;
 }
 
-.loading_spinner {
+.loadingSpinner {
   position: fixed;
   top: calc(50% - 16px);
   left: calc(50% - 16px);
 }
-/* 
-.calendar {
-} */
 
-.calendar_style_container {
+.calendarStyleContainer {
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   height: 86vh;
@@ -43,46 +40,37 @@
   border-top-right-radius: 8px;
 }
 
-.expand_btn {
+.expandBtn {
   padding: 3px;
   border-radius: 6px;
 }
 
-.expand_btn:hover {
+.expandBtn:hover {
   cursor: pointer;
 }
 
-.expand_icon {
+.expandIcon {
   display: block;
 }
 
-.top_left {
+.topLeft {
   left: 0%;
   transform: rotateZ(90deg) translate(-40%, -85%);
 }
 
-.top_left:hover {
+.topLeft:hover {
   transform: rotateZ(90deg) translate(-40%, -85%) scale(1.1);
 }
 
-.top_right {
+.topRight {
   right: 0%;
   transform: translate(50%, -40%);
 }
 
-.top_right:hover {
+.topRight:hover {
   transform: translate(50%, -40%) scale(1.1);
 }
 
-.settings_dropdown {
-  position: absolute;
-  display: flex;
-  height: 50px;
-  top: 52px;
-  right: 0px;
-  z-index: 488;
-}
-
-.mobile_calendar {
+.mobileCalendar {
   height: 75vh;
 }

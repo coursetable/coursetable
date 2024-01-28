@@ -1,4 +1,4 @@
-.collapse_container {
+.collapseContainer {
   width: 200px;
   position: absolute;
   top: 66px;
@@ -10,12 +10,12 @@
   transform: translate(0px, -10px);
 }
 
-.collapse_text {
+.collapseText {
   color: inherit;
   font-weight: 500;
 }
 
-.collapse_text:hover {
+.collapseText:hover {
   cursor: pointer;
   text-decoration: none !important;
 }

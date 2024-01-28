@@ -248,7 +248,7 @@ function Results({
   }
 
   return (
-    <div className={styles.results_container_max_width}>
+    <div className={styles.resultsContainerMaxWidth}>
       {!isMobile && (
         <ResultsHeaders
           ref={ref}

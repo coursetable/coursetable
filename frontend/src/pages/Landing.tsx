@@ -36,7 +36,7 @@ function Landing() {
                     The best place to shop for classes at Yale.
                   </h1>
                   <Row className="pb-2 m-auto">
-                    <span className={clsx(styles.feature_text, 'd-inline')}>
+                    <span className={clsx(styles.featureText, 'd-inline')}>
                       <FcSearch className="mr-2 my-auto" size={20} />
                       Browse our catalog of <StyledStat>
                         80,000+
@@ -45,20 +45,20 @@ function Landing() {
                     </span>
                   </Row>
                   <Row className="pb-2 m-auto">
-                    <span className={styles.feature_text}>
+                    <span className={styles.featureText}>
                       <FcComboChart className="mr-2 my-auto" size={20} />
                       Read from <StyledStat>600,000+</StyledStat> student
                       evaluation comments
                     </span>
                   </Row>
                   <Row className="pb-2 m-auto">
-                    <span className={styles.feature_text}>
+                    <span className={styles.featureText}>
                       <FcBookmark className="mr-2 my-auto" size={20} />
                       Save and view classes in your worksheet
                     </span>
                   </Row>
                   <Row className="m-auto">
-                    <span className={styles.feature_text}>
+                    <span className={styles.featureText}>
                       <FcConferenceCall className="mr-2 my-auto" size={20} />
                       See what classes your friends are interested in
                     </span>

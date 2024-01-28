@@ -43,13 +43,13 @@ function WorksheetHideButton({
           <BsEyeSlash
             color={theme.hidden}
             size={buttonSize}
-            className={styles.scale_icon}
+            className={styles.scaleIcon}
           />
         ) : (
           <BsEye
             color={theme.text[0]}
             size={buttonSize}
-            className={styles.scale_icon}
+            className={styles.scaleIcon}
           />
         )}
       </Button>

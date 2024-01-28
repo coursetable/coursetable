@@ -1,13 +1,9 @@
-.info_combined {
-  width: 100%;
-}
-
-.lable_bubble {
+.labelBubble {
   font-weight: 550;
   color: rgb(136, 136, 136);
 }
 
-.toggle_bubble {
+.toggleBubble {
   font-weight: 550;
   color: #468ff2;
   white-space: nowrap;
@@ -17,8 +13,8 @@
   font-weight: 600;
 }
 
-.rating_bubble,
-.rating_bubble_unclickable {
+.ratingBubble,
+.ratingBubbleUnclickable {
   /* background-color: rgb(190, 221, 255); */
   border-radius: 8px;
   /* HAVE RATING BUBBLE ANIMATION */
@@ -29,27 +25,27 @@
   transition: max-height 0.2s ease-out;
 }
 
-.rating_bubble:hover {
+.ratingBubble:hover {
   background-color: rgb(92, 168, 250);
   max-height: 50px;
   cursor: pointer;
   transition: max-height 0.2s ease-in;
 }
 
-.rating_bubble_unclickable:hover {
+.ratingBubbleUnclickable:hover {
   max-height: 50px;
   cursor: default;
   transition: max-height 0.2s ease-in;
 }
 
-.rating_cell {
+.ratingCell {
   width: 100%;
   text-align: center;
   border-radius: 6px;
   justify-content: center;
 }
 
-.evaluation_header {
+.evaluationHeader {
   font-weight: 500;
   color: grey;
 }
@@ -79,27 +75,27 @@
   color: rgb(252, 105, 105);
 }
 
-.filter_container:focus {
+.filterContainer:focus {
   outline: none;
 }
 
-.filter_container:focus-visible .evaluations_filter {
+.filterContainer:focus-visible .evaluationsFilter {
   outline: 2px solid #468ff2;
 }
 
 @media (hover: none) {
-  .rating_bubble {
+  .ratingBubble {
     max-height: 3rem;
     height: 3rem;
   }
-  .rating_bubble:hover {
+  .ratingBubble:hover {
     max-height: 3rem;
     height: 3rem;
     transition: max-height 0s;
   }
 }
 
-.flag_info {
+.flagInfo {
   margin-bottom: 0;
   padding-left: 1em;
 }

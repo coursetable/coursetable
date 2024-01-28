@@ -187,8 +187,8 @@ function ResultsItem({
   return (
     <StyledSpacer
       className={clsx(
-        isFirst && styles.first_search_result_item,
-        course.extra_info !== 'ACTIVE' && styles.cancelled_class,
+        isFirst && styles.firstSearchResultItem,
+        course.extra_info !== 'ACTIVE' && styles.cancelledClass,
       )}
       onClick={() => {
         setSearchParams((prev) => {
@@ -213,7 +213,7 @@ function ResultsItem({
                 </Tooltip>
               )}
             >
-              <div className={clsx(styles.skills_areas, 'my-auto')}>
+              <div className={clsx(styles.skillsAreas, 'my-auto')}>
                 <Tag
                   variant="secondary"
                   className={styles[seasons[(season - 1) as 0 | 1 | 2]]}
@@ -229,7 +229,7 @@ function ResultsItem({
         {/* Course Code */}
         <div
           style={codeStyle}
-          className={clsx(styles.ellipsis_text, 'font-weight-bold')}
+          className={clsx(styles.ellipsisText, 'font-weight-bold')}
         >
           <OverlayTrigger
             placement="top"
@@ -259,11 +259,11 @@ function ResultsItem({
         <OverlayTrigger
           placement="right"
           overlay={(props) => (
-            <StyledPopover {...props} id="title_popover">
+            <StyledPopover {...props} id="title-popover">
               <Popover.Title>
                 <strong>
                   {course.extra_info !== 'ACTIVE' ? (
-                    <span className={styles.cancelled_text}>CANCELLED </span>
+                    <span className={styles.cancelledText}>CANCELLED</span>
                   ) : (
                     ''
                   )}
@@ -282,7 +282,7 @@ function ResultsItem({
         >
           {/* Course Title */}
           <div style={titleStyle}>
-            <div className={styles.ellipsis_text}>{course.title}</div>
+            <div className={styles.ellipsisText}>{course.title}</div>
           </div>
         </OverlayTrigger>
         <div className="d-flex">
@@ -312,7 +312,7 @@ function ResultsItem({
                 {getProfessorRatings(course, 'display')}
               </RatingCell>
             </div>
-            <div className={styles.ellipsis_text}>
+            <div className={styles.ellipsisText}>
               {course.professor_names.length === 0
                 ? 'TBA'
                 : course.professor_names.join(' • ')}
@@ -325,7 +325,7 @@ function ResultsItem({
         </div>
         {/* Skills and Areas */}
         <div style={saStyle} className="d-flex">
-          <span className={styles.skills_areas}>
+          <span className={styles.skillsAreas}>
             {course.skills.map((skill, index) => (
               <Tag
                 variant="secondary"
@@ -360,11 +360,11 @@ function ResultsItem({
         </div>
         {/* Course Meeting Days & Times */}
         <div style={meetStyle}>
-          <div className={styles.ellipsis_text}>{course.times_summary}</div>
+          <div className={styles.ellipsisText}>{course.times_summary}</div>
         </div>
         {/* Course Location */}
         <div style={locStyle}>
-          <div className={styles.ellipsis_text}>{course.locations_summary}</div>
+          <div className={styles.ellipsisText}>{course.locations_summary}</div>
         </div>
         {/* # Friends also shopping */}
         <div style={friendsStyle} className="d-flex ">
@@ -387,7 +387,7 @@ function ResultsItem({
         </div>
         {/* Add/remove from worksheet button */}
         <div
-          className={styles.worksheet_btn}
+          className={styles.worksheetBtn}
           data-tutorial={isFirst && 'catalog-6'}
         >
           <WorksheetToggleButton
@@ -399,7 +399,7 @@ function ResultsItem({
         </div>
         {/* Render conflict icon only when component has been mounted */}
         {mounted && (
-          <div className={styles.conflict_error}>
+          <div className={styles.conflictError}>
             <CourseConflictIcon course={course} />
           </div>
         )}

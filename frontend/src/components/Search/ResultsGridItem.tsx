@@ -126,7 +126,7 @@ function ResultsGridItem({
             return prev;
           });
         }}
-        className={clsx(styles.one_line, styles.item_container, 'px-3 pb-3')}
+        className={clsx(styles.oneLine, styles.itemContainer, 'px-3 pb-3')}
         tabIndex={0}
         inWorksheet={courseInWorksheet}
       >
@@ -134,7 +134,7 @@ function ResultsGridItem({
           {/* Course Code */}
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
-              <small className={styles.course_codes}>
+              <small className={styles.courseCodes}>
                 {course.course_code && (
                   <>
                     <OverlayTrigger
@@ -178,7 +178,7 @@ function ResultsGridItem({
                 >
                   <div
                     className={clsx(
-                      styles.season_tag,
+                      styles.seasonTag,
                       'ml-auto px-1 pb-0',
                       tagStyles[seasons[(season - 1) as 0 | 1 | 2]],
                     )}
@@ -197,7 +197,7 @@ function ResultsGridItem({
         </Row>
         {/* Course Title */}
         <Row className="m-auto">
-          <strong className={styles.one_line}>{course.title}</strong>
+          <strong className={styles.oneLine}>{course.title}</strong>
         </Row>
         <Row className="m-auto justify-content-between">
           <Col xs={7} className="p-0">
@@ -205,7 +205,7 @@ function ResultsGridItem({
             <Row className="m-auto">
               <TextComponent
                 type={1}
-                className={clsx(styles.one_line, styles.professors)}
+                className={clsx(styles.oneLine, styles.professors)}
               >
                 {course.professor_names.length > 0
                   ? course.professor_names.join(' • ')
@@ -214,7 +214,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Times */}
             <Row className="m-auto">
-              <small className={clsx(styles.one_line, styles.small_text)}>
+              <small className={clsx(styles.oneLine, styles.smallText)}>
                 <TextComponent type={1}>
                   {course.times_summary === 'TBA'
                     ? 'Times: TBA'
@@ -224,7 +224,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Location */}
             <Row className="m-auto">
-              <small className={clsx(styles.one_line, styles.small_text)}>
+              <small className={clsx(styles.oneLine, styles.smallText)}>
                 <TextComponent type={1}>
                   {course.locations_summary === 'TBA'
                     ? 'Location: TBA'
@@ -234,7 +234,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Skills and Areas */}
             <Row className="m-auto">
-              <div className={tagStyles.skills_areas}>
+              <div className={tagStyles.skillsAreas}>
                 {course.skills.map((skill) => (
                   <SkillBadge skill={skill} key={skill} />
                 ))}
@@ -288,7 +288,7 @@ function ResultsGridItem({
                     {getProfessorRatings(course, 'display')}
                   </RatingCell>
                   <StyledIcon>
-                    <IoPersonOutline className={styles.prof_icon} />
+                    <IoPersonOutline className={styles.profIcon} />
                   </StyledIcon>
                 </Row>
               </OverlayTrigger>
@@ -318,7 +318,7 @@ function ResultsGridItem({
         </Row>
       </StyledGridItem>
       {/* Add/remove from worksheet button */}
-      <div className={styles.worksheet_btn}>
+      <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
           crn={course.crn}
           seasonCode={course.season_code}
@@ -327,7 +327,7 @@ function ResultsGridItem({
         />
       </div>
       {/* Render conflict icon */}
-      <div className={styles.conflict_error}>
+      <div className={styles.conflictError}>
         <CourseConflictIcon course={course} />
       </div>
     </Col>
