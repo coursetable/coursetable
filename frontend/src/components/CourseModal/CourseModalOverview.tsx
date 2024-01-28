@@ -48,6 +48,9 @@ import {
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
 
+// Component used for cutting off long descriptions
+const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
+
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
   background-color: ${({ theme }) =>
@@ -220,8 +223,6 @@ function CourseModalOverview({
 }) {
   // Fetch user context data
   const { user } = useUser();
-  // Component used for cutting off long descriptions
-  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   // Is description clamped?
   const [clamped, setClamped] = useState(false);
   // Number of description lines to display

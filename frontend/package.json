@@ -70,6 +70,7 @@
     "@types/react": "^18.2.48",
     "@types/react-big-calendar": "^1.8.8",
     "@types/react-dom": "^18.2.18",
+    "@types/react-lines-ellipsis": "^0.15.5",
     "@types/react-scroll": "^1.8.10",
     "@types/reactour": "^1.18.5",
     "@types/styled-components": "^5.1.34",
