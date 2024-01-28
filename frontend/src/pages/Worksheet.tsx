@@ -194,8 +194,8 @@ function Worksheet() {
         <div>
           <Row className={clsx(styles.accordion, 'm-0 p-3')}>
             <Col className="p-0">
-              <div className="mobile-calendar-container">
-                <div className="mobile-dropdowns">
+              <div>
+                <div>
                   <WorksheetNumDropdown />
                   <Row className={clsx(styles.dropdowns, 'mx-auto')}>
                     <Col xs={6} className="m-0 p-0">
@@ -206,10 +206,10 @@ function Worksheet() {
                     </Col>
                   </Row>
                 </div>
-                <div className="mobile-calendar">
+                <div className={styles.mobile_calendar}>
                   <WorksheetCalendar />
                 </div>
-                <div className="mobile-list">
+                <div>
                   <WorksheetCalendarList />
                 </div>
               </div>

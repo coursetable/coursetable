@@ -2,17 +2,18 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import clsx from 'clsx';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/react';
 
-import './WorksheetToggleButton.css';
 import { useUser } from '../../contexts/userContext';
 import type { Crn, Season } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import styles from './WorksheetToggleButton.module.css';
 
 const StyledButton = styled(Button)`
   color: ${({ theme }) => theme.primary}!important;
@@ -163,8 +164,11 @@ function WorksheetToggleButton({
   // Disabled worksheet add/remove button if not logged in
   if (!user.worksheet) {
     return (
-      <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
-        <BsBookmark size={25} className="disabled-button-icon" />
+      <Button
+        onClick={toggleWorkSheet}
+        className={clsx('p-0', styles.disabledButton)}
+      >
+        <BsBookmark size={25} className={styles.disabledButtonIcon} />
       </Button>
     );
   }
@@ -183,16 +187,19 @@ function WorksheetToggleButton({
     >
       <StyledButton
         variant="toggle"
-        className="py-auto px-1 d-flex align-items-center g-1"
+        className={clsx(
+          'py-auto px-1 d-flex align-items-center',
+          styles.toggleButton,
+        )}
         onClick={toggleWorkSheet}
       >
         {/* Show bookmark icon on modal and +/- everywhere else */}
         {modal ? (
           <>
             {inWorksheet ? (
-              <FaMinus size={25} className="scale_icon" />
+              <FaMinus size={25} className={styles.scale_icon} />
             ) : (
-              <FaPlus size={25} className="scale_icon" />
+              <FaPlus size={25} className={styles.scale_icon} />
             )}
             {/* Render the worksheet dropdown */}
             <StyledSelect
@@ -208,7 +215,7 @@ function WorksheetToggleButton({
               onMouseEnter={(e) => {
                 e.preventDefault();
               }}
-              className="worksheet-dropdown"
+              className={styles.worksheetDropdown}
             >
               {worksheetOptions.map((option) => (
                 <option key={option} value={option}>
