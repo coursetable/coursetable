@@ -205,11 +205,12 @@ export function NavbarWorksheetSearch() {
             {/* Season Filter Dropdown */}
             <Popout
               buttonText="Season"
-              type="season"
-              selectOptions={selectedSeason}
+              displayOptionLabel
+              maxDisplayOptions={1}
+              selectedOptions={selectedSeason}
               clearIcon={false}
             >
-              <PopoutSelect
+              <PopoutSelect<Option<Season>, false>
                 isClearable={false}
                 hideSelectedOptions={false}
                 value={selectedSeason}
@@ -227,8 +228,7 @@ export function NavbarWorksheetSearch() {
             {/* Worksheet Choice Filter Dropdown */}
             <Popout
               buttonText="Worksheet"
-              type="worksheet"
-              selectOptions={selectedWorksheet}
+              selectedOptions={selectedWorksheet}
               clearIcon={false}
             >
               <PopoutSelect
@@ -246,8 +246,7 @@ export function NavbarWorksheetSearch() {
             {/* Friends' Courses Dropdown */}
             <Popout
               buttonText="Friends' courses"
-              type="friend"
-              selectOptions={selectedPerson}
+              selectedOptions={selectedPerson}
               onReset={() => {
                 handlePersonChange('me');
               }}
@@ -293,7 +292,6 @@ export function NavbarWorksheetSearch() {
             {/* Friend Requests Dropdown */}
             <Popout
               buttonText="Friend requests"
-              type="friend reqs"
               onReset={() => {
                 handlePersonChange('me');
               }}
@@ -339,7 +337,7 @@ export function NavbarWorksheetSearch() {
 
             {/* Add Friend Dropdown */}
 
-            <Popout buttonText="Add Friend" type="adding friends">
+            <Popout buttonText="Add Friend">
               <Searchbar
                 hideSelectedOptions={false}
                 components={{

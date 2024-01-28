@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import clsx from 'clsx';
@@ -30,22 +30,29 @@ export default function MobileSearchForm({
   readonly onSubmit: (event: React.FormEvent) => void;
 }) {
   // Get search context data
+  const { filters, coursesLoading, searchData } = useSearch();
   const {
-    filters: {
-      searchText,
-      selectSubjects,
-      selectSkillsAreas,
-      overallBounds,
-      workloadBounds,
-      professorBounds,
-      selectSeasons,
-      selectSchools,
-    },
-    coursesLoading,
-    searchData,
-    resetKey,
-    handleResetFilters,
-  } = useSearch();
+    searchText,
+    selectSubjects,
+    selectSkillsAreas,
+    overallBounds,
+    workloadBounds,
+    professorBounds,
+    selectSeasons,
+    selectSchools,
+  } = filters;
+  // These are exactly the same as the filters, except they update responsively
+  // without triggering searching
+  const [overallRangeValue, setOverallRangeValue] = useState(
+    overallBounds.value,
+  );
+  const [workloadRangeValue, setWorkloadRangeValue] = useState(
+    workloadBounds.value,
+  );
+  const [professorRangeValue, setProfessorRangeValue] = useState(
+    professorBounds.value,
+  );
+
   return (
     <Col className={clsx('p-3', styles.searchColMobile)}>
       <SurfaceComponent
@@ -59,7 +66,12 @@ export default function MobileSearchForm({
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <small
               className={clsx(styles.resetFiltersBtn, 'mr-auto')}
-              onClick={handleResetFilters}
+              onClick={() => {
+                setOverallRangeValue(defaultFilters.overallBounds);
+                setWorkloadRangeValue(defaultFilters.workloadBounds);
+                setProfessorRangeValue(defaultFilters.professorBounds);
+                Object.values(filters).forEach((filter) => filter.reset());
+              }}
             >
               Reset Filters
             </small>
@@ -89,7 +101,7 @@ export default function MobileSearchForm({
           </Row>
           {/* Sort by option and order */}
           <Row className="mx-auto py-0 px-4">
-            <SortBySelect key={resetKey} />
+            <SortBySelect />
           </Row>
           <StyledHr />
           <Row className={clsx('mx-auto py-0 px-4', styles.multiSelects)}>
@@ -161,8 +173,10 @@ export default function MobileSearchForm({
                   min={defaultFilters.overallBounds[0]}
                   max={defaultFilters.overallBounds[1]}
                   step={0.1}
-                  key={resetKey}
-                  defaultValue={overallBounds.value}
+                  value={overallRangeValue}
+                  onChange={(value) => {
+                    setOverallRangeValue(value as [number, number]);
+                  }}
                   onAfterChange={(value) => {
                     overallBounds.set(value as [number, number]);
                   }}
@@ -188,8 +202,10 @@ export default function MobileSearchForm({
                   min={defaultFilters.workloadBounds[0]}
                   max={defaultFilters.workloadBounds[1]}
                   step={0.1}
-                  key={resetKey}
-                  defaultValue={workloadBounds.value}
+                  value={workloadRangeValue}
+                  onChange={(value) => {
+                    setWorkloadRangeValue(value as [number, number]);
+                  }}
                   onAfterChange={(value) => {
                     workloadBounds.set(value as [number, number]);
                   }}
@@ -215,8 +231,10 @@ export default function MobileSearchForm({
                   min={defaultFilters.professorBounds[0]}
                   max={defaultFilters.professorBounds[1]}
                   step={0.1}
-                  key={resetKey}
-                  defaultValue={professorBounds.value}
+                  value={professorRangeValue}
+                  onChange={(value) => {
+                    setProfessorRangeValue(value as [number, number]);
+                  }}
                   onAfterChange={(value) => {
                     professorBounds.set(value as [number, number]);
                   }}
