@@ -190,6 +190,7 @@ export function NavbarCatalogSearch() {
     hideGraduateCourses,
     hideDiscussionSections,
     selectSortBy,
+    sortOrder,
   } = filters;
 
   // These are exactly the same as the filters, except they update responsively
@@ -535,8 +536,10 @@ export function NavbarCatalogSearch() {
                     'hideDiscussionSections',
                   ] as const
                 ).forEach((k) => filters[k].reset());
-                if (selectSortBy.value.value === 'average_gut_rating')
+                if (selectSortBy.value.value === 'average_gut_rating') {
                   selectSortBy.reset();
+                  sortOrder.reset();
+                }
                 setTimeRangeValue(defaultFilters.timeBounds);
                 setEnrollRangeValue(
                   defaultFilters.enrollBounds.map(toLinear).map(Math.round) as [
