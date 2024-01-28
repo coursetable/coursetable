@@ -172,7 +172,7 @@ export function NavbarCatalogSearch() {
     duration,
     searchData,
     coursesLoading,
-    handleResetFilters,
+    resetAllFilters,
     setStartTime,
   } = useSearch();
 
@@ -874,11 +874,9 @@ export function NavbarCatalogSearch() {
           {/* Reset Filters & Sorting Button */}
           <StyledButton
             variant="danger"
-            onClick={handleResetFilters}
+            onClick={resetAllFilters}
             // Cannot reset if no filters have changed
-            disabled={Object.entries(filters)
-              .filter(([k]) => !['sortOrder', 'selectSortBy'].includes(k))
-              .every(([, filter]) => !filter.hasChanged)}
+            disabled={Object.values(filters).every((x) => !x.hasChanged)}
           >
             Reset
           </StyledButton>

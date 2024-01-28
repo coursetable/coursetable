@@ -43,7 +43,7 @@ export default function MobileSearchForm({
     },
     coursesLoading,
     searchData,
-    handleResetFilters,
+    resetAllFilters,
   } = useSearch();
   return (
     <Col className={clsx('p-3', styles.searchColMobile)}>
@@ -58,7 +58,7 @@ export default function MobileSearchForm({
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <small
               className={clsx(styles.resetFiltersBtn, 'mr-auto')}
-              onClick={handleResetFilters}
+              onClick={resetAllFilters}
             >
               Reset Filters
             </small>

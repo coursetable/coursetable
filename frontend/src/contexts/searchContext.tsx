@@ -124,7 +124,7 @@ type Store = {
   isLoggedIn: boolean;
   numFriends: { [seasonCodeCrn: string]: string[] };
   duration: number;
-  handleResetFilters: () => void;
+  resetAllFilters: () => void;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
 };
 
@@ -567,7 +567,7 @@ export function SearchProvider({
   );
 
   // For resetting all filters and sorts
-  const handleResetFilters = useCallback(() => {
+  const resetAllFilters = useCallback(() => {
     Object.values(filters).forEach((filter) => filter.reset());
     setStartTime(Date.now());
   }, [filters]);
@@ -591,7 +591,7 @@ export function SearchProvider({
       numFriends,
       duration,
 
-      handleResetFilters,
+      resetAllFilters,
       setStartTime,
     }),
     [
@@ -602,7 +602,7 @@ export function SearchProvider({
       isLoggedIn,
       numFriends,
       duration,
-      handleResetFilters,
+      resetAllFilters,
       setStartTime,
     ],
   );
