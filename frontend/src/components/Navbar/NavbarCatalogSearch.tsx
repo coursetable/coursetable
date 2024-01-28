@@ -290,7 +290,9 @@ export function NavbarCatalogSearch() {
   // Consolidate all advanced filters' selected options
   const advancedOptions = useMemo(
     (): {
-      [key: string]: { [key: string]: Option<string | number>[] | boolean };
+      [key: string]: {
+        [key: string]: Option<string | number>[] | boolean | [number, number];
+      };
     } => ({
       selects: {
         selectDays: selectDays.value,
@@ -301,6 +303,7 @@ export function NavbarCatalogSearch() {
         selectSkillsAreas: isTablet && selectSkillsAreas.value,
       },
       ranges: {
+        professorBounds: isTablet && professorBounds.value,
         activeTime,
         activeEnrollment,
         activeNumber,
@@ -318,6 +321,7 @@ export function NavbarCatalogSearch() {
       },
     }),
     [
+      professorBounds,
       selectDays,
       selectSchools,
       selectCredits,
@@ -543,37 +547,39 @@ export function NavbarCatalogSearch() {
                   }}
                 />
               </Col>
-              <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
-                {/* Professor Rating Range */}
-                <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                  <RangeValueLabel>{professorValueLabels[0]}</RangeValueLabel>
-                  <RangeLabel
-                    className="flex-grow-1 text-center"
-                    style={activeStyle(activeProfessor)}
-                  >
-                    Professor
-                  </RangeLabel>
-                  <RangeValueLabel>{professorValueLabels[1]}</RangeValueLabel>
-                </div>
-                <StyledRange
-                  min={defaultFilters.professorBounds[0]}
-                  max={defaultFilters.professorBounds[1]}
-                  step={0.1}
-                  isTablet={isTablet}
-                  key={resetKey}
-                  handleStyle={rangeHandleStyle}
-                  railStyle={rangeRailStyle}
-                  trackStyle={[rangeRailStyle]}
-                  defaultValue={professorBounds.value}
-                  onChange={(value) => {
-                    setProfessorValueLabels(value as [number, number]);
-                  }}
-                  onAfterChange={(value) => {
-                    professorBounds.set(value as [number, number]);
-                    setStartTime(Date.now());
-                  }}
-                />
-              </Col>
+
+              {!isTablet && (
+                <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+                  <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                    <RangeValueLabel>{professorValueLabels[0]}</RangeValueLabel>
+                    <RangeLabel
+                      className="flex-grow-1 text-center"
+                      style={activeStyle(activeProfessor)}
+                    >
+                      Professor
+                    </RangeLabel>
+                    <RangeValueLabel>{professorValueLabels[1]}</RangeValueLabel>
+                  </div>
+                  <StyledRange
+                    min={defaultFilters.professorBounds[0]}
+                    max={defaultFilters.professorBounds[1]}
+                    step={0.1}
+                    isTablet={isTablet}
+                    key={resetKey}
+                    handleStyle={rangeHandleStyle}
+                    railStyle={rangeRailStyle}
+                    trackStyle={[rangeRailStyle]}
+                    defaultValue={professorBounds.value}
+                    onChange={(value) => {
+                      setProfessorValueLabels(value as [number, number]);
+                    }}
+                    onAfterChange={(value) => {
+                      professorBounds.set(value as [number, number]);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Col>
+              )}
             </div>
             {/* Season Filter Dropdown */}
             {!isTablet && (
@@ -797,6 +803,43 @@ export function NavbarCatalogSearch() {
                     />
                   </AdvancedRangeGroup>
                 </Row>
+                {/* Professor Range */}
+
+                {isTablet && (
+                  <Row className="align-items-center justify-content-between mx-3 mt-3">
+                    <AdvancedLabel style={activeStyle(activeProfessor)}>
+                      Professor:
+                    </AdvancedLabel>
+                    <AdvancedRangeGroup>
+                      {/* Professor Rating Range */}
+                      <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                        <RangeValueLabel>
+                          {professorValueLabels[0]}
+                        </RangeValueLabel>
+                        <RangeValueLabel>
+                          {professorValueLabels[1]}
+                        </RangeValueLabel>
+                      </div>
+                      <AdvancedRange
+                        min={defaultFilters.professorBounds[0]}
+                        max={defaultFilters.professorBounds[1]}
+                        step={0.1}
+                        key={resetKey}
+                        handleStyle={rangeHandleStyle}
+                        railStyle={rangeRailStyle}
+                        trackStyle={[rangeRailStyle]}
+                        defaultValue={professorBounds.value}
+                        onChange={(value) => {
+                          setProfessorValueLabels(value as [number, number]);
+                        }}
+                        onAfterChange={(value) => {
+                          professorBounds.set(value as [number, number]);
+                          setStartTime(Date.now());
+                        }}
+                      />
+                    </AdvancedRangeGroup>
+                  </Row>
+                )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <AdvancedLabel style={activeStyle(activeNumber)}>
                     Course #:
