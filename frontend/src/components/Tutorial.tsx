@@ -1,47 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
-import styled from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { useTheme } from '../contexts/themeContext';
 import styles from './Tutorial.module.css';
 import './reactour-override.css';
-
-// Next button for tutorial
-const NextButton = styled(Button)`
-  background-color: ${({ theme }) => theme.primaryHover};
-  border-color: transparent !important;
-  box-shadow: none !important;
-  font-size: 14px;
-
-  &:focus {
-    background-color: ${({ theme }) => theme.primaryHover};
-  }
-`;
-
-// Back button for tutorial
-const PrevButton = styled(Button)`
-  background-color: transparent;
-  border-color: transparent !important;
-  color: ${({ theme }) => theme.text[0]} !important;
-  box-shadow: none !important;
-  font-size: 14px;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonActive};
-  }
-  &:active {
-    background-color: ${({ theme }) => theme.buttonActive} !important;
-  }
-  &:focus {
-    background-color: transparent;
-  }
-  &:disabled {
-    background-color: transparent;
-    color: ${({ theme }) => theme.text[2]} !important;
-  }
-`;
 
 type Props = {
   readonly isTutorialOpen: boolean;
@@ -269,24 +233,34 @@ function Tutorial({
     if (currentStep === 0) return <div style={{ display: 'none' }} />;
     if (!shownTutorial) {
       return (
-        <PrevButton
+        <Button
+          className={styles.prevButton}
           style={{
             marginRight: '-40px',
           }}
           disabled={location.pathname === '/worksheet' && currentStep === 7}
         >
           Back
-        </PrevButton>
+        </Button>
       );
     }
-    return <PrevButton>Back</PrevButton>;
+    return <Button className={styles.prevButton}>Back</Button>;
   }, [currentStep, shownTutorial, location]);
 
   // Next button component
   const nextButton = useMemo(() => {
-    if (location.pathname === '/catalog' && currentStep === 7)
-      return <NextButton disabled>Next</NextButton>;
-    return <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>;
+    if (location.pathname === '/catalog' && currentStep === 7) {
+      return (
+        <Button className={styles.nextButton} disabled>
+          Next
+        </Button>
+      );
+    }
+    return (
+      <Button className={styles.nextButton}>
+        {currentStep === 0 ? 'Start' : 'Next'}
+      </Button>
+    );
   }, [currentStep, location]);
 
   return (
@@ -311,7 +285,9 @@ function Tutorial({
       showNumber={false}
       nextButton={nextButton}
       prevButton={prevButton}
-      lastStepNextButton={<NextButton>Finish Tutorial</NextButton>}
+      lastStepNextButton={
+        <Button className={styles.nextButton}>Finish Tutorial</Button>
+      }
       getCurrentStep={(curr) => setCurrentStep(curr)}
       disableKeyboardNavigation={['esc']}
       onAfterOpen={disableBodyScroll}

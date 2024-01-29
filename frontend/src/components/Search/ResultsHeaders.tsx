@@ -12,42 +12,6 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { breakpoints } from '../../utilities/display';
 import styles from './ResultsHeaders.module.css';
 
-const StyledToggle = styled.div`
-  color: ${({ theme }) => theme.text[1]};
-  padding: 7.5px;
-  border-radius: 15px;
-  transition: color ${({ theme }) => theme.transDur};
-  cursor: pointer;
-  &:hover {
-    background-color: ${({ theme }) => theme.select};
-    color: ${({ theme }) => theme.primary};
-  }
-`;
-
-// Space above row dropdown to hide scrolled courses
-const StyledSpacer = styled.div`
-  background-color: ${({ theme }) => theme.background};
-  transition: background-color ${({ theme }) => theme.transDur};
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  z-index: 2;
-`;
-
-// Restrict the row width
-const StyledRow = styled(Row)`
-  max-width: 1600px;
-`;
-
-// Container of row dropdown (without spacer)
-const StyledContainer = styled(SurfaceComponent)`
-  border-top: 2px solid ${({ theme }) => theme.border};
-  border-bottom: 2px solid ${({ theme }) => theme.border};
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-`;
-
 // Column header
 const ResultsHeader = styled.div`
   line-height: 30px;
@@ -129,10 +93,14 @@ function ResultsHeaders(
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
 
   return (
-    <StyledSpacer style={{ top: navbarHeight }}>
-      <StyledContainer layer={0} id="results_container" className="px-0 mx-0">
+    <div className={styles.spacer} style={{ top: navbarHeight }}>
+      <SurfaceComponent
+        layer={0}
+        id="results_container"
+        className={clsx('px-0 mx-0', styles.container)}
+      >
         {/* Column Headers */}
-        <StyledRow
+        <Row
           ref={ref}
           className={clsx(
             'mx-auto pl-4 pr-2',
@@ -149,8 +117,10 @@ function ResultsHeaders(
               'd-flex ml-auto my-auto p-0',
             )}
           >
-            <StyledToggle
-              className="d-flex ml-auto my-auto"
+            {/* TODO */}
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+            <div
+              className={clsx(styles.toggle, 'd-flex ml-auto my-auto')}
               onClick={() => setIsListView(!isListView)}
             >
               {!isListView ? (
@@ -158,7 +128,7 @@ function ResultsHeaders(
               ) : (
                 <FaTh className="m-auto" size={15} />
               )}
-            </StyledToggle>
+            </div>
           </div>
           {isListView ? (
             <>
@@ -337,9 +307,9 @@ function ResultsHeaders(
               </ResultsHeader>
             </Col>
           )}
-        </StyledRow>
-      </StyledContainer>
-    </StyledSpacer>
+        </Row>
+      </SurfaceComponent>
+    </div>
   );
 }
 

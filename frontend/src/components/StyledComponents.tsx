@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FormControl, Card, Popover } from 'react-bootstrap';
+import { FormControl, Popover } from 'react-bootstrap';
 import type chroma from 'chroma-js';
 import { breakpoints } from '../utilities/display';
 
@@ -52,14 +52,6 @@ export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
     theme.theme === 'light' ? '#ededed' : '#404040'};
   transition: border-color ${({ theme }) => theme.transDur};
-`;
-
-// Card used in Worksheet mobile and about page
-export const StyledCard = styled(Card)`
-  background-color: ${({ theme }) => theme.surface[0]};
-  transition:
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
 `;
 
 // Popovers in search results item, prof popover in modal, and worksheet
@@ -132,11 +124,4 @@ export const StyledHoverText = styled.span`
   &:hover {
     color: ${({ theme }) => theme.primary};
   }
-`;
-
-// SVG Icons used in search results for the various ratings
-export const StyledIcon = styled.div`
-  fill: ${({ theme }) => theme.text[0]};
-  margin-top: auto;
-  margin-bottom: auto;
 `;

@@ -4,7 +4,6 @@ import { Col, Container, Row, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import type {
@@ -21,18 +20,6 @@ import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
-
-// Course Modal
-const StyledModal = styled(Modal)`
-  .modal-content {
-    background-color: ${({ theme }) => theme.surface[0]};
-    .modal-header {
-      .close {
-        color: ${({ theme }) => theme.text[0]};
-      }
-    }
-  }
-`;
 
 const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -114,7 +101,7 @@ function CourseModal() {
   return (
     <div className="d-flex justify-content-center">
       {curListing && (
-        <StyledModal
+        <Modal
           show={Boolean(listing)}
           scrollable
           onHide={() => {
@@ -326,7 +313,7 @@ function CourseModal() {
                 courseCode={view[1].course_code}
               />
             ))}
-        </StyledModal>
+        </Modal>
       )}
     </div>
   );

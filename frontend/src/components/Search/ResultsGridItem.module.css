@@ -69,6 +69,12 @@
   font-weight: 500;
 }
 
+.iconContainer {
+  fill: var(--color-text);
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .icon {
   width: 16px;
   display: block;

@@ -23,20 +23,6 @@ import { API_ENDPOINT } from '../../config';
 import { useTheme } from '../../contexts/themeContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
-// Profile icon
-const StyledMeIcon = styled.div`
-  background-color: ${({ theme }) =>
-    theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
-  color: ${({ theme }) => theme.text[1]};
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-  &:hover {
-    color: ${({ theme }) => theme.primary};
-  }
-`;
-
 const SignInOutButton = styled.div`
   color: ${({ theme }) => theme.text[1]};
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
@@ -47,15 +33,7 @@ const SignInOutButton = styled.div`
 
 // Nav links
 const StyledNavLink = styled(NavLink)`
-  color: ${({ theme }) => theme.text[1]};
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
-  transition: color ${({ theme }) => theme.transDur};
-  &:hover {
-    color: ${({ theme }) => theme.primary};
-  }
-  &.active {
-    color: ${({ theme }) => theme.primary};
-  }
 `;
 
 // Nav toggle for mobile
@@ -291,7 +269,9 @@ export default function CourseTableNavbar({
                     )}
                   >
                     <div className={styles.navbarMe}>
-                      <StyledMeIcon
+                      {/* TODO */}
+                      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+                      <div
                         ref={elemRef}
                         className={clsx(styles.meIcon, 'm-auto')}
                         onClick={() =>
@@ -303,7 +283,7 @@ export default function CourseTableNavbar({
                           size={20}
                           color={isComponentVisible ? '#007bff' : undefined}
                         />
-                      </StyledMeIcon>
+                      </div>
                     </div>
                   </div>
                   {/* Sign in/out buttons. Show if mobile */}

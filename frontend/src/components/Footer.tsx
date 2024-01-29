@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import styles from './Footer.module.css';
@@ -9,11 +8,6 @@ import Logo from './Navbar/Logo';
 import { StyledHr, TextComponent } from './StyledComponents';
 import { scrollToTop } from '../utilities/display';
 import VercelBanner from '../images/powered-by-vercel.svg';
-
-// Header
-const StyledH5 = styled.h5`
-  transition: color ${({ theme }) => theme.transDur};
-`;
 
 function Footer() {
   return (
@@ -39,7 +33,7 @@ function Footer() {
             </a>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>Explore</StyledH5>
+            <h5 className={styles.sectionHeading}>Explore</h5>
             <ul className="list-unstyled text-small">
               {/* Catalog */}
               <li>
@@ -56,7 +50,7 @@ function Footer() {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>Support</StyledH5>
+            <h5 className={styles.sectionHeading}>Support</h5>
             <ul className="list-unstyled text-small">
               {/* FAQ */}
               <li>
@@ -94,7 +88,7 @@ function Footer() {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>Developers</StyledH5>
+            <h5 className={styles.sectionHeading}>Developers</h5>
             <ul className="list-unstyled text-small">
               {/* GraphQL explorer */}
               <li>
@@ -105,7 +99,7 @@ function Footer() {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>About</StyledH5>
+            <h5 className={styles.sectionHeading}>About</h5>
             <ul className="list-unstyled text-small">
               {/* Team */}
               <li>

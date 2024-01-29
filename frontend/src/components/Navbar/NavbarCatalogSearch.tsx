@@ -38,11 +38,6 @@ import {
 } from '../../utilities/course';
 import styles from './NavbarCatalogSearch.module.css';
 
-// Wrapper for search bar
-const SearchWrapper = styled.div<{ isTablet: boolean }>`
-  width: ${({ isTablet }) => (isTablet ? 35 : 40)}vw;
-`;
-
 // Search bar
 const SearchBar = styled(StyledInput)`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
@@ -56,23 +51,16 @@ const StyledRange = styled(Range)<{ isTablet: boolean }>`
 // Range filter label
 const RangeLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-  transition: color ${({ theme }) => theme.transDur};
 `;
 
 // Range filter value label
 const RangeValueLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
-  transition: color ${({ theme }) => theme.transDur};
 `;
 
 // Advanced filters label in dropdown
 const AdvancedLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-`;
-
-// Row for toggles in advanced filters
-const AdvancedToggleRow = styled(Row)`
-  background-color: ${({ theme }) => theme.buttonActive};
 `;
 
 const ResetButton = styled(Button)`
@@ -227,7 +215,7 @@ export function NavbarCatalogSearch() {
       >
         {/* Top row */}
         <Row className={styles.row}>
-          <SearchWrapper className={styles.searchWrapper} isTablet={isTablet}>
+          <div className={styles.searchWrapper}>
             {/* Search Bar */}
             <InputGroup className="h-100">
               <SearchBar
@@ -253,7 +241,7 @@ export function NavbarCatalogSearch() {
                 }}
               />
             )}
-          </SearchWrapper>
+          </div>
           {/* Number of results shown & seach speed text */}
           <SmallTextComponent
             type={2}
@@ -838,14 +826,19 @@ export function NavbarCatalogSearch() {
                     selectOption={sortByOptions.average_gut_rating}
                   />
                 </Row>
-                <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
+                <Row
+                  className={clsx(
+                    styles.advancedToggleRow,
+                    'align-items-center justify-content-between mx-auto mt-3 py-2 px-4',
+                  )}
+                >
                   <Toggle handle="searchDescription" />
                   <Toggle handle="hideCancelled" />
                   <Toggle handle="hideConflicting" />
                   <Toggle handle="hideFirstYearSeminars" />
                   <Toggle handle="hideGraduateCourses" />
                   <Toggle handle="hideDiscussionSections" />
-                </AdvancedToggleRow>
+                </Row>
               </div>
             </Popout>
           </div>

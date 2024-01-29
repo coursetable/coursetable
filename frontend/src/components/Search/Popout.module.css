@@ -1,0 +1,55 @@
+.wrapper {
+  position: relative;
+}
+
+.arrowIcon {
+  color: var(--color-icon-focus);
+  transition: color var(--trans-dur);
+}
+
+.clearIcon {
+  z-index: 1000;
+  cursor: pointer;
+  color: var(--color-icon-focus);
+  transition: color var(--trans-dur);
+}
+
+.button {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 0;
+  padding: 6px 8px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-right: 6px;
+  font-weight: 400;
+  font-size: 14px;
+  border-radius: 4px;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.button:hover {
+  background-color: var(--color-button-hover);
+  color: var(--color-primary-hover);
+}
+
+.button:active {
+  background-color: var(--color-button-active);
+  color: var(--color-primary-hover);
+}
+
+.dropdown {
+  background-color: var(--color-select);
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px hsla(218, 50%, 10%, 0.1),
+    0 4px 11px hsla(218, 50%, 10%, 0.1);
+  margin-top: 8px;
+  position: absolute;
+  z-index: 1000;
+}

@@ -2,56 +2,11 @@ import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import styled from 'styled-components';
 
 import CalendarEvent, { type CourseEvent } from './CalendarEvent';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import './react-big-calendar-override.css';
-
-// Calendar for worksheet
-const StyledCalendar = styled(Calendar<CourseEvent>)`
-  &.rbc-calendar {
-    .rbc-time-view {
-      .rbc-time-header {
-        .rbc-time-header-content {
-          border-color: ${({ theme }) => theme.border};
-          transition: border-color ${({ theme }) => theme.transDur};
-          .rbc-time-header-cell {
-            .rbc-header {
-              user-select: none;
-              cursor: default;
-              border-color: ${({ theme }) => theme.border};
-              transition: border-color ${({ theme }) => theme.transDur};
-            }
-          }
-        }
-      }
-      .rbc-time-content {
-        border-color: ${({ theme }) => theme.border};
-        transition: border-color ${({ theme }) => theme.transDur};
-        .rbc-time-gutter {
-          .rbc-timeslot-group {
-            user-select: none;
-            cursor: default;
-            border-color: ${({ theme }) => theme.border};
-            transition: border-color ${({ theme }) => theme.transDur};
-          }
-        }
-        .rbc-day-slot {
-          .rbc-timeslot-group {
-            border-color: ${({ theme }) => theme.border};
-            transition: border-color ${({ theme }) => theme.transDur};
-            .rbc-time-slot {
-              border-color: ${({ theme }) => theme.border};
-              transition: border-color ${({ theme }) => theme.transDur};
-          }
-        }
-      }
-    }
-  }
-`;
-// TODO: Allow users to change color of courses in calendar?
 
 /**
  * Render Worksheet Calendar component
@@ -117,7 +72,7 @@ function WorksheetCalendar() {
   }, [courses, hiddenCourses, curSeason]);
 
   return (
-    <StyledCalendar
+    <Calendar
       // Show Mon-Fri
       defaultView="work_week"
       views={['work_week']}

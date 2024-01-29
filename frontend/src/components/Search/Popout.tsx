@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import chroma from 'chroma-js';
@@ -9,80 +10,21 @@ import {
   useComponentVisibleDropdown,
 } from '../../utilities/display';
 import { isOption, type Option } from '../../contexts/searchContext';
-
-// Entire popout component
-const PopoutWrapper = styled.div`
-  position: relative;
-`;
-
-// Actual part that drops down
-const shadow = 'hsla(218, 50%, 10%, 0.1)';
-const Dropdown = styled.div`
-  background-color: ${({ theme }) => theme.select};
-  border-radius: 4px;
-  box-shadow:
-    0 0 0 1px ${shadow},
-    0 4px 11px ${shadow};
-  margin-top: 8px;
-  position: absolute;
-  z-index: 1000;
-`;
+import styles from './Popout.module.css';
 
 // Popout button
 const StyledButton = styled.div`
-  background-color: ${({ theme }) => theme.surface[0]};
-  color: ${({ theme }) => theme.text[0]};
-  border: 0;
-  padding: 6px 8px;
-  margin-top: 6px;
-  margin-bottom: 6px;
-  margin-right: 6px;
-  font-weight: 400;
-  font-size: 14px;
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-  border-radius: 4px;
-  user-select: none;
-  cursor: pointer;
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonHover};
-    color: ${({ theme }) => theme.primaryHover};
-  }
-
-  &:active {
-    background-color: ${({ theme }) => theme.buttonActive};
-    color: ${({ theme }) => theme.primaryHover};
-  }
 `;
 
 // Clear filter button
 const ClearIcon = styled(IoClose)`
-  z-index: 1000;
-  cursor: pointer;
-  color: ${({ theme }) => theme.iconFocus};
-  transition: color ${({ theme }) => theme.transDur};
   &:hover {
     color: ${({ theme }) =>
       theme.theme === 'light'
         ? chroma(theme.iconFocus).darken().css()
         : chroma(theme.iconFocus).brighten().css()};
   }
-`;
-
-// Down icon
-const DownIcon = styled(IoMdArrowDropdown)`
-  color: ${({ theme }) => theme.iconFocus};
-  transition: color ${({ theme }) => theme.transDur};
-`;
-
-// Up icon
-const UpIcon = styled(IoMdArrowDropup)`
-  color: ${({ theme }) => theme.iconFocus};
-  transition: color ${({ theme }) => theme.transDur};
 `;
 
 type Props = {
@@ -171,21 +113,22 @@ export function Popout({
   };
 
   return (
-    <PopoutWrapper
+    <div
       data-tutorial={dataTutorial ? `catalog-${dataTutorial}-observe` : ''}
+      className={styles.wrapper}
     >
       {/* Popout Button */}
       <StyledButton
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
         ref={toggleRef}
-        className={className}
+        className={clsx(className, styles.button)}
         data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
       >
         {text ?? buttonText}
         {text && clearIcon ? (
           <ClearIcon
-            className="ml-1"
+            className={clsx(styles.clearIcon, 'ml-1')}
             onClick={(e) => {
               // Prevent parent popout button onClick from firing and opening
               // dropdown
@@ -195,16 +138,18 @@ export function Popout({
           />
         ) : arrowIcon ? (
           isComponentVisible ? (
-            <DownIcon className="ml-1" />
+            <IoMdArrowDropdown className={clsx(styles.arrowIcon, 'ml-1')} />
           ) : (
-            <UpIcon className="ml-1" />
+            <IoMdArrowDropup className={clsx(styles.arrowIcon, 'ml-1')} />
           )
         ) : null}
       </StyledButton>
       {/* Dropdown */}
       {isComponentVisible ? (
-        <Dropdown ref={dropdownRef}>{children}</Dropdown>
+        <div className={styles.dropdown} ref={dropdownRef}>
+          {children}
+        </div>
       ) : null}
-    </PopoutWrapper>
+    </div>
   );
 }

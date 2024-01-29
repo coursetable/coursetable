@@ -21,7 +21,7 @@ import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
-import { TextComponent, StyledIcon } from '../StyledComponents';
+import { TextComponent } from '../StyledComponents';
 import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
@@ -266,9 +266,9 @@ function ResultsGridItem({
                   >
                     {getOverallRatings(course, 'display')}
                   </RatingCell>
-                  <StyledIcon>
+                  <div className={styles.iconContainer}>
                     <AiOutlineStar className={styles.icon} />
-                  </StyledIcon>
+                  </div>
                 </Row>
               </OverlayTrigger>
               {/* Professor Rating */}
@@ -287,9 +287,9 @@ function ResultsGridItem({
                   >
                     {getProfessorRatings(course, 'display')}
                   </RatingCell>
-                  <StyledIcon>
+                  <div className={styles.iconContainer}>
                     <IoPersonOutline className={styles.profIcon} />
-                  </StyledIcon>
+                  </div>
                 </Row>
               </OverlayTrigger>
               {/* Workload Rating */}
@@ -308,9 +308,9 @@ function ResultsGridItem({
                   >
                     {getWorkloadRatings(course, 'display')}
                   </RatingCell>
-                  <StyledIcon>
+                  <div className={styles.iconContainer}>
                     <BiBookOpen className={styles.icon} />
-                  </StyledIcon>
+                  </div>
                 </Row>
               </OverlayTrigger>
             </div>

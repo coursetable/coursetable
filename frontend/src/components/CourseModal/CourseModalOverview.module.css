@@ -27,6 +27,11 @@
 
 .ratingBubble {
   cursor: pointer;
+  background-color: rgb(190, 221, 255);
+}
+
+[data-theme='dark'] .ratingBubble {
+  background-color: var(--color-select-hover);
 }
 
 .ratingBubble:hover {
@@ -37,6 +42,7 @@
 
 .ratingBubbleUnclickable {
   cursor: default;
+  background-color: var(--color-surface);
 }
 
 .ratingBubbleUnclickable:hover {
@@ -54,6 +60,12 @@
 .evaluationHeader {
   font-weight: 500;
   color: grey;
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-border);
+}
+
+.evaluationHeader :global(.toggleOption) {
+  color: var(--color-text);
 }
 
 .hidden {
@@ -87,6 +99,15 @@
 
 .filterContainer:focus-visible .evaluationsFilter {
   outline: 2px solid #468ff2;
+}
+
+.evaluationsFilter {
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-border);
+}
+
+.evaluationsFilter :global(.toggleOption) {
+  color: var(--color-text);
 }
 
 @media (hover: none) {

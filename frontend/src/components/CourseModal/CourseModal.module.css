@@ -18,7 +18,14 @@
 
 .dialog {
   max-width: 800px !important;
-  /* max-width: none !important; */
+}
+
+.dialog :global(.modal-content) {
+  background-color: var(--color-surface);
+}
+
+.dialog :global(.modal-header) :global(.close) {
+  color: var(--color-text);
 }
 
 .moreInfo {

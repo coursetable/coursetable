@@ -22,11 +22,6 @@ import { toSeasonString } from '../../utilities/course';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
 
-// Restrict the row width
-const StyledRow = styled(Row)`
-  max-width: 1600px;
-`;
-
 // Search results
 const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
   overflow: hidden;
@@ -187,7 +182,7 @@ function Results({
           >
             {({ index, style }) => (
               <div style={style}>
-                <StyledRow className="mx-auto">
+                <Row className={clsx(styles.gridRow, 'mx-auto')}>
                   {data
                     .slice(index * numCols, (index + 1) * numCols)
                     .map((course) => (
@@ -198,7 +193,7 @@ function Results({
                         key={course.season_code + course.crn}
                       />
                     ))}
-                </StyledRow>
+                </Row>
               </div>
             )}
           </FixedSizeList>

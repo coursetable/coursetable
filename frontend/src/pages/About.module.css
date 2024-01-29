@@ -17,6 +17,13 @@
   max-width: 750px;
 }
 
+.card {
+  background-color: var(--color-surface);
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
 @media (max-width: 950px) {
   .container {
     width: 80vw;
