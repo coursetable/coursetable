@@ -201,12 +201,12 @@ function CustomSelect<
     colors: {
       ...theme.colors,
       primary50: '#85c2ff', // OptionBackground :focus
-      primary25: globalTheme.selectHover, // OptionBackground :hover
-      neutral0: globalTheme.select, // AllBackground & optionText :selected
-      neutral10: globalTheme.multivalue, // SelectedOptionBackground & disabledBorder
+      primary25: 'var(--color-select-hover)', // OptionBackground :hover
+      neutral0: 'var(--color-select)', // AllBackground & optionText :selected
+      neutral10: 'var(--color-select-multivalue)', // SelectedOptionBackground & disabledBorder
       neutral30: 'hsl(0, 0%, 70%)', // Border :hover
-      neutral60: globalTheme.text[0], // DropdownIconFocus & clearIconFocus
-      neutral80: globalTheme.text[0], // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover
+      neutral60: 'var(--color-text)', // DropdownIconFocus & clearIconFocus
+      neutral80: 'var(--color-text)', // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover
     },
   });
 

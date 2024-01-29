@@ -2,16 +2,12 @@ import React from 'react';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
 import WorksheetList from '../components/Worksheet/WorksheetList';
-import {
-  SurfaceComponent,
-  StyledExpandBtn,
-} from '../components/StyledComponents';
+import { SurfaceComponent } from '../components/StyledComponents';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
@@ -23,13 +19,6 @@ import ErrorPage from '../components/ErrorPage';
 
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
-
-const StyledCalendarContainer = styled(SurfaceComponent)`
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-`;
 
 /**
  * Renders worksheet page
@@ -119,15 +108,10 @@ function Worksheet() {
                 worksheetView.view === 'list' && styles.hidden,
               )}
             >
-              <StyledCalendarContainer
-                layer={0}
-                className={styles.calendarStyleContainer}
-              >
+              <SurfaceComponent layer={0} className={styles.calendarContainer}>
                 <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
-                <StyledExpandBtn
-                  className={clsx(styles.expandBtn, styles.topRight)}
-                >
+                <div className={clsx(styles.expandBtn, styles.topRight)}>
                   {worksheetView.view === 'calendar' &&
                   worksheetView.mode !== 'expanded' ? (
                     <FaExpandAlt
@@ -152,8 +136,8 @@ function Worksheet() {
                       }}
                     />
                   )}
-                </StyledExpandBtn>
-              </StyledCalendarContainer>
+                </div>
+              </SurfaceComponent>
             </Col>
             {/* List Component */}
             <Col

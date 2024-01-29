@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import chroma from 'chroma-js';
@@ -152,20 +152,19 @@ export function Popout({
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLDivElement>(false);
-  const theme = useTheme();
   const text = getText(selectedOptions, maxDisplayOptions, displayOptionLabel);
 
   // Popout button styles for open and active states
   const buttonStyles = (open: boolean) => {
     if (open) {
       return {
-        backgroundColor: theme.buttonActive,
-        color: theme.primaryHover,
+        backgroundColor: 'var(--color-button-active)',
+        color: 'var(--color-primary-hover)',
       };
     }
     if (text) {
       return {
-        color: theme.primaryHover,
+        color: 'var(--color-primary-hover)',
       };
     }
     return undefined;

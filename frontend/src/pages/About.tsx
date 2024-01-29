@@ -1,11 +1,10 @@
 import React from 'react';
-
-import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
 import { TextComponent, StyledCard } from '../components/StyledComponents';
+import { useTheme } from '../contexts/themeContext';
 
 // Link Logos
 import github from '../images/link-logos/github.png';
@@ -47,11 +46,6 @@ import hs from '../images/headshots/harshal-sheth.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 
-// Header
-const StyledH1 = styled.h1`
-  transition: color ${({ theme }) => theme.transDur};
-`;
-
 type Person = {
   name: string;
   image: string;
@@ -64,7 +58,7 @@ type Person = {
 };
 
 function About() {
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   const current: Person[] = [
     {
@@ -287,7 +281,7 @@ function About() {
     link && (
       <a href={link}>
         <img
-          src={theme.theme === 'dark' ? imageDark : image}
+          src={theme === 'dark' ? imageDark : image}
           alt={text}
           style={{
             width: '24px',
@@ -317,7 +311,7 @@ function About() {
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <StyledH1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</StyledH1>
+      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</h1>
       <TextComponent type={1}>
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find

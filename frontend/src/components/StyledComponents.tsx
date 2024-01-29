@@ -62,19 +62,6 @@ export const StyledCard = styled(Card)`
     color ${({ theme }) => theme.transDur};
 `;
 
-// Expand buttons in worksheet and worksheet expanded
-export const StyledExpandBtn = styled.div`
-  background-color: ${({ theme }) => theme.multivalue};
-  color: ${({ theme }) => theme.text[1]};
-  position: absolute;
-  top: 0%;
-  z-index: 2;
-  transition:
-    transform 0.05s linear,
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-`;
-
 // Popovers in search results item, prof popover in modal, and worksheet
 // calendar
 export const StyledPopover = styled(Popover)`

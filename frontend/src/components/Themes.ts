@@ -15,7 +15,6 @@ export const lightTheme: DefaultTheme = {
   border: '#ededed', // Used in borders (calendar, and between list items)
   select: '#FFFFFF', // Background color for react-select
   selectHover: 'rgba(70, 143, 242, 0.3)', // Blueish tint to use on hover
-  multivalue: 'hsl(0,0%,90%)', // Multivalue background-color used in react-select
   hidden: '#b9b8b8', // Color to use when course is hidden
   disabled: 'rgb(242, 242, 242)', // Disabled color for react-select
   buttonHover: 'rgb(250, 250, 250)', // Button hover color
@@ -26,7 +25,6 @@ export const lightTheme: DefaultTheme = {
   primary: '#468ff2', // Primary color (blue)
   primaryLight: 'rgba(70, 143, 242, 0.15)', // Primary color (lighter blue)
   primaryHover: '#007bff', // Primary hover color (dark blue)
-  rowOdd: '#f9f9f9', // Odd row background color
   transDur: '0.35s', // Transition duration
 };
 export const darkTheme: DefaultTheme = {
@@ -38,7 +36,6 @@ export const darkTheme: DefaultTheme = {
   border: '#303030', // Used in borders (calendar, and between list items)
   select: '#303030', // Background color for react-select
   selectHover: 'rgba(68, 100, 145, 0.75)', // Blueish tint to use on hover
-  multivalue: '#4d4d4d', // Multivalue background-color used in react-select
   hidden: '#4d4d4d', // Color to use when course is hidden
   disabled: 'rgba(242, 242, 242, 0.1)', // Disabled color for react-select
   buttonHover: 'rgba(255, 255, 255, 0.02)', // Button hover color
@@ -49,6 +46,5 @@ export const darkTheme: DefaultTheme = {
   primary: '#61adff', // Primary color (blue)
   primaryLight: 'rgba(68, 100, 145, 0.25)', // Primary color (lighter blue)
   primaryHover: '#007bff', // Primary hover color (blue)
-  rowOdd: '#202020', // Odd row background color
   transDur: '0.35s', // Transition duration
 };

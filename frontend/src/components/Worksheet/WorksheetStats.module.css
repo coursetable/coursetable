@@ -67,3 +67,7 @@
 .wide {
   flex-grow: 0.9;
 }
+
+.infoIcon {
+  color: var(--color-primary);
+}

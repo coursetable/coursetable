@@ -98,6 +98,7 @@ function ResultsItem({
   course,
   multiSeasons,
   isFirst,
+  isOdd,
   COL_SPACING,
   friends,
   style,
@@ -105,6 +106,7 @@ function ResultsItem({
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
+  readonly isOdd: boolean;
   // This can be more exact, but I'm too lazy to type everything out :)
   readonly COL_SPACING: { [prop: string]: number };
   readonly friends: string[];
@@ -188,6 +190,7 @@ function ResultsItem({
     <StyledSpacer
       className={clsx(
         isFirst && styles.firstSearchResultItem,
+        isOdd ? styles.oddSearchResultItem : styles.evenSearchResultItem,
         course.extra_info !== 'ACTIVE' && styles.cancelledClass,
       )}
       onClick={() => {

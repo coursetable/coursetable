@@ -40,6 +40,10 @@
   filter: brightness(90%);
 }
 
+.stat {
+  color: var(--color-primary);
+}
+
 .feature {
   height: 150px;
   width: 250px;

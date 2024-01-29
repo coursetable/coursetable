@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { useTheme } from '../contexts/themeContext';
 import styles from './Tutorial.module.css';
 import './reactour-override.css';
 
@@ -189,7 +190,7 @@ function Tutorial({
     if (!isTutorialOpen) setCurrentStep(0);
   }, [isTutorialOpen]);
 
-  const globalTheme = useTheme();
+  const { theme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -197,8 +198,8 @@ function Tutorial({
   const helperStyle: React.CSSProperties = useMemo(() => {
     let styles: React.CSSProperties = {
       maxWidth: '432px',
-      backgroundColor: globalTheme.background,
-      color: globalTheme.text[0],
+      backgroundColor: 'var(--color-bg)',
+      color: 'var(--color-text)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
@@ -210,7 +211,7 @@ function Tutorial({
       };
     }
     return styles;
-  }, [globalTheme, shownTutorial]);
+  }, [shownTutorial]);
 
   // Generate react tour steps
   const steps = stepsContent.map(
@@ -229,7 +230,7 @@ function Tutorial({
           {image && (
             <img
               className={styles.stepImage}
-              src={`./images/${image}-${globalTheme.theme}.png`}
+              src={`./images/${image}-${theme}.png`}
               alt={image}
               height="362"
             />
@@ -299,7 +300,7 @@ function Tutorial({
         setIsTutorialOpen(false);
       }}
       startAt={0}
-      accentColor={globalTheme.primaryHover}
+      accentColor="var(--color-primary-hover)"
       rounded={6}
       showCloseButton
       disableDotsNavigation

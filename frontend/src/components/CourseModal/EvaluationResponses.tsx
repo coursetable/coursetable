@@ -23,22 +23,6 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
-// Row for each comment
-const StyledCommentRow = styled(Row)`
-  border-bottom: 1px solid ${({ theme }) => theme.multivalue};
-`;
-
-// Bubble to choose sort order
-const StyledSortOption = styled.span<{ active: boolean }>`
-  background-color: ${({ theme, active }) =>
-    active ? 'rgba(92, 168, 250,0.5)' : theme.border};
-  color: ${({ theme, active }) => (active ? theme.text[0] : theme.text[2])};
-  &:hover {
-    background-color: ${({ theme, active }) =>
-      active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue};
-  }
-`;
-
 /**
  * Displays Evaluation Comments
  * @prop crn - integer that holds current listing's crn
@@ -108,21 +92,18 @@ function EvaluationResponses({
           response.toLowerCase().includes(filter.toLowerCase()),
         )
         .map((response, index) => (
-          <StyledCommentRow
+          <Row
             key={index}
             className={clsx(styles.commentRow, 'm-auto p-2 responses')}
           >
             <TextComponent type={1}>{response}</TextComponent>
-          </StyledCommentRow>
+          </Row>
         ));
       if (filteredResps.length === 0) {
         return [
-          <StyledCommentRow
-            key={0}
-            className={clsx(styles.commentRow, 'm-auto p-2')}
-          >
+          <Row key={0} className={clsx(styles.commentRow, 'm-auto p-2')}>
             <TextComponent type={1}>No matches found.</TextComponent>
-          </StyledCommentRow>,
+          </Row>,
         ];
       }
       return filteredResps;
@@ -163,20 +144,28 @@ function EvaluationResponses({
       >
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sortOptions}>
-          <StyledSortOption
-            className={styles.sortOption}
-            active={sortOrder === 'length'}
+          {/* TODO */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <span
+            className={clsx(
+              styles.sortOption,
+              sortOrder === 'length' && styles.activeSortOption,
+            )}
             onClick={() => setSortOrder('length')}
           >
             original order
-          </StyledSortOption>
-          <StyledSortOption
-            className={styles.sortOption}
-            active={sortOrder === 'original'}
+          </span>
+          {/* TODO */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <span
+            className={clsx(
+              styles.sortOption,
+              sortOrder === 'original' && styles.activeSortOption,
+            )}
             onClick={() => setSortOrder('original')}
           >
             length
-          </StyledSortOption>
+          </span>
         </div>
       </Row>
       <StyledTabs

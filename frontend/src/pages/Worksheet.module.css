@@ -13,13 +13,17 @@
   left: calc(50% - 16px);
 }
 
-.calendarStyleContainer {
+.calendarContainer {
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   height: 86vh;
   position: sticky;
   top: calc(1rem + 56px);
   border-radius: 8px;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
 }
 
 /* DISABLE TRANSITION ANIMATIONS */
@@ -44,6 +48,15 @@
   padding: 3px;
   border-radius: 6px;
   cursor: pointer;
+  background-color: var(--color-select-multivalue);
+  color: var(--color-text-secondary);
+  position: absolute;
+  top: 0%;
+  z-index: 2;
+  transition:
+    transform 0.05s linear,
+    background-color var(--trans-dur),
+    color var(--trans-dur);
 }
 
 .expandIcon {

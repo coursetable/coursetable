@@ -8,16 +8,11 @@ import {
   FcBookmark,
   FcSearch,
 } from 'react-icons/fc';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import { API_ENDPOINT } from '../config';
 import styles from './Landing.module.css';
 import LandingImage from '../images/landing_page.svg';
-
-const StyledStat = styled.span`
-  color: ${({ theme }) => theme.primary};
-`;
 
 /**
  * Renders the Landing page for when users aren't logged in
@@ -38,17 +33,17 @@ function Landing() {
                   <Row className="pb-2 m-auto">
                     <span className={clsx(styles.featureText, 'd-inline')}>
                       <FcSearch className="mr-2 my-auto" size={20} />
-                      Browse our catalog of <StyledStat>
-                        80,000+
-                      </StyledStat>{' '}
-                      classes
+                      Browse our catalog of{' '}
+                      <span className={styles.stat}>80,000+</span> classes
                     </span>
                   </Row>
                   <Row className="pb-2 m-auto">
                     <span className={styles.featureText}>
                       <FcComboChart className="mr-2 my-auto" size={20} />
-                      Read from <StyledStat>600,000+</StyledStat> student
-                      evaluation comments
+                      Read from <span className={styles.stat}>
+                        600,000+
+                      </span>{' '}
+                      student evaluation comments
                     </span>
                   </Row>
                   <Row className="pb-2 m-auto">

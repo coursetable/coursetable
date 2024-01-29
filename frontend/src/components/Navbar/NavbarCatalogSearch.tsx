@@ -3,7 +3,7 @@ import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import clsx from 'clsx';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
@@ -148,16 +148,11 @@ export function NavbarCatalogSearch() {
   );
   const [numRangeValue, setNumRangeValue] = useState(numBounds.value);
 
-  const globalTheme = useTheme();
-
   // Active styles for range filters
-  const activeStyle = useCallback(
-    (active: boolean) => {
-      if (active) return { color: globalTheme.primaryHover };
-      return undefined;
-    },
-    [globalTheme],
-  );
+  const activeStyle = useCallback((active: boolean) => {
+    if (active) return { color: 'var(--color-primary-hover)' };
+    return undefined;
+  }, []);
 
   // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
@@ -188,12 +183,12 @@ export function NavbarCatalogSearch() {
   const searchbarStyle = useMemo(() => {
     if (searchText.value) {
       return {
-        backgroundColor: globalTheme.selectHover,
-        borderColor: globalTheme.primary,
+        backgroundColor: 'var(--color-select-hover)',
+        borderColor: 'var(--color-primary)',
       };
     }
     return undefined;
-  }, [searchText, globalTheme]);
+  }, [searchText]);
 
   // Prevent overlap with tooltips
   const menuPortalTarget = document.querySelector<HTMLElement>('#portal');
