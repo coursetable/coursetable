@@ -3,14 +3,15 @@ import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
-import styled from 'styled-components';
+import { useTheme as useSCTheme } from 'styled-components';
 import clsx from 'clsx';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
 import chroma from 'chroma-js';
 
-import { SmallTextComponent, StyledInput } from '../StyledComponents';
+import { TextComponent, Input } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { useTheme } from '../../contexts/themeContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import Toggle from '../Search/Toggle';
@@ -37,24 +38,14 @@ import {
 } from '../../utilities/course';
 import styles from './NavbarCatalogSearch.module.css';
 
-// Clear search bar button
-const CloseIcon = styled(IoClose)`
-  color: ${({ theme }) => theme.iconFocus};
-  transition: color ${({ theme }) => theme.transDur};
-  &:hover {
-    color: ${({ theme }) =>
-      theme.theme === 'light'
-        ? chroma(theme.iconFocus).darken().css()
-        : chroma(theme.iconFocus).brighten().css()};
-  }
-`;
-
 /**
  * Catalog search form for the desktop in the navbar
  */
 export function NavbarCatalogSearch() {
   // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  const globalTheme = useSCTheme();
+  const { theme } = useTheme();
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
 
@@ -188,7 +179,7 @@ export function NavbarCatalogSearch() {
           <div className={styles.searchWrapper}>
             {/* Search Bar */}
             <InputGroup className="h-100">
-              <StyledInput
+              <Input
                 className={styles.searchBar}
                 type="text"
                 value={searchText.value}
@@ -202,8 +193,16 @@ export function NavbarCatalogSearch() {
               />
             </InputGroup>
             {searchText.value && (
-              <CloseIcon
+              <IoClose
                 className={styles.searchTextClear}
+                style={{
+                  // @ts-expect-error: custom CSS variable
+                  // TODO: this should be a theme variable
+                  '--hover-color':
+                    theme === 'light'
+                      ? chroma(globalTheme.iconFocus).darken().css()
+                      : chroma(globalTheme.iconFocus).brighten().css(),
+                }}
                 size={18}
                 onClick={() => {
                   searchText.reset();
@@ -213,8 +212,9 @@ export function NavbarCatalogSearch() {
             )}
           </div>
           {/* Number of results shown & seach speed text */}
-          <SmallTextComponent
-            type={2}
+          <TextComponent
+            type="tertiary"
+            small
             className="ml-2 mb-1 d-flex align-items-end"
             style={{ whiteSpace: 'pre-line' }}
           >
@@ -223,7 +223,7 @@ export function NavbarCatalogSearch() {
               : `Showing ${searchData.length} results${
                   !isTablet ? `${speed.length > 20 ? '\n' : ' '}(${speed})` : ''
                 }`}
-          </SmallTextComponent>
+          </TextComponent>
         </Row>
         {/* Bottom row */}
         <Row className={clsx(styles.row, 'align-items-center')}>

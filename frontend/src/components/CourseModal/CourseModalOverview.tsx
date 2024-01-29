@@ -21,10 +21,10 @@ import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import {
   TextComponent,
-  StyledPopover,
-  StyledRating,
-  StyledLink,
-} from '../StyledComponents';
+  InfoPopover,
+  RatingBubble,
+  LinkLikeText,
+} from '../Typography';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import styles from './CourseModalOverview.module.css';
 import CourseModalLoading from './CourseModalLoading';
@@ -61,11 +61,11 @@ type ProfInfo = {
 // TODO: merge it with one of the many types representing "a course"
 export type CourseOffering = {
   // Course rating
-  rating: number;
+  rating: number | null;
   // Workload rating
-  workload: number;
+  workload: number | null;
   // Professor rating
-  professor_rating: number;
+  professor_rating: number | null;
   // Season code
   season_code: Season;
   // Professors
@@ -116,7 +116,7 @@ export type ComputedListingInfo = Omit<
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
   (props) => (
-    <StyledPopover {...props} id="title-popover" className="d-none d-md-block">
+    <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
       <Popover.Title>
         <Row className="mx-auto">
           {/* Professor Name */}
@@ -128,7 +128,7 @@ const profInfoPopover =
             {profInfo?.email ? (
               <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
             ) : (
-              <TextComponent type={1}>N/A</TextComponent>
+              <TextComponent type="secondary">N/A</TextComponent>
             )}
           </small>
         </Row>
@@ -178,7 +178,7 @@ const profInfoPopover =
           </Col>
         </Row>
       </Popover.Content>
-    </StyledPopover>
+    </InfoPopover>
   );
 
 /**
@@ -346,14 +346,14 @@ function CourseModalOverview({
       courseOfferings.push({
         // Course rating
         rating: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_rating || -1
-          : -1,
+          ? season.course.evaluation_statistic.avg_rating || null
+          : null,
         // Workload rating
         workload: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_workload || -1
-          : -1,
+          ? season.course.evaluation_statistic.avg_workload || null
+          : null,
         // Professor rating
-        professor_rating: averageProfessorRating || -1,
+        professor_rating: averageProfessorRating || null,
         // Season code
         season_code: season.season_code,
         // Professors
@@ -396,7 +396,7 @@ function CourseModalOverview({
       const isBothOverlap =
         isCourseOverlap &&
         overlappingProfs(offering.professor) === listing.professor_names.length;
-      const hasEvals = offering.rating !== -1;
+      const hasEvals = offering.rating !== null;
       const type = isBothOverlap
         ? 'both'
         : isCourseOverlap
@@ -461,41 +461,41 @@ function CourseModalOverview({
             xs={2}
             className="px-1 ml-0 d-flex justify-content-center text-center"
           >
-            <StyledRating
+            <RatingBubble
               rating={offering.rating}
-              colormap={ratingColormap}
+              colorMap={ratingColormap}
               className={styles.ratingCell}
             >
-              {offering.rating !== -1 ? offering.rating.toFixed(1) : 'N/A'}
-            </StyledRating>
+              {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
+            </RatingBubble>
           </Col>
           {/* Professor Rating */}
           <Col
             xs={2}
             className="px-1 ml-0 d-flex justify-content-center text-center"
           >
-            <StyledRating
+            <RatingBubble
               rating={offering.professor_rating}
-              colormap={ratingColormap}
+              colorMap={ratingColormap}
               className={styles.ratingCell}
             >
-              {offering.professor_rating !== -1
+              {offering.professor_rating
                 ? offering.professor_rating.toFixed(1)
                 : 'N/A'}
-            </StyledRating>
+            </RatingBubble>
           </Col>
           {/* Workload Rating */}
           <Col
             xs={2}
             className="px-1 ml-0 d-flex justify-content-center text-center"
           >
-            <StyledRating
+            <RatingBubble
               rating={offering.workload}
-              colormap={workloadColormap}
+              colorMap={workloadColormap}
               className={styles.ratingCell}
             >
-              {offering.workload !== -1 ? offering.workload.toFixed(1) : 'N/A'}
-            </StyledRating>
+              {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
+            </RatingBubble>
           </Col>
         </Row>
       );
@@ -546,7 +546,7 @@ function CourseModalOverview({
           {/* Read More arrow button */}
           {clamped && (
             <Row className="mx-auto">
-              <StyledLink
+              <LinkLikeText
                 className="mx-auto"
                 onClick={() => {
                   setLines(100);
@@ -554,7 +554,7 @@ function CourseModalOverview({
                 title="Read More"
               >
                 <IoIosArrowDown size={20} />
-              </StyledLink>
+              </LinkLikeText>
             </Row>
           )}
           {/* Course Requirements */}
@@ -649,7 +649,7 @@ function CourseModalOverview({
                         placement="right"
                         overlay={profInfoPopover(prof, profInfo.get(prof))}
                       >
-                        <StyledLink>{prof}</StyledLink>
+                        <LinkLikeText>{prof}</LinkLikeText>
                       </OverlayTrigger>
                     </React.Fragment>
                   ))

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import ResultsHeaders from './ResultsHeaders';
@@ -21,13 +20,6 @@ import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
-
-// Search results
-const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
-  overflow: hidden;
-  ${({ numCourses, isMobile }) =>
-    numCourses > 0 && numCourses < 20 && !isMobile ? 'height: 80vh;' : ''}
-`;
 
 // Function to calculate column width within a max and min
 const getColWidth = (calculated: number, min = 0, max = 1000000) =>
@@ -249,13 +241,18 @@ function Results({
         />
       )}
 
-      <SearchResults
-        className={!isListView ? 'px-1 pt-3' : ''}
-        numCourses={data.length}
-        isMobile={isMobile}
+      <div
+        className={clsx(
+          !isListView && 'px-1 pt-3',
+          styles.searchResults,
+          data.length > 0 &&
+            data.length < 20 &&
+            isListView &&
+            styles.searchResultsSmall,
+        )}
       >
         {resultsListing}
-      </SearchResults>
+      </div>
     </div>
   );
 }

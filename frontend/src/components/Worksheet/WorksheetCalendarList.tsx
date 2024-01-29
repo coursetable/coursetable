@@ -12,7 +12,7 @@ import clsx from 'clsx';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { TbCalendarDown } from 'react-icons/tb';
 
-import { SurfaceComponent } from '../StyledComponents';
+import { SurfaceComponent } from '../Typography';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import WorksheetStats from './WorksheetStats';
 import NoCourses from '../Search/NoCourses';
@@ -53,7 +53,7 @@ function WorksheetCalendarList() {
     <>
       <WorksheetStats />
       <div className={clsx(styles.spacer, 'pt-3')}>
-        <SurfaceComponent layer={1} className={clsx(styles.container, 'mx-1')}>
+        <SurfaceComponent elevated className={clsx(styles.container, 'mx-1')}>
           <div className="shadow-sm p-2">
             <ButtonGroup className="w-100">
               <OverlayTrigger
@@ -109,7 +109,7 @@ function WorksheetCalendarList() {
         </SurfaceComponent>
       </div>
       {/* List of courses for this season */}
-      <SurfaceComponent layer={0} className={clsx(styles.courseList, 'mx-1')}>
+      <SurfaceComponent className={clsx(styles.courseList, 'mx-1')}>
         {items.length > 0 ? (
           // There are courses for this season
           <ListGroup variant="flush">{items}</ListGroup>

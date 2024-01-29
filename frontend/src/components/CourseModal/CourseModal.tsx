@@ -12,9 +12,8 @@ import type {
   ComputedListingInfo,
 } from './CourseModalOverview';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './CourseModal.module.css';
-import { TextComponent, StyledLink } from '../StyledComponents';
+import { TextComponent, LinkLikeText } from '../Typography';
 import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
@@ -75,8 +74,6 @@ function CourseModal() {
     ? courses[seasonCode]?.get(Number(crn) as Crn)
     : undefined;
 
-  // Fetch current device
-  const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains
   // [season code, listing info] for evaluations
   const [view, setView] = useState<'overview' | [Season, CourseOffering]>(
@@ -122,7 +119,7 @@ function CourseModal() {
               {view === 'overview' ? (
                 // Viewing Course Overview
                 <div>
-                  <Row className="m-auto modal-top">
+                  <Row className={clsx('m-auto', styles.modalTop)}>
                     <Col xs="auto" className="my-auto p-0">
                       {/* Show worksheet add/remove button */}
                       {listings.length === 1 ? (
@@ -143,7 +140,7 @@ function CourseModal() {
                       ) : (
                         // If this is the overview of some other eval course,
                         // show back button
-                        <StyledLink
+                        <LinkLikeText
                           onClick={() => {
                             // Go back to the evaluations of this course
                             setView([curListing.season_code, curListing.eval]);
@@ -151,18 +148,14 @@ function CourseModal() {
                           className={styles.backArrow}
                         >
                           <IoMdArrowRoundBack size={30} />
-                        </StyledLink>
+                        </LinkLikeText>
                       )}
                     </Col>
                     <Col className="p-0 ml-3">
                       {/* Course Title */}
                       <Modal.Title>
                         <Row className="mx-auto mt-1 align-items-center">
-                          <span
-                            className={
-                              isMobile ? 'modal-title-mobile' : 'modal-title'
-                            }
-                          >
+                          <span className={styles.modalTitle}>
                             {curListing.extra_info !== 'ACTIVE' ? (
                               <span className={styles.cancelledText}>
                                 {extraInfoMap[curListing.extra_info]}{' '}
@@ -170,9 +163,9 @@ function CourseModal() {
                             ) : (
                               ''
                             )}
-                            {curListing.title}
-                            <TextComponent type={2}>
-                              {` (${toSeasonString(curListing.season_code)})`}
+                            {curListing.title}{' '}
+                            <TextComponent type="tertiary">
+                              ({toSeasonString(curListing.season_code)})
                             </TextComponent>
                           </span>
                         </Row>
@@ -181,7 +174,7 @@ function CourseModal() {
                       <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
                         {/* Course Codes */}
                         <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
-                          <TextComponent type={2}>
+                          <TextComponent type="tertiary">
                             {curListing.all_course_codes.join(' • ')}
                           </TextComponent>
                         </p>
@@ -202,7 +195,7 @@ function CourseModal() {
                   <Row className="m-auto">
                     <Col xs="auto" className="my-auto p-0">
                       {/* Back to overview arrow */}
-                      <StyledLink
+                      <LinkLikeText
                         onClick={() => {
                           if (
                             listings.length > 1 &&
@@ -217,20 +210,16 @@ function CourseModal() {
                         className={styles.backArrow}
                       >
                         <IoMdArrowRoundBack size={30} />
-                      </StyledLink>
+                      </LinkLikeText>
                     </Col>
                     <Col className="p-0 ml-3">
                       {/* Course Title */}
                       <Modal.Title>
                         <Row className="mx-auto mt-1 align-items-center">
-                          <span
-                            className={
-                              isMobile ? 'modal-title-mobile' : 'modal-title'
-                            }
-                          >
-                            {`${view[1].title} `}
-                            <TextComponent type={2}>
-                              {` (${toSeasonString(view[0])})`}
+                          <span className={styles.modalTitle}>
+                            {view[1].title}{' '}
+                            <TextComponent type="tertiary">
+                              ({toSeasonString(view[0])})
                             </TextComponent>
                             {/* TODO */}
                             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
@@ -255,7 +244,7 @@ function CourseModal() {
                       <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
                         {/* Course Code */}
                         <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
-                          <TextComponent type={2}>
+                          <TextComponent type="tertiary">
                             {view[1].course_code}
                           </TextComponent>
                         </p>
@@ -276,10 +265,9 @@ function CourseModal() {
                                 'pl-2',
                             )}
                           >
-                            <TextComponent type={2}>
-                              {`| ${view[1].professor.join(', ')} | Section ${
-                                view[1].section
-                              }`}
+                            <TextComponent type="tertiary">
+                              | {view[1].professor.join(', ')} | Section{' '}
+                              {view[1].section}
                             </TextComponent>
                           </p>
                         )}

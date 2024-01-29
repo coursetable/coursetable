@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
 import type { Crn } from '../../utilities/common';
-import { StyledInput, TextComponent } from '../StyledComponents';
+import { Input, TextComponent } from '../Typography';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 /**
@@ -80,13 +80,13 @@ function EvaluationResponses({
             key={index}
             className={clsx(styles.commentRow, 'm-auto p-2 responses')}
           >
-            <TextComponent type={1}>{response}</TextComponent>
+            <TextComponent type="secondary">{response}</TextComponent>
           </Row>
         ));
       if (filteredResps.length === 0) {
         return [
           <Row key={0} className={clsx(styles.commentRow, 'm-auto p-2')}>
-            <TextComponent type={1}>No matches found.</TextComponent>
+            <TextComponent type="secondary">No matches found.</TextComponent>
           </Row>,
         ];
       }
@@ -108,7 +108,7 @@ function EvaluationResponses({
 
   return (
     <div>
-      <StyledInput
+      <Input
         id="filter-input"
         type="text"
         placeholder="Search evaluations..."
@@ -167,7 +167,7 @@ function EvaluationResponses({
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">
             <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent type={0}>
+              <TextComponent>
                 Would you recommend this course to another student? Please
                 explain.
               </TextComponent>
@@ -179,7 +179,7 @@ function EvaluationResponses({
         {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
             <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent type={0}>
+              <TextComponent>
                 What knowledge, skills, and insights did you develop by taking
                 this course?
               </TextComponent>
@@ -191,7 +191,7 @@ function EvaluationResponses({
         {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
             <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent type={0}>
+              <TextComponent>
                 What are the strengths and weaknesses of this course and how
                 could it be improved?
               </TextComponent>
@@ -203,7 +203,7 @@ function EvaluationResponses({
         {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
             <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent type={0}>
+              <TextComponent>
                 How would you summarize this course? Would you recommend it to
                 another student? Why or why not?
               </TextComponent>

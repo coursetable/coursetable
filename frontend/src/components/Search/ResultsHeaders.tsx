@@ -4,7 +4,7 @@ import { FaBars, FaTh } from 'react-icons/fa';
 import clsx from 'clsx';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { SurfaceComponent } from '../StyledComponents';
+import { SurfaceComponent } from '../Typography';
 
 import { sortByOptions } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
@@ -83,7 +83,6 @@ function ResultsHeaders(
   return (
     <div className={styles.spacer} style={{ top: navbarHeight }}>
       <SurfaceComponent
-        layer={0}
         id="results_container"
         className={clsx('px-0 mx-0', styles.container)}
       >

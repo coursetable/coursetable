@@ -2,7 +2,7 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import clsx from 'clsx';
 import styles from './RatingsGraph.module.css';
-import { TextComponent } from '../StyledComponents';
+import { TextComponent } from '../Typography';
 
 /**
  * Displays Evaluation Graphs
@@ -42,7 +42,7 @@ function RatingsGraph({
       <div key={labels[indx]} className={styles.bar}>
         {/* Number of votes for each rating */}
         <p className={clsx(styles.value, 'm-0')}>
-          <TextComponent type={1}>{rating}</TextComponent>
+          <TextComponent type="secondary">{rating}</TextComponent>
         </p>
         {/* Bar */}
         <div

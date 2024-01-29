@@ -7,12 +7,7 @@ import styles from './MobileSearchForm.module.css';
 import Toggle from './Toggle';
 import CustomSelect from './CustomSelect';
 import SortBySelect from './SortBySelect';
-import {
-  SurfaceComponent,
-  StyledInput,
-  StyledHr,
-  TextComponent,
-} from '../StyledComponents';
+import { SurfaceComponent, Input, Hr, TextComponent } from '../Typography';
 import type { Season } from '../../utilities/common';
 import {
   useSearch,
@@ -55,10 +50,7 @@ export default function MobileSearchForm({
 
   return (
     <Col className={clsx('p-3', styles.searchColMobile)}>
-      <SurfaceComponent
-        layer={0}
-        className={clsx('ml-1', styles.searchContainer)}
-      >
+      <SurfaceComponent className={clsx('ml-1', styles.searchContainer)}>
         <Form className="px-0" onSubmit={onSubmit}>
           <Row className="mx-auto pt-4 px-4">
             {/* Reset Filters Button */}
@@ -77,7 +69,7 @@ export default function MobileSearchForm({
             </small>
             {/* Number of results shown text */}
             <small className={clsx(styles.numResults, 'ml-auto')}>
-              <TextComponent type={2}>
+              <TextComponent type="tertiary">
                 {coursesLoading
                   ? 'Searching ...'
                   : `Showing ${searchData.length} results`}
@@ -88,7 +80,7 @@ export default function MobileSearchForm({
           <Row className="mx-auto pt-1 pb-2 px-4">
             <div className={styles.searchBar}>
               <InputGroup className={styles.searchInput}>
-                <StyledInput
+                <Input
                   type="text"
                   value={searchText.value}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -103,7 +95,7 @@ export default function MobileSearchForm({
           <Row className="mx-auto py-0 px-4">
             <SortBySelect />
           </Row>
-          <StyledHr />
+          <Hr />
           <Row className={clsx('mx-auto py-0 px-4', styles.multiSelects)}>
             {/* Seasons Multi-Select */}
             <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
@@ -164,7 +156,7 @@ export default function MobileSearchForm({
               />
             </div>
           </Row>
-          <StyledHr />
+          <Hr />
           <Row className={clsx('mx-auto pt-0 pb-0 px-2', styles.sliders)}>
             {/* Class Rating Slider */}
             <Col>
@@ -254,7 +246,7 @@ export default function MobileSearchForm({
               </div>
             </Col>
           </Row>
-          <StyledHr className="mb-0" />
+          <Hr className="mb-0" />
           <Row
             className={clsx(
               'mx-auto pt-1 px-4 justify-content-left',

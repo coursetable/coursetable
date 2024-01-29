@@ -9,6 +9,6 @@
   background-color: var(--color-button-active);
 }
 
-.buttonActive {
+.button.buttonActive {
   background-color: var(--color-select-hover);
 }

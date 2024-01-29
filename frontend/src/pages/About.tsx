@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
-import { TextComponent } from '../components/StyledComponents';
+import { TextComponent } from '../components/Typography';
 import { useTheme } from '../contexts/themeContext';
 
 // Link Logos
@@ -298,7 +298,7 @@ function About() {
         <Card.Body className="p-3">
           <Card.Title className="mb-1">{person.name}</Card.Title>
           <Card.Text>
-            <TextComponent type={1}>{person.role}</TextComponent>
+            <TextComponent type="secondary">{person.role}</TextComponent>
             <br />
             {logoLink(person.links?.github, github, githubDark, 'github')}
             {logoLink(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
@@ -312,7 +312,7 @@ function About() {
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
       <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</h1>
-      <TextComponent type={1}>
+      <TextComponent type="secondary">
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find
           the courses they want, bringing together course information, student

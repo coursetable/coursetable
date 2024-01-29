@@ -14,7 +14,7 @@ import {
   useComponentVisible,
 } from '../../utilities/display';
 import styles from './Navbar.module.css';
-import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
+import { SurfaceComponent, TextComponent } from '../Typography';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 
 import { API_ENDPOINT } from '../../config';
@@ -129,7 +129,7 @@ export default function CourseTableNavbar({
 
   return (
     <div className={styles.stickyNavbar}>
-      <SurfaceComponent layer={0}>
+      <SurfaceComponent>
         <Container fluid className="p-0">
           <Navbar
             expanded={navExpanded}
@@ -281,10 +281,14 @@ export default function CourseTableNavbar({
               </Navbar.Collapse>
               {/* Last updated ago text for desktop */}
               {showSearch && page === 'catalog' && (
-                <SmallTextComponent type={2} className="mb-2 text-right">
+                <TextComponent
+                  type="tertiary"
+                  small
+                  className="mb-2 text-right"
+                >
                   <MdUpdate className="mr-1" />
                   Updated {lastUpdated} ago
-                </SmallTextComponent>
+                </TextComponent>
               )}
             </NavCollapseWrapper>
           </Navbar>

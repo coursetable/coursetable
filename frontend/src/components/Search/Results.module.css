@@ -10,3 +10,11 @@
   width: 18px;
   display: block;
 }
+
+.searchResults {
+  overflow: hidden;
+}
+
+.searchResultsSmall {
+  height: 80vh;
+}

@@ -18,11 +18,7 @@ import {
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import {
-  TextComponent,
-  StyledPopover,
-  StyledRating,
-} from '../StyledComponents';
+import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
 import styles from './ResultsItem.module.css';
 import {
@@ -217,7 +213,7 @@ function ResultsItem({
             <span>{subjectCode}</span>
           </OverlayTrigger>{' '}
           {courseCode}
-          <TextComponent type={1}>
+          <TextComponent type="secondary">
             {course.section
               ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
               : ''}
@@ -226,7 +222,7 @@ function ResultsItem({
         <OverlayTrigger
           placement="right"
           overlay={(props) => (
-            <StyledPopover {...props} id="title-popover">
+            <InfoPopover {...props} id="title-popover">
               <Popover.Title>
                 <strong>
                   {course.extra_info !== 'ACTIVE' ? (
@@ -244,7 +240,7 @@ function ResultsItem({
                   {truncatedText(course.requirements, 250, '')}
                 </div>
               </Popover.Content>
-            </StyledPopover>
+            </InfoPopover>
           )}
         >
           {/* Course Title */}
@@ -254,33 +250,33 @@ function ResultsItem({
         </OverlayTrigger>
         <div className="d-flex">
           {/* Overall Rating */}
-          <StyledRating
+          <RatingBubble
             className={styles.ratingCell}
             rating={getOverallRatings(course, 'stat')}
-            colormap={ratingColormap}
+            colorMap={ratingColormap}
             style={rateOverallStyle}
           >
             {getOverallRatings(course, 'display')}
-          </StyledRating>
+          </RatingBubble>
           {/* Workload Rating */}
-          <StyledRating
+          <RatingBubble
             className={styles.ratingCell}
             rating={getWorkloadRatings(course, 'stat')}
-            colormap={workloadColormap}
+            colorMap={workloadColormap}
             style={rateWorkloadStyle}
           >
             {getWorkloadRatings(course, 'display')}
-          </StyledRating>
+          </RatingBubble>
           {/* Professor Rating & Course Professors */}
           <div style={profStyle} className="d-flex align-items-center">
             <div style={rateProfStyle} className="mr-2 h-100">
-              <StyledRating
+              <RatingBubble
                 className={styles.ratingCell}
                 rating={getProfessorRatings(course, 'stat')}
-                colormap={ratingColormap}
+                colorMap={ratingColormap}
               >
                 {getProfessorRatings(course, 'display')}
-              </StyledRating>
+              </RatingBubble>
             </div>
             <div className={styles.ellipsisText}>
               {course.professor_names.length === 0

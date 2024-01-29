@@ -20,7 +20,7 @@ import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
-import { TextComponent } from '../StyledComponents';
+import { TextComponent } from '../Typography';
 import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
@@ -32,18 +32,18 @@ import SkillBadge from '../SkillBadge';
 
 function RatingCell({
   rating,
-  colormap,
+  colorMap,
   children,
 }: {
   readonly rating: number | null;
-  readonly colormap: chroma.Scale;
+  readonly colorMap: chroma.Scale;
   readonly children?: React.ReactNode;
 }) {
   return (
     <div
       className={clsx(styles.rating, 'mr-1')}
       style={{
-        color: rating ? colormap(rating).darken().saturate().css() : '#cccccc',
+        color: rating ? colorMap(rating).darken().saturate().css() : '#cccccc',
       }}
     >
       {children}
@@ -194,7 +194,7 @@ function ResultsGridItem({
             {/* Course Professors */}
             <Row className="m-auto">
               <TextComponent
-                type={1}
+                type="secondary"
                 className={clsx(styles.oneLine, styles.professors)}
               >
                 {course.professor_names.length > 0
@@ -205,7 +205,7 @@ function ResultsGridItem({
             {/* Course Times */}
             <Row className="m-auto">
               <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type={1}>
+                <TextComponent type="secondary">
                   {course.times_summary === 'TBA'
                     ? 'Times: TBA'
                     : course.times_summary}
@@ -215,7 +215,7 @@ function ResultsGridItem({
             {/* Course Location */}
             <Row className="m-auto">
               <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type={1}>
+                <TextComponent type="secondary">
                   {course.locations_summary === 'TBA'
                     ? 'Location: TBA'
                     : course.locations_summary}
@@ -252,7 +252,7 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <RatingCell
                     rating={getOverallRatings(course, 'stat')}
-                    colormap={ratingColormap}
+                    colorMap={ratingColormap}
                   >
                     {getOverallRatings(course, 'display')}
                   </RatingCell>
@@ -273,7 +273,7 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <RatingCell
                     rating={getProfessorRatings(course, 'stat')}
-                    colormap={ratingColormap}
+                    colorMap={ratingColormap}
                   >
                     {getProfessorRatings(course, 'display')}
                   </RatingCell>
@@ -294,7 +294,7 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <RatingCell
                     rating={getWorkloadRatings(course, 'stat')}
-                    colormap={workloadColormap}
+                    colorMap={workloadColormap}
                   >
                     {getWorkloadRatings(course, 'display')}
                   </RatingCell>

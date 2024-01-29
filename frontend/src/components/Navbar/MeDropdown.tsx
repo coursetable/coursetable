@@ -6,11 +6,7 @@ import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
 import { logout, scrollToTop } from '../../utilities/display';
-import {
-  SurfaceComponent,
-  TextComponent,
-  StyledHoverText,
-} from '../StyledComponents';
+import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 
@@ -34,7 +30,7 @@ function MeDropdown({
 
   return (
     <SurfaceComponent
-      layer={1}
+      elevated
       className={styles.collapseContainer}
       onClick={() => {
         setIsComponentVisible(true);
@@ -54,13 +50,13 @@ function MeDropdown({
                     size={20}
                     style={{ paddingLeft: '2px' }}
                   />
-                  <TextComponent type={1}>
+                  <TextComponent type="secondary">
                     <NavLink
                       to="/about"
                       className={styles.collapseText}
                       onClick={scrollToTop}
                     >
-                      <StyledHoverText>About</StyledHoverText>
+                      <HoverText>About</HoverText>
                     </NavLink>
                   </TextComponent>
                 </Row>
@@ -71,13 +67,13 @@ function MeDropdown({
                     size={20}
                     style={{ paddingLeft: '2px' }}
                   />
-                  <TextComponent type={1}>
+                  <TextComponent type="secondary">
                     <NavLink
                       to="/faq"
                       className={styles.collapseText}
                       onClick={scrollToTop}
                     >
-                      <StyledHoverText>FAQ</StyledHoverText>
+                      <HoverText>FAQ</HoverText>
                     </NavLink>
                   </TextComponent>
                 </Row>
@@ -90,7 +86,7 @@ function MeDropdown({
                 size={20}
                 style={{ paddingLeft: '2px' }}
               />
-              <TextComponent type={1}>
+              <TextComponent type="secondary">
                 <a
                   href="https://feedback.coursetable.com/"
                   target="_blank"
@@ -98,7 +94,7 @@ function MeDropdown({
                   className={styles.collapseText}
                   onClick={scrollToTop}
                 >
-                  <StyledHoverText>Feedback</StyledHoverText>
+                  <HoverText>Feedback</HoverText>
                 </a>
               </TextComponent>
             </Row>
@@ -110,7 +106,7 @@ function MeDropdown({
                   size={20}
                   style={{ paddingLeft: '2px' }}
                 />
-                <TextComponent type={1}>
+                <TextComponent type="secondary">
                   <NavLink
                     to="/catalog"
                     className={styles.collapseText}
@@ -121,7 +117,7 @@ function MeDropdown({
                       setShownTutorial(false);
                     }}
                   >
-                    <StyledHoverText>Tutorial</StyledHoverText>
+                    <HoverText>Tutorial</HoverText>
                   </NavLink>
                 </TextComponent>
               </Row>
@@ -136,11 +132,11 @@ function MeDropdown({
                   style={{ paddingLeft: '2px' }}
                 />
                 <TextComponent
-                  type={1}
+                  type="secondary"
                   onClick={logout}
                   className={styles.collapseText}
                 >
-                  <StyledHoverText>Sign Out</StyledHoverText>
+                  <HoverText>Sign Out</HoverText>
                 </TextComponent>
               </Row>
             ) : (
@@ -155,8 +151,8 @@ function MeDropdown({
                   href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
                   className={styles.collapseText}
                 >
-                  <TextComponent type={1}>
-                    <StyledHoverText>Sign In</StyledHoverText>
+                  <TextComponent type="secondary">
+                    <HoverText>Sign In</HoverText>
                   </TextComponent>
                 </a>
               </Row>
