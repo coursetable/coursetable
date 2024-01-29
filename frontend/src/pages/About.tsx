@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
-import { TextComponent, StyledCard } from '../components/StyledComponents';
+import { TextComponent } from '../components/StyledComponents';
 import { useTheme } from '../contexts/themeContext';
 
 // Link Logos
@@ -293,7 +293,7 @@ function About() {
 
   const createCards = (person: Person, idx: number) => (
     <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-      <StyledCard style={{ height: '100%' }}>
+      <Card className={styles.card} style={{ height: '100%' }}>
         <Card.Img variant="top" src={person.image} alt={person.name} />
         <Card.Body className="p-3">
           <Card.Title className="mb-1">{person.name}</Card.Title>
@@ -305,7 +305,7 @@ function About() {
             {logoLink(person.links?.website, web, webDark, 'website')}
           </Card.Text>
         </Card.Body>
-      </StyledCard>
+      </Card>
     </div>
   );
 

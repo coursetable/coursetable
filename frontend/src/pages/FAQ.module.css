@@ -31,6 +31,14 @@
 .card {
   background-color: transparent;
   border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  transition: border-color var(--trans-dur);
+}
+
+.card :global(.active) {
+  border-bottom: 1px solid var(--color-border) !important;
+  color: var(--color-primary);
+  transition: border-color var(--trans-dur);
 }
 
 @media (max-width: 768px) {

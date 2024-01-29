@@ -3,6 +3,11 @@
   position: sticky;
   top: 56px;
   z-index: 2;
+  background-color: var(--color-bg);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
 }
 
 .container {
@@ -13,6 +18,10 @@
 
 .icon {
   transition: transform 0.3s !important;
+}
+
+.calendarIcon {
+  color: var(--color-text);
 }
 
 .button {
@@ -26,14 +35,46 @@
   align-items: center;
   user-select: none;
   margin-bottom: 5px;
+
+  background-color: var(--color-select);
+  color: var(--color-text);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.button:active {
+  background-color: var(--color-button-active) !important;
 }
 
 .button:disabled {
   background-color: transparent;
+  color: var(--color-text-tertiary) !important;
 }
 
 .button:hover {
+  background-color: var(--color-button-active) !important;
+  color: var(--color-text) !important;
   border: 2px solid hsl(0, 0%, 70%);
+}
+
+.button:focus {
+  background-color: var(--color-select);
+}
+
+.button:global(.form-control):focus {
+  color: var(--color-text);
+}
+
+.button :global(.dropdown-menu),
+.button :global(.dropdown-item) {
+  color: var(--color-text);
+  background-color: var(--color-surface-elevated);
+}
+
+.button :global(.dropdown-item):hover {
+  background-color: var(--color-select-hover);
 }
 
 .button:hover .icon {

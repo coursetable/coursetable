@@ -14,16 +14,7 @@ import { toSeasonString } from '../../utilities/course';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import type { NetId, Season } from '../../utilities/common';
-
-// Row in navbar search
-const StyledRow = styled(Row)`
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-// Filter group wrapper
-const FilterGroup = styled.div``;
+import styles from './NavbarWorksheetSearch.module.css';
 
 // Toggle button group
 // Do not pass isTablet prop to ToggleButtonGroup
@@ -185,8 +176,8 @@ export function NavbarWorksheetSearch() {
     <>
       {/* Filters Form */}
       <Form className="px-0" data-tutorial="">
-        <StyledRow>
-          <FilterGroup className="d-flex align-items-center">
+        <Row className={styles.row}>
+          <div className="d-flex align-items-center">
             {/* Worksheet View Toggle */}
             <StyledToggleButtonGroup
               name="worksheet-view-toggle"
@@ -358,8 +349,8 @@ export function NavbarWorksheetSearch() {
                 isDisabled={false}
               />
             </Popout>
-          </FilterGroup>
-        </StyledRow>
+          </div>
+        </Row>
       </Form>
     </>
   );

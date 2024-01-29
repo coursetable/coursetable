@@ -1,17 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 import clsx from 'clsx';
 import { FaRegMoon } from 'react-icons/fa';
 import { ImSun } from 'react-icons/im';
 import { useTheme } from '../../contexts/themeContext';
 import styles from './DarkModeButton.module.css';
-
-const StyledBtn = styled.span`
-  color: ${({ theme }) => theme.text[1]};
-  &:hover {
-    color: ${({ theme }) => theme.primary};
-  }
-`;
 
 /**
  * DarkMode Button
@@ -19,13 +11,13 @@ const StyledBtn = styled.span`
 function DarkModeButton() {
   const { theme } = useTheme();
   return (
-    <StyledBtn className={clsx(styles.button, 'my-auto')}>
+    <span className={clsx(styles.button, 'my-auto')}>
       {theme === 'dark' ? (
         <ImSun size={20} style={{ display: 'block' }} />
       ) : (
         <FaRegMoon size={20} style={{ display: 'block' }} />
       )}
-    </StyledBtn>
+    </span>
   );
 }
 

@@ -27,6 +27,20 @@
   border-radius: 15px;
   display: flex;
   cursor: pointer;
+  background-color: rgba(1, 1, 1, 0.1);
+  color: var(--color-text-secondary);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+[data-theme='dark'] .meIcon {
+  background-color: #525252;
+}
+
+.meIcon:hover {
+  color: var(--color-primary);
 }
 
 .signInOutButton {
@@ -41,8 +55,15 @@
   cursor: pointer;
   font-weight: 500;
   font-size: 1rem;
+  color: var(--color-text-secondary);
+  transition: color var(--trans-dur);
 }
 
 .navLink:hover {
   text-decoration: none !important;
+  color: var(--color-primary);
+}
+
+.navLink:global(.active) {
+  color: var(--color-primary);
 }

@@ -1,27 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
-import styled from 'styled-components';
 import clsx from 'clsx';
 import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
 import type { Crn } from '../../utilities/common';
 import { StyledInput, TextComponent } from '../StyledComponents';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
-
-// Tabs of evaluation comments in modal
-const StyledTabs = styled(Tabs)`
-  background-color: ${({ theme }) => theme.surface[0]};
-  .active {
-    background-color: ${({ theme }) => theme.surface[0]} !important;
-  }
-  .nav-item {
-    color: ${({ theme }) => theme.text[0]};
-  }
-  .nav-item:hover {
-    background-color: ${({ theme }) => theme.banner};
-    color: ${({ theme }) => theme.text[0]};
-  }
-`;
 
 /**
  * Displays Evaluation Comments
@@ -168,7 +152,7 @@ function EvaluationResponses({
           </span>
         </div>
       </Row>
-      <StyledTabs
+      <Tabs
         className={styles.tabs}
         variant="tabs"
         transition={false}
@@ -227,7 +211,7 @@ function EvaluationResponses({
             {summary}
           </Tab>
         )}
-      </StyledTabs>
+      </Tabs>
       {!numQuestions && <strong>No comments for this course</strong>}
     </div>
   );

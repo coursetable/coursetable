@@ -2,6 +2,10 @@
   width: 100%;
 }
 
+.gridRow {
+  max-width: 1600px;
+}
+
 .icon {
   width: 18px;
   display: block;

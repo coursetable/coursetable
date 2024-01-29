@@ -39,11 +39,21 @@ mark {
   font-weight: 500;
   position: sticky;
   top: -1rem;
+  background-color: var(--color-surface);
 }
 
 .tabs :global(.active) {
   color: #468ff2 !important;
+  background-color: var(--color-surface) !important;
   border-bottom: none;
+}
+
+.tabs :global(.nav-item) {
+  color: var(--color-text);
+}
+
+.tabs :global(.nav-item):hover {
+  background-color: var(--color-banner);
 }
 
 .commentRow {

@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from 'react';
-
+import clsx from 'clsx';
 import {
   FcAlphabeticalSortingAz,
   FcAlphabeticalSortingZa,
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import styled from 'styled-components';
 import {
   useSearch,
   defaultFilters,
   type SortByOption,
 } from '../../contexts/searchContext';
-
-const StyledSortBtn = styled.div`
-  cursor: pointer;
-  border-radius: 4px;
-  padding: 2px;
-  transition: background-color ${({ theme }) => theme.transDur};
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonActive};
-  }
-`;
+import styles from './ResultsColumnSort.module.css';
 
 type Props = {
   readonly selectOption: SortByOption;
@@ -63,9 +53,14 @@ function ResultsColumnSort({ selectOption }: Props) {
   }, [firstTime, selectOption, selectSortBy, sortOrder, active]);
 
   return (
-    <StyledSortBtn
-      style={{ backgroundColor: active ? 'var(--color-select-hover)' : '' }}
-      className="ml-1 my-auto"
+    // TODO
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      className={clsx(
+        styles.button,
+        'ml-1 my-auto',
+        active && styles.buttonActive,
+      )}
       onClick={() => {
         // If not sorting by this option previously, start sorting this option
         if (selectSortBy.value.value !== selectOption.value) {
@@ -95,7 +90,7 @@ function ResultsColumnSort({ selectOption }: Props) {
       ) : (
         <FcNumericalSorting21 className="d-block" size={20} />
       )}
-    </StyledSortBtn>
+    </div>
   );
 }
 

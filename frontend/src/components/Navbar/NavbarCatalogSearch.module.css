@@ -8,6 +8,13 @@
 .searchWrapper {
   display: flex;
   align-items: center;
+  width: 40vw;
+}
+
+@media (max-width: 1200px) {
+  .searchWrapper {
+    width: 35vw;
+  }
 }
 
 .searchBar {
@@ -32,12 +39,14 @@
   cursor: default;
   text-align: center;
   flex-grow: 1;
+  transition: color var(--trans-dur);
 }
 
 .rangeValueLabel {
   font-size: 12px;
   user-select: none;
   cursor: default;
+  transition: color var(--trans-dur);
 }
 
 .advancedWrapper {
@@ -68,6 +77,10 @@
 
 .advancedSelect {
   width: 80%;
+}
+
+.advancedToggleRow {
+  background-color: var(--color-button-active);
 }
 
 .resetButton {

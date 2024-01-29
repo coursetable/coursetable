@@ -4,23 +4,10 @@ import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
 import clsx from 'clsx';
 import { StyledHoverText, TextComponent } from '../components/StyledComponents';
 import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities/display';
-
-// Card used in FAQ accordion
-const StyledCard = styled(Card)`
-  border-bottom: 1px solid ${({ theme }) => theme.border} !important;
-  transition: border-color ${({ theme }) => theme.transDur};
-
-  .active {
-    border-bottom: 1px solid ${({ theme }) => theme.border} !important;
-    color: ${({ theme }) => theme.primary};
-    transition: border-color ${({ theme }) => theme.transDur};
-  }
-`;
 
 // Custom accordion component
 function ContextAwareToggle({
@@ -295,7 +282,7 @@ function FAQ() {
       </p>
       <Accordion>
         {faqs.map((faq, idx) => (
-          <StyledCard className={styles.card} key={idx}>
+          <Card className={styles.card} key={idx}>
             <div>
               <ContextAwareToggle eventKey={String(idx)} question={faq.title} />
             </div>
@@ -304,7 +291,7 @@ function FAQ() {
                 <TextComponent type={1}>{faq.contents}</TextComponent>
               </Card.Body>
             </Accordion.Collapse>
-          </StyledCard>
+          </Card>
         ))}
       </Accordion>
     </div>

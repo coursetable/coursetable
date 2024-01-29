@@ -15,7 +15,6 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { HiExternalLink } from 'react-icons/hi';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import { CUR_YEAR } from '../../config';
@@ -50,26 +49,6 @@ import './react-multi-toggle-override.css';
 
 // Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
-
-// Button with season and other info that user selects to view evals
-const StyledCol = styled(Col)`
-  background-color: ${({ theme }) =>
-    theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.selectHover};
-`;
-
-// Unclickable version of StyledCol for courses with no evaluations
-const StyledColUnclickable = styled(Col)`
-  background-color: ${({ theme }) => theme.surface};
-`;
-
-// Multitoggle in modal (course, both, prof)
-const StyledMultiToggle = styled(MultiToggle<Filter>)`
-  background-color: ${({ theme }) => theme.surface[1]};
-  border-color: ${({ theme }) => theme.border};
-  .toggleOption {
-    color: ${({ theme }) => theme.text[0]};
-  }
-`;
 
 export type Filter = 'both' | 'course' | 'professor';
 
@@ -439,7 +418,7 @@ function CourseModalOverview({
           {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
           {hasEvals ? (
-            <StyledCol
+            <Col
               xs={5}
               className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
               onClick={() => {
@@ -457,9 +436,9 @@ function CourseModalOverview({
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
-            </StyledCol>
+            </Col>
           ) : (
-            <StyledColUnclickable
+            <Col
               xs={5}
               className={clsx(
                 styles.ratingBubbleUnclickable,
@@ -475,7 +454,7 @@ function CourseModalOverview({
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
-            </StyledColUnclickable>
+            </Col>
           )}
           {/* Course Rating */}
           <Col
@@ -868,7 +847,7 @@ function CourseModalOverview({
             }}
             tabIndex={0}
           >
-            <StyledMultiToggle
+            <MultiToggle
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}
