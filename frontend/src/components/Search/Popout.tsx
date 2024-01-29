@@ -5,17 +5,9 @@ import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import chroma from 'chroma-js';
 
-import {
-  breakpoints,
-  useComponentVisibleDropdown,
-} from '../../utilities/display';
+import { useComponentVisibleDropdown } from '../../utilities/display';
 import { isOption, type Option } from '../../contexts/searchContext';
 import styles from './Popout.module.css';
-
-// Popout button
-const StyledButton = styled.div`
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-`;
 
 // Clear filter button
 const ClearIcon = styled(IoClose)`
@@ -118,7 +110,9 @@ export function Popout({
       className={styles.wrapper}
     >
       {/* Popout Button */}
-      <StyledButton
+      {/* TODO */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
         ref={toggleRef}
@@ -143,7 +137,7 @@ export function Popout({
             <IoMdArrowDropup className={clsx(styles.arrowIcon, 'ml-1')} />
           )
         ) : null}
-      </StyledButton>
+      </div>
       {/* Dropdown */}
       {isComponentVisible ? (
         <div className={styles.dropdown} ref={dropdownRef}>

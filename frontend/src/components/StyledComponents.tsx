@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { FormControl, Popover } from 'react-bootstrap';
 import type chroma from 'chroma-js';
-import { breakpoints } from '../utilities/display';
 
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`
@@ -19,7 +18,9 @@ export const TextComponent = styled.span<{ type: number }>`
 // Small text component
 export const SmallTextComponent = styled(TextComponent)`
   font-size: 70%;
-  ${breakpoints('font-size', '%', [{ 1320: 64 }])};
+  @media (max-width: var(--max-width-sm-desktop)) {
+    font-size: 64%;
+  }
 `;
 
 // FormControl for any typed inputs
@@ -74,7 +75,7 @@ export const StyledPopover = styled(Popover)`
     border-right-color: ${({ theme }) => theme.surface[0]};
     border-left-color: ${({ theme }) => theme.surface[0]};
   }
-  @media only screen and (max-width: 767px) {
+  @media (max-width: var(--max-width-mobile)) {
     .popover-header {
       display: none;
     }
@@ -119,9 +120,12 @@ export const StyledLink = styled.span`
 // Show Primary color on hover
 export const StyledHoverText = styled.span`
   user-select: none;
-  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
   cursor: pointer;
   &:hover {
     color: ${({ theme }) => theme.primary};
+  }
+
+  @media (max-width: var(--max-width-sm-desktop)) {
+    font-size: 0.9rem;
   }
 `;

@@ -60,8 +60,6 @@
 .evaluationHeader {
   font-weight: 500;
   color: grey;
-  background-color: var(--color-surface-elevated);
-  border-color: var(--color-border);
 }
 
 .evaluationHeader :global(.toggleOption) {

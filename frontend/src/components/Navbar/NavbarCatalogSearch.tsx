@@ -28,7 +28,6 @@ import {
   schoolsOptions,
   seasonsOptions,
 } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities/display';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
 import {
   toRealTime,
@@ -37,35 +36,6 @@ import {
   toExponential,
 } from '../../utilities/course';
 import styles from './NavbarCatalogSearch.module.css';
-
-// Search bar
-const SearchBar = styled(StyledInput)`
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-`;
-
-// Range filter
-const StyledRange = styled(Range)<{ isTablet: boolean }>`
-  width: ${({ isTablet }) => (isTablet ? 74 : 100)}px;
-`;
-
-// Range filter label
-const RangeLabel = styled.div`
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-`;
-
-// Range filter value label
-const RangeValueLabel = styled.div`
-  ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
-`;
-
-// Advanced filters label in dropdown
-const AdvancedLabel = styled.div`
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-`;
-
-const ResetButton = styled(Button)`
-  ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
-`;
 
 // Clear search bar button
 const CloseIcon = styled(IoClose)`
@@ -218,7 +188,7 @@ export function NavbarCatalogSearch() {
           <div className={styles.searchWrapper}>
             {/* Search Bar */}
             <InputGroup className="h-100">
-              <SearchBar
+              <StyledInput
                 className={styles.searchBar}
                 type="text"
                 value={searchText.value}
@@ -313,25 +283,24 @@ export function NavbarCatalogSearch() {
               <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                 {/* Overall Rating Range */}
                 <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                  <RangeValueLabel className={styles.rangeValueLabel}>
+                  <div className={styles.rangeValueLabel}>
                     {overallRangeValue[0]}
-                  </RangeValueLabel>
-                  <RangeLabel
+                  </div>
+                  <div
                     className={styles.rangeLabel}
                     style={activeStyle(overallBounds.hasChanged)}
                   >
                     Overall
-                  </RangeLabel>
-                  <RangeValueLabel className={styles.rangeValueLabel}>
+                  </div>
+                  <div className={styles.rangeValueLabel}>
                     {overallRangeValue[1]}
-                  </RangeValueLabel>
+                  </div>
                 </div>
-                <StyledRange
-                  className={styles.range}
+                <Range
+                  className={clsx(styles.range, styles.mainRange)}
                   min={defaultFilters.overallBounds[0]}
                   max={defaultFilters.overallBounds[1]}
                   step={0.1}
-                  isTablet={isTablet}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
@@ -348,25 +317,24 @@ export function NavbarCatalogSearch() {
               <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                 {/* Workload Rating Range */}
                 <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                  <RangeValueLabel className={styles.rangeValueLabel}>
+                  <div className={styles.rangeValueLabel}>
                     {workloadRangeValue[0]}
-                  </RangeValueLabel>
-                  <RangeLabel
+                  </div>
+                  <div
                     className={styles.rangeLabel}
                     style={activeStyle(workloadBounds.hasChanged)}
                   >
                     Workload
-                  </RangeLabel>
-                  <RangeValueLabel className={styles.rangeValueLabel}>
+                  </div>
+                  <div className={styles.rangeValueLabel}>
                     {workloadRangeValue[1]}
-                  </RangeValueLabel>
+                  </div>
                 </div>
-                <StyledRange
-                  className={styles.range}
+                <Range
+                  className={clsx(styles.range, styles.mainRange)}
                   min={defaultFilters.workloadBounds[0]}
                   max={defaultFilters.workloadBounds[1]}
                   step={0.1}
-                  isTablet={isTablet}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
@@ -384,25 +352,24 @@ export function NavbarCatalogSearch() {
               {!isTablet && (
                 <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                   <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                    <RangeValueLabel className={styles.rangeValueLabel}>
+                    <div className={styles.rangeValueLabel}>
                       {professorRangeValue[0]}
-                    </RangeValueLabel>
-                    <RangeLabel
+                    </div>
+                    <div
                       className={styles.rangeLabel}
                       style={activeStyle(professorBounds.hasChanged)}
                     >
                       Professor
-                    </RangeLabel>
-                    <RangeValueLabel className={styles.rangeValueLabel}>
+                    </div>
+                    <div className={styles.rangeValueLabel}>
                       {professorRangeValue[1]}
-                    </RangeValueLabel>
+                    </div>
                   </div>
-                  <StyledRange
-                    className={styles.range}
+                  <Range
+                    className={clsx(styles.range, styles.mainRange)}
                     min={defaultFilters.professorBounds[0]}
                     max={defaultFilters.professorBounds[1]}
                     step={0.1}
-                    isTablet={isTablet}
                     handleStyle={rangeHandleStyle}
                     railStyle={rangeRailStyle}
                     trackStyle={[rangeRailStyle]}
@@ -518,9 +485,7 @@ export function NavbarCatalogSearch() {
                   <>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Yale Subjects Filter Dropdown */}
-                      <AdvancedLabel className={styles.advancedLabel}>
-                        Subject:
-                      </AdvancedLabel>
+                      <div className={styles.advancedLabel}>Subject:</div>
                       <CustomSelect
                         className={styles.advancedSelect}
                         closeMenuOnSelect
@@ -537,9 +502,7 @@ export function NavbarCatalogSearch() {
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Areas/Skills Filter Dropdown */}
-                      <AdvancedLabel className={styles.advancedLabel}>
-                        Areas/Skills:
-                      </AdvancedLabel>
+                      <div className={styles.advancedLabel}>Areas/Skills:</div>
                       <CustomSelect
                         className={styles.advancedSelect}
                         useColors
@@ -557,9 +520,7 @@ export function NavbarCatalogSearch() {
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Season Filter Dropdown */}
-                      <AdvancedLabel className={styles.advancedLabel}>
-                        Season:
-                      </AdvancedLabel>
+                      <div className={styles.advancedLabel}>Season:</div>
                       <CustomSelect
                         className={styles.advancedSelect}
                         closeMenuOnSelect
@@ -578,9 +539,7 @@ export function NavbarCatalogSearch() {
                 )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Day Multi-Select */}
-                  <AdvancedLabel className={styles.advancedLabel}>
-                    Day:
-                  </AdvancedLabel>
+                  <div className={styles.advancedLabel}>Day:</div>
                   <CustomSelect<Option<Weekdays>, true>
                     className={styles.advancedSelect}
                     closeMenuOnSelect
@@ -599,21 +558,21 @@ export function NavbarCatalogSearch() {
                   />
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel
+                  <div
                     className={styles.advancedLabel}
                     style={activeStyle(timeBounds.hasChanged)}
                   >
                     Time:
-                  </AdvancedLabel>
+                  </div>
                   <div className={styles.advancedRangeGroup}>
                     {/* Time Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel className={styles.rangeValueLabel}>
+                      <div className={styles.rangeValueLabel}>
                         {to12HourTime(toRealTime(timeRangeValue[0]))}
-                      </RangeValueLabel>
-                      <RangeValueLabel className={styles.rangeValueLabel}>
+                      </div>
+                      <div className={styles.rangeValueLabel}>
                         {to12HourTime(toRealTime(timeRangeValue[1]))}
-                      </RangeValueLabel>
+                      </div>
                     </div>
                     <Range
                       className={clsx(styles.range, styles.advancedRange)}
@@ -643,21 +602,21 @@ export function NavbarCatalogSearch() {
                   </div>
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel
+                  <div
                     className={styles.advancedLabel}
                     style={activeStyle(enrollBounds.hasChanged)}
                   >
                     # Enrolled:
-                  </AdvancedLabel>
+                  </div>
                   <div className={styles.advancedRangeGroup}>
                     {/* Enrollment Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel className={styles.rangeValueLabel}>
+                      <div className={styles.rangeValueLabel}>
                         {Math.round(toExponential(enrollRangeValue[0]))}
-                      </RangeValueLabel>
-                      <RangeValueLabel className={styles.rangeValueLabel}>
+                      </div>
+                      <div className={styles.rangeValueLabel}>
                         {Math.round(toExponential(enrollRangeValue[1]))}
-                      </RangeValueLabel>
+                      </div>
                     </div>
                     <Range
                       className={clsx(styles.range, styles.advancedRange)}
@@ -686,21 +645,21 @@ export function NavbarCatalogSearch() {
                 </Row>
                 {isTablet && (
                   <Row className="align-items-center justify-content-between mx-3 mt-3">
-                    <AdvancedLabel
+                    <div
                       className={styles.advancedLabel}
                       style={activeStyle(professorBounds.hasChanged)}
                     >
                       Professor:
-                    </AdvancedLabel>
+                    </div>
                     <div className={styles.advancedRangeGroup}>
                       {/* Professor Rating Range */}
                       <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                        <RangeValueLabel className={styles.rangeValueLabel}>
+                        <div className={styles.rangeValueLabel}>
                           {professorRangeValue[0]}
-                        </RangeValueLabel>
-                        <RangeValueLabel className={styles.rangeValueLabel}>
+                        </div>
+                        <div className={styles.rangeValueLabel}>
                           {professorRangeValue[1]}
-                        </RangeValueLabel>
+                        </div>
                       </div>
                       <Range
                         className={clsx(styles.range, styles.advancedRange)}
@@ -723,23 +682,23 @@ export function NavbarCatalogSearch() {
                   </Row>
                 )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel
+                  <div
                     className={styles.advancedLabel}
                     style={activeStyle(numBounds.hasChanged)}
                   >
                     Course #:
-                  </AdvancedLabel>
+                  </div>
                   <div className={styles.advancedRangeGroup}>
                     {/* Course Number Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel className={styles.rangeValueLabel}>
+                      <div className={styles.rangeValueLabel}>
                         {numRangeValue[0].toString().padStart(3, '0')}
-                      </RangeValueLabel>
-                      <RangeValueLabel className={styles.rangeValueLabel}>
+                      </div>
+                      <div className={styles.rangeValueLabel}>
                         {numRangeValue[1] === 1000
                           ? '1000+'
                           : numRangeValue[1].toString().padStart(3, '0')}
-                      </RangeValueLabel>
+                      </div>
                     </div>
                     <Range
                       className={clsx(styles.range, styles.advancedRange)}
@@ -775,9 +734,7 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}
-                  <AdvancedLabel className={styles.advancedLabel}>
-                    School:
-                  </AdvancedLabel>
+                  <div className={styles.advancedLabel}>School:</div>
                   <CustomSelect
                     className={styles.advancedSelect}
                     closeMenuOnSelect
@@ -794,9 +751,7 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Course Credit Multi-Select */}
-                  <AdvancedLabel className={styles.advancedLabel}>
-                    Credit:
-                  </AdvancedLabel>
+                  <div className={styles.advancedLabel}>Credit:</div>
                   <CustomSelect
                     className={styles.advancedSelect}
                     closeMenuOnSelect
@@ -819,9 +774,9 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Sort by Guts */}
-                  <AdvancedLabel className={styles.advancedLabel}>
+                  <div className={styles.advancedLabel}>
                     {sortByOptions.average_gut_rating.label}:
-                  </AdvancedLabel>
+                  </div>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_gut_rating}
                   />
@@ -844,7 +799,7 @@ export function NavbarCatalogSearch() {
           </div>
 
           {/* Reset Filters & Sorting Button */}
-          <ResetButton
+          <Button
             className={styles.resetButton}
             variant="danger"
             onClick={() => {
@@ -866,7 +821,7 @@ export function NavbarCatalogSearch() {
             disabled={Object.values(filters).every((x) => !x.hasChanged)}
           >
             Reset
-          </ResetButton>
+          </Button>
         </Row>
       </Form>
     </>

@@ -3,14 +3,12 @@ import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
-import styled from 'styled-components';
 import clsx from 'clsx';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import {
-  breakpoints,
   logout,
   scrollToTop,
   useComponentVisible,
@@ -22,32 +20,6 @@ import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 import { API_ENDPOINT } from '../../config';
 import { useTheme } from '../../contexts/themeContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
-
-const SignInOutButton = styled.div`
-  color: ${({ theme }) => theme.text[1]};
-  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
-  &:hover {
-    color: ${({ theme }) => theme.primary};
-  }
-`;
-
-// Nav links
-const StyledNavLink = styled(NavLink)`
-  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
-`;
-
-// Nav toggle for mobile
-const StyledNavToggle = styled(Navbar.Toggle)`
-  border-color: ${({ theme }) => theme.border} !important;
-  .navbar-toggler-icon {
-    background-image: ${({ theme }) =>
-      `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='${
-        theme.theme === 'light'
-          ? 'rgba(69, 69, 69, 1)'
-          : 'rgba(219, 219, 219, 1)'
-      }' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")`};
-  }
-`;
 
 type Props = {
   readonly isLoggedIn: boolean;
@@ -65,14 +37,9 @@ function NavbarLink({
   readonly id?: string;
 }) {
   return (
-    <StyledNavLink
-      className={styles.navLink}
-      to={to}
-      onClick={scrollToTop}
-      id={id}
-    >
+    <NavLink className={styles.navLink} to={to} onClick={scrollToTop} id={id}>
       {children}
-    </StyledNavLink>
+    </NavLink>
   );
 }
 
@@ -200,7 +167,10 @@ export default function CourseTableNavbar({
             </Nav>
 
             {/* Mobile nav toggle */}
-            <StyledNavToggle aria-controls="basic-navbar-nav" />
+            <Navbar.Toggle
+              className={styles.navToggle}
+              aria-controls="basic-navbar-nav"
+            />
 
             {/* Desktop navbar search */}
             {showSearch && page === 'catalog' ? (
@@ -289,21 +259,22 @@ export default function CourseTableNavbar({
                   {/* Sign in/out buttons. Show if mobile */}
                   <div className="d-md-none">
                     {!isLoggedIn ? (
-                      <SignInOutButton
+                      // TODO
+                      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+                      <div
                         className={styles.signInOutButton}
                         onClick={() => {
                           window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
                         }}
                       >
                         Sign In
-                      </SignInOutButton>
+                      </div>
                     ) : (
-                      <SignInOutButton
-                        className={styles.signInOutButton}
-                        onClick={logout}
-                      >
+                      // TODO
+                      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+                      <div className={styles.signInOutButton} onClick={logout}>
                         Sign Out
-                      </SignInOutButton>
+                      </div>
                     )}
                   </div>
                 </Nav>

@@ -19,6 +19,20 @@
   max-width: 1600px;
 }
 
+.resultsHeader {
+  line-height: 30px;
+  display: flex;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: var(--max-width-sm-desktop)) {
+  .resultsHeader {
+    font-size: 12px;
+    line-height: 24px;
+  }
+}
+
 .listGridToggle {
   position: absolute;
   left: 5px;

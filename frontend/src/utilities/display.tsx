@@ -8,7 +8,6 @@ import React, {
 import { Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
-import { css } from 'styled-components';
 
 import { API_ENDPOINT } from '../config';
 
@@ -161,26 +160,4 @@ export async function logout() {
     Sentry.captureException(err);
     toast.error(`Failed to sign out. ${String(err)}`);
   }
-}
-
-// Helper function for setting breakpoint styles in styled-components
-export function breakpoints(
-  cssProp = 'padding', // The CSS property to apply to the breakpoints
-  cssPropUnits = 'px', // The units of the CSS property (can set equal to "" and apply units to values directly)
-  values: { [screenWidth: number]: number }[] = [], // Array of objects, e.g. [{ 800: 60 }, ...] <-- 800 (key) = screen breakpoint, 60 (value) = CSS prop breakpoint
-  mediaQueryType = 'max-width',
-) {
-  const breakpointProps = values.reduce((mediaQueries, value) => {
-    const [screenBreakpoint, cssPropBreakpoint] = [
-      Object.keys(value)[0],
-      Object.values(value)[0],
-    ];
-    mediaQueries += `
-    @media screen and (${mediaQueryType}: ${screenBreakpoint}px) {
-      ${cssProp}: ${cssPropBreakpoint}${cssPropUnits} !important;
-    }
-    `;
-    return mediaQueries;
-  }, '');
-  return css([breakpointProps] as unknown as TemplateStringsArray);
 }

@@ -41,13 +41,13 @@
   transition: border-color var(--trans-dur);
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--max-width-mobile)) {
   .container {
     width: 80vw;
   }
 }
 
-@media (max-width: 425px) {
+@media (max-width: var(--max-width-sm-mobile)) {
   .container {
     width: 95vw;
   }
