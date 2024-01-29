@@ -88,10 +88,10 @@
 .resetFiltersBtn {
   color: #e23e57;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .resetFiltersBtn:hover {
-  cursor: pointer;
   color: #a82f41;
 }
 

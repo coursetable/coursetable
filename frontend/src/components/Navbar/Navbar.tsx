@@ -28,27 +28,18 @@ const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
   color: ${({ theme }) => theme.text[1]};
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
-  display: flex;
   transition:
     border-color ${({ theme }) => theme.transDur},
     background-color ${({ theme }) => theme.transDur},
     color ${({ theme }) => theme.transDur};
   &:hover {
-    cursor: pointer;
     color: ${({ theme }) => theme.primary};
   }
 `;
 
-// Sign in/out buttons
-const StyledDiv = styled.div`
-  padding: 0.5rem 1rem 0.5rem 0rem;
+const SignInOutButton = styled.div`
   color: ${({ theme }) => theme.text[1]};
-  font-weight: 500;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
-  user-select: none;
   &:hover {
     color: ${({ theme }) => theme.primary};
   }
@@ -56,16 +47,10 @@ const StyledDiv = styled.div`
 
 // Nav links
 const StyledNavLink = styled(NavLink)`
-  padding: 0.5rem 1rem 0.5rem 0rem;
   color: ${({ theme }) => theme.text[1]};
-  user-select: none;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1rem;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
   transition: color ${({ theme }) => theme.transDur};
   &:hover {
-    text-decoration: none !important;
     color: ${({ theme }) => theme.primary};
   }
   &.active {
@@ -86,17 +71,32 @@ const StyledNavToggle = styled(Navbar.Toggle)`
   }
 `;
 
-// Nav logo
-const NavLogo = styled(Nav)`
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-`;
-
 type Props = {
   readonly isLoggedIn: boolean;
   readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
   readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+function NavbarLink({
+  to,
+  children,
+  id,
+}: {
+  readonly to: string;
+  readonly children: React.ReactNode;
+  readonly id?: string;
+}) {
+  return (
+    <StyledNavLink
+      className={styles.navLink}
+      to={to}
+      onClick={scrollToTop}
+      id={id}
+    >
+      {children}
+    </StyledNavLink>
+  );
+}
 
 //  Wrapper for nav collapse for # of results shown text
 function NavCollapseWrapper({
@@ -201,7 +201,7 @@ export default function CourseTableNavbar({
             }
           >
             {/* Logo in top left */}
-            <NavLogo className="navbar-brand">
+            <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
               <NavLink
                 to="/"
                 style={({ isActive }) =>
@@ -219,7 +219,7 @@ export default function CourseTableNavbar({
                   <Logo icon={false} />
                 </span>
               </NavLink>
-            </NavLogo>
+            </Nav>
 
             {/* Mobile nav toggle */}
             <StyledNavToggle aria-controls="basic-navbar-nav" />
@@ -265,29 +265,21 @@ export default function CourseTableNavbar({
                   {isLoggedIn && (
                     <>
                       {/* Catalog Page */}
-                      <StyledNavLink
-                        to="/catalog"
-                        onClick={scrollToTop}
-                        id="catalog-link"
-                      >
+                      <NavbarLink to="/catalog" id="catalog-link">
                         Catalog
-                      </StyledNavLink>
+                      </NavbarLink>
                       {/* Worksheet Page */}
-                      <StyledNavLink to="/worksheet" onClick={scrollToTop}>
+                      <NavbarLink to="/worksheet">
                         <span data-tutorial="worksheet-1">Worksheet</span>
-                      </StyledNavLink>
+                      </NavbarLink>
                     </>
                   )}
                   {(isMobile || !isLoggedIn) && (
                     <>
                       {/* About Page */}
-                      <StyledNavLink to="/about" onClick={scrollToTop}>
-                        About
-                      </StyledNavLink>
+                      <NavbarLink to="/about">About</NavbarLink>
                       {/* FAQ Page */}
-                      <StyledNavLink to="/faq" onClick={scrollToTop}>
-                        FAQ
-                      </StyledNavLink>
+                      <NavbarLink to="/faq">FAQ</NavbarLink>
                     </>
                   )}
                   {/* Profile Icon. Show if not mobile */}
@@ -301,7 +293,7 @@ export default function CourseTableNavbar({
                     <div className={styles.navbarMe}>
                       <StyledMeIcon
                         ref={elemRef}
-                        className={clsx(styles.iconCircle, 'm-auto')}
+                        className={clsx(styles.meIcon, 'm-auto')}
                         onClick={() =>
                           setIsComponentVisible(!isComponentVisible)
                         }
@@ -317,15 +309,21 @@ export default function CourseTableNavbar({
                   {/* Sign in/out buttons. Show if mobile */}
                   <div className="d-md-none">
                     {!isLoggedIn ? (
-                      <StyledDiv
+                      <SignInOutButton
+                        className={styles.signInOutButton}
                         onClick={() => {
                           window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
                         }}
                       >
                         Sign In
-                      </StyledDiv>
+                      </SignInOutButton>
                     ) : (
-                      <StyledDiv onClick={logout}>Sign Out</StyledDiv>
+                      <SignInOutButton
+                        className={styles.signInOutButton}
+                        onClick={logout}
+                      >
+                        Sign Out
+                      </SignInOutButton>
                     )}
                   </div>
                 </Nav>

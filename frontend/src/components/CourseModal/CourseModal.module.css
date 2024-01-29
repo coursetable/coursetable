@@ -20,3 +20,15 @@
   max-width: 800px !important;
   /* max-width: none !important; */
 }
+
+.moreInfo {
+  padding: 3px 5px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.moreInfo:hover {
+  filter: brightness(80%);
+}

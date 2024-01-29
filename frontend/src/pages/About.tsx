@@ -49,9 +49,6 @@ import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 
 // Header
 const StyledH1 = styled.h1`
-  font-weight: 600;
-  font-size: 25px;
-  text-align: center;
   transition: color ${({ theme }) => theme.transDur};
 `;
 
@@ -320,7 +317,7 @@ function About() {
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <StyledH1 className="mt-5 mb-1">About Us</StyledH1>
+      <StyledH1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</StyledH1>
       <TextComponent type={1}>
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find

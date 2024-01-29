@@ -1,8 +1,5 @@
 .container {
   transition: 0.1s;
-}
-
-.container:hover {
   cursor: pointer;
 }
 

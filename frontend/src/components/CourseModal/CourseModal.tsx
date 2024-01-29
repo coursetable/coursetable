@@ -36,16 +36,8 @@ const StyledModal = styled(Modal)`
 
 // More info button
 const StyledMoreInfo = styled.span`
-  padding: 3px 5px;
-  font-size: 14px;
-  border-radius: 6px;
   background-color: ${({ theme }) => theme.multivalue};
   color: ${({ theme }) => theme.text[0]};
-  font-weight: 500;
-  &:hover {
-    filter: brightness(80%);
-    cursor: pointer;
-  }
 `;
 
 const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
@@ -260,7 +252,7 @@ function CourseModal() {
                               {` (${toSeasonString(view[0])})`}
                             </TextComponent>
                             <StyledMoreInfo
-                              className="mt-auto ml-2"
+                              className={clsx(styles.moreInfo, 'mt-auto ml-2')}
                               onClick={() => {
                                 // Go to overview page of this eval course
                                 setView('overview');

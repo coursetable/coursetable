@@ -6,6 +6,8 @@
 
 .navLogo {
   font-size: 1.6rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .navbarMe {
@@ -19,9 +21,28 @@
   transition: 0.1s;
 }
 
-.iconCircle {
+.meIcon {
   width: 30px;
   height: 30px;
   border-radius: 15px;
   display: flex;
+  cursor: pointer;
+}
+
+.signInOutButton {
+  padding: 0.5rem 1rem 0.5rem 0rem;
+  font-weight: 500;
+  user-select: none;
+}
+
+.navLink {
+  padding: 0.5rem 1rem 0.5rem 0rem;
+  user-select: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.navLink:hover {
+  text-decoration: none !important;
 }

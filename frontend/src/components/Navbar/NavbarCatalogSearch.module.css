@@ -1,0 +1,76 @@
+.row {
+  height: 50%;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.searchBar {
+  border-radius: 4px;
+  height: 100%;
+  font-size: 14px;
+}
+
+.searchTextClear {
+  z-index: 1000;
+  margin-left: -30px;
+  cursor: pointer;
+}
+
+.range {
+  cursor: pointer;
+}
+
+.rangeLabel {
+  font-size: 14px;
+  user-select: none;
+  cursor: default;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.rangeValueLabel {
+  font-size: 12px;
+  user-select: none;
+  cursor: default;
+}
+
+.advancedWrapper {
+  width: 440px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.advancedLabel {
+  font-size: 14px;
+  margin-left: 0.25rem;
+  user-select: none;
+  cursor: default;
+}
+
+.advancedRangeGroup {
+  width: 75%;
+  display: flex;
+  flex-grow: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.advancedRange {
+  margin-bottom: 20px;
+}
+
+.advancedSelect {
+  width: 80%;
+}
+
+.resetButton {
+  padding: 0.25rem 0.375rem;
+  font-size: 12px;
+}

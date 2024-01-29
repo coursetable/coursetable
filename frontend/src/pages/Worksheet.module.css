@@ -43,9 +43,6 @@
 .expandBtn {
   padding: 3px;
   border-radius: 6px;
-}
-
-.expandBtn:hover {
   cursor: pointer;
 }
 
