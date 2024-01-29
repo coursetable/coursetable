@@ -61,11 +61,11 @@ type ProfInfo = {
 // TODO: merge it with one of the many types representing "a course"
 export type CourseOffering = {
   // Course rating
-  rating: number;
+  rating: number | null;
   // Workload rating
-  workload: number;
+  workload: number | null;
   // Professor rating
-  professor_rating: number;
+  professor_rating: number | null;
   // Season code
   season_code: Season;
   // Professors
@@ -346,14 +346,14 @@ function CourseModalOverview({
       courseOfferings.push({
         // Course rating
         rating: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_rating || -1
-          : -1,
+          ? season.course.evaluation_statistic.avg_rating || null
+          : null,
         // Workload rating
         workload: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_workload || -1
-          : -1,
+          ? season.course.evaluation_statistic.avg_workload || null
+          : null,
         // Professor rating
-        professor_rating: averageProfessorRating || -1,
+        professor_rating: averageProfessorRating || null,
         // Season code
         season_code: season.season_code,
         // Professors
@@ -396,7 +396,7 @@ function CourseModalOverview({
       const isBothOverlap =
         isCourseOverlap &&
         overlappingProfs(offering.professor) === listing.professor_names.length;
-      const hasEvals = offering.rating !== -1;
+      const hasEvals = offering.rating !== null;
       const type = isBothOverlap
         ? 'both'
         : isCourseOverlap
@@ -466,7 +466,7 @@ function CourseModalOverview({
               colorMap={ratingColormap}
               className={styles.ratingCell}
             >
-              {offering.rating !== -1 ? offering.rating.toFixed(1) : 'N/A'}
+              {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
             </RatingBubble>
           </Col>
           {/* Professor Rating */}
@@ -479,7 +479,7 @@ function CourseModalOverview({
               colorMap={ratingColormap}
               className={styles.ratingCell}
             >
-              {offering.professor_rating !== -1
+              {offering.professor_rating
                 ? offering.professor_rating.toFixed(1)
                 : 'N/A'}
             </RatingBubble>
@@ -494,7 +494,7 @@ function CourseModalOverview({
               colorMap={workloadColormap}
               className={styles.ratingCell}
             >
-              {offering.workload !== -1 ? offering.workload.toFixed(1) : 'N/A'}
+              {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
             </RatingBubble>
           </Col>
         </Row>
