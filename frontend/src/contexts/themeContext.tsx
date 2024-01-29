@@ -29,20 +29,20 @@ export function ThemeProvider({
 }) {
   const [theme, setTheme] = useState<Theme>('light');
 
-  const setMode = useCallback((mode: Theme) => {
-    storage.set(mode);
-    setTheme(mode);
-  }, []);
-
   const toggleTheme = useCallback(() => {
-    if (theme === 'light') setMode('dark');
-    else setMode('light');
-  }, [theme, setMode]);
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    storage.set(newTheme);
+    setTheme(newTheme);
+  }, [theme]);
 
   useEffect(() => {
     const localTheme = storage.get();
     if (localTheme) setTheme(localTheme);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   const scTheme = theme === 'light' ? lightTheme : darkTheme;
 

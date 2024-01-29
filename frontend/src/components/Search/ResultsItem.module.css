@@ -2,6 +2,18 @@
   border-top: 1px solid transparent !important;
 }
 
+.oddSearchResultItem {
+  background-color: #f9f9f9 !important;
+}
+
+.evenSearchResultItem {
+  background-color: var(--color-surface) !important;
+}
+
+[data-theme='dark'] .oddSearchResultItem {
+  background-color: #202020 !important;
+}
+
 .ellipsisText {
   display: block;
   width: 100%;

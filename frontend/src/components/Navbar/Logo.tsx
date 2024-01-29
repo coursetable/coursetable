@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTheme } from 'styled-components';
+import { useTheme } from '../../contexts/themeContext';
 import logo from '../../images/brand/bluebook.svg';
 import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import wordmarkOutlinesDark from '../../images/brand/ct_white.svg';
@@ -17,7 +17,7 @@ type Props = {
  * CourseTable Logo
  */
 function Logo({ icon = true, wordmark = true }: Props) {
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   return (
     <span
@@ -29,7 +29,7 @@ function Logo({ icon = true, wordmark = true }: Props) {
       {icon && <img src={logo} alt="" className={styles.coursetableLogoImg} />}{' '}
       {wordmark && (
         <img
-          src={theme.theme === 'dark' ? wordmarkOutlinesDark : wordmarkOutlines}
+          src={theme === 'dark' ? wordmarkOutlinesDark : wordmarkOutlines}
           alt="CourseTable"
           className={styles.coursetableLogoWordmark}
         />

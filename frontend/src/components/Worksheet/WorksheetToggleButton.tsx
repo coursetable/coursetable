@@ -4,7 +4,6 @@ import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
 import * as Sentry from '@sentry/react';
 
 import { useUser } from '../../contexts/userContext';
@@ -14,15 +13,6 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import styles from './WorksheetToggleButton.module.css';
-
-const StyledButton = styled(Button)`
-  color: ${({ theme }) => theme.primary} !important;
-`;
-
-const StyledSelect = styled.select`
-  background-color: ${({ theme }) => theme.select || '#f2f2f2'} !important;
-  color: ${({ theme }) => theme.text[0] || '#333'} !important;
-`;
 
 /**
  * Toggle button to add course to or remove from worksheet
@@ -175,7 +165,7 @@ function WorksheetToggleButton({
         </Tooltip>
       )}
     >
-      <StyledButton
+      <Button
         variant="toggle"
         className={clsx(
           'py-auto px-1 d-flex align-items-center',
@@ -192,7 +182,7 @@ function WorksheetToggleButton({
               <FaPlus size={25} className={styles.scaleIcon} />
             )}
             {/* Render the worksheet dropdown */}
-            <StyledSelect
+            <select
               value={selectedWorksheet}
               onChange={(event) => {
                 setSelectedWorksheet(event.target.value);
@@ -202,6 +192,7 @@ function WorksheetToggleButton({
                 if ((e.target as HTMLSelectElement).tagName === 'SELECT')
                   e.stopPropagation();
               }}
+              // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
               onMouseEnter={(e) => {
                 e.preventDefault();
               }}
@@ -212,7 +203,7 @@ function WorksheetToggleButton({
                   {option === '0' ? 'Main Worksheet' : `Worksheet ${option}`}
                 </option>
               ))}
-            </StyledSelect>
+            </select>
           </>
         ) : (
           <>
@@ -223,7 +214,7 @@ function WorksheetToggleButton({
             )}
           </>
         )}
-      </StyledButton>
+      </Button>
     </OverlayTrigger>
   );
 }

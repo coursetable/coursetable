@@ -6,6 +6,8 @@
   border: none;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  background-color: var(--color-select);
+  color: var(--color-text);
 }
 
 .worksheetDropdown:hover {
@@ -39,6 +41,7 @@
   gap: 1rem;
   background-color: transparent;
   border-width: 0;
+  color: var(--color-primary) !important;
 }
 
 .toggleButton:active,

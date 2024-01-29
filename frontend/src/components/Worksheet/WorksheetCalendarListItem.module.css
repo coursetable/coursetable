@@ -2,6 +2,15 @@
   background-color: transparent;
   overflow: hidden;
   cursor: pointer;
+  border-color: var(--color-border);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.listItem:hover {
+  background-color: var(--color-select-hover);
 }
 
 /* Hides icon until you hover over the list item */
@@ -30,4 +39,5 @@
 
 .courseCode {
   overflow: hidden;
+  transition: color var(--trans-dur);
 }

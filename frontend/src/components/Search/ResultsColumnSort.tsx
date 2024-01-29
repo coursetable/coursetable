@@ -6,7 +6,7 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import {
   useSearch,
   defaultFilters,
@@ -47,8 +47,6 @@ function ResultsColumnSort({ selectOption }: Props) {
     filters: { selectSortBy, sortOrder },
   } = useSearch();
 
-  const globalTheme = useTheme();
-
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
@@ -66,7 +64,7 @@ function ResultsColumnSort({ selectOption }: Props) {
 
   return (
     <StyledSortBtn
-      style={{ backgroundColor: active ? globalTheme.selectHover : '' }}
+      style={{ backgroundColor: active ? 'var(--color-select-hover)' : '' }}
       className="ml-1 my-auto"
       onClick={() => {
         // If not sorting by this option previously, start sorting this option

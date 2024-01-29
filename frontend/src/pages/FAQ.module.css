@@ -1,6 +1,7 @@
 .container {
   width: 600px;
   margin-bottom: 3rem;
+  transition: color var(--trans-dur);
 }
 
 .faqHeader {

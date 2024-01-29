@@ -22,11 +22,6 @@ const StyledCard = styled(Card)`
   }
 `;
 
-// Container for FAQ
-const StyledContainer = styled.div`
-  transition: color ${({ theme }) => theme.transDur};
-`;
-
 // Custom accordion component
 function ContextAwareToggle({
   eventKey,
@@ -290,7 +285,7 @@ function FAQ() {
   ];
 
   return (
-    <StyledContainer className={clsx('mx-auto', styles.container)}>
+    <div className={clsx('mx-auto', styles.container)}>
       <h1 className={clsx(styles.faqHeader, 'mt-5 mb-1')}>
         Frequently Asked Questions
       </h1>
@@ -312,7 +307,7 @@ function FAQ() {
           </StyledCard>
         ))}
       </Accordion>
-    </StyledContainer>
+    </div>
   );
 }
 

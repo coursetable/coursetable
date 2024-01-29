@@ -20,10 +20,6 @@ const StyledStatPill = styled.span<
   color: ${({ theme, stat }) => (stat ? '#141414' : theme.text[0])};
 `;
 
-const StyledInfo = styled(MdInfoOutline)`
-  color: ${({ theme }) => theme.primary};
-`;
-
 const courseNumberColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([4, 6]);
@@ -126,7 +122,7 @@ export default function WorksheetStats() {
                         </Tooltip>
                       )}
                     >
-                      <StyledInfo />
+                      <MdInfoOutline className={styles.infoIcon} />
                     </OverlayTrigger>
                   )}
                 </StyledStatPill>
@@ -152,7 +148,7 @@ export default function WorksheetStats() {
                         </Tooltip>
                       )}
                     >
-                      <StyledInfo />
+                      <MdInfoOutline className={styles.infoIcon} />
                     </OverlayTrigger>
                   )}
                 </StyledStatPill>

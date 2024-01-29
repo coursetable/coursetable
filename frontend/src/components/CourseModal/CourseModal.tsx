@@ -34,12 +34,6 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-// More info button
-const StyledMoreInfo = styled.span`
-  background-color: ${({ theme }) => theme.multivalue};
-  color: ${({ theme }) => theme.text[0]};
-`;
-
 const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
   MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
@@ -251,7 +245,9 @@ function CourseModal() {
                             <TextComponent type={2}>
                               {` (${toSeasonString(view[0])})`}
                             </TextComponent>
-                            <StyledMoreInfo
+                            {/* TODO */}
+                            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+                            <span
                               className={clsx(styles.moreInfo, 'mt-auto ml-2')}
                               onClick={() => {
                                 // Go to overview page of this eval course
@@ -264,7 +260,7 @@ function CourseModal() {
                               }}
                             >
                               More Info
-                            </StyledMoreInfo>
+                            </span>
                           </span>
                         </Row>
                       </Modal.Title>

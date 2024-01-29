@@ -11,7 +11,6 @@ declare module 'styled-components' {
     border: string;
     select: string;
     selectHover: string;
-    multivalue: string;
     hidden: string;
     disabled: string;
     buttonHover: string;
@@ -22,7 +21,6 @@ declare module 'styled-components' {
     primary: string;
     primaryLight: string;
     primaryHover: string;
-    rowOdd: string;
     transDur: string;
   }
 }

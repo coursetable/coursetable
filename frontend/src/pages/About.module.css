@@ -7,6 +7,7 @@
   font-weight: 600;
   font-size: 25px;
   text-align: center;
+  transition: color var(--trans-dur);
 }
 
 .aboutDescription {

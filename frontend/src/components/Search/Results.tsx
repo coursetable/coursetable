@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import clsx from 'clsx';
 
 import ResultsHeaders from './ResultsHeaders';
@@ -76,8 +76,6 @@ function Results({
   const [rowWidth, setRowWidth] = useState(0);
 
   const { curSeason } = useWorksheet();
-
-  const globalTheme = useTheme();
 
   // Ref to get row width
   const ref = useRef<HTMLDivElement>(null);
@@ -226,13 +224,8 @@ function Results({
               const friends = numFriends[course.season_code + course.crn] ?? [];
               return (
                 <ResultsItem
-                  style={{
-                    ...style,
-                    backgroundColor:
-                      index % 2 === 0
-                        ? globalTheme.surface[0]
-                        : globalTheme.rowOdd,
-                  }}
+                  isOdd={index % 2 === 1}
+                  style={style}
                   course={course}
                   multiSeasons={multiSeasons}
                   isFirst={index === 0}
