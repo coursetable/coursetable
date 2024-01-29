@@ -5,7 +5,7 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
-import { StyledHoverText, TextComponent } from '../components/StyledComponents';
+import { HoverText, TextComponent } from '../components/Typography';
 import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities/display';
 
@@ -26,7 +26,7 @@ function ContextAwareToggle({
   const isCurrentEventKey = currentEventKey === eventKey;
 
   return (
-    <StyledHoverText
+    <HoverText
       className={clsx(
         isCurrentEventKey && 'active',
         'd-flex justify-content-between py-3 px-3',
@@ -43,7 +43,7 @@ function ContextAwareToggle({
           styles.accordionArrow,
         )}
       />
-    </StyledHoverText>
+    </HoverText>
   );
 }
 
@@ -277,7 +277,7 @@ function FAQ() {
         Frequently Asked Questions
       </h1>
       <p className={clsx(styles.faqDescription, 'mb-3')}>
-        <TextComponent type={1}>Have another question?</TextComponent>{' '}
+        <TextComponent type="secondary">Have another question?</TextComponent>{' '}
         <a href="https://feedback.coursetable.com">Contact us</a>.
       </p>
       <Accordion>
@@ -288,7 +288,7 @@ function FAQ() {
             </div>
             <Accordion.Collapse eventKey={String(idx)}>
               <Card.Body className="py-3">
-                <TextComponent type={1}>{faq.contents}</TextComponent>
+                <TextComponent type="secondary">{faq.contents}</TextComponent>
               </Card.Body>
             </Accordion.Collapse>
           </Card>

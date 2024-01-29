@@ -11,10 +11,7 @@ import { useUser } from '../contexts/userContext';
 import styles from './Challenge.module.css';
 
 import ChallengeError from '../images/error.svg';
-import {
-  TextComponent,
-  SurfaceComponent,
-} from '../components/StyledComponents';
+import { TextComponent, SurfaceComponent } from '../components/Typography';
 
 import { API_ENDPOINT } from '../config';
 
@@ -272,10 +269,7 @@ function Challenge() {
         className="py-5"
         style={{ backgroundColor: 'rgba(255, 170, 165, 0.5)' }}
       >
-        <SurfaceComponent
-          layer={0}
-          className="container col-sm-8 col-md-6 col-lg-4 text-center p-5 rounded shadow"
-        >
+        <SurfaceComponent className="container col-sm-8 col-md-6 col-lg-4 text-center p-5 rounded shadow">
           <img
             alt="No courses found."
             className="w-50 md:w-25 py-5"
@@ -293,14 +287,11 @@ function Challenge() {
       className="py-5"
       style={{ backgroundColor: 'rgba(168, 216, 234, 0.5)' }}
     >
-      <SurfaceComponent
-        layer={0}
-        className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow"
-      >
+      <SurfaceComponent className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow">
         {/* Page Header */}
         <h1 className="font-weight-bold mb-2">Enable evaluations</h1>
         {/* Page Description */}
-        <TextComponent type={1}>
+        <TextComponent type="secondary">
           <p className="mb-2">
             To confirm that you have access to course evaluations, we ask that
             you retrieve the number of people who responded to a specific

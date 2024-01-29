@@ -14,6 +14,10 @@
   transition: color var(--trans-dur);
 }
 
+.clearIcon:hover {
+  color: var(--hover-color);
+}
+
 .button {
   background-color: var(--color-surface);
   color: var(--color-text);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 import clsx from 'clsx';
 import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
@@ -10,15 +10,34 @@ import { ratingColormap } from '../../utilities/constants';
 import { getOverallRatings, getWorkloadRatings } from '../../utilities/course';
 import styles from './WorksheetStats.module.css';
 
-const StyledStatPill = styled.span<
-  { colormap: chroma.Scale; stat: number } | { colormap?: never; stat?: never }
->`
-  background-color: ${({ theme, colormap, stat }) =>
-    colormap
-      ? colormap(stat).alpha(theme.ratingAlpha).css()
-      : theme.surface[0]};
-  color: ${({ theme, stat }) => (stat ? '#141414' : theme.text[0])};
-`;
+function StatPill({
+  colorMap,
+  stat,
+  children,
+}: (
+  | {
+      readonly colorMap: chroma.Scale;
+      readonly stat: number;
+    }
+  | {
+      readonly colorMap?: never;
+      readonly stat?: never;
+    }
+) & { readonly children: React.ReactNode }) {
+  const globalTheme = useTheme();
+  return (
+    <span
+      className={clsx(styles.statPill, stat && styles.hasStat)}
+      style={{
+        backgroundColor: colorMap
+          ? colorMap(stat).alpha(globalTheme.ratingAlpha).css()
+          : undefined,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
 
 const courseNumberColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
@@ -90,22 +109,19 @@ export default function WorksheetStats() {
           <div className={styles.stats}>
             <ul>
               <li>
-                <StyledStatPill>Total courses</StyledStatPill>
-                <StyledStatPill
-                  colormap={courseNumberColormap}
-                  stat={courseCnt}
-                >
+                <StatPill>Total courses</StatPill>
+                <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
                   {courseCnt}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>Total credits</StyledStatPill>
-                <StyledStatPill colormap={creditColormap} stat={credits}>
+                <StatPill>Total credits</StatPill>
+                <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>
+                <StatPill>
                   Total workload
                   {coursesWithoutWorkload.length > 0 && (
                     <OverlayTrigger
@@ -125,13 +141,13 @@ export default function WorksheetStats() {
                       <MdInfoOutline className={styles.infoIcon} />
                     </OverlayTrigger>
                   )}
-                </StyledStatPill>
-                <StyledStatPill colormap={workloadColormap} stat={workload}>
+                </StatPill>
+                <StatPill colorMap={workloadColormap} stat={workload}>
                   {workload.toFixed(2)}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>
+                <StatPill>
                   Average rating
                   {coursesWithoutRating.length > 0 && (
                     <OverlayTrigger
@@ -151,18 +167,18 @@ export default function WorksheetStats() {
                       <MdInfoOutline className={styles.infoIcon} />
                     </OverlayTrigger>
                   )}
-                </StyledStatPill>
-                <StyledStatPill colormap={ratingColormap} stat={avgRating}>
+                </StatPill>
+                <StatPill colorMap={ratingColormap} stat={avgRating}>
                   {avgRating.toFixed(2)}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li className={styles.wide}>
-                <StyledStatPill>Skills & Areas</StyledStatPill>
-                <StyledStatPill>
+                <StatPill>Skills & Areas</StatPill>
+                <StatPill>
                   {skillsAreas.sort().map((skill, i) => (
                     <SkillBadge skill={skill} key={i} />
                   ))}
-                </StyledStatPill>
+                </StatPill>
               </li>
             </ul>
           </div>

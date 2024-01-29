@@ -2,7 +2,7 @@ import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { StyledPopover } from '../StyledComponents';
+import { InfoPopover } from '../Typography';
 import type { Listing } from '../../utilities/common';
 import { truncatedText } from '../../utilities/course';
 import styles from './CalendarEvent.module.css';
@@ -31,7 +31,7 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
       // Course info that appears on hover
       placement="right"
       overlay={(props) => (
-        <StyledPopover {...props} id="title-popover">
+        <InfoPopover {...props} id="title-popover">
           <Popover.Title>
             <strong>{course.title}</strong>
             <span className="d-block">{course.times_summary}</span>
@@ -43,7 +43,7 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
               {truncatedText(course.requirements, 250, '')}
             </div>
           </Popover.Content>
-        </StyledPopover>
+        </InfoPopover>
       )}
       // Have a 1000ms delay before showing popover so it only pops up when user
       // wants it to

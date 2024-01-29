@@ -10,7 +10,7 @@ import { ThemeProvider as SCThemeProvider } from 'styled-components';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 import { lightTheme, darkTheme } from '../components/Themes';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
 type Store = {
   theme: Theme;

@@ -21,6 +21,12 @@
   z-index: 1000;
   margin-left: -30px;
   cursor: pointer;
+  color: var(--color-icon-focus);
+  transition: color var(--trans-dur);
+}
+
+.searchTextClear:hover {
+  color: var(--hover-color);
 }
 
 .range {

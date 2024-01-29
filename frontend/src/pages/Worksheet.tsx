@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
 import WorksheetList from '../components/Worksheet/WorksheetList';
-import { SurfaceComponent } from '../components/StyledComponents';
+import { SurfaceComponent } from '../components/Typography';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
@@ -108,7 +108,7 @@ function Worksheet() {
                 worksheetView.view === 'list' && styles.hidden,
               )}
             >
-              <SurfaceComponent layer={0} className={styles.calendarContainer}>
+              <SurfaceComponent className={styles.calendarContainer}>
                 <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
                 <div className={clsx(styles.expandBtn, styles.topRight)}>
