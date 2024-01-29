@@ -17,3 +17,25 @@ mark {
   padding: 0px;
   border-radius: 3.5px;
 }
+
+.tabs {
+  font-weight: 500;
+  position: sticky;
+  top: -1rem;
+}
+
+.tabs :global(.active) {
+  color: #468ff2 !important;
+  border-bottom: none;
+}
+
+.commentRow {
+  font-size: 14px;
+  font-weight: 450;
+}
+
+.sortOption {
+  padding: 3px 5px;
+  font-weight: 500;
+  cursor: pointer;
+}

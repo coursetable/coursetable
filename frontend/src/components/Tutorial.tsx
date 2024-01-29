@@ -4,6 +4,7 @@ import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import styles from './Tutorial.module.css';
 import './reactour-override.css';
 
 // Next button for tutorial
@@ -39,27 +40,6 @@ const PrevButton = styled(Button)`
     background-color: transparent;
     color: ${({ theme }) => theme.text[2]} !important;
   }
-`;
-
-// Step content in helper
-const StepContent = styled.div`
-  font-size: 14px;
-  margin-bottom: 1rem;
-`;
-
-// Step video
-const StepVideo = styled.video`
-  margin-left: -30px;
-  margin-top: -24px;
-  margin-bottom: 20px;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-`;
-
-// Step image
-const StepImage = styled.img`
-  width: 100% !important;
-  margin-bottom: 20px;
 `;
 
 type Props = {
@@ -233,42 +213,53 @@ function Tutorial({
   }, [globalTheme, shownTutorial]);
 
   // Generate react tour steps
-  const steps: ReactourStep[] = stepsContent.map(
-    ({ selector, header, text, observe, video, image, position }) => {
+  const steps = stepsContent.map(
+    ({
+      selector,
+      header,
+      text,
+      observe,
+      video,
+      image,
+      position,
+    }): ReactourStep => {
       // Create step content
       const content = () => (
-        <StepContent>
+        <div className={styles.stepContent}>
           {image && (
-            <StepImage
+            <img
+              className={styles.stepImage}
               src={`./images/${image}-${globalTheme.theme}.png`}
               alt={image}
               height="362"
             />
           )}
           {video && (
-            <StepVideo autoPlay loop key={selector} width="116%" height="270">
+            // TODO
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video
+              className={styles.stepVideo}
+              autoPlay
+              loop
+              key={selector}
+              width="116%"
+              height="270"
+            >
               <source src={`./videos/${selector}.mp4`} type="video/mp4" />
-            </StepVideo>
+            </video>
           )}
           <h6 className="mt-2">{header}</h6>
           {typeof text === 'string' ? text : text()}
-        </StepContent>
+        </div>
       );
 
-      // Create step object
-      let step: ReactourStep = {
+      return {
         selector: selector && `[data-tutorial="${selector}"]`,
         content,
         style: helperStyle,
+        ...(observe && { observe: `[data-tutorial="${selector}-observe"]` }),
+        ...(position && { position }),
       };
-
-      // Add observe selector if observing
-      if (observe)
-        step = { ...step, observe: `[data-tutorial="${selector}-observe"]` };
-
-      if (position) step = { ...step, position };
-
-      return step;
     },
   );
 

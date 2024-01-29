@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from 'react-bootstrap';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { TbCalendarDown } from 'react-icons/tb';
 
@@ -19,32 +20,18 @@ import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
+import styles from './WorksheetCalendarList.module.css';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: 56px;
-  z-index: 2;
   transition:
     border-color ${({ theme }) => theme.transDur},
     background-color ${({ theme }) => theme.transDur},
     color ${({ theme }) => theme.transDur};
 `;
 
-// Hide icon
-const StyledBsEyeSlash = styled(BsEyeSlash)`
-  transition: transform 0.3s !important;
-`;
-
-// Show icon
-const StyledBsEye = styled(BsEye)`
-  transition: transform 0.3s !important;
-`;
-
 const StyledTbCalendarDown = styled(TbCalendarDown)`
-  transition: transform 0.3s !important;
   color: ${({ theme }) => theme.text[0]};
 `;
 
@@ -52,16 +39,6 @@ const StyledTbCalendarDown = styled(TbCalendarDown)`
 const StyledBtn = styled(Button)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
-  padding: 5px;
-  cursor: pointer;
-  text-align: center;
-  border: solid 2px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  margin-bottom: 5px;
   transition:
     border-color ${({ theme }) => theme.transDur},
     background-color ${({ theme }) => theme.transDur},
@@ -72,17 +49,12 @@ const StyledBtn = styled(Button)`
   }
 
   &:disabled {
-    background-color: transparent;
     color: ${({ theme }) => theme.text[2]} !important;
   }
 
   &:hover {
-    border: 2px solid hsl(0, 0%, 70%);
     background-color: ${({ theme }) => theme.buttonActive};
     color: ${({ theme }) => theme.text[0]} !important;
-    ${StyledBsEyeSlash}, ${StyledBsEye}, ${StyledTbCalendarDown} {
-      transform: scale(1.15);
-    }
   }
 
   &:focus {
@@ -91,10 +63,6 @@ const StyledBtn = styled(Button)`
 
   &.form-control:focus {
     color: ${({ theme }) => theme.text[0]};
-  }
-
-  & .dropdown-menu {
-    min-width: 20rem !important;
   }
 
   & .dropdown-menu,
@@ -108,25 +76,9 @@ const StyledBtn = styled(Button)`
   }
 `;
 
-// Container of row dropdown (without spacer)
-const StyledContainer = styled(SurfaceComponent)`
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-`;
-
-// Course list
-const CourseList = styled(SurfaceComponent)`
-  overflow-x: hidden;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-`;
-
 /**
  * Render worksheet list in default worksheet view
  */
-
 function WorksheetCalendarList() {
   const { courses, curSeason, hiddenCourses, worksheetNumber, toggleCourse } =
     useWorksheet();
@@ -150,13 +102,13 @@ function WorksheetCalendarList() {
     return Object.keys(hiddenCourses[curSeason]!).length === courses.length;
   }, [hiddenCourses, courses, curSeason]);
 
-  const HideShowIcon = areHidden ? StyledBsEyeSlash : StyledBsEye;
+  const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
   return (
     <>
       <WorksheetStats />
-      <StyledSpacer className="pt-3">
-        <StyledContainer layer={1} className="mx-1">
+      <StyledSpacer className={clsx(styles.spacer, 'pt-3')}>
+        <SurfaceComponent layer={1} className={clsx(styles.container, 'mx-1')}>
           <div className="shadow-sm p-2">
             <ButtonGroup className="w-100">
               <OverlayTrigger
@@ -170,9 +122,12 @@ function WorksheetCalendarList() {
                 <StyledBtn
                   onClick={() => toggleCourse(areHidden ? -2 : -1)}
                   variant="none"
-                  className="px-3 w-100"
+                  className={clsx(styles.button, 'px-3 w-100')}
                 >
-                  <HideShowIcon className="my-auto pr-2" size={32} />
+                  <HideShowIcon
+                    className={clsx(styles.icon, 'my-auto pr-2')}
+                    size={32}
+                  />
                 </StyledBtn>
               </OverlayTrigger>
               <OverlayTrigger
@@ -187,9 +142,11 @@ function WorksheetCalendarList() {
                   as={StyledBtn}
                   drop="down"
                   menuAlign="right"
-                  title={<StyledTbCalendarDown size={22} />}
+                  title={
+                    <StyledTbCalendarDown className={styles.icon} size={22} />
+                  }
                   variant="none"
-                  className="w-100"
+                  className={clsx(styles.button, 'w-100')}
                 >
                   <Dropdown.Item eventKey="1">
                     <GoogleCalendarButton />
@@ -201,10 +158,10 @@ function WorksheetCalendarList() {
               </OverlayTrigger>
             </ButtonGroup>
           </div>
-        </StyledContainer>
+        </SurfaceComponent>
       </StyledSpacer>
       {/* List of courses for this season */}
-      <CourseList layer={0} className="mx-1">
+      <SurfaceComponent layer={0} className={clsx(styles.courseList, 'mx-1')}>
         {items.length > 0 ? (
           // There are courses for this season
           <ListGroup variant="flush">{items}</ListGroup>
@@ -212,7 +169,7 @@ function WorksheetCalendarList() {
           // There aren't courses for this season
           <NoCourses />
         )}
-      </CourseList>
+      </SurfaceComponent>
     </>
   );
 }

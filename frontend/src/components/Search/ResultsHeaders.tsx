@@ -17,8 +17,8 @@ const StyledToggle = styled.div`
   padding: 7.5px;
   border-radius: 15px;
   transition: color ${({ theme }) => theme.transDur};
+  cursor: pointer;
   &:hover {
-    cursor: pointer;
     background-color: ${({ theme }) => theme.select};
     color: ${({ theme }) => theme.primary};
   }

@@ -1,0 +1,13 @@
+.check {
+  margin: 0.25rem 0;
+  user-select: none;
+  width: 100%;
+}
+
+.input {
+  cursor: pointer !important;
+}
+
+.label {
+  cursor: pointer !important;
+}

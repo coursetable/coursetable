@@ -1,21 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
 import { useSearch, type Filters } from '../../contexts/searchContext';
-
-const StyledCheck = styled(Form.Check)`
-  margin: 0.25rem 0;
-  user-select: none;
-  width: 100%;
-`;
-
-const StyledInput = styled(Form.Check.Input)`
-  cursor: pointer !important;
-`;
-
-const StyledLabel = styled(Form.Check.Label)`
-  cursor: pointer !important;
-`;
+import styles from './Toggle.module.css';
 
 const labels = {
   searchDescription: 'Include descriptions in search',
@@ -35,19 +21,21 @@ export default function Toggle({
 }) {
   const { filters, setStartTime } = useSearch();
   return (
-    <StyledCheck type="switch">
-      <StyledInput
+    <Form.Check type="switch" className={styles.check}>
+      <Form.Check.Input
+        className={styles.input}
         checked={filters[handle].value}
         onChange={() => {}} // Dummy handler to remove warning
       />
-      <StyledLabel
+      <Form.Check.Label
+        className={styles.label}
         onClick={() => {
           filters[handle].set((x) => !x);
           setStartTime(Date.now());
         }}
       >
         {labels[handle]}
-      </StyledLabel>
-    </StyledCheck>
+      </Form.Check.Label>
+    </Form.Check>
   );
 }

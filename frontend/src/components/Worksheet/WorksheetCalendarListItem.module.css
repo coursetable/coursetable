@@ -1,7 +1,33 @@
+.listItem {
+  background-color: transparent;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Hides icon until you hover over the list item */
+.listItem .hideButtonHidden {
+  opacity: 0;
+  transition: 0.05s opacity;
+}
+
+.listItem:hover .hideButtonHidden {
+  opacity: 1;
+}
+
+@media only screen and (max-width: 480px) {
+  .listItem .hideButtonHidden {
+    opacity: 1;
+  }
+}
+
 .courseTitle {
   display: block;
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.courseCode {
+  overflow: hidden;
 }

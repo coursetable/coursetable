@@ -1,0 +1,4 @@
+.button {
+  transition: color 0.1s;
+  cursor: pointer;
+}

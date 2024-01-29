@@ -11,13 +11,8 @@ import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
   background-color: ${({ theme }) => theme.surface[0]};
-  font-weight: 500;
-  position: sticky;
-  top: -1rem;
   .active {
-    background-color: ${({ theme }) => `${theme.surface[0]} !important`};
-    color: #468ff2 !important;
-    border-bottom: none;
+    background-color: ${({ theme }) => theme.surface[0]} !important;
   }
   .nav-item {
     color: ${({ theme }) => theme.text[0]};
@@ -30,22 +25,17 @@ const StyledTabs = styled(Tabs)`
 
 // Row for each comment
 const StyledCommentRow = styled(Row)`
-  font-size: 14px;
-  font-weight: 450;
   border-bottom: 1px solid ${({ theme }) => theme.multivalue};
 `;
 
 // Bubble to choose sort order
 const StyledSortOption = styled.span<{ active: boolean }>`
-  padding: 3px 5px;
   background-color: ${({ theme, active }) =>
     active ? 'rgba(92, 168, 250,0.5)' : theme.border};
   color: ${({ theme, active }) => (active ? theme.text[0] : theme.text[2])};
-  font-weight: 500;
   &:hover {
     background-color: ${({ theme, active }) =>
       active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue};
-    cursor: pointer;
   }
 `;
 
@@ -118,13 +108,19 @@ function EvaluationResponses({
           response.toLowerCase().includes(filter.toLowerCase()),
         )
         .map((response, index) => (
-          <StyledCommentRow key={index} className="m-auto p-2 responses">
+          <StyledCommentRow
+            key={index}
+            className={clsx(styles.commentRow, 'm-auto p-2 responses')}
+          >
             <TextComponent type={1}>{response}</TextComponent>
           </StyledCommentRow>
         ));
       if (filteredResps.length === 0) {
         return [
-          <StyledCommentRow key={0} className="m-auto p-2">
+          <StyledCommentRow
+            key={0}
+            className={clsx(styles.commentRow, 'm-auto p-2')}
+          >
             <TextComponent type={1}>No matches found.</TextComponent>
           </StyledCommentRow>,
         ];
@@ -168,12 +164,14 @@ function EvaluationResponses({
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sortOptions}>
           <StyledSortOption
+            className={styles.sortOption}
             active={sortOrder === 'length'}
             onClick={() => setSortOrder('length')}
           >
             original order
           </StyledSortOption>
           <StyledSortOption
+            className={styles.sortOption}
             active={sortOrder === 'original'}
             onClick={() => setSortOrder('original')}
           >
@@ -182,6 +180,7 @@ function EvaluationResponses({
         </div>
       </Row>
       <StyledTabs
+        className={styles.tabs}
         variant="tabs"
         transition={false}
         onSelect={() => {

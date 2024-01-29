@@ -12,8 +12,6 @@ import { scrollToTop } from '../utilities/display';
 
 // Card used in FAQ accordion
 const StyledCard = styled(Card)`
-  background-color: transparent;
-  border: none !important;
   border-bottom: 1px solid ${({ theme }) => theme.border} !important;
   transition: border-color ${({ theme }) => theme.transDur};
 
@@ -26,8 +24,6 @@ const StyledCard = styled(Card)`
 
 // Container for FAQ
 const StyledContainer = styled.div`
-  width: 600px;
-  margin-bottom: 3rem;
   transition: color ${({ theme }) => theme.transDur};
 `;
 
@@ -294,7 +290,7 @@ function FAQ() {
   ];
 
   return (
-    <StyledContainer className="mx-auto">
+    <StyledContainer className={clsx('mx-auto', styles.container)}>
       <h1 className={clsx(styles.faqHeader, 'mt-5 mb-1')}>
         Frequently Asked Questions
       </h1>
@@ -304,7 +300,7 @@ function FAQ() {
       </p>
       <Accordion>
         {faqs.map((faq, idx) => (
-          <StyledCard key={idx}>
+          <StyledCard className={styles.card} key={idx}>
             <div>
               <ContextAwareToggle eventKey={String(idx)} question={faq.title} />
             </div>

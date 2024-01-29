@@ -10,6 +10,8 @@
     rgb(75, 127, 192) 50%,
     rgb(99, 166, 208) 100%
   );
+  transition: background-color 0.2s linear;
+  color: #ffffff;
 }
 
 .banner .content {
@@ -23,7 +25,7 @@
   width: 30px;
   transition: 0.33s ease-out;
 }
-.banner .closeButton:hover {
+.banner .closeButton {
   cursor: pointer;
   color: rgb(51, 162, 255);
 }

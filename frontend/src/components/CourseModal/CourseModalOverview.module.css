@@ -25,16 +25,22 @@
   transition: max-height 0.2s ease-out;
 }
 
+.ratingBubble {
+  cursor: pointer;
+}
+
 .ratingBubble:hover {
   background-color: rgb(92, 168, 250);
   max-height: 50px;
-  cursor: pointer;
   transition: max-height 0.2s ease-in;
+}
+
+.ratingBubbleUnclickable {
+  cursor: default;
 }
 
 .ratingBubbleUnclickable:hover {
   max-height: 50px;
-  cursor: default;
   transition: max-height 0.2s ease-in;
 }
 

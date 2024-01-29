@@ -16,22 +16,12 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import styles from './WorksheetToggleButton.module.css';
 
 const StyledButton = styled(Button)`
-  color: ${({ theme }) => theme.primary}!important;
-  &:hover {
-    opacity: 0.5;
-  }
+  color: ${({ theme }) => theme.primary} !important;
 `;
 
 const StyledSelect = styled.select`
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.select || '#f2f2f2'}!important;
-  color: ${({ theme }) => theme.text[0] || '#333'}!important;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  background-color: ${({ theme }) => theme.select || '#f2f2f2'} !important;
+  color: ${({ theme }) => theme.text[0] || '#333'} !important;
 `;
 
 /**

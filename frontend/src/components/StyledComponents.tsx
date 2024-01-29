@@ -22,13 +22,6 @@ export const SmallTextComponent = styled(TextComponent)`
   ${breakpoints('font-size', '%', [{ 1320: 64 }])};
 `;
 
-// Div for banner components
-export const StyledBanner = styled.div`
-  background-color: #0086fa;
-  transition: background-color 0.2s linear;
-  color: #ffffff;
-`;
-
 // FormControl for any typed inputs
 export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
@@ -138,9 +131,9 @@ export const StyledRating = styled.div<{
 export const StyledLink = styled.span`
   color: ${({ theme }) => theme.primary};
   transition: color ${({ theme }) => theme.transDur};
+  cursor: pointer;
   &:hover {
     color: ${({ theme }) => theme.primaryHover};
-    cursor: pointer;
   }
 `;
 
@@ -148,9 +141,9 @@ export const StyledLink = styled.span`
 export const StyledHoverText = styled.span`
   user-select: none;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
+  cursor: pointer;
   &:hover {
     color: ${({ theme }) => theme.primary};
-    cursor: pointer;
   }
 `;
 

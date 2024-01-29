@@ -54,9 +54,9 @@ const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
   outline: none !important;
   background-color: ${({ theme, inWorksheet }) =>
     inWorksheet ? theme.primaryLight : 'inherit'};
+  cursor: pointer;
 
   &:hover {
-    cursor: pointer;
     background-color: ${({ theme }) => theme.selectHover} !important;
   }
 
