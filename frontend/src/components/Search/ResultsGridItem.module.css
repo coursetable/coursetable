@@ -3,14 +3,31 @@
   cursor: pointer;
 }
 
-.itemContainer:focus,
-.itemContainer:active {
+.resultItem:not(.inWorksheetResultItem) {
+  border-radius: 8px;
+  background-color: rgb(245, 245, 245);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+[data-theme='dark'] .resultItem:not(.inWorksheetResultItem) {
+  background-color: var(--color-surface-elevated);
+}
+
+.inWorksheetResultItem {
+  background-color: var(--color-primary-light);
+}
+
+.resultItem:focus,
+.resultItem:active {
   border: none;
   outline: none;
 }
 
-.itemContainer {
-  border-radius: 8px;
+.resultItem:hover {
+  background-color: var(--color-select-hover) !important;
 }
 
 .seasonTag {

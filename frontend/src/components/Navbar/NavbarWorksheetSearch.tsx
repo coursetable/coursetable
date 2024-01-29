@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import styled from 'styled-components';
 import { components } from 'react-select';
 import { toast } from 'react-toastify';
 import { Popout } from '../Search/Popout';
@@ -8,59 +8,11 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
 import { isOption, type Option } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities/display';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/course';
 import { useUser } from '../../contexts/userContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import type { NetId, Season } from '../../utilities/common';
 import styles from './NavbarWorksheetSearch.module.css';
-
-// Toggle button group
-// Do not pass isTablet prop to ToggleButtonGroup
-const StyledToggleButtonGroup = styled(({ isTablet, ...props }) => (
-  <ToggleButtonGroup {...props} />
-))<{
-  isTablet: boolean;
-}>`
-  width: ${({ isTablet }) => (isTablet ? 140 : 180)}px;
-`;
-
-// Toggle button
-const StyledToggleButton = styled(ToggleButton)`
-  box-shadow: none !important;
-  font-size: 14px;
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-  background-color: ${({ theme }) => theme.surface[0]};
-  color: ${({ theme }) => theme.text[0]};
-  border: ${({ theme }) => theme.icon} 2px solid;
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-  padding: 0.25rem 0;
-  width: 50%;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonHover};
-    color: ${({ theme }) => theme.text[0]};
-    border: ${({ theme }) => theme.primaryHover} 2px solid;
-  }
-
-  &:active {
-    background-color: ${({ theme }) => theme.buttonActive}!important;
-    color: ${({ theme }) => theme.text[0]}!important;
-  }
-
-  &:focus {
-    box-shadow: none !important;
-  }
-
-  &.active {
-    background-color: ${({ theme }) => theme.primaryHover}!important;
-    border-color: ${({ theme }) => theme.primaryHover}!important;
-  }
-`;
 
 /**
  * Worksheet search form for the desktop in the navbar
@@ -165,8 +117,6 @@ export function NavbarWorksheetSearch() {
     return friendRequestOptionsTemp;
   }, [friendRequestInfo]);
 
-  const { isTablet } = useWindowDimensions();
-
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   const [deleting, setDeleting] = useState(0);
@@ -179,20 +129,23 @@ export function NavbarWorksheetSearch() {
         <Row className={styles.row}>
           <div className="d-flex align-items-center">
             {/* Worksheet View Toggle */}
-            <StyledToggleButtonGroup
+            <ToggleButtonGroup
               name="worksheet-view-toggle"
               type="radio"
               value={worksheetView.view}
               onChange={(val: 'calendar' | 'list') =>
                 handleWorksheetView({ view: val, mode: '' })
               }
-              className="ml-2 mr-3"
+              className={clsx(styles.toggleButtonGroup, 'ml-2 mr-3')}
               data-tutorial="worksheet-2"
-              isTablet={isTablet}
             >
-              <StyledToggleButton value="calendar">Calendar</StyledToggleButton>
-              <StyledToggleButton value="list">List</StyledToggleButton>
-            </StyledToggleButtonGroup>
+              <ToggleButton className={styles.toggleButton} value="calendar">
+                Calendar
+              </ToggleButton>
+              <ToggleButton className={styles.toggleButton} value="list">
+                List
+              </ToggleButton>
+            </ToggleButtonGroup>
             {/* Season Filter Dropdown */}
             <Popout
               buttonText="Season"

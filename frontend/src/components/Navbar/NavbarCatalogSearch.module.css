@@ -11,12 +11,6 @@
   width: 40vw;
 }
 
-@media (max-width: 1200px) {
-  .searchWrapper {
-    width: 35vw;
-  }
-}
-
 .searchBar {
   border-radius: 4px;
   height: 100%;
@@ -47,6 +41,16 @@
   user-select: none;
   cursor: default;
   transition: color var(--trans-dur);
+}
+
+.mainRange {
+  width: 100px;
+}
+
+@media (max-width: var(--max-width-tablet)) {
+  .mainRange {
+    width: 74px;
+  }
 }
 
 .advancedWrapper {
@@ -86,4 +90,21 @@
 .resetButton {
   padding: 0.25rem 0.375rem;
   font-size: 12px;
+}
+
+@media (max-width: var(--max-width-sm-desktop)) {
+  .searchWrapper {
+    width: 35vw;
+  }
+
+  .rangeLabel,
+  .advancedLabel,
+  .searchBar {
+    font-size: 12px;
+  }
+
+  .rangeValueLabel,
+  .resetButton {
+    font-size: 10px;
+  }
 }

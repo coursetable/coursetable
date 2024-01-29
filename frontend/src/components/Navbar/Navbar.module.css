@@ -10,6 +10,18 @@
   padding-bottom: 0.75rem;
 }
 
+.navToggle {
+  border-color: var(--color-border) !important;
+}
+
+.navToggle :global(.navbar-toggler-icon) {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(69, 69, 69, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+[data-theme='dark'] .navToggle :global(.navbar-toggler-icon) {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(219, 219, 219, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 .navbarMe {
   /* padding-left: 1rem; */
   height: 40px;
@@ -47,6 +59,18 @@
   padding: 0.5rem 1rem 0.5rem 0rem;
   font-weight: 500;
   user-select: none;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: var(--max-width-sm-desktop)) {
+  .navLink,
+  .signInOutButton {
+    font-size: 0.9rem;
+  }
+}
+
+.signInOutButton:hover {
+  color: var(--color-primary);
 }
 
 .navLink {

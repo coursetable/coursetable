@@ -9,7 +9,6 @@ import { BiBookOpen } from 'react-icons/bi';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import {
@@ -30,23 +29,6 @@ import {
   toSeasonString,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
-
-// Grid Item wrapper
-const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
-  background-color: ${({ theme, inWorksheet }) =>
-    inWorksheet
-      ? theme.primaryLight
-      : theme.theme === 'light'
-        ? 'rgb(245, 245, 245)'
-        : theme.surface[1]};
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-  &:hover {
-    background-color: ${({ theme }) => theme.selectHover};
-  }
-`;
 
 function RatingCell({
   rating,
@@ -119,16 +101,24 @@ function ResultsGridItem({
       className={clsx(styles.container, 'px-2 pt-0 pb-3')}
       style={{ overflow: 'hidden' }}
     >
-      <StyledGridItem
+      {/* TODO */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
         onClick={() => {
           setSearchParams((prev) => {
             prev.set('course-modal', `${course.season_code}-${course.crn}`);
             return prev;
           });
         }}
-        className={clsx(styles.oneLine, styles.itemContainer, 'px-3 pb-3')}
+        className={clsx(
+          styles.oneLine,
+          styles.resultItem,
+          courseInWorksheet && styles.inWorksheetResultItem,
+          'px-3 pb-3',
+        )}
+        // TODO
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
-        inWorksheet={courseInWorksheet}
       >
         <Row className="m-auto">
           {/* Course Code */}
@@ -316,7 +306,7 @@ function ResultsGridItem({
             </div>
           </Col>
         </Row>
-      </StyledGridItem>
+      </div>
       {/* Add/remove from worksheet button */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton

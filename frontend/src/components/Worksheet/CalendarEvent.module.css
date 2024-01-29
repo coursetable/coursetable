@@ -2,7 +2,7 @@
   font-weight: 500;
 }
 
-@media only screen and (max-width: 767px) {
+@media (max-width: var(--max-width-mobile)) {
   .locationText {
     display: none;
   }

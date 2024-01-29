@@ -23,7 +23,7 @@
   opacity: 1;
 }
 
-@media only screen and (max-width: 480px) {
+@media (max-width: var(--max-width-sm-mobile)) {
   .listItem .hideButtonHidden {
     opacity: 1;
   }

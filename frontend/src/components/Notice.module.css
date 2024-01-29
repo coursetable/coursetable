@@ -24,8 +24,5 @@
 .banner .closeButton {
   width: 30px;
   transition: 0.33s ease-out;
-}
-.banner .closeButton {
   cursor: pointer;
-  color: rgb(51, 162, 255);
 }

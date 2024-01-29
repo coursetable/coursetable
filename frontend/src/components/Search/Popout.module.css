@@ -33,6 +33,12 @@
     color var(--trans-dur);
 }
 
+@media (max-width: var(--max-width-sm-desktop)) {
+  .button {
+    font-size: 12px;
+  }
+}
+
 .button:hover {
   background-color: var(--color-button-hover);
   color: var(--color-primary-hover);
