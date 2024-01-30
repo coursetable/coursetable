@@ -13,6 +13,7 @@ import {
 } from '../utilities/common';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
+import { useWorksheet } from './worksheetContext';
 import {
   skillsAreasColors,
   skillsAreas,
@@ -20,6 +21,7 @@ import {
   schools,
 } from '../utilities/constants';
 import {
+  isInWorksheet,
   checkConflict,
   getDayTimes,
   getEnrolled,
@@ -316,7 +318,13 @@ export function SearchProvider({
   // (if multiple seasons are queried, the season is indicated)
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { data: worksheetInfo } = useWorksheetInfo(user.worksheet);
+  const { worksheetNumber } = useWorksheet();
+
+  const { data: worksheetInfo } = useWorksheetInfo(
+    user.worksheet,
+    null,
+    worksheetNumber,
+  );
 
   // Filtered and sorted courses
   const searchData = useMemo(() => {
@@ -400,6 +408,12 @@ export function SearchProvider({
       if (
         hideConflicting.value &&
         listing.times_summary !== 'TBA' &&
+        !isInWorksheet(
+          listing.season_code,
+          listing.crn,
+          worksheetNumber,
+          user.worksheet,
+        ) &&
         checkConflict(worksheetInfo, listing).length > 0
       )
         return false;
@@ -499,6 +513,8 @@ export function SearchProvider({
     processedNumBounds,
     hideCancelled.value,
     hideConflicting.value,
+    worksheetNumber,
+    user.worksheet,
     worksheetInfo,
     hideDiscussionSections.value,
     hideFirstYearSeminars.value,

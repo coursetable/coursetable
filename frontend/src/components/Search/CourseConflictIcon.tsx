@@ -4,6 +4,7 @@ import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 import { MdErrorOutline } from 'react-icons/md';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Listing } from '../../utilities/common';
 import {
   checkConflict,
@@ -17,22 +18,28 @@ import {
  */
 function CourseConflictIcon({ course }: { readonly course: Listing }) {
   const { user } = useUser();
-
-  const inWorksheet = isInWorksheet(
-    course.season_code,
-    course.crn,
-    0,
-    user.worksheet,
-  );
+  const { worksheetNumber } = useWorksheet();
 
   // Fetch listing info for each listing in user's worksheet
-  const { data } = useWorksheetInfo(user.worksheet, course.season_code);
+  const { data } = useWorksheetInfo(
+    user.worksheet,
+    course.season_code,
+    worksheetNumber,
+  );
 
   // Update conflict status whenever the user's worksheet changes
   const conflicts = useMemo(() => {
+    const inWorksheet = isInWorksheet(
+      course.season_code,
+      course.crn,
+      worksheetNumber,
+      user.worksheet,
+    );
+    // If the course is in the worksheet, we never report a conflict
+    if (inWorksheet) return [];
     if (course.times_summary === 'TBA') return [];
     return checkConflict(data, course);
-  }, [course, data]);
+  }, [course, data, user.worksheet, worksheetNumber]);
 
   // Update conflict status whenever the user's worksheet changes
   const crossListed = useMemo(
@@ -42,31 +49,25 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
 
   return (
     // Smooth fade in and out transition
-    <Fade in={!inWorksheet && conflicts.length > 0}>
+    <Fade in={conflicts.length > 0}>
       <div>
         <OverlayTrigger
           placement="top"
-          overlay={(props) =>
-            // Render if this course isn't in the worksheet and there is a
-            // conflict
-            !inWorksheet && conflicts.length > 0 ? (
-              <Tooltip {...props} id="conflict-icon-button-tooltip">
-                <small style={{ fontWeight: 500 }}>
-                  Conflicts with: <br />
-                  {conflicts.map((x) => x.course_code).join(', ')} <br />
-                </small>
-                {crossListed !== false ? (
-                  // Show only if the class is cross-listed with another class
-                  // in the worksheet
-                  <small>(cross-listed with {crossListed})</small>
-                ) : (
-                  ''
-                )}
-              </Tooltip>
-            ) : (
-              <div />
-            )
-          }
+          overlay={(props) => (
+            <Tooltip {...props} id="conflict-icon-button-tooltip">
+              <small style={{ fontWeight: 500 }}>
+                Conflicts with: <br />
+                {conflicts.map((x) => x.course_code).join(', ')} <br />
+              </small>
+              {crossListed !== false ? (
+                // Show only if the class is cross-listed with another class
+                // in the worksheet
+                <small>(cross-listed with {crossListed})</small>
+              ) : (
+                ''
+              )}
+            </Tooltip>
+          )}
         >
           <MdErrorOutline color="#fc4103" />
         </OverlayTrigger>
