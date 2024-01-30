@@ -68,13 +68,15 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
           <UserProvider>
             <FerryProvider>
               <WindowDimensionsProvider>
-                <SearchProvider>
-                  <WorksheetProvider>
+                {/* SearchProvider must be inside WorksheetProvider because the
+                  former depends on the currently viewed worksheet */}
+                <WorksheetProvider>
+                  <SearchProvider>
                     <ThemeProvider>
                       <div id="base">{children}</div>
                     </ThemeProvider>
-                  </WorksheetProvider>
-                </SearchProvider>
+                  </SearchProvider>
+                </WorksheetProvider>
                 {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
                 <ToastContainer toastClassName="rounded" />
               </WindowDimensionsProvider>
