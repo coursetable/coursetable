@@ -78,7 +78,6 @@
     "mdast-util-to-string": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "rollup-plugin-visualizer": "^5.12.0",
-    "typescript-plugin-css-modules": "^5.0.2",
     "unist-util-visit": "^5.0.0",
     "vite": "^5.0.12",
     "vite-plugin-html": "^3.2.2"

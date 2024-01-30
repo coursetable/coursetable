@@ -94,11 +94,6 @@
   transform: translate(100%, -35%);
 }
 
-.friends {
-  font-weight: 500;
-  padding-left: 2px;
-}
-
 .cancelledText {
   color: rgb(255 98 98);
 }

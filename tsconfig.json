@@ -3,6 +3,11 @@
   "compilerOptions": {
     "noEmit": true,
     "module": "node16",
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+      },
+    ],
     // TODO: enable these
     "exactOptionalPropertyTypes": false,
   },

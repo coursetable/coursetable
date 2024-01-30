@@ -74,18 +74,6 @@
   transform: translate(-40%, 0%);
 }
 
-.friends {
-  position: absolute;
-  top: 0;
-  left: 8px;
-  width: 16px;
-  height: 16px;
-  line-height: 15px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 500;
-}
-
 .iconContainer {
   fill: var(--color-text);
   margin-top: auto;

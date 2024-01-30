@@ -6,11 +6,6 @@
   max-width: 1600px;
 }
 
-.icon {
-  width: 18px;
-  display: block;
-}
-
 .searchResults {
   overflow: hidden;
 }

@@ -62,15 +62,6 @@
   display: block;
 }
 
-.topLeft {
-  left: 0%;
-  transform: rotateZ(90deg) translate(-40%, -85%);
-}
-
-.topLeft:hover {
-  transform: rotateZ(90deg) translate(-40%, -85%) scale(1.1);
-}
-
 .topRight {
   right: 0%;
   transform: translate(50%, -40%);

@@ -61,11 +61,6 @@
   color: var(--color-text);
 }
 
-.hidden {
-  opacity: 0;
-  transition: 0.1s;
-}
-
 .shown {
   opacity: 1;
   transition: 0.2s;
