@@ -8,7 +8,10 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type { HiddenCourses } from '../contexts/worksheetContext';
+import type {
+  HiddenCourses,
+  WorksheetCourse,
+} from '../contexts/worksheetContext';
 import type { CourseEvent } from '../components/Worksheet/CalendarEvent';
 
 /**
@@ -114,7 +117,7 @@ type CalendarEvent = {
   description: string;
   location: string;
   colorIndex: number;
-  listing: Listing;
+  listing: WorksheetCourse;
   days: number[];
 };
 
@@ -203,25 +206,25 @@ type RBCEvent = CourseEvent;
 
 export function getCalendarEvents(
   type: 'gcal',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): GCalEvent[];
 export function getCalendarEvents(
   type: 'ics',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): ICSEvent[];
 export function getCalendarEvents(
   type: 'rbc',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): RBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ) {

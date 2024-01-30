@@ -48,17 +48,13 @@ type ListingOverrides = {
     ][];
   }>;
 };
-type ListingAugments = {
-  // TODO: this should be in the worksheet data structure
-  color?: [number, number, number];
-};
+
 expectType<
   // Make sure we don't override a key that wasn't there originally.
   TypeOf<keyof RawListingResponse, keyof ListingOverrides>
 >(true);
 export type Listing = Omit<RawListingResponse, keyof ListingOverrides> &
-  ListingOverrides &
-  ListingAugments;
+  ListingOverrides;
 
 export function isEqual<T>(a: T, b: T): boolean {
   if (Array.isArray(a) && Array.isArray(b)) {

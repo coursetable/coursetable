@@ -322,7 +322,7 @@ export function SearchProvider({
 
   const { data: worksheetInfo } = useWorksheetInfo(
     user.worksheets,
-    null,
+    processedSeasons,
     worksheetNumber,
   );
 

@@ -265,7 +265,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
             [worksheetNumber: number]: {
               crn: Crn;
             }[];
-          }
+          };
         };
       };
     };
@@ -344,7 +344,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
         [worksheetNumber: number]: {
           crn: Crn;
         }[];
-      }
+      };
     };
     ```
 
