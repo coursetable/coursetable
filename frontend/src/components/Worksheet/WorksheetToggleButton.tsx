@@ -159,7 +159,8 @@ function WorksheetToggleButton({
       overlay={(props) => (
         <Tooltip id="button-tooltip" {...props}>
           <small>
-            {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
+            {inWorksheet ? 'Remove from' : 'Add to'} my{' '}
+            {worksheetOptions[Number(worksheetNumber)]!.label}
           </small>
         </Tooltip>
       )}
