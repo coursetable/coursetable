@@ -71,9 +71,7 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
                 <SearchProvider>
                   <WorksheetProvider>
                     <ThemeProvider>
-                      <div id="base" style={{ height: 'auto' }}>
-                        {children}
-                      </div>
+                      <div id="base">{children}</div>
                     </ThemeProvider>
                   </WorksheetProvider>
                 </SearchProvider>

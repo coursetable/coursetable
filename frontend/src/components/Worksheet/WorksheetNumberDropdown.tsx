@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import styles from './WorksheetNumberDropdown.module.css';
 
 function WorksheetNumDropdown() {
   const { changeWorksheet, worksheetNumber } = useWorksheet();
@@ -19,7 +20,7 @@ function WorksheetNumDropdown() {
   return (
     <div className="container p-0 m-0 w-mx">
       <DropdownButton
-        id="dropdown-btn"
+        className={styles.dropdownButton}
         variant="primary"
         title={
           worksheetNumber === '0'
