@@ -87,7 +87,7 @@ ALTER TABLE `StudentBluebookSettings`
 --
 ALTER TABLE `StudentFriendRequests`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `netId_friendNetId` (`netId`,`friendNetId`),
+  ADD UNIQUE KEY `netId_friendNetId` (`netId`, `friendNetId`),
   ADD KEY `netId` (`netId`);
 
 --
@@ -95,7 +95,7 @@ ALTER TABLE `StudentFriendRequests`
 --
 ALTER TABLE `StudentFriends`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `netId_friendNetId` (`netId`,`friendNetId`),
+  ADD UNIQUE KEY `netId_friendNetId` (`netId`, `friendNetId`),
   ADD KEY `netId` (`netId`);
 
 --
@@ -103,7 +103,7 @@ ALTER TABLE `StudentFriends`
 --
 ALTER TABLE `WorksheetCourses`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `netId_ociId_season_worksheetNumber` (`netId`,`ociId`,`season`, `worksheetNumber`),
+  ADD UNIQUE KEY `netId_ociId_season_worksheetNumber` (`netId`, `ociId`, `season`, `worksheetNumber`),
   ADD KEY `netId` (`netId`);
 
 --

@@ -81,7 +81,7 @@ function WorksheetToggleButton({
         action: addRemove,
         season: seasonCode,
         ociId: crn,
-        worksheetNumber: parseInt(selectedWorksheet, 10),
+        worksheetNumber: selectedWorksheet,
       });
 
       // Call the endpoint
@@ -160,7 +160,7 @@ function WorksheetToggleButton({
         <Tooltip id="button-tooltip" {...props}>
           <small>
             {inWorksheet ? 'Remove from' : 'Add to'} my{' '}
-            {worksheetOptions[Number(worksheetNumber)]!.label}
+            {worksheetOptions[worksheetNumber]!.label}
           </small>
         </Tooltip>
       )}
@@ -185,7 +185,7 @@ function WorksheetToggleButton({
             <select
               value={selectedWorksheet}
               onChange={(event) => {
-                setSelectedWorksheet(event.target.value);
+                setSelectedWorksheet(Number(event.target.value));
               }}
               onClick={(e) => {
                 // Check if the clicked target is the select element

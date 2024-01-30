@@ -12,14 +12,10 @@ import React, {
 } from 'react';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
-import type { NetId, Season } from '../utilities/common';
+import type { NetId, Season, Crn } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
-export type Worksheet = [
-  season: Season,
-  crn: string,
-  worksheetNumber: string,
-][];
+export type Worksheet = [season: Season, crn: Crn, worksheetNumber: number][];
 export type FriendRecord = {
   [netId: NetId]: {
     name: string;

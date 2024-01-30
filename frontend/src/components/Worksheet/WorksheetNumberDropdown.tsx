@@ -11,9 +11,9 @@ function WorksheetNumDropdown() {
       <DropdownButton
         className={styles.dropdownButton}
         variant="primary"
-        title={worksheetOptions[Number(worksheetNumber)]!.label}
+        title={worksheetOptions[worksheetNumber]!.label}
         onSelect={(v) => {
-          if (v) changeWorksheet(v);
+          if (v) changeWorksheet(Number(v));
         }}
       >
         {worksheetOptions.map(({ value, label }) => (

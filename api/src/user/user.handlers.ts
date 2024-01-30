@@ -122,8 +122,8 @@ export const getUserWorksheet = async (
     school: studentProfile?.school ?? null,
     data: worksheets.map((course) => [
       String(course.season),
-      String(course.ociId),
-      String(course.worksheetNumber),
+      course.ociId,
+      course.worksheetNumber,
     ]),
   });
 };

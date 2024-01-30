@@ -21,7 +21,7 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
   const inWorksheet = isInWorksheet(
     course.season_code,
     course.crn,
-    '0',
+    0,
     user.worksheet,
   );
 
