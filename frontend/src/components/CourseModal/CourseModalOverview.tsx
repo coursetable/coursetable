@@ -400,10 +400,10 @@ function CourseModalOverview({
       const type = isBothOverlap
         ? 'both'
         : isCourseOverlap
-          ? 'course'
-          : isProfOverlap
-            ? 'professor'
-            : undefined;
+        ? 'course'
+        : isProfOverlap
+        ? 'professor'
+        : undefined;
       if (!type) {
         // Consider a course cross-listed with course codes A and B.
         // It was taught by prof X in year 1 and prof Y in year 2.
@@ -433,8 +433,8 @@ function CourseModalOverview({
                 {type === 'professor'
                   ? offering.course_code
                   : type === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
+                  ? `Section ${offering.section}`
+                  : offering.professor[0]}
               </div>
             </Col>
           ) : (
@@ -451,8 +451,8 @@ function CourseModalOverview({
                 {type === 'professor'
                   ? offering.course_code
                   : type === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
+                  ? `Section ${offering.section}`
+                  : offering.professor[0]}
               </div>
             </Col>
           )}
