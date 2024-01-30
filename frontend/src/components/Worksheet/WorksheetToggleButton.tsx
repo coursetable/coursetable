@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
 import { useUser } from '../../contexts/userContext';
+import { worksheetColors } from '../../utilities/constants';
 import type { Crn, Season } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
@@ -82,6 +83,8 @@ function WorksheetToggleButton({
         season: seasonCode,
         crn,
         worksheetNumber: selectedWorksheet,
+        color:
+          worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
       });
 
       // Call the endpoint

@@ -73,7 +73,8 @@ CREATE TABLE `WorksheetCourses` (
   `netId` char(8) NOT NULL,
   `crn` mediumint(8) UNSIGNED NOT NULL,
   `season` mediumint(8) UNSIGNED NOT NULL,
-  `worksheetNumber` mediumint(8) UNSIGNED DEFAULT 0
+  `worksheetNumber` mediumint(8) UNSIGNED DEFAULT 0 COMMENT 'Multiple worksheets!',
+  `color` varchar(32) NOT NULL COMMENT 'Color of course on worksheet'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --

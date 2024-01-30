@@ -4,6 +4,7 @@ export function worksheetCoursesToWorksheets(
     crn: number;
     season: number;
     worksheetNumber: number;
+    color: string;
   }[],
 ) {
   const res: {
@@ -11,6 +12,7 @@ export function worksheetCoursesToWorksheets(
       [season: string]: {
         [worksheetNumber: number]: {
           crn: number;
+          color: string;
         }[];
       };
     };
@@ -24,6 +26,7 @@ export function worksheetCoursesToWorksheets(
     res[course.netId]![course.season]![course.worksheetNumber] ??= [];
     res[course.netId]![course.season]![course.worksheetNumber]!.push({
       crn: course.crn,
+      color: course.color,
     });
   }
   return res;

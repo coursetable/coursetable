@@ -19,6 +19,7 @@ export type UserWorksheets = {
   [season: Season]: {
     [worksheetNumber: number]: {
       crn: Crn;
+      color: string;
     }[];
   };
 };

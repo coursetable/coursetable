@@ -10,7 +10,6 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
-import { worksheetColors } from '../utilities/constants';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse } from './worksheetContext';
@@ -163,7 +162,7 @@ export function useWorksheetInfo(
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      worksheet.forEach(({ crn }, i) => {
+      for (const { crn, color } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
         if (!listing) {
           // This error is unactionable.
@@ -176,11 +175,11 @@ export function useWorksheetInfo(
         } else {
           dataReturn.push({
             crn,
-            color: worksheetColors[i % worksheetColors.length]!,
+            color,
             listing,
           });
         }
-      });
+      }
     }
     return dataReturn.sort((a, b) =>
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
