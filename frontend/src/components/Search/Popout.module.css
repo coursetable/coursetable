@@ -15,7 +15,7 @@
 }
 
 .clearIcon:hover {
-  color: var(--hover-color);
+  color: var(--color-icon-focus-hover);
 }
 
 .button {

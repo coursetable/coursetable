@@ -6,9 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { ThemeProvider as SCThemeProvider } from 'styled-components';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
-import { lightTheme, darkTheme } from '../components/Themes';
 
 export type Theme = 'light' | 'dark';
 
@@ -44,8 +42,6 @@ export function ThemeProvider({
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
-  const scTheme = theme === 'light' ? lightTheme : darkTheme;
-
   const store: Store = useMemo(
     () => ({
       theme,
@@ -55,9 +51,7 @@ export function ThemeProvider({
   );
 
   return (
-    <ThemeContext.Provider value={store}>
-      <SCThemeProvider theme={scTheme}>{children}</SCThemeProvider>
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={store}>{children}</ThemeContext.Provider>
   );
 }
 

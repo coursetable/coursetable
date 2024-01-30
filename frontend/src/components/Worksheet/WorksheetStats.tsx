@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
-import { useTheme } from 'styled-components';
 import clsx from 'clsx';
 import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
+import { useTheme } from '../../contexts/themeContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { ratingColormap } from '../../utilities/constants';
 import { getOverallRatings, getWorkloadRatings } from '../../utilities/course';
@@ -24,13 +24,15 @@ function StatPill({
       readonly stat?: never;
     }
 ) & { readonly children: React.ReactNode }) {
-  const globalTheme = useTheme();
+  const { theme } = useTheme();
   return (
     <span
-      className={clsx(styles.statPill, stat && styles.hasStat)}
+      className={clsx(styles.statPill, colorMap && styles.hasStat)}
       style={{
         backgroundColor: colorMap
-          ? colorMap(stat).alpha(globalTheme.ratingAlpha).css()
+          ? colorMap(stat)
+              .alpha(theme === 'light' ? 1 : 0.75)
+              .css()
           : undefined,
       }}
     >

@@ -15,7 +15,9 @@
   --color-button-hover: #fafafa;
   --color-button-active: #f0f0f0;
   --color-icon: #cccccc;
+  --color-icon-hover: #9b9b9b;
   --color-icon-focus: #666666;
+  --color-icon-focus-hover: #3c3c3c;
   --color-primary: #468ff2;
   --color-primary-light: #468ff226;
   --color-primary-hover: #007bff;
@@ -50,7 +52,9 @@
   --color-button-hover: #ffffff05;
   --color-button-active: #ffffff0d;
   --color-icon: #666666;
+  --color-icon-hover: #949494;
   --color-icon-focus: #cccccc;
+  --color-icon-focus-hover: #ffffff;
   --color-primary: #61adff;
   --color-primary-light: #44649140;
   --color-primary-hover: #007bff;

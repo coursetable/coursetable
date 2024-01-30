@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { type DefaultTheme, useTheme as useSCTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
 import chroma from 'chroma-js';
 import Select, {
@@ -9,40 +8,33 @@ import Select, {
   type Theme as SelectTheme,
   type ThemeConfig,
 } from 'react-select';
-import { useTheme, type Theme } from '../../contexts/themeContext';
 import type { Option } from '../../contexts/searchContext';
 
 // Styles for the select indicators
 function indicatorStyles<
   T extends Option<number | string>,
   IsMulti extends boolean,
->(
-  theme: Theme,
-  globalTheme: DefaultTheme,
-  isMulti: IsMulti,
-): StylesConfig<T, IsMulti> {
-  const iconFocus = chroma(globalTheme.iconFocus);
-  const icon = chroma(globalTheme.icon);
-  const newIconFocus =
-    theme === 'light' ? iconFocus.darken() : iconFocus.brighten();
-  const newIcon = theme === 'light' ? icon.darken() : icon.brighten();
-
+>(isMulti: IsMulti): StylesConfig<T, IsMulti> {
   return {
     clearIndicator: (base, state) => ({
       ...base,
-      color: state.isFocused ? iconFocus.css() : icon.css(),
+      color: state.isFocused ? 'var(--color-icon-focus)' : 'var(--color-icon)',
       ':hover': {
         ...base[':hover'],
-        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
+        color: state.isFocused
+          ? 'var(--color-icon-focus-hover)'
+          : 'var(--color-icon-hover)',
       },
     }),
     dropdownIndicator: (base, state) => ({
       ...base,
       display: isMulti && state.hasValue ? 'none' : 'flex',
-      color: state.isFocused ? iconFocus.css() : icon.css(),
+      color: state.isFocused ? 'var(--color-icon-focus)' : 'var(--color-icon)',
       ':hover': {
         ...base[':hover'],
-        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
+        color: state.isFocused
+          ? 'var(--color-icon-focus-hover)'
+          : 'var(--color-icon-hover)',
       },
     }),
     indicatorSeparator: (base) => ({
@@ -96,10 +88,7 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
 }
 
 // Styles for popout select
-function popoutStyles(
-  theme: DefaultTheme,
-  width: number,
-): StylesConfig<Option<number | string>> {
+function popoutStyles(width: number): StylesConfig<Option<number | string>> {
   return {
     control: (base, { isDisabled }) => ({
       ...base,
@@ -199,9 +188,6 @@ function CustomSelect<
   components,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
-  const globalTheme = useSCTheme();
-  const { theme } = useTheme();
-
   // All the default theme colors
   const themeStyles: ThemeConfig = (theme: SelectTheme): SelectTheme => ({
     ...theme,
@@ -226,8 +212,8 @@ function CustomSelect<
 
   // Configure styles
   let styles = mergeStyles(
-    indicatorStyles(theme, globalTheme, isMulti),
-    popout ? popoutStyles(globalTheme, 400) : defaultStyles(),
+    indicatorStyles(isMulti),
+    popout ? popoutStyles(400) : defaultStyles(),
   );
   if (useColors) styles = mergeStyles(styles, colorStyles());
 
