@@ -129,7 +129,7 @@ function Footer() {
                   <TextComponent type={1}>GitHub</TextComponent>
                 </a>
               </li>
-              {/* Blog */}
+              {/* Linkedin */}
               <li>
                 <a
                   href="https://www.linkedin.com/company/coursetable/"
@@ -137,6 +137,16 @@ function Footer() {
                   rel="noopener noreferrer"
                 >
                   <TextComponent type={1}>LinkedIn</TextComponent>
+                </a>
+              </li>
+              {/* Buy Me A Coffee */}
+              <li>
+                <a
+                  href="https://www.buymeacoffee.com/coursetable"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <TextComponent type={1}>Support CourseTable</TextComponent>
                 </a>
               </li>
             </ul>
