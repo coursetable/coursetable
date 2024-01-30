@@ -26,28 +26,27 @@ function WorksheetToggleButton({
   seasonCode,
   modal,
   setCourseInWorksheet,
-  selectedWorksheet: initialSelectedWorksheet,
 }: {
   readonly crn: Crn;
   readonly seasonCode: Season;
   readonly modal: boolean;
   readonly setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly selectedWorksheet?: string;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
 
-  // Define options for the worksheet dropdown
-  const worksheetOptions = ['0', '1', '2', '3'];
+  const {
+    curSeason,
+    hiddenCourses,
+    toggleCourse,
+    worksheetNumber,
+    worksheetOptions,
+  } = useWorksheet();
 
-  const [selectedWorksheet, setSelectedWorksheet] = useState(
-    initialSelectedWorksheet || '0',
-  );
+  const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
   useEffect(() => {
-    setSelectedWorksheet(initialSelectedWorksheet || '0');
-  }, [initialSelectedWorksheet]);
-
-  const { curSeason, hiddenCourses, toggleCourse } = useWorksheet();
+    setSelectedWorksheet(worksheetNumber);
+  }, [worksheetNumber]);
 
   const worksheetCheck = useMemo(
     () => isInWorksheet(seasonCode, crn, selectedWorksheet, user.worksheet),
@@ -198,9 +197,9 @@ function WorksheetToggleButton({
               }}
               className={styles.worksheetDropdown}
             >
-              {worksheetOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option === '0' ? 'Main Worksheet' : `Worksheet ${option}`}
+              {worksheetOptions.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
                 </option>
               ))}
             </select>

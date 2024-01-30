@@ -24,21 +24,12 @@ export function NavbarWorksheetSearch() {
     changeSeason,
     changeWorksheet,
     worksheetNumber,
+    worksheetOptions,
     person,
     handlePersonChange,
     worksheetView,
     handleWorksheetView,
   } = useWorksheet();
-
-  const worksheetOptions = useMemo(() => {
-    const worksheetOptionsTemp = [
-      { value: '0', label: 'Main Worksheet' },
-      { value: '1', label: 'Worksheet 1' },
-      { value: '2', label: 'Worksheet 2' },
-      { value: '3', label: 'Worksheet 3' },
-    ];
-    return worksheetOptionsTemp;
-  }, []);
 
   const selectedSeason = useMemo(() => {
     if (curSeason) {
@@ -49,19 +40,6 @@ export function NavbarWorksheetSearch() {
     }
     return null;
   }, [curSeason]);
-
-  const selectedWorksheet = useMemo(() => {
-    if (worksheetNumber) {
-      return {
-        value: worksheetNumber,
-        label:
-          worksheetNumber === '0'
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheetNumber}`,
-      };
-    }
-    return null;
-  }, [worksheetNumber]);
 
   // Fetch user context data
   const { user, addFriend, removeFriend, requestAddFriend } = useUser();
@@ -173,18 +151,17 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Worksheet"
               displayOptionLabel
-              selectedOptions={selectedWorksheet}
+              selectedOptions={worksheetOptions[Number(worksheetNumber)]}
               clearIcon={false}
             >
               <PopoutSelect
                 isClearable={false}
                 hideSelectedOptions={false}
-                value={selectedWorksheet}
+                value={worksheetOptions[Number(worksheetNumber)]}
                 options={worksheetOptions}
-                placeholder="Main Worksheet"
                 onChange={(selectedOption) => {
                   if (isOption(selectedOption))
-                    changeWorksheet(selectedOption.value as string);
+                    changeWorksheet(selectedOption.value);
                 }}
               />
             </Popout>
