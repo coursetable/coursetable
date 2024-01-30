@@ -2,7 +2,6 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -24,6 +23,10 @@ type WorksheetView =
   | { view: 'calendar'; mode: '' }
   | { view: 'list'; mode: '' };
 
+export type WorksheetCourse = Listing & {
+  color: string;
+};
+
 type Store = {
   // These define which courses the store contains
   person: 'me' | NetId;
@@ -35,7 +38,7 @@ type Store = {
   worksheetOptions: Option<number>[];
 
   // Controls which courses are displayed
-  courses: Listing[];
+  courses: WorksheetCourse[];
   hiddenCourses: HiddenCourses;
   hoverCourse: number | null;
   worksheetView: WorksheetView;
@@ -124,13 +127,6 @@ export function WorksheetProvider({
     error: worksheetError,
     data: worksheetData,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
-  // Cache calendar colors. Reset whenever the season changes.
-  const [colorMap, setColorMap] = useState<{
-    [crn: Crn]: [number, number, number];
-  }>({});
-  useEffect(() => {
-    setColorMap({});
-  }, [curSeason]);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -145,21 +141,17 @@ export function WorksheetProvider({
   // Courses data - basically a color-annotated version of the worksheet info.
   const courses = useMemo(() => {
     if (!worksheetLoading && !worksheetError) {
-      const temp = [...worksheetData];
-      // Assign color to each course
-      for (let i = 0; i < worksheetData.length; i++) {
-        let choice = colors[i % colors.length]!;
-        if (colorMap[temp[i]!.crn]) choice = colorMap[temp[i]!.crn]!;
-        else colorMap[temp[i]!.crn] = choice;
-
-        temp[i]!.color = choice;
-      }
-      // Sort list by course code
-      temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
-      return temp;
+      return worksheetData
+        .map(
+          (course, i): WorksheetCourse => ({
+            color: colors[i % colors.length]!.join(' '),
+            ...course,
+          }),
+        )
+        .sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
     }
     return [];
-  }, [worksheetLoading, worksheetError, worksheetData, colorMap]);
+  }, [worksheetLoading, worksheetError, worksheetData]);
 
   /* Functions */
 

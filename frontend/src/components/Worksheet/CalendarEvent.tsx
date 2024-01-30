@@ -3,7 +3,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { InfoPopover } from '../Typography';
-import type { Listing } from '../../utilities/common';
+import type { WorksheetCourse } from '../../contexts/worksheetContext';
 import { truncatedText } from '../../utilities/course';
 import styles from './CalendarEvent.module.css';
 
@@ -14,7 +14,7 @@ export interface CourseEvent {
   description: string;
   start: Date;
   end: Date;
-  listing: Listing;
+  listing: WorksheetCourse;
   id: number;
   location: string;
 }

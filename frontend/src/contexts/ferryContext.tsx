@@ -138,16 +138,14 @@ export const useCourseData = (seasons: Season[]) => {
 
 export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
-  season: Season | null = null,
+  season: Season | Season[],
   worksheetNumber = 0,
 ) {
   const requiredSeasons = useMemo(() => {
     if (!worksheets) return [];
-    if (season !== null) {
-      if (season in worksheets) return [season];
-      return [];
-    }
-    return Object.keys(worksheets) as Season[];
+    if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
+    if (season in worksheets) return [season];
+    return [];
   }, [season, worksheets]);
 
   const { loading, error, courses } = useCourseData(requiredSeasons);

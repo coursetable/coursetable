@@ -22,8 +22,8 @@ function WorksheetCalendar() {
       // Shouldn't happen
       if (!event.listing.color) return { style: {} };
       const style: CSSProperties = {
-        backgroundColor: `rgb(${event.listing.color.join(' ')} / 0.85)`,
-        borderColor: `rgb(${event.listing.color.join(' ')})`,
+        backgroundColor: `rgb(${event.listing.color} / 0.85)`,
+        borderColor: `rgb(${event.listing.color})`,
         borderWidth: '2px',
       };
       if (hoverCourse && hoverCourse === event.listing.crn) {
