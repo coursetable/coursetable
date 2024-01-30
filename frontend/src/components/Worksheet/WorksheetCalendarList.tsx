@@ -25,8 +25,7 @@ import styles from './WorksheetCalendarList.module.css';
  * Render worksheet list in default worksheet view
  */
 function WorksheetCalendarList() {
-  const { courses, curSeason, hiddenCourses, worksheetNumber, toggleCourse } =
-    useWorksheet();
+  const { courses, curSeason, hiddenCourses, toggleCourse } = useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(
@@ -36,10 +35,9 @@ function WorksheetCalendarList() {
           key={i}
           course={course}
           hidden={hiddenCourses[curSeason]?.[course.crn] ?? false}
-          worksheetNumber={worksheetNumber}
         />
       )),
-    [courses, hiddenCourses, curSeason, worksheetNumber],
+    [courses, hiddenCourses, curSeason],
   );
 
   const areHidden = useMemo(() => {

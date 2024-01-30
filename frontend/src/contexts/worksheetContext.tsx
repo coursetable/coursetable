@@ -13,6 +13,7 @@ import {
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type Worksheet } from './userContext';
+import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
 export type HiddenCourses = {
@@ -27,7 +28,6 @@ type Store = {
   seasonCodes: Season[];
   curWorksheet: Worksheet;
   curSeason: Season;
-  worksheetNumber: string;
   person: 'me' | NetId;
   courses: Listing[];
   hiddenCourses: HiddenCourses;
@@ -36,6 +36,8 @@ type Store = {
   worksheetLoading: boolean;
   worksheetError: {} | null;
   worksheetData: Listing[];
+  worksheetOptions: Option[];
+  worksheetNumber: string;
   changeSeason: (seasonCode: Season | null) => void;
   changeWorksheet: (worksheetNumber: string) => void;
   handlePersonChange: (newPerson: 'me' | NetId) => void;
@@ -127,6 +129,16 @@ export function WorksheetProvider({
     setColorMap({});
   }, [curSeason]);
 
+  // This will be dependent on backend data if we allow renaming
+  const worksheetOptions = useMemo<Option[]>(
+    () =>
+      ['0', '1', '2', '3'].map((x) => ({
+        label: x === '0' ? 'Main Worksheet' : `Worksheet ${x}`,
+        value: x,
+      })),
+    [],
+  );
+
   // Courses data - basically a color-annotated version of the worksheet info.
   const [courses, setCourses] = useState<Listing[]>([]);
 
@@ -141,7 +153,6 @@ export function WorksheetProvider({
         else colorMap[temp[i]!.crn] = choice;
 
         temp[i]!.color = choice;
-        temp[i]!.currentWorksheet = worksheetNumber;
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
@@ -248,6 +259,7 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       worksheetData,
+      worksheetOptions,
 
       // Update methods.
       changeSeason,
@@ -270,6 +282,7 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       worksheetData,
+      worksheetOptions,
       changeSeason,
       handlePersonChange,
       setHoverCourse,

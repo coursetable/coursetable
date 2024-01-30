@@ -18,7 +18,7 @@ import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
-import type { Season, Crn, Listing } from '../../utilities/common';
+import type { Season, Crn } from '../../utilities/common';
 
 const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -129,13 +129,6 @@ function CourseModal() {
                           crn={curListing.crn}
                           seasonCode={curListing.season_code}
                           modal
-                          selectedWorksheet={
-                            // TODO: we love global mutations <3 they are so
-                            // easy to trace & analyze and so bug-proof!
-                            // In all seriousness we need to get rid of
-                            // currentWorksheet and color in ListingArguments
-                            (curListing as unknown as Listing).currentWorksheet
-                          }
                         />
                       ) : (
                         // If this is the overview of some other eval course,

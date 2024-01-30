@@ -16,11 +16,9 @@ import type { Listing } from '../../utilities/common';
 export default function WorksheetCalendarListItem({
   course,
   hidden,
-  worksheetNumber,
 }: {
   readonly course: Listing;
   readonly hidden: boolean;
-  readonly worksheetNumber?: string;
 }) {
   const [, setSearchParams] = useSearchParams();
   const { curSeason, toggleCourse, setHoverCourse } = useWorksheet();
@@ -64,7 +62,6 @@ export default function WorksheetCalendarListItem({
             crn={course.crn}
             seasonCode={curSeason}
             modal={false}
-            selectedWorksheet={worksheetNumber}
           />
         </div>
       </Row>
