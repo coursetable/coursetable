@@ -41,9 +41,9 @@ export const toggleBookmark = async (
 
   const existing = await prisma.worksheetCourses.findUnique({
     where: {
-      netId_ociId_season_worksheetNumber: {
+      netId_crn_season_worksheetNumber: {
         netId,
-        ociId: crn,
+        crn,
         season,
         worksheetNumber,
       },
@@ -60,7 +60,7 @@ export const toggleBookmark = async (
       return;
     }
     await prisma.worksheetCourses.create({
-      data: { netId, ociId: crn, season, worksheetNumber },
+      data: { netId, crn, season, worksheetNumber },
     });
   } else {
     // Remove a bookmarked course
@@ -73,9 +73,9 @@ export const toggleBookmark = async (
     }
     await prisma.worksheetCourses.delete({
       where: {
-        netId_ociId_season_worksheetNumber: {
+        netId_crn_season_worksheetNumber: {
           netId,
-          ociId: crn,
+          crn,
           season,
           worksheetNumber,
         },

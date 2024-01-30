@@ -1,7 +1,7 @@
 export function worksheetCoursesToWorksheets(
   worksheetCourses: {
     netId: string;
-    ociId: number;
+    crn: number;
     season: number;
     worksheetNumber: number;
   }[],
@@ -23,7 +23,7 @@ export function worksheetCoursesToWorksheets(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     res[course.netId]![course.season]![course.worksheetNumber] ??= [];
     res[course.netId]![course.season]![course.worksheetNumber]!.push({
-      crn: course.ociId,
+      crn: course.crn,
     });
   }
   return res;
