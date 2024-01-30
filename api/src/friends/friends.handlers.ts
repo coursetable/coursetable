@@ -285,7 +285,7 @@ export const getFriendsWorksheets = async (
   const friendInfoMap: {
     [netId: string]: {
       name: string;
-      worksheets: [season: string, ociId: string, worksheetNumber: string][];
+      worksheets: [season: string, ociId: number, worksheetNumber: number][];
     };
   } = Object.fromEntries(
     friendInfos.map((f) => [
@@ -304,12 +304,8 @@ export const getFriendsWorksheets = async (
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       (friendInfoMap[friendNetId] ??= {
         name: '[unknown]',
-        worksheets: [[String(season), String(ociId), String(worksheetNumber)]],
-      }).worksheets.push([
-        String(season),
-        String(ociId),
-        String(worksheetNumber),
-      ]);
+        worksheets: [],
+      }).worksheets.push([String(season), ociId, worksheetNumber]);
     },
   );
 

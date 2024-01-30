@@ -151,13 +151,13 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Worksheet"
               displayOptionLabel
-              selectedOptions={worksheetOptions[Number(worksheetNumber)]}
+              selectedOptions={worksheetOptions[worksheetNumber]}
               clearIcon={false}
             >
               <PopoutSelect
                 isClearable={false}
                 hideSelectedOptions={false}
-                value={worksheetOptions[Number(worksheetNumber)]}
+                value={worksheetOptions[worksheetNumber]}
                 options={worksheetOptions}
                 onChange={(selectedOption) => {
                   if (isOption(selectedOption))

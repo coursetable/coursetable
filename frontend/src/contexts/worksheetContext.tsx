@@ -36,10 +36,10 @@ type Store = {
   worksheetLoading: boolean;
   worksheetError: {} | null;
   worksheetData: Listing[];
-  worksheetOptions: Option[];
-  worksheetNumber: string;
+  worksheetOptions: Option<number>[];
+  worksheetNumber: number;
   changeSeason: (seasonCode: Season | null) => void;
-  changeWorksheet: (worksheetNumber: string) => void;
+  changeWorksheet: (worksheetNumber: number) => void;
   handlePersonChange: (newPerson: 'me' | NetId) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
@@ -111,7 +111,7 @@ export function WorksheetProvider({
   // Current worksheet number
   const [worksheetNumber, setWorksheetNumber] = useSessionStorageState(
     'worksheetNumber',
-    '0',
+    0,
   );
 
   // Fetch the worksheet info. This is eventually copied into the 'courses'
@@ -130,10 +130,10 @@ export function WorksheetProvider({
   }, [curSeason]);
 
   // This will be dependent on backend data if we allow renaming
-  const worksheetOptions = useMemo<Option[]>(
+  const worksheetOptions = useMemo<Option<number>[]>(
     () =>
-      ['0', '1', '2', '3'].map((x) => ({
-        label: x === '0' ? 'Main Worksheet' : `Worksheet ${x}`,
+      [0, 1, 2, 3].map((x) => ({
+        label: x === 0 ? 'Main Worksheet' : `Worksheet ${x}`,
         value: x,
       })),
     [],
@@ -237,7 +237,7 @@ export function WorksheetProvider({
 
   // Function to change worksheet number
   const changeWorksheet = useCallback(
-    (newNumber: string) => {
+    (newNumber: number) => {
       setWorksheetNumber(newNumber);
     },
     [setWorksheetNumber],
