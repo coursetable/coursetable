@@ -15,17 +15,16 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { HiExternalLink } from 'react-icons/hi';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import {
   TextComponent,
-  StyledPopover,
-  StyledRating,
-  StyledLink,
-} from '../StyledComponents';
+  InfoPopover,
+  RatingBubble,
+  LinkLikeText,
+} from '../Typography';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import styles from './CourseModalOverview.module.css';
 import CourseModalLoading from './CourseModalLoading';
@@ -48,25 +47,8 @@ import {
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
 
-// Button with season and other info that user selects to view evals
-const StyledCol = styled(Col)`
-  background-color: ${({ theme }) =>
-    theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.selectHover};
-`;
-
-// Unclickable version of StyledCol for courses with no evaluations
-const StyledColUnclickable = styled(Col)`
-  background-color: ${({ theme }) => theme.surface};
-`;
-
-// Multitoggle in modal (course, both, prof)
-const StyledMultiToggle = styled(MultiToggle<Filter>)`
-  background-color: ${({ theme }) => theme.surface[1]};
-  border-color: ${({ theme }) => theme.border};
-  .toggleOption {
-    color: ${({ theme }) => theme.text[0]};
-  }
-`;
+// Component used for cutting off long descriptions
+const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 export type Filter = 'both' | 'course' | 'professor';
 
@@ -79,11 +61,11 @@ type ProfInfo = {
 // TODO: merge it with one of the many types representing "a course"
 export type CourseOffering = {
   // Course rating
-  rating: number;
+  rating: number | null;
   // Workload rating
-  workload: number;
+  workload: number | null;
   // Professor rating
-  professor_rating: number;
+  professor_rating: number | null;
   // Season code
   season_code: Season;
   // Professors
@@ -134,7 +116,7 @@ export type ComputedListingInfo = Omit<
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
   (props) => (
-    <StyledPopover {...props} id="title-popover" className="d-none d-md-block">
+    <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
       <Popover.Title>
         <Row className="mx-auto">
           {/* Professor Name */}
@@ -146,7 +128,7 @@ const profInfoPopover =
             {profInfo?.email ? (
               <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
             ) : (
-              <TextComponent type={1}>N/A</TextComponent>
+              <TextComponent type="secondary">N/A</TextComponent>
             )}
           </small>
         </Row>
@@ -196,7 +178,7 @@ const profInfoPopover =
           </Col>
         </Row>
       </Popover.Content>
-    </StyledPopover>
+    </InfoPopover>
   );
 
 /**
@@ -220,8 +202,6 @@ function CourseModalOverview({
 }) {
   // Fetch user context data
   const { user } = useUser();
-  // Component used for cutting off long descriptions
-  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   // Is description clamped?
   const [clamped, setClamped] = useState(false);
   // Number of description lines to display
@@ -366,14 +346,14 @@ function CourseModalOverview({
       courseOfferings.push({
         // Course rating
         rating: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_rating || -1
-          : -1,
+          ? season.course.evaluation_statistic.avg_rating || null
+          : null,
         // Workload rating
         workload: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_workload || -1
-          : -1,
+          ? season.course.evaluation_statistic.avg_workload || null
+          : null,
         // Professor rating
-        professor_rating: averageProfessorRating || -1,
+        professor_rating: averageProfessorRating || null,
         // Season code
         season_code: season.season_code,
         // Professors
@@ -416,7 +396,7 @@ function CourseModalOverview({
       const isBothOverlap =
         isCourseOverlap &&
         overlappingProfs(offering.professor) === listing.professor_names.length;
-      const hasEvals = offering.rating !== -1;
+      const hasEvals = offering.rating !== null;
       const type = isBothOverlap
         ? 'both'
         : isCourseOverlap
@@ -438,7 +418,7 @@ function CourseModalOverview({
           {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
           {hasEvals ? (
-            <StyledCol
+            <Col
               xs={5}
               className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
               onClick={() => {
@@ -456,9 +436,9 @@ function CourseModalOverview({
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
-            </StyledCol>
+            </Col>
           ) : (
-            <StyledColUnclickable
+            <Col
               xs={5}
               className={clsx(
                 styles.ratingBubbleUnclickable,
@@ -474,48 +454,48 @@ function CourseModalOverview({
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
-            </StyledColUnclickable>
+            </Col>
           )}
           {/* Course Rating */}
           <Col
             xs={2}
             className="px-1 ml-0 d-flex justify-content-center text-center"
           >
-            <StyledRating
+            <RatingBubble
               rating={offering.rating}
-              colormap={ratingColormap}
+              colorMap={ratingColormap}
               className={styles.ratingCell}
             >
-              {offering.rating !== -1 ? offering.rating.toFixed(1) : 'N/A'}
-            </StyledRating>
+              {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
+            </RatingBubble>
           </Col>
           {/* Professor Rating */}
           <Col
             xs={2}
             className="px-1 ml-0 d-flex justify-content-center text-center"
           >
-            <StyledRating
+            <RatingBubble
               rating={offering.professor_rating}
-              colormap={ratingColormap}
+              colorMap={ratingColormap}
               className={styles.ratingCell}
             >
-              {offering.professor_rating !== -1
+              {offering.professor_rating
                 ? offering.professor_rating.toFixed(1)
                 : 'N/A'}
-            </StyledRating>
+            </RatingBubble>
           </Col>
           {/* Workload Rating */}
           <Col
             xs={2}
             className="px-1 ml-0 d-flex justify-content-center text-center"
           >
-            <StyledRating
+            <RatingBubble
               rating={offering.workload}
-              colormap={workloadColormap}
+              colorMap={workloadColormap}
               className={styles.ratingCell}
             >
-              {offering.workload !== -1 ? offering.workload.toFixed(1) : 'N/A'}
-            </StyledRating>
+              {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
+            </RatingBubble>
           </Col>
         </Row>
       );
@@ -566,7 +546,7 @@ function CourseModalOverview({
           {/* Read More arrow button */}
           {clamped && (
             <Row className="mx-auto">
-              <StyledLink
+              <LinkLikeText
                 className="mx-auto"
                 onClick={() => {
                   setLines(100);
@@ -574,7 +554,7 @@ function CourseModalOverview({
                 title="Read More"
               >
                 <IoIosArrowDown size={20} />
-              </StyledLink>
+              </LinkLikeText>
             </Row>
           )}
           {/* Course Requirements */}
@@ -669,7 +649,7 @@ function CourseModalOverview({
                         placement="right"
                         overlay={profInfoPopover(prof, profInfo.get(prof))}
                       >
-                        <StyledLink>{prof}</StyledLink>
+                        <LinkLikeText>{prof}</LinkLikeText>
                       </OverlayTrigger>
                     </React.Fragment>
                   ))
@@ -867,7 +847,7 @@ function CourseModalOverview({
             }}
             tabIndex={0}
           >
-            <StyledMultiToggle
+            <MultiToggle
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}

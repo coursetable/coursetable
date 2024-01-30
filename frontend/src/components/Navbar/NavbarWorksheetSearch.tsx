@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import styled from 'styled-components';
 import { components } from 'react-select';
 import { toast } from 'react-toastify';
 import { Popout } from '../Search/Popout';
@@ -8,68 +8,11 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
 import { isOption, type Option } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities/display';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/course';
 import { useUser } from '../../contexts/userContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import type { NetId, Season } from '../../utilities/common';
-
-// Row in navbar search
-const StyledRow = styled(Row)`
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-// Filter group wrapper
-const FilterGroup = styled.div``;
-
-// Toggle button group
-// Do not pass isTablet prop to ToggleButtonGroup
-const StyledToggleButtonGroup = styled(({ isTablet, ...props }) => (
-  <ToggleButtonGroup {...props} />
-))<{
-  isTablet: boolean;
-}>`
-  width: ${({ isTablet }) => (isTablet ? 140 : 180)}px;
-`;
-
-// Toggle button
-const StyledToggleButton = styled(ToggleButton)`
-  box-shadow: none !important;
-  font-size: 14px;
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-  background-color: ${({ theme }) => theme.surface[0]};
-  color: ${({ theme }) => theme.text[0]};
-  border: ${({ theme }) => theme.icon} 2px solid;
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-  padding: 0.25rem 0;
-  width: 50%;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonHover};
-    color: ${({ theme }) => theme.text[0]};
-    border: ${({ theme }) => theme.primaryHover} 2px solid;
-  }
-
-  &:active {
-    background-color: ${({ theme }) => theme.buttonActive}!important;
-    color: ${({ theme }) => theme.text[0]}!important;
-  }
-
-  &:focus {
-    box-shadow: none !important;
-  }
-
-  &.active {
-    background-color: ${({ theme }) => theme.primaryHover}!important;
-    border-color: ${({ theme }) => theme.primaryHover}!important;
-  }
-`;
+import styles from './NavbarWorksheetSearch.module.css';
 
 /**
  * Worksheet search form for the desktop in the navbar
@@ -81,21 +24,12 @@ export function NavbarWorksheetSearch() {
     changeSeason,
     changeWorksheet,
     worksheetNumber,
+    worksheetOptions,
     person,
     handlePersonChange,
     worksheetView,
     handleWorksheetView,
   } = useWorksheet();
-
-  const worksheetOptions = useMemo(() => {
-    const worksheetOptionsTemp = [
-      { value: '0', label: 'Main Worksheet' },
-      { value: '1', label: 'Worksheet 1' },
-      { value: '2', label: 'Worksheet 2' },
-      { value: '3', label: 'Worksheet 3' },
-    ];
-    return worksheetOptionsTemp;
-  }, []);
 
   const selectedSeason = useMemo(() => {
     if (curSeason) {
@@ -106,19 +40,6 @@ export function NavbarWorksheetSearch() {
     }
     return null;
   }, [curSeason]);
-
-  const selectedWorksheet = useMemo(() => {
-    if (worksheetNumber) {
-      return {
-        value: worksheetNumber,
-        label:
-          worksheetNumber === '0'
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheetNumber}`,
-      };
-    }
-    return null;
-  }, [worksheetNumber]);
 
   // Fetch user context data
   const { user, addFriend, removeFriend, requestAddFriend } = useUser();
@@ -174,8 +95,6 @@ export function NavbarWorksheetSearch() {
     return friendRequestOptionsTemp;
   }, [friendRequestInfo]);
 
-  const { isTablet } = useWindowDimensions();
-
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   const [deleting, setDeleting] = useState(0);
@@ -185,31 +104,35 @@ export function NavbarWorksheetSearch() {
     <>
       {/* Filters Form */}
       <Form className="px-0" data-tutorial="">
-        <StyledRow>
-          <FilterGroup className="d-flex align-items-center">
+        <Row className={styles.row}>
+          <div className="d-flex align-items-center">
             {/* Worksheet View Toggle */}
-            <StyledToggleButtonGroup
+            <ToggleButtonGroup
               name="worksheet-view-toggle"
               type="radio"
               value={worksheetView.view}
               onChange={(val: 'calendar' | 'list') =>
                 handleWorksheetView({ view: val, mode: '' })
               }
-              className="ml-2 mr-3"
+              className={clsx(styles.toggleButtonGroup, 'ml-2 mr-3')}
               data-tutorial="worksheet-2"
-              isTablet={isTablet}
             >
-              <StyledToggleButton value="calendar">Calendar</StyledToggleButton>
-              <StyledToggleButton value="list">List</StyledToggleButton>
-            </StyledToggleButtonGroup>
+              <ToggleButton className={styles.toggleButton} value="calendar">
+                Calendar
+              </ToggleButton>
+              <ToggleButton className={styles.toggleButton} value="list">
+                List
+              </ToggleButton>
+            </ToggleButtonGroup>
             {/* Season Filter Dropdown */}
             <Popout
               buttonText="Season"
-              type="season"
-              selectOptions={selectedSeason}
+              displayOptionLabel
+              maxDisplayOptions={1}
+              selectedOptions={selectedSeason}
               clearIcon={false}
             >
-              <PopoutSelect
+              <PopoutSelect<Option<Season>, false>
                 isClearable={false}
                 hideSelectedOptions={false}
                 value={selectedSeason}
@@ -227,27 +150,26 @@ export function NavbarWorksheetSearch() {
             {/* Worksheet Choice Filter Dropdown */}
             <Popout
               buttonText="Worksheet"
-              type="worksheet"
-              selectOptions={selectedWorksheet}
+              displayOptionLabel
+              selectedOptions={worksheetOptions[worksheetNumber]}
               clearIcon={false}
             >
               <PopoutSelect
                 isClearable={false}
                 hideSelectedOptions={false}
-                value={selectedWorksheet}
+                value={worksheetOptions[worksheetNumber]}
                 options={worksheetOptions}
-                placeholder="Main Worksheet"
                 onChange={(selectedOption) => {
                   if (isOption(selectedOption))
-                    changeWorksheet(selectedOption.value as string);
+                    changeWorksheet(selectedOption.value);
                 }}
               />
             </Popout>
             {/* Friends' Courses Dropdown */}
             <Popout
               buttonText="Friends' courses"
-              type="friend"
-              selectOptions={selectedPerson}
+              displayOptionLabel
+              selectedOptions={selectedPerson}
               onReset={() => {
                 handlePersonChange('me');
               }}
@@ -293,7 +215,6 @@ export function NavbarWorksheetSearch() {
             {/* Friend Requests Dropdown */}
             <Popout
               buttonText="Friend requests"
-              type="friend reqs"
               onReset={() => {
                 handlePersonChange('me');
               }}
@@ -339,7 +260,7 @@ export function NavbarWorksheetSearch() {
 
             {/* Add Friend Dropdown */}
 
-            <Popout buttonText="Add Friend" type="adding friends">
+            <Popout buttonText="Add Friend">
               <Searchbar
                 hideSelectedOptions={false}
                 components={{
@@ -358,8 +279,8 @@ export function NavbarWorksheetSearch() {
                 isDisabled={false}
               />
             </Popout>
-          </FilterGroup>
-        </StyledRow>
+          </div>
+        </Row>
       </Form>
     </>
   );

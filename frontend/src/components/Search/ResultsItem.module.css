@@ -1,5 +1,42 @@
-.firstSearchResultItem {
+.resultItem {
+  outline: none !important;
+  cursor: pointer;
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.firstResultItem {
   border-top: 1px solid transparent !important;
+}
+
+.oddResultItem:not(.inWorksheetResultItem) {
+  background-color: #f9f9f9;
+}
+
+.evenResultItem:not(.inWorksheetResultItem) {
+  background-color: var(--color-surface);
+}
+
+[data-theme='dark'] .oddResultItem:not(.inWorksheetResultItem) {
+  background-color: #202020;
+}
+
+.inWorksheetResultItem {
+  background-color: var(--color-primary-light);
+}
+
+.resultItem:hover {
+  background-color: var(--color-select-hover) !important;
+}
+
+.resultItemContent {
+  max-width: 1600px;
+  user-select: none;
+  overflow: hidden;
+  position: relative;
+  font-size: 13px;
+  line-height: 32px;
 }
 
 .ellipsisText {
@@ -68,4 +105,31 @@
 
 .cancelledClass {
   background-color: rgba(255, 98, 98, 0.3) !important;
+}
+
+.ratingCell {
+  width: 100%;
+  height: 100%;
+  padding: 3px 10px;
+  line-height: 1.5;
+}
+
+.tag {
+  margin: 1px;
+  font-size: 13px;
+  font-weight: 600 !important;
+  padding: 4px 6px !important;
+  border-radius: 6px !important;
+}
+
+@media (max-width: 1319px) {
+  .resultsItemContent {
+    font-size: 11px;
+    line-height: 28px;
+  }
+
+  .tag,
+  .ratingCell {
+    font-size: 11px;
+  }
 }

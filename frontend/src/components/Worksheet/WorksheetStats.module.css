@@ -64,6 +64,19 @@
   border-radius: 0 8px 8px 0;
 }
 
+.statPill {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.statPill.hasStat {
+  color: #141414;
+}
+
 .wide {
   flex-grow: 0.9;
+}
+
+.infoIcon {
+  color: var(--color-primary);
 }

@@ -1,42 +1,24 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import styles from './WorksheetNumberDropdown.module.css';
 
 function WorksheetNumDropdown() {
-  const { changeWorksheet, worksheetNumber } = useWorksheet();
-
-  // Generate list of possible worksheets
-  const worksheetOptions = useMemo(() => {
-    const tempWorksheetOptions = [
-      { value: '0', label: 'Main Worksheet' },
-      { value: '1', label: 'Worksheet 1' },
-      { value: '2', label: 'Worksheet 2' },
-      { value: '3', label: 'Worksheet 3' },
-    ];
-    return tempWorksheetOptions;
-  }, []);
+  const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
 
   return (
     <div className="container p-0 m-0 w-mx">
       <DropdownButton
-        id="dropdown-btn"
+        className={styles.dropdownButton}
         variant="primary"
-        title={
-          worksheetNumber === '0'
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheetNumber}`
-        }
+        title={worksheetOptions[worksheetNumber]!.label}
         onSelect={(v) => {
-          if (v) changeWorksheet(v);
+          if (v) changeWorksheet(Number(v));
         }}
       >
-        {worksheetOptions.map((worksheet) => (
-          <Dropdown.Item
-            key={worksheet.value}
-            eventKey={worksheet.value}
-            className="d-flex"
-          >
-            <div className="mx-auto">{worksheet.label}</div>
+        {worksheetOptions.map(({ value, label }) => (
+          <Dropdown.Item key={value} eventKey={value} className="d-flex">
+            <div className="mx-auto">{label}</div>
           </Dropdown.Item>
         ))}
       </DropdownButton>

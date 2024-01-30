@@ -4,7 +4,6 @@ import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
 import * as Sentry from '@sentry/react';
 
 import { useUser } from '../../contexts/userContext';
@@ -14,25 +13,6 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import styles from './WorksheetToggleButton.module.css';
-
-const StyledButton = styled(Button)`
-  color: ${({ theme }) => theme.primary}!important;
-  &:hover {
-    opacity: 0.5;
-  }
-`;
-
-const StyledSelect = styled.select`
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.select || '#f2f2f2'}!important;
-  color: ${({ theme }) => theme.text[0] || '#333'}!important;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-`;
 
 /**
  * Toggle button to add course to or remove from worksheet
@@ -46,28 +26,27 @@ function WorksheetToggleButton({
   seasonCode,
   modal,
   setCourseInWorksheet,
-  selectedWorksheet: initialSelectedWorksheet,
 }: {
   readonly crn: Crn;
   readonly seasonCode: Season;
   readonly modal: boolean;
   readonly setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly selectedWorksheet?: string;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
 
-  // Define options for the worksheet dropdown
-  const worksheetOptions = ['0', '1', '2', '3'];
+  const {
+    curSeason,
+    hiddenCourses,
+    toggleCourse,
+    worksheetNumber,
+    worksheetOptions,
+  } = useWorksheet();
 
-  const [selectedWorksheet, setSelectedWorksheet] = useState(
-    initialSelectedWorksheet || '0',
-  );
+  const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
   useEffect(() => {
-    setSelectedWorksheet(initialSelectedWorksheet || '0');
-  }, [initialSelectedWorksheet]);
-
-  const { curSeason, hiddenCourses, toggleCourse } = useWorksheet();
+    setSelectedWorksheet(worksheetNumber);
+  }, [worksheetNumber]);
 
   const worksheetCheck = useMemo(
     () => isInWorksheet(seasonCode, crn, selectedWorksheet, user.worksheet),
@@ -102,7 +81,7 @@ function WorksheetToggleButton({
         action: addRemove,
         season: seasonCode,
         ociId: crn,
-        worksheetNumber: parseInt(selectedWorksheet, 10),
+        worksheetNumber: selectedWorksheet,
       });
 
       // Call the endpoint
@@ -176,16 +155,17 @@ function WorksheetToggleButton({
   return (
     <OverlayTrigger
       placement="top"
-      delay={{ show: 1000, hide: 0 }}
+      delay={modal ? { show: 300, hide: 0 } : undefined}
       overlay={(props) => (
         <Tooltip id="button-tooltip" {...props}>
           <small>
-            {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
+            {inWorksheet ? 'Remove from' : 'Add to'} my{' '}
+            {worksheetOptions[worksheetNumber]!.label}
           </small>
         </Tooltip>
       )}
     >
-      <StyledButton
+      <Button
         variant="toggle"
         className={clsx(
           'py-auto px-1 d-flex align-items-center',
@@ -202,27 +182,28 @@ function WorksheetToggleButton({
               <FaPlus size={25} className={styles.scaleIcon} />
             )}
             {/* Render the worksheet dropdown */}
-            <StyledSelect
+            <select
               value={selectedWorksheet}
               onChange={(event) => {
-                setSelectedWorksheet(event.target.value);
+                setSelectedWorksheet(Number(event.target.value));
               }}
               onClick={(e) => {
                 // Check if the clicked target is the select element
                 if ((e.target as HTMLSelectElement).tagName === 'SELECT')
                   e.stopPropagation();
               }}
+              // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
               onMouseEnter={(e) => {
                 e.preventDefault();
               }}
               className={styles.worksheetDropdown}
             >
-              {worksheetOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option === '0' ? 'Main Worksheet' : `Worksheet ${option}`}
+              {worksheetOptions.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
                 </option>
               ))}
-            </StyledSelect>
+            </select>
           </>
         ) : (
           <>
@@ -233,7 +214,7 @@ function WorksheetToggleButton({
             )}
           </>
         )}
-      </StyledButton>
+      </Button>
     </OverlayTrigger>
   );
 }

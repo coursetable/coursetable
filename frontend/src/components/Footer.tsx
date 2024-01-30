@@ -1,24 +1,18 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import styles from './Footer.module.css';
 import Logo from './Navbar/Logo';
-import { StyledHr, TextComponent } from './StyledComponents';
+import { Hr, TextComponent } from './Typography';
 import { scrollToTop } from '../utilities/display';
 import VercelBanner from '../images/powered-by-vercel.svg';
-
-// Header
-const StyledH5 = styled.h5`
-  transition: color ${({ theme }) => theme.transDur};
-`;
 
 function Footer() {
   return (
     <Container fluid>
-      <StyledHr />
+      <Hr />
       <footer className={clsx(styles.footer, 'py-5 px-5')}>
         <div className="row">
           {/* Copyright */}
@@ -39,29 +33,29 @@ function Footer() {
             </a>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>Explore</StyledH5>
+            <h5 className={styles.sectionHeading}>Explore</h5>
             <ul className="list-unstyled text-small">
               {/* Catalog */}
               <li>
                 <NavLink to="/catalog" onClick={scrollToTop}>
-                  <TextComponent type={1}>Catalog</TextComponent>
+                  <TextComponent type="secondary">Catalog</TextComponent>
                 </NavLink>
               </li>
               {/* Worksheet */}
               <li>
                 <NavLink to="/worksheet" onClick={scrollToTop}>
-                  <TextComponent type={1}>Worksheet</TextComponent>
+                  <TextComponent type="secondary">Worksheet</TextComponent>
                 </NavLink>
               </li>
             </ul>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>Support</StyledH5>
+            <h5 className={styles.sectionHeading}>Support</h5>
             <ul className="list-unstyled text-small">
               {/* FAQ */}
               <li>
                 <NavLink to="/faq" onClick={scrollToTop}>
-                  <TextComponent type={1}>FAQ</TextComponent>
+                  <TextComponent type="secondary">FAQ</TextComponent>
                 </NavLink>
               </li>
               {/* Feedback */}
@@ -72,7 +66,7 @@ function Footer() {
                   rel="noopener noreferrer"
                   onClick={scrollToTop}
                 >
-                  <TextComponent type={1}>Feedback</TextComponent>
+                  <TextComponent type="secondary">Feedback</TextComponent>
                 </a>
               </li>
               {/* Status */}
@@ -82,41 +76,43 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <TextComponent type={1}>Status</TextComponent>
+                  <TextComponent type="secondary">Status</TextComponent>
                 </a>
               </li>
               {/* Privacy Policy */}
               <li>
                 <NavLink to="/privacypolicy" onClick={scrollToTop}>
-                  <TextComponent type={1}>Privacy Policy</TextComponent>
+                  <TextComponent type="secondary">Privacy Policy</TextComponent>
                 </NavLink>
               </li>
             </ul>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>Developers</StyledH5>
+            <h5 className={styles.sectionHeading}>Developers</h5>
             <ul className="list-unstyled text-small">
               {/* GraphQL explorer */}
               <li>
                 <NavLink to="/graphiql" onClick={scrollToTop}>
-                  <TextComponent type={1}>GraphQL playground</TextComponent>
+                  <TextComponent type="secondary">
+                    GraphQL playground
+                  </TextComponent>
                 </NavLink>
               </li>
             </ul>
           </div>
           <div className="col-6 col-md">
-            <StyledH5>About</StyledH5>
+            <h5 className={styles.sectionHeading}>About</h5>
             <ul className="list-unstyled text-small">
               {/* Team */}
               <li>
                 <NavLink to="/about" onClick={scrollToTop}>
-                  <TextComponent type={1}>Team</TextComponent>
+                  <TextComponent type="secondary">Team</TextComponent>
                 </NavLink>
               </li>
               {/* Join us */}
               <li>
                 <NavLink to="/joinus" onClick={scrollToTop}>
-                  <TextComponent type={1}>Join Us</TextComponent>
+                  <TextComponent type="secondary">Join Us</TextComponent>
                 </NavLink>
               </li>
               {/* Github */}
@@ -126,7 +122,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <TextComponent type={1}>GitHub</TextComponent>
+                  <TextComponent type="secondary">GitHub</TextComponent>
                 </a>
               </li>
               {/* Linkedin */}
@@ -136,7 +132,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <TextComponent type={1}>LinkedIn</TextComponent>
+                  <TextComponent type="secondary">LinkedIn</TextComponent>
                 </a>
               </li>
               {/* Buy Me A Coffee */}

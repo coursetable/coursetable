@@ -9,7 +9,6 @@ import { BiBookOpen } from 'react-icons/bi';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import {
@@ -21,7 +20,7 @@ import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
-import { TextComponent, StyledIcon } from '../StyledComponents';
+import { TextComponent } from '../Typography';
 import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
@@ -31,37 +30,20 @@ import {
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
-// Grid Item wrapper
-const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
-  background-color: ${({ theme, inWorksheet }) =>
-    inWorksheet
-      ? theme.primaryLight
-      : theme.theme === 'light'
-        ? 'rgb(245, 245, 245)'
-        : theme.surface[1]};
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-  &:hover {
-    background-color: ${({ theme }) => theme.selectHover};
-  }
-`;
-
 function RatingCell({
   rating,
-  colormap,
+  colorMap,
   children,
 }: {
   readonly rating: number | null;
-  readonly colormap: chroma.Scale;
+  readonly colorMap: chroma.Scale;
   readonly children?: React.ReactNode;
 }) {
   return (
     <div
       className={clsx(styles.rating, 'mr-1')}
       style={{
-        color: rating ? colormap(rating).darken().saturate().css() : '#cccccc',
+        color: rating ? colorMap(rating).darken().saturate().css() : '#cccccc',
       }}
     >
       {children}
@@ -119,16 +101,24 @@ function ResultsGridItem({
       className={clsx(styles.container, 'px-2 pt-0 pb-3')}
       style={{ overflow: 'hidden' }}
     >
-      <StyledGridItem
+      {/* TODO */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
         onClick={() => {
           setSearchParams((prev) => {
             prev.set('course-modal', `${course.season_code}-${course.crn}`);
             return prev;
           });
         }}
-        className={clsx(styles.oneLine, styles.itemContainer, 'px-3 pb-3')}
+        className={clsx(
+          styles.oneLine,
+          styles.resultItem,
+          courseInWorksheet && styles.inWorksheetResultItem,
+          'px-3 pb-3',
+        )}
+        // TODO
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
-        inWorksheet={courseInWorksheet}
       >
         <Row className="m-auto">
           {/* Course Code */}
@@ -204,7 +194,7 @@ function ResultsGridItem({
             {/* Course Professors */}
             <Row className="m-auto">
               <TextComponent
-                type={1}
+                type="secondary"
                 className={clsx(styles.oneLine, styles.professors)}
               >
                 {course.professor_names.length > 0
@@ -215,7 +205,7 @@ function ResultsGridItem({
             {/* Course Times */}
             <Row className="m-auto">
               <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type={1}>
+                <TextComponent type="secondary">
                   {course.times_summary === 'TBA'
                     ? 'Times: TBA'
                     : course.times_summary}
@@ -225,7 +215,7 @@ function ResultsGridItem({
             {/* Course Location */}
             <Row className="m-auto">
               <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type={1}>
+                <TextComponent type="secondary">
                   {course.locations_summary === 'TBA'
                     ? 'Location: TBA'
                     : course.locations_summary}
@@ -262,13 +252,13 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <RatingCell
                     rating={getOverallRatings(course, 'stat')}
-                    colormap={ratingColormap}
+                    colorMap={ratingColormap}
                   >
                     {getOverallRatings(course, 'display')}
                   </RatingCell>
-                  <StyledIcon>
+                  <div className={styles.iconContainer}>
                     <AiOutlineStar className={styles.icon} />
-                  </StyledIcon>
+                  </div>
                 </Row>
               </OverlayTrigger>
               {/* Professor Rating */}
@@ -283,13 +273,13 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <RatingCell
                     rating={getProfessorRatings(course, 'stat')}
-                    colormap={ratingColormap}
+                    colorMap={ratingColormap}
                   >
                     {getProfessorRatings(course, 'display')}
                   </RatingCell>
-                  <StyledIcon>
+                  <div className={styles.iconContainer}>
                     <IoPersonOutline className={styles.profIcon} />
-                  </StyledIcon>
+                  </div>
                 </Row>
               </OverlayTrigger>
               {/* Workload Rating */}
@@ -304,19 +294,19 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <RatingCell
                     rating={getWorkloadRatings(course, 'stat')}
-                    colormap={workloadColormap}
+                    colorMap={workloadColormap}
                   >
                     {getWorkloadRatings(course, 'display')}
                   </RatingCell>
-                  <StyledIcon>
+                  <div className={styles.iconContainer}>
                     <BiBookOpen className={styles.icon} />
-                  </StyledIcon>
+                  </div>
                 </Row>
               </OverlayTrigger>
             </div>
           </Col>
         </Row>
-      </StyledGridItem>
+      </div>
       {/* Add/remove from worksheet button */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton

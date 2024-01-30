@@ -5,7 +5,6 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import styled from 'styled-components';
 import clsx from 'clsx';
 import styles from './SortBySelect.module.css';
 import CustomSelect from './CustomSelect';
@@ -14,13 +13,6 @@ import {
   useSearch,
   sortByOptions,
 } from '../../contexts/searchContext';
-
-// Toggle sort order button
-const StyledSortBtn = styled.div`
-  &:hover {
-    background-color: ${({ theme }) => theme.banner};
-  }
-`;
 
 export default function SortBySelect() {
   const {
@@ -41,7 +33,9 @@ export default function SortBySelect() {
         />
       </div>
       {/* Toggle sort order button */}
-      <StyledSortBtn
+      {/* TODO */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
         className={clsx(styles.sortBtn, 'my-auto')}
         onClick={() => sortOrder.set((o) => (o === 'asc' ? 'desc' : 'asc'))}
       >
@@ -58,7 +52,7 @@ export default function SortBySelect() {
         ) : (
           <FcNumericalSorting21 className={styles.sortIcon} size={20} />
         )}
-      </StyledSortBtn>
+      </div>
     </>
   );
 }

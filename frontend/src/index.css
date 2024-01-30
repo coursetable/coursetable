@@ -1,3 +1,65 @@
+:root {
+  --color-text: #141414;
+  --color-text-secondary: #454545;
+  --color-text-tertiary: #7a7a7a;
+  --color-bg: #ffffff;
+  --color-surface: #ffffff; /* All surfaces are white */
+  --color-surface-elevated: #ffffff;
+  --color-banner: #f5f5f5;
+  --color-border: #ededed;
+  --color-select: #ffffff;
+  --color-select-hover: #468ff24d;
+  --color-select-multivalue: #e6e6e6;
+  --color-hidden: #b9b8b8;
+  --color-disabled: #f2f2f2;
+  --color-button-hover: #fafafa;
+  --color-button-active: #f0f0f0;
+  --color-icon: #cccccc;
+  --color-icon-hover: #9b9b9b;
+  --color-icon-focus: #666666;
+  --color-icon-focus-hover: #3c3c3c;
+  --color-primary: #468ff2;
+  --color-primary-light: #468ff226;
+  --color-primary-hover: #007bff;
+  --trans-dur: 0.35s;
+
+  --max-width-sm-mobile: calc(var(--min-width-mobile) - 1px);
+  --min-width-mobile: 480px;
+  --max-width-mobile: calc(var(--min-width-tablet) - 1px);
+  --min-width-tablet: 768px;
+  --max-width-tablet: calc(var(--min-width-sm-desktop) - 1px);
+  --min-width-sm-desktop: 1200px;
+  --max-width-sm-desktop: calc(var(--min-width-lg-desktop) - 1px);
+  --min-width-lg-desktop: 1320px;
+}
+
+:root[data-theme='dark'] {
+  --color-text: #fafafa;
+  --color-text-secondary: #dbdbdb;
+  --color-text-tertiary: #bababa;
+  --color-surface: #242424;
+  --color-surface-elevated: #363636;
+  --color-bg: #121212;
+  --color-surface: #242424;
+  --color-surface-elevated: #363636;
+  --color-banner: #363636;
+  --color-border: #303030;
+  --color-select: #303030;
+  --color-select-hover: #446491bf;
+  --color-select-multivalue: #4d4d4d;
+  --color-hidden: #4d4d4d;
+  --color-disabled: #f2f2f21a;
+  --color-button-hover: #ffffff05;
+  --color-button-active: #ffffff0d;
+  --color-icon: #666666;
+  --color-icon-hover: #949494;
+  --color-icon-focus: #cccccc;
+  --color-icon-focus-hover: #ffffff;
+  --color-primary: #61adff;
+  --color-primary-light: #44649140;
+  --color-primary-hover: #007bff;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -6,6 +68,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color var(--trans-dur);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
 }
 
 button:focus {
@@ -22,7 +95,7 @@ code {
 }
 
 #base {
-  height: 100vh;
+  height: auto;
 }
 
 /* TODO: can we modularized the below? */
@@ -31,11 +104,6 @@ code {
 .dropdown-menu,
 .dropdown-toggle {
   width: 100%;
-}
-
-#dropdown-btn {
-  border-top-right-radius: 8px !important;
-  border-top-left-radius: 8px !important;
 }
 
 .dropdown-menu {
@@ -63,43 +131,4 @@ code {
 hr {
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
-}
-
-.modal-content {
-  border: none !important;
-  border-radius: 8px !important;
-  /* max-height: 80% !important;
-  min-height: 80% !important; */
-  height: 90% !important;
-}
-
-.modal-title {
-  font-weight: 550;
-  line-height: 1.2 !important;
-}
-
-.modal-title-mobile {
-  font-weight: 550;
-  font-size: 18px !important;
-}
-
-.modal-header {
-  display: flex !important;
-  padding: 1rem 1rem 0.5rem 1rem !important;
-}
-
-.modal-dialog {
-  transition: transform 0.1s ease-out !important;
-}
-
-@media only screen and (min-width: 576px) and (max-width: 800px) {
-  .modal-dialog {
-    margin: 1.75rem 0.5rem;
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  .modal-top {
-    flex-direction: column !important;
-  }
 }

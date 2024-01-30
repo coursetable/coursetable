@@ -25,16 +25,28 @@
   transition: max-height 0.2s ease-out;
 }
 
+.ratingBubble {
+  cursor: pointer;
+  background-color: rgb(190, 221, 255);
+}
+
+[data-theme='dark'] .ratingBubble {
+  background-color: var(--color-select-hover);
+}
+
 .ratingBubble:hover {
   background-color: rgb(92, 168, 250);
   max-height: 50px;
-  cursor: pointer;
   transition: max-height 0.2s ease-in;
+}
+
+.ratingBubbleUnclickable {
+  cursor: default;
+  background-color: var(--color-surface);
 }
 
 .ratingBubbleUnclickable:hover {
   max-height: 50px;
-  cursor: default;
   transition: max-height 0.2s ease-in;
 }
 
@@ -48,6 +60,10 @@
 .evaluationHeader {
   font-weight: 500;
   color: grey;
+}
+
+.evaluationHeader :global(.toggleOption) {
+  color: var(--color-text);
 }
 
 .hidden {
@@ -81,6 +97,15 @@
 
 .filterContainer:focus-visible .evaluationsFilter {
   outline: 2px solid #468ff2;
+}
+
+.evaluationsFilter {
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-border);
+}
+
+.evaluationsFilter :global(.toggleOption) {
+  color: var(--color-text);
 }
 
 @media (hover: none) {

@@ -253,7 +253,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
-  - `friends`: `{ [netId: string]: { name: string; worksheets: [season: string, ociId: string, worksheetNumber: string][] } }`
+  - `friends`: `{ [netId: string]: { name: string; worksheets: [season: string, ociId: number, worksheetNumber: number][] } }`
 
 ### `GET` `/api/friends/names`
 
@@ -319,7 +319,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
   - `evaluationsEnabled`: `boolean | null`
   - `year`: `number | null`
   - `school`: `string | null`
-  - `data`: `[season: string, ociId: string, worksheetNumber: string][]`
+  - `data`: `[season: string, ociId: number, worksheetNumber: number][]`
 
 ## Health check
 

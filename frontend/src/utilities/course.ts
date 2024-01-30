@@ -23,14 +23,14 @@ export function truncatedText(
 export function isInWorksheet(
   seasonCode: Season,
   crn: Crn,
-  worksheetNumber: string,
+  worksheetNumber: number,
   worksheet?: Worksheet,
 ): boolean {
   if (!worksheet) return false;
   return worksheet.some(
     (course) =>
       course[0] === seasonCode &&
-      course[1] === String(crn) &&
+      course[1] === crn &&
       course[2] === worksheetNumber,
   );
 }
@@ -106,7 +106,7 @@ export function friendsAlsoTaking(
   return Object.values(friends)
     .filter((friend) =>
       friend.worksheets.some(
-        (value) => value[0] === seasonCode && parseInt(value[1], 10) === crn,
+        (value) => value[0] === seasonCode && value[1] === crn,
       ),
     )
     .map((friend) => friend.name);

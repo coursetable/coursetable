@@ -51,7 +51,6 @@ type ListingOverrides = {
 type ListingAugments = {
   // TODO: this should be in the worksheet data structure
   color?: [number, number, number];
-  currentWorksheet?: string;
 };
 expectType<
   // Make sure we don't override a key that wasn't there originally.

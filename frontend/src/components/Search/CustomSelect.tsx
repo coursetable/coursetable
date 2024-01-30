@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
-import { type DefaultTheme, useTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
 import chroma from 'chroma-js';
 import Select, {
   mergeStyles,
   type Props as SelectProps,
   type StylesConfig,
-  type Theme,
+  type Theme as SelectTheme,
   type ThemeConfig,
 } from 'react-select';
 import type { Option } from '../../contexts/searchContext';
@@ -15,29 +14,27 @@ import type { Option } from '../../contexts/searchContext';
 function indicatorStyles<
   T extends Option<number | string>,
   IsMulti extends boolean,
->(theme: DefaultTheme, isMulti: IsMulti): StylesConfig<T, IsMulti> {
-  const iconFocus = chroma(theme.iconFocus);
-  const icon = chroma(theme.icon);
-  const newIconFocus =
-    theme.theme === 'light' ? iconFocus.darken() : iconFocus.brighten();
-  const newIcon = theme.theme === 'light' ? icon.darken() : icon.brighten();
-
+>(isMulti: IsMulti): StylesConfig<T, IsMulti> {
   return {
     clearIndicator: (base, state) => ({
       ...base,
-      color: state.isFocused ? iconFocus.css() : icon.css(),
+      color: state.isFocused ? 'var(--color-icon-focus)' : 'var(--color-icon)',
       ':hover': {
         ...base[':hover'],
-        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
+        color: state.isFocused
+          ? 'var(--color-icon-focus-hover)'
+          : 'var(--color-icon-hover)',
       },
     }),
     dropdownIndicator: (base, state) => ({
       ...base,
       display: isMulti && state.hasValue ? 'none' : 'flex',
-      color: state.isFocused ? iconFocus.css() : icon.css(),
+      color: state.isFocused ? 'var(--color-icon-focus)' : 'var(--color-icon)',
       ':hover': {
         ...base[':hover'],
-        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
+        color: state.isFocused
+          ? 'var(--color-icon-focus-hover)'
+          : 'var(--color-icon-hover)',
       },
     }),
     indicatorSeparator: (base) => ({
@@ -48,14 +45,14 @@ function indicatorStyles<
 }
 
 // Styles for default select
-function defaultStyles<T extends Option<number | string>>(
-  theme: DefaultTheme,
-): StylesConfig<T> {
+function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
   return {
     control: (base, { isDisabled }) => ({
       ...base,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      backgroundColor: isDisabled ? theme.disabled : theme.select,
+      backgroundColor: isDisabled
+        ? 'var(--color-disabled)'
+        : 'var(--color-select)',
       borderColor: 'rgba(0, 0, 0, 0.1)',
       borderWidth: '2px',
       transition: 'none',
@@ -85,21 +82,20 @@ function defaultStyles<T extends Option<number | string>>(
     }),
     singleValue: (base, { isDisabled }) => ({
       ...base,
-      color: isDisabled ? theme.text[2] : undefined,
+      color: isDisabled ? 'var(--color-text-tertiary)' : undefined,
     }),
   };
 }
 
 // Styles for popout select
-function popoutStyles(
-  theme: DefaultTheme,
-  width: number,
-): StylesConfig<Option<number | string>> {
+function popoutStyles(width: number): StylesConfig<Option<number | string>> {
   return {
     control: (base, { isDisabled }) => ({
       ...base,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
-      backgroundColor: isDisabled ? theme.disabled : theme.select,
+      backgroundColor: isDisabled
+        ? 'var(--color-disabled)'
+        : 'var(--color-select)',
       borderColor: 'rgba(0, 0, 0, 0.1)',
       minWidth: width,
       margin: 8,
@@ -192,21 +188,19 @@ function CustomSelect<
   components,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
-  const globalTheme = useTheme();
-
   // All the default theme colors
-  const themeStyles: ThemeConfig = (theme: Theme): Theme => ({
+  const themeStyles: ThemeConfig = (theme: SelectTheme): SelectTheme => ({
     ...theme,
     borderRadius: 8,
     colors: {
       ...theme.colors,
       primary50: '#85c2ff', // OptionBackground :focus
-      primary25: globalTheme.selectHover, // OptionBackground :hover
-      neutral0: globalTheme.select, // AllBackground & optionText :selected
-      neutral10: globalTheme.multivalue, // SelectedOptionBackground & disabledBorder
+      primary25: 'var(--color-select-hover)', // OptionBackground :hover
+      neutral0: 'var(--color-select)', // AllBackground & optionText :selected
+      neutral10: 'var(--color-select-multivalue)', // SelectedOptionBackground & disabledBorder
       neutral30: 'hsl(0, 0%, 70%)', // Border :hover
-      neutral60: globalTheme.text[0], // DropdownIconFocus & clearIconFocus
-      neutral80: globalTheme.text[0], // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover
+      neutral60: 'var(--color-text)', // DropdownIconFocus & clearIconFocus
+      neutral80: 'var(--color-text)', // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover
     },
   });
 
@@ -218,8 +212,8 @@ function CustomSelect<
 
   // Configure styles
   let styles = mergeStyles(
-    indicatorStyles(globalTheme, isMulti),
-    popout ? popoutStyles(globalTheme, 400) : defaultStyles(globalTheme),
+    indicatorStyles(isMulti),
+    popout ? popoutStyles(400) : defaultStyles(),
   );
   if (useColors) styles = mergeStyles(styles, colorStyles());
 

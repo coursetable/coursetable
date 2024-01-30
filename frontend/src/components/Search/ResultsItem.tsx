@@ -7,7 +7,6 @@ import chroma from 'chroma-js';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import {
@@ -19,11 +18,7 @@ import {
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import {
-  TextComponent,
-  StyledPopover,
-  StyledRating,
-} from '../StyledComponents';
+import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
 import styles from './ResultsItem.module.css';
 import {
@@ -34,55 +29,7 @@ import {
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
-import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
-
-// Row for results item
-const StyledResultsItem = styled(Row)`
-  max-width: 1600px;
-  user-select: none;
-  overflow: hidden;
-  position: relative;
-  font-size: 13px;
-  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
-  line-height: 32px;
-  ${breakpoints('line-height', 'px', [{ 1320: 28 }])};
-`;
-
-// Wrapper for row
-const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
-  outline: none !important;
-  background-color: ${({ theme, inWorksheet }) =>
-    inWorksheet ? theme.primaryLight : 'inherit'};
-
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ theme }) => theme.selectHover} !important;
-  }
-
-  transition:
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-`;
-
-// Rating cell within the row
-const RatingCell = styled(StyledRating)`
-  width: 100%;
-  height: 100%;
-  padding: 3px 10px;
-  line-height: 1.5;
-  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
-`;
-
-// Season and skills/areas tag
-const Tag = styled(Badge)`
-  margin: 1px;
-  font-size: 13px;
-  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
-  font-weight: 600 !important;
-  padding: 4px 6px !important;
-  border-radius: 6px !important;
-`;
 
 /**
  * Renders a list item for a search result
@@ -98,6 +45,7 @@ function ResultsItem({
   course,
   multiSeasons,
   isFirst,
+  isOdd,
   COL_SPACING,
   friends,
   style,
@@ -105,6 +53,7 @@ function ResultsItem({
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
+  readonly isOdd: boolean;
   // This can be more exact, but I'm too lazy to type everything out :)
   readonly COL_SPACING: { [prop: string]: number };
   readonly friends: string[];
@@ -185,9 +134,14 @@ function ResultsItem({
   ];
 
   return (
-    <StyledSpacer
+    // TODO
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
       className={clsx(
-        isFirst && styles.firstSearchResultItem,
+        styles.resultItem,
+        courseInWorksheet && styles.inWorksheetResultItem,
+        isFirst && styles.firstResultItem,
+        isOdd ? styles.oddResultItem : styles.evenResultItem,
         course.extra_info !== 'ACTIVE' && styles.cancelledClass,
       )}
       onClick={() => {
@@ -196,12 +150,18 @@ function ResultsItem({
           return prev;
         });
       }}
+      // TODO
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
-      inWorksheet={courseInWorksheet}
       style={style}
     >
       {/* Search Row Item */}
-      <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
+      <Row
+        className={clsx(
+          styles.resultItemContent,
+          'mx-auto pl-4 pr-2 py-0 justify-content-between',
+        )}
+      >
         {/* Season */}
         {multiSeasons && (
           <div style={sznStyle} className="d-flex">
@@ -214,14 +174,17 @@ function ResultsItem({
               )}
             >
               <div className={clsx(styles.skillsAreas, 'my-auto')}>
-                <Tag
+                <Badge
                   variant="secondary"
-                  className={styles[seasons[(season - 1) as 0 | 1 | 2]]}
+                  className={clsx(
+                    styles.tag,
+                    styles[seasons[(season - 1) as 0 | 1 | 2]],
+                  )}
                   key={season}
                 >
                   <div style={{ display: 'inline-block' }}>{icon}</div>
                   &nbsp;{`'${year}`}
-                </Tag>
+                </Badge>
               </div>
             </OverlayTrigger>
           </div>
@@ -250,7 +213,7 @@ function ResultsItem({
             <span>{subjectCode}</span>
           </OverlayTrigger>{' '}
           {courseCode}
-          <TextComponent type={1}>
+          <TextComponent type="secondary">
             {course.section
               ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
               : ''}
@@ -259,7 +222,7 @@ function ResultsItem({
         <OverlayTrigger
           placement="right"
           overlay={(props) => (
-            <StyledPopover {...props} id="title-popover">
+            <InfoPopover {...props} id="title-popover">
               <Popover.Title>
                 <strong>
                   {course.extra_info !== 'ACTIVE' ? (
@@ -277,7 +240,7 @@ function ResultsItem({
                   {truncatedText(course.requirements, 250, '')}
                 </div>
               </Popover.Content>
-            </StyledPopover>
+            </InfoPopover>
           )}
         >
           {/* Course Title */}
@@ -287,30 +250,33 @@ function ResultsItem({
         </OverlayTrigger>
         <div className="d-flex">
           {/* Overall Rating */}
-          <RatingCell
+          <RatingBubble
+            className={styles.ratingCell}
             rating={getOverallRatings(course, 'stat')}
-            colormap={ratingColormap}
+            colorMap={ratingColormap}
             style={rateOverallStyle}
           >
             {getOverallRatings(course, 'display')}
-          </RatingCell>
+          </RatingBubble>
           {/* Workload Rating */}
-          <RatingCell
+          <RatingBubble
+            className={styles.ratingCell}
             rating={getWorkloadRatings(course, 'stat')}
-            colormap={workloadColormap}
+            colorMap={workloadColormap}
             style={rateWorkloadStyle}
           >
             {getWorkloadRatings(course, 'display')}
-          </RatingCell>
+          </RatingBubble>
           {/* Professor Rating & Course Professors */}
           <div style={profStyle} className="d-flex align-items-center">
             <div style={rateProfStyle} className="mr-2 h-100">
-              <RatingCell
+              <RatingBubble
+                className={styles.ratingCell}
                 rating={getProfessorRatings(course, 'stat')}
-                colormap={ratingColormap}
+                colorMap={ratingColormap}
               >
                 {getProfessorRatings(course, 'display')}
-              </RatingCell>
+              </RatingBubble>
             </div>
             <div className={styles.ellipsisText}>
               {course.professor_names.length === 0
@@ -327,9 +293,9 @@ function ResultsItem({
         <div style={saStyle} className="d-flex">
           <span className={styles.skillsAreas}>
             {course.skills.map((skill, index) => (
-              <Tag
+              <Badge
                 variant="secondary"
-                className="my-auto"
+                className={clsx(styles.tag, 'my-auto')}
                 key={index}
                 style={{
                   color: skillsAreasColors[skill],
@@ -339,12 +305,12 @@ function ResultsItem({
                 }}
               >
                 {skill}
-              </Tag>
+              </Badge>
             ))}
             {course.areas.map((area, index) => (
-              <Tag
+              <Badge
                 variant="secondary"
-                className="my-auto"
+                className={clsx(styles.tag, 'my-auto')}
                 key={index}
                 style={{
                   color: skillsAreasColors[area],
@@ -354,7 +320,7 @@ function ResultsItem({
                 }}
               >
                 {area}
-              </Tag>
+              </Badge>
             ))}
           </span>
         </div>
@@ -403,8 +369,8 @@ function ResultsItem({
             <CourseConflictIcon course={course} />
           </div>
         )}
-      </StyledResultsItem>
-    </StyledSpacer>
+      </Row>
+    </div>
   );
 }
 

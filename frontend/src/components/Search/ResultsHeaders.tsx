@@ -1,62 +1,14 @@
 import React, { useMemo, forwardRef } from 'react';
 import { Col, Row, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaBars, FaTh } from 'react-icons/fa';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { SurfaceComponent } from '../StyledComponents';
+import { SurfaceComponent } from '../Typography';
 
-import { useSearch, sortByOptions } from '../../contexts/searchContext';
+import { sortByOptions } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { breakpoints } from '../../utilities/display';
 import styles from './ResultsHeaders.module.css';
-
-const StyledToggle = styled.div`
-  color: ${({ theme }) => theme.text[1]};
-  padding: 7.5px;
-  border-radius: 15px;
-  transition: color ${({ theme }) => theme.transDur};
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ theme }) => theme.select};
-    color: ${({ theme }) => theme.primary};
-  }
-`;
-
-// Space above row dropdown to hide scrolled courses
-const StyledSpacer = styled.div`
-  background-color: ${({ theme }) => theme.background};
-  transition: background-color ${({ theme }) => theme.transDur};
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  z-index: 2;
-`;
-
-// Restrict the row width
-const StyledRow = styled(Row)`
-  max-width: 1600px;
-`;
-
-// Container of row dropdown (without spacer)
-const StyledContainer = styled(SurfaceComponent)`
-  border-top: 2px solid ${({ theme }) => theme.border};
-  border-bottom: 2px solid ${({ theme }) => theme.border};
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-`;
-
-// Column header
-const ResultsHeader = styled.div`
-  line-height: 30px;
-  ${breakpoints('line-height', 'px', [{ 1320: 24 }])};
-  display: flex;
-  font-size: 14px;
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-  font-weight: 600;
-`;
 
 function ResultsHeaders(
   {
@@ -77,9 +29,6 @@ function ResultsHeaders(
   },
   ref: React.Ref<HTMLDivElement>,
 ) {
-  // Fetch resetKey from search context
-  const { resetKey } = useSearch();
-
   const { isTablet, isLgDesktop, isSmDesktop } = useWindowDimensions();
 
   // Column width styles
@@ -132,10 +81,13 @@ function ResultsHeaders(
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
 
   return (
-    <StyledSpacer style={{ top: navbarHeight }}>
-      <StyledContainer layer={0} id="results_container" className="px-0 mx-0">
+    <div className={styles.spacer} style={{ top: navbarHeight }}>
+      <SurfaceComponent
+        id="results_container"
+        className={clsx('px-0 mx-0', styles.container)}
+      >
         {/* Column Headers */}
-        <StyledRow
+        <Row
           ref={ref}
           className={clsx(
             'mx-auto pl-4 pr-2',
@@ -152,8 +104,10 @@ function ResultsHeaders(
               'd-flex ml-auto my-auto p-0',
             )}
           >
-            <StyledToggle
-              className="d-flex ml-auto my-auto"
+            {/* TODO */}
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+            <div
+              className={clsx(styles.toggle, 'd-flex ml-auto my-auto')}
               onClick={() => setIsListView(!isListView)}
             >
               {!isListView ? (
@@ -161,15 +115,17 @@ function ResultsHeaders(
               ) : (
                 <FaTh className="m-auto" size={15} />
               )}
-            </StyledToggle>
+            </div>
           </div>
           {isListView ? (
             <>
               {multiSeasons && (
-                <ResultsHeader style={sznStyle}>Season</ResultsHeader>
+                <div className={styles.resultsHeader} style={sznStyle}>
+                  Season
+                </div>
               )}
               {/* Course Code */}
-              <ResultsHeader style={codeStyle}>
+              <div className={styles.resultsHeader} style={codeStyle}>
                 <OverlayTrigger
                   placement="bottom"
                   overlay={(props) => (
@@ -183,22 +139,16 @@ function ResultsHeaders(
                 >
                   <span className={styles.oneLine}>Code</span>
                 </OverlayTrigger>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.course_code}
-                  key={resetKey}
-                />
-              </ResultsHeader>
+                <ResultsColumnSort selectOption={sortByOptions.course_code} />
+              </div>
               {/* Course Name */}
-              <ResultsHeader style={titleStyle}>
+              <div className={styles.resultsHeader} style={titleStyle}>
                 <span className={styles.oneLine}>Title</span>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.title}
-                  key={resetKey}
-                />
-              </ResultsHeader>
+                <ResultsColumnSort selectOption={sortByOptions.title} />
+              </div>
               <div className="d-flex">
                 {/* Overall Rating */}
-                <ResultsHeader style={rateOverallStyle}>
+                <div className={styles.resultsHeader} style={rateOverallStyle}>
                   <OverlayTrigger
                     placement="bottom"
                     overlay={(props) => (
@@ -217,11 +167,10 @@ function ResultsHeaders(
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_rating}
-                    key={resetKey}
                   />
-                </ResultsHeader>
+                </div>
                 {/* Workload Rating */}
-                <ResultsHeader style={rateWorkloadStyle}>
+                <div className={styles.resultsHeader} style={rateWorkloadStyle}>
                   <OverlayTrigger
                     placement="bottom"
                     overlay={(props) => (
@@ -239,11 +188,10 @@ function ResultsHeaders(
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_workload}
-                    key={resetKey}
                   />
-                </ResultsHeader>
+                </div>
                 {/* Professor Rating & Course Professors */}
-                <ResultsHeader style={profStyle}>
+                <div className={styles.resultsHeader} style={profStyle}>
                   <OverlayTrigger
                     placement="bottom"
                     overlay={(props) => (
@@ -261,12 +209,11 @@ function ResultsHeaders(
                   </OverlayTrigger>
                   <ResultsColumnSort
                     selectOption={sortByOptions.average_professor}
-                    key={resetKey}
                   />
-                </ResultsHeader>
+                </div>
               </div>
               {/* Previous Enrollment Number */}
-              <ResultsHeader style={enrollStyle}>
+              <div className={styles.resultsHeader} style={enrollStyle}>
                 <OverlayTrigger
                   placement="bottom"
                   overlay={(props) => (
@@ -294,15 +241,14 @@ function ResultsHeaders(
                 </OverlayTrigger>
                 <ResultsColumnSort
                   selectOption={sortByOptions.last_enrollment}
-                  key={resetKey}
                 />
-              </ResultsHeader>
+              </div>
               {/* Skills/Areas */}
-              <ResultsHeader style={saStyle}>
+              <div className={styles.resultsHeader} style={saStyle}>
                 <span className={styles.oneLine}>Skills/Areas</span>
-              </ResultsHeader>
+              </div>
               {/* Course Meeting Days & Times */}
-              <ResultsHeader style={meetStyle}>
+              <div className={styles.resultsHeader} style={meetStyle}>
                 <OverlayTrigger
                   placement="bottom"
                   overlay={(props) => (
@@ -317,20 +263,16 @@ function ResultsHeaders(
                 >
                   <span className={styles.oneLine}>Meets</span>
                 </OverlayTrigger>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.times_by_day}
-                  key={resetKey}
-                />
-              </ResultsHeader>
+                <ResultsColumnSort selectOption={sortByOptions.times_by_day} />
+              </div>
               {/* Location */}
-              <ResultsHeader style={locStyle}>
+              <div className={styles.resultsHeader} style={locStyle}>
                 <span className={styles.oneLine}>Location</span>
                 <ResultsColumnSort
                   selectOption={sortByOptions.locations_summary}
-                  key={resetKey}
                 />
-              </ResultsHeader>
-              <ResultsHeader style={friendsStyle}>
+              </div>
+              <div className={styles.resultsHeader} style={friendsStyle}>
                 <OverlayTrigger
                   placement="bottom"
                   overlay={(props) => (
@@ -341,25 +283,22 @@ function ResultsHeaders(
                 >
                   <span className={styles.oneLine}>#F</span>
                 </OverlayTrigger>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.friend}
-                  key={resetKey}
-                />
-              </ResultsHeader>
+                <ResultsColumnSort selectOption={sortByOptions.friend} />
+              </div>
             </>
           ) : (
             // Showing how many search results for grid view
             <Col md={10}>
-              <ResultsHeader>
+              <div className={styles.resultsHeader}>
                 {`Showing ${numResults} course${
                   numResults === 1 ? '' : 's'
                 }...`}
-              </ResultsHeader>
+              </div>
             </Col>
           )}
-        </StyledRow>
-      </StyledContainer>
-    </StyledSpacer>
+        </Row>
+      </SurfaceComponent>
+    </div>
   );
 }
 

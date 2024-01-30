@@ -9,13 +9,13 @@
   left: calc(50% - 16px);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .container {
     width: 80vw;
   }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 479px) {
   .container {
     width: 90vw;
   }

@@ -13,9 +13,9 @@
 .collapseText {
   color: inherit;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .collapseText:hover {
-  cursor: pointer;
   text-decoration: none !important;
 }

@@ -139,7 +139,7 @@ export const useCourseData = (seasons: Season[]) => {
 export function useWorksheetInfo(
   worksheet: Worksheet | undefined,
   season: Season | null = null,
-  worksheetNumber = '0',
+  worksheetNumber = 0,
 ) {
   const requiredSeasons = useMemo(() => {
     if (!worksheet || worksheet.length === 0) {
@@ -169,7 +169,7 @@ export function useWorksheetInfo(
       if (season !== null && season !== seasonCode) continue;
 
       if (seasonCode in courses && worksheetNumberCourse === worksheetNumber) {
-        const course = courses[seasonCode]!.get(parseInt(crn, 10) as Crn);
+        const course = courses[seasonCode]!.get(crn);
         if (!course) {
           // This error is unactionable.
           // https://github.com/coursetable/coursetable/pull/1508

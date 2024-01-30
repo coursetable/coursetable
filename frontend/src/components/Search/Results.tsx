@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
-import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
 
 import ResultsHeaders from './ResultsHeaders';
@@ -21,18 +20,6 @@ import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
-
-// Restrict the row width
-const StyledRow = styled(Row)`
-  max-width: 1600px;
-`;
-
-// Search results
-const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
-  overflow: hidden;
-  ${({ numCourses, isMobile }) =>
-    numCourses > 0 && numCourses < 20 && !isMobile ? 'height: 80vh;' : ''}
-`;
 
 // Function to calculate column width within a max and min
 const getColWidth = (calculated: number, min = 0, max = 1000000) =>
@@ -76,8 +63,6 @@ function Results({
   const [rowWidth, setRowWidth] = useState(0);
 
   const { curSeason } = useWorksheet();
-
-  const globalTheme = useTheme();
 
   // Ref to get row width
   const ref = useRef<HTMLDivElement>(null);
@@ -189,7 +174,7 @@ function Results({
           >
             {({ index, style }) => (
               <div style={style}>
-                <StyledRow className="mx-auto">
+                <Row className={clsx(styles.gridRow, 'mx-auto')}>
                   {data
                     .slice(index * numCols, (index + 1) * numCols)
                     .map((course) => (
@@ -200,7 +185,7 @@ function Results({
                         key={course.season_code + course.crn}
                       />
                     ))}
-                </StyledRow>
+                </Row>
               </div>
             )}
           </FixedSizeList>
@@ -226,13 +211,8 @@ function Results({
               const friends = numFriends[course.season_code + course.crn] ?? [];
               return (
                 <ResultsItem
-                  style={{
-                    ...style,
-                    backgroundColor:
-                      index % 2 === 0
-                        ? globalTheme.surface[0]
-                        : globalTheme.rowOdd,
-                  }}
+                  isOdd={index % 2 === 1}
+                  style={style}
                   course={course}
                   multiSeasons={multiSeasons}
                   isFirst={index === 0}
@@ -261,13 +241,18 @@ function Results({
         />
       )}
 
-      <SearchResults
-        className={!isListView ? 'px-1 pt-3' : ''}
-        numCourses={data.length}
-        isMobile={isMobile}
+      <div
+        className={clsx(
+          !isListView && 'px-1 pt-3',
+          styles.searchResults,
+          data.length > 0 &&
+            data.length < 20 &&
+            isListView &&
+            styles.searchResultsSmall,
+        )}
       >
         {resultsListing}
-      </SearchResults>
+      </div>
     </div>
   );
 }

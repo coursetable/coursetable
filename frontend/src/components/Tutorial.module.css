@@ -1,0 +1,50 @@
+.stepImage {
+  width: 100% !important;
+  margin-bottom: 20px;
+}
+
+.stepVideo {
+  margin-left: -30px;
+  margin-top: -24px;
+  margin-bottom: 20px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.stepContent {
+  font-size: 14px;
+  margin-bottom: 1rem;
+}
+
+.nextButton {
+  background-color: var(--color-primary-hover);
+  border-color: transparent !important;
+  box-shadow: none !important;
+  font-size: 14px;
+}
+
+.nextButton:focus {
+  background-color: var(--color-primary-hover);
+}
+
+.prevButton {
+  background-color: transparent;
+  border-color: transparent !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+  font-size: 14px;
+}
+
+.prevButton:hover {
+  background-color: var(--color-button-active);
+}
+.prevButton:active {
+  background-color: var(--color-button-active) !important;
+}
+.prevButton:focus {
+  background-color: transparent;
+}
+.prevButton:disabled {
+  background-color: transparent;
+  color: var(--color-text-tertiary) !important;
+}

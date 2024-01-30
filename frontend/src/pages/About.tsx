@@ -1,11 +1,10 @@
 import React from 'react';
-
-import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
-import { TextComponent, StyledCard } from '../components/StyledComponents';
+import { TextComponent } from '../components/Typography';
+import { useTheme } from '../contexts/themeContext';
 
 // Link Logos
 import github from '../images/link-logos/github.png';
@@ -47,14 +46,6 @@ import hs from '../images/headshots/harshal-sheth.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 
-// Header
-const StyledH1 = styled.h1`
-  font-weight: 600;
-  font-size: 25px;
-  text-align: center;
-  transition: color ${({ theme }) => theme.transDur};
-`;
-
 type Person = {
   name: string;
   image: string;
@@ -67,7 +58,7 @@ type Person = {
 };
 
 function About() {
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   const current: Person[] = [
     {
@@ -290,7 +281,7 @@ function About() {
     link && (
       <a href={link}>
         <img
-          src={theme.theme === 'dark' ? imageDark : image}
+          src={theme === 'dark' ? imageDark : image}
           alt={text}
           style={{
             width: '24px',
@@ -302,26 +293,26 @@ function About() {
 
   const createCards = (person: Person, idx: number) => (
     <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-      <StyledCard style={{ height: '100%' }}>
+      <Card className={styles.card} style={{ height: '100%' }}>
         <Card.Img variant="top" src={person.image} alt={person.name} />
         <Card.Body className="p-3">
           <Card.Title className="mb-1">{person.name}</Card.Title>
           <Card.Text>
-            <TextComponent type={1}>{person.role}</TextComponent>
+            <TextComponent type="secondary">{person.role}</TextComponent>
             <br />
             {logoLink(person.links?.github, github, githubDark, 'github')}
             {logoLink(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
             {logoLink(person.links?.website, web, webDark, 'website')}
           </Card.Text>
         </Card.Body>
-      </StyledCard>
+      </Card>
     </div>
   );
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <StyledH1 className="mt-5 mb-1">About Us</StyledH1>
-      <TextComponent type={1}>
+      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</h1>
+      <TextComponent type="secondary">
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find
           the courses they want, bringing together course information, student

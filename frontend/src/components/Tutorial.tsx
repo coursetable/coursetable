@@ -1,66 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
-import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { useTheme } from '../contexts/themeContext';
+import styles from './Tutorial.module.css';
 import './reactour-override.css';
-
-// Next button for tutorial
-const NextButton = styled(Button)`
-  background-color: ${({ theme }) => theme.primaryHover};
-  border-color: transparent !important;
-  box-shadow: none !important;
-  font-size: 14px;
-
-  &:focus {
-    background-color: ${({ theme }) => theme.primaryHover};
-  }
-`;
-
-// Back button for tutorial
-const PrevButton = styled(Button)`
-  background-color: transparent;
-  border-color: transparent !important;
-  color: ${({ theme }) => theme.text[0]} !important;
-  box-shadow: none !important;
-  font-size: 14px;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonActive};
-  }
-  &:active {
-    background-color: ${({ theme }) => theme.buttonActive} !important;
-  }
-  &:focus {
-    background-color: transparent;
-  }
-  &:disabled {
-    background-color: transparent;
-    color: ${({ theme }) => theme.text[2]} !important;
-  }
-`;
-
-// Step content in helper
-const StepContent = styled.div`
-  font-size: 14px;
-  margin-bottom: 1rem;
-`;
-
-// Step video
-const StepVideo = styled.video`
-  margin-left: -30px;
-  margin-top: -24px;
-  margin-bottom: 20px;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-`;
-
-// Step image
-const StepImage = styled.img`
-  width: 100% !important;
-  margin-bottom: 20px;
-`;
 
 type Props = {
   readonly isTutorialOpen: boolean;
@@ -209,7 +154,7 @@ function Tutorial({
     if (!isTutorialOpen) setCurrentStep(0);
   }, [isTutorialOpen]);
 
-  const globalTheme = useTheme();
+  const { theme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -217,8 +162,8 @@ function Tutorial({
   const helperStyle: React.CSSProperties = useMemo(() => {
     let styles: React.CSSProperties = {
       maxWidth: '432px',
-      backgroundColor: globalTheme.background,
-      color: globalTheme.text[0],
+      backgroundColor: 'var(--color-bg)',
+      color: 'var(--color-text)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
@@ -230,45 +175,56 @@ function Tutorial({
       };
     }
     return styles;
-  }, [globalTheme, shownTutorial]);
+  }, [shownTutorial]);
 
   // Generate react tour steps
-  const steps: ReactourStep[] = stepsContent.map(
-    ({ selector, header, text, observe, video, image, position }) => {
+  const steps = stepsContent.map(
+    ({
+      selector,
+      header,
+      text,
+      observe,
+      video,
+      image,
+      position,
+    }): ReactourStep => {
       // Create step content
       const content = () => (
-        <StepContent>
+        <div className={styles.stepContent}>
           {image && (
-            <StepImage
-              src={`./images/${image}-${globalTheme.theme}.png`}
+            <img
+              className={styles.stepImage}
+              src={`./images/${image}-${theme}.png`}
               alt={image}
               height="362"
             />
           )}
           {video && (
-            <StepVideo autoPlay loop key={selector} width="116%" height="270">
+            // TODO
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video
+              className={styles.stepVideo}
+              autoPlay
+              loop
+              key={selector}
+              width="116%"
+              height="270"
+            >
               <source src={`./videos/${selector}.mp4`} type="video/mp4" />
-            </StepVideo>
+            </video>
           )}
           <h6 className="mt-2">{header}</h6>
           {typeof text === 'string' ? text : text()}
-        </StepContent>
+        </div>
       );
 
-      // Create step object
-      let step: ReactourStep = {
+      return {
         selector: selector && `[data-tutorial="${selector}"]`,
         content,
         style: helperStyle,
+        ...(observe && { observe: `[data-tutorial="${selector}-observe"]` }),
+        ...(position && { position }),
       };
-
-      // Add observe selector if observing
-      if (observe)
-        step = { ...step, observe: `[data-tutorial="${selector}-observe"]` };
-
-      if (position) step = { ...step, position };
-
-      return step;
     },
   );
 
@@ -277,24 +233,34 @@ function Tutorial({
     if (currentStep === 0) return <div style={{ display: 'none' }} />;
     if (!shownTutorial) {
       return (
-        <PrevButton
+        <Button
+          className={styles.prevButton}
           style={{
             marginRight: '-40px',
           }}
           disabled={location.pathname === '/worksheet' && currentStep === 7}
         >
           Back
-        </PrevButton>
+        </Button>
       );
     }
-    return <PrevButton>Back</PrevButton>;
+    return <Button className={styles.prevButton}>Back</Button>;
   }, [currentStep, shownTutorial, location]);
 
   // Next button component
   const nextButton = useMemo(() => {
-    if (location.pathname === '/catalog' && currentStep === 7)
-      return <NextButton disabled>Next</NextButton>;
-    return <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>;
+    if (location.pathname === '/catalog' && currentStep === 7) {
+      return (
+        <Button className={styles.nextButton} disabled>
+          Next
+        </Button>
+      );
+    }
+    return (
+      <Button className={styles.nextButton}>
+        {currentStep === 0 ? 'Start' : 'Next'}
+      </Button>
+    );
   }, [currentStep, location]);
 
   return (
@@ -308,7 +274,7 @@ function Tutorial({
         setIsTutorialOpen(false);
       }}
       startAt={0}
-      accentColor={globalTheme.primaryHover}
+      accentColor="var(--color-primary-hover)"
       rounded={6}
       showCloseButton
       disableDotsNavigation
@@ -319,7 +285,9 @@ function Tutorial({
       showNumber={false}
       nextButton={nextButton}
       prevButton={prevButton}
-      lastStepNextButton={<NextButton>Finish Tutorial</NextButton>}
+      lastStepNextButton={
+        <Button className={styles.nextButton}>Finish Tutorial</Button>
+      }
       getCurrentStep={(curr) => setCurrentStep(curr)}
       disableKeyboardNavigation={['esc']}
       onAfterOpen={disableBodyScroll}
