@@ -3,15 +3,12 @@ import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
-import { useTheme as useSCTheme } from 'styled-components';
 import clsx from 'clsx';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
-import chroma from 'chroma-js';
 
 import { TextComponent, Input } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { useTheme } from '../../contexts/themeContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import Toggle from '../Search/Toggle';
@@ -44,8 +41,6 @@ import styles from './NavbarCatalogSearch.module.css';
 export function NavbarCatalogSearch() {
   // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
-  const globalTheme = useSCTheme();
-  const { theme } = useTheme();
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
 
@@ -195,14 +190,6 @@ export function NavbarCatalogSearch() {
             {searchText.value && (
               <IoClose
                 className={styles.searchTextClear}
-                style={{
-                  // @ts-expect-error: custom CSS variable
-                  // TODO: this should be a theme variable
-                  '--hover-color':
-                    theme === 'light'
-                      ? chroma(globalTheme.iconFocus).darken().css()
-                      : chroma(globalTheme.iconFocus).brighten().css(),
-                }}
                 size={18}
                 onClick={() => {
                   searchText.reset();

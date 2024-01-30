@@ -1,13 +1,10 @@
 import React from 'react';
-import { useTheme as useSCTheme } from 'styled-components';
 import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
-import chroma from 'chroma-js';
 
 import { useComponentVisibleDropdown } from '../../utilities/display';
 import { isOption, type Option } from '../../contexts/searchContext';
-import { useTheme } from '../../contexts/themeContext';
 import styles from './Popout.module.css';
 
 type Props = {
@@ -78,8 +75,6 @@ export function Popout({
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLDivElement>(false);
   const text = getText(selectedOptions, maxDisplayOptions, displayOptionLabel);
-  const globalTheme = useSCTheme();
-  const { theme } = useTheme();
 
   // Popout button styles for open and active states
   const buttonStyles = (open: boolean) => {
@@ -116,14 +111,6 @@ export function Popout({
         {text && clearIcon ? (
           <IoClose
             className={clsx(styles.clearIcon, 'ml-1')}
-            style={{
-              // @ts-expect-error: custom CSS variable
-              // TODO: this should be a theme variable
-              '--hover-color':
-                theme === 'light'
-                  ? chroma(globalTheme.iconFocus).darken().css()
-                  : chroma(globalTheme.iconFocus).brighten().css(),
-            }}
             onClick={(e) => {
               // Prevent parent popout button onClick from firing and opening
               // dropdown

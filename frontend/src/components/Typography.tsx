@@ -1,8 +1,8 @@
 import React from 'react';
-import { useTheme } from 'styled-components';
 import clsx from 'clsx';
 import { FormControl, Popover } from 'react-bootstrap';
 import type chroma from 'chroma-js';
+import { useTheme } from '../contexts/themeContext';
 import styles from './Typography.module.css';
 
 // Div used to color the background of surface components
@@ -86,7 +86,7 @@ export function RatingBubble({
   readonly rating: number | null;
   readonly colorMap: chroma.Scale;
 } & React.ComponentProps<'div'>) {
-  const globalTheme = useTheme();
+  const { theme } = useTheme();
   return (
     <div
       {...props}
@@ -98,7 +98,9 @@ export function RatingBubble({
       style={{
         ...style,
         backgroundColor: rating
-          ? colorMap(rating).alpha(globalTheme.ratingAlpha).css()
+          ? colorMap(rating)
+              .alpha(theme === 'light' ? 1 : 0.75)
+              .css()
           : undefined,
       }}
     />
