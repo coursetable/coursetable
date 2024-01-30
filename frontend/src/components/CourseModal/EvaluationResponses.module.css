@@ -22,7 +22,7 @@
 }
 
 .sortOption.activeSortOption {
-  background-color: rgba(92, 168, 250, 0.5);
+  background-color: rgb(92 168 250 / 50%);
   color: var(--color-text-primary);
 }
 
@@ -31,7 +31,7 @@
 }
 
 mark {
-  padding: 0px;
+  padding: 0;
   border-radius: 3.5px;
 }
 

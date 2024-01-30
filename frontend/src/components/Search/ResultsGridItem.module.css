@@ -3,9 +3,19 @@
   cursor: pointer;
 }
 
+.resultItem:focus,
+.resultItem:active {
+  border: none;
+  outline: none;
+}
+
+.resultItem:hover {
+  background-color: var(--color-select-hover) !important;
+}
+
 .resultItem:not(.inWorksheetResultItem) {
   border-radius: 8px;
-  background-color: rgb(245, 245, 245);
+  background-color: rgb(245 245 245);
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
@@ -20,16 +30,6 @@
   background-color: var(--color-primary-light);
 }
 
-.resultItem:focus,
-.resultItem:active {
-  border: none;
-  outline: none;
-}
-
-.resultItem:hover {
-  background-color: var(--color-select-hover) !important;
-}
-
 .seasonTag {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -38,7 +38,7 @@
 
 .courseCodes {
   font-weight: 500;
-  color: rgb(38, 131, 185);
+  color: rgb(38 131 185);
 }
 
 .professors {
@@ -70,13 +70,13 @@
 .conflictError {
   position: absolute;
   top: -7px;
-  right: 0px;
+  right: 0;
   transform: translate(-40%, 0%);
 }
 
 .friends {
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 8px;
   width: 16px;
   height: 16px;

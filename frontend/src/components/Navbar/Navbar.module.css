@@ -39,7 +39,7 @@
   border-radius: 15px;
   display: flex;
   cursor: pointer;
-  background-color: rgba(1, 1, 1, 0.1);
+  background-color: rgb(1 1 1 / 10%);
   color: var(--color-text-secondary);
   transition:
     border-color var(--trans-dur),
@@ -56,13 +56,13 @@
 }
 
 .signInOutButton {
-  padding: 0.5rem 1rem 0.5rem 0rem;
+  padding: 0.5rem 1rem 0.5rem 0;
   font-weight: 500;
   user-select: none;
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1319px) {
+@media (width < 1320px) {
   .navLink,
   .signInOutButton {
     font-size: 0.9rem;
@@ -74,7 +74,7 @@
 }
 
 .navLink {
-  padding: 0.5rem 1rem 0.5rem 0rem;
+  padding: 0.5rem 1rem 0.5rem 0;
   user-select: none;
   cursor: pointer;
   font-weight: 500;

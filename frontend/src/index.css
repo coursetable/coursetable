@@ -2,43 +2,32 @@
   --color-text: #141414;
   --color-text-secondary: #454545;
   --color-text-tertiary: #7a7a7a;
-  --color-bg: #ffffff;
-  --color-surface: #ffffff; /* All surfaces are white */
-  --color-surface-elevated: #ffffff;
+  --color-bg: #fff;
+  --color-surface: #fff; /* All surfaces are white */
+  --color-surface-elevated: #fff;
   --color-banner: #f5f5f5;
   --color-border: #ededed;
-  --color-select: #ffffff;
+  --color-select: #fff;
   --color-select-hover: #468ff24d;
   --color-select-multivalue: #e6e6e6;
   --color-hidden: #b9b8b8;
   --color-disabled: #f2f2f2;
   --color-button-hover: #fafafa;
   --color-button-active: #f0f0f0;
-  --color-icon: #cccccc;
+  --color-icon: #ccc;
   --color-icon-hover: #9b9b9b;
-  --color-icon-focus: #666666;
+  --color-icon-focus: #666;
   --color-icon-focus-hover: #3c3c3c;
   --color-primary: #468ff2;
   --color-primary-light: #468ff226;
   --color-primary-hover: #007bff;
   --trans-dur: 0.35s;
-
-  --max-width-sm-mobile: calc(var(--min-width-mobile) - 1px);
-  --min-width-mobile: 480px;
-  --max-width-mobile: calc(var(--min-width-tablet) - 1px);
-  --min-width-tablet: 768px;
-  --max-width-tablet: calc(var(--min-width-sm-desktop) - 1px);
-  --min-width-sm-desktop: 1200px;
-  --max-width-sm-desktop: calc(var(--min-width-lg-desktop) - 1px);
-  --min-width-lg-desktop: 1320px;
 }
 
 :root[data-theme='dark'] {
   --color-text: #fafafa;
   --color-text-secondary: #dbdbdb;
   --color-text-tertiary: #bababa;
-  --color-surface: #242424;
-  --color-surface-elevated: #363636;
   --color-bg: #121212;
   --color-surface: #242424;
   --color-surface-elevated: #363636;
@@ -51,10 +40,10 @@
   --color-disabled: #f2f2f21a;
   --color-button-hover: #ffffff05;
   --color-button-active: #ffffff0d;
-  --color-icon: #666666;
+  --color-icon: #666;
   --color-icon-hover: #949494;
-  --color-icon-focus: #cccccc;
-  --color-icon-focus-hover: #ffffff;
+  --color-icon-focus: #ccc;
+  --color-icon-focus-hover: #fff;
   --color-primary: #61adff;
   --color-primary-light: #44649140;
   --color-primary-hover: #007bff;
@@ -63,9 +52,8 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--color-bg);
@@ -113,10 +101,7 @@ code {
 }
 
 .dropdown-toggle {
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  border-top-right-radius: 0 !important;
+  border-radius: 0 !important;
 }
 
 .dropdown-toggle:focus,

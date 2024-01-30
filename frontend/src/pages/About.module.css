@@ -24,13 +24,13 @@
     color var(--trans-dur);
 }
 
-@media (max-width: 767px) {
+@media (width < 768px) {
   .container {
     width: 80vw;
   }
 }
 
-@media (max-width: 479px) {
+@media (width < 480px) {
   .container {
     width: 90vw;
   }

@@ -13,7 +13,7 @@
 }
 
 .cancelledText {
-  color: rgb(255, 98, 98);
+  color: rgb(255 98 98);
 }
 
 .dialog {
@@ -24,14 +24,12 @@
   background-color: var(--color-surface);
   border: none !important;
   border-radius: 8px !important;
-  /* max-height: 80% !important;
-  min-height: 80% !important; */
   height: 90% !important;
 }
 
 .dialog :global(.modal-header) {
   display: flex !important;
-  padding: 1rem 1rem 0.5rem 1rem !important;
+  padding: 1rem 1rem 0.5rem !important;
 }
 
 .dialog :global(.modal-header) :global(.close) {
@@ -47,7 +45,7 @@
   line-height: 1.2 !important;
 }
 
-@media (max-width: 767px) {
+@media (width < 768px) {
   .modalTop {
     flex-direction: column !important;
   }

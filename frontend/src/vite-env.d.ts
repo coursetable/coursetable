@@ -9,7 +9,3 @@ interface ImportMetaEnv extends Readonly<{ [key: string]: string }> {
   readonly VITE_DEV_GCAL_API_KEY: string;
   readonly VITE_DEV_GCAL_CLIENT_ID: string;
 }
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}

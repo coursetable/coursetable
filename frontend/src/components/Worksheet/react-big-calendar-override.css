@@ -3,6 +3,10 @@
   transition: border-color var(--trans-dur);
 }
 
+.rbc-header {
+  border-bottom: none !important;
+}
+
 .rbc-time-header-cell .rbc-header {
   user-select: none;
   cursor: default;
@@ -13,6 +17,7 @@
 .rbc-time-content {
   border-color: var(--color-border);
   transition: border-color var(--trans-dur);
+  overflow-y: visible !important;
 }
 
 .rbc-time-gutter .rbc-timeslot-group {
@@ -46,10 +51,6 @@
   background-color: transparent !important;
 }
 
-.rbc-header {
-  border-bottom: none !important;
-}
-
 .rbc-header a:hover {
   color: black !important;
   text-decoration: none !important;
@@ -73,12 +74,8 @@
   display: none !important;
 }
 
-.rbc-time-content {
-  overflow-y: visible !important;
-}
-
-@media (max-width: 767px) {
+@media (width < 768px) {
   .rbc-calendar {
-    margin: 1rem 0 0.5rem 0;
+    margin: 1rem 0 0.5rem;
   }
 }

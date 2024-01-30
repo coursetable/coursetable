@@ -38,12 +38,15 @@
 .prevButton:hover {
   background-color: var(--color-button-active);
 }
+
 .prevButton:active {
   background-color: var(--color-button-active) !important;
 }
+
 .prevButton:focus {
   background-color: transparent;
 }
+
 .prevButton:disabled {
   background-color: transparent;
   color: var(--color-text-tertiary) !important;

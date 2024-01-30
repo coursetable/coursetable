@@ -1,5 +1,5 @@
 .container {
-  margin-bottom: 0px;
+  margin-bottom: 0;
   border: none;
 }
 
@@ -14,8 +14,7 @@
 }
 
 .calendarContainer {
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
   height: 86vh;
   position: sticky;
   top: calc(1rem + 56px);

@@ -15,13 +15,13 @@
   text-align: center;
 }
 
-@media (max-width: 767px) {
+@media (width < 768px) {
   .container {
     width: 60vw;
   }
 }
 
-@media (max-width: 479px) {
+@media (width < 480px) {
   .container {
     width: 80vw;
   }

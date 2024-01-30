@@ -1,6 +1,6 @@
 .labelBubble {
   font-weight: 550;
-  color: rgb(136, 136, 136);
+  color: rgb(136 136 136);
 }
 
 .toggleBubble {
@@ -15,19 +15,14 @@
 
 .ratingBubble,
 .ratingBubbleUnclickable {
-  /* background-color: rgb(190, 221, 255); */
   border-radius: 8px;
-  /* HAVE RATING BUBBLE ANIMATION */
-  /* max-height: 24px; */
-  /* NO RATING BUBBLE ANIMATION */
   max-height: 3rem;
-
   transition: max-height 0.2s ease-out;
 }
 
 .ratingBubble {
   cursor: pointer;
-  background-color: rgb(190, 221, 255);
+  background-color: rgb(190 221 255);
 }
 
 [data-theme='dark'] .ratingBubble {
@@ -35,7 +30,7 @@
 }
 
 .ratingBubble:hover {
-  background-color: rgb(92, 168, 250);
+  background-color: rgb(92 168 250);
   max-height: 50px;
   transition: max-height 0.2s ease-in;
 }
@@ -88,7 +83,12 @@
 
 .requirements {
   font-weight: 500;
-  color: rgb(252, 105, 105);
+  color: rgb(252 105 105);
+}
+
+.evaluationsFilter {
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-border);
 }
 
 .filterContainer:focus {
@@ -97,11 +97,6 @@
 
 .filterContainer:focus-visible .evaluationsFilter {
   outline: 2px solid #468ff2;
-}
-
-.evaluationsFilter {
-  background-color: var(--color-surface-elevated);
-  border-color: var(--color-border);
 }
 
 .evaluationsFilter :global(.toggleOption) {
@@ -113,6 +108,7 @@
     max-height: 3rem;
     height: 3rem;
   }
+
   .ratingBubble:hover {
     max-height: 3rem;
     height: 3rem;

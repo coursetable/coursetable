@@ -23,7 +23,7 @@
   opacity: 1;
 }
 
-@media (max-width: 479px) {
+@media (width < 480px) {
   .listItem .hideButtonHidden {
     opacity: 1;
   }

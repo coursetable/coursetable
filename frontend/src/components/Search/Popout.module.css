@@ -37,7 +37,7 @@
     color var(--trans-dur);
 }
 
-@media (max-width: 1319px) {
+@media (width < 1320px) {
   .button {
     font-size: 12px;
   }
@@ -57,8 +57,8 @@
   background-color: var(--color-select);
   border-radius: 4px;
   box-shadow:
-    0 0 0 1px hsla(218, 50%, 10%, 0.1),
-    0 4px 11px hsla(218, 50%, 10%, 0.1);
+    0 0 0 1px hsl(218deg 50% 10% / 10%),
+    0 4px 11px hsl(218deg 50% 10% / 10%);
   margin-top: 8px;
   position: absolute;
   z-index: 1000;

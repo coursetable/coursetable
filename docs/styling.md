@@ -118,7 +118,7 @@ const element = (
 To create different styles for different screen sizes, use the `@media` query:
 
 ```css
-@media (max-width: 767px) {
+@media (width < 768px) {
   .container {
     padding: 1rem;
   }
@@ -128,7 +128,7 @@ To create different styles for different screen sizes, use the `@media` query:
 This will only apply to screens that are mobile size.
 
 ```css
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
   .container {
     padding: 1rem;
   }
@@ -137,17 +137,17 @@ This will only apply to screens that are mobile size.
 
 This will only apply to screens that are desktop size.
 
-Tip: if your component is only rendered on tablet size and above, you can use `@media (max-width: 1199px)` to select _just_ tablets, without needing an extra `(min-width: 768px)`.
+Tip: if your component is only rendered on tablet size and above, you can use `@media (width < 1200px)` to select _just_ tablets, without needing an extra `(width >= 768px)`.
 
 Unfortunately due to our lack of CSS preprocessors, we cannot use variables in media queries. You can refer to the following table:
 
-| Size          | Min width | Max width |
-| ------------- | --------- | --------- |
-| Small mobile  | 0         | 479px     |
-| Large mobile  | 480px     | 767px     |
-| Tablet        | 768px     | 1199px    |
-| Small desktop | 1200px    | 1319px    |
-| Large desktop | 1320px    | ∞         |
+| Size          | `>=`   | `<`    |
+| ------------- | ------ | ------ |
+| Small mobile  | 0      | 480px  |
+| Large mobile  | 480px  | 768px  |
+| Tablet        | 768px  | 1200px |
+| Small desktop | 1200px | 1320px |
+| Large desktop | 1320px | ∞      |
 
 Try to keep your responsive design in CSS only, by using the same DOM structure and changing how they are layed out. If you need to change the markup (for example, to render a component only on large screens), you can use the `useWindowDimensions` hook:
 

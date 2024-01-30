@@ -12,7 +12,7 @@
   font-weight: 500;
 }
 
-@media (max-width: 767px) {
+@media (width < 768px) {
   .locationText {
     display: none;
   }
