@@ -135,31 +135,35 @@ function colorStyles(): StylesConfig<Option<number | string>> {
         color: 'white',
       },
     }),
-    // @ts-expect-error: probably wrong react-select type def
     option(base, { data, isDisabled, isFocused, isSelected }) {
       const color = chroma(data.color!);
+      if (isDisabled) {
+        return {
+          ...base,
+          fontWeight: 'bold',
+          color: '#ccc',
+        };
+      } else if (isSelected) {
+        return {
+          ...base,
+          fontWeight: 'bold',
+          backgroundColor: data.color,
+          color: chroma.contrast(color, 'white') > 2 ? 'white' : 'black',
+          ':active': {
+            ...base[':active'],
+            backgroundColor: data.color,
+          },
+        };
+      }
       return {
         ...base,
         fontWeight: 'bold',
-        backgroundColor: isDisabled
-          ? null
-          : isSelected
-            ? data.color
-            : isFocused
-              ? color.alpha(0.1).css()
-              : null,
-        color: isDisabled
-          ? '#ccc'
-          : isSelected
-            ? chroma.contrast(color, 'white') > 2
-              ? 'white'
-              : 'black'
-            : data.color,
+        backgroundColor: isFocused ? color.alpha(0.1).css() : undefined,
+        color: data.color,
 
         ':active': {
           ...base[':active'],
-          backgroundColor:
-            !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
+          backgroundColor: color.alpha(0.5).css(),
         },
       };
     },
