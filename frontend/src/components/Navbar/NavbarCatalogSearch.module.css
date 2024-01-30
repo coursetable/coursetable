@@ -53,7 +53,7 @@
   width: 100px;
 }
 
-@media (max-width: var(--max-width-tablet)) {
+@media (max-width: 1199px) {
   .mainRange {
     width: 74px;
   }
@@ -98,7 +98,7 @@
   font-size: 12px;
 }
 
-@media (max-width: var(--max-width-sm-desktop)) {
+@media (max-width: 1319px) {
   .searchWrapper {
     width: 35vw;
   }

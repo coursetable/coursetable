@@ -155,7 +155,7 @@ function WorksheetToggleButton({
   return (
     <OverlayTrigger
       placement="top"
-      delay={{ show: 1000, hide: 0 }}
+      delay={modal ? { show: 300, hide: 0 } : undefined}
       overlay={(props) => (
         <Tooltip id="button-tooltip" {...props}>
           <small>

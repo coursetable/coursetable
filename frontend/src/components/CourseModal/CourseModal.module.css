@@ -47,7 +47,7 @@
   line-height: 1.2 !important;
 }
 
-@media (max-width: var(--max-width-mobile)) {
+@media (max-width: 767px) {
   .modalTop {
     flex-direction: column !important;
   }

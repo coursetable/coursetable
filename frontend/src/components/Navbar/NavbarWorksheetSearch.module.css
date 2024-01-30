@@ -8,7 +8,7 @@
   width: 180px;
 }
 
-@media (max-width: var(--max-width-tablet)) {
+@media (max-width: 1199px) {
   .toggleButtonGroup {
     width: 140px;
   }
@@ -28,7 +28,7 @@
   width: 50%;
 }
 
-@media (max-width: var(--max-width-sm-desktop)) {
+@media (max-width: 1319px) {
   .toggleButton {
     font-size: 12px;
   }

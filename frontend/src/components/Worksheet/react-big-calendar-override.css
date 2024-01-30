@@ -77,7 +77,7 @@
   overflow-y: visible !important;
 }
 
-@media (max-width: var(--max-width-mobile)) {
+@media (max-width: 767px) {
   .rbc-calendar {
     margin: 1rem 0 0.5rem 0;
   }

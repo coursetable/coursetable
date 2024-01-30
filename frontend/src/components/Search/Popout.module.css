@@ -37,7 +37,7 @@
     color var(--trans-dur);
 }
 
-@media (max-width: var(--max-width-sm-desktop)) {
+@media (max-width: 1319px) {
   .button {
     font-size: 12px;
   }

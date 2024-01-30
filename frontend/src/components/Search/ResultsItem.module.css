@@ -122,7 +122,7 @@
   border-radius: 6px !important;
 }
 
-@media (max-width: var(--max-width-sm-desktop)) {
+@media (max-width: 1319px) {
   .resultsItemContent {
     font-size: 11px;
     line-height: 28px;

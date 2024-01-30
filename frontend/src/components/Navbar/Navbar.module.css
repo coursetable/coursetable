@@ -62,7 +62,7 @@
   color: var(--color-text-secondary);
 }
 
-@media (max-width: var(--max-width-sm-desktop)) {
+@media (max-width: 1319px) {
   .navLink,
   .signInOutButton {
     font-size: 0.9rem;

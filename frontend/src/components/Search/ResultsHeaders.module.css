@@ -26,7 +26,7 @@
   font-weight: 600;
 }
 
-@media (max-width: var(--max-width-sm-desktop)) {
+@media (max-width: 1319px) {
   .resultsHeader {
     font-size: 12px;
     line-height: 24px;

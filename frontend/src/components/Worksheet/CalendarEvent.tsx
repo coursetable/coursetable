@@ -19,11 +19,6 @@ export interface CourseEvent {
   location: string;
 }
 
-const eventStyle = {
-  width: '100%',
-  height: '100%',
-};
-
 function CalendarEvent({ event }: { readonly event: CourseEvent }) {
   const course = event.listing;
   return (
@@ -45,16 +40,14 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
           </Popover.Content>
         </InfoPopover>
       )}
-      // Have a 1000ms delay before showing popover so it only pops up when user
-      // wants it to
-      delay={{ show: 1000, hide: 0 }}
+      delay={{ show: 300, hide: 0 }}
     >
-      <div style={eventStyle}>
+      <div className={styles.event}>
         <strong>{event.title}</strong>
         <br />
-        <span style={{ fontSize: '12px' }}>
+        <span>
           <ResponsiveEllipsis
-            style={{ whiteSpace: 'pre-wrap' }}
+            className={styles.courseNameText}
             text={event.description}
             maxLine="2"
             basedOn="words"

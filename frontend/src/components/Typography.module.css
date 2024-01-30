@@ -59,6 +59,7 @@
 
 .infoPopover {
   background-color: var(--color-surface);
+  z-index: 10000;
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
@@ -78,7 +79,7 @@
   border-left-color: var(--color-surface);
 }
 
-@media (max-width: var(--max-width-mobile)) {
+@media (max-width: 767px) {
   .infoPopover :global(.popover-header),
   .infoPopover :global(.popover-body),
   .infoPopover :global(.arrow)::before,
@@ -122,7 +123,7 @@
   color: var(--color-primary);
 }
 
-@media (max-width: var(--max-width-sm-desktop)) {
+@media (max-width: 1319px) {
   .smallText {
     font-size: 64%;
   }

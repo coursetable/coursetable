@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import clsx from 'clsx';
 import { FormControl, Popover } from 'react-bootstrap';
 import type chroma from 'chroma-js';
@@ -54,12 +54,15 @@ export function TextComponent({
 }
 
 // FormControl for any typed inputs
-export function Input({
-  className,
-  ...props
-}: React.ComponentProps<typeof FormControl>) {
-  return <FormControl {...props} className={clsx(styles.input, className)} />;
-}
+export const Input = forwardRef(
+  ({ className, ...props }: React.ComponentProps<typeof FormControl>, ref) => (
+    <FormControl
+      {...props}
+      ref={ref}
+      className={clsx(styles.input, className)}
+    />
+  ),
+);
 
 // Hr tag used to divide stuff in search form and footer
 export function Hr({ className, ...props }: React.ComponentProps<'hr'>) {
@@ -68,12 +71,15 @@ export function Hr({ className, ...props }: React.ComponentProps<'hr'>) {
 
 // Popovers in search results item, prof popover in modal, and worksheet
 // calendar
-export function InfoPopover({
-  className,
-  ...props
-}: React.ComponentProps<typeof Popover>) {
-  return <Popover {...props} className={clsx(styles.infoPopover, className)} />;
-}
+export const InfoPopover = forwardRef(
+  ({ className, ...props }: React.ComponentProps<typeof Popover>, ref) => (
+    <Popover
+      {...props}
+      ref={ref}
+      className={clsx(styles.infoPopover, className)}
+    />
+  ),
+);
 
 // Rating bubbles in search results list item and modal
 export function RatingBubble({

@@ -24,7 +24,6 @@ export default function WorksheetHideButton({
   return (
     <OverlayTrigger
       placement="bottom"
-      delay={{ show: 1000, hide: 0 }}
       overlay={(props) => (
         <Tooltip id="button-tooltip" {...props}>
           <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
