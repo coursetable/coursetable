@@ -95,7 +95,7 @@ code {
 }
 
 #base {
-  height: 100vh;
+  height: auto;
 }
 
 /* TODO: can we modularized the below? */
@@ -104,11 +104,6 @@ code {
 .dropdown-menu,
 .dropdown-toggle {
   width: 100%;
-}
-
-#dropdown-btn {
-  border-top-right-radius: 8px !important;
-  border-top-left-radius: 8px !important;
 }
 
 .dropdown-menu {
