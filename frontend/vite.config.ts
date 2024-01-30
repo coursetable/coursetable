@@ -107,7 +107,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name]-[hash:10][extname]',
-        chunkFileNames: 'assets/[name]-[hash:10].js',
+        chunkFileNames(chunkInfo) {
+          // Our best attempt at avoiding chunks called `index`. Avoids chunk
+          // name collision and messes with build size calc.
+          // Fixable by https://github.com/rollup/rollup/issues/4858
+          if (chunkInfo.name === 'index') {
+            if (chunkInfo.facadeModuleId?.includes('gapy-script'))
+              return 'assets/gapi-script-[hash:10].js';
+          }
+          return 'assets/[name]-[hash:10].js';
+        },
         // Prevent collision with chunk name and mess with build size calc
         entryFileNames: 'assets/entry-[name]-[hash:10].js',
       },
