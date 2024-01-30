@@ -10,7 +10,7 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
-import { useUser, type Worksheet } from './userContext';
+import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { Crn, Season, Listing } from '../utilities/common';
 
@@ -137,38 +137,33 @@ export const useCourseData = (seasons: Season[]) => {
 };
 
 export function useWorksheetInfo(
-  worksheet: Worksheet | undefined,
+  worksheets: UserWorksheets | undefined,
   season: Season | null = null,
   worksheetNumber = 0,
 ) {
   const requiredSeasons = useMemo(() => {
-    if (!worksheet || worksheet.length === 0) {
-      // If the worksheet is empty, we don't want to request data for any
-      // seasons, even if a specific season is requested.
-      return [];
-    }
-    const seasons = new Set<Season>();
-    worksheet.forEach((item) => {
-      seasons.add(item[0]);
-    });
+    if (!worksheets) return [];
     if (season !== null) {
-      if (seasons.has(season)) return [season];
+      if (season in worksheets) return [season];
       return [];
     }
-    return Array.from(seasons); // Idk just need to return something i think
-  }, [season, worksheet]);
+    return Object.keys(worksheets) as Season[];
+  }, [season, worksheets]);
 
   const { loading, error, courses } = useCourseData(requiredSeasons);
 
   const data = useMemo(() => {
     const dataReturn: Listing[] = [];
-    if (!worksheet) return dataReturn;
+    if (!worksheets) return dataReturn;
+    if (loading || error) return dataReturn;
 
     // Resolve the worksheet items.
-    for (const [seasonCode, crn, worksheetNumberCourse] of worksheet) {
-      if (season !== null && season !== seasonCode) continue;
-
-      if (seasonCode in courses && worksheetNumberCourse === worksheetNumber) {
+    for (const seasonCode of requiredSeasons) {
+      // Guaranteed to exist because of how requiredSeasons is constructed.
+      const seasonWorksheets = worksheets[seasonCode]!;
+      const worksheet = seasonWorksheets[worksheetNumber];
+      if (!worksheet) continue;
+      for (const { crn } of worksheet) {
         const course = courses[seasonCode]!.get(crn);
         if (!course) {
           // This error is unactionable.
@@ -184,6 +179,6 @@ export function useWorksheetInfo(
       }
     }
     return dataReturn;
-  }, [season, courses, worksheet, worksheetNumber]);
+  }, [requiredSeasons, courses, worksheets, worksheetNumber, loading, error]);
   return { loading, error, data };
 }

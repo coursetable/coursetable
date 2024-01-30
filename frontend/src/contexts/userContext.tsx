@@ -15,11 +15,17 @@ import { toast } from 'react-toastify';
 import type { NetId, Season, Crn } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
-export type Worksheet = [season: Season, crn: Crn, worksheetNumber: number][];
+export type UserWorksheets = {
+  [season: Season]: {
+    [worksheetNumber: number]: {
+      crn: Crn;
+    }[];
+  };
+};
 export type FriendRecord = {
   [netId: NetId]: {
     name: string;
-    worksheets: Worksheet;
+    worksheets: UserWorksheets;
   };
 };
 type FriendRequest = {
@@ -36,7 +42,7 @@ type Store = {
   loading: boolean;
   user: {
     netId?: NetId;
-    worksheet?: Worksheet;
+    worksheets?: UserWorksheets;
     hasEvals?: boolean;
     year?: number;
     school?: string;
@@ -69,7 +75,9 @@ export function UserProvider({
   // User's netId
   const [netId, setNetId] = useState<NetId | undefined>(undefined);
   // User's worksheet
-  const [worksheet, setWorksheet] = useState<Worksheet | undefined>(undefined);
+  const [worksheets, setWorksheets] = useState<UserWorksheets | undefined>(
+    undefined,
+  );
   // User's evals enabled status
   const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
   // User's year
@@ -97,7 +105,7 @@ export function UserProvider({
       setHasEvals(data.evaluationsEnabled);
       setYear(data.year);
       setSchool(data.school);
-      setWorksheet(data.data);
+      setWorksheets(data.data);
     } catch (err) {
       Sentry.addBreadcrumb({
         category: 'user',
@@ -108,12 +116,12 @@ export function UserProvider({
       Sentry.getCurrentScope().clear();
       toast.error(`Failed to fetch user data. ${String(err)}`);
       setNetId(undefined);
-      setWorksheet(undefined);
+      setWorksheets(undefined);
       setHasEvals(undefined);
       setYear(undefined);
       setSchool(undefined);
     }
-  }, [setWorksheet, setNetId, setHasEvals, setYear, setSchool]);
+  }, [setWorksheets, setNetId, setHasEvals, setYear, setSchool]);
 
   // Refresh user friends stuff
   const friendRefresh = useCallback(async (): Promise<void> => {
@@ -332,7 +340,7 @@ export function UserProvider({
   const user = useMemo(
     () => ({
       netId,
-      worksheet,
+      worksheets,
       hasEvals,
       year,
       school,
@@ -342,7 +350,7 @@ export function UserProvider({
     }),
     [
       netId,
-      worksheet,
+      worksheets,
       hasEvals,
       year,
       school,

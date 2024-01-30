@@ -12,7 +12,7 @@ import {
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
-import { useUser, type Worksheet } from './userContext';
+import { useUser, type UserWorksheets } from './userContext';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
@@ -25,19 +25,22 @@ type WorksheetView =
   | { view: 'list'; mode: '' };
 
 type Store = {
-  seasonCodes: Season[];
-  curWorksheet: Worksheet;
-  curSeason: Season;
+  // These define which courses the store contains
   person: 'me' | NetId;
+  curSeason: Season;
+  worksheetNumber: number;
+
+  // These are used to select the worksheet
+  seasonCodes: Season[];
+  worksheetOptions: Option<number>[];
+
+  // Controls which courses are displayed
   courses: Listing[];
   hiddenCourses: HiddenCourses;
   hoverCourse: number | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
   worksheetError: {} | null;
-  worksheetData: Listing[];
-  worksheetOptions: Option<number>[];
-  worksheetNumber: number;
   changeSeason: (seasonCode: Season | null) => void;
   changeWorksheet: (worksheetNumber: number) => void;
   handlePersonChange: (newPerson: 'me' | NetId) => void;
@@ -93,11 +96,11 @@ export function WorksheetProvider({
 
   // Worksheet of the current person
   const curWorksheet = useMemo(() => {
-    const whenNotDefined: Worksheet = []; // TODO: change this to undefined
-    if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
+    const whenNotDefined: UserWorksheets = {}; // TODO: change this to undefined
+    if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
 
     return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
-  }, [user.worksheet, user.friends, viewedPerson]);
+  }, [user.worksheets, user.friends, viewedPerson]);
 
   // TODO: restrict to only the seasons with data
   const seasonCodes = seasons;
@@ -140,10 +143,7 @@ export function WorksheetProvider({
   );
 
   // Courses data - basically a color-annotated version of the worksheet info.
-  const [courses, setCourses] = useState<Listing[]>([]);
-
-  // Initialize courses state and color map.
-  useEffect(() => {
+  const courses = useMemo(() => {
     if (!worksheetLoading && !worksheetError) {
       const temp = [...worksheetData];
       // Assign color to each course
@@ -156,17 +156,10 @@ export function WorksheetProvider({
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
-      setCourses(temp);
+      return temp;
     }
-  }, [
-    worksheetLoading,
-    worksheetError,
-    curWorksheet,
-    worksheetNumber,
-    worksheetData,
-    setCourses,
-    colorMap,
-  ]);
+    return [];
+  }, [worksheetLoading, worksheetError, worksheetData, colorMap]);
 
   /* Functions */
 
@@ -248,7 +241,6 @@ export function WorksheetProvider({
     () => ({
       // Context state.
       seasonCodes,
-      curWorksheet,
       curSeason,
       worksheetNumber,
       person: viewedPerson,
@@ -258,7 +250,6 @@ export function WorksheetProvider({
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetData,
       worksheetOptions,
 
       // Update methods.
@@ -271,7 +262,6 @@ export function WorksheetProvider({
     }),
     [
       seasonCodes,
-      curWorksheet,
       curSeason,
       worksheetNumber,
       viewedPerson,
@@ -281,7 +271,6 @@ export function WorksheetProvider({
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetData,
       worksheetOptions,
       changeSeason,
       handlePersonChange,

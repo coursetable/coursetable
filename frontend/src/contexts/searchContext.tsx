@@ -236,7 +236,7 @@ export function SearchProvider({
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
-  const isLoggedIn = Boolean(user.worksheet);
+  const isLoggedIn = Boolean(user.worksheets);
 
   // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
@@ -321,7 +321,7 @@ export function SearchProvider({
   const { worksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
-    user.worksheet,
+    user.worksheets,
     null,
     worksheetNumber,
   );
@@ -412,7 +412,7 @@ export function SearchProvider({
           listing.season_code,
           listing.crn,
           worksheetNumber,
-          user.worksheet,
+          user.worksheets,
         ) &&
         checkConflict(worksheetInfo, listing).length > 0
       )
@@ -514,7 +514,7 @@ export function SearchProvider({
     hideCancelled.value,
     hideConflicting.value,
     worksheetNumber,
-    user.worksheet,
+    user.worksheets,
     worksheetInfo,
     hideDiscussionSections.value,
     hideFirstYearSeminars.value,

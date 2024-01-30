@@ -14,7 +14,6 @@ import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
 
 import styles from './Worksheet.module.css';
 
-import NoCoursesFound from '../images/no_courses_found.svg';
 import ErrorPage from '../components/ErrorPage';
 
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
@@ -29,34 +28,12 @@ function Worksheet() {
   const { isMobile } = useWindowDimensions();
 
   const {
-    curWorksheet,
     worksheetView,
     worksheetLoading,
     worksheetError,
     handleWorksheetView,
   } = useWorksheet();
 
-  // Display no courses page if no courses in worksheet
-  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
-  if (curWorksheet.length === 0 && !isMobile && false) {
-    // TODO: remove this part and add an empty state later on.
-    // We don't want to prevent a user from seeing their friend's
-    // worksheets if they haven't added anything to their own worksheet.
-    return (
-      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <div className="text-center m-auto">
-          <img
-            alt="No courses found."
-            className="py-5"
-            src={NoCoursesFound}
-            style={{ width: '25%' }}
-          />
-          <h3>No courses found</h3>
-          <div>Please add courses to your worksheet</div>
-        </div>
-      </div>
-    );
-  }
   // Wait for search query to finish
   if (worksheetError) {
     Sentry.captureException(worksheetError);

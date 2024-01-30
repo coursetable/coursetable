@@ -49,8 +49,8 @@ function WorksheetToggleButton({
   }, [worksheetNumber]);
 
   const worksheetCheck = useMemo(
-    () => isInWorksheet(seasonCode, crn, selectedWorksheet, user.worksheet),
-    [user.worksheet, seasonCode, crn, selectedWorksheet],
+    () => isInWorksheet(seasonCode, crn, selectedWorksheet, user.worksheets),
+    [user.worksheets, seasonCode, crn, selectedWorksheet],
   );
   // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(false);
@@ -80,7 +80,7 @@ function WorksheetToggleButton({
       const body = JSON.stringify({
         action: addRemove,
         season: seasonCode,
-        ociId: crn,
+        crn,
         worksheetNumber: selectedWorksheet,
       });
 
@@ -141,7 +141,7 @@ function WorksheetToggleButton({
   );
 
   // Disabled worksheet add/remove button if not logged in
-  if (!user.worksheet) {
+  if (!user.worksheets) {
     return (
       <Button
         onClick={toggleWorkSheet}

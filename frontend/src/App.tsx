@@ -52,7 +52,7 @@ function App() {
   const { loading, user } = useUser();
 
   // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheet);
+  const isLoggedIn = Boolean(user.worksheets);
 
   // Tutorial state
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);

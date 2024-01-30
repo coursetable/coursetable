@@ -22,7 +22,7 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
 
   // Fetch listing info for each listing in user's worksheet
   const { data } = useWorksheetInfo(
-    user.worksheet,
+    user.worksheets,
     course.season_code,
     worksheetNumber,
   );
@@ -33,13 +33,13 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
       course.season_code,
       course.crn,
       worksheetNumber,
-      user.worksheet,
+      user.worksheets,
     );
     // If the course is in the worksheet, we never report a conflict
     if (inWorksheet) return [];
     if (course.times_summary === 'TBA') return [];
     return checkConflict(data, course);
-  }, [course, data, user.worksheet, worksheetNumber]);
+  }, [course, data, user.worksheets, worksheetNumber]);
 
   // Update conflict status whenever the user's worksheet changes
   const crossListed = useMemo(
@@ -51,26 +51,28 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
     // Smooth fade in and out transition
     <Fade in={conflicts.length > 0}>
       <div>
-        <OverlayTrigger
-          placement="top"
-          overlay={(props) => (
-            <Tooltip {...props} id="conflict-icon-button-tooltip">
-              <small style={{ fontWeight: 500 }}>
-                Conflicts with: <br />
-                {conflicts.map((x) => x.course_code).join(', ')} <br />
-              </small>
-              {crossListed !== false ? (
-                // Show only if the class is cross-listed with another class
-                // in the worksheet
-                <small>(cross-listed with {crossListed})</small>
-              ) : (
-                ''
-              )}
-            </Tooltip>
-          )}
-        >
-          <MdErrorOutline color="#fc4103" />
-        </OverlayTrigger>
+        {conflicts.length > 0 && (
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) => (
+              <Tooltip {...props} id="conflict-icon-button-tooltip">
+                <small style={{ fontWeight: 500 }}>
+                  Conflicts with: <br />
+                  {conflicts.map((x) => x.course_code).join(', ')} <br />
+                </small>
+                {crossListed !== false ? (
+                  // Show only if the class is cross-listed with another class
+                  // in the worksheet
+                  <small>(cross-listed with {crossListed})</small>
+                ) : (
+                  ''
+                )}
+              </Tooltip>
+            )}
+          >
+            <MdErrorOutline color="#fc4103" />
+          </OverlayTrigger>
+        )}
       </div>
     </Fade>
   );

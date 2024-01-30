@@ -5,6 +5,7 @@
 import type express from 'express';
 import z from 'zod';
 import { prisma } from '../config';
+import { worksheetCoursesToWorksheets } from '../user/user.utils';
 
 import winston from '../logging/winston';
 
@@ -270,6 +271,7 @@ export const getFriendsWorksheets = async (
       },
     },
   });
+  const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
 
   // Get friends' infos from NetIDs
   winston.info('Getting info of friends');
@@ -281,35 +283,27 @@ export const getFriendsWorksheets = async (
       },
     },
   });
-
-  const friendInfoMap: {
-    [netId: string]: {
-      name: string;
-      worksheets: [season: string, ociId: number, worksheetNumber: number][];
-    };
-  } = Object.fromEntries(
-    friendInfos.map((f) => [
-      f.netId,
+  const friendInfoMap = Object.fromEntries(
+    friendInfos.map((friendInfo) => [
+      friendInfo.netId,
       {
-        name: `${f.firstName ?? '[unknown]'} ${f.lastName ?? '[unknown]'}`,
-        worksheets: [],
+        name: `${friendInfo.firstName ?? '[unknown]'} ${
+          friendInfo.lastName ?? '[unknown]'
+        }`,
+      },
+    ]),
+  );
+  const aggregateInfo = Object.fromEntries(
+    friendNetIds.map((friendNetId) => [
+      friendNetId,
+      {
+        name: friendInfoMap[friendNetId]?.name ?? '[unknown]',
+        worksheets: friendWorksheetMap[friendNetId] ?? {},
       },
     ]),
   );
 
-  friendWorksheets.forEach(
-    ({ netId: friendNetId, ociId, season, worksheetNumber }) => {
-      // There are a lot of ESLint bugs with index signatures and
-      // no-unnecessary-condition
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      (friendInfoMap[friendNetId] ??= {
-        name: '[unknown]',
-        worksheets: [],
-      }).worksheets.push([String(season), ociId, worksheetNumber]);
-    },
-  );
-
-  res.status(200).json({ friends: friendInfoMap });
+  res.status(200).json({ friends: aggregateInfo });
 };
 
 export const getNames = async (

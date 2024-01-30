@@ -6,7 +6,7 @@ import {
   weekdays,
   type Listing,
 } from './common';
-import type { FriendRecord, Worksheet } from '../contexts/userContext';
+import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
 import type { SortKeys } from '../contexts/searchContext';
 
 export function truncatedText(
@@ -24,14 +24,15 @@ export function isInWorksheet(
   seasonCode: Season,
   crn: Crn,
   worksheetNumber: number,
-  worksheet?: Worksheet,
+  worksheet: UserWorksheets | undefined,
 ): boolean {
   if (!worksheet) return false;
-  return worksheet.some(
-    (course) =>
-      course[0] === seasonCode &&
-      course[1] === crn &&
-      course[2] === worksheetNumber,
+  return (
+    seasonCode in worksheet &&
+    worksheetNumber in worksheet[seasonCode]! &&
+    worksheet[seasonCode]![worksheetNumber]!.some(
+      (course) => course.crn === crn,
+    )
   );
 }
 
@@ -104,10 +105,12 @@ export function friendsAlsoTaking(
 ): string[] {
   if (!friends) return [];
   return Object.values(friends)
-    .filter((friend) =>
-      friend.worksheets.some(
-        (value) => value[0] === seasonCode && value[1] === crn,
-      ),
+    .filter(
+      (friend) =>
+        seasonCode in friend.worksheets &&
+        Object.values(friend.worksheets[seasonCode]!).some((w) =>
+          w.some((course) => course.crn === crn),
+        ),
     )
     .map((friend) => friend.name);
 }
@@ -125,12 +128,16 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   // Iterate over each friend's worksheet
   for (const friend of Object.values(friends)) {
     // Iterate over each course in this friend's worksheet
-    friend.worksheets.forEach((course) => {
-      const key = course[0] + course[1]; // Key of object is season code + crn
-      // There are a lot of ESLint bugs with index signatures and
-      // no-unnecessary-condition
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      (numFriends[key] ??= []).push(friend.name); // Add friend's name to this list
+    Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
+      Object.values(worksheets).forEach((w) =>
+        w.forEach((course) => {
+          const key = seasonCode + course.crn; // Key of object is season code + crn
+          // There are a lot of ESLint bugs with index signatures and
+          // no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          (numFriends[key] ??= []).push(friend.name); // Add friend's name to this list
+        }),
+      );
     });
   }
   return numFriends;
