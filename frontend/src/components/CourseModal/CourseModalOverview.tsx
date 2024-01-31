@@ -784,60 +784,31 @@ function CourseModalOverview({
                 <Row key={i} className="m-auto py-1 justify-content-center">
                   {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
-                  {offering.rating !== null ? (
-                    <Col
-                      xs={5}
-                      className={clsx(
-                        styles.ratingBubble,
-                        'px-0 mr-3 text-center',
-                      )}
-                      onClick={() => {
+                  <Col
+                    xs={5}
+                    className={clsx(
+                      offering.rating !== null
+                        ? styles.ratingBubble
+                        : styles.ratingBubbleUnclickable,
+                      'px-0 mr-3 text-center',
+                    )}
+                    {...(offering.rating !== null && {
+                      onClick() {
                         // Temp dictionary that stores listing info
                         const temp = { ...offering };
                         setSeason(temp);
-                      }}
-                      style={{ flex: 'none' }}
-                    >
-                      <strong>{toSeasonString(offering.season_code)}</strong>
-                      <div
-                        className={clsx(
-                          styles.details,
-                          'mx-auto',
-                          styles.shown,
-                        )}
-                      >
-                        {filter === 'professor'
-                          ? offering.course_code
-                          : filter === 'both'
-                            ? `Section ${offering.section}`
-                            : offering.professor[0]}
-                      </div>
-                    </Col>
-                  ) : (
-                    <Col
-                      xs={5}
-                      className={clsx(
-                        styles.ratingBubbleUnclickable,
-                        'px-0 mr-3 text-center',
-                      )}
-                      style={{ flex: 'none', color: '#b5b5b5' }}
-                    >
-                      <strong>{toSeasonString(offering.season_code)}</strong>
-                      <div
-                        className={clsx(
-                          styles.details,
-                          'mx-auto',
-                          styles.shown,
-                        )}
-                      >
-                        {filter === 'professor'
-                          ? offering.course_code
-                          : filter === 'both'
-                            ? `Section ${offering.section}`
-                            : offering.professor[0]}
-                      </div>
-                    </Col>
-                  )}
+                      },
+                    })}
+                  >
+                    <strong>{toSeasonString(offering.season_code)}</strong>
+                    <div className={clsx(styles.details, 'mx-auto')}>
+                      {filter === 'professor'
+                        ? offering.course_code
+                        : filter === 'both'
+                          ? `Section ${offering.section}`
+                          : offering.professor[0]}
+                    </div>
+                  </Col>
                   {/* Course Rating */}
                   <Col
                     xs={2}

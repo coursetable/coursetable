@@ -33,7 +33,6 @@ function RatingsGraph({
     const height = rating ? MIN_HEIGHT + (rating / maxVal) * 100 : 0;
     // Skip to last color if this is the yes/no question
     if (indx === 1 && ratings.length === 2) indx = 4;
-    if (reverse) indx = barChartColors.length - 1 - indx;
     // Build bar
     return (
       <div key={labels[indx]} className={styles.bar}>
@@ -45,7 +44,8 @@ function RatingsGraph({
         <div
           className={clsx(styles.column, 'px-1 mx-auto')}
           style={{
-            backgroundColor: barChartColors[indx],
+            backgroundColor:
+              barChartColors[reverse ? barChartColors.length - 1 - indx : indx],
             height: `${height.toString()}px`,
           }}
         />
