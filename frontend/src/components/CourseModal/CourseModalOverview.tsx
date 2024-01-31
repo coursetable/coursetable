@@ -324,185 +324,94 @@ function CourseModalOverview({
 
   const overlapSections = useMemo(() => {
     const overlapSections: {
-      [filter in Filter]: JSX.Element[];
+      [filter in Filter]: CourseOffering[];
     } = { both: [], course: [], professor: [] };
     if (!data) return overlapSections;
-    // Hold list of evaluation dictionaries
-    const courseOfferings: CourseOffering[] = [];
-    // Loop by season code
-    for (const season of data.computed_listing_info as ComputedListingInfo[]) {
-      // Stores the average rating for all profs teaching this course and
-      // populates prof_info
-      let averageProfessorRating = 0;
-      const numProfs = season.professor_info.length;
-      season.professor_info.forEach((prof) => {
-        if (prof.average_rating) {
-          // Add up all prof ratings
-          averageProfessorRating += prof.average_rating;
+    (data.computed_listing_info as ComputedListingInfo[])
+      .map((season): CourseOffering => {
+        // Stores the average rating for all profs teaching this course and
+        // populates prof_info
+        let averageProfessorRating = 0;
+        const numProfs = season.professor_info.length;
+        season.professor_info.forEach((prof) => {
+          if (prof.average_rating) {
+            // Add up all prof ratings
+            averageProfessorRating += prof.average_rating;
+          }
+        });
+        // Divide by number of profs to get average
+        averageProfessorRating /= numProfs;
+        return {
+          // Course rating
+          rating: season.course.evaluation_statistic
+            ? season.course.evaluation_statistic.avg_rating || null
+            : null,
+          // Workload rating
+          workload: season.course.evaluation_statistic
+            ? season.course.evaluation_statistic.avg_workload || null
+            : null,
+          // Professor rating
+          professor_rating: averageProfessorRating || null,
+          // Season code
+          season_code: season.season_code,
+          // Professors
+          professor: season.professor_names.length
+            ? season.professor_names
+            : ['TBA'],
+          // Course code
+          course_code: season.course_code || 'TBA',
+          // Crn
+          crn: season.crn,
+          // Section number
+          section: season.section,
+          // Course Title
+          title: season.title,
+          // Course Skills
+          skills: season.skills,
+          // Course Areas
+          areas: season.areas,
+          // Store course listing
+          listing: season,
+        };
+      })
+      .sort(
+        (a, b) =>
+          b.season_code.localeCompare(a.season_code, 'en-US') ||
+          parseInt(a.section, 10) - parseInt(b.section, 10),
+      )
+      .forEach((offering) => {
+        // Skip listings in the current and future seasons that have no evals
+        if (CUR_YEAR.includes(offering.season_code)) return;
+        // TODO: this whole logic is not ideal. We need to systematically
+        // reconsider what we mean by "same course" and "same professor".
+        // See: https://docs.google.com/document/d/1mIsanCz1U3M6SU2KbcBp9ONXRssDfeTzRtDIRzxdAOk
+        const isCourseOverlap = offering.course_code === listing.course_code;
+        const isProfOverlap = overlappingProfs(offering.professor) > 0;
+        // We require ALL professors to be the same
+        const isBothOverlap =
+          isCourseOverlap &&
+          overlappingProfs(offering.professor) ===
+            listing.professor_names.length;
+        const type = isBothOverlap
+          ? 'both'
+          : isCourseOverlap
+            ? 'course'
+            : isProfOverlap
+              ? 'professor'
+              : undefined;
+        if (!type) {
+          // Consider a course cross-listed with course codes A and B.
+          // It was taught by prof X in year 1 and prof Y in year 2.
+          // Then GraphQL would return 2-B when viewing 1-A even when they
+          // appear to not overlap.
+          // TODO: maybe we should fix this in the GraphQL layer? Again,
+          // reconsideration of course relationships needed...
+          return;
         }
+        overlapSections[type].push(offering);
       });
-      // Divide by number of profs to get average
-      averageProfessorRating /= numProfs;
-      courseOfferings.push({
-        // Course rating
-        rating: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_rating || null
-          : null,
-        // Workload rating
-        workload: season.course.evaluation_statistic
-          ? season.course.evaluation_statistic.avg_workload || null
-          : null,
-        // Professor rating
-        professor_rating: averageProfessorRating || null,
-        // Season code
-        season_code: season.season_code,
-        // Professors
-        professor: season.professor_names.length
-          ? season.professor_names
-          : ['TBA'],
-        // Course code
-        course_code: season.course_code || 'TBA',
-        // Crn
-        crn: season.crn,
-        // Section number
-        section: season.section,
-        // Course Title
-        title: season.title,
-        // Course Skills
-        skills: season.skills,
-        // Course Areas
-        areas: season.areas,
-        // Store course listing
-        listing: season,
-      });
-    }
-    // Sort by season code and section
-    courseOfferings.sort(
-      (a, b) =>
-        b.season_code.localeCompare(a.season_code, 'en-US') ||
-        parseInt(a.section, 10) - parseInt(b.section, 10),
-    );
-
-    // Loop through each listing with evals
-    courseOfferings.forEach((offering, i) => {
-      // Skip listings in the current and future seasons that have no evals
-      if (CUR_YEAR.includes(offering.season_code)) return;
-      // TODO: this whole logic is not ideal. We need to systematically
-      // reconsider what we mean by "same course" and "same professor".
-      // See: https://docs.google.com/document/d/1mIsanCz1U3M6SU2KbcBp9ONXRssDfeTzRtDIRzxdAOk
-      const isCourseOverlap = offering.course_code === listing.course_code;
-      const isProfOverlap = overlappingProfs(offering.professor) > 0;
-      // We require ALL professors to be the same
-      const isBothOverlap =
-        isCourseOverlap &&
-        overlappingProfs(offering.professor) === listing.professor_names.length;
-      const hasEvals = offering.rating !== null;
-      const type = isBothOverlap
-        ? 'both'
-        : isCourseOverlap
-          ? 'course'
-          : isProfOverlap
-            ? 'professor'
-            : undefined;
-      if (!type) {
-        // Consider a course cross-listed with course codes A and B.
-        // It was taught by prof X in year 1 and prof Y in year 2.
-        // Then GraphQL would return 2-B when viewing 1-A even when they appear
-        // to not overlap.
-        // TODO: maybe we should fix this in the GraphQL layer? Again,
-        // reconsideration of course relationships needed...
-        return;
-      }
-      const evalBox = (
-        <Row key={i} className="m-auto py-1 justify-content-center">
-          {/* The listing button, either clickable or greyed out based on
-                whether evaluations exist */}
-          {hasEvals ? (
-            <Col
-              xs={5}
-              className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
-              onClick={() => {
-                // Temp dictionary that stores listing info
-                const temp = { ...offering };
-                setSeason(temp);
-              }}
-              style={{ flex: 'none' }}
-            >
-              <strong>{toSeasonString(offering.season_code)}</strong>
-              <div className={clsx(styles.details, 'mx-auto', styles.shown)}>
-                {type === 'professor'
-                  ? offering.course_code
-                  : type === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
-              </div>
-            </Col>
-          ) : (
-            <Col
-              xs={5}
-              className={clsx(
-                styles.ratingBubbleUnclickable,
-                'px-0 mr-3 text-center',
-              )}
-              style={{ flex: 'none', color: '#b5b5b5' }}
-            >
-              <strong>{toSeasonString(offering.season_code)}</strong>
-              <div className={clsx(styles.details, 'mx-auto', styles.shown)}>
-                {type === 'professor'
-                  ? offering.course_code
-                  : type === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
-              </div>
-            </Col>
-          )}
-          {/* Course Rating */}
-          <Col
-            xs={2}
-            className="px-1 ml-0 d-flex justify-content-center text-center"
-          >
-            <RatingBubble
-              rating={offering.rating}
-              colorMap={ratingColormap}
-              className={styles.ratingCell}
-            >
-              {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
-            </RatingBubble>
-          </Col>
-          {/* Professor Rating */}
-          <Col
-            xs={2}
-            className="px-1 ml-0 d-flex justify-content-center text-center"
-          >
-            <RatingBubble
-              rating={offering.professor_rating}
-              colorMap={ratingColormap}
-              className={styles.ratingCell}
-            >
-              {offering.professor_rating
-                ? offering.professor_rating.toFixed(1)
-                : 'N/A'}
-            </RatingBubble>
-          </Col>
-          {/* Workload Rating */}
-          <Col
-            xs={2}
-            className="px-1 ml-0 d-flex justify-content-center text-center"
-          >
-            <RatingBubble
-              rating={offering.workload}
-              colorMap={workloadColormap}
-              className={styles.ratingCell}
-            >
-              {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
-            </RatingBubble>
-          </Col>
-        </Row>
-      );
-      overlapSections[type].push(evalBox);
-    });
     return overlapSections;
-  }, [data, setSeason, listing, overlappingProfs]);
+  }, [data, listing, overlappingProfs]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Options for the evaluation filters
@@ -854,27 +763,126 @@ function CourseModalOverview({
               className={clsx(styles.evaluationsFilter, 'mb-2')}
             />
           </Row>
-          {/* Course Evaluations Header */}
-          {overlapSections[filter].length !== 0 && (
-            <Row className="m-auto pb-1 justify-content-center">
-              <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
-                <span className={styles.evaluationHeader}>Season</span>
-              </Col>
-              <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluationHeader}>Class</span>
-              </Col>
-              <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluationHeader}>Prof</span>
-              </Col>
-              <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluationHeader}>Work</span>
-              </Col>
-            </Row>
-          )}
           {/* Course Evaluations */}
-          {overlapSections[filter].length !== 0 && overlapSections[filter]}
-          {/* No Course Evaluations */}
-          {overlapSections[filter].length === 0 && (
+          {overlapSections[filter].length !== 0 ? (
+            <>
+              <Row className="m-auto pb-1 justify-content-center">
+                <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
+                  <span className={styles.evaluationHeader}>Season</span>
+                </Col>
+                <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+                  <span className={styles.evaluationHeader}>Class</span>
+                </Col>
+                <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+                  <span className={styles.evaluationHeader}>Prof</span>
+                </Col>
+                <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+                  <span className={styles.evaluationHeader}>Work</span>
+                </Col>
+              </Row>
+              {overlapSections[filter].map((offering, i) => (
+                <Row key={i} className="m-auto py-1 justify-content-center">
+                  {/* The listing button, either clickable or greyed out based on
+                whether evaluations exist */}
+                  {offering.rating !== null ? (
+                    <Col
+                      xs={5}
+                      className={clsx(
+                        styles.ratingBubble,
+                        'px-0 mr-3 text-center',
+                      )}
+                      onClick={() => {
+                        // Temp dictionary that stores listing info
+                        const temp = { ...offering };
+                        setSeason(temp);
+                      }}
+                      style={{ flex: 'none' }}
+                    >
+                      <strong>{toSeasonString(offering.season_code)}</strong>
+                      <div
+                        className={clsx(
+                          styles.details,
+                          'mx-auto',
+                          styles.shown,
+                        )}
+                      >
+                        {filter === 'professor'
+                          ? offering.course_code
+                          : filter === 'both'
+                            ? `Section ${offering.section}`
+                            : offering.professor[0]}
+                      </div>
+                    </Col>
+                  ) : (
+                    <Col
+                      xs={5}
+                      className={clsx(
+                        styles.ratingBubbleUnclickable,
+                        'px-0 mr-3 text-center',
+                      )}
+                      style={{ flex: 'none', color: '#b5b5b5' }}
+                    >
+                      <strong>{toSeasonString(offering.season_code)}</strong>
+                      <div
+                        className={clsx(
+                          styles.details,
+                          'mx-auto',
+                          styles.shown,
+                        )}
+                      >
+                        {filter === 'professor'
+                          ? offering.course_code
+                          : filter === 'both'
+                            ? `Section ${offering.section}`
+                            : offering.professor[0]}
+                      </div>
+                    </Col>
+                  )}
+                  {/* Course Rating */}
+                  <Col
+                    xs={2}
+                    className="px-1 ml-0 d-flex justify-content-center text-center"
+                  >
+                    <RatingBubble
+                      rating={offering.rating}
+                      colorMap={ratingColormap}
+                      className={styles.ratingCell}
+                    >
+                      {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
+                    </RatingBubble>
+                  </Col>
+                  {/* Professor Rating */}
+                  <Col
+                    xs={2}
+                    className="px-1 ml-0 d-flex justify-content-center text-center"
+                  >
+                    <RatingBubble
+                      rating={offering.professor_rating}
+                      colorMap={ratingColormap}
+                      className={styles.ratingCell}
+                    >
+                      {offering.professor_rating
+                        ? offering.professor_rating.toFixed(1)
+                        : 'N/A'}
+                    </RatingBubble>
+                  </Col>
+                  {/* Workload Rating */}
+                  <Col
+                    xs={2}
+                    className="px-1 ml-0 d-flex justify-content-center text-center"
+                  >
+                    <RatingBubble
+                      rating={offering.workload}
+                      colorMap={workloadColormap}
+                      className={styles.ratingCell}
+                    >
+                      {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
+                    </RatingBubble>
+                  </Col>
+                </Row>
+              ))}
+            </>
+          ) : (
             <Row className="m-auto justify-content-center">
               <strong>No Results</strong>
             </Row>

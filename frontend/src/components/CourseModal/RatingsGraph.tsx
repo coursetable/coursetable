@@ -2,6 +2,7 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import clsx from 'clsx';
 import styles from './RatingsGraph.module.css';
+import { barChartColors } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
 
 /**
@@ -22,11 +23,6 @@ function RatingsGraph({
 }) {
   const maxVal = Math.max(...ratings);
 
-  // Bar chart colors
-  const colors = ['#f54242', '#f5a142', '#f5f542', '#aeed1a', '#00e800'];
-  // Reverse colors if needed
-  if (reverse) colors.reverse();
-
   // Set minimum bar height
   const MIN_HEIGHT = 15;
   // Loop through each rating to build the bar
@@ -37,6 +33,7 @@ function RatingsGraph({
     const height = rating ? MIN_HEIGHT + (rating / maxVal) * 100 : 0;
     // Skip to last color if this is the yes/no question
     if (indx === 1 && ratings.length === 2) indx = 4;
+    if (reverse) indx = barChartColors.length - 1 - indx;
     // Build bar
     return (
       <div key={labels[indx]} className={styles.bar}>
@@ -48,7 +45,7 @@ function RatingsGraph({
         <div
           className={clsx(styles.column, 'px-1 mx-auto')}
           style={{
-            backgroundColor: colors[indx],
+            backgroundColor: barChartColors[indx],
             height: `${height.toString()}px`,
           }}
         />
