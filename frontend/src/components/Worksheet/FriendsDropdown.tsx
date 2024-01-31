@@ -50,13 +50,14 @@ function FriendsDropdown() {
   }
 
   // Generate friend netId list, sorted by name.
-  const friends = Object.entries(user.friends).map(([netId, { name }]) => ({
-    netId: netId as NetId,
-    name,
-  }));
-  friends.sort((a, b) =>
-    a.name.localeCompare(b.name, 'en-US', { sensitivity: 'base' }),
-  );
+  const friends = Object.entries(user.friends)
+    .map(([netId, { name }]) => ({
+      netId: netId as NetId,
+      name,
+    }))
+    .sort((a, b) =>
+      a.name.localeCompare(b.name, 'en-US', { sensitivity: 'base' }),
+    );
   return (
     <div className="container p-0 m-0">
       <DropdownButton

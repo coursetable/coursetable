@@ -257,11 +257,13 @@ export function SearchProvider({
     () => selectSubjects.value.map((x) => x.value),
     [selectSubjects.value],
   );
-  const processedSkillsAreas = useMemo(() => {
-    const ret = selectSkillsAreas.value.map((x) => x.value);
-    if (ret.includes('L')) ret.push('L1', 'L2', 'L3', 'L4', 'L5');
-    return ret;
-  }, [selectSkillsAreas.value]);
+  const processedSkillsAreas = useMemo(
+    () =>
+      selectSkillsAreas.value.flatMap((x) =>
+        x.value === 'L' ? ['L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
+      ),
+    [selectSkillsAreas.value],
+  );
   const processedSeasons = useMemo(() => {
     if (selectSeasons.value.length === 0) {
       // Nothing selected, so default to all seasons.

@@ -46,21 +46,17 @@ export function NavbarWorksheetSearch() {
 
   // List of friend options. Initialize with me option
   const friendOptions = useMemo(() => {
-    const friendOptionsTemp: Option[] = [];
-    if (!user.friends) return friendOptionsTemp;
-    // Add friend to dropdown if they have worksheet courses in the current
-    // season
-    for (const [friendNetId, { name }] of Object.entries(user.friends)) {
-      friendOptionsTemp.push({
-        value: friendNetId as NetId,
-        label: name,
-      });
-    }
-    // Sort friends in alphabetical order
-    friendOptionsTemp.sort((a, b) =>
-      a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
-    );
-    return friendOptionsTemp;
+    if (!user.friends) return [];
+    return Object.entries(user.friends)
+      .map(
+        ([friendNetId, { name }]): Option => ({
+          value: friendNetId as NetId,
+          label: name,
+        }),
+      )
+      .sort((a, b) =>
+        a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
+      );
   }, [user.friends]);
 
   const selectedPerson = useMemo(() => {
@@ -71,29 +67,18 @@ export function NavbarWorksheetSearch() {
     };
   }, [person, user.friends]);
 
-  // Friends names
-  const friendRequestInfo = useMemo(
-    () => (user.friendRequests ? user.friendRequests : []),
-    [user.friendRequests],
-  );
-
   // Friend requests variables
   const friendRequestOptions = useMemo(() => {
-    const friendRequestOptionsTemp = [];
-    // Add friend to dropdown if they have worksheet courses in the current
-    // season
-    for (const friend of friendRequestInfo) {
-      friendRequestOptionsTemp.push({
+    if (!user.friendRequests) return [];
+    return user.friendRequests
+      .map((friend) => ({
         value: friend.netId,
         label: friend.name,
-      });
-    }
-    // Sort friends in alphabetical order
-    friendRequestOptionsTemp.sort((a, b) =>
-      a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
-    );
-    return friendRequestOptionsTemp;
-  }, [friendRequestInfo]);
+      }))
+      .sort((a, b) =>
+        a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
+      );
+  }, [user.friendRequests]);
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 

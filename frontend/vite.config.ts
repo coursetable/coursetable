@@ -112,7 +112,7 @@ export default defineConfig({
           // name collision and messes with build size calc.
           // Fixable by https://github.com/rollup/rollup/issues/4858
           if (chunkInfo.name === 'index') {
-            if (chunkInfo.facadeModuleId?.includes('gapy-script'))
+            if (chunkInfo.facadeModuleId?.includes('gapi-script'))
               return 'assets/gapi-script-[hash:10].js';
           }
           return 'assets/[name]-[hash:10].js';
