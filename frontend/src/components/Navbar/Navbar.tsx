@@ -82,21 +82,10 @@ export default function CourseTableNavbar({
   const { isMobile, isLgDesktop } = useWindowDimensions();
 
   // Show navbar search state
-  const [showSearch, setShowSearch] = useState(false);
-  // Page state
-  const [page, setPage] = useState('');
-  // Handles page
-  useEffect(() => {
-    if (location.pathname === '/catalog') setPage('catalog');
-    else if (location.pathname === '/worksheet') setPage('worksheet');
-    else setPage('');
-  }, [location]);
-
-  // Decides whether to show search or not
-  useEffect(() => {
-    if (!isMobile && isLoggedIn && page) setShowSearch(true);
-    else setShowSearch(false);
-  }, [isMobile, isLoggedIn, page]);
+  const showSearch =
+    !isMobile &&
+    isLoggedIn &&
+    ['/catalog', '/worksheet'].includes(location.pathname);
 
   // Calculate time since last updated
   useEffect(() => {
@@ -137,7 +126,7 @@ export default function CourseTableNavbar({
             expand="md"
             className="shadow-sm px-3 align-items-start"
             style={
-              showSearch && page === 'catalog'
+              showSearch && location.pathname === '/catalog'
                 ? {
                     height: isLgDesktop ? '100px' : '88px',
                     paddingBottom: '0px',
@@ -173,10 +162,11 @@ export default function CourseTableNavbar({
             />
 
             {/* Desktop navbar search */}
-            {showSearch && page === 'catalog' ? (
+            {showSearch && location.pathname === '/catalog' ? (
               <NavbarCatalogSearch />
             ) : (
-              showSearch && page === 'worksheet' && <NavbarWorksheetSearch />
+              showSearch &&
+              location.pathname === '/worksheet' && <NavbarWorksheetSearch />
             )}
 
             <NavCollapseWrapper wrap={!isMobile && showSearch}>
@@ -280,7 +270,7 @@ export default function CourseTableNavbar({
                 </Nav>
               </Navbar.Collapse>
               {/* Last updated ago text for desktop */}
-              {showSearch && page === 'catalog' && (
+              {showSearch && location.pathname === '/catalog' && (
                 <TextComponent
                   type="tertiary"
                   small
