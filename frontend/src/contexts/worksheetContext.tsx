@@ -23,8 +23,10 @@ type WorksheetView =
   | { view: 'calendar'; mode: '' }
   | { view: 'list'; mode: '' };
 
-export type WorksheetCourse = Listing & {
+export type WorksheetCourse = {
+  crn: Crn;
   color: string;
+  listing: Listing;
 };
 
 type Store = {
@@ -54,16 +56,6 @@ type Store = {
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
-
-// List of colors for the calendar events
-const colors: [number, number, number][] = [
-  [108, 194, 111],
-  [202, 95, 83],
-  [49, 164, 212],
-  [223, 134, 83],
-  [38, 186, 154],
-  [186, 120, 129],
-];
 
 /**
  * Stores the user's worksheet filters and sorts
@@ -125,7 +117,7 @@ export function WorksheetProvider({
   const {
     loading: worksheetLoading,
     error: worksheetError,
-    data: worksheetData,
+    data: courses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
 
   // This will be dependent on backend data if we allow renaming
@@ -137,21 +129,6 @@ export function WorksheetProvider({
       })),
     [],
   );
-
-  // Courses data - basically a color-annotated version of the worksheet info.
-  const courses = useMemo(() => {
-    if (!worksheetLoading && !worksheetError) {
-      return worksheetData
-        .map(
-          (course, i): WorksheetCourse => ({
-            color: colors[i % colors.length]!.join(' '),
-            ...course,
-          }),
-        )
-        .sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
-    }
-    return [];
-  }, [worksheetLoading, worksheetError, worksheetData]);
 
   /* Functions */
 

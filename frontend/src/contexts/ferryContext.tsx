@@ -10,8 +10,10 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
+import { worksheetColors } from '../utilities/constants';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
+import type { WorksheetCourse } from './worksheetContext';
 import type { Crn, Season, Listing } from '../utilities/common';
 
 import { API_ENDPOINT } from '../config';
@@ -151,9 +153,9 @@ export function useWorksheetInfo(
   const { loading, error, courses } = useCourseData(requiredSeasons);
 
   const data = useMemo(() => {
-    const dataReturn: Listing[] = [];
-    if (!worksheets) return dataReturn;
-    if (loading || error) return dataReturn;
+    const dataReturn: WorksheetCourse[] = [];
+    if (!worksheets) return [];
+    if (loading || error) return [];
 
     // Resolve the worksheet items.
     for (const seasonCode of requiredSeasons) {
@@ -161,9 +163,9 @@ export function useWorksheetInfo(
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      for (const { crn } of worksheet) {
-        const course = courses[seasonCode]!.get(crn);
-        if (!course) {
+      worksheet.forEach(({ crn }, i) => {
+        const listing = courses[seasonCode]!.get(crn);
+        if (!listing) {
           // This error is unactionable.
           // https://github.com/coursetable/coursetable/pull/1508
           // Sentry.captureException(
@@ -172,11 +174,17 @@ export function useWorksheetInfo(
           //   ),
           // );
         } else {
-          dataReturn.push(course);
+          dataReturn.push({
+            crn,
+            color: worksheetColors[i % worksheetColors.length]!,
+            listing,
+          });
         }
-      }
+      });
     }
-    return dataReturn;
+    return dataReturn.sort((a, b) =>
+      a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
+    );
   }, [requiredSeasons, courses, worksheets, worksheetNumber, loading, error]);
   return { loading, error, data };
 }

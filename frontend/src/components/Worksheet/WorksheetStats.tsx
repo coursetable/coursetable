@@ -67,7 +67,7 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  for (const course of courses) {
+  for (const { listing: course } of courses) {
     // See if any of the course's codes have already been counted or if it's
     // hidden so we don't double count
     const alreadyCounted = course.all_course_codes.some((code) =>

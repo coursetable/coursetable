@@ -33,7 +33,7 @@ function WorksheetCalendarList() {
       courses.map((course, i) => (
         <WorksheetCalendarListItem
           key={i}
-          course={course}
+          course={course.listing}
           hidden={hiddenCourses[curSeason]?.[course.crn] ?? false}
         />
       )),

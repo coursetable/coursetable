@@ -121,6 +121,6 @@ export const getUserWorksheet = async (
     evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
-    data: worksheetCoursesToWorksheets(worksheets)[netId]!,
+    data: worksheetCoursesToWorksheets(worksheets)[netId] ?? {},
   });
 };
