@@ -3,23 +3,13 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { InfoPopover } from '../Typography';
-import type { WorksheetCourse } from '../../contexts/worksheetContext';
 import { truncatedText } from '../../utilities/course';
+import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export interface CourseEvent {
-  title: string;
-  description: string;
-  start: Date;
-  end: Date;
-  listing: WorksheetCourse;
-  id: number;
-  location: string;
-}
-
-function CalendarEvent({ event }: { readonly event: CourseEvent }) {
+function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const course = event.listing;
   return (
     <OverlayTrigger

@@ -8,6 +8,7 @@ import {
 } from './common';
 import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
 import type { SortKeys } from '../contexts/searchContext';
+import type { WorksheetCourse } from '../contexts/worksheetContext';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -44,13 +45,16 @@ export function toSeasonString(seasonCode: Season): string {
 }
 
 // Checks if the a new course conflicts with the user's worksheet
-export function checkConflict(listings: Listing[], course: Listing): Listing[] {
+export function checkConflict(
+  worksheetData: WorksheetCourse[],
+  course: Listing,
+): Listing[] {
   const conflicts: Listing[] = [];
   const daysToCheck = Object.keys(
     course.times_by_day,
   ) as (keyof Listing['times_by_day'])[];
   // Iterate over worksheet listings
-  loopWorksheet: for (const worksheetCourse of listings) {
+  loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
     // Continue if they aren't in the same season
     if (worksheetCourse.season_code !== course.season_code) continue;
     for (const day of daysToCheck) {
@@ -79,12 +83,12 @@ export function checkConflict(listings: Listing[], course: Listing): Listing[] {
 }
 // Checks if a course is cross-listed in the user's worksheet
 export function checkCrossListed(
-  listings: Listing[],
+  worksheetData: WorksheetCourse[],
   course: Listing,
 ): false | string {
   const classes: string[] = [];
   // Iterate over worksheet listings
-  for (const l of listings) {
+  for (const { listing: l } of worksheetData) {
     // Continue if they aren't in the same season
     if (l.season_code !== course.season_code) continue;
     // Keep track of encountered classes and their aliases in the classes array
