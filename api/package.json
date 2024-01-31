@@ -24,6 +24,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.8",
     "@types/passport": "^1.0.16",
+    "chroma-js": "^2.4.2",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
@@ -42,5 +43,8 @@
     "ts-node-dev": "^2.0.0",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/chroma-js": "^2.4.3"
   }
 }

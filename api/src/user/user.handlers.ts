@@ -4,6 +4,7 @@
 
 import type express from 'express';
 import z from 'zod';
+import chroma from 'chroma-js';
 
 import { worksheetCoursesToWorksheets } from './user.utils';
 import winston from '../logging/winston';
@@ -15,7 +16,7 @@ const ToggleBookmarkReqBodySchema = z.object({
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
   worksheetNumber: z.number(),
-  color: z.string(),
+  color: z.string().refine((val) => chroma.valid(val)),
 });
 
 /**
