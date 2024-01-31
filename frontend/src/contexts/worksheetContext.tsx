@@ -118,7 +118,7 @@ export function WorksheetProvider({
     loading: worksheetLoading,
     error: worksheetError,
     data: courses,
-  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
+  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber, viewedPerson);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(

@@ -16,7 +16,7 @@ import { fetchCatalog } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse } from './worksheetContext';
-import type { Crn, Season, Listing } from '../utilities/common';
+import type { Crn, Season, Listing, NetId } from '../utilities/common';
 
 export const seasons = seasonsData as Season[];
 
@@ -128,7 +128,8 @@ export const useCourseData = (seasons: Season[]) => {
 export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
   season: Season | Season[],
-  worksheetNumber = 0,
+  worksheetNumber: number,
+  person: NetId | 'me',
 ) {
   const requiredSeasons = useMemo(() => {
     if (!worksheets) return [];
@@ -152,57 +153,67 @@ export function useWorksheetInfo(
       if (!worksheet) continue;
       worksheet.forEach(({ crn }, i) => {
         const listing = courses[seasonCode]!.get(crn);
-        if (!listing) {
-          toast.error(
-            <div>
-              We recorded a course with CRN {crn} in your worksheet for{' '}
-              {toSeasonString(seasonCode)}, but we can't find its information
-              now. Usually, this is non-critical. Try reloading the page. If the
-              issue persists, you can choose to remove this course. If you think
-              this is an error, please{' '}
-              <a
-                href="https://feedback.coursetable.com/"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                report the problem
-              </a>
-              , including the name of the course that disappeared.
-              <button
-                type="button"
-                onClick={async () => {
-                  await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
-                    body: JSON.stringify({
-                      action: 'remove',
-                      season: seasonCode,
-                      crn,
-                      worksheetNumber,
-                    }),
-                    credentials: 'include',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                  });
-                  toast.dismiss();
-                }}
-              >
-                Remove this course
-              </button>
-            </div>,
-            { autoClose: false },
-          );
-        } else {
+        if (listing) {
           dataReturn.push({
             crn,
             color: worksheetColors[i % worksheetColors.length]!,
             listing,
           });
+          return;
         }
+        // Can't ask people to remove courses from others' worksheet
+        if (person !== 'me') return;
+        toast.error(
+          <div>
+            We recorded a course with CRN {crn} in your worksheet for{' '}
+            {toSeasonString(seasonCode)}, but we can't find its information now.
+            Usually, this is non-critical. Try reloading the page. If the issue
+            persists, you can choose to remove this course. If you know what
+            course disappeared and you think this is an error, please{' '}
+            <a
+              href="https://feedback.coursetable.com/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              report the problem
+            </a>
+            , including the name of the course.
+            <button
+              type="button"
+              onClick={async () => {
+                await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
+                  body: JSON.stringify({
+                    action: 'remove',
+                    season: seasonCode,
+                    crn,
+                    worksheetNumber,
+                  }),
+                  credentials: 'include',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                });
+                toast.dismiss();
+              }}
+            >
+              Remove this course
+            </button>
+          </div>,
+          { autoClose: false },
+        );
       });
     }
     return dataReturn.sort((a, b) =>
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
-  }, [requiredSeasons, courses, worksheets, worksheetNumber, loading, error]);
+  }, [
+    requiredSeasons,
+    courses,
+    worksheets,
+    worksheetNumber,
+    loading,
+    error,
+    person,
+  ]);
   return { loading, error, data };
 }

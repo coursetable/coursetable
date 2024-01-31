@@ -321,12 +321,13 @@ export function SearchProvider({
   // (if multiple seasons are queried, the season is indicated)
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { worksheetNumber } = useWorksheet();
+  const { worksheetNumber, person } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     user.worksheets,
     processedSeasons,
     worksheetNumber,
+    person,
   );
 
   // Filtered and sorted courses

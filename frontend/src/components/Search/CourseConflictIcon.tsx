@@ -18,13 +18,14 @@ import {
  */
 function CourseConflictIcon({ course }: { readonly course: Listing }) {
   const { user } = useUser();
-  const { worksheetNumber } = useWorksheet();
+  const { worksheetNumber, person } = useWorksheet();
 
   // Fetch listing info for each listing in user's worksheet
   const { data } = useWorksheetInfo(
     user.worksheets,
     course.season_code,
     worksheetNumber,
+    person,
   );
 
   // Update conflict status whenever the user's worksheet changes
