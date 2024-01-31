@@ -125,6 +125,8 @@ export const useCourseData = (seasons: Season[]) => {
   return { loading, error, courses };
 };
 
+const hasWarned = new Set<Crn>();
+
 export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
   season: Season | Season[],
@@ -163,6 +165,8 @@ export function useWorksheetInfo(
         }
         // Can't ask people to remove courses from others' worksheet
         if (person !== 'me') return;
+        if (hasWarned.has(crn)) return;
+        hasWarned.add(crn);
         toast.error(
           <div>
             We recorded a course with CRN {crn} in your worksheet for{' '}
