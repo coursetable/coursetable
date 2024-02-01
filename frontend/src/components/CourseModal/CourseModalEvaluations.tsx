@@ -5,7 +5,7 @@ import EvaluationRatings from './EvaluationRatings';
 
 import CourseModalLoading from './CourseModalLoading';
 import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
-import type { Crn, Season } from '../../utilities/common';
+import type { Listing } from '../../utilities/common';
 
 /**
  * Displays course modal when clicking on a course
@@ -13,20 +13,12 @@ import type { Crn, Season } from '../../utilities/common';
  * @prop crn - integer that holds current listing's crn
  * @prop courseCode - string that holds current listing's course code
  */
-function CourseModalEvaluations({
-  seasonCode,
-  crn,
-  courseCode,
-}: {
-  readonly seasonCode: Season;
-  readonly crn: Crn;
-  readonly courseCode: string;
-}) {
+function CourseModalEvaluations({ listing }: { readonly listing: Listing }) {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
-      season_code: seasonCode,
-      course_code: courseCode || 'bruh',
+      season_code: listing.season_code,
+      course_code: listing.course_code,
     },
   });
   // Wait until fetched
@@ -38,12 +30,12 @@ function CourseModalEvaluations({
       <Row className="m-auto">
         <Col md={5} className="px-0 my-0">
           {/* Evaluation Graphs */}
-          <EvaluationRatings crn={crn} info={info} />
+          <EvaluationRatings crn={listing.crn} info={info} />
         </Col>
 
         <Col md={7} className="pr-0 pl-2 my-0">
           {/* Evaluation Comments */}
-          <EvaluationResponses crn={crn} info={info} />
+          <EvaluationResponses crn={listing.crn} info={info} />
         </Col>
       </Row>
     </Modal.Body>

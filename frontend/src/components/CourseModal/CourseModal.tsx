@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Col, Container, Row, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 
-import type {
-  Filter,
-  CourseOffering,
-  ComputedListingInfo,
-} from './CourseModalOverview';
+import type { Filter, ComputedListingInfo } from './CourseModalOverview';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 import { TextComponent, LinkLikeText } from '../Typography';
@@ -18,7 +14,7 @@ import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
-import type { Season, Crn } from '../../utilities/common';
+import type { Season, Crn, Listing } from '../../utilities/common';
 
 const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -63,239 +59,190 @@ const CourseModalEvaluations = suspended(
 
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const courseModal = searchParams.get('course-modal');
-  const [seasonCode, crn] = courseModal
-    ? (courseModal.split('-') as [Season, string])
+  // `view` is either "overview" or "evals"
+  const [seasonCode, crn, view = 'overview'] = courseModal
+    ? (courseModal.split('-') as [Season, string, string?])
     : [null, null];
-  const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
+  const { courses, loading } = useCourseData(seasonCode ? [seasonCode] : []);
 
-  const listing = seasonCode
-    ? courses[seasonCode]?.get(Number(crn) as Crn)
-    : undefined;
+  // Keep showing old data until new data is loaded
+  const [listing, setListing] = useState<Listing | undefined>(undefined);
+  useEffect(() => {
+    if (loading) return;
+    setListing(
+      seasonCode ? courses[seasonCode]?.get(Number(crn) as Crn) : undefined,
+    );
+  }, [loading, seasonCode, crn, courses]);
 
-  // Viewing overview or an evaluation? List contains
-  // [season code, listing info] for evaluations
-  const [view, setView] = useState<'overview' | [Season, CourseOffering]>(
-    'overview',
-  );
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState<Filter>('both');
-  // Stack for listings that the user has viewed
-  const [listings, setListings] = useState<
-    (ComputedListingInfo & { eval: CourseOffering })[]
-  >([]);
-  useEffect(() => {
-    // @ts-expect-error: `listing` is an actual Listing, not the weird type that
-    // SameCourseOrProfOfferingsQuery gives, and it doesn't have an `eval`
-    // field! Surprised that it has caused no errors so far
-    // TODO: is this actually okay?
-    setListings(listing ? [listing] : []);
-  }, [listing]);
-  // Current listing that we are viewing overview info for
-  const curListing = listings[listings.length - 1] ?? null;
+
+  if (!listing) return null;
 
   return (
     <div className="d-flex justify-content-center">
-      {curListing && (
-        <Modal
-          show={Boolean(listing)}
-          scrollable
-          onHide={() => {
-            // Reset views and filters
-            setView('overview');
-            setFilter('both');
-            setSearchParams((prev) => {
-              prev.delete('course-modal');
-              return prev;
-            });
-          }}
-          dialogClassName={styles.dialog}
-          animation={false}
-          centered
-        >
-          <Modal.Header closeButton className="d-flex justify-content-between">
-            <Container className="p-0" fluid>
-              {view === 'overview' ? (
-                // Viewing Course Overview
-                <div>
-                  <Row className={clsx('m-auto', styles.modalTop)}>
-                    <Col xs="auto" className="my-auto p-0">
-                      {/* Show worksheet add/remove button */}
-                      {listings.length === 1 ? (
-                        // If this is the initial listing, show worksheet
-                        // toggle button
-                        <WorksheetToggleButton
-                          crn={curListing.crn}
-                          seasonCode={curListing.season_code}
-                          modal
-                        />
-                      ) : (
-                        // If this is the overview of some other eval course,
-                        // show back button
-                        <LinkLikeText
-                          onClick={() => {
-                            // Go back to the evaluations of this course
-                            setView([curListing.season_code, curListing.eval]);
-                          }}
-                          className={styles.backArrow}
-                        >
-                          <IoMdArrowRoundBack size={30} />
-                        </LinkLikeText>
-                      )}
-                    </Col>
-                    <Col className="p-0 ml-3">
-                      {/* Course Title */}
-                      <Modal.Title>
-                        <Row className="mx-auto mt-1 align-items-center">
-                          <span className={styles.modalTitle}>
-                            {curListing.extra_info !== 'ACTIVE' ? (
-                              <span className={styles.cancelledText}>
-                                {extraInfoMap[curListing.extra_info]}{' '}
-                              </span>
-                            ) : (
-                              ''
-                            )}
-                            {curListing.title}{' '}
-                            <TextComponent type="tertiary">
-                              ({toSeasonString(curListing.season_code)})
-                            </TextComponent>
-                          </span>
-                        </Row>
-                      </Modal.Title>
-
-                      <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
-                        {/* Course Codes */}
-                        <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
-                          <TextComponent type="tertiary">
-                            {curListing.all_course_codes.join(' • ')}
-                          </TextComponent>
-                        </p>
-                        {/* Course Skills and Areas */}
-                        {curListing.skills.map((skill) => (
-                          <SkillBadge skill={skill} key={skill} />
-                        ))}
-                        {curListing.areas.map((area) => (
-                          <SkillBadge skill={area} key={area} />
-                        ))}
-                      </Row>
-                    </Col>
-                  </Row>
-                </div>
-              ) : (
-                // Viewing course evaluation
-                <div>
-                  <Row className="m-auto">
-                    <Col xs="auto" className="my-auto p-0">
-                      {/* Back to overview arrow */}
-                      <LinkLikeText
-                        onClick={() => {
-                          if (
-                            listings.length > 1 &&
-                            curListing.crn === view[1].crn &&
-                            curListing.season_code === view[1].season_code
-                          ) {
-                            // Go to overview of previous listing
-                            setListings(listings.slice(0, -1));
-                          }
-                          setView('overview');
-                        }}
-                        className={styles.backArrow}
-                      >
-                        <IoMdArrowRoundBack size={30} />
-                      </LinkLikeText>
-                    </Col>
-                    <Col className="p-0 ml-3">
-                      {/* Course Title */}
-                      <Modal.Title>
-                        <Row className="mx-auto mt-1 align-items-center">
-                          <span className={styles.modalTitle}>
-                            {view[1].title}{' '}
-                            <TextComponent type="tertiary">
-                              ({toSeasonString(view[0])})
-                            </TextComponent>
-                            {/* TODO */}
-                            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-                            <span
-                              className={clsx(styles.moreInfo, 'mt-auto ml-2')}
-                              onClick={() => {
-                                // Go to overview page of this eval course
-                                setView('overview');
-                                const newListing = {
-                                  ...view[1].listing,
-                                  eval: view[1],
-                                };
-                                setListings([...listings, newListing]);
-                              }}
-                            >
-                              More Info
+      <Modal
+        show
+        scrollable
+        onHide={() => {
+          setFilter('both');
+          setSearchParams((prev) => {
+            prev.delete('course-modal');
+            return prev;
+          });
+        }}
+        dialogClassName={styles.dialog}
+        animation={false}
+        centered
+      >
+        <Modal.Header closeButton className="d-flex justify-content-between">
+          <Container className="p-0" fluid>
+            {view === 'overview' ? (
+              // Viewing Course Overview
+              <div>
+                <Row className={clsx('m-auto', styles.modalTop)}>
+                  <Col xs="auto" className="my-auto p-0">
+                    {/* Show worksheet add/remove button */}
+                    <WorksheetToggleButton
+                      crn={listing.crn}
+                      seasonCode={listing.season_code}
+                      modal
+                    />
+                  </Col>
+                  <Col className="p-0 ml-3">
+                    {/* Course Title */}
+                    <Modal.Title>
+                      <Row className="mx-auto mt-1 align-items-center">
+                        <span className={styles.modalTitle}>
+                          {listing.extra_info !== 'ACTIVE' && (
+                            <span className={styles.cancelledText}>
+                              {extraInfoMap[listing.extra_info]}{' '}
                             </span>
-                          </span>
-                        </Row>
-                      </Modal.Title>
-
-                      <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
-                        {/* Course Code */}
-                        <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
+                          )}
+                          {listing.title}{' '}
                           <TextComponent type="tertiary">
-                            {view[1].course_code}
+                            ({toSeasonString(listing.season_code)})
+                          </TextComponent>
+                        </span>
+                      </Row>
+                    </Modal.Title>
+
+                    <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
+                      {/* Course Codes */}
+                      <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
+                        <TextComponent type="tertiary">
+                          {listing.all_course_codes.join(' • ')}
+                        </TextComponent>
+                      </p>
+                      {/* Course Skills and Areas */}
+                      {listing.skills.map((skill) => (
+                        <SkillBadge skill={skill} key={skill} />
+                      ))}
+                      {listing.areas.map((area) => (
+                        <SkillBadge skill={area} key={area} />
+                      ))}
+                    </Row>
+                  </Col>
+                </Row>
+              </div>
+            ) : (
+              // Viewing course evaluation
+              <div>
+                <Row className="m-auto">
+                  <Col xs="auto" className="my-auto p-0">
+                    {/* Back to overview arrow */}
+                    <LinkLikeText
+                      onClick={() => navigate(-1)}
+                      className={styles.backArrow}
+                    >
+                      <IoMdArrowRoundBack size={30} />
+                    </LinkLikeText>
+                  </Col>
+                  <Col className="p-0 ml-3">
+                    {/* Course Title */}
+                    <Modal.Title>
+                      <Row className="mx-auto mt-1 align-items-center">
+                        <span className={styles.modalTitle}>
+                          {listing.title}{' '}
+                          <TextComponent type="tertiary">
+                            ({toSeasonString(listing.season_code)})
+                          </TextComponent>
+                          {/* TODO */}
+                          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+                          <span
+                            className={clsx(styles.moreInfo, 'mt-auto ml-2')}
+                            onClick={() => {
+                              setSearchParams((prev) => {
+                                prev.set(
+                                  'course-modal',
+                                  `${listing.season_code}-${listing.crn}`,
+                                );
+                                return prev;
+                              });
+                            }}
+                          >
+                            More Info
+                          </span>
+                        </span>
+                      </Row>
+                    </Modal.Title>
+
+                    <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
+                      {/* Course Code */}
+                      <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
+                        <TextComponent type="tertiary">
+                          {listing.course_code}
+                        </TextComponent>
+                      </p>
+                      {/* Course Skills and Areas */}
+                      {listing.skills.map((skill) => (
+                        <SkillBadge skill={skill} key={skill} />
+                      ))}
+                      {listing.areas.map((area) => (
+                        <SkillBadge skill={area} key={area} />
+                      ))}
+                      {/* Course Professors and Section */}
+                      {listing.professor_names.length > 0 && (
+                        <p
+                          className={clsx(
+                            styles.courseCodes,
+                            'my-0',
+                            (listing.skills.length || listing.areas.length) &&
+                              'pl-2',
+                          )}
+                        >
+                          <TextComponent type="tertiary">
+                            | {listing.professor_names.join(', ')} | Section{' '}
+                            {listing.section}
                           </TextComponent>
                         </p>
-                        {/* Course Skills and Areas */}
-                        {view[1].skills.map((skill) => (
-                          <SkillBadge skill={skill} key={skill} />
-                        ))}
-                        {view[1].areas.map((area) => (
-                          <SkillBadge skill={area} key={area} />
-                        ))}
-                        {/* Course Professors and Section */}
-                        {view[1].professor[0] !== 'TBA' && (
-                          <p
-                            className={clsx(
-                              styles.courseCodes,
-                              'my-0',
-                              (view[1].skills.length || view[1].areas.length) &&
-                                'pl-2',
-                            )}
-                          >
-                            <TextComponent type="tertiary">
-                              | {view[1].professor.join(', ')} | Section{' '}
-                              {view[1].section}
-                            </TextComponent>
-                          </p>
-                        )}
-                      </Row>
-                    </Col>
-                  </Row>
-                </div>
-              )}
-            </Container>
-            {/* Share Button */}
-            <div className="align-self-center">
-              <ShareButton courseCode={curListing.course_code} />
-            </div>
-          </Modal.Header>
-          {listing &&
-            (view === 'overview' ? (
-              // Show overview data
-              <CourseModalOverview
-                setFilter={setFilter}
-                filter={filter}
-                setSeason={(evaluation) => {
-                  setView([evaluation.season_code, evaluation]);
-                }}
-                listing={curListing}
-              />
-            ) : (
-              // Show eval data
-              <CourseModalEvaluations
-                seasonCode={view[0]}
-                crn={view[1].crn}
-                courseCode={view[1].course_code}
-              />
-            ))}
-        </Modal>
-      )}
+                      )}
+                    </Row>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Container>
+          {/* Share Button */}
+          <div className="align-self-center">
+            <ShareButton courseCode={listing.course_code} />
+          </div>
+        </Modal.Header>
+        {view === 'overview' ? (
+          // Show overview data
+          <CourseModalOverview
+            setFilter={setFilter}
+            filter={filter}
+            listing={listing}
+          />
+        ) : (
+          // Show eval data
+          <CourseModalEvaluations listing={listing} />
+        )}
+      </Modal>
     </div>
   );
 }

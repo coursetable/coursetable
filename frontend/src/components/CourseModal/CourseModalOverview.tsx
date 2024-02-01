@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Row,
   Col,
@@ -59,7 +60,7 @@ type ProfInfo = {
 };
 
 // TODO: merge it with one of the many types representing "a course"
-export type CourseOffering = {
+type CourseOffering = {
   // Course rating
   rating: number | null;
   // Workload rating
@@ -185,21 +186,19 @@ const profInfoPopover =
  * Displays course modal when clicking on a course
  * @prop setFilter - function that switches evaluation filter
  * @prop filter - string that holds current filter
- * @prop setSeason - function that sets the evaluation to view
  * @prop listing - dictionary that holds all the info for this listing
  */
 
 function CourseModalOverview({
   setFilter,
   filter,
-  setSeason,
   listing,
 }: {
   readonly setFilter: (f: Filter) => void;
   readonly filter: Filter;
-  readonly setSeason: (x: CourseOffering) => void;
-  readonly listing: ComputedListingInfo;
+  readonly listing: Listing;
 }) {
+  const [, setSearchParams] = useSearchParams();
   // Fetch user context data
   const { user } = useUser();
   // Is description clamped?
@@ -794,9 +793,13 @@ function CourseModalOverview({
                     )}
                     {...(offering.rating !== null && {
                       onClick() {
-                        // Temp dictionary that stores listing info
-                        const temp = { ...offering };
-                        setSeason(temp);
+                        setSearchParams((prev) => {
+                          prev.set(
+                            'course-modal',
+                            `${offering.season_code}-${offering.crn}-evals`,
+                          );
+                          return prev;
+                        });
                       },
                     })}
                   >
