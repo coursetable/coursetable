@@ -1,7 +1,3 @@
-// TODO: runtime response validation
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, {
   createContext,
   useContext,
@@ -12,9 +8,79 @@ import React, {
 } from 'react';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
+import z from 'zod';
 import type { NetId, Season, Crn } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
+const friendRequestsSchema = z.object({
+  requests: z.array(
+    z.object({
+      netId: z.string(),
+      name: z.string(),
+    }),
+  ),
+});
+
+const userWorksheetsSchema = z.record(
+  z.record(
+    z.array(
+      z.object({
+        crn: z.number(),
+      }),
+    ),
+  ),
+);
+
+const friendsResSchema = z.object({
+  friends: z.record(
+    z.object({
+      name: z.string(),
+      worksheets: userWorksheetsSchema,
+    }),
+  ),
+});
+
+const userWorksheetsResSchema = z.object({
+  netId: z.string(),
+  // This cannot be null in the real application, because the site creates a
+  // user if one doesn't exist. This is purely for completeness.
+  evaluationsEnabled: z.union([z.boolean(), z.null()]),
+  year: z.union([z.number(), z.null()]),
+  school: z.union([z.string(), z.null()]),
+  data: userWorksheetsSchema,
+});
+
+const friendsNamesResSchema = z.object({
+  names: z.array(
+    z.object({
+      netId: z.string(),
+      first: z.union([z.string(), z.null()]),
+      last: z.union([z.string(), z.null()]),
+      college: z.union([z.string(), z.null()]),
+    }),
+  ),
+});
+
+const authCheckResSchema = z.union([
+  z.object({
+    auth: z.literal(true),
+    netId: z.string(),
+    user: z.object({
+      netId: z.string(),
+      evals: z.boolean(),
+      email: z.string().optional(),
+      firstName: z.string().optional(),
+      lastName: z.string().optional(),
+    }),
+  }),
+  z.object({
+    auth: z.literal(false),
+    netId: z.null(),
+    user: z.null(),
+  }),
+]);
+
+// Not using z.infer because we want narrower types
 export type UserWorksheets = {
   [season: Season]: {
     [worksheetNumber: number]: {
@@ -28,16 +94,18 @@ export type FriendRecord = {
     worksheets: UserWorksheets;
   };
 };
-type FriendRequest = {
+type FriendRequests = {
   netId: NetId;
   name: string;
-};
-type FriendName = {
+}[];
+
+type FriendNames = {
   netId: NetId;
-  first: string;
-  last: string;
-  college: string;
-};
+  first: string | null;
+  last: string | null;
+  college: string | null;
+}[];
+
 type Store = {
   loading: boolean;
   user: {
@@ -46,17 +114,16 @@ type Store = {
     hasEvals?: boolean;
     year?: number;
     school?: string;
-    friendRequests?: FriendRequest[];
+    friendRequests?: FriendRequests;
     friends?: FriendRecord;
-    allNames?: FriendName[];
   };
+  allNames: FriendNames;
   userRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
   addFriend: (friendNetId: NetId) => Promise<void>;
   removeFriend: (friendNetId: NetId) => Promise<void>;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
-  getAllNames: () => Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -88,10 +155,10 @@ export function UserProvider({
   const [friends, setFriends] = useState<FriendRecord | undefined>(undefined);
   // User's friend requests
   const [friendRequests, setFriendRequests] = useState<
-    FriendRequest[] | undefined
+    FriendRequests | undefined
   >(undefined);
   // All names, used for searching
-  const [allNames, setAllNames] = useState<FriendName[] | undefined>(undefined);
+  const [allNames, setAllNames] = useState<FriendNames>([]);
 
   // Refresh user worksheet
   const userRefresh = useCallback(async (): Promise<void> => {
@@ -99,13 +166,18 @@ export function UserProvider({
       const res = await fetch(`${API_ENDPOINT}/api/user/worksheets`, {
         credentials: 'include',
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? res.statusText);
-      setNetId(data.netId);
-      setHasEvals(data.evaluationsEnabled);
-      setYear(data.year);
-      setSchool(data.school);
-      setWorksheets(data.data);
+      const rawData: unknown = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          (rawData as { error?: string }).error ?? res.statusText,
+        );
+      }
+      const data = userWorksheetsResSchema.parse(rawData);
+      setNetId(data.netId satisfies string as NetId);
+      setHasEvals(data.evaluationsEnabled ?? undefined);
+      setYear(data.year ?? undefined);
+      setSchool(data.school ?? undefined);
+      setWorksheets(data.data as UserWorksheets);
     } catch (err) {
       Sentry.addBreadcrumb({
         category: 'user',
@@ -129,9 +201,14 @@ export function UserProvider({
       const res = await fetch(`${API_ENDPOINT}/api/friends/worksheets`, {
         credentials: 'include',
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? res.statusText);
-      setFriends(data.friends);
+      const rawData: unknown = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          (rawData as { error?: string }).error ?? res.statusText,
+        );
+      }
+      const data = friendsResSchema.parse(rawData);
+      setFriends(data.friends as FriendRecord);
     } catch (err) {
       Sentry.addBreadcrumb({
         category: 'friends',
@@ -150,9 +227,14 @@ export function UserProvider({
       const res = await fetch(`${API_ENDPOINT}/api/friends/getRequests`, {
         credentials: 'include',
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? res.statusText);
-      setFriendRequests(data.requests);
+      const rawData: unknown = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          (rawData as { error?: string }).error ?? res.statusText,
+        );
+      }
+      const data = friendRequestsSchema.parse(rawData);
+      setFriendRequests(data.requests as FriendRequests);
     } catch (err) {
       Sentry.addBreadcrumb({
         category: 'friends',
@@ -170,9 +252,14 @@ export function UserProvider({
       const res = await fetch(`${API_ENDPOINT}/api/friends/names`, {
         credentials: 'include',
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? res.statusText);
-      setAllNames(data.names);
+      const rawData: unknown = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          (rawData as { error?: string }).error ?? res.statusText,
+        );
+      }
+      const data = friendsNamesResSchema.parse(rawData);
+      setAllNames(data.names as FriendNames);
     } catch (err) {
       Sentry.addBreadcrumb({
         category: 'friends',
@@ -181,7 +268,7 @@ export function UserProvider({
       });
       Sentry.captureException(err);
       toast.error(`Failed to get user names. ${String(err)}`);
-      setAllNames(undefined);
+      setAllNames([]);
     }
   }, []);
 
@@ -197,7 +284,7 @@ export function UserProvider({
         },
       });
       if (!res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as { error?: string };
         // The only way for users to legally interact with this API is through
         // the requests dropdown, so anything that doesn't seem right should be
         // reported to us
@@ -229,7 +316,7 @@ export function UserProvider({
           },
         });
         if (!res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as { error?: string };
           throw new Error(data.error ?? res.statusText);
         }
         toast.info(`Removed friend: ${friendNetId}`);
@@ -273,7 +360,7 @@ export function UserProvider({
           },
         });
         if (!res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as { error?: string };
           switch (data.error) {
             case 'FRIEND_NOT_FOUND':
               toast.error(`The net ID ${friendNetId} does not exist.`);
@@ -311,8 +398,13 @@ export function UserProvider({
         const res = await fetch(`${API_ENDPOINT}/api/auth/check`, {
           credentials: 'include',
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? res.statusText);
+        const rawData: unknown = await res.json();
+        if (!res.ok) {
+          throw new Error(
+            (rawData as { error?: string }).error ?? res.statusText,
+          );
+        }
+        const data = authCheckResSchema.parse(rawData);
         if (!data.auth) return;
         Sentry.setUser({ username: data.netId });
       } catch (err) {
@@ -327,15 +419,10 @@ export function UserProvider({
         return;
       }
       // This shouldn't fail, because they all handle their own errors
-      await Promise.all([
-        userRefresh(),
-        friendRefresh(),
-        friendReqRefresh(),
-        getAllNames(),
-      ]);
+      await Promise.all([userRefresh(), friendRefresh(), friendReqRefresh()]);
     }
     void init().finally(() => setLoading(false));
-  }, [userRefresh, friendRefresh, friendReqRefresh, getAllNames]);
+  }, [userRefresh, friendRefresh, friendReqRefresh]);
 
   const user = useMemo(
     () => ({
@@ -346,24 +433,15 @@ export function UserProvider({
       school,
       friendRequests,
       friends,
-      allNames,
     }),
-    [
-      netId,
-      worksheets,
-      hasEvals,
-      year,
-      school,
-      friendRequests,
-      friends,
-      allNames,
-    ],
+    [netId, worksheets, hasEvals, year, school, friendRequests, friends],
   );
 
   const store = useMemo(
     () => ({
       loading,
       user,
+      allNames,
       userRefresh,
       friendRefresh,
       friendReqRefresh,
@@ -375,6 +453,7 @@ export function UserProvider({
     [
       loading,
       user,
+      allNames,
       userRefresh,
       friendRefresh,
       friendReqRefresh,
