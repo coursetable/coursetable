@@ -3,6 +3,14 @@
   cursor: pointer;
 }
 
+.resultItem {
+  border-radius: 8px;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
 .resultItem:focus,
 .resultItem:active {
   border: none;
@@ -14,12 +22,7 @@
 }
 
 .resultItem:not(.inWorksheetResultItem) {
-  border-radius: 8px;
   background-color: rgb(245 245 245);
-  transition:
-    border-color var(--trans-dur),
-    background-color var(--trans-dur),
-    color var(--trans-dur);
 }
 
 [data-theme='dark'] .resultItem:not(.inWorksheetResultItem) {
@@ -82,11 +85,6 @@
 
 .icon {
   width: 16px;
-  display: block;
-}
-
-.profIcon {
-  width: 15px;
   display: block;
 }
 
