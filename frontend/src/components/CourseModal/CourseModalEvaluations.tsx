@@ -22,8 +22,8 @@ function CourseModalEvaluations({ listing }: { readonly listing: Listing }) {
     },
   });
   // Wait until fetched
-  if (loading || error) return <CourseModalLoading />;
-  const info = data?.computed_listing_info;
+  if (loading || error || !data) return <CourseModalLoading />;
+  const info = data.computed_listing_info;
 
   return (
     <Modal.Body>

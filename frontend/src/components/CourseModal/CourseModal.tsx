@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Col, Container, Row, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -7,6 +7,7 @@ import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 
 import type { Filter, ComputedListingInfo } from './CourseModalOverview';
+import CourseModalLoading from './CourseModalLoading';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 import { TextComponent, LinkLikeText } from '../Typography';
@@ -14,7 +15,7 @@ import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
-import type { Season, Crn, Listing } from '../../utilities/common';
+import type { Season, Crn } from '../../utilities/common';
 
 const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -69,18 +70,53 @@ function CourseModal() {
   const { courses, loading } = useCourseData(seasonCode ? [seasonCode] : []);
 
   // Keep showing old data until new data is loaded
-  const [listing, setListing] = useState<Listing | undefined>(undefined);
-  useEffect(() => {
-    if (loading) return;
-    setListing(
-      seasonCode ? courses[seasonCode]?.get(Number(crn) as Crn) : undefined,
-    );
-  }, [loading, seasonCode, crn, courses]);
+  const listing = seasonCode
+    ? courses[seasonCode]?.get(Number(crn) as Crn)
+    : undefined;
 
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState<Filter>('both');
 
-  if (!listing) return null;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center">
+        <Modal
+          show
+          scrollable
+          onHide={() => {
+            setFilter('both');
+            setSearchParams((prev) => {
+              prev.delete('course-modal');
+              return prev;
+            });
+          }}
+          dialogClassName={styles.dialog}
+          animation={false}
+          centered
+        >
+          <Modal.Header closeButton className="d-flex justify-content-between">
+            <Container className="p-0" fluid>
+              <div>
+                <Row className={clsx('m-auto', styles.modalTop)}>
+                  <Col className="p-0 ml-3">
+                    <Modal.Title>
+                      <Row className="mx-auto mt-1 align-items-center">
+                        Loading...
+                      </Row>
+                    </Modal.Title>
+                    <Row className={clsx(styles.badges, 'mx-auto mt-1')} />
+                  </Col>
+                </Row>
+              </div>
+            </Container>
+          </Modal.Header>
+          <CourseModalLoading />
+        </Modal>
+      </div>
+    );
+  } else if (!listing) {
+    return null;
+  }
 
   return (
     <div className="d-flex justify-content-center">

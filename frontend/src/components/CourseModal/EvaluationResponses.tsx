@@ -18,7 +18,7 @@ function EvaluationResponses({
   info,
 }: {
   readonly crn: Crn;
-  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly info: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }) {
   // Sort by original order or length?
   const [sortOrder, setSortOrder] = useState('length');
@@ -27,7 +27,7 @@ function EvaluationResponses({
   const [responses, sortedResponses] = useMemo(() => {
     const tempResponses: { [questionText: string]: string[] } = {};
     // Loop through each section for this course code
-    (info || []).forEach((section) => {
+    info.forEach((section) => {
       const crnCode = section.crn;
       // Only fetch comments for this section
       if (crnCode !== crn) return;
