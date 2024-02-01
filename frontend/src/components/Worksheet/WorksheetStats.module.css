@@ -63,12 +63,12 @@
   border-radius: 0 8px 8px 0;
 }
 
-.statPill {
+.statName {
   background-color: var(--color-surface);
   color: var(--color-text);
 }
 
-.statPill.hasStat {
+.statPill {
   color: #141414;
 }
 
