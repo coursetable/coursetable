@@ -34,6 +34,7 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
+  type NumFriendsReturn,
 } from '../utilities/course';
 import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
@@ -123,7 +124,7 @@ type Store = {
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
-  numFriends: { [seasonCodeCrn: string]: string[] };
+  numFriends: NumFriendsReturn;
   duration: number;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
 };

@@ -17,7 +17,7 @@ function Search() {
   const { isMobile } = useWindowDimensions();
 
   // Get search context data
-  const { coursesLoading, searchData, multiSeasons, numFriends } = useSearch();
+  const { coursesLoading, searchData, multiSeasons } = useSearch();
 
   const scrollToResults = useCallback(
     (event?: React.FormEvent) => {
@@ -70,7 +70,6 @@ function Search() {
               data={searchData}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
-              numFriends={numFriends}
             />
           </Element>
         </Col>
