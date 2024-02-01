@@ -31,6 +31,8 @@ import {
 } from '../../utilities/course';
 import type { Listing } from '../../utilities/common';
 
+import { useSearch } from '../../contexts/searchContext';
+
 /**
  * Renders a list item for a search result
  * @prop course - object | listing data for the current course
@@ -47,7 +49,6 @@ function ResultsItem({
   isFirst,
   isOdd,
   COL_SPACING,
-  friends,
   style,
 }: {
   readonly course: Listing;
@@ -56,7 +57,6 @@ function ResultsItem({
   readonly isOdd: boolean;
   // This can be more exact, but I'm too lazy to type everything out :)
   readonly COL_SPACING: { [prop: string]: number };
-  readonly friends: string[];
   readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
@@ -67,6 +67,9 @@ function ResultsItem({
   useEffect(() => {
     if (!mounted) setMounted(true);
   }, [mounted]);
+
+  const { numFriends } = useSearch();
+  const friends = numFriends[course.season_code + course.crn];
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
@@ -337,9 +340,9 @@ function ResultsItem({
           <OverlayTrigger
             placement="top"
             overlay={(props) =>
-              friends.length > 0 ? (
+              friends && friends.size > 0 ? (
                 <Tooltip id="button-tooltip" {...props}>
-                  {friends.join(' • ')}
+                  {[...friends].join(' • ')}
                 </Tooltip>
               ) : (
                 <div />
@@ -347,7 +350,7 @@ function ResultsItem({
             }
           >
             <span className="my-auto">
-              {friends.length > 0 ? friends.length : ''}
+              {friends && friends.size > 0 ? friends.size : ''}
             </span>
           </OverlayTrigger>
         </div>

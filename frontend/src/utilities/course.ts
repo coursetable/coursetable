@@ -123,7 +123,7 @@ export function friendsAlsoTaking(
  * Key is season code + crn;
  * Value is the list of friends taking the class
  */
-type NumFriendsReturn = { [seasonCodeCrn: string]: string[] };
+export type NumFriendsReturn = { [seasonCodeCrn: string]: Set<string> };
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
 export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
@@ -139,7 +139,7 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
           // There are a lot of ESLint bugs with index signatures and
           // no-unnecessary-condition
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          (numFriends[key] ??= []).push(friend.name); // Add friend's name to this list
+          (numFriends[key] ??= new Set()).add(friend.name);
         }),
       );
     });
@@ -283,8 +283,8 @@ function compare(
   // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key
-    const friendsTakingA = numFriends[a.season_code + a.crn]?.length ?? 0;
-    const friendsTakingB = numFriends[b.season_code + b.crn]?.length ?? 0;
+    const friendsTakingA = numFriends[a.season_code + a.crn]?.size ?? 0;
+    const friendsTakingB = numFriends[b.season_code + b.crn]?.size ?? 0;
     return comparatorReturn(friendsTakingA, friendsTakingB);
   }
   // Sorting by course rating

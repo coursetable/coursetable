@@ -38,7 +38,6 @@ function WorksheetList() {
               data={worksheetData}
               loading={worksheetLoading}
               multiSeasons={false}
-              numFriends={numFriends}
               page="worksheet"
             />
           </div>
