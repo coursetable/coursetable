@@ -240,69 +240,48 @@ function ResultsGridItem({
           </Col>
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
-              {/* Class Rating */}
-              <OverlayTrigger
-                placement="right"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Class</span>
-                  </Tooltip>
-                )}
-              >
-                <Row className="m-auto justify-content-end">
-                  <RatingCell
-                    rating={getOverallRatings(course, 'stat')}
-                    colorMap={ratingColormap}
-                  >
-                    {getOverallRatings(course, 'display')}
-                  </RatingCell>
-                  <div className={styles.iconContainer}>
-                    <AiOutlineStar className={styles.icon} />
-                  </div>
-                </Row>
-              </OverlayTrigger>
-              {/* Professor Rating */}
-              <OverlayTrigger
-                placement="right"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Professor</span>
-                  </Tooltip>
-                )}
-              >
-                <Row className="m-auto justify-content-end">
-                  <RatingCell
-                    rating={getProfessorRatings(course, 'stat')}
-                    colorMap={ratingColormap}
-                  >
-                    {getProfessorRatings(course, 'display')}
-                  </RatingCell>
-                  <div className={styles.iconContainer}>
-                    <IoPersonOutline className={styles.profIcon} />
-                  </div>
-                </Row>
-              </OverlayTrigger>
-              {/* Workload Rating */}
-              <OverlayTrigger
-                placement="right"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Workload</span>
-                  </Tooltip>
-                )}
-              >
-                <Row className="m-auto justify-content-end">
-                  <RatingCell
-                    rating={getWorkloadRatings(course, 'stat')}
-                    colorMap={workloadColormap}
-                  >
-                    {getWorkloadRatings(course, 'display')}
-                  </RatingCell>
-                  <div className={styles.iconContainer}>
-                    <BiBookOpen className={styles.icon} />
-                  </div>
-                </Row>
-              </OverlayTrigger>
+              {[
+                {
+                  name: 'Class',
+                  getRating: getOverallRatings,
+                  colorMap: ratingColormap,
+                  Icon: AiOutlineStar,
+                },
+                {
+                  name: 'Professor',
+                  getRating: getProfessorRatings,
+                  colorMap: ratingColormap,
+                  Icon: IoPersonOutline,
+                },
+                {
+                  name: 'Workload',
+                  getRating: getWorkloadRatings,
+                  colorMap: workloadColormap,
+                  Icon: BiBookOpen,
+                },
+              ].map(({ name, getRating, colorMap, Icon }) => (
+                <OverlayTrigger
+                  key={name}
+                  placement="right"
+                  overlay={(props) => (
+                    <Tooltip id="button-tooltip" {...props}>
+                      <span>{name}</span>
+                    </Tooltip>
+                  )}
+                >
+                  <Row className="m-auto justify-content-end">
+                    <RatingCell
+                      rating={getRating(course, 'stat')}
+                      colorMap={colorMap}
+                    >
+                      {getRating(course, 'display')}
+                    </RatingCell>
+                    <div className={styles.iconContainer}>
+                      <Icon className={styles.icon} />
+                    </div>
+                  </Row>
+                </OverlayTrigger>
+              ))}
             </div>
           </Col>
         </Row>

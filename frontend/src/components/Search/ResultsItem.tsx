@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
-import chroma from 'chroma-js';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -12,12 +11,12 @@ import clsx from 'clsx';
 import {
   ratingColormap,
   workloadColormap,
-  skillsAreasColors,
   subjects,
 } from '../../utilities/constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
+import SkillBadge from '../SkillBadge';
 import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
 import styles from './ResultsItem.module.css';
@@ -295,35 +294,8 @@ function ResultsItem({
         {/* Skills and Areas */}
         <div style={saStyle} className="d-flex">
           <span className={styles.skillsAreas}>
-            {course.skills.map((skill, index) => (
-              <Badge
-                variant="secondary"
-                className={clsx(styles.tag, 'my-auto')}
-                key={index}
-                style={{
-                  color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill]!)
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {skill}
-              </Badge>
-            ))}
-            {course.areas.map((area, index) => (
-              <Badge
-                variant="secondary"
-                className={clsx(styles.tag, 'my-auto')}
-                key={index}
-                style={{
-                  color: skillsAreasColors[area],
-                  backgroundColor: chroma(skillsAreasColors[area]!)
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {area}
-              </Badge>
+            {[...course.skills, ...course.areas].map((skill, index) => (
+              <SkillBadge skill={skill} className="my-auto" key={index} />
             ))}
           </span>
         </div>
