@@ -27,6 +27,7 @@ import {
   getWorkloadRatings,
   getProfessorRatings,
   toSeasonString,
+  formatCourseSection,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
@@ -148,9 +149,7 @@ function ResultsGridItem({
                     {courseCode}
                   </>
                 )}
-                {course.section
-                  ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
-                  : ''}
+                {formatCourseSection(course.section)}
               </small>
             </Row>
           </Col>

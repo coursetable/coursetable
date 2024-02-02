@@ -27,6 +27,7 @@ import {
   getProfessorRatings,
   toSeasonString,
   truncatedText,
+  formatCourseSection,
 } from '../../utilities/course';
 import type { Listing } from '../../utilities/common';
 
@@ -216,9 +217,7 @@ function ResultsItem({
           </OverlayTrigger>{' '}
           {courseCode}
           <TextComponent type="secondary">
-            {course.section
-              ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
-              : ''}
+            {formatCourseSection(course.section)}
           </TextComponent>
         </div>
         <OverlayTrigger

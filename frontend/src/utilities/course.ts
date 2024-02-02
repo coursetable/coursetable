@@ -427,3 +427,14 @@ export const toExponential = (number: number): number => 1.01 ** number;
 
 // Convert exponential to linear
 export const toLinear = (number: number): number => getBaseLog(1.01, number);
+
+/**
+ * Formats the course section number with a leading zero if necessary.
+ * @param {string | undefined} section The course discussion section number.
+ * @return {string} The formatted section number.
+ */
+export function formatCourseSection(section: string | undefined): string {
+  if (!section) return '';
+
+  return ` ${section.length > 1 ? '' : '0'}${section}`;
+}
