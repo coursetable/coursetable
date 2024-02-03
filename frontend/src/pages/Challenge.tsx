@@ -2,47 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import * as Sentry from '@sentry/react';
 import { useApolloClient } from '@apollo/client';
-import z from 'zod';
 
 import { FiExternalLink } from 'react-icons/fi';
 import { useUser } from '../contexts/userContext';
+import {
+  requestChallenge,
+  verifyChallenge,
+  type RequestChallengeResBody,
+} from '../utilities/api';
 import styles from './Challenge.module.css';
 
 import ChallengeError from '../images/error.svg';
 import { TextComponent, SurfaceComponent } from '../components/Typography';
-
-import { API_ENDPOINT } from '../config';
 
 type Answer = {
   courseRatingId: number;
   courseRatingIndex: number;
   answer: string;
 };
-
-const requestResSchema = z.object({
-  token: z.string(),
-  salt: z.string(),
-  courseInfo: z.array(
-    z.object({
-      courseId: z.number(),
-      courseTitle: z.string(),
-      courseRatingIndex: z.number(),
-      courseOceUrl: z.string(),
-    }),
-  ),
-  challengeTries: z.number(),
-  maxChallengeTries: z.number(),
-});
-
-type RequestResBody = z.infer<typeof requestResSchema>;
-
-const verifyResSchema = z.object({
-  results: z.array(z.boolean()),
-  challengeTries: z.number(),
-  maxChallengeTries: z.number(),
-});
 
 function renderRequestError(requestError: string, navigate: NavigateFunction) {
   if (requestError === 'USER_NOT_FOUND') {
@@ -134,7 +112,7 @@ function Challenge() {
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
   // Stores body of response for the /api/challenge/request API call
-  const [resBody, setResBody] = useState<RequestResBody | null>(null);
+  const [resBody, setResBody] = useState<RequestChallengeResBody | null>(null);
   // Stores user's answers
   const [answers, setAnswers] = useState<Answer[]>([
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
@@ -159,33 +137,15 @@ function Challenge() {
 
   // Fetch questions on component mount
   useEffect(() => {
-    async function requestChallenge() {
-      try {
-        const res = await fetch(`${API_ENDPOINT}/api/challenge/request`, {
-          credentials: 'include',
-        });
-        const rawData: unknown = await res.json();
-        if (!res.ok) {
-          setRequestError(
-            (rawData as { error?: string }).error ?? res.statusText,
-          );
-          return;
-        }
-        const data = requestResSchema.parse(rawData);
-        setResBody(data);
-        setNumTries(data.challengeTries);
-        setMaxTries(data.maxChallengeTries);
-      } catch (err) {
-        Sentry.addBreadcrumb({
-          category: 'challenge',
-          message: 'Requesting challenge',
-          level: 'info',
-        });
-        Sentry.captureException(err);
-        toast.error(`Failed to request challenge. ${String(err)}`);
+    void requestChallenge().then((res) => {
+      if (res.status === 'success') {
+        setResBody(res.data);
+        setNumTries(res.data.challengeTries);
+        setMaxTries(res.data.maxChallengeTries);
+      } else if (res.message) {
+        setRequestError(res.message);
       }
-    }
-    void requestChallenge();
+    });
   }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -206,51 +166,29 @@ function Challenge() {
     // are correct, and showing checkmarks for everything is confusing.
     // TODO: fix this
     setValidated(false);
-    const body = JSON.stringify({
+    const res = await verifyChallenge({
       token: resBody.token,
       salt: resBody.salt,
       answers: answers.map((x) => ({ ...x, answer: Number(x.answer) })),
     });
-    try {
-      const res = await fetch(`${API_ENDPOINT}/api/challenge/verify`, {
-        method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-      const rawData: unknown = await res.json();
-      if (!res.ok) {
-        setVerifyError((rawData as { error?: string }).error ?? res.statusText);
-        return;
+    if (res.status === 'accepted') {
+      try {
+        await userRefresh();
+        await client.resetStore();
+        toast.success(
+          "All of your responses were correct! Refresh the page if the courses aren't showing.",
+        );
+        navigate(-1);
+      } catch {
+        toast.error('Failed to update evaluation status');
       }
-      const data = verifyResSchema.parse(rawData);
-      if (data.results.every((x) => x)) {
-        try {
-          await userRefresh();
-          await client.resetStore();
-          toast.success(
-            "All of your responses were correct! Refresh the page if the courses aren't showing.",
-          );
-          navigate(-1);
-        } catch {
-          toast.error('Failed to update evaluation status');
-        }
-      } else {
-        setVerifyError('INCORRECT');
-        setVerificationResults(data.results);
-        setNumTries(data.challengeTries);
-        setMaxTries(data.maxChallengeTries);
-      }
-    } catch (err) {
-      Sentry.addBreadcrumb({
-        category: 'challenge',
-        message: `Verifying challenge ${body}`,
-        level: 'info',
-      });
-      Sentry.captureException(err);
-      toast.error(`Failed to verify challenge. ${String(err)}`);
+    } else if (res.status === 'rejected') {
+      setVerifyError('INCORRECT');
+      setVerificationResults(res.data.results);
+      setNumTries(res.data.challengeTries);
+      setMaxTries(res.data.maxChallengeTries);
+    } else if (res.message) {
+      setVerifyError(res.message);
     }
   };
 
