@@ -11,12 +11,11 @@ import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
 import { worksheetColors } from '../utilities/constants';
+import { fetchCatalog } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse } from './worksheetContext';
 import type { Crn, Season, Listing } from '../utilities/common';
-
-import { API_ENDPOINT } from '../config';
 
 export const seasons = seasonsData as Season[];
 
@@ -34,20 +33,7 @@ const addToCache = (season: Season): Promise<void> =>
     // Log that we attempted to load this.
     courseLoadAttempted.add(season);
 
-    const res = await fetch(
-      `${API_ENDPOINT}/api/static/catalogs/${season}.json`,
-      { credentials: 'include' },
-    );
-    if (!res.ok) {
-      // TODO: better error handling here; we may want to get rid of async-lock
-      // first
-      throw new Error(
-        `failed to fetch course data for ${season}. ${res.statusText}`,
-      );
-    }
-    const data = (await res.json()) as Listing[];
-    const info = new Map<Crn, Listing>();
-    for (const listing of data) info.set(listing.crn, listing);
+    const info = await fetchCatalog(season);
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
       ...courseData,

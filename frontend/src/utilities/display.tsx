@@ -6,10 +6,6 @@ import React, {
   useState,
 } from 'react';
 import { Row, Spinner } from 'react-bootstrap';
-import { toast } from 'react-toastify';
-import * as Sentry from '@sentry/react';
-
-import { API_ENDPOINT } from '../config';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function suspended<T extends React.ComponentType<any>>(
@@ -135,29 +131,3 @@ export const scrollToTop: MouseEventHandler = (event) => {
 
   if (!newPage) window.scrollTo({ top: 0, left: 0 });
 };
-
-export async function logout() {
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/auth/logout`, {
-      credentials: 'include',
-    });
-    if (!res.ok)
-      throw new Error(((await res.json()) as { error?: string }).error);
-    // Clear cookies
-    document.cookie.split(';').forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/u, '')
-        .replace(/=.*/u, `=;expires=${new Date().toUTCString()};path=/`);
-    });
-    // Redirect to home page and refresh as well
-    window.location.pathname = '/';
-  } catch (err) {
-    Sentry.addBreadcrumb({
-      category: 'user',
-      message: 'Signing out',
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to sign out. ${String(err)}`);
-  }
-}

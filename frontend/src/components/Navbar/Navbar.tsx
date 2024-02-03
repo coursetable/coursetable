@@ -8,11 +8,8 @@ import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import {
-  logout,
-  scrollToTop,
-  useComponentVisible,
-} from '../../utilities/display';
+import { logout } from '../../utilities/api';
+import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
