@@ -38,13 +38,11 @@ function Results({
   data,
   loading = false,
   multiSeasons = false,
-  numFriends,
   page = 'catalog',
 }: {
   readonly data: Listing[];
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
-  readonly numFriends: { [seasonCodeCrn: string]: string[] };
   readonly page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
@@ -206,21 +204,16 @@ function Results({
             style={style}
             useIsScrolling
           >
-            {({ index, style }) => {
-              const course = data[index]!;
-              const friends = numFriends[course.season_code + course.crn] ?? [];
-              return (
-                <ResultsItem
-                  isOdd={index % 2 === 1}
-                  style={style}
-                  course={course}
-                  multiSeasons={multiSeasons}
-                  isFirst={index === 0}
-                  COL_SPACING={COL_SPACING}
-                  friends={friends}
-                />
-              );
-            }}
+            {({ index, style }) => (
+              <ResultsItem
+                isOdd={index % 2 === 1}
+                style={style}
+                course={data[index]!}
+                multiSeasons={multiSeasons}
+                isFirst={index === 0}
+                COL_SPACING={COL_SPACING}
+              />
+            )}
           </FixedSizeList>
         )}
       </WindowScroller>

@@ -6,9 +6,43 @@ import clsx from 'clsx';
 import ResultsColumnSort from './ResultsColumnSort';
 import { SurfaceComponent } from '../Typography';
 
-import { sortByOptions } from '../../contexts/searchContext';
+import { type SortKeys, sortByOptions } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './ResultsHeaders.module.css';
+
+function HeaderCol({
+  style,
+  children,
+  tooltip,
+  sortOption,
+}: {
+  readonly style: React.CSSProperties;
+  readonly children: React.ReactNode;
+  readonly tooltip?: string | JSX.Element;
+  readonly sortOption?: SortKeys;
+}) {
+  return (
+    <div className={styles.resultsHeader} style={style}>
+      {tooltip ? (
+        <OverlayTrigger
+          placement="bottom"
+          overlay={(props) => (
+            <Tooltip id="button-tooltip" {...props}>
+              {typeof tooltip === 'string' ? <span>{tooltip}</span> : tooltip}
+            </Tooltip>
+          )}
+        >
+          <span className={styles.oneLine}>{children}</span>
+        </OverlayTrigger>
+      ) : (
+        <span className={styles.oneLine}>{children}</span>
+      )}
+      {sortOption && (
+        <ResultsColumnSort selectOption={sortByOptions[sortOption]} />
+      )}
+    </div>
+  );
+}
 
 function ResultsHeaders(
   {
@@ -119,172 +153,111 @@ function ResultsHeaders(
           </div>
           {isListView ? (
             <>
-              {multiSeasons && (
-                <div className={styles.resultsHeader} style={sznStyle}>
-                  Season
-                </div>
-              )}
-              {/* Course Code */}
-              <div className={styles.resultsHeader} style={codeStyle}>
-                <OverlayTrigger
-                  placement="bottom"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>
-                        Course Code <br />
-                        and Section
-                      </span>
-                    </Tooltip>
-                  )}
-                >
-                  <span className={styles.oneLine}>Code</span>
-                </OverlayTrigger>
-                <ResultsColumnSort selectOption={sortByOptions.course_code} />
-              </div>
-              {/* Course Name */}
-              <div className={styles.resultsHeader} style={titleStyle}>
-                <span className={styles.oneLine}>Title</span>
-                <ResultsColumnSort selectOption={sortByOptions.title} />
-              </div>
+              {multiSeasons && <HeaderCol style={sznStyle}>Season</HeaderCol>}
+              <HeaderCol
+                style={codeStyle}
+                tooltip="Course Code and Section"
+                sortOption="course_code"
+              >
+                Code
+              </HeaderCol>
+              <HeaderCol style={titleStyle} sortOption="title">
+                Title
+              </HeaderCol>
               <div className="d-flex">
-                {/* Overall Rating */}
-                <div className={styles.resultsHeader} style={rateOverallStyle}>
-                  <OverlayTrigger
-                    placement="bottom"
-                    overlay={(props) => (
-                      <Tooltip id="button-tooltip" {...props}>
-                        <span>
-                          Average Course Rating
-                          <br />
-                          (same professor and all cross-listed courses. If this
-                          professor hasn't taught the course before, a ~ denotes
-                          an average across all professors)
-                        </span>
-                      </Tooltip>
-                    )}
-                  >
-                    <span className={styles.oneLine}>Overall</span>
-                  </OverlayTrigger>
-                  <ResultsColumnSort
-                    selectOption={sortByOptions.average_rating}
-                  />
-                </div>
-                {/* Workload Rating */}
-                <div className={styles.resultsHeader} style={rateWorkloadStyle}>
-                  <OverlayTrigger
-                    placement="bottom"
-                    overlay={(props) => (
-                      <Tooltip id="button-tooltip" {...props}>
-                        <span>
-                          Average Workload Rating <br />
-                          (same professor and all cross-listed courses. If this
-                          professor hasn't taught the course before, a ~ denotes
-                          an average across all professors)
-                        </span>
-                      </Tooltip>
-                    )}
-                  >
-                    <span className={styles.oneLine}>Work</span>
-                  </OverlayTrigger>
-                  <ResultsColumnSort
-                    selectOption={sortByOptions.average_workload}
-                  />
-                </div>
-                {/* Professor Rating & Course Professors */}
-                <div className={styles.resultsHeader} style={profStyle}>
-                  <OverlayTrigger
-                    placement="bottom"
-                    overlay={(props) => (
-                      <Tooltip id="button-tooltip" {...props}>
-                        <span>
-                          Average Professor Rating <br />
-                          and Names <br />
-                          (if there are multiple professors, we take the average
-                          between them)
-                        </span>
-                      </Tooltip>
-                    )}
-                  >
-                    <span className={styles.oneLine}>Professors</span>
-                  </OverlayTrigger>
-                  <ResultsColumnSort
-                    selectOption={sortByOptions.average_professor}
-                  />
-                </div>
-              </div>
-              {/* Previous Enrollment Number */}
-              <div className={styles.resultsHeader} style={enrollStyle}>
-                <OverlayTrigger
-                  placement="bottom"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      {multiSeasons ? (
-                        <span>
-                          Class Enrollment
-                          <br />
-                          (If the course has not occurred/completed, based on
-                          the most recent past instance of this course. a ~
-                          means a different professor was teaching)
-                        </span>
-                      ) : (
-                        <span>
-                          Previous Class Enrollment
-                          <br />
-                          (based on the most recent past instance of this
-                          course. a ~ means a different professor was teaching)
-                        </span>
-                      )}
-                    </Tooltip>
-                  )}
+                <HeaderCol
+                  style={rateOverallStyle}
+                  tooltip={
+                    <span>
+                      Average Course Rating
+                      <br />
+                      (same professor and all cross-listed courses. If this
+                      professor hasn't taught the course before, a ~ denotes an
+                      average across all professors)
+                    </span>
+                  }
+                  sortOption="average_rating"
                 >
-                  <span className={styles.oneLine}>#</span>
-                </OverlayTrigger>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.last_enrollment}
-                />
-              </div>
-              {/* Skills/Areas */}
-              <div className={styles.resultsHeader} style={saStyle}>
-                <span className={styles.oneLine}>Skills/Areas</span>
-              </div>
-              {/* Course Meeting Days & Times */}
-              <div className={styles.resultsHeader} style={meetStyle}>
-                <OverlayTrigger
-                  placement="bottom"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>
-                        Days of the Week <br />
-                        and Times <br />
-                        (sort order based on day and starting time)
-                      </span>
-                    </Tooltip>
-                  )}
+                  Overall
+                </HeaderCol>
+                <HeaderCol
+                  style={rateWorkloadStyle}
+                  tooltip={
+                    <span>
+                      Average Workload Rating
+                      <br />
+                      (same professor and all cross-listed courses. If this
+                      professor hasn't taught the course before, a ~ denotes an
+                      average across all professors)
+                    </span>
+                  }
+                  sortOption="average_workload"
                 >
-                  <span className={styles.oneLine}>Meets</span>
-                </OverlayTrigger>
-                <ResultsColumnSort selectOption={sortByOptions.times_by_day} />
-              </div>
-              {/* Location */}
-              <div className={styles.resultsHeader} style={locStyle}>
-                <span className={styles.oneLine}>Location</span>
-                <ResultsColumnSort
-                  selectOption={sortByOptions.locations_summary}
-                />
-              </div>
-              <div className={styles.resultsHeader} style={friendsStyle}>
-                <OverlayTrigger
-                  placement="bottom"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>Number of friends shopping this course</span>
-                    </Tooltip>
-                  )}
+                  Work
+                </HeaderCol>
+                <HeaderCol
+                  style={profStyle}
+                  tooltip={
+                    <span>
+                      Average Professor Rating and Names
+                      <br />
+                      (if there are multiple professors, we take the average
+                      between them)
+                    </span>
+                  }
+                  sortOption="average_professor"
                 >
-                  <span className={styles.oneLine}>#F</span>
-                </OverlayTrigger>
-                <ResultsColumnSort selectOption={sortByOptions.friend} />
+                  Professors
+                </HeaderCol>
               </div>
+              <HeaderCol
+                style={enrollStyle}
+                tooltip={
+                  multiSeasons ? (
+                    <span>
+                      Class Enrollment
+                      <br />
+                      (If the course has not occurred/completed, based on the
+                      most recent past instance of this course. a ~ means a
+                      different professor was teaching)
+                    </span>
+                  ) : (
+                    <span>
+                      Previous Class Enrollment
+                      <br />
+                      (based on the most recent past instance of this course. a
+                      ~ means a different professor was teaching)
+                    </span>
+                  )
+                }
+                sortOption="last_enrollment"
+              >
+                #
+              </HeaderCol>
+              <HeaderCol style={saStyle}>Skills/Areas</HeaderCol>
+              <HeaderCol
+                style={meetStyle}
+                tooltip={
+                  <span>
+                    Days of the Week and Times
+                    <br />
+                    (sort order based on day and starting time)
+                  </span>
+                }
+                sortOption="times_by_day"
+              >
+                Meets
+              </HeaderCol>
+              <HeaderCol style={locStyle} sortOption="locations_summary">
+                Location
+              </HeaderCol>
+              <HeaderCol
+                style={friendsStyle}
+                tooltip="Number of friends shopping this course"
+                sortOption="friend"
+              >
+                #F
+              </HeaderCol>
             </>
           ) : (
             // Showing how many search results for grid view

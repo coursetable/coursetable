@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
-import chroma from 'chroma-js';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -12,12 +11,12 @@ import clsx from 'clsx';
 import {
   ratingColormap,
   workloadColormap,
-  skillsAreasColors,
   subjects,
 } from '../../utilities/constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
+import SkillBadge from '../SkillBadge';
 import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
 import styles from './ResultsItem.module.css';
@@ -30,6 +29,8 @@ import {
   truncatedText,
 } from '../../utilities/course';
 import type { Listing } from '../../utilities/common';
+
+import { useSearch } from '../../contexts/searchContext';
 
 /**
  * Renders a list item for a search result
@@ -47,7 +48,6 @@ function ResultsItem({
   isFirst,
   isOdd,
   COL_SPACING,
-  friends,
   style,
 }: {
   readonly course: Listing;
@@ -56,7 +56,6 @@ function ResultsItem({
   readonly isOdd: boolean;
   // This can be more exact, but I'm too lazy to type everything out :)
   readonly COL_SPACING: { [prop: string]: number };
-  readonly friends: string[];
   readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
@@ -67,6 +66,9 @@ function ResultsItem({
   useEffect(() => {
     if (!mounted) setMounted(true);
   }, [mounted]);
+
+  const { numFriends } = useSearch();
+  const friends = numFriends[course.season_code + course.crn];
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
@@ -292,35 +294,8 @@ function ResultsItem({
         {/* Skills and Areas */}
         <div style={saStyle} className="d-flex">
           <span className={styles.skillsAreas}>
-            {course.skills.map((skill, index) => (
-              <Badge
-                variant="secondary"
-                className={clsx(styles.tag, 'my-auto')}
-                key={index}
-                style={{
-                  color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill]!)
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {skill}
-              </Badge>
-            ))}
-            {course.areas.map((area, index) => (
-              <Badge
-                variant="secondary"
-                className={clsx(styles.tag, 'my-auto')}
-                key={index}
-                style={{
-                  color: skillsAreasColors[area],
-                  backgroundColor: chroma(skillsAreasColors[area]!)
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {area}
-              </Badge>
+            {[...course.skills, ...course.areas].map((skill, index) => (
+              <SkillBadge skill={skill} className="my-auto" key={index} />
             ))}
           </span>
         </div>
@@ -337,9 +312,9 @@ function ResultsItem({
           <OverlayTrigger
             placement="top"
             overlay={(props) =>
-              friends.length > 0 ? (
+              friends && friends.size > 0 ? (
                 <Tooltip id="button-tooltip" {...props}>
-                  {friends.join(' • ')}
+                  {[...friends].join(' • ')}
                 </Tooltip>
               ) : (
                 <div />
@@ -347,7 +322,7 @@ function ResultsItem({
             }
           >
             <span className="my-auto">
-              {friends.length > 0 ? friends.length : ''}
+              {friends && friends.size > 0 ? friends.size : ''}
             </span>
           </OverlayTrigger>
         </div>

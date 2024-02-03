@@ -3,15 +3,13 @@ import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import clsx from 'clsx';
-import { toast } from 'react-toastify';
-import * as Sentry from '@sentry/react';
 
 import { useUser } from '../../contexts/userContext';
 import { worksheetColors } from '../../utilities/constants';
 import type { Crn, Season } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
+import { toggleBookmark } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import styles from './WorksheetToggleButton.module.css';
 
@@ -78,7 +76,7 @@ function WorksheetToggleButton({
 
       // Remove it from hidden courses before removing from worksheet
       if (inWorksheet && hiddenCourses[curSeason]?.[crn]) toggleCourse(crn);
-      const body = JSON.stringify({
+      const success = await toggleBookmark({
         action: addRemove,
         season: seasonCode,
         crn,
@@ -86,49 +84,10 @@ function WorksheetToggleButton({
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
       });
-
-      // Call the endpoint
-      try {
-        const res = await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body,
-        });
-        if (!res.ok) {
-          const data = (await res.json()) as { error?: string };
-          switch (data.error) {
-            // These errors can be triggered if the user clicks the button twice
-            // in a row
-            // TODO: we should debounce the request instead
-            case 'ALREADY_BOOKMARKED':
-              toast.error(
-                'You have already added this class to your worksheet',
-              );
-              break;
-            case 'NOT_BOOKMARKED':
-              toast.error(
-                'You have already remove this class from your worksheet',
-              );
-              break;
-            default:
-              throw new Error(data.error ?? res.statusText);
-          }
-          return;
-        }
+      if (success) {
         await userRefresh();
         // If not in worksheet view, update inWorksheet state
         setInWorksheet(!inWorksheet);
-      } catch (err) {
-        Sentry.addBreadcrumb({
-          category: 'worksheet',
-          message: `Updating worksheet: ${body}`,
-          level: 'info',
-        });
-        Sentry.captureException(err);
-        toast.error(`Failed to update worksheet. ${String(err)}`);
       }
     },
     [
