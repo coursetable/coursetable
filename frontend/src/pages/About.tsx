@@ -71,9 +71,19 @@ function About() {
       },
     },
     {
+      name: 'Sida Chen',
+      image: sc,
+      role: 'CourseTable Co-Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
+        github: 'https://github.com/Josh-Cena/',
+        website: 'https://joshcena.com/',
+      },
+    },
+    {
       name: 'Lucas Huang',
       image: lh,
-      role: 'CourseTable Co-Lead',
+      role: 'Former Lead',
       links: {
         github: 'https://github.com/Quintec',
         linkedin: 'https://www.linkedin.com/in/huangl16/',
@@ -152,16 +162,6 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/tungk/',
         github: 'https://github.com/kentng01/',
         website: 'https://kenneru.netlify.app/',
-      },
-    },
-    {
-      name: 'Sida Chen',
-      image: sc,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
-        github: 'https://github.com/Josh-Cena/',
-        website: 'https://joshcena.com/',
       },
     },
   ];
