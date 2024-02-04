@@ -148,7 +148,7 @@ function About() {
     {
       name: 'Neil Song',
       image: ns,
-      role: 'Development',
+      role: 'Backend Team Lead',
       links: {
         linkedin: 'https://www.linkedin.com/in/neil-song/',
         github: 'https://github.com/neilsong',
