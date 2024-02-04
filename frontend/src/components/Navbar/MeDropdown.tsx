@@ -6,7 +6,8 @@ import { FcInfo, FcQuestions, FcFeedback, FcPuzzle } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
-import { logout, scrollToTop } from '../../utilities/display';
+import { logout } from '../../utilities/api';
+import { scrollToTop } from '../../utilities/display';
 import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
