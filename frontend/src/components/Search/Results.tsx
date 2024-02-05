@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
@@ -21,10 +21,6 @@ import { toSeasonString } from '../../utilities/course';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
 
-// Function to calculate column width within a max and min
-const getColWidth = (calculated: number, min = 0, max = 1000000) =>
-  Math.max(Math.min(calculated, max), min);
-
 /**
  * Renders the infinite list of search results for both catalog and worksheet
  * @prop data - array | that holds the search results
@@ -46,75 +42,13 @@ function Results({
   readonly page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
-  const {
-    width: windowWidth,
-    isMobile,
-    isTablet,
-    isLgDesktop,
-  } = useWindowDimensions();
+  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
   const [isListView, setIsListView] = useSessionStorageState(
     'isListView',
     true,
   );
 
-  // State that holds width of the row for list view
-  const [rowWidth, setRowWidth] = useState(0);
-
   const { curSeason } = useWorksheet();
-
-  // Ref to get row width
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    // Set row width
-    if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, windowWidth]);
-
-  // Spacing for each column in list view
-  const COL_SPACING = useMemo(() => {
-    const TEMP_COL_SPACING = {
-      SZN_WIDTH: 60,
-      CODE_WIDTH: isLgDesktop ? 110 : 90,
-      RATE_OVERALL_WIDTH: isLgDesktop ? 92 : 82,
-      RATE_WORKLOAD_WIDTH: isLgDesktop ? 92 : 82,
-      RATE_PROF_WIDTH: isLgDesktop ? 40 : 36,
-      ENROLL_WIDTH: 40,
-      FRIENDS_WIDTH: 60,
-      PADDING: 43,
-
-      PROF_WIDTH: 0,
-      SA_WIDTH: 0,
-      MEET_WIDTH: 0,
-      LOC_WIDTH: 0,
-      TITLE_WIDTH: 0,
-    };
-
-    const EXTRA =
-      rowWidth -
-      (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
-      TEMP_COL_SPACING.CODE_WIDTH -
-      TEMP_COL_SPACING.ENROLL_WIDTH -
-      TEMP_COL_SPACING.FRIENDS_WIDTH -
-      TEMP_COL_SPACING.RATE_OVERALL_WIDTH -
-      TEMP_COL_SPACING.RATE_WORKLOAD_WIDTH -
-      TEMP_COL_SPACING.RATE_PROF_WIDTH -
-      TEMP_COL_SPACING.PADDING;
-
-    TEMP_COL_SPACING.PROF_WIDTH =
-      getColWidth(EXTRA / 7, undefined, undefined) +
-      TEMP_COL_SPACING.RATE_PROF_WIDTH;
-    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 40, 126);
-    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, 60, 170);
-    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, 30, undefined);
-    TEMP_COL_SPACING.TITLE_WIDTH =
-      EXTRA -
-      TEMP_COL_SPACING.PROF_WIDTH -
-      TEMP_COL_SPACING.SA_WIDTH -
-      TEMP_COL_SPACING.MEET_WIDTH -
-      TEMP_COL_SPACING.LOC_WIDTH -
-      10;
-
-    return TEMP_COL_SPACING;
-  }, [rowWidth, multiSeasons, isLgDesktop]);
 
   // Number of columns to use in grid view
   const numCols = isMobile ? 1 : isTablet ? 2 : 3;
@@ -211,7 +145,6 @@ function Results({
                 course={data[index]!}
                 multiSeasons={multiSeasons}
                 isFirst={index === 0}
-                COL_SPACING={COL_SPACING}
               />
             )}
           </FixedSizeList>
@@ -221,11 +154,14 @@ function Results({
   }
 
   return (
-    <div className={styles.resultsContainerMaxWidth}>
+    <div
+      className={clsx(
+        styles.resultsContainer,
+        multiSeasons && styles.resultsMultiSeasons,
+      )}
+    >
       {!isMobile && (
         <ResultsHeaders
-          ref={ref}
-          COL_SPACING={COL_SPACING}
           multiSeasons={multiSeasons}
           page={page}
           isListView={isListView}
