@@ -312,7 +312,7 @@ function About() {
 
   const alumniSection = (role: string, exactMatch: boolean = false) => (
     <div>
-      <h3 className="mt-3">{exactMatch ? role : `${role  }s`}</h3>
+      <h3 className="mt-3">{exactMatch ? role : `${role}s`}</h3>
       <div className="my-1">
         <Row className="mx-auto">
           {alumni
