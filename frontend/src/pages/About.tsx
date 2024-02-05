@@ -81,59 +81,12 @@ function About() {
       },
     },
     {
-      name: 'Lucas Huang',
-      image: lh,
-      role: 'Former Lead',
+      name: 'Neil Song',
+      image: ns,
+      role: 'Backend Team Lead',
       links: {
-        github: 'https://github.com/Quintec',
-        linkedin: 'https://www.linkedin.com/in/huangl16/',
-        website: 'https://quintec.github.io/',
-      },
-    },
-    {
-      name: 'Lily Zhou',
-      image: lz,
-      role: 'Former Lead',
-      links: {
-        github: 'https://github.com/lilyzhouZYJ',
-        linkedin: 'https://www.linkedin.com/in/lily-zhou-b12142146/',
-      },
-    },
-    {
-      name: 'Kevin Hu',
-      image: kh,
-      role: 'Former Lead',
-      links: {
-        github: 'https://github.com/kevinhu',
-        linkedin: 'https://www.linkedin.com/in/hukevinhu/',
-        website: 'https://kevinhu.io/',
-      },
-    },
-    {
-      name: 'Josh Chough',
-      image: jc,
-      role: 'Former Lead',
-      links: {
-        github: 'https://github.com/itsjoshthedeveloper',
-        linkedin: 'https://www.linkedin.com/in/joshchough/',
-      },
-    },
-    {
-      name: 'Max Yuan',
-      image: my,
-      role: 'Former Lead',
-      links: {
-        github: 'https://github.com/maxyuan6717',
-        linkedin: 'https://www.linkedin.com/in/max-yuan-209930194/',
-        website: 'https://maxyuan.io/',
-      },
-    },
-    {
-      name: 'Erik Boesen',
-      image: eb,
-      role: 'Development',
-      links: {
-        website: 'https://erikboesen.com',
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
       },
     },
     {
@@ -143,15 +96,6 @@ function About() {
       links: {
         linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
         github: 'https://github.com/benzuzu',
-      },
-    },
-    {
-      name: 'Neil Song',
-      image: ns,
-      role: 'Backend Team Lead',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/neil-song/',
-        github: 'https://github.com/neilsong',
       },
     },
     {
@@ -166,6 +110,7 @@ function About() {
     },
   ];
 
+  // Order within role categories is best guess at reverse chronological
   const alumni: Person[] = [
     {
       name: 'Peter Xu',
@@ -178,6 +123,54 @@ function About() {
       role: 'Cofounder',
     },
     {
+      name: 'Lucas Huang',
+      image: lh,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/Quintec',
+        linkedin: 'https://www.linkedin.com/in/huangl16/',
+        website: 'https://quintec.github.io/',
+      },
+    },
+    {
+      name: 'Lily Zhou',
+      image: lz,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/lilyzhouZYJ',
+        linkedin: 'https://www.linkedin.com/in/lily-zhou-b12142146/',
+      },
+    },
+    {
+      name: 'Kevin Hu',
+      image: kh,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/kevinhu',
+        linkedin: 'https://www.linkedin.com/in/hukevinhu/',
+        website: 'https://kevinhu.io/',
+      },
+    },
+    {
+      name: 'Josh Chough',
+      image: jc,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/itsjoshthedeveloper',
+        linkedin: 'https://www.linkedin.com/in/joshchough/',
+      },
+    },
+    {
+      name: 'Max Yuan',
+      image: my,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/maxyuan6717',
+        linkedin: 'https://www.linkedin.com/in/max-yuan-209930194/',
+        website: 'https://maxyuan.io/',
+      },
+    },
+    {
       name: 'Harshal Sheth',
       image: hs,
       role: 'CourseTable Lead',
@@ -188,19 +181,22 @@ function About() {
       },
     },
     {
-      name: 'Hao Li',
-      image: hl,
-      role: 'Development',
-    },
-    {
-      name: 'Dylan Fernandez de Lara',
-      image: df,
-      role: 'Design',
-    },
-    {
       name: 'Michelle M. Li',
       image: ml,
       role: 'Design Lead',
+    },
+    {
+      name: 'Erik Boesen',
+      image: eb,
+      role: 'Development',
+      links: {
+        website: 'https://erikboesen.com',
+      },
+    },
+    {
+      name: 'Hao Li',
+      image: hl,
+      role: 'Development',
     },
     {
       name: 'Murad Avliyakulov',
@@ -211,14 +207,6 @@ function About() {
       name: 'Abhijit Gupta',
       image: ag,
       role: 'Development',
-    },
-    {
-      name: 'Sidney Hirschman',
-      image: sh,
-      role: 'Design',
-      links: {
-        website: 'https://sidneyhirschman.com/',
-      },
     },
     {
       name: 'Aidan Evans',
@@ -246,6 +234,29 @@ function About() {
       role: 'Development',
     },
     {
+      name: 'Leck Tang',
+      image: lt,
+      role: 'Development',
+    },
+    {
+      name: 'Shayna Sragovicz',
+      image: ss,
+      role: 'Development',
+    },
+    {
+      name: 'Dylan Fernandez de Lara',
+      image: df,
+      role: 'Design',
+    },
+    {
+      name: 'Sidney Hirschman',
+      image: sh,
+      role: 'Design',
+      links: {
+        website: 'https://sidneyhirschman.com/',
+      },
+    },
+    {
       name: 'Josephine Shin',
       image: js,
       role: 'Design',
@@ -254,16 +265,6 @@ function About() {
       name: 'Lauren Song',
       image: ls,
       role: 'Design',
-    },
-    {
-      name: 'Shayna Sragovicz',
-      image: ss,
-      role: 'Development',
-    },
-    {
-      name: 'Leck Tang',
-      image: lt,
-      role: 'Development',
     },
     {
       name: 'Anna Zhang',
@@ -306,6 +307,21 @@ function About() {
           </Card.Text>
         </Card.Body>
       </Card>
+    </div>
+  );
+
+  const alumniSection = (role: string, exactMatch: boolean = false) => (
+    <div>
+      <h3 className="mt-3">{role}</h3>
+      <div className="my-1">
+        <Row className="mx-auto">
+          {alumni
+            .filter((person) =>
+              exactMatch ? person.role === role : person.role.includes(role),
+            )
+            .map(createCards)}
+        </Row>
+      </div>
     </div>
   );
 
@@ -353,10 +369,15 @@ function About() {
         <Row className="mx-auto">{current.map(createCards)}</Row>
       </div>
 
-      <h1 className="mt-5 mb-1">CourseTable Alumni</h1>
-      <div className="my-3">
-        <Row className="mx-auto">{alumni.map(createCards)}</Row>
-      </div>
+      <h1 className="mt-5 mb-5">CourseTable Alumni</h1>
+
+      {alumniSection('Cofounder')}
+
+      {alumniSection('Lead')}
+
+      {alumniSection('Development', true)}
+
+      {alumniSection('Design', true)}
     </div>
   );
 }
