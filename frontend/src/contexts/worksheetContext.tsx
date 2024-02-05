@@ -140,7 +140,7 @@ export function WorksheetProvider({
           const newHiddenCourses = { ...oldHiddenCourses };
           // There are a lot of ESLint bugs with index signatures and
           // no-unnecessary-condition
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
           newHiddenCourses[curSeason] ??= {};
 
           courses.forEach((listing) => {
@@ -159,7 +159,7 @@ export function WorksheetProvider({
           const newHiddenCourses = { ...oldHiddenCourses };
           // There are a lot of ESLint bugs with index signatures and
           // no-unnecessary-condition
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
           newHiddenCourses[curSeason] ??= {};
 
           if (newHiddenCourses[curSeason]![crn])

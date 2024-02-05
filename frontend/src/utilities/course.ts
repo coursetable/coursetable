@@ -138,7 +138,7 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
           const key = seasonCode + course.crn; // Key of object is season code + crn
           // There are a lot of ESLint bugs with index signatures and
           // no-unnecessary-condition
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
           (numFriends[key] ??= new Set()).add(friend.name);
         }),
       );
