@@ -1,5 +1,42 @@
-.resultsContainerMaxWidth {
+.resultsContainer {
   width: 100%;
+
+  --width-total: min(1600px, 100vw);
+  --width-col-season: 0px;
+  --width-col-code: 90px;
+  --width-col-overall: 82px;
+  --width-col-workload: 82px;
+  --width-col-prof-rating: 36px;
+  --width-col-enroll: 40px;
+  --width-col-friends: 60px;
+  --width-padding: 43px;
+  --width-extra: calc(
+    var(--width-total) - var(--width-col-season) - var(--width-col-code) -
+      var(--width-col-overall) - var(--width-col-workload) -
+      var(--width-col-prof-rating) - var(--width-col-enroll) -
+      var(--width-col-friends) - var(--width-padding)
+  );
+  --width-col-prof: calc(var(--width-extra) / 7 + var(--width-col-prof-rating));
+  --width-col-skill-area: clamp(40px, calc(var(--width-extra) / 8), 126px);
+  --width-col-meet: clamp(60px, calc(var(--width-extra) / 6), 170px);
+  --width-col-loc: max(30px, var(--width-extra) / 13);
+  --width-col-title: calc(
+    var(--width-extra) - var(--width-col-prof) - var(--width-col-skill-area) -
+      var(--width-col-meet) - var(--width-col-loc) - 10px
+  );
+}
+
+.resultsContainer.resultsMultiSeasons {
+  --width-col-season: 60px;
+}
+
+@media (width >= 1320px) {
+  .resultsContainer {
+    --width-col-code: 110px;
+    --width-col-overall: 92px;
+    --width-col-workload: 92px;
+    --width-col-prof-rating: 40px;
+  }
 }
 
 .gridRow {
