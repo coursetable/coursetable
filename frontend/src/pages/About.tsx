@@ -365,6 +365,8 @@ function About() {
         </div>
       </Row>
 
+      <h1 className="mt-3">Current Team</h1>
+
       <div className="my-3">
         <Row className="mx-auto">{current.map(createCards)}</Row>
       </div>
