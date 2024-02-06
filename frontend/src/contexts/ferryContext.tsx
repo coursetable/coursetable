@@ -12,7 +12,7 @@ import * as Sentry from '@sentry/react';
 
 import { worksheetColors } from '../utilities/constants';
 import { toSeasonString } from '../utilities/course';
-import { fetchCatalog } from '../utilities/api';
+import { fetchCatalog, toggleBookmark } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse } from './worksheetContext';
@@ -185,17 +185,11 @@ export function useWorksheetInfo(
             <button
               type="button"
               onClick={async () => {
-                await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
-                  body: JSON.stringify({
-                    action: 'remove',
-                    season: seasonCode,
-                    crn,
-                    worksheetNumber,
-                  }),
-                  credentials: 'include',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
+                await toggleBookmark({
+                  action: 'remove',
+                  season: seasonCode,
+                  crn,
+                  worksheetNumber,
                 });
                 toast.dismiss();
               }}
