@@ -5,13 +5,13 @@
     "module": "node16",
     "plugins": [
       {
-        "name": "typescript-plugin-css-modules"
-      }
+        "name": "typescript-plugin-css-modules",
+      },
     ],
     // TODO: enable these
-    "exactOptionalPropertyTypes": false
+    "exactOptionalPropertyTypes": false,
   },
   "include": ["./**/*", "./.eslintrc.js"],
   // These have their own tsconfig
-  "exclude": ["./api", "./frontend"]
+  "exclude": ["./api", "./frontend"],
 }

@@ -37,9 +37,6 @@ function EvaluationResponses({
       // Add comments to responses dictionary
       nodes.forEach((node) => {
         if (node.evaluation_question.question_text && node.comment) {
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-
           (tempResponses[node.evaluation_question.question_text] ??= []).push(
             node.comment,
           );

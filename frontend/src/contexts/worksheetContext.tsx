@@ -138,9 +138,6 @@ export function WorksheetProvider({
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-
           newHiddenCourses[curSeason] ??= {};
 
           courses.forEach((listing) => {
@@ -157,9 +154,6 @@ export function WorksheetProvider({
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-
           newHiddenCourses[curSeason] ??= {};
 
           if (newHiddenCourses[curSeason]![crn])

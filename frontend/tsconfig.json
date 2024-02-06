@@ -7,8 +7,8 @@
     "moduleResolution": "bundler",
     // We use ESLint for this
     "allowUnreachableCode": true,
-    "jsx": "react"
+    "jsx": "react",
   },
   "include": ["src", "vite.config.ts"],
-  "exclude": []
+  "exclude": [],
 }

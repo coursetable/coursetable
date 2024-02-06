@@ -136,9 +136,6 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
       Object.values(worksheets).forEach((w) =>
         w.forEach((course) => {
           const key = seasonCode + course.crn; // Key of object is season code + crn
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-
           (numFriends[key] ??= new Set()).add(friend.name);
         }),
       );
