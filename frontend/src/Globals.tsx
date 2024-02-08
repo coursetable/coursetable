@@ -18,7 +18,6 @@ import { SearchProvider } from './contexts/searchContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
 import { ThemeProvider } from './contexts/themeContext';
 import { GapiProvider } from './contexts/gapiContext';
-import { TutorialProvider } from './contexts/tutorialContext';
 
 import { isDev, API_ENDPOINT } from './config';
 import './index.css';
@@ -69,19 +68,15 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
           <UserProvider>
             <FerryProvider>
               <WindowDimensionsProvider>
-                {/* TutorialProvider must be inside UserProvider and
-                  WindowDimensionsProvider */}
-                <TutorialProvider>
-                  {/* SearchProvider must be inside WorksheetProvider because the
+                {/* SearchProvider must be inside WorksheetProvider because the
                   former depends on the currently viewed worksheet */}
-                  <WorksheetProvider>
-                    <SearchProvider>
-                      <ThemeProvider>
-                        <div id="base">{children}</div>
-                      </ThemeProvider>
-                    </SearchProvider>
-                  </WorksheetProvider>
-                </TutorialProvider>
+                <WorksheetProvider>
+                  <SearchProvider>
+                    <ThemeProvider>
+                      <div id="base">{children}</div>
+                    </ThemeProvider>
+                  </SearchProvider>
+                </WorksheetProvider>
                 {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
                 <ToastContainer toastClassName="rounded" />
               </WindowDimensionsProvider>
