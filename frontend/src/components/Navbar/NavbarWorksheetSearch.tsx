@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { components } from 'react-select';
-import { toast } from 'react-toastify';
+import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
@@ -49,7 +49,7 @@ export function NavbarWorksheetSearch() {
     if (!user.friends) return [];
     return Object.entries(user.friends)
       .map(
-        ([friendNetId, { name }]): Option => ({
+        ([friendNetId, { name }]): Option<NetId> => ({
           value: friendNetId as NetId,
           label: name,
         }),
@@ -81,9 +81,6 @@ export function NavbarWorksheetSearch() {
   }, [user.friendRequests]);
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
-
-  const [deleting, setDeleting] = useState(0);
-  const [removing, setRemoving] = useState(0);
 
   return (
     <>
@@ -159,92 +156,84 @@ export function NavbarWorksheetSearch() {
                 handlePersonChange('me');
               }}
             >
-              <Searchbar
-                components={{
-                  Control: (props) => (
-                    // TODO
-                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                    <div
-                      onClick={() => {
-                        setRemoving(1 - removing);
-                      }}
-                    >
-                      <components.Control {...props} />
-                    </div>
-                  ),
-                }}
+              <PopoutSelect<Option<NetId | 'me'>, false>
                 hideSelectedOptions={false}
+                menuIsOpen
+                placeholder="My worksheets"
                 value={selectedPerson}
-                options={friendOptions}
-                placeholder={
-                  removing === 0
-                    ? 'Selecting friends (click to switch to remove mode)'
-                    : 'Removing friends (click to switch to select mode)'
+                options={
+                  friendRequestOptions.length
+                    ? [
+                        {
+                          label: 'friend requests',
+                          options: friendRequestOptions,
+                        },
+                        {
+                          label: 'friends',
+                          options: friendOptions,
+                        },
+                      ]
+                    : friendOptions
                 }
-                isSearchable={false}
                 onChange={(selectedOption) => {
-                  if (removing === 0) {
-                    // Cleared friend
-                    if (!selectedOption) handlePersonChange('me');
-                    // Selected friend
-                    else if (isOption(selectedOption))
-                      handlePersonChange(selectedOption.value as NetId);
-                  } else if (selectedOption && isOption(selectedOption)) {
-                    void removeFriend(selectedOption.value as NetId);
+                  if (!selectedOption) {
+                    handlePersonChange('me');
+                  } else if (isOption(selectedOption)) {
+                    if (
+                      friendRequestOptions.some(
+                        (x) => x.value === selectedOption.value,
+                      )
+                    )
+                      void addFriend(selectedOption.value as NetId);
+                    else handlePersonChange(selectedOption.value);
                   }
                 }}
-                isDisabled={false}
-              />
-            </Popout>
-
-            {/* Friend Requests Dropdown */}
-            <Popout
-              buttonText="Friend requests"
-              onReset={() => {
-                handlePersonChange('me');
-              }}
-            >
-              <Searchbar
                 components={{
-                  Control: (props) => (
-                    // TODO
-                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                    <div
-                      onClick={() => {
-                        setDeleting(1 - deleting);
-                      }}
-                    >
-                      <components.Control {...props} />
-                    </div>
-                  ),
-                }}
-                hideSelectedOptions={false}
-                value={null}
-                isSearchable={false}
-                options={friendRequestOptions}
-                placeholder={
-                  deleting === 0
-                    ? 'Accepting requests (click to switch to decline mode)'
-                    : 'Declining requests (click to switch to accept mode)'
-                }
-                onChange={(selectedOption) => {
-                  if (selectedOption && isOption(selectedOption)) {
-                    if (deleting === 0) {
-                      void addFriend(selectedOption.value as NetId);
-                    } else if (deleting === 1) {
-                      // TODO actually decline it (remove from database)
-                      toast.info(
-                        `Declined friend request: ${selectedOption.value}`,
+                  Option({ children, ...props }) {
+                    if (props.data.value === 'me') {
+                      return (
+                        <components.Option {...props}>
+                          {children}
+                        </components.Option>
                       );
                     }
-                  }
+                    const isRequest = friendRequestOptions.some(
+                      (x) => x.value === props.data.value,
+                    );
+                    return (
+                      <components.Option {...props}>
+                        {children}
+                        {isRequest && (
+                          <MdPersonAdd
+                            className={styles.addFriendIcon}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              void addFriend(props.data.value as NetId);
+                            }}
+                            title="Accept friend request"
+                          />
+                        )}
+                        <MdPersonRemove
+                          className={styles.removeFriendIcon}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            void removeFriend(props.data.value as NetId);
+                            handlePersonChange('me');
+                          }}
+                          title={
+                            isRequest
+                              ? 'Decline friend request'
+                              : 'Remove friend'
+                          }
+                        />
+                      </components.Option>
+                    );
+                  },
                 }}
                 isDisabled={false}
               />
             </Popout>
-
             {/* Add Friend Dropdown */}
-
             <Popout buttonText="Add Friend">
               <Searchbar
                 hideSelectedOptions={false}
