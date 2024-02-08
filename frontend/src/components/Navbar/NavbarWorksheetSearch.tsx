@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { components } from 'react-select';
+import { toast } from 'react-toastify';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
+import { LinkLikeText } from '../Typography';
 
 import { isOption, type Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -80,6 +82,40 @@ export function NavbarWorksheetSearch() {
   }, [user.friendRequests]);
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+
+  const removeFriendWithConfirmation = useCallback(
+    (friendNetId: NetId, isRequest: boolean) => {
+      toast.warn(
+        <>
+          You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
+          {friendNetId}.{' '}
+          <b>This is irreversible without another friend request.</b> Do you
+          want to continue?
+          <br />
+          <LinkLikeText
+            className="mx-2"
+            onClick={async () => {
+              if (!isRequest && person === friendNetId)
+                handlePersonChange('me');
+              await removeFriend(friendNetId, isRequest);
+            }}
+          >
+            Yes
+          </LinkLikeText>
+          <LinkLikeText
+            className="mx-2"
+            onClick={() => {
+              toast.dismiss();
+            }}
+          >
+            No
+          </LinkLikeText>
+        </>,
+        { autoClose: false },
+      );
+    },
+    [handlePersonChange, person, removeFriend],
+  );
 
   return (
     <>
@@ -167,7 +203,11 @@ export function NavbarWorksheetSearch() {
                     handlePersonChange(selectedOption.value);
                 }}
                 components={{
-                  NoOptionsMessage: () => 'No friends found',
+                  NoOptionsMessage: ({ children, ...props }) => (
+                    <components.NoOptionsMessage {...props}>
+                      No friends found
+                    </components.NoOptionsMessage>
+                  ),
                   Option({ children, ...props }) {
                     if (props.data.value === 'me') {
                       return (
@@ -183,8 +223,11 @@ export function NavbarWorksheetSearch() {
                           className={styles.removeFriendIcon}
                           onClick={(e) => {
                             e.preventDefault();
-                            handlePersonChange('me');
-                            removeFriend(props.data.value as NetId, false);
+                            e.stopPropagation();
+                            removeFriendWithConfirmation(
+                              props.data.value as NetId,
+                              false,
+                            );
                           }}
                           title="Remove friend"
                         />
@@ -217,7 +260,11 @@ export function NavbarWorksheetSearch() {
                   setCurrentFriendNetID(e);
                 }}
                 components={{
-                  NoOptionsMessage: () => 'No incoming friend requests',
+                  NoOptionsMessage: ({ children, ...props }) => (
+                    <components.NoOptionsMessage {...props}>
+                      No incoming friend requests
+                    </components.NoOptionsMessage>
+                  ),
                   Option({ children, ...props }) {
                     return (
                       <components.Option {...props}>
@@ -226,6 +273,7 @@ export function NavbarWorksheetSearch() {
                           className={styles.addFriendIcon}
                           onClick={(e) => {
                             e.preventDefault();
+                            e.stopPropagation();
                             void addFriend(props.data.value);
                           }}
                           title="Accept friend request"
@@ -234,7 +282,11 @@ export function NavbarWorksheetSearch() {
                           className={styles.removeFriendIcon}
                           onClick={(e) => {
                             e.preventDefault();
-                            removeFriend(props.data.value, true);
+                            e.stopPropagation();
+                            removeFriendWithConfirmation(
+                              props.data.value,
+                              true,
+                            );
                           }}
                           title="Decline friend request"
                         />

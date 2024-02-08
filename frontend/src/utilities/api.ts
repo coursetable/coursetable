@@ -1,12 +1,10 @@
 // This file contains all the interactions with the backend. In testing, we can
 // swap this file with a file that serves static data instead of making network
 // requests.
-import React from 'react';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import z from 'zod';
 
-import { LinkLikeText } from '../components/Typography';
 import { API_ENDPOINT } from '../config';
 import type { Season, Crn, Listing, NetId } from './common';
 
@@ -407,55 +405,34 @@ export async function requestAddFriend(friendNetId: NetId) {
   }
 }
 
-export function removeFriend(friendNetId: string, isRequest: boolean) {
-  toast.warn(
-    <>
-      You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
-      {friendNetId}.<b>This is irreversible without another friend request.</b>
-      Do you want to continue?
-      <LinkLikeText
-        onClick={async () => {
-          const body = JSON.stringify({ friendNetId });
-          try {
-            const res = await fetch(`${API_ENDPOINT}/api/friends/remove`, {
-              method: 'POST',
-              credentials: 'include',
-              body,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
-            if (!res.ok) {
-              const data = (await res.json()) as { error?: string };
-              throw new Error(data.error ?? res.statusText);
-            }
-            toast.info(
-              `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
-            );
-            window.location.reload();
-          } catch (err) {
-            Sentry.addBreadcrumb({
-              category: 'friends',
-              message: `Removing friend ${body}`,
-              level: 'info',
-            });
-            Sentry.captureException(err);
-            toast.error(`Failed to remove friend. ${String(err)}`);
-          }
-        }}
-      >
-        Yes
-      </LinkLikeText>
-      <LinkLikeText
-        onClick={() => {
-          toast.dismiss();
-        }}
-      >
-        No
-      </LinkLikeText>
-    </>,
-    { autoClose: false },
-  );
+export async function removeFriend(friendNetId: string, isRequest: boolean) {
+  const body = JSON.stringify({ friendNetId });
+  try {
+    const res = await fetch(`${API_ENDPOINT}/api/friends/remove`, {
+      method: 'POST',
+      credentials: 'include',
+      body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!res.ok) {
+      const data = (await res.json()) as { error?: string };
+      throw new Error(data.error ?? res.statusText);
+    }
+    toast.info(
+      `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
+    );
+    window.location.reload();
+  } catch (err) {
+    Sentry.addBreadcrumb({
+      category: 'friends',
+      message: `Removing friend ${body}`,
+      level: 'info',
+    });
+    Sentry.captureException(err);
+    toast.error(`Failed to remove friend. ${String(err)}`);
+  }
 }
 
 const authCheckResSchema = z.union([
