@@ -5,7 +5,6 @@ import { components } from 'react-select';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
-import { Searchbar } from '../Search/Searchbar';
 
 import { isOption, type Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -217,8 +216,8 @@ export function NavbarWorksheetSearch() {
                           className={styles.removeFriendIcon}
                           onClick={(e) => {
                             e.preventDefault();
-                            void removeFriend(props.data.value as NetId);
                             handlePersonChange('me');
+                            void removeFriend(props.data.value as NetId);
                           }}
                           title={
                             isRequest
@@ -235,7 +234,7 @@ export function NavbarWorksheetSearch() {
             </Popout>
             {/* Add Friend Dropdown */}
             <Popout buttonText="Add Friend">
-              <Searchbar
+              <PopoutSelect
                 hideSelectedOptions={false}
                 components={{
                   Menu: () => null,
