@@ -184,7 +184,7 @@ export function NavbarWorksheetSearch() {
                           onClick={(e) => {
                             e.preventDefault();
                             handlePersonChange('me');
-                            void removeFriend(props.data.value as NetId);
+                            removeFriend(props.data.value as NetId, false);
                           }}
                           title="Remove friend"
                         />
@@ -234,8 +234,7 @@ export function NavbarWorksheetSearch() {
                           className={styles.removeFriendIcon}
                           onClick={(e) => {
                             e.preventDefault();
-                            // The removeFriend endpoint also declines requests
-                            void removeFriend(props.data.value);
+                            removeFriend(props.data.value, true);
                           }}
                           title="Decline friend request"
                         />

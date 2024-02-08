@@ -65,7 +65,7 @@ type Store = {
   // on the context, in case we add more logic in the future that depends on
   // React rendering logic (flushing UI, etc.)
   addFriend: (friendNetId: NetId) => Promise<void>;
-  removeFriend: (friendNetId: NetId) => Promise<void>;
+  removeFriend: (friendNetId: NetId, isRequest: boolean) => void;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
 };
 
