@@ -10,14 +10,13 @@ import { logout } from '../../utilities/api';
 import { scrollToTop } from '../../utilities/display';
 import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { useUser } from '../../contexts/userContext';
+import { useTutorial } from '../../contexts/tutorialContext';
 import { API_ENDPOINT } from '../../config';
 
 type Props = {
-  readonly profileExpanded: boolean;
-  readonly setIsComponentVisible: (visible: boolean) => void;
-  readonly isLoggedIn: boolean;
-  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly isExpanded: boolean;
+  readonly setIsExpanded: (visible: boolean) => void;
 };
 
 function DropdownItem({
@@ -79,25 +78,21 @@ function DropdownItem({
   );
 }
 
-function MeDropdown({
-  profileExpanded,
-  setIsComponentVisible,
-  isLoggedIn,
-  setIsTutorialOpen,
-  setShownTutorial,
-}: Props) {
-  // Fetch current device
+function MeDropdown({ isExpanded, setIsExpanded }: Props) {
   const { isMobile, isTablet } = useWindowDimensions();
+  const { user } = useUser();
+  const { setIsTutorialOpen, setShownTutorial } = useTutorial();
+  const isLoggedIn = Boolean(user.worksheets);
 
   return (
     <SurfaceComponent
       elevated
       className={styles.collapseContainer}
       onClick={() => {
-        setIsComponentVisible(true);
+        setIsExpanded(true);
       }}
     >
-      <Collapse in={profileExpanded}>
+      <Collapse in={isExpanded}>
         {/* This wrapper div is important for making the collapse animation
           smooth */}
         <div>

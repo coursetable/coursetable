@@ -4,20 +4,14 @@ import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { useTheme } from '../contexts/themeContext';
+import { useTutorial } from '../contexts/tutorialContext';
 import styles from './Tutorial.module.css';
 import './reactour-override.css';
-
-type Props = {
-  readonly isTutorialOpen: boolean;
-  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly shownTutorial: boolean;
-  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
 type Step = {
   selector: string;
   header: string;
-  text: string | (() => JSX.Element);
+  text: React.ReactNode;
   observe?: boolean;
   video?: boolean;
   image?: string;
@@ -54,7 +48,7 @@ const stepsContent: Step[] = [
   {
     selector: 'catalog-4',
     header: '🌠 Take it to the next level',
-    text: () => (
+    text: (
       <>
         Click on <strong>Advanced</strong> to see more advanced filters.
       </>
@@ -72,7 +66,7 @@ const stepsContent: Step[] = [
   {
     selector: 'catalog-6',
     header: '💾 Save courses you’re interested in',
-    text: () => (
+    text: (
       <>
         Click on the <strong>+</strong> button next to a course to add it to
         your Worksheet.
@@ -83,7 +77,7 @@ const stepsContent: Step[] = [
   {
     selector: 'worksheet-1',
     header: '👀 View your saved courses',
-    text: () => (
+    text: (
       <>
         Click on <strong>Worksheet</strong> to see all the courses you’ve saved.
         <br />
@@ -96,7 +90,7 @@ const stepsContent: Step[] = [
   {
     selector: 'worksheet-2',
     header: '📅 Change how you see your Worksheet',
-    text: () => (
+    text: (
       <>
         Click on <strong>Calendar</strong> to see your courses on a calendar and{' '}
         <strong>List</strong> to see your courses in a list.
@@ -108,7 +102,7 @@ const stepsContent: Step[] = [
   {
     selector: 'feedback',
     header: '📢 We gotchu fam',
-    text: () => (
+    text: (
       <>
         If you have any problems or new ideas, you can leave feedback on our{' '}
         <a
@@ -126,7 +120,7 @@ const stepsContent: Step[] = [
   {
     selector: '',
     header: "🎉 That's it! 🎉",
-    text: () => (
+    text: (
       <>
         That's it! Click <strong>Finish Tutorial</strong> to start using
         CourseTable!
@@ -140,12 +134,9 @@ const stepsContent: Step[] = [
  * Custom Tutorial component using react tour
  */
 
-function Tutorial({
-  isTutorialOpen,
-  setIsTutorialOpen,
-  shownTutorial,
-  setShownTutorial,
-}: Props) {
+function Tutorial() {
+  const { isTutorialOpen, setIsTutorialOpen, shownTutorial, setShownTutorial } =
+    useTutorial();
   // Current step state
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -214,7 +205,7 @@ function Tutorial({
             </video>
           )}
           <h6 className="mt-2">{header}</h6>
-          {typeof text === 'string' ? text : text()}
+          {text}
         </div>
       );
 
