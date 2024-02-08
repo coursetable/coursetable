@@ -160,34 +160,14 @@ export function NavbarWorksheetSearch() {
                 menuIsOpen
                 placeholder="My worksheets"
                 value={selectedPerson}
-                options={
-                  friendRequestOptions.length
-                    ? [
-                        {
-                          label: 'friend requests',
-                          options: friendRequestOptions,
-                        },
-                        {
-                          label: 'friends',
-                          options: friendOptions,
-                        },
-                      ]
-                    : friendOptions
-                }
+                options={friendOptions}
                 onChange={(selectedOption) => {
-                  if (!selectedOption) {
-                    handlePersonChange('me');
-                  } else if (isOption(selectedOption)) {
-                    if (
-                      friendRequestOptions.some(
-                        (x) => x.value === selectedOption.value,
-                      )
-                    )
-                      void addFriend(selectedOption.value as NetId);
-                    else handlePersonChange(selectedOption.value);
-                  }
+                  if (!selectedOption) handlePersonChange('me');
+                  else if (isOption(selectedOption))
+                    handlePersonChange(selectedOption.value);
                 }}
                 components={{
+                  NoOptionsMessage: () => 'No friends found',
                   Option({ children, ...props }) {
                     if (props.data.value === 'me') {
                       return (
@@ -196,22 +176,9 @@ export function NavbarWorksheetSearch() {
                         </components.Option>
                       );
                     }
-                    const isRequest = friendRequestOptions.some(
-                      (x) => x.value === props.data.value,
-                    );
                     return (
                       <components.Option {...props}>
                         {children}
-                        {isRequest && (
-                          <MdPersonAdd
-                            className={styles.addFriendIcon}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              void addFriend(props.data.value as NetId);
-                            }}
-                            title="Accept friend request"
-                          />
-                        )}
                         <MdPersonRemove
                           className={styles.removeFriendIcon}
                           onClick={(e) => {
@@ -219,11 +186,7 @@ export function NavbarWorksheetSearch() {
                             handlePersonChange('me');
                             void removeFriend(props.data.value as NetId);
                           }}
-                          title={
-                            isRequest
-                              ? 'Decline friend request'
-                              : 'Remove friend'
-                          }
+                          title="Remove friend"
                         />
                       </components.Option>
                     );
@@ -236,10 +199,14 @@ export function NavbarWorksheetSearch() {
             <Popout buttonText="Add Friend">
               <PopoutSelect
                 hideSelectedOptions={false}
-                components={{
-                  Menu: () => null,
-                }}
+                menuIsOpen
                 placeholder="Enter your friend's NetID (hit enter to add): "
+                options={[
+                  {
+                    label: 'Incoming requests',
+                    options: friendRequestOptions,
+                  },
+                ]}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -248,6 +215,33 @@ export function NavbarWorksheetSearch() {
                 }}
                 onInputChange={(e) => {
                   setCurrentFriendNetID(e);
+                }}
+                components={{
+                  NoOptionsMessage: () => 'No incoming friend requests',
+                  Option({ children, ...props }) {
+                    return (
+                      <components.Option {...props}>
+                        {children}
+                        <MdPersonAdd
+                          className={styles.addFriendIcon}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            void addFriend(props.data.value);
+                          }}
+                          title="Accept friend request"
+                        />
+                        <MdPersonRemove
+                          className={styles.removeFriendIcon}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // The removeFriend endpoint also declines requests
+                            void removeFriend(props.data.value);
+                          }}
+                          title="Decline friend request"
+                        />
+                      </components.Option>
+                    );
+                  },
                 }}
                 isDisabled={false}
               />
