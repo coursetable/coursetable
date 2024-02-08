@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { components } from 'react-select';
 import { toast } from 'react-toastify';
+import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
-import { Searchbar } from '../Search/Searchbar';
+import { LinkLikeText } from '../Typography';
 
 import { isOption, type Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -49,7 +50,7 @@ export function NavbarWorksheetSearch() {
     if (!user.friends) return [];
     return Object.entries(user.friends)
       .map(
-        ([friendNetId, { name }]): Option => ({
+        ([friendNetId, { name }]): Option<NetId> => ({
           value: friendNetId as NetId,
           label: name,
         }),
@@ -82,8 +83,39 @@ export function NavbarWorksheetSearch() {
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
-  const [deleting, setDeleting] = useState(0);
-  const [removing, setRemoving] = useState(0);
+  const removeFriendWithConfirmation = useCallback(
+    (friendNetId: NetId, isRequest: boolean) => {
+      toast.warn(
+        <>
+          You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
+          {friendNetId}.{' '}
+          <b>This is irreversible without another friend request.</b> Do you
+          want to continue?
+          <br />
+          <LinkLikeText
+            className="mx-2"
+            onClick={async () => {
+              if (!isRequest && person === friendNetId)
+                handlePersonChange('me');
+              await removeFriend(friendNetId, isRequest);
+            }}
+          >
+            Yes
+          </LinkLikeText>
+          <LinkLikeText
+            className="mx-2"
+            onClick={() => {
+              toast.dismiss();
+            }}
+          >
+            No
+          </LinkLikeText>
+        </>,
+        { autoClose: false },
+      );
+    },
+    [handlePersonChange, person, removeFriend],
+  );
 
   return (
     <>
@@ -159,99 +191,65 @@ export function NavbarWorksheetSearch() {
                 handlePersonChange('me');
               }}
             >
-              <Searchbar
-                components={{
-                  Control: (props) => (
-                    // TODO
-                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                    <div
-                      onClick={() => {
-                        setRemoving(1 - removing);
-                      }}
-                    >
-                      <components.Control {...props} />
-                    </div>
-                  ),
-                }}
+              <PopoutSelect<Option<NetId | 'me'>, false>
                 hideSelectedOptions={false}
+                menuIsOpen
+                placeholder="My worksheets"
                 value={selectedPerson}
                 options={friendOptions}
-                placeholder={
-                  removing === 0
-                    ? 'Selecting friends (click to switch to remove mode)'
-                    : 'Removing friends (click to switch to select mode)'
-                }
-                isSearchable={false}
                 onChange={(selectedOption) => {
-                  if (removing === 0) {
-                    // Cleared friend
-                    if (!selectedOption) handlePersonChange('me');
-                    // Selected friend
-                    else if (isOption(selectedOption))
-                      handlePersonChange(selectedOption.value as NetId);
-                  } else if (selectedOption && isOption(selectedOption)) {
-                    void removeFriend(selectedOption.value as NetId);
-                  }
+                  if (!selectedOption) handlePersonChange('me');
+                  else if (isOption(selectedOption))
+                    handlePersonChange(selectedOption.value);
                 }}
-                isDisabled={false}
-              />
-            </Popout>
-
-            {/* Friend Requests Dropdown */}
-            <Popout
-              buttonText="Friend requests"
-              onReset={() => {
-                handlePersonChange('me');
-              }}
-            >
-              <Searchbar
                 components={{
-                  Control: (props) => (
-                    // TODO
-                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                    <div
-                      onClick={() => {
-                        setDeleting(1 - deleting);
-                      }}
-                    >
-                      <components.Control {...props} />
-                    </div>
+                  NoOptionsMessage: ({ children, ...props }) => (
+                    <components.NoOptionsMessage {...props}>
+                      No friends found
+                    </components.NoOptionsMessage>
                   ),
-                }}
-                hideSelectedOptions={false}
-                value={null}
-                isSearchable={false}
-                options={friendRequestOptions}
-                placeholder={
-                  deleting === 0
-                    ? 'Accepting requests (click to switch to decline mode)'
-                    : 'Declining requests (click to switch to accept mode)'
-                }
-                onChange={(selectedOption) => {
-                  if (selectedOption && isOption(selectedOption)) {
-                    if (deleting === 0) {
-                      void addFriend(selectedOption.value as NetId);
-                    } else if (deleting === 1) {
-                      // TODO actually decline it (remove from database)
-                      toast.info(
-                        `Declined friend request: ${selectedOption.value}`,
+                  Option({ children, ...props }) {
+                    if (props.data.value === 'me') {
+                      return (
+                        <components.Option {...props}>
+                          {children}
+                        </components.Option>
                       );
                     }
-                  }
+                    return (
+                      <components.Option {...props}>
+                        {children}
+                        <MdPersonRemove
+                          className={styles.removeFriendIcon}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeFriendWithConfirmation(
+                              props.data.value as NetId,
+                              false,
+                            );
+                          }}
+                          title="Remove friend"
+                        />
+                      </components.Option>
+                    );
+                  },
                 }}
                 isDisabled={false}
               />
             </Popout>
-
             {/* Add Friend Dropdown */}
-
             <Popout buttonText="Add Friend">
-              <Searchbar
+              <PopoutSelect
                 hideSelectedOptions={false}
-                components={{
-                  Menu: () => null,
-                }}
+                menuIsOpen
                 placeholder="Enter your friend's NetID (hit enter to add): "
+                options={[
+                  {
+                    label: 'Incoming requests',
+                    options: friendRequestOptions,
+                  },
+                ]}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -260,6 +258,41 @@ export function NavbarWorksheetSearch() {
                 }}
                 onInputChange={(e) => {
                   setCurrentFriendNetID(e);
+                }}
+                components={{
+                  NoOptionsMessage: ({ children, ...props }) => (
+                    <components.NoOptionsMessage {...props}>
+                      No incoming friend requests
+                    </components.NoOptionsMessage>
+                  ),
+                  Option({ children, ...props }) {
+                    return (
+                      <components.Option {...props}>
+                        {children}
+                        <MdPersonAdd
+                          className={styles.addFriendIcon}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            void addFriend(props.data.value);
+                          }}
+                          title="Accept friend request"
+                        />
+                        <MdPersonRemove
+                          className={styles.removeFriendIcon}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeFriendWithConfirmation(
+                              props.data.value,
+                              true,
+                            );
+                          }}
+                          title="Decline friend request"
+                        />
+                      </components.Option>
+                    );
+                  },
                 }}
                 isDisabled={false}
               />
