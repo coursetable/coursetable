@@ -277,8 +277,8 @@ export default function CourseTableNavbar() {
       {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
-          profileExpanded={isComponentVisible}
-          setIsComponentVisible={setIsComponentVisible}
+          isExpanded={isComponentVisible}
+          setIsExpanded={setIsComponentVisible}
         />
       </div>
     </div>

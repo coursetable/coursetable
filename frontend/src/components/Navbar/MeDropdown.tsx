@@ -15,8 +15,8 @@ import { useTutorial } from '../../contexts/tutorialContext';
 import { API_ENDPOINT } from '../../config';
 
 type Props = {
-  readonly profileExpanded: boolean;
-  readonly setIsComponentVisible: (visible: boolean) => void;
+  readonly isExpanded: boolean;
+  readonly setIsExpanded: (visible: boolean) => void;
 };
 
 function DropdownItem({
@@ -78,7 +78,7 @@ function DropdownItem({
   );
 }
 
-function MeDropdown({ profileExpanded, setIsComponentVisible }: Props) {
+function MeDropdown({ isExpanded, setIsExpanded }: Props) {
   const { isMobile, isTablet } = useWindowDimensions();
   const { user } = useUser();
   const { setIsTutorialOpen, setShownTutorial } = useTutorial();
@@ -89,10 +89,10 @@ function MeDropdown({ profileExpanded, setIsComponentVisible }: Props) {
       elevated
       className={styles.collapseContainer}
       onClick={() => {
-        setIsComponentVisible(true);
+        setIsExpanded(true);
       }}
     >
-      <Collapse in={profileExpanded}>
+      <Collapse in={isExpanded}>
         {/* This wrapper div is important for making the collapse animation
           smooth */}
         <div>
