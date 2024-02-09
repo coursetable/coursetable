@@ -81,7 +81,7 @@ function DropdownItem({
 function MeDropdown({ isExpanded, setIsExpanded }: Props) {
   const { isMobile, isTablet } = useWindowDimensions();
   const { user } = useUser();
-  const { setIsTutorialOpen, setShownTutorial } = useTutorial();
+  const { toggleTutorial } = useTutorial();
   const isLoggedIn = Boolean(user.worksheets);
 
   return (
@@ -118,8 +118,7 @@ function MeDropdown({ isExpanded, setIsExpanded }: Props) {
                 onClick={(e) => {
                   e.stopPropagation();
                   scrollToTop(e);
-                  setIsTutorialOpen(true);
-                  setShownTutorial(false);
+                  toggleTutorial(true);
                 }}
               >
                 Tutorial

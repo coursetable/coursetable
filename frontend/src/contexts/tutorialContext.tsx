@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -11,10 +12,8 @@ import { useUser } from './userContext';
 import { useWindowDimensions } from './windowDimensionsContext';
 
 type Store = {
-  shownTutorial: boolean;
-  setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   isTutorialOpen: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleTutorial: (open: boolean) => void;
 };
 
 const TutorialContext = createContext<Store | undefined>(undefined);
@@ -56,14 +55,20 @@ export function TutorialProvider({
     setIsTutorialOpen,
   ]);
 
+  const toggleTutorial = useCallback(
+    (open: boolean) => {
+      setIsTutorialOpen(open);
+      setShownTutorial(!open);
+    },
+    [setShownTutorial],
+  );
+
   const store: Store = useMemo(
     () => ({
-      shownTutorial,
-      setShownTutorial,
       isTutorialOpen,
-      setIsTutorialOpen,
+      toggleTutorial,
     }),
-    [shownTutorial, setShownTutorial, isTutorialOpen],
+    [isTutorialOpen, toggleTutorial],
   );
 
   return (
