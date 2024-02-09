@@ -11,7 +11,6 @@ import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
   fetchFriendReqs,
-  fetchAllNames,
   addFriend,
   requestAddFriend as baseRequestAddFriend,
   removeFriend,
@@ -38,13 +37,6 @@ type FriendRequests = {
   name: string;
 }[];
 
-type FriendNames = {
-  netId: NetId;
-  first: string | null;
-  last: string | null;
-  college: string | null;
-}[];
-
 type Store = {
   loading: boolean;
   user: {
@@ -56,11 +48,9 @@ type Store = {
     friendRequests?: FriendRequests;
     friends?: FriendRecord;
   };
-  allNames: FriendNames;
   userRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
-  allNamesRefresh: () => Promise<void>;
   // These functions actually don't depend on context data. They are still put
   // on the context, in case we add more logic in the future that depends on
   // React rendering logic (flushing UI, etc.)
@@ -100,8 +90,6 @@ export function UserProvider({
   const [friendRequests, setFriendRequests] = useState<
     FriendRequests | undefined
   >(undefined);
-  // All names, used for searching
-  const [allNames, setAllNames] = useState<FriendNames>([]);
 
   // Refresh user worksheet
   const userRefresh = useCallback(async (): Promise<void> => {
@@ -134,12 +122,6 @@ export function UserProvider({
     if (data) setFriendRequests(data.requests as FriendRequests);
     else setFriendRequests(undefined);
   }, [setFriendRequests]);
-
-  const allNamesRefresh = useCallback(async (): Promise<void> => {
-    const data = await fetchAllNames();
-    if (data) setAllNames(data.names as FriendNames);
-    else setAllNames([]);
-  }, []);
 
   const requestAddFriend = useCallback(
     async (friendNetId: NetId): Promise<void> => {
@@ -186,11 +168,9 @@ export function UserProvider({
     () => ({
       loading,
       user,
-      allNames,
       userRefresh,
       friendRefresh,
       friendReqRefresh,
-      allNamesRefresh,
       addFriend,
       removeFriend,
       requestAddFriend,
@@ -198,11 +178,9 @@ export function UserProvider({
     [
       loading,
       user,
-      allNames,
       userRefresh,
       friendRefresh,
       friendReqRefresh,
-      allNamesRefresh,
       requestAddFriend,
     ],
   );
