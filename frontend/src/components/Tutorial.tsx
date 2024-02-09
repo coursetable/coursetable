@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
@@ -135,8 +135,7 @@ const stepsContent: Step[] = [
  */
 
 function Tutorial() {
-  const { isTutorialOpen, setIsTutorialOpen, shownTutorial, setShownTutorial } =
-    useTutorial();
+  const { isTutorialOpen, toggleTutorial } = useTutorial();
   // Current step state
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -147,26 +146,6 @@ function Tutorial() {
 
   const { theme } = useTheme();
   const location = useLocation();
-  const navigate = useNavigate();
-
-  // Change react tour helper styling based on theme
-  const helperStyle: React.CSSProperties = useMemo(() => {
-    let styles: React.CSSProperties = {
-      maxWidth: '432px',
-      backgroundColor: 'var(--color-bg)',
-      color: 'var(--color-text)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-end',
-    };
-    if (shownTutorial) {
-      styles = {
-        ...styles,
-        alignItems: 'center',
-      };
-    }
-    return styles;
-  }, [shownTutorial]);
 
   // Generate react tour steps
   const steps = stepsContent.map(
@@ -212,70 +191,58 @@ function Tutorial() {
       return {
         selector: selector && `[data-tutorial="${selector}"]`,
         content,
-        style: helperStyle,
+        style: {
+          maxWidth: '432px',
+          backgroundColor: 'var(--color-bg)',
+          color: 'var(--color-text)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+        },
         ...(observe && { observe: `[data-tutorial="${selector}-observe"]` }),
         ...(position && { position }),
       };
     },
   );
 
-  // Handle prev button styling
-  const prevButton = useMemo(() => {
-    if (currentStep === 0) return <div style={{ display: 'none' }} />;
-    if (!shownTutorial) {
-      return (
-        <Button
-          className={styles.prevButton}
-          style={{
-            marginRight: '-40px',
-          }}
-          disabled={location.pathname === '/worksheet' && currentStep === 7}
-        >
-          Back
-        </Button>
-      );
-    }
-    return <Button className={styles.prevButton}>Back</Button>;
-  }, [currentStep, shownTutorial, location]);
-
-  // Next button component
-  const nextButton = useMemo(() => {
-    if (location.pathname === '/catalog' && currentStep === 7) {
-      return (
-        <Button className={styles.nextButton} disabled>
-          Next
-        </Button>
-      );
-    }
-    return (
-      <Button className={styles.nextButton}>
-        {currentStep === 0 ? 'Start' : 'Next'}
-      </Button>
-    );
-  }, [currentStep, location]);
-
   return (
     <Tour
       steps={steps}
       isOpen={isTutorialOpen}
       onRequestClose={() => {
-        if (!shownTutorial) navigate('/catalog');
-
-        setShownTutorial(true);
-        setIsTutorialOpen(false);
+        toggleTutorial(false);
       }}
       startAt={0}
       accentColor="var(--color-primary-hover)"
       rounded={6}
       showCloseButton
       disableDotsNavigation
-      showNavigation={shownTutorial && currentStep !== 10}
-      closeWithMask={shownTutorial}
+      showNavigation={false}
+      closeWithMask={false}
       disableFocusLock
       showNavigationNumber={false}
       showNumber={false}
-      nextButton={nextButton}
-      prevButton={prevButton}
+      nextButton={
+        <Button
+          className={styles.nextButton}
+          disabled={location.pathname === '/catalog' && currentStep === 7}
+        >
+          {currentStep === 0 ? 'Start' : 'Next'}
+        </Button>
+      }
+      prevButton={
+        currentStep === 0 ? null : (
+          <Button
+            className={styles.prevButton}
+            style={{
+              marginRight: '-40px',
+            }}
+            disabled={location.pathname === '/worksheet' && currentStep === 7}
+          >
+            Back
+          </Button>
+        )
+      }
       lastStepNextButton={
         <Button className={styles.nextButton}>Finish Tutorial</Button>
       }

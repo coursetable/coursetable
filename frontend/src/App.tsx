@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import CourseModal from './components/CourseModal/CourseModal';
 
 import { useUser } from './contexts/userContext';
+import { useTutorial } from './contexts/tutorialContext';
 import { suspended } from './utilities/display';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
@@ -46,6 +47,7 @@ function App() {
   const location = useLocation();
   // User context data
   const { loading, user } = useUser();
+  const { isTutorialOpen } = useTutorial();
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheets);
@@ -160,7 +162,7 @@ function App() {
       </SentryRoutes>
       {!['/catalog'].includes(location.pathname) && <Footer />}
       {/* Tutorial for first-time users */}
-      <Tutorial />
+      {isTutorialOpen && <Tutorial />}
       <CourseModal />
     </>
   );
