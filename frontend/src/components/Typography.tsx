@@ -45,7 +45,7 @@ export function TextComponent({
           ? styles.secondaryText
           : type === 'tertiary'
             ? styles.tertiaryText
-            : styles.primaryText,
+            : undefined,
         small && styles.smallText,
         className,
       )}

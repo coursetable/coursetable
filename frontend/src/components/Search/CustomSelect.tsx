@@ -189,7 +189,7 @@ function CustomSelect<
   popout = false,
   useColors = false,
   isMulti = false as IsMulti,
-  components,
+  components: componentsProp,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
   // All the default theme colors
@@ -210,8 +210,11 @@ function CustomSelect<
 
   // Makes Select forms animated
   const animatedComponents = useMemo(
-    () => components ?? makeAnimated(),
-    [components],
+    () => ({
+      ...makeAnimated(),
+      ...componentsProp,
+    }),
+    [componentsProp],
   );
 
   // Configure styles

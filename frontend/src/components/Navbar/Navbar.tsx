@@ -15,14 +15,9 @@ import { SurfaceComponent, TextComponent } from '../Typography';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 
 import { API_ENDPOINT } from '../../config';
+import { useUser } from '../../contexts/userContext';
 import { useTheme } from '../../contexts/themeContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
-
-type Props = {
-  readonly isLoggedIn: boolean;
-  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
 function NavbarLink({
   to,
@@ -58,11 +53,9 @@ function NavCollapseWrapper({
   return <>{children}</>;
 }
 
-export default function CourseTableNavbar({
-  isLoggedIn,
-  setIsTutorialOpen,
-  setShownTutorial,
-}: Props) {
+export default function CourseTableNavbar() {
+  const { user } = useUser();
+  const isLoggedIn = Boolean(user.worksheets);
   const location = useLocation();
   // Is navbar expanded in mobile view?
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
@@ -284,11 +277,8 @@ export default function CourseTableNavbar({
       {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
-          profileExpanded={isComponentVisible}
-          setIsComponentVisible={setIsComponentVisible}
-          isLoggedIn={isLoggedIn}
-          setIsTutorialOpen={setIsTutorialOpen}
-          setShownTutorial={setShownTutorial}
+          isExpanded={isComponentVisible}
+          setIsExpanded={setIsComponentVisible}
         />
       </div>
     </div>
