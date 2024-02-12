@@ -33,6 +33,7 @@ import {
   getEnrolled,
   toSeasonString,
   to12HourTime,
+  isDiscussionSection,
 } from '../../utilities/course';
 import {
   useSameCourseOrProfOfferingsQuery,
@@ -328,6 +329,8 @@ function CourseModalOverview({
     } = { both: [], course: [], professor: [] };
     if (!data) return overlapSections;
     (data.computed_listing_info as ComputedListingInfo[])
+      // Discussion sections have no ratings, nothing to show
+      .filter((season) => !isDiscussionSection(season))
       .map((season): CourseOffering => {
         // Stores the average rating for all profs teaching this course and
         // populates prof_info
@@ -392,23 +395,15 @@ function CourseModalOverview({
           isCourseOverlap &&
           overlappingProfs(offering.professor) ===
             listing.professor_names.length;
-        const type = isBothOverlap
-          ? 'both'
-          : isCourseOverlap
-            ? 'course'
-            : isProfOverlap
-              ? 'professor'
-              : undefined;
-        if (!type) {
-          // Consider a course cross-listed with course codes A and B.
-          // It was taught by prof X in year 1 and prof Y in year 2.
-          // Then GraphQL would return 2-B when viewing 1-A even when they
-          // appear to not overlap.
-          // TODO: maybe we should fix this in the GraphQL layer? Again,
-          // reconsideration of course relationships needed...
-          return;
-        }
-        overlapSections[type].push(offering);
+        if (isBothOverlap) overlapSections.both.push(offering);
+        if (isCourseOverlap) overlapSections.course.push(offering);
+        if (isProfOverlap) overlapSections.professor.push(offering);
+        // Consider a course cross-listed with course codes A and B.
+        // It was taught by prof X in year 1 and prof Y in year 2.
+        // Then GraphQL would return 2-B when viewing 1-A even when they
+        // appear to not overlap.
+        // TODO: maybe we should fix this in the GraphQL layer? Again,
+        // reconsideration of course relationships needed...
       });
     return overlapSections;
   }, [data, listing, overlappingProfs]);
@@ -780,8 +775,11 @@ function CourseModalOverview({
                   <span className={styles.evaluationHeader}>Work</span>
                 </Col>
               </Row>
-              {overlapSections[filter].map((offering, i) => (
-                <Row key={i} className="m-auto py-1 justify-content-center">
+              {overlapSections[filter].map((offering) => (
+                <Row
+                  key={offering.crn}
+                  className="m-auto py-1 justify-content-center"
+                >
                   {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
                   <Col

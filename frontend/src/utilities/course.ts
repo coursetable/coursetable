@@ -363,11 +363,13 @@ export function getEnrolled(
   return usage === 'modal' ? 'N/A' : '';
 }
 
-export function isGraduate(listing: Listing): boolean {
+export function isGraduate(listing: Pick<Listing, 'number'>): boolean {
   return Number(listing.number.replace(/\D/gu, '')) >= 500;
 }
 
-export function isDiscussionSection(listing: Listing): boolean {
+export function isDiscussionSection(
+  listing: Pick<Listing, 'section'>,
+): boolean {
   // Checks whether the section field consists only of letters -- if so, the
   // class is a discussion section.
   return /^[A-Z]*$/u.test(listing.section);
