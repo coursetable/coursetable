@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
-import { createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import {
   InMemoryCache,
@@ -56,19 +55,7 @@ function CustomErrorBoundary({
     </Sentry.ErrorBoundary>
   );
 }
-const GlobalStyles = createGlobalStyle`
-  body {
-    background: ${({ theme }) => theme.background};
-    color: ${({ theme }) => theme.text[0]};
-    transition: background-color ${({ theme }) => theme.transDur};
-  }
-  a {
-    color: ${({ theme }) => theme.primary};  
-    &:hover {
-      color: ${({ theme }) => theme.primaryHover};  
-    }
-  }
-  `;
+
 function Globals({ children }: { readonly children: React.ReactNode }) {
   return (
     <CustomErrorBoundary>
@@ -81,16 +68,15 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
           <UserProvider>
             <FerryProvider>
               <WindowDimensionsProvider>
-                <SearchProvider>
-                  <WorksheetProvider>
+                {/* SearchProvider must be inside WorksheetProvider because the
+                  former depends on the currently viewed worksheet */}
+                <WorksheetProvider>
+                  <SearchProvider>
                     <ThemeProvider>
-                      <GlobalStyles />
-                      <div id="base" style={{ height: 'auto' }}>
-                        {children}
-                      </div>
+                      <div id="base">{children}</div>
                     </ThemeProvider>
-                  </WorksheetProvider>
-                </SearchProvider>
+                  </SearchProvider>
+                </WorksheetProvider>
                 {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
                 <ToastContainer toastClassName="rounded" />
               </WindowDimensionsProvider>

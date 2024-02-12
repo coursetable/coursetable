@@ -18,10 +18,10 @@ function WorksheetList() {
     numFriends,
   } = useSearch();
 
-  const WorksheetData = useMemo(
+  const worksheetData = useMemo(
     () =>
       sortCourses(
-        courses,
+        courses.map((course) => course.listing),
         { key: selectSortBy.value.value, type: sortOrder.value },
         numFriends,
       ),
@@ -35,10 +35,9 @@ function WorksheetList() {
         <Col md={12} className="m-0 px-0 pb-3">
           <div className="d-flex justify-content-center">
             <Results
-              data={WorksheetData}
+              data={worksheetData}
               loading={worksheetLoading}
               multiSeasons={false}
-              numFriends={numFriends}
               page="worksheet"
             />
           </div>

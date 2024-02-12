@@ -1,165 +1,146 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Row, Col, Collapse } from 'react-bootstrap';
+import type { IconType } from 'react-icons';
 import { FcInfo, FcQuestions, FcFeedback, FcPuzzle } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
-import { logout, scrollToTop } from '../../utilities/display';
-import {
-  SurfaceComponent,
-  TextComponent,
-  StyledHoverText,
-} from '../StyledComponents';
+import { logout } from '../../utilities/api';
+import { scrollToTop } from '../../utilities/display';
+import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { useUser } from '../../contexts/userContext';
+import { useTutorial } from '../../contexts/tutorialContext';
 import { API_ENDPOINT } from '../../config';
 
 type Props = {
-  readonly profileExpanded: boolean;
-  readonly setIsComponentVisible: (visible: boolean) => void;
-  readonly isLoggedIn: boolean;
-  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly isExpanded: boolean;
+  readonly setIsExpanded: (visible: boolean) => void;
 };
 
-function MeDropdown({
-  profileExpanded,
-  setIsComponentVisible,
-  isLoggedIn,
-  setIsTutorialOpen,
-  setShownTutorial,
-}: Props) {
-  // Fetch current device
+function DropdownItem({
+  icon: Icon,
+  iconColor,
+  children,
+  to,
+  href,
+  externalLink,
+  onClick,
+}: {
+  readonly icon: IconType;
+  readonly iconColor?: string;
+  readonly children: string;
+  readonly to?: string;
+  readonly href?: string;
+  readonly externalLink?: boolean;
+  readonly onClick?: (e: React.MouseEvent) => void;
+}) {
+  return (
+    <Row className="pb-3 m-auto">
+      <Icon
+        className="mr-2 my-auto"
+        size={20}
+        style={{ paddingLeft: '2px' }}
+        color={iconColor}
+      />
+      <TextComponent type="secondary">
+        {to ? (
+          <NavLink
+            to={to}
+            className={styles.collapseText}
+            onClick={onClick ?? scrollToTop}
+          >
+            <HoverText>{children}</HoverText>
+          </NavLink>
+        ) : href ? (
+          // eslint-disable-next-line react/jsx-no-target-blank
+          <a
+            href={href}
+            className={styles.collapseText}
+            {...(externalLink && {
+              target: '_blank',
+              rel: 'noreferrer noopener',
+            })}
+          >
+            <HoverText>{children}</HoverText>
+          </a>
+        ) : (
+          <HoverText
+            {...(onClick && { onClick })}
+            className={styles.collapseText}
+          >
+            {children}
+          </HoverText>
+        )}
+      </TextComponent>
+    </Row>
+  );
+}
+
+function MeDropdown({ isExpanded, setIsExpanded }: Props) {
   const { isMobile, isTablet } = useWindowDimensions();
+  const { user } = useUser();
+  const { toggleTutorial } = useTutorial();
+  const isLoggedIn = Boolean(user.worksheets);
 
   return (
     <SurfaceComponent
-      layer={1}
+      elevated
       className={styles.collapseContainer}
       onClick={() => {
-        setIsComponentVisible(true);
+        setIsExpanded(true);
       }}
     >
-      <Collapse in={profileExpanded}>
+      <Collapse in={isExpanded}>
         {/* This wrapper div is important for making the collapse animation
           smooth */}
         <div>
           <Col className="px-3 pt-3">
-            {isLoggedIn && (
-              <>
-                {/* About page Link */}
-                <Row className="pb-3 m-auto">
-                  <FcInfo
-                    className="mr-2 my-auto"
-                    size={20}
-                    style={{ paddingLeft: '2px' }}
-                  />
-                  <TextComponent type={1}>
-                    <NavLink
-                      to="/about"
-                      className={styles.collapseText}
-                      onClick={scrollToTop}
-                    >
-                      <StyledHoverText>About</StyledHoverText>
-                    </NavLink>
-                  </TextComponent>
-                </Row>
-                {/* FAQ page Link */}
-                <Row className="pb-3 m-auto">
-                  <FcQuestions
-                    className="mr-2 my-auto"
-                    size={20}
-                    style={{ paddingLeft: '2px' }}
-                  />
-                  <TextComponent type={1}>
-                    <NavLink
-                      to="/faq"
-                      className={styles.collapseText}
-                      onClick={scrollToTop}
-                    >
-                      <StyledHoverText>FAQ</StyledHoverText>
-                    </NavLink>
-                  </TextComponent>
-                </Row>
-              </>
-            )}
-            {/* Feedback page Link */}
-            <Row className="pb-3 m-auto">
-              <FcFeedback
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px' }}
-              />
-              <TextComponent type={1}>
-                <a
-                  href="https://feedback.coursetable.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.collapseText}
-                  onClick={scrollToTop}
-                >
-                  <StyledHoverText>Feedback</StyledHoverText>
-                </a>
-              </TextComponent>
-            </Row>
+            <DropdownItem icon={FcInfo} to="/about">
+              About
+            </DropdownItem>
+            <DropdownItem icon={FcQuestions} to="/faq">
+              FAQ
+            </DropdownItem>
+            <DropdownItem
+              icon={FcFeedback}
+              href="https://feedback.coursetable.com/"
+              externalLink
+            >
+              Feedback
+            </DropdownItem>
             {/* Try tutorial only on desktop */}
             {!isMobile && !isTablet && isLoggedIn && (
-              <Row className="pb-3 m-auto">
-                <FcPuzzle
-                  className="mr-2 my-auto"
-                  size={20}
-                  style={{ paddingLeft: '2px' }}
-                />
-                <TextComponent type={1}>
-                  <NavLink
-                    to="/catalog"
-                    className={styles.collapseText}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      scrollToTop(e);
-                      setIsTutorialOpen(true);
-                      setShownTutorial(false);
-                    }}
-                  >
-                    <StyledHoverText>Tutorial</StyledHoverText>
-                  </NavLink>
-                </TextComponent>
-              </Row>
+              <DropdownItem
+                icon={FcPuzzle}
+                to="/catalog"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  scrollToTop(e);
+                  toggleTutorial(true);
+                }}
+              >
+                Tutorial
+              </DropdownItem>
             )}
             {/* Sign In/Out button */}
             {isLoggedIn ? (
-              <Row className="pb-3 m-auto">
-                <FaSignOutAlt
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#ed5f5f"
-                  style={{ paddingLeft: '2px' }}
-                />
-                <TextComponent
-                  type={1}
-                  onClick={logout}
-                  className={styles.collapseText}
-                >
-                  <StyledHoverText>Sign Out</StyledHoverText>
-                </TextComponent>
-              </Row>
+              <DropdownItem
+                icon={FaSignOutAlt}
+                iconColor="#ed5f5f"
+                onClick={logout}
+              >
+                Sign Out
+              </DropdownItem>
             ) : (
-              <Row className="pb-3 m-auto">
-                <FaSignInAlt
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#30e36b"
-                  style={{ paddingLeft: '2px' }}
-                />
-                <a
-                  href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
-                  className={styles.collapseText}
-                >
-                  <TextComponent type={1}>
-                    <StyledHoverText>Sign In</StyledHoverText>
-                  </TextComponent>
-                </a>
-              </Row>
+              <DropdownItem
+                icon={FaSignInAlt}
+                iconColor="#30e36b"
+                href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
+              >
+                Sign In
+              </DropdownItem>
             )}
           </Col>
         </div>

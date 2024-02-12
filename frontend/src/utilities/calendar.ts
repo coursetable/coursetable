@@ -8,8 +8,10 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type { HiddenCourses } from '../contexts/worksheetContext';
-import type { CourseEvent } from '../components/Worksheet/CalendarEvent';
+import type {
+  HiddenCourses,
+  WorksheetCourse,
+} from '../contexts/worksheetContext';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -113,7 +115,7 @@ type CalendarEvent = {
   recurrence: string[];
   description: string;
   location: string;
-  colorIndex: number;
+  color: string;
   listing: Listing;
   days: number[];
 };
@@ -168,7 +170,7 @@ function toRBCEvent({
   end,
   description,
   location,
-  colorIndex,
+  color,
   listing,
   days,
 }: CalendarEvent): RBCEvent[] {
@@ -191,7 +193,7 @@ function toRBCEvent({
       start: startTimeCpy,
       end: endTimeCpy,
       listing,
-      id: colorIndex,
+      color,
       location,
     };
   });
@@ -199,29 +201,37 @@ function toRBCEvent({
 
 type GCalEvent = ReturnType<typeof toGCalEvent>;
 type ICSEvent = string;
-type RBCEvent = CourseEvent;
+export type RBCEvent = {
+  title: string;
+  description: string;
+  start: Date;
+  end: Date;
+  listing: Listing;
+  color: string;
+  location: string;
+};
 
 export function getCalendarEvents(
   type: 'gcal',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): GCalEvent[];
 export function getCalendarEvents(
   type: 'ics',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): ICSEvent[];
 export function getCalendarEvents(
   type: 'rbc',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): RBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ) {
@@ -242,7 +252,7 @@ export function getCalendarEvents(
   }
   const toEvent =
     type === 'gcal' ? toGCalEvent : type === 'ics' ? toICSEvent : toRBCEvent;
-  const events = visibleCourses.flatMap((c, colorIndex) => {
+  const events = visibleCourses.flatMap(({ listing: c, color }) => {
     const times = getTimes(c.times_by_day);
     const endRepeat = semester
       ? isoString(semester.end, '23:59').replace(/[:-]/gu, '')
@@ -273,7 +283,7 @@ export function getCalendarEvents(
           ],
           description: c.title,
           location,
-          colorIndex,
+          color,
           listing: c,
           days,
         });

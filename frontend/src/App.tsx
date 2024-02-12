@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
@@ -14,9 +14,8 @@ import Footer from './components/Footer';
 import CourseModal from './components/CourseModal/CourseModal';
 
 import { useUser } from './contexts/userContext';
-import { useLocalStorageState } from './utilities/browserStorage';
+import { useTutorial } from './contexts/tutorialContext';
 import { suspended } from './utilities/display';
-import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -46,43 +45,12 @@ const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
   const location = useLocation();
-  // Fetch current device
-  const { isMobile, isTablet } = useWindowDimensions();
   // User context data
   const { loading, user } = useUser();
+  const { isTutorialOpen } = useTutorial();
 
   // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheet);
-
-  // Tutorial state
-  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
-
-  // First tutorial state
-  const [shownTutorial, setShownTutorial] = useLocalStorageState(
-    'shownTutorial',
-    false,
-  );
-
-  // Handle whether or not to open tutorial
-  useEffect(() => {
-    if (!isMobile && !isTablet && isLoggedIn && !shownTutorial) {
-      if (location.pathname === '/catalog') {
-        setIsTutorialOpen(true);
-      } else if (location.pathname !== '/worksheet') {
-        // This can happen if the user got redirected to /challenge
-        setIsTutorialOpen(false);
-      }
-    } else {
-      setIsTutorialOpen(false);
-    }
-  }, [
-    isMobile,
-    isTablet,
-    isLoggedIn,
-    shownTutorial,
-    location,
-    setIsTutorialOpen,
-  ]);
+  const isLoggedIn = Boolean(user.worksheets);
 
   // Render spinner if page loading
   if (loading) {
@@ -117,11 +85,7 @@ function App() {
         </a>
         !
       </Notice>
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        setIsTutorialOpen={setIsTutorialOpen}
-        setShownTutorial={setShownTutorial}
-      />
+      <Navbar />
       <SentryRoutes>
         {/* Home Page */}
         <Route
@@ -198,12 +162,7 @@ function App() {
       </SentryRoutes>
       {!['/catalog'].includes(location.pathname) && <Footer />}
       {/* Tutorial for first-time users */}
-      <Tutorial
-        isTutorialOpen={isTutorialOpen}
-        setIsTutorialOpen={setIsTutorialOpen}
-        shownTutorial={shownTutorial}
-        setShownTutorial={setShownTutorial}
-      />
+      {isTutorialOpen && <Tutorial />}
       <CourseModal />
     </>
   );

@@ -40,10 +40,6 @@
   filter: brightness(90%);
 }
 
-.feature {
-  height: 150px;
-  width: 250px;
-  background-color: rgb(216, 237, 253);
-  border-radius: 50px;
-  transition: 0.3s;
+.stat {
+  color: var(--color-primary);
 }

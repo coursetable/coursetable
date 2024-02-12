@@ -8,7 +8,7 @@
   position: relative;
   width: 100%;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
 }
 
 @media (hover: none) {
@@ -24,17 +24,11 @@
 /* Make this look good in dark mode */
 .searchInput input {
   border-radius: 8px;
-  /* border: 2px solid hsl(0, 0%, 90%); */
 }
 
 .filterTitle {
   font-size: 0.9rem;
-  /* color: rgba(0, 0, 0, 0.75); */
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
+  -webkit-touch-callout: none;
   user-select: none;
 }
 
@@ -46,17 +40,13 @@
   font-weight: 500;
   margin-top: 4px;
   margin-bottom: 4px;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
+  -webkit-touch-callout: none;
   user-select: none;
   width: calc(100% - 35px);
 }
 
 .lightBg {
-  background-color: rgba(0, 0, 0, 0.033);
+  background-color: rgb(0 0 0 / 3.3%);
 }
 
 .sliders {
@@ -77,7 +67,6 @@
   padding: 5px 0;
   border-radius: 6px;
   font-weight: 600;
-
   position: absolute;
   z-index: 1;
   bottom: 150%;
@@ -88,10 +77,10 @@
 .resetFiltersBtn {
   color: #e23e57;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .resetFiltersBtn:hover {
-  cursor: pointer;
   color: #a82f41;
 }
 

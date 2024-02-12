@@ -3,6 +3,13 @@
   margin-bottom: 3rem;
 }
 
+.title {
+  font-weight: 600;
+  font-size: 25px;
+  text-align: center;
+  transition: color var(--trans-dur);
+}
+
 .aboutDescription {
   font-weight: 500;
   font-size: 15px;
@@ -10,13 +17,20 @@
   max-width: 750px;
 }
 
-@media (max-width: 950px) {
+.card {
+  background-color: var(--color-surface);
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+@media (width < 768px) {
   .container {
     width: 80vw;
   }
 }
 
-@media (max-width: 425px) {
+@media (width < 480px) {
   .container {
     width: 90vw;
   }

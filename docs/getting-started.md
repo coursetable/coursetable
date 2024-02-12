@@ -164,7 +164,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
 
-1. Start the frontend:
+1. In a seperate terminal window, start the frontend:
 
    ```sh
    cd ../frontend
@@ -235,8 +235,9 @@ This runs the following checks:
 1. There are no unused dependencies declared in `package.json`
 2. The code is appropriately formatted using [Prettier](https://prettier.io/)
 3. The code follows our [ESLint](https://eslint.org/) rules
-4. Images in `frontend/src/images/headshots` are properly scaled
-5. The code type-checks
+4. The CSS code follows our [stylelint](https://stylelint.io/) rules
+5. Images in `frontend/src/images/headshots` are properly scaled
+6. The code type-checks
 
 If you get any errors, you can run the following command to fix them:
 
@@ -246,6 +247,7 @@ bun checks:fix
 
 - Problems reported by `depcheck`: if the dependency is actually unused, remove it from `package.json` and run `bun install`. If the dependency is actually used but it's not imported by any code (for example, it's only used in command line), add it to the `ignores` list in `.depcheckrc`.
 - Problems reported by `prettier`: they will all be automatically fixed by `checks:fix`.
-- Problems reported by `eslint`: some will all be automatically fixed by `checks:fix`. For the rest, you can check the respective documentation for the rule if you are unsure what to do (your editor's error popup should display a link).
+- Problems reported by `eslint`: some will be automatically fixed by `checks:fix`. For the rest, you can check the respective documentation for the rule if you are unsure what to do (your editor's error popup should display a link).
+- Problems reported by `stylelint`: some will be automatically fixed by `checks:fix`. For the rest, fix them manually.
 - Problems reported by `resize-image`: they will all be automatically fixed by `checks:fix`.
 - Problems reported by `tsc`: you'll have to fix them manually. You can ask someone for help if you are unsure what to do.

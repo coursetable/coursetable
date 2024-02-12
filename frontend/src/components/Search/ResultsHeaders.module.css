@@ -1,5 +1,36 @@
+.spacer {
+  background-color: var(--color-bg);
+  transition: background-color var(--trans-dur);
+  position: sticky;
+  z-index: 2;
+}
+
+.container {
+  border-top: 2px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur) !important;
+}
+
 .resultsHeaderRow {
   user-select: none;
+  max-width: 1600px;
+}
+
+.resultsHeader {
+  line-height: 30px;
+  display: flex;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (width < 1320px) {
+  .resultsHeader {
+    font-size: 12px;
+    line-height: 24px;
+  }
 }
 
 .listGridToggle {
@@ -13,4 +44,17 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.toggle {
+  color: var(--color-text-secondary);
+  padding: 7.5px;
+  border-radius: 15px;
+  transition: color var(--trans-dur);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background-color: var(--color-select);
+  color: var(--color-primary);
 }

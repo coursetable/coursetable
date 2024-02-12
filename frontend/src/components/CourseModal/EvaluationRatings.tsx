@@ -5,7 +5,7 @@ import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
 import type { Crn } from '../../utilities/common';
 import { evalQuestions } from '../../utilities/constants';
-import { TextComponent } from '../StyledComponents';
+import { TextComponent } from '../Typography';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 const questions = Object.keys(evalQuestions) as (keyof typeof evalQuestions)[];
@@ -63,7 +63,7 @@ function EvaluationRatings({
         <Row className="mx-auto mb-1 pl-1 justify-content-center">
           <strong>{evalQuestions[question].title}</strong>
           <small className={clsx(styles.questionText, 'text-center')}>
-            <TextComponent type={1}>
+            <TextComponent type="secondary">
               {evalQuestions[question].question}
             </TextComponent>
           </small>

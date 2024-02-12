@@ -2,36 +2,21 @@ import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { StyledPopover } from '../StyledComponents';
-import type { Listing } from '../../utilities/common';
+import { InfoPopover } from '../Typography';
 import { truncatedText } from '../../utilities/course';
+import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export interface CourseEvent {
-  title: string;
-  description: string;
-  start: Date;
-  end: Date;
-  listing: Listing;
-  id: number;
-  location: string;
-}
-
-const eventStyle = {
-  width: '100%',
-  height: '100%',
-};
-
-function CalendarEvent({ event }: { readonly event: CourseEvent }) {
+function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const course = event.listing;
   return (
     <OverlayTrigger
       // Course info that appears on hover
       placement="right"
       overlay={(props) => (
-        <StyledPopover {...props} id="title-popover">
+        <InfoPopover {...props} id="title-popover">
           <Popover.Title>
             <strong>{course.title}</strong>
             <span className="d-block">{course.times_summary}</span>
@@ -43,18 +28,16 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
               {truncatedText(course.requirements, 250, '')}
             </div>
           </Popover.Content>
-        </StyledPopover>
+        </InfoPopover>
       )}
-      // Have a 1000ms delay before showing popover so it only pops up when user
-      // wants it to
-      delay={{ show: 1000, hide: 0 }}
+      delay={{ show: 300, hide: 0 }}
     >
-      <div style={eventStyle}>
+      <div className={styles.event}>
         <strong>{event.title}</strong>
         <br />
-        <span style={{ fontSize: '12px' }}>
+        <span>
           <ResponsiveEllipsis
-            style={{ whiteSpace: 'pre-wrap' }}
+            className={styles.courseNameText}
             text={event.description}
             maxLine="2"
             basedOn="words"

@@ -1,19 +1,36 @@
 .container {
   transition: 0.1s;
-}
-
-.container:hover {
   cursor: pointer;
 }
 
-.itemContainer:focus,
-.itemContainer:active {
+.resultItem {
+  border-radius: 8px;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.resultItem:focus,
+.resultItem:active {
   border: none;
   outline: none;
 }
 
-.itemContainer {
-  border-radius: 8px;
+.resultItem:hover {
+  background-color: var(--color-select-hover) !important;
+}
+
+.resultItem:not(.inWorksheetResultItem) {
+  background-color: rgb(245 245 245);
+}
+
+[data-theme='dark'] .resultItem:not(.inWorksheetResultItem) {
+  background-color: var(--color-surface-elevated);
+}
+
+.inWorksheetResultItem {
+  background-color: var(--color-primary-light);
 }
 
 .seasonTag {
@@ -24,7 +41,7 @@
 
 .courseCodes {
   font-weight: 500;
-  color: rgb(38, 131, 185);
+  color: rgb(38 131 185);
 }
 
 .professors {
@@ -56,29 +73,18 @@
 .conflictError {
   position: absolute;
   top: -7px;
-  right: 0px;
+  right: 0;
   transform: translate(-40%, 0%);
 }
 
-.friends {
-  position: absolute;
-  top: 0px;
-  left: 8px;
-  width: 16px;
-  height: 16px;
-  line-height: 15px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 500;
+.iconContainer {
+  fill: var(--color-text);
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .icon {
   width: 16px;
-  display: block;
-}
-
-.profIcon {
-  width: 15px;
   display: block;
 }
 

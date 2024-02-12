@@ -1,0 +1,135 @@
+.surface {
+  transition: background-color var(--trans-dur);
+  background-color: var(--color-surface);
+}
+
+.surface.surfaceElevated {
+  background-color: var(--color-surface-elevated);
+}
+
+.text {
+  transition: background-color var(--trans-dur);
+  color: var(--color-text);
+}
+
+.text.secondaryText {
+  color: var(--color-text-secondary);
+}
+
+.text.tertiaryText {
+  color: var(--color-text-tertiary);
+}
+
+.smallText {
+  font-size: 70%;
+}
+
+.input {
+  background-color: var(--color-select);
+  color: var(--color-text);
+  border: solid 2px rgb(0 0 0 / 10%);
+  border-radius: 8px;
+  padding: 0.375rem 0.75rem;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.input:hover {
+  border: 2px solid hsl(0deg 0% 70%);
+}
+
+.input:focus {
+  background-color: var(--color-select);
+}
+
+.input:global(.form-control):focus {
+  color: var(--color-text);
+}
+
+.hr {
+  border-color: #ededed;
+  transition: border-color var(--trans-dur);
+}
+
+[data-theme='dark'] .hr {
+  border-color: #404040;
+}
+
+.infoPopover {
+  background-color: var(--color-surface);
+  z-index: 10000;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.infoPopover :global(.popover-header) {
+  background-color: var(--color-banner);
+  color: var(--color-text-secondary);
+}
+
+.infoPopover :global(.popover-body) {
+  color: var(--color-text);
+}
+
+.infoPopover :global(.arrow)::after {
+  border-right-color: var(--color-surface);
+  border-left-color: var(--color-surface);
+}
+
+@media (width < 768px) {
+  .infoPopover :global(.popover-header),
+  .infoPopover :global(.popover-body),
+  .infoPopover :global(.arrow)::before,
+  .infoPopover :global(.arrow)::after {
+    display: none;
+  }
+}
+
+.ratingBubble {
+  display: flex;
+  align-items: center;
+}
+
+.ratingBubble:not(.hasRating) {
+  font-weight: 400;
+  font-size: 12px;
+  color: #b5b5b5;
+}
+
+.ratingBubble.hasRating {
+  font-weight: 600;
+  color: #141414;
+}
+
+.linkText {
+  color: var(--color-primary);
+  transition: color var(--trans-dur);
+  cursor: pointer;
+}
+
+.linkText:hover {
+  color: var(--color-primary-hover);
+}
+
+.hoverText {
+  user-select: none;
+  cursor: pointer;
+}
+
+.hoverText:hover {
+  color: var(--color-primary);
+}
+
+@media (width < 1320px) {
+  .smallText {
+    font-size: 64%;
+  }
+
+  .hoverText {
+    font-size: 0.9rem;
+  }
+}

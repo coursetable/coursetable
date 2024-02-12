@@ -8,14 +8,16 @@
     "frontend"
   ],
   "scripts": {
-    "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run resize-image:check && bun run typecheck",
-    "checks:fix": "bun run format && bun run lint && bun run resize-image",
+    "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run lint:css:check && bun run resize-image:check && bun run typecheck",
+    "checks:fix": "bun run format && bun run lint && bun run lint:css && bun run resize-image",
     "typecheck": "tsc && tsc -p frontend && tsc -p api",
     "depcheck": "bunx depcheck . --ignore-patterns=api,frontend && bunx depcheck api && bunx depcheck frontend",
     "format": "prettier --write .",
     "format:check": "prettier -l .",
     "lint": "eslint --fix \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
     "lint:check": "eslint \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
+    "lint:css": "stylelint --fix \"**/*.css\"",
+    "lint:css:check": "stylelint \"**/*.css\"",
     "resize-image": "bun tools/resize-image.mts",
     "resize-image:check": "bun tools/resize-image.mts --test",
     "postinstall": "patch-package"
@@ -26,11 +28,12 @@
   "devDependencies": {
     "@types/image-size": "^0.8.0",
     "@types/sharp": "^0.32.0",
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "commander": "^11.1.0",
     "eslint": "^8.56.0",
     "eslint-config-jc": "^4.2.1",
+    "eslint-plugin-css-modules": "^2.12.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-n": "^16.6.2",
@@ -39,9 +42,12 @@
     "eslint-plugin-regexp": "^2.2.0",
     "image-size": "^1.1.1",
     "patch-package": "^8.0.0",
-    "prettier": "^3.2.4",
+    "prettier": "^3.2.5",
     "sharp": "^0.33.2",
+    "stylelint": "^16.2.1",
+    "stylelint-config-standard": "^36.0.0",
     "tsconfig-jc": "^2.3.1",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "typescript-plugin-css-modules": "^5.0.2"
   }
 }

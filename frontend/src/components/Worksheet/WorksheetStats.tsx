@@ -1,28 +1,38 @@
 import React, { useState } from 'react';
 import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
-import styled from 'styled-components';
 import clsx from 'clsx';
 import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
+import { useTheme } from '../../contexts/themeContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { ratingColormap } from '../../utilities/constants';
 import { getOverallRatings, getWorkloadRatings } from '../../utilities/course';
 import styles from './WorksheetStats.module.css';
 
-const StyledStatPill = styled.span<
-  { colormap: chroma.Scale; stat: number } | { colormap?: never; stat?: never }
->`
-  background-color: ${({ theme, colormap, stat }) =>
-    colormap
-      ? colormap(stat).alpha(theme.ratingAlpha).css()
-      : theme.surface[0]};
-  color: ${({ theme, stat }) => (stat ? '#141414' : theme.text[0])};
-`;
-
-const StyledInfo = styled(MdInfoOutline)`
-  color: ${({ theme }) => theme.primary};
-`;
+function StatPill({
+  colorMap,
+  stat,
+  children,
+}: {
+  readonly colorMap: chroma.Scale;
+  readonly stat: number;
+  readonly children: React.ReactNode;
+}) {
+  const { theme } = useTheme();
+  return (
+    <span
+      className={styles.statPill}
+      style={{
+        backgroundColor: colorMap(stat)
+          .alpha(theme === 'light' ? 1 : 0.75)
+          .css(),
+      }}
+    >
+      {children}
+    </span>
+  );
+}
 
 const courseNumberColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
@@ -38,6 +48,35 @@ const formatter = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction',
 });
+
+function NoStatsTip({
+  coursesWithoutRating,
+  coursesWithRating,
+}: {
+  readonly coursesWithoutRating: string[];
+  readonly coursesWithRating: number;
+}) {
+  return (
+    coursesWithoutRating.length > 0 && (
+      <OverlayTrigger
+        placement="top"
+        overlay={(props) => (
+          <Tooltip {...props} id="conflict-icon-button-tooltip">
+            <small style={{ fontWeight: 500 }}>
+              Computed with {coursesWithRating} course
+              {coursesWithRating === 1 ? '' : 's'}.{' '}
+              {formatter.format(coursesWithoutRating)} ha
+              {coursesWithoutRating.length > 1 ? 've' : 's'} no ratings.
+            </small>
+          </Tooltip>
+        )}
+      >
+        <MdInfoOutline className={styles.infoIcon} />
+      </OverlayTrigger>
+    )
+  );
+}
+
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hiddenCourses, curSeason } = useWorksheet();
@@ -50,7 +89,7 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  for (const course of courses) {
+  for (const { listing: course } of courses) {
     // See if any of the course's codes have already been counted or if it's
     // hidden so we don't double count
     const alreadyCounted = course.all_course_codes.some((code) =>
@@ -94,79 +133,48 @@ export default function WorksheetStats() {
           <div className={styles.stats}>
             <ul>
               <li>
-                <StyledStatPill>Total courses</StyledStatPill>
-                <StyledStatPill
-                  colormap={courseNumberColormap}
-                  stat={courseCnt}
-                >
+                <span className={styles.statName}>Total courses</span>
+                <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
                   {courseCnt}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>Total credits</StyledStatPill>
-                <StyledStatPill colormap={creditColormap} stat={credits}>
+                <span className={styles.statName}>Total credits</span>
+                <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>
+                <span className={styles.statName}>
                   Total workload
-                  {coursesWithoutWorkload.length > 0 && (
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={(props) => (
-                        <Tooltip {...props} id="conflict-icon-button-tooltip">
-                          <small style={{ fontWeight: 500 }}>
-                            Computed with {coursesWithWorkload} course
-                            {coursesWithWorkload === 1 ? '' : 's'}.{' '}
-                            {formatter.format(coursesWithoutWorkload)} ha
-                            {coursesWithoutWorkload.length > 1 ? 've' : 's'} no
-                            ratings.
-                          </small>
-                        </Tooltip>
-                      )}
-                    >
-                      <StyledInfo />
-                    </OverlayTrigger>
-                  )}
-                </StyledStatPill>
-                <StyledStatPill colormap={workloadColormap} stat={workload}>
+                  <NoStatsTip
+                    coursesWithoutRating={coursesWithoutWorkload}
+                    coursesWithRating={coursesWithWorkload}
+                  />
+                </span>
+                <StatPill colorMap={workloadColormap} stat={workload}>
                   {workload.toFixed(2)}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>
+                <span className={styles.statName}>
                   Average rating
-                  {coursesWithoutRating.length > 0 && (
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={(props) => (
-                        <Tooltip {...props} id="conflict-icon-button-tooltip">
-                          <small style={{ fontWeight: 500 }}>
-                            Computed with {coursesWithRating} course
-                            {coursesWithRating === 1 ? '' : 's'}.{' '}
-                            {formatter.format(coursesWithoutRating)} ha
-                            {coursesWithoutRating.length > 1 ? 've' : 's'} no
-                            ratings.
-                          </small>
-                        </Tooltip>
-                      )}
-                    >
-                      <StyledInfo />
-                    </OverlayTrigger>
-                  )}
-                </StyledStatPill>
-                <StyledStatPill colormap={ratingColormap} stat={avgRating}>
+                  <NoStatsTip
+                    coursesWithoutRating={coursesWithoutRating}
+                    coursesWithRating={coursesWithRating}
+                  />
+                </span>
+                <StatPill colorMap={ratingColormap} stat={avgRating}>
                   {avgRating.toFixed(2)}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li className={styles.wide}>
-                <StyledStatPill>Skills & Areas</StyledStatPill>
-                <StyledStatPill>
+                <span className={styles.statName}>Skills & Areas</span>
+                <span className={styles.statName}>
                   {skillsAreas.sort().map((skill, i) => (
                     <SkillBadge skill={skill} key={i} />
                   ))}
-                </StyledStatPill>
+                </span>
               </li>
             </ul>
           </div>

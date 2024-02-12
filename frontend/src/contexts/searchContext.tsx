@@ -13,6 +13,7 @@ import {
 } from '../utilities/common';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
+import { useWorksheet } from './worksheetContext';
 import {
   skillsAreasColors,
   skillsAreas,
@@ -21,6 +22,7 @@ import {
   courseInfoAttributes,
 } from '../utilities/constants';
 import {
+  isInWorksheet,
   checkConflict,
   getDayTimes,
   getEnrolled,
@@ -33,6 +35,7 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
+  type NumFriendsReturn,
 } from '../utilities/course';
 import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
@@ -129,7 +132,7 @@ type Store = {
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
-  numFriends: { [seasonCodeCrn: string]: string[] };
+  numFriends: NumFriendsReturn;
   duration: number;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -247,7 +250,7 @@ export function SearchProvider({
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
-  const isLoggedIn = Boolean(user.worksheet);
+  const isLoggedIn = Boolean(user.worksheets);
 
   // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
@@ -268,11 +271,13 @@ export function SearchProvider({
     () => selectSubjects.value.map((x) => x.value),
     [selectSubjects.value],
   );
-  const processedSkillsAreas = useMemo(() => {
-    const ret = selectSkillsAreas.value.map((x) => x.value);
-    if (ret.includes('L')) ret.push('L1', 'L2', 'L3', 'L4', 'L5');
-    return ret;
-  }, [selectSkillsAreas.value]);
+  const processedSkillsAreas = useMemo(
+    () =>
+      selectSkillsAreas.value.flatMap((x) =>
+        x.value === 'L' ? ['L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
+      ),
+    [selectSkillsAreas.value],
+  );
   const processedSeasons = useMemo(() => {
     if (selectSeasons.value.length === 0) {
       // Nothing selected, so default to all seasons.
@@ -333,7 +338,13 @@ export function SearchProvider({
   // (if multiple seasons are queried, the season is indicated)
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { data: worksheetInfo } = useWorksheetInfo(user.worksheet);
+  const { worksheetNumber } = useWorksheet();
+
+  const { data: worksheetInfo } = useWorksheetInfo(
+    user.worksheets,
+    processedSeasons,
+    worksheetNumber,
+  );
 
   // Filtered and sorted courses
   const searchData = useMemo(() => {
@@ -417,6 +428,12 @@ export function SearchProvider({
       if (
         hideConflicting.value &&
         listing.times_summary !== 'TBA' &&
+        !isInWorksheet(
+          listing.season_code,
+          listing.crn,
+          worksheetNumber,
+          user.worksheets,
+        ) &&
         checkConflict(worksheetInfo, listing).length > 0
       )
         return false;
@@ -524,6 +541,8 @@ export function SearchProvider({
     processedNumBounds,
     hideCancelled.value,
     hideConflicting.value,
+    worksheetNumber,
+    user.worksheets,
     worksheetInfo,
     hideDiscussionSections.value,
     hideFirstYearSeminars.value,

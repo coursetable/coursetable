@@ -759,3 +759,20 @@ export const evalQuestions = {
     title: 'Intellectual Challenge',
   },
 };
+
+export const worksheetColors = [
+  '#6cc26f',
+  '#ca5f53',
+  '#31a4d4',
+  '#df8653',
+  '#26ba9a',
+  '#ba7881',
+];
+
+export const barChartColors = [
+  '#f54242',
+  '#f5a142',
+  '#f5f542',
+  '#aeed1a',
+  '#00e800',
+];

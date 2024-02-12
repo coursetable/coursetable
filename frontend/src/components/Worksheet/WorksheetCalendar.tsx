@@ -2,56 +2,16 @@ import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import styled from 'styled-components';
+import chroma from 'chroma-js';
 
-import CalendarEvent, { type CourseEvent } from './CalendarEvent';
-import { localizer, getCalendarEvents } from '../../utilities/calendar';
+import CalendarEvent from './CalendarEvent';
+import {
+  localizer,
+  getCalendarEvents,
+  type RBCEvent,
+} from '../../utilities/calendar';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import './react-big-calendar-override.css';
-
-// Calendar for worksheet
-const StyledCalendar = styled(Calendar<CourseEvent>)`
-  &.rbc-calendar {
-    .rbc-time-view {
-      .rbc-time-header {
-        .rbc-time-header-content {
-          border-color: ${({ theme }) => theme.border};
-          transition: border-color ${({ theme }) => theme.transDur};
-          .rbc-time-header-cell {
-            .rbc-header {
-              user-select: none;
-              cursor: default;
-              border-color: ${({ theme }) => theme.border};
-              transition: border-color ${({ theme }) => theme.transDur};
-            }
-          }
-        }
-      }
-      .rbc-time-content {
-        border-color: ${({ theme }) => theme.border};
-        transition: border-color ${({ theme }) => theme.transDur};
-        .rbc-time-gutter {
-          .rbc-timeslot-group {
-            user-select: none;
-            cursor: default;
-            border-color: ${({ theme }) => theme.border};
-            transition: border-color ${({ theme }) => theme.transDur};
-          }
-        }
-        .rbc-day-slot {
-          .rbc-timeslot-group {
-            border-color: ${({ theme }) => theme.border};
-            transition: border-color ${({ theme }) => theme.transDur};
-            .rbc-time-slot {
-              border-color: ${({ theme }) => theme.border};
-              transition: border-color ${({ theme }) => theme.transDur};
-          }
-        }
-      }
-    }
-  }
-`;
-// TODO: Allow users to change color of courses in calendar?
 
 /**
  * Render Worksheet Calendar component
@@ -63,12 +23,11 @@ function WorksheetCalendar() {
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
-    (event: CourseEvent) => {
-      // Shouldn't happen
-      if (!event.listing.color) return { style: {} };
+    (event: RBCEvent) => {
+      const color = chroma(event.color);
       const style: CSSProperties = {
-        backgroundColor: `rgb(${event.listing.color.join(' ')} / 0.85)`,
-        borderColor: `rgb(${event.listing.color.join(' ')})`,
+        backgroundColor: color.alpha(0.85).css(),
+        borderColor: color.css(),
         borderWidth: '2px',
       };
       if (hoverCourse && hoverCourse === event.listing.crn) {
@@ -117,7 +76,7 @@ function WorksheetCalendar() {
   }, [courses, hiddenCourses, curSeason]);
 
   return (
-    <StyledCalendar
+    <Calendar
       // Show Mon-Fri
       defaultView="work_week"
       views={['work_week']}

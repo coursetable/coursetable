@@ -6,8 +6,9 @@ import {
   weekdays,
   type Listing,
 } from './common';
-import type { FriendRecord, Worksheet } from '../contexts/userContext';
+import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
 import type { SortKeys } from '../contexts/searchContext';
+import type { WorksheetCourse } from '../contexts/worksheetContext';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -23,15 +24,16 @@ export function truncatedText(
 export function isInWorksheet(
   seasonCode: Season,
   crn: Crn,
-  worksheetNumber: string,
-  worksheet?: Worksheet,
+  worksheetNumber: number,
+  worksheet: UserWorksheets | undefined,
 ): boolean {
   if (!worksheet) return false;
-  return worksheet.some(
-    (course) =>
-      course[0] === seasonCode &&
-      course[1] === String(crn) &&
-      course[2] === worksheetNumber,
+  return (
+    seasonCode in worksheet &&
+    worksheetNumber in worksheet[seasonCode]! &&
+    worksheet[seasonCode]![worksheetNumber]!.some(
+      (course) => course.crn === crn,
+    )
   );
 }
 
@@ -43,13 +45,16 @@ export function toSeasonString(seasonCode: Season): string {
 }
 
 // Checks if the a new course conflicts with the user's worksheet
-export function checkConflict(listings: Listing[], course: Listing): Listing[] {
+export function checkConflict(
+  worksheetData: WorksheetCourse[],
+  course: Listing,
+): Listing[] {
   const conflicts: Listing[] = [];
   const daysToCheck = Object.keys(
     course.times_by_day,
   ) as (keyof Listing['times_by_day'])[];
   // Iterate over worksheet listings
-  loopWorksheet: for (const worksheetCourse of listings) {
+  loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
     // Continue if they aren't in the same season
     if (worksheetCourse.season_code !== course.season_code) continue;
     for (const day of daysToCheck) {
@@ -78,12 +83,12 @@ export function checkConflict(listings: Listing[], course: Listing): Listing[] {
 }
 // Checks if a course is cross-listed in the user's worksheet
 export function checkCrossListed(
-  listings: Listing[],
+  worksheetData: WorksheetCourse[],
   course: Listing,
 ): false | string {
   const classes: string[] = [];
   // Iterate over worksheet listings
-  for (const l of listings) {
+  for (const { listing: l } of worksheetData) {
     // Continue if they aren't in the same season
     if (l.season_code !== course.season_code) continue;
     // Keep track of encountered classes and their aliases in the classes array
@@ -104,10 +109,12 @@ export function friendsAlsoTaking(
 ): string[] {
   if (!friends) return [];
   return Object.values(friends)
-    .filter((friend) =>
-      friend.worksheets.some(
-        (value) => value[0] === seasonCode && parseInt(value[1], 10) === crn,
-      ),
+    .filter(
+      (friend) =>
+        seasonCode in friend.worksheets &&
+        Object.values(friend.worksheets[seasonCode]!).some((w) =>
+          w.some((course) => course.crn === crn),
+        ),
     )
     .map((friend) => friend.name);
 }
@@ -116,7 +123,7 @@ export function friendsAlsoTaking(
  * Key is season code + crn;
  * Value is the list of friends taking the class
  */
-type NumFriendsReturn = { [seasonCodeCrn: string]: string[] };
+export type NumFriendsReturn = { [seasonCodeCrn: string]: Set<string> };
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
 export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
@@ -125,12 +132,13 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   // Iterate over each friend's worksheet
   for (const friend of Object.values(friends)) {
     // Iterate over each course in this friend's worksheet
-    friend.worksheets.forEach((course) => {
-      const key = course[0] + course[1]; // Key of object is season code + crn
-      // There are a lot of ESLint bugs with index signatures and
-      // no-unnecessary-condition
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      (numFriends[key] ??= []).push(friend.name); // Add friend's name to this list
+    Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
+      Object.values(worksheets).forEach((w) =>
+        w.forEach((course) => {
+          const key = seasonCode + course.crn; // Key of object is season code + crn
+          (numFriends[key] ??= new Set()).add(friend.name);
+        }),
+      );
     });
   }
   return numFriends;
@@ -272,8 +280,8 @@ function compare(
   // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key
-    const friendsTakingA = numFriends[a.season_code + a.crn]?.length ?? 0;
-    const friendsTakingB = numFriends[b.season_code + b.crn]?.length ?? 0;
+    const friendsTakingA = numFriends[a.season_code + a.crn]?.size ?? 0;
+    const friendsTakingB = numFriends[b.season_code + b.crn]?.size ?? 0;
     return comparatorReturn(friendsTakingA, friendsTakingB);
   }
   // Sorting by course rating

@@ -1,11 +1,10 @@
 import React from 'react';
-
-import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
-import { TextComponent, StyledCard } from '../components/StyledComponents';
+import { TextComponent } from '../components/Typography';
+import { useTheme } from '../contexts/themeContext';
 
 // Link Logos
 import github from '../images/link-logos/github.png';
@@ -47,14 +46,6 @@ import hs from '../images/headshots/harshal-sheth.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 
-// Header
-const StyledH1 = styled.h1`
-  font-weight: 600;
-  font-size: 25px;
-  text-align: center;
-  transition: color ${({ theme }) => theme.transDur};
-`;
-
 type Person = {
   name: string;
   image: string;
@@ -67,7 +58,7 @@ type Person = {
 };
 
 function About() {
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   const current: Person[] = [
     {
@@ -80,59 +71,22 @@ function About() {
       },
     },
     {
-      name: 'Lucas Huang',
-      image: lh,
+      name: 'Sida Chen',
+      image: sc,
       role: 'CourseTable Co-Lead',
       links: {
-        github: 'https://github.com/Quintec',
-        linkedin: 'https://www.linkedin.com/in/huangl16/',
-        website: 'https://quintec.github.io/',
+        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
+        github: 'https://github.com/Josh-Cena/',
+        website: 'https://joshcena.com/',
       },
     },
     {
-      name: 'Lily Zhou',
-      image: lz,
-      role: 'Former Lead',
+      name: 'Neil Song',
+      image: ns,
+      role: 'Backend Team Lead',
       links: {
-        github: 'https://github.com/lilyzhouZYJ',
-        linkedin: 'https://www.linkedin.com/in/lily-zhou-b12142146/',
-      },
-    },
-    {
-      name: 'Kevin Hu',
-      image: kh,
-      role: 'Former Lead',
-      links: {
-        github: 'https://github.com/kevinhu',
-        linkedin: 'https://www.linkedin.com/in/hukevinhu/',
-        website: 'https://kevinhu.io/',
-      },
-    },
-    {
-      name: 'Josh Chough',
-      image: jc,
-      role: 'Former Lead',
-      links: {
-        github: 'https://github.com/itsjoshthedeveloper',
-        linkedin: 'https://www.linkedin.com/in/joshchough/',
-      },
-    },
-    {
-      name: 'Max Yuan',
-      image: my,
-      role: 'Former Lead',
-      links: {
-        github: 'https://github.com/maxyuan6717',
-        linkedin: 'https://www.linkedin.com/in/max-yuan-209930194/',
-        website: 'https://maxyuan.io/',
-      },
-    },
-    {
-      name: 'Erik Boesen',
-      image: eb,
-      role: 'Development',
-      links: {
-        website: 'https://erikboesen.com',
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
       },
     },
     {
@@ -145,15 +99,6 @@ function About() {
       },
     },
     {
-      name: 'Neil Song',
-      image: ns,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/neil-song/',
-        github: 'https://github.com/neilsong',
-      },
-    },
-    {
       name: 'Kenny Tung',
       image: kt,
       role: 'Development',
@@ -163,18 +108,9 @@ function About() {
         website: 'https://kenneru.netlify.app/',
       },
     },
-    {
-      name: 'Sida Chen',
-      image: sc,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
-        github: 'https://github.com/Josh-Cena/',
-        website: 'https://joshcena.com/',
-      },
-    },
   ];
 
+  // Order within role categories is best guess at reverse chronological
   const alumni: Person[] = [
     {
       name: 'Peter Xu',
@@ -187,6 +123,54 @@ function About() {
       role: 'Cofounder',
     },
     {
+      name: 'Lucas Huang',
+      image: lh,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/Quintec',
+        linkedin: 'https://www.linkedin.com/in/huangl16/',
+        website: 'https://quintec.github.io/',
+      },
+    },
+    {
+      name: 'Lily Zhou',
+      image: lz,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/lilyzhouZYJ',
+        linkedin: 'https://www.linkedin.com/in/lily-zhou-b12142146/',
+      },
+    },
+    {
+      name: 'Kevin Hu',
+      image: kh,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/kevinhu',
+        linkedin: 'https://www.linkedin.com/in/hukevinhu/',
+        website: 'https://kevinhu.io/',
+      },
+    },
+    {
+      name: 'Josh Chough',
+      image: jc,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/itsjoshthedeveloper',
+        linkedin: 'https://www.linkedin.com/in/joshchough/',
+      },
+    },
+    {
+      name: 'Max Yuan',
+      image: my,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/maxyuan6717',
+        linkedin: 'https://www.linkedin.com/in/max-yuan-209930194/',
+        website: 'https://maxyuan.io/',
+      },
+    },
+    {
       name: 'Harshal Sheth',
       image: hs,
       role: 'CourseTable Lead',
@@ -197,19 +181,22 @@ function About() {
       },
     },
     {
-      name: 'Hao Li',
-      image: hl,
-      role: 'Development',
-    },
-    {
-      name: 'Dylan Fernandez de Lara',
-      image: df,
-      role: 'Design',
-    },
-    {
       name: 'Michelle M. Li',
       image: ml,
       role: 'Design Lead',
+    },
+    {
+      name: 'Erik Boesen',
+      image: eb,
+      role: 'Development',
+      links: {
+        website: 'https://erikboesen.com',
+      },
+    },
+    {
+      name: 'Hao Li',
+      image: hl,
+      role: 'Development',
     },
     {
       name: 'Murad Avliyakulov',
@@ -220,14 +207,6 @@ function About() {
       name: 'Abhijit Gupta',
       image: ag,
       role: 'Development',
-    },
-    {
-      name: 'Sidney Hirschman',
-      image: sh,
-      role: 'Design',
-      links: {
-        website: 'https://sidneyhirschman.com/',
-      },
     },
     {
       name: 'Aidan Evans',
@@ -255,6 +234,29 @@ function About() {
       role: 'Development',
     },
     {
+      name: 'Leck Tang',
+      image: lt,
+      role: 'Development',
+    },
+    {
+      name: 'Shayna Sragovicz',
+      image: ss,
+      role: 'Development',
+    },
+    {
+      name: 'Dylan Fernandez de Lara',
+      image: df,
+      role: 'Design',
+    },
+    {
+      name: 'Sidney Hirschman',
+      image: sh,
+      role: 'Design',
+      links: {
+        website: 'https://sidneyhirschman.com/',
+      },
+    },
+    {
       name: 'Josephine Shin',
       image: js,
       role: 'Design',
@@ -263,16 +265,6 @@ function About() {
       name: 'Lauren Song',
       image: ls,
       role: 'Design',
-    },
-    {
-      name: 'Shayna Sragovicz',
-      image: ss,
-      role: 'Development',
-    },
-    {
-      name: 'Leck Tang',
-      image: lt,
-      role: 'Development',
     },
     {
       name: 'Anna Zhang',
@@ -290,7 +282,7 @@ function About() {
     link && (
       <a href={link}>
         <img
-          src={theme.theme === 'dark' ? imageDark : image}
+          src={theme === 'dark' ? imageDark : image}
           alt={text}
           style={{
             width: '24px',
@@ -302,26 +294,41 @@ function About() {
 
   const createCards = (person: Person, idx: number) => (
     <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-      <StyledCard style={{ height: '100%' }}>
+      <Card className={styles.card} style={{ height: '100%' }}>
         <Card.Img variant="top" src={person.image} alt={person.name} />
         <Card.Body className="p-3">
           <Card.Title className="mb-1">{person.name}</Card.Title>
           <Card.Text>
-            <TextComponent type={1}>{person.role}</TextComponent>
+            <TextComponent type="secondary">{person.role}</TextComponent>
             <br />
             {logoLink(person.links?.github, github, githubDark, 'github')}
             {logoLink(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
             {logoLink(person.links?.website, web, webDark, 'website')}
           </Card.Text>
         </Card.Body>
-      </StyledCard>
+      </Card>
+    </div>
+  );
+
+  const alumniSection = (role: string, exactMatch: boolean = false) => (
+    <div>
+      <h3 className="mt-3">{exactMatch ? role : `${role}s`}</h3>
+      <div className="my-1">
+        <Row className="mx-auto">
+          {alumni
+            .filter((person) =>
+              exactMatch ? person.role === role : person.role.includes(role),
+            )
+            .map(createCards)}
+        </Row>
+      </div>
     </div>
   );
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <StyledH1 className="mt-5 mb-1">About Us</StyledH1>
-      <TextComponent type={1}>
+      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</h1>
+      <TextComponent type="secondary">
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find
           the courses they want, bringing together course information, student
@@ -358,14 +365,21 @@ function About() {
         </div>
       </Row>
 
+      <h1 className="mt-3">Current Team</h1>
+
       <div className="my-3">
         <Row className="mx-auto">{current.map(createCards)}</Row>
       </div>
 
-      <h1 className="mt-5 mb-1">CourseTable Alumni</h1>
-      <div className="my-3">
-        <Row className="mx-auto">{alumni.map(createCards)}</Row>
-      </div>
+      <h1 className="mt-5 mb-5">CourseTable Alumni</h1>
+
+      {alumniSection('Cofounder')}
+
+      {alumniSection('Lead')}
+
+      {alumniSection('Development', true)}
+
+      {alumniSection('Design', true)}
     </div>
   );
 }

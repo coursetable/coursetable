@@ -3,29 +3,24 @@ import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
-import chroma from 'chroma-js';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import styled from 'styled-components';
 import clsx from 'clsx';
 
 import {
   ratingColormap,
   workloadColormap,
-  skillsAreasColors,
   subjects,
 } from '../../utilities/constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import {
-  TextComponent,
-  StyledPopover,
-  StyledRating,
-} from '../StyledComponents';
+import SkillBadge from '../SkillBadge';
+import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
 import styles from './ResultsItem.module.css';
+import colStyles from './ResultsCols.module.css';
 import {
   getEnrolled,
   getOverallRatings,
@@ -34,55 +29,9 @@ import {
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
-import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
 
-// Row for results item
-const StyledResultsItem = styled(Row)`
-  max-width: 1600px;
-  user-select: none;
-  overflow: hidden;
-  position: relative;
-  font-size: 13px;
-  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
-  line-height: 32px;
-  ${breakpoints('line-height', 'px', [{ 1320: 28 }])};
-`;
-
-// Wrapper for row
-const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
-  outline: none !important;
-  background-color: ${({ theme, inWorksheet }) =>
-    inWorksheet ? theme.primaryLight : 'inherit'};
-
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ theme }) => theme.selectHover} !important;
-  }
-
-  transition:
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-`;
-
-// Rating cell within the row
-const RatingCell = styled(StyledRating)`
-  width: 100%;
-  height: 100%;
-  padding: 3px 10px;
-  line-height: 1.5;
-  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
-`;
-
-// Season and skills/areas tag
-const Tag = styled(Badge)`
-  margin: 1px;
-  font-size: 13px;
-  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
-  font-weight: 600 !important;
-  padding: 4px 6px !important;
-  border-radius: 6px !important;
-`;
+import { useSearch } from '../../contexts/searchContext';
 
 /**
  * Renders a list item for a search result
@@ -98,16 +47,13 @@ function ResultsItem({
   course,
   multiSeasons,
   isFirst,
-  COL_SPACING,
-  friends,
+  isOdd,
   style,
 }: {
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
-  // This can be more exact, but I'm too lazy to type everything out :)
-  readonly COL_SPACING: { [prop: string]: number };
-  readonly friends: string[];
+  readonly isOdd: boolean;
   readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
@@ -118,6 +64,9 @@ function ResultsItem({
   useEffect(() => {
     if (!mounted) setMounted(true);
   }, [mounted]);
+
+  const { numFriends } = useSearch();
+  const friends = numFriends[course.season_code + course.crn];
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
@@ -138,56 +87,20 @@ function ResultsItem({
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
-  // Column width styles
-  const sznStyle: React.CSSProperties = {
-    width: `${COL_SPACING.SZN_WIDTH}px`,
-    paddingLeft: '15px',
-  };
-  const codeStyle: React.CSSProperties = {
-    width: `${COL_SPACING.CODE_WIDTH}px`,
-    paddingLeft: !multiSeasons ? '15px' : '0px',
-  };
-  const titleStyle: React.CSSProperties = {
-    width: `${COL_SPACING.TITLE_WIDTH}px`,
-  };
-  const rateOverallStyle: React.CSSProperties = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
-  };
-  const rateWorkloadStyle: React.CSSProperties = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
-  };
-  const rateProfStyle: React.CSSProperties = {
-    whiteSpace: 'nowrap',
-    minWidth: `${COL_SPACING.RATE_PROF_WIDTH}px`,
-  };
-  const profStyle: React.CSSProperties = {
-    width: `${COL_SPACING.PROF_WIDTH}px`,
-  };
-  const meetStyle: React.CSSProperties = {
-    width: `${COL_SPACING.MEET_WIDTH}px`,
-  };
-  const locStyle: React.CSSProperties = {
-    width: `${COL_SPACING.LOC_WIDTH}px`,
-  };
-  const enrollStyle: React.CSSProperties = {
-    width: `${COL_SPACING.ENROLL_WIDTH}px`,
-  };
-  const friendsStyle: React.CSSProperties = {
-    width: `${COL_SPACING.FRIENDS_WIDTH}px`,
-  };
-  const saStyle: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
-
   const [subjectCode, courseCode] = course.course_code.split(' ') as [
     string,
     string,
   ];
 
   return (
-    <StyledSpacer
+    // TODO
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
       className={clsx(
-        isFirst && styles.firstSearchResultItem,
+        styles.resultItem,
+        courseInWorksheet && styles.inWorksheetResultItem,
+        isFirst && styles.firstResultItem,
+        isOdd ? styles.oddResultItem : styles.evenResultItem,
         course.extra_info !== 'ACTIVE' && styles.cancelledClass,
       )}
       onClick={() => {
@@ -196,15 +109,21 @@ function ResultsItem({
           return prev;
         });
       }}
+      // TODO
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
-      inWorksheet={courseInWorksheet}
       style={style}
     >
       {/* Search Row Item */}
-      <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
+      <Row
+        className={clsx(
+          styles.resultItemContent,
+          'mx-auto pl-4 pr-2 py-0 justify-content-between',
+        )}
+      >
         {/* Season */}
         {multiSeasons && (
-          <div style={sznStyle} className="d-flex">
+          <div className={clsx('d-flex', colStyles.seasonCol)}>
             <OverlayTrigger
               placement="top"
               overlay={(props) => (
@@ -214,52 +133,59 @@ function ResultsItem({
               )}
             >
               <div className={clsx(styles.skillsAreas, 'my-auto')}>
-                <Tag
+                <Badge
                   variant="secondary"
-                  className={styles[seasons[(season - 1) as 0 | 1 | 2]]}
+                  className={clsx(
+                    styles.tag,
+                    styles[seasons[(season - 1) as 0 | 1 | 2]],
+                  )}
                   key={season}
                 >
                   <div style={{ display: 'inline-block' }}>{icon}</div>
                   &nbsp;{`'${year}`}
-                </Tag>
+                </Badge>
               </div>
             </OverlayTrigger>
           </div>
         )}
         {/* Course Code */}
         <div
-          style={codeStyle}
-          className={clsx(styles.ellipsisText, 'font-weight-bold')}
+          className={clsx(
+            colStyles.codeCol,
+            multiSeasons && colStyles.multiSeasons,
+          )}
         >
-          <OverlayTrigger
-            placement="top"
-            overlay={(props) => {
-              const subjectName = subjects[subjectCode];
-              if (!subjectName) {
-                Sentry.captureException(
-                  new Error(`Subject ${subjectCode} has no label`),
+          <div className={clsx(styles.ellipsisText, 'font-weight-bold')}>
+            <OverlayTrigger
+              placement="top"
+              overlay={(props) => {
+                const subjectName = subjects[subjectCode];
+                if (!subjectName) {
+                  Sentry.captureException(
+                    new Error(`Subject ${subjectCode} has no label`),
+                  );
+                }
+                return (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <small>{subjectName ?? '[unknown]'}</small>
+                  </Tooltip>
                 );
-              }
-              return (
-                <Tooltip id="button-tooltip" {...props}>
-                  <small>{subjectName ?? '[unknown]'}</small>
-                </Tooltip>
-              );
-            }}
-          >
-            <span>{subjectCode}</span>
-          </OverlayTrigger>{' '}
-          {courseCode}
-          <TextComponent type={1}>
-            {course.section
-              ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
-              : ''}
-          </TextComponent>
+              }}
+            >
+              <span>{subjectCode}</span>
+            </OverlayTrigger>{' '}
+            {courseCode}
+            <TextComponent type="secondary">
+              {course.section
+                ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
+                : ''}
+            </TextComponent>
+          </div>
         </div>
         <OverlayTrigger
           placement="right"
           overlay={(props) => (
-            <StyledPopover {...props} id="title-popover">
+            <InfoPopover {...props} id="title-popover">
               <Popover.Title>
                 <strong>
                   {course.extra_info !== 'ACTIVE' ? (
@@ -277,40 +203,42 @@ function ResultsItem({
                   {truncatedText(course.requirements, 250, '')}
                 </div>
               </Popover.Content>
-            </StyledPopover>
+            </InfoPopover>
           )}
         >
           {/* Course Title */}
-          <div style={titleStyle}>
+          <div className={colStyles.titleCol}>
             <div className={styles.ellipsisText}>{course.title}</div>
           </div>
         </OverlayTrigger>
         <div className="d-flex">
-          {/* Overall Rating */}
-          <RatingCell
-            rating={getOverallRatings(course, 'stat')}
-            colormap={ratingColormap}
-            style={rateOverallStyle}
-          >
-            {getOverallRatings(course, 'display')}
-          </RatingCell>
-          {/* Workload Rating */}
-          <RatingCell
-            rating={getWorkloadRatings(course, 'stat')}
-            colormap={workloadColormap}
-            style={rateWorkloadStyle}
-          >
-            {getWorkloadRatings(course, 'display')}
-          </RatingCell>
-          {/* Professor Rating & Course Professors */}
-          <div style={profStyle} className="d-flex align-items-center">
-            <div style={rateProfStyle} className="mr-2 h-100">
-              <RatingCell
+          <div className={colStyles.overallCol}>
+            <RatingBubble
+              className={styles.ratingCell}
+              rating={getOverallRatings(course, 'stat')}
+              colorMap={ratingColormap}
+            >
+              {getOverallRatings(course, 'display')}
+            </RatingBubble>
+          </div>
+          <div className={colStyles.workloadCol}>
+            <RatingBubble
+              className={clsx(styles.ratingCell, colStyles.workloadCol)}
+              rating={getWorkloadRatings(course, 'stat')}
+              colorMap={workloadColormap}
+            >
+              {getWorkloadRatings(course, 'display')}
+            </RatingBubble>
+          </div>
+          <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
+            <div className={clsx('mr-2 h-100', styles.profRating)}>
+              <RatingBubble
+                className={styles.ratingCell}
                 rating={getProfessorRatings(course, 'stat')}
-                colormap={ratingColormap}
+                colorMap={ratingColormap}
               >
                 {getProfessorRatings(course, 'display')}
-              </RatingCell>
+              </RatingBubble>
             </div>
             <div className={styles.ellipsisText}>
               {course.professor_names.length === 0
@@ -320,60 +248,33 @@ function ResultsItem({
           </div>
         </div>
         {/* Previous Enrollment */}
-        <div style={enrollStyle} className="d-flex">
+        <div className={clsx('d-flex', colStyles.enrollCol)}>
           <span className="my-auto">{getEnrolled(course, 'display')}</span>
         </div>
         {/* Skills and Areas */}
-        <div style={saStyle} className="d-flex">
+        <div className={clsx('d-flex', colStyles.skillAreaCol)}>
           <span className={styles.skillsAreas}>
-            {course.skills.map((skill, index) => (
-              <Tag
-                variant="secondary"
-                className="my-auto"
-                key={index}
-                style={{
-                  color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill]!)
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {skill}
-              </Tag>
-            ))}
-            {course.areas.map((area, index) => (
-              <Tag
-                variant="secondary"
-                className="my-auto"
-                key={index}
-                style={{
-                  color: skillsAreasColors[area],
-                  backgroundColor: chroma(skillsAreasColors[area]!)
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {area}
-              </Tag>
+            {[...course.skills, ...course.areas].map((skill, index) => (
+              <SkillBadge skill={skill} className="my-auto" key={index} />
             ))}
           </span>
         </div>
         {/* Course Meeting Days & Times */}
-        <div style={meetStyle}>
+        <div className={colStyles.meetCol}>
           <div className={styles.ellipsisText}>{course.times_summary}</div>
         </div>
         {/* Course Location */}
-        <div style={locStyle}>
+        <div className={colStyles.locCol}>
           <div className={styles.ellipsisText}>{course.locations_summary}</div>
         </div>
         {/* # Friends also shopping */}
-        <div style={friendsStyle} className="d-flex ">
+        <div className={clsx('d-flex', colStyles.friendsCol)}>
           <OverlayTrigger
             placement="top"
             overlay={(props) =>
-              friends.length > 0 ? (
+              friends && friends.size > 0 ? (
                 <Tooltip id="button-tooltip" {...props}>
-                  {friends.join(' • ')}
+                  {[...friends].join(' • ')}
                 </Tooltip>
               ) : (
                 <div />
@@ -381,7 +282,7 @@ function ResultsItem({
             }
           >
             <span className="my-auto">
-              {friends.length > 0 ? friends.length : ''}
+              {friends && friends.size > 0 ? friends.size : ''}
             </span>
           </OverlayTrigger>
         </div>
@@ -403,8 +304,8 @@ function ResultsItem({
             <CourseConflictIcon course={course} />
           </div>
         )}
-      </StyledResultsItem>
-    </StyledSpacer>
+      </Row>
+    </div>
   );
 }
 

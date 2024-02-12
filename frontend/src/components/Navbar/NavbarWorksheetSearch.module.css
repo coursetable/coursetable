@@ -1,0 +1,67 @@
+.row {
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toggleButtonGroup {
+  width: 180px;
+}
+
+@media (width < 1200px) {
+  .toggleButtonGroup {
+    width: 140px;
+  }
+}
+
+.toggleButton {
+  box-shadow: none !important;
+  font-size: 14px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: var(--color-icon) 2px solid;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+  padding: 0.25rem 0;
+  width: 50%;
+}
+
+@media (width < 1320px) {
+  .toggleButton {
+    font-size: 12px;
+  }
+}
+
+.toggleButton:hover {
+  background-color: var(--color-button-hover);
+  color: var(--color-text);
+  border: var(--color-primary-hover) 2px solid;
+}
+
+.toggleButton:active {
+  background-color: var(--color-button-active) !important;
+  color: var(--color-text) !important;
+}
+
+.toggleButton:focus {
+  box-shadow: none !important;
+}
+
+.toggleButton:global(.active) {
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+}
+
+.addFriendIcon {
+  position: absolute;
+  right: 30px;
+  margin-top: 4px;
+}
+
+.removeFriendIcon {
+  position: absolute;
+  right: 10px;
+  margin-top: 4px;
+}

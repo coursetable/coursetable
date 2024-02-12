@@ -2,7 +2,6 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -12,7 +11,8 @@ import {
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
-import { useUser, type Worksheet } from './userContext';
+import { useUser, type UserWorksheets } from './userContext';
+import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
 export type HiddenCourses = {
@@ -23,21 +23,31 @@ type WorksheetView =
   | { view: 'calendar'; mode: '' }
   | { view: 'list'; mode: '' };
 
+export type WorksheetCourse = {
+  crn: Crn;
+  color: string;
+  listing: Listing;
+};
+
 type Store = {
-  seasonCodes: Season[];
-  curWorksheet: Worksheet;
-  curSeason: Season;
-  worksheetNumber: string;
+  // These define which courses the store contains
   person: 'me' | NetId;
-  courses: Listing[];
+  curSeason: Season;
+  worksheetNumber: number;
+
+  // These are used to select the worksheet
+  seasonCodes: Season[];
+  worksheetOptions: Option<number>[];
+
+  // Controls which courses are displayed
+  courses: WorksheetCourse[];
   hiddenCourses: HiddenCourses;
   hoverCourse: number | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
   worksheetError: {} | null;
-  worksheetData: Listing[];
   changeSeason: (seasonCode: Season | null) => void;
-  changeWorksheet: (worksheetNumber: string) => void;
+  changeWorksheet: (worksheetNumber: number) => void;
   handlePersonChange: (newPerson: 'me' | NetId) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
@@ -46,16 +56,6 @@ type Store = {
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
-
-// List of colors for the calendar events
-const colors: [number, number, number][] = [
-  [108, 194, 111],
-  [202, 95, 83],
-  [49, 164, 212],
-  [223, 134, 83],
-  [38, 186, 154],
-  [186, 120, 129],
-];
 
 /**
  * Stores the user's worksheet filters and sorts
@@ -91,11 +91,11 @@ export function WorksheetProvider({
 
   // Worksheet of the current person
   const curWorksheet = useMemo(() => {
-    const whenNotDefined: Worksheet = []; // TODO: change this to undefined
-    if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
+    const whenNotDefined: UserWorksheets = {}; // TODO: change this to undefined
+    if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
 
     return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
-  }, [user.worksheet, user.friends, viewedPerson]);
+  }, [user.worksheets, user.friends, viewedPerson]);
 
   // TODO: restrict to only the seasons with data
   const seasonCodes = seasons;
@@ -109,7 +109,7 @@ export function WorksheetProvider({
   // Current worksheet number
   const [worksheetNumber, setWorksheetNumber] = useSessionStorageState(
     'worksheetNumber',
-    '0',
+    0,
   );
 
   // Fetch the worksheet info. This is eventually copied into the 'courses'
@@ -117,45 +117,18 @@ export function WorksheetProvider({
   const {
     loading: worksheetLoading,
     error: worksheetError,
-    data: worksheetData,
+    data: courses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
-  // Cache calendar colors. Reset whenever the season changes.
-  const [colorMap, setColorMap] = useState<{
-    [crn: Crn]: [number, number, number];
-  }>({});
-  useEffect(() => {
-    setColorMap({});
-  }, [curSeason]);
 
-  // Courses data - basically a color-annotated version of the worksheet info.
-  const [courses, setCourses] = useState<Listing[]>([]);
-
-  // Initialize courses state and color map.
-  useEffect(() => {
-    if (!worksheetLoading && !worksheetError) {
-      const temp = [...worksheetData];
-      // Assign color to each course
-      for (let i = 0; i < worksheetData.length; i++) {
-        let choice = colors[i % colors.length]!;
-        if (colorMap[temp[i]!.crn]) choice = colorMap[temp[i]!.crn]!;
-        else colorMap[temp[i]!.crn] = choice;
-
-        temp[i]!.color = choice;
-        temp[i]!.currentWorksheet = worksheetNumber;
-      }
-      // Sort list by course code
-      temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
-      setCourses(temp);
-    }
-  }, [
-    worksheetLoading,
-    worksheetError,
-    curWorksheet,
-    worksheetNumber,
-    worksheetData,
-    setCourses,
-    colorMap,
-  ]);
+  // This will be dependent on backend data if we allow renaming
+  const worksheetOptions = useMemo<Option<number>[]>(
+    () =>
+      [0, 1, 2, 3].map((x) => ({
+        label: x === 0 ? 'Main Worksheet' : `Worksheet ${x}`,
+        value: x,
+      })),
+    [],
+  );
 
   /* Functions */
 
@@ -165,9 +138,6 @@ export function WorksheetProvider({
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           newHiddenCourses[curSeason] ??= {};
 
           courses.forEach((listing) => {
@@ -184,9 +154,6 @@ export function WorksheetProvider({
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           newHiddenCourses[curSeason] ??= {};
 
           if (newHiddenCourses[curSeason]![crn])
@@ -226,7 +193,7 @@ export function WorksheetProvider({
 
   // Function to change worksheet number
   const changeWorksheet = useCallback(
-    (newNumber: string) => {
+    (newNumber: number) => {
       setWorksheetNumber(newNumber);
     },
     [setWorksheetNumber],
@@ -237,7 +204,6 @@ export function WorksheetProvider({
     () => ({
       // Context state.
       seasonCodes,
-      curWorksheet,
       curSeason,
       worksheetNumber,
       person: viewedPerson,
@@ -247,7 +213,7 @@ export function WorksheetProvider({
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetData,
+      worksheetOptions,
 
       // Update methods.
       changeSeason,
@@ -259,7 +225,6 @@ export function WorksheetProvider({
     }),
     [
       seasonCodes,
-      curWorksheet,
       curSeason,
       worksheetNumber,
       viewedPerson,
@@ -269,7 +234,7 @@ export function WorksheetProvider({
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetData,
+      worksheetOptions,
       changeSeason,
       handlePersonChange,
       setHoverCourse,

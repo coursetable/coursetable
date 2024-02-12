@@ -1,3 +1,9 @@
+.container {
+  width: 600px;
+  margin-bottom: 3rem;
+  transition: color var(--trans-dur);
+}
+
 .faqHeader {
   font-weight: 600;
   font-size: 25px;
@@ -22,13 +28,26 @@
   transform: rotateZ(90deg);
 }
 
-@media (max-width: 768px) {
+.card {
+  background-color: transparent;
+  border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  transition: border-color var(--trans-dur);
+}
+
+.card :global(.active) {
+  border-bottom: 1px solid var(--color-border) !important;
+  color: var(--color-primary);
+  transition: border-color var(--trans-dur);
+}
+
+@media (width < 768px) {
   .container {
     width: 80vw;
   }
 }
 
-@media (max-width: 425px) {
+@media (width < 480px) {
   .container {
     width: 95vw;
   }

@@ -5,6 +5,7 @@
 import type express from 'express';
 import z from 'zod';
 
+import { worksheetCoursesToWorksheets } from './user.utils';
 import winston from '../logging/winston';
 
 import { prisma } from '../config';
@@ -12,7 +13,7 @@ import { prisma } from '../config';
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove')]),
   season: z.string().transform((val) => parseInt(val, 10)),
-  ociId: z.number(),
+  crn: z.number(),
   worksheetNumber: z.number(),
 });
 
@@ -36,13 +37,13 @@ export const toggleBookmark = async (
     return;
   }
 
-  const { action, season, ociId, worksheetNumber } = bodyParseRes.data;
+  const { action, season, crn, worksheetNumber } = bodyParseRes.data;
 
   const existing = await prisma.worksheetCourses.findUnique({
     where: {
-      netId_ociId_season_worksheetNumber: {
+      netId_crn_season_worksheetNumber: {
         netId,
-        ociId,
+        crn,
         season,
         worksheetNumber,
       },
@@ -52,19 +53,19 @@ export const toggleBookmark = async (
   if (action === 'add') {
     // Add a bookmarked course
     winston.info(
-      `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
+      `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
     if (existing) {
       res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
       return;
     }
     await prisma.worksheetCourses.create({
-      data: { netId, ociId, season, worksheetNumber },
+      data: { netId, crn, season, worksheetNumber },
     });
   } else {
     // Remove a bookmarked course
     winston.info(
-      `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
+      `Removing bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
     if (!existing) {
       res.status(400).json({ error: 'NOT_BOOKMARKED' });
@@ -72,9 +73,9 @@ export const toggleBookmark = async (
     }
     await prisma.worksheetCourses.delete({
       where: {
-        netId_ociId_season_worksheetNumber: {
+        netId_crn_season_worksheetNumber: {
           netId,
-          ociId,
+          crn,
           season,
           worksheetNumber,
         },
@@ -120,10 +121,6 @@ export const getUserWorksheet = async (
     evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
-    data: worksheets.map((course) => [
-      String(course.season),
-      String(course.ociId),
-      String(course.worksheetNumber),
-    ]),
+    data: worksheetCoursesToWorksheets(worksheets)[netId] ?? {},
   });
 };

@@ -1,3 +1,42 @@
+.rbc-time-header-content {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-header {
+  border-bottom: none !important;
+}
+
+.rbc-time-header-cell .rbc-header {
+  user-select: none;
+  cursor: default;
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-time-content {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+  overflow-y: visible !important;
+}
+
+.rbc-time-gutter .rbc-timeslot-group {
+  user-select: none;
+  cursor: default;
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-day-slot .rbc-timeslot-group {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
 .rbc-events-container {
   border: none !important;
   margin: 0 3px !important;
@@ -10,10 +49,6 @@
 .rbc-today,
 .rbc-current-time-indicator {
   background-color: transparent !important;
-}
-
-.rbc-header {
-  border-bottom: none !important;
 }
 
 .rbc-header a:hover {
@@ -39,12 +74,8 @@
   display: none !important;
 }
 
-.rbc-time-content {
-  overflow-y: visible !important;
-}
-
-@media only screen and (max-width: 767px) {
+@media (width < 768px) {
   .rbc-calendar {
-    margin: 1rem 0 0.5rem 0;
+    margin: 1rem 0 0.5rem;
   }
 }

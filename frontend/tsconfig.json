@@ -8,11 +8,6 @@
     // We use ESLint for this
     "allowUnreachableCode": true,
     "jsx": "react",
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules",
-      },
-    ],
   },
   "include": ["src", "vite.config.ts"],
   "exclude": [],

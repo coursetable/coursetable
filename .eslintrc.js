@@ -4,6 +4,7 @@
 module.exports = {
   root: true,
   extends: ['jc', 'jc/typescript-typecheck', 'jc/node'],
+  plugins: ['css-modules'],
   parserOptions: {
     project: true,
   },
@@ -16,6 +17,8 @@ module.exports = {
         checksVoidReturn: false,
       },
     ],
+    'css-modules/no-unused-class': 'error',
+    'css-modules/no-undef-class': 'error',
     'react/jsx-child-element-spacing': 'off',
     'react/jsx-no-bind': 'off',
     // TODO: needs a lot more a11y audits

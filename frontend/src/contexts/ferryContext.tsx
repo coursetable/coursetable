@@ -10,11 +10,12 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
-import { useUser, type Worksheet } from './userContext';
+import { worksheetColors } from '../utilities/constants';
+import { fetchCatalog } from '../utilities/api';
+import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
+import type { WorksheetCourse } from './worksheetContext';
 import type { Crn, Season, Listing } from '../utilities/common';
-
-import { API_ENDPOINT } from '../config';
 
 export const seasons = seasonsData as Season[];
 
@@ -32,20 +33,7 @@ const addToCache = (season: Season): Promise<void> =>
     // Log that we attempted to load this.
     courseLoadAttempted.add(season);
 
-    const res = await fetch(
-      `${API_ENDPOINT}/api/static/catalogs/${season}.json`,
-      { credentials: 'include' },
-    );
-    if (!res.ok) {
-      // TODO: better error handling here; we may want to get rid of async-lock
-      // first
-      throw new Error(
-        `failed to fetch course data for ${season}. ${res.statusText}`,
-      );
-    }
-    const data = (await res.json()) as Listing[];
-    const info = new Map<Crn, Listing>();
-    for (const listing of data) info.set(listing.crn, listing);
+    const info = await fetchCatalog(season);
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
       ...courseData,
@@ -137,40 +125,33 @@ export const useCourseData = (seasons: Season[]) => {
 };
 
 export function useWorksheetInfo(
-  worksheet: Worksheet | undefined,
-  season: Season | null = null,
-  worksheetNumber = '0',
+  worksheets: UserWorksheets | undefined,
+  season: Season | Season[],
+  worksheetNumber = 0,
 ) {
   const requiredSeasons = useMemo(() => {
-    if (!worksheet || worksheet.length === 0) {
-      // If the worksheet is empty, we don't want to request data for any
-      // seasons, even if a specific season is requested.
-      return [];
-    }
-    const seasons = new Set<Season>();
-    worksheet.forEach((item) => {
-      seasons.add(item[0]);
-    });
-    if (season !== null) {
-      if (seasons.has(season)) return [season];
-      return [];
-    }
-    return Array.from(seasons); // Idk just need to return something i think
-  }, [season, worksheet]);
+    if (!worksheets) return [];
+    if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
+    if (season in worksheets) return [season];
+    return [];
+  }, [season, worksheets]);
 
   const { loading, error, courses } = useCourseData(requiredSeasons);
 
   const data = useMemo(() => {
-    const dataReturn: Listing[] = [];
-    if (!worksheet) return dataReturn;
+    const dataReturn: WorksheetCourse[] = [];
+    if (!worksheets) return [];
+    if (loading || error) return [];
 
     // Resolve the worksheet items.
-    for (const [seasonCode, crn, worksheetNumberCourse] of worksheet) {
-      if (season !== null && season !== seasonCode) continue;
-
-      if (seasonCode in courses && worksheetNumberCourse === worksheetNumber) {
-        const course = courses[seasonCode]!.get(parseInt(crn, 10) as Crn);
-        if (!course) {
+    for (const seasonCode of requiredSeasons) {
+      // Guaranteed to exist because of how requiredSeasons is constructed.
+      const seasonWorksheets = worksheets[seasonCode]!;
+      const worksheet = seasonWorksheets[worksheetNumber];
+      if (!worksheet) continue;
+      worksheet.forEach(({ crn }, i) => {
+        const listing = courses[seasonCode]!.get(crn);
+        if (!listing) {
           // This error is unactionable.
           // https://github.com/coursetable/coursetable/pull/1508
           // Sentry.captureException(
@@ -179,11 +160,17 @@ export function useWorksheetInfo(
           //   ),
           // );
         } else {
-          dataReturn.push(course);
+          dataReturn.push({
+            crn,
+            color: worksheetColors[i % worksheetColors.length]!,
+            listing,
+          });
         }
-      }
+      });
     }
-    return dataReturn;
-  }, [season, courses, worksheet, worksheetNumber]);
+    return dataReturn.sort((a, b) =>
+      a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
+    );
+  }, [requiredSeasons, courses, worksheets, worksheetNumber, loading, error]);
   return { loading, error, data };
 }
