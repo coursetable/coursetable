@@ -765,14 +765,14 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Course Information Attributes Multi-Select */}
-                  <AdvancedLabel>Info:</AdvancedLabel>
-                  <AdvancedSelect
+                  <div className={styles.advancedLabel}>Info:</div>
+                  <CustomSelect
+                    className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
                     value={selectCourseInfoAttributes.value}
                     options={courseInfoAttributesOptions}
                     placeholder="Course Information Attributes"
-                    // Prevent overlap with tooltips
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
                       selectCourseInfoAttributes.set(
