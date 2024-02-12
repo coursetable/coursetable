@@ -25,7 +25,6 @@ import {
   subjectsOptions,
   schoolsOptions,
   seasonsOptions,
-  courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
 import {
@@ -66,7 +65,6 @@ export function NavbarCatalogSearch() {
     numBounds,
     selectSchools,
     selectCredits,
-    selectCourseInfoAttributes,
     searchDescription,
     hideCancelled,
     hideConflicting,
@@ -422,7 +420,6 @@ export function NavbarCatalogSearch() {
                     'numBounds',
                     'selectSchools',
                     'selectCredits',
-                    'selectCourseInfoAttributes',
                     'searchDescription',
                     'hideCancelled',
                     'hideConflicting',
@@ -459,7 +456,6 @@ export function NavbarCatalogSearch() {
                   numBounds.hasChanged,
                   selectSchools.hasChanged,
                   selectCredits.hasChanged,
-                  selectCourseInfoAttributes.hasChanged,
                   selectSortBy.value.value === 'average_gut_rating',
                   searchDescription.value,
                   hideCancelled.value,
@@ -759,25 +755,6 @@ export function NavbarCatalogSearch() {
                       // Don't think about these generics too much. It poisons
                       // your brain.
                       selectCredits.set(selectedOption as Option<number>[]);
-                      setStartTime(Date.now());
-                    }}
-                  />
-                </Row>
-                <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  {/* Course Information Attributes Multi-Select */}
-                  <AdvancedLabel>Info:</AdvancedLabel>
-                  <AdvancedSelect
-                    closeMenuOnSelect
-                    isMulti
-                    value={selectCourseInfoAttributes.value}
-                    options={courseInfoAttributesOptions}
-                    placeholder="Course Information Attributes"
-                    // Prevent overlap with tooltips
-                    menuPortalTarget={menuPortalTarget}
-                    onChange={(selectedOption) => {
-                      selectCourseInfoAttributes.set(
-                        selectedOption as Option[],
-                      );
                       setStartTime(Date.now());
                     }}
                   />
