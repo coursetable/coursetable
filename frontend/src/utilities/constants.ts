@@ -356,6 +356,7 @@ export const subjects: { [code: string]: string } = {
   ZULU: 'Zulu',
 };
 
+// TODO: dynamically generate this like seasons.json
 export const courseInfoAttributes = [
   'DI: Area I',
   'DI: Area II',
