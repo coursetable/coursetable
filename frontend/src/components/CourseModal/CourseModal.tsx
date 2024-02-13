@@ -6,11 +6,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 
-import type {
-  Filter,
-  CourseOffering,
-  ComputedListingInfo,
-} from './CourseModalOverview';
+import type { Filter, ComputedListingInfo } from './CourseModalOverview';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 import { TextComponent, LinkLikeText } from '../Typography';
@@ -76,15 +72,13 @@ function CourseModal() {
 
   // Viewing overview or an evaluation? List contains
   // [season code, listing info] for evaluations
-  const [view, setView] = useState<'overview' | [Season, CourseOffering]>(
+  const [view, setView] = useState<'overview' | ComputedListingInfo>(
     'overview',
   );
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState<Filter>('both');
   // Stack for listings that the user has viewed
-  const [listings, setListings] = useState<
-    (ComputedListingInfo & { eval: CourseOffering })[]
-  >([]);
+  const [listings, setListings] = useState<ComputedListingInfo[]>([]);
   useEffect(() => {
     // @ts-expect-error: `listing` is an actual Listing, not the weird type that
     // SameCourseOrProfOfferingsQuery gives, and it doesn't have an `eval`
@@ -136,7 +130,7 @@ function CourseModal() {
                         <LinkLikeText
                           onClick={() => {
                             // Go back to the evaluations of this course
-                            setView([curListing.season_code, curListing.eval]);
+                            setView(curListing);
                           }}
                           className={styles.backArrow}
                         >
@@ -192,8 +186,8 @@ function CourseModal() {
                         onClick={() => {
                           if (
                             listings.length > 1 &&
-                            curListing.crn === view[1].crn &&
-                            curListing.season_code === view[1].season_code
+                            curListing.crn === view.crn &&
+                            curListing.season_code === view.season_code
                           ) {
                             // Go to overview of previous listing
                             setListings(listings.slice(0, -1));
@@ -210,9 +204,9 @@ function CourseModal() {
                       <Modal.Title>
                         <Row className="mx-auto mt-1 align-items-center">
                           <span className={styles.modalTitle}>
-                            {view[1].title}{' '}
+                            {view.title}{' '}
                             <TextComponent type="tertiary">
-                              ({toSeasonString(view[0])})
+                              ({toSeasonString(view.season_code)})
                             </TextComponent>
                             {/* TODO */}
                             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
@@ -221,11 +215,7 @@ function CourseModal() {
                               onClick={() => {
                                 // Go to overview page of this eval course
                                 setView('overview');
-                                const newListing = {
-                                  ...view[1].listing,
-                                  eval: view[1],
-                                };
-                                setListings([...listings, newListing]);
+                                setListings([...listings, view]);
                               }}
                             >
                               More Info
@@ -238,29 +228,29 @@ function CourseModal() {
                         {/* Course Code */}
                         <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
                           <TextComponent type="tertiary">
-                            {view[1].course_code}
+                            {view.course_code}
                           </TextComponent>
                         </p>
                         {/* Course Skills and Areas */}
-                        {view[1].skills.map((skill) => (
+                        {view.skills.map((skill) => (
                           <SkillBadge skill={skill} key={skill} />
                         ))}
-                        {view[1].areas.map((area) => (
+                        {view.areas.map((area) => (
                           <SkillBadge skill={area} key={area} />
                         ))}
                         {/* Course Professors and Section */}
-                        {view[1].professor[0] !== 'TBA' && (
+                        {view.professor_names.length > 0 && (
                           <p
                             className={clsx(
                               styles.courseCodes,
                               'my-0',
-                              (view[1].skills.length || view[1].areas.length) &&
+                              (view.skills.length || view.areas.length) &&
                                 'pl-2',
                             )}
                           >
                             <TextComponent type="tertiary">
-                              | {view[1].professor.join(', ')} | Section{' '}
-                              {view[1].section}
+                              | {view.professor_names.join(', ')} | Section{' '}
+                              {view.section}
                             </TextComponent>
                           </p>
                         )}
@@ -281,17 +271,15 @@ function CourseModal() {
               <CourseModalOverview
                 setFilter={setFilter}
                 filter={filter}
-                setSeason={(evaluation) => {
-                  setView([evaluation.season_code, evaluation]);
-                }}
+                setView={setView}
                 listing={curListing}
               />
             ) : (
               // Show eval data
               <CourseModalEvaluations
-                seasonCode={view[0]}
-                crn={view[1].crn}
-                courseCode={view[1].course_code}
+                seasonCode={view.season_code}
+                crn={view.crn}
+                courseCode={view.course_code}
               />
             ))}
         </Modal>
