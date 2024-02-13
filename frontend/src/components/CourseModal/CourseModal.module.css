@@ -69,6 +69,12 @@
   color: var(--color-text);
 }
 
+.tabButton.tabDisabled {
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
 .shareButton {
   cursor: pointer;
   margin: 1em;

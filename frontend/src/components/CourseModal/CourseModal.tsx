@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Col, Container, Row, Modal } from 'react-bootstrap';
+import {
+  Col,
+  Container,
+  Row,
+  Modal,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
@@ -14,6 +21,7 @@ import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useFerry } from '../../contexts/ferryContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
+import { CUR_YEAR } from '../../config';
 
 const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -51,9 +59,11 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
 function ViewTabs({
   view,
   setView,
+  seasonCode,
 }: {
   readonly view: 'overview' | 'evals';
   readonly setView: React.Dispatch<React.SetStateAction<'overview' | 'evals'>>;
+  readonly seasonCode: Season;
 }) {
   return (
     <div className={styles.tabs}>
@@ -62,20 +72,38 @@ function ViewTabs({
           { label: 'Overview', value: 'overview' },
           { label: 'Evaluations', value: 'evals' },
         ] as const
-      ).map(({ label, value }) => (
-        <button
-          key={value}
-          aria-current={view === value}
-          type="button"
-          onClick={() => setView(value)}
-          className={clsx(
-            styles.tabButton,
-            view === value && styles.tabSelected,
-          )}
-        >
-          {label}
-        </button>
-      ))}
+      ).map(({ label, value }) => {
+        const isDisabled = CUR_YEAR.includes(seasonCode) && value === 'evals';
+        const button = (
+          <button
+            key={value}
+            aria-current={view === value}
+            type="button"
+            {...(!isDisabled && { onClick: () => setView(value) })}
+            className={clsx(
+              styles.tabButton,
+              view === value && styles.tabSelected,
+              isDisabled && styles.tabDisabled,
+            )}
+          >
+            {label}
+          </button>
+        );
+        if (!isDisabled) return button;
+        return (
+          <OverlayTrigger
+            key={value}
+            placement="top"
+            overlay={(props) => (
+              <Tooltip {...props} id="disabled-tooltip">
+                No evaluations
+              </Tooltip>
+            )}
+          >
+            {button}
+          </OverlayTrigger>
+        );
+      })}
     </div>
   );
 }
@@ -180,7 +208,11 @@ function CourseModal() {
               </Col>
             </Row>
             <Row className="ml-auto mr-2 justify-content-between flex-wrap-reverse">
-              <ViewTabs view={view} setView={setView} />
+              <ViewTabs
+                view={view}
+                setView={setView}
+                seasonCode={listing.season_code}
+              />
               <Row>
                 <WorksheetToggleButton
                   crn={listing.crn}
@@ -206,6 +238,7 @@ function CourseModal() {
                 prev.set('course-modal', `${l.season_code}-${l.crn}`);
                 return prev;
               });
+              setView('evals');
             }}
             listing={listing}
           />
