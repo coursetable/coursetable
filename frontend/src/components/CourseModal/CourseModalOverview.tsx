@@ -711,7 +711,7 @@ function CourseModalOverview({
               </Row>
               {overlapSections[filter].map((offering) => (
                 <Row
-                  key={offering.listing.crn}
+                  key={offering.listing.season_code + offering.listing.crn}
                   className="m-auto py-1 justify-content-center"
                 >
                   {/* The listing button, either clickable or greyed out based on
