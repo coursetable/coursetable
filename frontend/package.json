@@ -5,7 +5,7 @@
   "scripts": {
     "build": "vite build",
     "clean": "rm -rf build node_modules package-lock.json # Needed for build-size report to work",
-    "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml",
+    "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml && prettier -w src/generated/*",
     "serve": "vite preview",
     "start": "vite",
     "test": "vite test"
