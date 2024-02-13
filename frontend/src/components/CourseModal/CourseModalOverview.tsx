@@ -50,7 +50,7 @@ import './react-multi-toggle-override.css';
 // Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export type Filter = 'both' | 'course' | 'professor';
+type Filter = 'both' | 'course' | 'professor';
 
 type ProfInfo = {
   email: string;
@@ -153,20 +153,18 @@ const profInfoPopover =
   );
 
 function CourseModalOverview({
-  setFilter,
-  filter,
-  setView,
+  gotoCourse,
   listing,
 }: {
-  readonly setFilter: (f: Filter) => void;
-  readonly filter: Filter;
-  readonly setView: (x: Listing) => void;
+  readonly gotoCourse: (x: Listing) => void;
   readonly listing: Listing;
 }) {
   // Fetch user context data
   const { user } = useUser();
   // Is description clamped?
   const [clamped, setClamped] = useState(false);
+  // Current evaluation filter (both, course, professor)
+  const [filter, setFilter] = useState<Filter>('both');
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
@@ -717,7 +715,11 @@ function CourseModalOverview({
                     )}
                     {...(offering.rating !== null && {
                       onClick() {
-                        setView(offering.listing);
+                        // Note, we purposefully use the listing data fetched
+                        // from GraphQL instead of the static seasons data.
+                        // This means on navigation we don't have to possibly
+                        // fetch a new season and cause a loading screen.
+                        gotoCourse(offering.listing);
                       },
                     })}
                   >
