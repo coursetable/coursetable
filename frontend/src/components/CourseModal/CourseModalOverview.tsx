@@ -39,7 +39,12 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
-import { weekdays, type Listing, type Weekdays } from '../../utilities/common';
+import {
+  weekdays,
+  type NarrowListing,
+  type Weekdays,
+  type Listing,
+} from '../../utilities/common';
 import './react-multi-toggle-override.css';
 
 // Component used for cutting off long descriptions
@@ -63,22 +68,14 @@ type CourseOffering = {
   // Professors
   professor: string[];
   // Store course listing
-  listing: ComputedListingInfo;
+  listing: Listing;
 };
 
-// TODO: merge it with one of the many types representing "a course"
-type ComputedListingInfoOverride = Pick<
-  Listing,
-  | 'all_course_codes'
-  | 'areas'
-  | 'crn'
-  | 'flag_info'
-  | 'season_code'
-  | 'skills'
-  | 'professor_ids'
-  | 'professor_names'
-  | 'times_by_day'
-  | 'extra_info'
+type RelatedListingInfo = Omit<
+  NarrowListing<
+    SameCourseOrProfOfferingsQuery['computed_listing_info'][number]
+  >,
+  'professor_info'
 > & {
   professor_info: {
     average_rating: number;
@@ -86,12 +83,6 @@ type ComputedListingInfoOverride = Pick<
     name: string;
   }[];
 };
-
-export type ComputedListingInfo = Omit<
-  SameCourseOrProfOfferingsQuery['computed_listing_info'][number],
-  keyof ComputedListingInfoOverride
-> &
-  ComputedListingInfoOverride;
 
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
@@ -169,8 +160,8 @@ function CourseModalOverview({
 }: {
   readonly setFilter: (f: Filter) => void;
   readonly filter: Filter;
-  readonly setView: (x: ComputedListingInfo) => void;
-  readonly listing: ComputedListingInfo;
+  readonly setView: (x: Listing) => void;
+  readonly listing: Listing;
 }) {
   // Fetch user context data
   const { user } = useUser();
@@ -235,7 +226,7 @@ function CourseModalOverview({
     // Only count cross-listed courses once per season
     const countedCourses = new Set<string>();
     if (!data) return profInfo;
-    for (const season of data.computed_listing_info as ComputedListingInfo[]) {
+    for (const season of data.computed_listing_info as RelatedListingInfo[]) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
       season.professor_info.forEach((prof) => {
@@ -260,7 +251,7 @@ function CourseModalOverview({
       .filter(
         (
           course,
-        ): course is ComputedListingInfo & {
+        ): course is RelatedListingInfo & {
           syllabus_url: string;
         } =>
           course.same_course_id === listing.same_course_id &&
@@ -287,7 +278,7 @@ function CourseModalOverview({
       [filter in Filter]: CourseOffering[];
     } = { both: [], course: [], professor: [] };
     if (!data) return overlapSections;
-    (data.computed_listing_info as ComputedListingInfo[])
+    (data.computed_listing_info as RelatedListingInfo[])
       // Discussion sections have no ratings, nothing to show
       .filter((course) => !isDiscussionSection(course))
       .map((course): CourseOffering => {

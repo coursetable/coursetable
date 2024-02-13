@@ -6,7 +6,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 
-import type { Filter, ComputedListingInfo } from './CourseModalOverview';
+import type { Filter } from './CourseModalOverview';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 import { TextComponent, LinkLikeText } from '../Typography';
@@ -14,9 +14,9 @@ import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
-import type { Season, Crn } from '../../utilities/common';
+import type { Season, Crn, Listing } from '../../utilities/common';
 
-const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
+const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
   MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
   CANCELLED: 'CANCELLED',
@@ -72,18 +72,12 @@ function CourseModal() {
 
   // Viewing overview or an evaluation? List contains
   // [season code, listing info] for evaluations
-  const [view, setView] = useState<'overview' | ComputedListingInfo>(
-    'overview',
-  );
+  const [view, setView] = useState<'overview' | Listing>('overview');
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState<Filter>('both');
   // Stack for listings that the user has viewed
-  const [listings, setListings] = useState<ComputedListingInfo[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
   useEffect(() => {
-    // @ts-expect-error: `listing` is an actual Listing, not the weird type that
-    // SameCourseOrProfOfferingsQuery gives, and it doesn't have an `eval`
-    // field! Surprised that it has caused no errors so far
-    // TODO: is this actually okay?
     setListings(listing ? [listing] : []);
   }, [listing]);
   // Current listing that we are viewing overview info for
