@@ -11,7 +11,7 @@ import {
   checkCrossListed,
   isInWorksheet,
 } from '../../utilities/course';
-import { CUR_SEASON, CUR_YEAR } from '../../config';
+import { CUR_SEASON} from '../../config';
 
 interface CourseConflictIconProps {
   readonly course: Listing;
