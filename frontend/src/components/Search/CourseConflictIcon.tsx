@@ -11,12 +11,18 @@ import {
   checkCrossListed,
   isInWorksheet,
 } from '../../utilities/course';
+import { CUR_SEASON, CUR_YEAR } from '../../config';
+
+interface CourseConflictIconProps {
+  course: Listing;
+  inModal?: boolean;
+}
 
 /**
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-function CourseConflictIcon({ course }: { readonly course: Listing }) {
+function CourseConflictIcon({ course, inModal = false }: CourseConflictIconProps) {
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
@@ -47,26 +53,26 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
     [course, data],
   );
 
+  const seasonMismatch = course.season_code !== CUR_SEASON;
+
+
+  const displayConflict = inModal ? seasonMismatch : conflicts.length > 0 || seasonMismatch;
+
+
+
+
   return (
-    // Smooth fade in and out transition
-    <Fade in={conflicts.length > 0}>
+    <Fade in={displayConflict}>
       <div>
-        {conflicts.length > 0 && (
+        {displayConflict && (
           <OverlayTrigger
             placement="top"
             overlay={(props) => (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>
-                  Conflicts with: <br />
-                  {conflicts.map((x) => x.course_code).join(', ')} <br />
+                  {seasonMismatch ? `This will add this course to a worksheet in a different season.` : `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`}
+                  {crossListed && <small>(cross-listed with {crossListed})</small>}
                 </small>
-                {crossListed !== false ? (
-                  // Show only if the class is cross-listed with another class
-                  // in the worksheet
-                  <small>(cross-listed with {crossListed})</small>
-                ) : (
-                  ''
-                )}
               </Tooltip>
             )}
           >
