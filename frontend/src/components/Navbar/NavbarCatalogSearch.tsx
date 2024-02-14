@@ -103,13 +103,12 @@ export function NavbarCatalogSearch() {
   // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
     if (isLgDesktop) return undefined;
-    const styles: React.CSSProperties = { height: '12px', width: '12px' };
-    return [styles, styles];
+    const style: React.CSSProperties = { height: '12px', width: '12px' };
+    return [style, style];
   }, [isLgDesktop]);
   const rangeRailStyle = useMemo((): React.CSSProperties => {
     if (isLgDesktop) return {};
-    const styles = { marginTop: '-1px' };
-    return styles;
+    return { marginTop: '-1px' };
   }, [isLgDesktop]);
 
   // Ctrl/cmd-s search hotkey
