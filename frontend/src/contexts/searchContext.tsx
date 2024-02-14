@@ -67,7 +67,6 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
 
 const sortCriteria = {
   course_code: { label: 'Sort by Course Code', numeric: false },
-  number: { label: 'Sort by Course Number', numeric: true },
   title: { label: 'Sort by Course Title', numeric: false },
   friend: { label: 'Sort by Friends', numeric: true },
   average_rating: { label: 'Sort by Course Rating', numeric: true },
@@ -87,7 +86,11 @@ export const sortByOptions = Object.fromEntries(
 ) as { [k in SortKeys]: SortByOption };
 
 // We can only sort by primitive keys by default, unless we have special support
-export type SortKeys = keyof typeof sortCriteria;
+export type SortKeys =
+  | keyof typeof sortCriteria
+  | keyof {
+      [K in keyof Listing as Listing[K] extends string | number ? K : never]: K;
+    };
 
 export type SortByOption = Option & {
   value: SortKeys;
