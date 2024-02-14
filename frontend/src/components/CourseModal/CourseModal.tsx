@@ -200,7 +200,7 @@ function CourseModal() {
                 currentTab={view}
               />
               <Row>
-                <CourseConflictIcon course={listing} inModal={true} />
+                <CourseConflictIcon course={listing} inModal />
                 <WorksheetToggleButton
                   crn={listing.crn}
                   seasonCode={listing.season_code}

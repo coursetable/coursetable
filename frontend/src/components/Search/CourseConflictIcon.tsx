@@ -14,8 +14,8 @@ import {
 import { CUR_SEASON, CUR_YEAR } from '../../config';
 
 interface CourseConflictIconProps {
-  course: Listing;
-  inModal?: boolean;
+  readonly course: Listing;
+  readonly inModal?: boolean;
 }
 
 /**
