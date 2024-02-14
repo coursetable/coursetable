@@ -71,18 +71,17 @@ function CourseConflictIcon({
             overlay={(props) => (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>
-                <Tooltip {...props} id="conflict-icon-button-tooltip">
-  <small style={{ fontWeight: 500 }}>
-    {seasonMismatch
-      ? `This will add this course to a worksheet in a different season.`
-      : `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`}
-  </small>
-  {crossListed && (
-    <div>
-      <small>(cross-listed with {crossListed})</small>
-    </div>
-  )}
-</Tooltip>
+                  {seasonMismatch
+                    ? `This will add this course to a worksheet in a different season.`
+                    : `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`}
+                </small>
+                {crossListed && (
+                  // Use a div to ensure it appears on a new line
+                  <div>
+                    <small>(cross-listed with {crossListed})</small>
+                  </div>
+                )}
+              </Tooltip>
             )}
           >
             <MdErrorOutline color="#fc4103" />
