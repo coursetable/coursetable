@@ -11,7 +11,7 @@ import {
   checkCrossListed,
   isInWorksheet,
 } from '../../utilities/course';
-import { CUR_SEASON } from '../../config';
+import { CUR_YEAR } from '../../config';
 
 interface CourseConflictIconProps {
   readonly course: Listing;
@@ -56,25 +56,22 @@ function CourseConflictIcon({
     [course, data],
   );
 
-  const seasonMismatch = inModal && course.season_code !== CUR_SEASON;
-
-  const displayConflict = inModal
-    ? seasonMismatch
-    : conflicts.length > 0 || seasonMismatch;
+  const warning =
+    inModal && !CUR_YEAR.includes(course.season_code)
+      ? 'This will add to the worksheet of a semester that has already ended.'
+      : !inModal && conflicts.length > 0
+        ? `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`
+        : undefined;
 
   return (
-    <Fade in={displayConflict}>
+    <Fade in={Boolean(warning)}>
       <div>
-        {displayConflict && (
+        {warning && (
           <OverlayTrigger
             placement="top"
             overlay={(props) => (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
-                <small style={{ fontWeight: 500 }}>
-                  {seasonMismatch
-                    ? `This will add this course to a worksheet in a different season.`
-                    : `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`}
-                </small>
+                <small style={{ fontWeight: 500 }}>{warning}</small>
                 {crossListed && (
                   // Use a div to ensure it appears on a new line
                   <div>
