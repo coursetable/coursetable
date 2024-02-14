@@ -6507,7 +6507,7 @@ export type SameCourseOrProfOfferingsQuery = {
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code: InputMaybe<Scalars['String']['input']>;
-  course_code: InputMaybe<Scalars['String']['input']>;
+  crn: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 export type SearchEvaluationNarrativesQuery = {
@@ -6732,12 +6732,9 @@ export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<
   SameCourseOrProfOfferingsQueryVariables
 >;
 export const SearchEvaluationNarrativesDocument = gql`
-  query SearchEvaluationNarratives($season_code: String, $course_code: String) {
+  query SearchEvaluationNarratives($season_code: String, $crn: Int) {
     computed_listing_info(
-      where: {
-        season_code: { _eq: $season_code }
-        course_code: { _eq: $course_code }
-      }
+      where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
     ) {
       crn
       course {
@@ -6773,7 +6770,7 @@ export const SearchEvaluationNarrativesDocument = gql`
  * const { data, loading, error } = useSearchEvaluationNarrativesQuery({
  *   variables: {
  *      season_code: // value for 'season_code'
- *      course_code: // value for 'course_code'
+ *      crn: // value for 'crn'
  *   },
  * });
  */

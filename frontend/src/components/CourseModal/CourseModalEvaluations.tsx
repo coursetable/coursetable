@@ -16,17 +16,15 @@ import type { Crn, Season } from '../../utilities/common';
 function CourseModalEvaluations({
   seasonCode,
   crn,
-  courseCode,
 }: {
   readonly seasonCode: Season;
   readonly crn: Crn;
-  readonly courseCode: string;
 }) {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
       season_code: seasonCode,
-      course_code: courseCode || 'bruh',
+      crn,
     },
   });
   // Wait until fetched

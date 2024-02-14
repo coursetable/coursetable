@@ -136,9 +136,9 @@ function WorksheetToggleButton({
         {modal ? (
           <>
             {inWorksheet ? (
-              <FaMinus size={25} className={styles.scaleIcon} />
+              <FaMinus size={20} className={styles.scaleIcon} />
             ) : (
-              <FaPlus size={25} className={styles.scaleIcon} />
+              <FaPlus size={20} className={styles.scaleIcon} />
             )}
             {/* Render the worksheet dropdown */}
             <select
