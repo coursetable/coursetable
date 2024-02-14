@@ -22,7 +22,10 @@ interface CourseConflictIconProps {
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-function CourseConflictIcon({ course, inModal = false }: CourseConflictIconProps) {
+function CourseConflictIcon({
+  course,
+  inModal = false,
+}: CourseConflictIconProps) {
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
@@ -55,11 +58,9 @@ function CourseConflictIcon({ course, inModal = false }: CourseConflictIconProps
 
   const seasonMismatch = course.season_code !== CUR_SEASON;
 
-
-  const displayConflict = inModal ? seasonMismatch : conflicts.length > 0 || seasonMismatch;
-
-
-
+  const displayConflict = inModal
+    ? seasonMismatch
+    : conflicts.length > 0 || seasonMismatch;
 
   return (
     <Fade in={displayConflict}>
@@ -70,8 +71,12 @@ function CourseConflictIcon({ course, inModal = false }: CourseConflictIconProps
             overlay={(props) => (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>
-                  {seasonMismatch ? `This will add this course to a worksheet in a different season.` : `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`}
-                  {crossListed && <small>(cross-listed with {crossListed})</small>}
+                  {seasonMismatch
+                    ? `This will add this course to a worksheet in a different season.`
+                    : `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`}
+                  {crossListed && (
+                    <small>(cross-listed with {crossListed})</small>
+                  )}
                 </small>
               </Tooltip>
             )}

@@ -17,7 +17,6 @@ import type { Season, Crn, Listing } from '../../utilities/common';
 import { CUR_YEAR } from '../../config';
 import CourseConflictIcon from '../Search/CourseConflictIcon';
 
-
 const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
   MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
@@ -201,7 +200,7 @@ function CourseModal() {
                 currentTab={view}
               />
               <Row>
-              <CourseConflictIcon course={listing} inModal={true} />
+                <CourseConflictIcon course={listing} inModal={true} />
                 <WorksheetToggleButton
                   crn={listing.crn}
                   seasonCode={listing.season_code}
