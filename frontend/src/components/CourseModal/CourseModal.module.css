@@ -48,8 +48,6 @@
 .tabs {
   width: 220px;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
 }
 
 .tabButton {
