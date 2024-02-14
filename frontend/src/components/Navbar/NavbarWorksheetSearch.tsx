@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { components } from 'react-select';
@@ -192,8 +192,6 @@ function AddFriendDropdown({
         a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
       );
   }, [user.friendRequests]);
-
-  useEffect(() => {}, []);
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 

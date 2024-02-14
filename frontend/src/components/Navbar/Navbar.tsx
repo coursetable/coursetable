@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
@@ -16,7 +16,6 @@ import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 
 import { API_ENDPOINT } from '../../config';
 import { useUser } from '../../contexts/userContext';
-import { useTheme } from '../../contexts/themeContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
 function NavbarLink({
@@ -63,11 +62,6 @@ export default function CourseTableNavbar() {
   const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
 
-  // Last updated state
-  const [lastUpdated, setLastUpdated] = useState('0 hrs');
-
-  const { toggleTheme } = useTheme();
-
   // Fetch current device
   const { isMobile, isLgDesktop } = useWindowDimensions();
 
@@ -78,7 +72,7 @@ export default function CourseTableNavbar() {
     ['/catalog', '/worksheet'].includes(location.pathname);
 
   // Calculate time since last updated
-  useEffect(() => {
+  const lastUpdated = useMemo(() => {
     const now = new Date();
     // We always update at around 8:25am UTC, regardless of DST
     // TODO: maybe the DB should tell us when it was last updated
@@ -96,14 +90,13 @@ export default function CourseTableNavbar() {
     if (lastUpdateTime > nowTime) lastUpdateTime -= 24 * 60 * 60;
     const diffInSecs = nowTime - lastUpdateTime;
     if (diffInSecs < 60) {
-      setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
+      return `${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`;
     } else if (diffInSecs < 3600) {
       const diffInMins = Math.floor(diffInSecs / 60);
-      setLastUpdated(`${diffInMins} min${diffInMins > 1 ? 's' : ''}`);
-    } else {
-      const diffInHrs = Math.floor(diffInSecs / 3600);
-      setLastUpdated(`${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`);
+      return `${diffInMins} min${diffInMins > 1 ? 's' : ''}`;
     }
+    const diffInHrs = Math.floor(diffInSecs / 3600);
+    return `${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`;
   }, []);
 
   return (
@@ -178,18 +171,13 @@ export default function CourseTableNavbar() {
                   style={{ width: '100%' }}
                 >
                   {/* DarkMode Button */}
-                  {/* TODO */}
-                  {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-                  <div
+                  <DarkModeButton
                     className={clsx(
                       styles.navbarDarkModeBtn,
                       'd-flex',
                       !isMobile && 'ml-auto',
                     )}
-                    onClick={toggleTheme}
-                  >
-                    <DarkModeButton />
-                  </div>
+                  />
                   {isLoggedIn && (
                     <>
                       {/* Catalog Page */}
