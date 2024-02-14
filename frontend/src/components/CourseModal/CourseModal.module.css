@@ -48,8 +48,6 @@
 .tabs {
   width: 220px;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
 }
 
 .tabButton {
@@ -67,12 +65,6 @@
 .tabButton.tabSelected {
   background-color: var(--color-select-hover);
   color: var(--color-text);
-}
-
-.tabButton.tabDisabled {
-  background-color: var(--color-surface);
-  color: var(--color-text-secondary);
-  cursor: not-allowed;
 }
 
 .shareButton {
