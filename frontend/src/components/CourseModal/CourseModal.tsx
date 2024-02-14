@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import {
-  Col,
-  Container,
-  Row,
-  Modal,
-  OverlayTrigger,
-  Tooltip,
-} from 'react-bootstrap';
+import { Col, Container, Row, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
@@ -56,52 +49,38 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
   );
 }
 
+type Tab = {
+  readonly label: string;
+  readonly value: 'overview' | 'evals';
+  readonly hidden?: boolean;
+};
+
 function ViewTabs({
-  view,
-  setView,
-  seasonCode,
+  currentTab,
+  tabs,
+  onSelectTab,
 }: {
-  readonly view: 'overview' | 'evals';
-  readonly setView: React.Dispatch<React.SetStateAction<'overview' | 'evals'>>;
-  readonly seasonCode: Season;
+  readonly currentTab: Tab['value'];
+  readonly tabs: Tab[];
+  readonly onSelectTab: (value: Tab['value']) => void;
 }) {
   return (
     <div className={styles.tabs}>
-      {(
-        [
-          { label: 'Overview', value: 'overview' },
-          { label: 'Evaluations', value: 'evals' },
-        ] as const
-      ).map(({ label, value }) => {
-        const isDisabled = CUR_YEAR.includes(seasonCode) && value === 'evals';
-        const button = (
+      {tabs.map(({ label, value, hidden }) => {
+        if (hidden) return null;
+        return (
           <button
             key={value}
-            aria-current={view === value}
+            aria-current={currentTab === value}
             type="button"
-            {...(!isDisabled && { onClick: () => setView(value) })}
+            onClick={() => onSelectTab(value)}
             className={clsx(
               styles.tabButton,
-              view === value && styles.tabSelected,
-              isDisabled && styles.tabDisabled,
+              currentTab === value && styles.tabSelected,
             )}
           >
             {label}
           </button>
-        );
-        if (!isDisabled) return button;
-        return (
-          <OverlayTrigger
-            key={value}
-            placement="top"
-            overlay={(props) => (
-              <Tooltip {...props} id="disabled-tooltip">
-                No evaluations
-              </Tooltip>
-            )}
-          >
-            {button}
-          </OverlayTrigger>
         );
       })}
     </div>
@@ -158,11 +137,10 @@ function CourseModal() {
             <Row className={clsx('m-auto', styles.modalTop)}>
               <Col xs="auto" className="my-auto p-0">
                 {history.length > 1 && (
-                  // If this is the overview of some other eval course,
-                  // show back button
                   <LinkLikeText
                     onClick={() => {
                       setHistory(history.slice(0, -1));
+                      setView('overview');
                     }}
                     className={styles.backArrow}
                   >
@@ -209,9 +187,16 @@ function CourseModal() {
             </Row>
             <Row className="ml-auto mr-2 justify-content-between flex-wrap-reverse">
               <ViewTabs
-                view={view}
-                setView={setView}
-                seasonCode={listing.season_code}
+                tabs={[
+                  { label: 'Overview', value: 'overview' },
+                  {
+                    label: 'Evaluations',
+                    value: 'evals',
+                    hidden: CUR_YEAR.includes(listing.season_code),
+                  },
+                ]}
+                onSelectTab={setView}
+                currentTab={view}
               />
               <Row>
                 <WorksheetToggleButton
