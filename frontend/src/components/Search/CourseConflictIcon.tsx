@@ -56,7 +56,7 @@ function CourseConflictIcon({
     [course, data],
   );
 
-  const seasonMismatch = course.season_code !== CUR_SEASON;
+  const seasonMismatch = inModal && course.season_code !== CUR_SEASON;
 
   const displayConflict = inModal
     ? seasonMismatch
