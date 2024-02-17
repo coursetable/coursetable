@@ -25,13 +25,13 @@ function EvaluationRatings({
 }) {
   // List of dictionaries that holds the ratings for each question as well as
   // the question text
-  const ratings = (info || []).flatMap((section) => {
+  const ratings = (info ?? []).flatMap((section) => {
     const crnCode = section.crn;
     // Only fetch ratings data for this section
     if (crnCode !== crn) return [];
     // Loop through each set of ratings
     return section.course.evaluation_ratings.map((x) => ({
-      question: x.evaluation_question.question_text || '',
+      question: x.evaluation_question.question_text ?? '',
       values: [...((x.rating as number[] | null) ?? [])],
     }));
   });

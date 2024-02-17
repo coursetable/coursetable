@@ -40,7 +40,7 @@ export function isInWorksheet(
 // Convert season code to legible string
 export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
-  const season = ['', 'Spring', 'Summer', 'Fall'][Number(seasonCode[5])];
+  const season = ['Spring', 'Summer', 'Fall'][Number(seasonCode[5]) - 1]!;
   return `${season} ${year}`;
 }
 

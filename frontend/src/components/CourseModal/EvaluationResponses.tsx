@@ -27,7 +27,7 @@ function EvaluationResponses({
   const [responses, sortedResponses] = useMemo(() => {
     const tempResponses: { [questionText: string]: string[] } = {};
     // Loop through each section for this course code
-    (info || []).forEach((section) => {
+    (info ?? []).forEach((section) => {
       const crnCode = section.crn;
       // Only fetch comments for this section
       if (crnCode !== crn) return;
