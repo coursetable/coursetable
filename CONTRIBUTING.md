@@ -1,4 +1,4 @@
-# Getting Started with CourseTable
+# Contributing to CourseTable
 
 Thanks for taking the initiative to get started with CourseTable! Here are a few reasons why you made the right choice:
 
@@ -7,7 +7,7 @@ Thanks for taking the initiative to get started with CourseTable! Here are a few
 
 We hope you’ll enjoy building something your friends can use as well!
 
-## Initial Development Environment Setup
+## Setting up the development environment
 
 <details>
   <summary><strong>Initial setup for Windows only (CLICK HERE)</strong></summary>
@@ -74,7 +74,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    - Linux: Install [Docker CE](https://docs.docker.com/engine/install/)
      and [Docker Compose](https://docs.docker.com/compose/install/)
 
-1. Install Node/NPM
+1. Install Node/npm
 
    - Mac or Linux: Install Node: see [here](https://nodejs.org/en/download/) for downloadable installer.
 
@@ -86,7 +86,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    - Run `curl -fsSL https://bun.sh/install | bash`
 
-## Aside: a quick explainer on docker-compose
+### Aside: a quick explainer on docker-compose
 
 `docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
 
@@ -164,7 +164,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
 
-1. In a seperate terminal window, start the frontend:
+1. In a separate terminal window, start the frontend:
 
    ```sh
    cd ../frontend
@@ -183,7 +183,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    > Use Ctrl+C in each terminal (frontend & backend) to safely exit.
 
-## Troubleshooting
+### Troubleshooting
 
 - `Windows: “Hardware assisted virtualization and data execution protection must be enabled in the BIOS”`
 
@@ -202,27 +202,56 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
   Try using `sudo doppler update`.
 
-## Adding packages
+## Contributing
 
-1. Ensure bun is installed by running `bun -v`
+1. Create a branch for your feature. This can usually be done with `git checkout -b <username>/<feature_name>`
+2. _Make changes._
+3. Create some commits and push your changes to the origin.
+4. Create a pull request and add a few reviewers. In the pull request, be sure to reference any relevant issue numbers.
+5. Once the pull request has been approved, merge it into the master branch.
 
-1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
+### Semantic commit messages
 
-1. Add your package by running `bun install <package>`
+We use semantic commit messages to help us keep track of the code history. The format looks like: `<type>: <subject>`. There is also a scope, but because significant changes are usually not scoped to one particular part, we don't use it.
 
-## Updating packages
+The various types of commits:
 
-1. Ensure bun is installed by running `bun -v`
+- `feat`: a new API or behavior **for the end user**.
+- `fix`: a bug fix **for the end user**.
+- `docs`: a change to other Markdown documents in our repo.
+- `refactor`: a change to production code that leads to no behavior difference, e.g. splitting files, renaming internal variables, improving code style...
+- `test`: adding missing tests, refactoring tests; no production code change.
+- `chore`: upgrading dependencies, releasing new versions... Chores that are **regularly done** for maintenance purposes.
+- `misc`: anything else that doesn't change production code, yet is not `test` or `chore`. e.g. updating GitHub actions workflow.
 
-1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
+Do not get too stressed about PR titles, however. Your PR will be squash-merged and your commit to the `master` branch will get the title of your PR, so commits within a branch don't need to be semantically named. Others can rename your PR title when they merge it.
 
-1. Add your package by running `bun update --save`
+Example:
 
-</details>
+```
+fix: sort past syllabi in chronological order
+^--^ ^------------^
+|    |
+|    +-> Summary in present tense. Use lower case not title case!
+|
++-------> Type: see above for the list we use.
+```
 
-&nbsp;
+### Looking for something to work on?
 
-## Fixing linting errors
+We use [GitHub issues](https://github.com/coursetable/coursetable/issues) to keep track of issues that the team has interest in pursuing. This should be your first point of reference.
+
+Team members can also look at the [Canny board](https://coursetable.canny.io/) and identify new feature requests that have value in pursuing. You should triage these requests as "Under review" or "Planned", and then create a linked GitHub issue for them.
+
+## Development quick references
+
+### Managing dependencies
+
+Please read the [Bun documentation](https://bun.sh/docs/cli/install) for how to install, update, and remove dependencies. Because we use a monorepo, make sure that you install dependencies in the project that actually depends on it.
+
+On the frontend, we minimize the number and size of dependencies we use. You can check the [bundle map](https://coursetable.com/bundle-map.html) on our live website to find the largest dependencies in the main bundle (`entry-index-xxxxx.js`). If you really need to use heavy dependencies, make sure they are code-split and only loaded when necessary (such as the graphiql library which only loads when you open the GraphQL Playground).
+
+### Fixing linting errors
 
 We have a bunch of linting infrastructure to help you write clean and maintainable code. When you submit a PR, a GitHub action runs all checks and fails if there are any errors. All linting infrastructure is defined in the root `package.json`. You can run the following command:
 
@@ -247,7 +276,6 @@ bun checks:fix
 
 - Problems reported by `depcheck`: if the dependency is actually unused, remove it from `package.json` and run `bun install`. If the dependency is actually used but it's not imported by any code (for example, it's only used in command line), add it to the `ignores` list in `.depcheckrc`.
 - Problems reported by `prettier`: they will all be automatically fixed by `checks:fix`.
-- Problems reported by `eslint`: some will be automatically fixed by `checks:fix`. For the rest, you can check the respective documentation for the rule if you are unsure what to do (your editor's error popup should display a link).
-- Problems reported by `stylelint`: some will be automatically fixed by `checks:fix`. For the rest, fix them manually.
+- Problems reported by `eslint` and `stylelint`: some will be automatically fixed by `checks:fix`. For the rest, you can check the respective documentation for the rule if you are unsure what to do (your editor's error popup should display a link).
 - Problems reported by `resize-image`: they will all be automatically fixed by `checks:fix`.
 - Problems reported by `tsc`: you'll have to fix them manually. You can ask someone for help if you are unsure what to do.
