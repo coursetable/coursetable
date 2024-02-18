@@ -26,6 +26,11 @@ services:
       - ferry_default
       - default
 
+  redis:
+    restart: always
+    networks:
+      - default
+
 networks:
   traefik:
     external: true
