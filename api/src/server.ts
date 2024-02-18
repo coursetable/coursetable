@@ -1,5 +1,7 @@
 import express from 'express';
 import session from 'express-session';
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
@@ -59,14 +61,30 @@ app.use((req, _, next) => {
   next();
 });
 
-// Setup sessions.
+// Setup session management.
+
+// Initialize Redis client.
+const redisClient = createClient({
+  socket: {
+    host: 'redis',
+  },
+});
+redisClient.connect().catch(winston.error);
+
+// Initialize Redis session store.
+const redisStore = new RedisStore({
+  client: redisClient,
+  prefix: 'myapp:',
+});
+
 app.use(
   session({
     secret: SESSION_SECRET,
 
-    // Recommended by the express-session documentation.
+    // Recommended by the connect-redis documentation.
+    store: redisStore,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
 
     cookie: {
       // Cookie lifetime of one year.
