@@ -75,6 +75,7 @@ redisClient.connect().catch(winston.error);
 const redisStore = new RedisStore({
   client: redisClient,
   prefix: 'myapp:',
+  ttl: 365 * 24 * 60 * 60, // 1 year
 });
 
 app.use(
