@@ -219,7 +219,7 @@ function AddFriendDropdown({
             style={{
               position: 'absolute',
               top: 0,
-              right: 20,
+              right: 3,
               color: '#fc4103',
               cursor: 'pointer',
               zIndex: 1,
