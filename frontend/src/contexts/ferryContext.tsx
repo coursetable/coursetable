@@ -70,6 +70,8 @@ export function FerryProvider({
     async (requestedSeasons: Season[]) => {
       if (!user.hasEvals) return; // Not logged in / doesn't have evals
       const fetches = requestedSeasons.map(async (season) => {
+        // No data; this can happen if the course-modal query is invalid
+        if (!seasons.includes(season)) return;
         // As long as there is one request in progress, don't fire another
         if (courseLoadAttempted.has(season)) return;
 
