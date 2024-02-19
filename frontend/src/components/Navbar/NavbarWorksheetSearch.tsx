@@ -196,7 +196,7 @@ function AddFriendDropdown({
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   return (
-    <Popout buttonText="Add Friend">
+    <Popout buttonText="Add Friend" notifications={user.friendRequests?.length}>
       <PopoutSelect
         hideSelectedOptions={false}
         menuIsOpen
