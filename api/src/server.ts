@@ -87,18 +87,18 @@ app.use(
     resave: false,
     saveUninitialized: false,
 
-    cookie: {
-      // Cookie lifetime of one year.
-      maxAge: 365 * 24 * 60 * 60 * 1000,
+    // Cookie lifetime of one year.
+    // cookie: {
+    //   maxAge: 365 * 24 * 60 * 60 * 1000,
 
-      // We currently set this to false because our logout process involves
-      // the client-side JS clearing all cookies.
-      httpOnly: false,
+    //   // We currently set this to false because our logout process involves
+    //   // the client-side JS clearing all cookies.
+    //   httpOnly: false,
 
-      // Not enabling this yet since it could have unintended consequences.
-      // Eventually we should enable this.
-      // secure: true,
-    },
+    //   // Not enabling this yet since it could have unintended consequences.
+    //   // Eventually we should enable this.
+    //   // secure: true,
+    // },
   }),
 );
 
