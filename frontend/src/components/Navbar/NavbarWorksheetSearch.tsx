@@ -5,11 +5,9 @@ import {
   Row,
   ToggleButton,
   ToggleButtonGroup,
-  OverlayTrigger,
-  Tooltip,
 } from 'react-bootstrap';
 
-import { MdErrorOutline, MdPersonAdd, MdPersonRemove } from 'react-icons/md';
+import {MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { components } from 'react-select';
 import { toast } from 'react-toastify';
 import { Popout } from '../Search/Popout';
@@ -205,15 +203,21 @@ function AddFriendDropdown({
       );
   }, [user.friendRequests]);
 
-  const friendRequestCount = useMemo(() => user.friendRequests ? user.friendRequests.length : 0, [user.friendRequests]);
+  const friendRequestCount = useMemo(
+    () => (user.friendRequests ? user.friendRequests.length : 0),
+    [user.friendRequests],
+  );
 
   const NotificationIcon: React.FC<NotificationIconProps> = ({ count }) => (
-      <div style={{
+    <div
+      style={{
         position: 'relative',
         display: 'inline-block',
         cursor: 'pointer',
-      }}>
-        <span style={{
+      }}
+    >
+      <span
+        style={{
           position: 'absolute',
           right: '10px',
           backgroundColor: 'blue',
@@ -225,20 +229,29 @@ function AddFriendDropdown({
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '12px',
-        }}>
-          {count}
-        </span>
-      </div>
+        }}
+      >
+        {count}
+      </span>
+    </div>
   );
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   return (
     // If incoming requests, show the icon
-    <div style={{ position: 'relative' }}>
-      {' '}
+    <div style={{ position: 'relative', display: 'inline-block' }}>
       {friendRequestCount > 0 && (
-        <NotificationIcon count={friendRequestCount} />
+        <div
+          style={{
+            position: 'absolute',
+            top: -5, // ADJUST
+            right: -15, // ADJUST
+            zIndex: 2,
+          }}
+        >
+          <NotificationIcon count={friendRequestCount} />
+        </div>
       )}
       <Popout buttonText="Add Friend">
         <PopoutSelect
