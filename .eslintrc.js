@@ -34,9 +34,7 @@ module.exports = {
     {
       files: ['frontend/**/*'],
       rules: {
-        // TODO: until we have better types
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
-        '@typescript-eslint/restrict-template-expressions': 'off',
         'no-restricted-imports': [
           'error',
           {

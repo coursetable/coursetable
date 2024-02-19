@@ -353,7 +353,6 @@ export async function addFriend(friendNetId: NetId) {
       throw new Error(data.error ?? res.statusText);
     }
     toast.info(`Added friend: ${friendNetId}`);
-    window.location.reload();
   } catch (err) {
     Sentry.addBreadcrumb({
       category: 'friends',
@@ -406,7 +405,7 @@ export async function requestAddFriend(friendNetId: NetId) {
   }
 }
 
-export async function removeFriend(friendNetId: string) {
+export async function removeFriend(friendNetId: string, isRequest: boolean) {
   const body = JSON.stringify({ friendNetId });
   try {
     const res = await fetch(`${API_ENDPOINT}/api/friends/remove`, {
@@ -421,8 +420,9 @@ export async function removeFriend(friendNetId: string) {
       const data = (await res.json()) as { error?: string };
       throw new Error(data.error ?? res.statusText);
     }
-    toast.info(`Removed friend: ${friendNetId}`);
-    window.location.reload();
+    toast.info(
+      `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
+    );
   } catch (err) {
     Sentry.addBreadcrumb({
       category: 'friends',

@@ -27,11 +27,10 @@ import {
  * @prop salt - salt value to append to password
  */
 function encrypt(text: string, salt: string): string {
-  // TODO
-  // eslint-disable-next-line n/no-deprecated-api
-  const cipher = crypto.createCipher(
+  const cipher = crypto.createCipheriv(
     CHALLENGE_ALGORITHM,
-    CHALLENGE_PASSWORD + salt,
+    CHALLENGE_PASSWORD,
+    Buffer.from(salt, 'hex'),
   );
   let crypted = cipher.update(text, 'utf8', 'hex');
   crypted += cipher.final('hex');
@@ -45,11 +44,10 @@ function encrypt(text: string, salt: string): string {
  * @prop salt - salt value to append to password
  */
 function decrypt(text: string, salt: string): string {
-  // TODO
-  // eslint-disable-next-line n/no-deprecated-api
-  const decipher = crypto.createDecipher(
+  const decipher = crypto.createDecipheriv(
     CHALLENGE_ALGORITHM,
-    CHALLENGE_PASSWORD + salt,
+    CHALLENGE_PASSWORD,
+    Buffer.from(salt, 'hex'),
   );
   let dec = decipher.update(text, 'hex', 'utf8');
   dec += decipher.final('utf8');

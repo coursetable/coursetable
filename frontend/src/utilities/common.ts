@@ -1,5 +1,5 @@
 import { expectType, type TypeOf } from 'ts-expect';
-import type { CatalogBySeasonQuery } from '../generated/graphql';
+import type { ListingFragment } from '../generated/graphql';
 
 // A couple common types.
 
@@ -20,7 +20,12 @@ export const weekdays = [
 ] as const;
 export type Weekdays = (typeof weekdays)[number];
 
-type RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
+// TODO: can this narrowing be done within graphql-codegen?
+export type NarrowListing<T extends ListingFragment> = Omit<
+  T,
+  keyof ListingOverrides
+> &
+  ListingOverrides;
 type ListingOverrides = {
   crn: Crn;
   season_code: Season;
@@ -51,10 +56,9 @@ type ListingOverrides = {
 
 expectType<
   // Make sure we don't override a key that wasn't there originally.
-  TypeOf<keyof RawListingResponse, keyof ListingOverrides>
+  TypeOf<keyof ListingFragment, keyof ListingOverrides>
 >(true);
-export type Listing = Omit<RawListingResponse, keyof ListingOverrides> &
-  ListingOverrides;
+export type Listing = NarrowListing<ListingFragment>;
 
 export function isEqual<T>(a: T, b: T): boolean {
   if (Array.isArray(a) && Array.isArray(b)) {

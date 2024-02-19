@@ -40,7 +40,7 @@ export function isInWorksheet(
 // Convert season code to legible string
 export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
-  const season = ['', 'Spring', 'Summer', 'Fall'][Number(seasonCode[5])];
+  const season = ['Spring', 'Summer', 'Fall'][Number(seasonCode[5]) - 1]!;
   return `${season} ${year}`;
 }
 
@@ -136,9 +136,6 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
       Object.values(worksheets).forEach((w) =>
         w.forEach((course) => {
           const key = seasonCode + course.crn; // Key of object is season code + crn
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           (numFriends[key] ??= new Set()).add(friend.name);
         }),
       );
@@ -252,6 +249,82 @@ function calculateDayTime(course: Listing): number | null {
   return null;
 }
 
+function comparatorReturn(
+  aVal: number | string | null,
+  bVal: number | string | null,
+  ordering: 'asc' | 'desc',
+) {
+  if (aVal === null && bVal === null) return 0;
+  if (aVal === null) return 1;
+  if (bVal === null) return -1;
+  if (typeof aVal === 'number' && typeof bVal === 'number')
+    return ordering === 'asc' ? aVal - bVal : bVal - aVal;
+  // Shouldn't happen
+  if (typeof aVal === 'number' || typeof bVal === 'number') return 0;
+  const strCmp = aVal.localeCompare(bVal, 'en-US', {
+    // Use numeric sorting, so that course codes like ARCH 1002 appear after
+    // ARCH 200
+    numeric: true,
+  });
+  return ordering === 'asc' ? strCmp : -strCmp;
+}
+
+function compareByKey(
+  a: Listing,
+  b: Listing,
+  key: Exclude<SortKeys, 'friend'>,
+  ordering: 'asc' | 'desc',
+): number;
+function compareByKey(
+  a: Listing,
+  b: Listing,
+  key: SortKeys,
+  ordering: 'asc' | 'desc',
+  numFriends: NumFriendsReturn,
+): number;
+function compareByKey(
+  a: Listing,
+  b: Listing,
+  key: SortKeys,
+  ordering: 'asc' | 'desc',
+  numFriends?: NumFriendsReturn,
+) {
+  // Sorting by friends
+  if (key === 'friend') {
+    // Concatenate season code and crn to form key
+    const friendsTakingA = numFriends![a.season_code + a.crn]?.size ?? 0;
+    const friendsTakingB = numFriends![b.season_code + b.crn]?.size ?? 0;
+    return comparatorReturn(friendsTakingA, friendsTakingB, ordering);
+  }
+  // Sorting by course rating
+  if (key === 'average_rating') {
+    return comparatorReturn(
+      getOverallRatings(a, 'stat'),
+      getOverallRatings(b, 'stat'),
+      ordering,
+    );
+  }
+  if (key === 'average_workload') {
+    return comparatorReturn(
+      getWorkloadRatings(a, 'stat'),
+      getWorkloadRatings(b, 'stat'),
+      ordering,
+    );
+  }
+  // Sorting by days & times
+  if (key === 'times_by_day') {
+    // Calculate day and time score for sorting
+    return comparatorReturn(calculateDayTime(a), calculateDayTime(b), ordering);
+  }
+  // If value is 0, return null
+  return comparatorReturn(
+    // || is intentional: 0 also means nonexistence
+    a[key] || null,
+    b[key] || null,
+    ordering,
+  );
+}
+
 /**
  * Compares two listings by the specified key.
  */
@@ -262,54 +335,12 @@ function compare(
   ordering: 'asc' | 'desc',
   numFriends: NumFriendsReturn,
 ): number {
-  function comparatorReturn(
-    aVal: number | string | null,
-    bVal: number | string | null,
-  ) {
-    if (aVal === null && bVal === null) return 0;
-    if (aVal === null) return 1;
-    if (bVal === null) return -1;
-    if (typeof aVal === 'number' && typeof bVal === 'number')
-      return ordering === 'asc' ? aVal - bVal : bVal - aVal;
-    // Shouldn't happen
-    if (typeof aVal === 'number' || typeof bVal === 'number') return 0;
-    const strCmp = aVal.localeCompare(bVal, 'en-US', {
-      // Use numeric sorting, so that course codes like ARCH 1002 appear after
-      // ARCH 200
-      numeric: true,
-    });
-    return ordering === 'asc' ? strCmp : -strCmp;
-  }
-  // Sorting by friends
-  if (key === 'friend') {
-    // Concatenate season code and crn to form key
-    const friendsTakingA = numFriends[a.season_code + a.crn]?.size ?? 0;
-    const friendsTakingB = numFriends[b.season_code + b.crn]?.size ?? 0;
-    return comparatorReturn(friendsTakingA, friendsTakingB);
-  }
-  // Sorting by course rating
-  if (key === 'average_rating') {
-    return comparatorReturn(
-      getOverallRatings(a, 'stat'),
-      getOverallRatings(b, 'stat'),
-    );
-  }
-  if (key === 'average_workload') {
-    return comparatorReturn(
-      getWorkloadRatings(a, 'stat'),
-      getWorkloadRatings(b, 'stat'),
-    );
-  }
-  // Sorting by days & times
-  if (key === 'times_by_day') {
-    // Calculate day and time score for sorting
-    return comparatorReturn(calculateDayTime(a), calculateDayTime(b));
-  }
-  // If value is 0, return null
-  return comparatorReturn(
-    // || is intentional: 0 also means nonexistence
-    a[key] || null,
-    b[key] || null,
+  return (
+    compareByKey(a, b, key, ordering, numFriends) ||
+    // Define a stable sort order for courses that compare equal
+    compareByKey(a, b, 'season_code', 'desc') ||
+    compareByKey(a, b, 'course_code', 'asc') ||
+    compareByKey(a, b, 'section', 'asc')
   );
 }
 
@@ -366,11 +397,13 @@ export function getEnrolled(
   return usage === 'modal' ? 'N/A' : '';
 }
 
-export function isGraduate(listing: Listing): boolean {
+export function isGraduate(listing: Pick<Listing, 'number'>): boolean {
   return Number(listing.number.replace(/\D/gu, '')) >= 500;
 }
 
-export function isDiscussionSection(listing: Listing): boolean {
+export function isDiscussionSection(
+  listing: Pick<Listing, 'section'>,
+): boolean {
   // Checks whether the section field consists only of letters -- if so, the
   // class is a discussion section.
   return /^[A-Z]*$/u.test(listing.section);

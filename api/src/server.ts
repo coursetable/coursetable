@@ -1,10 +1,11 @@
 import express from 'express';
-import cookieSession from 'cookie-session';
+import session from 'express-session';
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
 
@@ -60,21 +61,44 @@ app.use((req, _, next) => {
   next();
 });
 
-// Setup sessions.
+// Setup session management.
+
+// Initialize Redis client.
+const redisClient = createClient({
+  socket: {
+    host: 'redis',
+  },
+});
+redisClient.connect().catch(winston.error);
+
+// Initialize Redis session store.
+const redisStore = new RedisStore({
+  client: redisClient,
+  prefix: 'myapp:',
+  ttl: 365 * 24 * 60 * 60, // 1 year
+});
+
 app.use(
-  cookieSession({
+  session({
     secret: SESSION_SECRET,
 
-    // Cookie lifetime of one year.
-    maxAge: 365 * 24 * 60 * 60 * 1000,
+    // Recommended by the connect-redis documentation.
+    store: redisStore,
+    resave: false,
+    saveUninitialized: true,
 
-    // We currently set this to false because our logout process involves
-    // the client-side JS clearing all cookies.
-    httpOnly: false,
+    cookie: {
+      // Cookie lifetime of one year.
+      maxAge: 365 * 24 * 60 * 60 * 1000,
 
-    // Not enabling this yet since it could have unintended consequences.
-    // Eventually we should enable this.
-    // secure: true,
+      // We currently set this to false because our logout process involves
+      // the client-side JS clearing all cookies.
+      httpOnly: false,
+
+      // Not enabling this yet since it could have unintended consequences.
+      // Eventually we should enable this.
+      // secure: true,
+    },
   }),
 );
 
@@ -91,12 +115,10 @@ https
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
-app.use(cookieParser());
-
 // Configuring passport
 passportConfig(passport);
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.authenticate('session'));
 
 app.use(
   '/ferry',

@@ -46,7 +46,7 @@ type Store = {
 
   error: {} | null;
   courses: typeof courseData;
-  requestSeasons: (seasons: Season[]) => void;
+  requestSeasons: (requestedSeasons: Season[]) => void;
 };
 
 const FerryCtx = createContext<Store | undefined>(undefined);
@@ -66,9 +66,11 @@ export function FerryProvider({
   const { user } = useUser();
 
   const requestSeasons = useCallback(
-    async (seasons: Season[]) => {
+    async (requestedSeasons: Season[]) => {
       if (!user.hasEvals) return; // Not logged in / doesn't have evals
-      const fetches = seasons.map(async (season) => {
+      const fetches = requestedSeasons.map(async (season) => {
+        // No data; this can happen if the course-modal query is invalid
+        if (!seasons.includes(season)) return;
         // As long as there is one request in progress, don't fire another
         if (courseLoadAttempted.has(season)) return;
 
@@ -109,16 +111,17 @@ export function FerryProvider({
 }
 
 export const useFerry = () => useContext(FerryCtx)!;
-export const useCourseData = (seasons: Season[]) => {
+export const useCourseData = (requestedSeasons: Season[]) => {
   const { error, courses, requestSeasons } = useFerry();
 
   useEffect(() => {
-    requestSeasons(seasons);
-  }, [requestSeasons, seasons]);
+    requestSeasons(requestedSeasons);
+  }, [requestSeasons, requestedSeasons]);
 
   // If not everything is loaded, we're still loading.
   // But if we hit an error, stop loading immediately.
-  const loading = !error && !seasons.every((season) => courses[season]);
+  const loading =
+    !error && !requestedSeasons.every((season) => courses[season]);
 
   return { loading, error, courses };
 };
@@ -128,14 +131,14 @@ export function useWorksheetInfo(
   season: Season | Season[],
   worksheetNumber = 0,
 ) {
-  const requiredSeasons = useMemo(() => {
+  const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
     if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
     if (season in worksheets) return [season];
     return [];
   }, [season, worksheets]);
 
-  const { loading, error, courses } = useCourseData(requiredSeasons);
+  const { loading, error, courses } = useCourseData(requestedSeasons);
 
   const data = useMemo(() => {
     const dataReturn: WorksheetCourse[] = [];
@@ -143,8 +146,8 @@ export function useWorksheetInfo(
     if (loading || error) return [];
 
     // Resolve the worksheet items.
-    for (const seasonCode of requiredSeasons) {
-      // Guaranteed to exist because of how requiredSeasons is constructed.
+    for (const seasonCode of requestedSeasons) {
+      // Guaranteed to exist because of how requestedSeasons is constructed.
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
@@ -170,6 +173,6 @@ export function useWorksheetInfo(
     return dataReturn.sort((a, b) =>
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
-  }, [requiredSeasons, courses, worksheets, worksheetNumber, loading, error]);
+  }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error]);
   return { loading, error, data };
 }

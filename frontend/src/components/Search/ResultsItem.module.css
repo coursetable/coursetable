@@ -109,6 +109,11 @@
   line-height: 1.5;
 }
 
+.profRating {
+  white-space: nowrap;
+  min-width: var(--width-col-prof-rating);
+}
+
 .tag {
   margin: 1px;
   font-size: 13px;

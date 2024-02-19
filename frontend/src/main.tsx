@@ -10,6 +10,7 @@ import {
 import * as Sentry from '@sentry/react';
 
 import Globals from './Globals';
+import { TutorialProvider } from './contexts/tutorialContext';
 import App from './App';
 import { isDev } from './config';
 
@@ -61,7 +62,11 @@ const root = createRoot(domNode);
 root.render(
   <Globals>
     <BrowserRouter>
-      <App />
+      {/* Tutorial provider has to be inside the router. Plus it doesn't need
+      SSR */}
+      <TutorialProvider>
+        <App />
+      </TutorialProvider>
     </BrowserRouter>
   </Globals>,
 );

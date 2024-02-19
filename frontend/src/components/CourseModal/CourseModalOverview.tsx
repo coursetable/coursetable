@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Row,
   Col,
@@ -33,6 +33,7 @@ import {
   getEnrolled,
   toSeasonString,
   to12HourTime,
+  isDiscussionSection,
 } from '../../utilities/course';
 import {
   useSameCourseOrProfOfferingsQuery,
@@ -40,17 +41,16 @@ import {
 } from '../../generated/graphql';
 import {
   weekdays,
-  type Season,
-  type Crn,
-  type Listing,
+  type NarrowListing,
   type Weekdays,
+  type Listing,
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
 
 // Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export type Filter = 'both' | 'course' | 'professor';
+type Filter = 'both' | 'course' | 'professor';
 
 type ProfInfo = {
   email: string;
@@ -58,47 +58,24 @@ type ProfInfo = {
   numCourses: number;
 };
 
-// TODO: merge it with one of the many types representing "a course"
-export type CourseOffering = {
+type CourseOffering = {
   // Course rating
   rating: number | null;
   // Workload rating
   workload: number | null;
   // Professor rating
-  professor_rating: number | null;
-  // Season code
-  season_code: Season;
+  professorRating: number | null;
   // Professors
   professor: string[];
-  // Course code
-  course_code: string;
-  // Crn
-  crn: Crn;
-  // Section number
-  section: string;
-  // Course Title
-  title: string;
-  // Course Skills
-  skills: string[];
-  // Course Areas
-  areas: string[];
   // Store course listing
-  listing: ComputedListingInfo;
+  listing: Listing;
 };
 
-// TODO: merge it with one of the many types representing "a course"
-type ComputedListingInfoOverride = Pick<
-  Listing,
-  | 'all_course_codes'
-  | 'areas'
-  | 'crn'
-  | 'flag_info'
-  | 'season_code'
-  | 'skills'
-  | 'professor_ids'
-  | 'professor_names'
-  | 'times_by_day'
-  | 'extra_info'
+type RelatedListingInfo = Omit<
+  NarrowListing<
+    SameCourseOrProfOfferingsQuery['computed_listing_info'][number]
+  >,
+  'professor_info'
 > & {
   professor_info: {
     average_rating: number;
@@ -106,12 +83,6 @@ type ComputedListingInfoOverride = Pick<
     name: string;
   }[];
 };
-
-export type ComputedListingInfo = Omit<
-  SameCourseOrProfOfferingsQuery['computed_listing_info'][number],
-  keyof ComputedListingInfoOverride
-> &
-  ComputedListingInfoOverride;
 
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
@@ -181,29 +152,19 @@ const profInfoPopover =
     </InfoPopover>
   );
 
-/**
- * Displays course modal when clicking on a course
- * @prop setFilter - function that switches evaluation filter
- * @prop filter - string that holds current filter
- * @prop setSeason - function that sets the evaluation to view
- * @prop listing - dictionary that holds all the info for this listing
- */
-
 function CourseModalOverview({
-  setFilter,
-  filter,
-  setSeason,
+  gotoCourse,
   listing,
 }: {
-  readonly setFilter: (f: Filter) => void;
-  readonly filter: Filter;
-  readonly setSeason: (x: CourseOffering) => void;
-  readonly listing: ComputedListingInfo;
+  readonly gotoCourse: (x: Listing) => void;
+  readonly listing: Listing;
 }) {
   // Fetch user context data
   const { user } = useUser();
   // Is description clamped?
   const [clamped, setClamped] = useState(false);
+  // Current evaluation filter (both, course, professor)
+  const [filter, setFilter] = useState<Filter>('both');
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
@@ -263,7 +224,7 @@ function CourseModalOverview({
     // Only count cross-listed courses once per season
     const countedCourses = new Set<string>();
     if (!data) return profInfo;
-    for (const season of data.computed_listing_info as ComputedListingInfo[]) {
+    for (const season of data.computed_listing_info as RelatedListingInfo[]) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
       season.professor_info.forEach((prof) => {
@@ -281,18 +242,6 @@ function CourseModalOverview({
     return profInfo;
   }, [data, listing]);
 
-  // Count number of profs that overlap between this listing and an eval
-  const overlappingProfs = useCallback(
-    (evalProfs: string[]) => {
-      let cnt = 0;
-      listing.professor_names.forEach((prof) => {
-        // Eval course contains this prof
-        if (evalProfs.includes(prof)) cnt++;
-      });
-      return cnt;
-    },
-    [listing.professor_names],
-  );
   // Get past syllabi links
   const pastSyllabi = useMemo(() => {
     if (!data) return [];
@@ -300,7 +249,7 @@ function CourseModalOverview({
       .filter(
         (
           course,
-        ): course is ComputedListingInfo & {
+        ): course is RelatedListingInfo & {
           syllabus_url: string;
         } =>
           course.same_course_id === listing.same_course_id &&
@@ -327,91 +276,60 @@ function CourseModalOverview({
       [filter in Filter]: CourseOffering[];
     } = { both: [], course: [], professor: [] };
     if (!data) return overlapSections;
-    (data.computed_listing_info as ComputedListingInfo[])
-      .map((season): CourseOffering => {
-        // Stores the average rating for all profs teaching this course and
-        // populates prof_info
-        let averageProfessorRating = 0;
-        const numProfs = season.professor_info.length;
-        season.professor_info.forEach((prof) => {
-          if (prof.average_rating) {
-            // Add up all prof ratings
-            averageProfessorRating += prof.average_rating;
-          }
-        });
-        // Divide by number of profs to get average
-        averageProfessorRating /= numProfs;
+    (data.computed_listing_info as RelatedListingInfo[])
+      // Discussion sections have no ratings, nothing to show
+      .filter((course) => !isDiscussionSection(course))
+      .map((course): CourseOffering => {
+        const averageProfessorRating =
+          course.professor_info.reduce(
+            (sum, prof) => sum + (prof.average_rating || 0),
+            0,
+          ) / course.professor_info.length;
         return {
-          // Course rating
-          rating: season.course.evaluation_statistic
-            ? season.course.evaluation_statistic.avg_rating || null
-            : null,
-          // Workload rating
-          workload: season.course.evaluation_statistic
-            ? season.course.evaluation_statistic.avg_workload || null
-            : null,
-          // Professor rating
-          professor_rating: averageProfessorRating || null,
-          // Season code
-          season_code: season.season_code,
-          // Professors
-          professor: season.professor_names.length
-            ? season.professor_names
+          rating: course.course.evaluation_statistic?.avg_rating || null,
+          workload: course.course.evaluation_statistic?.avg_workload || null,
+          professorRating: averageProfessorRating || null,
+          professor: course.professor_names.length
+            ? course.professor_names
             : ['TBA'],
-          // Course code
-          course_code: season.course_code || 'TBA',
-          // Crn
-          crn: season.crn,
-          // Section number
-          section: season.section,
-          // Course Title
-          title: season.title,
-          // Course Skills
-          skills: season.skills,
-          // Course Areas
-          areas: season.areas,
-          // Store course listing
-          listing: season,
+          listing: course,
         };
       })
       .sort(
         (a, b) =>
-          b.season_code.localeCompare(a.season_code, 'en-US') ||
-          parseInt(a.section, 10) - parseInt(b.section, 10),
+          b.listing.season_code.localeCompare(a.listing.season_code, 'en-US') ||
+          parseInt(a.listing.section, 10) - parseInt(b.listing.section, 10),
       )
       .forEach((offering) => {
         // Skip listings in the current and future seasons that have no evals
-        if (CUR_YEAR.includes(offering.season_code)) return;
+        if (CUR_YEAR.includes(offering.listing.season_code)) return;
+        const overlappingProfs = listing.professor_names.reduce(
+          (cnt, prof) => cnt + (offering.professor.includes(prof) ? 1 : 0),
+          0,
+        );
         // TODO: this whole logic is not ideal. We need to systematically
         // reconsider what we mean by "same course" and "same professor".
         // See: https://docs.google.com/document/d/1mIsanCz1U3M6SU2KbcBp9ONXRssDfeTzRtDIRzxdAOk
-        const isCourseOverlap = offering.course_code === listing.course_code;
-        const isProfOverlap = overlappingProfs(offering.professor) > 0;
+        const isCourseOverlap =
+          offering.listing.course_code === listing.course_code;
+        const isProfOverlap = overlappingProfs > 0;
         // We require ALL professors to be the same
         const isBothOverlap =
           isCourseOverlap &&
-          overlappingProfs(offering.professor) ===
-            listing.professor_names.length;
-        const type = isBothOverlap
-          ? 'both'
-          : isCourseOverlap
-            ? 'course'
-            : isProfOverlap
-              ? 'professor'
-              : undefined;
-        if (!type) {
-          // Consider a course cross-listed with course codes A and B.
-          // It was taught by prof X in year 1 and prof Y in year 2.
-          // Then GraphQL would return 2-B when viewing 1-A even when they
-          // appear to not overlap.
-          // TODO: maybe we should fix this in the GraphQL layer? Again,
-          // reconsideration of course relationships needed...
-          return;
-        }
-        overlapSections[type].push(offering);
+          overlappingProfs === offering.professor.length &&
+          overlappingProfs === listing.professor_names.length;
+        if (isBothOverlap) overlapSections.both.push(offering);
+        if (isCourseOverlap) overlapSections.course.push(offering);
+        if (isProfOverlap) overlapSections.professor.push(offering);
+        // Consider a course cross-listed with course codes A and B.
+        // It was taught by prof X in year 1 and prof Y in year 2.
+        // Then GraphQL would return 2-B when viewing 1-A even when they
+        // appear to not overlap.
+        // TODO: maybe we should fix this in the GraphQL layer? Again,
+        // reconsideration of course relationships needed...
       });
     return overlapSections;
-  }, [data, listing, overlappingProfs]);
+  }, [data, listing]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Options for the evaluation filters
@@ -780,8 +698,11 @@ function CourseModalOverview({
                   <span className={styles.evaluationHeader}>Work</span>
                 </Col>
               </Row>
-              {overlapSections[filter].map((offering, i) => (
-                <Row key={i} className="m-auto py-1 justify-content-center">
+              {overlapSections[filter].map((offering) => (
+                <Row
+                  key={offering.listing.season_code + offering.listing.crn}
+                  className="m-auto py-1 justify-content-center"
+                >
                   {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
                   <Col
@@ -794,18 +715,22 @@ function CourseModalOverview({
                     )}
                     {...(offering.rating !== null && {
                       onClick() {
-                        // Temp dictionary that stores listing info
-                        const temp = { ...offering };
-                        setSeason(temp);
+                        // Note, we purposefully use the listing data fetched
+                        // from GraphQL instead of the static seasons data.
+                        // This means on navigation we don't have to possibly
+                        // fetch a new season and cause a loading screen.
+                        gotoCourse(offering.listing);
                       },
                     })}
                   >
-                    <strong>{toSeasonString(offering.season_code)}</strong>
+                    <strong>
+                      {toSeasonString(offering.listing.season_code)}
+                    </strong>
                     <div className={clsx(styles.details, 'mx-auto')}>
                       {filter === 'professor'
-                        ? offering.course_code
+                        ? offering.listing.course_code
                         : filter === 'both'
-                          ? `Section ${offering.section}`
+                          ? `Section ${offering.listing.section}`
                           : offering.professor[0]}
                     </div>
                   </Col>
@@ -828,12 +753,12 @@ function CourseModalOverview({
                     className="px-1 ml-0 d-flex justify-content-center text-center"
                   >
                     <RatingBubble
-                      rating={offering.professor_rating}
+                      rating={offering.professorRating}
                       colorMap={ratingColormap}
                       className={styles.ratingCell}
                     >
-                      {offering.professor_rating
-                        ? offering.professor_rating.toFixed(1)
+                      {offering.professorRating
+                        ? offering.professorRating.toFixed(1)
                         : 'N/A'}
                     </RatingBubble>
                   </Col>

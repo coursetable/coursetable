@@ -11,12 +11,21 @@ import {
   checkCrossListed,
   isInWorksheet,
 } from '../../utilities/course';
+import { CUR_YEAR } from '../../config';
+
+interface CourseConflictIconProps {
+  readonly course: Listing;
+  readonly inModal?: boolean;
+}
 
 /**
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-function CourseConflictIcon({ course }: { readonly course: Listing }) {
+function CourseConflictIcon({
+  course,
+  inModal = false,
+}: CourseConflictIconProps) {
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
@@ -47,25 +56,27 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
     [course, data],
   );
 
+  const warning =
+    inModal && !CUR_YEAR.includes(course.season_code)
+      ? 'This will add to the worksheet of a semester that has already ended.'
+      : !inModal && conflicts.length > 0
+        ? `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`
+        : undefined;
+
   return (
-    // Smooth fade in and out transition
-    <Fade in={conflicts.length > 0}>
+    <Fade in={Boolean(warning)}>
       <div>
-        {conflicts.length > 0 && (
+        {warning && (
           <OverlayTrigger
             placement="top"
             overlay={(props) => (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
-                <small style={{ fontWeight: 500 }}>
-                  Conflicts with: <br />
-                  {conflicts.map((x) => x.course_code).join(', ')} <br />
-                </small>
-                {crossListed !== false ? (
-                  // Show only if the class is cross-listed with another class
-                  // in the worksheet
-                  <small>(cross-listed with {crossListed})</small>
-                ) : (
-                  ''
+                <small style={{ fontWeight: 500 }}>{warning}</small>
+                {crossListed && (
+                  // Use a div to ensure it appears on a new line
+                  <div>
+                    <small>(cross-listed with {crossListed})</small>
+                  </div>
                 )}
               </Tooltip>
             )}

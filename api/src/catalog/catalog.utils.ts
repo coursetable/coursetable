@@ -2,7 +2,7 @@
  * @file utilities used for fetching catalog files.
  */
 
-import fs from 'fs';
+import fs from 'fs/promises';
 import { request } from 'graphql-request';
 
 import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
@@ -79,7 +79,7 @@ export async function fetchCatalog(
   }
 
   winston.info(`Fetched ${seasons.seasons.length} seasons`);
-  fs.writeFileSync(
+  await fs.writeFile(
     `${STATIC_FILE_DIR}/seasons.json`,
     JSON.stringify(
       seasons.seasons
@@ -94,7 +94,13 @@ export async function fetchCatalog(
     const seasonCode = season.season_code;
     const outputPath = `${STATIC_FILE_DIR}/catalogs/${seasonCode}.json`;
 
-    if (!overwrite && fs.existsSync(outputPath)) {
+    if (
+      !overwrite &&
+      (await fs.access(outputPath).then(
+        () => true,
+        () => false,
+      ))
+    ) {
       winston.info(`Catalog for ${seasonCode} exists, skipping`);
       return;
     }
@@ -110,7 +116,10 @@ export async function fetchCatalog(
       throw err;
     }
 
-    fs.writeFileSync(outputPath, JSON.stringify(catalog.computed_listing_info));
+    await fs.writeFile(
+      outputPath,
+      JSON.stringify(catalog.computed_listing_info),
+    );
 
     winston.info(
       `Fetched season ${seasonCode}: n=${catalog.computed_listing_info.length}`,

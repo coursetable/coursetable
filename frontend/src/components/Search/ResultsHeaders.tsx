@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef } from 'react';
+import React, { useMemo } from 'react';
 import { Col, Row, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaBars, FaTh } from 'react-icons/fa';
 import clsx from 'clsx';
@@ -9,20 +9,21 @@ import { SurfaceComponent } from '../Typography';
 import { type SortKeys, sortByOptions } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './ResultsHeaders.module.css';
+import colStyles from './ResultsCols.module.css';
 
 function HeaderCol({
-  style,
+  className,
   children,
   tooltip,
   sortOption,
 }: {
-  readonly style: React.CSSProperties;
+  readonly className: string | undefined;
   readonly children: React.ReactNode;
   readonly tooltip?: string | JSX.Element;
   readonly sortOption?: SortKeys;
 }) {
   return (
-    <div className={styles.resultsHeader} style={style}>
+    <div className={clsx(className, styles.resultsHeader)}>
       {tooltip ? (
         <OverlayTrigger
           placement="bottom"
@@ -44,63 +45,20 @@ function HeaderCol({
   );
 }
 
-function ResultsHeaders(
-  {
-    COL_SPACING,
-    multiSeasons,
-    page,
-    isListView,
-    setIsListView,
-    numResults,
-  }: {
-    // This can be more exact, but I'm too lazy to type everything out :)
-    readonly COL_SPACING: { [prop: string]: number };
-    readonly multiSeasons: boolean;
-    readonly page: 'catalog' | 'worksheet';
-    readonly isListView: boolean;
-    readonly setIsListView: (isList: boolean) => void;
-    readonly numResults: number;
-  },
-  ref: React.Ref<HTMLDivElement>,
-) {
+function ResultsHeaders({
+  multiSeasons,
+  page,
+  isListView,
+  setIsListView,
+  numResults,
+}: {
+  readonly multiSeasons: boolean;
+  readonly page: 'catalog' | 'worksheet';
+  readonly isListView: boolean;
+  readonly setIsListView: (isList: boolean) => void;
+  readonly numResults: number;
+}) {
   const { isTablet, isLgDesktop, isSmDesktop } = useWindowDimensions();
-
-  // Column width styles
-  const sznStyle: React.CSSProperties = {
-    width: `${COL_SPACING.SZN_WIDTH}px`,
-    paddingLeft: '15px',
-  };
-  const codeStyle: React.CSSProperties = {
-    width: `${COL_SPACING.CODE_WIDTH}px`,
-    paddingLeft: !multiSeasons ? '15px' : '0px',
-  };
-  const titleStyle: React.CSSProperties = {
-    width: `${COL_SPACING.TITLE_WIDTH}px`,
-  };
-  const rateOverallStyle: React.CSSProperties = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
-  };
-  const rateWorkloadStyle: React.CSSProperties = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
-  };
-  const profStyle: React.CSSProperties = {
-    width: `${COL_SPACING.PROF_WIDTH}px`,
-  };
-  const meetStyle: React.CSSProperties = {
-    width: `${COL_SPACING.MEET_WIDTH}px`,
-  };
-  const locStyle: React.CSSProperties = {
-    width: `${COL_SPACING.LOC_WIDTH}px`,
-  };
-  const enrollStyle: React.CSSProperties = {
-    width: `${COL_SPACING.ENROLL_WIDTH}px`,
-  };
-  const friendsStyle: React.CSSProperties = {
-    width: `${COL_SPACING.FRIENDS_WIDTH}px`,
-  };
-  const saStyle: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
@@ -122,7 +80,6 @@ function ResultsHeaders(
       >
         {/* Column Headers */}
         <Row
-          ref={ref}
           className={clsx(
             'mx-auto pl-4 pr-2',
             isLgDesktop ? 'py-2' : 'py-1',
@@ -153,20 +110,25 @@ function ResultsHeaders(
           </div>
           {isListView ? (
             <>
-              {multiSeasons && <HeaderCol style={sznStyle}>Season</HeaderCol>}
+              {multiSeasons && (
+                <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
+              )}
               <HeaderCol
-                style={codeStyle}
+                className={clsx(
+                  colStyles.codeCol,
+                  multiSeasons && colStyles.multiSeasons,
+                )}
                 tooltip="Course Code and Section"
                 sortOption="course_code"
               >
                 Code
               </HeaderCol>
-              <HeaderCol style={titleStyle} sortOption="title">
+              <HeaderCol className={colStyles.titleCol} sortOption="title">
                 Title
               </HeaderCol>
               <div className="d-flex">
                 <HeaderCol
-                  style={rateOverallStyle}
+                  className={colStyles.overallCol}
                   tooltip={
                     <span>
                       Average Course Rating
@@ -181,7 +143,7 @@ function ResultsHeaders(
                   Overall
                 </HeaderCol>
                 <HeaderCol
-                  style={rateWorkloadStyle}
+                  className={colStyles.workloadCol}
                   tooltip={
                     <span>
                       Average Workload Rating
@@ -196,7 +158,7 @@ function ResultsHeaders(
                   Work
                 </HeaderCol>
                 <HeaderCol
-                  style={profStyle}
+                  className={colStyles.profCol}
                   tooltip={
                     <span>
                       Average Professor Rating and Names
@@ -211,7 +173,7 @@ function ResultsHeaders(
                 </HeaderCol>
               </div>
               <HeaderCol
-                style={enrollStyle}
+                className={colStyles.enrollCol}
                 tooltip={
                   multiSeasons ? (
                     <span>
@@ -234,9 +196,11 @@ function ResultsHeaders(
               >
                 #
               </HeaderCol>
-              <HeaderCol style={saStyle}>Skills/Areas</HeaderCol>
+              <HeaderCol className={colStyles.skillAreaCol}>
+                Skills/Areas
+              </HeaderCol>
               <HeaderCol
-                style={meetStyle}
+                className={colStyles.meetCol}
                 tooltip={
                   <span>
                     Days of the Week and Times
@@ -248,11 +212,14 @@ function ResultsHeaders(
               >
                 Meets
               </HeaderCol>
-              <HeaderCol style={locStyle} sortOption="locations_summary">
+              <HeaderCol
+                className={colStyles.locCol}
+                sortOption="locations_summary"
+              >
                 Location
               </HeaderCol>
               <HeaderCol
-                style={friendsStyle}
+                className={colStyles.friendsCol}
                 tooltip="Number of friends shopping this course"
                 sortOption="friend"
               >
@@ -275,4 +242,4 @@ function ResultsHeaders(
   );
 }
 
-export default forwardRef(ResultsHeaders);
+export default ResultsHeaders;
