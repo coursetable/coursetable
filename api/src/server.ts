@@ -118,7 +118,7 @@ https
 // Configuring passport
 passportConfig(passport);
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.authenticate('session'));
 
 app.use(
   '/ferry',
