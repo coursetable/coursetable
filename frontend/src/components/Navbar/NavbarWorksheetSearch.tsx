@@ -31,6 +31,10 @@ type FriendNames = {
   college: string | null;
 }[];
 
+interface NotificationIconProps {
+  count: number;
+}
+
 function SeasonDropdown() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();
 
@@ -200,7 +204,32 @@ function AddFriendDropdown({
         a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
       );
   }, [user.friendRequests]);
-  const hasRequests = friendRequestOptions.length > 0;
+
+  const friendRequestCount = useMemo(() => user.friendRequests ? user.friendRequests.length : 0, [user.friendRequests]);
+
+  const NotificationIcon: React.FC<NotificationIconProps> = ({ count }) => (
+      <div style={{
+        position: 'relative',
+        display: 'inline-block',
+        cursor: 'pointer',
+      }}>
+        <span style={{
+          position: 'absolute',
+          right: '10px',
+          backgroundColor: 'blue',
+          color: 'white',
+          borderRadius: '50%',
+          width: '20px',
+          height: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '12px',
+        }}>
+          {count}
+        </span>
+      </div>
+  );
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
@@ -208,24 +237,8 @@ function AddFriendDropdown({
     // If incoming requests, show the icon
     <div style={{ position: 'relative' }}>
       {' '}
-      {hasRequests && (
-        <OverlayTrigger
-          placement="top"
-          overlay={
-            <Tooltip id="request-tooltip">You have friend requests!</Tooltip>
-          }
-        >
-          <MdErrorOutline
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 3,
-              color: '#fc4103',
-              cursor: 'pointer',
-              zIndex: 1,
-            }}
-          />
-        </OverlayTrigger>
+      {friendRequestCount > 0 && (
+        <NotificationIcon count={friendRequestCount} />
       )}
       <Popout buttonText="Add Friend">
         <PopoutSelect
