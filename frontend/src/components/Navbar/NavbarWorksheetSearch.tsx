@@ -7,7 +7,6 @@ import {
   ToggleButtonGroup,
   OverlayTrigger,
   Tooltip,
-  Fade,
 } from 'react-bootstrap';
 
 import { MdErrorOutline, MdPersonAdd, MdPersonRemove } from 'react-icons/md';
