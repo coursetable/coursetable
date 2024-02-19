@@ -30,7 +30,7 @@ type FriendNames = {
 }[];
 
 interface NotificationIconProps {
-  count: number;
+  readonly count: number;
 }
 
 function SeasonDropdown() {
