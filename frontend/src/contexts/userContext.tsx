@@ -11,9 +11,9 @@ import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
   fetchFriendReqs,
-  addFriend,
+  addFriend as baseAddFriend,
   requestAddFriend as baseRequestAddFriend,
-  removeFriend,
+  removeFriend as baseRemoveFriend,
   checkAuth,
 } from '../utilities/api';
 import type { NetId, Season, Crn } from '../utilities/common';
@@ -51,9 +51,6 @@ type Store = {
   userRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
-  // These functions actually don't depend on context data. They are still put
-  // on the context, in case we add more logic in the future that depends on
-  // React rendering logic (flushing UI, etc.)
   addFriend: (friendNetId: NetId) => Promise<void>;
   removeFriend: (friendNetId: NetId, isRequest: boolean) => Promise<void>;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
@@ -123,6 +120,22 @@ export function UserProvider({
     else setFriendRequests(undefined);
   }, [setFriendRequests]);
 
+  const addFriend = useCallback(
+    async (friendNetId: NetId): Promise<void> => {
+      await baseAddFriend(friendNetId);
+      await Promise.all([friendRefresh(), friendReqRefresh()]);
+    },
+    [friendRefresh, friendReqRefresh],
+  );
+
+  const removeFriend = useCallback(
+    async (friendNetId: NetId, isRequest: boolean): Promise<void> => {
+      await baseRemoveFriend(friendNetId, isRequest);
+      await Promise.all([friendRefresh(), friendReqRefresh()]);
+    },
+    [friendRefresh, friendReqRefresh],
+  );
+
   const requestAddFriend = useCallback(
     async (friendNetId: NetId): Promise<void> => {
       // Prevent sending to server in common error cases
@@ -181,6 +194,8 @@ export function UserProvider({
       userRefresh,
       friendRefresh,
       friendReqRefresh,
+      addFriend,
+      removeFriend,
       requestAddFriend,
     ],
   );
