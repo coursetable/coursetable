@@ -352,7 +352,6 @@ export async function addFriend(friendNetId: NetId) {
       throw new Error(data.error ?? res.statusText);
     }
     toast.info(`Added friend: ${friendNetId}`);
-    window.location.reload();
   } catch (err) {
     Sentry.addBreadcrumb({
       category: 'friends',
@@ -423,7 +422,6 @@ export async function removeFriend(friendNetId: string, isRequest: boolean) {
     toast.info(
       `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
     );
-    window.location.reload();
   } catch (err) {
     Sentry.addBreadcrumb({
       category: 'friends',
