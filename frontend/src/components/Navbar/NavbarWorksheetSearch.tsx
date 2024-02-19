@@ -1,9 +1,18 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
-import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import {
+  Form,
+  Row,
+  ToggleButton,
+  ToggleButtonGroup,
+  OverlayTrigger,
+  Tooltip,
+  Fade,
+} from 'react-bootstrap';
+
+import { MdErrorOutline, MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { components } from 'react-select';
 import { toast } from 'react-toastify';
-import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { LinkLikeText } from '../Typography';
@@ -192,70 +201,94 @@ function AddFriendDropdown({
         a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
       );
   }, [user.friendRequests]);
+  const hasRequests = friendRequestOptions.length > 0;
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   return (
-    <Popout buttonText="Add Friend">
-      <PopoutSelect
-        hideSelectedOptions={false}
-        menuIsOpen
-        placeholder="Enter your friend's NetID (hit enter to add): "
-        options={[
-          {
-            label: 'Incoming requests',
-            options: friendRequestOptions,
-          },
-        ]}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            void requestAddFriend(currentFriendNetID as NetId);
+    // If incoming requests, show the icon
+    <div style={{ position: 'relative' }}>
+      {' '}
+      {hasRequests && (
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id="request-tooltip">You have friend requests!</Tooltip>
           }
-        }}
-        onInputChange={(e) => {
-          setCurrentFriendNetID(e);
-        }}
-        onMenuOpen={async () => {
-          const data = await fetchAllNames();
-          if (data) setAllNames(data.names as FriendNames);
-          else setAllNames([]);
-        }}
-        components={{
-          NoOptionsMessage: ({ children, ...props }) => (
-            <components.NoOptionsMessage {...props}>
-              No incoming friend requests
-            </components.NoOptionsMessage>
-          ),
-          Option({ children, ...props }) {
-            return (
-              <components.Option {...props}>
-                {children}
-                <MdPersonAdd
-                  className={styles.addFriendIcon}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    void addFriend(props.data.value);
-                  }}
-                  title="Accept friend request"
-                />
-                <MdPersonRemove
-                  className={styles.removeFriendIcon}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeFriend(props.data.value, true);
-                  }}
-                  title="Decline friend request"
-                />
-              </components.Option>
-            );
-          },
-        }}
-        isDisabled={false}
-      />
-    </Popout>
+        >
+          <MdErrorOutline
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 20,
+              color: '#fc4103',
+              cursor: 'pointer',
+              zIndex: 1,
+            }}
+          />
+        </OverlayTrigger>
+      )}
+      <Popout buttonText="Add Friend">
+        <PopoutSelect
+          hideSelectedOptions={false}
+          menuIsOpen
+          placeholder="Enter your friend's NetID (hit enter to add): "
+          options={[
+            {
+              label: 'Incoming requests',
+              options: friendRequestOptions,
+            },
+          ]}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              void requestAddFriend(currentFriendNetID as NetId);
+            }
+          }}
+          onInputChange={(e) => {
+            setCurrentFriendNetID(e);
+          }}
+          onMenuOpen={async () => {
+            const data = await fetchAllNames();
+            if (data) setAllNames(data.names as FriendNames);
+            else setAllNames([]);
+          }}
+          components={{
+            NoOptionsMessage: ({ children, ...props }) => (
+              <components.NoOptionsMessage {...props}>
+                No incoming friend requests
+              </components.NoOptionsMessage>
+            ),
+            Option({ children, ...props }) {
+              return (
+                <components.Option {...props}>
+                  {children}
+                  <MdPersonAdd
+                    className={styles.addFriendIcon}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      void addFriend(props.data.value);
+                    }}
+                    title="Accept friend request"
+                  />
+                  <MdPersonRemove
+                    className={styles.removeFriendIcon}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      removeFriend(props.data.value, true);
+                    }}
+                    title="Decline friend request"
+                  />
+                </components.Option>
+              );
+            },
+          }}
+          isDisabled={false}
+        />
+      </Popout>
+    </div>
   );
 }
 
