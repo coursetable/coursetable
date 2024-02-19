@@ -240,7 +240,7 @@ function AddFriendDropdown({
         <div
           style={{
             position: 'absolute',
-            top: -5, // ADJUST
+            top: -15, // ADJUST
             right: -15, // ADJUST
             zIndex: 2,
           }}
