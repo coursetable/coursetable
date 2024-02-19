@@ -1,13 +1,8 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
-import {
-  Form,
-  Row,
-  ToggleButton,
-  ToggleButtonGroup,
-} from 'react-bootstrap';
+import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
-import {MdPersonAdd, MdPersonRemove } from 'react-icons/md';
+import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { components } from 'react-select';
 import { toast } from 'react-toastify';
 import { Popout } from '../Search/Popout';
