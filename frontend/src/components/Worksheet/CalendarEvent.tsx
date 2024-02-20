@@ -18,7 +18,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { toggleCourse } = useWorksheet();
   const [isHovering, setIsHovering] = useState(false);
 
-  const handleEventHover = (hovering) => {
+  const handleEventHover = (hovering: boolean) => {
     setIsHovering(hovering);
   };
 
@@ -47,15 +47,18 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         className={styles.event}
         onMouseEnter={() => handleEventHover(true)}
         onMouseLeave={() => handleEventHover(false)}
+        onFocus={() => handleEventHover(true)} // Accessibility improvement
+        onBlur={() => handleEventHover(false)} // Accessibility improvement
       >
         <div
           className={clsx(styles.worksheetHideButton, styles.hideButtonHidden)}
           onMouseEnter={(e) => {
-            // Prevent the course details from showing when hovering over the hide button
             e.stopPropagation();
             handleEventHover(false);
           }}
-          onMouseLeave={() => handleEventHover(true)} // Re-enable course detail popover when leaving the button
+          onMouseLeave={() => handleEventHover(true)}
+          onFocus={() => handleEventHover(false)} // Accessibility improvement
+          onBlur={() => handleEventHover(true)} // Accessibility improvement
         >
           <WorksheetHideButton
             toggleCourse={() => toggleCourse(course.crn)}
