@@ -38,28 +38,33 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
       )}
       delay={{ show: 300, hide: 0 }}
     >
-    <div className={styles.event}>
-  {/* Positioned at the top right corner */}
-  <div className={clsx(styles.worksheetHideButton, !hidden && styles.hideButtonHidden)}>
-    <WorksheetHideButton
-      toggleCourse={() => toggleCourse(course.crn)}
-      hidden={hidden}
-    />
-  </div>
-  <div>
-    <strong>{event.title}</strong>
-    <br />
-    <span>
-      <ResponsiveEllipsis
-        className={styles.courseNameText}
-        text={event.description}
-        maxLine="2"
-        basedOn="words"
-      />
-    </span>
-    <small className={styles.locationText}>{event.location}</small>
-  </div>
-</div>
+      <div className={styles.event}>
+        {/* Positioned at the top right corner */}
+        <div
+          className={clsx(
+            styles.worksheetHideButton,
+            !hidden && styles.hideButtonHidden,
+          )}
+        >
+          <WorksheetHideButton
+            toggleCourse={() => toggleCourse(course.crn)}
+            hidden={hidden}
+          />
+        </div>
+        <div>
+          <strong>{event.title}</strong>
+          <br />
+          <span>
+            <ResponsiveEllipsis
+              className={styles.courseNameText}
+              text={event.description}
+              maxLine="2"
+              basedOn="words"
+            />
+          </span>
+          <small className={styles.locationText}>{event.location}</small>
+        </div>
+      </div>
     </OverlayTrigger>
   );
 }
