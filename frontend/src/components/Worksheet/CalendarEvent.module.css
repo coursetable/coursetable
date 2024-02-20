@@ -5,9 +5,15 @@
 }
 
 .worksheetHideButton {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.event:hover .worksheetHideButton {
+  opacity: 1;
 }
 
 .courseNameText {
