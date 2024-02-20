@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
@@ -16,11 +16,16 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const hidden = false; // Always shown if in cal
   const course = event.listing;
   const { toggleCourse } = useWorksheet();
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleEventHover = (hovering) => {
+    setIsHovering(hovering);
+  };
 
   return (
     <OverlayTrigger
-      // Course info that appears on hover
       placement="right"
+      show={isHovering} // Show popover based on hovering state
       overlay={(props) => (
         <InfoPopover {...props} id="title-popover">
           <Popover.Title>
@@ -38,10 +43,19 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
       )}
       delay={{ show: 300, hide: 0 }}
     >
-      <div className={styles.event}>
-        {/* Positioned at the top right corner */}
+      <div
+        className={styles.event}
+        onMouseEnter={() => handleEventHover(true)}
+        onMouseLeave={() => handleEventHover(false)}
+      >
         <div
           className={clsx(styles.worksheetHideButton, styles.hideButtonHidden)}
+          onMouseEnter={(e) => {
+            // Prevent the course details from showing when hovering over the hide button
+            e.stopPropagation();
+            handleEventHover(false);
+          }}
+          onMouseLeave={() => handleEventHover(true)} // Re-enable course detail popover when leaving the button
         >
           <WorksheetHideButton
             toggleCourse={() => toggleCourse(course.crn)}
