@@ -23,6 +23,11 @@ export default function WorksheetHideButton({
   // Size of toggle button
   const buttonSize = 18;
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation(); // Prevent event from propagating to parent elements
+    toggleCourse();
+  };
+
   return (
     <OverlayTrigger
       placement="bottom"
@@ -34,7 +39,7 @@ export default function WorksheetHideButton({
     >
       <Button
         variant="toggle"
-        onClick={toggleCourse}
+        onClick={handleClick}
         className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
       >
         {hidden ? (
