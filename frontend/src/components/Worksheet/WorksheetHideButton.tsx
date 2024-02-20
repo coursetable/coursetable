@@ -51,7 +51,8 @@ export default function WorksheetHideButton({
       <Button
         variant="toggle"
         onClick={handleClick}
-        className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}      >
+        className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
+      >
         {hidden ? (
           <BsEyeSlash
             color="var(--color-hidden)"
