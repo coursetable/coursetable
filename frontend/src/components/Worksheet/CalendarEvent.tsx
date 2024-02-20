@@ -41,10 +41,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
       <div className={styles.event}>
         {/* Positioned at the top right corner */}
         <div
-          className={clsx(
-            styles.worksheetHideButton,
-            styles.hideButtonHidden,
-          )}
+          className={clsx(styles.worksheetHideButton, styles.hideButtonHidden)}
         >
           <WorksheetHideButton
             toggleCourse={() => toggleCourse(course.crn)}
