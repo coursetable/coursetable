@@ -513,7 +513,23 @@ export function SearchProvider({
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
             professor.toLowerCase().includes(token),
-          )
+          ) ||
+          // Use `times_by_day` instead of `locations_summary` to account for
+          // multiple locations.
+          Object.values(listing.times_by_day)
+            .flat()
+            .flatMap((x) => x[2].toLowerCase().split(' '))
+            .some(
+              (loc) =>
+                // Never allow a number to match a room number, as numbers are
+                // more likely to be course numbers.
+                // TODO: this custom parsing is not ideal. `times_by_day` should
+                // give a more structured location format.
+                !/^\d+$/u.test(loc) &&
+                loc !== '-' &&
+                loc !== 'tba' &&
+                loc.startsWith(token),
+            )
         )
           continue;
 
