@@ -80,12 +80,6 @@ export async function logout() {
     });
     if (!res.ok)
       throw new Error(((await res.json()) as { error?: string }).error);
-    // Clear cookies
-    document.cookie.split(';').forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/u, '')
-        .replace(/=.*/u, `=;expires=${new Date().toUTCString()};path=/`);
-    });
     // Redirect to home page and refresh as well
     window.location.pathname = '/';
   } catch (err) {
