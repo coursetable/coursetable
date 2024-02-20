@@ -2,13 +2,13 @@ import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import clsx from 'clsx';
 import { InfoPopover } from '../Typography';
 import { truncatedText } from '../../utilities/course';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import clsx from 'clsx';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -43,7 +43,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         <div
           className={clsx(
             styles.worksheetHideButton,
-            !hidden && styles.hideButtonHidden,
+            styles.hideButtonHidden,
           )}
         >
           <WorksheetHideButton
