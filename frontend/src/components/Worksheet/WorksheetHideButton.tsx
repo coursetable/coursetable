@@ -29,7 +29,7 @@ export default function WorksheetHideButton({
   const determineButtonColor = () => {
     if (!courseColor) return undefined;
 
-    return chroma(courseColor).luminance() < 0.5 ? 'white' : 'black';
+    return chroma.contrast(courseColor, 'white') > 2 ? 'white' : 'black';
   };
 
   const buttonColor = determineButtonColor();
