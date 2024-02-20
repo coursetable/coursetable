@@ -13,6 +13,7 @@ export async function toggleBookmark(payload: {
   season: Season;
   crn: Crn;
   worksheetNumber: number;
+  color: string;
 }): Promise<boolean> {
   const body = JSON.stringify(payload);
   try {

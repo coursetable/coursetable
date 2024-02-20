@@ -4,6 +4,7 @@
 
 import type express from 'express';
 import z from 'zod';
+import chroma from 'chroma-js';
 
 import { worksheetCoursesToWorksheets } from './user.utils';
 import winston from '../logging/winston';
@@ -15,6 +16,7 @@ const ToggleBookmarkReqBodySchema = z.object({
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
   worksheetNumber: z.number(),
+  color: z.string().refine((val) => chroma.valid(val)),
 });
 
 /**
@@ -37,7 +39,7 @@ export const toggleBookmark = async (
     return;
   }
 
-  const { action, season, crn, worksheetNumber } = bodyParseRes.data;
+  const { action, season, crn, worksheetNumber, color } = bodyParseRes.data;
 
   const existing = await prisma.worksheetCourses.findUnique({
     where: {
@@ -60,7 +62,7 @@ export const toggleBookmark = async (
       return;
     }
     await prisma.worksheetCourses.create({
-      data: { netId, crn, season, worksheetNumber },
+      data: { netId, crn, season, worksheetNumber, color },
     });
   } else {
     // Remove a bookmarked course

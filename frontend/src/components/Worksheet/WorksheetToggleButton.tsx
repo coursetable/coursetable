@@ -5,6 +5,7 @@ import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import clsx from 'clsx';
 
 import { useUser } from '../../contexts/userContext';
+import { worksheetColors } from '../../utilities/constants';
 import type { Crn, Season } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
 import { toggleBookmark } from '../../utilities/api';
@@ -80,6 +81,8 @@ function WorksheetToggleButton({
         season: seasonCode,
         crn,
         worksheetNumber: selectedWorksheet,
+        color:
+          worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
       });
       if (success) {
         await userRefresh();
