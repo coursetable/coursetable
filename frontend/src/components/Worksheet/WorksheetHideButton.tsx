@@ -24,7 +24,7 @@ export default function WorksheetHideButton({
   const buttonSize = 18;
 
   const handleClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.stopPropagation(); // Prevent event from propagating to parent elements
     toggleCourse();

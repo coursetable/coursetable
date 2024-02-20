@@ -13,7 +13,7 @@ import clsx from 'clsx';
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
-  const hidden = false; // always shown if in cal
+  const hidden = false; // Always shown if in cal
   const course = event.listing;
   const { toggleCourse } = useWorksheet();
 

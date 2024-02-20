@@ -116,7 +116,7 @@ function popoutStyles(width: number): StylesConfig<Option<number | string>> {
 function colorStyles(): StylesConfig<Option<number | string>> {
   return {
     multiValue(base, { data }) {
-      const backgroundColor = chroma(data.color!).alpha(0.16).css();
+      const backgroundColor = chroma(data.color).alpha(0.16).css();
       return {
         ...base,
         backgroundColor,
@@ -136,7 +136,7 @@ function colorStyles(): StylesConfig<Option<number | string>> {
       },
     }),
     option(base, { data, isDisabled, isFocused, isSelected }) {
-      const color = chroma(data.color!);
+      const color = chroma(data.color);
       if (isDisabled) {
         return {
           ...base,
