@@ -10,6 +10,15 @@
   position: absolute;
   top: 0;
   right: 0;
+  background-color: white;
+  color: black;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
 }
 
 .event:hover .worksheetHideButton {
