@@ -170,11 +170,12 @@ export function useWorksheetInfo(
         hasWarned.add(crn);
         toast.error(
           <div>
-            We recorded a course with CRN {crn} in your worksheet for{' '}
-            {toSeasonString(seasonCode)}, but we can't find its information now.
-            Usually, this is non-critical. Try reloading the page. If the issue
-            persists, you can choose to remove this course. If you know what
-            course disappeared and you think this is an error, please{' '}
+            We have recorded a course with CRN {crn} in your worksheet for{' '}
+            {toSeasonString(seasonCode)}, but its information is currently
+            unavailable. This issue is usually non-critical. Please try
+            reloading the page. If the problem persists, consider removing this
+            course. If you know what course disappeared and believe this to be
+            an error, please{' '}
             <a
               href="https://feedback.coursetable.com/"
               target="_blank"
@@ -182,7 +183,7 @@ export function useWorksheetInfo(
             >
               report the problem
             </a>
-            , including the name of the course.
+            , including the course name, by clicking the link.
             <button
               type="button"
               onClick={async () => {
