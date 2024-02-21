@@ -34,7 +34,11 @@ export default function WorksheetHideButton({
     >
       <Button
         variant="toggle"
-        onClick={toggleCourse}
+        onClick={(e) => {
+          // Prevent clicking hide button from opening course modal
+          e.stopPropagation();
+          toggleCourse();
+        }}
         className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
       >
         {hidden ? (
