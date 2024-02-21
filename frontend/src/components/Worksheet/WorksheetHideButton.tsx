@@ -16,9 +16,11 @@ import styles from './WorksheetToggleButton.module.css';
 export default function WorksheetHideButton({
   hidden,
   toggleCourse,
+  inCal,
 }: {
   readonly hidden: boolean;
   readonly toggleCourse: () => void;
+  readonly inCal?: boolean;
 }) {
   // Size of toggle button
   const buttonSize = 18;
@@ -50,7 +52,7 @@ export default function WorksheetHideButton({
           />
         ) : (
           <BsEye
-            color="var(--color-text)"
+            color={inCal ? 'black' : 'var(--color-text)'}
             size={buttonSize}
             className={styles.scaleIcon}
           />

@@ -63,6 +63,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
           <WorksheetHideButton
             toggleCourse={() => toggleCourse(course.crn)}
             hidden={hidden}
+            inCal
           />
         </div>
         <div>
