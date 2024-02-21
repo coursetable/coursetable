@@ -59,8 +59,9 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         >
           <WorksheetHideButton
             toggleCourse={() => toggleCourse(course.crn)}
+            // Course in calendar is never hidden
             hidden={false}
-            inCal
+            color="black"
           />
         </div>
         <div>
