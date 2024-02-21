@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import clsx from 'clsx';
 import { InfoPopover } from '../Typography';
 import { truncatedText } from '../../utilities/course';
 import type { RBCEvent } from '../../utilities/calendar';
@@ -46,7 +45,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         onBlur={() => setIsHovering(false)}
       >
         <div
-          className={clsx(styles.worksheetHideButton, styles.hideButtonHidden)}
+          className={styles.worksheetHideButton}
           // Prevent hovering over the hide button from showing the course info
           // popover
           onMouseEnter={(e) => {
@@ -61,7 +60,6 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
             toggleCourse={() => toggleCourse(course.crn)}
             // Course in calendar is never hidden
             hidden={false}
-            color="black"
           />
         </div>
         <div>
