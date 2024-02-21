@@ -38,8 +38,6 @@
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "prisma": "^5.9.1",
     "redis": "^4.6.13",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
