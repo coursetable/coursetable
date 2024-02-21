@@ -1,5 +1,4 @@
 .event {
-  position: relative;
   width: 100%;
   height: 100%;
 }
@@ -23,7 +22,8 @@
   --color-text: black;
 }
 
-.event:hover .worksheetHideButton {
+.worksheetHideButton:hover,
+.event:hover ~ .worksheetHideButton {
   opacity: 1;
 }
 
