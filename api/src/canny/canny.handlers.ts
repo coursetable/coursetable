@@ -50,9 +50,9 @@ export const cannyIdentify = async (
           netid: netId,
         },
       }),
-    }).then((res) => {
-      if (!res.ok) throw new Error(res.statusText);
-      return res.json();
+    }).then((yaliesRes) => {
+      if (!yaliesRes.ok) throw new Error(yaliesRes.statusText);
+      return yaliesRes.json();
     })) as YaliesResponse;
     // If no user found, do not grant access
     if (data === null || data.length === 0) {

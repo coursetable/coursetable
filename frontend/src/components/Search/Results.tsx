@@ -93,7 +93,7 @@ function Results({
     // window, the view can still be restored to list view
     resultsListing = (
       <WindowScroller>
-        {({ ref, outerRef, style }) => (
+        {({ ref, outerRef, style: listStyle }) => (
           // We use a list even for grid, because we only virtualize the rows
           <FixedSizeList
             outerRef={outerRef}
@@ -102,10 +102,10 @@ function Results({
             itemCount={Math.ceil(data.length / numCols)}
             itemSize={178}
             width={window.innerWidth}
-            style={style}
+            style={listStyle}
           >
-            {({ index, style }) => (
-              <div style={style}>
+            {({ index, style: itemStyle }) => (
+              <div style={itemStyle}>
                 <Row className={clsx(styles.gridRow, 'mx-auto')}>
                   {data
                     .slice(index * numCols, (index + 1) * numCols)
@@ -127,7 +127,7 @@ function Results({
   } else {
     resultsListing = (
       <WindowScroller>
-        {({ ref, outerRef, style }) => (
+        {({ ref, outerRef, style: listStyle }) => (
           <FixedSizeList
             outerRef={outerRef}
             ref={ref}
@@ -135,13 +135,13 @@ function Results({
             itemCount={data.length}
             itemSize={isLgDesktop ? 32 : 28}
             width={window.innerWidth}
-            style={style}
+            style={listStyle}
             useIsScrolling
           >
-            {({ index, style }) => (
+            {({ index, style: itemStyle }) => (
               <ResultsItem
                 isOdd={index % 2 === 1}
-                style={style}
+                style={itemStyle}
                 course={data[index]!}
                 multiSeasons={multiSeasons}
                 isFirst={index === 0}

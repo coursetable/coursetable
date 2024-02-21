@@ -25,6 +25,7 @@ import {
   subjectsOptions,
   schoolsOptions,
   seasonsOptions,
+  courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
 import {
@@ -65,6 +66,7 @@ export function NavbarCatalogSearch() {
     numBounds,
     selectSchools,
     selectCredits,
+    selectCourseInfoAttributes,
     searchDescription,
     hideCancelled,
     hideConflicting,
@@ -101,13 +103,12 @@ export function NavbarCatalogSearch() {
   // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
     if (isLgDesktop) return undefined;
-    const styles: React.CSSProperties = { height: '12px', width: '12px' };
-    return [styles, styles];
+    const style: React.CSSProperties = { height: '12px', width: '12px' };
+    return [style, style];
   }, [isLgDesktop]);
   const rangeRailStyle = useMemo((): React.CSSProperties => {
     if (isLgDesktop) return {};
-    const styles = { marginTop: '-1px' };
-    return styles;
+    return { marginTop: '-1px' };
   }, [isLgDesktop]);
 
   // Ctrl/cmd-s search hotkey
@@ -420,6 +421,7 @@ export function NavbarCatalogSearch() {
                     'numBounds',
                     'selectSchools',
                     'selectCredits',
+                    'selectCourseInfoAttributes',
                     'searchDescription',
                     'hideCancelled',
                     'hideConflicting',
@@ -456,6 +458,7 @@ export function NavbarCatalogSearch() {
                   numBounds.hasChanged,
                   selectSchools.hasChanged,
                   selectCredits.hasChanged,
+                  selectCourseInfoAttributes.hasChanged,
                   selectSortBy.value.value === 'average_gut_rating',
                   searchDescription.value,
                   hideCancelled.value,
@@ -755,6 +758,25 @@ export function NavbarCatalogSearch() {
                       // Don't think about these generics too much. It poisons
                       // your brain.
                       selectCredits.set(selectedOption as Option<number>[]);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Course Information Attributes Multi-Select */}
+                  <div className={styles.advancedLabel}>Info:</div>
+                  <CustomSelect
+                    className={styles.advancedSelect}
+                    closeMenuOnSelect
+                    isMulti
+                    value={selectCourseInfoAttributes.value}
+                    options={courseInfoAttributesOptions}
+                    placeholder="Course Information Attributes"
+                    menuPortalTarget={menuPortalTarget}
+                    onChange={(selectedOption) => {
+                      selectCourseInfoAttributes.set(
+                        selectedOption as Option[],
+                      );
                       setStartTime(Date.now());
                     }}
                   />

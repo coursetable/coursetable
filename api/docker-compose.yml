@@ -43,3 +43,14 @@ services:
       interval: 0.5s
       timeout: 10s
       retries: 60
+
+  redis:
+    container_name: redis
+    image: redis/redis-stack-server:latest
+    volumes:
+      - ./redis:/usr/local/etc/redis
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 0.5s
+      timeout: 10s
+      retries: 60

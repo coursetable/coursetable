@@ -10,7 +10,6 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
-import { worksheetColors } from '../utilities/constants';
 import { toSeasonString } from '../utilities/course';
 import { fetchCatalog, toggleBookmark } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
@@ -48,7 +47,7 @@ type Store = {
 
   error: {} | null;
   courses: typeof courseData;
-  requestSeasons: (seasons: Season[]) => void;
+  requestSeasons: (requestedSeasons: Season[]) => void;
 };
 
 const FerryCtx = createContext<Store | undefined>(undefined);
@@ -68,9 +67,11 @@ export function FerryProvider({
   const { user } = useUser();
 
   const requestSeasons = useCallback(
-    async (seasons: Season[]) => {
+    async (requestedSeasons: Season[]) => {
       if (!user.hasEvals) return; // Not logged in / doesn't have evals
-      const fetches = seasons.map(async (season) => {
+      const fetches = requestedSeasons.map(async (season) => {
+        // No data; this can happen if the course-modal query is invalid
+        if (!seasons.includes(season)) return;
         // As long as there is one request in progress, don't fire another
         if (courseLoadAttempted.has(season)) return;
 
@@ -111,16 +112,17 @@ export function FerryProvider({
 }
 
 export const useFerry = () => useContext(FerryCtx)!;
-export const useCourseData = (seasons: Season[]) => {
+export const useCourseData = (requestedSeasons: Season[]) => {
   const { error, courses, requestSeasons } = useFerry();
 
   useEffect(() => {
-    requestSeasons(seasons);
-  }, [requestSeasons, seasons]);
+    requestSeasons(requestedSeasons);
+  }, [requestSeasons, requestedSeasons]);
 
   // If not everything is loaded, we're still loading.
   // But if we hit an error, stop loading immediately.
-  const loading = !error && !seasons.every((season) => courses[season]);
+  const loading =
+    !error && !requestedSeasons.every((season) => courses[season]);
 
   return { loading, error, courses };
 };
@@ -133,14 +135,14 @@ export function useWorksheetInfo(
   worksheetNumber: number,
   person: NetId | 'me',
 ) {
-  const requiredSeasons = useMemo(() => {
+  const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
     if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
     if (season in worksheets) return [season];
     return [];
   }, [season, worksheets]);
 
-  const { loading, error, courses } = useCourseData(requiredSeasons);
+  const { loading, error, courses } = useCourseData(requestedSeasons);
 
   const data = useMemo(() => {
     const dataReturn: WorksheetCourse[] = [];
@@ -148,24 +150,23 @@ export function useWorksheetInfo(
     if (loading || error) return [];
 
     // Resolve the worksheet items.
-    for (const seasonCode of requiredSeasons) {
-      // Guaranteed to exist because of how requiredSeasons is constructed.
+    for (const seasonCode of requestedSeasons) {
+      // Guaranteed to exist because of how requestedSeasons is constructed.
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      worksheet.forEach(({ crn }, i) => {
+      for (const { crn, color } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
         if (listing) {
           dataReturn.push({
             crn,
-            color: worksheetColors[i % worksheetColors.length]!,
+            color,
             listing,
           });
-          return;
+          continue;
         }
         // Can't ask people to remove courses from others' worksheet
-        if (person !== 'me') return;
-        if (hasWarned.has(crn)) return;
+        if (person !== 'me' || hasWarned.has(crn)) continue;
         hasWarned.add(crn);
         toast.error(
           <div>
@@ -190,6 +191,8 @@ export function useWorksheetInfo(
                   season: seasonCode,
                   crn,
                   worksheetNumber,
+                  // Remove needs a color but does not use it
+                  color: '#000000',
                 });
                 toast.dismiss();
               }}
@@ -199,13 +202,13 @@ export function useWorksheetInfo(
           </div>,
           { autoClose: false },
         );
-      });
+      }
     }
     return dataReturn.sort((a, b) =>
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
   }, [
-    requiredSeasons,
+    requestedSeasons,
     courses,
     worksheets,
     worksheetNumber,

@@ -27,7 +27,7 @@ function EvaluationResponses({
   const [responses, sortedResponses] = useMemo(() => {
     const tempResponses: { [questionText: string]: string[] } = {};
     // Loop through each section for this course code
-    (info || []).forEach((section) => {
+    (info ?? []).forEach((section) => {
       const crnCode = section.crn;
       // Only fetch comments for this section
       if (crnCode !== crn) return;
@@ -37,9 +37,6 @@ function EvaluationResponses({
       // Add comments to responses dictionary
       nodes.forEach((node) => {
         if (node.evaluation_question.question_text && node.comment) {
-          // There are a lot of ESLint bugs with index signatures and
-          // no-unnecessary-condition
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           (tempResponses[node.evaluation_question.question_text] ??= []).push(
             node.comment,
           );

@@ -29,7 +29,7 @@
 
 .dialog :global(.modal-header) {
   display: flex !important;
-  padding: 1rem 1rem 0.5rem !important;
+  padding: 1rem 1rem 0 !important;
 }
 
 .dialog :global(.modal-header) :global(.close) {
@@ -43,6 +43,34 @@
 .modalTitle {
   font-weight: 550;
   line-height: 1.2 !important;
+}
+
+.tabs {
+  width: 220px;
+  display: flex;
+  align-items: end;
+}
+
+.tabButton {
+  width: 50%;
+  padding: 0.5em 0;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tabButton.tabSelected {
+  background-color: var(--color-select-hover);
+  color: var(--color-text);
+}
+
+.shareButton {
+  cursor: pointer;
+  margin: 1em;
 }
 
 @media (width < 768px) {
@@ -72,4 +100,11 @@
 
 .moreInfo:hover {
   filter: brightness(80%);
+}
+
+.conflictIconPosition {
+  position: absolute;
+  top: -10px;
+  right: 50px;
+  z-index: 10;
 }

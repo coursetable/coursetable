@@ -5,11 +5,12 @@ CourseTable uses the following Docker containers for core functionality, so they
 - `express`: this contains the Express app code for running the API.
 - `mysql`: this is a MySQL database that stores user data.
 - `graphql-engine`: this is a Hasura engine that wraps the Postgres database created by Ferry. Ferry dumps course data in it, and the engine exposes a GraphQL API for querying the data.
+- `redis`: this is a Redis stack server that stores all user sessions from Express.
 - `phpmyadmin`: this is a PHPMyAdmin instance that allows you to view the MySQL database managed by API. It is useful for debugging and DB manipulation.
 
 Note that we have two databases: a MySQL database managed by API, which stores user data, and a Postgres database managed by Ferry, which stores course data. The latter is exposed as a GraphQL API by the Hasura engine. Therefore, you need to be connected to the Internet to even start CourseTable locally, because the GraphQL engine used in dev still communicates with the remote Postgres database.
 
-In `coursetable/api`, we only manage the `express` and `graphql-engine` containers. We do provide development versions of the `mysql` and `phpmyadmin` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra/mysql`](https://github.com/coursetable/infra/blob/main/mysql/docker-compose.yml).
+In `coursetable/api`, we only manage the `express`, `graphql-engine`, and `redis` containers. We do provide development versions of the `mysql` and `phpmyadmin` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra/mysql`](https://github.com/coursetable/infra/blob/main/mysql/docker-compose.yml).
 
 Here's the data flow for course data:
 

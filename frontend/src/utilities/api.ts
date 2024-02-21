@@ -13,6 +13,7 @@ export async function toggleBookmark(payload: {
   season: Season;
   crn: Crn;
   worksheetNumber: number;
+  color: string;
 }): Promise<boolean> {
   const body = JSON.stringify(payload);
   try {
@@ -79,12 +80,6 @@ export async function logout() {
     });
     if (!res.ok)
       throw new Error(((await res.json()) as { error?: string }).error);
-    // Clear cookies
-    document.cookie.split(';').forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/u, '')
-        .replace(/=.*/u, `=;expires=${new Date().toUTCString()};path=/`);
-    });
     // Redirect to home page and refresh as well
     window.location.pathname = '/';
   } catch (err) {
@@ -200,6 +195,7 @@ const userWorksheetsSchema = z.record(
     z.array(
       z.object({
         crn: z.number(),
+        color: z.string(),
       }),
     ),
   ),
@@ -352,7 +348,6 @@ export async function addFriend(friendNetId: NetId) {
       throw new Error(data.error ?? res.statusText);
     }
     toast.info(`Added friend: ${friendNetId}`);
-    window.location.reload();
   } catch (err) {
     Sentry.addBreadcrumb({
       category: 'friends',
@@ -405,7 +400,7 @@ export async function requestAddFriend(friendNetId: NetId) {
   }
 }
 
-export async function removeFriend(friendNetId: string) {
+export async function removeFriend(friendNetId: string, isRequest: boolean) {
   const body = JSON.stringify({ friendNetId });
   try {
     const res = await fetch(`${API_ENDPOINT}/api/friends/remove`, {
@@ -420,8 +415,9 @@ export async function removeFriend(friendNetId: string) {
       const data = (await res.json()) as { error?: string };
       throw new Error(data.error ?? res.statusText);
     }
-    toast.info(`Removed friend: ${friendNetId}`);
-    window.location.reload();
+    toast.info(
+      `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
+    );
   } catch (err) {
     Sentry.addBreadcrumb({
       category: 'friends',

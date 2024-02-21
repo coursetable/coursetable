@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -57,13 +57,6 @@ function ResultsItem({
   readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
-  // Has the component been mounted?
-  const [mounted, setMounted] = useState(false);
-
-  // Set mounted on mount
-  useEffect(() => {
-    if (!mounted) setMounted(true);
-  }, [mounted]);
 
   const { numFriends } = useSearch();
   const friends = numFriends[course.season_code + course.crn];
@@ -298,12 +291,9 @@ function ResultsItem({
             setCourseInWorksheet={setCourseInWorksheet}
           />
         </div>
-        {/* Render conflict icon only when component has been mounted */}
-        {mounted && (
-          <div className={styles.conflictError}>
-            <CourseConflictIcon course={course} />
-          </div>
-        )}
+        <div className={styles.conflictError}>
+          <CourseConflictIcon course={course} />
+        </div>
       </Row>
     </div>
   );

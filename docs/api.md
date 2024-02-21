@@ -264,6 +264,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
           [season: Season]: {
             [worksheetNumber: number]: {
               crn: Crn;
+              color: string;
             }[];
           };
         };
@@ -343,6 +344,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
       [season: Season]: {
         [worksheetNumber: number]: {
           crn: Crn;
+          color: string;
         }[];
       };
     };

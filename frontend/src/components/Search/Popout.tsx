@@ -21,6 +21,7 @@ type Props = {
   readonly maxDisplayOptions?: number;
   readonly displayOptionLabel?: boolean;
   readonly className?: string;
+  readonly notifications?: number;
   readonly dataTutorial?: number;
 };
 
@@ -59,6 +60,14 @@ function getText(
   return selectedOptions !== 0 ? `Advanced: ${selectedOptions}` : undefined;
 }
 
+function NotificationIcon({ count }: { readonly count: number }) {
+  return (
+    <div className={styles.notificationIcon}>
+      <span>{count}</span>
+    </div>
+  );
+}
+
 export function Popout({
   children,
   buttonText,
@@ -69,6 +78,7 @@ export function Popout({
   maxDisplayOptions = 3,
   displayOptionLabel,
   className,
+  notifications,
   dataTutorial,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
@@ -125,6 +135,7 @@ export function Popout({
             <IoMdArrowDropup className={clsx(styles.arrowIcon, 'ml-1')} />
           )
         ) : null}
+        {notifications ? <NotificationIcon count={notifications} /> : null}
       </div>
       {/* Dropdown */}
       {isComponentVisible ? (

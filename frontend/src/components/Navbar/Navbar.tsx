@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
@@ -15,14 +15,8 @@ import { SurfaceComponent, TextComponent } from '../Typography';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 
 import { API_ENDPOINT } from '../../config';
-import { useTheme } from '../../contexts/themeContext';
+import { useUser } from '../../contexts/userContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
-
-type Props = {
-  readonly isLoggedIn: boolean;
-  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
 function NavbarLink({
   to,
@@ -58,22 +52,15 @@ function NavCollapseWrapper({
   return <>{children}</>;
 }
 
-export default function CourseTableNavbar({
-  isLoggedIn,
-  setIsTutorialOpen,
-  setShownTutorial,
-}: Props) {
+export default function CourseTableNavbar() {
+  const { user } = useUser();
+  const isLoggedIn = Boolean(user.worksheets);
   const location = useLocation();
   // Is navbar expanded in mobile view?
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
   const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
-
-  // Last updated state
-  const [lastUpdated, setLastUpdated] = useState('0 hrs');
-
-  const { toggleTheme } = useTheme();
 
   // Fetch current device
   const { isMobile, isLgDesktop } = useWindowDimensions();
@@ -85,7 +72,7 @@ export default function CourseTableNavbar({
     ['/catalog', '/worksheet'].includes(location.pathname);
 
   // Calculate time since last updated
-  useEffect(() => {
+  const lastUpdated = useMemo(() => {
     const now = new Date();
     // We always update at around 8:25am UTC, regardless of DST
     // TODO: maybe the DB should tell us when it was last updated
@@ -103,14 +90,13 @@ export default function CourseTableNavbar({
     if (lastUpdateTime > nowTime) lastUpdateTime -= 24 * 60 * 60;
     const diffInSecs = nowTime - lastUpdateTime;
     if (diffInSecs < 60) {
-      setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
+      return `${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`;
     } else if (diffInSecs < 3600) {
       const diffInMins = Math.floor(diffInSecs / 60);
-      setLastUpdated(`${diffInMins} min${diffInMins > 1 ? 's' : ''}`);
-    } else {
-      const diffInHrs = Math.floor(diffInSecs / 3600);
-      setLastUpdated(`${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`);
+      return `${diffInMins} min${diffInMins > 1 ? 's' : ''}`;
     }
+    const diffInHrs = Math.floor(diffInSecs / 3600);
+    return `${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`;
   }, []);
 
   return (
@@ -185,18 +171,13 @@ export default function CourseTableNavbar({
                   style={{ width: '100%' }}
                 >
                   {/* DarkMode Button */}
-                  {/* TODO */}
-                  {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-                  <div
+                  <DarkModeButton
                     className={clsx(
                       styles.navbarDarkModeBtn,
                       'd-flex',
                       !isMobile && 'ml-auto',
                     )}
-                    onClick={toggleTheme}
-                  >
-                    <DarkModeButton />
-                  </div>
+                  />
                   {isLoggedIn && (
                     <>
                       {/* Catalog Page */}
@@ -284,11 +265,8 @@ export default function CourseTableNavbar({
       {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
-          profileExpanded={isComponentVisible}
-          setIsComponentVisible={setIsComponentVisible}
-          isLoggedIn={isLoggedIn}
-          setIsTutorialOpen={setIsTutorialOpen}
-          setShownTutorial={setShownTutorial}
+          isExpanded={isComponentVisible}
+          setIsExpanded={setIsComponentVisible}
         />
       </div>
     </div>

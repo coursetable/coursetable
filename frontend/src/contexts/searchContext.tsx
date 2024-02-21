@@ -19,6 +19,7 @@ import {
   skillsAreas,
   subjects,
   schools,
+  courseInfoAttributes,
 } from '../utilities/constants';
 import {
   isInWorksheet,
@@ -66,7 +67,6 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
 
 const sortCriteria = {
   course_code: { label: 'Sort by Course Code', numeric: false },
-  number: { label: 'Sort by Course Number', numeric: true },
   title: { label: 'Sort by Course Title', numeric: false },
   friend: { label: 'Sort by Friends', numeric: true },
   average_rating: { label: 'Sort by Course Rating', numeric: true },
@@ -86,7 +86,11 @@ export const sortByOptions = Object.fromEntries(
 ) as { [k in SortKeys]: SortByOption };
 
 // We can only sort by primitive keys by default, unless we have special support
-export type SortKeys = keyof typeof sortCriteria;
+export type SortKeys =
+  | keyof typeof sortCriteria
+  | keyof {
+      [K in keyof Listing as Listing[K] extends string | number ? K : never]: K;
+    };
 
 export type SortByOption = Option & {
   value: SortKeys;
@@ -111,6 +115,13 @@ export const seasonsOptions = seasons.map(
   (x): Option<Season> => ({
     value: x,
     label: toSeasonString(x),
+  }),
+);
+
+export const courseInfoAttributesOptions = courseInfoAttributes.map(
+  (attr): Option => ({
+    label: attr,
+    value: attr,
   }),
 );
 
@@ -146,6 +157,7 @@ export type Filters = {
   numBounds: [number, number];
   selectSchools: Option[];
   selectCredits: Option<number>[];
+  selectCourseInfoAttributes: Option[];
   searchDescription: boolean;
   hideCancelled: boolean;
   hideConflicting: boolean;
@@ -170,6 +182,7 @@ export const defaultFilters: Filters = {
   numBounds: [0, 1000],
   selectSchools: [],
   selectCredits: [],
+  selectCourseInfoAttributes: [],
   searchDescription: false,
   hideCancelled: true,
   hideConflicting: false,
@@ -219,6 +232,9 @@ export function SearchProvider({
   const numBounds = useFilterState('numBounds');
   const selectSchools = useFilterState('selectSchools');
   const selectCredits = useFilterState('selectCredits');
+  const selectCourseInfoAttributes = useFilterState(
+    'selectCourseInfoAttributes',
+  );
   const searchDescription = useFilterState('searchDescription');
   const hideCancelled = useFilterState('hideCancelled');
   const hideConflicting = useFilterState('hideConflicting');
@@ -283,6 +299,10 @@ export function SearchProvider({
   const processedCredits = useMemo(
     () => selectCredits.value.map((x) => x.value),
     [selectCredits.value],
+  );
+  const processedCourseInfoAttributes = useMemo(
+    () => selectCourseInfoAttributes.value.map((x) => x.value),
+    [selectCourseInfoAttributes.value],
   );
   // If the bounds are unaltered, we need to set them to null
   // to include unrated courses
@@ -462,6 +482,14 @@ export function SearchProvider({
         return false;
 
       if (
+        processedCourseInfoAttributes.length !== 0 &&
+        !processedCourseInfoAttributes.some((attr) =>
+          listing.flag_info.includes(attr),
+        )
+      )
+        return false;
+
+      if (
         processedSchools.length !== 0 &&
         listing.school !== null &&
         !processedSchools.includes(listing.school)
@@ -486,7 +514,23 @@ export function SearchProvider({
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
             professor.toLowerCase().includes(token),
-          )
+          ) ||
+          // Use `times_by_day` instead of `locations_summary` to account for
+          // multiple locations.
+          Object.values(listing.times_by_day)
+            .flat()
+            .flatMap((x) => x[2].toLowerCase().split(' '))
+            .some(
+              (loc) =>
+                // Never allow a number to match a room number, as numbers are
+                // more likely to be course numbers.
+                // TODO: this custom parsing is not ideal. `times_by_day` should
+                // give a more structured location format.
+                !/^\d+$/u.test(loc) &&
+                loc !== '-' &&
+                loc !== 'tba' &&
+                loc.startsWith(token),
+            )
         )
           continue;
 
@@ -527,6 +571,7 @@ export function SearchProvider({
     processedDays,
     processedSkillsAreas,
     processedCredits,
+    processedCourseInfoAttributes,
     processedSchools,
     processedSearchText,
     searchDescription.value,
@@ -547,6 +592,7 @@ export function SearchProvider({
       numBounds,
       selectSchools,
       selectCredits,
+      selectCourseInfoAttributes,
       searchDescription,
       hideCancelled,
       hideConflicting,
@@ -570,6 +616,7 @@ export function SearchProvider({
       numBounds,
       selectSchools,
       selectCredits,
+      selectCourseInfoAttributes,
       searchDescription,
       hideCancelled,
       hideConflicting,

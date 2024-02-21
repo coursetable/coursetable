@@ -11,10 +11,9 @@ import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
   fetchFriendReqs,
-  fetchAllNames,
-  addFriend,
+  addFriend as baseAddFriend,
   requestAddFriend as baseRequestAddFriend,
-  removeFriend,
+  removeFriend as baseRemoveFriend,
   checkAuth,
 } from '../utilities/api';
 import type { NetId, Season, Crn } from '../utilities/common';
@@ -24,6 +23,7 @@ export type UserWorksheets = {
   [season: Season]: {
     [worksheetNumber: number]: {
       crn: Crn;
+      color: string;
     }[];
   };
 };
@@ -38,13 +38,6 @@ type FriendRequests = {
   name: string;
 }[];
 
-type FriendNames = {
-  netId: NetId;
-  first: string | null;
-  last: string | null;
-  college: string | null;
-}[];
-
 type Store = {
   loading: boolean;
   user: {
@@ -56,16 +49,11 @@ type Store = {
     friendRequests?: FriendRequests;
     friends?: FriendRecord;
   };
-  allNames: FriendNames;
   userRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
-  allNamesRefresh: () => Promise<void>;
-  // These functions actually don't depend on context data. They are still put
-  // on the context, in case we add more logic in the future that depends on
-  // React rendering logic (flushing UI, etc.)
   addFriend: (friendNetId: NetId) => Promise<void>;
-  removeFriend: (friendNetId: NetId) => Promise<void>;
+  removeFriend: (friendNetId: NetId, isRequest: boolean) => Promise<void>;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
 };
 
@@ -100,8 +88,6 @@ export function UserProvider({
   const [friendRequests, setFriendRequests] = useState<
     FriendRequests | undefined
   >(undefined);
-  // All names, used for searching
-  const [allNames, setAllNames] = useState<FriendNames>([]);
 
   // Refresh user worksheet
   const userRefresh = useCallback(async (): Promise<void> => {
@@ -135,11 +121,21 @@ export function UserProvider({
     else setFriendRequests(undefined);
   }, [setFriendRequests]);
 
-  const allNamesRefresh = useCallback(async (): Promise<void> => {
-    const data = await fetchAllNames();
-    if (data) setAllNames(data.names as FriendNames);
-    else setAllNames([]);
-  }, []);
+  const addFriend = useCallback(
+    async (friendNetId: NetId): Promise<void> => {
+      await baseAddFriend(friendNetId);
+      await Promise.all([friendRefresh(), friendReqRefresh()]);
+    },
+    [friendRefresh, friendReqRefresh],
+  );
+
+  const removeFriend = useCallback(
+    async (friendNetId: NetId, isRequest: boolean): Promise<void> => {
+      await baseRemoveFriend(friendNetId, isRequest);
+      await Promise.all([friendRefresh(), friendReqRefresh()]);
+    },
+    [friendRefresh, friendReqRefresh],
+  );
 
   const requestAddFriend = useCallback(
     async (friendNetId: NetId): Promise<void> => {
@@ -186,11 +182,9 @@ export function UserProvider({
     () => ({
       loading,
       user,
-      allNames,
       userRefresh,
       friendRefresh,
       friendReqRefresh,
-      allNamesRefresh,
       addFriend,
       removeFriend,
       requestAddFriend,
@@ -198,11 +192,11 @@ export function UserProvider({
     [
       loading,
       user,
-      allNames,
       userRefresh,
       friendRefresh,
       friendReqRefresh,
-      allNamesRefresh,
+      addFriend,
+      removeFriend,
       requestAddFriend,
     ],
   );

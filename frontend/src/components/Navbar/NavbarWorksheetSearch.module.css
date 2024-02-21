@@ -53,3 +53,15 @@
   background-color: var(--color-primary-hover) !important;
   border-color: var(--color-primary-hover) !important;
 }
+
+.addFriendIcon {
+  position: absolute;
+  right: 30px;
+  margin-top: 4px;
+}
+
+.removeFriendIcon {
+  position: absolute;
+  right: 10px;
+  margin-top: 4px;
+}

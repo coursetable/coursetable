@@ -46,6 +46,7 @@ model WorksheetCourses {
   crn             Int    @db.UnsignedMediumInt
   season          Int    @db.UnsignedMediumInt
   worksheetNumber Int    @default(0) @db.UnsignedMediumInt
+  color           String @db.VarChar(32)
 
   @@unique([netId, crn, season, worksheetNumber], map: "netId_crn_season_worksheetNumber")
   @@index([netId], map: "netId")

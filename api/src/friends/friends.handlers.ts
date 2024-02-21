@@ -106,24 +106,35 @@ export const removeFriend = async (
   });
 
   if (!friend) {
-    res.status(400).json({ error: 'NO_FRIEND' });
-    return;
-  }
-
-  await prisma.$transaction([
-    prisma.studentFriends.delete({
-      where: {
-        netId_friendNetId: { netId, friendNetId },
-      },
-    }),
-    // Bidirectional deletion
-    prisma.studentFriends.delete({
+    const friendRequest = await prisma.studentFriendRequests.findUnique({
       where: {
         netId_friendNetId: { netId: friendNetId, friendNetId: netId },
       },
-    }),
-  ]);
-
+    });
+    if (!friendRequest) {
+      res.status(400).json({ error: 'NO_FRIEND' });
+      return;
+    }
+    await prisma.studentFriendRequests.delete({
+      where: {
+        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
+      },
+    });
+  } else {
+    await prisma.$transaction([
+      prisma.studentFriends.delete({
+        where: {
+          netId_friendNetId: { netId, friendNetId },
+        },
+      }),
+      // Bidirectional deletion
+      prisma.studentFriends.delete({
+        where: {
+          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
+        },
+      }),
+    ]);
+  }
   res.sendStatus(200);
 };
 
