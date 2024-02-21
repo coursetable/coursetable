@@ -194,13 +194,13 @@ export function useWorksheetInfo(
                   // Remove needs a color but does not use it
                   color: '#000000',
                 });
-                toast.dismiss();
+                toast.dismiss(`${seasonCode}-${crn}`);
               }}
             >
               Remove this course
             </button>
           </div>,
-          { autoClose: false },
+          { autoClose: false, toastId: `${seasonCode}-${crn}` },
         );
       }
     }
