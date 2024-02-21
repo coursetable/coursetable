@@ -13,14 +13,9 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
-  const hidden = false; // Always shown if in cal
   const course = event.listing;
   const { toggleCourse } = useWorksheet();
   const [isHovering, setIsHovering] = useState(false);
-
-  const handleEventHover = (hovering: boolean) => {
-    setIsHovering(hovering);
-  };
 
   return (
     <OverlayTrigger
@@ -45,24 +40,27 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
     >
       <div
         className={styles.event}
-        onMouseEnter={() => handleEventHover(true)}
-        onMouseLeave={() => handleEventHover(false)}
-        onFocus={() => handleEventHover(true)} // Accessibility improvement
-        onBlur={() => handleEventHover(false)} // Accessibility improvement
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+        onFocus={() => setIsHovering(true)}
+        onBlur={() => setIsHovering(false)}
       >
         <div
           className={clsx(styles.worksheetHideButton, styles.hideButtonHidden)}
+          // Prevent hovering over the hide button from showing the course info
+          // popover
           onMouseEnter={(e) => {
             e.stopPropagation();
-            handleEventHover(false);
+            setIsHovering(false);
           }}
-          onMouseLeave={() => handleEventHover(true)}
-          onFocus={() => handleEventHover(false)} // Accessibility improvement
-          onBlur={() => handleEventHover(true)} // Accessibility improvement
+          onMouseLeave={() => setIsHovering(true)}
+          onFocus={() => setIsHovering(false)}
+          onBlur={() => setIsHovering(true)}
         >
           <WorksheetHideButton
             toggleCourse={() => toggleCourse(course.crn)}
-            hidden={hidden}
+            // Courses in calendar are always visible
+            hidden={false}
           />
         </div>
         <div>
