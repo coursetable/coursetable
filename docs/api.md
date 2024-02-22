@@ -304,10 +304,11 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - Needs credentials
 - Body:
-  - `action`: `"add" | "remove"`
+  - `action`: `"add" | "remove" | "update"`
   - `season`: `string`
   - `crn`: `number`
   - `worksheetNumber`: `number`
+  - `color`: `string` (must be a valid color string)
 
 #### Response
 
