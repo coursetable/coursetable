@@ -254,6 +254,7 @@ export default function MobileSearchForm({
             )}
           >
             <Toggle handle="searchDescription" />
+            <Toggle handle="enableQuist" />
             <Toggle handle="hideCancelled" />
             <Toggle handle="hideConflicting" />
             <Toggle handle="hideFirstYearSeminars" />

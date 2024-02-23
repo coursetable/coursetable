@@ -16,7 +16,9 @@ We have just released a new feature that we are very excited about: [Quist](http
 Let's start by looking at an example.
 
 ```
-(subject:in MATH, CPSC, S&DS OR description:contains Python) AND 300<=number<500 AND NOT professor-names:has-any-of "Bruce Wayne", "Tony Stark"
+(subject:in MATH, CPSC, S&DS OR description:contains Python)
+  AND 300<=number<500
+  AND NOT professor-names:has-any-of "Bruce Wayne", "Tony Stark"
 ```
 
 Let's break it in parts:
@@ -132,6 +134,7 @@ Note that you can't do other compound expressions like `num < field > num`. If w
 - `field:has-all-of value1, value2, ..., valueN`: the field contains all of the values (i.e. the field is a superset of the given values).
 - `field:has-any-of value1, value2, ..., valueN`: the field contains any of the values (i.e. the field has an intersection with the given values).
 - `field:all-in value1, value2, ..., valueN`: the field is a subset of the given values.
+- `field:equals value1, value2, ..., valueN`: the field is exactly the same as the given values.
 
 ### Querying text
 
@@ -142,6 +145,33 @@ Note that you can't do other compound expressions like `num < field > num`. If w
 For text operations specifically, we have a special field name `*`, which should cause it to match all fields that contain text.
 
 Also, any token that does not belong to a query is implicitly part of `*:contains`. For example, `Hello world` as a query is the same as `*:contains Hello *:contains world`.
+
+## How do I start using Quist?
+
+Because Quist is **still experimental** and comes with performance tradeoffs, it is turned off by default. To turn it on, go to the "Advanced" dropdown and turn on "Enable Quist".
+
+Quist always has lower precedence than the graphical filters. For example, if you have "CPSC" selected in the subjects dropdown, then no matter what you write in Quist, the result will never contain non-CS classes. Make sure you reset all filters before using Quist.
+
+Here are some simple examples you can try:
+
+- I want to see all classes that simultaneously have `Sc` and `So` credits: `areas:has-all-of Sc, So`
+- I want to see all first-year seminars: `is:fysem` (yes, you couldn't have done this before!)
+- I want to see all classes not in the CS department about Internet: `NOT subject:is CPSC internet`
+- I want to see all classes with a \>4 rating or a \<3 workload: `rating > 4 OR workload < 3`
+- I want to see all classes that meet on Monday and maybe other days: `days:has M`. The days dropdown requires the course's days to match exactly, not just contain the days you selected! You can also achieve this, with `days:equals M`.
+- I want to see all classes that are not offered by Yale College but have course code \<500: `NOT school:is YC AND number < 500`
+
+## What's next?
+
+Quist enables a lot of other features that we are excited to explore. For example, you can now save your queries and share them with others. We will also put it in the browser address (like we do for the course modal ID), so that you can save them directly in your bookmarks! We are also planning to port the existing filter UI to be backed by Quist, so that even if you don't know Quist syntax, you can still enjoy your query being saved and shared.
+
+There are also UX improvements to be made. For example, we will investigate adding syntax highlighting to the Quist input box so you understand what you are writing better. Remember: Quist is very lax and anything slightly wrong will become plain text! We may also want to add a warning system to tell you when your query may contain typos.
+
+Our eventual plan is to make Quist turned on by default. You can still use it as if it's a text search most of the time, but you will occasionally enjoy the power of Quist when you need it.
+
+## We want your feedback!
+
+Please try enabling Quist when searching for classes. If you found a query that doesn't return what you expect, or if you have other filtering logic that cannot be expressed with Quist, please [let us know](https://feedback.coursetable.com/). We are also interested in hearing about your use cases and what Quist enables you to do.
 
 </TextComponent>
 </div>
