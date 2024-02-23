@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { buildEvaluator } from 'quist';
 import {
   isEqual,
   type Listing,
@@ -159,6 +160,7 @@ export type Filters = {
   selectCredits: Option<number>[];
   selectCourseInfoAttributes: Option[];
   searchDescription: boolean;
+  enableQuist: boolean;
   hideCancelled: boolean;
   hideConflicting: boolean;
   hideFirstYearSeminars: boolean;
@@ -184,6 +186,7 @@ export const defaultFilters: Filters = {
   selectCredits: [],
   selectCourseInfoAttributes: [],
   searchDescription: false,
+  enableQuist: false,
   hideCancelled: true,
   hideConflicting: false,
   hideFirstYearSeminars: false,
@@ -209,6 +212,34 @@ function useFilterState<K extends keyof Filters>(key: K) {
     [value, setValue, key],
   );
 }
+
+const targetTypes = {
+  categorical: new Set(['school', 'season', 'type', 'subject'] as const),
+  numeric: new Set([
+    'rating',
+    'workload',
+    'professor-rating',
+    'number',
+    'enrollment',
+    'credits',
+  ] as const),
+  set: new Set([
+    'skills',
+    'areas',
+    'days',
+    'info-attributes',
+    'subjects',
+  ] as const),
+  boolean: new Set([
+    'cancelled',
+    'conflicting',
+    'grad',
+    'discussion',
+    'fysem',
+    'colsem',
+  ] as const),
+  text: new Set(['title', 'description', 'location'] as const),
+};
 
 /**
  * Stores the user's search, filters, and sorts
@@ -236,6 +267,7 @@ export function SearchProvider({
     'selectCourseInfoAttributes',
   );
   const searchDescription = useFilterState('searchDescription');
+  const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
   const hideConflicting = useFilterState('hideConflicting');
   const hideFirstYearSeminars = useFilterState('hideFirstYearSeminars');
@@ -348,6 +380,72 @@ export function SearchProvider({
     processedSeasons,
     worksheetNumber,
   );
+
+  const queryEvaluator = useMemo(
+    () =>
+      buildEvaluator(targetTypes, (listing: Listing, key) => {
+        switch (key) {
+          case 'rating':
+            return getOverallRatings(listing, 'stat');
+          case 'workload':
+            return getWorkloadRatings(listing, 'stat');
+          case 'professor-rating':
+            return getProfessorRatings(listing, 'stat');
+          case 'enrollment':
+            return getEnrolled(listing, 'stat');
+          case 'days':
+            return Object.keys(listing.times_by_day).map((d) =>
+              d === 'Thursday' ? 'Th' : d[0],
+            );
+          case 'info-attributes':
+            return listing.flag_info;
+          case 'subjects':
+            return listing.all_course_codes;
+          case 'cancelled':
+            return listing.extra_info !== 'ACTIVE';
+          case 'conflicting':
+            return (
+              listing.times_summary !== 'TBA' &&
+              !isInWorksheet(
+                listing.season_code,
+                listing.crn,
+                worksheetNumber,
+                user.worksheets,
+              ) &&
+              checkConflict(worksheetInfo, listing).length > 0
+            );
+          case 'grad':
+            return isGraduate(listing);
+          case 'discussion':
+            return isDiscussionSection(listing);
+          case 'fysem':
+            return listing.fysem !== false;
+          case 'colsem':
+            // TODO: query for colsem
+            return false;
+          case 'location':
+            return listing.locations_summary;
+          case '*': {
+            const base = `${listing.subject} ${listing.number} ${listing.title} ${listing.professor_names.join(' ')}`;
+            if (searchDescription.value && listing.description)
+              return `${base} ${listing.description}`;
+            return base;
+          }
+          case 'season':
+            return listing.season_code;
+          case 'type':
+            return 'lecture'; // TODO: add other types like fysem, discussion, etc.
+          default:
+            return listing[key];
+        }
+      }),
+    [searchDescription.value, worksheetInfo, worksheetNumber, user.worksheets],
+  );
+
+  const quistPredicate = useMemo(() => {
+    if (!enableQuist.value) return null;
+    return queryEvaluator(searchText.value);
+  }, [enableQuist.value, queryEvaluator, searchText.value]);
 
   // Filtered and sorted courses
   const searchData = useMemo(() => {
@@ -495,6 +593,7 @@ export function SearchProvider({
       )
         return false;
 
+      if (quistPredicate) return quistPredicate(listing);
       // Handle search text. Each token must match something.
       for (const token of processedSearchText) {
         // First character of the course number
@@ -572,6 +671,7 @@ export function SearchProvider({
     processedCredits,
     processedCourseInfoAttributes,
     processedSchools,
+    quistPredicate,
     processedSearchText,
     searchDescription.value,
   ]);
@@ -593,6 +693,7 @@ export function SearchProvider({
       selectCredits,
       selectCourseInfoAttributes,
       searchDescription,
+      enableQuist,
       hideCancelled,
       hideConflicting,
       hideFirstYearSeminars,
@@ -617,6 +718,7 @@ export function SearchProvider({
       selectCredits,
       selectCourseInfoAttributes,
       searchDescription,
+      enableQuist,
       hideCancelled,
       hideConflicting,
       hideFirstYearSeminars,
