@@ -230,6 +230,7 @@ const targetTypes = {
     'days',
     'info-attributes',
     'subjects',
+    'professor-names',
   ] as const),
   boolean: new Set([
     'cancelled',
@@ -426,16 +427,18 @@ export function SearchProvider({
             return false;
           case 'location':
             return listing.locations_summary;
+          case 'season':
+            return listing.season_code;
+          case 'professor-names':
+            return listing.professor_names;
+          case 'type':
+            return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case '*': {
             const base = `${listing.subject} ${listing.number} ${listing.title} ${listing.professor_names.join(' ')}`;
             if (searchDescription.value && listing.description)
               return `${base} ${listing.description}`;
             return base;
           }
-          case 'season':
-            return listing.season_code;
-          case 'type':
-            return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           default:
             return listing[key];
         }
