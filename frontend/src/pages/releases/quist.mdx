@@ -88,7 +88,7 @@ To discuss queries, we first need to talk about data types. Quist supports the f
 
 In the context of CourseTable, here are all fields that we support:
 
-- Categorical: `school`, `season`, `type`, `subject`
+- Categorical: `school`, `season`, `type`, `subject`, `course-code`
 - Numerical: `rating`, `workload`, `professor-rating`, `number`, `enrollment`, `credits`
 - Boolean: `cancelled`, `conflicting`, `grad`, `discussion`, `fysem`, `colsem`
 - Set: `skills`, `areas`, `days`, `info-attributes`, `subjects`, `professor-names`
@@ -160,6 +160,13 @@ Here are some simple examples you can try:
 - I want to see all classes with a \>4 rating or a \<3 workload: `rating > 4 OR workload < 3`
 - I want to see all classes that meet on Monday and maybe other days: `days:has M`. The days dropdown requires the course's days to match exactly, not just contain the days you selected! You can also achieve this, with `days:equals M`.
 - I want to see all classes that are not offered by Yale College but have course code \<500: `NOT school:is YC AND number < 500`
+
+Here are examples of how to implement features that you have requested with Quist:
+
+- [Select courses to hide (already taken, etc.)](https://feedback.coursetable.com/feature-requests/p/select-courses-to-hide-already-taken-etc): `NOT course-code:in "CHEM 161", "CHEM 163", ...` (this will be easier when we allow you to save queries!)
+- [Negative filters (hide courses that match filter)](https://feedback.coursetable.com/feature-requests/p/negative-filters-hide-courses-that-match-filter): you should know how to do this at this point ;)
+- [Add First Year Seminar Tag](https://feedback.coursetable.com/feature-requests/p/add-first-year-seminar-tag): `is:fysem`
+- [Allow using AND instead of OR to combine subjects](https://feedback.coursetable.com/feature-requests/p/allow-using-and-instead-of-or-to-combine-subjects): the request specifically mentions being able to searching for classes offered by _both_ departments, which you can do with `subjects:has-all-of MATH, S&DS`!
 
 ## What's next?
 

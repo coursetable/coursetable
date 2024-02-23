@@ -215,7 +215,13 @@ function useFilterState<K extends keyof Filters>(key: K) {
 }
 
 const targetTypes = {
-  categorical: new Set(['school', 'season', 'type', 'subject'] as const),
+  categorical: new Set([
+    'school',
+    'season',
+    'type',
+    'subject',
+    'course-code',
+  ] as const),
   numeric: new Set([
     'rating',
     'workload',
@@ -401,6 +407,10 @@ export function SearchProvider({
             );
           case 'info-attributes':
             return listing.flag_info;
+          case 'skills':
+            return listing.skills.some((s) => s.startsWith('L'))
+              ? [...listing.skills, 'L']
+              : listing.skills;
           case 'subjects':
             return listing.all_course_codes.map((code) => code.split(' ')[0]);
           case 'cancelled':
@@ -431,6 +441,8 @@ export function SearchProvider({
             return listing.season_code;
           case 'professor-names':
             return listing.professor_names;
+          case 'course-code':
+            return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case '*': {
