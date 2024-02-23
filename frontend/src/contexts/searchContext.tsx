@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { buildEvaluator } from 'quist';
+import * as Sentry from '@sentry/react';
 import {
   isEqual,
   type Listing,
@@ -444,7 +445,17 @@ export function SearchProvider({
 
   const quistPredicate = useMemo(() => {
     if (!enableQuist.value) return null;
-    return queryEvaluator(searchText.value);
+    try {
+      return queryEvaluator(searchText.value);
+    } catch {
+      Sentry.addBreadcrumb({
+        category: 'quist',
+        message: `Parsing quist query "${searchText.value}"`,
+        level: 'info',
+      });
+      Sentry.captureException(new Error('Quist query failed to parse'));
+      return null;
+    }
   }, [enableQuist.value, queryEvaluator, searchText.value]);
 
   // Filtered and sorted courses
