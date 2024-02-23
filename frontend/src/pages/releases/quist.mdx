@@ -88,10 +88,31 @@ To discuss queries, we first need to talk about data types. Quist supports the f
 
 In the context of CourseTable, here are all fields that we support:
 
-- Categorical: `school`, `season`, `type`, `subject`, `course-code`
-- Numerical: `rating`, `workload`, `professor-rating`, `number`, `enrollment`, `credits`
-- Boolean: `cancelled`, `conflicting`, `grad`, `discussion`, `fysem`, `colsem`
-- Set: `skills`, `areas`, `days`, `info-attributes`, `subjects`, `professor-names`
+- Categorical:
+  - `school`: We use the short codes: `YC`, `AC`, `AT`, etc.;
+  - `season`: The format is year + `01`/`02`/`03`, such as `202401` for Spring 2024 and `202303` for Fall 2023;
+  - `subject`: The department code, such as `MATH`, `CPSC`, `S&DS`. Must be capitalized;
+  - `course-code`: Subject + number, such as `CPSC 201`;
+- Numerical:
+  - `rating`: The overall rating number;
+  - `workload`: The workload rating number;
+  - `professor-rating`: The professor rating number;
+  - `number`: The course number, such as `201` for `CPSC 201`;
+  - `enrollment`: The enrollment number (actual number for historical courses, last enrollment for current ones);
+  - `credits`: The number of credits;
+- Boolean:
+  - `cancelled`: Whether the course is cancelled;
+  - `conflicting`: Whether the course conflicts in schedule with the current worksheet;
+  - `grad`: Whether the course is a graduate class;
+  - `discussion`: Whether the course is a discussion section;
+  - `fysem`: Whether the course is a first year seminar;
+- Set:
+  - `skills`: `QR`, `WR`, `L`, `L1` to `L5`;
+  - `areas`: `So`, `Sc`, `Hu`;
+  - `days`: The days of the week, such as `M`, `T`, `W`, `Th`, `F`;
+  - `info-attributes`: Major info attributes, such as `"YC Math: Core Real Analysis"`;
+  - `subjects`: Subject codes of all cross-listings, such as `CPSC, ECON` for `CPSC 365`;
+  - `professor-names`: The professor names;
 - Text: `title`, `description`, `location`
 
 Each type corresponds to its own set of operators. If during parsing, we encounter an operator on a field that's not of the right type, we stop treating it as an operator and treat it as plain text instead!
