@@ -402,7 +402,7 @@ export function SearchProvider({
           case 'info-attributes':
             return listing.flag_info;
           case 'subjects':
-            return listing.all_course_codes;
+            return listing.all_course_codes.map((code) => code.split(' ')[0]);
           case 'cancelled':
             return listing.extra_info !== 'ACTIVE';
           case 'conflicting':
