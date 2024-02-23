@@ -1,0 +1,36 @@
+import clsx from 'clsx';
+import styles from './releases.module.css';
+import { TextComponent } from '../../components/Typography';
+
+<div className={clsx(styles.container, 'mx-auto')}>
+<TextComponent type="secondary">
+
+# Introducing Quist, a new query language for CourseTable
+
+_2024-02-23_
+
+Hi everyone!
+
+We have just released a new feature that we are very excited about: [Quist](https://github.com/coursetable/quist), a new query language for CourseTable. The goal of Quist is to provide a more powerful and flexible way to filter and search for classes on CourseTable. We believe that Quist will enable a lot of advanced use cases that are otherwise difficult to express with purely graphical interfaces.
+
+Let's start by looking at an example.
+
+```
+(subject:in MATH, CPSC, S&DS OR description:contains Python) AND 300<=number<500 AND NOT professor-names:has-any-of "Bruce Wayne", "Tony Stark"
+```
+
+Let's break it in parts:
+
+- `subject:in MATH, CPSC, S&DS` means that the class must be in one of the specified subjects.
+- `description:contains Python` means that the class description mentions "Python".
+- `300<=number<500` means that the class number must be between 300 and 499.
+- `NOT professor-names:has-any-of "Bruce Wayne", "Tony Stark"` means that the class must not be taught by either of the specified professors.
+
+This query will return all classes that are in MATH, CPSC, or S&DS, or otherwise has something to do with Python, have a number between 300 and 499, and are not taught by Bruce Wayne or Tony Stark.
+
+Previously, this is not achievable—you cannot specify what kind of text you are searching for, you cannot search professor names with exact strings, and you cannot join the results with another separate condition.
+
+Let's explore what exactly you can do with Quist.
+
+</TextComponent>
+</div>
