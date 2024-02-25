@@ -215,6 +215,7 @@ function CourseModal() {
           // Show overview data
           <CourseModalOverview
             gotoCourse={(l) => {
+              setView('evals');
               if (
                 l.crn === listing.crn &&
                 l.season_code === listing.season_code
@@ -225,7 +226,6 @@ function CourseModal() {
                 prev.set('course-modal', `${l.season_code}-${l.crn}`);
                 return prev;
               });
-              setView('evals');
             }}
             listing={listing}
           />
