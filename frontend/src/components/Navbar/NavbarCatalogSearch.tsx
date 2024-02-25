@@ -68,6 +68,7 @@ export function NavbarCatalogSearch() {
     selectCredits,
     selectCourseInfoAttributes,
     searchDescription,
+    enableQuist,
     hideCancelled,
     hideConflicting,
     hideFirstYearSeminars,
@@ -423,6 +424,7 @@ export function NavbarCatalogSearch() {
                     'selectCredits',
                     'selectCourseInfoAttributes',
                     'searchDescription',
+                    'enableQuist',
                     'hideCancelled',
                     'hideConflicting',
                     'hideFirstYearSeminars',
@@ -461,6 +463,7 @@ export function NavbarCatalogSearch() {
                   selectCourseInfoAttributes.hasChanged,
                   selectSortBy.value.value === 'average_gut_rating',
                   searchDescription.value,
+                  enableQuist.value,
                   hideCancelled.value,
                   hideConflicting.value,
                   hideFirstYearSeminars.value,
@@ -797,6 +800,7 @@ export function NavbarCatalogSearch() {
                   )}
                 >
                   <Toggle handle="searchDescription" />
+                  <Toggle handle="enableQuist" />
                   <Toggle handle="hideCancelled" />
                   <Toggle handle="hideConflicting" />
                   <Toggle handle="hideFirstYearSeminars" />

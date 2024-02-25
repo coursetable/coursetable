@@ -40,7 +40,9 @@ const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
 const Join = suspended(() => import('./pages/Join'));
+// TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
+const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
@@ -70,20 +72,19 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={2}
+        id={3}
       >
-        Read about{' '}
         <a
-          href="/releases/fall23"
+          href="/releases/quist"
           style={{
             color: 'white',
             fontWeight: 'bold',
             textDecoration: 'underline',
           }}
         >
-          what we've done in Fall/Winter 2023
+          Check out Quist
         </a>
-        !
+        , our new language for advanced queries!
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -155,6 +156,7 @@ function App() {
         <Route path="/Table" element={<Navigate to="/catalog" />} />
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
+        <Route path="/releases/quist" element={<QuistRelease />} />
 
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />

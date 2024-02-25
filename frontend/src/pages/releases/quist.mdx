@@ -1,0 +1,205 @@
+import clsx from 'clsx';
+import styles from './releases.module.css';
+import { TextComponent } from '../../components/Typography';
+
+<div className={clsx(styles.container, 'mx-auto')}>
+<TextComponent type="secondary">
+
+# Introducing Quist, a new query language for CourseTable
+
+_2024-02-23_
+
+Hi everyone!
+
+We have just released a new feature that we are very excited about: [Quist](https://github.com/coursetable/quist), a new query language for CourseTable. The goal of Quist is to provide a more powerful and flexible way to filter and search for classes on CourseTable. We believe that Quist will enable a lot of advanced use cases that are otherwise difficult to express with purely graphical interfaces.
+
+Let's start by looking at an example.
+
+```
+(subject:in MATH, CPSC, S&DS OR description:contains Python)
+  AND 300<=number<500
+  AND NOT professor-names:has-any-of "Bruce Wayne", "Tony Stark"
+```
+
+Let's break it into parts:
+
+- `subject:in MATH, CPSC, S&DS` means that the class must be in one of the specified subjects.
+- `description:contains Python` means that the class description mentions "Python".
+- `300<=number<500` means that the class number must be between 300 and 499.
+- `NOT professor-names:has-any-of "Bruce Wayne", "Tony Stark"` means that the class must not be taught by either of the specified professors.
+
+This query will return all classes that are in MATH, CPSC, or S&DS, or otherwise has something to do with Python, have a number between 300 and 499, and are not taught by Bruce Wayne or Tony Stark.
+
+Previously, this is not achievable—you cannot specify what kind of text you are searching for, you cannot search professor names with exact strings, and you cannot join the results with another separate condition.
+
+Let's explore what exactly you can do with Quist.
+
+## Syntax
+
+At the highest level, you write a query like this:
+
+```
+query1 OR query2 OR query3
+```
+
+This query will return the union of the results of `query1`, `query2`, and `query3`.
+
+AND is the default operator, so you can also write:
+
+```
+query1 query2 query3
+query1 AND query2 AND query3
+```
+
+Which both return the intersection of the results of `query1`, `query2`, and `query3`.
+
+Note that you can only use one type of operator in one level. In the following:
+
+```
+query1 OR query2 AND query3
+```
+
+`OR` is used as the operator, and `AND` is simply treated as plain text!
+
+To mix `AND` and `OR`, you can use parentheses:
+
+```
+query1 OR (query2 AND query3)
+```
+
+`NOT` is also supported. You can prefix any query with `NOT` to negate it:
+
+```
+NOT query1 OR NOT query2
+
+# Equivalent to:
+NOT (query1 AND query2)
+```
+
+### Data types
+
+To discuss queries, we first need to talk about data types. Quist supports the following JSON data types:
+
+- Categorical: typically a string with a fixed set of values.
+- Numerical: a number.
+- Boolean: `true` or `false`.
+- Text: arbitrary string.
+- Set: an array of categorical values.
+
+In the context of CourseTable, here are all fields that we support:
+
+- Categorical:
+  - `school`: We use the short codes: `YC`, `AC`, `AT`, etc.;
+  - `season`: The format is year + `01`/`02`/`03`, such as `202401` for Spring 2024 and `202303` for Fall 2023;
+  - `subject`: The department code, such as `MATH`, `CPSC`, `S&DS`. Must be capitalized;
+  - `course-code`: Subject + number, such as `CPSC 201`;
+- Numerical:
+  - `rating`: The overall rating number;
+  - `workload`: The workload rating number;
+  - `professor-rating`: The professor rating number;
+  - `number`: The course number, such as `201` for `CPSC 201`;
+  - `enrollment`: The enrollment number (actual number for historical courses, last enrollment for current ones);
+  - `credits`: The number of credits;
+- Boolean:
+  - `cancelled`: Whether the course is cancelled;
+  - `conflicting`: Whether the course conflicts in schedule with the current worksheet;
+  - `grad`: Whether the course is a graduate class;
+  - `discussion`: Whether the course is a discussion section;
+  - `fysem`: Whether the course is a first year seminar;
+- Set:
+  - `skills`: `QR`, `WR`, `L`, `L1` to `L5`;
+  - `areas`: `So`, `Sc`, `Hu`;
+  - `days`: The days of the week, such as `M`, `T`, `W`, `Th`, `F`;
+  - `info-attributes`: Major info attributes, such as `"YC Math: Core Real Analysis"`;
+  - `subjects`: Subject codes of all cross-listings, such as `CPSC, ECON` for `CPSC 365`;
+  - `professor-names`: The professor names;
+- Text: `title`, `description`, `location`
+
+Each type corresponds to its own set of operators. If during parsing, we encounter an operator on a field that's not of the right type, we stop treating it as an operator and treat it as plain text instead!
+
+### Querying categorical fields
+
+All `value` below should be string literals. In Quist, a string is either space-delimited, or double quoted. For example, `days:has Monday` and `professor-names:has "Jay Lim"` are both valid.
+
+- `field:is value`: the field is exactly `value`.
+  - This is like `field = value`.
+- `field:in value1, value2, ..., valueN`: the field is one of the values. We end looking for values when a value is followed by another string without a comma in between.
+  - This is like `field IN (value1, value2, ..., valueN)`.
+
+### Querying numerical fields
+
+Querying numerical fields is the most different because you use mathematical expressions. All `num` below should be number literals.
+
+- `field < num`: the field is less than `num`.
+- `field <= num`: the field is less than or equal to `num`.
+- `field > num`: the field is greater than `num`.
+- `field >= num`: the field is greater than or equal to `num`.
+- `field = num`: the field is equal to `num`.
+- `field != num`: the field is not equal to `num`.
+
+The `field` must appear on the _left-hand side_ of the operator. We also support a compound expression syntax.
+
+- `num < field < num` (either `<` could be `<=`)
+- `num > field > num` (either `>` could be `>=`)
+
+Note that you can't do other compound expressions like `num < field > num`. If we encounter any kind of invalid expression, we treat the whole thing as plain text. So the above is just 5 words.
+
+### Querying boolean fields
+
+- `is:field`: the field is `true`.
+- `not:field`: the field is `false`. The same as `NOT is:field`.
+
+### Querying set fields
+
+- `field:has value`: the field contains `value`.
+- `field:has-all-of value1, value2, ..., valueN`: the field contains all of the values (i.e. the field is a superset of the given values).
+- `field:has-any-of value1, value2, ..., valueN`: the field contains any of the values (i.e. the field has an intersection with the given values).
+- `field:all-in value1, value2, ..., valueN`: the field is a subset of the given values.
+- `field:equals value1, value2, ..., valueN`: the field is exactly the same as the given values.
+
+### Querying text
+
+- `field:contains value`: the field contains `value` as any substring. Case-insensitive by normalizing both the field value and the `value` to lower case.
+- `field:contains-words value`: the field contains `value` as whole words. For example, "photography" contains "graph" but doesn't contain it as a whole word. Case-insensitive by normalizing both the field value and the `value` to lower case.
+- `field:matches value`: the field matches `value` where `value` is a regex pattern. The regex is compiled with the `u` and `i` flags.
+
+For text operations specifically, we have a special field name `*`, which should cause it to match all fields that contain text.
+
+Also, any token that does not belong to a query is implicitly part of `*:contains`. For example, `Hello world` as a query is the same as `*:contains Hello *:contains world`.
+
+## How do I start using Quist?
+
+Because Quist is **still experimental** and comes with performance tradeoffs, it is turned off by default. To turn it on, go to the "Advanced" dropdown and turn on "Enable Quist".
+
+Quist always has lower precedence than the graphical filters. For example, if you have "CPSC" selected in the subjects dropdown, then no matter what you write in Quist, the result will never contain non-CS classes. Make sure you reset all filters before using Quist.
+
+Here are some simple examples you can try:
+
+- I want to see all classes that simultaneously have `Sc` and `So` credits: `areas:has-all-of Sc, So`
+- I want to see all first-year seminars: `is:fysem` (yes, you couldn't have done this before!)
+- I want to see all classes not in the CS department about Internet: `NOT subject:is CPSC internet`
+- I want to see all classes with a \>4 rating or a \<3 workload: `rating > 4 OR workload < 3`
+- I want to see all classes that meet on Monday and maybe other days: `days:has M`. The days dropdown requires the course's days to match exactly, not just contain the days you selected! You can also achieve this, with `days:equals M`.
+- I want to see all classes that are not offered by Yale College but have course code \<500: `NOT school:is YC AND number < 500`
+
+Here are examples of how to implement features that you have requested with Quist:
+
+- [Select courses to hide (already taken, etc.)](https://feedback.coursetable.com/feature-requests/p/select-courses-to-hide-already-taken-etc): `NOT course-code:in "CHEM 161", "CHEM 163", ...` (this will be easier when we allow you to save queries!)
+- [Negative filters (hide courses that match filter)](https://feedback.coursetable.com/feature-requests/p/negative-filters-hide-courses-that-match-filter): you should know how to do this at this point ;)
+- [Add First Year Seminar Tag](https://feedback.coursetable.com/feature-requests/p/add-first-year-seminar-tag): `is:fysem`
+- [Allow using AND instead of OR to combine subjects](https://feedback.coursetable.com/feature-requests/p/allow-using-and-instead-of-or-to-combine-subjects): the request specifically mentions being able to searching for classes offered by _both_ departments, which you can do with `subjects:has-all-of MATH, S&DS`!
+
+## What's next?
+
+Quist enables a lot of other features that we are excited to explore. For example, you can now save your queries and share them with others. We will also put it in the browser address (like we do for the course modal ID), so that you can save them directly in your bookmarks! We are also planning to port the existing filter UI to be backed by Quist, so that even if you don't know Quist syntax, you can still enjoy your query being saved and shared.
+
+There are also UX improvements to be made. For example, we will investigate adding syntax highlighting to the Quist input box so you understand what you are writing better. Remember: Quist is very lax and anything slightly wrong will become plain text! We may also want to add a warning system to tell you when your query may contain typos.
+
+Our eventual plan is to make Quist turned on by default. You can still use it as if it's a text search most of the time, but you will occasionally enjoy the power of Quist when you need it.
+
+## We want your feedback!
+
+Please try enabling Quist when searching for classes. If you found a query that doesn't return what you expect, or if you have other filtering logic that cannot be expressed with Quist, please [let us know](https://feedback.coursetable.com/). We are also interested in hearing about your use cases and what Quist enables you to do.
+
+</TextComponent>
+</div>
