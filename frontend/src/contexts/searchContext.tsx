@@ -445,6 +445,8 @@ export function SearchProvider({
             return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
+          case 'number':
+            return Number(listing.number.replace(/\D/gu, ''));
           case '*': {
             const base = `${listing.subject} ${listing.number} ${listing.title} ${listing.professor_names.join(' ')}`;
             if (searchDescription.value && listing.description)
