@@ -74,18 +74,17 @@ function App() {
         // won't see the updated content.
         id={2}
       >
-        Read about{' '}
         <a
-          href="/releases/fall23"
+          href="/releases/quist"
           style={{
             color: 'white',
             fontWeight: 'bold',
             textDecoration: 'underline',
           }}
         >
-          what we've done in Fall/Winter 2023
+          Check out Quist
         </a>
-        !
+        , our new language for advanced queries!
       </Notice>
       <Navbar />
       <SentryRoutes>
