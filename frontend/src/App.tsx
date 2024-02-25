@@ -72,7 +72,7 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={2}
+        id={3}
       >
         <a
           href="/releases/quist"
