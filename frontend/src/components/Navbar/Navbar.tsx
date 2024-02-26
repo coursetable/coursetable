@@ -68,8 +68,8 @@ export default function CourseTableNavbar() {
   // Show navbar search state
   const showSearch =
     !isMobile &&
-    isLoggedIn &&
-    ['/catalog', '/worksheet'].includes(location.pathname);
+    (location.pathname === '/catalog' ||
+      (isLoggedIn && location.pathname === '/worksheet'));
 
   // Calculate time since last updated
   const lastUpdated = useMemo(() => {
