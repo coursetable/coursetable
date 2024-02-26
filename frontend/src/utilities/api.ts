@@ -2,10 +2,12 @@
 // swap this file with a file that serves static data instead of making network
 // requests.
 import * as Sentry from '@sentry/react';
+import { userInfo } from 'os';
 import { toast } from 'react-toastify';
 import z from 'zod';
 
 import { API_ENDPOINT } from '../config';
+import { useUser } from '../contexts/userContext';
 import type { Season, Crn, Listing, NetId } from './common';
 
 export async function toggleBookmark(payload: {
@@ -55,12 +57,24 @@ export async function toggleBookmark(payload: {
   }
 }
 
-export async function fetchCatalog(season: Season, loggedIn: boolean) {
-  const endpoint = loggedIn ? 'catalogs' : 'catalogs/public';
-  const res = await fetch(
-    `${API_ENDPOINT}/api/static/${endpoint}/${season}.json`,
-    { credentials: 'include' },
-  );
+export async function fetchCatalog(season: Season) {
+  console.log(`fetching catalog for season ${season}`);
+  //const endpoint = user.hasEvals ? 'catalogs' : 'catalogs/public';
+  // do first request to catalogs if 401 then to public
+  let res = await fetch(`${API_ENDPOINT}/api/static/catalogs/${season}.json`, {
+    credentials: 'include',
+  });
+
+  // check if the response was not OK due to authentication issues
+  if (!res.ok && res.status === 401) {
+    // attempt to fetch the public version of the catalog
+    console.log(
+      `Attempting to fetch public catalog for season ${season} due to authentication issue.`,
+    );
+    res = await fetch(
+      `${API_ENDPOINT}/api/static/catalogs/public/${season}.json`,
+    );
+  }
   if (!res.ok) {
     // TODO: better error handling here; we may want to get rid of async-lock
     // first

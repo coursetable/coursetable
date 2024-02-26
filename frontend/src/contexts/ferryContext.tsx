@@ -22,7 +22,7 @@ export const seasons = seasonsData as Season[];
 const courseDataLock = new AsyncLock();
 const courseLoadAttempted = new Set<Season>();
 let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
-const addToCache = (season: Season, isAuthenticated: boolean): Promise<void> =>
+const addToCache = (season: Season): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     if (courseLoadAttempted.has(season)) {
       // Skip if already loaded, or if we previously tried to load it.
@@ -31,8 +31,7 @@ const addToCache = (season: Season, isAuthenticated: boolean): Promise<void> =>
 
     // Log that we attempted to load this.
     courseLoadAttempted.add(season);
-
-    const info = await fetchCatalog(season, isAuthenticated);
+    const info = await fetchCatalog(season);
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
       ...courseData,
@@ -67,10 +66,7 @@ export function FerryProvider({
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {
-      if (!user.hasEvals) return; // Not logged in / doesn't have evals CHANGE: Everyone can see years?
-      // make this false if null
-      console.log(user)
-      const auth = user.hasEvals ?? false;
+      //if (!user.hasEvals) return; // Not logged in / doesn't have evals CHANGE: Everyone can see years?
       const fetches = requestedSeasons.map(async (season) => {
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;
@@ -80,7 +76,7 @@ export function FerryProvider({
         // Add to cache.
         setRequests((r) => r + 1);
         try {
-          await addToCache(season, auth);
+          await addToCache(season);
         } finally {
           setRequests((r) => r - 1);
         }
