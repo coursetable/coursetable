@@ -38,7 +38,10 @@ type FriendRequests = {
   name: string;
 }[];
 
+type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
+
 type Store = {
+  authStatus: AuthStatus;
   loading: boolean;
   user: {
     netId?: NetId;
@@ -68,6 +71,8 @@ export function UserProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
+  const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
+
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User's netId
@@ -158,9 +163,13 @@ export function UserProvider({
   // Refresh user worksheet and friends data on page load
   useEffect(() => {
     async function init() {
-      if (!(await checkAuth())) return;
-      // This shouldn't fail, because they all handle their own errors
-      await Promise.all([userRefresh(), friendRefresh(), friendReqRefresh()]);
+      const isAuthenticated = await checkAuth();
+      if (isAuthenticated) {
+        setAuthStatus('authenticated');
+        await Promise.all([userRefresh(), friendRefresh(), friendReqRefresh()]);
+      } else {
+        setAuthStatus('unauthenticated');
+      }
     }
     void init().finally(() => setLoading(false));
   }, [userRefresh, friendRefresh, friendReqRefresh]);
@@ -180,6 +189,7 @@ export function UserProvider({
 
   const store = useMemo(
     () => ({
+      authStatus,
       loading,
       user,
       userRefresh,
@@ -190,6 +200,7 @@ export function UserProvider({
       requestAddFriend,
     }),
     [
+      authStatus,
       loading,
       user,
       userRefresh,

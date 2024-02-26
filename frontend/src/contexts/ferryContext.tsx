@@ -22,7 +22,10 @@ export const seasons = seasonsData as Season[];
 const courseDataLock = new AsyncLock();
 const courseLoadAttempted = new Set<Season>();
 let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
-const addToCache = (season: Season): Promise<void> =>
+const addToCache = (
+  season: Season,
+  fetchPublicCatalog: boolean,
+): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     if (courseLoadAttempted.has(season)) {
       // Skip if already loaded, or if we previously tried to load it.
@@ -31,7 +34,7 @@ const addToCache = (season: Season): Promise<void> =>
 
     // Log that we attempted to load this.
     courseLoadAttempted.add(season);
-    const info = await fetchCatalog(season);
+    const info = await fetchCatalog(season, fetchPublicCatalog);
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
       ...courseData,
@@ -62,10 +65,23 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const { user } = useUser();
+  const { user, authStatus } = useUser();
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {
+      if (authStatus === 'loading') {
+        const waitForAuth = new Promise<void>((resolve) => {
+          const checkAuthInterval = setInterval(() => {
+            if (authStatus !== 'loading') {
+              clearInterval(checkAuthInterval);
+              resolve();
+            }
+          }, 100); // check every 100ms, can change
+        });
+        await waitForAuth;
+      }
+      const fetchPublicCatalog = authStatus === 'unauthenticated';
+
       //if (!user.hasEvals) return; // Not logged in / doesn't have evals CHANGE: Everyone can see years?
       const fetches = requestedSeasons.map(async (season) => {
         // No data; this can happen if the course-modal query is invalid
@@ -76,7 +92,7 @@ export function FerryProvider({
         // Add to cache.
         setRequests((r) => r + 1);
         try {
-          await addToCache(season);
+          await addToCache(season, fetchPublicCatalog);
         } finally {
           setRequests((r) => r - 1);
         }
@@ -87,7 +103,7 @@ export function FerryProvider({
         setErrors((e) => [...e, err as {}]);
       });
     },
-    [user.hasEvals],
+    [authStatus],
   );
 
   // If there's any error, we want to immediately stop "loading" and start

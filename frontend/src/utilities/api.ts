@@ -55,24 +55,19 @@ export async function toggleBookmark(payload: {
   }
 }
 
-export async function fetchCatalog(season: Season) {
+export const fetchCatalog = async (
+  season: Season,
+  fetchPublicCatalog: boolean = false,
+) => {
   console.log(`fetching catalog for season ${season}`);
   //const endpoint = user.hasEvals ? 'catalogs' : 'catalogs/public';
-  // do first request to catalogs if 401 then to public
-  let res = await fetch(`${API_ENDPOINT}/api/static/catalogs/${season}.json`, {
+  const endpoint = fetchPublicCatalog
+    ? `/api/static/catalogs/public/${season}.json`
+    : `/api/static/catalogs/${season}.json`;
+  let res = await fetch(`${API_ENDPOINT}${endpoint}`, {
     credentials: 'include',
   });
 
-  // check if the response was not OK due to authentication issues
-  if (!res.ok && res.status === 401) {
-    // attempt to fetch the public version of the catalog
-    console.log(
-      `Attempting to fetch public catalog for season ${season} due to authentication issue.`,
-    );
-    res = await fetch(
-      `${API_ENDPOINT}/api/static/catalogs/public/${season}.json`,
-    );
-  }
   if (!res.ok) {
     // TODO: better error handling here; we may want to get rid of async-lock
     // first
@@ -84,7 +79,7 @@ export async function fetchCatalog(season: Season) {
   const info = new Map<Crn, Listing>();
   for (const listing of data) info.set(listing.crn, listing);
   return info;
-}
+};
 
 export async function logout() {
   try {
