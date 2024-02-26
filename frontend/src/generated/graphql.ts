@@ -6551,6 +6551,17 @@ export type CatalogBySeasonQuery = {
   >;
 };
 
+export type CatalogBySeasonNoRatingsQueryVariables = Exact<{
+  season: Scalars['String']['input'];
+}>;
+
+export type CatalogBySeasonNoRatingsQuery = {
+  __typename?: 'query_root';
+  computed_listing_info: Array<
+    { __typename?: 'computed_listing_info' } & ListingFragment
+  >;
+};
+
 export type ListingFragment = {
   __typename?: 'computed_listing_info';
   all_course_codes: any;
@@ -6896,4 +6907,48 @@ export type CatalogBySeasonSuspenseQueryHookResult = ReturnType<
 export type CatalogBySeasonQueryResult = Apollo.QueryResult<
   CatalogBySeasonQuery,
   CatalogBySeasonQueryVariables
+>;
+
+export const catalogBySeasonNoRatingsQuery = gql`
+  query catalogBySeasonNoRatings($season: String!) {
+    computed_listing_info(where: { season_code: { _eq: $season } }) {
+      // fields without ratings
+    } 
+  }
+`;
+// similar to above but for no auth
+export function useCatalogBySeasonNoRatingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    CatalogBySeasonNoRatingsQuery,
+    CatalogBySeasonNoRatingsQueryVariables
+  >,
+) {
+  return Apollo.useQuery<
+    CatalogBySeasonNoRatingsQuery,
+    CatalogBySeasonNoRatingsQueryVariables
+  >(catalogBySeasonNoRatingsQuery, baseOptions);
+}
+
+export function useCatalogBySeasonNoRatingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CatalogBySeasonNoRatingsQuery,
+    CatalogBySeasonNoRatingsQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<
+    CatalogBySeasonNoRatingsQuery,
+    CatalogBySeasonNoRatingsQueryVariables
+  >(catalogBySeasonNoRatingsQuery, baseOptions);
+}
+
+// Types for query results
+export type CatalogBySeasonNoRatingsQueryHookResult = ReturnType<
+  typeof useCatalogBySeasonNoRatingsQuery
+>;
+export type CatalogBySeasonNoRatingsLazyQueryHookResult = ReturnType<
+  typeof useCatalogBySeasonNoRatingsLazyQuery
+>;
+export type CatalogBySeasonNoRatingsQueryResult = Apollo.QueryResult<
+  CatalogBySeasonNoRatingsQuery,
+  CatalogBySeasonNoRatingsQueryVariables
 >;

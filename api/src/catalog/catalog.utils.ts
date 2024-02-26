@@ -5,7 +5,11 @@
 import fs from 'fs/promises';
 import { request } from 'graphql-request';
 
-import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
+import {
+  catalogBySeasonQuery,
+  catalogBySeasonNoRatingsQuery,
+  listSeasonsQuery,
+} from './catalog.queries';
 import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import winston from '../logging/winston';
 
@@ -68,6 +72,7 @@ type Catalog = {
  */
 export async function fetchCatalog(
   overwrite: boolean,
+  loggedIn: boolean = true,
 ): Promise<PromiseSettledResult<void>[]> {
   let seasons: Seasons = { seasons: [] };
   // Get a list of all seasons
@@ -108,7 +113,10 @@ export async function fetchCatalog(
     let catalog: Catalog = { computed_listing_info: [] };
 
     try {
-      catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
+      const query = loggedIn
+        ? catalogBySeasonQuery
+        : catalogBySeasonNoRatingsQuery;
+      catalog = await request(GRAPHQL_ENDPOINT, query, {
         season: seasonCode,
       });
     } catch (err) {

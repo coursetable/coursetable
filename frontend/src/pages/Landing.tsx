@@ -71,6 +71,12 @@ function Landing() {
                     >
                       About Us
                     </Link>
+                    <Link
+                      to="/catalog"
+                      className={clsx(styles.btn, styles.about)} // TODO style
+                    >
+                      Guest
+                    </Link>
                   </Row>
                 </div>
               </Col>
