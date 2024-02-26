@@ -91,7 +91,6 @@ function ViewTabs({
 // We can only split subviews of CourseModal because CourseModal contains core
 // logic that determines whether itself is visible.
 // Maybe we should split more code into the subviews?
-
 const CourseModalOverview = suspended(() => import('./CourseModalOverview'));
 const CourseModalEvaluations = suspended(
   () => import('./CourseModalEvaluations'),
@@ -104,7 +103,6 @@ function CourseModal() {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<Listing[]>([]);
-
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -118,7 +116,6 @@ function CourseModal() {
   const listing = history[history.length - 1];
 
   if (!listing) return null;
-
   return (
     <div className="d-flex justify-content-center">
       <Modal
