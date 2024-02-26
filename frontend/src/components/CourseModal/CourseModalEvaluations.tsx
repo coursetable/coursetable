@@ -20,6 +20,7 @@ function CourseModalEvaluations({
   readonly seasonCode: Season;
   readonly crn: Crn;
 }) {
+
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
@@ -47,5 +48,6 @@ function CourseModalEvaluations({
     </Modal.Body>
   );
 }
+
 
 export default CourseModalEvaluations;
