@@ -32,7 +32,6 @@ const addToCache = (season: Season, isAuthenticated: boolean): Promise<void> =>
     // Log that we attempted to load this.
     courseLoadAttempted.add(season);
 
-    console.log(isAuthenticated);
     const info = await fetchCatalog(season, isAuthenticated);
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
@@ -68,8 +67,9 @@ export function FerryProvider({
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {
-      //if (!user.hasEvals) return; // Not logged in / doesn't have evals CHANGE: Everyone can see years?
+      if (!user.hasEvals) return; // Not logged in / doesn't have evals CHANGE: Everyone can see years?
       // make this false if null
+      console.log(user)
       const auth = user.hasEvals ?? false;
       const fetches = requestedSeasons.map(async (season) => {
         // No data; this can happen if the course-modal query is invalid

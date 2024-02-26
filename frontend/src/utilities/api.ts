@@ -59,6 +59,7 @@ export async function fetchCatalog(season: Season, loggedIn: boolean) {
   const endpoint = loggedIn ? 'catalogs' : 'catalogs/public';
   const res = await fetch(
     `${API_ENDPOINT}/api/static/${endpoint}/${season}.json`,
+    { credentials: 'include' },
   );
   if (!res.ok) {
     // TODO: better error handling here; we may want to get rid of async-lock
