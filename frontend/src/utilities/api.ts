@@ -2,12 +2,10 @@
 // swap this file with a file that serves static data instead of making network
 // requests.
 import * as Sentry from '@sentry/react';
-import { userInfo } from 'os';
 import { toast } from 'react-toastify';
 import z from 'zod';
 
 import { API_ENDPOINT } from '../config';
-import { useUser } from '../contexts/userContext';
 import type { Season, Crn, Listing, NetId } from './common';
 
 export async function toggleBookmark(payload: {
