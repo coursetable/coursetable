@@ -72,7 +72,6 @@ type Catalog = {
  */
 export async function fetchCatalog(
   overwrite: boolean,
-  loggedIn: boolean = true,
 ): Promise<PromiseSettledResult<void>[]> {
   let seasons: Seasons = { seasons: [] };
   // Get a list of all seasons
@@ -97,42 +96,68 @@ export async function fetchCatalog(
   // (if overwrite = true or if file does not exist)
   const processSeasons = seasons.seasons.map(async (season) => {
     const seasonCode = season.season_code;
-    const outputPath = `${STATIC_FILE_DIR}/catalogs/${seasonCode}.json`;
+    const fullCatalogPath = `${STATIC_FILE_DIR}/catalogs/${seasonCode}.json`;
+    const publicCatalogPath = `${STATIC_FILE_DIR}/catalogs/public/${seasonCode}.json`;
+    let catalogFull: Catalog = { computed_listing_info: [] };
+    let catalogPublic: Catalog = { computed_listing_info: [] };
 
+    // Fetch and save the full catalog (including evaluations)
     if (
-      !overwrite &&
-      (await fs.access(outputPath).then(
+      overwrite ||
+      !(await fs.access(fullCatalogPath).then(
         () => true,
         () => false,
       ))
     ) {
-      winston.info(`Catalog for ${seasonCode} exists, skipping`);
-      return;
+      try {
+        catalogFull = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
+          season: seasonCode,
+        });
+        await fs.writeFile(
+          fullCatalogPath,
+          JSON.stringify(catalogFull.computed_listing_info),
+        );
+        winston.info(
+          `Fetched full catalog for season ${seasonCode}: n=${catalogFull.computed_listing_info.length}`,
+        );
+      } catch (err) {
+        winston.error(
+          `Error fetching full catalog for season ${seasonCode}: ${err}`,
+        );
+      }
+    } else {
+      winston.info(`Full catalog for ${seasonCode} exists, skipping`);
     }
 
-    let catalog: Catalog = { computed_listing_info: [] };
-
-    try {
-      const query = loggedIn
-        ? catalogBySeasonQuery
-        : catalogBySeasonNoRatingsQuery;
-      catalog = await request(GRAPHQL_ENDPOINT, query, {
-        season: seasonCode,
-      });
-    } catch (err) {
-      winston.error(err);
-      throw err;
+    // Fetch and save the public catalog (no evaluations)
+    if (
+      overwrite ||
+      !(await fs.access(publicCatalogPath).then(
+        () => true,
+        () => false,
+      ))
+    ) {
+      try {
+        catalogPublic = await request(
+          GRAPHQL_ENDPOINT,
+          catalogBySeasonNoRatingsQuery,
+          { season: seasonCode },
+        );
+        await fs.writeFile(
+          publicCatalogPath,
+          JSON.stringify(catalogPublic.computed_listing_info),
+        );
+        winston.info(
+          `Fetched public catalog for season ${seasonCode}: n=${catalogPublic.computed_listing_info.length}`,
+        );
+      } catch (err) {
+        winston.error(
+          `Error fetching public catalog for season ${seasonCode}: ${err}`,
+        );
+      }
+    } else {
+      winston.info(`Public catalog for ${seasonCode} exists, skipping`);
     }
-
-    await fs.writeFile(
-      outputPath,
-      JSON.stringify(catalog.computed_listing_info),
-    );
-
-    winston.info(
-      `Fetched season ${seasonCode}: n=${catalog.computed_listing_info.length}`,
-    );
   });
-
   return Promise.allSettled(processSeasons);
 }

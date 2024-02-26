@@ -60,6 +60,18 @@ export async function fetchCatalog(season: Season) {
     `${API_ENDPOINT}/api/static/catalogs/${season}.json`,
     { credentials: 'include' },
   );
+
+  if (!res.ok && res.status === 401) {
+    // check this code
+    // Attempt to fetch a public version of the catalog
+    console.log(
+      `Attempting to fetch public catalog for season ${season} due to authentication issue.`,
+    );
+    res = await fetch(
+      `${API_ENDPOINT}/api/static/catalogs/public/${season}.json`,
+    );
+  }
+
   if (!res.ok) {
     // TODO: better error handling here; we may want to get rid of async-lock
     // first

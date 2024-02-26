@@ -148,6 +148,14 @@ friends(app);
 canny(app);
 user(app);
 
+// Serve public catalog files without authentication
+app.use('/api/static/catalogs/public', express.static(`${STATIC_FILE_DIR}/catalogs/public`, {
+  cacheControl: true,
+  maxAge: '1h',
+  lastModified: true,
+  etag: true,
+}));
+
 // Mount static files route and require NetID authentication
 app.use(
   '/api/static',
