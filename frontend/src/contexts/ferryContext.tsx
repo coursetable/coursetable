@@ -22,7 +22,7 @@ export const seasons = seasonsData as Season[];
 const courseDataLock = new AsyncLock();
 const courseLoadAttempted = new Set<Season>();
 let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
-const addToCache = (season: Season): Promise<void> =>
+const addToCache = (season: Season, isAuthenticated: boolean): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     if (courseLoadAttempted.has(season)) {
       // Skip if already loaded, or if we previously tried to load it.
@@ -32,7 +32,9 @@ const addToCache = (season: Season): Promise<void> =>
     // Log that we attempted to load this.
     courseLoadAttempted.add(season);
 
-    const info = await fetchCatalog(season);
+
+    console.log(isAuthenticated)
+    const info = await fetchCatalog(season, isAuthenticated);
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
       ...courseData,
@@ -63,11 +65,25 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const { user } = useUser();
+  const { user, loading: isUserLoading } = useUser();
+
+  const [isAuthStatusKnown, setIsAuthStatusKnown] = useState(false);
+
+  useEffect(() => {
+    if (!isUserLoading) {
+      setIsAuthStatusKnown(true);
+    }
+  }, [isUserLoading]);
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {
-      if (!user.hasEvals) return; // Not logged in / doesn't have evals
+      console.log(isAuthStatusKnown)
+      if (!isAuthStatusKnown) return; // Only proceed if auth status is known
+      //if (!user.hasEvals) return; // Not logged in / doesn't have evals CHANGE: Everyone can see years?
+      // make this false if null
+      console.log(user)
+      const auth = !!user.hasEvals;
+
       const fetches = requestedSeasons.map(async (season) => {
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;
@@ -77,7 +93,7 @@ export function FerryProvider({
         // Add to cache.
         setRequests((r) => r + 1);
         try {
-          await addToCache(season);
+          await addToCache(season, auth);
         } finally {
           setRequests((r) => r - 1);
         }

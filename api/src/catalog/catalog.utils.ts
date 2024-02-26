@@ -152,7 +152,7 @@ export async function fetchCatalog(
         );
       } catch (err) {
         winston.error(
-          `Error fetching public catalog for season ${seasonCode}: ${err}`,
+          `Error fetching public catalog for season ${seasonCode}: ${err}`, // MAKE SURE ITS MADE
         );
       }
     } else {
