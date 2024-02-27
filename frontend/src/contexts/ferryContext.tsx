@@ -65,7 +65,7 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const { user, authStatus } = useUser();
+  const { authStatus } = useUser();
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {
