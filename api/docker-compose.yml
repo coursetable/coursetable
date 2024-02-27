@@ -34,6 +34,7 @@ services:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: 'anonymous' # for public access
       #HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET?hasura_admin_secret}}
     ports:
       - '127.0.0.1:8080:8080'
