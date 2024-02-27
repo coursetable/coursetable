@@ -131,6 +131,7 @@ app.use(
       '^/ferry/': '/', // Remove base path
     },
     ws: true,
+    xfwd: true, // Forward the headers
   }),
 );
 // Enable request logging.
