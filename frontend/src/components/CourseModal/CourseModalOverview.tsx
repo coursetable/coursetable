@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -38,6 +38,8 @@ import {
 import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
+  useSameCourseOrProfOfferingsPublicQuery,
+  type SameCourseOrProfOfferingsPublicQuery
 } from '../../generated/graphql';
 import {
   weekdays,
@@ -46,6 +48,8 @@ import {
   type Listing,
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
+import { checkAuth } from '../../utilities/api'; 
+
 
 // Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -159,6 +163,15 @@ function CourseModalOverview({
   readonly gotoCourse: (x: Listing) => void;
   readonly listing: Listing;
 }) {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  useEffect(() => { // better way to do auth?
+    const init = async () => {
+      const authStatus = await checkAuth();
+      setIsAuthenticated(authStatus);
+    };
+    init();
+  }, []);
+
   // Fetch user context data
   const { user } = useUser();
   // Is description clamped?
@@ -197,13 +210,19 @@ function CourseModalOverview({
       times.get(timespan)!.add(day);
     }
   }
-
-  const { loading, error, data } = useSameCourseOrProfOfferingsQuery({
-    variables: {
-      same_course_id: listing.same_course_id,
-      professor_ids: listing.professor_ids,
-    },
-  });
+  const { loading, error, data } = isAuthenticated
+  ? useSameCourseOrProfOfferingsQuery({
+      variables: {
+        same_course_id: listing.same_course_id,
+        professor_ids: listing.professor_ids,
+      },
+    })
+  : useSameCourseOrProfOfferingsPublicQuery({
+      variables: {
+        same_course_id: listing.same_course_id,
+        professor_ids: listing.professor_ids,
+      },
+    });
 
   // Holds Prof information for popover
   const profInfo = useMemo(() => {

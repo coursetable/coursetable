@@ -2,35 +2,22 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
-export type MakeEmpty<
-  T extends { [key: string]: unknown },
-  K extends keyof T,
-> = { [_ in K]?: never };
-export type Incremental<T> =
-  | T
-  | {
-      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
-    };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
-  float8: { input: number; output: number };
-  json: { input: any; output: any };
-  jsonb: { input: any; output: any };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  float8: { input: number; output: number; }
+  json: { input: any; output: any; }
+  jsonb: { input: any; output: any; }
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -320,7 +307,7 @@ export type Computed_Listing_Info_Bool_Exp = {
 /** unique or primary key constraints on table "computed_listing_info" */
 export enum Computed_Listing_Info_Constraint {
   /** unique or primary key constraint on columns "listing_id" */
-  IdxComputedListingListingId = 'idx_computed_listing_listing_id',
+  IdxComputedListingListingId = 'idx_computed_listing_listing_id'
 }
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
@@ -723,7 +710,7 @@ export enum Computed_Listing_Info_Select_Column {
   /** column name */
   TimesSummary = 'times_summary',
   /** column name */
-  Title = 'title',
+  Title = 'title'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_avg_arguments_columns" columns of table "computed_listing_info" */
@@ -741,7 +728,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_bool_and_arguments_columns" columns of table "computed_listing_info" */
@@ -753,7 +740,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
   /** column name */
-  Sysem = 'sysem',
+  Sysem = 'sysem'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_bool_or_arguments_columns" columns of table "computed_listing_info" */
@@ -765,7 +752,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
   /** column name */
-  Sysem = 'sysem',
+  Sysem = 'sysem'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_corr_arguments_columns" columns of table "computed_listing_info" */
@@ -783,7 +770,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "computed_listing_info" */
@@ -801,7 +788,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_max_arguments_columns" columns of table "computed_listing_info" */
@@ -819,7 +806,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_min_arguments_columns" columns of table "computed_listing_info" */
@@ -837,7 +824,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "computed_listing_info" */
@@ -855,7 +842,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_sum_arguments_columns" columns of table "computed_listing_info" */
@@ -873,7 +860,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "computed_listing_info_aggregate_bool_exp_var_samp_arguments_columns" columns of table "computed_listing_info" */
@@ -891,7 +878,7 @@ export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** input type for updating data in table "computed_listing_info" */
@@ -1239,7 +1226,7 @@ export enum Computed_Listing_Info_Update_Column {
   /** column name */
   TimesSummary = 'times_summary',
   /** column name */
-  Title = 'title',
+  Title = 'title'
 }
 
 export type Computed_Listing_Info_Updates = {
@@ -1389,7 +1376,6 @@ export type Course_Discussions_Bool_Exp = {
   _and: InputMaybe<Array<Course_Discussions_Bool_Exp>>;
   _not: InputMaybe<Course_Discussions_Bool_Exp>;
   _or: InputMaybe<Array<Course_Discussions_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
   course_id: InputMaybe<Int_Comparison_Exp>;
   discussion: InputMaybe<Discussions_Bool_Exp>;
   discussion_id: InputMaybe<Int_Comparison_Exp>;
@@ -1398,7 +1384,7 @@ export type Course_Discussions_Bool_Exp = {
 /** unique or primary key constraints on table "course_discussions" */
 export enum Course_Discussions_Constraint {
   /** unique or primary key constraint on columns "discussion_id", "course_id" */
-  PkCourseDiscussionsStaged = 'pk_course_discussions_staged',
+  PkCourseDiscussions = 'pk_course_discussions'
 }
 
 /** input type for incrementing numeric columns in table "course_discussions" */
@@ -1409,7 +1395,6 @@ export type Course_Discussions_Inc_Input = {
 
 /** input type for inserting data into table "course_discussions" */
 export type Course_Discussions_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   course_id: InputMaybe<Scalars['Int']['input']>;
   discussion: InputMaybe<Discussions_Obj_Rel_Insert_Input>;
   discussion_id: InputMaybe<Scalars['Int']['input']>;
@@ -1436,7 +1421,6 @@ export type Course_Discussions_On_Conflict = {
 
 /** Ordering options when selecting data from "course_discussions". */
 export type Course_Discussions_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
   course_id: InputMaybe<Order_By>;
   discussion: InputMaybe<Discussions_Order_By>;
   discussion_id: InputMaybe<Order_By>;
@@ -1453,7 +1437,7 @@ export enum Course_Discussions_Select_Column {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  DiscussionId = 'discussion_id',
+  DiscussionId = 'discussion_id'
 }
 
 /** input type for updating data in table "course_discussions" */
@@ -1505,7 +1489,7 @@ export enum Course_Discussions_Update_Column {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  DiscussionId = 'discussion_id',
+  DiscussionId = 'discussion_id'
 }
 
 export type Course_Discussions_Updates = {
@@ -1588,7 +1572,7 @@ export type Course_Flags_Bool_Exp = {
 /** unique or primary key constraints on table "course_flags" */
 export enum Course_Flags_Constraint {
   /** unique or primary key constraint on columns "course_id", "flag_id" */
-  PkCourseFlagsStaged = 'pk_course_flags_staged',
+  PkCourseFlagsStaged = 'pk_course_flags_staged'
 }
 
 /** input type for incrementing numeric columns in table "course_flags" */
@@ -1643,7 +1627,7 @@ export enum Course_Flags_Select_Column {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  FlagId = 'flag_id',
+  FlagId = 'flag_id'
 }
 
 /** input type for updating data in table "course_flags" */
@@ -1695,7 +1679,7 @@ export enum Course_Flags_Update_Column {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  FlagId = 'flag_id',
+  FlagId = 'flag_id'
 }
 
 export type Course_Flags_Updates = {
@@ -1778,7 +1762,7 @@ export type Course_Professors_Bool_Exp = {
 /** unique or primary key constraints on table "course_professors" */
 export enum Course_Professors_Constraint {
   /** unique or primary key constraint on columns "course_id", "professor_id" */
-  PkCourseProfessorsStaged = 'pk_course_professors_staged',
+  PkCourseProfessorsStaged = 'pk_course_professors_staged'
 }
 
 /** input type for incrementing numeric columns in table "course_professors" */
@@ -1833,7 +1817,7 @@ export enum Course_Professors_Select_Column {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  ProfessorId = 'professor_id',
+  ProfessorId = 'professor_id'
 }
 
 /** input type for updating data in table "course_professors" */
@@ -1885,7 +1869,7 @@ export enum Course_Professors_Update_Column {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  ProfessorId = 'professor_id',
+  ProfessorId = 'professor_id'
 }
 
 export type Course_Professors_Updates = {
@@ -2122,8 +2106,6 @@ export type Courses_Bool_Exp = {
   computed_listing_infos_aggregate: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp>;
   course: InputMaybe<Courses_Bool_Exp>;
   courseByLastOfferedCourseId: InputMaybe<Courses_Bool_Exp>;
-  course_discussions: InputMaybe<Course_Discussions_Bool_Exp>;
-  course_discussions_aggregate: InputMaybe<Course_Discussions_Aggregate_Bool_Exp>;
   course_flags: InputMaybe<Course_Flags_Bool_Exp>;
   course_flags_aggregate: InputMaybe<Course_Flags_Aggregate_Bool_Exp>;
   course_home_url: InputMaybe<String_Comparison_Exp>;
@@ -2135,7 +2117,6 @@ export type Courses_Bool_Exp = {
   coursesByLastOfferedCourseId_aggregate: InputMaybe<Courses_Aggregate_Bool_Exp>;
   courses_aggregate: InputMaybe<Courses_Aggregate_Bool_Exp>;
   credits: InputMaybe<Float8_Comparison_Exp>;
-  demand_statistic: InputMaybe<Demand_Statistics_Bool_Exp>;
   description: InputMaybe<String_Comparison_Exp>;
   evaluation_narratives: InputMaybe<Evaluation_Narratives_Bool_Exp>;
   evaluation_narratives_aggregate: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp>;
@@ -2143,10 +2124,6 @@ export type Courses_Bool_Exp = {
   evaluation_ratings_aggregate: InputMaybe<Evaluation_Ratings_Aggregate_Bool_Exp>;
   evaluation_statistic: InputMaybe<Evaluation_Statistics_Bool_Exp>;
   extra_info: InputMaybe<String_Comparison_Exp>;
-  fasttextSimilarsByTarget: InputMaybe<Fasttext_Similars_Bool_Exp>;
-  fasttextSimilarsByTarget_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Bool_Exp>;
-  fasttext_similars: InputMaybe<Fasttext_Similars_Bool_Exp>;
-  fasttext_similars_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Bool_Exp>;
   final_exam: InputMaybe<String_Comparison_Exp>;
   fysem: InputMaybe<Boolean_Comparison_Exp>;
   last_enrollment: InputMaybe<Int_Comparison_Exp>;
@@ -2169,10 +2146,6 @@ export type Courses_Bool_Exp = {
   skills: InputMaybe<Json_Comparison_Exp>;
   syllabus_url: InputMaybe<String_Comparison_Exp>;
   sysem: InputMaybe<Boolean_Comparison_Exp>;
-  tfidfSimilarsByTarget: InputMaybe<Tfidf_Similars_Bool_Exp>;
-  tfidfSimilarsByTarget_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Bool_Exp>;
-  tfidf_similars: InputMaybe<Tfidf_Similars_Bool_Exp>;
-  tfidf_similars_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Bool_Exp>;
   times_by_day: InputMaybe<Json_Comparison_Exp>;
   times_long_summary: InputMaybe<String_Comparison_Exp>;
   times_summary: InputMaybe<String_Comparison_Exp>;
@@ -2182,7 +2155,7 @@ export type Courses_Bool_Exp = {
 /** unique or primary key constraints on table "courses" */
 export enum Courses_Constraint {
   /** unique or primary key constraint on columns "course_id" */
-  PkCoursesStaged = 'pk_courses_staged',
+  PkCoursesStaged = 'pk_courses_staged'
 }
 
 /** input type for incrementing numeric columns in table "courses" */
@@ -2294,7 +2267,6 @@ export type Courses_Insert_Input = {
   computed_listing_infos: InputMaybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   courseByLastOfferedCourseId: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  course_discussions: InputMaybe<Course_Discussions_Arr_Rel_Insert_Input>;
   course_flags: InputMaybe<Course_Flags_Arr_Rel_Insert_Input>;
   /** Link to the course homepage */
   course_home_url: InputMaybe<Scalars['String']['input']>;
@@ -2304,7 +2276,6 @@ export type Courses_Insert_Input = {
   coursesByLastOfferedCourseId: InputMaybe<Courses_Arr_Rel_Insert_Input>;
   /** Number of course credits */
   credits: InputMaybe<Scalars['float8']['input']>;
-  demand_statistic: InputMaybe<Demand_Statistics_Obj_Rel_Insert_Input>;
   /** Course description */
   description: InputMaybe<Scalars['String']['input']>;
   evaluation_narratives: InputMaybe<Evaluation_Narratives_Arr_Rel_Insert_Input>;
@@ -2312,8 +2283,6 @@ export type Courses_Insert_Input = {
   evaluation_statistic: InputMaybe<Evaluation_Statistics_Obj_Rel_Insert_Input>;
   /** Additional information (indicates if class has been cancelled) */
   extra_info: InputMaybe<Scalars['String']['input']>;
-  fasttextSimilarsByTarget: InputMaybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
-  fasttext_similars: InputMaybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
   /** Final exam information */
   final_exam: InputMaybe<Scalars['String']['input']>;
   /** True if the course is a first-year seminar. False otherwise. */
@@ -2383,8 +2352,6 @@ export type Courses_Insert_Input = {
   syllabus_url: InputMaybe<Scalars['String']['input']>;
   /** True if the course is a sophomore seminar. False otherwise. */
   sysem: InputMaybe<Scalars['Boolean']['input']>;
-  tfidfSimilarsByTarget: InputMaybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
-  tfidf_similars: InputMaybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
   /**
    * Course meeting times by day, with days as keys and
    *         tuples of `(start_time, end_time, location)`
@@ -2651,7 +2618,6 @@ export type Courses_Order_By = {
   computed_listing_infos_aggregate: InputMaybe<Computed_Listing_Info_Aggregate_Order_By>;
   course: InputMaybe<Courses_Order_By>;
   courseByLastOfferedCourseId: InputMaybe<Courses_Order_By>;
-  course_discussions_aggregate: InputMaybe<Course_Discussions_Aggregate_Order_By>;
   course_flags_aggregate: InputMaybe<Course_Flags_Aggregate_Order_By>;
   course_home_url: InputMaybe<Order_By>;
   course_id: InputMaybe<Order_By>;
@@ -2659,14 +2625,11 @@ export type Courses_Order_By = {
   coursesByLastOfferedCourseId_aggregate: InputMaybe<Courses_Aggregate_Order_By>;
   courses_aggregate: InputMaybe<Courses_Aggregate_Order_By>;
   credits: InputMaybe<Order_By>;
-  demand_statistic: InputMaybe<Demand_Statistics_Order_By>;
   description: InputMaybe<Order_By>;
   evaluation_narratives_aggregate: InputMaybe<Evaluation_Narratives_Aggregate_Order_By>;
   evaluation_ratings_aggregate: InputMaybe<Evaluation_Ratings_Aggregate_Order_By>;
   evaluation_statistic: InputMaybe<Evaluation_Statistics_Order_By>;
   extra_info: InputMaybe<Order_By>;
-  fasttextSimilarsByTarget_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Order_By>;
-  fasttext_similars_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Order_By>;
   final_exam: InputMaybe<Order_By>;
   fysem: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
@@ -2688,8 +2651,6 @@ export type Courses_Order_By = {
   skills: InputMaybe<Order_By>;
   syllabus_url: InputMaybe<Order_By>;
   sysem: InputMaybe<Order_By>;
-  tfidfSimilarsByTarget_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Order_By>;
-  tfidf_similars_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Order_By>;
   times_by_day: InputMaybe<Order_By>;
   times_long_summary: InputMaybe<Order_By>;
   times_summary: InputMaybe<Order_By>;
@@ -2778,7 +2739,7 @@ export enum Courses_Select_Column {
   /** column name */
   TimesSummary = 'times_summary',
   /** column name */
-  Title = 'title',
+  Title = 'title'
 }
 
 /** select "courses_aggregate_bool_exp_avg_arguments_columns" columns of table "courses" */
@@ -2792,7 +2753,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Avg_Arguments_Colum
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "courses_aggregate_bool_exp_bool_and_arguments_columns" columns of table "courses" */
@@ -2804,7 +2765,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Bool_And_Arguments_
   /** column name */
   LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
   /** column name */
-  Sysem = 'sysem',
+  Sysem = 'sysem'
 }
 
 /** select "courses_aggregate_bool_exp_bool_or_arguments_columns" columns of table "courses" */
@@ -2816,7 +2777,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Bool_Or_Arguments_C
   /** column name */
   LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
   /** column name */
-  Sysem = 'sysem',
+  Sysem = 'sysem'
 }
 
 /** select "courses_aggregate_bool_exp_corr_arguments_columns" columns of table "courses" */
@@ -2830,7 +2791,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Corr_Arguments_Colu
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "courses_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "courses" */
@@ -2844,7 +2805,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Covar_Samp_Argument
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "courses_aggregate_bool_exp_max_arguments_columns" columns of table "courses" */
@@ -2858,7 +2819,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Max_Arguments_Colum
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "courses_aggregate_bool_exp_min_arguments_columns" columns of table "courses" */
@@ -2872,7 +2833,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Min_Arguments_Colum
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "courses_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "courses" */
@@ -2886,7 +2847,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Stddev_Samp_Argumen
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "courses_aggregate_bool_exp_sum_arguments_columns" columns of table "courses" */
@@ -2900,7 +2861,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Sum_Arguments_Colum
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** select "courses_aggregate_bool_exp_var_samp_arguments_columns" columns of table "courses" */
@@ -2914,7 +2875,7 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Var_Samp_Arguments_
   /** column name */
   AverageWorkloadSameProfessors = 'average_workload_same_professors',
   /** column name */
-  Credits = 'credits',
+  Credits = 'credits'
 }
 
 /** input type for updating data in table "courses" */
@@ -3524,7 +3485,7 @@ export enum Courses_Update_Column {
   /** column name */
   TimesSummary = 'times_summary',
   /** column name */
-  Title = 'title',
+  Title = 'title'
 }
 
 export type Courses_Updates = {
@@ -3733,7 +3694,7 @@ export enum Cursor_Ordering {
   /** ascending ordering of the cursor */
   Asc = 'ASC',
   /** descending ordering of the cursor */
-  Desc = 'DESC',
+  Desc = 'DESC'
 }
 
 /** Boolean expression to filter rows from the table "demand_statistics". All fields are combined with a logical 'AND'. */
@@ -3741,7 +3702,6 @@ export type Demand_Statistics_Bool_Exp = {
   _and: InputMaybe<Array<Demand_Statistics_Bool_Exp>>;
   _not: InputMaybe<Demand_Statistics_Bool_Exp>;
   _or: InputMaybe<Array<Demand_Statistics_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
   course_id: InputMaybe<Int_Comparison_Exp>;
   demand: InputMaybe<Json_Comparison_Exp>;
   latest_demand: InputMaybe<Int_Comparison_Exp>;
@@ -3751,7 +3711,7 @@ export type Demand_Statistics_Bool_Exp = {
 /** unique or primary key constraints on table "demand_statistics" */
 export enum Demand_Statistics_Constraint {
   /** unique or primary key constraint on columns "course_id" */
-  PkDemandStatisticsStaged = 'pk_demand_statistics_staged',
+  PkDemandStatistics = 'pk_demand_statistics'
 }
 
 /** input type for incrementing numeric columns in table "demand_statistics" */
@@ -3764,7 +3724,6 @@ export type Demand_Statistics_Inc_Input = {
 
 /** input type for inserting data into table "demand_statistics" */
 export type Demand_Statistics_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   /** The course to which these demand statistics apply */
   course_id: InputMaybe<Scalars['Int']['input']>;
   /** JSON dict containing demand stats by day */
@@ -3773,13 +3732,6 @@ export type Demand_Statistics_Insert_Input = {
   latest_demand: InputMaybe<Scalars['Int']['input']>;
   /** Latest demand date */
   latest_demand_date: InputMaybe<Scalars['String']['input']>;
-};
-
-/** input type for inserting object relation for remote table "demand_statistics" */
-export type Demand_Statistics_Obj_Rel_Insert_Input = {
-  data: Demand_Statistics_Insert_Input;
-  /** upsert condition */
-  on_conflict: InputMaybe<Demand_Statistics_On_Conflict>;
 };
 
 /** on_conflict condition type for table "demand_statistics" */
@@ -3791,7 +3743,6 @@ export type Demand_Statistics_On_Conflict = {
 
 /** Ordering options when selecting data from "demand_statistics". */
 export type Demand_Statistics_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
   course_id: InputMaybe<Order_By>;
   demand: InputMaybe<Order_By>;
   latest_demand: InputMaybe<Order_By>;
@@ -3813,7 +3764,7 @@ export enum Demand_Statistics_Select_Column {
   /** column name */
   LatestDemand = 'latest_demand',
   /** column name */
-  LatestDemandDate = 'latest_demand_date',
+  LatestDemandDate = 'latest_demand_date'
 }
 
 /** input type for updating data in table "demand_statistics" */
@@ -3857,7 +3808,7 @@ export enum Demand_Statistics_Update_Column {
   /** column name */
   LatestDemand = 'latest_demand',
   /** column name */
-  LatestDemandDate = 'latest_demand_date',
+  LatestDemandDate = 'latest_demand_date'
 }
 
 export type Demand_Statistics_Updates = {
@@ -3889,7 +3840,7 @@ export type Discussions_Bool_Exp = {
 /** unique or primary key constraints on table "discussions" */
 export enum Discussions_Constraint {
   /** unique or primary key constraint on columns "discussion_id" */
-  PkDiscussionsStaged = 'pk_discussions_staged',
+  PkDiscussions = 'pk_discussions'
 }
 
 /** input type for incrementing numeric columns in table "discussions" */
@@ -3976,7 +3927,7 @@ export enum Discussions_Select_Column {
   /** column name */
   TimesLongSummary = 'times_long_summary',
   /** column name */
-  TimesSummary = 'times_summary',
+  TimesSummary = 'times_summary'
 }
 
 /** input type for updating data in table "discussions" */
@@ -4058,7 +4009,7 @@ export enum Discussions_Update_Column {
   /** column name */
   TimesLongSummary = 'times_long_summary',
   /** column name */
-  TimesSummary = 'times_summary',
+  TimesSummary = 'times_summary'
 }
 
 export type Discussions_Updates = {
@@ -4212,7 +4163,7 @@ export type Evaluation_Narratives_Bool_Exp = {
 /** unique or primary key constraints on table "evaluation_narratives" */
 export enum Evaluation_Narratives_Constraint {
   /** unique or primary key constraint on columns "id" */
-  PkEvaluationNarrativesStaged = 'pk_evaluation_narratives_staged',
+  PkEvaluationNarrativesStaged = 'pk_evaluation_narratives_staged'
 }
 
 /** input type for incrementing numeric columns in table "evaluation_narratives" */
@@ -4332,7 +4283,7 @@ export enum Evaluation_Narratives_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  QuestionCode = 'question_code',
+  QuestionCode = 'question_code'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_avg_arguments_columns" columns of table "evaluation_narratives" */
@@ -4344,7 +4295,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_corr_arguments_columns" columns of table "evaluation_narratives" */
@@ -4356,7 +4307,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "evaluation_narratives" */
@@ -4368,7 +4319,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_max_arguments_columns" columns of table "evaluation_narratives" */
@@ -4380,7 +4331,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_min_arguments_columns" columns of table "evaluation_narratives" */
@@ -4392,7 +4343,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "evaluation_narratives" */
@@ -4404,7 +4355,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_sum_arguments_columns" columns of table "evaluation_narratives" */
@@ -4416,7 +4367,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_var_samp_arguments_columns" columns of table "evaluation_narratives" */
@@ -4428,7 +4379,7 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentNeu = 'comment_neu',
   /** column name */
-  CommentPos = 'comment_pos',
+  CommentPos = 'comment_pos'
 }
 
 /** input type for updating data in table "evaluation_narratives" */
@@ -4554,7 +4505,7 @@ export enum Evaluation_Narratives_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  QuestionCode = 'question_code',
+  QuestionCode = 'question_code'
 }
 
 export type Evaluation_Narratives_Updates = {
@@ -4630,7 +4581,7 @@ export type Evaluation_Questions_Bool_Exp = {
 /** unique or primary key constraints on table "evaluation_questions" */
 export enum Evaluation_Questions_Constraint {
   /** unique or primary key constraint on columns "question_code" */
-  PkEvaluationQuestionsStaged = 'pk_evaluation_questions_staged',
+  PkEvaluationQuestionsStaged = 'pk_evaluation_questions_staged'
 }
 
 /** input type for inserting data into table "evaluation_questions" */
@@ -4697,7 +4648,7 @@ export enum Evaluation_Questions_Select_Column {
   /** column name */
   QuestionText = 'question_text',
   /** column name */
-  Tag = 'tag',
+  Tag = 'tag'
 }
 
 /** input type for updating data in table "evaluation_questions" */
@@ -4759,7 +4710,7 @@ export enum Evaluation_Questions_Update_Column {
   /** column name */
   QuestionText = 'question_text',
   /** column name */
-  Tag = 'tag',
+  Tag = 'tag'
 }
 
 export type Evaluation_Questions_Updates = {
@@ -4825,7 +4776,7 @@ export type Evaluation_Ratings_Bool_Exp = {
 /** unique or primary key constraints on table "evaluation_ratings" */
 export enum Evaluation_Ratings_Constraint {
   /** unique or primary key constraint on columns "id" */
-  PkEvaluationRatingsStaged = 'pk_evaluation_ratings_staged',
+  PkEvaluationRatingsStaged = 'pk_evaluation_ratings_staged'
 }
 
 /** input type for incrementing numeric columns in table "evaluation_ratings" */
@@ -4897,7 +4848,7 @@ export enum Evaluation_Ratings_Select_Column {
   /** column name */
   QuestionCode = 'question_code',
   /** column name */
-  Rating = 'rating',
+  Rating = 'rating'
 }
 
 /** input type for updating data in table "evaluation_ratings" */
@@ -4967,7 +4918,7 @@ export enum Evaluation_Ratings_Update_Column {
   /** column name */
   QuestionCode = 'question_code',
   /** column name */
-  Rating = 'rating',
+  Rating = 'rating'
 }
 
 export type Evaluation_Ratings_Updates = {
@@ -5020,7 +4971,7 @@ export type Evaluation_Statistics_Bool_Exp = {
 /** unique or primary key constraints on table "evaluation_statistics" */
 export enum Evaluation_Statistics_Constraint {
   /** unique or primary key constraint on columns "course_id" */
-  PkEvaluationStatisticsStaged = 'pk_evaluation_statistics_staged',
+  PkEvaluationStatisticsStaged = 'pk_evaluation_statistics_staged'
 }
 
 /** input type for incrementing numeric columns in table "evaluation_statistics" */
@@ -5119,7 +5070,7 @@ export enum Evaluation_Statistics_Select_Column {
   /** column name */
   NoResponse = 'no_response',
   /** column name */
-  Responses = 'responses',
+  Responses = 'responses'
 }
 
 /** input type for updating data in table "evaluation_statistics" */
@@ -5193,7 +5144,7 @@ export enum Evaluation_Statistics_Update_Column {
   /** column name */
   NoResponse = 'no_response',
   /** column name */
-  Responses = 'responses',
+  Responses = 'responses'
 }
 
 export type Evaluation_Statistics_Updates = {
@@ -5205,54 +5156,11 @@ export type Evaluation_Statistics_Updates = {
   where: Evaluation_Statistics_Bool_Exp;
 };
 
-export type Fasttext_Similars_Aggregate_Bool_Exp = {
-  count: InputMaybe<Fasttext_Similars_Aggregate_Bool_Exp_Count>;
-};
-
-export type Fasttext_Similars_Aggregate_Bool_Exp_Count = {
-  arguments: InputMaybe<Array<Fasttext_Similars_Select_Column>>;
-  distinct: InputMaybe<Scalars['Boolean']['input']>;
-  filter: InputMaybe<Fasttext_Similars_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** order by aggregate values of table "fasttext_similars" */
-export type Fasttext_Similars_Aggregate_Order_By = {
-  avg: InputMaybe<Fasttext_Similars_Avg_Order_By>;
-  count: InputMaybe<Order_By>;
-  max: InputMaybe<Fasttext_Similars_Max_Order_By>;
-  min: InputMaybe<Fasttext_Similars_Min_Order_By>;
-  stddev: InputMaybe<Fasttext_Similars_Stddev_Order_By>;
-  stddev_pop: InputMaybe<Fasttext_Similars_Stddev_Pop_Order_By>;
-  stddev_samp: InputMaybe<Fasttext_Similars_Stddev_Samp_Order_By>;
-  sum: InputMaybe<Fasttext_Similars_Sum_Order_By>;
-  var_pop: InputMaybe<Fasttext_Similars_Var_Pop_Order_By>;
-  var_samp: InputMaybe<Fasttext_Similars_Var_Samp_Order_By>;
-  variance: InputMaybe<Fasttext_Similars_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "fasttext_similars" */
-export type Fasttext_Similars_Arr_Rel_Insert_Input = {
-  data: Array<Fasttext_Similars_Insert_Input>;
-  /** upsert condition */
-  on_conflict: InputMaybe<Fasttext_Similars_On_Conflict>;
-};
-
-/** order by avg() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Avg_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "fasttext_similars". All fields are combined with a logical 'AND'. */
 export type Fasttext_Similars_Bool_Exp = {
   _and: InputMaybe<Array<Fasttext_Similars_Bool_Exp>>;
   _not: InputMaybe<Fasttext_Similars_Bool_Exp>;
   _or: InputMaybe<Array<Fasttext_Similars_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
-  courseByTarget: InputMaybe<Courses_Bool_Exp>;
   rank: InputMaybe<Int_Comparison_Exp>;
   source: InputMaybe<Int_Comparison_Exp>;
   target: InputMaybe<Int_Comparison_Exp>;
@@ -5261,7 +5169,7 @@ export type Fasttext_Similars_Bool_Exp = {
 /** unique or primary key constraints on table "fasttext_similars" */
 export enum Fasttext_Similars_Constraint {
   /** unique or primary key constraint on columns "target", "source" */
-  PkFasttextSimilarsStaged = 'pk_fasttext_similars_staged',
+  PkFasttextSimilars = 'pk_fasttext_similars'
 }
 
 /** input type for incrementing numeric columns in table "fasttext_similars" */
@@ -5274,28 +5182,10 @@ export type Fasttext_Similars_Inc_Input = {
 
 /** input type for inserting data into table "fasttext_similars" */
 export type Fasttext_Similars_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  courseByTarget: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   /** Target course similarity rank relative to all targets of a source */
   rank: InputMaybe<Scalars['Int']['input']>;
   source: InputMaybe<Scalars['Int']['input']>;
   target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by max() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Max_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Min_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
 };
 
 /** on_conflict condition type for table "fasttext_similars" */
@@ -5307,8 +5197,6 @@ export type Fasttext_Similars_On_Conflict = {
 
 /** Ordering options when selecting data from "fasttext_similars". */
 export type Fasttext_Similars_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
-  courseByTarget: InputMaybe<Courses_Order_By>;
   rank: InputMaybe<Order_By>;
   source: InputMaybe<Order_By>;
   target: InputMaybe<Order_By>;
@@ -5327,7 +5215,7 @@ export enum Fasttext_Similars_Select_Column {
   /** column name */
   Source = 'source',
   /** column name */
-  Target = 'target',
+  Target = 'target'
 }
 
 /** input type for updating data in table "fasttext_similars" */
@@ -5336,30 +5224,6 @@ export type Fasttext_Similars_Set_Input = {
   rank: InputMaybe<Scalars['Int']['input']>;
   source: InputMaybe<Scalars['Int']['input']>;
   target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by stddev() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Stddev_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_pop() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Stddev_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_samp() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Stddev_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "fasttext_similars" */
@@ -5378,14 +5242,6 @@ export type Fasttext_Similars_Stream_Cursor_Value_Input = {
   target: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** order by sum() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Sum_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
 /** update columns of table "fasttext_similars" */
 export enum Fasttext_Similars_Update_Column {
   /** column name */
@@ -5393,7 +5249,7 @@ export enum Fasttext_Similars_Update_Column {
   /** column name */
   Source = 'source',
   /** column name */
-  Target = 'target',
+  Target = 'target'
 }
 
 export type Fasttext_Similars_Updates = {
@@ -5403,30 +5259,6 @@ export type Fasttext_Similars_Updates = {
   _set: InputMaybe<Fasttext_Similars_Set_Input>;
   /** filter the rows which have to be updated */
   where: Fasttext_Similars_Bool_Exp;
-};
-
-/** order by var_pop() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Var_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by var_samp() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Var_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by variance() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Variance_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "flags". All fields are combined with a logical 'AND'. */
@@ -5443,7 +5275,7 @@ export type Flags_Bool_Exp = {
 /** unique or primary key constraints on table "flags" */
 export enum Flags_Constraint {
   /** unique or primary key constraint on columns "flag_id" */
-  PkFlagsStaged = 'pk_flags_staged',
+  PkFlagsStaged = 'pk_flags_staged'
 }
 
 /** input type for incrementing numeric columns in table "flags" */
@@ -5493,7 +5325,7 @@ export enum Flags_Select_Column {
   /** column name */
   FlagId = 'flag_id',
   /** column name */
-  FlagText = 'flag_text',
+  FlagText = 'flag_text'
 }
 
 /** input type for updating data in table "flags" */
@@ -5525,7 +5357,7 @@ export enum Flags_Update_Column {
   /** column name */
   FlagId = 'flag_id',
   /** column name */
-  FlagText = 'flag_text',
+  FlagText = 'flag_text'
 }
 
 export type Flags_Updates = {
@@ -5659,7 +5491,7 @@ export enum Listings_Constraint {
   /** unique or primary key constraint on columns "crn", "season_code" */
   IdxSeasonCodeCrnUnique = 'idx_season_code_crn_unique',
   /** unique or primary key constraint on columns "listing_id" */
-  PkListingsStaged = 'pk_listings_staged',
+  PkListingsStaged = 'pk_listings_staged'
 }
 
 /** input type for incrementing numeric columns in table "listings" */
@@ -5796,7 +5628,7 @@ export enum Listings_Select_Column {
   /** column name */
   Section = 'section',
   /** column name */
-  Subject = 'subject',
+  Subject = 'subject'
 }
 
 /** input type for updating data in table "listings" */
@@ -5910,7 +5742,7 @@ export enum Listings_Update_Column {
   /** column name */
   Section = 'section',
   /** column name */
-  Subject = 'subject',
+  Subject = 'subject'
 }
 
 export type Listings_Updates = {
@@ -5965,7 +5797,7 @@ export enum Order_By {
   /** in descending order, nulls first */
   DescNullsFirst = 'desc_nulls_first',
   /** in descending order, nulls last */
-  DescNullsLast = 'desc_nulls_last',
+  DescNullsLast = 'desc_nulls_last'
 }
 
 /** Boolean expression to filter rows from the table "professors". All fields are combined with a logical 'AND'. */
@@ -5985,7 +5817,7 @@ export type Professors_Bool_Exp = {
 /** unique or primary key constraints on table "professors" */
 export enum Professors_Constraint {
   /** unique or primary key constraint on columns "professor_id" */
-  PkProfessorsStaged = 'pk_professors_staged',
+  PkProfessorsStaged = 'pk_professors_staged'
 }
 
 /** input type for incrementing numeric columns in table "professors" */
@@ -6060,7 +5892,7 @@ export enum Professors_Select_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  ProfessorId = 'professor_id',
+  ProfessorId = 'professor_id'
 }
 
 /** input type for updating data in table "professors" */
@@ -6116,7 +5948,7 @@ export enum Professors_Update_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  ProfessorId = 'professor_id',
+  ProfessorId = 'professor_id'
 }
 
 export type Professors_Updates = {
@@ -6147,7 +5979,7 @@ export type Seasons_Bool_Exp = {
 /** unique or primary key constraints on table "seasons" */
 export enum Seasons_Constraint {
   /** unique or primary key constraint on columns "season_code" */
-  PkSeasonsStaged = 'pk_seasons_staged',
+  PkSeasonsStaged = 'pk_seasons_staged'
 }
 
 /** input type for incrementing numeric columns in table "seasons" */
@@ -6206,7 +6038,7 @@ export enum Seasons_Select_Column {
   /** column name */
   Term = 'term',
   /** column name */
-  Year = 'year',
+  Year = 'year'
 }
 
 /** input type for updating data in table "seasons" */
@@ -6244,7 +6076,7 @@ export enum Seasons_Update_Column {
   /** column name */
   Term = 'term',
   /** column name */
-  Year = 'year',
+  Year = 'year'
 }
 
 export type Seasons_Updates = {
@@ -6256,54 +6088,11 @@ export type Seasons_Updates = {
   where: Seasons_Bool_Exp;
 };
 
-export type Tfidf_Similars_Aggregate_Bool_Exp = {
-  count: InputMaybe<Tfidf_Similars_Aggregate_Bool_Exp_Count>;
-};
-
-export type Tfidf_Similars_Aggregate_Bool_Exp_Count = {
-  arguments: InputMaybe<Array<Tfidf_Similars_Select_Column>>;
-  distinct: InputMaybe<Scalars['Boolean']['input']>;
-  filter: InputMaybe<Tfidf_Similars_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** order by aggregate values of table "tfidf_similars" */
-export type Tfidf_Similars_Aggregate_Order_By = {
-  avg: InputMaybe<Tfidf_Similars_Avg_Order_By>;
-  count: InputMaybe<Order_By>;
-  max: InputMaybe<Tfidf_Similars_Max_Order_By>;
-  min: InputMaybe<Tfidf_Similars_Min_Order_By>;
-  stddev: InputMaybe<Tfidf_Similars_Stddev_Order_By>;
-  stddev_pop: InputMaybe<Tfidf_Similars_Stddev_Pop_Order_By>;
-  stddev_samp: InputMaybe<Tfidf_Similars_Stddev_Samp_Order_By>;
-  sum: InputMaybe<Tfidf_Similars_Sum_Order_By>;
-  var_pop: InputMaybe<Tfidf_Similars_Var_Pop_Order_By>;
-  var_samp: InputMaybe<Tfidf_Similars_Var_Samp_Order_By>;
-  variance: InputMaybe<Tfidf_Similars_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "tfidf_similars" */
-export type Tfidf_Similars_Arr_Rel_Insert_Input = {
-  data: Array<Tfidf_Similars_Insert_Input>;
-  /** upsert condition */
-  on_conflict: InputMaybe<Tfidf_Similars_On_Conflict>;
-};
-
-/** order by avg() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Avg_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "tfidf_similars". All fields are combined with a logical 'AND'. */
 export type Tfidf_Similars_Bool_Exp = {
   _and: InputMaybe<Array<Tfidf_Similars_Bool_Exp>>;
   _not: InputMaybe<Tfidf_Similars_Bool_Exp>;
   _or: InputMaybe<Array<Tfidf_Similars_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
-  courseByTarget: InputMaybe<Courses_Bool_Exp>;
   rank: InputMaybe<Int_Comparison_Exp>;
   source: InputMaybe<Int_Comparison_Exp>;
   target: InputMaybe<Int_Comparison_Exp>;
@@ -6312,7 +6101,7 @@ export type Tfidf_Similars_Bool_Exp = {
 /** unique or primary key constraints on table "tfidf_similars" */
 export enum Tfidf_Similars_Constraint {
   /** unique or primary key constraint on columns "target", "source" */
-  PkTfidfSimilarsStaged = 'pk_tfidf_similars_staged',
+  PkTfidfSimilars = 'pk_tfidf_similars'
 }
 
 /** input type for incrementing numeric columns in table "tfidf_similars" */
@@ -6325,28 +6114,10 @@ export type Tfidf_Similars_Inc_Input = {
 
 /** input type for inserting data into table "tfidf_similars" */
 export type Tfidf_Similars_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  courseByTarget: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   /** Target course similarity rank relative to all targets of a source */
   rank: InputMaybe<Scalars['Int']['input']>;
   source: InputMaybe<Scalars['Int']['input']>;
   target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by max() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Max_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Min_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
 };
 
 /** on_conflict condition type for table "tfidf_similars" */
@@ -6358,8 +6129,6 @@ export type Tfidf_Similars_On_Conflict = {
 
 /** Ordering options when selecting data from "tfidf_similars". */
 export type Tfidf_Similars_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
-  courseByTarget: InputMaybe<Courses_Order_By>;
   rank: InputMaybe<Order_By>;
   source: InputMaybe<Order_By>;
   target: InputMaybe<Order_By>;
@@ -6378,7 +6147,7 @@ export enum Tfidf_Similars_Select_Column {
   /** column name */
   Source = 'source',
   /** column name */
-  Target = 'target',
+  Target = 'target'
 }
 
 /** input type for updating data in table "tfidf_similars" */
@@ -6387,30 +6156,6 @@ export type Tfidf_Similars_Set_Input = {
   rank: InputMaybe<Scalars['Int']['input']>;
   source: InputMaybe<Scalars['Int']['input']>;
   target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by stddev() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Stddev_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_pop() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Stddev_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_samp() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Stddev_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "tfidf_similars" */
@@ -6429,14 +6174,6 @@ export type Tfidf_Similars_Stream_Cursor_Value_Input = {
   target: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** order by sum() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Sum_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
 /** update columns of table "tfidf_similars" */
 export enum Tfidf_Similars_Update_Column {
   /** column name */
@@ -6444,7 +6181,7 @@ export enum Tfidf_Similars_Update_Column {
   /** column name */
   Source = 'source',
   /** column name */
-  Target = 'target',
+  Target = 'target'
 }
 
 export type Tfidf_Similars_Updates = {
@@ -6456,178 +6193,299 @@ export type Tfidf_Similars_Updates = {
   where: Tfidf_Similars_Bool_Exp;
 };
 
-/** order by var_pop() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Var_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by var_samp() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Var_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by variance() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Variance_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
 export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   same_course_id: Scalars['Int']['input'];
-  professor_ids: InputMaybe<
-    Array<Scalars['String']['input']> | Scalars['String']['input']
-  >;
+  professor_ids: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
-export type SameCourseOrProfOfferingsQuery = {
-  __typename?: 'query_root';
-  computed_listing_info: Array<
-    {
-      __typename?: 'computed_listing_info';
-      professor_info: any;
-      course: {
-        __typename?: 'courses';
-        evaluation_statistic: {
-          __typename?: 'evaluation_statistics';
-          avg_workload: number | null;
-          avg_rating: number | null;
-        } | null;
-      };
-    } & ListingFragment
-  >;
-};
+
+export type SameCourseOrProfOfferingsQuery = { __typename?: 'query_root', computed_listing_info: Array<(
+    { __typename?: 'computed_listing_info', professor_info: any, course: { __typename?: 'courses', evaluation_statistic: { __typename?: 'evaluation_statistics', avg_workload: number | null, avg_rating: number | null } | null } }
+    & ListingFragment
+  )> };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code: InputMaybe<Scalars['String']['input']>;
   crn: InputMaybe<Scalars['Int']['input']>;
 }>;
 
-export type SearchEvaluationNarrativesQuery = {
-  __typename?: 'query_root';
-  computed_listing_info: Array<{
-    __typename?: 'computed_listing_info';
-    crn: number;
-    course: {
-      __typename?: 'courses';
-      evaluation_narratives_aggregate: {
-        __typename?: 'evaluation_narratives_aggregate';
-        nodes: Array<{
-          __typename?: 'evaluation_narratives';
-          comment: string | null;
-          evaluation_question: {
-            __typename?: 'evaluation_questions';
-            question_text: string | null;
-          };
-        }>;
-      };
-      evaluation_ratings: Array<{
-        __typename?: 'evaluation_ratings';
-        rating: any | null;
-        evaluation_question: {
-          __typename?: 'evaluation_questions';
-          question_text: string | null;
-        };
-      }>;
-    };
-  }>;
-};
+
+export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn: number, course: { __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment: string | null, evaluation_question: { __typename?: 'evaluation_questions', question_text: string | null } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating: any | null, evaluation_question: { __typename?: 'evaluation_questions', question_text: string | null } }> } }> };
 
 export type CatalogBySeasonQueryVariables = Exact<{
   season: Scalars['String']['input'];
 }>;
 
-export type CatalogBySeasonQuery = {
-  __typename?: 'query_root';
-  computed_listing_info: Array<
-    { __typename?: 'computed_listing_info' } & ListingFragment
-  >;
-};
+
+export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<(
+    { __typename?: 'computed_listing_info' }
+    & ListingFragment
+  )> };
+
+export type ListingFragment = { __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: number | null, average_professor: number | null, average_rating: number | null, average_workload: number | null, average_rating_same_professors: number | null, average_workload_same_professors: number | null, classnotes: string | null, course_code: string, credits: number | null, crn: number, description: string | null, enrolled: number | null, extra_info: string, final_exam: string | null, flag_info: any, fysem: boolean | null, last_enrollment: number | null, last_enrollment_same_professors: boolean | null, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_names: any, regnotes: string | null, requirements: string | null, rp_attr: string | null, same_course_id: number, same_course_and_profs_id: number, last_offered_course_id: number | null, school: string | null, season_code: string, section: string, skills: any, subject: string, syllabus_url: string | null, times_by_day: any, times_summary: string, title: string };
 
 export type CatalogBySeasonNoRatingsQueryVariables = Exact<{
   season: Scalars['String']['input'];
 }>;
 
-export type CatalogBySeasonNoRatingsQuery = {
-  __typename?: 'query_root';
-  computed_listing_info: Array<
-    { __typename?: 'computed_listing_info' } & ListingFragment
-  >;
-};
 
-export type ListingFragment = {
-  __typename?: 'computed_listing_info';
-  all_course_codes: any;
-  areas: any;
-  average_gut_rating: number | null;
-  average_professor: number | null;
-  average_rating: number | null;
-  average_workload: number | null;
-  average_rating_same_professors: number | null;
-  average_workload_same_professors: number | null;
-  classnotes: string | null;
-  course_code: string;
-  credits: number | null;
-  crn: number;
-  description: string | null;
-  enrolled: number | null;
-  extra_info: string;
-  final_exam: string | null;
-  flag_info: any;
-  fysem: boolean | null;
-  last_enrollment: number | null;
-  last_enrollment_same_professors: boolean | null;
-  listing_id: number;
-  locations_summary: string;
-  number: string;
-  professor_ids: any;
-  professor_names: any;
-  regnotes: string | null;
-  requirements: string | null;
-  rp_attr: string | null;
-  same_course_id: number;
-  same_course_and_profs_id: number;
-  last_offered_course_id: number | null;
-  school: string | null;
-  season_code: string;
-  section: string;
-  skills: any;
-  subject: string;
-  syllabus_url: string | null;
-  times_by_day: any;
-  times_summary: string;
-  title: string;
-};
+export type CatalogBySeasonNoRatingsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, classnotes: string | null, course_code: string, credits: number | null, crn: number, description: string | null, extra_info: string, final_exam: string | null, flag_info: any, fysem: boolean | null, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_names: any, regnotes: string | null, requirements: string | null, rp_attr: string | null, same_course_id: number, same_course_and_profs_id: number, last_offered_course_id: number | null, school: string | null, season_code: string, section: string, skills: any, subject: string, syllabus_url: string | null, times_by_day: any, times_summary: string, title: string }> };
+
+export type SameCourseOrProfOfferingsPublicQueryVariables = Exact<{
+  same_course_id: Scalars['Int']['input'];
+  professor_ids: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type SameCourseOrProfOfferingsPublicQuery = { __typename?: 'query_root', computed_listing_info: Array<(
+    { __typename?: 'computed_listing_info', professor_info: any, course: { __typename?: 'courses', title: string | null } }
+    & ListingPublicFragment
+  )> };
+
+export type ListingPublicFragment = { __typename?: 'computed_listing_info', all_course_codes: any, areas: any, classnotes: string | null, course_code: string, credits: number | null, crn: number, description: string | null, extra_info: string, final_exam: string | null, flag_info: any, fysem: boolean | null, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_names: any, regnotes: string | null, requirements: string | null, rp_attr: string | null, same_course_id: number, same_course_and_profs_id: number, last_offered_course_id: number | null, school: string | null, season_code: string, section: string, skills: any, subject: string, syllabus_url: string | null, times_by_day: any, times_summary: string, title: string };
 
 export const ListingFragmentDoc = gql`
-  fragment Listing on computed_listing_info {
+    fragment Listing on computed_listing_info {
+  all_course_codes
+  areas
+  average_gut_rating
+  average_professor
+  average_rating
+  average_workload
+  average_rating_same_professors
+  average_workload_same_professors
+  classnotes
+  course_code
+  credits
+  crn
+  description
+  enrolled
+  extra_info
+  final_exam
+  flag_info
+  fysem
+  last_enrollment
+  last_enrollment_same_professors
+  listing_id
+  locations_summary
+  number
+  professor_ids
+  professor_names
+  regnotes
+  requirements
+  rp_attr
+  same_course_id
+  same_course_and_profs_id
+  last_offered_course_id
+  school
+  season_code
+  section
+  skills
+  subject
+  syllabus_url
+  times_by_day
+  times_summary
+  title
+}
+    `;
+export const ListingPublicFragmentDoc = gql`
+    fragment ListingPublic on computed_listing_info {
+  all_course_codes
+  areas
+  classnotes
+  course_code
+  credits
+  crn
+  description
+  extra_info
+  final_exam
+  flag_info
+  fysem
+  listing_id
+  locations_summary
+  number
+  professor_ids
+  professor_names
+  regnotes
+  requirements
+  rp_attr
+  same_course_id
+  same_course_and_profs_id
+  last_offered_course_id
+  school
+  season_code
+  section
+  skills
+  subject
+  syllabus_url
+  times_by_day
+  times_summary
+  title
+}
+    `;
+export const SameCourseOrProfOfferingsDocument = gql`
+    query SameCourseOrProfOfferings($same_course_id: Int!, $professor_ids: [String!]) {
+  computed_listing_info(
+    where: {_or: [{same_course_id: {_eq: $same_course_id}}, {professor_ids: {_has_keys_any: $professor_ids}}]}
+  ) {
+    course {
+      evaluation_statistic {
+        avg_workload
+        avg_rating
+      }
+    }
+    professor_info
+    ...Listing
+  }
+}
+    ${ListingFragmentDoc}`;
+
+/**
+ * __useSameCourseOrProfOfferingsQuery__
+ *
+ * To run a query within a React component, call `useSameCourseOrProfOfferingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSameCourseOrProfOfferingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
+ *   variables: {
+ *      same_course_id: // value for 'same_course_id'
+ *      professor_ids: // value for 'professor_ids'
+ *   },
+ * });
+ */
+export function useSameCourseOrProfOfferingsQuery(baseOptions: Apollo.QueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>(SameCourseOrProfOfferingsDocument, options);
+      }
+export function useSameCourseOrProfOfferingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>(SameCourseOrProfOfferingsDocument, options);
+        }
+export function useSameCourseOrProfOfferingsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>(SameCourseOrProfOfferingsDocument, options);
+        }
+export type SameCourseOrProfOfferingsQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsQuery>;
+export type SameCourseOrProfOfferingsLazyQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsLazyQuery>;
+export type SameCourseOrProfOfferingsSuspenseQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsSuspenseQuery>;
+export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>;
+export const SearchEvaluationNarrativesDocument = gql`
+    query SearchEvaluationNarratives($season_code: String, $crn: Int) {
+  computed_listing_info(
+    where: {season_code: {_eq: $season_code}, crn: {_eq: $crn}}
+  ) {
+    crn
+    course {
+      evaluation_narratives_aggregate {
+        nodes {
+          comment
+          evaluation_question {
+            question_text
+          }
+        }
+      }
+      evaluation_ratings {
+        rating
+        evaluation_question {
+          question_text
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchEvaluationNarrativesQuery__
+ *
+ * To run a query within a React component, call `useSearchEvaluationNarrativesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchEvaluationNarrativesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchEvaluationNarrativesQuery({
+ *   variables: {
+ *      season_code: // value for 'season_code'
+ *      crn: // value for 'crn'
+ *   },
+ * });
+ */
+export function useSearchEvaluationNarrativesQuery(baseOptions?: Apollo.QueryHookOptions<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>(SearchEvaluationNarrativesDocument, options);
+      }
+export function useSearchEvaluationNarrativesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>(SearchEvaluationNarrativesDocument, options);
+        }
+export function useSearchEvaluationNarrativesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>(SearchEvaluationNarrativesDocument, options);
+        }
+export type SearchEvaluationNarrativesQueryHookResult = ReturnType<typeof useSearchEvaluationNarrativesQuery>;
+export type SearchEvaluationNarrativesLazyQueryHookResult = ReturnType<typeof useSearchEvaluationNarrativesLazyQuery>;
+export type SearchEvaluationNarrativesSuspenseQueryHookResult = ReturnType<typeof useSearchEvaluationNarrativesSuspenseQuery>;
+export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>;
+export const CatalogBySeasonDocument = gql`
+    query catalogBySeason($season: String!) {
+  computed_listing_info(where: {season_code: {_eq: $season}}) {
+    ...Listing
+  }
+}
+    ${ListingFragmentDoc}`;
+
+/**
+ * __useCatalogBySeasonQuery__
+ *
+ * To run a query within a React component, call `useCatalogBySeasonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogBySeasonQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useCatalogBySeasonQuery(baseOptions: Apollo.QueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, options);
+      }
+export function useCatalogBySeasonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, options);
+        }
+export function useCatalogBySeasonSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, options);
+        }
+export type CatalogBySeasonQueryHookResult = ReturnType<typeof useCatalogBySeasonQuery>;
+export type CatalogBySeasonLazyQueryHookResult = ReturnType<typeof useCatalogBySeasonLazyQuery>;
+export type CatalogBySeasonSuspenseQueryHookResult = ReturnType<typeof useCatalogBySeasonSuspenseQuery>;
+export type CatalogBySeasonQueryResult = Apollo.QueryResult<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>;
+export const CatalogBySeasonNoRatingsDocument = gql`
+    query catalogBySeasonNoRatings($season: String!) {
+  computed_listing_info(where: {season_code: {_eq: $season}}) {
     all_course_codes
     areas
-    average_gut_rating
-    average_professor
-    average_rating
-    average_workload
-    average_rating_same_professors
-    average_workload_same_professors
     classnotes
     course_code
     credits
     crn
     description
-    enrolled
     extra_info
     final_exam
     flag_info
     fysem
-    last_enrollment
-    last_enrollment_same_professors
     listing_id
     locations_summary
     number
@@ -6649,338 +6507,85 @@ export const ListingFragmentDoc = gql`
     times_summary
     title
   }
-`;
-export const SameCourseOrProfOfferingsDocument = gql`
-  query SameCourseOrProfOfferings(
-    $same_course_id: Int!
-    $professor_ids: [String!]
-  ) {
-    computed_listing_info(
-      where: {
-        _or: [
-          { same_course_id: { _eq: $same_course_id } }
-          { professor_ids: { _has_keys_any: $professor_ids } }
-        ]
-      }
-    ) {
-      course {
-        evaluation_statistic {
-          avg_workload
-          avg_rating
-        }
-      }
-      professor_info
-      ...Listing
-    }
-  }
-  ${ListingFragmentDoc}
-`;
+}
+    `;
 
 /**
- * __useSameCourseOrProfOfferingsQuery__
+ * __useCatalogBySeasonNoRatingsQuery__
  *
- * To run a query within a React component, call `useSameCourseOrProfOfferingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSameCourseOrProfOfferingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCatalogBySeasonNoRatingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogBySeasonNoRatingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
+ * const { data, loading, error } = useCatalogBySeasonNoRatingsQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useCatalogBySeasonNoRatingsQuery(baseOptions: Apollo.QueryHookOptions<CatalogBySeasonNoRatingsQuery, CatalogBySeasonNoRatingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CatalogBySeasonNoRatingsQuery, CatalogBySeasonNoRatingsQueryVariables>(CatalogBySeasonNoRatingsDocument, options);
+      }
+export function useCatalogBySeasonNoRatingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogBySeasonNoRatingsQuery, CatalogBySeasonNoRatingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CatalogBySeasonNoRatingsQuery, CatalogBySeasonNoRatingsQueryVariables>(CatalogBySeasonNoRatingsDocument, options);
+        }
+export function useCatalogBySeasonNoRatingsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CatalogBySeasonNoRatingsQuery, CatalogBySeasonNoRatingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CatalogBySeasonNoRatingsQuery, CatalogBySeasonNoRatingsQueryVariables>(CatalogBySeasonNoRatingsDocument, options);
+        }
+export type CatalogBySeasonNoRatingsQueryHookResult = ReturnType<typeof useCatalogBySeasonNoRatingsQuery>;
+export type CatalogBySeasonNoRatingsLazyQueryHookResult = ReturnType<typeof useCatalogBySeasonNoRatingsLazyQuery>;
+export type CatalogBySeasonNoRatingsSuspenseQueryHookResult = ReturnType<typeof useCatalogBySeasonNoRatingsSuspenseQuery>;
+export type CatalogBySeasonNoRatingsQueryResult = Apollo.QueryResult<CatalogBySeasonNoRatingsQuery, CatalogBySeasonNoRatingsQueryVariables>;
+export const SameCourseOrProfOfferingsPublicDocument = gql`
+    query SameCourseOrProfOfferingsPublic($same_course_id: Int!, $professor_ids: [String!]) {
+  computed_listing_info(
+    where: {_or: [{same_course_id: {_eq: $same_course_id}}, {professor_ids: {_has_keys_any: $professor_ids}}]}
+  ) {
+    course {
+      title
+    }
+    professor_info
+    ...ListingPublic
+  }
+}
+    ${ListingPublicFragmentDoc}`;
+
+/**
+ * __useSameCourseOrProfOfferingsPublicQuery__
+ *
+ * To run a query within a React component, call `useSameCourseOrProfOfferingsPublicQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSameCourseOrProfOfferingsPublicQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSameCourseOrProfOfferingsPublicQuery({
  *   variables: {
  *      same_course_id: // value for 'same_course_id'
  *      professor_ids: // value for 'professor_ids'
  *   },
  * });
  */
-export function useSameCourseOrProfOfferingsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
-}
-export function useSameCourseOrProfOfferingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
-}
-export function useSameCourseOrProfOfferingsSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
-}
-export type SameCourseOrProfOfferingsQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsQuery
->;
-export type SameCourseOrProfOfferingsLazyQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsLazyQuery
->;
-export type SameCourseOrProfOfferingsSuspenseQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsSuspenseQuery
->;
-export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<
-  SameCourseOrProfOfferingsQuery,
-  SameCourseOrProfOfferingsQueryVariables
->;
-export const SearchEvaluationNarrativesDocument = gql`
-  query SearchEvaluationNarratives($season_code: String, $crn: Int) {
-    computed_listing_info(
-      where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
-    ) {
-      crn
-      course {
-        evaluation_narratives_aggregate {
-          nodes {
-            comment
-            evaluation_question {
-              question_text
-            }
-          }
-        }
-        evaluation_ratings {
-          rating
-          evaluation_question {
-            question_text
-          }
-        }
+export function useSameCourseOrProfOfferingsPublicQuery(baseOptions: Apollo.QueryHookOptions<SameCourseOrProfOfferingsPublicQuery, SameCourseOrProfOfferingsPublicQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SameCourseOrProfOfferingsPublicQuery, SameCourseOrProfOfferingsPublicQueryVariables>(SameCourseOrProfOfferingsPublicDocument, options);
       }
-    }
-  }
-`;
-
-/**
- * __useSearchEvaluationNarrativesQuery__
- *
- * To run a query within a React component, call `useSearchEvaluationNarrativesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchEvaluationNarrativesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchEvaluationNarrativesQuery({
- *   variables: {
- *      season_code: // value for 'season_code'
- *      crn: // value for 'crn'
- *   },
- * });
- */
-export function useSearchEvaluationNarrativesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >(SearchEvaluationNarrativesDocument, options);
-}
-export function useSearchEvaluationNarrativesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >(SearchEvaluationNarrativesDocument, options);
-}
-export function useSearchEvaluationNarrativesSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >(SearchEvaluationNarrativesDocument, options);
-}
-export type SearchEvaluationNarrativesQueryHookResult = ReturnType<
-  typeof useSearchEvaluationNarrativesQuery
->;
-export type SearchEvaluationNarrativesLazyQueryHookResult = ReturnType<
-  typeof useSearchEvaluationNarrativesLazyQuery
->;
-export type SearchEvaluationNarrativesSuspenseQueryHookResult = ReturnType<
-  typeof useSearchEvaluationNarrativesSuspenseQuery
->;
-export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
-  SearchEvaluationNarrativesQuery,
-  SearchEvaluationNarrativesQueryVariables
->;
-export const CatalogBySeasonDocument = gql`
-  query catalogBySeason($season: String!) {
-    computed_listing_info(where: { season_code: { _eq: $season } }) {
-      ...Listing
-    }
-  }
-  ${ListingFragmentDoc}
-`;
-
-/**
- * __useCatalogBySeasonQuery__
- *
- * To run a query within a React component, call `useCatalogBySeasonQuery` and pass it any options that fit your needs.
- * When your component renders, `useCatalogBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCatalogBySeasonQuery({
- *   variables: {
- *      season: // value for 'season'
- *   },
- * });
- */
-export function useCatalogBySeasonQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    CatalogBySeasonQuery,
-    CatalogBySeasonQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(
-    CatalogBySeasonDocument,
-    options,
-  );
-}
-export function useCatalogBySeasonLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    CatalogBySeasonQuery,
-    CatalogBySeasonQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    CatalogBySeasonQuery,
-    CatalogBySeasonQueryVariables
-  >(CatalogBySeasonDocument, options);
-}
-export function useCatalogBySeasonSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    CatalogBySeasonQuery,
-    CatalogBySeasonQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    CatalogBySeasonQuery,
-    CatalogBySeasonQueryVariables
-  >(CatalogBySeasonDocument, options);
-}
-export type CatalogBySeasonQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonQuery
->;
-export type CatalogBySeasonLazyQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonLazyQuery
->;
-export type CatalogBySeasonSuspenseQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonSuspenseQuery
->;
-export type CatalogBySeasonQueryResult = Apollo.QueryResult<
-  CatalogBySeasonQuery,
-  CatalogBySeasonQueryVariables
->;
-
-export const catalogBySeasonNoRatingsQuery = gql`
-  query catalogBySeasonNoRatings($season: String!) {
-    computed_listing_info(where: { season_code: { _eq: $season } }) {
-      all_course_codes
-      areas
-      classnotes
-      course_code
-      credits
-      crn
-      description
-      extra_info
-      final_exam
-      flag_info
-      fysem
-      listing_id
-      locations_summary
-      number
-      professor_ids
-      professor_names
-      regnotes
-      requirements
-      rp_attr
-      same_course_id
-      same_course_and_profs_id
-      last_offered_course_id
-      school
-      season_code
-      section
-      skills
-      subject
-      syllabus_url
-      times_by_day
-      times_summary
-      title
-      # Omit any fields related to evaluations or ratings
-    }
-  }
-`;
-
-// similar to above but for no auth
-export function useCatalogBySeasonNoRatingsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
-  >,
-) {
-  return Apollo.useQuery<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
-  >(catalogBySeasonNoRatingsQuery, baseOptions);
-}
-
-export function useCatalogBySeasonNoRatingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
-  >,
-) {
-  return Apollo.useLazyQuery<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
-  >(catalogBySeasonNoRatingsQuery, baseOptions);
-}
-
-// Types for query results
-export type CatalogBySeasonNoRatingsQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonNoRatingsQuery
->;
-export type CatalogBySeasonNoRatingsLazyQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonNoRatingsLazyQuery
->;
-export type CatalogBySeasonNoRatingsQueryResult = Apollo.QueryResult<
-  CatalogBySeasonNoRatingsQuery,
-  CatalogBySeasonNoRatingsQueryVariables
->;
+export function useSameCourseOrProfOfferingsPublicLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SameCourseOrProfOfferingsPublicQuery, SameCourseOrProfOfferingsPublicQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SameCourseOrProfOfferingsPublicQuery, SameCourseOrProfOfferingsPublicQueryVariables>(SameCourseOrProfOfferingsPublicDocument, options);
+        }
+export function useSameCourseOrProfOfferingsPublicSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SameCourseOrProfOfferingsPublicQuery, SameCourseOrProfOfferingsPublicQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SameCourseOrProfOfferingsPublicQuery, SameCourseOrProfOfferingsPublicQueryVariables>(SameCourseOrProfOfferingsPublicDocument, options);
+        }
+export type SameCourseOrProfOfferingsPublicQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsPublicQuery>;
+export type SameCourseOrProfOfferingsPublicLazyQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsPublicLazyQuery>;
+export type SameCourseOrProfOfferingsPublicSuspenseQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsPublicSuspenseQuery>;
+export type SameCourseOrProfOfferingsPublicQueryResult = Apollo.QueryResult<SameCourseOrProfOfferingsPublicQuery, SameCourseOrProfOfferingsPublicQueryVariables>;
