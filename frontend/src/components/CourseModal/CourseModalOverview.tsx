@@ -164,7 +164,7 @@ function CourseModalOverview({
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   useEffect(() => {
-    // better way to do auth?
+    // Better way to do auth?
     const init = async () => {
       const authStatus = await checkAuth();
       setIsAuthenticated(authStatus);
