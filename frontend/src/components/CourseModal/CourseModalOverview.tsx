@@ -39,7 +39,7 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
   useSameCourseOrProfOfferingsPublicQuery,
-  //type SameCourseOrProfOfferingsPublicQuery, guess we don't use
+  // Type SameCourseOrProfOfferingsPublicQuery, guess we don't use
 } from '../../generated/graphql';
 import {
   weekdays,
@@ -80,7 +80,8 @@ type RelatedListingInfo = Omit<
   >,
   'professor_info'
 > & {
-  professor_info: {
+  professor_info?: {
+    // For public may not have prof info
     average_rating: number;
     email: string;
     name: string;
@@ -210,19 +211,36 @@ function CourseModalOverview({
       times.get(timespan)!.add(day);
     }
   }
-  const { loading, error, data } = isAuthenticated
-    ? useSameCourseOrProfOfferingsQuery({
-        variables: {
-          same_course_id: listing.same_course_id,
-          professor_ids: listing.professor_ids,
-        },
-      })
-    : useSameCourseOrProfOfferingsPublicQuery({
-        variables: {
-          same_course_id: listing.same_course_id,
-          professor_ids: listing.professor_ids,
-        },
-      });
+  // Need to do this bc can't condtionally call react hooks but maybe a better way
+  const {
+    data: dataPrivate,
+    loading: loadingPrivate,
+    error: errorPrivate,
+  } = useSameCourseOrProfOfferingsQuery({
+    skip: !isAuthenticated, // Skip this query if not authenticated
+    variables: {
+      same_course_id: listing.same_course_id,
+      professor_ids: listing.professor_ids,
+    },
+  });
+
+  const {
+    data: dataPublic,
+    loading: loadingPublic,
+    error: errorPublic,
+  } = useSameCourseOrProfOfferingsPublicQuery({
+    skip: isAuthenticated, // Skip this query if authenticated
+    variables: {
+      same_course_id: listing.same_course_id,
+      professor_ids: listing.professor_ids,
+    },
+  });
+
+  // Then decide what data to use here
+
+  const data = isAuthenticated ? dataPrivate : dataPublic;
+  const loading = isAuthenticated ? loadingPrivate : loadingPublic;
+  const error = isAuthenticated ? errorPrivate : errorPublic;
 
   // Holds Prof information for popover
   const profInfo = useMemo(() => {

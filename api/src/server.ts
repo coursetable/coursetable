@@ -130,7 +130,7 @@ app.use(
     pathRewrite: { '^/ferry/': '/' },
     ws: true,
     xfwd: true,
-    onProxyReq(proxyReq, req, _) {
+    onProxyReq(proxyReq, req) {
       const hasuraRole = req.headers['X-Hasura-Role'] || 'anonymous'; // Default to 'anonymous'
       proxyReq.setHeader('X-Hasura-Role', hasuraRole);
     },
