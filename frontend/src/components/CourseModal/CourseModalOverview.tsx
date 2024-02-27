@@ -39,7 +39,7 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
   useSameCourseOrProfOfferingsPublicQuery,
-  type SameCourseOrProfOfferingsPublicQuery
+  type SameCourseOrProfOfferingsPublicQuery,
 } from '../../generated/graphql';
 import {
   weekdays,
@@ -48,8 +48,7 @@ import {
   type Listing,
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
-import { checkAuth } from '../../utilities/api'; 
-
+import { checkAuth } from '../../utilities/api';
 
 // Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -164,7 +163,8 @@ function CourseModalOverview({
   readonly listing: Listing;
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  useEffect(() => { // better way to do auth?
+  useEffect(() => {
+    // better way to do auth?
     const init = async () => {
       const authStatus = await checkAuth();
       setIsAuthenticated(authStatus);
@@ -211,18 +211,18 @@ function CourseModalOverview({
     }
   }
   const { loading, error, data } = isAuthenticated
-  ? useSameCourseOrProfOfferingsQuery({
-      variables: {
-        same_course_id: listing.same_course_id,
-        professor_ids: listing.professor_ids,
-      },
-    })
-  : useSameCourseOrProfOfferingsPublicQuery({
-      variables: {
-        same_course_id: listing.same_course_id,
-        professor_ids: listing.professor_ids,
-      },
-    });
+    ? useSameCourseOrProfOfferingsQuery({
+        variables: {
+          same_course_id: listing.same_course_id,
+          professor_ids: listing.professor_ids,
+        },
+      })
+    : useSameCourseOrProfOfferingsPublicQuery({
+        variables: {
+          same_course_id: listing.same_course_id,
+          professor_ids: listing.professor_ids,
+        },
+      });
 
   // Holds Prof information for popover
   const profInfo = useMemo(() => {
@@ -246,6 +246,7 @@ function CourseModalOverview({
     for (const season of data.computed_listing_info as RelatedListingInfo[]) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
+      if (!season.professor_info) continue;
       season.professor_info.forEach((prof) => {
         if (profInfo.has(prof.name)) {
           const dict = profInfo.get(prof.name)!;
@@ -299,11 +300,12 @@ function CourseModalOverview({
       // Discussion sections have no ratings, nothing to show
       .filter((course) => !isDiscussionSection(course))
       .map((course): CourseOffering => {
-        const averageProfessorRating =
-          course.professor_info.reduce(
-            (sum, prof) => sum + (prof.average_rating || 0),
-            0,
-          ) / course.professor_info.length;
+        const averageProfessorRating = course.professor_info
+          ? course.professor_info.reduce(
+              (sum, prof) => sum + (prof.average_rating || 0),
+              0,
+            ) / course.professor_info.length
+          : null;
         return {
           rating: course.course.evaluation_statistic?.avg_rating || null,
           workload: course.course.evaluation_statistic?.avg_workload || null,

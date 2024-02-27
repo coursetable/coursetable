@@ -116,20 +116,26 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 app.use((req, res, next) => {
-  req.headers['X-Hasura-Role'] = req.isAuthenticated() ? 'student' : 'anonymous';
-  console.log("Forwarding role:", req.headers['X-Hasura-Role']);
+  req.headers['X-Hasura-Role'] = req.isAuthenticated()
+    ? 'student'
+    : 'anonymous';
+  console.log('Forwarding role:', req.headers['X-Hasura-Role']);
   next();
 });
 
-app.use('/ferry', createProxyMiddleware({
-  target: 'http://graphql-engine:8080',
-  pathRewrite: { '^/ferry/': '/' },
-  ws: true,
-  xfwd: true,
-  onProxyReq: (proxyReq, req, _) => {
-    const hasuraRole = req.headers['X-Hasura-Role'] || 'anonymous'; // default to 'anonymous'
-    proxyReq.setHeader('X-Hasura-Role', hasuraRole);  },
-}));
+app.use(
+  '/ferry',
+  createProxyMiddleware({
+    target: 'http://graphql-engine:8080',
+    pathRewrite: { '^/ferry/': '/' },
+    ws: true,
+    xfwd: true,
+    onProxyReq: (proxyReq, req, _) => {
+      const hasuraRole = req.headers['X-Hasura-Role'] || 'anonymous'; // default to 'anonymous'
+      proxyReq.setHeader('X-Hasura-Role', hasuraRole);
+    },
+  }),
+);
 // Enable request logging.
 app.use(morgan);
 

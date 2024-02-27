@@ -424,7 +424,9 @@ export async function removeFriend(friendNetId: string, isRequest: boolean) {
       throw new Error(data.error ?? res.statusText);
     }
     toast.info(
-      `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
+      `${
+        isRequest ? 'Declined request from' : 'Removed friend'
+      } ${friendNetId}`,
     );
   } catch (err) {
     Sentry.addBreadcrumb({

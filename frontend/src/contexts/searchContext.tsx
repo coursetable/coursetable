@@ -448,7 +448,9 @@ export function SearchProvider({
           case 'number':
             return Number(listing.number.replace(/\D/gu, ''));
           case '*': {
-            const base = `${listing.subject} ${listing.number} ${listing.title} ${listing.professor_names.join(' ')}`;
+            const base = `${listing.subject} ${listing.number} ${
+              listing.title
+            } ${listing.professor_names.join(' ')}`;
             if (searchDescription.value && listing.description)
               return `${base} ${listing.description}`;
             return base;

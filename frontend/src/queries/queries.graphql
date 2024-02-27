@@ -151,8 +151,7 @@ query SameCourseOrProfOfferingsPublic(
     course {
       title
     }
-    professor_info
-    # Use the Listing fragment but ensure it does not include evaluation data
+    professor_names
     ...ListingPublic
   }
 }
