@@ -117,7 +117,7 @@ function Results({
                         numCols={numCols}
                         multiSeasons={multiSeasons}
                         key={course.season_code + course.crn}
-                        isAuthenticated={!!isAuthenticated}
+                        isAuthenticated={Boolean(isAuthenticated)}
                       />
                     ))}
                 </Row>
@@ -148,7 +148,7 @@ function Results({
                 course={data[index]!}
                 multiSeasons={multiSeasons}
                 isFirst={index === 0}
-                isAuthenticated={!!isAuthenticated}
+                isAuthenticated={Boolean(isAuthenticated)}
               />
             )}
           </FixedSizeList>

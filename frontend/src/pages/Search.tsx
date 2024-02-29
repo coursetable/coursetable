@@ -11,8 +11,9 @@ import Results from '../components/Search/Results';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useSearch } from '../contexts/searchContext';
 import './rc-slider-override.css';
-// take auth state in search
-function Search({ isAuthorized }: { isAuthorized: boolean | undefined }) {
+
+// Take auth state in search
+function Search({ isAuthorized }: { readonly isAuthorized: boolean | undefined }) {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
 

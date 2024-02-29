@@ -9,7 +9,7 @@ export const useRandomColors = (
   const generateRandomColor = (colorMap: chroma.Scale) => {
     const scale = colorMap.colors(5);
     const randomIndex = Math.floor(Math.random() * scale.length);
-    return scale[randomIndex] ?? ''; // for type
+    return scale[randomIndex] ?? ''; // For type
   };
 
   const [randomColors, setRandomColors] = useState({

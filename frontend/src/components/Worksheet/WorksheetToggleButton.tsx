@@ -109,11 +109,11 @@ function WorksheetToggleButton({
         placement="top"
         overlay={
           <Tooltip id="tooltip-disabled">
-            {'Log in to add to your worksheet'}
+            Log in to add to your worksheet
           </Tooltip>
         }
       >
-        <Button className={clsx('p-0', styles.disabledButton)} disabled={true}>
+        <Button className={clsx('p-0', styles.disabledButton)} disabled>
           <BsBookmark size={25} className={styles.disabledButtonIcon} />
         </Button>
       </OverlayTrigger>

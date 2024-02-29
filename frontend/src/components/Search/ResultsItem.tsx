@@ -87,7 +87,7 @@ function ResultsItem({
     string,
   ];
 
-  // state to store random colors
+  // State to store random colors
   const [randomColors, setRandomColors] = useState({
     overallRatingColor: '',
     workloadRatingColor: '',
@@ -109,8 +109,8 @@ function ResultsItem({
     }
   }, [isAuthenticated]);
 
-  const BlurRatingTooltip = ({ children }) => (
-    <OverlayTrigger
+  function BlurRatingTooltip({ children }) {
+  return <OverlayTrigger
       placement="top"
       overlay={
         <Tooltip>
@@ -120,7 +120,7 @@ function ResultsItem({
     >
       {children}
     </OverlayTrigger>
-  );
+}
 
   return (
     // TODO
@@ -260,7 +260,7 @@ function ResultsItem({
                     filter: 'blur(3px)',
                   }}
                 >
-                  {/* maybe put number here */}
+                  {/* Maybe put number here */}
                 </div>
               </BlurRatingTooltip>
             )}
@@ -283,7 +283,7 @@ function ResultsItem({
                     filter: 'blur(3px)',
                   }}
                 >
-                  {/* number maybe */}
+                  {/* Number maybe */}
                 </div>
               </BlurRatingTooltip>
             )}
@@ -307,7 +307,7 @@ function ResultsItem({
                       filter: 'blur(3px)',
                     }}
                   >
-                    {/* maybe put number here */}
+                    {/* Maybe put number here */}
                   </div>
                 </BlurRatingTooltip>
               )}

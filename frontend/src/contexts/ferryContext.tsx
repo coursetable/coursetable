@@ -72,7 +72,7 @@ export function FerryProvider({
       if (authStatus === 'loading') {
         const waitForAuth = new Promise<void>((resolve) => {
           const checkAuthInterval = setInterval(() => {
-            // this seems necessary but maybe a better way but disabling lint for now
+            // This seems necessary but maybe a better way but disabling lint for now
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (authStatus !== 'loading') {
               clearInterval(checkAuthInterval);

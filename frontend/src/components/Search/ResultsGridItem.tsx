@@ -30,6 +30,93 @@ import {
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
+type RatingInfo = {
+  name: 'Class' | 'Professor' | 'Workload';
+  getRating?: {
+    (course: Listing, usage: 'stat'): number | null;
+    (course: Listing, usage: 'display'): string;
+  };
+  colorMap?: chroma.Scale;
+  Icon: React.ElementType;
+};
+
+function RatingRows({
+  course,
+  isAuthenticated,
+  ratingColors,
+}: {
+  readonly course: Listing;
+  readonly isAuthenticated: boolean;
+  readonly ratingColors: { [key in RatingInfo['name']]: string };
+}) {
+  const ratings: RatingInfo[] = [
+    {
+      name: 'Class',
+      getRating: getOverallRatings,
+      colorMap: ratingColormap,
+      Icon: AiOutlineStar,
+    },
+    {
+      name: 'Professor',
+      getRating: getProfessorRatings,
+      colorMap: ratingColormap,
+      Icon: IoPersonOutline,
+    },
+    {
+      name: 'Workload',
+      getRating: getWorkloadRatings,
+      colorMap: workloadColormap,
+      Icon: BiBookOpen,
+    },
+  ];
+
+  return (
+    <>
+      {ratings.map(({ name, getRating, colorMap, Icon }) =>
+        isAuthenticated ? (
+          <OverlayTrigger
+            key={name}
+            placement="right"
+            overlay={(props) => (
+              <Tooltip id={`${name}-tooltip`} {...props}>
+                {!isAuthenticated
+                  ? 'These colors are randomly generated. Sign in to see real ratings.'
+                  : name}
+              </Tooltip>
+            )}
+          >
+            <Row className="m-auto justify-content-end">
+              <RatingCell
+                rating={getRating!(course, 'stat')}
+                colorMap={colorMap!}
+              >
+                {getRating!(course, 'display')}
+              </RatingCell>
+              <div className={styles.iconContainer}>
+                <Icon className={styles.icon} />
+              </div>
+            </Row>
+          </OverlayTrigger>
+        ) : (
+          <Row key={name} className="m-auto justify-content-end">
+            <div
+              className={clsx(styles.rating, 'mr-1')}
+              style={{
+                backgroundColor: ratingColors[name],
+                filter: 'blur(3px)',
+              }}
+            >
+              &nbsp; {/* A number if we want */}
+            </div>
+            <div className={styles.iconContainer}>
+              <Icon className={styles.icon} />
+            </div>
+          </Row>
+        ),
+      )}
+    </>
+  );
+}
 type RatingName = 'Class' | 'Professor' | 'Workload';
 
 function RatingCell({
@@ -99,7 +186,42 @@ function ResultsGridItem({
     string,
   ];
 
-  // for the blurs
+  const ratingData = [
+    {
+      name: 'Class',
+      getRating: getOverallRatings,
+      colorMap: ratingColormap,
+      Icon: AiOutlineStar,
+    },
+    {
+      name: 'Professor',
+      getRating: getProfessorRatings,
+      colorMap: ratingColormap,
+      Icon: IoPersonOutline,
+    },
+    {
+      name: 'Workload',
+      getRating: getWorkloadRatings,
+      colorMap: workloadColormap,
+      Icon: BiBookOpen,
+    },
+  ];
+
+  function BlurRatingTooltip({ children }) {
+  return <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip id="blur-rating-tooltip">
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      }
+      id="blur-rating-tooltip"
+    >
+      {children}
+    </OverlayTrigger>
+}
+
+  // For the blurs
   const [ratingColors, setRatingColors] = useState({
     Class: '',
     Professor: '',
@@ -107,9 +229,9 @@ function ResultsGridItem({
   });
 
   const randomColorFromMap = (colorMap: chroma.Scale) => {
-    const scale = colorMap.colors(5); // should probabaly make this a seperate function so no duplicate code
+    const scale = colorMap.colors(5); // Should probabaly make this a seperate function so no duplicate code
     const randomIndex = Math.floor(Math.random() * scale.length);
-    return scale[randomIndex] ?? colorMap(0).hex(); // needed to do the if for type maybe Sida will clutch
+    return scale[randomIndex] ?? colorMap(0).hex(); // Needed to do the if for type maybe Sida will clutch
   };
 
   // Initialize random colors for rating cells on component mount (page load) so they don't constantly chane
@@ -268,61 +390,31 @@ function ResultsGridItem({
           </Col>
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
-              {[
-                {
-                  name: 'Class' as RatingName,
-                  getRating: getOverallRatings,
-                  colorMap: ratingColormap,
-                  Icon: AiOutlineStar,
-                },
-                {
-                  name: 'Professor' as RatingName,
-                  getRating: getProfessorRatings,
-                  colorMap: ratingColormap,
-                  Icon: IoPersonOutline,
-                },
-                {
-                  name: 'Workload' as RatingName,
-                  getRating: getWorkloadRatings,
-                  colorMap: workloadColormap,
-                  Icon: BiBookOpen,
-                },
-              ].map(({ name, getRating, colorMap, Icon }) => (
+              {isAuthenticated ? (
+                <RatingRows
+                  course={course}
+                  isAuthenticated
+                  ratingColors={ratingColors}
+                />
+              ) : (
                 <OverlayTrigger
-                  key={name}
-                  placement="right"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>{name}</span>
+                  placement="top"
+                  overlay={
+                    <Tooltip id="blur-rating-tooltip">
+                      These colors are randomly generated. Sign in to see real
+                      ratings.
                     </Tooltip>
-                  )}
+                  }
                 >
-                  <Row className="m-auto justify-content-end">
-                    {isAuthenticated ? (
-                      <RatingCell
-                        rating={getRating(course, 'stat')}
-                        colorMap={colorMap}
-                      >
-                        {getRating(course, 'display')}
-                      </RatingCell>
-                    ) : (
-                      <div
-                        className={clsx(styles.rating, 'mr-1')}
-                        style={{
-                          backgroundColor: ratingColors[name],
-                          filter: 'blur(3px)',
-                        }}
-                      >
-                        &nbsp;{' '}
-                        {/* Placeholder for blurred rating. I think we generate a random number here but have a comment in the source code so if someone tries to inspect they will see a comment seeing it is random */}
-                      </div>
-                    )}
-                    <div className={styles.iconContainer}>
-                      <Icon className={styles.icon} />
-                    </div>
-                  </Row>
+                  <div>
+                    <RatingRows
+                      course={course}
+                      isAuthenticated={false}
+                      ratingColors={ratingColors}
+                    />
+                  </div>
                 </OverlayTrigger>
-              ))}
+              )}
             </div>
           </Col>
         </Row>

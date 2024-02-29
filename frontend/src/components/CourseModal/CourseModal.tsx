@@ -205,7 +205,7 @@ function CourseModal() {
                   {
                     label: 'Evaluations',
                     value: 'evals',
-                    // don't show eval tab if it's current year or no auth
+                    // Don't show eval tab if it's current year or no auth
                     hidden:
                       CUR_YEAR.includes(listing.season_code) ||
                       !isAuthenticated,
