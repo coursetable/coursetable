@@ -87,9 +87,10 @@ function ResultsItem({
     string,
   ];
 
-  const randomBackgroundColor = () => {
-    const colors = ['#f0ad4e', '#5bc0de', '#5cb85c', '#d9534f', '#0275d8']; // can change colors
-    return colors[Math.floor(Math.random() * colors.length)];
+  const randomColorFromMap = (colorMap: any) => {
+    const scale = colorMap.colors(5); // 5 colors but can adjust scale
+    const randomIndex = Math.floor(Math.random() * scale.length);
+    return scale[randomIndex];
   };
 
   return (
@@ -212,48 +213,48 @@ function ResultsItem({
           </div>
         </OverlayTrigger>
         <div className="d-flex">
-          <div className={colStyles.overallCol}>
-            {isAuthenticated ? (
-              <RatingBubble
-                className={styles.ratingCell}
-                rating={getOverallRatings(course, 'stat')}
-                colorMap={ratingColormap}
-              >
-                {getOverallRatings(course, 'display')}
-              </RatingBubble>
-            ) : (
-              <div
-                className={styles.ratingCell}
-                style={{
-                  background: randomBackgroundColor(),
-                  filter: 'blur(3px)',
-                }}
-              >
-                {/* figure out here */}
-              </div>
-            )}
-          </div>
-          <div className={colStyles.workloadCol}>
-            {isAuthenticated ? (
-              <RatingBubble
-                className={clsx(styles.ratingCell, colStyles.workloadCol)}
-                rating={getWorkloadRatings(course, 'stat')}
-                colorMap={workloadColormap}
-              >
-                {getWorkloadRatings(course, 'display')}
-              </RatingBubble>
-            ) : (
-              <div
-                className={clsx(styles.ratingCell, colStyles.workloadCol)}
-                style={{
-                  background: randomBackgroundColor(),
-                  filter: 'blur(3px)',
-                }}
-              >
-                {/* figure out here */}
-              </div>
-            )}
-          </div>
+        <div className={colStyles.overallCol}>
+          {isAuthenticated ? (
+            <RatingBubble
+              className={styles.ratingCell}
+              rating={getOverallRatings(course, 'stat')}
+              colorMap={ratingColormap}
+            >
+              {getOverallRatings(course, 'display')}
+            </RatingBubble>
+          ) : (
+            <div
+              className={styles.ratingCell}
+              style={{
+                backgroundColor: randomColorFromMap(ratingColormap),
+                filter: 'blur(3px)',
+              }}
+            >
+              {/* maybe put number here */}
+            </div>
+          )}
+        </div>
+        <div className={colStyles.workloadCol}>
+          {isAuthenticated ? (
+            <RatingBubble
+              className={clsx(styles.ratingCell, colStyles.workloadCol)}
+              rating={getWorkloadRatings(course, 'stat')}
+              colorMap={workloadColormap}
+            >
+              {getWorkloadRatings(course, 'display')}
+            </RatingBubble>
+          ) : (
+            <div
+              className={clsx(styles.ratingCell, colStyles.workloadCol)}
+              style={{
+                backgroundColor: randomColorFromMap(workloadColormap),
+                filter: 'blur(3px)',
+              }}
+            >
+              {/* number maybe */}
+            </div>
+          )}
+        </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
             <div className={clsx('mr-2 h-100', styles.profRating)}>
               {isAuthenticated ? (
@@ -268,11 +269,11 @@ function ResultsItem({
                 <div
                   className={styles.ratingCell}
                   style={{
-                    background: randomBackgroundColor(),
+                    backgroundColor: randomColorFromMap(ratingColormap),
                     filter: 'blur(3px)',
                   }}
                 >
-                  {/* figure out */}
+                  {/* maybe put number here */}
                 </div>
               )}
             </div>
