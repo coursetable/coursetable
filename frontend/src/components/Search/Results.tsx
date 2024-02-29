@@ -35,11 +35,13 @@ function Results({
   loading = false,
   multiSeasons = false,
   page = 'catalog',
+  isAuthenticated,
 }: {
   readonly data: Listing[];
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
   readonly page?: 'catalog' | 'worksheet';
+  readonly isAuthenticated?: boolean;
 }) {
   // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
@@ -145,6 +147,7 @@ function Results({
                 course={data[index]!}
                 multiSeasons={multiSeasons}
                 isFirst={index === 0}
+                isAuthenticated={!!isAuthenticated}
               />
             )}
           </FixedSizeList>

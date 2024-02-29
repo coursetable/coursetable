@@ -102,7 +102,10 @@ function App() {
 
         {/* Authenticated routes */}
         {/* Catalog */}
-        <Route path="/catalog" element={<Search />} />
+        <Route
+          path="/catalog"
+          element={<Search isAuthorized={user.hasEvals} />}
+        />
 
         {/* Worksheet */}
         <Route

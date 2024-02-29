@@ -49,12 +49,14 @@ function ResultsItem({
   isFirst,
   isOdd,
   style,
+  isAuthenticated,
 }: {
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
   readonly isOdd: boolean;
   readonly style?: React.CSSProperties;
+  readonly isAuthenticated: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
 
@@ -84,6 +86,11 @@ function ResultsItem({
     string,
     string,
   ];
+
+  const randomBackgroundColor = () => {
+    const colors = ['#f0ad4e', '#5bc0de', '#5cb85c', '#d9534f', '#0275d8']; // can change colors
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
 
   return (
     // TODO
@@ -206,32 +213,68 @@ function ResultsItem({
         </OverlayTrigger>
         <div className="d-flex">
           <div className={colStyles.overallCol}>
-            <RatingBubble
-              className={styles.ratingCell}
-              rating={getOverallRatings(course, 'stat')}
-              colorMap={ratingColormap}
-            >
-              {getOverallRatings(course, 'display')}
-            </RatingBubble>
+            {isAuthenticated ? (
+              <RatingBubble
+                className={styles.ratingCell}
+                rating={getOverallRatings(course, 'stat')}
+                colorMap={ratingColormap}
+              >
+                {getOverallRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <div
+                className={styles.ratingCell}
+                style={{
+                  background: randomBackgroundColor(),
+                  filter: 'blur(3px)',
+                }}
+              >
+                {/* figure out here */}
+              </div>
+            )}
           </div>
           <div className={colStyles.workloadCol}>
-            <RatingBubble
-              className={clsx(styles.ratingCell, colStyles.workloadCol)}
-              rating={getWorkloadRatings(course, 'stat')}
-              colorMap={workloadColormap}
-            >
-              {getWorkloadRatings(course, 'display')}
-            </RatingBubble>
+            {isAuthenticated ? (
+              <RatingBubble
+                className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                rating={getWorkloadRatings(course, 'stat')}
+                colorMap={workloadColormap}
+              >
+                {getWorkloadRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <div
+                className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                style={{
+                  background: randomBackgroundColor(),
+                  filter: 'blur(3px)',
+                }}
+              >
+                {/* figure out here */}
+              </div>
+            )}
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
             <div className={clsx('mr-2 h-100', styles.profRating)}>
-              <RatingBubble
-                className={styles.ratingCell}
-                rating={getProfessorRatings(course, 'stat')}
-                colorMap={ratingColormap}
-              >
-                {getProfessorRatings(course, 'display')}
-              </RatingBubble>
+              {isAuthenticated ? (
+                <RatingBubble
+                  className={styles.ratingCell}
+                  rating={getProfessorRatings(course, 'stat')}
+                  colorMap={ratingColormap}
+                >
+                  {getProfessorRatings(course, 'display')}
+                </RatingBubble>
+              ) : (
+                <div
+                  className={styles.ratingCell}
+                  style={{
+                    background: randomBackgroundColor(),
+                    filter: 'blur(3px)',
+                  }}
+                >
+                  {/* figure out */}
+                </div>
+              )}
             </div>
             <div className={styles.ellipsisText}>
               {course.professor_names.length === 0
