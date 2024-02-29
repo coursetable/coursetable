@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -87,11 +87,27 @@ function ResultsItem({
     string,
   ];
 
-  const randomColorFromMap = (colorMap: any) => {
-    const scale = colorMap.colors(5); // 5 colors but can adjust scale
+  // state to store random colors
+  const [randomColors, setRandomColors] = useState({
+    overallRatingColor: '',
+    workloadRatingColor: '',
+    professorRatingColor: '',
+  });
+  const generateRandomColor = (colorMap: any) => {
+    const scale = colorMap.colors(5);
     const randomIndex = Math.floor(Math.random() * scale.length);
     return scale[randomIndex];
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setRandomColors({
+        overallRatingColor: generateRandomColor(ratingColormap),
+        workloadRatingColor: generateRandomColor(workloadColormap),
+        professorRatingColor: generateRandomColor(ratingColormap),
+      });
+    }
+  }, [isAuthenticated]);
 
   return (
     // TODO
@@ -226,7 +242,7 @@ function ResultsItem({
               <div
                 className={styles.ratingCell}
                 style={{
-                  backgroundColor: randomColorFromMap(ratingColormap),
+                  backgroundColor: randomColors.overallRatingColor, // Use state value here
                   filter: 'blur(3px)',
                 }}
               >
@@ -247,7 +263,7 @@ function ResultsItem({
               <div
                 className={clsx(styles.ratingCell, colStyles.workloadCol)}
                 style={{
-                  backgroundColor: randomColorFromMap(workloadColormap),
+                  backgroundColor: randomColors.workloadRatingColor, // Use state value here
                   filter: 'blur(3px)',
                 }}
               >
@@ -269,7 +285,7 @@ function ResultsItem({
                 <div
                   className={styles.ratingCell}
                   style={{
-                    backgroundColor: randomColorFromMap(ratingColormap),
+                    backgroundColor: randomColors.professorRatingColor, // Use state value here
                     filter: 'blur(3px)',
                   }}
                 >
