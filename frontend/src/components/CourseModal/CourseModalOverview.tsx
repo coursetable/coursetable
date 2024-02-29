@@ -168,22 +168,12 @@ const profInfoPopover =
 function CourseModalOverview({
   gotoCourse,
   listing,
+  isAuthenticated,
 }: {
   readonly gotoCourse: (x: Listing) => void;
   readonly listing: Listing;
+  readonly isAuthenticated: boolean | undefined;
 }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(
-    undefined,
-  );
-  useEffect(() => {
-    // Better way to do auth?
-    const init = async () => {
-      const authStatus = await checkAuth();
-      setIsAuthenticated(authStatus);
-    };
-    init();
-  }, []);
-
   // Fetch user context data
   const { user } = useUser();
   // Is description clamped?
