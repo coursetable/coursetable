@@ -213,48 +213,48 @@ function ResultsItem({
           </div>
         </OverlayTrigger>
         <div className="d-flex">
-        <div className={colStyles.overallCol}>
-          {isAuthenticated ? (
-            <RatingBubble
-              className={styles.ratingCell}
-              rating={getOverallRatings(course, 'stat')}
-              colorMap={ratingColormap}
-            >
-              {getOverallRatings(course, 'display')}
-            </RatingBubble>
-          ) : (
-            <div
-              className={styles.ratingCell}
-              style={{
-                backgroundColor: randomColorFromMap(ratingColormap),
-                filter: 'blur(3px)',
-              }}
-            >
-              {/* maybe put number here */}
-            </div>
-          )}
-        </div>
-        <div className={colStyles.workloadCol}>
-          {isAuthenticated ? (
-            <RatingBubble
-              className={clsx(styles.ratingCell, colStyles.workloadCol)}
-              rating={getWorkloadRatings(course, 'stat')}
-              colorMap={workloadColormap}
-            >
-              {getWorkloadRatings(course, 'display')}
-            </RatingBubble>
-          ) : (
-            <div
-              className={clsx(styles.ratingCell, colStyles.workloadCol)}
-              style={{
-                backgroundColor: randomColorFromMap(workloadColormap),
-                filter: 'blur(3px)',
-              }}
-            >
-              {/* number maybe */}
-            </div>
-          )}
-        </div>
+          <div className={colStyles.overallCol}>
+            {isAuthenticated ? (
+              <RatingBubble
+                className={styles.ratingCell}
+                rating={getOverallRatings(course, 'stat')}
+                colorMap={ratingColormap}
+              >
+                {getOverallRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <div
+                className={styles.ratingCell}
+                style={{
+                  backgroundColor: randomColorFromMap(ratingColormap),
+                  filter: 'blur(3px)',
+                }}
+              >
+                {/* maybe put number here */}
+              </div>
+            )}
+          </div>
+          <div className={colStyles.workloadCol}>
+            {isAuthenticated ? (
+              <RatingBubble
+                className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                rating={getWorkloadRatings(course, 'stat')}
+                colorMap={workloadColormap}
+              >
+                {getWorkloadRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <div
+                className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                style={{
+                  backgroundColor: randomColorFromMap(workloadColormap),
+                  filter: 'blur(3px)',
+                }}
+              >
+                {/* number maybe */}
+              </div>
+            )}
+          </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
             <div className={clsx('mr-2 h-100', styles.profRating)}>
               {isAuthenticated ? (
