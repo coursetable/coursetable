@@ -62,10 +62,12 @@ function ResultsGridItem({
   course,
   numCols,
   multiSeasons,
+  isAuthenticated,
 }: {
   readonly course: Listing;
   readonly numCols: number;
   readonly multiSeasons: boolean;
+  readonly isAuthenticated?: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
@@ -94,6 +96,12 @@ function ResultsGridItem({
     string,
     string,
   ];
+
+  const randomColorFromMap = (colorMap: chroma.Scale) => {
+    const scale = colorMap.colors(5); // should probabaly make this a seperate function so no duplicate code
+    const randomIndex = Math.floor(Math.random() * scale.length);
+    return scale[randomIndex];
+  };
 
   return (
     <Col
@@ -270,12 +278,24 @@ function ResultsGridItem({
                   )}
                 >
                   <Row className="m-auto justify-content-end">
-                    <RatingCell
-                      rating={getRating(course, 'stat')}
-                      colorMap={colorMap}
-                    >
-                      {getRating(course, 'display')}
-                    </RatingCell>
+                    {isAuthenticated ? (
+                      <RatingCell
+                        rating={getRating(course, 'stat')}
+                        colorMap={colorMap}
+                      >
+                        {getRating(course, 'display')}
+                      </RatingCell>
+                    ) : (
+                      <div
+                        className={clsx(styles.rating, 'mr-1')}
+                        style={{
+                          backgroundColor: randomColorFromMap(colorMap),
+                          filter: 'blur(3px)',
+                        }}
+                      >
+                        &nbsp; {/* Placeholder for blurred rating */}
+                      </div>
+                    )}
                     <div className={styles.iconContainer}>
                       <Icon className={styles.icon} />
                     </div>

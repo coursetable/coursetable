@@ -117,6 +117,7 @@ function Results({
                         numCols={numCols}
                         multiSeasons={multiSeasons}
                         key={course.season_code + course.crn}
+                        isAuthenticated={!!isAuthenticated}
                       />
                     ))}
                 </Row>
