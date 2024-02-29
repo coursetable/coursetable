@@ -88,6 +88,11 @@ type RelatedListingInfo = Omit<
   }[];
 };
 
+type RelatedListingInfoPublic = Omit<NarrowListing<SameCourseOrProfOfferingsPublicQuery['computed_listing_info'][number]>, 'professor_info'> & {
+  professor_names: string[];
+};
+
+
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
   (props) => (
@@ -163,7 +168,7 @@ function CourseModalOverview({
   readonly gotoCourse: (x: Listing) => void;
   readonly listing: Listing;
 }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     // Better way to do auth?
     const init = async () => {
