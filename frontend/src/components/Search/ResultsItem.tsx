@@ -110,17 +110,19 @@ function ResultsItem({
   }, [isAuthenticated]);
 
   function BlurRatingTooltip({ children }) {
-  return <OverlayTrigger
-      placement="top"
-      overlay={
-        <Tooltip>
-          These colors are randomly generated. Sign in to see real ratings.
-        </Tooltip>
-      }
-    >
-      {children}
-    </OverlayTrigger>
-}
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip>
+            These colors are randomly generated. Sign in to see real ratings.
+          </Tooltip>
+        }
+      >
+        {children}
+      </OverlayTrigger>
+    );
+  }
 
   return (
     // TODO

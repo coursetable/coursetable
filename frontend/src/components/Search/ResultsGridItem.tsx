@@ -208,18 +208,20 @@ function ResultsGridItem({
   ];
 
   function BlurRatingTooltip({ children }) {
-  return <OverlayTrigger
-      placement="top"
-      overlay={
-        <Tooltip id="blur-rating-tooltip">
-          These colors are randomly generated. Sign in to see real ratings.
-        </Tooltip>
-      }
-      id="blur-rating-tooltip"
-    >
-      {children}
-    </OverlayTrigger>
-}
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id="blur-rating-tooltip">
+            These colors are randomly generated. Sign in to see real ratings.
+          </Tooltip>
+        }
+        id="blur-rating-tooltip"
+      >
+        {children}
+      </OverlayTrigger>
+    );
+  }
 
   // For the blurs
   const [ratingColors, setRatingColors] = useState({

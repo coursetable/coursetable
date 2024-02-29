@@ -13,7 +13,11 @@ import { useSearch } from '../contexts/searchContext';
 import './rc-slider-override.css';
 
 // Take auth state in search
-function Search({ isAuthorized }: { readonly isAuthorized: boolean | undefined }) {
+function Search({
+  isAuthorized,
+}: {
+  readonly isAuthorized: boolean | undefined;
+}) {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
 
