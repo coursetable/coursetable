@@ -105,12 +105,18 @@ function WorksheetToggleButton({
   // Disabled worksheet add/remove button if not logged in
   if (!user.worksheets) {
     return (
-      <Button
-        onClick={toggleWorkSheet}
-        className={clsx('p-0', styles.disabledButton)}
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id="tooltip-disabled">
+            {'Log in to add to your worksheet'}
+          </Tooltip>
+        }
       >
-        <BsBookmark size={25} className={styles.disabledButtonIcon} />
-      </Button>
+        <Button className={clsx('p-0', styles.disabledButton)} disabled={true}>
+          <BsBookmark size={25} className={styles.disabledButtonIcon} />
+        </Button>
+      </OverlayTrigger>
     );
   }
 
