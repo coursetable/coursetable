@@ -293,7 +293,8 @@ function ResultsGridItem({
                           filter: 'blur(3px)',
                         }}
                       >
-                        &nbsp; {/* Placeholder for blurred rating */}
+                        &nbsp;{' '}
+                        {/* Placeholder for blurred rating. I think we generate a random number here but have a comment in the source code so if someone tries to inspect they will see a comment seeing it is random */}
                       </div>
                     )}
                     <div className={styles.iconContainer}>
