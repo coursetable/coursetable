@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type chroma from 'chroma-js';
@@ -29,6 +29,8 @@ import {
   toSeasonString,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
+
+type RatingName = 'Class' | 'Professor' | 'Workload';
 
 function RatingCell({
   rating,
@@ -97,11 +99,29 @@ function ResultsGridItem({
     string,
   ];
 
+  // for the blurs
+  const [ratingColors, setRatingColors] = useState({
+    Class: '',
+    Professor: '',
+    Workload: '',
+  });
+
   const randomColorFromMap = (colorMap: chroma.Scale) => {
     const scale = colorMap.colors(5); // should probabaly make this a seperate function so no duplicate code
     const randomIndex = Math.floor(Math.random() * scale.length);
-    return scale[randomIndex];
+    return scale[randomIndex] ?? colorMap(0).hex(); // needed to do the if for type maybe Sida will clutch
   };
+
+  // Initialize random colors for rating cells on component mount (page load) so they don't constantly chane
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setRatingColors({
+        Class: randomColorFromMap(ratingColormap),
+        Professor: randomColorFromMap(ratingColormap),
+        Workload: randomColorFromMap(workloadColormap),
+      });
+    }
+  }, [isAuthenticated]);
 
   return (
     <Col
@@ -250,19 +270,19 @@ function ResultsGridItem({
             <div className="ml-auto">
               {[
                 {
-                  name: 'Class',
+                  name: 'Class' as RatingName,
                   getRating: getOverallRatings,
                   colorMap: ratingColormap,
                   Icon: AiOutlineStar,
                 },
                 {
-                  name: 'Professor',
+                  name: 'Professor' as RatingName,
                   getRating: getProfessorRatings,
                   colorMap: ratingColormap,
                   Icon: IoPersonOutline,
                 },
                 {
-                  name: 'Workload',
+                  name: 'Workload' as RatingName,
                   getRating: getWorkloadRatings,
                   colorMap: workloadColormap,
                   Icon: BiBookOpen,
@@ -289,7 +309,7 @@ function ResultsGridItem({
                       <div
                         className={clsx(styles.rating, 'mr-1')}
                         style={{
-                          backgroundColor: randomColorFromMap(colorMap),
+                          backgroundColor: ratingColors[name],
                           filter: 'blur(3px)',
                         }}
                       >
