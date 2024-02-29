@@ -109,6 +109,19 @@ function ResultsItem({
     }
   }, [isAuthenticated]);
 
+  const BlurRatingTooltip = ({ children }) => (
+    <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip>
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      }
+    >
+      {children}
+    </OverlayTrigger>
+  );
+
   return (
     // TODO
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
@@ -239,15 +252,17 @@ function ResultsItem({
                 {getOverallRatings(course, 'display')}
               </RatingBubble>
             ) : (
-              <div
-                className={styles.ratingCell}
-                style={{
-                  backgroundColor: randomColors.overallRatingColor, // Use state value here
-                  filter: 'blur(3px)',
-                }}
-              >
-                {/* maybe put number here */}
-              </div>
+              <BlurRatingTooltip>
+                <div
+                  className={styles.ratingCell}
+                  style={{
+                    backgroundColor: randomColors.overallRatingColor, // Use state value here
+                    filter: 'blur(3px)',
+                  }}
+                >
+                  {/* maybe put number here */}
+                </div>
+              </BlurRatingTooltip>
             )}
           </div>
           <div className={colStyles.workloadCol}>
@@ -260,15 +275,17 @@ function ResultsItem({
                 {getWorkloadRatings(course, 'display')}
               </RatingBubble>
             ) : (
-              <div
-                className={clsx(styles.ratingCell, colStyles.workloadCol)}
-                style={{
-                  backgroundColor: randomColors.workloadRatingColor, // Use state value here
-                  filter: 'blur(3px)',
-                }}
-              >
-                {/* number maybe */}
-              </div>
+              <BlurRatingTooltip>
+                <div
+                  className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                  style={{
+                    backgroundColor: randomColors.workloadRatingColor, // Use state value here
+                    filter: 'blur(3px)',
+                  }}
+                >
+                  {/* number maybe */}
+                </div>
+              </BlurRatingTooltip>
             )}
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
@@ -282,15 +299,17 @@ function ResultsItem({
                   {getProfessorRatings(course, 'display')}
                 </RatingBubble>
               ) : (
-                <div
-                  className={styles.ratingCell}
-                  style={{
-                    backgroundColor: randomColors.professorRatingColor, // Use state value here
-                    filter: 'blur(3px)',
-                  }}
-                >
-                  {/* maybe put number here */}
-                </div>
+                <BlurRatingTooltip>
+                  <div
+                    className={styles.ratingCell}
+                    style={{
+                      backgroundColor: randomColors.professorRatingColor, // Use state value here
+                      filter: 'blur(3px)',
+                    }}
+                  >
+                    {/* maybe put number here */}
+                  </div>
+                </BlurRatingTooltip>
               )}
             </div>
             <div className={styles.ellipsisText}>
