@@ -117,7 +117,6 @@ function RatingRows({
     </>
   );
 }
-type RatingName = 'Class' | 'Professor' | 'Workload';
 
 function RatingCell({
   rating,
@@ -185,43 +184,6 @@ function ResultsGridItem({
     string,
     string,
   ];
-
-  const ratingData = [
-    {
-      name: 'Class',
-      getRating: getOverallRatings,
-      colorMap: ratingColormap,
-      Icon: AiOutlineStar,
-    },
-    {
-      name: 'Professor',
-      getRating: getProfessorRatings,
-      colorMap: ratingColormap,
-      Icon: IoPersonOutline,
-    },
-    {
-      name: 'Workload',
-      getRating: getWorkloadRatings,
-      colorMap: workloadColormap,
-      Icon: BiBookOpen,
-    },
-  ];
-
-  function BlurRatingTooltip({ children }) {
-    return (
-      <OverlayTrigger
-        placement="top"
-        overlay={
-          <Tooltip id="blur-rating-tooltip">
-            These colors are randomly generated. Sign in to see real ratings.
-          </Tooltip>
-        }
-        id="blur-rating-tooltip"
-      >
-        {children}
-      </OverlayTrigger>
-    );
-  }
 
   // For the blurs
   const [ratingColors, setRatingColors] = useState({

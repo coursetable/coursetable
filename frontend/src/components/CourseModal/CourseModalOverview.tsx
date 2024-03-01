@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Row,
   Col,
@@ -48,7 +48,6 @@ import {
   type Listing,
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
-import { checkAuth } from '../../utilities/api';
 
 // Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -86,15 +85,6 @@ type RelatedListingInfo = Omit<
     email: string;
     name: string;
   }[];
-};
-
-type RelatedListingInfoPublic = Omit<
-  NarrowListing<
-    SameCourseOrProfOfferingsPublicQuery['computed_listing_info'][number]
-  >,
-  'professor_info'
-> & {
-  professor_names: string[];
 };
 
 const profInfoPopover =
