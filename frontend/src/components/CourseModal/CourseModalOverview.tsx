@@ -738,12 +738,10 @@ function CourseModalOverview({
                   <Col
                     xs={5}
                     className={clsx(
-                      offering.rating !== null
-                        ? styles.ratingBubble
-                        : styles.ratingBubbleUnclickable,
+                      styles.ratingBubble,
                       'px-0 mr-3 text-center',
                     )}
-                    {...(offering.rating !== null && {
+                    {...{
                       onClick() {
                         // Note, we purposefully use the listing data fetched
                         // from GraphQL instead of the static seasons data.
@@ -751,7 +749,7 @@ function CourseModalOverview({
                         // fetch a new season and cause a loading screen.
                         gotoCourse(offering.listing);
                       },
-                    })}
+                    }}
                   >
                     <strong>
                       {toSeasonString(offering.listing.season_code)}
