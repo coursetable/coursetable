@@ -105,7 +105,12 @@ export async function fetchCatalog(
     // Fetch and save the full catalog (including evaluations)
     if (
       overwrite ||
-      !(await fs.access(fullCatalogPath).then(
+      !(await fs.access(fullCatalogPath)
+      .then(
+        () => true,
+        () => false,
+      ))
+      || !(await fs.access(publicCatalogPath).then(
         () => true,
         () => false,
       ))
