@@ -110,10 +110,6 @@ export async function fetchCatalog(
         () => true,
         () => false,
       ))
-      || !(await fs.access(publicCatalogPath).then(
-        () => true,
-        () => false,
-      ))
     ) {
       try {
         catalogFull = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
