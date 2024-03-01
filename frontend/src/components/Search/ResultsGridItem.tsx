@@ -79,9 +79,7 @@ function RatingRows({
             placement="right"
             overlay={(props) => (
               <Tooltip id={`${name}-tooltip`} {...props}>
-                {!isAuthenticated
-                  ? 'These colors are randomly generated. Sign in to see real ratings.'
-                  : name}
+                {name}
               </Tooltip>
             )}
           >

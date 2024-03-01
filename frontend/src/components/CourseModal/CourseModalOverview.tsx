@@ -39,7 +39,7 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
   useSameCourseOrProfOfferingsPublicQuery,
-  type SameCourseOrProfOfferingsPublicQuery,
+  // type SameCourseOrProfOfferingsPublicQuery, will need for typing later
 } from '../../generated/graphql';
 import {
   weekdays,

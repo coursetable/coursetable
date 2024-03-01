@@ -93,7 +93,7 @@ function ResultsItem({
     workloadRatingColor: '',
     professorRatingColor: '',
   });
-  const generateRandomColor = (colorMap: any) => {
+  const generateRandomColor = (colorMap: chroma.Scale) => {
     const scale = colorMap.colors(5);
     const randomIndex = Math.floor(Math.random() * scale.length);
     return scale[randomIndex];
@@ -102,9 +102,9 @@ function ResultsItem({
   useEffect(() => {
     if (!isAuthenticated) {
       setRandomColors({
-        overallRatingColor: generateRandomColor(ratingColormap),
-        workloadRatingColor: generateRandomColor(workloadColormap),
-        professorRatingColor: generateRandomColor(ratingColormap),
+        overallRatingColor: generateRandomColor(ratingColormap) ?? '', // For type
+        workloadRatingColor: generateRandomColor(workloadColormap) ?? '',
+        professorRatingColor: generateRandomColor(ratingColormap) ?? '',
       });
     }
   }, [isAuthenticated]);
