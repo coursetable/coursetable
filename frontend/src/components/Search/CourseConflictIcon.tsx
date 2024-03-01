@@ -36,8 +36,12 @@ function CourseConflictIcon({
     worksheetNumber,
   );
 
-  // Update conflict status whenever the user's worksheet changes
-  const conflicts = useMemo(() => {
+  const crossListed = useMemo(
+    () => checkCrossListed(data, course),
+    [course, data],
+  );
+
+  const warning = useMemo(() => {
     const inWorksheet = isInWorksheet(
       course.season_code,
       course.crn,
@@ -45,23 +49,25 @@ function CourseConflictIcon({
       user.worksheets,
     );
     // If the course is in the worksheet, we never report a conflict
-    if (inWorksheet) return [];
-    if (course.times_summary === 'TBA') return [];
-    return checkConflict(data, course);
-  }, [course, data, user.worksheets, worksheetNumber]);
-
-  // Update conflict status whenever the user's worksheet changes
-  const crossListed = useMemo(
-    () => checkCrossListed(data, course),
-    [course, data],
-  );
-
-  const warning =
-    inModal && !CUR_YEAR.includes(course.season_code)
-      ? 'This will add to the worksheet of a semester that has already ended.'
-      : !inModal && conflicts.length > 0
-        ? `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`
-        : undefined;
+    if (inWorksheet) return undefined;
+    if (inModal) {
+      if (!CUR_YEAR.includes(course.season_code))
+        return 'This will add to a worksheet of a semester that has already ended.';
+      return undefined;
+    }
+    if (course.times_summary === 'TBA') return undefined;
+    const conflicts = checkConflict(data, course);
+    if (conflicts.length > 0) {
+      return (
+        <>
+          Conflicts with: {conflicts.map((x) => x.course_code).join(', ')}
+          <br />
+          {crossListed && `(cross-listed with ${crossListed})`}
+        </>
+      );
+    }
+    return undefined;
+  }, [course, crossListed, data, inModal, user.worksheets, worksheetNumber]);
 
   return (
     <Fade in={Boolean(warning)}>
@@ -72,12 +78,6 @@ function CourseConflictIcon({
             overlay={(props) => (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>{warning}</small>
-                {crossListed && (
-                  // Use a div to ensure it appears on a new line
-                  <div>
-                    <small>(cross-listed with {crossListed})</small>
-                  </div>
-                )}
               </Tooltip>
             )}
           >
