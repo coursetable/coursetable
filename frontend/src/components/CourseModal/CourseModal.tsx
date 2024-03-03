@@ -231,7 +231,7 @@ function CourseModal() {
           <CourseModalOverview
             isAuthenticated={isAuthenticated}
             gotoCourse={(l) => {
-              isAuthenticated ? setView('evals') : setView('overview'); // need also to default to overview if no evals at all
+              isAuthenticated ? setView('evals') : setView('overview'); // Need also to default to overview if no evals at all
               if (
                 l.crn === listing.crn &&
                 l.season_code === listing.season_code

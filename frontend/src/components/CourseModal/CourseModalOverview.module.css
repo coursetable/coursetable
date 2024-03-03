@@ -13,8 +13,7 @@
   font-weight: 600;
 }
 
-.ratingBubble,
-.ratingBubbleUnclickable {
+.ratingBubble {
   border-radius: 8px;
   max-height: 3rem;
   transition: max-height 0.2s ease-out;
@@ -32,18 +31,6 @@
 
 .ratingBubble:hover {
   background-color: rgb(92 168 250);
-  max-height: 50px;
-  transition: max-height 0.2s ease-in;
-}
-
-.ratingBubbleUnclickable {
-  cursor: default;
-  flex: none;
-  background-color: var(--color-surface);
-  color: #b5b5b5;
-}
-
-.ratingBubbleUnclickable:hover {
   max-height: 50px;
   transition: max-height 0.2s ease-in;
 }
