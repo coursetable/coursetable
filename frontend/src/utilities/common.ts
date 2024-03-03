@@ -72,3 +72,7 @@ export function isEqual<T>(a: T, b: T): boolean {
   }
   return a === b;
 }
+
+export function generateRandomColor(colorMap: chroma.Scale) {
+  return colorMap(Math.random() * 4 + 1).hex();
+}

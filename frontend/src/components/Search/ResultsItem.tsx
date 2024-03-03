@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -29,9 +29,24 @@ import {
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
-import type { Listing } from '../../utilities/common';
+import { generateRandomColor, type Listing } from '../../utilities/common';
 
 import { useSearch } from '../../contexts/searchContext';
+
+function BlurRatingTooltip({ children }: { readonly children: JSX.Element }) {
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip id="blur-rating-tooltip">
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      }
+    >
+      {children}
+    </OverlayTrigger>
+  );
+}
 
 /**
  * Renders a list item for a search result
@@ -86,43 +101,6 @@ function ResultsItem({
     string,
     string,
   ];
-
-  // State to store random colors
-  const [randomColors, setRandomColors] = useState({
-    overallRatingColor: '',
-    workloadRatingColor: '',
-    professorRatingColor: '',
-  });
-  const generateRandomColor = (colorMap: chroma.Scale) => {
-    const scale = colorMap.colors(5);
-    const randomIndex = Math.floor(Math.random() * scale.length);
-    return scale[randomIndex];
-  };
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setRandomColors({
-        overallRatingColor: generateRandomColor(ratingColormap) ?? '', // For type
-        workloadRatingColor: generateRandomColor(workloadColormap) ?? '',
-        professorRatingColor: generateRandomColor(ratingColormap) ?? '',
-      });
-    }
-  }, [isAuthenticated]);
-
-  function BlurRatingTooltip({ children }) {
-    return (
-      <OverlayTrigger
-        placement="top"
-        overlay={
-          <Tooltip>
-            These colors are randomly generated. Sign in to see real ratings.
-          </Tooltip>
-        }
-      >
-        {children}
-      </OverlayTrigger>
-    );
-  }
 
   return (
     // TODO
@@ -258,7 +236,7 @@ function ResultsItem({
                 <div
                   className={styles.ratingCell}
                   style={{
-                    backgroundColor: randomColors.overallRatingColor, // Use state value here
+                    backgroundColor: generateRandomColor(ratingColormap),
                     filter: 'blur(3px)',
                   }}
                 >
@@ -281,7 +259,7 @@ function ResultsItem({
                 <div
                   className={clsx(styles.ratingCell, colStyles.workloadCol)}
                   style={{
-                    backgroundColor: randomColors.workloadRatingColor, // Use state value here
+                    backgroundColor: generateRandomColor(workloadColormap),
                     filter: 'blur(3px)',
                   }}
                 >
@@ -305,7 +283,7 @@ function ResultsItem({
                   <div
                     className={styles.ratingCell}
                     style={{
-                      backgroundColor: randomColors.professorRatingColor, // Use state value here
+                      backgroundColor: generateRandomColor(ratingColormap),
                       filter: 'blur(3px)',
                     }}
                   >

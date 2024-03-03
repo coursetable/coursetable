@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type chroma from 'chroma-js';
@@ -21,7 +21,7 @@ import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
 import { TextComponent } from '../Typography';
-import type { Listing } from '../../utilities/common';
+import { generateRandomColor, type Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
@@ -36,18 +36,16 @@ type RatingInfo = {
     (course: Listing, usage: 'stat'): number | null;
     (course: Listing, usage: 'display'): string;
   };
-  colorMap?: chroma.Scale;
+  colorMap: chroma.Scale;
   Icon: React.ElementType;
 };
 
 function RatingRows({
   course,
   isAuthenticated,
-  ratingColors,
 }: {
   readonly course: Listing;
   readonly isAuthenticated: boolean;
-  readonly ratingColors: { [key in RatingInfo['name']]: string };
 }) {
   const ratings: RatingInfo[] = [
     {
@@ -86,7 +84,7 @@ function RatingRows({
             <Row className="m-auto justify-content-end">
               <RatingCell
                 rating={getRating!(course, 'stat')}
-                colorMap={colorMap!}
+                colorMap={colorMap}
               >
                 {getRating!(course, 'display')}
               </RatingCell>
@@ -100,7 +98,7 @@ function RatingRows({
             <div
               className={clsx(styles.rating, 'mr-1')}
               style={{
-                backgroundColor: ratingColors[name],
+                backgroundColor: generateRandomColor(colorMap),
                 filter: 'blur(3px)',
               }}
             >
@@ -182,30 +180,6 @@ function ResultsGridItem({
     string,
     string,
   ];
-
-  // For the blurs
-  const [ratingColors, setRatingColors] = useState({
-    Class: '',
-    Professor: '',
-    Workload: '',
-  });
-
-  const randomColorFromMap = (colorMap: chroma.Scale) => {
-    const scale = colorMap.colors(5); // Should probabaly make this a seperate function so no duplicate code
-    const randomIndex = Math.floor(Math.random() * scale.length);
-    return scale[randomIndex] ?? colorMap(0).hex(); // Needed to do the if for type maybe Sida will clutch
-  };
-
-  // Initialize random colors for rating cells on component mount (page load) so they don't constantly chane
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setRatingColors({
-        Class: randomColorFromMap(ratingColormap),
-        Professor: randomColorFromMap(ratingColormap),
-        Workload: randomColorFromMap(workloadColormap),
-      });
-    }
-  }, [isAuthenticated]);
 
   return (
     <Col
@@ -353,11 +327,7 @@ function ResultsGridItem({
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
               {isAuthenticated ? (
-                <RatingRows
-                  course={course}
-                  isAuthenticated
-                  ratingColors={ratingColors}
-                />
+                <RatingRows course={course} isAuthenticated />
               ) : (
                 <OverlayTrigger
                   placement="top"
@@ -369,11 +339,7 @@ function ResultsGridItem({
                   }
                 >
                   <div>
-                    <RatingRows
-                      course={course}
-                      isAuthenticated={false}
-                      ratingColors={ratingColors}
-                    />
+                    <RatingRows course={course} isAuthenticated={false} />
                   </div>
                 </OverlayTrigger>
               )}
