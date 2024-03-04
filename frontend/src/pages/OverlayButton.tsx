@@ -8,8 +8,8 @@ function FloatingButton({
   overlayVisible,
   toggleOverlay,
 }: {
-  overlayVisible: boolean;
-  toggleOverlay: () => void;
+  readonly overlayVisible: boolean;
+  readonly toggleOverlay: () => void;
 }) {
   const overlayToolTip = overlayVisible ? (
     <Tooltip id="hide-overlay">Hide Worksheet</Tooltip>
