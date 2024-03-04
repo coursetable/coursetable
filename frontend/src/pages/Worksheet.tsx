@@ -3,6 +3,7 @@ import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
+import { NavLink } from 'react-router-dom';
 
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
@@ -61,12 +62,54 @@ function Worksheet() {
   // Button size for expand icons
   const expandBtnSize = 12;
 
+  const expandBtn =
+    worksheetView.view === 'overlay' ? (
+      <NavLink to="/worksheet">
+        <FaExpandAlt
+          className={styles.expandIcon}
+          size={expandBtnSize}
+          onClick={() => {
+            handleWorksheetView({ view: 'calendar', mode: 'expanded' });
+          }}
+        />
+      </NavLink>
+    ) : worksheetView.view === 'calendar' &&
+      worksheetView.mode !== 'expanded' ? (
+      <FaExpandAlt
+        className={styles.expandIcon}
+        size={expandBtnSize}
+        style={{ display: 'block' }}
+        onClick={() => {
+          // Expand calendar
+          handleWorksheetView({
+            view: 'calendar',
+            mode: 'expanded',
+          });
+        }}
+      />
+    ) : (
+      <FaCompressAlt
+        className={styles.expandIcon}
+        size={expandBtnSize}
+        onClick={() => {
+          // Compress calendar
+          handleWorksheetView({ view: 'calendar', mode: '' });
+        }}
+      />
+    );
+
   return (
     <div className={styles.container}>
       {!isMobile ? (
         /* Desktop View */
         <div className={styles.desktopContainer}>
-          <Row className={worksheetView.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
+          <Row
+            className={
+              worksheetView.view === 'list' || worksheetView.view === 'overlay'
+                ? 'mx-0'
+                : 'mx-3 mb-3'
+            }
+          >
             {/* Calendar Component */}
             <Col
               // Width of component depends on if it is expanded or not
@@ -74,10 +117,12 @@ function Worksheet() {
                 worksheetView.view === 'calendar' &&
                 worksheetView.mode === 'expanded'
                   ? 12
-                  : 9
+                  : worksheetView.view === 'overlay'
+                    ? 0
+                    : 9
               }
               className={clsx(
-                'mt-3 pl-0',
+                worksheetView.view === 'overlay' ? 'mt-0 pl-0' : 'mt-3 pl-0',
                 worksheetView.view === 'calendar' &&
                   worksheetView.mode === 'expanded'
                   ? 'pr-0'
@@ -87,67 +132,48 @@ function Worksheet() {
             >
               <SurfaceComponent className={styles.calendarContainer}>
                 <WorksheetCalendar />
-                {/* Expand/Compress icons for calendar */}
-                <div className={clsx(styles.expandBtn, styles.topRight)}>
-                  {worksheetView.view === 'calendar' &&
-                  worksheetView.mode !== 'expanded' ? (
-                    <FaExpandAlt
-                      className={styles.expandIcon}
-                      size={expandBtnSize}
-                      style={{ display: 'block' }}
-                      onClick={() => {
-                        // Expand calendar
-                        handleWorksheetView({
-                          view: 'calendar',
-                          mode: 'expanded',
-                        });
-                      }}
-                    />
-                  ) : (
-                    <FaCompressAlt
-                      className={styles.expandIcon}
-                      size={expandBtnSize}
-                      onClick={() => {
-                        // Compress calendar
-                        handleWorksheetView({ view: 'calendar', mode: '' });
-                      }}
-                    />
-                  )}
-                </div>
+                <NavLink to="/worksheet">
+                  {/* Expand/Compress icons for calendar */}
+                  <div className={clsx(styles.expandBtn, styles.topRight)}>
+                    {expandBtn}
+                  </div>
+                </NavLink>
               </SurfaceComponent>
             </Col>
             {/* List Component */}
-            <Col
-              // Width depends on if it is expanded or not
-              md={worksheetView.view === 'list' ? 12 : 3}
-              className={clsx(
-                'ml-auto px-0',
-                worksheetView.view === 'calendar' &&
-                  worksheetView.mode === 'expanded' &&
-                  styles.hidden,
-              )}
-            >
-              {/* List Component */}
-              <Fade in={worksheetView.view === 'list'}>
-                <div
-                  style={{
-                    display: worksheetView.view === 'list' ? '' : 'none',
-                  }}
-                >
-                  {worksheetView.view === 'list' && <WorksheetList />}
-                </div>
-              </Fade>
-              {/* Calendar List Component */}
-              <Fade in={worksheetView.view !== 'list'}>
-                <div
-                  style={{
-                    display: worksheetView.view !== 'list' ? '' : 'none',
-                  }}
-                >
-                  <WorksheetCalendarList />
-                </div>
-              </Fade>
-            </Col>
+            {worksheetView.view !== 'overlay' && (
+              <Col
+                // Width depends on if it is expanded or not
+                md={worksheetView.view === 'list' ? 12 : 3}
+                className={clsx(
+                  'ml-auto px-0',
+                  worksheetView.view === 'calendar' &&
+                    worksheetView.mode === 'expanded' &&
+                    styles.hidden,
+                )}
+              >
+                {/* List Component */}
+                <Fade in={worksheetView.view === 'list'}>
+                  <div
+                    style={{
+                      display: worksheetView.view === 'list' ? '' : 'none',
+                    }}
+                  >
+                    {worksheetView.view === 'list' && <WorksheetList />}
+                  </div>
+                </Fade>
+                {/* Calendar List Component */}
+                <Fade in={worksheetView.view !== 'list'}>
+                  <div
+                    style={{
+                      display: worksheetView.view !== 'list' ? '' : 'none',
+                    }}
+                  >
+                    <WorksheetCalendarList />
+                  </div>
+                </Fade>
+              </Col>
+            )}
           </Row>
         </div>
       ) : (

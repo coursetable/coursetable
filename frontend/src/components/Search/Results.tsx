@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
@@ -20,6 +20,8 @@ import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
+import OverlayComponent from '../../pages/OverlayComponent';
+import FloatingButton from '../../pages/OverlayButton';
 
 /**
  * Renders the infinite list of search results for both catalog and worksheet
@@ -47,6 +49,12 @@ function Results({
     'isListView',
     true,
   );
+
+  const [overlayVisible, setOverlayVisible] = useState(false);
+
+  const toggleOverlay = useCallback(() => {
+    setOverlayVisible((isVisible) => !isVisible);
+  }, []);
 
   const { curSeason } = useWorksheet();
 
@@ -128,26 +136,33 @@ function Results({
     resultsListing = (
       <WindowScroller>
         {({ ref, outerRef, style: listStyle }) => (
-          <FixedSizeList
-            outerRef={outerRef}
-            ref={ref}
-            height={window.innerHeight}
-            itemCount={data.length}
-            itemSize={isLgDesktop ? 32 : 28}
-            width={window.innerWidth}
-            style={listStyle}
-            useIsScrolling
-          >
-            {({ index, style: itemStyle }) => (
-              <ResultsItem
-                isOdd={index % 2 === 1}
-                style={itemStyle}
-                course={data[index]!}
-                multiSeasons={multiSeasons}
-                isFirst={index === 0}
-              />
-            )}
-          </FixedSizeList>
+          <>
+            <FloatingButton
+              overlayVisible={overlayVisible}
+              toggleOverlay={toggleOverlay}
+            />
+            <OverlayComponent isVisible={overlayVisible} />
+            <FixedSizeList
+              outerRef={outerRef}
+              ref={ref}
+              height={window.innerHeight}
+              itemCount={data.length}
+              itemSize={isLgDesktop ? 32 : 28}
+              width={window.innerWidth}
+              style={listStyle}
+              useIsScrolling
+            >
+              {({ index, style: itemStyle }) => (
+                <ResultsItem
+                  isOdd={index % 2 === 1}
+                  style={itemStyle}
+                  course={data[index]!}
+                  multiSeasons={multiSeasons}
+                  isFirst={index === 0}
+                />
+              )}
+            </FixedSizeList>
+          </>
         )}
       </WindowScroller>
     );
@@ -169,7 +184,6 @@ function Results({
           numResults={data.length}
         />
       )}
-
       <div
         className={clsx(
           !isListView && 'px-1 pt-3',
