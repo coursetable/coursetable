@@ -132,12 +132,10 @@ function Worksheet() {
             >
               <SurfaceComponent className={styles.calendarContainer}>
                 <WorksheetCalendar />
-                <NavLink to="/worksheet">
-                  {/* Expand/Compress icons for calendar */}
-                  <div className={clsx(styles.expandBtn, styles.topRight)}>
-                    {expandBtn}
-                  </div>
-                </NavLink>
+                {/* Expand/Compress icons for calendar */}
+                <div className={clsx(styles.expandBtn, styles.topRight)}>
+                  {expandBtn}
+                </div>
               </SurfaceComponent>
             </Col>
             {/* List Component */}
