@@ -139,7 +139,7 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       {
         name: 'November recess',
         start: [2024, 11, 23],
-        end: [2024, 11, 2],
+        end: [2024, 12, 2],
       },
     ],
     transfers: [{ date: [2024, 8, 39], day: 1 }],
