@@ -122,7 +122,7 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
     ],
     transfers: [{ date: [2024, 1, 19], day: 1 }],
   },
-  ['202402' as Season]: {
+  ['202403' as Season]: {
     start: [2024, 8, 28],
     end: [2024, 12, 7],
     breaks: [
