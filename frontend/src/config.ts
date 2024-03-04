@@ -145,4 +145,5 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
     transfers: [{ date: [2024, 8, 39], day: 1 }],
   },
   // Add more entries above, but don't remove any
+  // Use zero-based indexing, i.e. "start" included, "end" excluded
 };
