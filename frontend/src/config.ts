@@ -122,5 +122,27 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
     ],
     transfers: [{ date: [2024, 1, 19], day: 1 }],
   },
+  ['202402' as Season]: {
+    start: [2024, 8, 28],
+    end: [2024, 12, 7],
+    breaks: [
+      {
+        name: 'Labor Day',
+        start: [2024, 9, 2],
+        end: [2024, 9, 3],
+      },
+      {
+        name: 'October recess',
+        start: [2024, 10, 16],
+        end: [2024, 10, 21],
+      },
+      {
+        name: 'November recess',
+        start: [2024, 11, 23],
+        end: [2024, 11, 2],
+      },
+    ],
+    transfers: [{ date: [2024, 8, 39], day: 1 }],
+  },
   // Add more entries above, but don't remove any
 };
