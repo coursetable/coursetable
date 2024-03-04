@@ -17,9 +17,6 @@
   border-radius: 8px;
   max-height: 3rem;
   transition: max-height 0.2s ease-out;
-}
-
-.ratingBubble {
   cursor: pointer;
   flex: none;
   background-color: rgb(190 221 255);
