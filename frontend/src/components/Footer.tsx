@@ -109,6 +109,12 @@ function Footer() {
                   <TextComponent type="secondary">Team</TextComponent>
                 </NavLink>
               </li>
+              {/* Release Notes */}
+              <li>
+                <NavLink to="/releases" onClick={scrollToTop}>
+                  <TextComponent type="secondary">Release Notes</TextComponent>
+                </NavLink>
+              </li>
               {/* Join us */}
               <li>
                 <NavLink to="/joinus" onClick={scrollToTop}>
@@ -146,12 +152,6 @@ function Footer() {
                     Support CourseTable
                   </TextComponent>
                 </a>
-              </li>
-              {/* Release Notes */}
-              <li>
-                <NavLink to="/releases" onClick={scrollToTop}>
-                  <TextComponent type="secondary">Release Notes</TextComponent>
-                </NavLink>
               </li>
             </ul>
           </div>
