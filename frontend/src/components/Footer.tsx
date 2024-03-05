@@ -147,6 +147,12 @@ function Footer() {
                   </TextComponent>
                 </a>
               </li>
+              {/* Release Notes */}
+              <li>
+                <NavLink to="/releases" onClick={scrollToTop}>
+                  <TextComponent type="secondary">Release Notes</TextComponent>
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>
