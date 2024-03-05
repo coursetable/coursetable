@@ -84,7 +84,9 @@ export function FerryProvider({
       }
       const fetchPublicCatalog = authStatus === 'unauthenticated';
 
-      // If (!user.hasEvals) return; // Not logged in / doesn't have evals CHANGE: Everyone can see years?
+      // Not logged in / doesn't have evals
+      // TODO: Everyone can see years?
+      // if (!user.hasEvals) return;
       const fetches = requestedSeasons.map(async (season) => {
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;

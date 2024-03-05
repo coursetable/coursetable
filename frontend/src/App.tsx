@@ -51,9 +51,6 @@ function App() {
   const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
 
-  // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheets);
-
   // Render spinner if page loading
   if (authStatus === 'loading') {
     return (
@@ -92,7 +89,7 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? (
+            authStatus === 'authenticated' ? (
               /* <Home /> */ <Navigate to="/catalog" />
             ) : (
               <Navigate to="/login" />
@@ -127,7 +124,9 @@ function App() {
         {/* Auth */}
         <Route
           path="/login"
-          element={isLoggedIn ? <Navigate to="/" /> : <Landing />}
+          element={
+            authStatus === 'authenticated' ? <Navigate to="/" /> : <Landing />
+          }
         />
 
         {/* OCE Challenge */}

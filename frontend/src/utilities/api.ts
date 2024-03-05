@@ -55,10 +55,10 @@ export async function toggleBookmark(payload: {
   }
 }
 
-export const fetchCatalog = async (
+export async function fetchCatalog(
   season: Season,
   fetchPublicCatalog: boolean = false,
-) => {
+) {
   // Const endpoint = user.hasEvals ? 'catalogs' : 'catalogs/public';
   const endpoint = fetchPublicCatalog
     ? `/api/static/catalogs/public/${season}.json`
@@ -78,7 +78,7 @@ export const fetchCatalog = async (
   const info = new Map<Crn, Listing>();
   for (const listing of data) info.set(listing.crn, listing);
   return info;
-};
+}
 
 export async function logout() {
   try {
@@ -423,9 +423,7 @@ export async function removeFriend(friendNetId: string, isRequest: boolean) {
       throw new Error(data.error ?? res.statusText);
     }
     toast.info(
-      `${
-        isRequest ? 'Declined request from' : 'Removed friend'
-      } ${friendNetId}`,
+      `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
     );
   } catch (err) {
     Sentry.addBreadcrumb({
