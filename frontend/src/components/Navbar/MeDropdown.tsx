@@ -2,7 +2,13 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
-import { FcInfo, FcQuestions, FcFeedback, FcPuzzle } from 'react-icons/fc';
+import {
+  FcInfo,
+  FcQuestions,
+  FcFeedback,
+  FcPuzzle,
+  FcNews,
+} from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
@@ -109,6 +115,10 @@ function MeDropdown({ isExpanded, setIsExpanded }: Props) {
               externalLink
             >
               Feedback
+            </DropdownItem>
+            {/* Release notes */}
+            <DropdownItem icon={FcNews} to="/releases">
+              Release Notes
             </DropdownItem>
             {/* Try tutorial only on desktop */}
             {!isMobile && !isTablet && isLoggedIn && (

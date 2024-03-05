@@ -1,0 +1,18 @@
+.releaseNotesContainer {
+  padding: 2rem;
+}
+
+.releaseNotesHeader {
+  margin-bottom: 1.5rem;
+  color: var(--color-primary); /* Adjust according to your theme variables */
+}
+
+.releaseLink {
+  font-size: 1rem;
+  color: var(--color-secondary); /* Adjust according to your theme variables */
+  text-decoration: none;
+}
+
+.releaseLink:hover {
+  text-decoration: underline;
+}
