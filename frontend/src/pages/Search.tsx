@@ -12,12 +12,7 @@ import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useSearch } from '../contexts/searchContext';
 import './rc-slider-override.css';
 
-// Take auth state in search
-function Search({
-  isAuthorized,
-}: {
-  readonly isAuthorized: boolean | undefined;
-}) {
+function Search() {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
 
@@ -75,7 +70,6 @@ function Search({
               data={searchData}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
-              isAuthenticated={isAuthorized}
             />
           </Element>
         </Col>

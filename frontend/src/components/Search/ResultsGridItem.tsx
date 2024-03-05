@@ -42,13 +42,8 @@ type RatingInfo = {
   Icon: React.ElementType;
 };
 
-function RatingRows({
-  course,
-  isAuthenticated,
-}: {
-  readonly course: Listing;
-  readonly isAuthenticated: boolean;
-}) {
+function RatingRows({ course }: { readonly course: Listing }) {
+  const { user } = useUser();
   const ratings: RatingInfo[] = [
     {
       name: 'Class',
@@ -73,7 +68,7 @@ function RatingRows({
   return (
     <>
       {ratings.map(({ name, getRating, colorMap, Icon }) =>
-        isAuthenticated ? (
+        user.hasEvals ? (
           <OverlayTrigger
             key={name}
             placement="right"
@@ -148,12 +143,10 @@ function ResultsGridItem({
   course,
   numCols,
   multiSeasons,
-  isAuthenticated,
 }: {
   readonly course: Listing;
   readonly numCols: number;
   readonly multiSeasons: boolean;
-  readonly isAuthenticated?: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
@@ -338,8 +331,8 @@ function ResultsGridItem({
           </Col>
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
-              {isAuthenticated ? (
-                <RatingRows course={course} isAuthenticated />
+              {user.hasEvals ? (
+                <RatingRows course={course} />
               ) : (
                 <OverlayTrigger
                   placement="top"
@@ -351,7 +344,7 @@ function ResultsGridItem({
                   }
                 >
                   <div>
-                    <RatingRows course={course} isAuthenticated={false} />
+                    <RatingRows course={course} />
                   </div>
                 </OverlayTrigger>
               )}

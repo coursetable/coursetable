@@ -42,7 +42,6 @@ type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
 type Store = {
   authStatus: AuthStatus;
-  loading: boolean;
   user: {
     netId?: NetId;
     worksheets?: UserWorksheets;
@@ -73,8 +72,6 @@ export function UserProvider({
 }) {
   const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
 
-  // Page initialized as loading
-  const [loading, setLoading] = useState(true);
   // User's netId
   const [netId, setNetId] = useState<NetId | undefined>(undefined);
   // User's worksheet
@@ -171,7 +168,7 @@ export function UserProvider({
         setAuthStatus('unauthenticated');
       }
     }
-    void init().finally(() => setLoading(false));
+    void init();
   }, [userRefresh, friendRefresh, friendReqRefresh]);
 
   const user = useMemo(
@@ -190,7 +187,6 @@ export function UserProvider({
   const store = useMemo(
     () => ({
       authStatus,
-      loading,
       user,
       userRefresh,
       friendRefresh,
@@ -201,7 +197,6 @@ export function UserProvider({
     }),
     [
       authStatus,
-      loading,
       user,
       userRefresh,
       friendRefresh,

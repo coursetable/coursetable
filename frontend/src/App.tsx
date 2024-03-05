@@ -48,14 +48,14 @@ const Tutorial = suspended(() => import('./components/Tutorial'));
 function App() {
   const location = useLocation();
   // User context data
-  const { loading, user } = useUser();
+  const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheets);
 
   // Render spinner if page loading
-  if (loading) {
+  if (authStatus === 'loading') {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
@@ -102,10 +102,7 @@ function App() {
 
         {/* Authenticated routes */}
         {/* Catalog */}
-        <Route
-          path="/catalog"
-          element={<Search isAuthorized={user.hasEvals} />}
-        />
+        <Route path="/catalog" element={<Search />} />
 
         {/* Worksheet */}
         <Route

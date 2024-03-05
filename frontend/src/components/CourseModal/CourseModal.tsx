@@ -13,10 +13,9 @@ import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useFerry } from '../../contexts/ferryContext';
+import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
 import { CUR_YEAR } from '../../config';
-import CourseConflictIcon from '../Search/CourseConflictIcon';
-import { checkAuth } from '../../utilities/api';
 
 const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -100,17 +99,7 @@ const CourseModalEvaluations = suspended(
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(
-    undefined,
-  );
-  useEffect(() => {
-    // Better way to do auth?
-    const init = async () => {
-      const authStatus = await checkAuth();
-      setIsAuthenticated(authStatus);
-    };
-    init();
-  }, []);
+  const { user } = useUser();
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
@@ -207,8 +196,7 @@ function CourseModal() {
                     value: 'evals',
                     // Don't show eval tab if it's current year or no auth
                     hidden:
-                      CUR_YEAR.includes(listing.season_code) ||
-                      !isAuthenticated,
+                      CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
                   },
                 ]}
                 onSelectTab={setView}
@@ -224,9 +212,8 @@ function CourseModal() {
         {view === 'overview' ? (
           // Show overview data
           <CourseModalOverview
-            isAuthenticated={isAuthenticated}
             gotoCourse={(l) => {
-              isAuthenticated ? setView('evals') : setView('overview'); // Need also to default to overview if no evals at all
+              user.hasEvals ? setView('evals') : setView('overview');
               if (
                 l.crn === listing.crn &&
                 l.season_code === listing.season_code

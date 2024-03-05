@@ -89,25 +89,6 @@ type RelatedListingInfo = Omit<
   }[];
 };
 
-function RatingsWithTooltip({ isAuthenticated, children }) {
-  if (!isAuthenticated) {
-    return (
-      <OverlayTrigger
-        placement="top"
-        overlay={
-          <Tooltip>
-            These colors are randomly generated. Sign in to see real ratings.
-          </Tooltip>
-        }
-      >
-        <div>{children}</div>
-      </OverlayTrigger>
-    );
-  }
-
-  return <>{children}</>;
-}
-
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
   (props) => (
@@ -176,116 +157,79 @@ const profInfoPopover =
     </InfoPopover>
   );
 
-const renderRatingsRow = (
-  offering: CourseOffering,
-  isAuthenticated: boolean,
-) => {
-  const tooltipId = `tooltip-${offering.listing.crn}-${offering.listing.season_code}`;
-
-  const ratingContent = (
-    <>
-      {/* Course rating */}
+function RatingContent({
+  offering,
+  hasEvals,
+}: {
+  readonly offering: CourseOffering;
+  readonly hasEvals: boolean | undefined;
+}) {
+  const ratingBubbles = [
+    {
+      colorMap: ratingColormap,
+      rating: offering.rating,
+    },
+    {
+      colorMap: ratingColormap,
+      rating: offering.professorRating,
+    },
+    {
+      colorMap: workloadColormap,
+      rating: offering.workload,
+    },
+  ];
+  if (hasEvals) {
+    return ratingBubbles.map(({ colorMap, rating }, i) => (
       <Col
+        key={i}
         xs={2}
         className="px-1 ml-0 d-flex justify-content-center text-center"
-        style={
-          isAuthenticated
-            ? {}
-            : {
-                backgroundColor: generateRandomColor(ratingColormap),
-                filter: 'blur(3px)',
-              }
-        }
       >
         <RatingBubble
-          rating={offering.rating}
-          colorMap={ratingColormap}
+          rating={rating}
+          colorMap={colorMap}
           className={styles.ratingCell}
         >
-          {isAuthenticated
-            ? offering.rating
-              ? offering.rating.toFixed(1)
-              : 'N/A'
-            : ''}
+          {rating ? rating.toFixed(1) : 'N/A'}
         </RatingBubble>
       </Col>
-      {/* Professor rating */}
-      <Col
-        xs={2}
-        className="px-1 ml-0 d-flex justify-content-center text-center"
-        style={
-          isAuthenticated
-            ? {}
-            : {
-                backgroundColor: generateRandomColor(ratingColormap),
-                filter: 'blur(3px)',
-              }
-        }
-      >
-        <RatingBubble
-          rating={offering.professorRating}
-          colorMap={ratingColormap}
-          className={styles.ratingCell}
-        >
-          {isAuthenticated
-            ? offering.professorRating
-              ? offering.professorRating.toFixed(1)
-              : 'N/A'
-            : ''}
-        </RatingBubble>
-      </Col>
-      {/* Workload rating */}
-      <Col
-        xs={2}
-        className="px-1 ml-0 d-flex justify-content-center text-center"
-        style={
-          isAuthenticated
-            ? {}
-            : {
-                backgroundColor: generateRandomColor(workloadColormap),
-                filter: 'blur(3px)',
-              }
-        }
-      >
-        <RatingBubble
-          rating={offering.workload}
-          colorMap={workloadColormap}
-          className={styles.ratingCell}
-        >
-          {isAuthenticated
-            ? offering.workload
-              ? offering.workload.toFixed(1)
-              : 'N/A'
-            : ''}
-        </RatingBubble>
-      </Col>
-    </>
-  );
-
-  if (isAuthenticated) return ratingContent;
-
-  return (
+    ));
+  }
+  return ratingBubbles.map(({ colorMap, rating }, i) => (
     <OverlayTrigger
+      key={i}
       placement="top"
-      overlay={
-        <Tooltip>
+      overlay={(props) => (
+        <Tooltip id="color-tooltip" {...props}>
           These colors are randomly generated. Sign in to see real ratings.
         </Tooltip>
-      }
+      )}
     >
-      {ratingContent}
+      <Col
+        key={i}
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+        style={{
+          backgroundColor: generateRandomColor(colorMap),
+          filter: 'blur(3px)',
+        }}
+      >
+        <RatingBubble
+          rating={rating}
+          colorMap={colorMap}
+          className={styles.ratingCell}
+        />
+      </Col>
     </OverlayTrigger>
-  );
-};
+  ));
+}
 
 function CourseModalOverview({
   gotoCourse,
   listing,
-  isAuthenticated,
 }: {
   readonly gotoCourse: (x: Listing) => void;
   readonly listing: Listing;
-  readonly isAuthenticated: boolean | undefined;
 }) {
   // Fetch user context data
   const { user } = useUser();
@@ -325,13 +269,13 @@ function CourseModalOverview({
       times.get(timespan)!.add(day);
     }
   }
-  // Need to do this bc can't condtionally call react hooks but maybe a better way
+  // Need to do this bc can't conditionally call react hooks but maybe a better way
   const {
     data: dataPrivate,
     loading: loadingPrivate,
     error: errorPrivate,
   } = useSameCourseOrProfOfferingsQuery({
-    skip: !isAuthenticated, // Skip this query if not authenticated
+    skip: !user.hasEvals, // Skip this query if not authenticated
     variables: {
       same_course_id: listing.same_course_id,
       professor_ids: listing.professor_ids,
@@ -343,7 +287,7 @@ function CourseModalOverview({
     loading: loadingPublic,
     error: errorPublic,
   } = useSameCourseOrProfOfferingsPublicQuery({
-    skip: isAuthenticated, // Skip this query if authenticated
+    skip: user.hasEvals, // Skip this query if authenticated
     variables: {
       same_course_id: listing.same_course_id,
       professor_ids: listing.professor_ids,
@@ -352,9 +296,9 @@ function CourseModalOverview({
 
   // Then decide what data to use here
 
-  const data = isAuthenticated ? dataPrivate : dataPublic;
-  const loading = isAuthenticated ? loadingPrivate : loadingPublic;
-  const error = isAuthenticated ? errorPrivate : errorPublic;
+  const data = user.hasEvals ? dataPrivate : dataPublic;
+  const loading = user.hasEvals ? loadingPrivate : loadingPublic;
+  const error = user.hasEvals ? errorPrivate : errorPublic;
 
   // Holds Prof information for popover
   const profInfo = useMemo(() => {
@@ -884,7 +828,7 @@ function CourseModalOverview({
                     </div>
                   </Col>
                   {/* All Ratings */}
-                  {renderRatingsRow(offering, isAuthenticated)}
+                  <RatingContent offering={offering} hasEvals={user.hasEvals} />
                 </Row>
               ))}
             </>

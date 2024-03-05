@@ -70,14 +70,12 @@ function ResultsItem({
   isFirst,
   isOdd,
   style,
-  isAuthenticated,
 }: {
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
   readonly isOdd: boolean;
   readonly style?: React.CSSProperties;
-  readonly isAuthenticated: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   const { user } = useUser();
@@ -239,7 +237,7 @@ function ResultsItem({
         </OverlayTrigger>
         <div className="d-flex">
           <div className={colStyles.overallCol}>
-            {isAuthenticated ? (
+            {user.hasEvals ? (
               <RatingBubble
                 className={styles.ratingCell}
                 rating={getOverallRatings(course, 'stat')}
@@ -262,7 +260,7 @@ function ResultsItem({
             )}
           </div>
           <div className={colStyles.workloadCol}>
-            {isAuthenticated ? (
+            {user.hasEvals ? (
               <RatingBubble
                 className={clsx(styles.ratingCell, colStyles.workloadCol)}
                 rating={getWorkloadRatings(course, 'stat')}
@@ -286,7 +284,7 @@ function ResultsItem({
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
             <div className={clsx('mr-2 h-100', styles.profRating)}>
-              {isAuthenticated ? (
+              {user.hasEvals ? (
                 <RatingBubble
                   className={styles.ratingCell}
                   rating={getProfessorRatings(course, 'stat')}
