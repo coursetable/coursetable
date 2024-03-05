@@ -58,7 +58,7 @@ export default function WorksheetCalendarListItem({
         </div>
         {/* Add/remove from worksheet button */}
         <div className="my-auto">
-          <WorksheetToggleButton listing={course} modal={false} inWorksheet />
+          <WorksheetToggleButton listing={course} modal={false} />
         </div>
       </Row>
     </ListGroup.Item>

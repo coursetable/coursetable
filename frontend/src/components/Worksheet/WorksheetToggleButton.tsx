@@ -82,17 +82,11 @@ function WorksheetToggleButton({
   listing,
   modal,
   inWorksheet: inWorksheetProp,
-}:
-  | {
-      readonly listing: Listing;
-      readonly modal: false;
-      readonly inWorksheet: boolean;
-    }
-  | {
-      readonly listing: Listing;
-      readonly modal: true;
-      readonly inWorksheet?: undefined;
-    }) {
+}: {
+  readonly listing: Listing;
+  readonly modal: boolean;
+  readonly inWorksheet?: boolean;
+}) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
 
