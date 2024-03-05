@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import styles from './ReleaseNotes.module.css';
 
-const ReleaseNotes: React.FC = () => {
-  return (
+const ReleaseNotes: React.FC = () => (
     <Container className={styles.releaseNotesContainer}>
       <Row>
         <Col>
@@ -25,6 +24,5 @@ const ReleaseNotes: React.FC = () => {
       </Row>
     </Container>
   );
-};
 
 export default ReleaseNotes;
