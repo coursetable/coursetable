@@ -59,7 +59,6 @@ export const fetchCatalog = async (
   season: Season,
   fetchPublicCatalog: boolean = false,
 ) => {
-  console.log(`fetching catalog for season ${season}`);
   // Const endpoint = user.hasEvals ? 'catalogs' : 'catalogs/public';
   const endpoint = fetchPublicCatalog
     ? `/api/static/catalogs/public/${season}.json`

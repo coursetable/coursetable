@@ -4,6 +4,7 @@ import {
   Col,
   Modal,
   OverlayTrigger,
+  Tooltip,
   Popover,
   Collapse,
 } from 'react-bootstrap';
@@ -43,6 +44,7 @@ import {
 } from '../../generated/graphql';
 import {
   weekdays,
+  generateRandomColor,
   type NarrowListing,
   type Weekdays,
   type Listing,
@@ -86,6 +88,25 @@ type RelatedListingInfo = Omit<
     name: string;
   }[];
 };
+
+function RatingsWithTooltip({ isAuthenticated, children }) {
+  if (!isAuthenticated) {
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip>
+            These colors are randomly generated. Sign in to see real ratings.
+          </Tooltip>
+        }
+      >
+        <div>{children}</div>
+      </OverlayTrigger>
+    );
+  }
+
+  return <>{children}</>;
+}
 
 const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
@@ -154,6 +175,108 @@ const profInfoPopover =
       </Popover.Content>
     </InfoPopover>
   );
+
+const renderRatingsRow = (
+  offering: CourseOffering,
+  isAuthenticated: boolean,
+) => {
+  const tooltipId = `tooltip-${offering.listing.crn}-${offering.listing.season_code}`;
+
+  const ratingContent = (
+    <>
+      {/* Course rating */}
+      <Col
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+        style={
+          isAuthenticated
+            ? {}
+            : {
+                backgroundColor: generateRandomColor(ratingColormap),
+                filter: 'blur(3px)',
+              }
+        }
+      >
+        <RatingBubble
+          rating={offering.rating}
+          colorMap={ratingColormap}
+          className={styles.ratingCell}
+        >
+          {isAuthenticated
+            ? offering.rating
+              ? offering.rating.toFixed(1)
+              : 'N/A'
+            : ''}
+        </RatingBubble>
+      </Col>
+      {/* Professor rating */}
+      <Col
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+        style={
+          isAuthenticated
+            ? {}
+            : {
+                backgroundColor: generateRandomColor(ratingColormap),
+                filter: 'blur(3px)',
+              }
+        }
+      >
+        <RatingBubble
+          rating={offering.professorRating}
+          colorMap={ratingColormap}
+          className={styles.ratingCell}
+        >
+          {isAuthenticated
+            ? offering.professorRating
+              ? offering.professorRating.toFixed(1)
+              : 'N/A'
+            : ''}
+        </RatingBubble>
+      </Col>
+      {/* Workload rating */}
+      <Col
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+        style={
+          isAuthenticated
+            ? {}
+            : {
+                backgroundColor: generateRandomColor(workloadColormap),
+                filter: 'blur(3px)',
+              }
+        }
+      >
+        <RatingBubble
+          rating={offering.workload}
+          colorMap={workloadColormap}
+          className={styles.ratingCell}
+        >
+          {isAuthenticated
+            ? offering.workload
+              ? offering.workload.toFixed(1)
+              : 'N/A'
+            : ''}
+        </RatingBubble>
+      </Col>
+    </>
+  );
+
+  if (isAuthenticated) return ratingContent;
+
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip>
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      }
+    >
+      {ratingContent}
+    </OverlayTrigger>
+  );
+};
 
 function CourseModalOverview({
   gotoCourse,
@@ -760,47 +883,8 @@ function CourseModalOverview({
                           : offering.professor[0]}
                     </div>
                   </Col>
-                  {/* Course Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.rating}
-                      colorMap={ratingColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
-                    </RatingBubble>
-                  </Col>
-                  {/* Professor Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.professorRating}
-                      colorMap={ratingColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.professorRating
-                        ? offering.professorRating.toFixed(1)
-                        : 'N/A'}
-                    </RatingBubble>
-                  </Col>
-                  {/* Workload Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.workload}
-                      colorMap={workloadColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
-                    </RatingBubble>
-                  </Col>
+                  {/* All Ratings */}
+                  {renderRatingsRow(offering, isAuthenticated)}
                 </Row>
               ))}
             </>

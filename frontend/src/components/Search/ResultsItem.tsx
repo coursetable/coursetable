@@ -35,7 +35,11 @@ import { generateRandomColor, type Listing } from '../../utilities/common';
 
 import { useSearch } from '../../contexts/searchContext';
 
-function BlurRatingTooltip({ children }: { readonly children: JSX.Element }) {
+export function BlurRatingTooltip({
+  children,
+}: {
+  readonly children: JSX.Element;
+}) {
   return (
     <OverlayTrigger
       placement="top"
