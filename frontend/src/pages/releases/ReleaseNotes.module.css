@@ -11,7 +11,7 @@
 }
 
 .card {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 10%);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   transition:
     transform 0.2s,
     box-shadow 0.2s;
@@ -19,16 +19,16 @@
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 20%);
+  box-shadow: 0 10px 15px rgb(0 0 0 / 20%);
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .title {
     font-size: 24px;
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .container {
     padding-top: 1rem;
     padding-bottom: 2rem;

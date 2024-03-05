@@ -30,30 +30,32 @@ const releaseNotes: ReleaseNote[] = [
 // Sort release notes by date, newest first
 releaseNotes.sort((a, b) => b.date.localeCompare(a.date));
 
-const ReleaseNotes: React.FC = () => (
-  <Container className={styles.container}>
-    <h1 className={styles.title}>Release Notes</h1>
-    <Row>
-      {releaseNotes.map((note, index) => (
-        <div key={index} className="col-md-6 col-lg-4 mb-4">
-          <Card className={styles.card}>
-            <Card.Body>
-              <Card.Title>{note.title}</Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">
-                {note.date}
-              </Card.Subtitle>
-              <Card.Text>{note.summary}</Card.Text>
-              <Link
-                to={note.path}
-                className="stretched-link"
-                aria-label={`Read more about the ${note.title}`}
-              />
-            </Card.Body>
-          </Card>
-        </div>
-      ))}
-    </Row>
-  </Container>
-);
+function ReleaseNotes() {
+  return (
+    <Container className={styles.container}>
+      <h1 className={styles.title}>Release Notes</h1>
+      <Row>
+        {releaseNotes.map((note, index) => (
+          <div key={index} className="col-md-6 col-lg-4 mb-4">
+            <Card className={styles.card}>
+              <Card.Body>
+                <Card.Title>{note.title}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">
+                  {note.date}
+                </Card.Subtitle>
+                <Card.Text>{note.summary}</Card.Text>
+                <Link
+                  to={note.path}
+                  className="stretched-link"
+                  aria-label={`Read more about the ${note.title}`}
+                />
+              </Card.Body>
+            </Card>
+          </div>
+        ))}
+      </Row>
+    </Container>
+  );
+}
 
 export default ReleaseNotes;
