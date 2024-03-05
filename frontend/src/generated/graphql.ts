@@ -1345,196 +1345,6 @@ export type Computed_Listing_Info_Variance_Order_By = {
   same_course_id: InputMaybe<Order_By>;
 };
 
-export type Course_Discussions_Aggregate_Bool_Exp = {
-  count: InputMaybe<Course_Discussions_Aggregate_Bool_Exp_Count>;
-};
-
-export type Course_Discussions_Aggregate_Bool_Exp_Count = {
-  arguments: InputMaybe<Array<Course_Discussions_Select_Column>>;
-  distinct: InputMaybe<Scalars['Boolean']['input']>;
-  filter: InputMaybe<Course_Discussions_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** order by aggregate values of table "course_discussions" */
-export type Course_Discussions_Aggregate_Order_By = {
-  avg: InputMaybe<Course_Discussions_Avg_Order_By>;
-  count: InputMaybe<Order_By>;
-  max: InputMaybe<Course_Discussions_Max_Order_By>;
-  min: InputMaybe<Course_Discussions_Min_Order_By>;
-  stddev: InputMaybe<Course_Discussions_Stddev_Order_By>;
-  stddev_pop: InputMaybe<Course_Discussions_Stddev_Pop_Order_By>;
-  stddev_samp: InputMaybe<Course_Discussions_Stddev_Samp_Order_By>;
-  sum: InputMaybe<Course_Discussions_Sum_Order_By>;
-  var_pop: InputMaybe<Course_Discussions_Var_Pop_Order_By>;
-  var_samp: InputMaybe<Course_Discussions_Var_Samp_Order_By>;
-  variance: InputMaybe<Course_Discussions_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "course_discussions" */
-export type Course_Discussions_Arr_Rel_Insert_Input = {
-  data: Array<Course_Discussions_Insert_Input>;
-  /** upsert condition */
-  on_conflict: InputMaybe<Course_Discussions_On_Conflict>;
-};
-
-/** order by avg() on columns of table "course_discussions" */
-export type Course_Discussions_Avg_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "course_discussions". All fields are combined with a logical 'AND'. */
-export type Course_Discussions_Bool_Exp = {
-  _and: InputMaybe<Array<Course_Discussions_Bool_Exp>>;
-  _not: InputMaybe<Course_Discussions_Bool_Exp>;
-  _or: InputMaybe<Array<Course_Discussions_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
-  course_id: InputMaybe<Int_Comparison_Exp>;
-  discussion: InputMaybe<Discussions_Bool_Exp>;
-  discussion_id: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "course_discussions" */
-export enum Course_Discussions_Constraint {
-  /** unique or primary key constraint on columns "discussion_id", "course_id" */
-  PkCourseDiscussionsStaged = 'pk_course_discussions_staged',
-}
-
-/** input type for incrementing numeric columns in table "course_discussions" */
-export type Course_Discussions_Inc_Input = {
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "course_discussions" */
-export type Course_Discussions_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  discussion: InputMaybe<Discussions_Obj_Rel_Insert_Input>;
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by max() on columns of table "course_discussions" */
-export type Course_Discussions_Max_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "course_discussions" */
-export type Course_Discussions_Min_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** on_conflict condition type for table "course_discussions" */
-export type Course_Discussions_On_Conflict = {
-  constraint: Course_Discussions_Constraint;
-  update_columns: Array<Course_Discussions_Update_Column>;
-  where: InputMaybe<Course_Discussions_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "course_discussions". */
-export type Course_Discussions_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
-  course_id: InputMaybe<Order_By>;
-  discussion: InputMaybe<Discussions_Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: course_discussions */
-export type Course_Discussions_Pk_Columns_Input = {
-  course_id: Scalars['Int']['input'];
-  discussion_id: Scalars['Int']['input'];
-};
-
-/** select columns of table "course_discussions" */
-export enum Course_Discussions_Select_Column {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  DiscussionId = 'discussion_id',
-}
-
-/** input type for updating data in table "course_discussions" */
-export type Course_Discussions_Set_Input = {
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by stddev() on columns of table "course_discussions" */
-export type Course_Discussions_Stddev_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** order by stddev_pop() on columns of table "course_discussions" */
-export type Course_Discussions_Stddev_Pop_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** order by stddev_samp() on columns of table "course_discussions" */
-export type Course_Discussions_Stddev_Samp_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "course_discussions" */
-export type Course_Discussions_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Course_Discussions_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Course_Discussions_Stream_Cursor_Value_Input = {
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by sum() on columns of table "course_discussions" */
-export type Course_Discussions_Sum_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** update columns of table "course_discussions" */
-export enum Course_Discussions_Update_Column {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  DiscussionId = 'discussion_id',
-}
-
-export type Course_Discussions_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc: InputMaybe<Course_Discussions_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set: InputMaybe<Course_Discussions_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Course_Discussions_Bool_Exp;
-};
-
-/** order by var_pop() on columns of table "course_discussions" */
-export type Course_Discussions_Var_Pop_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** order by var_samp() on columns of table "course_discussions" */
-export type Course_Discussions_Var_Samp_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
-/** order by variance() on columns of table "course_discussions" */
-export type Course_Discussions_Variance_Order_By = {
-  course_id: InputMaybe<Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-};
-
 export type Course_Flags_Aggregate_Bool_Exp = {
   count: InputMaybe<Course_Flags_Aggregate_Bool_Exp_Count>;
 };
@@ -2122,8 +1932,6 @@ export type Courses_Bool_Exp = {
   computed_listing_infos_aggregate: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp>;
   course: InputMaybe<Courses_Bool_Exp>;
   courseByLastOfferedCourseId: InputMaybe<Courses_Bool_Exp>;
-  course_discussions: InputMaybe<Course_Discussions_Bool_Exp>;
-  course_discussions_aggregate: InputMaybe<Course_Discussions_Aggregate_Bool_Exp>;
   course_flags: InputMaybe<Course_Flags_Bool_Exp>;
   course_flags_aggregate: InputMaybe<Course_Flags_Aggregate_Bool_Exp>;
   course_home_url: InputMaybe<String_Comparison_Exp>;
@@ -2135,7 +1943,6 @@ export type Courses_Bool_Exp = {
   coursesByLastOfferedCourseId_aggregate: InputMaybe<Courses_Aggregate_Bool_Exp>;
   courses_aggregate: InputMaybe<Courses_Aggregate_Bool_Exp>;
   credits: InputMaybe<Float8_Comparison_Exp>;
-  demand_statistic: InputMaybe<Demand_Statistics_Bool_Exp>;
   description: InputMaybe<String_Comparison_Exp>;
   evaluation_narratives: InputMaybe<Evaluation_Narratives_Bool_Exp>;
   evaluation_narratives_aggregate: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp>;
@@ -2143,10 +1950,6 @@ export type Courses_Bool_Exp = {
   evaluation_ratings_aggregate: InputMaybe<Evaluation_Ratings_Aggregate_Bool_Exp>;
   evaluation_statistic: InputMaybe<Evaluation_Statistics_Bool_Exp>;
   extra_info: InputMaybe<String_Comparison_Exp>;
-  fasttextSimilarsByTarget: InputMaybe<Fasttext_Similars_Bool_Exp>;
-  fasttextSimilarsByTarget_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Bool_Exp>;
-  fasttext_similars: InputMaybe<Fasttext_Similars_Bool_Exp>;
-  fasttext_similars_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Bool_Exp>;
   final_exam: InputMaybe<String_Comparison_Exp>;
   fysem: InputMaybe<Boolean_Comparison_Exp>;
   last_enrollment: InputMaybe<Int_Comparison_Exp>;
@@ -2169,10 +1972,6 @@ export type Courses_Bool_Exp = {
   skills: InputMaybe<Json_Comparison_Exp>;
   syllabus_url: InputMaybe<String_Comparison_Exp>;
   sysem: InputMaybe<Boolean_Comparison_Exp>;
-  tfidfSimilarsByTarget: InputMaybe<Tfidf_Similars_Bool_Exp>;
-  tfidfSimilarsByTarget_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Bool_Exp>;
-  tfidf_similars: InputMaybe<Tfidf_Similars_Bool_Exp>;
-  tfidf_similars_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Bool_Exp>;
   times_by_day: InputMaybe<Json_Comparison_Exp>;
   times_long_summary: InputMaybe<String_Comparison_Exp>;
   times_summary: InputMaybe<String_Comparison_Exp>;
@@ -2294,7 +2093,6 @@ export type Courses_Insert_Input = {
   computed_listing_infos: InputMaybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   courseByLastOfferedCourseId: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  course_discussions: InputMaybe<Course_Discussions_Arr_Rel_Insert_Input>;
   course_flags: InputMaybe<Course_Flags_Arr_Rel_Insert_Input>;
   /** Link to the course homepage */
   course_home_url: InputMaybe<Scalars['String']['input']>;
@@ -2304,7 +2102,6 @@ export type Courses_Insert_Input = {
   coursesByLastOfferedCourseId: InputMaybe<Courses_Arr_Rel_Insert_Input>;
   /** Number of course credits */
   credits: InputMaybe<Scalars['float8']['input']>;
-  demand_statistic: InputMaybe<Demand_Statistics_Obj_Rel_Insert_Input>;
   /** Course description */
   description: InputMaybe<Scalars['String']['input']>;
   evaluation_narratives: InputMaybe<Evaluation_Narratives_Arr_Rel_Insert_Input>;
@@ -2312,8 +2109,6 @@ export type Courses_Insert_Input = {
   evaluation_statistic: InputMaybe<Evaluation_Statistics_Obj_Rel_Insert_Input>;
   /** Additional information (indicates if class has been cancelled) */
   extra_info: InputMaybe<Scalars['String']['input']>;
-  fasttextSimilarsByTarget: InputMaybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
-  fasttext_similars: InputMaybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
   /** Final exam information */
   final_exam: InputMaybe<Scalars['String']['input']>;
   /** True if the course is a first-year seminar. False otherwise. */
@@ -2383,8 +2178,6 @@ export type Courses_Insert_Input = {
   syllabus_url: InputMaybe<Scalars['String']['input']>;
   /** True if the course is a sophomore seminar. False otherwise. */
   sysem: InputMaybe<Scalars['Boolean']['input']>;
-  tfidfSimilarsByTarget: InputMaybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
-  tfidf_similars: InputMaybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
   /**
    * Course meeting times by day, with days as keys and
    *         tuples of `(start_time, end_time, location)`
@@ -2651,7 +2444,6 @@ export type Courses_Order_By = {
   computed_listing_infos_aggregate: InputMaybe<Computed_Listing_Info_Aggregate_Order_By>;
   course: InputMaybe<Courses_Order_By>;
   courseByLastOfferedCourseId: InputMaybe<Courses_Order_By>;
-  course_discussions_aggregate: InputMaybe<Course_Discussions_Aggregate_Order_By>;
   course_flags_aggregate: InputMaybe<Course_Flags_Aggregate_Order_By>;
   course_home_url: InputMaybe<Order_By>;
   course_id: InputMaybe<Order_By>;
@@ -2659,14 +2451,11 @@ export type Courses_Order_By = {
   coursesByLastOfferedCourseId_aggregate: InputMaybe<Courses_Aggregate_Order_By>;
   courses_aggregate: InputMaybe<Courses_Aggregate_Order_By>;
   credits: InputMaybe<Order_By>;
-  demand_statistic: InputMaybe<Demand_Statistics_Order_By>;
   description: InputMaybe<Order_By>;
   evaluation_narratives_aggregate: InputMaybe<Evaluation_Narratives_Aggregate_Order_By>;
   evaluation_ratings_aggregate: InputMaybe<Evaluation_Ratings_Aggregate_Order_By>;
   evaluation_statistic: InputMaybe<Evaluation_Statistics_Order_By>;
   extra_info: InputMaybe<Order_By>;
-  fasttextSimilarsByTarget_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Order_By>;
-  fasttext_similars_aggregate: InputMaybe<Fasttext_Similars_Aggregate_Order_By>;
   final_exam: InputMaybe<Order_By>;
   fysem: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
@@ -2688,8 +2477,6 @@ export type Courses_Order_By = {
   skills: InputMaybe<Order_By>;
   syllabus_url: InputMaybe<Order_By>;
   sysem: InputMaybe<Order_By>;
-  tfidfSimilarsByTarget_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Order_By>;
-  tfidf_similars_aggregate: InputMaybe<Tfidf_Similars_Aggregate_Order_By>;
   times_by_day: InputMaybe<Order_By>;
   times_long_summary: InputMaybe<Order_By>;
   times_summary: InputMaybe<Order_By>;
@@ -3735,340 +3522,6 @@ export enum Cursor_Ordering {
   /** descending ordering of the cursor */
   Desc = 'DESC',
 }
-
-/** Boolean expression to filter rows from the table "demand_statistics". All fields are combined with a logical 'AND'. */
-export type Demand_Statistics_Bool_Exp = {
-  _and: InputMaybe<Array<Demand_Statistics_Bool_Exp>>;
-  _not: InputMaybe<Demand_Statistics_Bool_Exp>;
-  _or: InputMaybe<Array<Demand_Statistics_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
-  course_id: InputMaybe<Int_Comparison_Exp>;
-  demand: InputMaybe<Json_Comparison_Exp>;
-  latest_demand: InputMaybe<Int_Comparison_Exp>;
-  latest_demand_date: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "demand_statistics" */
-export enum Demand_Statistics_Constraint {
-  /** unique or primary key constraint on columns "course_id" */
-  PkDemandStatisticsStaged = 'pk_demand_statistics_staged',
-}
-
-/** input type for incrementing numeric columns in table "demand_statistics" */
-export type Demand_Statistics_Inc_Input = {
-  /** The course to which these demand statistics apply */
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  /** Latest demand count */
-  latest_demand: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "demand_statistics" */
-export type Demand_Statistics_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  /** The course to which these demand statistics apply */
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  /** JSON dict containing demand stats by day */
-  demand: InputMaybe<Scalars['json']['input']>;
-  /** Latest demand count */
-  latest_demand: InputMaybe<Scalars['Int']['input']>;
-  /** Latest demand date */
-  latest_demand_date: InputMaybe<Scalars['String']['input']>;
-};
-
-/** input type for inserting object relation for remote table "demand_statistics" */
-export type Demand_Statistics_Obj_Rel_Insert_Input = {
-  data: Demand_Statistics_Insert_Input;
-  /** upsert condition */
-  on_conflict: InputMaybe<Demand_Statistics_On_Conflict>;
-};
-
-/** on_conflict condition type for table "demand_statistics" */
-export type Demand_Statistics_On_Conflict = {
-  constraint: Demand_Statistics_Constraint;
-  update_columns: Array<Demand_Statistics_Update_Column>;
-  where: InputMaybe<Demand_Statistics_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "demand_statistics". */
-export type Demand_Statistics_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
-  course_id: InputMaybe<Order_By>;
-  demand: InputMaybe<Order_By>;
-  latest_demand: InputMaybe<Order_By>;
-  latest_demand_date: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: demand_statistics */
-export type Demand_Statistics_Pk_Columns_Input = {
-  /** The course to which these demand statistics apply */
-  course_id: Scalars['Int']['input'];
-};
-
-/** select columns of table "demand_statistics" */
-export enum Demand_Statistics_Select_Column {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Demand = 'demand',
-  /** column name */
-  LatestDemand = 'latest_demand',
-  /** column name */
-  LatestDemandDate = 'latest_demand_date',
-}
-
-/** input type for updating data in table "demand_statistics" */
-export type Demand_Statistics_Set_Input = {
-  /** The course to which these demand statistics apply */
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  /** JSON dict containing demand stats by day */
-  demand: InputMaybe<Scalars['json']['input']>;
-  /** Latest demand count */
-  latest_demand: InputMaybe<Scalars['Int']['input']>;
-  /** Latest demand date */
-  latest_demand_date: InputMaybe<Scalars['String']['input']>;
-};
-
-/** Streaming cursor of the table "demand_statistics" */
-export type Demand_Statistics_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Demand_Statistics_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Demand_Statistics_Stream_Cursor_Value_Input = {
-  /** The course to which these demand statistics apply */
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  /** JSON dict containing demand stats by day */
-  demand: InputMaybe<Scalars['json']['input']>;
-  /** Latest demand count */
-  latest_demand: InputMaybe<Scalars['Int']['input']>;
-  /** Latest demand date */
-  latest_demand_date: InputMaybe<Scalars['String']['input']>;
-};
-
-/** update columns of table "demand_statistics" */
-export enum Demand_Statistics_Update_Column {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Demand = 'demand',
-  /** column name */
-  LatestDemand = 'latest_demand',
-  /** column name */
-  LatestDemandDate = 'latest_demand_date',
-}
-
-export type Demand_Statistics_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc: InputMaybe<Demand_Statistics_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set: InputMaybe<Demand_Statistics_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Demand_Statistics_Bool_Exp;
-};
-
-/** Boolean expression to filter rows from the table "discussions". All fields are combined with a logical 'AND'. */
-export type Discussions_Bool_Exp = {
-  _and: InputMaybe<Array<Discussions_Bool_Exp>>;
-  _not: InputMaybe<Discussions_Bool_Exp>;
-  _or: InputMaybe<Array<Discussions_Bool_Exp>>;
-  course_discussions: InputMaybe<Course_Discussions_Bool_Exp>;
-  course_discussions_aggregate: InputMaybe<Course_Discussions_Aggregate_Bool_Exp>;
-  discussion_id: InputMaybe<Int_Comparison_Exp>;
-  info: InputMaybe<String_Comparison_Exp>;
-  locations_summary: InputMaybe<String_Comparison_Exp>;
-  number: InputMaybe<String_Comparison_Exp>;
-  subject: InputMaybe<String_Comparison_Exp>;
-  times_by_day: InputMaybe<Json_Comparison_Exp>;
-  times_long_summary: InputMaybe<String_Comparison_Exp>;
-  times_summary: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "discussions" */
-export enum Discussions_Constraint {
-  /** unique or primary key constraint on columns "discussion_id" */
-  PkDiscussionsStaged = 'pk_discussions_staged',
-}
-
-/** input type for incrementing numeric columns in table "discussions" */
-export type Discussions_Inc_Input = {
-  /** Discussion section ID */
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "discussions" */
-export type Discussions_Insert_Input = {
-  course_discussions: InputMaybe<Course_Discussions_Arr_Rel_Insert_Input>;
-  /** Discussion section ID */
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-  /** Additional discussion section notes */
-  info: InputMaybe<Scalars['String']['input']>;
-  /**
-   * If single location, is `<location>`; otherwise is
-   *         `<location> + <n_other_locations>` where the first location is the one
-   *         with the greatest number of days. Same format as for courses.
-   */
-  locations_summary: InputMaybe<Scalars['String']['input']>;
-  /** Discussion section number */
-  number: InputMaybe<Scalars['String']['input']>;
-  /** Discussion section subject */
-  subject: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location)`. Same format as for courses.
-   */
-  times_by_day: InputMaybe<Scalars['json']['input']>;
-  /** Course times and locations. Same format as for courses. */
-  times_long_summary: InputMaybe<Scalars['String']['input']>;
-  /** Course times. Same format as for courses. */
-  times_summary: InputMaybe<Scalars['String']['input']>;
-};
-
-/** input type for inserting object relation for remote table "discussions" */
-export type Discussions_Obj_Rel_Insert_Input = {
-  data: Discussions_Insert_Input;
-  /** upsert condition */
-  on_conflict: InputMaybe<Discussions_On_Conflict>;
-};
-
-/** on_conflict condition type for table "discussions" */
-export type Discussions_On_Conflict = {
-  constraint: Discussions_Constraint;
-  update_columns: Array<Discussions_Update_Column>;
-  where: InputMaybe<Discussions_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "discussions". */
-export type Discussions_Order_By = {
-  course_discussions_aggregate: InputMaybe<Course_Discussions_Aggregate_Order_By>;
-  discussion_id: InputMaybe<Order_By>;
-  info: InputMaybe<Order_By>;
-  locations_summary: InputMaybe<Order_By>;
-  number: InputMaybe<Order_By>;
-  subject: InputMaybe<Order_By>;
-  times_by_day: InputMaybe<Order_By>;
-  times_long_summary: InputMaybe<Order_By>;
-  times_summary: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: discussions */
-export type Discussions_Pk_Columns_Input = {
-  /** Discussion section ID */
-  discussion_id: Scalars['Int']['input'];
-};
-
-/** select columns of table "discussions" */
-export enum Discussions_Select_Column {
-  /** column name */
-  DiscussionId = 'discussion_id',
-  /** column name */
-  Info = 'info',
-  /** column name */
-  LocationsSummary = 'locations_summary',
-  /** column name */
-  Number = 'number',
-  /** column name */
-  Subject = 'subject',
-  /** column name */
-  TimesByDay = 'times_by_day',
-  /** column name */
-  TimesLongSummary = 'times_long_summary',
-  /** column name */
-  TimesSummary = 'times_summary',
-}
-
-/** input type for updating data in table "discussions" */
-export type Discussions_Set_Input = {
-  /** Discussion section ID */
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-  /** Additional discussion section notes */
-  info: InputMaybe<Scalars['String']['input']>;
-  /**
-   * If single location, is `<location>`; otherwise is
-   *         `<location> + <n_other_locations>` where the first location is the one
-   *         with the greatest number of days. Same format as for courses.
-   */
-  locations_summary: InputMaybe<Scalars['String']['input']>;
-  /** Discussion section number */
-  number: InputMaybe<Scalars['String']['input']>;
-  /** Discussion section subject */
-  subject: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location)`. Same format as for courses.
-   */
-  times_by_day: InputMaybe<Scalars['json']['input']>;
-  /** Course times and locations. Same format as for courses. */
-  times_long_summary: InputMaybe<Scalars['String']['input']>;
-  /** Course times. Same format as for courses. */
-  times_summary: InputMaybe<Scalars['String']['input']>;
-};
-
-/** Streaming cursor of the table "discussions" */
-export type Discussions_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Discussions_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Discussions_Stream_Cursor_Value_Input = {
-  /** Discussion section ID */
-  discussion_id: InputMaybe<Scalars['Int']['input']>;
-  /** Additional discussion section notes */
-  info: InputMaybe<Scalars['String']['input']>;
-  /**
-   * If single location, is `<location>`; otherwise is
-   *         `<location> + <n_other_locations>` where the first location is the one
-   *         with the greatest number of days. Same format as for courses.
-   */
-  locations_summary: InputMaybe<Scalars['String']['input']>;
-  /** Discussion section number */
-  number: InputMaybe<Scalars['String']['input']>;
-  /** Discussion section subject */
-  subject: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location)`. Same format as for courses.
-   */
-  times_by_day: InputMaybe<Scalars['json']['input']>;
-  /** Course times and locations. Same format as for courses. */
-  times_long_summary: InputMaybe<Scalars['String']['input']>;
-  /** Course times. Same format as for courses. */
-  times_summary: InputMaybe<Scalars['String']['input']>;
-};
-
-/** update columns of table "discussions" */
-export enum Discussions_Update_Column {
-  /** column name */
-  DiscussionId = 'discussion_id',
-  /** column name */
-  Info = 'info',
-  /** column name */
-  LocationsSummary = 'locations_summary',
-  /** column name */
-  Number = 'number',
-  /** column name */
-  Subject = 'subject',
-  /** column name */
-  TimesByDay = 'times_by_day',
-  /** column name */
-  TimesLongSummary = 'times_long_summary',
-  /** column name */
-  TimesSummary = 'times_summary',
-}
-
-export type Discussions_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc: InputMaybe<Discussions_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set: InputMaybe<Discussions_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Discussions_Bool_Exp;
-};
 
 export type Evaluation_Narratives_Aggregate_Bool_Exp = {
   avg: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Avg>;
@@ -5205,230 +4658,6 @@ export type Evaluation_Statistics_Updates = {
   where: Evaluation_Statistics_Bool_Exp;
 };
 
-export type Fasttext_Similars_Aggregate_Bool_Exp = {
-  count: InputMaybe<Fasttext_Similars_Aggregate_Bool_Exp_Count>;
-};
-
-export type Fasttext_Similars_Aggregate_Bool_Exp_Count = {
-  arguments: InputMaybe<Array<Fasttext_Similars_Select_Column>>;
-  distinct: InputMaybe<Scalars['Boolean']['input']>;
-  filter: InputMaybe<Fasttext_Similars_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** order by aggregate values of table "fasttext_similars" */
-export type Fasttext_Similars_Aggregate_Order_By = {
-  avg: InputMaybe<Fasttext_Similars_Avg_Order_By>;
-  count: InputMaybe<Order_By>;
-  max: InputMaybe<Fasttext_Similars_Max_Order_By>;
-  min: InputMaybe<Fasttext_Similars_Min_Order_By>;
-  stddev: InputMaybe<Fasttext_Similars_Stddev_Order_By>;
-  stddev_pop: InputMaybe<Fasttext_Similars_Stddev_Pop_Order_By>;
-  stddev_samp: InputMaybe<Fasttext_Similars_Stddev_Samp_Order_By>;
-  sum: InputMaybe<Fasttext_Similars_Sum_Order_By>;
-  var_pop: InputMaybe<Fasttext_Similars_Var_Pop_Order_By>;
-  var_samp: InputMaybe<Fasttext_Similars_Var_Samp_Order_By>;
-  variance: InputMaybe<Fasttext_Similars_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "fasttext_similars" */
-export type Fasttext_Similars_Arr_Rel_Insert_Input = {
-  data: Array<Fasttext_Similars_Insert_Input>;
-  /** upsert condition */
-  on_conflict: InputMaybe<Fasttext_Similars_On_Conflict>;
-};
-
-/** order by avg() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Avg_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "fasttext_similars". All fields are combined with a logical 'AND'. */
-export type Fasttext_Similars_Bool_Exp = {
-  _and: InputMaybe<Array<Fasttext_Similars_Bool_Exp>>;
-  _not: InputMaybe<Fasttext_Similars_Bool_Exp>;
-  _or: InputMaybe<Array<Fasttext_Similars_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
-  courseByTarget: InputMaybe<Courses_Bool_Exp>;
-  rank: InputMaybe<Int_Comparison_Exp>;
-  source: InputMaybe<Int_Comparison_Exp>;
-  target: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "fasttext_similars" */
-export enum Fasttext_Similars_Constraint {
-  /** unique or primary key constraint on columns "target", "source" */
-  PkFasttextSimilarsStaged = 'pk_fasttext_similars_staged',
-}
-
-/** input type for incrementing numeric columns in table "fasttext_similars" */
-export type Fasttext_Similars_Inc_Input = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "fasttext_similars" */
-export type Fasttext_Similars_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  courseByTarget: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by max() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Max_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Min_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** on_conflict condition type for table "fasttext_similars" */
-export type Fasttext_Similars_On_Conflict = {
-  constraint: Fasttext_Similars_Constraint;
-  update_columns: Array<Fasttext_Similars_Update_Column>;
-  where: InputMaybe<Fasttext_Similars_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "fasttext_similars". */
-export type Fasttext_Similars_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
-  courseByTarget: InputMaybe<Courses_Order_By>;
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: fasttext_similars */
-export type Fasttext_Similars_Pk_Columns_Input = {
-  source: Scalars['Int']['input'];
-  target: Scalars['Int']['input'];
-};
-
-/** select columns of table "fasttext_similars" */
-export enum Fasttext_Similars_Select_Column {
-  /** column name */
-  Rank = 'rank',
-  /** column name */
-  Source = 'source',
-  /** column name */
-  Target = 'target',
-}
-
-/** input type for updating data in table "fasttext_similars" */
-export type Fasttext_Similars_Set_Input = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by stddev() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Stddev_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_pop() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Stddev_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_samp() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Stddev_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "fasttext_similars" */
-export type Fasttext_Similars_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Fasttext_Similars_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Fasttext_Similars_Stream_Cursor_Value_Input = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by sum() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Sum_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** update columns of table "fasttext_similars" */
-export enum Fasttext_Similars_Update_Column {
-  /** column name */
-  Rank = 'rank',
-  /** column name */
-  Source = 'source',
-  /** column name */
-  Target = 'target',
-}
-
-export type Fasttext_Similars_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc: InputMaybe<Fasttext_Similars_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set: InputMaybe<Fasttext_Similars_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Fasttext_Similars_Bool_Exp;
-};
-
-/** order by var_pop() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Var_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by var_samp() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Var_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by variance() on columns of table "fasttext_similars" */
-export type Fasttext_Similars_Variance_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "flags". All fields are combined with a logical 'AND'. */
 export type Flags_Bool_Exp = {
   _and: InputMaybe<Array<Flags_Bool_Exp>>;
@@ -6256,230 +5485,6 @@ export type Seasons_Updates = {
   where: Seasons_Bool_Exp;
 };
 
-export type Tfidf_Similars_Aggregate_Bool_Exp = {
-  count: InputMaybe<Tfidf_Similars_Aggregate_Bool_Exp_Count>;
-};
-
-export type Tfidf_Similars_Aggregate_Bool_Exp_Count = {
-  arguments: InputMaybe<Array<Tfidf_Similars_Select_Column>>;
-  distinct: InputMaybe<Scalars['Boolean']['input']>;
-  filter: InputMaybe<Tfidf_Similars_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** order by aggregate values of table "tfidf_similars" */
-export type Tfidf_Similars_Aggregate_Order_By = {
-  avg: InputMaybe<Tfidf_Similars_Avg_Order_By>;
-  count: InputMaybe<Order_By>;
-  max: InputMaybe<Tfidf_Similars_Max_Order_By>;
-  min: InputMaybe<Tfidf_Similars_Min_Order_By>;
-  stddev: InputMaybe<Tfidf_Similars_Stddev_Order_By>;
-  stddev_pop: InputMaybe<Tfidf_Similars_Stddev_Pop_Order_By>;
-  stddev_samp: InputMaybe<Tfidf_Similars_Stddev_Samp_Order_By>;
-  sum: InputMaybe<Tfidf_Similars_Sum_Order_By>;
-  var_pop: InputMaybe<Tfidf_Similars_Var_Pop_Order_By>;
-  var_samp: InputMaybe<Tfidf_Similars_Var_Samp_Order_By>;
-  variance: InputMaybe<Tfidf_Similars_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "tfidf_similars" */
-export type Tfidf_Similars_Arr_Rel_Insert_Input = {
-  data: Array<Tfidf_Similars_Insert_Input>;
-  /** upsert condition */
-  on_conflict: InputMaybe<Tfidf_Similars_On_Conflict>;
-};
-
-/** order by avg() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Avg_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "tfidf_similars". All fields are combined with a logical 'AND'. */
-export type Tfidf_Similars_Bool_Exp = {
-  _and: InputMaybe<Array<Tfidf_Similars_Bool_Exp>>;
-  _not: InputMaybe<Tfidf_Similars_Bool_Exp>;
-  _or: InputMaybe<Array<Tfidf_Similars_Bool_Exp>>;
-  course: InputMaybe<Courses_Bool_Exp>;
-  courseByTarget: InputMaybe<Courses_Bool_Exp>;
-  rank: InputMaybe<Int_Comparison_Exp>;
-  source: InputMaybe<Int_Comparison_Exp>;
-  target: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "tfidf_similars" */
-export enum Tfidf_Similars_Constraint {
-  /** unique or primary key constraint on columns "target", "source" */
-  PkTfidfSimilarsStaged = 'pk_tfidf_similars_staged',
-}
-
-/** input type for incrementing numeric columns in table "tfidf_similars" */
-export type Tfidf_Similars_Inc_Input = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "tfidf_similars" */
-export type Tfidf_Similars_Insert_Input = {
-  course: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  courseByTarget: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by max() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Max_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Min_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** on_conflict condition type for table "tfidf_similars" */
-export type Tfidf_Similars_On_Conflict = {
-  constraint: Tfidf_Similars_Constraint;
-  update_columns: Array<Tfidf_Similars_Update_Column>;
-  where: InputMaybe<Tfidf_Similars_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "tfidf_similars". */
-export type Tfidf_Similars_Order_By = {
-  course: InputMaybe<Courses_Order_By>;
-  courseByTarget: InputMaybe<Courses_Order_By>;
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: tfidf_similars */
-export type Tfidf_Similars_Pk_Columns_Input = {
-  source: Scalars['Int']['input'];
-  target: Scalars['Int']['input'];
-};
-
-/** select columns of table "tfidf_similars" */
-export enum Tfidf_Similars_Select_Column {
-  /** column name */
-  Rank = 'rank',
-  /** column name */
-  Source = 'source',
-  /** column name */
-  Target = 'target',
-}
-
-/** input type for updating data in table "tfidf_similars" */
-export type Tfidf_Similars_Set_Input = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by stddev() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Stddev_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_pop() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Stddev_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by stddev_samp() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Stddev_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "tfidf_similars" */
-export type Tfidf_Similars_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Tfidf_Similars_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Tfidf_Similars_Stream_Cursor_Value_Input = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Scalars['Int']['input']>;
-  source: InputMaybe<Scalars['Int']['input']>;
-  target: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** order by sum() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Sum_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** update columns of table "tfidf_similars" */
-export enum Tfidf_Similars_Update_Column {
-  /** column name */
-  Rank = 'rank',
-  /** column name */
-  Source = 'source',
-  /** column name */
-  Target = 'target',
-}
-
-export type Tfidf_Similars_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc: InputMaybe<Tfidf_Similars_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set: InputMaybe<Tfidf_Similars_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Tfidf_Similars_Bool_Exp;
-};
-
-/** order by var_pop() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Var_Pop_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by var_samp() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Var_Samp_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
-/** order by variance() on columns of table "tfidf_similars" */
-export type Tfidf_Similars_Variance_Order_By = {
-  /** Target course similarity rank relative to all targets of a source */
-  rank: InputMaybe<Order_By>;
-  source: InputMaybe<Order_By>;
-  target: InputMaybe<Order_By>;
-};
-
 export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   same_course_id: Scalars['Int']['input'];
   professor_ids: InputMaybe<
@@ -6686,7 +5691,11 @@ export function useSameCourseOrProfOfferingsQuery(
   baseOptions: Apollo.QueryHookOptions<
     SameCourseOrProfOfferingsQuery,
     SameCourseOrProfOfferingsQueryVariables
-  >,
+  > &
+    (
+      | { variables: SameCourseOrProfOfferingsQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -6852,7 +5861,11 @@ export function useCatalogBySeasonQuery(
   baseOptions: Apollo.QueryHookOptions<
     CatalogBySeasonQuery,
     CatalogBySeasonQueryVariables
-  >,
+  > &
+    (
+      | { variables: CatalogBySeasonQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(

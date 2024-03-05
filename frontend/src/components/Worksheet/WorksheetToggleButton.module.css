@@ -1,3 +1,7 @@
+.container {
+  position: relative;
+}
+
 .worksheetDropdown {
   padding: 10px;
   border-radius: 5px;
@@ -22,21 +26,6 @@
   transform: scale(1.15);
 }
 
-.disabledButton {
-  cursor: not-allowed !important;
-  background-color: transparent !important;
-  border-width: 0 !important;
-}
-
-.disabledButtonIcon {
-  color: rgb(0 0 0 / 50%);
-}
-
-.disabledButton:active,
-.disabledButton:focus {
-  box-shadow: none !important;
-}
-
 .toggleButton {
   gap: 1rem;
   background-color: transparent;
@@ -51,4 +40,16 @@
 
 .toggleButton:hover {
   opacity: 0.5;
+}
+
+.courseConflictIcon {
+  position: absolute;
+  top: -12px;
+  left: -5px;
+}
+
+.courseConflictIconModal {
+  position: absolute;
+  top: -3px;
+  left: -8px;
 }

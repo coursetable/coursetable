@@ -36,7 +36,7 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       #HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET?hasura_admin_secret}}
     ports:
-      - '127.0.0.1:8080:8080'
+      - 8085:8080
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080']
       interval: 0.5s

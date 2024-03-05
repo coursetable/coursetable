@@ -73,6 +73,10 @@
   margin: 1em;
 }
 
+.toolBar {
+  display: flex;
+}
+
 @media (width < 768px) {
   .modalTop {
     flex-direction: column !important;
