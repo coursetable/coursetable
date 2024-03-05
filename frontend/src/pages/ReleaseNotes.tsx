@@ -43,7 +43,11 @@ const ReleaseNotes: React.FC = () => (
                 {note.date}
               </Card.Subtitle>
               <Card.Text>{note.summary}</Card.Text>
-              <Link to={note.path} className="stretched-link" aria-label={`Read more about the ${note.title}`} />
+              <Link
+                to={note.path}
+                className="stretched-link"
+                aria-label={`Read more about the ${note.title}`}
+              />
             </Card.Body>
           </Card>
         </div>
