@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -8,6 +8,8 @@ import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import clsx from 'clsx';
 
+import { useUser } from '../../contexts/userContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import {
   ratingColormap,
   workloadColormap,
@@ -15,7 +17,6 @@ import {
 } from '../../utilities/constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import CourseConflictIcon from './CourseConflictIcon';
 import SkillBadge from '../SkillBadge';
 import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
@@ -28,6 +29,7 @@ import {
   getProfessorRatings,
   toSeasonString,
   truncatedText,
+  isInWorksheet,
 } from '../../utilities/course';
 import type { Listing } from '../../utilities/common';
 
@@ -57,6 +59,8 @@ function ResultsItem({
   readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
+  const { user } = useUser();
+  const { worksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
   const friends = numFriends[course.season_code + course.crn];
@@ -77,8 +81,16 @@ function ResultsItem({
       <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
     );
 
-  // Is the current course in the worksheet?
-  const [courseInWorksheet, setCourseInWorksheet] = useState(false);
+  const inWorksheet = useMemo(
+    () =>
+      isInWorksheet(
+        course.season_code,
+        course.crn,
+        worksheetNumber,
+        user.worksheets,
+      ),
+    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+  );
 
   const [subjectCode, courseCode] = course.course_code.split(' ') as [
     string,
@@ -91,7 +103,7 @@ function ResultsItem({
     <div
       className={clsx(
         styles.resultItem,
-        courseInWorksheet && styles.inWorksheetResultItem,
+        inWorksheet && styles.inWorksheetResultItem,
         isFirst && styles.firstResultItem,
         isOdd ? styles.oddResultItem : styles.evenResultItem,
         course.extra_info !== 'ACTIVE' && styles.cancelledClass,
@@ -285,14 +297,10 @@ function ResultsItem({
           data-tutorial={isFirst && 'catalog-6'}
         >
           <WorksheetToggleButton
-            crn={course.crn}
-            seasonCode={course.season_code}
+            listing={course}
             modal={false}
-            setCourseInWorksheet={setCourseInWorksheet}
+            inWorksheet={inWorksheet}
           />
-        </div>
-        <div className={styles.conflictError}>
-          <CourseConflictIcon course={course} />
         </div>
       </Row>
     </div>
