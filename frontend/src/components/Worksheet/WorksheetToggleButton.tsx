@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa';
+import { BsBookmark } from 'react-icons/bs';
 import { MdErrorOutline } from 'react-icons/md';
 import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
 import clsx from 'clsx';
@@ -171,6 +172,7 @@ function WorksheetToggleButton({
         }
       >
         <Button className={clsx('p-0', styles.disabledButton)} disabled>
+          {/* Could also do the add, but I (Alex) like the bookmark icon better */}
           <BsBookmark size={25} className={styles.disabledButtonIcon} />
         </Button>
       </OverlayTrigger>

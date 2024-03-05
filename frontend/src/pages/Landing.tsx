@@ -73,7 +73,7 @@ function Landing() {
                     </Link>
                     <Link
                       to="/catalog"
-                      className={clsx(styles.btn, styles.about)} // TODO style
+                      className={clsx(styles.btn, styles.guest)} // TODO style
                     >
                       Guest
                     </Link>
