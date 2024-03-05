@@ -44,7 +44,7 @@ const Join = suspended(() => import('./pages/Join'));
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
-const ReleaseNotes = suspended(() => import('./pages/ReleaseNotes'));
+const ReleaseNotes = suspended(() => import('./pages/releases/index'));
 
 function App() {
   const location = useLocation();
