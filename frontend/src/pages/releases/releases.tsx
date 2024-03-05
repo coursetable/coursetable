@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Row, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import styles from './ReleaseNotes.module.css';
+import styles from './releases.module.css';
 
 type ReleaseNote = {
   title: string;
