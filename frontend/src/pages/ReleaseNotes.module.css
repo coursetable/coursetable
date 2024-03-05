@@ -1,18 +1,58 @@
-.releaseNotesContainer {
-  padding: 2rem;
+.container {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
 }
 
-.releaseNotesHeader {
-  margin-bottom: 1.5rem;
-  color: var(--color-primary); /* Adjust according to your theme variables */
+.title {
+  font-weight: 600;
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.releaseLink {
-  font-size: 1rem;
-  color: var(--color-secondary); /* Adjust according to your theme variables */
-  text-decoration: none;
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
-.releaseLink:hover {
-  text-decoration: underline;
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+  position: relative;
+}
+
+.stretched-link::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: auto;
+  content: '';
+  background-color: rgba(0, 0, 0, 0);
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.card-subtitle {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #6c757d;
 }
