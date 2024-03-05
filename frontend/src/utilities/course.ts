@@ -81,24 +81,6 @@ export function checkConflict(
   }
   return conflicts;
 }
-// Checks if a course is cross-listed in the user's worksheet
-export function checkCrossListed(
-  worksheetData: WorksheetCourse[],
-  course: Listing,
-): false | string {
-  const classes: string[] = [];
-  // Iterate over worksheet listings
-  for (const { listing: l } of worksheetData) {
-    // Continue if they aren't in the same season
-    if (l.season_code !== course.season_code) continue;
-    // Keep track of encountered classes and their aliases in the classes array
-    classes.push(...l.all_course_codes);
-    // Return the course code of the cross-listed class currently in the
-    // worksheet if one exists
-    if (classes.includes(course.course_code)) return l.course_code;
-  }
-  return false;
-}
 
 // Fetch the friends that are also shopping a specific course. Used in course
 // modal overview
