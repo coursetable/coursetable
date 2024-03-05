@@ -22,22 +22,6 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
-.card-body {
-  position: relative;
-}
-
-.stretched-link::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  pointer-events: auto;
-  content: '';
-  background-color: rgba(0, 0, 0, 0);
-}
-
 @media (max-width: 768px) {
   .title {
     font-size: 24px;
@@ -49,10 +33,4 @@
     padding-top: 1rem;
     padding-bottom: 2rem;
   }
-}
-
-.card-subtitle {
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: #6c757d;
 }
