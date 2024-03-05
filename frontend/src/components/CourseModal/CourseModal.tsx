@@ -214,15 +214,10 @@ function CourseModal() {
                 onSelectTab={setView}
                 currentTab={view}
               />
-              <Row>
-                <CourseConflictIcon course={listing} inModal />
-                <WorksheetToggleButton
-                  crn={listing.crn}
-                  seasonCode={listing.season_code}
-                  modal
-                />
+              <div className={styles.toolBar}>
+                <WorksheetToggleButton listing={listing} modal />
                 <ShareButton courseCode={listing.course_code} />
-              </Row>
+              </div>
             </Row>
           </Container>
         </Modal.Header>

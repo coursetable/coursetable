@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type chroma from 'chroma-js';
@@ -11,13 +11,14 @@ import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import clsx from 'clsx';
 
+import { useUser } from '../../contexts/userContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import {
   ratingColormap,
   workloadColormap,
   subjects,
 } from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
 import { TextComponent } from '../Typography';
@@ -27,6 +28,7 @@ import {
   getWorkloadRatings,
   getProfessorRatings,
   toSeasonString,
+  isInWorksheet,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
@@ -156,6 +158,8 @@ function ResultsGridItem({
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
   const colWidth = 12 / numCols;
+  const { user } = useUser();
+  const { worksheetNumber } = useWorksheet();
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
@@ -173,8 +177,16 @@ function ResultsGridItem({
       <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
     );
 
-  // Is the current course in the worksheet?
-  const [courseInWorksheet, setCourseInWorksheet] = useState(false);
+  const inWorksheet = useMemo(
+    () =>
+      isInWorksheet(
+        course.season_code,
+        course.crn,
+        worksheetNumber,
+        user.worksheets,
+      ),
+    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+  );
 
   const [subjectCode, courseCode] = course.course_code.split(' ') as [
     string,
@@ -199,7 +211,7 @@ function ResultsGridItem({
         className={clsx(
           styles.oneLine,
           styles.resultItem,
-          courseInWorksheet && styles.inWorksheetResultItem,
+          inWorksheet && styles.inWorksheetResultItem,
           'px-3 pb-3',
         )}
         // TODO
@@ -350,15 +362,10 @@ function ResultsGridItem({
       {/* Add/remove from worksheet button */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
-          crn={course.crn}
-          seasonCode={course.season_code}
+          listing={course}
           modal={false}
-          setCourseInWorksheet={setCourseInWorksheet}
+          inWorksheet={inWorksheet}
         />
-      </div>
-      {/* Render conflict icon */}
-      <div className={styles.conflictError}>
-        <CourseConflictIcon course={course} />
       </div>
     </Col>
   );

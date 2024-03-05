@@ -761,11 +761,15 @@ export const evalQuestions = {
 };
 
 export const worksheetColors = [
-  '#6cc26f',
-  '#ca5f53',
   '#31a4d4',
-  '#df8653',
+  '#2cafb7',
   '#26ba9a',
+  '#49be85',
+  '#6cc26f',
+  '#a3b24b',
+  '#daa126',
+  '#df8653',
+  '#ca5f53',
   '#ba7881',
 ];
 

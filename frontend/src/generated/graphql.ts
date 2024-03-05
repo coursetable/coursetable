@@ -6542,7 +6542,11 @@ export function useSameCourseOrProfOfferingsQuery(
   baseOptions: Apollo.QueryHookOptions<
     SameCourseOrProfOfferingsQuery,
     SameCourseOrProfOfferingsQueryVariables
-  >,
+  > &
+    (
+      | { variables: SameCourseOrProfOfferingsQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -6708,7 +6712,11 @@ export function useCatalogBySeasonQuery(
   baseOptions: Apollo.QueryHookOptions<
     CatalogBySeasonQuery,
     CatalogBySeasonQueryVariables
-  >,
+  > &
+    (
+      | { variables: CatalogBySeasonQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(
