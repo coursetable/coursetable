@@ -51,6 +51,7 @@ import {
   type Listing,
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
+import { randomBytes } from 'crypto';
 
 // Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -165,18 +166,26 @@ function RatingContent({
   readonly offering: CourseOffering;
   readonly hasEvals: boolean | undefined;
 }) {
+  // For random seeds
+  const ratingIdentifier = `${offering.listing.crn}${offering.listing.season_code}rating`;
+  const workloadIdentifier = `${offering.listing.crn}${offering.listing.season_code}workload`;
+  const professorIdentifier = `${offering.listing.crn}${offering.listing.season_code}professor`;
+
   const ratingBubbles = [
     {
       colorMap: ratingColormap,
       rating: offering.rating,
+      identifier: ratingIdentifier,
     },
     {
       colorMap: ratingColormap,
       rating: offering.professorRating,
+      identifier: professorIdentifier,
     },
     {
       colorMap: workloadColormap,
       rating: offering.workload,
+      identifier: workloadIdentifier,
     },
   ];
   if (hasEvals) {
@@ -196,7 +205,7 @@ function RatingContent({
       </Col>
     ));
   }
-  return ratingBubbles.map(({ colorMap, rating }, i) => (
+  return ratingBubbles.map(({ colorMap, rating, identifier }, i) => (
     <OverlayTrigger
       key={i}
       placement="top"
@@ -211,7 +220,7 @@ function RatingContent({
         xs={2}
         className="px-1 ml-0 d-flex justify-content-center text-center"
         style={{
-          backgroundColor: generateRandomColor(colorMap),
+          backgroundColor: generateRandomColor(colorMap, identifier),
           filter: 'blur(3px)',
         }}
       >
