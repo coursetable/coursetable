@@ -112,10 +112,10 @@ https
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
-// limit rate
+// Rate limit
 const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 100, // Limit each IP to 100 requests per windowMs
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: 'Too many requests, please try again later',
@@ -125,24 +125,19 @@ const authRateLimiter = rateLimit({
 passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
-app.use((req, res, next) => {
-  authRateLimiter(req, res, () => {
-    req.headers['X-Hasura-Role'] = req.isAuthenticated()
-      ? 'student'
-      : 'anonymous';
-    console.log('Forwarding role:', req.headers['X-Hasura-Role']);
-    next();
-  });
-});
 
 app.use(
   '/ferry',
+  authRateLimiter,
   createProxyMiddleware({
     target: 'http://graphql-engine:8080',
     pathRewrite: { '^/ferry/': '/' },
     ws: true,
     xfwd: true,
     onProxyReq(proxyReq, req) {
+      req.headers['X-Hasura-Role'] = req.isAuthenticated()
+        ? 'student'
+        : 'anonymous';
       const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
       proxyReq.setHeader('X-Hasura-Role', hasuraRole);
     },
