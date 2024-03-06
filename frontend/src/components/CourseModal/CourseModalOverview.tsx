@@ -346,6 +346,7 @@ function CourseModalOverview({
       .filter(
         (
           course,
+          // @ts-expect-error Need to regen graphql queries with optional fields to fix
         ): course is RelatedListingInfo & {
           syllabus_url: string;
         } =>
@@ -542,11 +543,15 @@ function CourseModalOverview({
                       key={`${course.season_code}-${course.section}`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      // @ts-expect-error ideally this is fixed with new query
                       href={course.syllabus_url}
                       className="d-flex"
                     >
-                      {toSeasonString(course.season_code)} (section{' '}
-                      {course.section})
+                      {
+                        // @ts-expect-error ideally this is fixed with new query
+                        toSeasonString(course.season_code)
+                      }{' '}
+                      (section {course.section})
                       <HiExternalLink size={18} className="ml-1 my-auto" />
                     </a>
                   ))}
