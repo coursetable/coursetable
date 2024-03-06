@@ -250,7 +250,10 @@ function ResultsItem({
                 <div
                   className={styles.ratingCell}
                   style={{
-                    backgroundColor: generateRandomColor(ratingColormap),
+                    backgroundColor: generateRandomColor(
+                      ratingColormap,
+                      `${course.crn + course.season_code}overall`,
+                    ),
                     filter: 'blur(3px)',
                   }}
                 >
@@ -273,7 +276,10 @@ function ResultsItem({
                 <div
                   className={clsx(styles.ratingCell, colStyles.workloadCol)}
                   style={{
-                    backgroundColor: generateRandomColor(workloadColormap),
+                    backgroundColor: generateRandomColor(
+                      workloadColormap,
+                      `${course.crn + course.season_code}workload`,
+                    ),
                     filter: 'blur(3px)',
                   }}
                 >
@@ -297,7 +303,10 @@ function ResultsItem({
                   <div
                     className={styles.ratingCell}
                     style={{
-                      backgroundColor: generateRandomColor(ratingColormap),
+                      backgroundColor: generateRandomColor(
+                        ratingColormap,
+                        `${course.crn + course.season_code}prof`,
+                      ),
                       filter: 'blur(3px)',
                     }}
                   >

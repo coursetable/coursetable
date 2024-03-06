@@ -72,7 +72,19 @@ export function isEqual<T>(a: T, b: T): boolean {
   }
   return a === b;
 }
+// Stable based on crn and season
+export function generateRandomColor(
+  colorMap: chroma.Scale,
+  identifier: string,
+) {
+  let hash = 0;
+  for (let i = 0; i < identifier.length; i++) {
+    const char = identifier.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash &= hash; // Convert to 32bit integer
+  }
 
-export function generateRandomColor(colorMap: chroma.Scale) {
-  return colorMap(Math.random() * 4 + 1).hex();
+  const randomInRange = ((Math.abs(hash) % 1000) / 1000) * 4 + 1;
+
+  return colorMap(randomInRange).hex();
 }
