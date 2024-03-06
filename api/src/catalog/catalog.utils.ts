@@ -144,6 +144,9 @@ export async function fetchCatalog(
           catalogBySeasonNoRatingsQuery,
           { season: seasonCode },
         );
+        await fs.mkdir(`${STATIC_FILE_DIR}/catalogs/public`, {
+          recursive: true,
+        });
         await fs.writeFile(
           publicCatalogPath,
           JSON.stringify(catalogPublic.computed_listing_info),
