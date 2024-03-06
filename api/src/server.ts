@@ -8,7 +8,6 @@ import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
-import { rateLimit } from 'express-rate-limit';
 
 import {
   SECURE_PORT,
@@ -119,7 +118,7 @@ https
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: 'Too many requests, please try again later',
-}); /*
+}); */
 
 // Configuring passport
 passportConfig(passport);
