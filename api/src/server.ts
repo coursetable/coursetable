@@ -111,16 +111,29 @@ https
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
+// limit auth rate
+const rateLimit = require('express-rate-limit');
+
+const authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: 'Too many requests, please try again later',
+});
+
 // Configuring passport
 passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 app.use((req, res, next) => {
-  req.headers['X-Hasura-Role'] = req.isAuthenticated()
-    ? 'student'
-    : 'anonymous';
-  console.log('Forwarding role:', req.headers['X-Hasura-Role']);
-  next();
+  authRateLimiter(req, res, () => {
+    req.headers['X-Hasura-Role'] = req.isAuthenticated()
+      ? 'student'
+      : 'anonymous';
+    console.log('Forwarding role:', req.headers['X-Hasura-Role']);
+    next();
+  });
 });
 
 app.use(
