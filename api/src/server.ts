@@ -8,6 +8,7 @@ import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
+import { rateLimit } from 'express-rate-limit';
 
 import {
   SECURE_PORT,
@@ -111,9 +112,7 @@ https
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
-// limit auth rate
-const rateLimit = require('express-rate-limit');
-
+// limit rate
 const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
