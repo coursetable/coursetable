@@ -89,7 +89,10 @@ export function generateRandomColor(identifier: string) {
   const normalizedHash = (Math.abs(hash) % 1000) / 1000;
 
   // Interpolate between startColor and endColor based on normalizedHash
-  const color = chroma.scale([startColor, endColor])(normalizedHash).hex();
+  const color = chroma
+    .scale([startColor, endColor])(normalizedHash)
+    .alpha(0.75)
+    .css();
 
   return color;
 }
