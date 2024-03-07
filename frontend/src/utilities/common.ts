@@ -1,6 +1,6 @@
 import { expectType, type TypeOf } from 'ts-expect';
-import type { ListingFragment } from '../generated/graphql';
 import chroma from 'chroma-js';
+import type { ListingFragment } from '../generated/graphql';
 
 // A couple common types.
 
