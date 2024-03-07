@@ -61,7 +61,7 @@
 }
 
 .disabledButtonIcon {
-  color: rgb(0 0 0 / 50%);
+  color: var(--color-icon-focus);
 }
 
 .disabledButton:active,

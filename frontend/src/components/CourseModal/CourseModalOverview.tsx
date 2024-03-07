@@ -204,7 +204,7 @@ function RatingContent({
       </Col>
     ));
   }
-  return ratingBubbles.map(({ colorMap, rating, identifier }, i) => (
+  return ratingBubbles.map(({ identifier }, i) => (
     <OverlayTrigger
       key={i}
       placement="top"
@@ -218,14 +218,9 @@ function RatingContent({
         key={i}
         xs={2}
         className="px-1 ml-0 d-flex justify-content-center text-center"
-        style={{
-          backgroundColor: generateRandomColor(identifier),
-          filter: 'blur(3px)',
-        }}
       >
         <RatingBubble
-          rating={rating}
-          colorMap={colorMap}
+          color={generateRandomColor(identifier)}
           className={styles.ratingCell}
         />
       </Col>

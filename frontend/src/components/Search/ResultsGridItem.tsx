@@ -34,7 +34,7 @@ import SkillBadge from '../SkillBadge';
 
 type RatingInfo = {
   name: 'Class' | 'Professor' | 'Workload';
-  getRating?: {
+  getRating: {
     (course: Listing, usage: 'stat'): number | null;
     (course: Listing, usage: 'display'): string;
   };
@@ -80,10 +80,10 @@ function RatingRows({ course }: { readonly course: Listing }) {
           >
             <Row className="m-auto justify-content-end">
               <RatingCell
-                rating={getRating!(course, 'stat')}
+                rating={getRating(course, 'stat')}
                 colorMap={colorMap}
               >
-                {getRating!(course, 'display')}
+                {getRating(course, 'display')}
               </RatingCell>
               <div className={styles.iconContainer}>
                 <Icon className={styles.icon} />
@@ -95,13 +95,12 @@ function RatingRows({ course }: { readonly course: Listing }) {
             <div
               className={clsx(styles.rating, 'mr-1')}
               style={{
-                backgroundColor: generateRandomColor(
+                color: generateRandomColor(
                   course.crn + course.season_code + name,
                 ),
-                filter: 'blur(3px)',
               }}
             >
-              &nbsp; {/* A number if we want */}
+              ???
             </div>
             <div className={styles.iconContainer}>
               <Icon className={styles.icon} />

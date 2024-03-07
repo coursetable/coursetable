@@ -71,9 +71,8 @@ function App() {
         // won't see the updated content.
         id={4}
       >
-        You can now see courses (without evals) on CourseTable without needing
-        to login with CAS! Send it to your family and let us know what they
-        think ;)
+        Basic course information is now publicly available without login! Share
+        courses with your family and friends with ease ;)
       </Notice>
       <Navbar />
       <SentryRoutes>

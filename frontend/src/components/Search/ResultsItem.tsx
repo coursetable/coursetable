@@ -253,7 +253,6 @@ function ResultsItem({
                     backgroundColor: generateRandomColor(
                       `${course.crn + course.season_code}overall`,
                     ),
-                    filter: 'blur(3px)',
                   }}
                 >
                   {/* Maybe put number here */}
@@ -278,7 +277,6 @@ function ResultsItem({
                     backgroundColor: generateRandomColor(
                       `${course.crn + course.season_code}workload`,
                     ),
-                    filter: 'blur(3px)',
                   }}
                 >
                   {/* Number maybe */}
@@ -304,7 +302,6 @@ function ResultsItem({
                       backgroundColor: generateRandomColor(
                         `${course.crn + course.season_code}prof`,
                       ),
-                      filter: 'blur(3px)',
                     }}
                   >
                     {/* Maybe put number here */}
