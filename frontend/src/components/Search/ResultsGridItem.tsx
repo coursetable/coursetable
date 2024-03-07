@@ -96,7 +96,6 @@ function RatingRows({ course }: { readonly course: Listing }) {
               className={clsx(styles.rating, 'mr-1')}
               style={{
                 backgroundColor: generateRandomColor(
-                  colorMap,
                   course.crn + course.season_code + name,
                 ),
                 filter: 'blur(3px)',

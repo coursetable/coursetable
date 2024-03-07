@@ -251,7 +251,6 @@ function ResultsItem({
                   className={styles.ratingCell}
                   style={{
                     backgroundColor: generateRandomColor(
-                      ratingColormap,
                       `${course.crn + course.season_code}overall`,
                     ),
                     filter: 'blur(3px)',
@@ -277,7 +276,6 @@ function ResultsItem({
                   className={clsx(styles.ratingCell, colStyles.workloadCol)}
                   style={{
                     backgroundColor: generateRandomColor(
-                      workloadColormap,
                       `${course.crn + course.season_code}workload`,
                     ),
                     filter: 'blur(3px)',
@@ -304,7 +302,6 @@ function ResultsItem({
                     className={styles.ratingCell}
                     style={{
                       backgroundColor: generateRandomColor(
-                        ratingColormap,
                         `${course.crn + course.season_code}prof`,
                       ),
                       filter: 'blur(3px)',
