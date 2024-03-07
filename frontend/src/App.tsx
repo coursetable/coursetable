@@ -71,7 +71,7 @@ function App() {
         // won't see the updated content.
         id={4}
       >
-        You can now see courses (without evals) on CourseTable without needeing
+        You can now see courses (without evals) on CourseTable without needing
         to login with CAS! Send it to your family and let us know what they
         think ;)
       </Notice>
