@@ -1,5 +1,6 @@
 import { expectType, type TypeOf } from 'ts-expect';
 import type { ListingFragment } from '../generated/graphql';
+import chroma from 'chroma-js';
 
 // A couple common types.
 
@@ -73,10 +74,10 @@ export function isEqual<T>(a: T, b: T): boolean {
   return a === b;
 }
 // Stable based on crn and season
-export function generateRandomColor(
-  colorMap: chroma.Scale,
-  identifier: string,
-) {
+const startColor = '#aab8c2'; // Lighter grey
+const endColor = '#7eb6ff'; // Lighter blue
+export function generateRandomColor(identifier: string) {
+  // Calculate a hash from the identifier
   let hash = 0;
   for (let i = 0; i < identifier.length; i++) {
     const char = identifier.charCodeAt(i);
@@ -84,7 +85,11 @@ export function generateRandomColor(
     hash &= hash; // Convert to 32bit integer
   }
 
-  const randomInRange = ((Math.abs(hash) % 1000) / 1000) * 4 + 1;
+  // Normalize the hash to a value between 0 and 1 to use it for color interpolation
+  const normalizedHash = (Math.abs(hash) % 1000) / 1000;
 
-  return colorMap(randomInRange).hex();
+  // Interpolate between startColor and endColor based on normalizedHash
+  const color = chroma.scale([startColor, endColor])(normalizedHash).hex();
+
+  return color;
 }

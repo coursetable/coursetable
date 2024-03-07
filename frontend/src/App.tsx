@@ -69,19 +69,11 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={3}
+        id={4}
       >
-        <a
-          href="/releases/quist"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
-        >
-          Check out Quist
-        </a>
-        , our new language for advanced queries!
+        You can now see courses (without evals) on CourseTable without needeing
+        to login with CAS! Send it to your family and let us know what they
+        think ;)
       </Notice>
       <Navbar />
       <SentryRoutes>

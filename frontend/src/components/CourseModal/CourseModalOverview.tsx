@@ -219,7 +219,7 @@ function RatingContent({
         xs={2}
         className="px-1 ml-0 d-flex justify-content-center text-center"
         style={{
-          backgroundColor: generateRandomColor(colorMap, identifier),
+          backgroundColor: generateRandomColor(identifier),
           filter: 'blur(3px)',
         }}
       >
