@@ -159,6 +159,25 @@ function WorksheetToggleButton({
     ],
   );
 
+  // Disabled worksheet add/remove button if not logged in
+  if (!user.worksheets) {
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id="tooltip-disabled">
+            Log in to add to your worksheet
+          </Tooltip>
+        }
+      >
+        <Button className={clsx('p-0', styles.disabledButton)} disabled>
+          {/* Could also do the add, but I (Alex) like the bookmark icon better */}
+          <FaPlus size={25} className={styles.disabledButtonIcon} />
+        </Button>
+      </OverlayTrigger>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <CourseConflictIcon

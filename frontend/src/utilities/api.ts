@@ -55,11 +55,18 @@ export async function toggleBookmark(payload: {
   }
 }
 
-export async function fetchCatalog(season: Season) {
-  const res = await fetch(
-    `${API_ENDPOINT}/api/static/catalogs/${season}.json`,
-    { credentials: 'include' },
-  );
+export async function fetchCatalog(
+  season: Season,
+  fetchPublicCatalog: boolean = false,
+) {
+  // Const endpoint = user.hasEvals ? 'catalogs' : 'catalogs/public';
+  const endpoint = fetchPublicCatalog
+    ? `/api/static/catalogs/public/${season}.json`
+    : `/api/static/catalogs/${season}.json`;
+  const res = await fetch(`${API_ENDPOINT}${endpoint}`, {
+    credentials: 'include',
+  });
+
   if (!res.ok) {
     // TODO: better error handling here; we may want to get rid of async-lock
     // first

@@ -48,14 +48,11 @@ const Tutorial = suspended(() => import('./components/Tutorial'));
 function App() {
   const location = useLocation();
   // User context data
-  const { loading, user } = useUser();
+  const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
 
-  // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheets);
-
   // Render spinner if page loading
-  if (loading) {
+  if (authStatus === 'loading') {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
@@ -92,7 +89,7 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? (
+            authStatus === 'authenticated' ? (
               /* <Home /> */ <Navigate to="/catalog" />
             ) : (
               <Navigate to="/login" />
@@ -102,10 +99,7 @@ function App() {
 
         {/* Authenticated routes */}
         {/* Catalog */}
-        <Route
-          path="/catalog"
-          element={showIfAuthorized(user.hasEvals, <Search />)}
-        />
+        <Route path="/catalog" element={<Search />} />
 
         {/* Worksheet */}
         <Route
@@ -130,7 +124,9 @@ function App() {
         {/* Auth */}
         <Route
           path="/login"
-          element={isLoggedIn ? <Navigate to="/" /> : <Landing />}
+          element={
+            authStatus === 'authenticated' ? <Navigate to="/" /> : <Landing />
+          }
         />
 
         {/* OCE Challenge */}

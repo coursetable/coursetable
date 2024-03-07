@@ -87,7 +87,9 @@ const constructChallenge = (
       courseTitle: x.course.title,
       courseRatingIndex: ratingIndex,
       // Courses have multiple CRNs, and any one should be fine
-      courseOceUrl: `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=${x.course.listings[0]!.crn}&termCode=${x.course.season_code}`,
+      courseOceUrl: `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=${
+        x.course.listings[0]!.crn
+      }&termCode=${x.course.season_code}`,
     };
   });
 

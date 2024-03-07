@@ -111,6 +111,15 @@ https
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
+// Rate limit
+// const authRateLimiter = rateLimit({
+// windowMs: 15 * 60 * 1000, // 15 minutes
+// max: 100, // Limit each IP to 100 requests per windowMs
+// standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+// legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+// message: 'Too many requests, please try again later',
+// });
+
 // Configuring passport
 passportConfig(passport);
 app.use(passport.initialize());
@@ -118,19 +127,18 @@ app.use(passport.authenticate('session'));
 
 app.use(
   '/ferry',
-  // Restrict GraphQL access for authenticated Yale students only
-  authWithEvals,
-  (req, res, next) => {
-    // Use read-only student role for all Hasura queries
-    req.headers['X-Hasura-Role'] = 'student';
-    next();
-  },
   createProxyMiddleware({
     target: 'http://graphql-engine:8080',
-    pathRewrite: {
-      '^/ferry/': '/', // Remove base path
-    },
+    pathRewrite: { '^/ferry/': '/' },
     ws: true,
+    xfwd: true,
+    onProxyReq(proxyReq, req) {
+      req.headers['X-Hasura-Role'] = req.isAuthenticated()
+        ? 'student'
+        : 'anonymous';
+      const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
+      proxyReq.setHeader('X-Hasura-Role', hasuraRole);
+    },
   }),
 );
 // Enable request logging.
@@ -147,6 +155,17 @@ casAuth(app);
 friends(app);
 canny(app);
 user(app);
+
+// Serve public catalog files without authentication
+app.use(
+  '/api/static/catalogs/public',
+  express.static(`${STATIC_FILE_DIR}/catalogs/public`, {
+    cacheControl: true,
+    maxAge: '1h',
+    lastModified: true,
+    etag: true,
+  }),
+);
 
 // Mount static files route and require NetID authentication
 app.use(

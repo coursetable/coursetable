@@ -22,7 +22,7 @@ import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
 import { TextComponent } from '../Typography';
-import type { Listing } from '../../utilities/common';
+import { generateRandomColor, type Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
@@ -31,6 +31,88 @@ import {
   isInWorksheet,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
+
+type RatingInfo = {
+  name: 'Class' | 'Professor' | 'Workload';
+  getRating?: {
+    (course: Listing, usage: 'stat'): number | null;
+    (course: Listing, usage: 'display'): string;
+  };
+  colorMap: chroma.Scale;
+  Icon: React.ElementType;
+};
+
+function RatingRows({ course }: { readonly course: Listing }) {
+  const { user } = useUser();
+  const ratings: RatingInfo[] = [
+    {
+      name: 'Class',
+      getRating: getOverallRatings,
+      colorMap: ratingColormap,
+      Icon: AiOutlineStar,
+    },
+    {
+      name: 'Professor',
+      getRating: getProfessorRatings,
+      colorMap: ratingColormap,
+      Icon: IoPersonOutline,
+    },
+    {
+      name: 'Workload',
+      getRating: getWorkloadRatings,
+      colorMap: workloadColormap,
+      Icon: BiBookOpen,
+    },
+  ];
+
+  return (
+    <>
+      {ratings.map(({ name, getRating, colorMap, Icon }) =>
+        user.hasEvals ? (
+          <OverlayTrigger
+            key={name}
+            placement="right"
+            overlay={(props) => (
+              <Tooltip id={`${name}-tooltip`} {...props}>
+                {name}
+              </Tooltip>
+            )}
+          >
+            <Row className="m-auto justify-content-end">
+              <RatingCell
+                rating={getRating!(course, 'stat')}
+                colorMap={colorMap}
+              >
+                {getRating!(course, 'display')}
+              </RatingCell>
+              <div className={styles.iconContainer}>
+                <Icon className={styles.icon} />
+              </div>
+            </Row>
+          </OverlayTrigger>
+        ) : (
+          <Row key={name} className="m-auto justify-content-end">
+            <div
+              className={clsx(styles.rating, 'mr-1')}
+              style={{
+                backgroundColor: generateRandomColor(
+                  colorMap,
+                  course.crn + course.season_code + name,
+                ),
+                filter: 'blur(3px)',
+              }}
+            >
+              &nbsp; {/* A number if we want */}
+            </div>
+            <div className={styles.iconContainer}>
+              <Icon className={styles.icon} />
+            </div>
+          </Row>
+        ),
+      )}
+    </>
+  );
+}
 
 function RatingCell({
   rating,
@@ -252,48 +334,23 @@ function ResultsGridItem({
           </Col>
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
-              {[
-                {
-                  name: 'Class',
-                  getRating: getOverallRatings,
-                  colorMap: ratingColormap,
-                  Icon: AiOutlineStar,
-                },
-                {
-                  name: 'Professor',
-                  getRating: getProfessorRatings,
-                  colorMap: ratingColormap,
-                  Icon: IoPersonOutline,
-                },
-                {
-                  name: 'Workload',
-                  getRating: getWorkloadRatings,
-                  colorMap: workloadColormap,
-                  Icon: BiBookOpen,
-                },
-              ].map(({ name, getRating, colorMap, Icon }) => (
+              {user.hasEvals ? (
+                <RatingRows course={course} />
+              ) : (
                 <OverlayTrigger
-                  key={name}
-                  placement="right"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>{name}</span>
+                  placement="top"
+                  overlay={
+                    <Tooltip id="blur-rating-tooltip">
+                      These colors are randomly generated. Sign in to see real
+                      ratings.
                     </Tooltip>
-                  )}
+                  }
                 >
-                  <Row className="m-auto justify-content-end">
-                    <RatingCell
-                      rating={getRating(course, 'stat')}
-                      colorMap={colorMap}
-                    >
-                      {getRating(course, 'display')}
-                    </RatingCell>
-                    <div className={styles.iconContainer}>
-                      <Icon className={styles.icon} />
-                    </div>
-                  </Row>
+                  <div>
+                    <RatingRows course={course} />
+                  </div>
                 </OverlayTrigger>
-              ))}
+              )}
             </div>
           </Col>
         </Row>
