@@ -91,9 +91,9 @@ function FAQ() {
       title: 'Who can use CourseTable?',
       contents: (
         <>
-          Any Yale student can use CourseTable! However, we do require you to
-          log in with your Yale ID, since some of the information we provide is
-          not available to the general public.
+          Anyone can use CourseTable! However, we do require you to log in with
+          your Yale ID to use all of our features such as course ratings and
+          worksheets.
         </>
       ),
     },

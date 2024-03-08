@@ -53,8 +53,7 @@ function NavCollapseWrapper({
 }
 
 export default function CourseTableNavbar() {
-  const { user } = useUser();
-  const isLoggedIn = Boolean(user.worksheets);
+  const { authStatus } = useUser();
   const location = useLocation();
   // Is navbar expanded in mobile view?
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
@@ -68,8 +67,8 @@ export default function CourseTableNavbar() {
   // Show navbar search state
   const showSearch =
     !isMobile &&
-    isLoggedIn &&
-    ['/catalog', '/worksheet'].includes(location.pathname);
+    (location.pathname === '/catalog' ||
+      (authStatus === 'authenticated' && location.pathname === '/worksheet'));
 
   // Calculate time since last updated
   const lastUpdated = useMemo(() => {
@@ -178,7 +177,7 @@ export default function CourseTableNavbar() {
                       !isMobile && 'ml-auto',
                     )}
                   />
-                  {isLoggedIn && (
+                  {authStatus === 'authenticated' && (
                     <>
                       {/* Catalog Page */}
                       <NavbarLink to="/catalog" id="catalog-link">
@@ -190,7 +189,7 @@ export default function CourseTableNavbar() {
                       </NavbarLink>
                     </>
                   )}
-                  {(isMobile || !isLoggedIn) && (
+                  {(isMobile || authStatus !== 'authenticated') && (
                     <>
                       {/* About Page */}
                       <NavbarLink to="/about">About</NavbarLink>
@@ -226,7 +225,7 @@ export default function CourseTableNavbar() {
                   </div>
                   {/* Sign in/out buttons. Show if mobile */}
                   <div className="d-md-none">
-                    {!isLoggedIn ? (
+                    {authStatus !== 'authenticated' ? (
                       // TODO
                       // eslint-disable-next-line jsx-a11y/no-static-element-interactions
                       <div
