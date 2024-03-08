@@ -97,3 +97,96 @@ fragment Listing on computed_listing_info {
   times_summary
   title
 }
+
+query catalogBySeasonNoRatings($season: String!) {
+  computed_listing_info(where: { season_code: { _eq: $season } }) {
+    all_course_codes
+    areas
+    classnotes
+    course_code
+    credits
+    crn
+    description
+    extra_info
+    final_exam
+    flag_info
+    fysem
+    listing_id
+    locations_summary
+    number
+    professor_ids
+    professor_names
+    regnotes
+    requirements
+    rp_attr
+    same_course_id
+    same_course_and_profs_id
+    last_offered_course_id
+    school
+    season_code
+    section
+    skills
+    subject
+    syllabus_url
+    times_by_day
+    times_summary
+    title
+    # Omit any fields related to evaluations or ratings
+  }
+}
+
+# SameCourseOrProfOfferingsPublic.graphql
+query SameCourseOrProfOfferingsPublic(
+  $same_course_id: Int!
+  $professor_ids: [String!]
+) {
+  computed_listing_info(
+    where: {
+      _or: [
+        { same_course_id: { _eq: $same_course_id } }
+        { professor_ids: { _has_keys_any: $professor_ids } }
+      ]
+    }
+  ) {
+    course {
+      title
+    }
+    professor_names
+    ...ListingPublic
+  }
+}
+
+fragment ListingPublic on computed_listing_info {
+  all_course_codes
+  areas
+  classnotes
+  course_code
+  credits
+  crn
+  description
+  extra_info
+  final_exam
+  flag_info
+  fysem
+  listing_id
+  locations_summary
+  number
+  professor_ids
+  professor_names
+  regnotes
+  requirements
+  rp_attr
+  same_course_id
+  same_course_and_profs_id
+  last_offered_course_id
+  school
+  season_code
+  section
+  skills
+  subject
+  syllabus_url
+  times_by_day
+  times_summary
+  title
+  # Ensure no evaluation or rating fields are included in this fragment
+}

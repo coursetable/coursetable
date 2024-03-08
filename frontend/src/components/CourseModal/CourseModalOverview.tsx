@@ -4,6 +4,7 @@ import {
   Col,
   Modal,
   OverlayTrigger,
+  Tooltip,
   Popover,
   Collapse,
 } from 'react-bootstrap';
@@ -38,9 +39,13 @@ import {
 import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
+  useSameCourseOrProfOfferingsPublicQuery,
+  // TODO: fix types later
+  // type SameCourseOrProfOfferingsPublicQuery,
 } from '../../generated/graphql';
 import {
   weekdays,
+  generateRandomColor,
   type NarrowListing,
   type Weekdays,
   type Listing,
@@ -77,7 +82,8 @@ type RelatedListingInfo = Omit<
   >,
   'professor_info'
 > & {
-  professor_info: {
+  professor_info?: {
+    // For public may not have prof info
     average_rating: number;
     email: string;
     name: string;
@@ -152,6 +158,76 @@ const profInfoPopover =
     </InfoPopover>
   );
 
+function RatingContent({
+  offering,
+  hasEvals,
+}: {
+  readonly offering: CourseOffering;
+  readonly hasEvals: boolean | undefined;
+}) {
+  // For random seeds
+  const ratingIdentifier = `${offering.listing.crn}${offering.listing.season_code}rating`;
+  const workloadIdentifier = `${offering.listing.crn}${offering.listing.season_code}workload`;
+  const professorIdentifier = `${offering.listing.crn}${offering.listing.season_code}professor`;
+
+  const ratingBubbles = [
+    {
+      colorMap: ratingColormap,
+      rating: offering.rating,
+      identifier: ratingIdentifier,
+    },
+    {
+      colorMap: ratingColormap,
+      rating: offering.professorRating,
+      identifier: professorIdentifier,
+    },
+    {
+      colorMap: workloadColormap,
+      rating: offering.workload,
+      identifier: workloadIdentifier,
+    },
+  ];
+  if (hasEvals) {
+    return ratingBubbles.map(({ colorMap, rating }, i) => (
+      <Col
+        key={i}
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+      >
+        <RatingBubble
+          rating={rating}
+          colorMap={colorMap}
+          className={styles.ratingCell}
+        >
+          {rating ? rating.toFixed(1) : 'N/A'}
+        </RatingBubble>
+      </Col>
+    ));
+  }
+  return ratingBubbles.map(({ identifier }, i) => (
+    <OverlayTrigger
+      key={i}
+      placement="top"
+      overlay={(props) => (
+        <Tooltip id="color-tooltip" {...props}>
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      )}
+    >
+      <Col
+        key={i}
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+      >
+        <RatingBubble
+          color={generateRandomColor(identifier)}
+          className={styles.ratingCell}
+        />
+      </Col>
+    </OverlayTrigger>
+  ));
+}
+
 function CourseModalOverview({
   gotoCourse,
   listing,
@@ -197,13 +273,36 @@ function CourseModalOverview({
       times.get(timespan)!.add(day);
     }
   }
-
-  const { loading, error, data } = useSameCourseOrProfOfferingsQuery({
+  // Need to do this bc can't conditionally call react hooks but maybe a better way
+  const {
+    data: dataPrivate,
+    loading: loadingPrivate,
+    error: errorPrivate,
+  } = useSameCourseOrProfOfferingsQuery({
+    skip: !user.hasEvals, // Skip this query if not authenticated
     variables: {
       same_course_id: listing.same_course_id,
       professor_ids: listing.professor_ids,
     },
   });
+
+  const {
+    data: dataPublic,
+    loading: loadingPublic,
+    error: errorPublic,
+  } = useSameCourseOrProfOfferingsPublicQuery({
+    skip: user.hasEvals, // Skip this query if authenticated
+    variables: {
+      same_course_id: listing.same_course_id,
+      professor_ids: listing.professor_ids,
+    },
+  });
+
+  // Then decide what data to use here
+
+  const data = user.hasEvals ? dataPrivate : dataPublic;
+  const loading = user.hasEvals ? loadingPrivate : loadingPublic;
+  const error = user.hasEvals ? errorPrivate : errorPublic;
 
   // Holds Prof information for popover
   const profInfo = useMemo(() => {
@@ -227,6 +326,7 @@ function CourseModalOverview({
     for (const season of data.computed_listing_info as RelatedListingInfo[]) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
+      if (!season.professor_info) continue;
       season.professor_info.forEach((prof) => {
         if (profInfo.has(prof.name)) {
           const dict = profInfo.get(prof.name)!;
@@ -249,6 +349,7 @@ function CourseModalOverview({
       .filter(
         (
           course,
+          // @ts-expect-error Need to regen graphql queries with optional fields to fix
         ): course is RelatedListingInfo & {
           syllabus_url: string;
         } =>
@@ -280,11 +381,12 @@ function CourseModalOverview({
       // Discussion sections have no ratings, nothing to show
       .filter((course) => !isDiscussionSection(course))
       .map((course): CourseOffering => {
-        const averageProfessorRating =
-          course.professor_info.reduce(
-            (sum, prof) => sum + (prof.average_rating || 0),
-            0,
-          ) / course.professor_info.length;
+        const averageProfessorRating = course.professor_info
+          ? course.professor_info.reduce(
+              (sum, prof) => sum + (prof.average_rating || 0),
+              0,
+            ) / course.professor_info.length
+          : null;
         return {
           rating: course.course.evaluation_statistic?.avg_rating || null,
           workload: course.course.evaluation_statistic?.avg_workload || null,
@@ -444,11 +546,15 @@ function CourseModalOverview({
                       key={`${course.season_code}-${course.section}`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      // @ts-expect-error ideally this is fixed with new query
                       href={course.syllabus_url}
                       className="d-flex"
                     >
-                      {toSeasonString(course.season_code)} (section{' '}
-                      {course.section})
+                      {
+                        // @ts-expect-error ideally this is fixed with new query
+                        toSeasonString(course.season_code)
+                      }{' '}
+                      (section {course.section})
                       <HiExternalLink size={18} className="ml-1 my-auto" />
                     </a>
                   ))}
@@ -730,47 +836,8 @@ function CourseModalOverview({
                           : offering.professor[0]}
                     </div>
                   </Col>
-                  {/* Course Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.rating}
-                      colorMap={ratingColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
-                    </RatingBubble>
-                  </Col>
-                  {/* Professor Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.professorRating}
-                      colorMap={ratingColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.professorRating
-                        ? offering.professorRating.toFixed(1)
-                        : 'N/A'}
-                    </RatingBubble>
-                  </Col>
-                  {/* Workload Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.workload}
-                      colorMap={workloadColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
-                    </RatingBubble>
-                  </Col>
+                  {/* All Ratings */}
+                  <RatingContent offering={offering} hasEvals={user.hasEvals} />
                 </Row>
               ))}
             </>

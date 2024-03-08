@@ -29,8 +29,13 @@
   background-color: #1084ff;
 }
 
+.guest {
+  background-color: #009688;
+}
+
 .about {
   background-color: #344a61;
+  margin-right: 8px;
 }
 
 .btn:hover {

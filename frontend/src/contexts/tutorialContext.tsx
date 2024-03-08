@@ -26,17 +26,21 @@ export function TutorialProvider({
 }) {
   const location = useLocation();
   const { isMobile, isTablet } = useWindowDimensions();
-  const { user } = useUser();
+  const { authStatus } = useUser();
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const [shownTutorial, setShownTutorial] = useLocalStorageState(
     'shownTutorial',
     false,
   );
-  const isLoggedIn = Boolean(user.worksheets);
 
   // Handle whether or not to open tutorial
   useEffect(() => {
-    if (!isMobile && !isTablet && isLoggedIn && !shownTutorial) {
+    if (
+      !isMobile &&
+      !isTablet &&
+      authStatus === 'authenticated' &&
+      !shownTutorial
+    ) {
       if (location.pathname === '/catalog') {
         setIsTutorialOpen(true);
       } else if (location.pathname !== '/worksheet') {
@@ -49,7 +53,7 @@ export function TutorialProvider({
   }, [
     isMobile,
     isTablet,
-    isLoggedIn,
+    authStatus,
     shownTutorial,
     location,
     setIsTutorialOpen,

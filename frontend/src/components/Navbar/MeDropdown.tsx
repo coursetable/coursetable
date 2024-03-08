@@ -86,9 +86,8 @@ function DropdownItem({
 
 function MeDropdown({ isExpanded, setIsExpanded }: Props) {
   const { isMobile, isTablet } = useWindowDimensions();
-  const { user } = useUser();
+  const { authStatus } = useUser();
   const { toggleTutorial } = useTutorial();
-  const isLoggedIn = Boolean(user.worksheets);
 
   return (
     <SurfaceComponent
@@ -121,7 +120,7 @@ function MeDropdown({ isExpanded, setIsExpanded }: Props) {
               Release Notes
             </DropdownItem>
             {/* Try tutorial only on desktop */}
-            {!isMobile && !isTablet && isLoggedIn && (
+            {!isMobile && !isTablet && authStatus === 'authenticated' && (
               <DropdownItem
                 icon={FcPuzzle}
                 to="/catalog"
@@ -135,7 +134,7 @@ function MeDropdown({ isExpanded, setIsExpanded }: Props) {
               </DropdownItem>
             )}
             {/* Sign In/Out button */}
-            {isLoggedIn ? (
+            {authStatus === 'authenticated' ? (
               <DropdownItem
                 icon={FaSignOutAlt}
                 iconColor="#ed5f5f"

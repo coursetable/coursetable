@@ -31,9 +31,28 @@ import {
   truncatedText,
   isInWorksheet,
 } from '../../utilities/course';
-import type { Listing } from '../../utilities/common';
+import { generateRandomColor, type Listing } from '../../utilities/common';
 
 import { useSearch } from '../../contexts/searchContext';
+
+export function BlurRatingTooltip({
+  children,
+}: {
+  readonly children: JSX.Element;
+}) {
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip id="blur-rating-tooltip">
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      }
+    >
+      {children}
+    </OverlayTrigger>
+  );
+}
 
 /**
  * Renders a list item for a search result
@@ -218,32 +237,77 @@ function ResultsItem({
         </OverlayTrigger>
         <div className="d-flex">
           <div className={colStyles.overallCol}>
-            <RatingBubble
-              className={styles.ratingCell}
-              rating={getOverallRatings(course, 'stat')}
-              colorMap={ratingColormap}
-            >
-              {getOverallRatings(course, 'display')}
-            </RatingBubble>
+            {user.hasEvals ? (
+              <RatingBubble
+                className={styles.ratingCell}
+                rating={getOverallRatings(course, 'stat')}
+                colorMap={ratingColormap}
+              >
+                {getOverallRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <BlurRatingTooltip>
+                <div
+                  className={styles.ratingCell}
+                  style={{
+                    backgroundColor: generateRandomColor(
+                      `${course.crn + course.season_code}overall`,
+                    ),
+                  }}
+                >
+                  {/* Maybe put number here */}
+                </div>
+              </BlurRatingTooltip>
+            )}
           </div>
           <div className={colStyles.workloadCol}>
-            <RatingBubble
-              className={clsx(styles.ratingCell, colStyles.workloadCol)}
-              rating={getWorkloadRatings(course, 'stat')}
-              colorMap={workloadColormap}
-            >
-              {getWorkloadRatings(course, 'display')}
-            </RatingBubble>
+            {user.hasEvals ? (
+              <RatingBubble
+                className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                rating={getWorkloadRatings(course, 'stat')}
+                colorMap={workloadColormap}
+              >
+                {getWorkloadRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <BlurRatingTooltip>
+                <div
+                  className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                  style={{
+                    backgroundColor: generateRandomColor(
+                      `${course.crn + course.season_code}workload`,
+                    ),
+                  }}
+                >
+                  {/* Number maybe */}
+                </div>
+              </BlurRatingTooltip>
+            )}
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
             <div className={clsx('mr-2 h-100', styles.profRating)}>
-              <RatingBubble
-                className={styles.ratingCell}
-                rating={getProfessorRatings(course, 'stat')}
-                colorMap={ratingColormap}
-              >
-                {getProfessorRatings(course, 'display')}
-              </RatingBubble>
+              {user.hasEvals ? (
+                <RatingBubble
+                  className={styles.ratingCell}
+                  rating={getProfessorRatings(course, 'stat')}
+                  colorMap={ratingColormap}
+                >
+                  {getProfessorRatings(course, 'display')}
+                </RatingBubble>
+              ) : (
+                <BlurRatingTooltip>
+                  <div
+                    className={styles.ratingCell}
+                    style={{
+                      backgroundColor: generateRandomColor(
+                        `${course.crn + course.season_code}prof`,
+                      ),
+                    }}
+                  >
+                    {/* Maybe put number here */}
+                  </div>
+                </BlurRatingTooltip>
+              )}
             </div>
             <div className={styles.ellipsisText}>
               {course.professor_names.length === 0
