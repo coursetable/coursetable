@@ -51,30 +51,26 @@ async function findCourseBySeasonAndCrn(
   }
 }
 
-export function serveDynamicMeta(req: Request, res: Response) {
-  const { seasonCode, crn } = req.params;
-  if (!seasonCode || !crn) {
-    res.status(400).send('Invalid request');
-    return;
+export async function serveDynamicMeta(seasonCode: string, crn: string, res: Response) {
+  const course = await findCourseBySeasonAndCrn(seasonCode, crn);
+
+  if (course) {
+    // Serve HTML with dynamic meta tags for bots
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${course.title}</title>
+        <meta property="og:title" content="${course.title}" />
+        <meta property="og:description" content="${course.description || 'Course description here'}" />
+        <!-- Additional OG tags as needed -->
+      </head>
+      <body>
+        Course information and links here
+      </body>
+      </html>
+    `);
+  } else {
+    res.status(404).send('Course not found');
   }
-  findCourseBySeasonAndCrn(seasonCode, crn).then((course) => {
-    if (course) {
-      res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${course.title}</title>
-          <meta property="og:title" content="${course.title}">
-          <meta property="og:description" content="${course.description || 'Course description here'}">
-          <!-- Add more meta tags as necessary -->
-        </head>
-        <body>
-          <!-- You might want to include minimal content or instructions on how to view the course in a browser -->
-        </body>
-        </html>
-      `);
-    } else {
-      res.status(404).send('Course not found');
-    }
-  });
 }

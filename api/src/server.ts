@@ -186,20 +186,17 @@ app.get('/api/ping', (req, res) => {
 });
 
 // Message bot previews
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   const userAgent = req.headers['user-agent'] ?? '';
-  const isBot =
-    /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/iu.test(userAgent);
+  const isBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/iu.test(userAgent);
 
-  const isSpecialPath = /^\/(catalog|worksheet)$/.test(req.path);
+  const isSpecialPath = ['/catalog', '/worksheet'].includes(req.path);
   const courseModalParam = req.query['course-modal'];
 
   if (isBot && isSpecialPath && courseModalParam) {
     const [seasonCode, crn] = courseModalParam.split('-');
     if (seasonCode && crn) {
-      req.params.seasonCode = seasonCode;
-      req.params.crn = crn;
-      serveDynamicMeta(req, res);
+      serveDynamicMeta(seasonCode, crn, res);
     } else {
       next();
     }
