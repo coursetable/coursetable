@@ -18,6 +18,7 @@ import {
 } from './config';
 import morgan from './logging/morgan';
 import winston from './logging/winston';
+import { serveDynamicMeta } from './catalog/SSR/SSR';
 
 // Import routes
 import catalog from './catalog/catalog.routes';
@@ -182,6 +183,23 @@ app.use(
 // Setup routes.
 app.get('/api/ping', (req, res) => {
   res.json('pong');
+});
+
+// Message bot previews
+app.get('/course/:seasonCode/:crn', (req, res, next) => {
+  const userAgent = req.headers['user-agent'] || '';
+  const isBot =
+    /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/i.test(
+      userAgent,
+    );
+
+  if (isBot) {
+    // Serve dynamic HTML with metadata
+    serveDynamicMeta(req, res);
+  } else {
+    // Serve your regular React app
+    next();
+  }
 });
 
 app.use(
