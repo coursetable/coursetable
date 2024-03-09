@@ -187,9 +187,9 @@ app.get('/api/ping', (req, res) => {
 
 // Message bot previews
 app.get('/course/:seasonCode/:crn', (req, res, next) => {
-  const userAgent = req.headers['user-agent'] || '';
+  const userAgent = req.headers['user-agent'] ?? '';
   const isBot =
-    /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/i.test(
+    /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/iu.test(
       userAgent,
     );
 

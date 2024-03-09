@@ -36,7 +36,7 @@ async function findCourseBySeasonAndCrn(
       courseInfoMessagePreview,
       {
         season: seasonCode,
-        crn: parseInt(crn),
+        crn: parseInt(crn, 10),
       },
     );
 
