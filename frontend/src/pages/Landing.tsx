@@ -58,7 +58,7 @@ function Landing() {
                       See what classes your friends are interested in
                     </span>
                   </Row>
-                  <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
+                  <Row className="mx-auto mt-3 justify-content-md-start justify-content-center">
                     <a
                       href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
                       className={clsx(styles.btn, styles.login, 'mr-2')}
