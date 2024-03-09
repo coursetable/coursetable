@@ -186,18 +186,24 @@ app.get('/api/ping', (req, res) => {
 });
 
 // Message bot previews
-app.get('/course/:seasonCode/:crn', (req, res, next) => {
+app.use((req, res, next) => {
   const userAgent = req.headers['user-agent'] ?? '';
   const isBot =
-    /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/iu.test(
-      userAgent,
-    );
+    /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/iu.test(userAgent);
 
-  if (isBot) {
-    // Serve dynamic HTML with metadata
-    serveDynamicMeta(req, res);
+  const isSpecialPath = /^\/(catalog|worksheet)$/.test(req.path);
+  const courseModalParam = req.query['course-modal'];
+
+  if (isBot && isSpecialPath && courseModalParam) {
+    const [seasonCode, crn] = courseModalParam.split('-');
+    if (seasonCode && crn) {
+      req.params.seasonCode = seasonCode;
+      req.params.crn = crn;
+      serveDynamicMeta(req, res);
+    } else {
+      next();
+    }
   } else {
-    // Serve your regular React app
     next();
   }
 });
