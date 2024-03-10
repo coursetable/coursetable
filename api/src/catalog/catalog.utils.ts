@@ -3,6 +3,7 @@
  */
 
 import fs from 'fs/promises';
+import path from 'path';
 import { request } from 'graphql-request';
 
 import {
@@ -54,6 +55,8 @@ export async function fetchCatalog(
     const seasonCode = season.season_code;
     const evalsPath = `${STATIC_FILE_DIR}/catalogs/evals/${seasonCode}.json`;
     const catalogPath = `${STATIC_FILE_DIR}/catalogs/public/${seasonCode}.json`;
+    await fs.mkdir(path.dirname(evalsPath), { recursive: true });
+    await fs.mkdir(path.dirname(catalogPath), { recursive: true });
 
     // Fetch and save evals data
     if (
