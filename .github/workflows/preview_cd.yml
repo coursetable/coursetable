@@ -14,7 +14,7 @@ jobs:
     name: Frontend Build and Deploy
     environment:
       name: Preview
-      url: https://${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
+      url: https://${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,7 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token ${{ secrets.VERCEL_TOKEN }}
       - name: Deploy to Vercel and Alias Deployment
-        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -d
+        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -b ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -d
 
   comment:
     name: Preview Comment
