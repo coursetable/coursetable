@@ -10,7 +10,7 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
-import { fetchCatalog } from '../utilities/api';
+import { fetchCatalog, fetchEvals } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse } from './worksheetContext';
@@ -20,25 +20,60 @@ export const seasons = seasonsData as Season[];
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-const courseLoadAttempted = new Set<Season>();
+const catalogLoadAttempted = new Set<Season>();
+const evalsLoadAttempted = new Set<Season>();
 let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
-const addToCache = (
-  season: Season,
-  fetchPublicCatalog: boolean,
-): Promise<void> =>
+const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
-    if (courseLoadAttempted.has(season)) {
-      // Skip if already loaded, or if we previously tried to load it.
+    // Both data have been loaded; nothing to do
+    if (
+      catalogLoadAttempted.has(season) &&
+      (!includeEvals || evalsLoadAttempted.has(season))
+    )
+      return;
+    const catalogPromise = (() => {
+      if (catalogLoadAttempted.has(season)) return Promise.resolve(null);
+      catalogLoadAttempted.add(season);
+      return fetchCatalog(season);
+    })();
+    const evalsPromise = (() => {
+      if (evalsLoadAttempted.has(season) || !includeEvals)
+        return Promise.resolve(null);
+      evalsLoadAttempted.add(season);
+      return fetchEvals(season);
+    })();
+    const [catalog, evals] = await Promise.all([catalogPromise, evalsPromise]);
+    // Note! If we are fetching evals without fetching catalog, then a
+    // previous request must have already fetched the catalog. This is
+    // because we use async lock so two requests for the same season
+    // cannot race.
+    const seasonCatalog = catalog ?? courseData[season];
+    if (!seasonCatalog) {
+      Sentry.captureException(
+        new Error(
+          `Unexpected: fetched evals but no basic catalog for ${season}`,
+        ),
+      );
       return;
     }
-
-    // Log that we attempted to load this.
-    courseLoadAttempted.add(season);
-    const info = await fetchCatalog(season, fetchPublicCatalog);
+    if (evals) {
+      for (const [crn, ratings] of evals) {
+        const listing = seasonCatalog.get(crn);
+        if (listing) {
+          Object.assign(listing, ratings);
+        } else {
+          Sentry.captureException(
+            new Error(
+              `Catalogs and evals are out of sync: no basic catalog for ${season}-${crn}`,
+            ),
+          );
+        }
+      }
+    }
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
       ...courseData,
-      [season]: info,
+      [season]: seasonCatalog,
     };
   });
 
@@ -48,7 +83,7 @@ type Store = {
 
   error: {} | null;
   courses: typeof courseData;
-  requestSeasons: (requestedSeasons: Season[]) => void;
+  requestSeasons: (requestedSeasons: Season[]) => Promise<void>;
 };
 
 const FerryCtx = createContext<Store | undefined>(undefined);
@@ -69,34 +104,21 @@ export function FerryProvider({
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {
-      if (authStatus === 'loading') {
-        const waitForAuth = new Promise<void>((resolve) => {
-          const checkAuthInterval = setInterval(() => {
-            // This seems necessary but maybe a better way but disabling lint for now
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (authStatus !== 'loading') {
-              clearInterval(checkAuthInterval);
-              resolve();
-            }
-          }, 100); // Check every 100ms, can change
-        });
-        await waitForAuth;
-      }
-      const fetchPublicCatalog = authStatus === 'unauthenticated';
-
-      // Not logged in / doesn't have evals
-      // TODO: Everyone can see years?
-      // if (!user.hasEvals) return;
       const fetches = requestedSeasons.map(async (season) => {
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;
+        const includeEvals = authStatus === 'authenticated';
         // As long as there is one request in progress, don't fire another
-        if (courseLoadAttempted.has(season)) return;
+        if (
+          catalogLoadAttempted.has(season) &&
+          (!includeEvals || evalsLoadAttempted.has(season))
+        )
+          return;
 
         // Add to cache.
         setRequests((r) => r + 1);
         try {
-          await addToCache(season, fetchPublicCatalog);
+          await loadCatalog(season, includeEvals);
         } finally {
           setRequests((r) => r - 1);
         }
@@ -134,7 +156,7 @@ export const useCourseData = (requestedSeasons: Season[]) => {
   const { error, courses, requestSeasons } = useFerry();
 
   useEffect(() => {
-    requestSeasons(requestedSeasons);
+    void requestSeasons(requestedSeasons);
   }, [requestSeasons, requestedSeasons]);
 
   // If not everything is loaded, we're still loading.

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import z from 'zod';
 
 import { API_ENDPOINT } from '../config';
+import type { ListingRatingsFragment } from '../generated/graphql';
 import type { Season, Crn, Listing, NetId } from './common';
 
 export async function toggleBookmark(payload: {
@@ -55,21 +56,16 @@ export async function toggleBookmark(payload: {
   }
 }
 
-export async function fetchCatalog(
-  season: Season,
-  fetchPublicCatalog: boolean = false,
-) {
-  // Const endpoint = user.hasEvals ? 'catalogs' : 'catalogs/public';
-  const endpoint = fetchPublicCatalog
-    ? `/api/static/catalogs/public/${season}.json`
-    : `/api/static/catalogs/${season}.json`;
-  const res = await fetch(`${API_ENDPOINT}${endpoint}`, {
-    credentials: 'include',
-  });
+export async function fetchCatalog(season: Season) {
+  const res = await fetch(
+    `${API_ENDPOINT}/api/static/catalogs/public/${season}.json`,
+    {
+      credentials: 'include',
+    },
+  );
 
   if (!res.ok) {
-    // TODO: better error handling here; we may want to get rid of async-lock
-    // first
+    // TODO: better error handling here that interacts well with async-lock
     throw new Error(
       `failed to fetch course data for ${season}. ${res.statusText}`,
     );
@@ -77,6 +73,25 @@ export async function fetchCatalog(
   const data = (await res.json()) as Listing[];
   const info = new Map<Crn, Listing>();
   for (const listing of data) info.set(listing.crn, listing);
+  return info;
+}
+
+export async function fetchEvals(season: Season) {
+  const res = await fetch(
+    `${API_ENDPOINT}/api/static/catalogs/evals/${season}.json`,
+    {
+      credentials: 'include',
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      `failed to fetch evals data for ${season}. ${res.statusText}`,
+    );
+  }
+  const data = (await res.json()) as ListingRatingsFragment[];
+  const info = new Map<Crn, ListingRatingsFragment>();
+  for (const listing of data) info.set(listing.crn as Crn, listing);
   return info;
 }
 
