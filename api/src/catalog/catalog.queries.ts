@@ -26,6 +26,9 @@ export const evalsBySeasonQuery = gql`
       average_rating_same_professors
       average_workload_same_professors
       crn
+      enrolled
+      last_enrollment
+      last_enrollment_same_professors
     }
   }
 `;
@@ -41,13 +44,10 @@ export const catalogBySeasonQuery = gql`
       credits
       crn
       description
-      enrolled
       extra_info
       final_exam
       flag_info
       fysem
-      last_enrollment
-      last_enrollment_same_professors
       listing_id
       locations_summary
       number

@@ -5578,6 +5578,9 @@ export type ListingRatingsFragment = {
   average_rating_same_professors: number | null;
   average_workload_same_professors: number | null;
   crn: number;
+  enrolled: number | null;
+  last_enrollment: number | null;
+  last_enrollment_same_professors: boolean | null;
 };
 
 export type ListingFragment = {
@@ -5589,13 +5592,10 @@ export type ListingFragment = {
   credits: number | null;
   crn: number;
   description: string | null;
-  enrolled: number | null;
   extra_info: string;
   final_exam: string | null;
   flag_info: any;
   fysem: boolean | null;
-  last_enrollment: number | null;
-  last_enrollment_same_professors: boolean | null;
   listing_id: number;
   locations_summary: string;
   number: string;
@@ -5627,6 +5627,9 @@ export const ListingRatingsFragmentDoc = gql`
     average_rating_same_professors
     average_workload_same_professors
     crn
+    enrolled
+    last_enrollment
+    last_enrollment_same_professors
   }
 `;
 export const ListingFragmentDoc = gql`
@@ -5638,13 +5641,10 @@ export const ListingFragmentDoc = gql`
     credits
     crn
     description
-    enrolled
     extra_info
     final_exam
     flag_info
     fysem
-    last_enrollment
-    last_enrollment_same_professors
     listing_id
     locations_summary
     number
