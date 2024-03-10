@@ -11,6 +11,7 @@
 }
 
 .card {
+  background-color: var(--color-surface);
   box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   transition:
     transform 0.2s,

@@ -351,14 +351,14 @@ function About() {
           </a>
           .
         </p>
+        <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
+          Also check out our <Link to="/faq">FAQ</Link> and{' '}
+          <Link to="/releases">Release Notes</Link>.
+        </p>
       </TextComponent>
 
       <Row className="mx-auto">
         <div className="mx-auto">
-          <Link to="/faq">
-            <Button variant="outline-secondary">FAQ</Button>
-          </Link>
-          <span style={{ width: '1em', display: 'inline-block' }} />
           <Link to="/joinus">
             <Button>Join Us</Button>
           </Link>
