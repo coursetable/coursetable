@@ -5490,6 +5490,7 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   professor_ids: InputMaybe<
     Array<Scalars['String']['input']> | Scalars['String']['input']
   >;
+  hasEval: Scalars['Boolean']['input'];
 }>;
 
 export type SameCourseOrProfOfferingsQuery = {
@@ -5497,8 +5498,8 @@ export type SameCourseOrProfOfferingsQuery = {
   computed_listing_info: Array<
     {
       __typename?: 'computed_listing_info';
-      professor_info: any;
-      course: {
+      professor_info?: any;
+      course?: {
         __typename?: 'courses';
         evaluation_statistic: {
           __typename?: 'evaluation_statistics';
@@ -5506,7 +5507,8 @@ export type SameCourseOrProfOfferingsQuery = {
           avg_rating: number | null;
         } | null;
       };
-    } & ListingFragment
+    } & ListingFragment &
+      ListingRatingsFragment
   >;
 };
 
@@ -5556,16 +5558,32 @@ export type CatalogBySeasonQuery = {
   >;
 };
 
-export type ListingFragment = {
+export type EvalsBySeasonQueryVariables = Exact<{
+  season: Scalars['String']['input'];
+}>;
+
+export type EvalsBySeasonQuery = {
+  __typename?: 'query_root';
+  computed_listing_info: Array<
+    { __typename?: 'computed_listing_info' } & ListingRatingsFragment
+  >;
+};
+
+export type ListingRatingsFragment = {
   __typename?: 'computed_listing_info';
-  all_course_codes: any;
-  areas: any;
   average_gut_rating: number | null;
   average_professor: number | null;
   average_rating: number | null;
   average_workload: number | null;
   average_rating_same_professors: number | null;
   average_workload_same_professors: number | null;
+  crn: number;
+};
+
+export type ListingFragment = {
+  __typename?: 'computed_listing_info';
+  all_course_codes: any;
+  areas: any;
   classnotes: string | null;
   course_code: string;
   credits: number | null;
@@ -5600,111 +5618,21 @@ export type ListingFragment = {
   title: string;
 };
 
-export type CatalogBySeasonNoRatingsQueryVariables = Exact<{
-  season: Scalars['String']['input'];
-}>;
-
-export type CatalogBySeasonNoRatingsQuery = {
-  __typename?: 'query_root';
-  computed_listing_info: Array<{
-    __typename?: 'computed_listing_info';
-    all_course_codes: any;
-    areas: any;
-    classnotes: string | null;
-    course_code: string;
-    credits: number | null;
-    crn: number;
-    description: string | null;
-    extra_info: string;
-    final_exam: string | null;
-    flag_info: any;
-    fysem: boolean | null;
-    listing_id: number;
-    locations_summary: string;
-    number: string;
-    professor_ids: any;
-    professor_names: any;
-    regnotes: string | null;
-    requirements: string | null;
-    rp_attr: string | null;
-    same_course_id: number;
-    same_course_and_profs_id: number;
-    last_offered_course_id: number | null;
-    school: string | null;
-    season_code: string;
-    section: string;
-    skills: any;
-    subject: string;
-    syllabus_url: string | null;
-    times_by_day: any;
-    times_summary: string;
-    title: string;
-  }>;
-};
-
-export type SameCourseOrProfOfferingsPublicQueryVariables = Exact<{
-  same_course_id: Scalars['Int']['input'];
-  professor_ids: InputMaybe<
-    Array<Scalars['String']['input']> | Scalars['String']['input']
-  >;
-}>;
-
-export type SameCourseOrProfOfferingsPublicQuery = {
-  __typename?: 'query_root';
-  computed_listing_info: Array<
-    {
-      __typename?: 'computed_listing_info';
-      professor_names: any;
-      course: { __typename?: 'courses'; title: string | null };
-    } & ListingPublicFragment
-  >;
-};
-
-export type ListingPublicFragment = {
-  __typename?: 'computed_listing_info';
-  all_course_codes: any;
-  areas: any;
-  classnotes: string | null;
-  course_code: string;
-  credits: number | null;
-  crn: number;
-  description: string | null;
-  extra_info: string;
-  final_exam: string | null;
-  flag_info: any;
-  fysem: boolean | null;
-  listing_id: number;
-  locations_summary: string;
-  number: string;
-  professor_ids: any;
-  professor_names: any;
-  regnotes: string | null;
-  requirements: string | null;
-  rp_attr: string | null;
-  same_course_id: number;
-  same_course_and_profs_id: number;
-  last_offered_course_id: number | null;
-  school: string | null;
-  season_code: string;
-  section: string;
-  skills: any;
-  subject: string;
-  syllabus_url: string | null;
-  times_by_day: any;
-  times_summary: string;
-  title: string;
-};
-
-export const ListingFragmentDoc = gql`
-  fragment Listing on computed_listing_info {
-    all_course_codes
-    areas
+export const ListingRatingsFragmentDoc = gql`
+  fragment ListingRatings on computed_listing_info {
     average_gut_rating
     average_professor
     average_rating
     average_workload
     average_rating_same_professors
     average_workload_same_professors
+    crn
+  }
+`;
+export const ListingFragmentDoc = gql`
+  fragment Listing on computed_listing_info {
+    all_course_codes
+    areas
     classnotes
     course_code
     credits
@@ -5739,45 +5667,11 @@ export const ListingFragmentDoc = gql`
     title
   }
 `;
-export const ListingPublicFragmentDoc = gql`
-  fragment ListingPublic on computed_listing_info {
-    all_course_codes
-    areas
-    classnotes
-    course_code
-    credits
-    crn
-    description
-    extra_info
-    final_exam
-    flag_info
-    fysem
-    listing_id
-    locations_summary
-    number
-    professor_ids
-    professor_names
-    regnotes
-    requirements
-    rp_attr
-    same_course_id
-    same_course_and_profs_id
-    last_offered_course_id
-    school
-    season_code
-    section
-    skills
-    subject
-    syllabus_url
-    times_by_day
-    times_summary
-    title
-  }
-`;
 export const SameCourseOrProfOfferingsDocument = gql`
   query SameCourseOrProfOfferings(
     $same_course_id: Int!
     $professor_ids: [String!]
+    $hasEval: Boolean!
   ) {
     computed_listing_info(
       where: {
@@ -5787,17 +5681,19 @@ export const SameCourseOrProfOfferingsDocument = gql`
         ]
       }
     ) {
-      course {
+      course @include(if: $hasEval) {
         evaluation_statistic {
           avg_workload
           avg_rating
         }
       }
-      professor_info
+      professor_info @include(if: $hasEval)
       ...Listing
+      ...ListingRatings @include(if: $hasEval)
     }
   }
   ${ListingFragmentDoc}
+  ${ListingRatingsFragmentDoc}
 `;
 
 /**
@@ -5814,6 +5710,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
  *   variables: {
  *      same_course_id: // value for 'same_course_id'
  *      professor_ids: // value for 'professor_ids'
+ *      hasEval: // value for 'hasEval'
  *   },
  * });
  */
@@ -6040,206 +5937,81 @@ export type CatalogBySeasonQueryResult = Apollo.QueryResult<
   CatalogBySeasonQuery,
   CatalogBySeasonQueryVariables
 >;
-export const CatalogBySeasonNoRatingsDocument = gql`
-  query catalogBySeasonNoRatings($season: String!) {
+export const EvalsBySeasonDocument = gql`
+  query evalsBySeason($season: String!) {
     computed_listing_info(where: { season_code: { _eq: $season } }) {
-      all_course_codes
-      areas
-      classnotes
-      course_code
-      credits
-      crn
-      description
-      extra_info
-      final_exam
-      flag_info
-      fysem
-      listing_id
-      locations_summary
-      number
-      professor_ids
-      professor_names
-      regnotes
-      requirements
-      rp_attr
-      same_course_id
-      same_course_and_profs_id
-      last_offered_course_id
-      school
-      season_code
-      section
-      skills
-      subject
-      syllabus_url
-      times_by_day
-      times_summary
-      title
+      ...ListingRatings
     }
   }
+  ${ListingRatingsFragmentDoc}
 `;
 
 /**
- * __useCatalogBySeasonNoRatingsQuery__
+ * __useEvalsBySeasonQuery__
  *
- * To run a query within a React component, call `useCatalogBySeasonNoRatingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCatalogBySeasonNoRatingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useEvalsBySeasonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEvalsBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCatalogBySeasonNoRatingsQuery({
+ * const { data, loading, error } = useEvalsBySeasonQuery({
  *   variables: {
  *      season: // value for 'season'
  *   },
  * });
  */
-export function useCatalogBySeasonNoRatingsQuery(
+export function useEvalsBySeasonQuery(
   baseOptions: Apollo.QueryHookOptions<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
   > &
     (
-      | { variables: CatalogBySeasonNoRatingsQueryVariables; skip?: boolean }
+      | { variables: EvalsBySeasonQueryVariables; skip?: boolean }
       | { skip: boolean }
     ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
-  >(CatalogBySeasonNoRatingsDocument, options);
+  return Apollo.useQuery<EvalsBySeasonQuery, EvalsBySeasonQueryVariables>(
+    EvalsBySeasonDocument,
+    options,
+  );
 }
-export function useCatalogBySeasonNoRatingsLazyQuery(
+export function useEvalsBySeasonLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
-  >(CatalogBySeasonNoRatingsDocument, options);
+  return Apollo.useLazyQuery<EvalsBySeasonQuery, EvalsBySeasonQueryVariables>(
+    EvalsBySeasonDocument,
+    options,
+  );
 }
-export function useCatalogBySeasonNoRatingsSuspenseQuery(
+export function useEvalsBySeasonSuspenseQuery(
   baseOptions?: Apollo.SuspenseQueryHookOptions<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
-    CatalogBySeasonNoRatingsQuery,
-    CatalogBySeasonNoRatingsQueryVariables
-  >(CatalogBySeasonNoRatingsDocument, options);
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
+  >(EvalsBySeasonDocument, options);
 }
-export type CatalogBySeasonNoRatingsQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonNoRatingsQuery
+export type EvalsBySeasonQueryHookResult = ReturnType<
+  typeof useEvalsBySeasonQuery
 >;
-export type CatalogBySeasonNoRatingsLazyQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonNoRatingsLazyQuery
+export type EvalsBySeasonLazyQueryHookResult = ReturnType<
+  typeof useEvalsBySeasonLazyQuery
 >;
-export type CatalogBySeasonNoRatingsSuspenseQueryHookResult = ReturnType<
-  typeof useCatalogBySeasonNoRatingsSuspenseQuery
+export type EvalsBySeasonSuspenseQueryHookResult = ReturnType<
+  typeof useEvalsBySeasonSuspenseQuery
 >;
-export type CatalogBySeasonNoRatingsQueryResult = Apollo.QueryResult<
-  CatalogBySeasonNoRatingsQuery,
-  CatalogBySeasonNoRatingsQueryVariables
->;
-export const SameCourseOrProfOfferingsPublicDocument = gql`
-  query SameCourseOrProfOfferingsPublic(
-    $same_course_id: Int!
-    $professor_ids: [String!]
-  ) {
-    computed_listing_info(
-      where: {
-        _or: [
-          { same_course_id: { _eq: $same_course_id } }
-          { professor_ids: { _has_keys_any: $professor_ids } }
-        ]
-      }
-    ) {
-      course {
-        title
-      }
-      professor_names
-      ...ListingPublic
-    }
-  }
-  ${ListingPublicFragmentDoc}
-`;
-
-/**
- * __useSameCourseOrProfOfferingsPublicQuery__
- *
- * To run a query within a React component, call `useSameCourseOrProfOfferingsPublicQuery` and pass it any options that fit your needs.
- * When your component renders, `useSameCourseOrProfOfferingsPublicQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSameCourseOrProfOfferingsPublicQuery({
- *   variables: {
- *      same_course_id: // value for 'same_course_id'
- *      professor_ids: // value for 'professor_ids'
- *   },
- * });
- */
-export function useSameCourseOrProfOfferingsPublicQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SameCourseOrProfOfferingsPublicQuery,
-    SameCourseOrProfOfferingsPublicQueryVariables
-  > &
-    (
-      | {
-          variables: SameCourseOrProfOfferingsPublicQueryVariables;
-          skip?: boolean;
-        }
-      | { skip: boolean }
-    ),
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SameCourseOrProfOfferingsPublicQuery,
-    SameCourseOrProfOfferingsPublicQueryVariables
-  >(SameCourseOrProfOfferingsPublicDocument, options);
-}
-export function useSameCourseOrProfOfferingsPublicLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SameCourseOrProfOfferingsPublicQuery,
-    SameCourseOrProfOfferingsPublicQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SameCourseOrProfOfferingsPublicQuery,
-    SameCourseOrProfOfferingsPublicQueryVariables
-  >(SameCourseOrProfOfferingsPublicDocument, options);
-}
-export function useSameCourseOrProfOfferingsPublicSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    SameCourseOrProfOfferingsPublicQuery,
-    SameCourseOrProfOfferingsPublicQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SameCourseOrProfOfferingsPublicQuery,
-    SameCourseOrProfOfferingsPublicQueryVariables
-  >(SameCourseOrProfOfferingsPublicDocument, options);
-}
-export type SameCourseOrProfOfferingsPublicQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsPublicQuery
->;
-export type SameCourseOrProfOfferingsPublicLazyQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsPublicLazyQuery
->;
-export type SameCourseOrProfOfferingsPublicSuspenseQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsPublicSuspenseQuery
->;
-export type SameCourseOrProfOfferingsPublicQueryResult = Apollo.QueryResult<
-  SameCourseOrProfOfferingsPublicQuery,
-  SameCourseOrProfOfferingsPublicQueryVariables
+export type EvalsBySeasonQueryResult = Apollo.QueryResult<
+  EvalsBySeasonQuery,
+  EvalsBySeasonQueryVariables
 >;
