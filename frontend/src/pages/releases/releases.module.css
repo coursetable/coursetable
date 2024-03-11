@@ -1,38 +1,37 @@
-/* TODO: this is duplicated from Privacy.module.css.
-   We should have a shared MDX layout. */
-
 .container {
-  width: 900px;
-  margin-bottom: 3rem;
-  line-height: 1.5;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
 }
 
-.container h1 {
-  font-weight: bold;
-  font-size: x-large;
+.title {
+  font-weight: 600;
+  font-size: 28px;
   text-align: center;
-  margin-top: 3em;
-  margin-bottom: 0.5em;
+  margin-bottom: 2rem;
 }
 
-.container h2 {
-  font-weight: bold;
-  font-size: larger;
+.card {
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
-.container h3 {
-  font-weight: bold;
-  font-size: large;
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgb(0 0 0 / 20%);
 }
 
 @media (width < 768px) {
-  .container {
-    width: 80vw;
+  .title {
+    font-size: 24px;
   }
 }
 
 @media (width < 480px) {
   .container {
-    width: 90vw;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
   }
 }
