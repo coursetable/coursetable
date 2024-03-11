@@ -21,8 +21,7 @@ export type HiddenCourses = {
 type WorksheetView =
   | { view: 'calendar'; mode: 'expanded' }
   | { view: 'calendar'; mode: '' }
-  | { view: 'list'; mode: '' }
-  | { view: 'overlay'; mode: '' };
+  | { view: 'list'; mode: '' };
 
 export type WorksheetCourse = {
   crn: Crn;

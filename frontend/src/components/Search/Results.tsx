@@ -20,8 +20,8 @@ import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
-import OverlayComponent from '../../pages/OverlayComponent';
-import FloatingButton from '../../pages/OverlayButton';
+import OverlayComponent from './OverlayComponent';
+import FloatingButton from './OverlayButton';
 
 /**
  * Renders the infinite list of search results for both catalog and worksheet
