@@ -3,7 +3,6 @@ import { Row } from 'react-bootstrap';
 import clsx from 'clsx';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
-import type { Crn } from '../../utilities/common';
 import { evalQuestions } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
@@ -17,24 +16,17 @@ const questions = Object.keys(evalQuestions) as (keyof typeof evalQuestions)[];
  */
 
 function EvaluationRatings({
-  crn,
   info,
 }: {
-  readonly crn: Crn;
-  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly info:
+    | SearchEvaluationNarrativesQuery['computed_listing_info'][number]
+    | undefined;
 }) {
-  // List of dictionaries that holds the ratings for each question as well as
-  // the question text
-  const ratings = (info ?? []).flatMap((section) => {
-    const crnCode = section.crn;
-    // Only fetch ratings data for this section
-    if (crnCode !== crn) return [];
-    // Loop through each set of ratings
-    return section.course.evaluation_ratings.map((x) => ({
-      question: x.evaluation_question.question_text ?? '',
-      values: [...((x.rating as number[] | null) ?? [])],
-    }));
-  });
+  if (!info) return null;
+  const ratings = info.course.evaluation_ratings.map((x) => ({
+    question: x.evaluation_question.question_text ?? '',
+    values: [...((x.rating as number[] | null) ?? [])],
+  }));
 
   // Dictionary with ratings for each question
   const filteredRatings: { [code in keyof typeof evalQuestions]: number[] } = {
