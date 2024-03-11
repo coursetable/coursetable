@@ -23,13 +23,13 @@
   box-shadow: 0 10px 15px rgb(0 0 0 / 20%);
 }
 
-@media (width <= 768px) {
+@media (width < 768px) {
   .title {
     font-size: 24px;
   }
 }
 
-@media (width <= 480px) {
+@media (width < 480px) {
   .container {
     padding-top: 1rem;
     padding-bottom: 2rem;
