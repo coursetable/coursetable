@@ -156,10 +156,11 @@ friends(app);
 canny(app);
 user(app);
 
-// Serve public catalog files without authentication
+// Evals data require NetID authentication
 app.use(
-  '/api/static/catalogs/public',
-  express.static(`${STATIC_FILE_DIR}/catalogs/public`, {
+  '/api/static/catalogs/evals',
+  authWithEvals,
+  express.static(`${STATIC_FILE_DIR}/catalogs/evals`, {
     cacheControl: true,
     maxAge: '1h',
     lastModified: true,
@@ -167,10 +168,9 @@ app.use(
   }),
 );
 
-// Mount static files route and require NetID authentication
+// Serve public catalog files without authentication
 app.use(
   '/api/static',
-  authWithEvals,
   express.static(STATIC_FILE_DIR, {
     cacheControl: true,
     maxAge: '1h',

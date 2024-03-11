@@ -25,7 +25,6 @@ function RatingsGraph({
 
   // Set minimum bar height
   const MIN_HEIGHT = 15;
-  // Loop through each rating to build the bar
 
   // Holds the bars
   const columns = ratings.map((rating, indx) => {
