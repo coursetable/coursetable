@@ -159,6 +159,30 @@ function WorksheetToggleButton({
     ],
   );
 
+  const size = modal ? 20 : isLgDesktop ? 16 : 14;
+  const Icon = inWorksheet ? FaMinus : FaPlus;
+
+  // Disabled worksheet add/remove button if not logged in
+  if (!user.worksheets) {
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id="tooltip-disabled">
+            Log in to add to your worksheet
+          </Tooltip>
+        }
+      >
+        <Button
+          className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
+          disabled
+        >
+          <FaPlus size={size} className={styles.disabledButtonIcon} />
+        </Button>
+      </OverlayTrigger>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <CourseConflictIcon
@@ -190,11 +214,7 @@ function WorksheetToggleButton({
           {/* Show bookmark icon on modal and +/- everywhere else */}
           {modal ? (
             <>
-              {inWorksheet ? (
-                <FaMinus size={20} className={styles.scaleIcon} />
-              ) : (
-                <FaPlus size={20} className={styles.scaleIcon} />
-              )}
+              <Icon size={size} className={styles.scaleIcon} />
               {/* Render the worksheet dropdown */}
               <select
                 value={selectedWorksheet}
@@ -220,13 +240,7 @@ function WorksheetToggleButton({
               </select>
             </>
           ) : (
-            <>
-              {inWorksheet ? (
-                <FaMinus size={isLgDesktop ? 16 : 14} />
-              ) : (
-                <FaPlus size={isLgDesktop ? 16 : 14} />
-              )}
-            </>
+            <Icon size={size} />
           )}
         </Button>
       </OverlayTrigger>

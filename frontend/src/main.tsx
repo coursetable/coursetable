@@ -35,6 +35,7 @@ Sentry.init({
   ignoreErrors: [
     'TypeError: Failed to fetch',
     'TypeError: Load failed',
+    'TypeError: Importing a module script failed.',
     'TypeError: cancelled',
     'TypeError: NetworkError when attempting to fetch resource.',
     'TypeError: The network connection was lost.',

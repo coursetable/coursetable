@@ -4,7 +4,7 @@ CourseTable uses the following Docker containers for core functionality, so they
 
 - `express`: this contains the Express app code for running the API.
 - `mysql`: this is a MySQL database that stores user data.
-- `graphql-engine`: this is a Hasura engine that wraps the Postgres database created by Ferry. Ferry dumps course data in it, and the engine exposes a GraphQL API for querying the data.
+- `graphql-engine`: this is a Hasura engine that wraps the Postgres database created by Ferry. The engine exposes a GraphQL API for querying the data.
 - `redis`: this is a Redis stack server that stores all user sessions from Express.
 - `phpmyadmin`: this is a PHPMyAdmin instance that allows you to view the MySQL database managed by API. It is useful for debugging and DB manipulation.
 
@@ -18,6 +18,15 @@ Here's the data flow for course data:
 2. Ferry then writes the data to a Postgres database on the prod server.
 3. The Postgres database exposes itself to the Internet.
 4. During development and prod, we spin up a Hasura engine that wraps the Postgres database and exposes a GraphQL API.
+   <details>
+   <summary>Additional Details</summary>
+
+   > For security purposes, the Hasura Engine is only exposed to the localhost loopback interface (`127.0.0.1`). Therefore, the production Hasura Engine cannot be directly accessed from the Internet.
+   >
+   > When modifying the development Hasura Engine through the console at `localhost:8085`, configuration changes are synced to a special schema in the Ferry database. To sync the changes to the production Hasura Engine, we only need to restart its container.
+
+   </details>
+
 5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. These are cached locally unless you run `./start.sh -d -o`.
 6. The frontend requests the Express endpoint, which serves these JSON files.
 

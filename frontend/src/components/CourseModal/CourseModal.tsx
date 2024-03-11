@@ -13,6 +13,7 @@ import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useFerry } from '../../contexts/ferryContext';
+import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
 import { CUR_YEAR } from '../../config';
 
@@ -98,6 +99,7 @@ const CourseModalEvaluations = suspended(
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
+  const { user } = useUser();
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
@@ -107,10 +109,11 @@ function CourseModal() {
     const courseModal = searchParams.get('course-modal');
     if (!courseModal) return;
     const [seasonCode, crn] = courseModal.split('-') as [Season, string];
-    requestSeasons([seasonCode]);
-    const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
-    if (!listingFromQuery) return;
-    setHistory([listingFromQuery]);
+    void requestSeasons([seasonCode]).then(() => {
+      const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
+      if (!listingFromQuery) return;
+      setHistory([listingFromQuery]);
+    });
   }, [history.length, searchParams, requestSeasons, courses]);
   const listing = history[history.length - 1];
 
@@ -192,7 +195,9 @@ function CourseModal() {
                   {
                     label: 'Evaluations',
                     value: 'evals',
-                    hidden: CUR_YEAR.includes(listing.season_code),
+                    // Don't show eval tab if it's current year or no auth
+                    hidden:
+                      CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
                   },
                 ]}
                 onSelectTab={setView}
@@ -209,7 +214,7 @@ function CourseModal() {
           // Show overview data
           <CourseModalOverview
             gotoCourse={(l) => {
-              setView('evals');
+              user.hasEvals ? setView('evals') : setView('overview');
               if (
                 l.crn === listing.crn &&
                 l.season_code === listing.season_code

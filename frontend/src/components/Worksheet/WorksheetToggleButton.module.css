@@ -53,3 +53,18 @@
   top: -3px;
   left: -8px;
 }
+
+.disabledButton {
+  cursor: not-allowed !important;
+  background-color: transparent !important;
+  border-width: 0 !important;
+}
+
+.disabledButtonIcon {
+  color: var(--color-icon-focus);
+}
+
+.disabledButton:active,
+.disabledButton:focus {
+  box-shadow: none !important;
+}

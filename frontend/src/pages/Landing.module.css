@@ -23,14 +23,20 @@
   transition:
     transform 0.3s,
     filter 0.3s;
+  margin-top: 8px;
 }
 
 .login {
   background-color: #1084ff;
 }
 
+.guest {
+  background-color: #009688;
+}
+
 .about {
   background-color: #344a61;
+  margin-right: 8px;
 }
 
 .btn:hover {

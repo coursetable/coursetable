@@ -4,6 +4,7 @@ import {
   Col,
   Modal,
   OverlayTrigger,
+  Tooltip,
   Popover,
   Collapse,
 } from 'react-bootstrap';
@@ -41,6 +42,7 @@ import {
 } from '../../generated/graphql';
 import {
   weekdays,
+  generateRandomColor,
   type NarrowListing,
   type Weekdays,
   type Listing,
@@ -77,7 +79,8 @@ type RelatedListingInfo = Omit<
   >,
   'professor_info'
 > & {
-  professor_info: {
+  professor_info?: {
+    // For public may not have prof info
     average_rating: number;
     email: string;
     name: string;
@@ -152,6 +155,76 @@ const profInfoPopover =
     </InfoPopover>
   );
 
+function RatingContent({
+  offering,
+  hasEvals,
+}: {
+  readonly offering: CourseOffering;
+  readonly hasEvals: boolean | undefined;
+}) {
+  // For random seeds
+  const ratingIdentifier = `${offering.listing.crn}${offering.listing.season_code}rating`;
+  const workloadIdentifier = `${offering.listing.crn}${offering.listing.season_code}workload`;
+  const professorIdentifier = `${offering.listing.crn}${offering.listing.season_code}professor`;
+
+  const ratingBubbles = [
+    {
+      colorMap: ratingColormap,
+      rating: offering.rating,
+      identifier: ratingIdentifier,
+    },
+    {
+      colorMap: ratingColormap,
+      rating: offering.professorRating,
+      identifier: professorIdentifier,
+    },
+    {
+      colorMap: workloadColormap,
+      rating: offering.workload,
+      identifier: workloadIdentifier,
+    },
+  ];
+  if (hasEvals) {
+    return ratingBubbles.map(({ colorMap, rating }, i) => (
+      <Col
+        key={i}
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+      >
+        <RatingBubble
+          rating={rating}
+          colorMap={colorMap}
+          className={styles.ratingCell}
+        >
+          {rating ? rating.toFixed(1) : 'N/A'}
+        </RatingBubble>
+      </Col>
+    ));
+  }
+  return ratingBubbles.map(({ identifier }, i) => (
+    <OverlayTrigger
+      key={i}
+      placement="top"
+      overlay={(props) => (
+        <Tooltip id="color-tooltip" {...props}>
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      )}
+    >
+      <Col
+        key={i}
+        xs={2}
+        className="px-1 ml-0 d-flex justify-content-center text-center"
+      >
+        <RatingBubble
+          color={generateRandomColor(identifier)}
+          className={styles.ratingCell}
+        />
+      </Col>
+    </OverlayTrigger>
+  ));
+}
+
 function CourseModalOverview({
   gotoCourse,
   listing,
@@ -197,9 +270,9 @@ function CourseModalOverview({
       times.get(timespan)!.add(day);
     }
   }
-
-  const { loading, error, data } = useSameCourseOrProfOfferingsQuery({
+  const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
     variables: {
+      hasEval: Boolean(user.hasEvals), // Skip this query if not authenticated
       same_course_id: listing.same_course_id,
       professor_ids: listing.professor_ids,
     },
@@ -227,6 +300,7 @@ function CourseModalOverview({
     for (const season of data.computed_listing_info as RelatedListingInfo[]) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
+      if (!season.professor_info) continue;
       season.professor_info.forEach((prof) => {
         if (profInfo.has(prof.name)) {
           const dict = profInfo.get(prof.name)!;
@@ -280,14 +354,15 @@ function CourseModalOverview({
       // Discussion sections have no ratings, nothing to show
       .filter((course) => !isDiscussionSection(course))
       .map((course): CourseOffering => {
-        const averageProfessorRating =
-          course.professor_info.reduce(
-            (sum, prof) => sum + (prof.average_rating || 0),
-            0,
-          ) / course.professor_info.length;
+        const averageProfessorRating = course.professor_info
+          ? course.professor_info.reduce(
+              (sum, prof) => sum + (prof.average_rating || 0),
+              0,
+            ) / course.professor_info.length
+          : null;
         return {
-          rating: course.course.evaluation_statistic?.avg_rating || null,
-          workload: course.course.evaluation_statistic?.avg_workload || null,
+          rating: course.course?.evaluation_statistic?.avg_rating || null,
+          workload: course.course?.evaluation_statistic?.avg_workload || null,
           professorRating: averageProfessorRating || null,
           professor: course.professor_names.length
             ? course.professor_names
@@ -730,47 +805,8 @@ function CourseModalOverview({
                           : offering.professor[0]}
                     </div>
                   </Col>
-                  {/* Course Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.rating}
-                      colorMap={ratingColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.rating ? offering.rating.toFixed(1) : 'N/A'}
-                    </RatingBubble>
-                  </Col>
-                  {/* Professor Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.professorRating}
-                      colorMap={ratingColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.professorRating
-                        ? offering.professorRating.toFixed(1)
-                        : 'N/A'}
-                    </RatingBubble>
-                  </Col>
-                  {/* Workload Rating */}
-                  <Col
-                    xs={2}
-                    className="px-1 ml-0 d-flex justify-content-center text-center"
-                  >
-                    <RatingBubble
-                      rating={offering.workload}
-                      colorMap={workloadColormap}
-                      className={styles.ratingCell}
-                    >
-                      {offering.workload ? offering.workload.toFixed(1) : 'N/A'}
-                    </RatingBubble>
-                  </Col>
+                  {/* All Ratings */}
+                  <RatingContent offering={offering} hasEvals={user.hasEvals} />
                 </Row>
               ))}
             </>

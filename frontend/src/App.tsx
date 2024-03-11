@@ -40,6 +40,7 @@ const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
 const Join = suspended(() => import('./pages/Join'));
+const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
@@ -48,14 +49,11 @@ const Tutorial = suspended(() => import('./components/Tutorial'));
 function App() {
   const location = useLocation();
   // User context data
-  const { loading, user } = useUser();
+  const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
 
-  // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheets);
-
   // Render spinner if page loading
-  if (loading) {
+  if (authStatus === 'loading') {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
@@ -72,19 +70,10 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={3}
+        id={4}
       >
-        <a
-          href="/releases/quist"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
-        >
-          Check out Quist
-        </a>
-        , our new language for advanced queries!
+        Basic course information is now publicly available without login! Share
+        courses with your family and friends with ease ;)
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -92,7 +81,7 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? (
+            authStatus === 'authenticated' ? (
               /* <Home /> */ <Navigate to="/catalog" />
             ) : (
               <Navigate to="/login" />
@@ -102,10 +91,7 @@ function App() {
 
         {/* Authenticated routes */}
         {/* Catalog */}
-        <Route
-          path="/catalog"
-          element={showIfAuthorized(user.hasEvals, <Search />)}
-        />
+        <Route path="/catalog" element={<Search />} />
 
         {/* Worksheet */}
         <Route
@@ -130,7 +116,9 @@ function App() {
         {/* Auth */}
         <Route
           path="/login"
-          element={isLoggedIn ? <Navigate to="/" /> : <Landing />}
+          element={
+            authStatus === 'authenticated' ? <Navigate to="/" /> : <Landing />
+          }
         />
 
         {/* OCE Challenge */}
@@ -157,7 +145,7 @@ function App() {
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
-
+        <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
         {/* Render footer if not on catalog */}

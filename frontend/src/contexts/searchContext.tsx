@@ -136,7 +136,6 @@ type Store = {
   coursesLoading: boolean;
   searchData: Listing[];
   multiSeasons: boolean;
-  isLoggedIn: boolean;
   numFriends: NumFriendsReturn;
   duration: number;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
@@ -292,8 +291,6 @@ export function SearchProvider({
 
   // Fetch user context data
   const { user } = useUser();
-  // Is the user logged in?
-  const isLoggedIn = Boolean(user.worksheets);
 
   // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
@@ -772,7 +769,6 @@ export function SearchProvider({
       coursesLoading,
       searchData,
       multiSeasons,
-      isLoggedIn,
       numFriends,
       duration,
       setStartTime,
@@ -782,7 +778,6 @@ export function SearchProvider({
       coursesLoading,
       searchData,
       multiSeasons,
-      isLoggedIn,
       numFriends,
       duration,
       setStartTime,

@@ -15,30 +15,39 @@ export const listSeasonsQuery = gql`
   }
 `;
 
-// Query for getting catalog data by season
-export const catalogBySeasonQuery = gql`
-  query catalogBySeason($season: String!) {
+// Query for data that needs eval access
+export const evalsBySeasonQuery = gql`
+  query evalsBySeason($season: String!) {
     computed_listing_info(where: { season_code: { _eq: $season } }) {
-      all_course_codes
-      areas
       average_gut_rating
       average_professor
       average_rating
       average_workload
       average_rating_same_professors
       average_workload_same_professors
+      crn
+      enrolled
+      last_enrollment
+      last_enrollment_same_professors
+    }
+  }
+`;
+
+// Query for publicly available catalog data
+export const catalogBySeasonQuery = gql`
+  query catalogBySeason($season: String!) {
+    computed_listing_info(where: { season_code: { _eq: $season } }) {
+      all_course_codes
+      areas
       classnotes
       course_code
       credits
       crn
       description
-      enrolled
       extra_info
       final_exam
       flag_info
       fysem
-      last_enrollment
-      last_enrollment_same_professors
       listing_id
       locations_summary
       number

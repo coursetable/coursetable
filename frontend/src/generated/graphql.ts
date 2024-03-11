@@ -5490,6 +5490,7 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   professor_ids: InputMaybe<
     Array<Scalars['String']['input']> | Scalars['String']['input']
   >;
+  hasEval: Scalars['Boolean']['input'];
 }>;
 
 export type SameCourseOrProfOfferingsQuery = {
@@ -5497,8 +5498,8 @@ export type SameCourseOrProfOfferingsQuery = {
   computed_listing_info: Array<
     {
       __typename?: 'computed_listing_info';
-      professor_info: any;
-      course: {
+      professor_info?: any;
+      course?: {
         __typename?: 'courses';
         evaluation_statistic: {
           __typename?: 'evaluation_statistics';
@@ -5506,7 +5507,8 @@ export type SameCourseOrProfOfferingsQuery = {
           avg_rating: number | null;
         } | null;
       };
-    } & ListingFragment
+    } & ListingFragment &
+      ListingRatingsFragment
   >;
 };
 
@@ -5556,28 +5558,44 @@ export type CatalogBySeasonQuery = {
   >;
 };
 
-export type ListingFragment = {
+export type EvalsBySeasonQueryVariables = Exact<{
+  season: Scalars['String']['input'];
+}>;
+
+export type EvalsBySeasonQuery = {
+  __typename?: 'query_root';
+  computed_listing_info: Array<
+    { __typename?: 'computed_listing_info' } & ListingRatingsFragment
+  >;
+};
+
+export type ListingRatingsFragment = {
   __typename?: 'computed_listing_info';
-  all_course_codes: any;
-  areas: any;
   average_gut_rating: number | null;
   average_professor: number | null;
   average_rating: number | null;
   average_workload: number | null;
   average_rating_same_professors: number | null;
   average_workload_same_professors: number | null;
+  crn: number;
+  enrolled: number | null;
+  last_enrollment: number | null;
+  last_enrollment_same_professors: boolean | null;
+};
+
+export type ListingFragment = {
+  __typename?: 'computed_listing_info';
+  all_course_codes: any;
+  areas: any;
   classnotes: string | null;
   course_code: string;
   credits: number | null;
   crn: number;
   description: string | null;
-  enrolled: number | null;
   extra_info: string;
   final_exam: string | null;
   flag_info: any;
   fysem: boolean | null;
-  last_enrollment: number | null;
-  last_enrollment_same_professors: boolean | null;
   listing_id: number;
   locations_summary: string;
   number: string;
@@ -5600,28 +5618,33 @@ export type ListingFragment = {
   title: string;
 };
 
-export const ListingFragmentDoc = gql`
-  fragment Listing on computed_listing_info {
-    all_course_codes
-    areas
+export const ListingRatingsFragmentDoc = gql`
+  fragment ListingRatings on computed_listing_info {
     average_gut_rating
     average_professor
     average_rating
     average_workload
     average_rating_same_professors
     average_workload_same_professors
+    crn
+    enrolled
+    last_enrollment
+    last_enrollment_same_professors
+  }
+`;
+export const ListingFragmentDoc = gql`
+  fragment Listing on computed_listing_info {
+    all_course_codes
+    areas
     classnotes
     course_code
     credits
     crn
     description
-    enrolled
     extra_info
     final_exam
     flag_info
     fysem
-    last_enrollment
-    last_enrollment_same_professors
     listing_id
     locations_summary
     number
@@ -5648,6 +5671,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
   query SameCourseOrProfOfferings(
     $same_course_id: Int!
     $professor_ids: [String!]
+    $hasEval: Boolean!
   ) {
     computed_listing_info(
       where: {
@@ -5657,17 +5681,19 @@ export const SameCourseOrProfOfferingsDocument = gql`
         ]
       }
     ) {
-      course {
+      course @include(if: $hasEval) {
         evaluation_statistic {
           avg_workload
           avg_rating
         }
       }
-      professor_info
+      professor_info @include(if: $hasEval)
       ...Listing
+      ...ListingRatings @include(if: $hasEval)
     }
   }
   ${ListingFragmentDoc}
+  ${ListingRatingsFragmentDoc}
 `;
 
 /**
@@ -5684,6 +5710,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
  *   variables: {
  *      same_course_id: // value for 'same_course_id'
  *      professor_ids: // value for 'professor_ids'
+ *      hasEval: // value for 'hasEval'
  *   },
  * });
  */
@@ -5909,4 +5936,82 @@ export type CatalogBySeasonSuspenseQueryHookResult = ReturnType<
 export type CatalogBySeasonQueryResult = Apollo.QueryResult<
   CatalogBySeasonQuery,
   CatalogBySeasonQueryVariables
+>;
+export const EvalsBySeasonDocument = gql`
+  query evalsBySeason($season: String!) {
+    computed_listing_info(where: { season_code: { _eq: $season } }) {
+      ...ListingRatings
+    }
+  }
+  ${ListingRatingsFragmentDoc}
+`;
+
+/**
+ * __useEvalsBySeasonQuery__
+ *
+ * To run a query within a React component, call `useEvalsBySeasonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEvalsBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEvalsBySeasonQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useEvalsBySeasonQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
+  > &
+    (
+      | { variables: EvalsBySeasonQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EvalsBySeasonQuery, EvalsBySeasonQueryVariables>(
+    EvalsBySeasonDocument,
+    options,
+  );
+}
+export function useEvalsBySeasonLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EvalsBySeasonQuery, EvalsBySeasonQueryVariables>(
+    EvalsBySeasonDocument,
+    options,
+  );
+}
+export function useEvalsBySeasonSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    EvalsBySeasonQuery,
+    EvalsBySeasonQueryVariables
+  >(EvalsBySeasonDocument, options);
+}
+export type EvalsBySeasonQueryHookResult = ReturnType<
+  typeof useEvalsBySeasonQuery
+>;
+export type EvalsBySeasonLazyQueryHookResult = ReturnType<
+  typeof useEvalsBySeasonLazyQuery
+>;
+export type EvalsBySeasonSuspenseQueryHookResult = ReturnType<
+  typeof useEvalsBySeasonSuspenseQuery
+>;
+export type EvalsBySeasonQueryResult = Apollo.QueryResult<
+  EvalsBySeasonQuery,
+  EvalsBySeasonQueryVariables
 >;

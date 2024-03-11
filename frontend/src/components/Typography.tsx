@@ -87,11 +87,21 @@ export function RatingBubble({
   colorMap,
   className,
   style,
+  color,
   ...props
-}: {
-  readonly rating: number | null;
-  readonly colorMap: chroma.Scale;
-} & React.ComponentProps<'div'>) {
+}: (
+  | {
+      readonly rating: number | null;
+      readonly colorMap: chroma.Scale;
+      readonly color?: never;
+    }
+  | {
+      readonly rating?: never;
+      readonly colorMap?: never;
+      readonly color: string;
+    }
+) &
+  React.ComponentProps<'div'>) {
   const { theme } = useTheme();
   return (
     <div
@@ -103,11 +113,13 @@ export function RatingBubble({
       )}
       style={{
         ...style,
-        backgroundColor: rating
-          ? colorMap(rating)
-              .alpha(theme === 'light' ? 1 : 0.75)
-              .css()
-          : undefined,
+        backgroundColor:
+          color ??
+          (rating
+            ? colorMap(rating)
+                .alpha(theme === 'light' ? 1 : 0.75)
+                .css()
+            : undefined),
       }}
     />
   );
