@@ -1,10 +1,11 @@
 .overlayModal {
   position: fixed;
-  bottom: 0;
   width: 43.75%;
   height: 80%;
   background: var(--color-surface);
-  transition: right 0.5s ease-in-out;
+  transition:
+    right 0.5s ease-in-out,
+    bottom 0.5s ease-in-out;
   z-index: 1100;
   border: 2px solid var(--color-border);
   box-shadow: 0 0 10px 10px rgb(0 0 0 / 20%);
@@ -21,10 +22,20 @@
 
 .overlayModalHidden {
   right: -100%;
+  bottom: 0%;
+  box-shadow: none;
+}
+
+@media (width < 768px) {
+  .overlayModalHidden {
+    right: 0%;
+    bottom: -100%;
+  }
 }
 
 .overlayModalVisible {
-  right: 0;
+  right: 0%;
+  bottom: 0%;
 }
 
 .expandBtn {
