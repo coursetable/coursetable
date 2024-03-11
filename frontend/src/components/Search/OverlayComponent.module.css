@@ -13,6 +13,12 @@
   border-radius: 10px;
 }
 
+@media (width < 768px) {
+  .overlayModal {
+    width: 100%;
+  }
+}
+
 .overlayModalHidden {
   right: -100%;
 }

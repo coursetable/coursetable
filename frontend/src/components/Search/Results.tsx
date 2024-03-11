@@ -136,33 +136,26 @@ function Results({
     resultsListing = (
       <WindowScroller>
         {({ ref, outerRef, style: listStyle }) => (
-          <>
-            <FloatingButton
-              overlayVisible={overlayVisible}
-              toggleOverlay={toggleOverlay}
-            />
-            <OverlayComponent isVisible={overlayVisible} />
-            <FixedSizeList
-              outerRef={outerRef}
-              ref={ref}
-              height={window.innerHeight}
-              itemCount={data.length}
-              itemSize={isLgDesktop ? 32 : 28}
-              width={window.innerWidth}
-              style={listStyle}
-              useIsScrolling
-            >
-              {({ index, style: itemStyle }) => (
-                <ResultsItem
-                  isOdd={index % 2 === 1}
-                  style={itemStyle}
-                  course={data[index]!}
-                  multiSeasons={multiSeasons}
-                  isFirst={index === 0}
-                />
-              )}
-            </FixedSizeList>
-          </>
+          <FixedSizeList
+            outerRef={outerRef}
+            ref={ref}
+            height={window.innerHeight}
+            itemCount={data.length}
+            itemSize={isLgDesktop ? 32 : 28}
+            width={window.innerWidth}
+            style={listStyle}
+            useIsScrolling
+          >
+            {({ index, style: itemStyle }) => (
+              <ResultsItem
+                isOdd={index % 2 === 1}
+                style={itemStyle}
+                course={data[index]!}
+                multiSeasons={multiSeasons}
+                isFirst={index === 0}
+              />
+            )}
+          </FixedSizeList>
         )}
       </WindowScroller>
     );
@@ -196,6 +189,11 @@ function Results({
       >
         {resultsListing}
       </div>
+      <FloatingButton
+        overlayVisible={overlayVisible}
+        toggleOverlay={toggleOverlay}
+      />
+      <OverlayComponent isVisible={overlayVisible} />
     </div>
   );
 }
