@@ -1,6 +1,6 @@
 # Continuous Integration (CI) / Continuous Deployment (CD) Docs
 
-All CI/CD pipelines are implemented as GitHub workflow actions in `.github/workflows`. Details regarding the deployed infrastructure is available here (will be updated when available).
+All CI/CD pipelines are implemented as GitHub workflow actions in `.github/workflows`. Details regarding the deployed infrastructure is available at [coursetable/infra](https://github.com/coursetable/infra).
 
 Available Environments:
 
@@ -8,7 +8,8 @@ Available Environments:
   - PR-specific Vercel frontend deployments that use the `Staging` backend environment.
   - URL: `[branch-name].preview.coursetable.com`
 - Staging
-  - `master` tracking Vercel frontend and Azure Container Group (ACI) deployments. MySQL DB is overwritten by production MySQL data daily.
+  - `master` tracking Vercel frontend and Docker backend deployments.
+    <!-- TODO: MySQL DB is overwritten by production MySQL data daily. -->
   - URL:
     - Frontend: [staging.coursetable.com](https://staging.coursetable.com)
     - Backend: [api.staging.coursetable.com](https://api.staging.coursetable.com/ping)
