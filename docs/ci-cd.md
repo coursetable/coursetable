@@ -34,14 +34,14 @@ Deploys **frontend only** to Vercel and assigns unique preview link to each comm
 
 ## [Staging CD](../.github/workflows/staging_cd.yml) - In Progress
 
-Deploys both frontend to Vercel and backend to staging ACI Vnet. Builds latest Docker images and refreshes containers in-place. Allows for sanity-checking and robust testing of new commits before deploying to production.
+Deploys both frontend to Vercel and backend to the staging API Docker Network. Builds latest Docker images and refreshes containers in-place. Allows for sanity-checking and robust testing of new commits before deploying to production.
 
 - Trigger: `master` commit
 - Environment: Staging
 
 ## [Production CD](../.github/workflows/cd.yml) - Planned
 
-Deploys both frontend to Vercel and backend to production ACI VNet. Only refreshes containers in-place. Houses production MySQL data in Azure File Share.
+Deploys both frontend to Vercel and backend to production API Docker Network. Builds latest Docker images and refreshes containers. in-place.
 
 - Trigger: `master` commit with team lead approval
 - Environment: Production

@@ -13,7 +13,8 @@ services:
       CANNY_KEY: ${CANNY_KEY?canny_key}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
       FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
-      GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      GRAPHQL_ENDPOINT: http://${GRAPHQL_ENGINE_HOST?graphql-engine}:8080/v1/graphql
+      REDIS_HOST: ${REDIS_HOST?redis}
       MYSQL_HOST: ${MYSQL_HOST?host}
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
