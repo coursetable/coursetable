@@ -19,7 +19,7 @@ services:
   mysql:
     build: ./mysql
     image: coursetable/mysql:latest
-    container_name: mysql
+    container_name: ${MYSQL_HOST?mysql}
     command: --default-authentication-plugin=mysql_native_password --log-warnings
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
@@ -37,6 +37,8 @@ services:
       interval: 0.5s
       timeout: 10s
       retries: 60
+    networks:
+      - api
 
   # This container is only for dev! The prod container is at coursetable/infra/mysql
   phpmyadmin:
@@ -45,7 +47,9 @@ services:
     depends_on:
       - mysql
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: ${MYSQL_HOST?mysql}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
     ports:
       - '8081:80'
+    networks:
+      - api
