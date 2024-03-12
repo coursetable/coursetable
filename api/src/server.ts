@@ -15,6 +15,7 @@ import {
   SESSION_SECRET,
   CORS_OPTIONS,
   STATIC_FILE_DIR,
+  REDIS_HOST,
 } from './config';
 import morgan from './logging/morgan';
 import winston from './logging/winston';
@@ -66,7 +67,7 @@ app.use((req, _, next) => {
 // Initialize Redis client.
 const redisClient = createClient({
   socket: {
-    host: 'redis',
+    host: REDIS_HOST,
   },
 });
 redisClient.connect().catch(winston.error);

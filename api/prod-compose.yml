@@ -17,24 +17,22 @@ services:
       traefik.http.routers.coursetable.middlewares: gzip-compress@file
     networks:
       - traefik
-      - mysql_default
-      - default
+      - mysql
+      - api
 
   graphql-engine:
     restart: always
     networks:
-      - ferry_default
-      - default
+      - ferry
+      - api
 
   redis:
     restart: always
-    networks:
-      - default
 
 networks:
   traefik:
     external: true
-  ferry_default:
+  ferry:
     external: true
-  mysql_default:
+  mysql:
     external: true
