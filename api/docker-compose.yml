@@ -5,7 +5,7 @@ services:
       context: ../
       dockerfile: ./api/Dockerfile
     image: coursetable/api:latest
-    container_name: express
+    container_name: ${EXPRESS_HOST?express}
     depends_on:
       graphql-engine:
         condition: service_healthy
@@ -26,9 +26,11 @@ services:
       SECURE_PORT: ${SECURE_PORT?secure_port}
       INSECURE_PORT: ${INSECURE_PORT?insecure_port}
       CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
+    networks:
+      - api
 
   graphql-engine:
-    container_name: graphql-engine
+    container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
     image: hasura/graphql-engine:v2.33.4
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
@@ -41,9 +43,11 @@ services:
       interval: 0.5s
       timeout: 10s
       retries: 60
+    networks:
+      - api
 
   redis:
-    container_name: redis
+    container_name: ${REDIS_HOST?redis}
     image: redis/redis-stack-server:latest
     volumes:
       - ./redis:/usr/local/etc/redis
@@ -52,3 +56,10 @@ services:
       interval: 0.5s
       timeout: 10s
       retries: 60
+    networks:
+      - api
+
+networks:
+  api:
+    name: ${API_NETWORK?api}
+    driver: bridge

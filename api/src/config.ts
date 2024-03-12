@@ -16,6 +16,9 @@ export const INSECURE_PORT = getEnv('INSECURE_PORT');
 // API key for interfacing with the yalies.io API
 export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
 
+// Redis hostname
+export const REDIS_HOST = getEnv('REDIS_HOST');
+
 // Ferry GraphQL endpoint
 export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
 
