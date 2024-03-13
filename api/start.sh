@@ -45,10 +45,13 @@ then
     fi
     export HOT_RELOAD='true'
     doppler setup -p coursetable -c dev
+
     doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans --build -d"
     doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
+
     # build debug
     # doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml build --no-cache &> logs.txt"
+    
 elif [[ $ENV == 'prod' || $ENV == 'staging' ]]
 then
     if [[ $ENV == 'staging' ]]
