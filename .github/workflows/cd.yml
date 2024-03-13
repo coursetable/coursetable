@@ -87,15 +87,10 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
 
-      - name: Build Docker images
+      - name: Build and Deploy Docker containers
         working-directory: ./api
         run: |
-          docker-compose -f docker-compose.yml -f prod-compose.yml build
-
-      - name: Deploy Docker containers
-        working-directory: ./api
-        run: |
-          DOCKER_HOST="ssh://app@ocean.coursetable.com" docker-compose -f docker-compose.yml -f prod-compose.yml up -d
+          DOCKER_HOST="ssh://app@ocean.coursetable.com" docker-compose -f docker-compose.yml -f prod-compose.yml up -d --build
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
