@@ -16,6 +16,7 @@ shift
     case "$ARGS" in
         "--dev") set -- "$@" "-d" ;;
         "--prod") set -- "$@" "-p" ;;
+        "--staging") set -- "$@" "-s" ;;
         "--overwrite") set -- "$@" "-o" ;;
         *) set -- "$@" "$ARGS"
     esac
@@ -25,13 +26,14 @@ while getopts 'dpo' flag; do
     case "${flag}" in
         d) ENV="dev" ;;
         p) ENV="prod" ;;
+        s) ENV="staging" ;;
         o) OVERWRITE=true ;;
     esac
 done
 
 if [[ $ENV == "" ]]
 then
-    echo "Please use either '--dev' or '--prod', assuming '--dev' for this run."
+    echo "Please use either '--dev', '--prod', or '--staging', assuming '--dev' for this run."
     ENV="dev"
 fi
 
@@ -47,9 +49,20 @@ then
     doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml logs -f"
     # build debug
     # doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml build --no-cache &> logs.txt"
-elif [[ $ENV == 'prod' ]]
+elif [[ $ENV == 'prod' || $ENV == 'staging']]
 then
-    doppler setup -p coursetable -c prd
+    if [[ $ENV == 'staging' ]]
+    then
+        export CFG_ENV=prod_staging
+        export SENTRY_ENVIRONMENT=staging
+        export DOCKER_PROJECT_NAME=api-staging
+    else
+        export CFG_ENV=prod
+        export SENTRY_ENVIRONMENT=production
+        export DOCKER_PROJECT_NAME=api
+    fi
+
+    doppler setup -p coursetable -c $CFG_ENV
 
     VERSION=`sentry-cli releases propose-version`
     export SENTRY_ORG=coursetable
@@ -60,9 +73,9 @@ then
     sentry-cli releases new "$VERSION"
     sentry-cli releases set-commits "$VERSION" --auto
 
-    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml build"
+    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml -p $DOCKER_PROJECT_NAME build"
     sentry-cli releases finalize "$VERSION"
 
-    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml up -d"
-    sentry-cli releases deploys "$VERSION" new -e production
+    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml -p $DOCKER_PROJECT_NAME up -d"
+    sentry-cli releases deploys "$VERSION" new -e $SENTRY_ENVIRONMENT
 fi
