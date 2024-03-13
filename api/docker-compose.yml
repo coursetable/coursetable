@@ -41,7 +41,7 @@ services:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080']
       interval: 0.5s
       timeout: 10s
-      retries: 60
+      retries: 120
     networks:
       - api
 
