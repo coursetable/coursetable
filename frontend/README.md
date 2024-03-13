@@ -1,4 +1,4 @@
-# Frontend 1
+# Frontend
 
 Our frontend is a React SPA built by Vite.
 
