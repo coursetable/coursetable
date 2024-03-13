@@ -2,7 +2,7 @@ version: '3'
 services:
   api:
     build:
-      context: ../
+      context: ../../
       dockerfile: ./api/Dockerfile
     image: coursetable/api:latest
     container_name: ${EXPRESS_HOST?express}
@@ -35,10 +35,8 @@ services:
     image: hasura/graphql-engine:latest
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-    ports:
-      - '127.0.0.1:8085:8080'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080']
       interval: 0.5s
@@ -51,7 +49,7 @@ services:
     container_name: ${REDIS_HOST?redis}
     image: redis/redis-stack-server:latest
     volumes:
-      - ./redis:/usr/local/etc/redis
+      - ../redis:/usr/local/etc/redis
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 0.5s

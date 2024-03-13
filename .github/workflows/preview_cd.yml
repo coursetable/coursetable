@@ -1,7 +1,4 @@
 name: Preview CD
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
   pull_request:
@@ -16,6 +13,10 @@ jobs:
       name: Preview
       url: https://${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
     runs-on: ubuntu-latest
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - uses: actions/checkout@v4

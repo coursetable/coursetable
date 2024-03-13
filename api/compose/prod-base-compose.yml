@@ -3,18 +3,14 @@ services:
   api:
     restart: always
     ports:
-      - '${INSECURE_PORT:-8039}:${INSECURE_PORT:-8039}'
+      - '${INSECURE_PORT:-8040}:${INSECURE_PORT:-8040}'
     volumes:
-      - ./src:/usr/src/app/api/src
+      - ../src:/usr/src/app/api/src
     environment:
       NODE_ENV: production
       HOT_RELOAD: 'false'
     labels:
       traefik.enable: true
-      traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)
-      traefik.http.routers.coursetable.tls: true
-      traefik.http.routers.coursetable.tls.certResolver: ctresolver
-      traefik.http.routers.coursetable.middlewares: gzip-compress@file
     networks:
       - traefik
       - mysql

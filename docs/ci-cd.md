@@ -12,7 +12,7 @@ Available Environments:
     <!-- TODO: MySQL DB is overwritten by production MySQL data daily. -->
   - URL:
     - Frontend: [staging.coursetable.com](https://staging.coursetable.com)
-    - Backend: [api.staging.coursetable.com](https://api.staging.coursetable.com/ping)
+    - Backend: [api-staging.coursetable.com](https://api.staging.coursetable.com/ping)
 - Production
   - Asynchronously tracking deploys of `master` on approval from a team lead.
   - URL:
@@ -33,16 +33,16 @@ Deploys **frontend only** to Vercel and assigns unique preview link to each comm
 - Trigger: PR commit
 - Environment: Preview
 
-## [Staging CD](../.github/workflows/staging_cd.yml) - In Progress
+## [Staging CD](../.github/workflows/staging_cd.yml)
 
 Deploys both frontend to Vercel and backend to the staging API Docker Network. Builds latest Docker images and refreshes containers in-place. Allows for sanity-checking and robust testing of new commits before deploying to production.
 
 - Trigger: `master` commit
 - Environment: Staging
 
-## [Production CD](../.github/workflows/cd.yml) - Planned
+## [Production CD](../.github/workflows/cd.yml)
 
-Deploys both frontend to Vercel and backend to production API Docker Network. Builds latest Docker images and refreshes containers. in-place.
+Deploys both frontend to Vercel and backend to production API Docker Network. Builds latest Docker images and refreshes containers in-place.
 
 - Trigger: `master` commit with team lead approval
 - Environment: Production
