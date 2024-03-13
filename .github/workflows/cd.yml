@@ -90,7 +90,7 @@ jobs:
       - name: Build and Deploy Docker containers
         working-directory: ./api
         run: |
-          docker context create remote --docker “host=ssh://app@ocean.coursetable.com”
+          docker context create remote --docker "host=ssh://app@ocean.coursetable.com"
           docker-compose --context remote -f docker-compose.yml -f prod-compose.yml up -d --build
 
       - name: Create Sentry release
