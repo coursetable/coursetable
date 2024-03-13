@@ -2,7 +2,7 @@ name: Staging CD
 
 on:
   push:
-    branches: [master, staging-cd]
+    branches: [master]
     paths:
       - 'frontend/**'
       - 'api/**'
