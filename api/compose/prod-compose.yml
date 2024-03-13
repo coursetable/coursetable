@@ -9,4 +9,4 @@ services:
   
   redis:
     volumes:
-      - ../redis/prod-data:/data
+      - /home/app/redis/prod-data:/data
