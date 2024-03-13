@@ -35,13 +35,13 @@ services:
     image: hasura/graphql-engine:latest
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # set to "true" to enable console
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080']
       interval: 0.5s
       timeout: 10s
-      retries: 120
+      retries: 60
     networks:
       - api
 
