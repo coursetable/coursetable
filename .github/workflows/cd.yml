@@ -5,10 +5,10 @@ env:
 
 on:
   push:
-    branches: [master, prod-cd]
-    # paths:
-    #   - 'frontend/**'
-    #   - 'api/**'
+    branches: [master]
+    paths:
+      - 'frontend/**'
+      - 'api/**'
 
 jobs:
   changes:
@@ -73,11 +73,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-
-      # - name: Make secrets available as environment variables
-      #   uses: oNaiPs/secrets-to-env-action@v1
-      #   with:
-      #     secrets: ${{ toJSON(secrets) }}
 
       - name: Build and Deploy Docker containers
         working-directory: ./api
