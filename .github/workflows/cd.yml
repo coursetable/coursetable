@@ -21,15 +21,18 @@ jobs:
       api: ${{ steps.filter.outputs.api }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-    # For pull requests it's not necessary to checkout the code
-    - uses: dorny/paths-filter@v3
-      id: filter
-      with:
-        filters: |
-          api:
-            - 'api/**'
-          frontend:
-            - 'frontend/**'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+        
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+            frontend:
+              - 'frontend/**'
 
   frontend-build-and-deploy:
     needs: changes
