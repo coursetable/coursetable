@@ -14,7 +14,7 @@
 
 ### Setup
 
-Ensure that `doppler` is properly configured with access to the environment configs.
+Ensure that `doppler` is properly configured with access to the environment configs. We assume that all following commands will be run with `root` unless otherwise specified.
 
 ```sh
 # Fetch everything.
@@ -40,7 +40,17 @@ read -p "Add to crontab. Press [enter] when done..."
 
 ### GitHub Actions Self-Hosted Runner
 
-Setup the new VM as a self-hosted runner for GitHub Actions by following the instructions provided when adding a new self-hosted runner. Be sure to [install the runner application as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service) as well.
+```sh
+# Create new user that GitHub Actions assumes as an identity
+useradd -m app
+usermod -aG sudo app
+passwd app
+
+# Make sure to install the self-hosted runner application as the `app` user
+su app
+```
+
+Setup the new server as a self-hosted runner for GitHub Actions by following the instructions provided when adding a new self-hosted runner. Be sure to [install the runner application as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service) as well.
 
 ## Deploying to the server
 
