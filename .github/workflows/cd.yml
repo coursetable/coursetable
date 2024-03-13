@@ -6,9 +6,9 @@ env:
 on:
   push:
     branches: [master, prod-cd]
-    paths:
-      - 'frontend/**'
-      - 'api/**'
+    # paths:
+    #   - 'frontend/**'
+    #   - 'api/**'
 
 jobs:
   changes:
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-        
+
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -59,7 +59,7 @@ jobs:
         run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
       - name: Deploy to Vercel and Alias Deployment
         run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a coursetable.com
-  
+
   api-build-and-deploy:
     needs: changes
     if: ${{ needs.changes.outputs.api == 'true' }}
@@ -78,7 +78,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-  
+
       - name: Make secrets available as environment variables
         uses: oNaiPs/secrets-to-env-action@v1
         with:
@@ -88,7 +88,7 @@ jobs:
         working-directory: ./api
         run: |
           docker-compose -f docker-compose.yml -f prod-compose.yml build
-      
+
       - name: Deploy Docker containers
         working-directory: ./api
         run: |
@@ -101,4 +101,4 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
-            environment: production
+          environment: production
