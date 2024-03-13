@@ -67,37 +67,18 @@ jobs:
     environment:
       name: Production
       url: https://coursetable.com
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Configure SSH agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add VM to known hosts
-        run: ssh-keyscan -H ocean.coursetable.com >> ~/.ssh/known_hosts
-
-      - name: Make secrets available as environment variables
-        uses: oNaiPs/secrets-to-env-action@v1
-        with:
-          secrets: ${{ toJSON(secrets) }}
+      # - name: Make secrets available as environment variables
+      #   uses: oNaiPs/secrets-to-env-action@v1
+      #   with:
+      #     secrets: ${{ toJSON(secrets) }}
 
       - name: Build and Deploy Docker containers
         working-directory: ./api
-        run: |
-          docker context create remote --docker "host=ssh://app@ocean.coursetable.com"
-          docker-compose --context remote -f docker-compose.yml -f prod-compose.yml up -d --build
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
+        run: ./start.sh -p
