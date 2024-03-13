@@ -6,7 +6,7 @@ services:
       traefik.http.routers.coursetable.tls: true
       traefik.http.routers.coursetable.tls.certResolver: ctresolver
       traefik.http.routers.coursetable.middlewares: gzip-compress@file
-  
+
   redis:
     volumes:
       - /home/app/redis/prod-data:/data
