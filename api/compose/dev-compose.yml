@@ -4,9 +4,9 @@ services:
     ports:
       - '${SECURE_PORT:-3001}:${SECURE_PORT:-3001}'
     volumes:
-      - ./static:/usr/src/app/api/static
-      - ./src:/usr/src/app/api/src
-      - ./prisma:/usr/src/app/api/prisma
+      - ../static:/usr/src/app/api/static
+      - ../src:/usr/src/app/api/src
+      - ../prisma:/usr/src/app/api/prisma
     environment:
       OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
       HOT_RELOAD: ${HOT_RELOAD:-'true'}
@@ -21,7 +21,8 @@ services:
       
   # This container is only for dev! The prod container is at coursetable/infra/mysql
   mysql:
-    build: ./mysql
+    build: 
+      context: ../mysql
     image: coursetable/mysql:latest
     container_name: ${MYSQL_HOST?mysql}
     command: --default-authentication-plugin=mysql_native_password --log-warnings

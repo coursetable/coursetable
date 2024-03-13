@@ -5,7 +5,7 @@ set -euo pipefail
 trap ctrl_c INT
 
 function ctrl_c() {
-  doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml kill"
+  doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api kill"
 }
 
 ENV=""
@@ -45,8 +45,8 @@ then
     fi
     export HOT_RELOAD='true'
     doppler setup -p coursetable -c dev
-    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans --build -d"
-    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml logs -f"
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans --build -d"
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
     # build debug
     # doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml build --no-cache &> logs.txt"
 elif [[ $ENV == 'prod' || $ENV == 'staging' ]]
@@ -56,12 +56,12 @@ then
         export CFG_ENV=prod_staging
         export SENTRY_ENVIRONMENT=staging
         export DOCKER_PROJECT_NAME=api-staging
-        export ADDITIONAL_DOCKER_COMPOSE_FILE="-f staging-compose.yml"
+        export ADDITIONAL_DOCKER_COMPOSE_FILE="-f compose/staging-compose.yml"
     else
         export CFG_ENV=prod
         export SENTRY_ENVIRONMENT=production
         export DOCKER_PROJECT_NAME=api
-        export ADDITIONAL_DOCKER_COMPOSE_FILE="-f prod-compose.yml"
+        export ADDITIONAL_DOCKER_COMPOSE_FILE="-f compose/prod-compose.yml"
     fi
 
     doppler setup -p coursetable -c $CFG_ENV
@@ -75,9 +75,9 @@ then
     sentry-cli releases new "$VERSION"
     sentry-cli releases set-commits "$VERSION" --auto
 
-    doppler run --command "docker-compose -f docker-compose.yml -f prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME build"
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME build"
     sentry-cli releases finalize "$VERSION"
 
-    doppler run --command "docker-compose -f docker-compose.yml -f prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d"
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d"
     sentry-cli releases deploys "$VERSION" new -e $SENTRY_ENVIRONMENT
 fi
