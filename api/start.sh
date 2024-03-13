@@ -56,10 +56,12 @@ then
         export CFG_ENV=prod_staging
         export SENTRY_ENVIRONMENT=staging
         export DOCKER_PROJECT_NAME=api-staging
+        export ADDITIONAL_DOCKER_COMPOSE_FILE="-f staging-compose.yml"
     else
         export CFG_ENV=prod
         export SENTRY_ENVIRONMENT=production
         export DOCKER_PROJECT_NAME=api
+        export ADDITIONAL_DOCKER_COMPOSE_FILE=""
     fi
 
     doppler setup -p coursetable -c $CFG_ENV
@@ -73,9 +75,9 @@ then
     sentry-cli releases new "$VERSION"
     sentry-cli releases set-commits "$VERSION" --auto
 
-    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml -p $DOCKER_PROJECT_NAME build"
+    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME build"
     sentry-cli releases finalize "$VERSION"
 
-    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml -p $DOCKER_PROJECT_NAME up -d"
+    doppler run --command "docker-compose -f docker-compose.yml -f prod-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d"
     sentry-cli releases deploys "$VERSION" new -e $SENTRY_ENVIRONMENT
 fi

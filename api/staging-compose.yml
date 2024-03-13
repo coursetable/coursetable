@@ -1,0 +1,7 @@
+version: '3'
+services:
+  api:
+    ports:
+      - '${INSECURE_PORT:-8040}:${INSECURE_PORT:-8040}'
+    labels:
+      traefik.http.routers.coursetable.rule: Host(`api-staging.coursetable.com`)
