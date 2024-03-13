@@ -78,9 +78,7 @@ then
     sentry-cli releases new "$VERSION"
     sentry-cli releases set-commits "$VERSION" --auto
 
-    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME build"
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build"
     sentry-cli releases finalize "$VERSION"
-
-    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d"
     sentry-cli releases deploys "$VERSION" new -e $SENTRY_ENVIRONMENT
 fi
