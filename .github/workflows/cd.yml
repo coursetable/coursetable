@@ -79,6 +79,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add VM to known hosts
+        run: ssh-keyscan -H ocean.coursetable.com >> ~/.ssh/known_hosts
+
       - name: Make secrets available as environment variables
         uses: oNaiPs/secrets-to-env-action@v1
         with:
@@ -92,7 +95,7 @@ jobs:
       - name: Deploy Docker containers
         working-directory: ./api
         run: |
-          DOCKER_HOST="${{secrets.DOCKER_HOST}}" docker-compose -f docker-compose.yml -f prod-compose.yml up -d
+          DOCKER_HOST="ssh://app@ocean.coursetable.com" docker-compose -f docker-compose.yml -f prod-compose.yml up -d
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
