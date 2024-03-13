@@ -1,7 +1,8 @@
 version: '3'
 services:
   api:
-    ports:
-      - '${INSECURE_PORT:-8040}:${INSECURE_PORT:-8040}'
     labels:
-      traefik.http.routers.coursetable.rule: Host(`api-staging.coursetable.com`)
+      traefik.http.routers.coursetable-staging.rule: Host(`api-staging.coursetable.com`)
+      traefik.http.routers.coursetable-staging.tls: true
+      traefik.http.routers.coursetable-staging.tls.certResolver: ctresolver
+      traefik.http.routers.coursetable-staging.middlewares: gzip-compress@file
