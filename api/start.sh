@@ -15,18 +15,18 @@ for ARGS in "$@"; do
 shift
     case "$ARGS" in
         "--dev") set -- "$@" "-d" ;;
-        "--prod") set -- "$@" "-p" ;;
         "--staging") set -- "$@" "-s" ;;
+        "--prod") set -- "$@" "-p" ;;
         "--overwrite") set -- "$@" "-o" ;;
         *) set -- "$@" "$ARGS"
     esac
 done
 
-while getopts 'dpo' flag; do
+while getopts 'dspo' flag; do
     case "${flag}" in
         d) ENV="dev" ;;
-        p) ENV="prod" ;;
         s) ENV="staging" ;;
+        p) ENV="prod" ;;
         o) OVERWRITE=true ;;
     esac
 done
@@ -49,7 +49,7 @@ then
     doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml logs -f"
     # build debug
     # doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml build --no-cache &> logs.txt"
-elif [[ $ENV == 'prod' || $ENV == 'staging']]
+elif [[ $ENV == 'prod' || $ENV == 'staging' ]]
 then
     if [[ $ENV == 'staging' ]]
     then
