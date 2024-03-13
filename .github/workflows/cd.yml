@@ -8,9 +8,36 @@ on:
     branches: [master]
     paths:
       - 'frontend/**'
+      - 'api/**'
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    # Required permissions
+    permissions:
+      pull-requests: read
+    # Set job outputs to values from filter step
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+            frontend:
+              - 'frontend/**'
+
   frontend-build-and-deploy:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+
     environment:
       name: Production
       url: https://coursetable.com
@@ -32,3 +59,21 @@ jobs:
         run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
       - name: Deploy to Vercel and Alias Deployment
         run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a coursetable.com
+
+  api-build-and-deploy:
+    needs: changes
+    if: ${{ needs.changes.outputs.api == 'true' }}
+
+    environment:
+      name: Production
+      url: https://coursetable.com
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Build and Deploy Docker containers
+        working-directory: ./api
+        run: ./start.sh -p

@@ -32,7 +32,7 @@ services:
 
   graphql-engine:
     container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
-    image: hasura/graphql-engine:v2.33.4
+    image: hasura/graphql-engine:latest
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
