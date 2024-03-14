@@ -77,7 +77,6 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
                     </ThemeProvider>
                   </SearchProvider>
                 </WorksheetProvider>
-                {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
                 <ToastContainer toastClassName="rounded" />
               </WindowDimensionsProvider>
             </FerryProvider>

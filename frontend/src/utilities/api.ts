@@ -57,42 +57,55 @@ export async function toggleBookmark(payload: {
 }
 
 export async function fetchCatalog(season: Season) {
-  const res = await fetch(
-    `${API_ENDPOINT}/api/static/catalogs/public/${season}.json`,
-    {
-      credentials: 'include',
-    },
-  );
-
-  if (!res.ok) {
-    // TODO: better error handling here that interacts well with async-lock
-    throw new Error(
-      `failed to fetch course data for ${season}. ${res.statusText}`,
+  try {
+    const res = await fetch(
+      `${API_ENDPOINT}/api/static/catalogs/public/${season}.json`,
+      {
+        credentials: 'include',
+      },
     );
+
+    if (!res.ok) throw new Error(res.statusText);
+    const data = (await res.json()) as Listing[];
+    const info = new Map<Crn, Listing>();
+    for (const listing of data) info.set(listing.crn, listing);
+    return info;
+  } catch (err) {
+    Sentry.addBreadcrumb({
+      category: 'catalog',
+      message: `Fetching catalog ${season}`,
+      level: 'info',
+    });
+    Sentry.captureException(err);
+    toast.error(`Failed to fetch ${season} catalog. ${String(err)}`);
+    return undefined;
   }
-  const data = (await res.json()) as Listing[];
-  const info = new Map<Crn, Listing>();
-  for (const listing of data) info.set(listing.crn, listing);
-  return info;
 }
 
 export async function fetchEvals(season: Season) {
-  const res = await fetch(
-    `${API_ENDPOINT}/api/static/catalogs/evals/${season}.json`,
-    {
-      credentials: 'include',
-    },
-  );
-
-  if (!res.ok) {
-    throw new Error(
-      `failed to fetch evals data for ${season}. ${res.statusText}`,
+  try {
+    const res = await fetch(
+      `${API_ENDPOINT}/api/static/catalogs/evals/${season}.json`,
+      {
+        credentials: 'include',
+      },
     );
+
+    if (!res.ok) throw new Error(res.statusText);
+    const data = (await res.json()) as ListingRatingsFragment[];
+    const info = new Map<Crn, ListingRatingsFragment>();
+    for (const listing of data) info.set(listing.crn as Crn, listing);
+    return info;
+  } catch (err) {
+    Sentry.addBreadcrumb({
+      category: 'evals',
+      message: `Fetching evals ${season}`,
+      level: 'info',
+    });
+    Sentry.captureException(err);
+    toast.error(`Failed to fetch ${season} evals. ${String(err)}`);
+    return undefined;
   }
-  const data = (await res.json()) as ListingRatingsFragment[];
-  const info = new Map<Crn, ListingRatingsFragment>();
-  for (const listing of data) info.set(listing.crn as Crn, listing);
-  return info;
 }
 
 export async function logout() {

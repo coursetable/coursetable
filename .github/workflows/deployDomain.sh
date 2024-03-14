@@ -13,7 +13,7 @@ done
 
 if [[ $is_prod == true ]]; then
   echo "Deploying to production"
-  vercel deploy --prod --prebuilt --token=$token >deployment-url.txt 2>error.txt
+  vercel deploy --prod --prebuilt --skip-domain --token=$token >deployment-url.txt 2>error.txt
 else
   echo "Deploying to development"
   vercel deploy --prebuilt --token=$token >deployment-url.txt 2>error.txt

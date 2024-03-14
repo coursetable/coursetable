@@ -46,16 +46,11 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
     // Note! If we are fetching evals without fetching catalog, then a
     // previous request must have already fetched the catalog. This is
     // because we use async lock so two requests for the same season
-    // cannot race.
+    // cannot race. The only case where this happens is if the catalog
+    // request fails because of network; in this case, the user should
+    // refresh anyway
     const seasonCatalog = catalog ?? courseData[season];
-    if (!seasonCatalog) {
-      Sentry.captureException(
-        new Error(
-          `Unexpected: fetched evals but no basic catalog for ${season}`,
-        ),
-      );
-      return;
-    }
+    if (!seasonCatalog) return;
     if (evals) {
       for (const [crn, ratings] of evals) {
         const listing = seasonCatalog.get(crn);

@@ -40,6 +40,7 @@ const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
 const Join = suspended(() => import('./pages/Join'));
+const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
@@ -144,7 +145,7 @@ function App() {
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
-
+        <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
         {/* Render footer if not on catalog */}
