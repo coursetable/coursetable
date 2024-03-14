@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -66,15 +66,23 @@ function App() {
   return (
     <>
       {/* Notice bar */}
-      <Notice
-        // Increment for each new notice (though you don't need to change it
-        // when removing a notice), or users who previously dismissed the banner
-        // won't see the updated content.
-        id={4}
-      >
-        Basic course information is now publicly available without login! Share
-        courses with your family and friends with ease ;)
-      </Notice>
+      {['/catalog'].includes(location.pathname) &&
+      authStatus === 'unauthenticated' ? (
+        <Notice
+          // Increment for each new notice (though you don't need to change it
+          // when removing a notice), or users who previously dismissed the banner
+          // won't see the updated content.
+          id={5}
+        >
+          You are currently viewing Public CourseTable. Please log in{' '}
+          <Link to="/login">here</Link> to access all features.
+        </Notice>
+      ) : (
+        <Notice id={4}>
+          Basic course information is now publicly available without login!
+          Share courses with your family and friends with ease ;)
+        </Notice>
+      )}
       <Navbar />
       <SentryRoutes>
         {/* Home Page */}
