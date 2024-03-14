@@ -75,7 +75,7 @@ function App() {
           id={5}
         >
           You are currently viewing Public CourseTable. Please log in{' '}
-          <Link to="/login">here</Link> to access all features.
+          <Link to="/login" style={{color: '#3579f6'}} >here</Link> to access all features.
         </Notice>
       ) : (
         <Notice id={4}>
