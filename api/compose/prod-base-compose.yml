@@ -1,0 +1,32 @@
+version: '3'
+services:
+  api:
+    restart: always
+    ports:
+      - '${INSECURE_PORT:-8040}:${INSECURE_PORT:-8040}'
+    environment:
+      NODE_ENV: production
+      HOT_RELOAD: 'false'
+    labels:
+      traefik.enable: true
+    networks:
+      - traefik
+      - mysql
+      - api
+
+  graphql-engine:
+    restart: always
+    networks:
+      - ferry
+      - api
+
+  redis:
+    restart: always
+
+networks:
+  traefik:
+    external: true
+  ferry:
+    external: true
+  mysql:
+    external: true

@@ -117,3 +117,14 @@ hr {
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
 }
+
+/* TODO: we should add custom classes to Markdown code blocks */
+pre {
+  background-color: rgb(220 220 220 / 20%);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+pre code {
+  color: var(--color-text);
+}

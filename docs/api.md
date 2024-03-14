@@ -101,9 +101,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
   - `error`: `"NOT_FERRY"`
 
-### `GET` `/api/static/{season}.json`
-
-TODO: rename this to `/api/catalog` and remove `.json`?
+### `GET` `/api/static/catalogs/evals/{season}.json`
 
 #### Request
 
@@ -114,8 +112,19 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
+  - `ListingRatings[]` (see `static` folder for examples)
+
+### `GET` `/api/static/catalogs/public/{season}.json`
+
+TODO: rename this to `/api/catalog` and remove `.json`?
+
+#### Response
+
+**Status: 200**
+
+- Body:
   - `Listing[]` (see `static` folder for examples)
-  - TODO: provide typing SDK
+  - Types are available via GraphQL
 
 ## Auth
 
@@ -304,10 +313,11 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - Needs credentials
 - Body:
-  - `action`: `"add" | "remove"`
+  - `action`: `"add" | "remove" | "update"`
   - `season`: `string`
   - `crn`: `number`
   - `worksheetNumber`: `number`
+  - `color`: `string` (must be a valid color string)
 
 #### Response
 

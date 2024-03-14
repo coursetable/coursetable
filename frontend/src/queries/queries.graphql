@@ -4,6 +4,7 @@
 query SameCourseOrProfOfferings(
   $same_course_id: Int!
   $professor_ids: [String!]
+  $hasEval: Boolean!
 ) {
   computed_listing_info(
     where: {
@@ -13,14 +14,15 @@ query SameCourseOrProfOfferings(
       ]
     }
   ) {
-    course {
+    course @include(if: $hasEval) {
       evaluation_statistic {
         avg_workload
         avg_rating
       }
     }
-    professor_info
+    professor_info @include(if: $hasEval)
     ...Listing
+    ...ListingRatings @include(if: $hasEval)
   }
 }
 
@@ -55,27 +57,37 @@ query catalogBySeason($season: String!) {
   }
 }
 
-fragment Listing on computed_listing_info {
-  all_course_codes
-  areas
+query evalsBySeason($season: String!) {
+  computed_listing_info(where: { season_code: { _eq: $season } }) {
+    ...ListingRatings
+  }
+}
+
+fragment ListingRatings on computed_listing_info {
   average_gut_rating
   average_professor
   average_rating
   average_workload
   average_rating_same_professors
   average_workload_same_professors
+  crn
+  enrolled
+  last_enrollment
+  last_enrollment_same_professors
+}
+
+fragment Listing on computed_listing_info {
+  all_course_codes
+  areas
   classnotes
   course_code
   credits
   crn
   description
-  enrolled
   extra_info
   final_exam
   flag_info
   fysem
-  last_enrollment
-  last_enrollment_same_professors
   listing_id
   locations_summary
   number

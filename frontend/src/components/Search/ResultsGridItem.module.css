@@ -70,13 +70,6 @@
   right: 18px;
 }
 
-.conflictError {
-  position: absolute;
-  top: -7px;
-  right: 0;
-  transform: translate(-40%, 0%);
-}
-
 .iconContainer {
   fill: var(--color-text);
   margin-top: auto;

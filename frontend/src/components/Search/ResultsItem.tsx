@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -8,6 +8,8 @@ import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import clsx from 'clsx';
 
+import { useUser } from '../../contexts/userContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import {
   ratingColormap,
   workloadColormap,
@@ -15,7 +17,6 @@ import {
 } from '../../utilities/constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import CourseConflictIcon from './CourseConflictIcon';
 import SkillBadge from '../SkillBadge';
 import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
@@ -28,10 +29,30 @@ import {
   getProfessorRatings,
   toSeasonString,
   truncatedText,
+  isInWorksheet,
 } from '../../utilities/course';
-import type { Listing } from '../../utilities/common';
+import { generateRandomColor, type Listing } from '../../utilities/common';
 
 import { useSearch } from '../../contexts/searchContext';
+
+export function BlurRatingTooltip({
+  children,
+}: {
+  readonly children: JSX.Element;
+}) {
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip id="blur-rating-tooltip">
+          These colors are randomly generated. Sign in to see real ratings.
+        </Tooltip>
+      }
+    >
+      {children}
+    </OverlayTrigger>
+  );
+}
 
 /**
  * Renders a list item for a search result
@@ -57,6 +78,8 @@ function ResultsItem({
   readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
+  const { user } = useUser();
+  const { worksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
   const friends = numFriends[course.season_code + course.crn];
@@ -77,8 +100,16 @@ function ResultsItem({
       <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
     );
 
-  // Is the current course in the worksheet?
-  const [courseInWorksheet, setCourseInWorksheet] = useState(false);
+  const inWorksheet = useMemo(
+    () =>
+      isInWorksheet(
+        course.season_code,
+        course.crn,
+        worksheetNumber,
+        user.worksheets,
+      ),
+    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+  );
 
   const [subjectCode, courseCode] = course.course_code.split(' ') as [
     string,
@@ -91,7 +122,7 @@ function ResultsItem({
     <div
       className={clsx(
         styles.resultItem,
-        courseInWorksheet && styles.inWorksheetResultItem,
+        inWorksheet && styles.inWorksheetResultItem,
         isFirst && styles.firstResultItem,
         isOdd ? styles.oddResultItem : styles.evenResultItem,
         course.extra_info !== 'ACTIVE' && styles.cancelledClass,
@@ -206,32 +237,77 @@ function ResultsItem({
         </OverlayTrigger>
         <div className="d-flex">
           <div className={colStyles.overallCol}>
-            <RatingBubble
-              className={styles.ratingCell}
-              rating={getOverallRatings(course, 'stat')}
-              colorMap={ratingColormap}
-            >
-              {getOverallRatings(course, 'display')}
-            </RatingBubble>
+            {user.hasEvals ? (
+              <RatingBubble
+                className={styles.ratingCell}
+                rating={getOverallRatings(course, 'stat')}
+                colorMap={ratingColormap}
+              >
+                {getOverallRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <BlurRatingTooltip>
+                <div
+                  className={styles.ratingCell}
+                  style={{
+                    backgroundColor: generateRandomColor(
+                      `${course.crn + course.season_code}overall`,
+                    ),
+                  }}
+                >
+                  {/* Maybe put number here */}
+                </div>
+              </BlurRatingTooltip>
+            )}
           </div>
           <div className={colStyles.workloadCol}>
-            <RatingBubble
-              className={clsx(styles.ratingCell, colStyles.workloadCol)}
-              rating={getWorkloadRatings(course, 'stat')}
-              colorMap={workloadColormap}
-            >
-              {getWorkloadRatings(course, 'display')}
-            </RatingBubble>
+            {user.hasEvals ? (
+              <RatingBubble
+                className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                rating={getWorkloadRatings(course, 'stat')}
+                colorMap={workloadColormap}
+              >
+                {getWorkloadRatings(course, 'display')}
+              </RatingBubble>
+            ) : (
+              <BlurRatingTooltip>
+                <div
+                  className={clsx(styles.ratingCell, colStyles.workloadCol)}
+                  style={{
+                    backgroundColor: generateRandomColor(
+                      `${course.crn + course.season_code}workload`,
+                    ),
+                  }}
+                >
+                  {/* Number maybe */}
+                </div>
+              </BlurRatingTooltip>
+            )}
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
             <div className={clsx('mr-2 h-100', styles.profRating)}>
-              <RatingBubble
-                className={styles.ratingCell}
-                rating={getProfessorRatings(course, 'stat')}
-                colorMap={ratingColormap}
-              >
-                {getProfessorRatings(course, 'display')}
-              </RatingBubble>
+              {user.hasEvals ? (
+                <RatingBubble
+                  className={styles.ratingCell}
+                  rating={getProfessorRatings(course, 'stat')}
+                  colorMap={ratingColormap}
+                >
+                  {getProfessorRatings(course, 'display')}
+                </RatingBubble>
+              ) : (
+                <BlurRatingTooltip>
+                  <div
+                    className={styles.ratingCell}
+                    style={{
+                      backgroundColor: generateRandomColor(
+                        `${course.crn + course.season_code}prof`,
+                      ),
+                    }}
+                  >
+                    {/* Maybe put number here */}
+                  </div>
+                </BlurRatingTooltip>
+              )}
             </div>
             <div className={styles.ellipsisText}>
               {course.professor_names.length === 0
@@ -285,14 +361,10 @@ function ResultsItem({
           data-tutorial={isFirst && 'catalog-6'}
         >
           <WorksheetToggleButton
-            crn={course.crn}
-            seasonCode={course.season_code}
+            listing={course}
             modal={false}
-            setCourseInWorksheet={setCourseInWorksheet}
+            inWorksheet={inWorksheet}
           />
-        </div>
-        <div className={styles.conflictError}>
-          <CourseConflictIcon course={course} />
         </div>
       </Row>
     </div>

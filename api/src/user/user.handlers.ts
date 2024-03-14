@@ -12,7 +12,7 @@ import winston from '../logging/winston';
 import { prisma } from '../config';
 
 const ToggleBookmarkReqBodySchema = z.object({
-  action: z.union([z.literal('add'), z.literal('remove')]),
+  action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
   worksheetNumber: z.number(),
@@ -64,7 +64,7 @@ export const toggleBookmark = async (
     await prisma.worksheetCourses.create({
       data: { netId, crn, season, worksheetNumber, color },
     });
-  } else {
+  } else if (action === 'remove') {
     // Remove a bookmarked course
     winston.info(
       `Removing bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
@@ -82,6 +82,26 @@ export const toggleBookmark = async (
           worksheetNumber,
         },
       },
+    });
+  } else {
+    // Update data of a bookmarked course
+    winston.info(
+      `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
+    );
+    if (!existing) {
+      res.status(400).json({ error: 'NOT_BOOKMARKED' });
+      return;
+    }
+    await prisma.worksheetCourses.update({
+      where: {
+        netId_crn_season_worksheetNumber: {
+          netId,
+          crn,
+          season,
+          worksheetNumber,
+        },
+      },
+      data: { color },
     });
   }
 

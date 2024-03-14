@@ -1,10 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
+import { IoFlaskOutline } from 'react-icons/io5';
 import { useSearch, type Filters } from '../../contexts/searchContext';
 import styles from './Toggle.module.css';
 
 const labels = {
   searchDescription: 'Include descriptions in search',
+  enableQuist: (
+    <>
+      Enable <IoFlaskOutline color="var(--color-primary-hover)" />
+      <Link to="/releases/quist">Quist</Link>
+    </>
+  ),
   hideCancelled: 'Hide cancelled courses',
   hideConflicting: 'Hide courses with conflicting times',
   hideFirstYearSeminars: 'Hide first-year seminars',
