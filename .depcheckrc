@@ -1,7 +1,6 @@
 ignores:
   # TypeScript
   - '@types/*'
-  - ts-node
   - typescript
   - typescript-plugin-css-modules
   - tsconfig-*

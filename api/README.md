@@ -1,6 +1,15 @@
 # API
 
-This module provides an Express server that performs various back-end functions. As of right now, it generates and verifies the user challenge that checks if a user can access course evaluations on their own.
+This module provides an Express server that performs various back-end functions. For API endpoint documentation, see [`docs/api.md`](../docs/api.md).
+
+## Debugging
+
+You will notice that the Express server runs on a Bun runtime. Debugging is enabled in development through [Bun's web debugger](https://bun.sh/guides/runtime/web-debugger).
+
+Please note the following when debugging Bun in Docker (see [`oven/bun #7225`](https://github.com/oven-sh/bun/issues/7225)):
+
+- Bun will log `https://debug.bun.sh/#0.0.0.0:6499/forcingPrefix` as the web debugger
+- Use `https://debug.bun.sh/#localhost:6499/forcingPrefix` instead
 
 **TODO**:
 

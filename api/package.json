@@ -2,15 +2,10 @@
   "name": "api",
   "version": "0.0.0",
   "scripts": {
-    "generate": "prisma generate",
-    "prestart": "prisma generate",
-    "start": "ts-node-dev --transpile-only --debug --files --exit-child src/server.ts",
-    "start:prod": "prisma generate && ts-node --transpile-only --files src/server.ts"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "static/*"
-    ]
+    "generate": "bunx prisma generate",
+    "start": "bun --hot --inspect=ws://0.0.0.0:6499/forcingPrefix src/server.ts",
+    "start:prod": "bun src/server.ts",
+    "postinstall": "bun generate"
   },
   "dependencies": {
     "@prisma/client": "^5.9.1",
@@ -39,8 +34,6 @@
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "prisma": "^5.9.1",
     "redis": "^4.6.13",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
