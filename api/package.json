@@ -3,14 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "generate": "bunx prisma generate",
-    "start": "bun --hot src/server.ts",
+    "start": "bun --hot --inspect=ws://0.0.0.0:6499/forcingPrefix src/server.ts",
     "start:prod": "bun src/server.ts",
     "postinstall": "bun generate"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "static/*"
-    ]
   },
   "dependencies": {
     "@prisma/client": "^5.9.1",
