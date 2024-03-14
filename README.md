@@ -27,8 +27,8 @@ Check out [our contributing guide](CONTRIBUTING.md).
 
 ## How to deploy
 
-Deployments are automatically handled via GitHub Actions workflows (see [ci-cd.md](docs/ci-cd.md)).
+Deployments are automatically handled via GitHub Actions workflows (see [ci-cd.md](`docs/ci-cd.md`)).
 
-For manual deployments and boostrapping a new server, see [how-to-deploy.md](docs/how-to-deploy.md).
+For manual deployments and boostrapping a new server, see [how-to-deploy.md](`docs/how-to-deploy.md`).
 
 [![powered-by-vercel](/frontend/src/images/powered-by-vercel.svg)](https://vercel.com/?utm_source=coursetable&utm_campaign=oss)
