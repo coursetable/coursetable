@@ -12,6 +12,7 @@ COPY package.json bun.lockb /temp/dev/
 COPY api/package.json api/prisma /temp/dev/api/
 COPY frontend/package.json /temp/dev/frontend/package.json
 RUN cd /temp/dev && bun install --frozen-lockfile
+RUN cd /temp/dev/api && bun generate
 
 FROM base as release
 RUN mkdir -p api/static/catalogs
