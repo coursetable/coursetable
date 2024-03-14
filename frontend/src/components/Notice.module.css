@@ -6,9 +6,9 @@
   align-items: center;
   background: linear-gradient(
     90deg,
-    rgb(85, 111, 182) 0%,
-    rgb(117, 168, 230) 50%,
-    rgb(150, 195, 222) 100%
+    rgb(85 111 182) 0%,
+    rgb(117 168 230) 50%,
+    rgb(150 195 222) 100%
   );
   transition: background-color 0.2s linear;
   color: #fff;
