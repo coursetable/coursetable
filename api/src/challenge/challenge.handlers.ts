@@ -10,16 +10,16 @@ import {
   CHALLENGE_ALGORITHM,
   CHALLENGE_PASSWORD,
   prisma,
-} from '../config';
+} from '../config.js';
 
-import winston from '../logging/winston';
+import winston from '../logging/winston.js';
 
 import {
   requestEvalsQuery,
   type RequestEvalsQueryResponse,
   verifyEvalsQuery,
   type VerifyEvalsQueryResponse,
-} from './challenge.queries';
+} from './challenge.queries.js';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
