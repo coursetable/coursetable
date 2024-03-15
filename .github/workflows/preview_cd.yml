@@ -66,4 +66,4 @@ jobs:
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
-            Thanks for your pull request! The preview of your changes is available at https://${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com.`
+            Thanks for your pull request! The preview of your changes is available at https://${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com.
