@@ -39,9 +39,6 @@ import {
 import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
-  useSameCourseOrProfOfferingsPublicQuery,
-  // TODO: fix types later
-  // type SameCourseOrProfOfferingsPublicQuery,
 } from '../../generated/graphql';
 import {
   weekdays,
@@ -273,36 +270,13 @@ function CourseModalOverview({
       times.get(timespan)!.add(day);
     }
   }
-  // Need to do this bc can't conditionally call react hooks but maybe a better way
-  const {
-    data: dataPrivate,
-    loading: loadingPrivate,
-    error: errorPrivate,
-  } = useSameCourseOrProfOfferingsQuery({
-    skip: !user.hasEvals, // Skip this query if not authenticated
+  const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
     variables: {
+      hasEval: Boolean(user.hasEvals), // Skip this query if not authenticated
       same_course_id: listing.same_course_id,
       professor_ids: listing.professor_ids,
     },
   });
-
-  const {
-    data: dataPublic,
-    loading: loadingPublic,
-    error: errorPublic,
-  } = useSameCourseOrProfOfferingsPublicQuery({
-    skip: user.hasEvals, // Skip this query if authenticated
-    variables: {
-      same_course_id: listing.same_course_id,
-      professor_ids: listing.professor_ids,
-    },
-  });
-
-  // Then decide what data to use here
-
-  const data = user.hasEvals ? dataPrivate : dataPublic;
-  const loading = user.hasEvals ? loadingPrivate : loadingPublic;
-  const error = user.hasEvals ? errorPrivate : errorPublic;
 
   // Holds Prof information for popover
   const profInfo = useMemo(() => {
@@ -349,7 +323,6 @@ function CourseModalOverview({
       .filter(
         (
           course,
-          // @ts-expect-error Need to regen graphql queries with optional fields to fix
         ): course is RelatedListingInfo & {
           syllabus_url: string;
         } =>
@@ -388,8 +361,8 @@ function CourseModalOverview({
             ) / course.professor_info.length
           : null;
         return {
-          rating: course.course.evaluation_statistic?.avg_rating || null,
-          workload: course.course.evaluation_statistic?.avg_workload || null,
+          rating: course.course?.evaluation_statistic?.avg_rating || null,
+          workload: course.course?.evaluation_statistic?.avg_workload || null,
           professorRating: averageProfessorRating || null,
           professor: course.professor_names.length
             ? course.professor_names
@@ -546,15 +519,11 @@ function CourseModalOverview({
                       key={`${course.season_code}-${course.section}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      // @ts-expect-error ideally this is fixed with new query
                       href={course.syllabus_url}
                       className="d-flex"
                     >
-                      {
-                        // @ts-expect-error ideally this is fixed with new query
-                        toSeasonString(course.season_code)
-                      }{' '}
-                      (section {course.section})
+                      {toSeasonString(course.season_code)} (section{' '}
+                      {course.section})
                       <HiExternalLink size={18} className="ml-1 my-auto" />
                     </a>
                   ))}

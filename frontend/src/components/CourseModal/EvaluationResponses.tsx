@@ -3,7 +3,6 @@ import { Tab, Row, Tabs } from 'react-bootstrap';
 import clsx from 'clsx';
 import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
-import type { Crn } from '../../utilities/common';
 import { Input, TextComponent } from '../Typography';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
@@ -14,34 +13,26 @@ import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
  */
 
 function EvaluationResponses({
-  crn,
   info,
 }: {
-  readonly crn: Crn;
-  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly info:
+    | SearchEvaluationNarrativesQuery['computed_listing_info'][number]
+    | undefined;
 }) {
   // Sort by original order or length?
   const [sortOrder, setSortOrder] = useState('length');
 
   // Dictionary that holds the comments for each question
   const [responses, sortedResponses] = useMemo(() => {
+    if (!info) return [{}, {}];
     const tempResponses: { [questionText: string]: string[] } = {};
-    // Loop through each section for this course code
-    (info ?? []).forEach((section) => {
-      const crnCode = section.crn;
-      // Only fetch comments for this section
-      if (crnCode !== crn) return;
-      const { nodes } = section.course.evaluation_narratives_aggregate;
-      // Return if no comments
-      if (!nodes.length) return;
-      // Add comments to responses dictionary
-      nodes.forEach((node) => {
-        if (node.evaluation_question.question_text && node.comment) {
-          (tempResponses[node.evaluation_question.question_text] ??= []).push(
-            node.comment,
-          );
-        }
-      });
+    // Add comments to responses dictionary
+    info.course.evaluation_narratives_aggregate.nodes.forEach((node) => {
+      if (node.evaluation_question.question_text && node.comment) {
+        (tempResponses[node.evaluation_question.question_text] ??= []).push(
+          node.comment,
+        );
+      }
     });
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
@@ -50,7 +41,7 @@ function EvaluationResponses({
       r.sort((a, b) => b.length - a.length);
 
     return [tempResponses, sortedResponses];
-  }, [info, crn]);
+  }, [info]);
 
   // Number of questions
   const numQuestions = Object.keys(responses).length;
@@ -102,6 +93,14 @@ function EvaluationResponses({
 
   const context = document.querySelectorAll('.responses');
   const instance = new Mark(context);
+
+  if (!info || !numQuestions) {
+    return (
+      <div>
+        <strong>No evaluations available</strong>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -209,7 +208,6 @@ function EvaluationResponses({
           </Tab>
         )}
       </Tabs>
-      {!numQuestions && <strong>No comments for this course</strong>}
     </div>
   );
 }

@@ -109,10 +109,11 @@ function CourseModal() {
     const courseModal = searchParams.get('course-modal');
     if (!courseModal) return;
     const [seasonCode, crn] = courseModal.split('-') as [Season, string];
-    requestSeasons([seasonCode]);
-    const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
-    if (!listingFromQuery) return;
-    setHistory([listingFromQuery]);
+    void requestSeasons([seasonCode]).then(() => {
+      const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
+      if (!listingFromQuery) return;
+      setHistory([listingFromQuery]);
+    });
   }, [history.length, searchParams, requestSeasons, courses]);
   const listing = history[history.length - 1];
 

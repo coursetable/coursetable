@@ -1,6 +1,9 @@
 import { expectType, type TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
-import type { ListingFragment } from '../generated/graphql';
+import type {
+  ListingFragment,
+  ListingRatingsFragment,
+} from '../generated/graphql';
 
 // A couple common types.
 
@@ -59,7 +62,8 @@ expectType<
   // Make sure we don't override a key that wasn't there originally.
   TypeOf<keyof ListingFragment, keyof ListingOverrides>
 >(true);
-export type Listing = NarrowListing<ListingFragment>;
+export type Listing = NarrowListing<ListingFragment> &
+  Partial<ListingRatingsFragment>;
 
 export function isEqual<T>(a: T, b: T): boolean {
   if (Array.isArray(a) && Array.isArray(b)) {
