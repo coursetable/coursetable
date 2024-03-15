@@ -204,7 +204,7 @@ app.listen(INSECURE_PORT, () => {
   winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
 });
 
-// Serve with SSL.
+// Serve dev with SSL.
 https
   .createServer(
     {
