@@ -32,21 +32,32 @@ import challenge from './challenge/challenge.routes';
 
 import { fetchCatalog } from './catalog/catalog.utils';
 
-Sentry.init({
-  dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
-
-  environment: process.env.NODE_ENV,
-
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
-});
-
 // Initialize the app
 const app = express();
+
+// Initialize Sentry
+Sentry.init({
+  dsn: 'https://0ceb92b3c55a418131f3fcf02eabf00d@o476134.ingest.us.sentry.io/4506913066975232',
+  integrations: [
+    // Enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // Enable Express.js middleware tracing
+    new Sentry.Integrations.Express({ app }),
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+});
+
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
+
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
+
 // Enable url-encoding
 app.use(express.urlencoded({ extended: true }));
 
@@ -99,19 +110,6 @@ app.use(
     },
   }),
 );
-
-// Serve with SSL.
-https
-  .createServer(
-    {
-      key: fs.readFileSync('./src/keys/server.key'),
-      cert: fs.readFileSync('./src/keys/server.cert'),
-    },
-    app,
-  )
-  .listen(SECURE_PORT, () => {
-    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
-  });
 
 // Rate limit
 // const authRateLimiter = rateLimit({
@@ -186,6 +184,7 @@ app.get('/api/ping', (req, res) => {
   res.json('pong');
 });
 
+
 // Message bot previews
 app.use(async (req, res, next) => {
   const userAgent = req.headers['user-agent'] ?? '';
@@ -206,6 +205,10 @@ app.use(async (req, res, next) => {
   }
 });
 
+// The error handler must be registered before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
+
+
 app.use(
   (
     err: unknown,
@@ -215,7 +218,6 @@ app.use(
     next: express.NextFunction,
   ) => {
     winston.error(err);
-    Sentry.captureException(err, { user: req.user });
     res.status(500).json({ error: String(err) });
   },
 );
@@ -224,6 +226,19 @@ app.use(
 app.listen(INSECURE_PORT, () => {
   winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
 });
+
+// Serve dev with SSL.
+https
+  .createServer(
+    {
+      key: fs.readFileSync('./src/keys/server.key'),
+      cert: fs.readFileSync('./src/keys/server.cert'),
+    },
+    app,
+  )
+  .listen(SECURE_PORT, () => {
+    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
+  });
 
 // Generate the static catalog on start.
 winston.info('Updating static catalog');
