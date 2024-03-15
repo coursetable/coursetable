@@ -401,7 +401,9 @@ export function SearchProvider({
             return getEnrolled(listing, 'stat');
           case 'days':
             return Object.keys(listing.times_by_day).map((d) =>
-              d === 'Thursday' ? 'Th' : d[0],
+              ['Thursday', 'Saturday', 'Sunday'].includes(d)
+                ? d.slice(0, 2)
+                : d[0],
             );
           case 'info-attributes':
             return listing.flag_info;
