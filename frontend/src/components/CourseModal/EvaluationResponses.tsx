@@ -1,52 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
-import styled from 'styled-components';
+import clsx from 'clsx';
 import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
-import type { Crn } from '../../utilities/common';
-import { StyledInput, TextComponent } from '../StyledComponents';
+import { Input, TextComponent } from '../Typography';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
-
-// Tabs of evaluation comments in modal
-const StyledTabs = styled(Tabs)`
-  background-color: ${({ theme }) => theme.surface[0]};
-  font-weight: 500;
-  position: sticky;
-  top: -1rem;
-  .active {
-    background-color: ${({ theme }) => `${theme.surface[0]} !important`};
-    color: #468ff2 !important;
-    border-bottom: none;
-  }
-  .nav-item {
-    color: ${({ theme }) => theme.text[0]};
-  }
-  .nav-item:hover {
-    background-color: ${({ theme }) => theme.banner};
-    color: ${({ theme }) => theme.text[0]};
-  }
-`;
-
-// Row for each comment
-const StyledCommentRow = styled(Row)`
-  font-size: 14px;
-  font-weight: 450;
-  border-bottom: 1px solid ${({ theme }) => theme.multivalue};
-`;
-
-// Bubble to choose sort order
-const StyledSortOption = styled.span<{ active: boolean }>`
-  padding: 3px 5px;
-  background-color: ${({ theme, active }) =>
-    active ? 'rgba(92, 168, 250,0.5)' : theme.border};
-  color: ${({ theme, active }) => (active ? theme.text[0] : theme.text[2])};
-  font-weight: 500;
-  &:hover {
-    background-color: ${({ theme, active }) =>
-      active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue};
-    cursor: pointer;
-  }
-`;
 
 /**
  * Displays Evaluation Comments
@@ -55,44 +13,35 @@ const StyledSortOption = styled.span<{ active: boolean }>`
  */
 
 function EvaluationResponses({
-  crn,
   info,
 }: {
-  readonly crn: Crn;
-  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly info:
+    | SearchEvaluationNarrativesQuery['computed_listing_info'][number]
+    | undefined;
 }) {
   // Sort by original order or length?
-  const [sortOrder, setSortOrder] = useState('original');
+  const [sortOrder, setSortOrder] = useState('length');
 
   // Dictionary that holds the comments for each question
   const [responses, sortedResponses] = useMemo(() => {
+    if (!info) return [{}, {}];
     const tempResponses: { [questionText: string]: string[] } = {};
-    // Loop through each section for this course code
-    (info || []).forEach((section) => {
-      const crnCode = section.crn;
-      // Only fetch comments for this section
-      if (crnCode !== crn) return;
-      const { nodes } = section.course.evaluation_narratives_aggregate;
-      // Return if no comments
-      if (!nodes.length) return;
-      // Add comments to responses dictionary
-      nodes.forEach((node) => {
-        if (node.evaluation_question.question_text && node.comment) {
-          tempResponses[node.evaluation_question.question_text] ||= [];
-          tempResponses[node.evaluation_question.question_text].push(
-            node.comment,
-          );
-        }
-      });
+    // Add comments to responses dictionary
+    info.course.evaluation_narratives_aggregate.nodes.forEach((node) => {
+      if (node.evaluation_question.question_text && node.comment) {
+        (tempResponses[node.evaluation_question.question_text] ??= []).push(
+          node.comment,
+        );
+      }
     });
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
     ) as typeof tempResponses;
-    for (const key of Object.keys(tempResponses))
-      sortedResponses[key].sort((a, b) => b.length - a.length);
+    for (const r of Object.values(tempResponses))
+      r.sort((a, b) => b.length - a.length);
 
     return [tempResponses, sortedResponses];
-  }, [info, crn]);
+  }, [info]);
 
   // Number of questions
   const numQuestions = Object.keys(responses).length;
@@ -115,26 +64,29 @@ function EvaluationResponses({
           response.toLowerCase().includes(filter.toLowerCase()),
         )
         .map((response, index) => (
-          <StyledCommentRow key={index} className="m-auto p-2 responses">
-            <TextComponent type={1}>{response}</TextComponent>
-          </StyledCommentRow>
+          <Row
+            key={index}
+            className={clsx(styles.commentRow, 'm-auto p-2 responses')}
+          >
+            <TextComponent type="secondary">{response}</TextComponent>
+          </Row>
         ));
       if (filteredResps.length === 0) {
         return [
-          <StyledCommentRow key={0} className="m-auto p-2">
-            <TextComponent type={1}>No matches found.</TextComponent>
-          </StyledCommentRow>,
+          <Row key={0} className={clsx(styles.commentRow, 'm-auto p-2')}>
+            <TextComponent type="secondary">No matches found.</TextComponent>
+          </Row>,
         ];
       }
       return filteredResps;
     };
-    for (const key of Object.keys(curResponses)) {
-      if (key.includes('summarize')) tempSummary = genTemp(curResponses[key]);
-      else if (key.includes('recommend'))
-        tempRecommend = genTemp(curResponses[key]);
-      else if (key.includes('skills')) tempSkills = genTemp(curResponses[key]);
-      else if (key.includes('strengths'))
-        tempStrengths = genTemp(curResponses[key]);
+    for (const [question, qResponses] of Object.entries(curResponses)) {
+      if (question.includes('summarize')) tempSummary = genTemp(qResponses);
+      else if (question.includes('recommend'))
+        tempRecommend = genTemp(qResponses);
+      else if (question.includes('skills')) tempSkills = genTemp(qResponses);
+      else if (question.includes('strengths'))
+        tempStrengths = genTemp(qResponses);
     }
     return [tempRecommend, tempSkills, tempStrengths, tempSummary];
   }, [responses, sortOrder, sortedResponses, filter]);
@@ -142,9 +94,17 @@ function EvaluationResponses({
   const context = document.querySelectorAll('.responses');
   const instance = new Mark(context);
 
+  if (!info || !numQuestions) {
+    return (
+      <div>
+        <strong>No evaluations available</strong>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <StyledInput
+      <Input
         id="filter-input"
         type="text"
         placeholder="Search evaluations..."
@@ -159,24 +119,37 @@ function EvaluationResponses({
           });
         }}
       />
-      <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
+      <Row
+        className={clsx(styles.sortBy, 'mx-auto mb-2 justify-content-center')}
+      >
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
-        <div className={styles.sort_options}>
-          <StyledSortOption
-            active={sortOrder === 'original'}
-            onClick={() => setSortOrder('original')}
-          >
-            original order
-          </StyledSortOption>
-          <StyledSortOption
-            active={sortOrder === 'length'}
+        <div className={styles.sortOptions}>
+          {/* TODO */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <span
+            className={clsx(
+              styles.sortOption,
+              sortOrder === 'length' && styles.activeSortOption,
+            )}
             onClick={() => setSortOrder('length')}
           >
+            original order
+          </span>
+          {/* TODO */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <span
+            className={clsx(
+              styles.sortOption,
+              sortOrder === 'original' && styles.activeSortOption,
+            )}
+            onClick={() => setSortOrder('original')}
+          >
             length
-          </StyledSortOption>
+          </span>
         </div>
       </Row>
-      <StyledTabs
+      <Tabs
+        className={styles.tabs}
         variant="tabs"
         transition={false}
         onSelect={() => {
@@ -189,8 +162,8 @@ function EvaluationResponses({
         {/* Recommend Question */}
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
+              <TextComponent>
                 Would you recommend this course to another student? Please
                 explain.
               </TextComponent>
@@ -201,8 +174,8 @@ function EvaluationResponses({
         {/* Knowledge/Skills Question */}
         {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
+              <TextComponent>
                 What knowledge, skills, and insights did you develop by taking
                 this course?
               </TextComponent>
@@ -213,8 +186,8 @@ function EvaluationResponses({
         {/* Strengths/Weaknesses Question */}
         {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
+              <TextComponent>
                 What are the strengths and weaknesses of this course and how
                 could it be improved?
               </TextComponent>
@@ -225,8 +198,8 @@ function EvaluationResponses({
         {/* Summarize Question */}
         {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
+            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
+              <TextComponent>
                 How would you summarize this course? Would you recommend it to
                 another student? Why or why not?
               </TextComponent>
@@ -234,8 +207,7 @@ function EvaluationResponses({
             {summary}
           </Tab>
         )}
-      </StyledTabs>
-      {!numQuestions && <strong>No comments for this course</strong>}
+      </Tabs>
     </div>
   );
 }

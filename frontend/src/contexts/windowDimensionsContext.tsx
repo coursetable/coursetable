@@ -17,9 +17,14 @@ type Store = {
   isLgDesktop: boolean;
 };
 
-const mobileBreakpoint = 768;
-const tabletBreakpoint = 1200;
-const smDesktopBreakpoint = 1320;
+/**
+ * Each one is the upper bound of the range (exclusive)
+ */
+export const breakpoints = {
+  mobile: 768,
+  tablet: 1200,
+  smDesktop: 1320,
+};
 
 const WindowDimensionsCtx = createContext<Store | undefined>(undefined);
 
@@ -51,18 +56,22 @@ export function WindowDimensionsProvider({
         setDimensions({
           width: window.innerWidth,
           height: window.innerHeight,
-          isMobile: range(window.innerWidth, 0, mobileBreakpoint),
+          isMobile: range(window.innerWidth, 0, breakpoints.mobile),
           isTablet: range(
             window.innerWidth,
-            mobileBreakpoint,
-            tabletBreakpoint,
+            breakpoints.mobile,
+            breakpoints.tablet,
           ),
           isSmDesktop: range(
             window.innerWidth,
-            tabletBreakpoint,
-            smDesktopBreakpoint,
+            breakpoints.tablet,
+            breakpoints.smDesktop,
           ),
-          isLgDesktop: range(window.innerWidth, smDesktopBreakpoint, 100000),
+          isLgDesktop: range(
+            window.innerWidth,
+            breakpoints.smDesktop,
+            Infinity,
+          ),
         });
       }, 200),
     [setDimensions],
@@ -78,16 +87,8 @@ export function WindowDimensionsProvider({
     };
   }, [handleResize]);
 
-  // Store object returned in context provider
-  const store = useMemo(
-    () => ({
-      ...dimensions,
-    }),
-    [dimensions],
-  );
-
   return (
-    <WindowDimensionsCtx.Provider value={store}>
+    <WindowDimensionsCtx.Provider value={dimensions}>
       {children}
     </WindowDimensionsCtx.Provider>
   );

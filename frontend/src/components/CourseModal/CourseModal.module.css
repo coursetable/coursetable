@@ -13,46 +13,102 @@
 }
 
 .cancelledText {
-  color: rgb(255, 98, 98);
+  color: rgb(255 98 98);
 }
 
-:global .modal-custom-width {
+.dialog {
   max-width: 800px !important;
-  /* max-width: none !important; */
 }
 
-:global .modal-content {
+.dialog :global(.modal-content) {
+  background-color: var(--color-surface);
   border: none !important;
   border-radius: 8px !important;
-  /* max-height: 80% !important;
-  min-height: 80% !important; */
   height: 90% !important;
 }
 
-:global .modal-title {
+.dialog :global(.modal-header) {
+  display: flex !important;
+  padding: 1rem 1rem 0 !important;
+}
+
+.dialog :global(.modal-header) :global(.close) {
+  color: var(--color-text);
+}
+
+.dialog :global(.modal-dialog) {
+  transition: transform 0.1s ease-out !important;
+}
+
+.modalTitle {
   font-weight: 550;
   line-height: 1.2 !important;
 }
 
-:global .modal-title-mobile {
-  font-weight: 550;
-  font-size: 18px !important;
+.tabs {
+  width: 220px;
+  display: flex;
+  align-items: end;
 }
 
-:global .modal-header {
-  display: flex !important;
-  padding: 1rem 1rem 0.5rem 1rem !important;
+.tabButton {
+  width: 50%;
+  padding: 0.5em 0;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-:global .modal-dialog {
-  transition: transform 0.1s ease-out !important;
+.tabButton.tabSelected {
+  background-color: var(--color-select-hover);
+  color: var(--color-text);
+}
 
-  @media only screen and (min-width: 576px) and (max-width: 800px) {
+.shareButton {
+  cursor: pointer;
+  margin: 1em;
+}
+
+.toolBar {
+  display: flex;
+}
+
+@media (width < 768px) {
+  .modalTop {
+    flex-direction: column !important;
+  }
+
+  .modalTitle {
+    line-height: 1 !important;
+    font-size: 18px !important;
+  }
+
+  .dialog :global(.modal-dialog) {
     margin: 1.75rem 0.5rem;
   }
 }
-:global .modal-top {
-  @media only screen and (max-width: 767px) {
-    flex-direction: column !important;
-  }
+
+.moreInfo {
+  padding: 3px 5px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: var(--color-select-multivalue);
+  color: var(--color-text-primary);
+}
+
+.moreInfo:hover {
+  filter: brightness(80%);
+}
+
+.conflictIconPosition {
+  position: absolute;
+  top: -10px;
+  right: 50px;
+  z-index: 10;
 }

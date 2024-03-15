@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
+import * as Sentry from '@sentry/react';
 import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
 
@@ -16,34 +17,37 @@ import type { Crn, Season } from '../../utilities/common';
 function CourseModalEvaluations({
   seasonCode,
   crn,
-  courseCode,
 }: {
   readonly seasonCode: Season;
   readonly crn: Crn;
-  readonly courseCode: string;
 }) {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
       season_code: seasonCode,
-      course_code: courseCode || 'bruh',
+      crn,
     },
   });
   // Wait until fetched
   if (loading || error) return <CourseModalLoading />;
-  const info = data?.computed_listing_info;
+  if ((data?.computed_listing_info.length ?? 0) > 1) {
+    Sentry.captureException(
+      new Error(`More than one listings returned for ${seasonCode}-${crn}`),
+    );
+  }
+  const info = data?.computed_listing_info[0];
 
   return (
     <Modal.Body>
       <Row className="m-auto">
         <Col md={5} className="px-0 my-0">
           {/* Evaluation Graphs */}
-          <EvaluationRatings crn={crn} info={info} />
+          <EvaluationRatings info={info} />
         </Col>
 
         <Col md={7} className="pr-0 pl-2 my-0">
           {/* Evaluation Comments */}
-          <EvaluationResponses crn={crn} info={info} />
+          <EvaluationResponses info={info} />
         </Col>
       </Row>
     </Modal.Body>

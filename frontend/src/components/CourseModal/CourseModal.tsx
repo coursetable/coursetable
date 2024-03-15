@@ -4,50 +4,20 @@ import { Col, Container, Row, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
-import styled from 'styled-components';
+import clsx from 'clsx';
 
-import type {
-  Filter,
-  CourseOffering,
-  ComputedListingInfo,
-} from './CourseModalOverview';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './CourseModal.module.css';
-import { TextComponent, StyledLink } from '../StyledComponents';
+import { TextComponent, LinkLikeText } from '../Typography';
 import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
-import { useCourseData } from '../../contexts/ferryContext';
+import { useFerry } from '../../contexts/ferryContext';
+import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
+import { CUR_YEAR } from '../../config';
 
-// Course Modal
-const StyledModal = styled(Modal)`
-  .modal-content {
-    background-color: ${({ theme }) => theme.surface[0]};
-    .modal-header {
-      .close {
-        color: ${({ theme }) => theme.text[0]};
-      }
-    }
-  }
-`;
-
-// More info button
-const StyledMoreInfo = styled.span`
-  padding: 3px 5px;
-  font-size: 14px;
-  border-radius: 6px;
-  background-color: ${({ theme }) => theme.multivalue};
-  color: ${({ theme }) => theme.text[0]};
-  font-weight: 500;
-  &:hover {
-    filter: brightness(80%);
-    cursor: pointer;
-  }
-`;
-
-const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
+const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
   MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
   CANCELLED: 'CANCELLED',
@@ -73,10 +43,48 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
   return (
     <FaRegShareFromSquare
       onClick={copyToClipboard}
-      size={25}
+      size={20}
       color="#007bff"
-      style={{ cursor: 'pointer' }}
+      className={styles.shareButton}
     />
+  );
+}
+
+type Tab = {
+  readonly label: string;
+  readonly value: 'overview' | 'evals';
+  readonly hidden?: boolean;
+};
+
+function ViewTabs({
+  currentTab,
+  tabs,
+  onSelectTab,
+}: {
+  readonly currentTab: Tab['value'];
+  readonly tabs: Tab[];
+  readonly onSelectTab: (value: Tab['value']) => void;
+}) {
+  return (
+    <div className={styles.tabs}>
+      {tabs.map(({ label, value, hidden }) => {
+        if (hidden) return null;
+        return (
+          <button
+            key={value}
+            aria-current={currentTab === value}
+            type="button"
+            onClick={() => onSelectTab(value)}
+            className={clsx(
+              styles.tabButton,
+              currentTab === value && styles.tabSelected,
+            )}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -90,264 +98,144 @@ const CourseModalEvaluations = suspended(
 
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { requestSeasons, courses } = useFerry();
+  const { user } = useUser();
 
-  const courseModal = searchParams.get('course-modal');
-  const [seasonCode, crn] = courseModal
-    ? (courseModal.split('-') as [Season, string])
-    : [null, null];
-  const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
-
-  const listing = seasonCode
-    ? courses[seasonCode]?.get(Number(crn) as Crn)
-    : undefined;
-
-  // Fetch current device
-  const { isMobile } = useWindowDimensions();
-  // Viewing overview or an evaluation? List contains
-  // [season code, listing info] for evaluations
-  const [view, setView] = useState<'overview' | [Season, CourseOffering]>(
-    'overview',
-  );
-  // Current evaluation filter (both, course, professor)
-  const [filter, setFilter] = useState<Filter>('both');
+  const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
-  const [listings, setListings] = useState<
-    (ComputedListingInfo & { eval: CourseOffering })[]
-  >([]);
+  const [history, setHistory] = useState<Listing[]>([]);
   useEffect(() => {
-    // @ts-expect-error: `listing` is an actual Listing, not the weird type that
-    // SameCourseOrProfOfferingsQuery gives, and it doesn't have an `eval`
-    // field! Surprised that it has caused no errors so far
-    // TODO: is this actually okay?
-    setListings(listing ? [listing] : []);
-  }, [listing]);
-  // Current listing that we are viewing overview info for
-  const curListing = listings.length > 0 ? listings[listings.length - 1] : null;
+    if (history.length !== 0) return;
+    const courseModal = searchParams.get('course-modal');
+    if (!courseModal) return;
+    const [seasonCode, crn] = courseModal.split('-') as [Season, string];
+    void requestSeasons([seasonCode]).then(() => {
+      const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
+      if (!listingFromQuery) return;
+      setHistory([listingFromQuery]);
+    });
+  }, [history.length, searchParams, requestSeasons, courses]);
+  const listing = history[history.length - 1];
 
+  if (!listing) return null;
   return (
     <div className="d-flex justify-content-center">
-      {curListing && (
-        <StyledModal
-          show={Boolean(listing)}
-          scrollable
-          onHide={() => {
-            // Reset views and filters
-            setView('overview');
-            setFilter('both');
-            setSearchParams((prev) => {
-              prev.delete('course-modal');
-              return prev;
-            });
-          }}
-          dialogClassName="modal-custom-width"
-          animation={false}
-          centered
-        >
-          <Modal.Header closeButton className="d-flex justify-content-between">
-            <Container className="p-0" fluid>
-              {view === 'overview' ? (
-                // Viewing Course Overview
-                <div>
-                  <Row className="m-auto modal-top">
-                    <Col xs="auto" className="my-auto p-0">
-                      {/* Show worksheet add/remove button */}
-                      {curListing &&
-                        (listings.length === 1 ? (
-                          // If this is the initial listing, show worksheet
-                          // toggle button
-                          <WorksheetToggleButton
-                            crn={curListing.crn}
-                            seasonCode={curListing.season_code}
-                            modal
-                            selectedWorksheet={
-                              // TODO: we love global mutations <3 they are so
-                              // easy to trace & analyze and so bug-proof!
-                              // In all seriousness we need to get rid of
-                              // currentWorksheet and color in ListingArguments
-                              (curListing as unknown as Listing)
-                                .currentWorksheet
-                            }
-                          />
-                        ) : (
-                          // If this is the overview of some other eval course,
-                          // show back button
-                          <StyledLink
-                            onClick={() => {
-                              // Go back to the evaluations of this course
-                              setView([
-                                curListing.season_code,
-                                curListing.eval,
-                              ]);
-                            }}
-                            className={styles.backArrow}
-                          >
-                            <IoMdArrowRoundBack size={30} />
-                          </StyledLink>
-                        ))}
-                    </Col>
-                    <Col className="p-0 ml-3">
-                      {/* Course Title */}
-                      <Modal.Title>
-                        <Row className="mx-auto mt-1 align-items-center">
-                          <span
-                            className={
-                              isMobile ? 'modal-title-mobile' : 'modal-title'
-                            }
-                          >
-                            {curListing.extra_info !== 'ACTIVE' ? (
-                              <span className={styles.cancelledText}>
-                                {extraInfoMap[curListing.extra_info]}{' '}
-                              </span>
-                            ) : (
-                              ''
-                            )}
-                            {curListing.title}
-                            <TextComponent type={2}>
-                              {` (${toSeasonString(curListing.season_code)})`}
-                            </TextComponent>
-                          </span>
-                        </Row>
-                      </Modal.Title>
-
-                      <Row className={`${styles.badges} mx-auto mt-1 `}>
-                        {/* Course Codes */}
-                        <p className={`${styles.courseCodes} my-0 pr-2`}>
-                          <TextComponent type={2}>
-                            {curListing.all_course_codes &&
-                              curListing.all_course_codes.join(' • ')}
-                          </TextComponent>
-                        </p>
-                        {/* Course Skills and Areas */}
-                        {curListing.skills &&
-                          curListing.skills.map((skill) => (
-                            <SkillBadge skill={skill} key={skill} />
-                          ))}
-                        {curListing.areas &&
-                          curListing.areas.map((area) => (
-                            <SkillBadge skill={area} key={area} />
-                          ))}
-                      </Row>
-                    </Col>
+      <Modal
+        show={Boolean(listing)}
+        scrollable
+        onHide={() => {
+          setHistory([]);
+          setView('overview');
+          setSearchParams((prev) => {
+            prev.delete('course-modal');
+            return prev;
+          });
+        }}
+        dialogClassName={styles.dialog}
+        animation={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Container className="p-0 ml-2" fluid>
+            <Row className={clsx('m-auto', styles.modalTop)}>
+              <Col xs="auto" className="my-auto p-0">
+                {history.length > 1 && (
+                  <LinkLikeText
+                    onClick={() => {
+                      setHistory(history.slice(0, -1));
+                      setView('overview');
+                    }}
+                    className={styles.backArrow}
+                  >
+                    <IoMdArrowRoundBack size={30} />
+                  </LinkLikeText>
+                )}
+              </Col>
+              <Col className="p-0 ml-3">
+                {/* Course Title */}
+                <Modal.Title>
+                  <Row className="mx-auto mt-1 align-items-center">
+                    <span className={styles.modalTitle}>
+                      {listing.extra_info !== 'ACTIVE' ? (
+                        <span className={styles.cancelledText}>
+                          {extraInfoMap[listing.extra_info]}{' '}
+                        </span>
+                      ) : (
+                        ''
+                      )}
+                      {listing.title}{' '}
+                      <TextComponent type="tertiary">
+                        ({toSeasonString(listing.season_code)})
+                      </TextComponent>
+                    </span>
                   </Row>
-                </div>
-              ) : (
-                // Viewing course evaluation
-                <div>
-                  <Row className="m-auto">
-                    <Col xs="auto" className="my-auto p-0">
-                      {/* Back to overview arrow */}
-                      <StyledLink
-                        onClick={() => {
-                          if (
-                            listings.length > 1 &&
-                            curListing.crn === view[1].crn &&
-                            curListing.season_code === view[1].season_code
-                          ) {
-                            // Go to overview of previous listing
-                            setListings(listings.slice(0, -1));
-                          }
-                          setView('overview');
-                        }}
-                        className={styles.backArrow}
-                      >
-                        <IoMdArrowRoundBack size={30} />
-                      </StyledLink>
-                    </Col>
-                    <Col className="p-0 ml-3">
-                      {/* Course Title */}
-                      <Modal.Title>
-                        <Row className="mx-auto mt-1 align-items-center">
-                          <span
-                            className={
-                              isMobile ? 'modal-title-mobile' : 'modal-title'
-                            }
-                          >
-                            {`${view[1].title} `}
-                            <TextComponent type={2}>
-                              {` (${toSeasonString(view[0])})`}
-                            </TextComponent>
-                            <StyledMoreInfo
-                              className="mt-auto ml-2"
-                              onClick={() => {
-                                // Go to overview page of this eval course
-                                setView('overview');
-                                const newListing = {
-                                  ...view[1].listing,
-                                  eval: view[1],
-                                };
-                                setListings([...listings, newListing]);
-                              }}
-                            >
-                              More Info
-                            </StyledMoreInfo>
-                          </span>
-                        </Row>
-                      </Modal.Title>
+                </Modal.Title>
 
-                      <Row className={`${styles.badges} mx-auto mt-1 `}>
-                        {/* Course Code */}
-                        <p className={`${styles.courseCodes}  my-0 pr-2`}>
-                          <TextComponent type={2}>
-                            {view[1].course_code}
-                          </TextComponent>
-                        </p>
-                        {/* Course Skills and Areas */}
-                        {view[1].skills &&
-                          view[1].skills.map((skill) => (
-                            <SkillBadge skill={skill} key={skill} />
-                          ))}
-                        {view[1].areas &&
-                          view[1].areas.map((area) => (
-                            <SkillBadge skill={area} key={area} />
-                          ))}
-                        {/* Course Professors and Section */}
-                        {view[1].professor[0] !== 'TBA' && (
-                          <p
-                            className={`${styles.courseCodes}  my-0 ${
-                              view[1].skills.length || view[1].areas.length
-                                ? ' pl-2 '
-                                : ''
-                            }`}
-                          >
-                            <TextComponent type={2}>
-                              {`| ${view[1].professor.join(', ')} | Section ${
-                                view[1].section
-                              }`}
-                            </TextComponent>
-                          </p>
-                        )}
-                      </Row>
-                    </Col>
-                  </Row>
-                </div>
-              )}
-            </Container>
-            {/* Share Button */}
-            <div className="align-self-center">
-              <ShareButton courseCode={curListing.course_code} />
-            </div>
-          </Modal.Header>
-          {listing &&
-            (view === 'overview' ? (
-              // Show overview data
-              <CourseModalOverview
-                setFilter={setFilter}
-                filter={filter}
-                setSeason={(evaluation) => {
-                  setView([evaluation.season_code, evaluation]);
-                }}
-                listing={curListing}
+                <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
+                  {/* Course Codes */}
+                  <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
+                    <TextComponent type="tertiary">
+                      {listing.all_course_codes.join(' • ')}
+                    </TextComponent>
+                  </p>
+                  {/* Course Skills and Areas */}
+                  {listing.skills.map((skill) => (
+                    <SkillBadge skill={skill} key={skill} />
+                  ))}
+                  {listing.areas.map((area) => (
+                    <SkillBadge skill={area} key={area} />
+                  ))}
+                </Row>
+              </Col>
+            </Row>
+            <Row className="ml-auto mr-2 justify-content-between flex-wrap-reverse">
+              <ViewTabs
+                tabs={[
+                  { label: 'Overview', value: 'overview' },
+                  {
+                    label: 'Evaluations',
+                    value: 'evals',
+                    // Don't show eval tab if it's current year or no auth
+                    hidden:
+                      CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
+                  },
+                ]}
+                onSelectTab={setView}
+                currentTab={view}
               />
-            ) : (
-              // Show eval data
-              <CourseModalEvaluations
-                seasonCode={view[0]}
-                crn={view[1].crn}
-                courseCode={view[1].course_code}
-              />
-            ))}
-        </StyledModal>
-      )}
+              <div className={styles.toolBar}>
+                <WorksheetToggleButton listing={listing} modal />
+                <ShareButton courseCode={listing.course_code} />
+              </div>
+            </Row>
+          </Container>
+        </Modal.Header>
+        {view === 'overview' ? (
+          // Show overview data
+          <CourseModalOverview
+            gotoCourse={(l) => {
+              user.hasEvals ? setView('evals') : setView('overview');
+              if (
+                l.crn === listing.crn &&
+                l.season_code === listing.season_code
+              )
+                return;
+              setHistory([...history, l]);
+              setSearchParams((prev) => {
+                prev.set('course-modal', `${l.season_code}-${l.crn}`);
+                return prev;
+              });
+            }}
+            listing={listing}
+          />
+        ) : (
+          // Show eval data
+          <CourseModalEvaluations
+            seasonCode={listing.season_code}
+            crn={listing.crn}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

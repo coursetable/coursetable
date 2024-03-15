@@ -1,186 +1,40 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
-import styled, { useTheme } from 'styled-components';
+import clsx from 'clsx';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
-import chroma from 'chroma-js';
 
-import { SmallTextComponent, StyledInput } from '../StyledComponents';
+import { TextComponent, Input } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
+import Toggle from '../Search/Toggle';
 
-import {
-  skillsAreas,
-  skillsAreasColors,
-  credits,
-  schools,
-  subjects,
-  sortbyOptions,
-} from '../../utilities/constants';
-import { isEqual, weekdays } from '../../utilities/common';
-import CustomSelect from '../CustomSelect';
+import { credits, searchSpeed } from '../../utilities/constants';
+import { weekdays, type Season, type Weekdays } from '../../utilities/common';
+import CustomSelect from '../Search/CustomSelect';
 import {
   useSearch,
   type Option,
   defaultFilters,
+  sortByOptions,
+  skillsAreasOptions,
+  subjectsOptions,
+  schoolsOptions,
+  seasonsOptions,
+  courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities/display';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
 import {
-  toRangeTime,
   toRealTime,
   to12HourTime,
   toLinear,
   toExponential,
 } from '../../utilities/course';
-
-// Row in navbar search
-const StyledRow = styled(Row)`
-  height: 50%;
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-// Wrapper for search bar
-const SearchWrapper = styled.div<{ isTablet: boolean }>`
-  width: ${({ isTablet }) => (isTablet ? 35 : 40)}vw;
-  display: flex;
-  align-items: center;
-`;
-
-// Search bar
-const NavbarStyledSearchBar = styled(StyledInput)`
-  border-radius: 4px;
-  height: 100%;
-  font-size: 14px;
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-`;
-
-// Base range styles
-const BaseRange = styled(Range)`
-  cursor: pointer;
-`;
-
-// Range filter
-const StyledRange = styled(BaseRange)<{ isTablet: boolean }>`
-  width: ${({ isTablet }) => (isTablet ? 74 : 100)}px;
-`;
-
-// Range filter label
-const RangeLabel = styled.div`
-  font-size: 14px;
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-  user-select: none;
-  cursor: default;
-  transition: color ${({ theme }) => theme.transDur};
-`;
-
-// Range filter value label
-const RangeValueLabel = styled.div`
-  font-size: 12px;
-  ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
-  user-select: none;
-  cursor: default;
-  transition: color ${({ theme }) => theme.transDur};
-`;
-
-// Wrapper for advanced filters dropdown
-const AdvancedWrapper = styled.div`
-  width: 440px;
-  max-height: 80vh;
-  overflow: auto;
-`;
-
-// Advanced filters label in dropdown
-const AdvancedLabel = styled.div`
-  font-size: 14px;
-  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
-  margin-left: 0.25rem;
-  user-select: none;
-  cursor: default;
-`;
-
-// Advanced select in dropdown
-const AdvancedSelect = styled(CustomSelect<Option<string | number>, true>)`
-  width: 80%;
-`;
-
-// Advanced range styles
-const AdvancedRange = styled(BaseRange)`
-  margin-bottom: 20px;
-`;
-
-// Advanced range group
-const AdvancedRangeGroup = styled.div`
-  width: 75%;
-  display: flex;
-  flex-grow: 0;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 0.5rem;
-`;
-
-// Row for toggles in advanced filters
-const AdvancedToggleRow = styled(Row)`
-  background-color: ${({ theme }) => theme.buttonActive};
-`;
-
-// Advanced filter toggle
-const Toggle = styled(Form.Check)`
-  margin: 0.25rem 0;
-  user-select: none;
-`;
-
-// Advanced filter toggle input
-const ToggleInput = styled(Form.Check.Input)`
-  cursor: pointer !important;
-`;
-
-// Advanced filter toggle label
-const ToggleLabel = styled(Form.Check.Label)`
-  cursor: pointer !important;
-`;
-
-// Filter group wrapper
-const FilterGroup = styled.div``;
-
-// Reset button
-const StyledButton = styled(Button)`
-  padding: 0.25rem 0.375rem;
-  font-size: 12px;
-  ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
-`;
-
-// Clear search bar button
-const CloseIcon = styled(IoClose)`
-  z-index: 1000;
-  margin-left: -30px;
-  cursor: pointer;
-  color: ${({ theme }) => theme.iconFocus};
-  transition: color ${({ theme }) => theme.transDur};
-  &:hover {
-    color: ${({ theme }) =>
-      theme.theme === 'light'
-        ? chroma(theme.iconFocus).darken().css()
-        : chroma(theme.iconFocus).brighten().css()};
-  }
-`;
-
-/**
- * Identity function that casts a readonly array to a writable array
- */
-const asWritable = <T,>(value: readonly T[]) => value as T[];
+import styles from './NavbarCatalogSearch.module.css';
 
 /**
  * Catalog search form for the desktop in the navbar
@@ -195,123 +49,67 @@ export function NavbarCatalogSearch() {
   const searchTextInput = useRef<HTMLInputElement>(null);
 
   // Get search context data
+  const { filters, duration, searchData, coursesLoading, setStartTime } =
+    useSearch();
+
   const {
-    canReset,
     searchText,
     selectSubjects,
     selectSkillsAreas,
     overallBounds,
-    overallValueLabels,
     workloadBounds,
-    workloadValueLabels,
+    professorBounds,
     selectSeasons,
     selectDays,
     timeBounds,
-    timeValueLabels,
     enrollBounds,
-    enrollValueLabels,
     numBounds,
-    numValueLabels,
     selectSchools,
     selectCredits,
+    selectCourseInfoAttributes,
     searchDescription,
+    enableQuist,
     hideCancelled,
     hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
-    selectSortby,
-    resetKey,
-    searchData,
-    seasonsOptions,
-    coursesLoading,
-    speed,
-    setSearchText,
-    setSelectSubjects,
-    setSelectSkillsAreas,
-    setOverallBounds,
-    setOverallValueLabels,
-    setWorkloadBounds,
-    setWorkloadValueLabels,
-    setSelectSeasons,
-    setSelectDays,
-    setTimeBounds,
-    setTimeValueLabels,
-    setEnrollBounds,
-    setEnrollValueLabels,
-    setNumBounds,
-    setNumValueLabels,
-    setSelectSchools,
-    setSelectCredits,
-    setSearchDescription,
-    setHideCancelled,
-    setHideConflicting,
-    setHideFirstYearSeminars,
-    setHideGraduateCourses,
-    setHideDiscussionSections,
-    handleResetFilters,
-    setResetKey,
-    setStartTime,
-  } = useSearch();
+    selectSortBy,
+    sortOrder,
+  } = filters;
 
-  // Active state for range filters
-  const [activeOverall, setActiveOverall] = useState(false);
-  const [activeWorkload, setActiveWorkload] = useState(false);
-  const [activeTime, setActiveTime] = useState(false);
-  const [activeEnrollment, setActiveEnrollment] = useState(false);
-  const [activeNumber, setActiveNumber] = useState(false);
-
-  const globalTheme = useTheme();
-
-  // Handle active state for range filters
-  useEffect(() => {
-    setActiveOverall(
-      canReset && !isEqual(overallBounds, defaultFilters.defaultRatingBounds),
-    );
-    setActiveWorkload(
-      canReset && !isEqual(workloadBounds, defaultFilters.defaultRatingBounds),
-    );
-    setActiveTime(
-      canReset && !isEqual(timeBounds, defaultFilters.defaultTimeBounds),
-    );
-    setActiveEnrollment(
-      canReset &&
-        !isEqual(
-          enrollBounds.map(Math.round),
-          defaultFilters.defaultEnrollBounds,
-        ),
-    );
-    setActiveNumber(
-      canReset && !isEqual(numBounds, defaultFilters.defaultNumBounds),
-    );
-  }, [
-    canReset,
-    overallBounds,
-    workloadBounds,
-    timeBounds,
-    enrollBounds,
-    numBounds,
-  ]);
+  // These are exactly the same as the filters, except they update responsively
+  // without triggering searching
+  const [overallRangeValue, setOverallRangeValue] = useState(
+    overallBounds.value,
+  );
+  const [workloadRangeValue, setWorkloadRangeValue] = useState(
+    workloadBounds.value,
+  );
+  const [professorRangeValue, setProfessorRangeValue] = useState(
+    professorBounds.value,
+  );
+  const [timeRangeValue, setTimeRangeValue] = useState(timeBounds.value);
+  const [enrollRangeValue, setEnrollRangeValue] = useState(
+    enrollBounds.value.map(toLinear).map(Math.round) as [number, number],
+  );
+  const [numRangeValue, setNumRangeValue] = useState(numBounds.value);
 
   // Active styles for range filters
-  const activeStyle = useCallback(
-    (active: boolean) => {
-      if (active) return { color: globalTheme.primaryHover };
-      return undefined;
-    },
-    [globalTheme],
-  );
+  const activeStyle = useCallback((active: boolean) => {
+    if (active) return { color: 'var(--color-primary-hover)' };
+    return undefined;
+  }, []);
 
   // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
     if (isLgDesktop) return undefined;
-    const styles: React.CSSProperties = { height: '12px', width: '12px' };
-    return [styles, styles];
+    const style: React.CSSProperties = { height: '12px', width: '12px' };
+    return [style, style];
   }, [isLgDesktop]);
   const rangeRailStyle = useMemo((): React.CSSProperties => {
     if (isLgDesktop) return {};
-    const styles = { marginTop: '-1px' };
-    return styles;
+    return { marginTop: '-1px' };
   }, [isLgDesktop]);
 
   // Ctrl/cmd-s search hotkey
@@ -327,70 +125,27 @@ export function NavbarCatalogSearch() {
     },
   };
 
-  // Consolidate all advanced filters' selected options
-  const advancedOptions = useMemo(
-    (): {
-      [key: string]: { [key: string]: Option<string | number>[] | boolean };
-    } => ({
-      selects: {
-        selectDays,
-        selectSchools,
-        selectCredits,
-        selectSubjects: isTablet && selectSubjects,
-        selectSeasons: isTablet && selectSeasons,
-        selectSkillsAreas: isTablet && selectSkillsAreas,
-      },
-      ranges: {
-        activeTime,
-        activeEnrollment,
-        activeNumber,
-      },
-      toggles: {
-        searchDescription,
-        hideCancelled,
-        hideConflicting,
-        hideFirstYearSeminars,
-        hideGraduateCourses,
-        hideDiscussionSections,
-      },
-      sorts: {
-        average_gut_rating: selectSortby.value === sortbyOptions[7].value,
-      },
-    }),
-    [
-      selectDays,
-      selectSchools,
-      selectCredits,
-      selectSubjects,
-      selectSeasons,
-      selectSkillsAreas,
-      activeTime,
-      activeEnrollment,
-      activeNumber,
-      searchDescription,
-      hideCancelled,
-      hideConflicting,
-      hideFirstYearSeminars,
-      hideGraduateCourses,
-      hideDiscussionSections,
-      selectSortby,
-      isTablet,
-    ],
-  );
-
   // Styles for active search bar
   const searchbarStyle = useMemo(() => {
-    if (searchText) {
+    if (searchText.value) {
       return {
-        backgroundColor: globalTheme.selectHover,
-        borderColor: globalTheme.primary,
+        backgroundColor: 'var(--color-select-hover)',
+        borderColor: 'var(--color-primary)',
       };
     }
     return undefined;
-  }, [searchText, globalTheme]);
+  }, [searchText]);
 
   // Prevent overlap with tooltips
   const menuPortalTarget = document.querySelector<HTMLElement>('#portal');
+
+  const speed = useMemo(() => {
+    const pool =
+      searchSpeed[
+        duration > 1 ? 'fast' : duration > 0.5 ? 'faster' : 'fastest'
+      ];
+    return pool[Math.floor(Math.random() * pool.length)]!;
+  }, [duration]);
 
   return (
     <>
@@ -404,7 +159,7 @@ export function NavbarCatalogSearch() {
       <Form
         className="px-0 h-100"
         onSubmit={(event) => {
-          if (event) event.preventDefault();
+          event.preventDefault();
 
           if (isMobile) {
             scroller.scrollTo('catalog', {
@@ -417,35 +172,38 @@ export function NavbarCatalogSearch() {
         data-tutorial="catalog-1"
       >
         {/* Top row */}
-        <StyledRow>
-          <SearchWrapper isTablet={isTablet}>
+        <Row className={styles.row}>
+          <div className={styles.searchWrapper}>
             {/* Search Bar */}
             <InputGroup className="h-100">
-              <NavbarStyledSearchBar
+              <Input
+                className={styles.searchBar}
                 type="text"
-                value={searchText}
+                value={searchText.value}
                 style={searchbarStyle}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setSearchText(event.target.value);
+                  searchText.set(event.target.value);
                   setStartTime(Date.now());
                 }}
                 placeholder="Search by course code, title, prof, or whatever we don't really care"
                 ref={searchTextInput}
               />
             </InputGroup>
-            {searchText && (
-              <CloseIcon
+            {searchText.value && (
+              <IoClose
+                className={styles.searchTextClear}
                 size={18}
                 onClick={() => {
-                  setSearchText('');
+                  searchText.reset();
                   setStartTime(Date.now());
                 }}
               />
             )}
-          </SearchWrapper>
+          </div>
           {/* Number of results shown & seach speed text */}
-          <SmallTextComponent
-            type={2}
+          <TextComponent
+            type="tertiary"
+            small
             className="ml-2 mb-1 d-flex align-items-end"
             style={{ whiteSpace: 'pre-line' }}
           >
@@ -454,34 +212,30 @@ export function NavbarCatalogSearch() {
               : `Showing ${searchData.length} results${
                   !isTablet ? `${speed.length > 20 ? '\n' : ' '}(${speed})` : ''
                 }`}
-          </SmallTextComponent>
-        </StyledRow>
+          </TextComponent>
+        </Row>
         {/* Bottom row */}
-        <StyledRow className="align-items-center">
-          <FilterGroup className="d-flex align-items-center">
+        <Row className={clsx(styles.row, 'align-items-center')}>
+          <div className="d-flex align-items-center">
             {!isTablet && (
               <>
                 {/* Yale Subjects Filter Dropdown */}
                 <Popout
                   buttonText="Subject"
-                  type="subject"
                   onReset={() => {
-                    setSelectSubjects(defaultFilters.defaultOptions);
+                    selectSubjects.reset();
                     setStartTime(Date.now());
                   }}
-                  selectOptions={selectSubjects}
+                  selectedOptions={selectSubjects.value}
                   dataTutorial={2}
                 >
                   <PopoutSelect<Option, true>
                     isMulti
-                    value={selectSubjects}
-                    options={Object.entries(subjects).map(([code, name]) => ({
-                      label: `${code} - ${name}`,
-                      value: code,
-                    }))}
+                    value={selectSubjects.value}
+                    options={subjectsOptions}
                     placeholder="All Subjects"
                     onChange={(selectedOption) => {
-                      setSelectSubjects(asWritable(selectedOption));
+                      selectSubjects.set(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -489,31 +243,21 @@ export function NavbarCatalogSearch() {
                 {/* Areas/Skills Filter Dropdown */}
                 <Popout
                   buttonText="Areas/Skills"
-                  type="skills/areas"
                   onReset={() => {
-                    setSelectSkillsAreas(defaultFilters.defaultOptions);
+                    selectSkillsAreas.reset();
                     setStartTime(Date.now());
                   }}
-                  selectOptions={selectSkillsAreas}
+                  selectedOptions={selectSkillsAreas.value}
                   className="mr-0"
                 >
                   <PopoutSelect<Option, true>
                     useColors
                     isMulti
-                    value={selectSkillsAreas}
-                    options={['Areas', 'Skills'].map((type) => ({
-                      label: type,
-                      options: Object.entries(
-                        skillsAreas[type.toLowerCase() as 'areas' | 'skills'],
-                      ).map(([code, name]) => ({
-                        label: `${code} - ${name}`,
-                        value: code,
-                        color: skillsAreasColors[code],
-                      })),
-                    }))}
+                    value={selectSkillsAreas.value}
+                    options={skillsAreasOptions}
                     placeholder="All Areas/Skills"
                     onChange={(selectedOption) => {
-                      setSelectSkillsAreas(asWritable(selectedOption));
+                      selectSkillsAreas.set(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -528,30 +272,33 @@ export function NavbarCatalogSearch() {
               <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                 {/* Overall Rating Range */}
                 <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                  <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
-                  <RangeLabel
-                    className="flex-grow-1 text-center"
-                    style={activeStyle(activeOverall)}
+                  <div className={styles.rangeValueLabel}>
+                    {overallRangeValue[0]}
+                  </div>
+                  <div
+                    className={styles.rangeLabel}
+                    style={activeStyle(overallBounds.hasChanged)}
                   >
                     Overall
-                  </RangeLabel>
-                  <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
+                  </div>
+                  <div className={styles.rangeValueLabel}>
+                    {overallRangeValue[1]}
+                  </div>
                 </div>
-                <StyledRange
-                  min={defaultFilters.defaultRatingBounds[0]}
-                  max={defaultFilters.defaultRatingBounds[1]}
+                <Range
+                  className={clsx(styles.range, styles.mainRange)}
+                  min={defaultFilters.overallBounds[0]}
+                  max={defaultFilters.overallBounds[1]}
                   step={0.1}
-                  isTablet={isTablet}
-                  key={resetKey}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
-                  defaultValue={overallBounds}
+                  value={overallRangeValue}
                   onChange={(value) => {
-                    setOverallValueLabels(value);
+                    setOverallRangeValue(value as [number, number]);
                   }}
                   onAfterChange={(value) => {
-                    setOverallBounds(value);
+                    overallBounds.set(value as [number, number]);
                     setStartTime(Date.now());
                   }}
                 />
@@ -559,54 +306,94 @@ export function NavbarCatalogSearch() {
               <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                 {/* Workload Rating Range */}
                 <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                  <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
-                  <RangeLabel
-                    className="flex-grow-1 text-center"
-                    style={activeStyle(activeWorkload)}
+                  <div className={styles.rangeValueLabel}>
+                    {workloadRangeValue[0]}
+                  </div>
+                  <div
+                    className={styles.rangeLabel}
+                    style={activeStyle(workloadBounds.hasChanged)}
                   >
                     Workload
-                  </RangeLabel>
-                  <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
+                  </div>
+                  <div className={styles.rangeValueLabel}>
+                    {workloadRangeValue[1]}
+                  </div>
                 </div>
-                <StyledRange
-                  min={defaultFilters.defaultRatingBounds[0]}
-                  max={defaultFilters.defaultRatingBounds[1]}
+                <Range
+                  className={clsx(styles.range, styles.mainRange)}
+                  min={defaultFilters.workloadBounds[0]}
+                  max={defaultFilters.workloadBounds[1]}
                   step={0.1}
-                  isTablet={isTablet}
-                  key={resetKey}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
-                  defaultValue={workloadBounds}
+                  value={workloadRangeValue}
                   onChange={(value) => {
-                    setWorkloadValueLabels(value);
+                    setWorkloadRangeValue(value as [number, number]);
                   }}
                   onAfterChange={(value) => {
-                    setWorkloadBounds(value);
+                    workloadBounds.set(value as [number, number]);
                     setStartTime(Date.now());
                   }}
                 />
               </Col>
+
+              {!isTablet && (
+                <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+                  <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                    <div className={styles.rangeValueLabel}>
+                      {professorRangeValue[0]}
+                    </div>
+                    <div
+                      className={styles.rangeLabel}
+                      style={activeStyle(professorBounds.hasChanged)}
+                    >
+                      Professor
+                    </div>
+                    <div className={styles.rangeValueLabel}>
+                      {professorRangeValue[1]}
+                    </div>
+                  </div>
+                  <Range
+                    className={clsx(styles.range, styles.mainRange)}
+                    min={defaultFilters.professorBounds[0]}
+                    max={defaultFilters.professorBounds[1]}
+                    step={0.1}
+                    handleStyle={rangeHandleStyle}
+                    railStyle={rangeRailStyle}
+                    trackStyle={[rangeRailStyle]}
+                    value={professorRangeValue}
+                    onChange={(value) => {
+                      setProfessorRangeValue(value as [number, number]);
+                    }}
+                    onAfterChange={(value) => {
+                      professorBounds.set(value as [number, number]);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Col>
+              )}
             </div>
             {/* Season Filter Dropdown */}
             {!isTablet && (
               <Popout
                 buttonText="Season"
-                type="season"
+                displayOptionLabel
+                maxDisplayOptions={1}
                 onReset={() => {
-                  setSelectSeasons(defaultFilters.defaultOptions);
+                  selectSeasons.reset();
                   setStartTime(Date.now());
                 }}
-                selectOptions={selectSeasons}
+                selectedOptions={selectSeasons.value}
               >
                 <PopoutSelect<Option, true>
                   isMulti
-                  value={selectSeasons}
+                  value={selectSeasons.value}
                   options={seasonsOptions}
                   placeholder="Last 5 Years"
                   hideSelectedOptions={false}
                   onChange={(selectedOption) => {
-                    setSelectSeasons(asWritable(selectedOption));
+                    selectSeasons.set(selectedOption as Option<Season>[]);
                     setStartTime(Date.now());
                   }}
                 />
@@ -616,98 +403,127 @@ export function NavbarCatalogSearch() {
             <Popout
               buttonText="Advanced"
               arrowIcon={false}
-              type="advanced"
               onReset={() => {
                 if (isTablet) {
-                  setSelectSubjects(defaultFilters.defaultOptions);
-                  setSelectSeasons(defaultFilters.defaultOptions);
-                  setSelectSkillsAreas(defaultFilters.defaultOptions);
+                  (
+                    [
+                      'selectSubjects',
+                      'selectSkillsAreas',
+                      'selectSeasons',
+                      'professorBounds',
+                    ] as const
+                  ).forEach((k) => filters[k].reset());
                 }
-                setSelectDays(defaultFilters.defaultOptions);
-                setSelectSchools(defaultFilters.defaultOptions);
-                setSelectCredits(defaultFilters.defaultOptions);
-                setSearchDescription(defaultFilters.defaultFalse);
-                setHideCancelled(defaultFilters.defaultTrue);
-                setHideConflicting(defaultFilters.defaultFalse);
-                setHideFirstYearSeminars(defaultFilters.defaultFalse);
-                setHideGraduateCourses(defaultFilters.defaultFalse);
-                setHideDiscussionSections(defaultFilters.defaultFalse);
-                setTimeBounds(defaultFilters.defaultTimeBounds);
-                setTimeValueLabels(defaultFilters.defaultTimeBounds);
-                setEnrollBounds(defaultFilters.defaultEnrollBounds);
-                setEnrollValueLabels(defaultFilters.defaultEnrollBounds);
-                setNumBounds(defaultFilters.defaultNumBounds);
-                setNumValueLabels(defaultFilters.defaultNumBounds);
+                (
+                  [
+                    'selectDays',
+                    'timeBounds',
+                    'enrollBounds',
+                    'numBounds',
+                    'selectSchools',
+                    'selectCredits',
+                    'selectCourseInfoAttributes',
+                    'searchDescription',
+                    'enableQuist',
+                    'hideCancelled',
+                    'hideConflicting',
+                    'hideFirstYearSeminars',
+                    'hideGraduateCourses',
+                    'hideDiscussionSections',
+                  ] as const
+                ).forEach((k) => filters[k].reset());
+                if (selectSortBy.value.value === 'average_gut_rating') {
+                  selectSortBy.reset();
+                  sortOrder.reset();
+                }
+                setTimeRangeValue(defaultFilters.timeBounds);
+                setEnrollRangeValue(
+                  defaultFilters.enrollBounds.map(toLinear).map(Math.round) as [
+                    number,
+                    number,
+                  ],
+                );
+                setNumRangeValue(defaultFilters.numBounds);
+                if (isTablet)
+                  setProfessorRangeValue(defaultFilters.professorBounds);
                 setStartTime(Date.now());
-                setResetKey(resetKey + 1);
               }}
-              selectOptions={advancedOptions}
+              selectedOptions={
+                [
+                  isTablet && selectSubjects.hasChanged,
+                  isTablet && selectSkillsAreas.hasChanged,
+                  isTablet && selectSeasons.hasChanged,
+                  selectDays.hasChanged,
+                  timeBounds.hasChanged,
+                  enrollBounds.hasChanged,
+                  isTablet && professorBounds.hasChanged,
+                  numBounds.hasChanged,
+                  selectSchools.hasChanged,
+                  selectCredits.hasChanged,
+                  selectCourseInfoAttributes.hasChanged,
+                  selectSortBy.value.value === 'average_gut_rating',
+                  searchDescription.value,
+                  enableQuist.value,
+                  hideCancelled.value,
+                  hideConflicting.value,
+                  hideFirstYearSeminars.value,
+                  hideGraduateCourses.value,
+                  hideDiscussionSections.value,
+                ].filter(Boolean).length
+              }
               dataTutorial={4}
             >
-              <AdvancedWrapper>
+              <div className={styles.advancedWrapper}>
                 {isTablet && (
                   <>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Yale Subjects Filter Dropdown */}
-                      <AdvancedLabel>Subject:</AdvancedLabel>
-                      <AdvancedSelect
+                      <div className={styles.advancedLabel}>Subject:</div>
+                      <CustomSelect
+                        className={styles.advancedSelect}
                         closeMenuOnSelect
                         isMulti
-                        value={selectSubjects}
-                        options={Object.entries(subjects).map(
-                          ([code, name]) => ({
-                            label: `${code} - ${name}`,
-                            value: code,
-                          }),
-                        )}
+                        value={selectSubjects.value}
+                        options={subjectsOptions}
                         placeholder="All Subjects"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
-                          setSelectSubjects(selectedOption as Option[]);
+                          selectSubjects.set(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Areas/Skills Filter Dropdown */}
-                      <AdvancedLabel>Areas/Skills:</AdvancedLabel>
-                      <AdvancedSelect
+                      <div className={styles.advancedLabel}>Areas/Skills:</div>
+                      <CustomSelect
+                        className={styles.advancedSelect}
                         useColors
                         closeMenuOnSelect
                         isMulti
-                        value={selectSkillsAreas}
-                        options={['Areas', 'Skills'].map((type) => ({
-                          label: type,
-                          options: Object.entries(
-                            skillsAreas[
-                              type.toLowerCase() as 'areas' | 'skills'
-                            ],
-                          ).map(([code, name]) => ({
-                            label: `${code} - ${name}`,
-                            value: code,
-                            color: skillsAreasColors[code],
-                          })),
-                        }))}
+                        value={selectSkillsAreas.value}
+                        options={skillsAreasOptions}
                         placeholder="All Areas/Skills"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
-                          setSelectSkillsAreas(selectedOption as Option[]);
+                          selectSkillsAreas.set(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Season Filter Dropdown */}
-                      <AdvancedLabel>Season:</AdvancedLabel>
-                      <AdvancedSelect
+                      <div className={styles.advancedLabel}>Season:</div>
+                      <CustomSelect
+                        className={styles.advancedSelect}
                         closeMenuOnSelect
                         isMulti
-                        value={selectSeasons}
+                        value={selectSeasons.value}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
-                          setSelectSeasons(selectedOption as Option[]);
+                          selectSeasons.set(selectedOption as Option<Season>[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -716,11 +532,12 @@ export function NavbarCatalogSearch() {
                 )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Day Multi-Select */}
-                  <AdvancedLabel>Day:</AdvancedLabel>
-                  <AdvancedSelect
+                  <div className={styles.advancedLabel}>Day:</div>
+                  <CustomSelect<Option<Weekdays>, true>
+                    className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
-                    value={selectDays}
+                    value={selectDays.value}
                     options={weekdays.slice(0, 5).map((day) => ({
                       label: day,
                       value: day,
@@ -728,28 +545,32 @@ export function NavbarCatalogSearch() {
                     placeholder="All Days"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
-                      setSelectDays(selectedOption as Option[]);
+                      selectDays.set(selectedOption as Option<Weekdays>[]);
                       setStartTime(Date.now());
                     }}
                   />
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel style={activeStyle(activeTime)}>
+                  <div
+                    className={styles.advancedLabel}
+                    style={activeStyle(timeBounds.hasChanged)}
+                  >
                     Time:
-                  </AdvancedLabel>
-                  <AdvancedRangeGroup>
+                  </div>
+                  <div className={styles.advancedRangeGroup}>
                     {/* Time Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel>
-                        {to12HourTime(timeValueLabels[0])}
-                      </RangeValueLabel>
-                      <RangeValueLabel>
-                        {to12HourTime(timeValueLabels[1])}
-                      </RangeValueLabel>
+                      <div className={styles.rangeValueLabel}>
+                        {to12HourTime(toRealTime(timeRangeValue[0]))}
+                      </div>
+                      <div className={styles.rangeValueLabel}>
+                        {to12HourTime(toRealTime(timeRangeValue[1]))}
+                      </div>
                     </div>
-                    <AdvancedRange
-                      min={toRangeTime(defaultFilters.defaultTimeBounds[0])}
-                      max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
+                    <Range
+                      className={clsx(styles.range, styles.advancedRange)}
+                      min={defaultFilters.timeBounds[0]}
+                      max={defaultFilters.timeBounds[1]}
                       step={1}
                       marks={{
                         84: '7am',
@@ -759,76 +580,123 @@ export function NavbarCatalogSearch() {
                         228: '7pm',
                         264: '10pm',
                       }}
-                      key={resetKey}
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={timeBounds.map(toRangeTime)}
+                      value={timeRangeValue}
                       onChange={(value) => {
-                        setTimeValueLabels(value.map(toRealTime));
+                        setTimeRangeValue(value as [number, number]);
                       }}
                       onAfterChange={(value) => {
-                        setTimeBounds(value.map(toRealTime));
+                        timeBounds.set(value as [number, number]);
                         setStartTime(Date.now());
                       }}
                     />
-                  </AdvancedRangeGroup>
+                  </div>
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel style={activeStyle(activeEnrollment)}>
+                  <div
+                    className={styles.advancedLabel}
+                    style={activeStyle(enrollBounds.hasChanged)}
+                  >
                     # Enrolled:
-                  </AdvancedLabel>
-                  <AdvancedRangeGroup>
+                  </div>
+                  <div className={styles.advancedRangeGroup}>
                     {/* Enrollment Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
-                      <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
+                      <div className={styles.rangeValueLabel}>
+                        {Math.round(toExponential(enrollRangeValue[0]))}
+                      </div>
+                      <div className={styles.rangeValueLabel}>
+                        {Math.round(toExponential(enrollRangeValue[1]))}
+                      </div>
                     </div>
-                    <AdvancedRange
-                      min={Math.round(
-                        toLinear(defaultFilters.defaultEnrollBounds[0]),
-                      )}
-                      max={Math.round(
-                        toLinear(defaultFilters.defaultEnrollBounds[1]),
-                      )}
+                    <Range
+                      className={clsx(styles.range, styles.advancedRange)}
+                      min={Math.round(toLinear(defaultFilters.enrollBounds[0]))}
+                      max={Math.round(toLinear(defaultFilters.enrollBounds[1]))}
                       step={10}
                       marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
-                      key={resetKey}
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={enrollBounds.map(toLinear)}
+                      value={enrollRangeValue}
                       onChange={(value) => {
-                        setEnrollValueLabels(
-                          value.map(toExponential).map(Math.round),
-                        );
+                        setEnrollRangeValue(value as [number, number]);
                       }}
                       onAfterChange={(value) => {
-                        setEnrollBounds(value.map(toExponential));
+                        enrollBounds.set(
+                          value.map(toExponential).map(Math.round) as [
+                            number,
+                            number,
+                          ],
+                        );
                         setStartTime(Date.now());
                       }}
                     />
-                  </AdvancedRangeGroup>
+                  </div>
                 </Row>
+                {isTablet && (
+                  <Row className="align-items-center justify-content-between mx-3 mt-3">
+                    <div
+                      className={styles.advancedLabel}
+                      style={activeStyle(professorBounds.hasChanged)}
+                    >
+                      Professor:
+                    </div>
+                    <div className={styles.advancedRangeGroup}>
+                      {/* Professor Rating Range */}
+                      <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                        <div className={styles.rangeValueLabel}>
+                          {professorRangeValue[0]}
+                        </div>
+                        <div className={styles.rangeValueLabel}>
+                          {professorRangeValue[1]}
+                        </div>
+                      </div>
+                      <Range
+                        className={clsx(styles.range, styles.advancedRange)}
+                        min={defaultFilters.professorBounds[0]}
+                        max={defaultFilters.professorBounds[1]}
+                        step={0.1}
+                        handleStyle={rangeHandleStyle}
+                        railStyle={rangeRailStyle}
+                        trackStyle={[rangeRailStyle]}
+                        value={professorRangeValue}
+                        onChange={(value) => {
+                          setProfessorRangeValue(value as [number, number]);
+                        }}
+                        onAfterChange={(value) => {
+                          professorBounds.set(value as [number, number]);
+                          setStartTime(Date.now());
+                        }}
+                      />
+                    </div>
+                  </Row>
+                )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
-                  <AdvancedLabel style={activeStyle(activeNumber)}>
+                  <div
+                    className={styles.advancedLabel}
+                    style={activeStyle(numBounds.hasChanged)}
+                  >
                     Course #:
-                  </AdvancedLabel>
-                  <AdvancedRangeGroup>
+                  </div>
+                  <div className={styles.advancedRangeGroup}>
                     {/* Course Number Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel>
-                        {numValueLabels[0].toString().padStart(3, '0')}
-                      </RangeValueLabel>
-                      <RangeValueLabel>
-                        {numValueLabels[1] === 1000
+                      <div className={styles.rangeValueLabel}>
+                        {numRangeValue[0].toString().padStart(3, '0')}
+                      </div>
+                      <div className={styles.rangeValueLabel}>
+                        {numRangeValue[1] === 1000
                           ? '1000+'
-                          : numValueLabels[1].toString().padStart(3, '0')}
-                      </RangeValueLabel>
+                          : numRangeValue[1].toString().padStart(3, '0')}
+                      </div>
                     </div>
-                    <AdvancedRange
-                      min={defaultFilters.defaultNumBounds[0]}
-                      max={defaultFilters.defaultNumBounds[1]}
+                    <Range
+                      className={clsx(styles.range, styles.advancedRange)}
+                      min={defaultFilters.numBounds[0]}
+                      max={defaultFilters.numBounds[1]}
                       step={10}
                       marks={{
                         0: '000',
@@ -843,47 +711,45 @@ export function NavbarCatalogSearch() {
                         900: '900',
                         1000: '1000+',
                       }}
-                      key={resetKey}
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={numBounds}
+                      value={numRangeValue}
                       onChange={(value) => {
-                        setNumValueLabels(value);
+                        setNumRangeValue(value as [number, number]);
                       }}
                       onAfterChange={(value) => {
-                        setNumBounds(value);
+                        numBounds.set(value as [number, number]);
                         setStartTime(Date.now());
                       }}
                     />
-                  </AdvancedRangeGroup>
+                  </div>
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}
-                  <AdvancedLabel>School:</AdvancedLabel>
-                  <AdvancedSelect
+                  <div className={styles.advancedLabel}>School:</div>
+                  <CustomSelect
+                    className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
-                    value={selectSchools}
-                    options={Object.entries(schools).map(([code, name]) => ({
-                      label: name,
-                      value: code,
-                    }))}
+                    value={selectSchools.value}
+                    options={schoolsOptions}
                     placeholder="All Schools"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
-                      setSelectSchools(selectedOption as Option[]);
+                      selectSchools.set(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Course Credit Multi-Select */}
-                  <AdvancedLabel>Credit:</AdvancedLabel>
-                  <AdvancedSelect
+                  <div className={styles.advancedLabel}>Credit:</div>
+                  <CustomSelect
+                    className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
-                    value={selectCredits}
+                    value={selectCredits.value}
                     options={credits.map((credit) => ({
                       label: String(credit),
                       value: credit,
@@ -894,123 +760,82 @@ export function NavbarCatalogSearch() {
                       // If you want to get rid of these `as` casts:
                       // Don't think about these generics too much. It poisons
                       // your brain.
-                      setSelectCredits(selectedOption as Option<number>[]);
+                      selectCredits.set(selectedOption as Option<number>[]);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Course Information Attributes Multi-Select */}
+                  <div className={styles.advancedLabel}>Info:</div>
+                  <CustomSelect
+                    className={styles.advancedSelect}
+                    closeMenuOnSelect
+                    isMulti
+                    value={selectCourseInfoAttributes.value}
+                    options={courseInfoAttributesOptions}
+                    placeholder="Course Information Attributes"
+                    menuPortalTarget={menuPortalTarget}
+                    onChange={(selectedOption) => {
+                      selectCourseInfoAttributes.set(
+                        selectedOption as Option[],
+                      );
                       setStartTime(Date.now());
                     }}
                   />
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Sort by Guts */}
-                  <AdvancedLabel>{sortbyOptions[7].label}:</AdvancedLabel>
+                  <div className={styles.advancedLabel}>
+                    {sortByOptions.average_gut_rating.label}:
+                  </div>
                   <ResultsColumnSort
-                    selectOption={sortbyOptions[7]}
-                    key={resetKey}
+                    selectOption={sortByOptions.average_gut_rating}
                   />
                 </Row>
-                <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
-                  {/* Search By Description Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={searchDescription}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        setSearchDescription(!searchDescription);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Include descriptions in search
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide Cancelled Courses Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideCancelled}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        setHideCancelled(!hideCancelled);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide cancelled courses
-                    </ToggleLabel>
-                  </Toggle>
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideConflicting}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        setHideConflicting(!hideConflicting);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide courses with conflicting times
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide First-Year Seminar Courses Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideFirstYearSeminars}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        setHideFirstYearSeminars(!hideFirstYearSeminars);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide first-year seminars
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide Graduate-Level Courses Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideGraduateCourses}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        setHideGraduateCourses(!hideGraduateCourses);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide graduate courses
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide Discussion Sections Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideDiscussionSections}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        setHideDiscussionSections(!hideDiscussionSections);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide discussion sections
-                    </ToggleLabel>
-                  </Toggle>
-                </AdvancedToggleRow>
-              </AdvancedWrapper>
+                <Row
+                  className={clsx(
+                    styles.advancedToggleRow,
+                    'align-items-center justify-content-between mx-auto mt-3 py-2 px-4',
+                  )}
+                >
+                  <Toggle handle="searchDescription" />
+                  <Toggle handle="enableQuist" />
+                  <Toggle handle="hideCancelled" />
+                  <Toggle handle="hideConflicting" />
+                  <Toggle handle="hideFirstYearSeminars" />
+                  <Toggle handle="hideGraduateCourses" />
+                  <Toggle handle="hideDiscussionSections" />
+                </Row>
+              </div>
             </Popout>
-          </FilterGroup>
+          </div>
 
           {/* Reset Filters & Sorting Button */}
-          <StyledButton
+          <Button
+            className={styles.resetButton}
             variant="danger"
-            onClick={handleResetFilters}
-            disabled={!canReset}
+            onClick={() => {
+              setOverallRangeValue(defaultFilters.overallBounds);
+              setWorkloadRangeValue(defaultFilters.workloadBounds);
+              setTimeRangeValue(defaultFilters.timeBounds);
+              setEnrollRangeValue(
+                defaultFilters.enrollBounds.map(toLinear).map(Math.round) as [
+                  number,
+                  number,
+                ],
+              );
+              setNumRangeValue(defaultFilters.numBounds);
+              setProfessorRangeValue(defaultFilters.professorBounds);
+              Object.values(filters).forEach((filter) => filter.reset());
+              setStartTime(Date.now());
+            }}
+            // Cannot reset if no filters have changed
+            disabled={Object.values(filters).every((x) => !x.hasChanged)}
           >
             Reset
-          </StyledButton>
-        </StyledRow>
+          </Button>
+        </Row>
       </Form>
     </>
   );

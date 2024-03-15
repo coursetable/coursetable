@@ -8,8 +8,10 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type { HiddenCourses } from '../contexts/worksheetContext';
-import type { CourseEvent } from '../components/Worksheet/CalendarEvent';
+import type {
+  HiddenCourses,
+  WorksheetCourse,
+} from '../contexts/worksheetContext';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -21,7 +23,7 @@ function isoString(date: Date | SimpleDate, time?: string) {
     : // Avoid mutations
       new Date(date);
   if (time) {
-    const [hourString, minuteString] = time.split(':');
+    const [hourString, minuteString] = time.split(':') as [string, string];
     const hour = parseInt(hourString, 10);
     const minute = parseInt(minuteString, 10);
     d.setUTCHours(hour);
@@ -64,7 +66,7 @@ function getTimes(timesByDay: Listing['times_by_day']) {
   }[] = [];
 
   for (let idx = 1; idx <= 5; idx++) {
-    const info = timesByDay[weekdays[idx - 1]];
+    const info = timesByDay[weekdays[(idx - 1) as 0 | 1 | 2 | 3 | 4]];
     if (!info) continue;
     for (const [startTime, endTime, location] of info) {
       const time = times.find(
@@ -113,7 +115,7 @@ type CalendarEvent = {
   recurrence: string[];
   description: string;
   location: string;
-  colorIndex: number;
+  color: string;
   listing: Listing;
   days: number[];
 };
@@ -125,7 +127,6 @@ function toGCalEvent({
   recurrence,
   description,
   location,
-  colorIndex,
 }: CalendarEvent) {
   return {
     id: `coursetable${uuidv4().replace(/-/gu, '')}`,
@@ -139,8 +140,6 @@ function toGCalEvent({
       timeZone: 'America/New_York',
     },
     recurrence,
-    // Cycle the ID because each calendar only has a fixed set of colors
-    colorId: ((colorIndex % 11) + 1).toString(),
     description,
     location,
   };
@@ -171,7 +170,7 @@ function toRBCEvent({
   end,
   description,
   location,
-  colorIndex,
+  color,
   listing,
   days,
 }: CalendarEvent): RBCEvent[] {
@@ -194,7 +193,7 @@ function toRBCEvent({
       start: startTimeCpy,
       end: endTimeCpy,
       listing,
-      id: colorIndex,
+      color,
       location,
     };
   });
@@ -202,29 +201,37 @@ function toRBCEvent({
 
 type GCalEvent = ReturnType<typeof toGCalEvent>;
 type ICSEvent = string;
-type RBCEvent = CourseEvent;
+export type RBCEvent = {
+  title: string;
+  description: string;
+  start: Date;
+  end: Date;
+  listing: Listing;
+  color: string;
+  location: string;
+};
 
 export function getCalendarEvents(
   type: 'gcal',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): GCalEvent[];
 export function getCalendarEvents(
   type: 'ics',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): ICSEvent[];
 export function getCalendarEvents(
   type: 'rbc',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ): RBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
-  courses: Listing[],
+  courses: WorksheetCourse[],
   curSeason: Season,
   hiddenCourses: HiddenCourses,
 ) {
@@ -237,10 +244,7 @@ export function getCalendarEvents(
     return [];
   }
   const visibleCourses = courses.filter(
-    (course) =>
-      !hiddenCourses[curSeason] ||
-      !(course.crn in hiddenCourses[curSeason]) ||
-      !hiddenCourses[curSeason][course.crn],
+    (course) => !hiddenCourses[curSeason]?.[course.crn],
   );
   if (visibleCourses.length === 0) {
     if (type !== 'rbc') toast.error(`No courses in ${seasonString} to export!`);
@@ -248,7 +252,7 @@ export function getCalendarEvents(
   }
   const toEvent =
     type === 'gcal' ? toGCalEvent : type === 'ics' ? toICSEvent : toRBCEvent;
-  const events = visibleCourses.flatMap((c, colorIndex) => {
+  const events = visibleCourses.flatMap(({ listing: c, color }) => {
     const times = getTimes(c.times_by_day);
     const endRepeat = semester
       ? isoString(semester.end, '23:59').replace(/[:-]/gu, '')
@@ -279,7 +283,7 @@ export function getCalendarEvents(
           ],
           description: c.title,
           location,
-          colorIndex,
+          color,
           listing: c,
           days,
         });

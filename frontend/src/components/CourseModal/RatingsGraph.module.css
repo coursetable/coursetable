@@ -19,6 +19,13 @@
   transition: opacity 0.3s;
 }
 
+.label {
+  font-size: 10px !important;
+  width: 55px;
+  text-align: center;
+  color: #468ff2;
+}
+
 /* Comment out below for hover statistic functionality */
 
 /* .value {
@@ -33,6 +40,7 @@
   .value {
     opacity: 1;
   }
+
   .container {
     margin-top: 25px;
   }

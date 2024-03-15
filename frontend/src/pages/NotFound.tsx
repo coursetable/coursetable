@@ -17,7 +17,8 @@ function NotFound() {
       <h3>Page not found</h3>
       <div>
         If you think this is an error, please{' '}
-        <Link to="/feedback">let us know</Link> and we will take a look.
+        <Link to="https://feedback.coursetable.com/">let us know</Link> and we
+        will take a look.
       </div>
     </div>
   );

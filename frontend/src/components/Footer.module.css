@@ -11,3 +11,7 @@
   /* color: rgba(1, 1, 1, 0.7) !important; */
   color: inherit;
 }
+
+.sectionHeading {
+  transition: color var(--trans-dur);
+}

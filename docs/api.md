@@ -101,9 +101,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
   - `error`: `"NOT_FERRY"`
 
-### `GET` `/api/static/{season}.json`
-
-TODO: rename this to `/api/catalog` and remove `.json`?
+### `GET` `/api/static/catalogs/evals/{season}.json`
 
 #### Request
 
@@ -114,8 +112,19 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
+  - `ListingRatings[]` (see `static` folder for examples)
+
+### `GET` `/api/static/catalogs/public/{season}.json`
+
+TODO: rename this to `/api/catalog` and remove `.json`?
+
+#### Response
+
+**Status: 200**
+
+- Body:
   - `Listing[]` (see `static` folder for examples)
-  - TODO: provide typing SDK
+  - Types are available via GraphQL
 
 ## Auth
 
@@ -131,7 +140,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - Body:
   - `auth`: `boolean`
-  - `id`: `NetId | null`
+  - `netId`: `NetId | null`
   - `user`: `User | null`
 
 ### `GET` `/api/auth/cas`
@@ -253,7 +262,24 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
-  - `friends`: `{ [netId: string]: { name: string; worksheets: [season: string, ociId: string, worksheetNumber: string][] } }`
+
+  - `friends`:
+
+    ```ts
+    type Friends = {
+      [netId: NetId]: {
+        name: string;
+        worksheets: {
+          [season: Season]: {
+            [worksheetNumber: number]: {
+              crn: Crn;
+              color: string;
+            }[];
+          };
+        };
+      };
+    };
+    ```
 
 ### `GET` `/api/friends/names`
 
@@ -287,10 +313,11 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - Needs credentials
 - Body:
-  - `action`: `"add" | "remove"`
+  - `action`: `"add" | "remove" | "update"`
   - `season`: `string`
-  - `ociId`: `number`
+  - `crn`: `number`
   - `worksheetNumber`: `number`
+  - `color`: `string` (must be a valid color string)
 
 #### Response
 
@@ -315,11 +342,23 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
+
   - `netId`: `NetId`
   - `evaluationsEnabled`: `boolean | null`
   - `year`: `number | null`
   - `school`: `string | null`
-  - `data`: `[season: string, ociId: string, worksheetNumber: string][]`
+  - `data`:
+
+    ```ts
+    type Data = {
+      [season: Season]: {
+        [worksheetNumber: number]: {
+          crn: Crn;
+          color: string;
+        }[];
+      };
+    };
+    ```
 
 ## Health check
 

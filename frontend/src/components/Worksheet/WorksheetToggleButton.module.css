@@ -1,0 +1,70 @@
+.container {
+  position: relative;
+}
+
+.worksheetDropdown {
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  cursor: pointer;
+  background-color: var(--color-select);
+  color: var(--color-text);
+}
+
+.worksheetDropdown:hover {
+  opacity: 1 !important;
+}
+
+.scaleIcon {
+  transition: 0.1s !important;
+}
+
+.scaleIcon:hover {
+  transform: scale(1.15);
+}
+
+.toggleButton {
+  gap: 1rem;
+  background-color: transparent;
+  border-width: 0;
+  color: var(--color-primary) !important;
+}
+
+.toggleButton:active,
+.toggleButton:focus {
+  box-shadow: none !important;
+}
+
+.toggleButton:hover {
+  opacity: 0.5;
+}
+
+.courseConflictIcon {
+  position: absolute;
+  top: -12px;
+  left: -5px;
+}
+
+.courseConflictIconModal {
+  position: absolute;
+  top: -3px;
+  left: -8px;
+}
+
+.disabledButton {
+  cursor: not-allowed !important;
+  background-color: transparent !important;
+  border-width: 0 !important;
+}
+
+.disabledButtonIcon {
+  color: var(--color-icon-focus);
+}
+
+.disabledButton:active,
+.disabledButton:focus {
+  box-shadow: none !important;
+}

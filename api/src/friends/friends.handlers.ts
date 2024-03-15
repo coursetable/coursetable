@@ -1,6 +1,7 @@
 import type express from 'express';
 import z from 'zod';
 import { prisma } from '../config.js';
+import { worksheetCoursesToWorksheets } from '../user/user.utils';
 
 import winston from '../logging/winston.js';
 
@@ -101,24 +102,35 @@ export const removeFriend = async (
   });
 
   if (!friend) {
-    res.status(400).json({ error: 'NO_FRIEND' });
-    return;
-  }
-
-  await prisma.$transaction([
-    prisma.studentFriends.delete({
-      where: {
-        netId_friendNetId: { netId, friendNetId },
-      },
-    }),
-    // Bidirectional deletion
-    prisma.studentFriends.delete({
+    const friendRequest = await prisma.studentFriendRequests.findUnique({
       where: {
         netId_friendNetId: { netId: friendNetId, friendNetId: netId },
       },
-    }),
-  ]);
-
+    });
+    if (!friendRequest) {
+      res.status(400).json({ error: 'NO_FRIEND' });
+      return;
+    }
+    await prisma.studentFriendRequests.delete({
+      where: {
+        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
+      },
+    });
+  } else {
+    await prisma.$transaction([
+      prisma.studentFriends.delete({
+        where: {
+          netId_friendNetId: { netId, friendNetId },
+        },
+      }),
+      // Bidirectional deletion
+      prisma.studentFriends.delete({
+        where: {
+          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
+        },
+      }),
+    ]);
+  }
   res.sendStatus(200);
 };
 
@@ -266,6 +278,7 @@ export const getFriendsWorksheets = async (
       },
     },
   });
+  const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
 
   // Get friends' infos from NetIDs
   winston.info('Getting info of friends');
@@ -277,42 +290,27 @@ export const getFriendsWorksheets = async (
       },
     },
   });
-
-  const friendInfoMap: {
-    [netId: string]: {
-      name: string;
-      worksheets: [season: string, ociId: string, worksheetNumber: string][];
-    };
-  } = Object.fromEntries(
-    friendInfos.map((f) => [
-      f.netId,
+  const friendInfoMap = Object.fromEntries(
+    friendInfos.map((friendInfo) => [
+      friendInfo.netId,
       {
-        name: `${f.firstName ?? '[unknown]'} ${f.lastName ?? '[unknown]'}`,
-        worksheets: [],
+        name: `${friendInfo.firstName ?? '[unknown]'} ${
+          friendInfo.lastName ?? '[unknown]'
+        }`,
+      },
+    ]),
+  );
+  const aggregateInfo = Object.fromEntries(
+    friendNetIds.map((friendNetId) => [
+      friendNetId,
+      {
+        name: friendInfoMap[friendNetId]?.name ?? '[unknown]',
+        worksheets: friendWorksheetMap[friendNetId] ?? {},
       },
     ]),
   );
 
-  friendWorksheets.forEach(
-    ({ netId: friendNetId, ociId, season, worksheetNumber }) => {
-      if (friendNetId in friendInfoMap) {
-        friendInfoMap[friendNetId].worksheets.push([
-          String(season),
-          String(ociId),
-          String(worksheetNumber),
-        ]);
-      } else {
-        friendInfoMap[friendNetId] = {
-          name: '[unknown]',
-          worksheets: [
-            [String(season), String(ociId), String(worksheetNumber)],
-          ],
-        };
-      }
-    },
-  );
-
-  res.status(200).json({ friends: friendInfoMap });
+  res.status(200).json({ friends: aggregateInfo });
 };
 
 export const getNames = async (

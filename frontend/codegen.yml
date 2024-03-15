@@ -13,10 +13,11 @@ generates:
       - 'typescript-operations'
       - 'typescript-react-apollo'
     config:
-      preResolveTypes: true
+      onlyOperationTypes: true
       avoidOptionals: true
       scalars:
         float8: number
+      inlineFragmentTypes: combine
   src/generated/graphql.schema.json:
     plugins:
       - 'introspection'

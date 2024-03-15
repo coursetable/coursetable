@@ -1,10 +1,11 @@
 import express from 'express';
-import cookieSession from 'cookie-session';
+import session from 'express-session';
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
 
@@ -14,6 +15,7 @@ import {
   SESSION_SECRET,
   CORS_OPTIONS,
   STATIC_FILE_DIR,
+  REDIS_HOST,
 } from './config.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
@@ -60,21 +62,40 @@ app.use((req, _, next) => {
   next();
 });
 
-// Setup sessions.
+// Setup session management.
+
+// Initialize Redis client.
+const redisClient = createClient({
+  socket: {
+    host: REDIS_HOST,
+  },
+});
+redisClient.connect().catch(winston.error);
+
+// Initialize Redis session store.
+const redisStore = new RedisStore({
+  client: redisClient,
+  prefix: 'myapp:',
+  ttl: 365 * 24 * 60 * 60, // 1 year
+});
+
 app.use(
-  cookieSession({
+  session({
     secret: SESSION_SECRET,
 
-    // Cookie lifetime of one year.
-    maxAge: 365 * 24 * 60 * 60 * 1000,
+    // Recommended by the connect-redis documentation.
+    store: redisStore,
+    resave: false,
+    saveUninitialized: true,
 
-    // We currently set this to false because our logout process involves
-    // the client-side JS clearing all cookies.
-    httpOnly: false,
+    cookie: {
+      // Cookie lifetime of one year.
+      maxAge: 365 * 24 * 60 * 60 * 1000,
 
-    // Not enabling this yet since it could have unintended consequences.
-    // Eventually we should enable this.
-    // secure: true,
+      // Not enabling this yet since it could have unintended consequences.
+      // Eventually we should enable this.
+      // secure: true,
+    },
   }),
 );
 
@@ -91,28 +112,34 @@ https
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
-app.use(cookieParser());
+// Rate limit
+// const authRateLimiter = rateLimit({
+// windowMs: 15 * 60 * 1000, // 15 minutes
+// max: 100, // Limit each IP to 100 requests per windowMs
+// standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+// legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+// message: 'Too many requests, please try again later',
+// });
 
 // Configuring passport
 passportConfig(passport);
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.authenticate('session'));
 
 app.use(
   '/ferry',
-  // Restrict GraphQL access for authenticated Yale students only
-  authWithEvals,
-  (req, res, next) => {
-    // Use read-only student role for all Hasura queries
-    req.headers['X-Hasura-Role'] = 'student';
-    next();
-  },
   createProxyMiddleware({
     target: 'http://graphql-engine:8080',
-    pathRewrite: {
-      '^/ferry/': '/', // Remove base path
-    },
+    pathRewrite: { '^/ferry/': '/' },
     ws: true,
+    xfwd: true,
+    onProxyReq(proxyReq, req) {
+      req.headers['X-Hasura-Role'] = req.isAuthenticated()
+        ? 'student'
+        : 'anonymous';
+      const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
+      proxyReq.setHeader('X-Hasura-Role', hasuraRole);
+    },
   }),
 );
 // Enable request logging.
@@ -130,10 +157,21 @@ friends(app);
 canny(app);
 user(app);
 
-// Mount static files route and require NetID authentication
+// Evals data require NetID authentication
+app.use(
+  '/api/static/catalogs/evals',
+  authWithEvals,
+  express.static(`${STATIC_FILE_DIR}/catalogs/evals`, {
+    cacheControl: true,
+    maxAge: '1h',
+    lastModified: true,
+    etag: true,
+  }),
+);
+
+// Serve public catalog files without authentication
 app.use(
   '/api/static',
-  authWithEvals,
   express.static(STATIC_FILE_DIR, {
     cacheControl: true,
     maxAge: '1h',

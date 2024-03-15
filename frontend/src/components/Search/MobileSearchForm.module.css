@@ -1,0 +1,93 @@
+.searchColMobile {
+  /* background-color: transparent; */
+  overflow: scroll;
+  z-index: 1;
+}
+
+.searchContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
+}
+
+@media (hover: none) {
+  .searchContainer {
+    max-height: none;
+  }
+}
+
+.searchBar {
+  width: 100%;
+}
+
+/* Make this look good in dark mode */
+.searchInput input {
+  border-radius: 8px;
+}
+
+.filterTitle {
+  font-size: 0.9rem;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.multiSelects {
+  border-radius: 8px;
+}
+
+.selectorContainer {
+  font-weight: 500;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  -webkit-touch-callout: none;
+  user-select: none;
+  width: calc(100% - 35px);
+}
+
+.lightBg {
+  background-color: rgb(0 0 0 / 3.3%);
+}
+
+.sliders {
+  font-weight: 500;
+}
+
+.slider {
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.sliderTooltip {
+  font-size: 0.75rem;
+  width: 1.5rem;
+  color: white;
+  background-color: #2d87f3;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  font-weight: 600;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -0.75rem;
+}
+
+.resetFiltersBtn {
+  color: #e23e57;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.resetFiltersBtn:hover {
+  color: #a82f41;
+}
+
+.numResults {
+  font-weight: 500;
+}
+
+.uselessBtn {
+  display: none;
+}

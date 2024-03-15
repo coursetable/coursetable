@@ -50,13 +50,13 @@ const extractHostname = (url: string): string => {
   let hostname = '';
   // Find & remove protocol (http, ftp, etc.) and get hostname
 
-  if (url.includes('//')) [, , hostname] = url.split('/');
-  else [hostname] = url.split('/');
+  if (url.includes('//')) hostname = url.split('/')[2]!;
+  else hostname = url.split('/')[0]!;
 
   // Find & remove port number
-  [hostname] = hostname.split(':');
+  hostname = hostname.split(':')[0]!;
   // Find & remove "?"
-  [hostname] = hostname.split('?');
+  hostname = hostname.split('?')[0]!;
 
   return hostname;
 };
@@ -115,7 +115,7 @@ export const passportConfig = (
             return;
           }
 
-          const [user] = data;
+          const user = data[0]!;
 
           // Enable evaluations if user has a school code
           // or is a member of an approved organization (for faculty).

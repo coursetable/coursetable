@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
@@ -14,9 +14,8 @@ import Footer from './components/Footer';
 import CourseModal from './components/CourseModal/CourseModal';
 
 import { useUser } from './contexts/userContext';
-import { useLocalStorageState } from './utilities/browserStorage';
+import { useTutorial } from './contexts/tutorialContext';
 import { suspended } from './utilities/display';
-import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -33,7 +32,7 @@ function showIfAuthorized(
 const Landing = suspended(() => import('./pages/Landing'));
 const About = suspended(() => import('./pages/About'));
 const FAQ = suspended(() => import('./pages/FAQ'));
-const Privacy = suspended(() => import('./pages/Privacy'));
+const Privacy = suspended(() => import('./pages/Privacy.mdx'));
 const NotFound = suspended(() => import('./pages/NotFound'));
 const Thankyou = suspended(() => import('./pages/Thankyou'));
 const Challenge = suspended(() => import('./pages/Challenge'));
@@ -41,50 +40,20 @@ const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
 const Join = suspended(() => import('./pages/Join'));
+const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
+// TODO: use import.meta.glob instead of manual import
+const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
+const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
   const location = useLocation();
-  // Fetch current device
-  const { isMobile, isTablet } = useWindowDimensions();
   // User context data
-  const { loading, user } = useUser();
-
-  // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheet);
-
-  // Tutorial state
-  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
-
-  // First tutorial state
-  const [shownTutorial, setShownTutorial] = useLocalStorageState(
-    'shownTutorial',
-    false,
-  );
-
-  // Handle whether or not to open tutorial
-  useEffect(() => {
-    if (!isMobile && !isTablet && isLoggedIn && !shownTutorial) {
-      if (location.pathname === '/catalog') {
-        setIsTutorialOpen(true);
-      } else if (location.pathname !== '/worksheet') {
-        // This can happen if the user got redirected to /challenge
-        setIsTutorialOpen(false);
-      }
-    } else {
-      setIsTutorialOpen(false);
-    }
-  }, [
-    isMobile,
-    isTablet,
-    isLoggedIn,
-    shownTutorial,
-    location,
-    setIsTutorialOpen,
-  ]);
+  const { authStatus, user } = useUser();
+  const { isTutorialOpen } = useTutorial();
 
   // Render spinner if page loading
-  if (loading) {
+  if (authStatus === 'loading') {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
@@ -101,17 +70,18 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={1}
+        id={4}
       >
-        {/* Content */}
+        Basic course information is now publicly available without login! Share
+        courses with your family and friends with ease ;)
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
+      <Navbar />
       <SentryRoutes>
         {/* Home Page */}
         <Route
           path="/"
           element={
-            isLoggedIn ? (
+            authStatus === 'authenticated' ? (
               /* <Home /> */ <Navigate to="/catalog" />
             ) : (
               <Navigate to="/login" />
@@ -121,10 +91,7 @@ function App() {
 
         {/* Authenticated routes */}
         {/* Catalog */}
-        <Route
-          path="/catalog"
-          element={showIfAuthorized(user.hasEvals, <Search />)}
-        />
+        <Route path="/catalog" element={<Search />} />
 
         {/* Worksheet */}
         <Route
@@ -149,7 +116,9 @@ function App() {
         {/* Auth */}
         <Route
           path="/login"
-          element={isLoggedIn ? <Navigate to="/" /> : <Landing />}
+          element={
+            authStatus === 'authenticated' ? <Navigate to="/" /> : <Landing />
+          }
         />
 
         {/* OCE Challenge */}
@@ -174,18 +143,16 @@ function App() {
 
         <Route path="/Table" element={<Navigate to="/catalog" />} />
 
+        <Route path="/releases/fall23" element={<Fall23Release />} />
+        <Route path="/releases/quist" element={<QuistRelease />} />
+        <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
         {/* Render footer if not on catalog */}
       </SentryRoutes>
       {!['/catalog'].includes(location.pathname) && <Footer />}
       {/* Tutorial for first-time users */}
-      <Tutorial
-        isTutorialOpen={isTutorialOpen}
-        setIsTutorialOpen={setIsTutorialOpen}
-        shownTutorial={shownTutorial}
-        setShownTutorial={setShownTutorial}
-      />
+      {isTutorialOpen && <Tutorial />}
       <CourseModal />
     </>
   );

@@ -1,22 +1,38 @@
 import React, { useState } from 'react';
-import { Collapse } from 'react-bootstrap';
-import styled from 'styled-components';
+import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { MdInfoOutline } from 'react-icons/md';
+import clsx from 'clsx';
 import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
+import { useTheme } from '../../contexts/themeContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { ratingColormap } from '../../utilities/constants';
 import { getOverallRatings, getWorkloadRatings } from '../../utilities/course';
 import styles from './WorksheetStats.module.css';
 
-const StyledStatPill = styled.span<
-  { colormap: chroma.Scale; stat: number } | { colormap?: never; stat?: never }
->`
-  background-color: ${({ theme, colormap, stat }) =>
-    colormap
-      ? colormap(stat).alpha(theme.ratingAlpha).css()
-      : theme.surface[0]};
-  color: ${({ theme, stat }) => (stat ? '#141414' : theme.text[0])};
-`;
+function StatPill({
+  colorMap,
+  stat,
+  children,
+}: {
+  readonly colorMap: chroma.Scale;
+  readonly stat: number;
+  readonly children: React.ReactNode;
+}) {
+  const { theme } = useTheme();
+  return (
+    <span
+      className={styles.statPill}
+      style={{
+        backgroundColor: colorMap(stat)
+          .alpha(theme === 'light' ? 1 : 0.75)
+          .css(),
+      }}
+    >
+      {children}
+    </span>
+  );
+}
 
 const courseNumberColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
@@ -28,27 +44,60 @@ const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([12, 20]);
 
+const formatter = new Intl.ListFormat('en-US', {
+  style: 'long',
+  type: 'conjunction',
+});
+
+function NoStatsTip({
+  coursesWithoutRating,
+  coursesWithRating,
+}: {
+  readonly coursesWithoutRating: string[];
+  readonly coursesWithRating: number;
+}) {
+  return (
+    coursesWithoutRating.length > 0 && (
+      <OverlayTrigger
+        placement="top"
+        overlay={(props) => (
+          <Tooltip {...props} id="conflict-icon-button-tooltip">
+            <small style={{ fontWeight: 500 }}>
+              Computed with {coursesWithRating} course
+              {coursesWithRating === 1 ? '' : 's'}.{' '}
+              {formatter.format(coursesWithoutRating)} ha
+              {coursesWithoutRating.length > 1 ? 've' : 's'} no ratings.
+            </small>
+          </Tooltip>
+        )}
+      >
+        <MdInfoOutline className={styles.infoIcon} />
+      </OverlayTrigger>
+    )
+  );
+}
+
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hiddenCourses, curSeason } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
-  // Used to compute average
-  let coursesWithRating = 0;
   let credits = 0;
   let workload = 0;
   let rating = 0;
   const skillsAreas: string[] = [];
+  const coursesWithoutRating: string[] = [];
+  const coursesWithoutWorkload: string[] = [];
 
-  for (const course of courses) {
+  for (const { listing: course } of courses) {
     // See if any of the course's codes have already been counted or if it's
     // hidden so we don't double count
-    const shouldNotCount =
-      course.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
-      hiddenCourses[curSeason]?.[course.crn];
-    const useCourseInfo = course.credits;
+    const alreadyCounted = course.all_course_codes.some((code) =>
+      countedCourseCodes.has(code),
+    );
+    const isHidden = Boolean(hiddenCourses[curSeason]?.[course.crn]);
 
-    if (shouldNotCount || !useCourseInfo) continue;
+    if (alreadyCounted || isHidden || !course.credits) continue;
 
     // Mark codes as counted, no double counting
     course.all_course_codes.forEach((code) => {
@@ -56,20 +105,20 @@ export default function WorksheetStats() {
     });
     const courseRating = getOverallRatings(course, 'stat');
     const courseWorkload = getWorkloadRatings(course, 'stat');
-
+    if (!courseRating) coursesWithoutRating.push(course.course_code);
+    if (!courseWorkload) coursesWithoutWorkload.push(course.course_code);
     courseCnt++;
-    coursesWithRating += courseRating ? 1 : 0;
-    credits += course.credits ?? 0;
+    credits += course.credits;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
     skillsAreas.push(...course.skills, ...course.areas);
   }
+  const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
+  const coursesWithRating = courseCnt - coursesWithoutRating.length;
 
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
-    <div
-      className={`${shown ? 'dropdown' : 'dropup'} ${styles.statsContainer}`}
-    >
+    <div className={clsx(shown ? 'dropdown' : 'dropup', styles.statsContainer)}>
       <div className={styles.toggleButton}>
         <button
           type="button"
@@ -84,39 +133,48 @@ export default function WorksheetStats() {
           <div className={styles.stats}>
             <ul>
               <li>
-                <StyledStatPill>Total courses</StyledStatPill>
-                <StyledStatPill
-                  colormap={courseNumberColormap}
-                  stat={courseCnt}
-                >
+                <span className={styles.statName}>Total courses</span>
+                <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
                   {courseCnt}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>Total credits</StyledStatPill>
-                <StyledStatPill colormap={creditColormap} stat={credits}>
+                <span className={styles.statName}>Total credits</span>
+                <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>Total workload</StyledStatPill>
-                <StyledStatPill colormap={workloadColormap} stat={workload}>
+                <span className={styles.statName}>
+                  Total workload
+                  <NoStatsTip
+                    coursesWithoutRating={coursesWithoutWorkload}
+                    coursesWithRating={coursesWithWorkload}
+                  />
+                </span>
+                <StatPill colorMap={workloadColormap} stat={workload}>
                   {workload.toFixed(2)}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li>
-                <StyledStatPill>Average rating</StyledStatPill>
-                <StyledStatPill colormap={ratingColormap} stat={avgRating}>
+                <span className={styles.statName}>
+                  Average rating
+                  <NoStatsTip
+                    coursesWithoutRating={coursesWithoutRating}
+                    coursesWithRating={coursesWithRating}
+                  />
+                </span>
+                <StatPill colorMap={ratingColormap} stat={avgRating}>
                   {avgRating.toFixed(2)}
-                </StyledStatPill>
+                </StatPill>
               </li>
               <li className={styles.wide}>
-                <StyledStatPill>Skills & Areas</StyledStatPill>
-                <StyledStatPill>
+                <span className={styles.statName}>Skills & Areas</span>
+                <span className={styles.statName}>
                   {skillsAreas.sort().map((skill, i) => (
                     <SkillBadge skill={skill} key={i} />
                   ))}
-                </StyledStatPill>
+                </span>
               </li>
             </ul>
           </div>

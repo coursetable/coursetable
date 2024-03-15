@@ -3,11 +3,15 @@
   "compilerOptions": {
     "noEmit": true,
     "module": "node16",
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+      },
+    ],
     // TODO: enable these
     "exactOptionalPropertyTypes": false,
-    "noUncheckedIndexedAccess": false
   },
   "include": ["./**/*", "./.eslintrc.js"],
   // These have their own tsconfig
-  "exclude": ["./api", "./frontend"]
+  "exclude": ["./api", "./frontend"],
 }

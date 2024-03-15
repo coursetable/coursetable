@@ -71,9 +71,10 @@ CREATE TABLE `StudentFriendRequests` (
 CREATE TABLE `WorksheetCourses` (
   `id` mediumint(8) UNSIGNED NOT NULL,
   `netId` char(8) NOT NULL,
-  `ociId` mediumint(8) UNSIGNED NOT NULL,
+  `crn` mediumint(8) UNSIGNED NOT NULL,
   `season` mediumint(8) UNSIGNED NOT NULL,
-  `worksheetNumber` mediumint(8) UNSIGNED DEFAULT 0
+  `worksheetNumber` mediumint(8) UNSIGNED DEFAULT 0 COMMENT 'Which of the user''s worksheets for this season this belongs to',
+  `color` varchar(32) NOT NULL COMMENT 'Color of course on worksheet'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
@@ -87,7 +88,7 @@ ALTER TABLE `StudentBluebookSettings`
 --
 ALTER TABLE `StudentFriendRequests`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `netId_friendNetId` (`netId`,`friendNetId`),
+  ADD UNIQUE KEY `netId_friendNetId` (`netId`, `friendNetId`),
   ADD KEY `netId` (`netId`);
 
 --
@@ -95,7 +96,7 @@ ALTER TABLE `StudentFriendRequests`
 --
 ALTER TABLE `StudentFriends`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `netId_friendNetId` (`netId`,`friendNetId`),
+  ADD UNIQUE KEY `netId_friendNetId` (`netId`, `friendNetId`),
   ADD KEY `netId` (`netId`);
 
 --
@@ -103,7 +104,7 @@ ALTER TABLE `StudentFriends`
 --
 ALTER TABLE `WorksheetCourses`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `netId_ociId_season_worksheetNumber` (`netId`,`ociId`,`season`, `worksheetNumber`),
+  ADD UNIQUE KEY `netId_crn_season_worksheetNumber` (`netId`, `crn`, `season`, `worksheetNumber`),
   ADD KEY `netId` (`netId`);
 
 --

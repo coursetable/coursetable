@@ -1,0 +1,66 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ../../
+      dockerfile: ./api/Dockerfile
+    image: coursetable/api:latest
+    container_name: ${EXPRESS_HOST?express}
+    depends_on:
+      graphql-engine:
+        condition: service_healthy
+    environment:
+      CANNY_KEY: ${CANNY_KEY?canny_key}
+      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
+      FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
+      GRAPHQL_ENDPOINT: http://${GRAPHQL_ENGINE_HOST?graphql-engine}:8080/v1/graphql
+      REDIS_HOST: ${REDIS_HOST?redis}
+      MYSQL_HOST: ${MYSQL_HOST?host}
+      MYSQL_PORT: ${MYSQL_PORT?port}
+      MYSQL_USER: ${MYSQL_USERNAME?username}
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
+      MYSQL_URL: ${MYSQL_URL?mysql_url}
+      NODE_ENV: development
+      SESSION_SECRET: ${SESSION_SECRET?session_secret}
+      STUDENTS_DB: yaleplus
+      YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
+      SECURE_PORT: ${SECURE_PORT?secure_port}
+      INSECURE_PORT: ${INSECURE_PORT?insecure_port}
+      CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
+    networks:
+      - api
+
+  graphql-engine:
+    container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
+    image: hasura/graphql-engine:latest
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080']
+      interval: 0.5s
+      timeout: 10s
+      retries: 60
+    networks:
+      - api
+
+  redis:
+    container_name: ${REDIS_HOST?redis}
+    image: redis/redis-stack-server:latest
+    volumes:
+      - ../redis:/usr/local/etc/redis
+    environment:
+      - REDIS_ARGS=--save 60 1
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 0.5s
+      timeout: 10s
+      retries: 60
+    networks:
+      - api
+
+networks:
+  api:
+    name: ${API_NETWORK?api}
+    driver: bridge

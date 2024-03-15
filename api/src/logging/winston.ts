@@ -1,5 +1,6 @@
 import path from 'path';
 import winston from 'winston';
+import { isDev } from '../config';
 
 const levels = {
   error: 0,
@@ -7,13 +8,6 @@ const levels = {
   info: 2,
   http: 3,
   debug: 4,
-};
-
-// Get logging level from env variables
-const level = () => {
-  const env = process.env.NODE_ENV || 'development';
-  const isDevelopment = env === 'development';
-  return isDevelopment ? 'debug' : 'info';
 };
 
 // Define logging colors
@@ -62,7 +56,7 @@ const transports = [
 ];
 
 const logger = winston.createLogger({
-  level: level(),
+  level: isDev ? 'debug' : 'info',
   levels,
   format,
   transports,

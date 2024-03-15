@@ -1,0 +1,18 @@
+.sortByContainer {
+  width: calc(100% - 35px);
+}
+
+.sortIcon {
+  display: block;
+}
+
+.sortBtn {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 5px;
+  margin-left: auto;
+}
+
+.sortBtn:hover {
+  background-color: var(--color-banner);
+}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
 import { sortCourses } from '../../utilities/course';
@@ -11,16 +11,21 @@ import Results from '../Search/Results';
  */
 
 function WorksheetList() {
-  const [isListView, setIsListView] = useState(true);
   const { courses, worksheetLoading } = useWorksheet();
 
-  const { ordering, numFriends, isLoggedIn } = useSearch();
+  const {
+    filters: { selectSortBy, sortOrder },
+    numFriends,
+  } = useSearch();
 
-  const WorksheetData = useMemo(
+  const worksheetData = useMemo(
     () =>
-      // Apply sorting order.
-      sortCourses(courses, ordering, numFriends),
-    [ordering, courses, numFriends],
+      sortCourses(
+        courses.map((course) => course.listing),
+        { key: selectSortBy.value.value, type: sortOrder.value },
+        numFriends,
+      ),
+    [selectSortBy, sortOrder, courses, numFriends],
   );
 
   return (
@@ -30,13 +35,9 @@ function WorksheetList() {
         <Col md={12} className="m-0 px-0 pb-3">
           <div className="d-flex justify-content-center">
             <Results
-              data={WorksheetData}
-              isListView={isListView}
-              setIsListView={setIsListView}
+              data={worksheetData}
               loading={worksheetLoading}
               multiSeasons={false}
-              isLoggedIn={isLoggedIn}
-              numFriends={numFriends}
               page="worksheet"
             />
           </div>

@@ -1,0 +1,81 @@
+.rbc-time-header-content {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-header {
+  border-bottom: none !important;
+}
+
+.rbc-time-header-cell .rbc-header {
+  user-select: none;
+  cursor: default;
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-time-content {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+  overflow-y: visible !important;
+}
+
+.rbc-time-gutter .rbc-timeslot-group {
+  user-select: none;
+  cursor: default;
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-day-slot .rbc-timeslot-group {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-color: var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
+.rbc-events-container {
+  border: none !important;
+  margin: 0 3px !important;
+}
+
+.rbc-allday-cell {
+  display: none !important;
+}
+
+.rbc-today,
+.rbc-current-time-indicator {
+  background-color: transparent !important;
+}
+
+.rbc-header a:hover {
+  color: black !important;
+  text-decoration: none !important;
+  cursor: default;
+}
+
+.rbc-time-view {
+  border: none !important;
+}
+
+/* .rbc-event {
+  transition: transform 0.1s, background-color 0.1s, opacity 0.1s;
+} */
+
+.rbc-event:hover {
+  filter: brightness(85%);
+  z-index: 2;
+}
+
+.rbc-event-label {
+  display: none !important;
+}
+
+@media (width < 768px) {
+  .rbc-calendar {
+    margin: 1rem 0 0.5rem;
+  }
+}

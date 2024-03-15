@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 import styles from './Notice.module.css';
-import { StyledBanner } from './StyledComponents';
 
 const storage = createLocalStorageSlot<number>('lastDismissedBanner');
 
@@ -24,7 +23,7 @@ function Notice({
 
   if (!visible || !children) return null;
   return (
-    <StyledBanner className={styles.banner}>
+    <div className={styles.banner}>
       <div className={styles.content}>
         <div>{children}</div>
       </div>
@@ -39,7 +38,7 @@ function Notice({
       >
         <FaTimes style={{ display: 'block' }} />
       </span>
-    </StyledBanner>
+    </div>
   );
 }
 

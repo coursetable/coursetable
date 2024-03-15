@@ -10,6 +10,7 @@ import {
 import * as Sentry from '@sentry/react';
 
 import Globals from './Globals';
+import { TutorialProvider } from './contexts/tutorialContext';
 import App from './App';
 import { isDev } from './config';
 
@@ -34,7 +35,15 @@ Sentry.init({
   ignoreErrors: [
     'TypeError: Failed to fetch',
     'TypeError: Load failed',
+    'TypeError: Importing a module script failed.',
     'TypeError: cancelled',
+    'TypeError: NetworkError when attempting to fetch resource.',
+    'TypeError: The network connection was lost.',
+
+    // These occur with incomplete data
+    'SyntaxError: The string did not match the expected pattern.',
+    /SyntaxError: .*JSON.*/u,
+    'Syntax Error: Unexpected <EOF>.',
   ],
   environment: import.meta.env.MODE,
 
@@ -54,7 +63,11 @@ const root = createRoot(domNode);
 root.render(
   <Globals>
     <BrowserRouter>
-      <App />
+      {/* Tutorial provider has to be inside the router. Plus it doesn't need
+      SSR */}
+      <TutorialProvider>
+        <App />
+      </TutorialProvider>
     </BrowserRouter>
   </Globals>,
 );

@@ -1,90 +1,129 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import * as Sentry from '@sentry/react';
+import { MdErrorOutline } from 'react-icons/md';
+import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
+import clsx from 'clsx';
 
-import './WorksheetToggleButton.css';
 import { useUser } from '../../contexts/userContext';
-import type { Crn, Season } from '../../utilities/common';
-import { isInWorksheet } from '../../utilities/course';
+import { worksheetColors } from '../../utilities/constants';
+import type { Listing } from '../../utilities/common';
+import { isInWorksheet, checkConflict } from '../../utilities/course';
+import { toggleBookmark } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
-
-const StyledButton = styled(Button)`
-  color: ${({ theme }) => theme.primary}!important;
-  &:hover {
-    opacity: 0.5;
-  }
-`;
-
-const StyledSelect = styled.select`
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.select || '#f2f2f2'}!important;
-  color: ${({ theme }) => theme.text[0] || '#333'}!important;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-`;
+import { useWorksheetInfo } from '../../contexts/ferryContext';
+import styles from './WorksheetToggleButton.module.css';
+import { CUR_YEAR } from '../../config';
 
 /**
- * Toggle button to add course to or remove from worksheet
- * @prop crn - number | integer that holds the crn of the current course
- * @prop seasonCode - string | holds the current season code
- * @prop modal - boolean | are we rendering in the course modal
- * @prop setCourseInWorksheet - function | to set if current course is in user's worksheet for parent component
+ * Displays icon when there is a course conflict with worksheet
+ * @prop course - holds listing info
  */
-function WorksheetToggleButton({
-  crn,
-  seasonCode,
+function CourseConflictIcon({
+  listing,
+  inWorksheet,
   modal,
-  setCourseInWorksheet,
-  selectedWorksheet: initialSelectedWorksheet,
+  worksheetNumber,
 }: {
-  readonly crn: Crn;
-  readonly seasonCode: Season;
+  readonly listing: Listing;
+  readonly inWorksheet: boolean;
   readonly modal: boolean;
-  readonly setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
-  readonly selectedWorksheet?: string;
+  readonly worksheetNumber: number;
+}) {
+  const { user } = useUser();
+
+  // Fetch listing info for each listing in user's worksheet
+  const { data } = useWorksheetInfo(
+    user.worksheets,
+    listing.season_code,
+    worksheetNumber,
+  );
+
+  const warning = useMemo(() => {
+    // If the course is in the worksheet, we never report a conflict
+    if (inWorksheet) return undefined;
+    if (modal) {
+      if (!CUR_YEAR.includes(listing.season_code))
+        return 'This will add to a worksheet of a semester that has already ended.';
+      return undefined;
+    }
+    if (listing.times_summary === 'TBA') return undefined;
+    const conflicts = checkConflict(data, listing);
+    if (conflicts.length > 0)
+      return `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`;
+    return undefined;
+  }, [inWorksheet, modal, listing, data]);
+
+  return (
+    <Fade in={Boolean(warning)}>
+      <div
+        className={
+          modal ? styles.courseConflictIconModal : styles.courseConflictIcon
+        }
+      >
+        {warning && (
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) => (
+              <Tooltip {...props} id="conflict-icon-button-tooltip">
+                <small style={{ fontWeight: 500 }}>{warning}</small>
+              </Tooltip>
+            )}
+          >
+            <MdErrorOutline color="#fc4103" />
+          </OverlayTrigger>
+        )}
+      </div>
+    </Fade>
+  );
+}
+
+function WorksheetToggleButton({
+  listing,
+  modal,
+  inWorksheet: inWorksheetProp,
+}: {
+  readonly listing: Listing;
+  readonly modal: boolean;
+  readonly inWorksheet?: boolean;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
 
-  // Define options for the worksheet dropdown
-  const worksheetOptions = ['0', '1', '2', '3'];
+  const {
+    curSeason,
+    hiddenCourses,
+    toggleCourse,
+    worksheetNumber,
+    worksheetOptions,
+  } = useWorksheet();
 
-  const [selectedWorksheet, setSelectedWorksheet] = useState(
-    initialSelectedWorksheet || '0',
-  );
+  // In the modal, the select can override the "currently viewed" worksheet
+  const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
   useEffect(() => {
-    setSelectedWorksheet(initialSelectedWorksheet || '0');
-  }, [initialSelectedWorksheet]);
+    setSelectedWorksheet(worksheetNumber);
+  }, [worksheetNumber]);
 
-  const { curSeason, hiddenCourses, toggleCourse } = useWorksheet();
-
-  const worksheetCheck = useMemo(
-    () => isInWorksheet(seasonCode, crn, selectedWorksheet, user.worksheet),
-    [user.worksheet, seasonCode, crn, selectedWorksheet],
+  const inWorksheet = useMemo(
+    () =>
+      inWorksheetProp ??
+      isInWorksheet(
+        listing.season_code,
+        listing.crn,
+        selectedWorksheet,
+        user.worksheets,
+      ),
+    [
+      inWorksheetProp,
+      listing.season_code,
+      listing.crn,
+      selectedWorksheet,
+      user.worksheets,
+    ],
   );
-  // Is the current course in the worksheet?
-  const [inWorksheet, setInWorksheet] = useState(false);
 
   // Fetch width of window
   const { isLgDesktop } = useWindowDimensions();
-
-  // Reset inWorksheet state on every rerender
-  useEffect(() => {
-    if (inWorksheet !== worksheetCheck) {
-      setInWorksheet(worksheetCheck);
-      if (setCourseInWorksheet) setCourseInWorksheet(worksheetCheck);
-    }
-  }, [worksheetCheck, inWorksheet, setCourseInWorksheet]);
 
   // Handle button click
   const toggleWorkSheet = useCallback(
@@ -96,143 +135,116 @@ function WorksheetToggleButton({
       const addRemove = inWorksheet ? 'remove' : 'add';
 
       // Remove it from hidden courses before removing from worksheet
-      if (
-        inWorksheet &&
-        curSeason in hiddenCourses &&
-        hiddenCourses[curSeason][crn]
-      )
-        toggleCourse(crn);
-      const body = JSON.stringify({
+      if (inWorksheet && hiddenCourses[curSeason]?.[listing.crn])
+        toggleCourse(listing.crn);
+      const success = await toggleBookmark({
         action: addRemove,
-        season: seasonCode,
-        ociId: crn,
-        worksheetNumber: parseInt(selectedWorksheet, 10),
+        season: listing.season_code,
+        crn: listing.crn,
+        worksheetNumber: selectedWorksheet,
+        color:
+          worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
       });
-
-      // Call the endpoint
-      try {
-        const res = await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body,
-        });
-        if (!res.ok) {
-          const data = (await res.json()) as { error?: string };
-          switch (data.error) {
-            // These errors can be triggered if the user clicks the button twice
-            // in a row
-            // TODO: we should debounce the request instead
-            case 'ALREADY_BOOKMARKED':
-              toast.error(
-                'You have already added this class to your worksheet',
-              );
-              break;
-            case 'NOT_BOOKMARKED':
-              toast.error(
-                'You have already remove this class from your worksheet',
-              );
-              break;
-            default:
-              throw new Error(data.error ?? res.statusText);
-          }
-          return;
-        }
-        await userRefresh();
-        // If not in worksheet view, update inWorksheet state
-        setInWorksheet(!inWorksheet);
-      } catch (err) {
-        Sentry.addBreadcrumb({
-          category: 'worksheet',
-          message: `Updating worksheet: ${body}`,
-          level: 'info',
-        });
-        Sentry.captureException(err);
-        toast.error(`Failed to update worksheet. ${String(err)}`);
-      }
+      if (success) await userRefresh();
     },
     [
-      crn,
-      curSeason,
-      hiddenCourses,
       inWorksheet,
-      seasonCode,
+      hiddenCourses,
+      curSeason,
+      listing.crn,
+      listing.season_code,
       toggleCourse,
-      userRefresh,
       selectedWorksheet,
+      userRefresh,
     ],
   );
 
+  const size = modal ? 20 : isLgDesktop ? 16 : 14;
+  const Icon = inWorksheet ? FaMinus : FaPlus;
+
   // Disabled worksheet add/remove button if not logged in
-  if (!user.worksheet) {
+  if (!user.worksheets) {
     return (
-      <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
-        <BsBookmark size={25} className="disabled-button-icon" />
-      </Button>
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id="tooltip-disabled">
+            Log in to add to your worksheet
+          </Tooltip>
+        }
+      >
+        <Button
+          className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
+          disabled
+        >
+          <FaPlus size={size} className={styles.disabledButtonIcon} />
+        </Button>
+      </OverlayTrigger>
     );
   }
 
   return (
-    <OverlayTrigger
-      placement="top"
-      delay={{ show: 1000, hide: 0 }}
-      overlay={(props) => (
-        <Tooltip id="button-tooltip" {...props}>
-          <small>
-            {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
-          </small>
-        </Tooltip>
-      )}
-    >
-      <StyledButton
-        variant="toggle"
-        className="py-auto px-1 d-flex align-items-center g-1"
-        onClick={toggleWorkSheet}
-      >
-        {/* Show bookmark icon on modal and +/- everywhere else */}
-        {modal ? (
-          <>
-            {inWorksheet ? (
-              <FaMinus size={25} className="scale_icon" />
-            ) : (
-              <FaPlus size={25} className="scale_icon" />
-            )}
-            {/* Render the worksheet dropdown */}
-            <StyledSelect
-              value={selectedWorksheet}
-              onChange={(event) => {
-                setSelectedWorksheet(event.target.value);
-              }}
-              onClick={(e) => {
-                // Check if the clicked target is the select element
-                if ((e.target as HTMLSelectElement).tagName === 'SELECT')
-                  e.stopPropagation();
-              }}
-              onMouseEnter={(e) => {
-                e.preventDefault();
-              }}
-              className="worksheet-dropdown"
-            >
-              {worksheetOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option === '0' ? 'Main Worksheet' : `Worksheet ${option}`}
-                </option>
-              ))}
-            </StyledSelect>
-          </>
-        ) : (
-          <>
-            {inWorksheet ? (
-              <FaMinus size={isLgDesktop ? 16 : 14} />
-            ) : (
-              <FaPlus size={isLgDesktop ? 16 : 14} />
-            )}
-          </>
+    <div className={styles.container}>
+      <CourseConflictIcon
+        listing={listing}
+        inWorksheet={inWorksheet}
+        modal={modal}
+        worksheetNumber={selectedWorksheet}
+      />
+      <OverlayTrigger
+        placement="top"
+        delay={modal ? { show: 300, hide: 0 } : undefined}
+        overlay={(props) => (
+          <Tooltip id="button-tooltip" {...props}>
+            <small>
+              {inWorksheet ? 'Remove from' : 'Add to'} my{' '}
+              {worksheetOptions[selectedWorksheet]!.label}
+            </small>
+          </Tooltip>
         )}
-      </StyledButton>
-    </OverlayTrigger>
+      >
+        <Button
+          variant="toggle"
+          className={clsx(
+            'py-auto px-1 d-flex align-items-center',
+            styles.toggleButton,
+          )}
+          onClick={toggleWorkSheet}
+        >
+          {/* Show bookmark icon on modal and +/- everywhere else */}
+          {modal ? (
+            <>
+              <Icon size={size} className={styles.scaleIcon} />
+              {/* Render the worksheet dropdown */}
+              <select
+                value={selectedWorksheet}
+                onChange={(event) => {
+                  setSelectedWorksheet(Number(event.target.value));
+                }}
+                onClick={(e) => {
+                  // Check if the clicked target is the select element
+                  if ((e.target as HTMLSelectElement).tagName === 'SELECT')
+                    e.stopPropagation();
+                }}
+                // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+                onMouseEnter={(e) => {
+                  e.preventDefault();
+                }}
+                className={styles.worksheetDropdown}
+              >
+                {worksheetOptions.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </>
+          ) : (
+            <Icon size={size} />
+          )}
+        </Button>
+      </OverlayTrigger>
+    </div>
   );
 }
 

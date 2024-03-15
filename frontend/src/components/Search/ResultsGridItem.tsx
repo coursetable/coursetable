@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import type chroma from 'chroma-js';
 import * as Sentry from '@sentry/react';
 import { AiOutlineStar } from 'react-icons/ai';
 import { IoPersonOutline } from 'react-icons/io5';
@@ -8,65 +9,151 @@ import { BiBookOpen } from 'react-icons/bi';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import styled from 'styled-components';
+import clsx from 'clsx';
 
+import { useUser } from '../../contexts/userContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import {
   ratingColormap,
   workloadColormap,
   subjects,
 } from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
-import { TextComponent, StyledIcon } from '../StyledComponents';
-import type { Listing } from '../../utilities/common';
+import { TextComponent } from '../Typography';
+import { generateRandomColor, type Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
+  getProfessorRatings,
   toSeasonString,
+  isInWorksheet,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
-// Grid Item wrapper
-const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
-  background-color: ${({ theme, inWorksheet }) =>
-    inWorksheet
-      ? theme.primaryLight
-      : theme.theme === 'light'
-        ? 'rgb(245, 245, 245)'
-        : theme.surface[1]};
-  transition:
-    border-color ${({ theme }) => theme.transDur},
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
-  &:hover {
-    background-color: ${({ theme }) => theme.selectHover};
-  }
-`;
+type RatingInfo = {
+  name: 'Class' | 'Professor' | 'Workload';
+  getRating: {
+    (course: Listing, usage: 'stat'): number | null;
+    (course: Listing, usage: 'display'): string;
+  };
+  colorMap: chroma.Scale;
+  Icon: React.ElementType;
+};
+
+function RatingRows({ course }: { readonly course: Listing }) {
+  const { user } = useUser();
+  const ratings: RatingInfo[] = [
+    {
+      name: 'Class',
+      getRating: getOverallRatings,
+      colorMap: ratingColormap,
+      Icon: AiOutlineStar,
+    },
+    {
+      name: 'Professor',
+      getRating: getProfessorRatings,
+      colorMap: ratingColormap,
+      Icon: IoPersonOutline,
+    },
+    {
+      name: 'Workload',
+      getRating: getWorkloadRatings,
+      colorMap: workloadColormap,
+      Icon: BiBookOpen,
+    },
+  ];
+
+  return (
+    <>
+      {ratings.map(({ name, getRating, colorMap, Icon }) =>
+        user.hasEvals ? (
+          <OverlayTrigger
+            key={name}
+            placement="right"
+            overlay={(props) => (
+              <Tooltip id={`${name}-tooltip`} {...props}>
+                {name}
+              </Tooltip>
+            )}
+          >
+            <Row className="m-auto justify-content-end">
+              <RatingCell
+                rating={getRating(course, 'stat')}
+                colorMap={colorMap}
+              >
+                {getRating(course, 'display')}
+              </RatingCell>
+              <div className={styles.iconContainer}>
+                <Icon className={styles.icon} />
+              </div>
+            </Row>
+          </OverlayTrigger>
+        ) : (
+          <Row key={name} className="m-auto justify-content-end">
+            <div
+              className={clsx(styles.rating, 'mr-1')}
+              style={{
+                color: generateRandomColor(
+                  course.crn + course.season_code + name,
+                ),
+              }}
+            >
+              ???
+            </div>
+            <div className={styles.iconContainer}>
+              <Icon className={styles.icon} />
+            </div>
+          </Row>
+        ),
+      )}
+    </>
+  );
+}
+
+function RatingCell({
+  rating,
+  colorMap,
+  children,
+}: {
+  readonly rating: number | null;
+  readonly colorMap: chroma.Scale;
+  readonly children?: React.ReactNode;
+}) {
+  return (
+    <div
+      className={clsx(styles.rating, 'mr-1')}
+      style={{
+        color: rating ? colorMap(rating).darken().saturate().css() : '#cccccc',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 /**
  * Renders a grid item for a search result
  * @prop course data for the current course
- * @prop isLoggedIn is the user logged in?
  * @prop numCols integer that holds how many columns in grid view
  * @prop multiSeasons are we displaying courses across multiple seasons
  */
 
 function ResultsGridItem({
   course,
-  isLoggedIn,
   numCols,
   multiSeasons,
 }: {
   readonly course: Listing;
-  readonly isLoggedIn: boolean;
   readonly numCols: number;
   readonly multiSeasons: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
   const colWidth = 12 / numCols;
+  const { user } = useUser();
+  const { worksheetNumber } = useWorksheet();
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
@@ -84,33 +171,52 @@ function ResultsGridItem({
       <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
     );
 
-  // Is the current course in the worksheet?
-  const [courseInWorksheet, setCourseInWorksheet] = useState(false);
+  const inWorksheet = useMemo(
+    () =>
+      isInWorksheet(
+        course.season_code,
+        course.crn,
+        worksheetNumber,
+        user.worksheets,
+      ),
+    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+  );
 
-  const [subjectCode, courseCode] = course.course_code.split(' ');
+  const [subjectCode, courseCode] = course.course_code.split(' ') as [
+    string,
+    string,
+  ];
 
   return (
     <Col
       md={colWidth}
-      className={`${styles.container} px-2 pt-0 pb-3`}
+      className={clsx(styles.container, 'px-2 pt-0 pb-3')}
       style={{ overflow: 'hidden' }}
     >
-      <StyledGridItem
+      {/* TODO */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
         onClick={() => {
           setSearchParams((prev) => {
             prev.set('course-modal', `${course.season_code}-${course.crn}`);
             return prev;
           });
         }}
-        className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
+        className={clsx(
+          styles.oneLine,
+          styles.resultItem,
+          inWorksheet && styles.inWorksheetResultItem,
+          'px-3 pb-3',
+        )}
+        // TODO
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
-        inWorksheet={courseInWorksheet}
       >
         <Row className="m-auto">
           {/* Course Code */}
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
-              <small className={styles.course_codes}>
+              <small className={styles.courseCodes}>
                 {course.course_code && (
                   <>
                     <OverlayTrigger
@@ -153,9 +259,11 @@ function ResultsGridItem({
                   )}
                 >
                   <div
-                    className={`${styles.season_tag} ml-auto px-1 pb-0 ${
-                      tagStyles[seasons[season - 1]]
-                    }`}
+                    className={clsx(
+                      styles.seasonTag,
+                      'ml-auto px-1 pb-0',
+                      tagStyles[seasons[(season - 1) as 0 | 1 | 2]],
+                    )}
                   >
                     <Row className="m-auto">
                       {icon}
@@ -171,15 +279,15 @@ function ResultsGridItem({
         </Row>
         {/* Course Title */}
         <Row className="m-auto">
-          <strong className={styles.one_line}>{course.title}</strong>
+          <strong className={styles.oneLine}>{course.title}</strong>
         </Row>
         <Row className="m-auto justify-content-between">
           <Col xs={7} className="p-0">
             {/* Course Professors */}
             <Row className="m-auto">
               <TextComponent
-                type={1}
-                className={`${styles.one_line} ${styles.professors}`}
+                type="secondary"
+                className={clsx(styles.oneLine, styles.professors)}
               >
                 {course.professor_names.length > 0
                   ? course.professor_names.join(' • ')
@@ -188,8 +296,8 @@ function ResultsGridItem({
             </Row>
             {/* Course Times */}
             <Row className="m-auto">
-              <small className={`${styles.one_line} ${styles.small_text}`}>
-                <TextComponent type={1}>
+              <small className={clsx(styles.oneLine, styles.smallText)}>
+                <TextComponent type="secondary">
                   {course.times_summary === 'TBA'
                     ? 'Times: TBA'
                     : course.times_summary}
@@ -198,8 +306,8 @@ function ResultsGridItem({
             </Row>
             {/* Course Location */}
             <Row className="m-auto">
-              <small className={`${styles.one_line} ${styles.small_text}`}>
-                <TextComponent type={1}>
+              <small className={clsx(styles.oneLine, styles.smallText)}>
+                <TextComponent type="secondary">
                   {course.locations_summary === 'TBA'
                     ? 'Location: TBA'
                     : course.locations_summary}
@@ -208,7 +316,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Skills and Areas */}
             <Row className="m-auto">
-              <div className={tagStyles.skills_areas}>
+              <div className={tagStyles.skillsAreas}>
                 {course.skills.map((skill) => (
                   <SkillBadge skill={skill} key={skill} />
                 ))}
@@ -224,113 +332,34 @@ function ResultsGridItem({
           </Col>
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
-              {/* Class Rating */}
-              <OverlayTrigger
-                placement="right"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Class</span>
-                  </Tooltip>
-                )}
-              >
-                <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={`${styles.rating} mr-1`}
-                    style={{
-                      color: getOverallRatings(course, 'stat')
-                        ? ratingColormap(getOverallRatings(course, 'stat'))
-                            .darken()
-                            .saturate()
-                            .css()
-                        : '#cccccc',
-                    }}
-                  >
-                    {getOverallRatings(course, 'display')}
+              {user.hasEvals ? (
+                <RatingRows course={course} />
+              ) : (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip id="blur-rating-tooltip">
+                      These colors are randomly generated. Sign in to see real
+                      ratings.
+                    </Tooltip>
+                  }
+                >
+                  <div>
+                    <RatingRows course={course} />
                   </div>
-                  <StyledIcon>
-                    <AiOutlineStar className={styles.icon} />
-                  </StyledIcon>
-                </Row>
-              </OverlayTrigger>
-              {/* Professor Rating */}
-              <OverlayTrigger
-                placement="right"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Professor</span>
-                  </Tooltip>
-                )}
-              >
-                <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={`${styles.rating} mr-1`}
-                    style={{
-                      color:
-                        course.average_professor && isLoggedIn
-                          ? ratingColormap(course.average_professor)
-                              .darken()
-                              .saturate()
-                              .css()
-                          : '#cccccc',
-                    }}
-                  >
-                    {course.average_professor && isLoggedIn
-                      ? course.average_professor.toFixed(1)
-                      : 'N/A'}
-                  </div>
-                  <StyledIcon>
-                    <IoPersonOutline className={styles.prof_icon} />
-                  </StyledIcon>
-                </Row>
-              </OverlayTrigger>
-              {/* Workload Rating */}
-              <OverlayTrigger
-                placement="right"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Workload</span>
-                  </Tooltip>
-                )}
-              >
-                <Row className="m-auto justify-content-end">
-                  <div
-                    // Only show eval data when user is signed in
-                    className={`${styles.rating} mr-1`}
-                    style={{
-                      color:
-                        isLoggedIn && getWorkloadRatings(course, 'stat')
-                          ? workloadColormap(getWorkloadRatings(course, 'stat'))
-                              .darken()
-                              .saturate()
-                              .css()
-                          : '#cccccc',
-                    }}
-                  >
-                    {isLoggedIn && getWorkloadRatings(course, 'display')}
-                  </div>
-                  <StyledIcon>
-                    <BiBookOpen className={styles.icon} />
-                  </StyledIcon>
-                </Row>
-              </OverlayTrigger>
+                </OverlayTrigger>
+              )}
             </div>
           </Col>
         </Row>
-      </StyledGridItem>
-      {/* Add/remove from worksheet button */}
-      <div className={styles.worksheet_btn}>
-        <WorksheetToggleButton
-          crn={course.crn}
-          seasonCode={course.season_code}
-          modal={false}
-          setCourseInWorksheet={setCourseInWorksheet}
-        />
       </div>
-      {/* Render conflict icon */}
-      <div className={styles.conflict_error}>
-        <CourseConflictIcon course={course} />
+      {/* Add/remove from worksheet button */}
+      <div className={styles.worksheetBtn}>
+        <WorksheetToggleButton
+          listing={course}
+          modal={false}
+          inWorksheet={inWorksheet}
+        />
       </div>
     </Col>
   );

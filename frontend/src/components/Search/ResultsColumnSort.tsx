@@ -1,28 +1,17 @@
 import React, { useEffect, useState } from 'react';
-
+import clsx from 'clsx';
 import {
   FcAlphabeticalSortingAz,
   FcAlphabeticalSortingZa,
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import styled, { useTheme } from 'styled-components';
-import type { SortByOption } from '../../utilities/constants';
 import {
   useSearch,
   defaultFilters,
-  type SortOrderType,
+  type SortByOption,
 } from '../../contexts/searchContext';
-
-const StyledSortBtn = styled.div`
-  cursor: pointer;
-  border-radius: 4px;
-  padding: 2px;
-  transition: background-color ${({ theme }) => theme.transDur};
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonActive};
-  }
-`;
+import styles from './ResultsColumnSort.module.css';
 
 type Props = {
   readonly selectOption: SortByOption;
@@ -35,8 +24,8 @@ type Props = {
 
 function ResultsColumnSort({ selectOption }: Props) {
   // Local sort order state
-  const [localSortOrder, setLocalSortOrder] = useState<SortOrderType>(
-    defaultFilters.defaultSortOrder,
+  const [localSortOrder, setLocalSortOrder] = useState(
+    defaultFilters.sortOrder,
   );
   // First time state
   const [firstTime, setFirstTime] = useState(true);
@@ -44,42 +33,46 @@ function ResultsColumnSort({ selectOption }: Props) {
   const [active, setActive] = useState(false);
 
   // Get search context data
-  const { selectSortby, sortOrder, setSelectSortby, setSortOrder } =
-    useSearch();
-
-  const globalTheme = useTheme();
+  const {
+    filters: { selectSortBy, sortOrder },
+  } = useSearch();
 
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
-      if (selectSortby.value === selectOption.value) {
-        setLocalSortOrder(sortOrder);
+      if (selectSortBy.value.value === selectOption.value) {
+        setLocalSortOrder(sortOrder.value);
         setActive(true);
       }
       setFirstTime(false);
-    } else if (!active && selectSortby.value === selectOption.value) {
+    } else if (!active && selectSortBy.value.value === selectOption.value) {
       setActive(true);
-    } else if (active && selectSortby.value !== selectOption.value) {
+    } else if (active && selectSortBy.value.value !== selectOption.value) {
       setActive(false);
     }
-  }, [firstTime, selectOption, selectSortby, sortOrder, active]);
+  }, [firstTime, selectOption, selectSortBy, sortOrder, active]);
 
   return (
-    <StyledSortBtn
-      style={{ backgroundColor: active ? globalTheme.selectHover : '' }}
-      className="ml-1 my-auto"
+    // TODO
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      className={clsx(
+        styles.button,
+        'ml-1 my-auto',
+        active && styles.buttonActive,
+      )}
       onClick={() => {
         // If not sorting by this option previously, start sorting this option
-        if (selectSortby.value !== selectOption.value) {
-          setSelectSortby(selectOption);
-          setSortOrder(localSortOrder);
+        if (selectSortBy.value.value !== selectOption.value) {
+          selectSortBy.set(selectOption);
+          sortOrder.set(localSortOrder);
           return;
         }
         if (localSortOrder === 'asc') {
-          setSortOrder('desc');
+          sortOrder.set('desc');
           setLocalSortOrder('desc');
         } else {
-          setSortOrder('asc');
+          sortOrder.set('asc');
           setLocalSortOrder('asc');
         }
       }}
@@ -97,7 +90,7 @@ function ResultsColumnSort({ selectOption }: Props) {
       ) : (
         <FcNumericalSorting21 className="d-block" size={20} />
       )}
-    </StyledSortBtn>
+    </div>
   );
 }
 

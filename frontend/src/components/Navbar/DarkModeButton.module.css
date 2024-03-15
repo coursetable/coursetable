@@ -1,0 +1,9 @@
+.button {
+  transition: color 0.1s;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.button:hover {
+  color: var(--color-primary);
+}

@@ -1,5 +1,9 @@
 import { expectType, type TypeOf } from 'ts-expect';
-import type { CatalogBySeasonQuery } from '../generated/graphql';
+import chroma from 'chroma-js';
+import type {
+  ListingFragment,
+  ListingRatingsFragment,
+} from '../generated/graphql';
 
 // A couple common types.
 
@@ -20,7 +24,12 @@ export const weekdays = [
 ] as const;
 export type Weekdays = (typeof weekdays)[number];
 
-type RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
+// TODO: can this narrowing be done within graphql-codegen?
+export type NarrowListing<T extends ListingFragment> = Omit<
+  T,
+  keyof ListingOverrides
+> &
+  ListingOverrides;
 type ListingOverrides = {
   crn: Crn;
   season_code: Season;
@@ -48,29 +57,46 @@ type ListingOverrides = {
     ][];
   }>;
 };
-type ListingAugments = {
-  // TODO: this should be in the worksheet data structure
-  color?: [number, number, number];
-  currentWorksheet?: string;
-};
+
 expectType<
   // Make sure we don't override a key that wasn't there originally.
-  TypeOf<keyof RawListingResponse, keyof ListingOverrides>
+  TypeOf<keyof ListingFragment, keyof ListingOverrides>
 >(true);
-export type Listing = Omit<RawListingResponse, keyof ListingOverrides> &
-  ListingOverrides &
-  ListingAugments;
+export type Listing = NarrowListing<ListingFragment> &
+  Partial<ListingRatingsFragment>;
 
-export function isEqual(a: readonly unknown[], b: []): boolean;
-export function isEqual(a: [], b: readonly unknown[]): boolean;
-export function isEqual<T extends string | number | boolean>(
-  a: readonly T[],
-  b: readonly T[],
-): boolean;
-export function isEqual<T extends string | number | boolean>(
-  a: readonly T[],
-  b: readonly T[],
-) {
-  if (a.length !== b.length) return false;
-  return a.every((x, i) => b[i] === x);
+export function isEqual<T>(a: T, b: T): boolean {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    return a.every((x, i) => isEqual(b[i], x));
+  } else if (a && typeof a === 'object' && b && typeof b === 'object') {
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) return false;
+    return aKeys.every((key) => isEqual(a[key as never], b[key as never]));
+  }
+  return a === b;
+}
+// Stable based on crn and season
+const startColor = '#aab8c2'; // Lighter grey
+const endColor = '#7eb6ff'; // Lighter blue
+export function generateRandomColor(identifier: string) {
+  // Calculate a hash from the identifier
+  let hash = 0;
+  for (let i = 0; i < identifier.length; i++) {
+    const char = identifier.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash &= hash; // Convert to 32bit integer
+  }
+
+  // Normalize the hash to a value between 0 and 1 to use it for color interpolation
+  const normalizedHash = (Math.abs(hash) % 1000) / 1000;
+
+  // Interpolate between startColor and endColor based on normalizedHash
+  const color = chroma
+    .scale([startColor, endColor])(normalizedHash)
+    .alpha(0.75)
+    .css();
+
+  return color;
 }

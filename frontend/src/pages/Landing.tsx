@@ -8,15 +8,11 @@ import {
   FcBookmark,
   FcSearch,
 } from 'react-icons/fc';
-import styled from 'styled-components';
+import clsx from 'clsx';
 
 import { API_ENDPOINT } from '../config';
 import styles from './Landing.module.css';
 import LandingImage from '../images/landing_page.svg';
-
-const StyledStat = styled.span`
-  color: ${({ theme }) => theme.primary};
-`;
 
 /**
  * Renders the Landing page for when users aren't logged in
@@ -27,7 +23,7 @@ function Landing() {
     <div>
       <Container fluid>
         <Element name="splashpage">
-          <div className={`${styles.splashpage} mx-auto`}>
+          <div className={clsx(styles.splashpage, 'mx-auto')}>
             <Row className="mx-auto" style={{ minHeight: 'inherit' }}>
               <Col md={6} className="d-flex">
                 <div className="m-auto">
@@ -35,45 +31,51 @@ function Landing() {
                     The best place to shop for classes at Yale.
                   </h1>
                   <Row className="pb-2 m-auto">
-                    <span className={`${styles.feature_text} d-inline`}>
+                    <span className={clsx(styles.featureText, 'd-inline')}>
                       <FcSearch className="mr-2 my-auto" size={20} />
-                      Browse our catalog of <StyledStat>
-                        80,000+
-                      </StyledStat>{' '}
-                      classes
+                      Browse our catalog of{' '}
+                      <span className={styles.stat}>80,000+</span> classes
                     </span>
                   </Row>
                   <Row className="pb-2 m-auto">
-                    <span className={styles.feature_text}>
+                    <span className={styles.featureText}>
                       <FcComboChart className="mr-2 my-auto" size={20} />
-                      Read from <StyledStat>600,000+</StyledStat> student
-                      evaluation comments
+                      Read from <span className={styles.stat}>
+                        600,000+
+                      </span>{' '}
+                      student evaluation comments
                     </span>
                   </Row>
                   <Row className="pb-2 m-auto">
-                    <span className={styles.feature_text}>
+                    <span className={styles.featureText}>
                       <FcBookmark className="mr-2 my-auto" size={20} />
                       Save and view classes in your worksheet
                     </span>
                   </Row>
                   <Row className="m-auto">
-                    <span className={styles.feature_text}>
+                    <span className={styles.featureText}>
                       <FcConferenceCall className="mr-2 my-auto" size={20} />
                       See what classes your friends are interested in
                     </span>
                   </Row>
-                  <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
+                  <Row className="mx-auto mt-3 justify-content-md-start justify-content-center">
                     <a
                       href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
-                      className={`${styles.btn} ${styles.login} mr-2`}
+                      className={clsx(styles.btn, styles.login, 'mr-2')}
                     >
                       Login with CAS
                     </a>
                     <Link
                       to="/about"
-                      className={`${styles.btn} ${styles.about}`}
+                      className={clsx(styles.btn, styles.about)}
                     >
                       About Us
+                    </Link>
+                    <Link
+                      to="/catalog"
+                      className={clsx(styles.btn, styles.guest)}
+                    >
+                      Guest
                     </Link>
                   </Row>
                 </div>

@@ -1,9 +1,11 @@
 import React from 'react';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { withTheme, type DefaultTheme } from 'styled-components';
+import clsx from 'clsx';
 
-import './WorksheetToggleButton.css';
+// This module is "borrowed". Maybe we shouldn't do this?
+// eslint-disable-next-line css-modules/no-unused-class
+import styles from './WorksheetToggleButton.module.css';
 
 /**
  * Render the course hide button in the Worksheet List
@@ -11,14 +13,12 @@ import './WorksheetToggleButton.css';
  * @prop toggleCourse - function | to hide/show course
  * @prop crn - number | integer that holds crn for the current course
  */
-function WorksheetHideButton({
+export default function WorksheetHideButton({
   hidden,
   toggleCourse,
-  theme,
 }: {
   readonly hidden: boolean;
   readonly toggleCourse: () => void;
-  readonly theme: DefaultTheme;
 }) {
   // Size of toggle button
   const buttonSize = 18;
@@ -26,7 +26,6 @@ function WorksheetHideButton({
   return (
     <OverlayTrigger
       placement="bottom"
-      delay={{ show: 1000, hide: 0 }}
       overlay={(props) => (
         <Tooltip id="button-tooltip" {...props}>
           <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
@@ -35,25 +34,27 @@ function WorksheetHideButton({
     >
       <Button
         variant="toggle"
-        onClick={toggleCourse}
-        className="p-1 d-flex align-items-center"
+        onClick={(e) => {
+          // Prevent clicking hide button from opening course modal
+          e.stopPropagation();
+          toggleCourse();
+        }}
+        className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
       >
         {hidden ? (
           <BsEyeSlash
-            color={theme.hidden}
+            color="var(--color-hidden)"
             size={buttonSize}
-            className="scale_icon"
+            className={styles.scaleIcon}
           />
         ) : (
           <BsEye
-            color={theme.text[0]}
+            color="var(--color-text)"
             size={buttonSize}
-            className="scale_icon"
+            className={styles.scaleIcon}
           />
         )}
       </Button>
     </OverlayTrigger>
   );
 }
-
-export default withTheme(WorksheetHideButton);
