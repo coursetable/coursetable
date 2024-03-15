@@ -314,7 +314,8 @@ export function SearchProvider({
   const processedSkillsAreas = useMemo(
     () =>
       selectSkillsAreas.value.flatMap((x) =>
-        x.value === 'L' ? ['L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
+        // Old courses only have 'L' label
+        x.value === 'L' ? ['L', 'L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
       ),
     [selectSkillsAreas.value],
   );
