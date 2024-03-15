@@ -66,8 +66,7 @@ function App() {
   return (
     <>
       {/* Notice bar */}
-      {location.pathname === '/catalog' &&
-      authStatus === 'unauthenticated' ? (
+      {location.pathname === '/catalog' && authStatus === 'unauthenticated' ? (
         <Notice
           // Increment for each new notice (though you don't need to change it
           // when removing a notice), or users who previously dismissed the banner
@@ -82,8 +81,7 @@ function App() {
           to access all features.
         </Notice>
       ) : (
-        <Notice key="default-notice"
-        id={4}>
+        <Notice key="default-notice" id={4}>
           Basic course information is now publicly available without login!
           Share courses with your family and friends with ease ;)
         </Notice>
