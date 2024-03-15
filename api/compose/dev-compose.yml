@@ -28,6 +28,7 @@ services:
   mysql:
     build:
       context: ../mysql
+    image: coursetable/mysql:latest
     container_name: ${MYSQL_HOST?mysql}
     command: --default-authentication-plugin=mysql_native_password --log-warnings
     environment:

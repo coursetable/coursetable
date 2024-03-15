@@ -46,7 +46,7 @@ then
     export HOT_RELOAD='true'
     doppler setup -p coursetable -c dev
 
-    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api pull"
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api pull --ignore-buildable"
 
     doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans --build -d"
     doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
@@ -80,7 +80,7 @@ then
     sentry-cli releases new "$VERSION"
     sentry-cli releases set-commits "$VERSION" --auto
 
-    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME pull"
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME pull --ignore-buildable"
 
     doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build"
     
