@@ -4,6 +4,7 @@ services:
     build:
       context: ../../
       dockerfile: ./api/Dockerfile
+    image: coursetable/api:latest
     container_name: ${EXPRESS_HOST?express}
     depends_on:
       graphql-engine:

@@ -1,7 +1,7 @@
 # Remember: the context for this build is the root of the monorepo,
 # not the api folder
 
-FROM oven/bun:slim as base
+FROM oven/bun:1.0.30-slim as base
 WORKDIR /usr/src/app
 # Install openssl for prisma
 RUN apt-get update -y && apt-get install -y openssl
@@ -11,7 +11,7 @@ RUN mkdir -p /temp/dev/api /temp/dev/frontend
 COPY package.json bun.lockb /temp/dev/
 COPY api/package.json api/prisma /temp/dev/api/
 COPY frontend/package.json /temp/dev/frontend/package.json
-RUN cd /temp/dev && bun install --frozen-lockfile
+RUN cd /temp/dev && bun install
 
 FROM base as release
 RUN mkdir -p api/static/catalogs
