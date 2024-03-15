@@ -8,7 +8,7 @@
     "postinstall": "bun generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.9.1",
+    "@prisma/client": "^5.11.0",
     "@sentry/node": "^7.101.1",
     "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
@@ -32,7 +32,7 @@
     "morgan": "^1.10.0",
     "passport": "0.5.0",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
-    "prisma": "^5.9.1",
+    "prisma": "^5.11.0",
     "redis": "^4.6.13",
     "winston": "^3.11.0",
     "zod": "^3.22.4"

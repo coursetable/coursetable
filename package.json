@@ -23,6 +23,8 @@
     "postinstall": "bunx patcheer apply"
   },
   "trustedDependencies": [
+    "api",
+    "frontend",
     "sharp"
   ],
   "devDependencies": {
