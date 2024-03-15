@@ -21,7 +21,7 @@ export default function WorksheetCalendarListItem({
   readonly hidden: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
-  const { toggleCourse, setHoverCourse } = useWorksheet();
+  const { setHoverCourse } = useWorksheet();
 
   return (
     <ListGroup.Item
@@ -51,10 +51,7 @@ export default function WorksheetCalendarListItem({
         <div
           className={clsx('mr-1 my-auto', !hidden && styles.hideButtonHidden)}
         >
-          <WorksheetHideButton
-            toggleCourse={() => toggleCourse(course.crn)}
-            hidden={hidden}
-          />
+          <WorksheetHideButton crn={course.crn} hidden={hidden} />
         </div>
         {/* Add/remove from worksheet button */}
         <div className="my-auto">

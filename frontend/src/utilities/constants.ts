@@ -142,6 +142,7 @@ export const subjects: { [code: string]: string } = {
   CSES: 'Coll Sem:Ezra Stiles Coll',
   CSGH: 'Coll Sem:Grace Hopper Coll',
   CSJE: 'Coll Sem:Jonathan Edwards Coll',
+  CSLI: 'Computing and Linguistics',
   CSMC: 'Coll Sem:Morse Coll',
   CSMY: 'Coll Sem:Pauli Murray Coll',
   CSPC: 'Coll Sem:Pierson Coll',

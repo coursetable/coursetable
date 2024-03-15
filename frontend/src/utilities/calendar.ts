@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { DateLocalizer, type DateLocalizerSpec } from 'react-big-calendar';
-import { weekdays, type Listing, type Season } from './common';
+import { weekdays, type Listing, type Season, type Weekdays } from './common';
 import { toSeasonString } from './course';
 import {
   academicCalendars,
@@ -65,9 +65,9 @@ function getTimes(timesByDay: Listing['times_by_day']) {
     location: string;
   }[] = [];
 
-  for (let idx = 1; idx <= 5; idx++) {
-    const info = timesByDay[weekdays[(idx - 1) as 0 | 1 | 2 | 3 | 4]];
-    if (!info) continue;
+  for (const [day, info] of Object.entries(timesByDay)) {
+    // Sunday should be 0
+    const idx = (weekdays.indexOf(day as Weekdays) + 1) % 7;
     for (const [startTime, endTime, location] of info) {
       const time = times.find(
         (t) => t.startTime === startTime && t.endTime === endTime,
