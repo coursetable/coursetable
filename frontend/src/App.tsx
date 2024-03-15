@@ -66,12 +66,13 @@ function App() {
   return (
     <>
       {/* Notice bar */}
-      {['/catalog'].includes(location.pathname) &&
+      {location.pathname === '/catalog' &&
       authStatus === 'unauthenticated' ? (
         <Notice
           // Increment for each new notice (though you don't need to change it
           // when removing a notice), or users who previously dismissed the banner
           // won't see the updated content.
+          key="unauthenticated-notice"
           id={5}
         >
           You are currently viewing Public CourseTable. Please log in{' '}
@@ -81,7 +82,8 @@ function App() {
           to access all features.
         </Notice>
       ) : (
-        <Notice id={4}>
+        <Notice key="default-notice"
+        id={4}>
           Basic course information is now publicly available without login!
           Share courses with your family and friends with ease ;)
         </Notice>
