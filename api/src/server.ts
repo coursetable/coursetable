@@ -5,7 +5,6 @@ import { createClient } from 'redis';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
 
@@ -124,22 +123,14 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
-app.use(
-  '/ferry',
-  createProxyMiddleware({
-    target: 'http://graphql-engine:8080',
-    pathRewrite: { '^/ferry/': '/' },
-    ws: true,
-    xfwd: true,
-    onProxyReq(proxyReq, req) {
-      req.headers['X-Hasura-Role'] = req.isAuthenticated()
-        ? 'student'
-        : 'anonymous';
-      const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
-      proxyReq.setHeader('X-Hasura-Role', hasuraRole);
-    },
-  }),
-);
+app.use('/ferry', (req, _, next) => {
+  const server = req.socket; // Bun server
+  server.addListener('error', (err) => winston.error(err));
+  server.addListener('upgrade', (req, socket, head) => {
+    winston.info('Upgrading connection');
+    // TODO: check /ferry path, modify headers, send to ferry
+  });
+});
 // Enable request logging.
 app.use(morgan);
 

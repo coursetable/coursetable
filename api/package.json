@@ -2,10 +2,9 @@
   "name": "api",
   "version": "0.0.0",
   "scripts": {
-    "generate": "bunx prisma generate",
     "start": "bun --hot --inspect=ws://0.0.0.0:6499/forcingPrefix src/server.ts",
     "start:prod": "bun src/server.ts",
-    "postinstall": "bun generate"
+    "postinstall": "bunx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0",
@@ -27,7 +26,6 @@
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
-    "http-proxy-middleware": "^2.0.6",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "passport": "0.5.0",

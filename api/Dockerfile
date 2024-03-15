@@ -21,8 +21,5 @@ COPY api/src/ ./api/src/
 COPY api/prisma/ ./api/prisma/
 COPY api/entry.sh api/package.json api/tsconfig.json ./api/
 COPY tsconfig.json ./
-# Copy patches last to avoid reinstalling all dependencies on patch changes
-COPY patches ./patches
-RUN bunx patcheer apply
 
 ENTRYPOINT ["./api/entry.sh"]
