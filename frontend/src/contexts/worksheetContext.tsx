@@ -42,16 +42,16 @@ type Store = {
   // Controls which courses are displayed
   courses: WorksheetCourse[];
   hiddenCourses: HiddenCourses;
-  hoverCourse: number | null;
+  hoverCourse: Crn | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
   worksheetError: {} | null;
   changeSeason: (seasonCode: Season | null) => void;
   changeWorksheet: (worksheetNumber: number) => void;
   handlePersonChange: (newPerson: 'me' | NetId) => void;
-  setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
+  setHoverCourse: React.Dispatch<React.SetStateAction<Crn | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
-  toggleCourse: (crn: Crn | -1 | -2) => void;
+  toggleCourse: (crn: Crn | 'hide all' | 'show all') => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
@@ -79,7 +79,7 @@ export function WorksheetProvider({
     {},
   );
   // The current listing that the user is hovering over
-  const [hoverCourse, setHoverCourse] = useState<number | null>(null);
+  const [hoverCourse, setHoverCourse] = useState<Crn | null>(null);
   // Currently expanded component (calendar or list or none)
   const [worksheetView, setWorksheetView] =
     useSessionStorageState<WorksheetView>('worksheetView', {
@@ -134,8 +134,8 @@ export function WorksheetProvider({
 
   // Hide/Show this course
   const toggleCourse = useCallback(
-    (crn: Crn | -1 | -2) => {
-      if (crn === -1) {
+    (crn: Crn | 'hide all' | 'show all') => {
+      if (crn === 'hide all') {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
           newHiddenCourses[curSeason] ??= {};
@@ -145,7 +145,7 @@ export function WorksheetProvider({
           });
           return newHiddenCourses;
         });
-      } else if (crn === -2) {
+      } else if (crn === 'show all') {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
           newHiddenCourses[curSeason] = {};

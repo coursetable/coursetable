@@ -63,7 +63,9 @@ function WorksheetCalendarList() {
                 )}
               >
                 <Button
-                  onClick={() => toggleCourse(areHidden ? -2 : -1)}
+                  onClick={() =>
+                    toggleCourse(areHidden ? 'show all' : 'hide all')
+                  }
                   variant="none"
                   className={clsx(styles.button, 'px-3 w-100')}
                 >
