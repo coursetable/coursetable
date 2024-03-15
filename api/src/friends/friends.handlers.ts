@@ -1,7 +1,7 @@
 import type express from 'express';
 import z from 'zod';
 import { prisma } from '../config.js';
-import { worksheetCoursesToWorksheets } from '../user/user.utils';
+import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
 
 import winston from '../logging/winston.js';
 
