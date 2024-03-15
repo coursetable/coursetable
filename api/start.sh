@@ -46,6 +46,8 @@ then
     export HOT_RELOAD='true'
     doppler setup -p coursetable -c dev
 
+    doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api pull"
+
     doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans --build -d"
     doppler run --command "docker-compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
 
@@ -71,7 +73,7 @@ then
 
     VERSION=`sentry-cli releases propose-version`
     export SENTRY_ORG=coursetable
-    export SENTRY_PROJECT=frontend
+    export SENTRY_PROJECT=api
 
     export SENTRY_RELEASE_VERSION=${VERSION}
 
