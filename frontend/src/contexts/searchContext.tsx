@@ -314,7 +314,8 @@ export function SearchProvider({
   const processedSkillsAreas = useMemo(
     () =>
       selectSkillsAreas.value.flatMap((x) =>
-        x.value === 'L' ? ['L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
+        // Old courses only have 'L' label
+        x.value === 'L' ? ['L', 'L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
       ),
     [selectSkillsAreas.value],
   );
@@ -400,7 +401,9 @@ export function SearchProvider({
             return getEnrolled(listing, 'stat');
           case 'days':
             return Object.keys(listing.times_by_day).map((d) =>
-              d === 'Thursday' ? 'Th' : d[0],
+              ['Thursday', 'Saturday', 'Sunday'].includes(d)
+                ? d.slice(0, 2)
+                : d[0],
             );
           case 'info-attributes':
             return listing.flag_info;

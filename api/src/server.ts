@@ -186,6 +186,7 @@ app.use(
     next: express.NextFunction,
   ) => {
     winston.error(err);
+    Sentry.captureException(err, { user: req.user });
     res.status(500).json({ error: String(err) });
   },
 );

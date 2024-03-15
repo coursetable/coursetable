@@ -538,7 +538,7 @@ export function NavbarCatalogSearch() {
                     closeMenuOnSelect
                     isMulti
                     value={selectDays.value}
-                    options={weekdays.slice(0, 5).map((day) => ({
+                    options={weekdays.map((day) => ({
                       label: day,
                       value: day,
                     }))}
