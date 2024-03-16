@@ -127,13 +127,13 @@ app.use(passport.authenticate('session'));
 // Ferry proxy
 const ferryProxy = createProxyMiddleware({
   target: 'http://graphql-engine:8080',
-  ignorePath: true,
+  pathRewrite: { '^/ferry/': '/' },
+  xfwd: true,
 });
 
 // Add the authentication header to the request
 // Proxy initial HTTP requests to Ferry
 app.use('/ferry', (req, res, next) => {
-  winston.info('Proxying request to Ferry');
   req.headers['X-Hasura-Role'] = req.isAuthenticated()
     ? 'student'
     : 'anonymous';
