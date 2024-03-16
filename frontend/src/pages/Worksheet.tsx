@@ -61,31 +61,6 @@ function Worksheet() {
   // Button size for expand icons
   const expandBtnSize = 12;
 
-  const expandBtn =
-    worksheetView.view === 'calendar' && worksheetView.mode !== 'expanded' ? (
-      <FaExpandAlt
-        className={styles.expandIcon}
-        size={expandBtnSize}
-        style={{ display: 'block' }}
-        onClick={() => {
-          // Expand calendar
-          handleWorksheetView({
-            view: 'calendar',
-            mode: 'expanded',
-          });
-        }}
-      />
-    ) : (
-      <FaCompressAlt
-        className={styles.expandIcon}
-        size={expandBtnSize}
-        onClick={() => {
-          // Compress calendar
-          handleWorksheetView({ view: 'calendar', mode: '' });
-        }}
-      />
-    );
-
   return (
     <div className={styles.container}>
       {!isMobile ? (
@@ -114,7 +89,30 @@ function Worksheet() {
                 <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
                 <div className={clsx(styles.expandBtn, styles.topRight)}>
-                  {expandBtn}
+                  {worksheetView.view === 'calendar' &&
+                  worksheetView.mode !== 'expanded' ? (
+                    <FaExpandAlt
+                      className={styles.expandIcon}
+                      size={expandBtnSize}
+                      style={{ display: 'block' }}
+                      onClick={() => {
+                        // Expand calendar
+                        handleWorksheetView({
+                          view: 'calendar',
+                          mode: 'expanded',
+                        });
+                      }}
+                    />
+                  ) : (
+                    <FaCompressAlt
+                      className={styles.expandIcon}
+                      size={expandBtnSize}
+                      onClick={() => {
+                        // Compress calendar
+                        handleWorksheetView({ view: 'calendar', mode: '' });
+                      }}
+                    />
+                  )}
                 </div>
               </SurfaceComponent>
             </Col>
