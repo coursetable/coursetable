@@ -3,9 +3,6 @@ import Authentication from '../images/authentication.svg';
 
 import { API_ENDPOINT } from '../config';
 
-/**
- * Renders a login page if user tries to access worksheet page
- */
 function GraphiqlLogin() {
   return (
     <div className="text-center py-5">

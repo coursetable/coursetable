@@ -14,10 +14,6 @@ import { API_ENDPOINT } from '../config';
 import styles from './Landing.module.css';
 import LandingImage from '../images/landing_page.svg';
 
-/**
- * Renders the Landing page for when users aren't logged in
- */
-
 function Landing() {
   return (
     <div>

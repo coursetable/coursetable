@@ -42,7 +42,6 @@ import {
 import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
 
-// Option type for all the filter options
 export type Option<T extends string | number = string> = {
   label: string;
   value: T;
@@ -248,15 +247,11 @@ const targetTypes = {
   text: new Set(['title', 'description', 'location'] as const),
 };
 
-/**
- * Stores the user's search, filters, and sorts
- */
 export function SearchProvider({
   children,
 }: {
   readonly children: React.ReactNode;
 }) {
-  /* Filtering */
   const searchText = useFilterState('searchText');
   const selectSubjects = useFilterState('selectSubjects');
   const selectSkillsAreas = useFilterState('selectSkillsAreas');
@@ -281,24 +276,19 @@ export function SearchProvider({
   const hideGraduateCourses = useFilterState('hideGraduateCourses');
   const hideDiscussionSections = useFilterState('hideDiscussionSections');
 
-  /* Sorting */
   const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
 
-  /* Search speed */
   const [startTime, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
 
-  // Fetch user context data
   const { user } = useUser();
 
-  // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
     if (!user.friends) return {};
     return getNumFriends(user.friends);
   }, [user.friends]);
 
-  // Pre-process queries
   const processedSearchText = useMemo(
     () =>
       searchText.value
@@ -375,8 +365,7 @@ export function SearchProvider({
     error: courseLoadError,
   } = useCourseData(processedSeasons);
 
-  // State used to determine whether or not to show season tags
-  // (if multiple seasons are queried, the season is indicated)
+  // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
 
   const { worksheetNumber } = useWorksheet();
@@ -477,7 +466,6 @@ export function SearchProvider({
 
   // Filtered and sorted courses
   const searchData = useMemo(() => {
-    // Match search results with course data.
     if (coursesLoading || courseLoadError) return [];
 
     const listings = processedSeasons.flatMap((seasonCode) => {
@@ -487,7 +475,6 @@ export function SearchProvider({
     });
 
     const filtered = listings.filter((listing) => {
-      // Apply filters.
       if (processedOverallBounds !== null) {
         const overall = getOverallRatings(listing, 'stat');
         if (overall === null) return false;
@@ -757,7 +744,6 @@ export function SearchProvider({
     ],
   );
 
-  // Check if can or can't reset
   useEffect(() => {
     if (!coursesLoading) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
@@ -765,7 +751,6 @@ export function SearchProvider({
     }
   }, [filters, coursesLoading, searchData, startTime]);
 
-  // Store object returned in context provider
   const store = useMemo(
     () => ({
       filters,

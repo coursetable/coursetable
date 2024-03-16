@@ -13,10 +13,7 @@ import { useSearch } from '../contexts/searchContext';
 import './rc-slider-override.css';
 
 function Search() {
-  // Fetch current device
   const { isMobile } = useWindowDimensions();
-
-  // Get search context data
   const { coursesLoading, searchData, multiSeasons } = useSearch();
 
   const scrollToResults = useCallback(
@@ -54,15 +51,12 @@ function Search() {
         )}
       >
         {isMobile && <MobileSearchForm onSubmit={scrollToResults} />}
-
-        {/* Catalog Search Search */}
         <Col
           md={12}
           className={clsx(
             'm-0',
-            isMobile
-              ? ['p-3', styles.resultsCol]
-              : ['px-0 pb-3', styles.resultsCol],
+            styles.resultsCol,
+            isMobile ? 'p-3' : 'px-0 pb-3',
           )}
         >
           <Element name="catalog" className="d-flex justify-content-center">

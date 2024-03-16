@@ -36,19 +36,13 @@ import {
 } from '../../utilities/course';
 import styles from './NavbarCatalogSearch.module.css';
 
-/**
- * Catalog search form for the desktop in the navbar
- */
 export function NavbarCatalogSearch() {
-  // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
 
-  // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
 
-  // Get search context data
   const { filters, duration, searchData, coursesLoading, setStartTime } =
     useSearch();
 
@@ -95,13 +89,11 @@ export function NavbarCatalogSearch() {
   );
   const [numRangeValue, setNumRangeValue] = useState(numBounds.value);
 
-  // Active styles for range filters
   const activeStyle = useCallback((active: boolean) => {
     if (active) return { color: 'var(--color-primary-hover)' };
     return undefined;
   }, []);
 
-  // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
     if (isLgDesktop) return undefined;
     const style: React.CSSProperties = { height: '12px', width: '12px' };
@@ -112,7 +104,6 @@ export function NavbarCatalogSearch() {
     return { marginTop: '-1px' };
   }, [isLgDesktop]);
 
-  // Ctrl/cmd-s search hotkey
   const keyMap = {
     FOCUS_SEARCH: ['ctrl+s', 'command+s'],
   };
@@ -125,7 +116,6 @@ export function NavbarCatalogSearch() {
     },
   };
 
-  // Styles for active search bar
   const searchbarStyle = useMemo(() => {
     if (searchText.value) {
       return {

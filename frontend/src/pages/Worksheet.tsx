@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
@@ -19,20 +19,101 @@ import ErrorPage from '../components/ErrorPage';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
 
-/**
- * Renders worksheet page
- */
+function WorksheetMobile() {
+  return (
+    <Row className={clsx(styles.accordion, 'm-0 p-3')}>
+      <Col className="p-0">
+        <div className={styles.dropdowns}>
+          <WorksheetNumDropdown />
+        </div>
+        <Row className="mx-auto">
+          <Col xs={6} className="m-0 p-0">
+            <SeasonDropdown />
+          </Col>
+          <Col xs={6} className="m-0 p-0">
+            <FriendsDropdown />
+          </Col>
+        </Row>
+        <SurfaceComponent className={styles.mobileCalendar}>
+          <WorksheetCalendar />
+        </SurfaceComponent>
+        <WorksheetCalendarList />
+      </Col>
+    </Row>
+  );
+}
+
+function WorksheetDesktop() {
+  const expandBtnSize = 12;
+  const { worksheetView } = useWorksheet();
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <Row className={worksheetView === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
+      <Col
+        md={worksheetView === 'calendar' && expanded ? 12 : 9}
+        className={clsx(
+          'mt-3 pl-0',
+          worksheetView === 'calendar' && expanded ? 'pr-0' : 'pr-3',
+          worksheetView === 'list' && styles.hidden,
+        )}
+      >
+        <SurfaceComponent className={styles.calendarContainer}>
+          <WorksheetCalendar />
+          <div className={clsx(styles.expandBtn, styles.topRight)}>
+            {!expanded ? (
+              <FaExpandAlt
+                className={styles.expandIcon}
+                size={expandBtnSize}
+                style={{ display: 'block' }}
+                onClick={() => {
+                  setExpanded(true);
+                }}
+              />
+            ) : (
+              <FaCompressAlt
+                className={styles.expandIcon}
+                size={expandBtnSize}
+                onClick={() => {
+                  setExpanded(false);
+                }}
+              />
+            )}
+          </div>
+        </SurfaceComponent>
+      </Col>
+      <Col
+        md={worksheetView === 'list' ? 12 : 3}
+        className={clsx(
+          'ml-auto px-0',
+          worksheetView === 'calendar' && expanded && styles.hidden,
+        )}
+      >
+        <Fade in={worksheetView === 'list'}>
+          <div
+            style={{
+              display: worksheetView === 'list' ? '' : 'none',
+            }}
+          >
+            {worksheetView === 'list' && <WorksheetList />}
+          </div>
+        </Fade>
+        <Fade in={worksheetView !== 'list'}>
+          <div
+            style={{
+              display: worksheetView !== 'list' ? '' : 'none',
+            }}
+          >
+            <WorksheetCalendarList />
+          </div>
+        </Fade>
+      </Col>
+    </Row>
+  );
+}
 
 function Worksheet() {
-  // Fetch current device
   const { isMobile } = useWindowDimensions();
-
-  const {
-    worksheetView,
-    worksheetLoading,
-    worksheetError,
-    handleWorksheetView,
-  } = useWorksheet();
+  const { worksheetLoading, worksheetError } = useWorksheet();
 
   // Wait for search query to finish
   if (worksheetError) {
@@ -58,126 +139,11 @@ function Worksheet() {
   }
   // TODO: add something for when data.length === 0
 
-  // Button size for expand icons
-  const expandBtnSize = 12;
-
   return (
-    <div className={styles.container}>
-      {!isMobile ? (
-        /* Desktop View */
-        <div className={styles.desktopContainer}>
-          <Row className={worksheetView.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
-            {/* Calendar Component */}
-            <Col
-              // Width of component depends on if it is expanded or not
-              md={
-                worksheetView.view === 'calendar' &&
-                worksheetView.mode === 'expanded'
-                  ? 12
-                  : 9
-              }
-              className={clsx(
-                'mt-3 pl-0',
-                worksheetView.view === 'calendar' &&
-                  worksheetView.mode === 'expanded'
-                  ? 'pr-0'
-                  : 'pr-3',
-                worksheetView.view === 'list' && styles.hidden,
-              )}
-            >
-              <SurfaceComponent className={styles.calendarContainer}>
-                <WorksheetCalendar />
-                {/* Expand/Compress icons for calendar */}
-                <div className={clsx(styles.expandBtn, styles.topRight)}>
-                  {worksheetView.view === 'calendar' &&
-                  worksheetView.mode !== 'expanded' ? (
-                    <FaExpandAlt
-                      className={styles.expandIcon}
-                      size={expandBtnSize}
-                      style={{ display: 'block' }}
-                      onClick={() => {
-                        // Expand calendar
-                        handleWorksheetView({
-                          view: 'calendar',
-                          mode: 'expanded',
-                        });
-                      }}
-                    />
-                  ) : (
-                    <FaCompressAlt
-                      className={styles.expandIcon}
-                      size={expandBtnSize}
-                      onClick={() => {
-                        // Compress calendar
-                        handleWorksheetView({ view: 'calendar', mode: '' });
-                      }}
-                    />
-                  )}
-                </div>
-              </SurfaceComponent>
-            </Col>
-            {/* List Component */}
-            <Col
-              // Width depends on if it is expanded or not
-              md={worksheetView.view === 'list' ? 12 : 3}
-              className={clsx(
-                'ml-auto px-0',
-                worksheetView.view === 'calendar' &&
-                  worksheetView.mode === 'expanded' &&
-                  styles.hidden,
-              )}
-            >
-              {/* List Component */}
-              <Fade in={worksheetView.view === 'list'}>
-                <div
-                  style={{
-                    display: worksheetView.view === 'list' ? '' : 'none',
-                  }}
-                >
-                  {worksheetView.view === 'list' && <WorksheetList />}
-                </div>
-              </Fade>
-              {/* Calendar List Component */}
-              <Fade in={worksheetView.view !== 'list'}>
-                <div
-                  style={{
-                    display: worksheetView.view !== 'list' ? '' : 'none',
-                  }}
-                >
-                  <WorksheetCalendarList />
-                </div>
-              </Fade>
-            </Col>
-          </Row>
-        </div>
-      ) : (
-        /* Mobile View */
-        <div>
-          <Row className={clsx(styles.accordion, 'm-0 p-3')}>
-            <Col className="p-0">
-              <div>
-                <div>
-                  <WorksheetNumDropdown />
-                  <Row className={clsx(styles.dropdowns, 'mx-auto')}>
-                    <Col xs={6} className="m-0 p-0">
-                      <SeasonDropdown />
-                    </Col>
-                    <Col xs={6} className="m-0 p-0">
-                      <FriendsDropdown />
-                    </Col>
-                  </Row>
-                </div>
-                <div className={styles.mobileCalendar}>
-                  <WorksheetCalendar />
-                </div>
-                <div>
-                  <WorksheetCalendarList />
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </div>
-      )}
+    <div
+      className={clsx(styles.container, !isMobile && styles.desktopContainer)}
+    >
+      {!isMobile ? <WorksheetDesktop /> : <WorksheetMobile />}
     </div>
   );
 }

@@ -5,13 +5,6 @@ import styles from './RatingsGraph.module.css';
 import { barChartColors } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
 
-/**
- * Displays Evaluation Graphs
- * @prop ratings - list that holds the counts for each rating 1-5
- * @prop reverse - boolean of whether or not to reverse the colors
- * @prop labels - list that holds the x-axis labels for the grpah
- */
-
 function RatingsGraph({
   ratings,
   reverse,

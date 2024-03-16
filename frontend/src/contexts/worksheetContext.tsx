@@ -18,10 +18,7 @@ import type { Season, Listing, Crn, NetId } from '../utilities/common';
 export type HiddenCourses = {
   [seasonCode: Season]: { [crn: Crn]: boolean };
 };
-type WorksheetView =
-  | { view: 'calendar'; mode: 'expanded' }
-  | { view: 'calendar'; mode: '' }
-  | { view: 'list'; mode: '' };
+type WorksheetView = 'calendar' | 'list';
 
 export type WorksheetCourse = {
   crn: Crn;
@@ -57,41 +54,26 @@ type Store = {
 const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
 
-/**
- * Stores the user's worksheet filters and sorts
- */
 export function WorksheetProvider({
   children,
 }: {
   readonly children: React.ReactNode;
 }) {
-  // Fetch user context data
   const { user } = useUser();
-  // Current user who's worksheet we are viewing
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'person',
     'me',
   );
-
-  // List of courses that the user has marked hidden
   const [hiddenCourses, setHiddenCourses] = useLocalStorageState<HiddenCourses>(
     'hiddenCourses',
     {},
   );
-  // The current listing that the user is hovering over
   const [hoverCourse, setHoverCourse] = useState<Crn | null>(null);
-  // Currently expanded component (calendar or list or none)
   const [worksheetView, setWorksheetView] =
-    useSessionStorageState<WorksheetView>('worksheetView', {
-      view: 'calendar',
-      mode: '',
-    });
+    useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
 
-  /* Processing */
-
-  // Worksheet of the current person
   const curWorksheet = useMemo(() => {
-    const whenNotDefined: UserWorksheets = {}; // TODO: change this to undefined
+    const whenNotDefined: UserWorksheets = {};
     if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
 
     return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
@@ -99,21 +81,15 @@ export function WorksheetProvider({
 
   // TODO: restrict to only the seasons with data
   const seasonCodes = seasons;
-
-  // Current season
   const [curSeason, setCurSeason] = useSessionStorageState(
     'curSeason',
     CUR_SEASON,
   );
-
-  // Current worksheet number
   const [worksheetNumber, setWorksheetNumber] = useSessionStorageState(
     'worksheetNumber',
     0,
   );
 
-  // Fetch the worksheet info. This is eventually copied into the 'courses'
-  // variable.
   const {
     loading: worksheetLoading,
     error: worksheetError,
@@ -130,9 +106,6 @@ export function WorksheetProvider({
     [],
   );
 
-  /* Functions */
-
-  // Hide/Show this course
   const toggleCourse = useCallback(
     (crn: Crn | 'hide all' | 'show all') => {
       if (crn === 'hide all') {
@@ -182,7 +155,6 @@ export function WorksheetProvider({
     [setViewedPerson],
   );
 
-  // Function to change season
   const changeSeason = useCallback(
     (seasonCode: Season | null) => {
       if (seasonCode === null) return;
@@ -191,7 +163,6 @@ export function WorksheetProvider({
     [setCurSeason],
   );
 
-  // Function to change worksheet number
   const changeWorksheet = useCallback(
     (newNumber: number) => {
       setWorksheetNumber(newNumber);
@@ -199,10 +170,8 @@ export function WorksheetProvider({
     [setWorksheetNumber],
   );
 
-  // Store object returned in context provider
   const store = useMemo(
     () => ({
-      // Context state.
       seasonCodes,
       curSeason,
       worksheetNumber,
@@ -215,7 +184,6 @@ export function WorksheetProvider({
       worksheetError,
       worksheetOptions,
 
-      // Update methods.
       changeSeason,
       handlePersonChange,
       setHoverCourse,

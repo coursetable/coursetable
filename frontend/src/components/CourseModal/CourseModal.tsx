@@ -26,7 +26,6 @@ const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
-// Share button
 function ShareButton({ courseCode }: { readonly courseCode: string }) {
   const copyToClipboard = () => {
     const textToCopy = `${courseCode} -- CourseTable: ${window.location.href}`;
@@ -211,7 +210,6 @@ function CourseModal() {
           </Container>
         </Modal.Header>
         {view === 'overview' ? (
-          // Show overview data
           <CourseModalOverview
             gotoCourse={(l) => {
               user.hasEvals ? setView('evals') : setView('overview');
@@ -229,7 +227,6 @@ function CourseModal() {
             listing={listing}
           />
         ) : (
-          // Show eval data
           <CourseModalEvaluations
             seasonCode={listing.season_code}
             crn={listing.crn}

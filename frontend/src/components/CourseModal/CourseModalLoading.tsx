@@ -1,10 +1,6 @@
 import React from 'react';
 import { Modal, Spinner } from 'react-bootstrap';
 
-/**
- * Displays loading page for course modal
- */
-
 function CourseModalLoading() {
   return (
     <Modal.Body className="d-flex">

@@ -15,10 +15,6 @@ import { useWorksheetInfo } from '../../contexts/ferryContext';
 import styles from './WorksheetToggleButton.module.css';
 import { CUR_YEAR } from '../../config';
 
-/**
- * Displays icon when there is a course conflict with worksheet
- * @prop course - holds listing info
- */
 function CourseConflictIcon({
   listing,
   inWorksheet,
@@ -32,7 +28,6 @@ function CourseConflictIcon({
 }) {
   const { user } = useUser();
 
-  // Fetch listing info for each listing in user's worksheet
   const { data } = useWorksheetInfo(
     user.worksheets,
     listing.season_code,
@@ -87,7 +82,6 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
 
   const {
@@ -122,10 +116,8 @@ function WorksheetToggleButton({
     ],
   );
 
-  // Fetch width of window
   const { isLgDesktop } = useWindowDimensions();
 
-  // Handle button click
   const toggleWorkSheet = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -211,11 +203,11 @@ function WorksheetToggleButton({
           )}
           onClick={toggleWorkSheet}
         >
-          {/* Show bookmark icon on modal and +/- everywhere else */}
+          {/* Only show the worksheet number select in modal */}
           {modal ? (
             <>
               <Icon size={size} className={styles.scaleIcon} />
-              {/* Render the worksheet dropdown */}
+              {/* TODO: use the custom select component */}
               <select
                 value={selectedWorksheet}
                 onChange={(event) => {

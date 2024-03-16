@@ -62,9 +62,6 @@ type Store = {
 const UserContext = createContext<Store | undefined>(undefined);
 UserContext.displayName = 'UserContext';
 
-/**
- * Stores the user's worksheet and friends' worksheets
- */
 export function UserProvider({
   children,
 }: {
@@ -72,26 +69,18 @@ export function UserProvider({
 }) {
   const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
 
-  // User's netId
   const [netId, setNetId] = useState<NetId | undefined>(undefined);
-  // User's worksheet
   const [worksheets, setWorksheets] = useState<UserWorksheets | undefined>(
     undefined,
   );
-  // User's evals enabled status
   const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
-  // User's year
   const [year, setYear] = useState<number | undefined>(undefined);
-  // User's school
   const [school, setSchool] = useState<string | undefined>(undefined);
-  // User's friends
   const [friends, setFriends] = useState<FriendRecord | undefined>(undefined);
-  // User's friend requests
   const [friendRequests, setFriendRequests] = useState<
     FriendRequests | undefined
   >(undefined);
 
-  // Refresh user worksheet
   const userRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchUserWorksheets();
     if (data) {
@@ -109,14 +98,12 @@ export function UserProvider({
     }
   }, [setWorksheets, setNetId, setHasEvals, setYear, setSchool]);
 
-  // Refresh user friends stuff
   const friendRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchFriendWorksheets();
     if (data) setFriends(data.friends as FriendRecord);
     else setFriends(undefined);
   }, [setFriends]);
 
-  // Refresh friend requests
   const friendReqRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchFriendReqs();
     if (data) setFriendRequests(data.requests as FriendRequests);

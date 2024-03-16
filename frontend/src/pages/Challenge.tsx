@@ -99,14 +99,8 @@ function renderVerifyError(verifyError: string, navigate: NavigateFunction) {
   return renderRequestError(verifyError, navigate).errorMessage;
 }
 
-/**
- * Renders the OCE Challenge page if the user hasn't completed yet
- */
-
 function Challenge() {
-  // Apollo client
   const client = useApolloClient();
-  // Get user context info and refresh
   const { userRefresh } = useUser();
   const navigate = useNavigate();
   // Has the form been validated for submission?

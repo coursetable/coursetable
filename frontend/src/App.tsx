@@ -48,11 +48,9 @@ const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
   const location = useLocation();
-  // User context data
   const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
 
-  // Render spinner if page loading
   if (authStatus === 'loading') {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
@@ -65,7 +63,6 @@ function App() {
 
   return (
     <>
-      {/* Notice bar */}
       <Notice
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
@@ -77,12 +74,11 @@ function App() {
       </Notice>
       <Navbar />
       <SentryRoutes>
-        {/* Home Page */}
         <Route
           path="/"
           element={
             authStatus === 'authenticated' ? (
-              /* <Home /> */ <Navigate to="/catalog" />
+              <Navigate to="/catalog" />
             ) : (
               <Navigate to="/login" />
             )
@@ -90,10 +86,7 @@ function App() {
         />
 
         {/* Authenticated routes */}
-        {/* Catalog */}
         <Route path="/catalog" element={<Search />} />
-
-        {/* Worksheet */}
         <Route
           path="/worksheet"
           element={showIfAuthorized(
@@ -102,8 +95,6 @@ function App() {
             <WorksheetLogin />,
           )}
         />
-
-        {/* Graphiql explorer */}
         <Route
           path="/graphiql"
           element={showIfAuthorized(
@@ -112,8 +103,6 @@ function App() {
             <GraphiqlLogin />,
           )}
         />
-
-        {/* Auth */}
         <Route
           path="/login"
           element={
@@ -121,24 +110,14 @@ function App() {
           }
         />
 
-        {/* OCE Challenge */}
         {/* Challenge handles its own auth */}
         <Route path="/challenge" element={<Challenge />} />
 
         {/* Static pages that don't need login */}
-        {/* About */}
         <Route path="/about" element={<About />} />
-
-        {/* Thank You */}
         <Route path="/thankyou" element={<Thankyou />} />
-
-        {/* Join Us */}
         <Route path="/joinus" element={<Join />} />
-
-        {/* Footer Links */}
         <Route path="/faq" element={<FAQ />} />
-
-        {/* Privacy */}
         <Route path="/privacypolicy" element={<Privacy />} />
 
         <Route path="/Table" element={<Navigate to="/catalog" />} />
@@ -148,10 +127,10 @@ function App() {
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
-        {/* Render footer if not on catalog */}
       </SentryRoutes>
+      {/* Render footer if not on catalog */}
       {!['/catalog'].includes(location.pathname) && <Footer />}
-      {/* Tutorial for first-time users */}
+      {/* Globally overlaid components */}
       {isTutorialOpen && <Tutorial />}
       <CourseModal />
     </>

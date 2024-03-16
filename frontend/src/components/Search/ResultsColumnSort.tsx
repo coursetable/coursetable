@@ -17,27 +17,17 @@ type Props = {
   readonly selectOption: SortByOption;
 };
 
-/**
- * Renders column sort toggle button for results
- * @prop selectOption - sortbyOption from Constants to sort by
- */
-
 function ResultsColumnSort({ selectOption }: Props) {
-  // Local sort order state
   const [localSortOrder, setLocalSortOrder] = useState(
     defaultFilters.sortOrder,
   );
-  // First time state
   const [firstTime, setFirstTime] = useState(true);
-  // Whether or not this toggle is actively sorting
   const [active, setActive] = useState(false);
 
-  // Get search context data
   const {
     filters: { selectSortBy, sortOrder },
   } = useSearch();
 
-  // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
       if (selectSortBy.value.value === selectOption.value) {
@@ -78,14 +68,12 @@ function ResultsColumnSort({ selectOption }: Props) {
       }}
     >
       {!selectOption.numeric ? (
-        // Sorting by letters
         localSortOrder === 'asc' ? (
           <FcAlphabeticalSortingAz className="d-block" size={20} />
         ) : (
           <FcAlphabeticalSortingZa className="d-block" size={20} />
         )
-      ) : // Sorting by numbers
-      localSortOrder === 'asc' ? (
+      ) : localSortOrder === 'asc' ? (
         <FcNumericalSorting12 className="d-block" size={20} />
       ) : (
         <FcNumericalSorting21 className="d-block" size={20} />
