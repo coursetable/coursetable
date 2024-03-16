@@ -1,5 +1,6 @@
-// This is an edge function used to send HTML containing fake HTML for social
+// This is a Vercel middleware that sends HTML containing fake HTML for social
 // media links
+import { next } from '@vercel/edge';
 
 function truncatedText(
   text: string | null | undefined,
@@ -12,6 +13,7 @@ function truncatedText(
 }
 
 export const config = {
+  matcher: ['/catalog', '/worksheet'],
   runtime: 'edge',
 };
 
@@ -21,7 +23,7 @@ const identity = (strings: TemplateStringsArray, ...values: unknown[]) =>
 const html = identity;
 const gql = identity;
 
-export async function GET(req: Request) {
+export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
   const isBot =
     /facebook.*|linkedin.*|twitter.*|pinterest.*|bing.*|google.*|whatsapp.*/iu.test(
@@ -29,12 +31,11 @@ export async function GET(req: Request) {
     );
 
   const reqURL = new URL(req.url);
-  const isSpecialPath = ['/catalog', '/worksheet'].includes(reqURL.pathname);
   const courseModalParam = reqURL.searchParams.get('course-modal');
-  if (!isBot || !isSpecialPath || !courseModalParam) return undefined;
+  if (!isBot || !courseModalParam) return next();
 
   const [seasonCode, crn] = courseModalParam.split('-');
-  if (!seasonCode || !crn) return undefined;
+  if (!seasonCode || !crn) return next();
   const res = (await fetch('https://api.coursetable.com/ferry/v1/graphql', {
     method: 'POST',
     body: JSON.stringify({
@@ -63,7 +64,7 @@ export async function GET(req: Request) {
       }[];
     };
   };
-  if (!res.data?.computed_listing_info.length) return undefined;
+  if (!res.data?.computed_listing_info.length) return next();
   const course = res.data.computed_listing_info[0]!;
   return new Response(
     html`
