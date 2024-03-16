@@ -41,7 +41,6 @@ import {
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
 import {
-  weekdays,
   generateRandomColor,
   type NarrowListing,
   type Weekdays,
@@ -249,9 +248,7 @@ function CourseModalOverview({
 
   const locations = new Map<string, string>();
   const times = new Map<string, Set<Weekdays>>();
-  for (const day of weekdays) {
-    const info = listing.times_by_day[day];
-    if (!info) continue;
+  for (const [day, info] of Object.entries(listing.times_by_day)) {
     for (const [startTime, endTime, location, locationURL] of info) {
       if (locations.has(location) && locations.get(location) !== locationURL) {
         Sentry.captureException(
@@ -267,7 +264,7 @@ function CourseModalOverview({
       // Note! Some classes have multiple places at the same time, particularly
       // if one is "online". Avoid duplicates.
       // See for example: CDE 567, Spring 2023
-      times.get(timespan)!.add(day);
+      times.get(timespan)!.add(day as Weekdays);
     }
   }
   const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
@@ -571,7 +568,11 @@ function CourseModalOverview({
               {[...times.entries()].map(([timespan, days]) => (
                 <div key={timespan}>
                   {[...days]
-                    .map((d) => (d === 'Thursday' ? 'Th' : d[0]))
+                    .map((d) =>
+                      ['Thursday', 'Saturday', 'Sunday'].includes(d)
+                        ? d.slice(0, 2)
+                        : d[0],
+                    )
                     .join('')}{' '}
                   {timespan}
                 </div>

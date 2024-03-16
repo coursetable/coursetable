@@ -7,13 +7,11 @@ import { truncatedText } from '../../utilities/course';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 import WorksheetHideButton from './WorksheetHideButton';
-import { useWorksheet } from '../../contexts/worksheetContext';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const course = event.listing;
-  const { toggleCourse } = useWorksheet();
 
   return (
     <>
@@ -52,7 +50,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
       </OverlayTrigger>
       <div className={styles.worksheetHideButton}>
         <WorksheetHideButton
-          toggleCourse={() => toggleCourse(course.crn)}
+          crn={course.crn}
           // Course in calendar is never hidden
           hidden={false}
         />

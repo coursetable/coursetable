@@ -9,9 +9,9 @@ import {
   CANNY_KEY,
   FRONTEND_ENDPOINT,
   prisma,
-} from '../config';
-import type { YaliesResponse } from '../auth/auth.handlers';
-import winston from '../logging/winston';
+} from '../config.js';
+import type { YaliesResponse } from '../auth/auth.handlers.js';
+import winston from '../logging/winston.js';
 
 // Create a JWT-signed Canny token with user info
 const createCannyToken = (user: Express.User) => {

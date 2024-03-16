@@ -1,13 +1,9 @@
-/**
- * @file Handlers for managing users' friends.
- */
-
 import type express from 'express';
 import z from 'zod';
-import { prisma } from '../config';
-import { worksheetCoursesToWorksheets } from '../user/user.utils';
+import { prisma } from '../config.js';
+import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
 
-import winston from '../logging/winston';
+import winston from '../logging/winston.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),

@@ -2,24 +2,21 @@ import React from 'react';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import clsx from 'clsx';
+import { useWorksheet } from '../../contexts/worksheetContext';
 
 // This module is "borrowed". Maybe we shouldn't do this?
 // eslint-disable-next-line css-modules/no-unused-class
 import styles from './WorksheetToggleButton.module.css';
+import type { Crn } from '../../utilities/common';
 
-/**
- * Render the course hide button in the Worksheet List
- * @prop hidden - boolean | is this course hidden
- * @prop toggleCourse - function | to hide/show course
- * @prop crn - number | integer that holds crn for the current course
- */
 export default function WorksheetHideButton({
   hidden,
-  toggleCourse,
+  crn,
 }: {
   readonly hidden: boolean;
-  readonly toggleCourse: () => void;
+  readonly crn: Crn;
 }) {
+  const { toggleCourse } = useWorksheet();
   // Size of toggle button
   const buttonSize = 18;
 
@@ -37,7 +34,7 @@ export default function WorksheetHideButton({
         onClick={(e) => {
           // Prevent clicking hide button from opening course modal
           e.stopPropagation();
-          toggleCourse();
+          toggleCourse(crn);
         }}
         className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
       >

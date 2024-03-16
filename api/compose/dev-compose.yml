@@ -3,6 +3,7 @@ services:
   api:
     ports:
       - '${SECURE_PORT:-3001}:${SECURE_PORT:-3001}'
+      - 6499:6499
     volumes:
       - ../static:/usr/src/app/api/static
       - ../src:/usr/src/app/api/src

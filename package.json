@@ -19,10 +19,11 @@
     "lint:css": "stylelint --fix \"**/*.css\"",
     "lint:css:check": "stylelint \"**/*.css\"",
     "resize-image": "bun tools/resize-image.mts",
-    "resize-image:check": "bun tools/resize-image.mts --test",
-    "postinstall": "patch-package"
+    "resize-image:check": "bun tools/resize-image.mts --test"
   },
   "trustedDependencies": [
+    "api",
+    "frontend",
     "sharp"
   ],
   "devDependencies": {
@@ -41,7 +42,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-regexp": "^2.2.0",
     "image-size": "^1.1.1",
-    "patch-package": "^8.0.0",
     "prettier": "^3.2.5",
     "sharp": "^0.33.2",
     "stylelint": "^16.2.1",

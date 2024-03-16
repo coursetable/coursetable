@@ -16,36 +16,47 @@ import {
   CORS_OPTIONS,
   STATIC_FILE_DIR,
   REDIS_HOST,
-} from './config';
-import morgan from './logging/morgan';
-import winston from './logging/winston';
+} from './config.js';
+import morgan from './logging/morgan.js';
+import winston from './logging/winston.js';
 
 // Import routes
-import catalog from './catalog/catalog.routes';
-import { authWithEvals, passportConfig } from './auth/auth.handlers';
-import casAuth from './auth/auth.routes';
-import friends from './friends/friends.routes';
-import canny from './canny/canny.routes';
-import user from './user/user.routes';
-import challenge from './challenge/challenge.routes';
+import catalog from './catalog/catalog.routes.js';
+import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
+import casAuth from './auth/auth.routes.js';
+import friends from './friends/friends.routes.js';
+import canny from './canny/canny.routes.js';
+import user from './user/user.routes.js';
+import challenge from './challenge/challenge.routes.js';
 
-import { fetchCatalog } from './catalog/catalog.utils';
-
-Sentry.init({
-  dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
-
-  environment: process.env.NODE_ENV,
-
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
-});
+import { fetchCatalog } from './catalog/catalog.utils.js';
 
 // Initialize the app
 const app = express();
+
+// Initialize Sentry
+Sentry.init({
+  dsn: 'https://0ceb92b3c55a418131f3fcf02eabf00d@o476134.ingest.us.sentry.io/4506913066975232',
+  integrations: [
+    // Enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // Enable Express.js middleware tracing
+    new Sentry.Integrations.Express({ app }),
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+});
+
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
+
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
+
 // Enable url-encoding
 app.use(express.urlencoded({ extended: true }));
 
@@ -99,19 +110,6 @@ app.use(
   }),
 );
 
-// Serve with SSL.
-https
-  .createServer(
-    {
-      key: fs.readFileSync('./src/keys/server.key'),
-      cert: fs.readFileSync('./src/keys/server.cert'),
-    },
-    app,
-  )
-  .listen(SECURE_PORT, () => {
-    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
-  });
-
 // Rate limit
 // const authRateLimiter = rateLimit({
 // windowMs: 15 * 60 * 1000, // 15 minutes
@@ -126,27 +124,26 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
-app.use(
-  '/ferry',
-  createProxyMiddleware({
-    target: 'http://graphql-engine:8080',
-    pathRewrite: { '^/ferry/': '/' },
-    ws: true,
-    xfwd: true,
-    onProxyReq(proxyReq, req) {
-      req.headers['X-Hasura-Role'] = req.isAuthenticated()
-        ? 'student'
-        : 'anonymous';
-      const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
-      proxyReq.setHeader('X-Hasura-Role', hasuraRole);
-    },
-  }),
-);
+// Ferry proxy
+const ferryProxy = createProxyMiddleware({
+  target: 'http://graphql-engine:8080',
+  pathRewrite: { '^/ferry/': '/' },
+  xfwd: true,
+});
+
+// Add the authentication header to the request
+// Proxy initial HTTP requests to Ferry
+app.use('/ferry', (req, res, next) => {
+  const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
+  req.headers['X-Hasura-Role'] = hasuraRole;
+  ferryProxy(req, res, next);
+});
+
 // Enable request logging.
 app.use(morgan);
 
-// Figure out how to make this work with Ferry (has to go after Ferry
-// currently)
+// Has to go after Ferry because it consumes the request body stream
+// and the http-proxy needs a stream to consume.
 app.use(express.json());
 
 // Activate catalog and CAS authentication
@@ -185,6 +182,9 @@ app.get('/api/ping', (req, res) => {
   res.json('pong');
 });
 
+// The error handler must be registered before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
+
 app.use(
   (
     err: unknown,
@@ -203,6 +203,19 @@ app.use(
 app.listen(INSECURE_PORT, () => {
   winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
 });
+
+// Serve dev with SSL.
+https
+  .createServer(
+    {
+      key: fs.readFileSync('./src/keys/server.key'),
+      cert: fs.readFileSync('./src/keys/server.cert'),
+    },
+    app,
+  )
+  .listen(SECURE_PORT, () => {
+    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
+  });
 
 // Generate the static catalog on start.
 winston.info('Updating static catalog');
