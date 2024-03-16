@@ -5,9 +5,9 @@ import { createClient } from 'redis';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import {
   SECURE_PORT,
