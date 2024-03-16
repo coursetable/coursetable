@@ -89,7 +89,8 @@ export function generateRandomColor(identifier: string) {
     hash &= hash; // Convert to 32bit integer
   }
 
-  // Normalize the hash to a value between 0 and 1 to use it for color interpolation
+  // Normalize the hash to a value between 0 and 1
+  // to use it for color interpolation
   const normalizedHash = (Math.abs(hash) % 1000) / 1000;
 
   // Interpolate between startColor and endColor based on normalizedHash

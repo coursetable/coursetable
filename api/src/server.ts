@@ -103,9 +103,7 @@ app.use(
       // Cookie lifetime of one year.
       maxAge: 365 * 24 * 60 * 60 * 1000,
 
-      // Not enabling this yet since it could have unintended consequences.
-      // Eventually we should enable this.
-      // secure: true,
+      secure: true,
     },
   }),
 );
@@ -182,7 +180,8 @@ app.get('/api/ping', (req, res) => {
   res.json('pong');
 });
 
-// The error handler must be registered before any other error middleware and after all controllers
+// The error handler must be registered before
+// any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
 
 app.use(
