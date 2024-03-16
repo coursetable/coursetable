@@ -78,16 +78,14 @@ function ResultsItem({
   const seasons = ['spring', 'summer', 'fall'] as const;
   const season = Number(course.season_code[5]);
   const year = course.season_code.substring(2, 4);
-  // Size of season icons
-  const iconSize = 10;
   // Determine the icon for this season
   const icon =
     season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={iconSize} />
+      <FcCloseUpMode className="my-auto" size={10} />
     ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
+      <IoMdSunny color="#ffaa00" className="my-auto" size={10} />
     ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
+      <FaCanadianMapleLeaf className="my-auto" size={10} />
     );
 
   const inWorksheet = useMemo(

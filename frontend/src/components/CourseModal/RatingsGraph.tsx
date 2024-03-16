@@ -28,11 +28,9 @@ function RatingsGraph({
     // Build bar
     return (
       <div key={labels[indx]} className={styles.bar}>
-        {/* Number of votes for each rating */}
         <p className={clsx(styles.value, 'm-0')}>
           <TextComponent type="secondary">{rating}</TextComponent>
         </p>
-        {/* Bar */}
         <div
           className={clsx(styles.column, 'px-1 mx-auto')}
           style={{
@@ -41,7 +39,6 @@ function RatingsGraph({
             height: `${height.toString()}px`,
           }}
         />
-        {/* Rating labels */}
         {ratings.length === 2 && (
           <p className={clsx(styles.label, styles.value, 'm-0')}>
             {indx === 0 ? 'yes' : 'no'}

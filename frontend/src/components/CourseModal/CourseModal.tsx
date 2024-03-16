@@ -151,7 +151,6 @@ function CourseModal() {
                 )}
               </Col>
               <Col className="p-0 ml-3">
-                {/* Course Title */}
                 <Modal.Title>
                   <Row className="mx-auto mt-1 align-items-center">
                     <span className={styles.modalTitle}>
@@ -171,13 +170,11 @@ function CourseModal() {
                 </Modal.Title>
 
                 <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
-                  {/* Course Codes */}
                   <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
                     <TextComponent type="tertiary">
                       {listing.all_course_codes.join(' • ')}
                     </TextComponent>
                   </p>
-                  {/* Course Skills and Areas */}
                   {listing.skills.map((skill) => (
                     <SkillBadge skill={skill} key={skill} />
                   ))}

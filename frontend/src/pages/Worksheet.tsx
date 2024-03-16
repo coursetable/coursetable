@@ -44,7 +44,6 @@ function WorksheetMobile() {
 }
 
 function WorksheetDesktop() {
-  const expandBtnSize = 12;
   const { worksheetView } = useWorksheet();
   const [expanded, setExpanded] = useState(false);
   return (
@@ -63,7 +62,7 @@ function WorksheetDesktop() {
             {!expanded ? (
               <FaExpandAlt
                 className={styles.expandIcon}
-                size={expandBtnSize}
+                size={18}
                 style={{ display: 'block' }}
                 onClick={() => {
                   setExpanded(true);
@@ -72,7 +71,7 @@ function WorksheetDesktop() {
             ) : (
               <FaCompressAlt
                 className={styles.expandIcon}
-                size={expandBtnSize}
+                size={18}
                 onClick={() => {
                   setExpanded(false);
                 }}

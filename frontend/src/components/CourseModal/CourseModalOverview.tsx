@@ -86,11 +86,9 @@ const profInfoPopover =
     <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
       <Popover.Title>
         <Row className="mx-auto">
-          {/* Professor Name */}
           <strong>{profName}</strong>
         </Row>
         <Row className="mx-auto">
-          {/* Professor Email */}
           <small>
             {profInfo?.email ? (
               <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
@@ -103,7 +101,6 @@ const profInfoPopover =
       <Popover.Content style={{ width: '274px' }}>
         <Row className="mx-auto my-1">
           <Col md={6}>
-            {/* Professor Rating */}
             <Row className="mx-auto mb-1">
               <strong
                 className="mx-auto"
@@ -131,7 +128,6 @@ const profInfoPopover =
             </Row>
           </Col>
           <Col md={6}>
-            {/* Number of courses taught by this professor */}
             <Row className="mx-auto mb-1">
               <strong className="mx-auto">
                 {profInfo?.numCourses ?? '[unknown]'}
@@ -296,15 +292,7 @@ function Professors({
     const profInfo = new Map(
       listing.professor_names.map((prof): [string, ProfInfo] => [
         prof,
-        {
-          // Total number of courses this professor teaches
-          numCourses: 0,
-          // Total rating. Will divide by number of courses later to
-          // get average
-          totalRating: 0,
-          // Prof email
-          email: '',
-        },
+        { numCourses: 0, totalRating: 0, email: '' },
       ]),
     );
     // Only count cross-listed courses once per season
@@ -594,7 +582,6 @@ function EvalsCol({
   const [filter, setFilter] = useState<Filter>('both');
   return (
     <Col md={5} className="px-0 my-0">
-      {/* Filter Select */}
       <Row
         className={clsx(
           styles.filterContainer,
@@ -616,7 +603,6 @@ function EvalsCol({
           className={clsx(styles.evaluationsFilter, 'mb-2')}
         />
       </Row>
-      {/* Course Evaluations */}
       {overlapSections[filter].length !== 0 ? (
         <>
           <Row className="m-auto pb-1 justify-content-center">
@@ -638,8 +624,6 @@ function EvalsCol({
               key={offering.listing.season_code + offering.listing.crn}
               className="m-auto py-1 justify-content-center"
             >
-              {/* The listing button, either clickable or greyed out based on
-          whether evaluations exist */}
               <Col
                 xs={5}
                 className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
@@ -660,7 +644,6 @@ function EvalsCol({
                       : offering.professor[0]}
                 </div>
               </Col>
-              {/* All Ratings */}
               <RatingContent offering={offering} hasEvals={user.hasEvals} />
             </Row>
           ))}
