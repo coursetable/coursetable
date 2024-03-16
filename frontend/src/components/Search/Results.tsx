@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
+import FloatingWorksheet from './FloatingWorksheet';
 
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
@@ -20,8 +21,6 @@ import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
-import OverlayComponent from './OverlayComponent';
-import FloatingButton from './OverlayButton';
 
 function Results({
   data,
@@ -39,12 +38,6 @@ function Results({
     'isListView',
     true,
   );
-
-  const [overlayVisible, setOverlayVisible] = useState(false);
-
-  const toggleOverlay = useCallback(() => {
-    setOverlayVisible((isVisible) => !isVisible);
-  }, []);
 
   const { curSeason } = useWorksheet();
 
@@ -177,11 +170,7 @@ function Results({
       >
         {resultsListing}
       </div>
-      <FloatingButton
-        overlayVisible={overlayVisible}
-        toggleOverlay={toggleOverlay}
-      />
-      <OverlayComponent isVisible={overlayVisible} />
+      <FloatingWorksheet />
     </div>
   );
 }
