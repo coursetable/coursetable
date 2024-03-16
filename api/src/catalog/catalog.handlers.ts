@@ -3,23 +3,15 @@ import { FERRY_SECRET } from '../config.js';
 import winston from '../logging/winston.js';
 import { fetchCatalog } from './catalog.utils.js';
 
-/**
- * Middleware to verify request headers
- *
- * @param req - express request object
- * @param res - express response object
- * @param next - express next object
- */
 export const verifyHeaders = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ): void => {
   winston.info('Verifying headers');
-  // Get authentication headers
-  const authd = req.header('x-ferry-secret'); // If user is logged in
+  const authd = req.header('x-ferry-secret');
 
-  // require NetID authentication
+  // Should only be reachable if request made by Ferry
   if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
     res.status(401).json({ error: 'NOT_FERRY' });
     return;
@@ -28,22 +20,12 @@ export const verifyHeaders = (
   next();
 };
 
-/**
- * Endpoint to refresh static catalog JSONs
- *
- * @param req - express request object
- * @param res - express response object
- * @param next - express next object
- */
 export async function refreshCatalog(
   req: express.Request,
   res: express.Response,
 ): Promise<void> {
   winston.info('Refreshing catalog');
-  // Always overwrite when called
-  const overwrite = true;
-
-  // Fetch the catalog files and confirm success
-  await fetchCatalog(overwrite);
+  // Always overwrite when the refresh endpoint is hit
+  await fetchCatalog(true);
   res.sendStatus(200);
 }

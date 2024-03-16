@@ -1,7 +1,3 @@
-/**
- * @file Handlers for generating JWT tokens for Canny.
- */
-
 import type express from 'express';
 import jwt from 'jsonwebtoken';
 import {

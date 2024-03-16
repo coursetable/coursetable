@@ -11,10 +11,6 @@ import {
 } from './friends.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
-/**
- * Set up friend routes.
- * @param app: express app instance.
- */
 export default (app: express.Express): void => {
   app.use('/api/friends/*', authBasic);
   app.post('/api/friends/add', asyncHandler(addFriend));

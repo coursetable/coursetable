@@ -1,7 +1,3 @@
-/**
- * @file User type declarations.
- */
-
 import 'express';
 import 'passport';
 
