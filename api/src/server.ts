@@ -133,14 +133,15 @@ const ferryProxy = createProxyMiddleware({
 
 // Add the authentication header to the request
 // Proxy initial HTTP requests to Ferry
-app.use('/ferry', (req, res, next) => {
-  req.headers['X-Hasura-Role'] = req.isAuthenticated()
-    ? 'student'
-    : 'anonymous';
-  const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
-  req.headers['X-Hasura-Role'] = hasuraRole;
-  ferryProxy(req, res, next);
-});
+app.use(
+  '/ferry',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  (req, res, next) => {
+    const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
+    req.headers['X-Hasura-Role'] = hasuraRole;
+  },
+  ferryProxy,
+);
 
 // Enable request logging.
 app.use(morgan);
