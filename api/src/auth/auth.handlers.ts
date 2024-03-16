@@ -1,7 +1,3 @@
-/**
- * @file Handlers for passport-CAS authentication with Yale.
- */
-
 import type express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
@@ -61,14 +57,9 @@ const extractHostname = (url: string): string => {
   return hostname;
 };
 
-/**
- * Passport configuration for authentication
- * @param passportInstance: passport instance.
- */
 export const passportConfig = (
   passportInstance: passport.PassportStatic,
 ): void => {
-  // Strategy for integrating with CAS
   passportInstance.use(
     new CasStrategy(
       {
@@ -162,21 +153,11 @@ export const passportConfig = (
     ),
   );
 
-  /**
-   * Serialization function for identifying a user.
-   * @param user: user to encode.
-   * @param done: callback function to be executed after serialization.
-   */
   passport.serializeUser((user, done) => {
     winston.info(`Serializing user ${user.netId}`);
     done(null, user.netId);
   });
 
-  /**
-   * Deserialization function for identifying a user.
-   * @param netId: netId of user to get info for.
-   * @param done: callback function to be executed after deserialization.
-   */
   passport.deserializeUser(async (sessionKey: unknown, done) => {
     if (!sessionKey) {
       // Return `null`/`false` to denote no user; don't use `undefined`
@@ -207,11 +188,7 @@ export const passportConfig = (
 };
 
 const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
-/**
- * Redirects to be executed after login.
- * @param req: express request.
- * @param res: express response.
- */
+
 const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
   const redirect = req.query.redirect as string | undefined;
@@ -239,24 +216,16 @@ const postAuth = (req: express.Request, res: express.Response): void => {
   res.redirect('https://coursetable.com');
 };
 
-/**
- * Login handler.
- * @param req: express request.
- * @param res: express response.
- * @param next: express next function.
- */
 export const casLogin = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ): void => {
   winston.info('Logging in with CAS');
-  // Authenticate with passport
   (
     passport.authenticate(
       'cas',
       (casError: Error | undefined, user: Express.User | undefined) => {
-        // Handle auth errors or missing users
         if (casError) {
           next(casError);
           return;
@@ -267,7 +236,6 @@ export const casLogin = (
           return;
         }
 
-        // Log in the user
         winston.info(`"Logging in ${user.netId}`);
         req.logIn(user, (loginError) => {
           if (loginError) {
@@ -283,12 +251,6 @@ export const casLogin = (
   )(req, res, next);
 };
 
-/**
- * Middleware for requiring user account to be present.
- * @param req: express request.
- * @param res: express response.
- * @param next: express next function.
- */
 export const authBasic = (
   req: express.Request,
   res: express.Response,
@@ -305,12 +267,6 @@ export const authBasic = (
   next();
 };
 
-/**
- * Middleware for requiring user account to be present as well as evals access.
- * @param req: express request.
- * @param res: express response.
- * @param next: express next function.
- */
 export const authWithEvals = (
   req: express.Request,
   res: express.Response,

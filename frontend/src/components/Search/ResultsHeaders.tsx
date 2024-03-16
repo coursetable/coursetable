@@ -78,7 +78,6 @@ function ResultsHeaders({
         id="results_container"
         className={clsx('px-0 mx-0', styles.container)}
       >
-        {/* Column Headers */}
         <Row
           className={clsx(
             'mx-auto pl-4 pr-2',
@@ -88,7 +87,6 @@ function ResultsHeaders({
           )}
           data-tutorial="catalog-5"
         >
-          {/* View Toggle */}
           <div
             className={clsx(
               styles.listGridToggle,
@@ -227,7 +225,6 @@ function ResultsHeaders({
               </HeaderCol>
             </>
           ) : (
-            // Showing how many search results for grid view
             <Col md={10}>
               <div className={styles.resultsHeader}>
                 {`Showing ${numResults} course${

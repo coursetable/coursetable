@@ -31,7 +31,6 @@ const WindowDimensionsCtx = createContext<Store | undefined>(undefined);
 const range = (num: number, min: number, max: number) =>
   num >= min && num < max;
 
-// Return dimensions of the window
 export function WindowDimensionsProvider({
   children,
 }: {
@@ -74,7 +73,7 @@ export function WindowDimensionsProvider({
           ),
         });
       }, 200),
-    [setDimensions],
+    [],
   );
 
   // Update values on window resize

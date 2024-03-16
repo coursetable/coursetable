@@ -5,7 +5,6 @@ import type chroma from 'chroma-js';
 import { useTheme } from '../contexts/themeContext';
 import styles from './Typography.module.css';
 
-// Div used to color the background of surface components
 export function SurfaceComponent({
   elevated,
   className,
@@ -25,8 +24,6 @@ export function SurfaceComponent({
   );
 }
 
-// Span used to color text. Type is an int that represents primary (0) or
-// secondary (1) color
 export function TextComponent({
   type,
   small,
@@ -53,7 +50,6 @@ export function TextComponent({
   );
 }
 
-// FormControl for any typed inputs
 export const Input = forwardRef(
   ({ className, ...props }: React.ComponentProps<typeof FormControl>, ref) => (
     <FormControl
@@ -64,13 +60,10 @@ export const Input = forwardRef(
   ),
 );
 
-// Hr tag used to divide stuff in search form and footer
 export function Hr({ className, ...props }: React.ComponentProps<'hr'>) {
   return <hr {...props} className={clsx(styles.hr, className)} />;
 }
 
-// Popovers in search results item, prof popover in modal, and worksheet
-// calendar
 export const InfoPopover = forwardRef(
   ({ className, ...props }: React.ComponentProps<typeof Popover>, ref) => (
     <Popover

@@ -181,7 +181,6 @@ export function useWorksheetInfo(
     if (!worksheets) return [];
     if (loading || error) return [];
 
-    // Resolve the worksheet items.
     for (const seasonCode of requestedSeasons) {
       // Guaranteed to exist because of how requestedSeasons is constructed.
       const seasonWorksheets = worksheets[seasonCode]!;

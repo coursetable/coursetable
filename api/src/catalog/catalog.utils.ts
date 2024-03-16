@@ -1,7 +1,3 @@
-/**
- * @file utilities used for fetching catalog files.
- */
-
 import fs from 'fs/promises';
 import path from 'path';
 import { request } from 'graphql-request';
@@ -22,15 +18,10 @@ type Seasons = {
   }[];
 };
 
-/**
- * Get static catalogs for each season from Hasura,
- * @param overwrite - whether or not to skip existing catalogs.
- */
 export async function fetchCatalog(
   overwrite: boolean,
 ): Promise<PromiseSettledResult<void>[]> {
   let seasons: Seasons = { seasons: [] };
-  // Get a list of all seasons
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
   } catch (err) {

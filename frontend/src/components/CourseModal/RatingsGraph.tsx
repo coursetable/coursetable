@@ -5,13 +5,6 @@ import styles from './RatingsGraph.module.css';
 import { barChartColors } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
 
-/**
- * Displays Evaluation Graphs
- * @prop ratings - list that holds the counts for each rating 1-5
- * @prop reverse - boolean of whether or not to reverse the colors
- * @prop labels - list that holds the x-axis labels for the grpah
- */
-
 function RatingsGraph({
   ratings,
   reverse,
@@ -35,11 +28,9 @@ function RatingsGraph({
     // Build bar
     return (
       <div key={labels[indx]} className={styles.bar}>
-        {/* Number of votes for each rating */}
         <p className={clsx(styles.value, 'm-0')}>
           <TextComponent type="secondary">{rating}</TextComponent>
         </p>
-        {/* Bar */}
         <div
           className={clsx(styles.column, 'px-1 mx-auto')}
           style={{
@@ -48,7 +39,6 @@ function RatingsGraph({
             height: `${height.toString()}px`,
           }}
         />
-        {/* Rating labels */}
         {ratings.length === 2 && (
           <p className={clsx(styles.label, styles.value, 'm-0')}>
             {indx === 0 ? 'yes' : 'no'}

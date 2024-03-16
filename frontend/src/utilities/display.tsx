@@ -57,12 +57,10 @@ export function suspended<T extends React.ComponentType<any>>(
 export function useComponentVisible<T extends HTMLElement>(
   initialIsVisible: boolean,
 ) {
-  // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
     useState(initialIsVisible);
   const elemRef = useRef<T>(null);
 
-  // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
     if (elemRef.current && !elemRef.current.contains(event.target as Node))
@@ -85,13 +83,11 @@ export function useComponentVisibleDropdown<T extends HTMLElement>(
   initialIsVisible: boolean,
   callback?: (visible: boolean) => void,
 ) {
-  // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
     useState(initialIsVisible);
   const toggleRef = useRef<T>(null);
   const dropdownRef = useRef<T>(null);
 
-  // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
     const portal = document.querySelector('#portal');

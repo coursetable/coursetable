@@ -8,11 +8,6 @@ import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Listing } from '../../utilities/common';
 
-/**
- * Render worksheet list item in default worksheet view
- * @prop course - object | current listing
- * @prop hidden - object | dictionary of hidden courses
- */
 export default function WorksheetCalendarListItem({
   course,
   hidden,
@@ -30,7 +25,6 @@ export default function WorksheetCalendarListItem({
       onMouseLeave={() => setHoverCourse(null)}
     >
       <Row className="align-items-center mx-auto">
-        {/* Course Code and Title */}
         <Col
           className={clsx(styles.courseCode, 'pl-1 pr-2')}
           style={{
@@ -47,13 +41,11 @@ export default function WorksheetCalendarListItem({
           <br />
           <span className={styles.courseTitle}>{course.title}</span>
         </Col>
-        {/* Hide Button */}
         <div
           className={clsx('mr-1 my-auto', !hidden && styles.hideButtonHidden)}
         >
           <WorksheetHideButton crn={course.crn} hidden={hidden} />
         </div>
-        {/* Add/remove from worksheet button */}
         <div className="my-auto">
           <WorksheetToggleButton listing={course} modal={false} />
         </div>

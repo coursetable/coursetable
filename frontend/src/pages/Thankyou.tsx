@@ -1,9 +1,6 @@
 import React from 'react';
 import ThankYouImage from '../images/thankyou.svg';
 
-/**
- * Renders the Thank You page when user submits a form
- */
 function Thankyou() {
   return (
     <div className="text-center py-5">

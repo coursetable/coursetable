@@ -5,9 +5,6 @@ import styles from './Notice.module.css';
 
 const storage = createLocalStorageSlot<number>('lastDismissedBanner');
 
-/**
- * Notice banner at the top of the website
- */
 function Notice({
   children,
   id,

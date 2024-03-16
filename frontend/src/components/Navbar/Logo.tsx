@@ -6,17 +6,13 @@ import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import wordmarkOutlinesDark from '../../images/brand/ct_white.svg';
 import styles from './Logo.module.css';
 
-type Props = {
-  /** Should we show the icon */
+function Logo({
+  icon = true,
+  wordmark = true,
+}: {
   readonly icon?: boolean;
-  /** Should be show the wordmark */
   readonly wordmark?: boolean;
-};
-
-/**
- * CourseTable Logo
- */
-function Logo({ icon = true, wordmark = true }: Props) {
+}) {
   const { theme } = useTheme();
 
   return (

@@ -21,7 +21,6 @@ export default function SortBySelect() {
 
   return (
     <>
-      {/* Sort By Select */}
       <div className={styles.sortByContainer}>
         <CustomSelect
           value={selectSortBy.value}
@@ -32,7 +31,6 @@ export default function SortBySelect() {
           }}
         />
       </div>
-      {/* Toggle sort order button */}
       {/* TODO */}
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div
@@ -40,14 +38,12 @@ export default function SortBySelect() {
         onClick={() => sortOrder.set((o) => (o === 'asc' ? 'desc' : 'asc'))}
       >
         {!selectSortBy.value.numeric ? (
-          // Sorting by letters
           sortOrder.value === 'asc' ? (
             <FcAlphabeticalSortingAz className={styles.sortIcon} size={20} />
           ) : (
             <FcAlphabeticalSortingZa className={styles.sortIcon} size={20} />
           )
-        ) : // Sorting by numbers
-        sortOrder.value === 'asc' ? (
+        ) : sortOrder.value === 'asc' ? (
           <FcNumericalSorting12 className={styles.sortIcon} size={20} />
         ) : (
           <FcNumericalSorting21 className={styles.sortIcon} size={20} />

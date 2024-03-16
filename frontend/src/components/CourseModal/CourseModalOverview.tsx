@@ -20,6 +20,7 @@ import clsx from 'clsx';
 
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
+import { useSearch } from '../../contexts/searchContext';
 import {
   TextComponent,
   InfoPopover,
@@ -30,7 +31,6 @@ import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import styles from './CourseModalOverview.module.css';
 import CourseModalLoading from './CourseModalLoading';
 import {
-  friendsAlsoTaking,
   getEnrolled,
   toSeasonString,
   to12HourTime,
@@ -48,7 +48,6 @@ import {
 } from '../../utilities/common';
 import './react-multi-toggle-override.css';
 
-// Component used for cutting off long descriptions
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 type Filter = 'both' | 'course' | 'professor';
@@ -60,15 +59,10 @@ type ProfInfo = {
 };
 
 type CourseOffering = {
-  // Course rating
   rating: number | null;
-  // Workload rating
   workload: number | null;
-  // Professor rating
   professorRating: number | null;
-  // Professors
   professor: string[];
-  // Store course listing
   listing: Listing;
 };
 
@@ -78,8 +72,8 @@ type RelatedListingInfo = Omit<
   >,
   'professor_info'
 > & {
+  // For public may not have prof info
   professor_info?: {
-    // For public may not have prof info
     average_rating: number;
     email: string;
     name: string;
@@ -92,11 +86,9 @@ const profInfoPopover =
     <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
       <Popover.Title>
         <Row className="mx-auto">
-          {/* Professor Name */}
           <strong>{profName}</strong>
         </Row>
         <Row className="mx-auto">
-          {/* Professor Email */}
           <small>
             {profInfo?.email ? (
               <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
@@ -109,7 +101,6 @@ const profInfoPopover =
       <Popover.Content style={{ width: '274px' }}>
         <Row className="mx-auto my-1">
           <Col md={6}>
-            {/* Professor Rating */}
             <Row className="mx-auto mb-1">
               <strong
                 className="mx-auto"
@@ -137,7 +128,6 @@ const profInfoPopover =
             </Row>
           </Col>
           <Col md={6}>
-            {/* Number of courses taught by this professor */}
             <Row className="mx-auto mb-1">
               <strong className="mx-auto">
                 {profInfo?.numCourses ?? '[unknown]'}
@@ -153,6 +143,290 @@ const profInfoPopover =
       </Popover.Content>
     </InfoPopover>
   );
+
+function Description({ listing }: { readonly listing: Listing }) {
+  const [clamped, setClamped] = useState(false);
+  const [lines, setLines] = useState(8);
+  return (
+    <>
+      <Row className="mx-auto">
+        <ResponsiveEllipsis
+          style={{ whiteSpace: 'pre-wrap' }}
+          text={listing.description ? listing.description : 'no description'}
+          maxLine={lines}
+          basedOn="words"
+          onReflow={(rleState) => setClamped(rleState.clamped)}
+        />
+      </Row>
+      {clamped && (
+        <Row className="mx-auto">
+          <LinkLikeText
+            className="mx-auto"
+            onClick={() => {
+              setLines(100);
+            }}
+            title="Read More"
+          >
+            <IoIosArrowDown size={20} />
+          </LinkLikeText>
+        </Row>
+      )}
+    </>
+  );
+}
+
+const COL_LEN_LEFT = 4;
+
+function Syllabus({
+  data,
+  listing,
+}: {
+  readonly data: SameCourseOrProfOfferingsQuery | undefined;
+  readonly listing: Listing;
+}) {
+  const pastSyllabi = useMemo(() => {
+    if (!data) return [];
+    return data.computed_listing_info
+      .filter(
+        (
+          course,
+        ): course is RelatedListingInfo & {
+          syllabus_url: string;
+        } =>
+          course.same_course_id === listing.same_course_id &&
+          Boolean(course.syllabus_url),
+      )
+      .filter(
+        // Remove duplicates by syllabus URL
+        (v, i, a) =>
+          a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
+      )
+      .sort(
+        (a, b) =>
+          b.season_code.localeCompare(a.season_code, 'en-US') ||
+          parseInt(a.section, 10) - parseInt(b.section, 10),
+      );
+  }, [data, listing.same_course_id]);
+
+  const [showPastSyllabi, setShowPastSyllabi] = useState(
+    pastSyllabi.length < 8,
+  );
+
+  return (
+    <>
+      <Row className="m-auto pt-4 pb-2">
+        <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+          <span className={styles.labelBubble}>Syllabus</span>
+        </Col>
+        <Col
+          sm={12 - COL_LEN_LEFT}
+          xs={11 - COL_LEN_LEFT}
+          className={styles.metadata}
+        >
+          {listing.syllabus_url ? (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={listing.syllabus_url}
+              className="d-flex"
+            >
+              View Syllabus
+              <HiExternalLink size={18} className="ml-1 my-auto" />
+            </a>
+          ) : (
+            'N/A'
+          )}
+        </Col>
+      </Row>
+      {pastSyllabi.length > 0 && (
+        <Row className="m-auto pt-4 pb-2">
+          <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+            <span
+              role="button"
+              className={styles.toggleBubble}
+              onClick={() => setShowPastSyllabi(!showPastSyllabi)}
+            >
+              Past syllabi ({pastSyllabi.length}){' '}
+              {showPastSyllabi ? (
+                <MdExpandLess size={18} className="my-auto" />
+              ) : (
+                <MdExpandMore size={18} className="my-auto" />
+              )}
+            </span>
+          </Col>
+          <Collapse in={showPastSyllabi}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={styles.metadata}
+            >
+              {pastSyllabi.map((course) => (
+                <a
+                  key={`${course.season_code}-${course.section}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={course.syllabus_url}
+                  className="d-flex"
+                >
+                  {toSeasonString(course.season_code)} (section {course.section}
+                  )
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ))}
+            </Col>
+          </Collapse>
+        </Row>
+      )}
+    </>
+  );
+}
+
+function Professors({
+  data,
+  listing,
+}: {
+  readonly data: SameCourseOrProfOfferingsQuery | undefined;
+  readonly listing: Listing;
+}) {
+  const profInfo = useMemo(() => {
+    const profInfo = new Map(
+      listing.professor_names.map((prof): [string, ProfInfo] => [
+        prof,
+        { numCourses: 0, totalRating: 0, email: '' },
+      ]),
+    );
+    // Only count cross-listed courses once per season
+    const countedCourses = new Set<string>();
+    if (!data) return profInfo;
+    for (const season of data.computed_listing_info as RelatedListingInfo[]) {
+      if (countedCourses.has(`${season.season_code}-${season.course_code}`))
+        continue;
+      if (!season.professor_info) continue;
+      season.professor_info.forEach((prof) => {
+        if (profInfo.has(prof.name)) {
+          const dict = profInfo.get(prof.name)!;
+          dict.numCourses++;
+          dict.totalRating += prof.average_rating;
+          dict.email = prof.email;
+          season.all_course_codes.forEach((c) => {
+            countedCourses.add(`${season.season_code}-${c}`);
+          });
+        }
+      });
+    }
+    return profInfo;
+  }, [data, listing]);
+
+  return (
+    <Row className="m-auto py-2">
+      <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+        <span className={styles.labelBubble}>Professor</span>
+      </Col>
+      <Col
+        sm={12 - COL_LEN_LEFT}
+        xs={11 - COL_LEN_LEFT}
+        className={styles.metadata}
+      >
+        {listing.professor_names.length
+          ? listing.professor_names.map((prof, index) => (
+              <React.Fragment key={prof}>
+                {index ? ' • ' : ''}
+                <OverlayTrigger
+                  trigger="click"
+                  rootClose
+                  placement="right"
+                  overlay={profInfoPopover(prof, profInfo.get(prof))}
+                >
+                  <LinkLikeText>{prof}</LinkLikeText>
+                </OverlayTrigger>
+              </React.Fragment>
+            ))
+          : 'N/A'}
+      </Col>
+    </Row>
+  );
+}
+
+function TimeLocation({ listing }: { readonly listing: Listing }) {
+  const locations = new Map<string, string>();
+  const times = new Map<string, Set<Weekdays>>();
+  for (const [day, info] of Object.entries(listing.times_by_day)) {
+    for (const [startTime, endTime, location, locationURL] of info) {
+      if (locations.has(location) && locations.get(location) !== locationURL) {
+        Sentry.captureException(
+          new Error(
+            `${listing.course_code} has duplicate location ${location} with different URLs`,
+          ),
+        );
+      }
+      locations.set(location, locationURL);
+      const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
+      if (!times.has(timespan)) times.set(timespan, new Set());
+
+      // Note! Some classes have multiple places at the same time, particularly
+      // if one is "online". Avoid duplicates.
+      // See for example: CDE 567, Spring 2023
+      times.get(timespan)!.add(day as Weekdays);
+    }
+  }
+  return (
+    <>
+      <Row className="m-auto py-2">
+        <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+          <span className={styles.labelBubble}>Meets</span>
+        </Col>
+        <Col
+          sm={12 - COL_LEN_LEFT}
+          xs={11 - COL_LEN_LEFT}
+          className={styles.metadata}
+        >
+          {[...times.entries()].map(([timespan, days]) => (
+            <div key={timespan}>
+              {[...days]
+                .map((d) =>
+                  ['Thursday', 'Saturday', 'Sunday'].includes(d)
+                    ? d.slice(0, 2)
+                    : d[0],
+                )
+                .join('')}{' '}
+              {timespan}
+            </div>
+          ))}
+        </Col>
+      </Row>
+      <Row className="m-auto py-2">
+        <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+          <span className={styles.labelBubble}>Location</span>
+        </Col>
+        <Col
+          sm={12 - COL_LEN_LEFT}
+          xs={11 - COL_LEN_LEFT}
+          className={styles.metadata}
+        >
+          {[...locations.entries()].map(([location, locationURL]) => (
+            <div key={location}>
+              {locationURL ? (
+                <a target="_blank" rel="noopener noreferrer" href={locationURL}>
+                  {location}
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ) : (
+                location
+              )}
+            </div>
+          ))}
+        </Col>
+      </Row>
+    </>
+  );
+}
+
+// Hold index of each filter option
+const optionsIndx = {
+  course: 0,
+  both: 1,
+  professor: 2,
+};
 
 function RatingContent({
   offering,
@@ -224,124 +498,16 @@ function RatingContent({
   ));
 }
 
-function CourseModalOverview({
+function EvalsCol({
   gotoCourse,
+  data,
   listing,
 }: {
   readonly gotoCourse: (x: Listing) => void;
+  readonly data: SameCourseOrProfOfferingsQuery | undefined;
   readonly listing: Listing;
 }) {
-  // Fetch user context data
   const { user } = useUser();
-  // Is description clamped?
-  const [clamped, setClamped] = useState(false);
-  // Current evaluation filter (both, course, professor)
-  const [filter, setFilter] = useState<Filter>('both');
-  // Number of description lines to display
-  const [lines, setLines] = useState(8);
-  // List of other friends shopping this class
-  const alsoTaking = friendsAlsoTaking(
-    listing.season_code,
-    listing.crn,
-    user.friends,
-  );
-
-  const locations = new Map<string, string>();
-  const times = new Map<string, Set<Weekdays>>();
-  for (const [day, info] of Object.entries(listing.times_by_day)) {
-    for (const [startTime, endTime, location, locationURL] of info) {
-      if (locations.has(location) && locations.get(location) !== locationURL) {
-        Sentry.captureException(
-          new Error(
-            `${listing.course_code} has duplicate location ${location} with different URLs`,
-          ),
-        );
-      }
-      locations.set(location, locationURL);
-      const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
-      if (!times.has(timespan)) times.set(timespan, new Set());
-
-      // Note! Some classes have multiple places at the same time, particularly
-      // if one is "online". Avoid duplicates.
-      // See for example: CDE 567, Spring 2023
-      times.get(timespan)!.add(day as Weekdays);
-    }
-  }
-  const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
-    variables: {
-      hasEval: Boolean(user.hasEvals), // Skip this query if not authenticated
-      same_course_id: listing.same_course_id,
-      professor_ids: listing.professor_ids,
-    },
-  });
-
-  // Holds Prof information for popover
-  const profInfo = useMemo(() => {
-    const profInfo = new Map(
-      listing.professor_names.map((prof): [string, ProfInfo] => [
-        prof,
-        {
-          // Total number of courses this professor teaches
-          numCourses: 0,
-          // Total rating. Will divide by number of courses later to
-          // get average
-          totalRating: 0,
-          // Prof email
-          email: '',
-        },
-      ]),
-    );
-    // Only count cross-listed courses once per season
-    const countedCourses = new Set<string>();
-    if (!data) return profInfo;
-    for (const season of data.computed_listing_info as RelatedListingInfo[]) {
-      if (countedCourses.has(`${season.season_code}-${season.course_code}`))
-        continue;
-      if (!season.professor_info) continue;
-      season.professor_info.forEach((prof) => {
-        if (profInfo.has(prof.name)) {
-          const dict = profInfo.get(prof.name)!;
-          dict.numCourses++;
-          dict.totalRating += prof.average_rating;
-          dict.email = prof.email;
-          season.all_course_codes.forEach((c) => {
-            countedCourses.add(`${season.season_code}-${c}`);
-          });
-        }
-      });
-    }
-    return profInfo;
-  }, [data, listing]);
-
-  // Get past syllabi links
-  const pastSyllabi = useMemo(() => {
-    if (!data) return [];
-    return data.computed_listing_info
-      .filter(
-        (
-          course,
-        ): course is RelatedListingInfo & {
-          syllabus_url: string;
-        } =>
-          course.same_course_id === listing.same_course_id &&
-          Boolean(course.syllabus_url),
-      )
-      .filter(
-        // Remove duplicates by syllabus URL
-        (v, i, a) =>
-          a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
-      )
-      .sort(
-        (a, b) =>
-          b.season_code.localeCompare(a.season_code, 'en-US') ||
-          parseInt(a.section, 10) - parseInt(b.section, 10),
-      );
-  }, [data, listing.same_course_id]);
-
-  const [showPastSyllabi, setShowPastSyllabi] = useState(
-    pastSyllabi.length < 8,
-  );
-
   const overlapSections = useMemo(() => {
     const overlapSections: {
       [filter in Filter]: CourseOffering[];
@@ -402,9 +568,6 @@ function CourseModalOverview({
       });
     return overlapSections;
   }, [data, listing]);
-  // Wait until data is fetched
-  if (loading || error) return <CourseModalLoading />;
-  // Options for the evaluation filters
   const options = [
     {
       displayName: `Course (${overlapSections.course.length})`,
@@ -416,47 +579,113 @@ function CourseModalOverview({
       value: 'professor',
     },
   ] as const;
+  const [filter, setFilter] = useState<Filter>('both');
+  return (
+    <Col md={5} className="px-0 my-0">
+      <Row
+        className={clsx(
+          styles.filterContainer,
+          'm-auto justify-content-center',
+        )}
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          // Left/right arrow key
+          const newIndx = ((optionsIndx[filter] +
+            (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
+            3) as 0 | 1 | 2;
+          setFilter(options[newIndx].value);
+        }}
+        tabIndex={0}
+      >
+        <MultiToggle
+          options={options}
+          selectedOption={filter}
+          onSelectOption={(val) => setFilter(val)}
+          className={clsx(styles.evaluationsFilter, 'mb-2')}
+        />
+      </Row>
+      {overlapSections[filter].length !== 0 ? (
+        <>
+          <Row className="m-auto pb-1 justify-content-center">
+            <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
+              <span className={styles.evaluationHeader}>Season</span>
+            </Col>
+            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+              <span className={styles.evaluationHeader}>Class</span>
+            </Col>
+            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+              <span className={styles.evaluationHeader}>Prof</span>
+            </Col>
+            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+              <span className={styles.evaluationHeader}>Work</span>
+            </Col>
+          </Row>
+          {overlapSections[filter].map((offering) => (
+            <Row
+              key={offering.listing.season_code + offering.listing.crn}
+              className="m-auto py-1 justify-content-center"
+            >
+              <Col
+                xs={5}
+                className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
+                onClick={() => {
+                  // Note, we purposefully use the listing data fetched
+                  // from GraphQL instead of the static seasons data.
+                  // This means on navigation we don't have to possibly
+                  // fetch a new season and cause a loading screen.
+                  gotoCourse(offering.listing);
+                }}
+              >
+                <strong>{toSeasonString(offering.listing.season_code)}</strong>
+                <div className={clsx(styles.details, 'mx-auto')}>
+                  {filter === 'professor'
+                    ? offering.listing.course_code
+                    : filter === 'both'
+                      ? `Section ${offering.listing.section}`
+                      : offering.professor[0]}
+                </div>
+              </Col>
+              <RatingContent offering={offering} hasEvals={user.hasEvals} />
+            </Row>
+          ))}
+        </>
+      ) : (
+        <Row className="m-auto justify-content-center">
+          <strong>No Results</strong>
+        </Row>
+      )}
+    </Col>
+  );
+}
 
-  // Hold index of each filter option
-  const optionsIndx = {
-    course: 0,
-    both: 1,
-    professor: 2,
-  };
+function CourseModalOverview({
+  gotoCourse,
+  listing,
+}: {
+  readonly gotoCourse: (x: Listing) => void;
+  readonly listing: Listing;
+}) {
+  const { user } = useUser();
+  const { numFriends } = useSearch();
+  const alsoTaking = [
+    ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
+  ];
 
-  const COL_LEN_LEFT = 4;
+  const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
+    variables: {
+      hasEval: Boolean(user.hasEvals), // Skip this query if not authenticated
+      same_course_id: listing.same_course_id,
+      professor_ids: listing.professor_ids,
+    },
+  });
+
+  // Wait until data is fetched
+  if (loading || error) return <CourseModalLoading />;
 
   return (
     <Modal.Body>
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
-          {/* Course Description */}
-          <Row className="mx-auto">
-            <ResponsiveEllipsis
-              style={{ whiteSpace: 'pre-wrap' }}
-              text={
-                listing.description ? listing.description : 'no description'
-              }
-              maxLine={lines}
-              basedOn="words"
-              onReflow={(rleState) => setClamped(rleState.clamped)}
-            />
-          </Row>
-          {/* Read More arrow button */}
-          {clamped && (
-            <Row className="mx-auto">
-              <LinkLikeText
-                className="mx-auto"
-                onClick={() => {
-                  setLines(100);
-                }}
-                title="Read More"
-              >
-                <IoIosArrowDown size={20} />
-              </LinkLikeText>
-            </Row>
-          )}
-          {/* Course Requirements */}
+          <Description listing={listing} />
           {listing.requirements && (
             <Row className="mx-auto">
               <span className={clsx(styles.requirements, 'pt-1')}>
@@ -464,359 +693,59 @@ function CourseModalOverview({
               </span>
             </Row>
           )}
-          {/* Course Syllabus */}
-          <Row className="m-auto pt-4 pb-2">
-            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.labelBubble}>Syllabus</span>
-            </Col>
-            <Col
-              sm={12 - COL_LEN_LEFT}
-              xs={11 - COL_LEN_LEFT}
-              className={styles.metadata}
-            >
-              {listing.syllabus_url ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={listing.syllabus_url}
-                  className="d-flex"
-                >
-                  View Syllabus
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
-                </a>
-              ) : (
-                'N/A'
-              )}
-            </Col>
-          </Row>
-          {pastSyllabi.length > 0 && (
-            <Row className="m-auto pt-4 pb-2">
-              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span
-                  role="button"
-                  className={styles.toggleBubble}
-                  onClick={() => setShowPastSyllabi(!showPastSyllabi)}
-                >
-                  Past syllabi ({pastSyllabi.length}){' '}
-                  {showPastSyllabi ? (
-                    <MdExpandLess size={18} className="my-auto" />
-                  ) : (
-                    <MdExpandMore size={18} className="my-auto" />
-                  )}
-                </span>
-              </Col>
-              <Collapse in={showPastSyllabi}>
-                <Col
-                  sm={12 - COL_LEN_LEFT}
-                  xs={11 - COL_LEN_LEFT}
-                  className={styles.metadata}
-                >
-                  {pastSyllabi.map((course) => (
-                    <a
-                      key={`${course.season_code}-${course.section}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={course.syllabus_url}
-                      className="d-flex"
-                    >
-                      {toSeasonString(course.season_code)} (section{' '}
-                      {course.section})
-                      <HiExternalLink size={18} className="ml-1 my-auto" />
-                    </a>
+          <Syllabus data={data} listing={listing} />
+          <Professors data={data} listing={listing} />
+          <TimeLocation listing={listing} />
+          {[
+            { name: 'Section', value: listing.section },
+            {
+              name: 'Info',
+              value: listing.flag_info.length ? (
+                <ul className={styles.flagInfo}>
+                  {listing.flag_info.map((text) => (
+                    <li key={text}>{text}</li>
                   ))}
-                </Col>
-              </Collapse>
-            </Row>
-          )}
-          {/* Course Professors */}
-          <Row className="m-auto py-2">
-            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.labelBubble}>Professor</span>
-            </Col>
-            <Col
-              sm={12 - COL_LEN_LEFT}
-              xs={11 - COL_LEN_LEFT}
-              className={styles.metadata}
-            >
-              {listing.professor_names.length
-                ? listing.professor_names.map((prof, index) => (
-                    <React.Fragment key={prof}>
-                      {index ? ' • ' : ''}
-                      <OverlayTrigger
-                        trigger="click"
-                        rootClose
-                        placement="right"
-                        overlay={profInfoPopover(prof, profInfo.get(prof))}
-                      >
-                        <LinkLikeText>{prof}</LinkLikeText>
-                      </OverlayTrigger>
-                    </React.Fragment>
+                </ul>
+              ) : null,
+            },
+            { name: 'Enrollment', value: getEnrolled(listing, 'modal') },
+            { name: 'Credits', value: listing.credits },
+            { name: 'Class Notes', value: listing.classnotes },
+            { name: 'Registrar Notes', value: listing.regnotes },
+            { name: 'Reading Period', value: listing.rp_attr },
+            {
+              name: 'Final Exam',
+              value: listing.final_exam === 'HTBA' ? null : listing.final_exam,
+            },
+            {
+              name: 'Friends',
+              value: alsoTaking.length
+                ? alsoTaking.map((friend, index) => (
+                    <Row className="m-auto" key={index}>
+                      {friend + (index === alsoTaking.length - 1 ? '' : ',')}
+                    </Row>
                   ))
-                : 'N/A'}
-            </Col>
-          </Row>
-          {/* Course Times */}
-          <Row className="m-auto py-2">
-            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.labelBubble}>Meets</span>
-            </Col>
-            <Col
-              sm={12 - COL_LEN_LEFT}
-              xs={11 - COL_LEN_LEFT}
-              className={styles.metadata}
-            >
-              {[...times.entries()].map(([timespan, days]) => (
-                <div key={timespan}>
-                  {[...days]
-                    .map((d) =>
-                      ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                        ? d.slice(0, 2)
-                        : d[0],
-                    )
-                    .join('')}{' '}
-                  {timespan}
-                </div>
-              ))}
-            </Col>
-          </Row>
-          {/* Course Location */}
-          <Row className="m-auto py-2">
-            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.labelBubble}>Location</span>
-            </Col>
-            <Col
-              sm={12 - COL_LEN_LEFT}
-              xs={11 - COL_LEN_LEFT}
-              className={styles.metadata}
-            >
-              {[...locations.entries()].map(([location, locationURL]) => (
-                <div key={location}>
-                  {locationURL ? (
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={locationURL}
-                    >
-                      {location}
-                      <HiExternalLink size={18} className="ml-1 my-auto" />
-                    </a>
-                  ) : (
-                    location
-                  )}
-                </div>
-              ))}
-            </Col>
-          </Row>
-          {/* Course Section */}
-          <Row className="m-auto py-2">
-            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.labelBubble}>Section</span>
-            </Col>
-            <Col
-              sm={12 - COL_LEN_LEFT}
-              xs={11 - COL_LEN_LEFT}
-              className={styles.metadata}
-            >
-              {listing.section ? listing.section : 'N/A'}
-            </Col>
-          </Row>
-          {/* Course Information (flag_info) */}
-          {listing.flag_info.length > 0 && (
-            <Row className="m-auto py-2">
-              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.labelBubble}>Info</span>
-              </Col>
-              <Col
-                sm={12 - COL_LEN_LEFT}
-                xs={11 - COL_LEN_LEFT}
-                className={styles.metadata}
-              >
-                {listing.flag_info.length ? (
-                  <ul className={styles.flagInfo}>
-                    {listing.flag_info.map((text) => (
-                      <li key={text}>{text}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  'N/A'
-                )}
-              </Col>
-            </Row>
-          )}
-          {/* Course Enrollment */}
-          <Row className="m-auto py-2">
-            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.labelBubble}>Enrollment</span>
-            </Col>
-            <Col
-              sm={12 - COL_LEN_LEFT}
-              xs={11 - COL_LEN_LEFT}
-              className={styles.metadata}
-            >
-              {getEnrolled(listing, 'modal')}
-            </Col>
-          </Row>
-          {/* Credits */}
-          <Row className="m-auto py-2">
-            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={styles.labelBubble}>Credits</span>
-            </Col>
-            <Col
-              sm={12 - COL_LEN_LEFT}
-              xs={11 - COL_LEN_LEFT}
-              className={styles.metadata}
-            >
-              {listing.credits}
-            </Col>
-          </Row>
-          {/* Class Notes (classnotes) */}
-          {listing.classnotes && (
-            <Row className="m-auto py-2">
-              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.labelBubble}>Class Notes</span>
-              </Col>
-              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
-                {listing.classnotes}
-              </Col>
-            </Row>
-          )}
-          {/* Registrar Notes (regnotes) */}
-          {listing.regnotes && (
-            <Row className="m-auto py-2">
-              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.labelBubble}>Registrar Notes</span>
-              </Col>
-              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
-                {listing.regnotes}
-              </Col>
-            </Row>
-          )}
-          {/* Reading Period Notes (rp_attr) */}
-          {listing.rp_attr && (
-            <Row className="m-auto py-2">
-              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.labelBubble}>Reading Period</span>
-              </Col>
-              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
-                {listing.rp_attr}
-              </Col>
-            </Row>
-          )}
-          {/* Final Exam (final_exam) */}
-          {listing.final_exam && listing.final_exam !== 'HTBA' && (
-            <Row className="m-auto py-2">
-              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.labelBubble}>Final Exam</span>
-              </Col>
-              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
-                {listing.final_exam}
-              </Col>
-            </Row>
-          )}
-          {/* Friends that are also shopping this course */}
-          {alsoTaking.length > 0 && (
-            <Row className="m-auto py-2">
-              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={styles.labelBubble}>Friends</span>
-              </Col>
-              <Col
-                sm={12 - COL_LEN_LEFT}
-                xs={11 - COL_LEN_LEFT}
-                className={styles.metadata}
-              >
-                {alsoTaking.map((friend, index) => (
-                  <Row className="m-auto" key={index}>
-                    {friend + (index === alsoTaking.length - 1 ? '' : ',')}
-                  </Row>
-                ))}
-              </Col>
-            </Row>
-          )}
-        </Col>
-        {/* Course Evaluations */}
-        <Col md={5} className="px-0 my-0">
-          {/* Filter Select */}
-          <Row
-            className={clsx(
-              styles.filterContainer,
-              'm-auto justify-content-center',
-            )}
-            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-              // Left/right arrow key
-              const newIndx = ((optionsIndx[filter] +
-                (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
-                3) as 0 | 1 | 2;
-              setFilter(options[newIndx].value);
-            }}
-            tabIndex={0}
-          >
-            <MultiToggle
-              options={options}
-              selectedOption={filter}
-              onSelectOption={(val) => setFilter(val)}
-              className={clsx(styles.evaluationsFilter, 'mb-2')}
-            />
-          </Row>
-          {/* Course Evaluations */}
-          {overlapSections[filter].length !== 0 ? (
-            <>
-              <Row className="m-auto pb-1 justify-content-center">
-                <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
-                  <span className={styles.evaluationHeader}>Season</span>
-                </Col>
-                <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                  <span className={styles.evaluationHeader}>Class</span>
-                </Col>
-                <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                  <span className={styles.evaluationHeader}>Prof</span>
-                </Col>
-                <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                  <span className={styles.evaluationHeader}>Work</span>
-                </Col>
-              </Row>
-              {overlapSections[filter].map((offering) => (
-                <Row
-                  key={offering.listing.season_code + offering.listing.crn}
-                  className="m-auto py-1 justify-content-center"
-                >
-                  {/* The listing button, either clickable or greyed out based on
-                whether evaluations exist */}
-                  <Col
-                    xs={5}
-                    className={clsx(
-                      styles.ratingBubble,
-                      'px-0 mr-3 text-center',
-                    )}
-                    onClick={() => {
-                      // Note, we purposefully use the listing data fetched
-                      // from GraphQL instead of the static seasons data.
-                      // This means on navigation we don't have to possibly
-                      // fetch a new season and cause a loading screen.
-                      gotoCourse(offering.listing);
-                    }}
-                  >
-                    <strong>
-                      {toSeasonString(offering.listing.season_code)}
-                    </strong>
-                    <div className={clsx(styles.details, 'mx-auto')}>
-                      {filter === 'professor'
-                        ? offering.listing.course_code
-                        : filter === 'both'
-                          ? `Section ${offering.listing.section}`
-                          : offering.professor[0]}
-                    </div>
+                : null,
+            },
+          ].map(
+            ({ name, value }) =>
+              value && (
+                <Row className="m-auto py-2" key={name}>
+                  <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+                    <span className={styles.labelBubble}>{name}</span>
                   </Col>
-                  {/* All Ratings */}
-                  <RatingContent offering={offering} hasEvals={user.hasEvals} />
+                  <Col
+                    sm={12 - COL_LEN_LEFT}
+                    xs={11 - COL_LEN_LEFT}
+                    className={styles.metadata}
+                  >
+                    {value}
+                  </Col>
                 </Row>
-              ))}
-            </>
-          ) : (
-            <Row className="m-auto justify-content-center">
-              <strong>No Results</strong>
-            </Row>
+              ),
           )}
         </Col>
+        <EvalsCol gotoCourse={gotoCourse} data={data} listing={listing} />
       </Row>
     </Modal.Body>
   );

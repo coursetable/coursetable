@@ -133,13 +133,6 @@ function RatingCell({
   );
 }
 
-/**
- * Renders a grid item for a search result
- * @prop course data for the current course
- * @prop numCols integer that holds how many columns in grid view
- * @prop multiSeasons are we displaying courses across multiple seasons
- */
-
 function ResultsGridItem({
   course,
   numCols,
@@ -155,20 +148,16 @@ function ResultsGridItem({
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
-  // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
   const season = Number(course.season_code[5]);
   const year = course.season_code.substring(2, 4);
-  // Size of season icons
-  const iconSize = 13;
-  // Determine the icon for this season
   const icon =
     season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={iconSize} />
+      <FcCloseUpMode className="my-auto" size={13} />
     ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
+      <IoMdSunny color="#ffaa00" className="my-auto" size={13} />
     ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
+      <FaCanadianMapleLeaf className="my-auto" size={13} />
     );
 
   const inWorksheet = useMemo(
@@ -213,7 +202,6 @@ function ResultsGridItem({
         tabIndex={0}
       >
         <Row className="m-auto">
-          {/* Course Code */}
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.courseCodes}>
@@ -246,7 +234,6 @@ function ResultsGridItem({
               </small>
             </Row>
           </Col>
-          {/* Season tag */}
           {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
@@ -277,13 +264,11 @@ function ResultsGridItem({
             </Col>
           )}
         </Row>
-        {/* Course Title */}
         <Row className="m-auto">
           <strong className={styles.oneLine}>{course.title}</strong>
         </Row>
         <Row className="m-auto justify-content-between">
           <Col xs={7} className="p-0">
-            {/* Course Professors */}
             <Row className="m-auto">
               <TextComponent
                 type="secondary"
@@ -294,7 +279,6 @@ function ResultsGridItem({
                   : 'Professor: TBA'}
               </TextComponent>
             </Row>
-            {/* Course Times */}
             <Row className="m-auto">
               <small className={clsx(styles.oneLine, styles.smallText)}>
                 <TextComponent type="secondary">
@@ -304,7 +288,6 @@ function ResultsGridItem({
                 </TextComponent>
               </small>
             </Row>
-            {/* Course Location */}
             <Row className="m-auto">
               <small className={clsx(styles.oneLine, styles.smallText)}>
                 <TextComponent type="secondary">
@@ -314,7 +297,6 @@ function ResultsGridItem({
                 </TextComponent>
               </small>
             </Row>
-            {/* Course Skills and Areas */}
             <Row className="m-auto">
               <div className={tagStyles.skillsAreas}>
                 {course.skills.map((skill) => (
@@ -353,7 +335,6 @@ function ResultsGridItem({
           </Col>
         </Row>
       </div>
-      {/* Add/remove from worksheet button */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
           listing={course}

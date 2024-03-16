@@ -10,9 +10,6 @@ type Props = {
   readonly useColors?: boolean;
 };
 
-/**
- * Popout select component for select filters in popout dropdowns
- */
 export function PopoutSelect<
   T extends Option<number | string>,
   IsMulti extends boolean,

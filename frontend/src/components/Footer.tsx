@@ -9,13 +9,49 @@ import { Hr, TextComponent } from './Typography';
 import { scrollToTop } from '../utilities/display';
 import VercelBanner from '../images/powered-by-vercel.svg';
 
+const links = [
+  {
+    section: 'Explore',
+    items: [
+      { name: 'Catalog', to: '/catalog' },
+      { name: 'Worksheet', to: '/worksheet' },
+    ],
+  },
+  {
+    section: 'Support',
+    items: [
+      { name: 'FAQ', to: '/faq' },
+      { name: 'Feedback', to: 'https://feedback.coursetable.com/' },
+      { name: 'Status', to: 'https://stats.uptimerobot.com/NpVA5UNlX3' },
+      { name: 'Privacy Policy', to: '/privacypolicy' },
+    ],
+  },
+  {
+    section: 'Developers',
+    items: [{ name: 'GraphQL playground', to: '/graphiql' }],
+  },
+  {
+    section: 'About',
+    items: [
+      { name: 'Team', to: '/about' },
+      { name: 'Release Notes', to: '/releases' },
+      { name: 'Join Us', to: '/joinus' },
+      { name: 'GitHub', to: 'https://github.com/coursetable' },
+      { name: 'LinkedIn', to: 'https://www.linkedin.com/company/coursetable/' },
+      {
+        name: 'Support CourseTable',
+        to: 'https://www.buymeacoffee.com/coursetable',
+      },
+    ],
+  },
+];
+
 function Footer() {
   return (
     <Container fluid>
       <Hr />
       <footer className={clsx(styles.footer, 'py-5 px-5')}>
         <div className="row">
-          {/* Copyright */}
           <div className="col-12 col-md">
             <span className={styles.footerLogo}>
               <Logo icon={false} />
@@ -32,129 +68,26 @@ function Footer() {
               />
             </a>
           </div>
-          <div className="col-6 col-md">
-            <h5 className={styles.sectionHeading}>Explore</h5>
-            <ul className="list-unstyled text-small">
-              {/* Catalog */}
-              <li>
-                <NavLink to="/catalog" onClick={scrollToTop}>
-                  <TextComponent type="secondary">Catalog</TextComponent>
-                </NavLink>
-              </li>
-              {/* Worksheet */}
-              <li>
-                <NavLink to="/worksheet" onClick={scrollToTop}>
-                  <TextComponent type="secondary">Worksheet</TextComponent>
-                </NavLink>
-              </li>
-            </ul>
-          </div>
-          <div className="col-6 col-md">
-            <h5 className={styles.sectionHeading}>Support</h5>
-            <ul className="list-unstyled text-small">
-              {/* FAQ */}
-              <li>
-                <NavLink to="/faq" onClick={scrollToTop}>
-                  <TextComponent type="secondary">FAQ</TextComponent>
-                </NavLink>
-              </li>
-              {/* Feedback */}
-              <li>
-                <a
-                  href="https://feedback.coursetable.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={scrollToTop}
-                >
-                  <TextComponent type="secondary">Feedback</TextComponent>
-                </a>
-              </li>
-              {/* Status */}
-              <li>
-                <a
-                  href="https://stats.uptimerobot.com/NpVA5UNlX3"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <TextComponent type="secondary">Status</TextComponent>
-                </a>
-              </li>
-              {/* Privacy Policy */}
-              <li>
-                <NavLink to="/privacypolicy" onClick={scrollToTop}>
-                  <TextComponent type="secondary">Privacy Policy</TextComponent>
-                </NavLink>
-              </li>
-            </ul>
-          </div>
-          <div className="col-6 col-md">
-            <h5 className={styles.sectionHeading}>Developers</h5>
-            <ul className="list-unstyled text-small">
-              {/* GraphQL explorer */}
-              <li>
-                <NavLink to="/graphiql" onClick={scrollToTop}>
-                  <TextComponent type="secondary">
-                    GraphQL playground
-                  </TextComponent>
-                </NavLink>
-              </li>
-            </ul>
-          </div>
-          <div className="col-6 col-md">
-            <h5 className={styles.sectionHeading}>About</h5>
-            <ul className="list-unstyled text-small">
-              {/* Team */}
-              <li>
-                <NavLink to="/about" onClick={scrollToTop}>
-                  <TextComponent type="secondary">Team</TextComponent>
-                </NavLink>
-              </li>
-              {/* Release Notes */}
-              <li>
-                <NavLink to="/releases" onClick={scrollToTop}>
-                  <TextComponent type="secondary">Release Notes</TextComponent>
-                </NavLink>
-              </li>
-              {/* Join us */}
-              <li>
-                <NavLink to="/joinus" onClick={scrollToTop}>
-                  <TextComponent type="secondary">Join Us</TextComponent>
-                </NavLink>
-              </li>
-              {/* Github */}
-              <li>
-                <a
-                  href="https://github.com/coursetable"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <TextComponent type="secondary">GitHub</TextComponent>
-                </a>
-              </li>
-              {/* Blog */}
-              <li>
-                <a
-                  href="https://www.linkedin.com/company/coursetable/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <TextComponent type="secondary">LinkedIn</TextComponent>
-                </a>
-              </li>
-              {/* Buy Me A Coffee */}
-              <li>
-                <a
-                  href="https://www.buymeacoffee.com/coursetable"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <TextComponent type="secondary">
-                    Support CourseTable
-                  </TextComponent>
-                </a>
-              </li>
-            </ul>
-          </div>
+          {links.map(({ section, items }) => (
+            <div key={section} className="col-6 col-md">
+              <h5 className={styles.sectionHeading}>{section}</h5>
+              <ul className="list-unstyled text-small">
+                {items.map(({ name, to }) => (
+                  <li key={name}>
+                    {to.startsWith('https:') ? (
+                      <a href={to} rel="noopener noreferrer" target="_blank">
+                        <TextComponent type="secondary">{name}</TextComponent>
+                      </a>
+                    ) : (
+                      <NavLink to={to} onClick={scrollToTop}>
+                        <TextComponent type="secondary">{name}</TextComponent>
+                      </NavLink>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </footer>
     </Container>

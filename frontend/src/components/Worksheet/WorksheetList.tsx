@@ -6,10 +6,6 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import { useSearch } from '../../contexts/searchContext';
 import Results from '../Search/Results';
 
-/**
- * Render expanded worksheet list after maximize button is clicked
- */
-
 function WorksheetList() {
   const { courses, worksheetLoading } = useWorksheet();
 
@@ -29,21 +25,18 @@ function WorksheetList() {
   );
 
   return (
-    <div>
-      <Row className="p-0 m-0">
-        {/* Catalog Search Search */}
-        <Col md={12} className="m-0 px-0 pb-3">
-          <div className="d-flex justify-content-center">
-            <Results
-              data={worksheetData}
-              loading={worksheetLoading}
-              multiSeasons={false}
-              page="worksheet"
-            />
-          </div>
-        </Col>
-      </Row>
-    </div>
+    <Row className="p-0 m-0">
+      <Col md={12} className="m-0 px-0 pb-3">
+        <div className="d-flex justify-content-center">
+          <Results
+            data={worksheetData}
+            loading={worksheetLoading}
+            multiSeasons={false}
+            page="worksheet"
+          />
+        </div>
+      </Col>
+    </Row>
   );
 }
 

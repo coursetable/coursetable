@@ -115,7 +115,6 @@ function MeDropdown({ isExpanded, setIsExpanded }: Props) {
             >
               Feedback
             </DropdownItem>
-            {/* Release notes */}
             <DropdownItem icon={FcNews} to="/releases">
               Release Notes
             </DropdownItem>
@@ -133,7 +132,6 @@ function MeDropdown({ isExpanded, setIsExpanded }: Props) {
                 Tutorial
               </DropdownItem>
             )}
-            {/* Sign In/Out button */}
             {authStatus === 'authenticated' ? (
               <DropdownItem
                 icon={FaSignOutAlt}

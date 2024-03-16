@@ -54,16 +54,6 @@ export function BlurRatingTooltip({
   );
 }
 
-/**
- * Renders a list item for a search result
- * @prop course - object | listing data for the current course
- * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop isFirst - boolean | is this the first course of the results?
- * @prop COL_SPACING - object | with widths of each column
- * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
- * @prop friends - array | of friends also taking this course
- */
-
 function ResultsItem({
   course,
   multiSeasons,
@@ -82,22 +72,20 @@ function ResultsItem({
   const { worksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
-  const friends = numFriends[course.season_code + course.crn];
+  const friends = numFriends[`${course.season_code}${course.crn}`];
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
   const season = Number(course.season_code[5]);
   const year = course.season_code.substring(2, 4);
-  // Size of season icons
-  const iconSize = 10;
   // Determine the icon for this season
   const icon =
     season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={iconSize} />
+      <FcCloseUpMode className="my-auto" size={10} />
     ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
+      <IoMdSunny color="#ffaa00" className="my-auto" size={10} />
     ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
+      <FaCanadianMapleLeaf className="my-auto" size={10} />
     );
 
   const inWorksheet = useMemo(
@@ -138,14 +126,12 @@ function ResultsItem({
       tabIndex={0}
       style={style}
     >
-      {/* Search Row Item */}
       <Row
         className={clsx(
           styles.resultItemContent,
           'mx-auto pl-4 pr-2 py-0 justify-content-between',
         )}
       >
-        {/* Season */}
         {multiSeasons && (
           <div className={clsx('d-flex', colStyles.seasonCol)}>
             <OverlayTrigger
@@ -172,7 +158,6 @@ function ResultsItem({
             </OverlayTrigger>
           </div>
         )}
-        {/* Course Code */}
         <div
           className={clsx(
             colStyles.codeCol,
@@ -230,7 +215,6 @@ function ResultsItem({
             </InfoPopover>
           )}
         >
-          {/* Course Title */}
           <div className={colStyles.titleCol}>
             <div className={styles.ellipsisText}>{course.title}</div>
           </div>
@@ -316,11 +300,9 @@ function ResultsItem({
             </div>
           </div>
         </div>
-        {/* Previous Enrollment */}
         <div className={clsx('d-flex', colStyles.enrollCol)}>
           <span className="my-auto">{getEnrolled(course, 'display')}</span>
         </div>
-        {/* Skills and Areas */}
         <div className={clsx('d-flex', colStyles.skillAreaCol)}>
           <span className={styles.skillsAreas}>
             {[...course.skills, ...course.areas].map((skill, index) => (
@@ -328,15 +310,12 @@ function ResultsItem({
             ))}
           </span>
         </div>
-        {/* Course Meeting Days & Times */}
         <div className={colStyles.meetCol}>
           <div className={styles.ellipsisText}>{course.times_summary}</div>
         </div>
-        {/* Course Location */}
         <div className={colStyles.locCol}>
           <div className={styles.ellipsisText}>{course.locations_summary}</div>
         </div>
-        {/* # Friends also shopping */}
         <div className={clsx('d-flex', colStyles.friendsCol)}>
           <OverlayTrigger
             placement="top"
@@ -355,7 +334,6 @@ function ResultsItem({
             </span>
           </OverlayTrigger>
         </div>
-        {/* Add/remove from worksheet button */}
         <div
           className={styles.worksheetBtn}
           data-tutorial={isFirst && 'catalog-6'}

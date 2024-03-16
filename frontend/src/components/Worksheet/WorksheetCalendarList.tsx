@@ -21,9 +21,6 @@ import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import styles from './WorksheetCalendarList.module.css';
 
-/**
- * Render worksheet list in default worksheet view
- */
 function WorksheetCalendarList() {
   const { courses, curSeason, hiddenCourses, toggleCourse } = useWorksheet();
 
@@ -108,13 +105,10 @@ function WorksheetCalendarList() {
           </div>
         </SurfaceComponent>
       </div>
-      {/* List of courses for this season */}
       <SurfaceComponent className={clsx(styles.courseList, 'mx-1')}>
         {items.length > 0 ? (
-          // There are courses for this season
           <ListGroup variant="flush">{items}</ListGroup>
         ) : (
-          // There aren't courses for this season
           <NoCourses />
         )}
       </SurfaceComponent>

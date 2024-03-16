@@ -23,15 +23,6 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import OverlayComponent from './OverlayComponent';
 import FloatingButton from './OverlayButton';
 
-/**
- * Renders the infinite list of search results for both catalog and worksheet
- * @prop data - array | that holds the search results
- * @prop loading - boolean | Is the search query finished?
- * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop numFriends = object | holds a list of each friend taking a specific course
- * @prop page = string | page search results are on
- */
-
 function Results({
   data,
   loading = false,
@@ -43,7 +34,6 @@ function Results({
   readonly multiSeasons?: boolean;
   readonly page?: 'catalog' | 'worksheet';
 }) {
-  // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
   const [isListView, setIsListView] = useSessionStorageState(
     'isListView',
@@ -58,7 +48,6 @@ function Results({
 
   const { curSeason } = useWorksheet();
 
-  // Number of columns to use in grid view
   const numCols = isMobile ? 1 : isTablet ? 2 : 3;
 
   let resultsListing: JSX.Element | undefined = undefined;
@@ -71,7 +60,6 @@ function Results({
       </Row>
     );
   } else if (data.length === 0) {
-    // If no courses found, render the empty state
     resultsListing = (
       <div className="text-center py-5">
         <img
