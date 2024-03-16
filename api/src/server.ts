@@ -7,6 +7,7 @@ import https from 'https';
 import cors from 'cors';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import {
   SECURE_PORT,
@@ -123,19 +124,29 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
-app.use('/ferry', (req, _, next) => {
-  const server = req.socket; // Bun server
-  server.addListener('error', (err) => winston.error(err));
-  server.addListener('upgrade', (req, socket, head) => {
-    winston.info('Upgrading connection');
-    // TODO: check /ferry path, modify headers, send to ferry
-  });
+// Ferry proxy
+const ferryProxy = createProxyMiddleware({
+  target: 'http://graphql-engine:8080',
+  ignorePath: true,
 });
+
+// Add the authentication header to the request
+// Proxy initial HTTP requests to Ferry
+app.use('/ferry', (req, res, next) => {
+  winston.info('Proxying request to Ferry');
+  req.headers['X-Hasura-Role'] = req.isAuthenticated()
+    ? 'student'
+    : 'anonymous';
+  const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
+  req.headers['X-Hasura-Role'] = hasuraRole;
+  ferryProxy(req, res, next);
+});
+
 // Enable request logging.
 app.use(morgan);
 
-// Figure out how to make this work with Ferry (has to go after Ferry
-// currently)
+// Has to go after Ferry because it consumes the request body stream
+// and the http-proxy needs a stream to consume.
 app.use(express.json());
 
 // Activate catalog and CAS authentication
