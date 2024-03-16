@@ -1,12 +1,8 @@
-/**
- * @file Routes for working with user accounts.
- */
-
 import type express from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { toggleBookmark, getUserWorksheet } from './user.handlers';
-import { authBasic } from '../auth/auth.handlers';
+import { toggleBookmark, getUserWorksheet } from './user.handlers.js';
+import { authBasic } from '../auth/auth.handlers.js';
 
 /**
  * Set up user routes.

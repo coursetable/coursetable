@@ -1,15 +1,11 @@
-/**
- * @file Handlers for working with user accounts.
- */
-
 import type express from 'express';
 import z from 'zod';
 import chroma from 'chroma-js';
 
-import { worksheetCoursesToWorksheets } from './user.utils';
-import winston from '../logging/winston';
+import { worksheetCoursesToWorksheets } from './user.utils.js';
+import winston from '../logging/winston.js';
 
-import { prisma } from '../config';
+import { prisma } from '../config.js';
 
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),

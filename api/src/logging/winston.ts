@@ -1,6 +1,6 @@
 import path from 'path';
 import winston from 'winston';
-import { isDev } from '../config';
+import { isDev } from '../config.js';
 
 const levels = {
   error: 0,

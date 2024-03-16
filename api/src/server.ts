@@ -16,20 +16,20 @@ import {
   CORS_OPTIONS,
   STATIC_FILE_DIR,
   REDIS_HOST,
-} from './config';
-import morgan from './logging/morgan';
-import winston from './logging/winston';
+} from './config.js';
+import morgan from './logging/morgan.js';
+import winston from './logging/winston.js';
 
 // Import routes
-import catalog from './catalog/catalog.routes';
-import { authWithEvals, passportConfig } from './auth/auth.handlers';
-import casAuth from './auth/auth.routes';
-import friends from './friends/friends.routes';
-import canny from './canny/canny.routes';
-import user from './user/user.routes';
-import challenge from './challenge/challenge.routes';
+import catalog from './catalog/catalog.routes.js';
+import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
+import casAuth from './auth/auth.routes.js';
+import friends from './friends/friends.routes.js';
+import canny from './canny/canny.routes.js';
+import user from './user/user.routes.js';
+import challenge from './challenge/challenge.routes.js';
 
-import { fetchCatalog } from './catalog/catalog.utils';
+import { fetchCatalog } from './catalog/catalog.utils.js';
 
 // Initialize the app
 const app = express();
