@@ -124,27 +124,30 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
+// Ferry proxy
+const ferryProxy = createProxyMiddleware({
+  target: 'http://graphql-engine:8080',
+  pathRewrite: { '^/ferry/': '/' },
+  xfwd: true,
+});
+
+// Add the authentication header to the request
+// Proxy initial HTTP requests to Ferry
 app.use(
   '/ferry',
-  createProxyMiddleware({
-    target: 'http://graphql-engine:8080',
-    pathRewrite: { '^/ferry/': '/' },
-    ws: true,
-    xfwd: true,
-    onProxyReq(proxyReq, req) {
-      req.headers['X-Hasura-Role'] = req.isAuthenticated()
-        ? 'student'
-        : 'anonymous';
-      const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
-      proxyReq.setHeader('X-Hasura-Role', hasuraRole);
-    },
-  }),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  (req, res, next) => {
+    const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
+    req.headers['X-Hasura-Role'] = hasuraRole;
+  },
+  ferryProxy,
 );
+
 // Enable request logging.
 app.use(morgan);
 
-// Figure out how to make this work with Ferry (has to go after Ferry
-// currently)
+// Has to go after Ferry because it consumes the request body stream
+// and the http-proxy needs a stream to consume.
 app.use(express.json());
 
 // Activate catalog and CAS authentication
