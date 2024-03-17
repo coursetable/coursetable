@@ -9,16 +9,20 @@ function RatingsGraph({
   ratings,
   reverse,
   labels,
+  enrolled,
 }: {
   readonly ratings: number[];
   readonly reverse: boolean;
   readonly labels: string[];
+  readonly enrolled: number;
 }) {
   const maxVal = Math.max(...ratings);
 
   // Set minimum bar height
   const MIN_HEIGHT = 15;
+  // Loop through each rating to build the bar
 
+  const totalRatings = ratings.reduce((acc, cur) => acc + cur, 0);
   // Holds the bars
   const columns = ratings.map((rating, indx) => {
     // Calculate height of the bar
@@ -62,6 +66,12 @@ function RatingsGraph({
       )}
     >
       {columns}
+      <p style={{ fontSize: '12px', margin: '10px 0' }}>
+        <TextComponent type="secondary">
+          {totalRatings}/{enrolled} (
+          {((totalRatings / enrolled) * 100).toFixed(1)}%) responses
+        </TextComponent>
+      </p>
     </Row>
   );
 }

@@ -47,6 +47,7 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
         }
       }
     }
+    enrolled
   }
 }
 
