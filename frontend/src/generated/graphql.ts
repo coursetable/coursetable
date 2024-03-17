@@ -5522,6 +5522,7 @@ export type SearchEvaluationNarrativesQuery = {
   computed_listing_info: Array<{
     __typename?: 'computed_listing_info';
     crn: number;
+    enrolled: number | null;
     course: {
       __typename?: 'courses';
       evaluation_narratives_aggregate: {
@@ -5789,6 +5790,7 @@ export const SearchEvaluationNarrativesDocument = gql`
           }
         }
       }
+      enrolled
     }
   }
 `;

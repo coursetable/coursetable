@@ -58,6 +58,7 @@ function EvaluationRatings({
           ratings={filteredRatings[question]}
           reverse={question === 'workload' || question === 'challenge'}
           labels={evalQuestions[question].labels}
+          enrolled={info.enrolled ?? 0}
         />
       </div>
     ));

@@ -93,6 +93,7 @@ function EvaluationResponses({
       </div>
     );
   }
+  const enrolled = info.enrolled ?? 0;
 
   return (
     <div>
@@ -186,6 +187,13 @@ function EvaluationResponses({
               <Tab eventKey={key} title={title} key={key}>
                 <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
                   <TextComponent>{question}</TextComponent>
+                </Row>
+                <Row style={{ fontSize: '12px', margin: '10px 0' }}>
+                  <TextComponent type="secondary">
+                    {responses.length}/{enrolled} (
+                    {((responses.length / enrolled) * 100).toFixed(1)}%)
+                    responses
+                  </TextComponent>
                 </Row>
                 {responses}
               </Tab>
