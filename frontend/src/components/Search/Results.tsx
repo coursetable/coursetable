@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
+import FloatingWorksheet from './FloatingWorksheet';
 
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
@@ -157,7 +158,6 @@ function Results({
           numResults={data.length}
         />
       )}
-
       <div
         className={clsx(
           !isListView && 'px-1 pt-3',
@@ -170,6 +170,7 @@ function Results({
       >
         {resultsListing}
       </div>
+      <FloatingWorksheet />
     </div>
   );
 }
