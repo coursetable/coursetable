@@ -281,7 +281,7 @@ export function getCalendarEvents(
             `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
             `EXDATE;TZID=America/New_York:${exDate}`,
           ],
-          description: `Course: ${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
+          description: `${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
           location,
           color,
           listing: c,
