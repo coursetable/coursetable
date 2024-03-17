@@ -26,7 +26,6 @@ const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
-// Share button
 function ShareButton({ courseCode }: { readonly courseCode: string }) {
   const copyToClipboard = () => {
     const textToCopy = `${courseCode} -- CourseTable: ${window.location.href}`;
@@ -152,7 +151,6 @@ function CourseModal() {
                 )}
               </Col>
               <Col className="p-0 ml-3">
-                {/* Course Title */}
                 <Modal.Title>
                   <Row className="mx-auto mt-1 align-items-center">
                     <span className={styles.modalTitle}>
@@ -172,13 +170,11 @@ function CourseModal() {
                 </Modal.Title>
 
                 <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
-                  {/* Course Codes */}
                   <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
                     <TextComponent type="tertiary">
                       {listing.all_course_codes.join(' • ')}
                     </TextComponent>
                   </p>
-                  {/* Course Skills and Areas */}
                   {listing.skills.map((skill) => (
                     <SkillBadge skill={skill} key={skill} />
                   ))}
@@ -211,7 +207,6 @@ function CourseModal() {
           </Container>
         </Modal.Header>
         {view === 'overview' ? (
-          // Show overview data
           <CourseModalOverview
             gotoCourse={(l) => {
               user.hasEvals ? setView('evals') : setView('overview');
@@ -229,7 +224,6 @@ function CourseModal() {
             listing={listing}
           />
         ) : (
-          // Show eval data
           <CourseModalEvaluations
             seasonCode={listing.season_code}
             crn={listing.crn}

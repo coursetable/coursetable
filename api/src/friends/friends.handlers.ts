@@ -243,12 +243,6 @@ export const getRequestsForFriend = async (
   res.status(200).json({ requests: friendNames });
 };
 
-/**
- * Get worksheets of user's friends.
- *
- * @param req - express request object
- * @param res - express response object
- */
 export const getFriendsWorksheets = async (
   req: express.Request,
   res: express.Response,
@@ -257,7 +251,6 @@ export const getFriendsWorksheets = async (
 
   const { netId } = req.user!;
 
-  // Get NetIDs of friends
   winston.info('Getting NetIDs of friends');
   const friendRecords = await prisma.studentFriends.findMany({
     where: {
@@ -269,7 +262,6 @@ export const getFriendsWorksheets = async (
     (friendRecord) => friendRecord.friendNetId,
   );
 
-  // Get friends' worksheets from NetIDs
   winston.info('Getting worksheets of friends');
   const friendWorksheets = await prisma.worksheetCourses.findMany({
     where: {
@@ -280,7 +272,6 @@ export const getFriendsWorksheets = async (
   });
   const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
 
-  // Get friends' infos from NetIDs
   winston.info('Getting info of friends');
 
   const friendInfos = await prisma.studentBluebookSettings.findMany({

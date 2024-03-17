@@ -15,12 +15,6 @@ const ToggleBookmarkReqBodySchema = z.object({
   color: z.string().refine((val) => chroma.valid(val)),
 });
 
-/**
- * Toggle a bookmarked course in a worksheet.
- *
- * @param req - express request object
- * @param res - express response object
- */
 export const toggleBookmark = async (
   req: express.Request,
   res: express.Response,
@@ -49,7 +43,6 @@ export const toggleBookmark = async (
   });
 
   if (action === 'add') {
-    // Add a bookmarked course
     winston.info(
       `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
@@ -61,7 +54,6 @@ export const toggleBookmark = async (
       data: { netId, crn, season, worksheetNumber, color },
     });
   } else if (action === 'remove') {
-    // Remove a bookmarked course
     winston.info(
       `Removing bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
@@ -104,12 +96,6 @@ export const toggleBookmark = async (
   res.sendStatus(200);
 };
 
-/**
- * Get a user's personal worksheet.
- *
- * @param req - express request object
- * @param res - express response object
- */
 export const getUserWorksheet = async (
   req: express.Request,
   res: express.Response,
@@ -118,7 +104,6 @@ export const getUserWorksheet = async (
 
   const { netId } = req.user!;
 
-  // Get user info
   winston.info(`Getting profile for user ${netId}`);
   const studentProfile = await prisma.studentBluebookSettings.findUnique({
     where: {
@@ -126,7 +111,6 @@ export const getUserWorksheet = async (
     },
   });
 
-  // Get worksheets
   winston.info(`Getting worksheets for user ${netId}`);
   const worksheets = await prisma.worksheetCourses.findMany({
     where: {

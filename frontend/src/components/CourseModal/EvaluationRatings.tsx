@@ -9,12 +9,6 @@ import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 const questions = Object.keys(evalQuestions) as (keyof typeof evalQuestions)[];
 
-/**
- * Displays Evaluation Graphs
- * @prop crn - integer that holds current listing's crn
- * @prop info - dictionary that holds the eval data for each question
- */
-
 function EvaluationRatings({
   info,
 }: {

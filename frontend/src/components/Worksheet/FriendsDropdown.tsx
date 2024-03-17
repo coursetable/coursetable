@@ -28,15 +28,7 @@ function DropdownItem({
   );
 }
 
-/**
- * Render friends dropdown in mobile view.
- *
- * We include every friend in this list, even if they haven't selected
- * any classes in this season. In the list, we include the number of
- * listings they have in their worksheet in the given semester.
- */
 function FriendsDropdown() {
-  // Fetch user context data
   const { user } = useUser();
 
   const { person, handlePersonChange } = useWorksheet();

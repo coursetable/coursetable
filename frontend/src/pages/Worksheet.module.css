@@ -25,13 +25,9 @@
     color var(--trans-dur);
 }
 
-/* DISABLE TRANSITION ANIMATIONS */
-
 .hidden {
   display: none;
 }
-
-/* ----------------------------- */
 
 .accordion {
   width: 100vw;
@@ -41,6 +37,7 @@
 .dropdowns {
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  overflow: hidden;
 }
 
 .expandBtn {
@@ -72,5 +69,14 @@
 }
 
 .mobileCalendar {
+  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
   height: 75vh;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding-top: 1rem;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+  overflow: hidden;
 }

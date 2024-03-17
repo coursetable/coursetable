@@ -20,7 +20,6 @@ export function truncatedText(
   return `${text.slice(0, max)}...`;
 }
 
-// Check if a listing is in the user's worksheet
 export function isInWorksheet(
   seasonCode: Season,
   crn: Crn,
@@ -37,14 +36,12 @@ export function isInWorksheet(
   );
 }
 
-// Convert season code to legible string
 export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
   const season = ['Spring', 'Summer', 'Fall'][Number(seasonCode[5]) - 1]!;
   return `${season} ${year}`;
 }
 
-// Checks if the a new course conflicts with the user's worksheet
 export function checkConflict(
   worksheetData: WorksheetCourse[],
   course: Listing,
@@ -53,9 +50,7 @@ export function checkConflict(
   const daysToCheck = Object.keys(
     course.times_by_day,
   ) as (keyof Listing['times_by_day'])[];
-  // Iterate over worksheet listings
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
-    // Continue if they aren't in the same season
     if (worksheetCourse.season_code !== course.season_code) continue;
     for (const day of daysToCheck) {
       const info = worksheetCourse.times_by_day[day];
@@ -82,43 +77,23 @@ export function checkConflict(
   return conflicts;
 }
 
-// Fetch the friends that are also shopping a specific course. Used in course
-// modal overview
-export function friendsAlsoTaking(
-  seasonCode: Season,
-  crn: Crn,
-  friends: FriendRecord | undefined,
-): string[] {
-  if (!friends) return [];
-  return Object.values(friends)
-    .filter(
-      (friend) =>
-        seasonCode in friend.worksheets &&
-        Object.values(friend.worksheets[seasonCode]!).some((w) =>
-          w.some((course) => course.crn === crn),
-        ),
-    )
-    .map((friend) => friend.name);
-}
-
 /**
  * Key is season code + crn;
  * Value is the list of friends taking the class
  */
-export type NumFriendsReturn = { [seasonCodeCrn: string]: Set<string> };
+export type NumFriendsReturn = {
+  [seasonCodeCrn: `${Season}${Crn}`]: Set<string>;
+};
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
 export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
-  // Object to return
   const numFriends: NumFriendsReturn = {};
-  // Iterate over each friend's worksheet
   for (const friend of Object.values(friends)) {
-    // Iterate over each course in this friend's worksheet
     Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
       Object.values(worksheets).forEach((w) =>
         w.forEach((course) => {
-          const key = seasonCode + course.crn; // Key of object is season code + crn
-          (numFriends[key] ??= new Set()).add(friend.name);
+          (numFriends[`${seasonCode as Season}${course.crn}`] ??=
+            new Set()).add(friend.name);
         }),
       );
     });
@@ -126,7 +101,6 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   return numFriends;
 }
 
-// Get the overall rating for a course
 export function getOverallRatings(
   course: Listing,
   usage: 'stat',
@@ -150,7 +124,6 @@ export function getOverallRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-// Get the workload rating for a course
 export function getWorkloadRatings(
   course: Listing,
   usage: 'stat',
@@ -175,7 +148,6 @@ export function getWorkloadRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-// Get average professor rating for a course
 export function getProfessorRatings(
   course: Listing,
   usage: 'stat',
@@ -193,7 +165,6 @@ export function getProfessorRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-// Get start and end times
 export function getDayTimes(
   course: Listing,
 ): { day: Weekdays; start: string; end: string }[] {
@@ -204,27 +175,14 @@ export function getDayTimes(
   }));
 }
 
-// Calculate day and time score
-function calculateDayTime(course: Listing): number | null {
-  // Get all days' times
+function toDayTimeScore(course: Listing): number | null {
   const times = getDayTimes(course);
 
   if (times.length) {
-    // Calculate the time score
-    const startTime = Number(
-      times[0]!.start.split(':').reduce((final, num) => {
-        final += num;
-        return final;
-      }, ''),
-    );
-
-    // Calculate the day score
+    const startTime = Number(times[0]!.start.split(':').join(''));
     const firstDay = Object.keys(course.times_by_day)[0] as Weekdays;
     const dayScore = weekdays.indexOf(firstDay) * 10000;
-
-    // Calculate the total score and return
-    const score = dayScore + startTime;
-    return score;
+    return dayScore + startTime;
   }
 
   // If no times then return null
@@ -271,14 +229,12 @@ function compareByKey(
   ordering: 'asc' | 'desc',
   numFriends?: NumFriendsReturn,
 ) {
-  // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key
-    const friendsTakingA = numFriends![a.season_code + a.crn]?.size ?? 0;
-    const friendsTakingB = numFriends![b.season_code + b.crn]?.size ?? 0;
+    const friendsTakingA = numFriends![`${a.season_code}${a.crn}`]?.size ?? 0;
+    const friendsTakingB = numFriends![`${b.season_code}${b.crn}`]?.size ?? 0;
     return comparatorReturn(friendsTakingA, friendsTakingB, ordering);
   }
-  // Sorting by course rating
   if (key === 'average_rating') {
     return comparatorReturn(
       getOverallRatings(a, 'stat'),
@@ -293,11 +249,8 @@ function compareByKey(
       ordering,
     );
   }
-  // Sorting by days & times
-  if (key === 'times_by_day') {
-    // Calculate day and time score for sorting
-    return comparatorReturn(calculateDayTime(a), calculateDayTime(b), ordering);
-  }
+  if (key === 'times_by_day')
+    return comparatorReturn(toDayTimeScore(a), toDayTimeScore(b), ordering);
   // If value is 0, return null
   return comparatorReturn(
     // || is intentional: 0 also means nonexistence
@@ -340,7 +293,6 @@ export function sortCourses(
   );
 }
 
-// Get the enrollment for a course
 export function getEnrolled(
   course: Pick<
     Listing,
@@ -396,12 +348,10 @@ export function isDiscussionSection(
  * @returns Number of 5 minutes past midnight
  */
 export function toRangeTime(time: string): number {
-  // Get hour and minute
   const splitTime = time.split(':');
   const hour = Number(splitTime[0]);
   const minute = Number(splitTime[1]);
 
-  // Calculate range time
   const rangeTime = hour * 12 + minute / 5;
   return rangeTime;
 }
@@ -411,11 +361,9 @@ export function toRangeTime(time: string): number {
  * @returns A time in the format `hh:mm` (24 hour)
  */
 export function toRealTime(time: number): string {
-  // Get hour and minute
   const hour = Math.floor(time / 12);
   const minute = (time % 12) * 5;
 
-  // Format real time
   const realTime = `${hour}:${minute.toString().padStart(2, '0')}`;
   return realTime;
 }
@@ -434,11 +382,13 @@ export function to12HourTime(time: string) {
   return `${hourInt}:${minuteInt.toString().padStart(2, '0')}${ampm}`;
 }
 
-// Base log
-const getBaseLog = (x: number, y: number) => Math.log(y) / Math.log(x);
-
-// Convert linear to exponential
+/**
+ * Convert linear scale to exponential scale by taking $1.01^x$
+ */
 export const toExponential = (number: number): number => 1.01 ** number;
 
-// Convert exponential to linear
-export const toLinear = (number: number): number => getBaseLog(1.01, number);
+/**
+ * Convert exponential scale to linear scale by taking $\log_{1.01}$
+ */
+export const toLinear = (number: number): number =>
+  Math.log(number) / Math.log(1.01);

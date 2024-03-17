@@ -17,9 +17,6 @@ export default function WorksheetHideButton({
   readonly crn: Crn;
 }) {
   const { toggleCourse } = useWorksheet();
-  // Size of toggle button
-  const buttonSize = 18;
-
   return (
     <OverlayTrigger
       placement="bottom"
@@ -41,13 +38,13 @@ export default function WorksheetHideButton({
         {hidden ? (
           <BsEyeSlash
             color="var(--color-hidden)"
-            size={buttonSize}
+            size={18}
             className={styles.scaleIcon}
           />
         ) : (
           <BsEye
             color="var(--color-text)"
-            size={buttonSize}
+            size={18}
             className={styles.scaleIcon}
           />
         )}

@@ -6,12 +6,6 @@ import styles from './EvaluationResponses.module.css';
 import { Input, TextComponent } from '../Typography';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
-/**
- * Displays Evaluation Comments
- * @prop crn - integer that holds current listing's crn
- * @prop info - dictionary that holds the eval data for each question
- */
-
 function EvaluationResponses({
   info,
 }: {
@@ -50,13 +44,11 @@ function EvaluationResponses({
 
   // Generate HTML to hold the responses to each question
   const [recommend, skills, strengths, summary] = useMemo(() => {
-    // Lists that hold the html for the comments for a specific question
     let tempRecommend: JSX.Element[] = [];
     let tempSkills: JSX.Element[] = [];
     let tempStrengths: JSX.Element[] = [];
     let tempSummary: JSX.Element[] = [];
     const curResponses = sortOrder === 'length' ? sortedResponses : responses;
-    // Populate the lists above
     const genTemp = (resps: string[]) => {
       if (resps.length === 0) return [];
       const filteredResps = resps
@@ -159,53 +151,45 @@ function EvaluationResponses({
             ?.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
         }}
       >
-        {/* Recommend Question */}
-        {recommend.length !== 0 && (
-          <Tab eventKey="recommended" title="Recommend?">
-            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent>
-                Would you recommend this course to another student? Please
-                explain.
-              </TextComponent>
-            </Row>
-            {recommend}
-          </Tab>
-        )}
-        {/* Knowledge/Skills Question */}
-        {skills.length !== 0 && (
-          <Tab eventKey="knowledge/skills" title="Skills">
-            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent>
-                What knowledge, skills, and insights did you develop by taking
-                this course?
-              </TextComponent>
-            </Row>
-            {skills}
-          </Tab>
-        )}
-        {/* Strengths/Weaknesses Question */}
-        {strengths.length !== 0 && (
-          <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
-            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent>
-                What are the strengths and weaknesses of this course and how
-                could it be improved?
-              </TextComponent>
-            </Row>
-            {strengths}
-          </Tab>
-        )}
-        {/* Summarize Question */}
-        {summary.length !== 0 && (
-          <Tab eventKey="summary" title="Summary">
-            <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-              <TextComponent>
-                How would you summarize this course? Would you recommend it to
-                another student? Why or why not?
-              </TextComponent>
-            </Row>
-            {summary}
-          </Tab>
+        {[
+          {
+            key: 'recommended',
+            title: 'Recommend?',
+            question:
+              'Would you recommend this course to another student? Please explain.',
+            responses: recommend,
+          },
+          {
+            key: 'knowledge/skills',
+            title: 'Skills',
+            question:
+              'What knowledge, skills, and insights did you develop by taking this course?',
+            responses: skills,
+          },
+          {
+            key: 'strengths/weaknesses',
+            title: 'Strengths/Weaknesses',
+            question:
+              'What are the strengths and weaknesses of this course and how could it be improved?',
+            responses: strengths,
+          },
+          {
+            key: 'summary',
+            title: 'Summary',
+            question:
+              'How would you summarize this course? Would you recommend it to another student? Why or why not?',
+            responses: summary,
+          },
+        ].map(
+          ({ key, title, question, responses }) =>
+            responses.length !== 0 && (
+              <Tab eventKey={key} title={title} key={key}>
+                <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
+                  <TextComponent>{question}</TextComponent>
+                </Row>
+                {responses}
+              </Tab>
+            ),
         )}
       </Tabs>
     </div>

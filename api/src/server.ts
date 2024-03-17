@@ -31,10 +31,8 @@ import challenge from './challenge/challenge.routes.js';
 
 import { fetchCatalog } from './catalog/catalog.utils.js';
 
-// Initialize the app
 const app = express();
 
-// Initialize Sentry
 Sentry.init({
   dsn: 'https://0ceb92b3c55a418131f3fcf02eabf00d@o476134.ingest.us.sentry.io/4506913066975232',
   integrations: [
@@ -103,9 +101,7 @@ app.use(
       // Cookie lifetime of one year.
       maxAge: 365 * 24 * 60 * 60 * 1000,
 
-      // Not enabling this yet since it could have unintended consequences.
-      // Eventually we should enable this.
-      // secure: true,
+      secure: true,
     },
   }),
 );
@@ -124,27 +120,27 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
+// Add the authentication header to the request
+// Proxy initial HTTP requests to Ferry
 app.use(
   '/ferry',
+  (req, res, next) => {
+    const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
+    req.headers['X-Hasura-Role'] = hasuraRole;
+    next();
+  },
   createProxyMiddleware({
     target: 'http://graphql-engine:8080',
     pathRewrite: { '^/ferry/': '/' },
-    ws: true,
     xfwd: true,
-    onProxyReq(proxyReq, req) {
-      req.headers['X-Hasura-Role'] = req.isAuthenticated()
-        ? 'student'
-        : 'anonymous';
-      const hasuraRole = req.headers['X-Hasura-Role'] ?? 'anonymous'; // Default to 'anonymous'
-      proxyReq.setHeader('X-Hasura-Role', hasuraRole);
-    },
   }),
 );
+
 // Enable request logging.
 app.use(morgan);
 
-// Figure out how to make this work with Ferry (has to go after Ferry
-// currently)
+// Has to go after Ferry because it consumes the request body stream
+// and the http-proxy needs a stream to consume.
 app.use(express.json());
 
 // Activate catalog and CAS authentication
@@ -178,12 +174,12 @@ app.use(
   }),
 );
 
-// Setup routes.
 app.get('/api/ping', (req, res) => {
   res.json('pong');
 });
 
-// The error handler must be registered before any other error middleware and after all controllers
+// The error handler must be registered before
+// any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
 
 app.use(
@@ -195,6 +191,7 @@ app.use(
     next: express.NextFunction,
   ) => {
     winston.error(err);
+    // TODO: maybe this is not necessary given the errorHandler above?
     Sentry.captureException(err, { user: req.user });
     res.status(500).json({ error: String(err) });
   },

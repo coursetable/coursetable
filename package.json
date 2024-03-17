@@ -19,8 +19,7 @@
     "lint:css": "stylelint --fix \"**/*.css\"",
     "lint:css:check": "stylelint \"**/*.css\"",
     "resize-image": "bun tools/resize-image.mts",
-    "resize-image:check": "bun tools/resize-image.mts --test",
-    "postinstall": "bunx patcheer apply"
+    "resize-image:check": "bun tools/resize-image.mts --test"
   },
   "trustedDependencies": [
     "api",

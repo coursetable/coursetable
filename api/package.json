@@ -3,10 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "generate": "bunx prisma generate",
     "start": "bun --hot --inspect=ws://0.0.0.0:6499/forcingPrefix src/server.ts",
     "start:prod": "bun src/server.ts",
-    "postinstall": "bun generate"
+    "postinstall": "bunx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0",
@@ -15,6 +14,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/express-session": "^1.17.10",
+    "@types/http-proxy-middleware": "^1.0.0",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.19",

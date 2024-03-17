@@ -176,12 +176,6 @@ type Props = {
   readonly isMulti?: boolean;
 };
 
-/**
- * Custom Component for React-Select
- * @prop popout - rendering on a popout?
- * @prop useColors - use the color styles?
- * @prop isMulti - multi select?
- */
 function CustomSelect<
   T extends Option<string | number>,
   IsMulti extends boolean = false,
@@ -208,7 +202,6 @@ function CustomSelect<
     },
   });
 
-  // Makes Select forms animated
   const animatedComponents = useMemo(
     () => ({
       ...makeAnimated(),
@@ -217,7 +210,6 @@ function CustomSelect<
     [componentsProp],
   );
 
-  // Configure styles
   let styles = mergeStyles(
     indicatorStyles(isMulti),
     popout ? popoutStyles(400) : defaultStyles(),

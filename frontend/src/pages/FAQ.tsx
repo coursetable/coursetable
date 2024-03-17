@@ -9,7 +9,6 @@ import { HoverText, TextComponent } from '../components/Typography';
 import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities/display';
 
-// Custom accordion component
 function ContextAwareToggle({
   eventKey,
   question,
@@ -17,12 +16,8 @@ function ContextAwareToggle({
   readonly eventKey: string;
   readonly question: string;
 }) {
-  // Current active item
   const currentEventKey = useContext(AccordionContext);
-
   const decoratedOnClick = useAccordionToggle(eventKey, () => {});
-
-  // Is this one currently active?
   const isCurrentEventKey = currentEventKey === eventKey;
 
   return (

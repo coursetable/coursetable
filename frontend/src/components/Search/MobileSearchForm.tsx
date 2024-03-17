@@ -24,7 +24,6 @@ export default function MobileSearchForm({
 }: {
   readonly onSubmit: (event: React.FormEvent) => void;
 }) {
-  // Get search context data
   const { filters, coursesLoading, searchData } = useSearch();
   const {
     searchText,

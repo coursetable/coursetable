@@ -130,13 +130,8 @@ const stepsContent: Step[] = [
   },
 ];
 
-/**
- * Custom Tutorial component using react tour
- */
-
 function Tutorial() {
   const { isTutorialOpen, toggleTutorial } = useTutorial();
-  // Current step state
   const [currentStep, setCurrentStep] = useState(0);
 
   // Whenever the tutorial is closed, reset the currentStep
@@ -147,7 +142,6 @@ function Tutorial() {
   const { theme } = useTheme();
   const location = useLocation();
 
-  // Generate react tour steps
   const steps = stepsContent.map(
     ({
       selector,
@@ -158,7 +152,6 @@ function Tutorial() {
       image,
       position,
     }): ReactourStep => {
-      // Create step content
       const content = () => (
         <div className={styles.stepContent}>
           {image && (

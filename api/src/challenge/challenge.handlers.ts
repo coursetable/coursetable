@@ -23,8 +23,8 @@ import {
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
- * @prop text - string to encrypt
- * @prop salt - salt value to append to password
+ * @param text string to encrypt
+ * @param salt the initialization vector for the encryption algorithm
  */
 function encrypt(text: string, salt: string): string {
   const cipher = crypto.createCipheriv(
@@ -40,8 +40,8 @@ function encrypt(text: string, salt: string): string {
 /**
  * Decrypt a salted string according to CHALLENGE_ALGORITHM and
  * CHALLENGE_PASSWORD.
- * @prop text - string to decrypt
- * @prop salt - salt value to append to password
+ * @param text string to decrypt
+ * @param salt the iv used for the encryption of this text
  */
 function decrypt(text: string, salt: string): string {
   const decipher = crypto.createDecipheriv(
@@ -55,22 +55,12 @@ function decrypt(text: string, salt: string): string {
 }
 
 /**
- * Randomly-generate an integer between 0 and max-1
- * @prop max - max integer to return (not inclusive)
+ * Randomly generate an integer between 0 (inclusive) and max (exclusive).
  */
 function getRandomInt(max: number): number {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-/**
- * Generate a challenge object given a query response.
- * Used by the requestChallenge controller.
- *
- * @prop req - express request object
- * @prop res - express response object
- * @prop evals - evals from the GraphQL query over evaluations
- * @prop challengeTries - number of user attempts
- */
 const constructChallenge = (
   evals: RequestEvalsQueryResponse,
   challengeTries: number,
@@ -113,11 +103,6 @@ const constructChallenge = (
   };
 };
 
-/**
- * Generates and returns a user challenge.
- * @prop req - request object
- * @prop res - return object
- */
 export const requestChallenge = async (
   req: express.Request,
   res: express.Response,
@@ -145,7 +130,6 @@ export const requestChallenge = async (
   // randomly choosing a minimum rating
   const minRating = 1 + Math.random() * 4;
 
-  // Get a list of all seasons
   const evals: RequestEvalsQueryResponse = await request(
     GRAPHQL_ENDPOINT,
     requestEvalsQuery,
@@ -198,11 +182,6 @@ const VerifyEvalsReqBodySchema = z.object({
 
 type VerifyEvalsReqBody = z.infer<typeof VerifyEvalsReqBodySchema>;
 
-/**
- * Verifies answers to a challenge.
- * @prop req - request object
- * @prop res - return object
- */
 export const verifyChallenge = async (
   req: express.Request,
   res: express.Response,

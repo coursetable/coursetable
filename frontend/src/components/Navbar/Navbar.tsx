@@ -55,22 +55,16 @@ function NavCollapseWrapper({
 export default function CourseTableNavbar() {
   const { authStatus } = useUser();
   const location = useLocation();
-  // Is navbar expanded in mobile view?
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
   const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
-
-  // Fetch current device
   const { isMobile, isLgDesktop } = useWindowDimensions();
-
-  // Show navbar search state
   const showSearch =
     !isMobile &&
     (location.pathname === '/catalog' ||
       (authStatus === 'authenticated' && location.pathname === '/worksheet'));
 
-  // Calculate time since last updated
   const lastUpdated = useMemo(() => {
     const now = new Date();
     // We always update at around 8:25am UTC, regardless of DST

@@ -266,7 +266,6 @@ export function NavbarWorksheetSearch() {
   const { worksheetView, handleWorksheetView, person, handlePersonChange } =
     useWorksheet();
 
-  // Fetch user context data
   const { removeFriend } = useUser();
 
   const removeFriendWithConfirmation = useCallback(
@@ -312,10 +311,8 @@ export function NavbarWorksheetSearch() {
             <ToggleButtonGroup
               name="worksheet-view-toggle"
               type="radio"
-              value={worksheetView.view}
-              onChange={(val: 'calendar' | 'list') =>
-                handleWorksheetView({ view: val, mode: '' })
-              }
+              value={worksheetView}
+              onChange={(val: 'calendar' | 'list') => handleWorksheetView(val)}
               className={clsx(styles.toggleButtonGroup, 'ml-2 mr-3')}
               data-tutorial="worksheet-2"
             >

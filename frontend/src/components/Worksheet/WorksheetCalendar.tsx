@@ -13,10 +13,6 @@ import {
 import { useWorksheet } from '../../contexts/worksheetContext';
 import './react-big-calendar-override.css';
 
-/**
- * Render Worksheet Calendar component
- */
-
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
   const { courses, hoverCourse, hiddenCourses, curSeason } = useWorksheet();
