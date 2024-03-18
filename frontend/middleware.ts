@@ -1,7 +1,12 @@
+// This is a Vercel middleware that sends HTML containing fake HTML for social
+// media links
 import { next } from '@vercel/edge';
 
-// Helper function to truncate text
-function truncatedText(text: string | null | undefined, max: number, defaultStr: string) {
+function truncatedText(
+  text: string | null | undefined,
+  max: number,
+  defaultStr: string,
+) {
   if (!text) return defaultStr;
   else if (text.length <= max) return text;
   return `${text.slice(0, max)}...`;
@@ -11,6 +16,13 @@ export const config = {
   matcher: ['/catalog', '/worksheet'],
   runtime: 'edge',
 };
+
+// For Prettier formatting
+const identity = (strings: TemplateStringsArray, ...values: unknown[]) =>
+  String.raw({ raw: strings }, ...values);
+const html = identity;
+const gql = identity;
+
 
 export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
