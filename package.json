@@ -49,5 +49,8 @@
     "tsconfig-jc": "^2.3.1",
     "typescript": "~5.3.3",
     "typescript-plugin-css-modules": "^5.1.0"
+  },
+  "dependencies": {
+    "@vercel/edge": "^1.1.1"
   }
 }
