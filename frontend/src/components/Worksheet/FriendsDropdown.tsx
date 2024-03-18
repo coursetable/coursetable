@@ -19,8 +19,7 @@ function DropdownItem({
       className="d-flex"
       // Styling if this is the current person
       style={{
-        backgroundColor: person === viewedPerson ? '#007bff' : '',
-        color: person === viewedPerson ? 'white' : 'black',
+        backgroundColor: person === viewedPerson ? 'var(--color-primary)' : '',
       }}
     >
       <div className="mx-auto">{text}</div>

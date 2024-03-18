@@ -22,8 +22,8 @@ function SeasonDropdown() {
             className="d-flex"
             // Styling if this is the current season
             style={{
-              backgroundColor: season === curSeason ? '#007bff' : '',
-              color: season === curSeason ? 'white' : 'black',
+              backgroundColor:
+                season === curSeason ? 'var(--color-primary)' : '',
             }}
           >
             <div className="mx-auto">{toSeasonString(season)}</div>

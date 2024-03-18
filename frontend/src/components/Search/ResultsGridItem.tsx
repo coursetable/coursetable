@@ -3,12 +3,10 @@ import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type chroma from 'chroma-js';
 import * as Sentry from '@sentry/react';
+
 import { AiOutlineStar } from 'react-icons/ai';
 import { IoPersonOutline } from 'react-icons/io5';
 import { BiBookOpen } from 'react-icons/bi';
-import { FcCloseUpMode } from 'react-icons/fc';
-import { IoMdSunny } from 'react-icons/io';
-import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import clsx from 'clsx';
 
 import { useUser } from '../../contexts/userContext';
@@ -19,18 +17,19 @@ import {
   subjects,
 } from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import SkillBadge from '../SkillBadge';
+import SeasonTag from './SeasonTag';
+import { TextComponent } from '../Typography';
+
 import styles from './ResultsGridItem.module.css';
 import tagStyles from './ResultsItem.module.css';
-import { TextComponent } from '../Typography';
 import { generateRandomColor, type Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
   getProfessorRatings,
-  toSeasonString,
   isInWorksheet,
 } from '../../utilities/course';
-import SkillBadge from '../SkillBadge';
 
 type RatingInfo = {
   name: 'Class' | 'Professor' | 'Workload';
@@ -148,18 +147,6 @@ function ResultsGridItem({
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
-  const seasons = ['spring', 'summer', 'fall'] as const;
-  const season = Number(course.season_code[5]);
-  const year = course.season_code.substring(2, 4);
-  const icon =
-    season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={13} />
-    ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={13} />
-    ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={13} />
-    );
-
   const inWorksheet = useMemo(
     () =>
       isInWorksheet(
@@ -205,61 +192,36 @@ function ResultsGridItem({
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.courseCodes}>
-                {course.course_code && (
-                  <>
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={(props) => {
-                        const subjectName = subjects[subjectCode];
-                        if (!subjectName) {
-                          Sentry.captureException(
-                            new Error(`Subject ${subjectCode} has no label`),
-                          );
-                        }
-                        return (
-                          <Tooltip id="button-tooltip" {...props}>
-                            <small>{subjectName ?? '[unknown]'}</small>
-                          </Tooltip>
-                        );
-                      }}
-                    >
-                      <span>{subjectCode}</span>
-                    </OverlayTrigger>{' '}
-                    {courseCode}
-                  </>
-                )}
-                {course.section
-                  ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
-                  : ''}
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => {
+                    const subjectName = subjects[subjectCode];
+                    if (!subjectName) {
+                      Sentry.captureException(
+                        new Error(`Subject ${subjectCode} has no label`),
+                      );
+                    }
+                    return (
+                      <Tooltip id="button-tooltip" {...props}>
+                        <small>{subjectName ?? '[unknown]'}</small>
+                      </Tooltip>
+                    );
+                  }}
+                >
+                  <span>{subjectCode}</span>
+                </OverlayTrigger>{' '}
+                {courseCode}
+                {course.section ? ` ${course.section.padStart(2, '0')}` : ''}
               </small>
             </Row>
           </Col>
           {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
-                <OverlayTrigger
-                  placement="top"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <small>{toSeasonString(course.season_code)}</small>
-                    </Tooltip>
-                  )}
-                >
-                  <div
-                    className={clsx(
-                      styles.seasonTag,
-                      'ml-auto px-1 pb-0',
-                      tagStyles[seasons[(season - 1) as 0 | 1 | 2]],
-                    )}
-                  >
-                    <Row className="m-auto">
-                      {icon}
-                      <small style={{ fontWeight: 550 }}>
-                        &nbsp;{`'${year}`}
-                      </small>
-                    </Row>
-                  </div>
-                </OverlayTrigger>
+                <SeasonTag
+                  season={course.season_code}
+                  className={styles.season}
+                />
               </Row>
             </Col>
           )}

@@ -17,7 +17,16 @@ function WorksheetNumDropdown() {
         }}
       >
         {worksheetOptions.map(({ value, label }) => (
-          <Dropdown.Item key={value} eventKey={value} className="d-flex">
+          <Dropdown.Item
+            key={value}
+            eventKey={value}
+            className="d-flex"
+            // Styling if this is the current number
+            style={{
+              backgroundColor:
+                Number(value) === worksheetNumber ? 'var(--color-primary)' : '',
+            }}
+          >
             <div className="mx-auto">{label}</div>
           </Dropdown.Item>
         ))}

@@ -23,9 +23,7 @@ function WorksheetMobile() {
   return (
     <Row className={clsx(styles.accordion, 'm-0 p-3')}>
       <Col className="p-0">
-        <div className={styles.dropdowns}>
-          <WorksheetNumDropdown />
-        </div>
+        <WorksheetNumDropdown />
         <Row className="mx-auto">
           <Col xs={6} className="m-0 p-0">
             <SeasonDropdown />
@@ -62,7 +60,7 @@ function WorksheetDesktop() {
             {!expanded ? (
               <FaExpandAlt
                 className={styles.expandIcon}
-                size={18}
+                size={12}
                 style={{ display: 'block' }}
                 onClick={() => {
                   setExpanded(true);
@@ -71,7 +69,7 @@ function WorksheetDesktop() {
             ) : (
               <FaCompressAlt
                 className={styles.expandIcon}
-                size={18}
+                size={12}
                 onClick={() => {
                   setExpanded(false);
                 }}

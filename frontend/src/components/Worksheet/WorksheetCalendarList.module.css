@@ -65,16 +65,6 @@
   color: var(--color-text);
 }
 
-.button :global(.dropdown-menu),
-.button :global(.dropdown-item) {
-  color: var(--color-text);
-  background-color: var(--color-surface-elevated);
-}
-
-.button :global(.dropdown-item):hover {
-  background-color: var(--color-select-hover);
-}
-
 .button:hover .icon {
   transform: scale(1.15);
 }
