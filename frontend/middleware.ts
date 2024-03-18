@@ -67,35 +67,18 @@ export default async function middleware(req: Request) {
   if (!res.data?.computed_listing_info.length) return next();
   const course = res.data.computed_listing_info[0]!;
   return new Response(
-    html`
-      <!doctype html>
-      <html>
-        <head>
-          <title>
-            ${course.course_code} ${course.section.padStart(2, '0')}
-            ${course.title} | CourseTable
-          </title>
-          <meta
-            name="description"
-            content="${truncatedText(course.description, 300, '')}"
-          />
-          <meta
-            property="og:title"
-            content="${course.course_code} ${course.section.padStart(
-              2,
-              '0',
-            )} ${course.title} | CourseTable"
-          />
-          <meta
-            property="og:description"
-            content="${truncatedText(course.description, 300, '')}"
-          />
-          <!-- TODO: Add og:image -->
-          <!-- Additional OG tags as needed -->
-        </head>
-        <body></body>
-      </html>
-    `,
+    `<!doctype html>
+    <html>
+      <head>
+        <title>Static Title | CourseTable</title>
+        <meta name="description" content="Static description">
+        <meta property="og:title" content="Static Title | CourseTable">
+        <meta property="og:description" content="Static description">
+        <!-- TODO: Add og:image -->
+        <!-- Additional OG tags as needed -->
+      </head>
+      <body></body>
+    </html>`,
     {
       status: 200,
       headers: {
