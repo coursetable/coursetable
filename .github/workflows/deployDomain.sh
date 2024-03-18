@@ -1,3 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
 is_prod=true
 
 while getopts t:a:b:d flag
