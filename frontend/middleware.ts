@@ -26,7 +26,7 @@ const gql = identity;
 export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
   const isBot =
-    /facebook.*|linkedin.*|twitter.*|pinterest.*|bing.*|google.*|whatsapp.*/iu.test(
+    /facebook.*|linkedin.*|twitter.*|pinterest.*|bing.*|google.*|whatsapp.*|Vercel\sEdge\sFunctions/iu.test(
       userAgent,
     );
 
