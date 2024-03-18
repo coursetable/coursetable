@@ -1,77 +1,106 @@
-// This Vercel middleware generates HTML with Open Graph tags for social media links
-import { NextResponse } from '@vercel/edge';
+// This is a Vercel middleware that sends HTML containing fake HTML for social
+// media links
+import { next } from '@vercel/edge';
 
-function truncatedText(text, max, defaultStr = '') {
-  return text ? (text.length <= max ? text : `${text.slice(0, max)}...`) : defaultStr;
+function truncatedText(
+  text: string | null | undefined,
+  max: number,
+  defaultStr: string,
+) {
+  if (!text) return defaultStr;
+  else if (text.length <= max) return text;
+  return `${text.slice(0, max)}...`;
 }
 
 export const config = {
-  matcher: ['/catalog/:path*', '/worksheet/:path*'],
+  matcher: ['/catalog', '/worksheet'],
+  runtime: 'edge',
 };
 
-export default async function middleware(req) {
+// For Prettier formatting
+const identity = (strings: TemplateStringsArray, ...values: unknown[]) =>
+  String.raw({ raw: strings }, ...values);
+const html = identity;
+const gql = identity;
+
+export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
-  const isBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot/i.test(userAgent);
+  const isBot =
+    /facebook.*|linkedin.*|twitter.*|pinterest.*|bing.*|google.*|whatsapp.*|vercel\sedge\sfunctions/iu.test(
+      userAgent,
+    );
 
-  const url = new URL(req.url);
-  const courseModalParam = url.searchParams.get('course-modal');
-
-  if (!isBot || !courseModalParam) {
-    return NextResponse.next();
-  }
+  const reqURL = new URL(req.url);
+  const courseModalParam = reqURL.searchParams.get('course-modal');
+  if (!isBot || !courseModalParam) return next();
 
   const [seasonCode, crn] = courseModalParam.split('-');
-  if (!seasonCode || !crn) {
-    return NextResponse.next();
-  }
-
-  const apiUrl = 'https://api.coursetable.com/ferry/v1/graphql';
-  const query = `
-    query GetCourse($season_code: String!, $crn: Int!) {
-      computed_listing_info(where: {season_code: {_eq: $season_code}, crn: {_eq: $crn}}) {
-        course_code
-        section
-        title
-        description
-      }
-    }
-  `;
-  const variables = { season_code: seasonCode, crn: parseInt(crn) };
-  const body = JSON.stringify({ query, variables });
-
-  try {
-    const res = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: body,
-    });
-
-    const { data } = await res.json();
-    const course = data.computed_listing_info[0];
-
-    if (course) {
-      const htmlResponse = `
-        <!doctype html>
-        <html>
-          <head>
-            <title>${course.title} | CourseTable</title>
-            <meta name="description" content="${truncatedText(course.description, 300)}" />
-            <meta property="og:title" content="${course.course_code} ${course.section} ${course.title} | CourseTable" />
-            <meta property="og:description" content="${truncatedText(course.description, 300)}" />
-            <!-- <meta property="og:image" content="URL_to_an_image" /> -->
-            <!-- Additional OG tags as needed -->
-          </head>
-          <body></body>
-        </html>
-      `;
-
-      return new Response(htmlResponse, {
-        headers: { 'Content-Type': 'text/html' },
-      });
-    }
-  } catch (error) {
-    console.error('Error fetching course data:', error);
-  }
-
-  return NextResponse.next();
+  if (!seasonCode || !crn) return next();
+  const res = (await fetch('https://api.coursetable.com/ferry/v1/graphql', {
+    method: 'POST',
+    body: JSON.stringify({
+      variables: { season_code: seasonCode, crn: Number(crn) },
+      query: gql`
+        query GetCourse($season_code: String!, $crn: Int!) {
+          computed_listing_info(
+            where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
+          ) {
+            course_code
+            section
+            title
+            description
+          }
+        }
+      `,
+    }),
+    headers: { 'Content-Type': 'application/json' },
+  }).then((res) => res.json())) as {
+    data?: {
+      computed_listing_info: {
+        course_code: string;
+        section: string;
+        title: string;
+        description: string | null;
+      }[];
+    };
+  };
+  if (!res.data?.computed_listing_info.length) return next();
+  const course = res.data.computed_listing_info[0]!;
+  return new Response(
+    html`
+      <!doctype html>
+      <html>
+        <head>
+          <title>
+            ${course.course_code} ${course.section.padStart(2, '0')}
+            ${course.title} | CourseTable
+          </title>
+          <meta
+            name="description"
+            content="${truncatedText(course.description, 300, '')}"
+          />
+          <meta
+            property="og:title"
+            content="${course.course_code} ${course.section.padStart(
+              2,
+              '0',
+            )} ${course.title} | CourseTable"
+          />
+          <meta
+            property="og:description"
+            content="${truncatedText(course.description, 300, '')}"
+          />
+          <!-- TODO: Add og:image -->
+          <!-- Additional OG tags as needed -->
+        </head>
+        <body></body>
+      </html>
+    `,
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+      },
+    },
+  );
 }
