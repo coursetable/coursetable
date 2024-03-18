@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
+import { OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
-import { IoMdSunny } from 'react-icons/io';
-import { FcCloseUpMode } from 'react-icons/fc';
-import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import clsx from 'clsx';
 
 import { useUser } from '../../contexts/userContext';
@@ -15,9 +12,9 @@ import {
   workloadColormap,
   subjects,
 } from '../../utilities/constants';
-
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import SkillBadge from '../SkillBadge';
+import SeasonTag from './SeasonTag';
 import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
 
 import styles from './ResultsItem.module.css';
@@ -27,7 +24,6 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   getProfessorRatings,
-  toSeasonString,
   truncatedText,
   isInWorksheet,
 } from '../../utilities/course';
@@ -73,20 +69,6 @@ function ResultsItem({
 
   const { numFriends } = useSearch();
   const friends = numFriends[`${course.season_code}${course.crn}`];
-
-  // Season code for this listing
-  const seasons = ['spring', 'summer', 'fall'] as const;
-  const season = Number(course.season_code[5]);
-  const year = course.season_code.substring(2, 4);
-  // Determine the icon for this season
-  const icon =
-    season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={10} />
-    ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={10} />
-    ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={10} />
-    );
 
   const inWorksheet = useMemo(
     () =>
@@ -134,28 +116,12 @@ function ResultsItem({
       >
         {multiSeasons && (
           <div className={clsx('d-flex', colStyles.seasonCol)}>
-            <OverlayTrigger
-              placement="top"
-              overlay={(props) => (
-                <Tooltip id="button-tooltip" {...props}>
-                  <small>{toSeasonString(course.season_code)}</small>
-                </Tooltip>
-              )}
-            >
-              <div className={clsx(styles.skillsAreas, 'my-auto')}>
-                <Badge
-                  variant="secondary"
-                  className={clsx(
-                    styles.tag,
-                    styles[seasons[(season - 1) as 0 | 1 | 2]],
-                  )}
-                  key={season}
-                >
-                  <div style={{ display: 'inline-block' }}>{icon}</div>
-                  &nbsp;{`'${year}`}
-                </Badge>
-              </div>
-            </OverlayTrigger>
+            <div className="my-auto">
+              <SeasonTag
+                season={course.season_code}
+                className={styles.season}
+              />
+            </div>
           </div>
         )}
         <div
@@ -185,9 +151,7 @@ function ResultsItem({
             </OverlayTrigger>{' '}
             {courseCode}
             <TextComponent type="secondary">
-              {course.section
-                ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
-                : ''}
+              {course.section ? ` ${course.section.padStart(2, '0')}` : ''}
             </TextComponent>
           </div>
         </div>

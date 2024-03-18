@@ -1,0 +1,21 @@
+.seasonTag {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.75;
+}
+
+.spring {
+  color: rgb(15 100 22) !important;
+  background-color: rgb(184 223 187) !important;
+}
+
+.summer {
+  color: rgb(230 130 0) !important;
+  background-color: rgb(243 233 200) !important;
+}
+
+.fall {
+  color: rgb(172 47 9) !important;
+  background-color: rgb(141 64 33 / 40.4%) !important;
+}

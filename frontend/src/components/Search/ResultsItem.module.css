@@ -51,21 +51,6 @@
   box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
 }
 
-.spring {
-  color: rgb(15 100 22) !important;
-  background-color: rgb(184 223 187) !important;
-}
-
-.summer {
-  color: rgb(230 130 0) !important;
-  background-color: rgb(243 233 200) !important;
-}
-
-.fall {
-  color: rgb(172 47 9) !important;
-  background-color: rgb(141 64 33 / 40.4%) !important;
-}
-
 .dot {
   display: inline;
 }
@@ -114,12 +99,8 @@
   min-width: var(--width-col-prof-rating);
 }
 
-.tag {
-  margin: 1px;
-  font-size: 13px;
-  font-weight: 600 !important;
-  padding: 4px 6px !important;
-  border-radius: 6px !important;
+.season {
+  border-radius: 6px;
 }
 
 @media (width < 1320px) {
