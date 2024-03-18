@@ -19,3 +19,7 @@
   color: rgb(172 47 9) !important;
   background-color: rgb(141 64 33 / 40.4%) !important;
 }
+
+.cancelledText {
+  color: rgb(255 98 98);
+}

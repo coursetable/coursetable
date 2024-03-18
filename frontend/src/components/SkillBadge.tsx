@@ -7,11 +7,9 @@ import styles from './SkillBadge.module.css';
 
 export default function SkillBadge({
   skill,
-  hidden,
   className,
 }: {
   readonly skill: string;
-  readonly hidden?: boolean;
   readonly className?: string;
 }) {
   return (
@@ -21,7 +19,6 @@ export default function SkillBadge({
       style={{
         color: skillsAreasColors[skill],
         backgroundColor: chroma(skillsAreasColors[skill]!).alpha(0.16).css(),
-        opacity: hidden ? 0 : 1,
       }}
     >
       {skill}

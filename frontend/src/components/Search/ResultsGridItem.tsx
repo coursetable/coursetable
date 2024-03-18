@@ -1,134 +1,62 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import type chroma from 'chroma-js';
-import * as Sentry from '@sentry/react';
 
-import { AiOutlineStar } from 'react-icons/ai';
-import { IoPersonOutline } from 'react-icons/io5';
-import { BiBookOpen } from 'react-icons/bi';
 import clsx from 'clsx';
 
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import {
-  ratingColormap,
-  workloadColormap,
-  subjects,
-} from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import SkillBadge from '../SkillBadge';
-import SeasonTag from './SeasonTag';
+import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
 import { TextComponent } from '../Typography';
 
 import styles from './ResultsGridItem.module.css';
-import tagStyles from './ResultsItem.module.css';
 import { generateRandomColor, type Listing } from '../../utilities/common';
-import {
-  getOverallRatings,
-  getWorkloadRatings,
-  getProfessorRatings,
-  isInWorksheet,
-} from '../../utilities/course';
+import { isInWorksheet } from '../../utilities/course';
 
-type RatingInfo = {
-  name: 'Class' | 'Professor' | 'Workload';
-  getRating: {
-    (course: Listing, usage: 'stat'): number | null;
-    (course: Listing, usage: 'display'): string;
-  };
-  colorMap: chroma.Scale;
-  Icon: React.ElementType;
-};
-
-function RatingRows({ course }: { readonly course: Listing }) {
-  const { user } = useUser();
-  const ratings: RatingInfo[] = [
-    {
-      name: 'Class',
-      getRating: getOverallRatings,
-      colorMap: ratingColormap,
-      Icon: AiOutlineStar,
-    },
-    {
-      name: 'Professor',
-      getRating: getProfessorRatings,
-      colorMap: ratingColormap,
-      Icon: IoPersonOutline,
-    },
-    {
-      name: 'Workload',
-      getRating: getWorkloadRatings,
-      colorMap: workloadColormap,
-      Icon: BiBookOpen,
-    },
-  ];
-
-  return (
-    <>
-      {ratings.map(({ name, getRating, colorMap, Icon }) =>
-        user.hasEvals ? (
-          <OverlayTrigger
-            key={name}
-            placement="right"
-            overlay={(props) => (
-              <Tooltip id={`${name}-tooltip`} {...props}>
-                {name}
-              </Tooltip>
-            )}
-          >
-            <Row className="m-auto justify-content-end">
-              <RatingCell
-                rating={getRating(course, 'stat')}
-                colorMap={colorMap}
-              >
-                {getRating(course, 'display')}
-              </RatingCell>
-              <div className={styles.iconContainer}>
-                <Icon className={styles.icon} />
-              </div>
-            </Row>
-          </OverlayTrigger>
-        ) : (
-          <Row key={name} className="m-auto justify-content-end">
-            <div
-              className={clsx(styles.rating, 'mr-1')}
-              style={{
-                color: generateRandomColor(
-                  course.crn + course.season_code + name,
-                ),
-              }}
-            >
-              ???
-            </div>
-            <div className={styles.iconContainer}>
-              <Icon className={styles.icon} />
-            </div>
-          </Row>
-        ),
-      )}
-    </>
-  );
-}
-
-function RatingCell({
-  rating,
-  colorMap,
-  children,
+function Rating({
+  course,
+  hasEvals,
+  name,
 }: {
-  readonly rating: number | null;
-  readonly colorMap: chroma.Scale;
-  readonly children?: React.ReactNode;
+  readonly course: Listing;
+  readonly hasEvals: boolean | undefined;
+  readonly name: 'Class' | 'Professor' | 'Workload';
 }) {
+  const { Icon, getRating, colorMap } = ratingTypes[name];
+  const rating = getRating(course, 'stat');
   return (
-    <div
-      className={clsx(styles.rating, 'mr-1')}
-      style={{
-        color: rating ? colorMap(rating).darken().saturate().css() : '#cccccc',
-      }}
+    <OverlayTrigger
+      placement="top"
+      overlay={(props) => (
+        <Tooltip id={`${name}-tooltip`} {...props}>
+          {hasEvals
+            ? name
+            : `${name} (These colors are randomly generated. Sign in to see real ratings)`}
+        </Tooltip>
+      )}
     >
-      {children}
-    </div>
+      <Row className="m-auto justify-content-end">
+        <div
+          className={clsx(styles.rating, 'mr-1')}
+          style={{
+            color: hasEvals
+              ? rating
+                ? colorMap(rating).darken().saturate().css()
+                : '#cccccc'
+              : generateRandomColor(
+                  `${course.crn}${course.season_code}${name}`,
+                ),
+          }}
+        >
+          {hasEvals ? getRating(course, 'display') : '???'}
+        </div>
+        <div className={styles.iconContainer}>
+          <Icon className={styles.icon} />
+        </div>
+      </Row>
+    </OverlayTrigger>
   );
 }
 
@@ -157,11 +85,6 @@ function ResultsGridItem({
       ),
     [course.crn, course.season_code, worksheetNumber, user.worksheets],
   );
-
-  const [subjectCode, courseCode] = course.course_code.split(' ') as [
-    string,
-    string,
-  ];
 
   return (
     <Col
@@ -192,26 +115,7 @@ function ResultsGridItem({
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.courseCodes}>
-                <OverlayTrigger
-                  placement="top"
-                  overlay={(props) => {
-                    const subjectName = subjects[subjectCode];
-                    if (!subjectName) {
-                      Sentry.captureException(
-                        new Error(`Subject ${subjectCode} has no label`),
-                      );
-                    }
-                    return (
-                      <Tooltip id="button-tooltip" {...props}>
-                        <small>{subjectName ?? '[unknown]'}</small>
-                      </Tooltip>
-                    );
-                  }}
-                >
-                  <span>{subjectCode}</span>
-                </OverlayTrigger>{' '}
-                {courseCode}
-                {course.section ? ` ${course.section.padStart(2, '0')}` : ''}
+                <CourseCode course={course} subdueSection={false} />
               </small>
             </Row>
           </Col>
@@ -260,39 +164,23 @@ function ResultsGridItem({
               </small>
             </Row>
             <Row className="m-auto">
-              <div className={tagStyles.skillsAreas}>
-                {course.skills.map((skill) => (
+              <div className={styles.skillsAreas}>
+                {[...course.skills, ...course.areas].map((skill) => (
                   <SkillBadge skill={skill} key={skill} />
                 ))}
-                {course.areas.map((area) => (
-                  <SkillBadge skill={area} key={area} />
-                ))}
-                {/* Render hidden badge as a spacer if no skills/areas */}
-                {course.skills.length === 0 && course.areas.length === 0 && (
-                  <SkillBadge skill="Hu" hidden />
-                )}
               </div>
             </Row>
           </Col>
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
-              {user.hasEvals ? (
-                <RatingRows course={course} />
-              ) : (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={
-                    <Tooltip id="blur-rating-tooltip">
-                      These colors are randomly generated. Sign in to see real
-                      ratings.
-                    </Tooltip>
-                  }
-                >
-                  <div>
-                    <RatingRows course={course} />
-                  </div>
-                </OverlayTrigger>
-              )}
+              {(['Class', 'Professor', 'Workload'] as const).map((name) => (
+                <Rating
+                  key={name}
+                  course={course}
+                  hasEvals={user.hasEvals}
+                  name={name}
+                />
+              ))}
             </div>
           </Col>
         </Row>

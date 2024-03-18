@@ -64,6 +64,13 @@
   font-weight: bold;
 }
 
+.skillsAreas {
+  display: inline-flex;
+  white-space: nowrap;
+  overflow: hidden;
+  min-height: 24px;
+}
+
 .worksheetBtn {
   position: absolute;
   top: 4px;
