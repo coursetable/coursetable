@@ -23,10 +23,12 @@ const identity = (strings: TemplateStringsArray, ...values: unknown[]) =>
 const html = identity;
 const gql = identity;
 
-
 export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
-  const isBot = /facebook.*|linkedin.*|twitter.*|pinterest.*|bing.*|google.*|whatsapp.*|vercel\sedge\sfunctions/iu.test(userAgent);
+  const isBot =
+    /facebook.*|linkedin.*|twitter.*|pinterest.*|bing.*|google.*|whatsapp.*|vercel\sedge\sfunctions/iu.test(
+      userAgent,
+    );
   const reqURL = new URL(req.url);
   const courseModalParam = reqURL.searchParams.get('course-modal');
 
@@ -60,7 +62,11 @@ export default async function middleware(req: Request) {
 
   const course = data.computed_listing_info[0];
   const title = `${course.course_code} ${course.section.padStart(2, '0')} ${course.title} | CourseTable`;
-  const description = truncatedText(course.description, 300, 'No description available.');
+  const description = truncatedText(
+    course.description,
+    300,
+    'No description available.',
+  );
 
   // Constructing dynamic HTML response
   return new Response(
