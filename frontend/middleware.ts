@@ -17,7 +17,7 @@ export const config = {
 export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
   const isBot =
-    /facebook|linkedin|twitter|pinterest|bing|google|whatsapp|vercel\sedge\sfunctions/iu.test(
+    /facebook|linkedin|twitter|pinterest|discord|bing|google|whatsapp|vercel\sedge\sfunctions/iu.test(
       userAgent,
     );
 
@@ -60,14 +60,13 @@ export default async function middleware(req: Request) {
   };
 
   if (!data?.computed_listing_info.length) return next();
-  let {
-    course_code: courseCode,
-    section,
-    title,
-    description,
-  } = data.computed_listing_info[0]!;
-  title = `${courseCode} ${section.padStart(2, '0')} ${title} | CourseTable`;
-  description = truncatedText(description, 300, 'No description available');
+  const course = data.computed_listing_info[0]!;
+  const title = `${course.course_code} ${course.section.padStart(2, '0')} ${course.title} | CourseTable`;
+  const description = truncatedText(
+    course.description,
+    300,
+    'No description available',
+  );
 
   return new Response(
     html`
