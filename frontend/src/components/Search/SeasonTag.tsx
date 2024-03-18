@@ -40,9 +40,9 @@ function SeasonTag({
           styles.seasonTag,
           'ml-auto px-1 pb-0',
           {
-            [styles.spring]: seasonNum === 1,
-            [styles.summer]: seasonNum === 2,
-            [styles.fall]: seasonNum === 3,
+            [styles.spring!]: seasonNum === 1,
+            [styles.summer!]: seasonNum === 2,
+            [styles.fall!]: seasonNum === 3,
           },
           className,
         )}
