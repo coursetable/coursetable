@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euox pipefail
+set -euo pipefail
 
 is_prod=true
 
@@ -16,10 +16,10 @@ done
 
 if [[ $is_prod == true ]]; then
   echo "Deploying to production"
-  vercel deploy --prod --prebuilt --skip-domain --token=$token >deployment-url.txt 2>error.txt
+  vercel deploy --prod --prebuilt --skip-domain --token=$token >deployment-url.txt
 else
   echo "Deploying to development"
-  vercel deploy --prebuilt --token=$token >deployment-url.txt 2>error.txt
+  vercel deploy --prebuilt --token=$token >deployment-url.txt
 fi
  
 # check the exit code
