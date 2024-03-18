@@ -60,44 +60,24 @@ export default async function middleware(req: Request) {
   };
 
   if (!data?.computed_listing_info.length) return next();
-  const {
+  let {
     course_code: courseCode,
     section,
     title,
     description,
   } = data.computed_listing_info[0]!;
+  title = `${courseCode} ${section.padStart(2, '0')} ${title} | CourseTable`;
+  description = truncatedText(description, 300, 'No description available');
 
   return new Response(
     html`
       <!doctype html>
       <html>
         <head>
-          <title>
-            ${courseCode} ${section.padStart(2, '0')} ${title} | CourseTable
-          </title>
-          <meta
-            name="description"
-            content="${truncatedText(
-              description,
-              300,
-              'No description available',
-            )}"
-          />
-          <meta
-            property="og:title"
-            content="${courseCode} ${section.padStart(
-              2,
-              '0',
-            )} ${title} | CourseTable"
-          />
-          <meta
-            property="og:description"
-            content="${truncatedText(
-              description,
-              300,
-              'No description available',
-            )}"
-          />
+          <title>${title}</title>
+          <meta name="description" content="${description}" />
+          <meta property="og:title" content="${title}" />
+          <meta property="og:description" content="${description}" />
           <!-- TODO: Add og:image -->
           <!-- Additional OG tags as needed -->
         </head>
