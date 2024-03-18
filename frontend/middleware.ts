@@ -17,7 +17,7 @@ export const config = {
 export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
   const isBot =
-    /facebook|linkedin|twitter|pinterest|discord|bing|google|whatsapp|vercel\sedge\sfunctions/iu.test(
+    /facebook|linkedin|twitter|pinterest|discord|bing|google|whatsapp|slack|vercel\sedge\sfunctions/iu.test(
       userAgent,
     );
 
