@@ -2,6 +2,7 @@
 set -euo pipefail
 
 is_prod=true
+second_alias=""
 
 while getopts t:a:b:d flag
 do
@@ -28,7 +29,7 @@ if [ $code -eq 0 ]; then
     # Now you can use the deployment url from stdout for the next step of your workflow
     deploymentUrl=`cat deployment-url.txt`
     vercel alias set $deploymentUrl $alias --token=$token --scope=coursetable
-    if [[ -n $second_alias ]]; then
+    if [[ $second_alias ]]; then
       vercel alias set $deploymentUrl $second_alias --token=$token --scope=coursetable
     fi
 else
