@@ -100,11 +100,23 @@ function datesInBreak(
     const dates: string[] = [];
     for (
       const date = start;
-      date.getTime() < end;
+      date.getTime() <= end;
       date.setUTCDate(date.getUTCDate() + 1)
     )
       if (days.includes(date.getUTCDay())) dates.push(isoString(date, time));
     return dates;
+  });
+}
+
+function transferDays(
+  transfers: SeasonCalendar['transfers'],
+  days: number[],
+  time: string
+) {
+  return transfers.flatMap((t) => {
+    const day = new Date(Date.UTC(t.date[0], t.date[1] - 1, t.date[2]));
+    if (days.includes(t.day)) return isoString(day, time);
+    return '';
   });
 }
 
@@ -271,16 +283,27 @@ export function getCalendarEvents(
               .join(',')
           : // Irrelevant for rbc
             '';
+        const rDate = semester
+          ? transferDays(semester.transfers, days, startTime)
+              .map((s) => s.replace(/[:-]/gu, ''))
+              .join(',')
+          : // Irrelevant for rbc
+          '';
 
-        // TODO: take care of transfer schedules (see semester.transfer)
         return toEvent({
           summary: c.course_code,
           start: isoString(firstMeetingDay, startTime),
           end: isoString(firstMeetingDay, endTime),
-          recurrence: [
-            `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
-            `EXDATE;TZID=America/New_York:${exDate}`,
-          ],
+          recurrence: rDate ? 
+            [
+              `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
+              `EXDATE;TZID=America/New_York:${exDate}`,
+              `RDATE;TZID=America/New_York:${rDate}`,
+            ] : 
+            [
+              `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
+              `EXDATE;TZID=America/New_York:${exDate}`,
+            ],
           description: `${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
           location,
           color,
