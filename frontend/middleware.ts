@@ -1,10 +1,13 @@
+// This is a Vercel middleware that sends HTML containing fake HTML for social
+// media links
 import { next } from '@vercel/edge';
 
-// Utilize the identity function for safer HTML generation
-const identity = (
-  strings: TemplateStringsArray,
-  ...values: (string | number)[]
-) => String.raw({ raw: strings }, ...values);
+// For Prettier formatting. If you add a language tag before the template
+// literal, it will recognize them as embedded languages and format those
+const identity = (strings: TemplateStringsArray, ...values: unknown[]) =>
+  String.raw({ raw: strings }, ...values);
+const html = identity;
+const gql = identity;
 
 export const config = {
   matcher: ['/catalog', '/worksheet'],
@@ -14,7 +17,7 @@ export const config = {
 export default async function middleware(req: Request) {
   const userAgent = req.headers.get('User-Agent') ?? '';
   const isBot =
-    /facebook.*|linkedin.*|twitter.*|pinterest.*|bing.*|google.*|whatsapp.*|vercel\sedge\sfunctions/iu.test(
+    /facebook|linkedin|twitter|pinterest|bing|google|whatsapp|vercel\sedge\sfunctions/iu.test(
       userAgent,
     );
 
@@ -29,7 +32,7 @@ export default async function middleware(req: Request) {
     method: 'POST',
     body: JSON.stringify({
       variables: { season_code: seasonCode, crn: Number(crn) },
-      query: `
+      query: gql`
         query GetCourse($season_code: String!, $crn: Int!) {
           computed_listing_info(
             where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
@@ -47,38 +50,60 @@ export default async function middleware(req: Request) {
 
   const { data } = (await response.json()) as {
     data?: {
-      computed_listing_info: Array<{
+      computed_listing_info: {
         course_code: string;
         section: string;
         title: string;
-        description?: string;
-      }>;
+        description: string | null;
+      }[];
     };
   };
 
   if (!data?.computed_listing_info.length) return next();
   const {
-    course_code,
+    course_code: courseCode,
     section,
     title,
-    description = 'Description not available',
-  } = data.computed_listing_info[0];
+    description,
+  } = data.computed_listing_info[0]!;
 
   return new Response(
-    identity`
-    <!doctype html>
-    <html>
-      <head>
-        <title>${course_code} ${section.padStart(2, '0')} ${title} | CourseTable</title>
-        <meta name="description" content="${truncatedText(description, 300, 'No description available')}">
-        <meta property="og:title" content="${course_code} ${section.padStart(2, '0')} ${title} | CourseTable">
-        <meta property="og:description" content="${truncatedText(description, 300, 'No description available')}">
-        <!-- TODO: Add og:image -->
-        <!-- Additional OG tags as needed -->
-      </head>
-      <body></body>
-    </html>
-  `,
+    html`
+      <!doctype html>
+      <html>
+        <head>
+          <title>
+            ${courseCode} ${section.padStart(2, '0')} ${title} | CourseTable
+          </title>
+          <meta
+            name="description"
+            content="${truncatedText(
+              description,
+              300,
+              'No description available',
+            )}"
+          />
+          <meta
+            property="og:title"
+            content="${courseCode} ${section.padStart(
+              2,
+              '0',
+            )} ${title} | CourseTable"
+          />
+          <meta
+            property="og:description"
+            content="${truncatedText(
+              description,
+              300,
+              'No description available',
+            )}"
+          />
+          <!-- TODO: Add og:image -->
+          <!-- Additional OG tags as needed -->
+        </head>
+        <body></body>
+      </html>
+    `,
     {
       status: 200,
       headers: {
