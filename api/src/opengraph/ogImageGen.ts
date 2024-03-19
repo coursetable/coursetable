@@ -8,14 +8,13 @@ export async function generateOpenGraphImage(
 
   let image = new Jimp(width, height, '#ffffff');
 
-  const fontSize = 64;
   const fontPath = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
 
   const textWidth = Jimp.measureText(fontPath, courseTitle);
   const textHeight = Jimp.measureTextHeight(fontPath, courseTitle, width);
 
   // Add text to the image
-  image = await image.print(
+  image = image.print(
     fontPath,
     (width - textWidth) / 2,
     (height - textHeight) / 2,
