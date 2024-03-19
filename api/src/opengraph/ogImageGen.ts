@@ -1,31 +1,33 @@
-import sharp from 'sharp';
+import Jimp from 'jimp';
 
 export async function generateOpenGraphImage(
   courseTitle: string,
 ): Promise<Buffer> {
   const width = 1200;
   const height = 630;
-  const svgText = `
-    <svg width="${width}" height="${height}">
-      <rect width="100%" height="100%" fill="#ffffff"/>
-      <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" font-size="48" font-family="Arial, sans-serif" fill="#333">${courseTitle}</text>
-    </svg>
-  `;
 
-  // Create a buffer from the SVG text
-  const svgBuffer = Buffer.from(svgText);
+  let image = new Jimp(width, height, '#ffffff');
 
-  const image = await sharp({
-    create: {
-      width,
-      height,
-      channels: 4,
-      background: { r: 255, g: 255, b: 255, alpha: 1 },
+  const fontSize = 64;
+  const fontPath = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
+
+  const textWidth = Jimp.measureText(fontPath, courseTitle);
+  const textHeight = Jimp.measureTextHeight(fontPath, courseTitle, width);
+
+  // Add text to the image
+  image = await image.print(
+    fontPath,
+    (width - textWidth) / 2,
+    (height - textHeight) / 2,
+    {
+      text: courseTitle,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE,
     },
-  })
-    .composite([{ input: svgBuffer }])
-    .png()
-    .toBuffer();
+    width,
+    height,
+  );
 
-  return image;
+  // Convert the image to Buffer
+  return await image.getBufferAsync(Jimp.MIME_PNG);
 }
