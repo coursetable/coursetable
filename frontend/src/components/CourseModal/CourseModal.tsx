@@ -118,11 +118,9 @@ function CourseModal() {
   const listing = history[history.length - 1];
 
   // Make sure title goes back to CourseTable when page is closed
-  useEffect(() => {
-    return () => {
+  useEffect(() => () => {
       document.title = 'CourseTable';
-    };
-  }, [listing]);
+    }, [listing]);
 
   if (!listing) return null;
   return (
