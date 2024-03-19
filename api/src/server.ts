@@ -1,35 +1,35 @@
+import * as Sentry from '@sentry/node';
+import RedisStore from 'connect-redis';
+import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
-import RedisStore from 'connect-redis';
-import { createClient } from 'redis';
 import fs from 'fs';
-import https from 'https';
-import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import https from 'https';
 import passport from 'passport';
-import * as Sentry from '@sentry/node';
+import { createClient } from 'redis';
 
-import {
-  SECURE_PORT,
-  INSECURE_PORT,
-  SESSION_SECRET,
-  CORS_OPTIONS,
-  STATIC_FILE_DIR,
-  REDIS_HOST,
-} from './config.js';
-import morgan from './logging/morgan.js';
-import winston from './logging/winston.js';
+import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
+import casAuth from './auth/auth.routes.js';
+import canny from './canny/canny.routes.js';
 
 // Import routes
 import catalog from './catalog/catalog.routes.js';
-import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
-import casAuth from './auth/auth.routes.js';
-import friends from './friends/friends.routes.js';
-import canny from './canny/canny.routes.js';
-import user from './user/user.routes.js';
-import challenge from './challenge/challenge.routes.js';
-
 import { fetchCatalog } from './catalog/catalog.utils.js';
+import challenge from './challenge/challenge.routes.js';
+import {
+  CORS_OPTIONS,
+  INSECURE_PORT,
+  REDIS_HOST,
+  SECURE_PORT,
+  SESSION_SECRET,
+  STATIC_FILE_DIR,
+} from './config.js';
+import friends from './friends/friends.routes.js';
+import morgan from './logging/morgan.js';
+import winston from './logging/winston.js';
+import { generateOpenGraphImage } from './opengraph/ogImageGen.js';
+import user from './user/user.routes.js';
 
 const app = express();
 
@@ -176,6 +176,21 @@ app.use(
 
 app.get('/api/ping', (req, res) => {
   res.json('pong');
+});
+
+// Generate OpenGraph images
+app.get('/api/opengraph/:courseTitle', async (req, res) => {
+  const { courseTitle } = req.params;
+  try {
+    const imageBuffer = await generateOpenGraphImage(
+      decodeURIComponent(courseTitle),
+    );
+    res.setHeader('Content-Type', 'image/png');
+    res.send(imageBuffer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 // The error handler must be registered before
