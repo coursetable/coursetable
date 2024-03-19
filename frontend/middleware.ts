@@ -67,6 +67,7 @@ export default async function middleware(req: Request) {
     300,
     'No description available',
   );
+  const encodedTitle = encodeURIComponent(title);
 
   return new Response(
     html`
@@ -77,7 +78,7 @@ export default async function middleware(req: Request) {
           <meta name="description" content="${description}" />
           <meta property="og:title" content="${title}" />
           <meta property="og:description" content="${description}" />
-          <!-- TODO: Add og:image -->
+          <meta property="og:image" content="https://coursetable.com/api/opengraph/${encodedTitle}" />
           <!-- Additional OG tags as needed -->
         </head>
         <body></body>
