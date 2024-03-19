@@ -259,6 +259,9 @@ export default function MobileSearchForm({
             <Toggle handle="hideFirstYearSeminars" />
             <Toggle handle="hideGraduateCourses" />
             <Toggle handle="hideDiscussionSections" />
+            <Toggle handle="justFirstYearSeminars" />
+            <Toggle handle="justGraduateCourses" />
+            <Toggle handle="justDiscussionSections" />
           </Row>
           <div className={styles.uselessBtn}>
             {/* The form requires a button with type submit in order to

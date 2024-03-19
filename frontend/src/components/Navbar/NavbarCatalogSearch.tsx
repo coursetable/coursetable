@@ -68,6 +68,9 @@ export function NavbarCatalogSearch() {
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
+    justFirstYearSeminars,
+    justGraduateCourses,
+    justDiscussionSections,
     selectSortBy,
     sortOrder,
   } = filters;
@@ -420,6 +423,9 @@ export function NavbarCatalogSearch() {
                     'hideFirstYearSeminars',
                     'hideGraduateCourses',
                     'hideDiscussionSections',
+                    'justFirstYearSeminars',
+                    'justGraduateCourses',
+                    'justDiscussionSections',
                   ] as const
                 ).forEach((k) => filters[k].reset());
                 if (selectSortBy.value.value === 'average_gut_rating') {
@@ -459,6 +465,9 @@ export function NavbarCatalogSearch() {
                   hideFirstYearSeminars.value,
                   hideGraduateCourses.value,
                   hideDiscussionSections.value,
+                  justFirstYearSeminars.value,
+                  justGraduateCourses.value,
+                  justDiscussionSections.value
                 ].filter(Boolean).length
               }
               dataTutorial={4}
@@ -796,6 +805,9 @@ export function NavbarCatalogSearch() {
                   <Toggle handle="hideFirstYearSeminars" />
                   <Toggle handle="hideGraduateCourses" />
                   <Toggle handle="hideDiscussionSections" />
+                  <Toggle handle="justFirstYearSeminars" />
+                  <Toggle handle="justGraduateCourses" />
+                  <Toggle handle="justDiscussionSections" />
                 </Row>
               </div>
             </Popout>

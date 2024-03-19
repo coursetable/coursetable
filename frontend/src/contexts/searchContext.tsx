@@ -165,6 +165,9 @@ export type Filters = {
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
   hideDiscussionSections: boolean;
+  justFirstYearSeminars: boolean;
+  justGraduateCourses: boolean;
+  justDiscussionSections: boolean;
   selectSortBy: SortByOption;
   sortOrder: SortOrderType;
 };
@@ -191,6 +194,9 @@ export const defaultFilters: Filters = {
   hideFirstYearSeminars: false,
   hideGraduateCourses: false,
   hideDiscussionSections: true,
+  justFirstYearSeminars: false,
+  justGraduateCourses: false,
+  justDiscussionSections: false,
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
 };
@@ -275,6 +281,10 @@ export function SearchProvider({
   const hideFirstYearSeminars = useFilterState('hideFirstYearSeminars');
   const hideGraduateCourses = useFilterState('hideGraduateCourses');
   const hideDiscussionSections = useFilterState('hideDiscussionSections');
+
+  const justFirstYearSeminars = useFilterState('justFirstYearSeminars');
+  const justGraduateCourses = useFilterState('justGraduateCourses');
+  const justDiscussionSections = useFilterState('justDiscussionSections');
 
   const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
@@ -557,9 +567,16 @@ export function SearchProvider({
       if (hideDiscussionSections.value && isDiscussionSection(listing))
         return false;
 
+      if (justDiscussionSections.value && !isDiscussionSection(listing)) 
+        return false;
+
       if (hideFirstYearSeminars.value && listing.fysem !== false) return false;
 
+      if (justFirstYearSeminars.value && listing.fysem === false) return false;
+
       if (hideGraduateCourses.value && isGraduate(listing)) return false;
+
+      if (justGraduateCourses.value && !isGraduate(listing)) return false;
 
       if (
         processedSubjects.length !== 0 &&
@@ -680,6 +697,9 @@ export function SearchProvider({
     hideDiscussionSections.value,
     hideFirstYearSeminars.value,
     hideGraduateCourses.value,
+    justDiscussionSections.value,
+    justFirstYearSeminars.value,
+    justGraduateCourses.value,
     processedSubjects,
     processedDays,
     processedSkillsAreas,
@@ -714,6 +734,9 @@ export function SearchProvider({
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
+      justDiscussionSections,
+      justFirstYearSeminars,
+      justGraduateCourses,
       selectSortBy,
       sortOrder,
     }),
@@ -739,6 +762,9 @@ export function SearchProvider({
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
+      justDiscussionSections,
+      justFirstYearSeminars,
+      justGraduateCourses,
       selectSortBy,
       sortOrder,
     ],

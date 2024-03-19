@@ -18,6 +18,9 @@ const labels = {
   hideFirstYearSeminars: 'Hide first-year seminars',
   hideGraduateCourses: 'Hide graduate courses',
   hideDiscussionSections: 'Hide discussion sections',
+  justFirstYearSeminars: 'Just first-year seminars',
+  justGraduateCourses: 'Just graduate courses',
+  justDiscussionSections: 'Just discussion sections',
 };
 
 export default function Toggle({
