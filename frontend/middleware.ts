@@ -1,6 +1,7 @@
 // This is a Vercel middleware that sends HTML containing fake HTML for social
 // media links
 import { next } from '@vercel/edge';
+import { API_ENDPOINT } from './src/config';
 
 // For Prettier formatting. If you add a language tag before the template
 // literal, it will recognize them as embedded languages and format those
@@ -82,7 +83,7 @@ export default async function middleware(req: Request) {
           <meta property="og:description" content="${description}" />
           <meta
             property="og:image"
-            content="https://coursetable.com/api/opengraph/${encodedTitle}"
+            content="${API_ENDPOINT}/opengraph/${encodedTitle}"
           />
           <!-- Additional OG tags as needed -->
         </head>
