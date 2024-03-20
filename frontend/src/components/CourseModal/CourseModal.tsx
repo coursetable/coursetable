@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Col, Container, Row, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
-import { Helmet } from 'react-helmet';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 import { TextComponent, LinkLikeText } from '../Typography';
 import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
-import { toSeasonString } from '../../utilities/course';
+import { toSeasonString, truncatedText } from '../../utilities/course';
 import { useFerry } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
@@ -117,135 +117,131 @@ function CourseModal() {
   }, [history.length, searchParams, requestSeasons, courses]);
   const listing = history[history.length - 1];
 
-  // Make sure title goes back to CourseTable when page is closed
-  useEffect(
-    () => () => {
-      document.title = 'CourseTable';
-    },
-    [listing],
-  );
-
   if (!listing) return null;
+  const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.title} | CourseTable`;
+  const description = truncatedText(
+    listing.description,
+    300,
+    'No description available',
+  );
   return (
-    <>
+    <div className="d-flex justify-content-center">
       <Helmet>
-        <title>{`${listing.course_code}: ${listing.title} | CourseTable`}</title>
+        <title>{title}</title>
+        <meta name="description" content={description} />
       </Helmet>
-      <div className="d-flex justify-content-center">
-        <Modal
-          show={Boolean(listing)}
-          scrollable
-          onHide={() => {
-            setHistory([]);
-            setView('overview');
-            setSearchParams((prev) => {
-              prev.delete('course-modal');
-              return prev;
-            });
-          }}
-          dialogClassName={styles.dialog}
-          animation={false}
-          centered
-        >
-          <Modal.Header closeButton>
-            <Container className="p-0 ml-2" fluid>
-              <Row className={clsx('m-auto', styles.modalTop)}>
-                <Col xs="auto" className="my-auto p-0">
-                  {history.length > 1 && (
-                    <LinkLikeText
-                      onClick={() => {
-                        setHistory(history.slice(0, -1));
-                        setView('overview');
-                      }}
-                      className={styles.backArrow}
-                    >
-                      <IoMdArrowRoundBack size={30} />
-                    </LinkLikeText>
-                  )}
-                </Col>
-                <Col className="p-0 ml-3">
-                  <Modal.Title>
-                    <Row className="mx-auto mt-1 align-items-center">
-                      <span className={styles.modalTitle}>
-                        {listing.extra_info !== 'ACTIVE' ? (
-                          <span className={styles.cancelledText}>
-                            {extraInfoMap[listing.extra_info]}{' '}
-                          </span>
-                        ) : (
-                          ''
-                        )}
-                        {listing.title}{' '}
-                        <TextComponent type="tertiary">
-                          ({toSeasonString(listing.season_code)})
-                        </TextComponent>
-                      </span>
-                    </Row>
-                  </Modal.Title>
-
-                  <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
-                    <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
+      <Modal
+        show={Boolean(listing)}
+        scrollable
+        onHide={() => {
+          setHistory([]);
+          setView('overview');
+          setSearchParams((prev) => {
+            prev.delete('course-modal');
+            return prev;
+          });
+        }}
+        dialogClassName={styles.dialog}
+        animation={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Container className="p-0 ml-2" fluid>
+            <Row className={clsx('m-auto', styles.modalTop)}>
+              <Col xs="auto" className="my-auto p-0">
+                {history.length > 1 && (
+                  <LinkLikeText
+                    onClick={() => {
+                      setHistory(history.slice(0, -1));
+                      setView('overview');
+                    }}
+                    className={styles.backArrow}
+                  >
+                    <IoMdArrowRoundBack size={30} />
+                  </LinkLikeText>
+                )}
+              </Col>
+              <Col className="p-0 ml-3">
+                <Modal.Title>
+                  <Row className="mx-auto mt-1 align-items-center">
+                    <span className={styles.modalTitle}>
+                      {listing.extra_info !== 'ACTIVE' ? (
+                        <span className={styles.cancelledText}>
+                          {extraInfoMap[listing.extra_info]}{' '}
+                        </span>
+                      ) : (
+                        ''
+                      )}
+                      {listing.title}{' '}
                       <TextComponent type="tertiary">
-                        {listing.all_course_codes.join(' • ')}
+                        ({toSeasonString(listing.season_code)})
                       </TextComponent>
-                    </p>
-                    {listing.skills.map((skill) => (
-                      <SkillBadge skill={skill} key={skill} />
-                    ))}
-                    {listing.areas.map((area) => (
-                      <SkillBadge skill={area} key={area} />
-                    ))}
+                    </span>
                   </Row>
-                </Col>
-              </Row>
-              <Row className="ml-auto mr-2 justify-content-between flex-wrap-reverse">
-                <ViewTabs
-                  tabs={[
-                    { label: 'Overview', value: 'overview' },
-                    {
-                      label: 'Evaluations',
-                      value: 'evals',
-                      // Don't show eval tab if it's current year or no auth
-                      hidden:
-                        CUR_YEAR.includes(listing.season_code) ||
-                        !user.hasEvals,
-                    },
-                  ]}
-                  onSelectTab={setView}
-                  currentTab={view}
-                />
-                <div className={styles.toolBar}>
-                  <WorksheetToggleButton listing={listing} modal />
-                  <ShareButton courseCode={listing.course_code} />
-                </div>
-              </Row>
-            </Container>
-          </Modal.Header>
-          {view === 'overview' ? (
-            <CourseModalOverview
-              gotoCourse={(l) => {
-                user.hasEvals ? setView('evals') : setView('overview');
-                if (
-                  l.crn === listing.crn &&
-                  l.season_code === listing.season_code
-                )
-                  return;
-                setHistory([...history, l]);
-                setSearchParams((prev) => {
-                  prev.set('course-modal', `${l.season_code}-${l.crn}`);
-                  return prev;
-                });
-              }}
-              listing={listing}
-            />
-          ) : (
-            <CourseModalEvaluations
-              seasonCode={listing.season_code}
-              crn={listing.crn}
-            />
-          )}
-        </Modal>
-      </div>
-    </>
+                </Modal.Title>
+
+                <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
+                  <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
+                    <TextComponent type="tertiary">
+                      {listing.all_course_codes.join(' • ')}
+                    </TextComponent>
+                  </p>
+                  {listing.skills.map((skill) => (
+                    <SkillBadge skill={skill} key={skill} />
+                  ))}
+                  {listing.areas.map((area) => (
+                    <SkillBadge skill={area} key={area} />
+                  ))}
+                </Row>
+              </Col>
+            </Row>
+            <Row className="ml-auto mr-2 justify-content-between flex-wrap-reverse">
+              <ViewTabs
+                tabs={[
+                  { label: 'Overview', value: 'overview' },
+                  {
+                    label: 'Evaluations',
+                    value: 'evals',
+                    // Don't show eval tab if it's current year or no auth
+                    hidden:
+                      CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
+                  },
+                ]}
+                onSelectTab={setView}
+                currentTab={view}
+              />
+              <div className={styles.toolBar}>
+                <WorksheetToggleButton listing={listing} modal />
+                <ShareButton courseCode={listing.course_code} />
+              </div>
+            </Row>
+          </Container>
+        </Modal.Header>
+        {view === 'overview' ? (
+          <CourseModalOverview
+            gotoCourse={(l) => {
+              user.hasEvals ? setView('evals') : setView('overview');
+              if (
+                l.crn === listing.crn &&
+                l.season_code === listing.season_code
+              )
+                return;
+              setHistory([...history, l]);
+              setSearchParams((prev) => {
+                prev.set('course-modal', `${l.season_code}-${l.crn}`);
+                return prev;
+              });
+            }}
+            listing={listing}
+          />
+        ) : (
+          <CourseModalEvaluations
+            seasonCode={listing.season_code}
+            crn={listing.crn}
+          />
+        )}
+      </Modal>
+    </div>
   );
 }
 

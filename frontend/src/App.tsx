@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -63,6 +64,17 @@ function App() {
 
   return (
     <>
+      {/* Default metadata; can be overridden by individual pages/components
+      keep this in sync with index.html, so nothing actually changes after
+      hydration, and things get restored to the default state when those
+      components unmount */}
+      <Helmet>
+        <title>CourseTable</title>
+        <meta
+          name="description"
+          content="CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It's run by a small team of volunteers within the Yale Computer Society and is completely open source."
+        />
+      </Helmet>
       <Notice
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
