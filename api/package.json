@@ -20,6 +20,7 @@
     "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
     "http-proxy-middleware": "^2.0.6",
+    "jimp": "^0.22.12",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "passport": "0.5.0",
