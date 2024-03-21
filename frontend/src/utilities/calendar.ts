@@ -294,16 +294,11 @@ export function getCalendarEvents(
           summary: c.course_code,
           start: isoString(firstMeetingDay, startTime),
           end: isoString(firstMeetingDay, endTime),
-          recurrence: rDate
-            ? [
-                `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
-                `EXDATE;TZID=America/New_York:${exDate}`,
-                `RDATE;TZID=America/New_York:${rDate}`,
-              ]
-            : [
-                `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
-                `EXDATE;TZID=America/New_York:${exDate}`,
-              ],
+          recurrence: [
+            `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
+            `EXDATE;TZID=America/New_York:${exDate}`,
+            ...(rDate ? [`RDATE;TZID=America/New_York:${rDate}`] : []),
+          ],
           description: `${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
           location,
           color,
