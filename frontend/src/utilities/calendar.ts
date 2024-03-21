@@ -111,7 +111,7 @@ function datesInBreak(
 function transferDays(
   transfers: SeasonCalendar['transfers'],
   days: number[],
-  time: string
+  time: string,
 ) {
   return transfers.flatMap((t) => {
     const day = new Date(Date.UTC(t.date[0], t.date[1] - 1, t.date[2]));
@@ -288,22 +288,22 @@ export function getCalendarEvents(
               .map((s) => s.replace(/[:-]/gu, ''))
               .join(',')
           : // Irrelevant for rbc
-          '';
+            '';
 
         return toEvent({
           summary: c.course_code,
           start: isoString(firstMeetingDay, startTime),
           end: isoString(firstMeetingDay, endTime),
-          recurrence: rDate ? 
-            [
-              `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
-              `EXDATE;TZID=America/New_York:${exDate}`,
-              `RDATE;TZID=America/New_York:${rDate}`,
-            ] : 
-            [
-              `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
-              `EXDATE;TZID=America/New_York:${exDate}`,
-            ],
+          recurrence: rDate
+            ? [
+                `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
+                `EXDATE;TZID=America/New_York:${exDate}`,
+                `RDATE;TZID=America/New_York:${rDate}`,
+              ]
+            : [
+                `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
+                `EXDATE;TZID=America/New_York:${exDate}`,
+              ],
           description: `${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
           location,
           color,
