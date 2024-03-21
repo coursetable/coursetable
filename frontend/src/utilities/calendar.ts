@@ -113,7 +113,7 @@ function transferDays(
   days: number[],
   time: string,
 ) {
-  return transfers.flatMap((t) => {
+  return transfers.map((t) => {
     const day = new Date(Date.UTC(t.date[0], t.date[1] - 1, t.date[2]));
     if (days.includes(t.day)) return isoString(day, time);
     return '';
