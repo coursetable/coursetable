@@ -180,7 +180,6 @@ function toRBCEvent({
   summary,
   start,
   end,
-  description,
   location,
   color,
   listing,
@@ -201,7 +200,8 @@ function toRBCEvent({
     endTimeCpy.setDate(endTimeCpy.getDate() - endTimeCpy.getDay() + day);
     return {
       title: summary,
-      description,
+      // No instructors for RBC
+      description: listing.title,
       start: startTimeCpy,
       end: endTimeCpy,
       listing,
