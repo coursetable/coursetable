@@ -20,8 +20,8 @@ export type SimpleDate = [year: number, month: number, day: number];
 
 export type SeasonCalendar = {
   /**
-   * The first day of class. Note that for spring term this will be MLK day
-   * which is also a holiday, but semester starts on Monday always.
+   * The first day of class. Note that for spring term this may be MLK day
+   * which is also a holiday, but we still treat as if semester starts.
    */
   start: SimpleDate;
   /**
@@ -31,7 +31,7 @@ export type SeasonCalendar = {
   /**
    * Each entry has a start date and an end date. The start date
    * is the first day without classes, and the end date is the
-   * first day with classes.
+   * last day without classes.
    */
   breaks: { name: string; start: SimpleDate; end: SimpleDate }[];
   /**
@@ -41,8 +41,13 @@ export type SeasonCalendar = {
   transfers: { date: SimpleDate; day: number }[];
 };
 
-// TODO: instead of hardcoding every year, we should compute this, because
-// each time point is always the same day of the week.
+// TODO: instead of hardcoding every year, we should crawl this using Ferry
+// and store it in the database
+// To find historical seasons: https://registrar.yale.edu/sites/default/files/files/2021-2022_Yale%20College%20Calendar%20with%20Pertinent%20Deadlines%20_%20Yale%20University.pdf
+// (Goes back to 2016–2017)
+// Use fully-closed indexing, i.e. "start" and "end" both included
+// For breaks, the academic calendar uses wordings such as "begins after the
+// last academic obligations"—in this case, it actually starts on the next day
 export const academicCalendars: { [season: Season]: SeasonCalendar } = {
   ['202203' as Season]: {
     start: [2022, 8, 31],
@@ -162,5 +167,4 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
     transfers: [{ date: [2025, 1, 24], day: 1 }],
   },
   // Add more entries above, but don't remove any
-  // Use fully-closed indexing, i.e. "start" and "end" both included
 };

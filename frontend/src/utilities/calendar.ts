@@ -120,6 +120,10 @@ function transferDays(
   });
 }
 
+/**
+ * A usage-agnostic representation of a calendar event. It will be converted to
+ * a usable format by one of the `to*Event` functions.
+ */
 type CalendarEvent = {
   summary: string;
   start: string;
@@ -139,7 +143,7 @@ function toGCalEvent({
   recurrence,
   description,
   location,
-}: CalendarEvent) {
+}: CalendarEvent): GCalEvent {
   return {
     id: `coursetable${uuidv4().replace(/-/gu, '')}`,
     summary,
@@ -214,7 +218,7 @@ function toRBCEvent({
   });
 }
 
-type GCalEvent = ReturnType<typeof toGCalEvent>;
+type GCalEvent = gapi.client.calendar.EventInput;
 type ICSEvent = string;
 export type RBCEvent = {
   title: string;
