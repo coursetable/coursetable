@@ -166,7 +166,10 @@ function toICSEvent({
   location,
 }: CalendarEvent): ICSEvent {
   return `BEGIN:VEVENT
-DESCRIPTION:${description}
+DESCRIPTION:${
+    // ICS uses **CRLF**
+    description.replaceAll('\n', '\\r\\n')
+  }
 DTEND;TZID=America/New_York:${end.replace(/[:-]/gu, '')}
 DTSTART;TZID=America/New_York:${start.replace(/[:-]/gu, '')}
 LOCATION:${location}
