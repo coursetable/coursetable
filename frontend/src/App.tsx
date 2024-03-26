@@ -97,8 +97,9 @@ function App() {
           }
         />
 
-        {/* Authenticated routes */}
         <Route path="/catalog" element={<Search />} />
+
+        {/* Authenticated routes */}
         <Route
           path="/worksheet"
           element={showIfAuthorized(
