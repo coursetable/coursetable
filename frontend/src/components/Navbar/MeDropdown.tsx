@@ -44,12 +44,6 @@ function DropdownItem({
 }) {
   return (
     <Row className="pb-3 m-auto">
-      <Icon
-        className="mr-2 my-auto"
-        size={20}
-        style={{ paddingLeft: '2px' }}
-        color={iconColor}
-      />
       <TextComponent type="secondary">
         {to ? (
           <NavLink
@@ -57,7 +51,15 @@ function DropdownItem({
             className={styles.collapseText}
             onClick={onClick ?? scrollToTop}
           >
-            <HoverText>{children}</HoverText>
+            <HoverText>
+              <Icon
+                className="mr-2 my-auto"
+                size={20}
+                style={{ paddingLeft: '2px', paddingBottom: '2px' }}
+                color={iconColor}
+              />
+              {children}
+            </HoverText>
           </NavLink>
         ) : href ? (
           // eslint-disable-next-line react/jsx-no-target-blank
@@ -69,13 +71,27 @@ function DropdownItem({
               rel: 'noreferrer noopener',
             })}
           >
-            <HoverText>{children}</HoverText>
+            <HoverText>
+              <Icon
+                className="mr-2 my-auto"
+                size={20}
+                style={{ paddingLeft: '2px', paddingBottom: '2px' }}
+                color={iconColor}
+              />
+              {children}
+            </HoverText>
           </a>
         ) : (
           <HoverText
             {...(onClick && { onClick })}
             className={styles.collapseText}
           >
+            <Icon
+              className="mr-2 my-auto"
+              size={20}
+              style={{ paddingLeft: '2px', paddingBottom: '2px' }}
+              color={iconColor}
+            />
             {children}
           </HoverText>
         )}
