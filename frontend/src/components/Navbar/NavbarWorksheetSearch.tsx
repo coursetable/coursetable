@@ -188,12 +188,10 @@ function AddFriendDropdown({
     }
     void fetchNames();
   }, []);
-  const isFriend = useCallback(
-    (netId: NetId) =>
-      // Convert the object's keys to an array and check if it includes the netId
-      Object.keys(user.friends || {}).includes(netId),
-    [user.friends],
-  );
+  const isFriend = useMemo(() => {
+    const friends = new Set(Object.keys(user.friends ?? {}));
+    return (netId: NetId) => friends.has(netId);
+  }, [user.friends]);
 
   const searchResults = useMemo(() => {
     if (searchText.length < 3) return [];
@@ -201,9 +199,12 @@ function AddFriendDropdown({
       .filter(
         (name) =>
           !isFriend(name.netId) &&
-          `${name.first} ${name.last}`
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
+          ((name.first &&
+            name.last &&
+            `${name.first} ${name.last}`
+              .toLowerCase()
+              .includes(searchText.toLowerCase())) ||
+            name.netId.includes(searchText.toLowerCase())),
       )
       .map((name) => ({
         value: name.netId,
