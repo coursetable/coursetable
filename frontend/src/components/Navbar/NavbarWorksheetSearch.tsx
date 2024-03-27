@@ -246,9 +246,12 @@ function AddFriendDropdown({
                   className={styles.friendOption}
                   onClick={onOptionClick}
                   role="button"
-                  tabIndex="0"
+                  tabIndex={0}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
                   }}
                 >
                   <span className={styles.friendptionText}>{children}</span>
