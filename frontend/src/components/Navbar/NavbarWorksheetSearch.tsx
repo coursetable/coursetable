@@ -209,7 +209,7 @@ function AddFriendDropdown({
       )
       .map((name) => ({
         value: name.netId,
-        label: `${name.first!} ${name.last!} (${name.netId})`,
+        label: `${name.first ?? '[unknown]'} ${name.last ?? '[unknown]'} (${name.netId})`,
         type: 'searchResult',
       }));
   }, [allNames, searchText, user.netId, isFriend]);
