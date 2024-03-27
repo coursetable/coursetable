@@ -333,6 +333,7 @@ export function NavbarWorksheetSearch() {
               if (!isRequest && person === friendNetId)
                 handlePersonChange('me');
               await removeFriend(friendNetId, isRequest);
+              toast.dismiss();
             }}
           >
             Yes
