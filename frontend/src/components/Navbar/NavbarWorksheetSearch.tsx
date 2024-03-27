@@ -212,7 +212,7 @@ function AddFriendDropdown({
         label: `${name.first!} ${name.last!} (${name.netId})`,
         type: 'searchResult',
       }));
-  }, [allNames, searchText, isFriend]);
+  }, [allNames, searchText, user.netId, isFriend]);
   const friendRequestOptions = useMemo(
     () =>
       user.friendRequests?.map((request) => ({
