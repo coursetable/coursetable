@@ -197,7 +197,7 @@ function AddFriendDropdown() {
           .includes(searchText.toLowerCase()),
       )
       .map((name) => ({
-        value: name.netId,
+        value: name.netId as NetId,
         label: `${name.first} ${name.last}`,
         type: 'searchResult',
       }));
