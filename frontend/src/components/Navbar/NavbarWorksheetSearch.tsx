@@ -256,7 +256,7 @@ function AddFriendDropdown({
                     }
                   }}
                 >
-                  <span className={styles.friendptionText}>{children}</span>
+                  <span className={styles.friendOptionText}>{children}</span>
                   {!isFriend(props.data.value) && (
                     <MdPersonAdd
                       className={styles.addFriendIcon}
@@ -333,7 +333,7 @@ export function NavbarWorksheetSearch() {
               if (!isRequest && person === friendNetId)
                 handlePersonChange('me');
               await removeFriend(friendNetId, isRequest);
-              toast.dismiss();
+              toast.dismiss(`remove-${friendNetId}`);
             }}
           >
             Yes
@@ -341,13 +341,13 @@ export function NavbarWorksheetSearch() {
           <LinkLikeText
             className="mx-2"
             onClick={() => {
-              toast.dismiss();
+              toast.dismiss(`remove-${friendNetId}`);
             }}
           >
             No
           </LinkLikeText>
         </>,
-        { autoClose: false },
+        { autoClose: false, toastId: `remove-${friendNetId}` },
       );
     },
     [handlePersonChange, person, removeFriend],
