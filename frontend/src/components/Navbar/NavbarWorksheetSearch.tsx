@@ -8,7 +8,7 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { LinkLikeText } from '../Typography';
 
-import { isOption, useSearch, type Option } from '../../contexts/searchContext';
+import { isOption, type Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/course';
 import { fetchAllNames } from '../../utilities/api';
@@ -189,21 +189,23 @@ function AddFriendDropdown({
     void fetchNames();
   }, []);
   const isFriend = useCallback(
-    (netId: NetId) => {
+    (netId: NetId) =>
       // Convert the object's keys to an array and check if it includes the netId
-      return Object.keys(user.friends || {}).includes(netId);
-    },
-    [user.friends]
+      Object.keys(user.friends || {}).includes(netId),
+    [user.friends],
   );
 
   const searchResults = useMemo(() => {
     if (searchText.length < 3) return [];
     return allNames
-      .filter(name =>
-        !isFriend(name.netId) &&
-        `${name.first} ${name.last}`.toLowerCase().includes(searchText.toLowerCase())
+      .filter(
+        (name) =>
+          !isFriend(name.netId) &&
+          `${name.first} ${name.last}`
+            .toLowerCase()
+            .includes(searchText.toLowerCase()),
       )
-      .map(name => ({
+      .map((name) => ({
         value: name.netId,
         label: `${name.first!} ${name.last!} (${name.netId})`,
         type: 'searchResult',
@@ -230,20 +232,37 @@ function AddFriendDropdown({
         onInputChange={(newValue) => setSearchText(newValue)}
         components={{
           Option({ children, ...props }) {
-            // Distinguish between search results and incoming requests
+            // Prevent the option from being selected when clicked
+            const onOptionClick = (e: React.MouseEvent) => {
+              e.preventDefault();
+              // Prevents the select's onChange event
+              e.stopPropagation();
+            };
+
             if (props.data.type === 'searchResult') {
               return (
-                <selectComponents.Option {...props}>
-                  {children}
-                  <MdPersonAdd
-                    className={styles.addFriendIcon}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent default select behavior
-                      void requestAddFriend(props.data.value);
-                    }}
-                    title="Send friend request"
-                  />
-                </selectComponents.Option>
+                <div
+                  {...props.innerProps}
+                  className={styles.friendOption}
+                  onClick={onOptionClick}
+                  role="button"
+                  tabIndex="0"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
+                  }}
+                >
+                  <span className={styles.friendptionText}>{children}</span>
+                  {!isFriend(props.data.value) && (
+                    <MdPersonAdd
+                      className={styles.addFriendIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void requestAddFriend(props.data.value);
+                      }}
+                      title="Send friend request"
+                    />
+                  )}
+                </div>
               );
             }
             // For incoming requests
