@@ -200,6 +200,7 @@ function AddFriendDropdown({
     return allNames
       .filter(
         (name) =>
+          name.netId !== user.netId &&
           !isFriend(name.netId) &&
           `${name.first} ${name.last}`
             .toLowerCase()
