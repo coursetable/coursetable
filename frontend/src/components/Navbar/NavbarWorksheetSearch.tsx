@@ -145,7 +145,9 @@ function FriendsDropdown({
           Option({ children, ...props }) {
             if (props.data.value === 'me') {
               return (
-                <selectComponents.Option {...props}>{children}</selectComponents.Option>
+                <selectComponents.Option {...props}>
+                  {children}
+                </selectComponents.Option>
               );
             }
             return (
@@ -178,9 +180,7 @@ function AddFriendDropdown() {
   useEffect(() => {
     const fetchNames = async () => {
       const data = await fetchAllNames();
-      if (data) {
-        setAllNames(data.names);
-      }
+      if (data) setAllNames(data.names);
     };
 
     fetchNames();
@@ -223,7 +223,7 @@ function AddFriendDropdown() {
         ]}
         onInputChange={(newValue) => setSearchText(newValue)}
         components={{
-          Option: (props) => {
+          Option(props) {
             // Distinguish between search results and incoming requests
             if (props.data.type === 'searchResult') {
               return (
@@ -239,30 +239,29 @@ function AddFriendDropdown() {
                   />
                 </selectComponents.Option>
               );
-            } else {
-              // For incoming requests
-              return (
-                <selectComponents.Option {...props}>
-                  {props.children}
-                  <MdPersonAdd
-                    className={styles.addFriendIcon}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addFriend(props.data.value);
-                    }}
-                    title="Accept friend request"
-                  />
-                  <MdPersonRemove
-                    className={styles.removeFriendIcon}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeFriend(props.data.value, true);
-                    }}
-                    title="Decline friend request"
-                  />
-                </selectComponents.Option>
-              );
             }
+            // For incoming requests
+            return (
+              <selectComponents.Option {...props}>
+                {props.children}
+                <MdPersonAdd
+                  className={styles.addFriendIcon}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addFriend(props.data.value);
+                  }}
+                  title="Accept friend request"
+                />
+                <MdPersonRemove
+                  className={styles.removeFriendIcon}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFriend(props.data.value, true);
+                  }}
+                  title="Decline friend request"
+                />
+              </selectComponents.Option>
+            );
           },
           NoOptionsMessage: ({ children, ...props }) => (
             <selectComponents.NoOptionsMessage {...props}>
