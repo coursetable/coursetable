@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import { components } from 'react-select';
+import { components as selectComponents } from 'react-select';
 import { toast } from 'react-toastify';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
@@ -170,90 +170,102 @@ function FriendsDropdown({
   );
 }
 
-function AddFriendDropdown({
-  removeFriend,
-}: {
-  readonly removeFriend: (netId: NetId, isRequest: boolean) => void;
-}) {
-  const { user, addFriend, requestAddFriend } = useUser();
-  // TODO: implement name searching
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [allNames, setAllNames] = useState<FriendNames>([]);
+function AddFriendDropdown() {
+  const { user, requestAddFriend, addFriend, removeFriend } = useUser();
+  const [allNames, setAllNames] = useState<FriendNames[]>([]);
+  const [searchText, setSearchText] = useState('');
 
-  // Friend requests variables
-  const friendRequestOptions = useMemo(() => {
-    if (!user.friendRequests) return [];
-    return user.friendRequests
-      .map((friend) => ({
-        value: friend.netId,
-        label: friend.name,
-      }))
-      .sort((a, b) =>
-        a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
-      );
-  }, [user.friendRequests]);
+  useEffect(() => {
+    const fetchNames = async () => {
+      const data = await fetchAllNames();
+      if (data) {
+        setAllNames(data.names);
+      }
+    };
 
-  const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+    fetchNames();
+  }, []);
+
+  const searchResults = useMemo(() => {
+    // Only show search results if at least 3 characters have been typed
+    if (searchText.length < 3) return [];
+
+    return allNames
+      .filter((name) =>
+        `${name.first} ${name.last}`
+          .toLowerCase()
+          .includes(searchText.toLowerCase()),
+      )
+      .map((name) => ({
+        value: name.netId,
+        label: `${name.first} ${name.last}`,
+        type: 'searchResult',
+      }));
+  }, [allNames, searchText]);
+
+  const friendRequestOptions = useMemo(
+    () =>
+      user.friendRequests?.map((request) => ({
+        value: request.netId,
+        label: request.name,
+        type: 'incomingRequest',
+      })) || [],
+    [user.friendRequests],
+  );
 
   return (
     <Popout buttonText="Add Friend" notifications={user.friendRequests?.length}>
       <PopoutSelect
-        hideSelectedOptions={false}
-        menuIsOpen
-        placeholder="Enter your friend's NetID (hit enter to add): "
+        placeholder="Enter friend's name"
         options={[
-          {
-            label: 'Incoming requests',
-            options: friendRequestOptions,
-          },
+          { label: 'Search Results', options: searchResults },
+          { label: 'Incoming Requests', options: friendRequestOptions },
         ]}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            void requestAddFriend(currentFriendNetID as NetId);
-          }
-        }}
-        onInputChange={(e) => {
-          setCurrentFriendNetID(e);
-        }}
-        onMenuOpen={async () => {
-          const data = await fetchAllNames();
-          if (data) setAllNames(data.names as FriendNames);
-          else setAllNames([]);
-        }}
+        onInputChange={(newValue) => setSearchText(newValue)}
         components={{
-          NoOptionsMessage: ({ children, ...props }) => (
-            <components.NoOptionsMessage {...props}>
-              No incoming friend requests
-            </components.NoOptionsMessage>
-          ),
-          Option({ children, ...props }) {
-            return (
-              <components.Option {...props}>
-                {children}
-                <MdPersonAdd
-                  className={styles.addFriendIcon}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    void addFriend(props.data.value);
-                  }}
-                  title="Accept friend request"
-                />
-                <MdPersonRemove
-                  className={styles.removeFriendIcon}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeFriend(props.data.value, true);
-                  }}
-                  title="Decline friend request"
-                />
-              </components.Option>
-            );
+          Option: (props) => {
+            // Distinguish between search results and incoming requests
+            if (props.data.type === 'searchResult') {
+              return (
+                <selectComponents.Option {...props}>
+                  {props.children}
+                  <MdPersonAdd
+                    className={styles.addFriendIcon}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent default select behavior
+                      requestAddFriend(props.data.value);
+                    }}
+                    title="Send friend request"
+                  />
+                </selectComponents.Option>
+              );
+            } else {
+              // For incoming requests
+              return (
+                <selectComponents.Option {...props}>
+                  {props.children}
+                  <MdPersonAdd
+                    className={styles.addFriendIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addFriend(props.data.value);
+                    }}
+                    title="Accept friend request"
+                  />
+                  <MdPersonRemove
+                    className={styles.removeFriendIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFriend(props.data.value, true);
+                    }}
+                    title="Decline friend request"
+                  />
+                </selectComponents.Option>
+              );
+            }
           },
+          NoOptionsMessage: () => <div>No matches found</div>,
         }}
-        isDisabled={false}
       />
     </Popout>
   );
