@@ -202,7 +202,7 @@ function AddFriendDropdown({
           !isFriend(name.netId) &&
           ((name.first &&
             name.last &&
-            `${name.first} ${name.last}`
+            `${name.first ?? '[unknown]'} ${name.last ?? '[unknown]'}`
               .toLowerCase()
               .includes(searchText.toLowerCase())) ||
             name.netId.includes(searchText.toLowerCase())),
