@@ -8,7 +8,7 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { LinkLikeText } from '../Typography';
 
-import { isOption, type Option } from '../../contexts/searchContext';
+import { isOption, useSearch, type Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/course';
 import { fetchAllNames } from '../../utilities/api';
@@ -186,31 +186,29 @@ function AddFriendDropdown({
       const data = await fetchAllNames();
       if (data) setAllNames(data.names as FriendNames);
     }
-
     void fetchNames();
   }, []);
+  const isFriend = useCallback(
+    (netId: NetId) => {
+      // Convert the object's keys to an array and check if it includes the netId
+      return Object.keys(user.friends || {}).includes(netId);
+    },
+    [user.friends]
+  );
 
   const searchResults = useMemo(() => {
-    // Only show search results if at least 3 characters have been typed
     if (searchText.length < 3) return [];
-
     return allNames
-      .filter(
-        (name) =>
-          (name.first &&
-            name.last &&
-            `${name.first} ${name.last}`
-              .toLowerCase()
-              .includes(searchText.toLowerCase())) ||
-          name.netId.includes(searchText.toLowerCase()),
+      .filter(name =>
+        !isFriend(name.netId) &&
+        `${name.first} ${name.last}`.toLowerCase().includes(searchText.toLowerCase())
       )
-      .map((name) => ({
+      .map(name => ({
         value: name.netId,
         label: `${name.first!} ${name.last!} (${name.netId})`,
         type: 'searchResult',
       }));
-  }, [allNames, searchText]);
-
+  }, [allNames, searchText, isFriend]);
   const friendRequestOptions = useMemo(
     () =>
       user.friendRequests?.map((request) => ({
