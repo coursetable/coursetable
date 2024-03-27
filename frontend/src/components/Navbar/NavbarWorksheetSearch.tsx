@@ -271,11 +271,16 @@ function AddFriendDropdown({
               </selectComponents.Option>
             );
           },
-          NoOptionsMessage: ({ children, ...props }) => (
-            <selectComponents.NoOptionsMessage {...props}>
-              No results found
-            </selectComponents.NoOptionsMessage>
-          ),
+          NoOptionsMessage: ({ children, ...props }) =>
+            searchText.length < 3 ? (
+              <selectComponents.NoOptionsMessage {...props}>
+                Type at least 3 characters to search
+              </selectComponents.NoOptionsMessage>
+            ) : (
+              <selectComponents.NoOptionsMessage {...props}>
+                No results found
+              </selectComponents.NoOptionsMessage>
+            ),
         }}
       />
     </Popout>
