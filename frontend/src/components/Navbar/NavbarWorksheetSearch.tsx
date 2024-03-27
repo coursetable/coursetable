@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import { components } from 'react-select';
+import { components as selectComponents } from 'react-select';
 import { toast } from 'react-toastify';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
@@ -138,18 +138,20 @@ function FriendsDropdown({
         }}
         components={{
           NoOptionsMessage: ({ children, ...props }) => (
-            <components.NoOptionsMessage {...props}>
+            <selectComponents.NoOptionsMessage {...props}>
               No friends found
-            </components.NoOptionsMessage>
+            </selectComponents.NoOptionsMessage>
           ),
           Option({ children, ...props }) {
             if (props.data.value === 'me') {
               return (
-                <components.Option {...props}>{children}</components.Option>
+                <selectComponents.Option {...props}>
+                  {children}
+                </selectComponents.Option>
               );
             }
             return (
-              <components.Option {...props}>
+              <selectComponents.Option {...props}>
                 {children}
                 <MdPersonRemove
                   className={styles.removeFriendIcon}
@@ -160,7 +162,7 @@ function FriendsDropdown({
                   }}
                   title="Remove friend"
                 />
-              </components.Option>
+              </selectComponents.Option>
             );
           },
         }}
@@ -175,66 +177,106 @@ function AddFriendDropdown({
 }: {
   readonly removeFriend: (netId: NetId, isRequest: boolean) => void;
 }) {
-  const { user, addFriend, requestAddFriend } = useUser();
-  // TODO: implement name searching
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { user, requestAddFriend, addFriend } = useUser();
   const [allNames, setAllNames] = useState<FriendNames>([]);
+  const [searchText, setSearchText] = useState('');
 
-  // Friend requests variables
-  const friendRequestOptions = useMemo(() => {
-    if (!user.friendRequests) return [];
-    return user.friendRequests
-      .map((friend) => ({
-        value: friend.netId,
-        label: friend.name,
-      }))
-      .sort((a, b) =>
-        a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
-      );
-  }, [user.friendRequests]);
+  useEffect(() => {
+    async function fetchNames() {
+      const data = await fetchAllNames();
+      if (data) setAllNames(data.names as FriendNames);
+    }
+    void fetchNames();
+  }, []);
+  const isFriend = useMemo(() => {
+    const friends = new Set(Object.keys(user.friends ?? {}));
+    return (netId: NetId) => friends.has(netId);
+  }, [user.friends]);
 
-  const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+  const searchResults = useMemo(() => {
+    if (searchText.length < 3) return [];
+    return allNames
+      .filter(
+        (name) =>
+          name.netId !== user.netId &&
+          !isFriend(name.netId) &&
+          ((name.first &&
+            name.last &&
+            `${name.first} ${name.last}`
+              .toLowerCase()
+              .includes(searchText.toLowerCase())) ||
+            name.netId.includes(searchText.toLowerCase())),
+      )
+      .map((name) => ({
+        value: name.netId,
+        label: `${name.first ?? '[unknown]'} ${name.last ?? '[unknown]'} (${name.netId})`,
+        type: 'searchResult',
+      }));
+  }, [allNames, searchText, user.netId, isFriend]);
+  const friendRequestOptions = useMemo(
+    () =>
+      user.friendRequests?.map((request) => ({
+        value: request.netId,
+        label: request.name,
+        type: 'incomingRequest',
+      })) || [],
+    [user.friendRequests],
+  );
 
   return (
     <Popout buttonText="Add Friend" notifications={user.friendRequests?.length}>
       <PopoutSelect
-        hideSelectedOptions={false}
-        menuIsOpen
-        placeholder="Enter your friend's NetID (hit enter to add): "
+        placeholder="Enter friend's name"
         options={[
-          {
-            label: 'Incoming requests',
-            options: friendRequestOptions,
-          },
+          { label: 'Search Results', options: searchResults },
+          { label: 'Incoming Requests', options: friendRequestOptions },
         ]}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            void requestAddFriend(currentFriendNetID as NetId);
-          }
-        }}
-        onInputChange={(e) => {
-          setCurrentFriendNetID(e);
-        }}
-        onMenuOpen={async () => {
-          const data = await fetchAllNames();
-          if (data) setAllNames(data.names as FriendNames);
-          else setAllNames([]);
-        }}
+        onInputChange={(newValue) => setSearchText(newValue)}
         components={{
-          NoOptionsMessage: ({ children, ...props }) => (
-            <components.NoOptionsMessage {...props}>
-              No incoming friend requests
-            </components.NoOptionsMessage>
-          ),
           Option({ children, ...props }) {
+            // Prevent the option from being selected when clicked
+            const onOptionClick = (e: React.MouseEvent) => {
+              e.preventDefault();
+              // Prevents the select's onChange event
+              e.stopPropagation();
+            };
+
+            if (props.data.type === 'searchResult') {
+              return (
+                <div
+                  {...props.innerProps}
+                  className={styles.friendOption}
+                  onClick={onOptionClick}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
+                >
+                  <span className={styles.friendOptionText}>{children}</span>
+                  {!isFriend(props.data.value) && (
+                    <MdPersonAdd
+                      className={styles.addFriendIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void requestAddFriend(props.data.value);
+                      }}
+                      title="Send friend request"
+                    />
+                  )}
+                </div>
+              );
+            }
+            // For incoming requests
             return (
-              <components.Option {...props}>
+              <selectComponents.Option {...props}>
                 {children}
                 <MdPersonAdd
                   className={styles.addFriendIcon}
                   onClick={(e) => {
-                    e.preventDefault();
                     e.stopPropagation();
                     void addFriend(props.data.value);
                   }}
@@ -243,17 +285,25 @@ function AddFriendDropdown({
                 <MdPersonRemove
                   className={styles.removeFriendIcon}
                   onClick={(e) => {
-                    e.preventDefault();
                     e.stopPropagation();
                     removeFriend(props.data.value, true);
                   }}
                   title="Decline friend request"
                 />
-              </components.Option>
+              </selectComponents.Option>
             );
           },
+          NoOptionsMessage: ({ children, ...props }) =>
+            searchText.length < 3 ? (
+              <selectComponents.NoOptionsMessage {...props}>
+                Type at least 3 characters to search
+              </selectComponents.NoOptionsMessage>
+            ) : (
+              <selectComponents.NoOptionsMessage {...props}>
+                No results found
+              </selectComponents.NoOptionsMessage>
+            ),
         }}
-        isDisabled={false}
       />
     </Popout>
   );
@@ -283,6 +333,7 @@ export function NavbarWorksheetSearch() {
               if (!isRequest && person === friendNetId)
                 handlePersonChange('me');
               await removeFriend(friendNetId, isRequest);
+              toast.dismiss(`remove-${friendNetId}`);
             }}
           >
             Yes
@@ -290,13 +341,13 @@ export function NavbarWorksheetSearch() {
           <LinkLikeText
             className="mx-2"
             onClick={() => {
-              toast.dismiss();
+              toast.dismiss(`remove-${friendNetId}`);
             }}
           >
             No
           </LinkLikeText>
         </>,
-        { autoClose: false },
+        { autoClose: false, toastId: `remove-${friendNetId}` },
       );
     },
     [handlePersonChange, person, removeFriend],
