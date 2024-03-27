@@ -138,18 +138,18 @@ function FriendsDropdown({
         }}
         components={{
           NoOptionsMessage: ({ children, ...props }) => (
-            <components.NoOptionsMessage {...props}>
+            <selectComponents.NoOptionsMessage {...props}>
               No friends found
-            </components.NoOptionsMessage>
+            </selectComponents.NoOptionsMessage>
           ),
           Option({ children, ...props }) {
             if (props.data.value === 'me') {
               return (
-                <components.Option {...props}>{children}</components.Option>
+                <selectComponents.Option {...props}>{children}</selectComponents.Option>
               );
             }
             return (
-              <components.Option {...props}>
+              <selectComponents.Option {...props}>
                 {children}
                 <MdPersonRemove
                   className={styles.removeFriendIcon}
@@ -160,7 +160,7 @@ function FriendsDropdown({
                   }}
                   title="Remove friend"
                 />
-              </components.Option>
+              </selectComponents.Option>
             );
           },
         }}
