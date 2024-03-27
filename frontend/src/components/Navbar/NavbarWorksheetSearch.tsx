@@ -198,7 +198,7 @@ function AddFriendDropdown() {
       )
       .map((name) => ({
         value: name.netId as NetId,
-        label: `${name.first} ${name.last}`,
+        label: `${name.first} ${name.last} (${name.netId})`,
         type: 'searchResult',
       }));
   }, [allNames, searchText]);
