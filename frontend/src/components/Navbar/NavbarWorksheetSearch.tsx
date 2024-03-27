@@ -172,18 +172,22 @@ function FriendsDropdown({
   );
 }
 
-function AddFriendDropdown() {
-  const { user, requestAddFriend, addFriend, removeFriend } = useUser();
-  const [allNames, setAllNames] = useState<FriendNames[]>([]);
+function AddFriendDropdown({
+  removeFriend,
+}: {
+  readonly removeFriend: (netId: NetId, isRequest: boolean) => void;
+}) {
+  const { user, requestAddFriend, addFriend } = useUser();
+  const [allNames, setAllNames] = useState<FriendNames>([]);
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    const fetchNames = async () => {
+    async function fetchNames() {
       const data = await fetchAllNames();
-      if (data) setAllNames(data.names);
-    };
+      if (data) setAllNames(data.names as FriendNames);
+    }
 
-    fetchNames();
+    void fetchNames();
   }, []);
 
   const searchResults = useMemo(() => {
@@ -191,14 +195,18 @@ function AddFriendDropdown() {
     if (searchText.length < 3) return [];
 
     return allNames
-      .filter((name) =>
-        `${name.first} ${name.last}`
-          .toLowerCase()
-          .includes(searchText.toLowerCase()),
+      .filter(
+        (name) =>
+          (name.first &&
+            name.last &&
+            `${name.first} ${name.last}`
+              .toLowerCase()
+              .includes(searchText.toLowerCase())) ||
+          name.netId.includes(searchText.toLowerCase()),
       )
       .map((name) => ({
-        value: name.netId as NetId,
-        label: `${name.first} ${name.last} (${name.netId})`,
+        value: name.netId,
+        label: `${name.first!} ${name.last!} (${name.netId})`,
         type: 'searchResult',
       }));
   }, [allNames, searchText]);
@@ -223,17 +231,17 @@ function AddFriendDropdown() {
         ]}
         onInputChange={(newValue) => setSearchText(newValue)}
         components={{
-          Option(props) {
+          Option({ children, ...props }) {
             // Distinguish between search results and incoming requests
             if (props.data.type === 'searchResult') {
               return (
                 <selectComponents.Option {...props}>
-                  {props.children}
+                  {children}
                   <MdPersonAdd
                     className={styles.addFriendIcon}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent default select behavior
-                      requestAddFriend(props.data.value);
+                      void requestAddFriend(props.data.value);
                     }}
                     title="Send friend request"
                   />
@@ -243,12 +251,12 @@ function AddFriendDropdown() {
             // For incoming requests
             return (
               <selectComponents.Option {...props}>
-                {props.children}
+                {children}
                 <MdPersonAdd
                   className={styles.addFriendIcon}
                   onClick={(e) => {
                     e.stopPropagation();
-                    addFriend(props.data.value);
+                    void addFriend(props.data.value);
                   }}
                   title="Accept friend request"
                 />
