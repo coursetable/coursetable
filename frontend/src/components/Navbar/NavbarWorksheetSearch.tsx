@@ -264,7 +264,11 @@ function AddFriendDropdown() {
               );
             }
           },
-          NoOptionsMessage: () => <div>No matches found</div>,
+          NoOptionsMessage: ({ children, ...props }) => (
+            <selectComponents.NoOptionsMessage {...props}>
+              No results found
+            </selectComponents.NoOptionsMessage>
+          ),
         }}
       />
     </Popout>
