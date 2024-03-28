@@ -1,7 +1,10 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import { components as selectComponents } from 'react-select';
+import {
+  components as selectComponents,
+  type SingleValueProps,
+} from 'react-select';
 import { toast } from 'react-toastify';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
@@ -22,6 +25,12 @@ type FriendNames = {
   last: string | null;
   college: string | null;
 }[];
+
+interface OptionType {
+  value: NetId;
+  label: string;
+  type: string;
+}
 
 function SeasonDropdown() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();
@@ -223,9 +232,7 @@ function AddFriendDropdown({
     [user.friendRequests],
   );
 
-  const customSingleValue = (
-    props: React.PropsWithChildren<{ data: { type: string; value: NetId } }>,
-  ) => {
+  const customSingleValue = (props: SingleValueProps<OptionType, false>) => {
     const { children, data } = props;
 
     // Check if the selected value is a friend request or a search result that can be added
