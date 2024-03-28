@@ -223,6 +223,31 @@ function AddFriendDropdown({
     [user.friendRequests],
   );
 
+  const customSingleValue = ({ children, ...props }) => {
+
+    const data = props.data as { type: string; value: NetId }; // Or just make Interface?
+
+    // Check if the selected value is a friend request or a search result that can be added
+    const isAddable =
+      data.type === 'searchResult' && !isFriend(data.value);
+
+    return (
+      <selectComponents.SingleValue {...props}>
+        {children}
+        {isAddable && (
+          <MdPersonAdd
+            className={styles.addFriendIcon}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation(); // Prevent event from bubbling to the main select handler
+              void requestAddFriend(data.value);
+            }}
+            title="Send friend request"
+          />
+        )}
+      </selectComponents.SingleValue>
+    );
+  };
+
   return (
     <Popout buttonText="Add Friend" notifications={user.friendRequests?.length}>
       <PopoutSelect
@@ -293,6 +318,7 @@ function AddFriendDropdown({
               </selectComponents.Option>
             );
           },
+          SingleValue: customSingleValue,
           NoOptionsMessage: ({ children, ...props }) =>
             searchText.length < 3 ? (
               <selectComponents.NoOptionsMessage {...props}>
@@ -352,10 +378,14 @@ export function NavbarWorksheetSearch() {
     },
     [handlePersonChange, person, removeFriend],
   );
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
   return (
     <>
-      {/* Filters Form */}
-      <Form className="px-0" data-tutorial="">
+      {/* Filters Form, no form needs reload i think */}
+      <Form onSubmit={handleSubmit} className="px-0" data-tutorial="">
         <Row className={styles.row}>
           <div className="d-flex align-items-center">
             {/* Worksheet View Toggle */}
