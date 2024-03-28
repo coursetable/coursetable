@@ -223,13 +223,13 @@ function AddFriendDropdown({
     [user.friendRequests],
   );
 
-  const customSingleValue = ({ children, ...props }) => {
-
-    const data = props.data as { type: string; value: NetId }; // Or just make Interface?
+  const customSingleValue = (
+    props: React.PropsWithChildren<{ data: { type: string; value: NetId } }>,
+  ) => {
+    const { children, data } = props;
 
     // Check if the selected value is a friend request or a search result that can be added
-    const isAddable =
-      data.type === 'searchResult' && !isFriend(data.value);
+    const isAddable = data.type === 'searchResult' && !isFriend(data.value);
 
     return (
       <selectComponents.SingleValue {...props}>
