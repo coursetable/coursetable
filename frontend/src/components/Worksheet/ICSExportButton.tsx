@@ -5,10 +5,10 @@ import { getCalendarEvents } from '../../utilities/calendar';
 import ICSIcon from '../../images/ics.svg';
 
 export default function ICSExportButton() {
-  const { curSeason, hiddenCourses, courses } = useWorksheet();
+  const { curSeason, courses } = useWorksheet();
 
   const exportICS = () => {
-    const events = getCalendarEvents('ics', courses, curSeason, hiddenCourses);
+    const events = getCalendarEvents('ics', courses, curSeason);
     // Error already reported
     if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR

@@ -22,7 +22,7 @@ import ICSExportButton from './ICSExportButton';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, curSeason, hiddenCourses, toggleCourse } = useWorksheet();
+  const { courses, curSeason, toggleCourse } = useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(
@@ -31,16 +31,16 @@ function WorksheetCalendarList() {
         <WorksheetCalendarListItem
           key={i}
           course={course.listing}
-          hidden={hiddenCourses[curSeason]?.[course.crn] ?? false}
+          hidden={course.hidden ?? false}
         />
       )),
-    [courses, hiddenCourses, curSeason],
+    [courses, curSeason],
   );
 
   const areHidden = useMemo(() => {
-    if (!(curSeason in hiddenCourses)) return false;
-    return Object.keys(hiddenCourses[curSeason]!).length === courses.length;
-  }, [hiddenCourses, courses, curSeason]);
+    console.log(courses);
+    return courses.filter((course) => course.hidden).length === courses.length;
+  }, [courses]);
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 

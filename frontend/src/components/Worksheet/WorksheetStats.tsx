@@ -79,7 +79,7 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, hiddenCourses, curSeason } = useWorksheet();
+  const { courses } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
@@ -89,13 +89,12 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  for (const { listing: course } of courses) {
+  for (const { listing: course, hidden: isHidden } of courses) {
     // See if any of the course's codes have already been counted or if it's
     // hidden so we don't double count
     const alreadyCounted = course.all_course_codes.some((code) =>
       countedCourseCodes.has(code),
     );
-    const isHidden = Boolean(hiddenCourses[curSeason]?.[course.crn]);
 
     if (alreadyCounted || isHidden || !course.credits) continue;
 

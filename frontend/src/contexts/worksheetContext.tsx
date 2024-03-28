@@ -15,15 +15,13 @@ import { useUser, type UserWorksheets } from './userContext';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
-export type HiddenCourses = {
-  [seasonCode: Season]: { [crn: Crn]: boolean };
-};
 type WorksheetView = 'calendar' | 'list';
 
 export type WorksheetCourse = {
   crn: Crn;
   color: string;
   listing: Listing;
+  hidden: boolean;
 };
 
 type Store = {
@@ -38,7 +36,6 @@ type Store = {
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
-  hiddenCourses: HiddenCourses;
   hoverCourse: Crn | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
@@ -64,10 +61,6 @@ export function WorksheetProvider({
     'person',
     'me',
   );
-  const [hiddenCourses, setHiddenCourses] = useLocalStorageState<HiddenCourses>(
-    'hiddenCourses',
-    {},
-  );
   const [hoverCourse, setHoverCourse] = useState<Crn | null>(null);
   const [worksheetView, setWorksheetView] =
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
@@ -90,11 +83,22 @@ export function WorksheetProvider({
     0,
   );
 
+  const [courses, setCourses] = useSessionStorageState(
+    'courses',
+    [],
+  );
+
   const {
     loading: worksheetLoading,
     error: worksheetError,
-    data: courses,
+    data: tmpCourses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
+
+  useMemo(() => {
+    if (tmpCourses) {
+      setCourses(tmpCourses);
+    }
+  }, [tmpCourses]); // Dependency array to re-run this effect when 'worksheetCourses' changes
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -109,34 +113,25 @@ export function WorksheetProvider({
   const toggleCourse = useCallback(
     (crn: Crn | 'hide all' | 'show all') => {
       if (crn === 'hide all') {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] ??= {};
-
-          courses.forEach((listing) => {
-            newHiddenCourses[curSeason]![listing.crn] = true;
-          });
-          return newHiddenCourses;
-        });
+        setCourses(courses.map((course) => {
+          return {...course, hidden : true};
+        }));
       } else if (crn === 'show all') {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] = {};
-          return newHiddenCourses;
-        });
+        setCourses(courses.map((course) => {
+          return {...course, hidden : false};
+        }));
       } else {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] ??= {};
-
-          if (newHiddenCourses[curSeason]![crn])
-            delete newHiddenCourses[curSeason]![crn];
-          else newHiddenCourses[curSeason]![crn] = true;
-          return newHiddenCourses;
-        });
+        setCourses(courses.map((course) => {
+          if(course.crn == crn) {
+            return {...course, hidden : !course.hidden};
+          }
+          else {
+            return {...course};
+          }
+        }));
       }
     },
-    [setHiddenCourses, courses, curSeason],
+    [courses, curSeason],
   );
 
   const handleWorksheetView = useCallback(
@@ -170,6 +165,13 @@ export function WorksheetProvider({
     [setWorksheetNumber],
   );
 
+  const changeCourses = useCallback(
+    (newCourses: WorksheetCourse[]) => {
+      setCourses(courses);
+    },
+    [setCourses],
+  );
+
   const store = useMemo(
     () => ({
       seasonCodes,
@@ -177,7 +179,6 @@ export function WorksheetProvider({
       worksheetNumber,
       person: viewedPerson,
       courses,
-      hiddenCourses,
       hoverCourse,
       worksheetView,
       worksheetLoading,
@@ -197,7 +198,6 @@ export function WorksheetProvider({
       worksheetNumber,
       viewedPerson,
       courses,
-      hiddenCourses,
       hoverCourse,
       worksheetView,
       worksheetLoading,
