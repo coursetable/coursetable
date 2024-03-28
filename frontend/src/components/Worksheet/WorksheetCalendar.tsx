@@ -15,7 +15,7 @@ import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, hoverCourse, hiddenCourses, curSeason } = useWorksheet();
+  const { courses, hoverCourse, curSeason } = useWorksheet();
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
@@ -45,7 +45,6 @@ function WorksheetCalendar() {
       'rbc',
       courses,
       curSeason,
-      hiddenCourses,
     );
     if (parsedCourses.length === 0) {
       return {
@@ -69,7 +68,7 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, hiddenCourses, curSeason]);
+  }, [courses, curSeason]);
 
   return (
     <Calendar

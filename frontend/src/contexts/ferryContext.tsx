@@ -201,6 +201,7 @@ export function useWorksheetInfo(
             crn,
             color,
             listing,
+            hidden: false,
           });
         }
       }
