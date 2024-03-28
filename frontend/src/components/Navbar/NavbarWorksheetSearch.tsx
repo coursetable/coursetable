@@ -251,6 +251,7 @@ function AddFriendDropdown({
   return (
     <Popout buttonText="Add Friend" notifications={user.friendRequests?.length}>
       <PopoutSelect
+        isClearable={false}
         placeholder="Enter friend's name"
         options={[
           { label: 'Search Results', options: searchResults },
