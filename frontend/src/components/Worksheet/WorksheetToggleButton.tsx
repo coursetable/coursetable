@@ -85,7 +85,6 @@ function WorksheetToggleButton({
   const { user, userRefresh } = useUser();
 
   const {
-    curSeason,
     toggleCourse,
     worksheetNumber,
     worksheetOptions,
@@ -141,12 +140,12 @@ function WorksheetToggleButton({
     },
     [
       inWorksheet,
-      curSeason,
       listing.crn,
       listing.season_code,
       toggleCourse,
       selectedWorksheet,
       userRefresh,
+      courses,
     ],
   );
 

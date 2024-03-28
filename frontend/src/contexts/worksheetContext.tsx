@@ -83,7 +83,7 @@ export function WorksheetProvider({
     0,
   );
 
-  const [courses, setCourses] = useSessionStorageState(
+  const [courses, setCourses] = useLocalStorageState(
     'courses',
     [],
   );
@@ -94,11 +94,16 @@ export function WorksheetProvider({
     data: tmpCourses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
 
+  const changeCourses = useCallback(
+    (newCourses: WorksheetCourse[]) => {
+      setCourses(newCourses);
+    },
+    [setCourses],
+  );
+
   useMemo(() => {
-    if (tmpCourses) {
-      setCourses(tmpCourses);
-    }
-  }, [tmpCourses]); // Dependency array to re-run this effect when 'worksheetCourses' changes
+      changeCourses(tmpCourses);
+  }, [changeCourses, tmpCourses]);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -113,25 +118,18 @@ export function WorksheetProvider({
   const toggleCourse = useCallback(
     (crn: Crn | 'hide all' | 'show all') => {
       if (crn === 'hide all') {
-        setCourses(courses.map((course) => {
-          return {...course, hidden : true};
-        }));
+        setCourses(courses.map((course) => ({...course, hidden : true} as WorksheetCourse)));
       } else if (crn === 'show all') {
-        setCourses(courses.map((course) => {
-          return {...course, hidden : false};
-        }));
+        setCourses(courses.map((course) => ({...course, hidden : false} as WorksheetCourse)));
       } else {
         setCourses(courses.map((course) => {
-          if(course.crn == crn) {
-            return {...course, hidden : !course.hidden};
-          }
-          else {
-            return {...course};
-          }
+          if(course.crn === crn) 
+            return {...course, hidden : !course.hidden} as WorksheetCourse;
+          return {...course} as WorksheetCourse;
         }));
       }
     },
-    [courses, curSeason],
+    [setCourses, courses],
   );
 
   const handleWorksheetView = useCallback(
@@ -163,13 +161,6 @@ export function WorksheetProvider({
       setWorksheetNumber(newNumber);
     },
     [setWorksheetNumber],
-  );
-
-  const changeCourses = useCallback(
-    (newCourses: WorksheetCourse[]) => {
-      setCourses(courses);
-    },
-    [setCourses],
   );
 
   const store = useMemo(
