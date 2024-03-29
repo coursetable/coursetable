@@ -181,7 +181,7 @@ function FriendsDropdown({
   );
 }
 
-function AddFriendDropdown({
+export function AddFriendDropdown({
   removeFriend,
 }: {
   readonly removeFriend: (netId: NetId, isRequest: boolean) => void;

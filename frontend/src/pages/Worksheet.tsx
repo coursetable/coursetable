@@ -1,30 +1,78 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
+import { toast } from 'react-toastify';
 
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
 import WorksheetList from '../components/Worksheet/WorksheetList';
-import { SurfaceComponent } from '../components/Typography';
+import { LinkLikeText, SurfaceComponent } from '../components/Typography';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
-
+import { AddFriendDropdown } from '../components/Navbar/NavbarWorksheetSearch';
 import styles from './Worksheet.module.css';
 
 import ErrorPage from '../components/ErrorPage';
 
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
+import { useUser } from '../contexts/userContext';
+import type { NetId } from '../utilities/common';
 
 function WorksheetMobile() {
+  const {person, handlePersonChange } =
+    useWorksheet();
+
+  const { removeFriend } = useUser();
+
+  const removeFriendWithConfirmation = useCallback(
+    (friendNetId: NetId, isRequest: boolean) => {
+      toast.warn(
+        <>
+          You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
+          {friendNetId}.{' '}
+          <b>This is irreversible without another friend request.</b> Do you
+          want to continue?
+          <br />
+          <LinkLikeText
+            className="mx-2"
+            onClick={async () => {
+              if (!isRequest && person === friendNetId)
+                handlePersonChange('me');
+              await removeFriend(friendNetId, isRequest);
+              toast.dismiss(`remove-${friendNetId}`);
+            }}
+          >
+            Yes
+          </LinkLikeText>
+          <LinkLikeText
+            className="mx-2"
+            onClick={() => {
+              toast.dismiss(`remove-${friendNetId}`);
+            }}
+          >
+            No
+          </LinkLikeText>
+        </>,
+        { autoClose: false, toastId: `remove-${friendNetId}` },
+      );
+    },
+    [handlePersonChange, person, removeFriend],
+  );
+
   return (
     <Row className={clsx(styles.accordion, 'm-0 p-3')}>
       <Col className="p-0">
-        <WorksheetNumDropdown />
         <Row className="mx-auto">
+          <Col xs={6} className="m-0 p-0">
+            <WorksheetNumDropdown />
+          </Col>
+          <Col xs={6} className="m-0 p-0">
+            <AddFriendDropdown removeFriend={removeFriendWithConfirmation} />
+          </Col>
           <Col xs={6} className="m-0 p-0">
             <SeasonDropdown />
           </Col>
