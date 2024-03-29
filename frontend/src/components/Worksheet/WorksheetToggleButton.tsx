@@ -84,12 +84,8 @@ function WorksheetToggleButton({
 }) {
   const { user, userRefresh } = useUser();
 
-  const {
-    toggleCourse,
-    worksheetNumber,
-    worksheetOptions,
-    courses,
-  } = useWorksheet();
+  const { toggleCourse, worksheetNumber, worksheetOptions, courses } =
+    useWorksheet();
 
   // In the modal, the select can override the "currently viewed" worksheet
   const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
@@ -126,7 +122,7 @@ function WorksheetToggleButton({
       const addRemove = inWorksheet ? 'remove' : 'add';
 
       // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet && courses.filter(course => course.hidden).length > 0)
+      if (inWorksheet && courses.filter((course) => course.hidden).length > 0)
         toggleCourse(listing.crn);
       const success = await toggleBookmark({
         action: addRemove,

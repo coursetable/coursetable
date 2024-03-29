@@ -37,7 +37,10 @@ function WorksheetCalendarList() {
     [courses],
   );
 
-  const areHidden = useMemo(() => courses.filter((course) => course.hidden).length === courses.length, [courses]);
+  const areHidden = useMemo(
+    () => courses.filter((course) => course.hidden).length === courses.length,
+    [courses],
+  );
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 

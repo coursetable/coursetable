@@ -41,11 +41,7 @@ function WorksheetCalendar() {
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents(
-      'rbc',
-      courses,
-      curSeason,
-    );
+    const parsedCourses = getCalendarEvents('rbc', courses, curSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),

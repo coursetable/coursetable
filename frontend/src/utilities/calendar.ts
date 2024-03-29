@@ -8,9 +8,7 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type {
-  WorksheetCourse,
-} from '../contexts/worksheetContext';
+import type { WorksheetCourse } from '../contexts/worksheetContext';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -257,9 +255,7 @@ export function getCalendarEvents(
     );
     return [];
   }
-  const visibleCourses = courses.filter(
-    (course) => !course.hidden,
-  );
+  const visibleCourses = courses.filter((course) => !course.hidden);
   if (visibleCourses.length === 0) {
     if (type !== 'rbc') toast.error(`No courses in ${seasonString} to export!`);
     return [];

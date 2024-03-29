@@ -5,10 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {
-  useLocalStorageState,
-  useSessionStorageState,
-} from '../utilities/browserStorage';
+import { useSessionStorageState } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
@@ -83,16 +80,13 @@ export function WorksheetProvider({
     0,
   );
 
-  const [courses, setCourses] = useLocalStorageState(
-    'courses',
-    [],
-  );
-
   const {
     loading: worksheetLoading,
     error: worksheetError,
     data: tmpCourses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
+
+  const [courses, setCourses] = useSessionStorageState('courses', tmpCourses);
 
   const changeCourses = useCallback(
     (newCourses: WorksheetCourse[]) => {
@@ -102,8 +96,8 @@ export function WorksheetProvider({
   );
 
   useMemo(() => {
-      changeCourses(tmpCourses);
-  }, [changeCourses, tmpCourses]);
+    changeCourses(courses);
+  }, [changeCourses, courses]);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -118,15 +112,25 @@ export function WorksheetProvider({
   const toggleCourse = useCallback(
     (crn: Crn | 'hide all' | 'show all') => {
       if (crn === 'hide all') {
-        setCourses(courses.map((course) => ({...course, hidden : true} as WorksheetCourse)));
+        setCourses(
+          courses.map(
+            (course) => ({ ...course, hidden: true }) as WorksheetCourse,
+          ),
+        );
       } else if (crn === 'show all') {
-        setCourses(courses.map((course) => ({...course, hidden : false} as WorksheetCourse)));
+        setCourses(
+          courses.map(
+            (course) => ({ ...course, hidden: false }) as WorksheetCourse,
+          ),
+        );
       } else {
-        setCourses(courses.map((course) => {
-          if(course.crn === crn) 
-            return {...course, hidden : !course.hidden} as WorksheetCourse;
-          return {...course} as WorksheetCourse;
-        }));
+        setCourses(
+          courses.map((course) => {
+            if (course.crn === crn)
+              return { ...course, hidden: !course.hidden } as WorksheetCourse;
+            return { ...course } as WorksheetCourse;
+          }),
+        );
       }
     },
     [setCourses, courses],
