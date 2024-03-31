@@ -48,8 +48,8 @@ export default function MobileSearchForm({
   );
 
   return (
-    <Col className={clsx('p-3', styles.searchColMobile)}>
-      <SurfaceComponent className={clsx('ml-1', styles.searchContainer)}>
+    <div className="p-3">
+      <SurfaceComponent className={styles.searchContainer}>
         <Form className="px-0" onSubmit={onSubmit}>
           <Row className="mx-auto pt-4 px-4">
             {/* Reset Filters Button */}
@@ -269,6 +269,6 @@ export default function MobileSearchForm({
           </div>
         </Form>
       </SurfaceComponent>
-    </Col>
+    </div>
   );
 }
