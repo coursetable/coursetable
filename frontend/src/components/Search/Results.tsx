@@ -95,6 +95,10 @@ function Results({
               width: '100%',
               height: '100%',
               display: 'inline-block',
+              // https://github.com/coursetable/coursetable/issues/1628
+              // We need to cancel the list div being scrollable because we
+              // always scroll the entire window
+              overflow: 'hidden',
             }}
           >
             {({ index, style: itemStyle }) => (
@@ -132,6 +136,7 @@ function Results({
               width: '100%',
               height: '100%',
               display: 'inline-block',
+              overflow: 'hidden',
             }}
           >
             {({ index, style: itemStyle }) => (
