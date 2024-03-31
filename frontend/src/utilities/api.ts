@@ -231,6 +231,7 @@ const userWorksheetsSchema = z.record(
       z.object({
         crn: z.number(),
         color: z.string(),
+        hidden: z.boolean(),
       }),
     ),
   ),

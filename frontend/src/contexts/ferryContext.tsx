@@ -13,7 +13,8 @@ import * as Sentry from '@sentry/react';
 import { fetchCatalog, fetchEvals } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
-import type { WorksheetCourse } from './worksheetContext';
+import type { WorksheetCourse, HiddenCourses } from './worksheetContext';
+import { useWorksheet } from './worksheetContext';
 import type { Crn, Season, Listing } from '../utilities/common';
 
 export const seasons = seasonsData as Season[];
@@ -166,7 +167,11 @@ export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
   season: Season | Season[],
   worksheetNumber = 0,
+  hiddenCourses: HiddenCourses,
 ) {
+
+  const { person } = useWorksheet();
+
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
     if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
@@ -186,7 +191,7 @@ export function useWorksheetInfo(
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      for (const { crn, color } of worksheet) {
+      for (const { crn, color, hidden } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
         if (!listing) {
           // This error is unactionable.
@@ -197,11 +202,24 @@ export function useWorksheetInfo(
           //   ),
           // );
         } else {
-          dataReturn.push({
-            crn,
-            color,
-            listing,
-          });
+          if(person === 'me') {
+            const locallyHidden = hiddenCourses[seasonCode]?.[crn] ?? false;
+            dataReturn.push({
+              crn,
+              color,
+              listing,
+              hidden: locallyHidden
+            });
+          }
+          else {
+            dataReturn.push({
+              crn,
+              color,
+              listing,
+              hidden
+            });
+          }
+          
         }
       }
     }

@@ -24,6 +24,7 @@ export type WorksheetCourse = {
   crn: Crn;
   color: string;
   listing: Listing;
+  hidden: boolean;
 };
 
 type Store = {
@@ -94,7 +95,7 @@ export function WorksheetProvider({
     loading: worksheetLoading,
     error: worksheetError,
     data: courses,
-  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
+  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber, hiddenCourses);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
