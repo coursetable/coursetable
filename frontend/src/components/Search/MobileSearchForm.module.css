@@ -1,9 +1,3 @@
-.searchColMobile {
-  /* background-color: transparent; */
-  overflow: scroll;
-  z-index: 1;
-}
-
 .searchContainer {
   position: relative;
   width: 100%;

@@ -82,16 +82,20 @@ function Results({
     // window, the view can still be restored to list view
     resultsListing = (
       <WindowScroller>
-        {({ ref, outerRef, style: listStyle }) => (
+        {({ ref, outerRef }) => (
           // We use a list even for grid, because we only virtualize the rows
           <FixedSizeList
             outerRef={outerRef}
             ref={ref}
+            width={window.innerWidth}
             height={window.innerHeight}
             itemCount={Math.ceil(data.length / numCols)}
             itemSize={178}
-            width={window.innerWidth}
-            style={listStyle}
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'inline-block',
+            }}
           >
             {({ index, style: itemStyle }) => (
               <div style={itemStyle}>
@@ -116,16 +120,19 @@ function Results({
   } else {
     resultsListing = (
       <WindowScroller>
-        {({ ref, outerRef, style: listStyle }) => (
+        {({ ref, outerRef }) => (
           <FixedSizeList
             outerRef={outerRef}
             ref={ref}
+            width={window.innerWidth}
             height={window.innerHeight}
             itemCount={data.length}
             itemSize={isLgDesktop ? 32 : 28}
-            width={window.innerWidth}
-            style={listStyle}
-            useIsScrolling
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'inline-block',
+            }}
           >
             {({ index, style: itemStyle }) => (
               <ResultsItem
