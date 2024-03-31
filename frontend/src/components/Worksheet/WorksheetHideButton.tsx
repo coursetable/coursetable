@@ -16,8 +16,10 @@ export default function WorksheetHideButton({
   readonly hidden: boolean;
   readonly crn: Crn;
 }) {
-  const { toggleCourse } = useWorksheet();
+  const { toggleCourse, person } = useWorksheet();
   return (
+    <>
+    { person === 'me' && 
     <OverlayTrigger
       placement="bottom"
       overlay={(props) => (
@@ -49,6 +51,7 @@ export default function WorksheetHideButton({
           />
         )}
       </Button>
-    </OverlayTrigger>
+    </OverlayTrigger>}
+    </>
   );
 }

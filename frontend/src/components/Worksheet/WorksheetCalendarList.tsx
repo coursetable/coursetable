@@ -22,7 +22,7 @@ import ICSExportButton from './ICSExportButton';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, curSeason, hiddenCourses, toggleCourse } = useWorksheet();
+  const { courses, curSeason, hiddenCourses, toggleCourse, person } = useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(
@@ -65,6 +65,7 @@ function WorksheetCalendarList() {
                   }
                   variant="none"
                   className={clsx(styles.button, 'px-3 w-100')}
+                  disabled={person !== 'me'}
                 >
                   <HideShowIcon
                     className={clsx(styles.icon, 'my-auto pr-2')}

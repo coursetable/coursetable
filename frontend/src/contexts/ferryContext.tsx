@@ -15,7 +15,7 @@ import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse, HiddenCourses } from './worksheetContext';
 import { useWorksheet } from './worksheetContext';
-import type { Crn, Season, Listing } from '../utilities/common';
+import type { Crn, Season, Listing, NetId } from '../utilities/common';
 
 export const seasons = seasonsData as Season[];
 
@@ -168,9 +168,8 @@ export function useWorksheetInfo(
   season: Season | Season[],
   worksheetNumber = 0,
   hiddenCourses: HiddenCourses,
+  person: 'me' | NetId,
 ) {
-
-  const { person } = useWorksheet();
 
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
