@@ -72,6 +72,26 @@
   margin-bottom: 1em;
 }
 
+.moreDropdown {
+  cursor: pointer;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 0;
+}
+
+.moreDropdown :global(.dropdown-toggle) {
+  padding: 0;
+}
+
+.moreDropdown :global(.dropdown-toggle)::after {
+  display: none;
+}
+
+.moreDropdown :global(.dropdown-menu) {
+  background-color: var(--color-surface);
+  width: 200px;
+}
+
 .toolBar {
   display: flex;
   gap: 1em;
