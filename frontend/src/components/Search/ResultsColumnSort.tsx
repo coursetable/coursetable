@@ -43,9 +43,8 @@ function ResultsColumnSort({ selectOption }: Props) {
   }, [firstTime, selectOption, selectSortBy, sortOrder, active]);
 
   return (
-    // TODO
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
+    <button
+      type="button"
       className={clsx(
         styles.button,
         'ml-1 my-auto',
@@ -78,7 +77,7 @@ function ResultsColumnSort({ selectOption }: Props) {
       ) : (
         <FcNumericalSorting21 className="d-block" size={20} />
       )}
-    </div>
+    </button>
   );
 }
 

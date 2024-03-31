@@ -41,12 +41,14 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
   };
 
   return (
-    <FaRegShareFromSquare
-      onClick={copyToClipboard}
-      size={20}
-      color="#007bff"
+    <button
+      type="button"
       className={styles.shareButton}
-    />
+      onClick={copyToClipboard}
+      aria-label="Share"
+    >
+      <FaRegShareFromSquare size={20} color="#007bff" />
+    </button>
   );
 }
 

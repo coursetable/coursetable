@@ -83,7 +83,7 @@ export function Popout({
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
-    useComponentVisibleDropdown<HTMLDivElement>(false);
+    useComponentVisibleDropdown<HTMLButtonElement, HTMLDivElement>(false);
   const text = getText(selectedOptions, maxDisplayOptions, displayOptionLabel);
 
   // Popout button styles for open and active states
@@ -108,9 +108,8 @@ export function Popout({
       className={styles.wrapper}
     >
       {/* Popout Button */}
-      {/* TODO */}
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <div
+      <button
+        type="button"
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
         ref={toggleRef}
@@ -136,7 +135,7 @@ export function Popout({
           )
         ) : null}
         {notifications ? <NotificationIcon count={notifications} /> : null}
-      </div>
+      </button>
       {/* Dropdown */}
       {isComponentVisible ? (
         <div className={styles.dropdown} ref={dropdownRef}>

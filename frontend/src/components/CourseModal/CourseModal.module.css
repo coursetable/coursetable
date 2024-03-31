@@ -60,7 +60,6 @@
   color: var(--color-text);
   font-size: 16px;
   font-weight: 500;
-  cursor: pointer;
 }
 
 .tabButton.tabSelected {
@@ -69,12 +68,13 @@
 }
 
 .shareButton {
-  cursor: pointer;
-  margin: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .toolBar {
   display: flex;
+  gap: 1em;
 }
 
 @media (width < 768px) {
@@ -90,25 +90,4 @@
   .dialog :global(.modal-dialog) {
     margin: 1.75rem 0.5rem;
   }
-}
-
-.moreInfo {
-  padding: 3px 5px;
-  font-size: 14px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  background-color: var(--color-select-multivalue);
-  color: var(--color-text-primary);
-}
-
-.moreInfo:hover {
-  filter: brightness(80%);
-}
-
-.conflictIconPosition {
-  position: absolute;
-  top: -10px;
-  right: 50px;
-  z-index: 10;
 }

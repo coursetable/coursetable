@@ -8,17 +8,20 @@ import styles from './DarkModeButton.module.css';
 function DarkModeButton({ className }: { readonly className: string }) {
   const { theme, toggleTheme } = useTheme();
   return (
-    // TODO
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div className={className} onClick={toggleTheme}>
+    <button
+      type="button"
+      className={className}
+      onClick={toggleTheme}
+      title={`To ${theme === 'dark' ? 'light' : 'dark'} mode`}
+    >
       <span className={clsx(styles.button, 'my-auto')}>
         {theme === 'dark' ? (
-          <ImSun size={20} style={{ display: 'block' }} />
-        ) : (
           <FaRegMoon size={20} style={{ display: 'block' }} />
+        ) : (
+          <ImSun size={20} style={{ display: 'block' }} />
         )}
       </span>
-    </div>
+    </button>
   );
 }
 

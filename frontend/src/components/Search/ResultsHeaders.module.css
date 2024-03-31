@@ -51,7 +51,6 @@
   padding: 7.5px;
   border-radius: 15px;
   transition: color var(--trans-dur);
-  cursor: pointer;
 }
 
 .toggle:hover {

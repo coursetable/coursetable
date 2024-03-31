@@ -93,9 +93,8 @@ function ResultsHeaders({
               'd-flex ml-auto my-auto p-0',
             )}
           >
-            {/* TODO */}
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-            <div
+            <button
+              type="button"
               className={clsx(styles.toggle, 'd-flex ml-auto my-auto')}
               onClick={() => setIsListView(!isListView)}
             >
@@ -104,7 +103,7 @@ function ResultsHeaders({
               ) : (
                 <FaTh className="m-auto" size={15} />
               )}
-            </div>
+            </button>
           </div>
           {isListView ? (
             <>

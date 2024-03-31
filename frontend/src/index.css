@@ -69,7 +69,16 @@ a:hover {
   color: var(--color-primary-hover);
 }
 
-button:focus {
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+}
+
+button:focus:not(:focus-visible) {
   outline: none !important;
 }
 

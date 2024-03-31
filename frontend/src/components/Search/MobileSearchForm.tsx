@@ -53,9 +53,8 @@ export default function MobileSearchForm({
         <Form className="px-0" onSubmit={onSubmit}>
           <Row className="mx-auto pt-4 px-4">
             {/* Reset Filters Button */}
-            {/* TODO */}
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-            <small
+            <button
+              type="button"
               className={clsx(styles.resetFiltersBtn, 'mr-auto')}
               onClick={() => {
                 setOverallRangeValue(defaultFilters.overallBounds);
@@ -65,7 +64,7 @@ export default function MobileSearchForm({
               }}
             >
               Reset Filters
-            </small>
+            </button>
             {/* Number of results shown text */}
             <small className={clsx(styles.numResults, 'ml-auto')}>
               <TextComponent type="tertiary">

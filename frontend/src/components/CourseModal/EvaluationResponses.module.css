@@ -16,7 +16,6 @@
 .sortOption {
   padding: 3px 5px;
   font-weight: 500;
-  cursor: pointer;
   background-color: var(--color-border);
   color: var(--color-text-tertiary);
 }

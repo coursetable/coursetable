@@ -71,7 +71,7 @@
 .resetFiltersBtn {
   color: #e23e57;
   font-weight: 500;
-  cursor: pointer;
+  font-size: 14px;
 }
 
 .resetFiltersBtn:hover {

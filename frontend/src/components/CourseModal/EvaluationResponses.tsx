@@ -117,9 +117,8 @@ function EvaluationResponses({
       >
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sortOptions}>
-          {/* TODO */}
-          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <span
+          <button
+            type="button"
             className={clsx(
               styles.sortOption,
               sortOrder === 'length' && styles.activeSortOption,
@@ -127,10 +126,9 @@ function EvaluationResponses({
             onClick={() => setSortOrder('length')}
           >
             original order
-          </span>
-          {/* TODO */}
-          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <span
+          </button>
+          <button
+            type="button"
             className={clsx(
               styles.sortOption,
               sortOrder === 'original' && styles.activeSortOption,
@@ -138,7 +136,7 @@ function EvaluationResponses({
             onClick={() => setSortOrder('original')}
           >
             length
-          </span>
+          </button>
         </div>
       </Row>
       <Tabs

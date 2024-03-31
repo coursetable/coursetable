@@ -39,11 +39,9 @@ END:VCALENDAR`;
   };
 
   return (
-    // TODO
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div onClick={exportICS}>
+    <button type="button" onClick={exportICS}>
       <img style={{ height: '2rem' }} src={ICSIcon} alt="" />
       &nbsp;&nbsp;Download as ICS
-    </div>
+    </button>
   );
 }

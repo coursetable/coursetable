@@ -1,5 +1,4 @@
 .button {
-  cursor: pointer;
   border-radius: 4px;
   padding: 2px;
   transition: background-color var(--trans-dur);
