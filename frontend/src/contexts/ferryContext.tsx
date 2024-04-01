@@ -14,8 +14,10 @@ import { fetchCatalog, fetchEvals } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse, HiddenCourses } from './worksheetContext';
-import { useWorksheet } from './worksheetContext';
 import type { Crn, Season, Listing, NetId } from '../utilities/common';
+import { createLocalStorageSlot } from '../utilities/browserStorage';
+
+const hiddenCoursesStorage = createLocalStorageSlot<HiddenCourses>('hiddenCourses');
 
 export const seasons = seasonsData as Season[];
 
@@ -167,9 +169,10 @@ export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
   season: Season | Season[],
   worksheetNumber = 0,
-  hiddenCourses: HiddenCourses,
   person: 'me' | NetId,
 ) {
+
+  const hiddenCourses = hiddenCoursesStorage.get() ?? {};
 
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];

@@ -374,6 +374,7 @@ export function SearchProvider({
     user.worksheets,
     processedSeasons,
     worksheetNumber,
+    'me',
   );
 
   const queryEvaluator = useMemo(

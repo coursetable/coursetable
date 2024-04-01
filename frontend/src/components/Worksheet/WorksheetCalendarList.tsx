@@ -21,6 +21,7 @@ import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import styles from './WorksheetCalendarList.module.css';
 
+
 function WorksheetCalendarList() {
   const { courses, curSeason, hiddenCourses, toggleCourse, person } = useWorksheet();
 

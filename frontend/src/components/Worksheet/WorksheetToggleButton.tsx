@@ -32,6 +32,7 @@ function CourseConflictIcon({
     user.worksheets,
     listing.season_code,
     worksheetNumber,
+    'me',
   );
 
   const warning = useMemo(() => {
@@ -86,7 +87,7 @@ function WorksheetToggleButton({
 
   const {
     curSeason,
-    hiddenCourses,
+    courses,
     toggleCourse,
     worksheetNumber,
     worksheetOptions,
@@ -127,7 +128,7 @@ function WorksheetToggleButton({
       const addRemove = inWorksheet ? 'remove' : 'add';
 
       // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet && hiddenCourses[curSeason]?.[listing.crn])
+      if (inWorksheet && courses.filter(course => {course.crn == listing.crn && course.hidden}).length > 0)
         toggleCourse(listing.crn);
       const success = await toggleBookmark({
         action: addRemove,
@@ -141,7 +142,6 @@ function WorksheetToggleButton({
     },
     [
       inWorksheet,
-      hiddenCourses,
       curSeason,
       listing.crn,
       listing.season_code,

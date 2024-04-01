@@ -14,6 +14,9 @@ import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
+import { createLocalStorageSlot } from '../utilities/browserStorage';
+
+const hiddenCoursesStorage = createLocalStorageSlot<HiddenCourses>('hiddenCourses');
 
 export type HiddenCourses = {
   [seasonCode: Season]: { [crn: Crn]: boolean };
@@ -39,7 +42,6 @@ type Store = {
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
-  hiddenCourses: HiddenCourses;
   hoverCourse: Crn | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
@@ -65,10 +67,7 @@ export function WorksheetProvider({
     'person',
     'me',
   );
-  const [hiddenCourses, setHiddenCourses] = useLocalStorageState<HiddenCourses>(
-    'hiddenCourses',
-    {},
-  );
+
   const [hoverCourse, setHoverCourse] = useState<Crn | null>(null);
   const [worksheetView, setWorksheetView] =
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
@@ -95,7 +94,7 @@ export function WorksheetProvider({
     loading: worksheetLoading,
     error: worksheetError,
     data: courses,
-  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber, hiddenCourses, viewedPerson);
+  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber, viewedPerson);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -109,35 +108,27 @@ export function WorksheetProvider({
 
   const toggleCourse = useCallback(
     (crn: Crn | 'hide all' | 'show all') => {
+      const hiddenCourses = hiddenCoursesStorage.get() ?? {};
       if (crn === 'hide all') {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] ??= {};
-
-          courses.forEach((listing) => {
-            newHiddenCourses[curSeason]![listing.crn] = true;
-          });
-          return newHiddenCourses;
+        hiddenCourses[curSeason] ??= {};
+        courses.forEach((listing) => {
+          hiddenCourses[curSeason]![listing.crn] = true;
         });
       } else if (crn === 'show all') {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] = {};
-          return newHiddenCourses;
+        hiddenCourses[curSeason] ??= {};
+        courses.forEach((listing) => {
+          hiddenCourses[curSeason]![listing.crn] = false;
         });
       } else {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] ??= {};
+        hiddenCourses[curSeason] ??= {};
 
-          if (newHiddenCourses[curSeason]![crn])
-            delete newHiddenCourses[curSeason]![crn];
-          else newHiddenCourses[curSeason]![crn] = true;
-          return newHiddenCourses;
-        });
+        if (hiddenCourses[curSeason]![crn])
+          delete hiddenCourses[curSeason]![crn];
+        else hiddenCourses[curSeason]![crn] = true;
       }
+      hiddenCoursesStorage.set(hiddenCourses);
     },
-    [setHiddenCourses, courses, curSeason],
+    [courses, curSeason],
   );
 
   const handleWorksheetView = useCallback(
@@ -178,7 +169,6 @@ export function WorksheetProvider({
       worksheetNumber,
       person: viewedPerson,
       courses,
-      hiddenCourses,
       hoverCourse,
       worksheetView,
       worksheetLoading,
@@ -198,7 +188,6 @@ export function WorksheetProvider({
       worksheetNumber,
       viewedPerson,
       courses,
-      hiddenCourses,
       hoverCourse,
       worksheetView,
       worksheetLoading,
