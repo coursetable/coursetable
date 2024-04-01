@@ -11,12 +11,19 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../utilities/api';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import styles from './Navbar.module.css';
-import { SurfaceComponent, TextComponent } from '../Typography';
+import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 
 import { API_ENDPOINT } from '../../config';
 import { useUser } from '../../contexts/userContext';
+import { useSearch } from '../../contexts/searchContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
+
+import {
+  barChartColors,
+  ratingColormap,
+  workloadColormap,
+} from '../../utilities/constants';
 
 function NavbarLink({
   to,
@@ -55,6 +62,9 @@ function NavCollapseWrapper({
 export default function CourseTableNavbar() {
   const { authStatus } = useUser();
   const location = useLocation();
+  const {
+    filters: { professorBounds },
+  } = useSearch();
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
   const { elemRef, isComponentVisible, setIsComponentVisible } =
@@ -163,6 +173,18 @@ export default function CourseTableNavbar() {
                   )}
                   style={{ width: '100%' }}
                 >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      ratingColormap.domain([5, 1]);
+                      workloadColormap.domain([5, 1]);
+                      if (barChartColors[0] === '#00e800')
+                        barChartColors.reverse();
+                      professorBounds.set([...professorBounds.value]);
+                    }}
+                  >
+                    <HoverText>Haha!</HoverText>
+                  </button>
                   {/* DarkMode Button */}
                   <DarkModeButton
                     className={clsx(
