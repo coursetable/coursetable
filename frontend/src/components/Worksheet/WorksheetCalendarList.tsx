@@ -65,7 +65,7 @@ function WorksheetCalendarList() {
                   }
                   variant="none"
                   className={clsx(styles.button, 'px-3 w-100')}
-                  disabled={person !== 'me'}
+                  disabled={person === 'me'}
                 >
                   <HideShowIcon
                     className={clsx(styles.icon, 'my-auto pr-2')}
