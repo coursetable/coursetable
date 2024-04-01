@@ -6,6 +6,7 @@ import {
   evalsBySeasonQuery,
   catalogBySeasonQuery,
   listSeasonsQuery,
+  courseAttributesQuery,
 } from './catalog.queries.js';
 import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config.js';
 import winston from '../logging/winston.js';
@@ -38,6 +39,21 @@ export async function fetchCatalog(
         .sort((a, b) => Number(b) - Number(a)),
     ),
   );
+
+  try {
+    const infoAttributes = await request<{
+      course_flags: { flag: { flag_text: string } }[];
+    }>(GRAPHQL_ENDPOINT, courseAttributesQuery);
+    await fs.writeFile(
+      `${STATIC_FILE_DIR}/infoAttributes.json`,
+      JSON.stringify(
+        infoAttributes.course_flags.map((x) => x.flag.flag_text).sort(),
+      ),
+    );
+  } catch (err) {
+    winston.error(err);
+    throw err;
+  }
 
   // For each season, fetch all courses inside it and save
   // (if overwrite = true or if file does not exist)
