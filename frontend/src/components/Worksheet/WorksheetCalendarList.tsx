@@ -23,7 +23,7 @@ import styles from './WorksheetCalendarList.module.css';
 
 
 function WorksheetCalendarList() {
-  const { courses, curSeason, hiddenCourses, toggleCourse, person } = useWorksheet();
+  const { courses, curSeason, toggleCourse, person } = useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(
@@ -32,16 +32,15 @@ function WorksheetCalendarList() {
         <WorksheetCalendarListItem
           key={i}
           course={course.listing}
-          hidden={hiddenCourses[curSeason]?.[course.crn] ?? false}
+          hidden={course.hidden ?? false}
         />
       )),
-    [courses, hiddenCourses, curSeason],
+    [courses, curSeason],
   );
 
   const areHidden = useMemo(() => {
-    if (!(curSeason in hiddenCourses)) return false;
-    return Object.keys(hiddenCourses[curSeason]!).length === courses.length;
-  }, [hiddenCourses, courses, curSeason]);
+    return courses.filter(course => course.hidden).length > 0;
+  }, [courses, curSeason]);
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 

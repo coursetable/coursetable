@@ -93,8 +93,13 @@ export function WorksheetProvider({
   const {
     loading: worksheetLoading,
     error: worksheetError,
-    data: courses,
+    data: tmpCourses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber, viewedPerson);
+
+  const [courses, setCourses] = useLocalStorageState(
+    'courses',
+    tmpCourses
+  );
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -114,17 +119,27 @@ export function WorksheetProvider({
         courses.forEach((listing) => {
           hiddenCourses[curSeason]![listing.crn] = true;
         });
+        setCourses(courses.map(course => {
+          return {...course, hidden: true};
+        }));
       } else if (crn === 'show all') {
         hiddenCourses[curSeason] ??= {};
         courses.forEach((listing) => {
           hiddenCourses[curSeason]![listing.crn] = false;
         });
+        setCourses(courses.map(course => {
+          return {...course, hidden: false};
+        }));
       } else {
         hiddenCourses[curSeason] ??= {};
 
         if (hiddenCourses[curSeason]![crn])
           delete hiddenCourses[curSeason]![crn];
         else hiddenCourses[curSeason]![crn] = true;
+        setCourses(courses.map(course => {
+          if(course.crn === crn) return {...course, hidden: !course.hidden};
+          return course;
+        }));
       }
       hiddenCoursesStorage.set(hiddenCourses);
     },
