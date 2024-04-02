@@ -81,7 +81,7 @@ function WorksheetCalendarList() {
                 )}
               >
                 <DropdownButton
-                  as={Button}
+                  as="div"
                   drop="down"
                   menuAlign="right"
                   title={
@@ -91,12 +91,12 @@ function WorksheetCalendarList() {
                     />
                   }
                   variant="none"
-                  className={clsx(styles.button, 'w-100')}
+                  className={clsx(styles.button, 'w-100 btn')}
                 >
-                  <Dropdown.Item eventKey="1">
+                  <Dropdown.Item eventKey="1" as="div">
                     <GoogleCalendarButton />
                   </Dropdown.Item>
-                  <Dropdown.Item eventKey="2">
+                  <Dropdown.Item eventKey="2" as="div">
                     <ICSExportButton />
                   </Dropdown.Item>
                 </DropdownButton>
