@@ -4,6 +4,7 @@ import React, {
   useContext,
   useMemo,
   useState,
+  useEffect
 } from 'react';
 import {
   useLocalStorageState,
@@ -73,6 +74,7 @@ export function WorksheetProvider({
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
 
   const curWorksheet = useMemo(() => {
+    console.log('ws changing');
     const whenNotDefined: UserWorksheets = {};
     if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
 
@@ -100,6 +102,10 @@ export function WorksheetProvider({
     'courses',
     tmpCourses
   );
+
+  useEffect(() => {
+    setCourses(tmpCourses);
+  }, [tmpCourses]); // `count` is a dependency
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(

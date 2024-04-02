@@ -15,6 +15,7 @@ export async function toggleBookmark(payload: {
   crn: Crn;
   worksheetNumber: number;
   color: string;
+  hidden: boolean;
 }): Promise<boolean> {
   const body = JSON.stringify(payload);
   try {

@@ -127,8 +127,10 @@ function WorksheetToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWorksheet ? 'remove' : 'add';
 
+      const isHidden = courses.filter(course => {course.crn === listing.crn && course.hidden}).length > 0
+
       // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet && courses.filter(course => {course.crn == listing.crn && course.hidden}).length > 0)
+      if (inWorksheet && isHidden)
         toggleCourse(listing.crn);
       const success = await toggleBookmark({
         action: addRemove,
@@ -137,6 +139,7 @@ function WorksheetToggleButton({
         worksheetNumber: selectedWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
+        hidden: isHidden,
       });
       if (success) await userRefresh();
     },

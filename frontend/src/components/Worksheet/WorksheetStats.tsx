@@ -79,7 +79,7 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, curSeason } = useWorksheet();
+  const { courses } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;

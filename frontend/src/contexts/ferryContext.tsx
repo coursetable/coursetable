@@ -171,7 +171,6 @@ export function useWorksheetInfo(
   worksheetNumber = 0,
   person: 'me' | NetId,
 ) {
-
   const hiddenCourses = hiddenCoursesStorage.get() ?? {};
 
   const requestedSeasons = useMemo(() => {
