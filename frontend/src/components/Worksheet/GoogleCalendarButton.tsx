@@ -13,7 +13,7 @@ function GoogleCalendarButton(): JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
   const { curSeason, hiddenCourses, courses } = useWorksheet();
-  const exportButtonRef = useRef<HTMLDivElement>(null);
+  const exportButtonRef = useRef<HTMLButtonElement>(null);
   const exportEvents = useCallback(async () => {
     if (!gapi) {
       Sentry.captureException(new Error('gapi not loaded'));
@@ -132,7 +132,8 @@ function GoogleCalendarButton(): JSX.Element {
   }, [authInstance, user, setUser, exportEvents]);
 
   return (
-    <div
+    <button
+      type="button"
       ref={exportButtonRef}
       onClick={user && !exporting ? exportEvents : undefined}
     >
@@ -142,7 +143,7 @@ function GoogleCalendarButton(): JSX.Element {
         <Spinner animation="border" role="status" size="sm" />
       )}
       &nbsp;&nbsp;Export to Google Calendar
-    </div>
+    </button>
   );
 }
 

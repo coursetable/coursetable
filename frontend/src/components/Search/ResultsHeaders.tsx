@@ -97,6 +97,9 @@ function ResultsHeaders({
               type="button"
               className={clsx(styles.toggle, 'd-flex ml-auto my-auto')}
               onClick={() => setIsListView(!isListView)}
+              aria-label={
+                isListView ? 'Switch to grid view' : 'Switch to list view'
+              }
             >
               {!isListView ? (
                 <FaBars className="m-auto" size={15} />

@@ -241,8 +241,8 @@ function Syllabus({
       {pastSyllabi.length > 0 && (
         <Row className="m-auto pt-4 pb-2">
           <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-            <span
-              role="button"
+            <button
+              type="button"
               className={styles.toggleBubble}
               onClick={() => setShowPastSyllabi(!showPastSyllabi)}
             >
@@ -252,7 +252,7 @@ function Syllabus({
               ) : (
                 <MdExpandMore size={18} className="my-auto" />
               )}
-            </span>
+            </button>
           </Col>
           <Collapse in={showPastSyllabi}>
             <Col
@@ -625,8 +625,11 @@ function EvalsCol({
               className="m-auto py-1 justify-content-center"
             >
               <Col
+                as="button"
+                role="button"
                 xs={5}
                 className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
+                tabIndex={0}
                 onClick={() => {
                   // Note, we purposefully use the listing data fetched
                   // from GraphQL instead of the static seasons data.

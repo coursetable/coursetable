@@ -92,9 +92,8 @@ function ResultsGridItem({
       className={clsx(styles.container, 'px-2 pt-0 pb-3')}
       style={{ overflow: 'hidden' }}
     >
-      {/* TODO */}
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div
+        role="button"
         onClick={() => {
           setSearchParams((prev) => {
             prev.set('course-modal', `${course.season_code}-${course.crn}`);
@@ -107,8 +106,6 @@ function ResultsGridItem({
           inWorksheet && styles.inWorksheetResultItem,
           'px-3 pb-3',
         )}
-        // TODO
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
       >
         <Row className="m-auto">
