@@ -10,12 +10,10 @@ on:
     inputs:
       api:
         description: 'Deploy API'
-        required: false
-        default: 'false'
+        type: boolean
       frontend:
         description: 'Deploy Frontend'
-        required: false
-        default: 'false'
+        type: boolean
 
 jobs:
   changes:
