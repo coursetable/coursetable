@@ -9,13 +9,12 @@ import React, {
 import {
   useLocalStorageState,
   useSessionStorageState,
-} from '../utilities/browserStorage';
+ createLocalStorageSlot } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
-import { createLocalStorageSlot } from '../utilities/browserStorage';
 
 const hiddenCoursesStorage = createLocalStorageSlot<HiddenCourses>('hiddenCourses');
 
@@ -74,7 +73,6 @@ export function WorksheetProvider({
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
 
   const curWorksheet = useMemo(() => {
-    console.log('ws changing');
     const whenNotDefined: UserWorksheets = {};
     if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
 
@@ -96,7 +94,7 @@ export function WorksheetProvider({
     loading: worksheetLoading,
     error: worksheetError,
     data: tmpCourses,
-  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber, viewedPerson);
+  } = useWorksheetInfo(curWorksheet, curSeason, viewedPerson, worksheetNumber);
 
   const [courses, setCourses] = useLocalStorageState(
     'courses',
@@ -105,7 +103,7 @@ export function WorksheetProvider({
 
   useEffect(() => {
     setCourses(tmpCourses);
-  }, [tmpCourses]); // `count` is a dependency
+  }, [tmpCourses, setCourses]); // `count` is a dependency
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -125,17 +123,13 @@ export function WorksheetProvider({
         courses.forEach((listing) => {
           hiddenCourses[curSeason]![listing.crn] = true;
         });
-        setCourses(courses.map(course => {
-          return {...course, hidden: true};
-        }));
+        setCourses(courses.map(course => ({...course, hidden: true})));
       } else if (crn === 'show all') {
         hiddenCourses[curSeason] ??= {};
         courses.forEach((listing) => {
           hiddenCourses[curSeason]![listing.crn] = false;
         });
-        setCourses(courses.map(course => {
-          return {...course, hidden: false};
-        }));
+        setCourses(courses.map(course => ({...course, hidden: false})));
       } else {
         hiddenCourses[curSeason] ??= {};
 
@@ -149,7 +143,7 @@ export function WorksheetProvider({
       }
       hiddenCoursesStorage.set(hiddenCourses);
     },
-    [courses, curSeason],
+    [courses, curSeason, setCourses],
   );
 
   const handleWorksheetView = useCallback(

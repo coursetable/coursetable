@@ -168,10 +168,10 @@ export const useCourseData = (requestedSeasons: Season[]) => {
 export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
   season: Season | Season[],
-  worksheetNumber = 0,
   person: 'me' | NetId,
+  worksheetNumber = 0,
 ) {
-  const hiddenCourses = hiddenCoursesStorage.get() ?? {};
+  const hiddenCourses = useMemo(() => hiddenCoursesStorage.get() ?? {}, []);
 
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
@@ -202,8 +202,7 @@ export function useWorksheetInfo(
           //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
           //   ),
           // );
-        } else {
-          if(person === 'me') {
+        } else if(person === 'me') {
             const locallyHidden = hiddenCourses[seasonCode]?.[crn] ?? false;
             dataReturn.push({
               crn,
@@ -220,13 +219,11 @@ export function useWorksheetInfo(
               hidden
             });
           }
-          
-        }
       }
     }
     return dataReturn.sort((a, b) =>
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
-  }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error]);
+  }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error, person, hiddenCourses]);
   return { loading, error, data };
 }
