@@ -6,6 +6,16 @@ on:
     paths:
       - 'frontend/**'
       - 'api/**'
+  workflow_dispatch:
+    inputs:
+      api:
+        description: 'Deploy API'
+        required: false
+        default: 'false'
+      frontend:
+        description: 'Deploy Frontend'
+        required: false
+        default: 'false'
 
 jobs:
   changes:
@@ -33,7 +43,7 @@ jobs:
 
   frontend-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend == 'true' }}
 
     environment:
       name: Staging
@@ -63,7 +73,7 @@ jobs:
 
   api-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.api == 'true' }}
+    if: ${{ needs.changes.outputs.api == 'true' || inputs.api == 'true' }}
 
     environment:
       name: Staging
