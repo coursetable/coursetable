@@ -17,7 +17,8 @@ import type { WorksheetCourse, HiddenCourses } from './worksheetContext';
 import type { Crn, Season, Listing, NetId } from '../utilities/common';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 
-const hiddenCoursesStorage = createLocalStorageSlot<HiddenCourses>('hiddenCourses');
+const hiddenCoursesStorage =
+  createLocalStorageSlot<HiddenCourses>('hiddenCourses');
 
 export const seasons = seasonsData as Season[];
 
@@ -202,28 +203,36 @@ export function useWorksheetInfo(
           //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
           //   ),
           // );
-        } else if(person === 'me') {
-            const locallyHidden = hiddenCourses[seasonCode]?.[crn] ?? false;
-            dataReturn.push({
-              crn,
-              color,
-              listing,
-              hidden: locallyHidden
-            });
-          }
-          else {
-            dataReturn.push({
-              crn,
-              color,
-              listing,
-              hidden
-            });
-          }
+        } else if (person === 'me') {
+          const locallyHidden = hiddenCourses[seasonCode]?.[crn] ?? false;
+          dataReturn.push({
+            crn,
+            color,
+            listing,
+            hidden: locallyHidden,
+          });
+        } else {
+          dataReturn.push({
+            crn,
+            color,
+            listing,
+            hidden,
+          });
+        }
       }
     }
     return dataReturn.sort((a, b) =>
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
-  }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error, person, hiddenCourses]);
+  }, [
+    requestedSeasons,
+    courses,
+    worksheets,
+    worksheetNumber,
+    loading,
+    error,
+    person,
+    hiddenCourses,
+  ]);
   return { loading, error, data };
 }

@@ -63,11 +63,7 @@ function GoogleCalendarButton(): JSX.Element {
           }),
         );
       }
-      const events = getCalendarEvents(
-        'gcal',
-        courses,
-        curSeason,
-      );
+      const events = getCalendarEvents('gcal', courses, curSeason);
       await Promise.all(
         events.map(async (event) => {
           try {

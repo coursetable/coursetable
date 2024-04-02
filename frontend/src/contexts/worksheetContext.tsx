@@ -4,19 +4,21 @@ import React, {
   useContext,
   useMemo,
   useState,
-  useEffect
+  useEffect,
 } from 'react';
 import {
   useLocalStorageState,
   useSessionStorageState,
- createLocalStorageSlot } from '../utilities/browserStorage';
+  createLocalStorageSlot,
+} from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
-const hiddenCoursesStorage = createLocalStorageSlot<HiddenCourses>('hiddenCourses');
+const hiddenCoursesStorage =
+  createLocalStorageSlot<HiddenCourses>('hiddenCourses');
 
 export type HiddenCourses = {
   [seasonCode: Season]: { [crn: Crn]: boolean };
@@ -96,10 +98,7 @@ export function WorksheetProvider({
     data: tmpCourses,
   } = useWorksheetInfo(curWorksheet, curSeason, viewedPerson, worksheetNumber);
 
-  const [courses, setCourses] = useLocalStorageState(
-    'courses',
-    tmpCourses
-  );
+  const [courses, setCourses] = useLocalStorageState('courses', tmpCourses);
 
   useEffect(() => {
     setCourses(tmpCourses);
@@ -123,23 +122,26 @@ export function WorksheetProvider({
         courses.forEach((listing) => {
           hiddenCourses[curSeason]![listing.crn] = true;
         });
-        setCourses(courses.map(course => ({...course, hidden: true})));
+        setCourses(courses.map((course) => ({ ...course, hidden: true })));
       } else if (crn === 'show all') {
         hiddenCourses[curSeason] ??= {};
         courses.forEach((listing) => {
           hiddenCourses[curSeason]![listing.crn] = false;
         });
-        setCourses(courses.map(course => ({...course, hidden: false})));
+        setCourses(courses.map((course) => ({ ...course, hidden: false })));
       } else {
         hiddenCourses[curSeason] ??= {};
 
         if (hiddenCourses[curSeason]![crn])
           delete hiddenCourses[curSeason]![crn];
         else hiddenCourses[curSeason]![crn] = true;
-        setCourses(courses.map(course => {
-          if(course.crn === crn) return {...course, hidden: !course.hidden};
-          return course;
-        }));
+        setCourses(
+          courses.map((course) => {
+            if (course.crn === crn)
+              return { ...course, hidden: !course.hidden };
+            return course;
+          }),
+        );
       }
       hiddenCoursesStorage.set(hiddenCourses);
     },

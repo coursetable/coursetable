@@ -37,7 +37,10 @@ function WorksheetCalendarList() {
     [courses],
   );
 
-  const areHidden = useMemo(() => courses.filter(course => course.hidden).length > 0, [courses]);
+  const areHidden = useMemo(
+    () => courses.filter((course) => course.hidden).length > 0,
+    [courses],
+  );
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
@@ -48,29 +51,29 @@ function WorksheetCalendarList() {
         <SurfaceComponent elevated className={clsx(styles.container, 'mx-1')}>
           <div className="shadow-sm p-2">
             <ButtonGroup className="w-100">
-              {person === 'me' && 
-              <OverlayTrigger
-                placement="top"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>{areHidden ? 'Show' : 'Hide'} all</span>
-                  </Tooltip>
-                )}
-              >
-                <Button
-                  onClick={() =>
-                    toggleCourse(areHidden ? 'show all' : 'hide all')
-                  }
-                  variant="none"
-                  className={clsx(styles.button, 'px-3 w-100')}
+              {person === 'me' && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="button-tooltip" {...props}>
+                      <span>{areHidden ? 'Show' : 'Hide'} all</span>
+                    </Tooltip>
+                  )}
                 >
-                  <HideShowIcon
-                    className={clsx(styles.icon, 'my-auto pr-2')}
-                    size={32}
-                  />
-                </Button>
-              </OverlayTrigger>
-              }
+                  <Button
+                    onClick={() =>
+                      toggleCourse(areHidden ? 'show all' : 'hide all')
+                    }
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                  >
+                    <HideShowIcon
+                      className={clsx(styles.icon, 'my-auto pr-2')}
+                      size={32}
+                    />
+                  </Button>
+                </OverlayTrigger>
+              )}
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (

@@ -5,7 +5,7 @@ import { CourseInfoPopover } from '../Search/ResultsItemCommon';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 import WorksheetHideButton from './WorksheetHideButton';
-import { useWorksheet } from '../../contexts/worksheetContext'
+import { useWorksheet } from '../../contexts/worksheetContext';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -32,15 +32,15 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         </div>
       </CourseInfoPopover>
 
-      {person === 'me' &&
-      <div className={styles.worksheetHideButton}>
-        <WorksheetHideButton
-          crn={course.crn}
-          // Course in calendar is never hidden
-          hidden={false}
-        />
-      </div>
-      }
+      {person === 'me' && (
+        <div className={styles.worksheetHideButton}>
+          <WorksheetHideButton
+            crn={course.crn}
+            // Course in calendar is never hidden
+            hidden={false}
+          />
+        </div>
+      )}
     </>
   );
 }

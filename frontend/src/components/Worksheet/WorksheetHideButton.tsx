@@ -19,39 +19,43 @@ export default function WorksheetHideButton({
   const { toggleCourse, person } = useWorksheet();
   return (
     <>
-    { person === 'me' && 
-    <OverlayTrigger
-      placement="bottom"
-      overlay={(props) => (
-        <Tooltip id="button-tooltip" {...props}>
-          <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
-        </Tooltip>
+      {person === 'me' && (
+        <OverlayTrigger
+          placement="bottom"
+          overlay={(props) => (
+            <Tooltip id="button-tooltip" {...props}>
+              <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
+            </Tooltip>
+          )}
+        >
+          <Button
+            variant="toggle"
+            onClick={(e) => {
+              // Prevent clicking hide button from opening course modal
+              e.stopPropagation();
+              toggleCourse(crn);
+            }}
+            className={clsx(
+              'p-1 d-flex align-items-center',
+              styles.toggleButton,
+            )}
+          >
+            {hidden ? (
+              <BsEyeSlash
+                color="var(--color-hidden)"
+                size={18}
+                className={styles.scaleIcon}
+              />
+            ) : (
+              <BsEye
+                color="var(--color-text)"
+                size={18}
+                className={styles.scaleIcon}
+              />
+            )}
+          </Button>
+        </OverlayTrigger>
       )}
-    >
-      <Button
-        variant="toggle"
-        onClick={(e) => {
-          // Prevent clicking hide button from opening course modal
-          e.stopPropagation();
-          toggleCourse(crn);
-        }}
-        className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
-      >
-        {hidden ? (
-          <BsEyeSlash
-            color="var(--color-hidden)"
-            size={18}
-            className={styles.scaleIcon}
-          />
-        ) : (
-          <BsEye
-            color="var(--color-text)"
-            size={18}
-            className={styles.scaleIcon}
-          />
-        )}
-      </Button>
-    </OverlayTrigger>}
     </>
   );
 }
