@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState, useId } from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -40,6 +40,7 @@ export function NavbarCatalogSearch() {
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
+  const formLabelId = useId();
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -276,6 +277,10 @@ export function NavbarCatalogSearch() {
                   </div>
                 </div>
                 <Range
+                  ariaLabelGroupForHandles={[
+                    'Overall rating lower bound',
+                    'Overall rating upper bound',
+                  ]}
                   className={clsx(styles.range, styles.mainRange)}
                   min={defaultFilters.overallBounds[0]}
                   max={defaultFilters.overallBounds[1]}
@@ -310,6 +315,10 @@ export function NavbarCatalogSearch() {
                   </div>
                 </div>
                 <Range
+                  ariaLabelGroupForHandles={[
+                    'Workload rating lower bound',
+                    'Workload rating upper bound',
+                  ]}
                   className={clsx(styles.range, styles.mainRange)}
                   min={defaultFilters.workloadBounds[0]}
                   max={defaultFilters.workloadBounds[1]}
@@ -345,6 +354,10 @@ export function NavbarCatalogSearch() {
                     </div>
                   </div>
                   <Range
+                    ariaLabelGroupForHandles={[
+                      'Professor rating lower bound',
+                      'Professor rating upper bound',
+                    ]}
                     className={clsx(styles.range, styles.mainRange)}
                     min={defaultFilters.professorBounds[0]}
                     max={defaultFilters.professorBounds[1]}
@@ -468,8 +481,14 @@ export function NavbarCatalogSearch() {
                   <>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Yale Subjects Filter Dropdown */}
-                      <div className={styles.advancedLabel}>Subject:</div>
+                      <div
+                        className={styles.advancedLabel}
+                        id={`${formLabelId}-subject`}
+                      >
+                        Subject:
+                      </div>
                       <CustomSelect
+                        aria-labelledby={`${formLabelId}-subject`}
                         className={styles.advancedSelect}
                         closeMenuOnSelect
                         isMulti
@@ -485,8 +504,14 @@ export function NavbarCatalogSearch() {
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Areas/Skills Filter Dropdown */}
-                      <div className={styles.advancedLabel}>Areas/Skills:</div>
+                      <div
+                        className={styles.advancedLabel}
+                        id={`${formLabelId}-aria-skills`}
+                      >
+                        Areas/Skills:
+                      </div>
                       <CustomSelect
+                        aria-labelledby={`${formLabelId}-aria-skills`}
                         className={styles.advancedSelect}
                         useColors
                         closeMenuOnSelect
@@ -503,8 +528,14 @@ export function NavbarCatalogSearch() {
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Season Filter Dropdown */}
-                      <div className={styles.advancedLabel}>Season:</div>
+                      <div
+                        className={styles.advancedLabel}
+                        id={`${formLabelId}-season`}
+                      >
+                        Season:
+                      </div>
                       <CustomSelect
+                        aria-labelledby={`${formLabelId}-season`}
                         className={styles.advancedSelect}
                         closeMenuOnSelect
                         isMulti
@@ -522,8 +553,14 @@ export function NavbarCatalogSearch() {
                 )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Day Multi-Select */}
-                  <div className={styles.advancedLabel}>Day:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-day`}
+                  >
+                    Day:
+                  </div>
                   <CustomSelect<Option<Weekdays>, true>
+                    aria-labelledby={`${formLabelId}-day`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
@@ -558,6 +595,10 @@ export function NavbarCatalogSearch() {
                       </div>
                     </div>
                     <Range
+                      ariaLabelGroupForHandles={[
+                        'Time lower bound',
+                        'Time upper bound',
+                      ]}
                       className={clsx(styles.range, styles.advancedRange)}
                       min={defaultFilters.timeBounds[0]}
                       max={defaultFilters.timeBounds[1]}
@@ -602,6 +643,10 @@ export function NavbarCatalogSearch() {
                       </div>
                     </div>
                     <Range
+                      ariaLabelGroupForHandles={[
+                        'Enrollment lower bound',
+                        'Enrollment upper bound',
+                      ]}
                       className={clsx(styles.range, styles.advancedRange)}
                       min={Math.round(toLinear(defaultFilters.enrollBounds[0]))}
                       max={Math.round(toLinear(defaultFilters.enrollBounds[1]))}
@@ -645,6 +690,10 @@ export function NavbarCatalogSearch() {
                         </div>
                       </div>
                       <Range
+                        ariaLabelGroupForHandles={[
+                          'Professor rating lower bound',
+                          'Professor rating upper bound',
+                        ]}
                         className={clsx(styles.range, styles.advancedRange)}
                         min={defaultFilters.professorBounds[0]}
                         max={defaultFilters.professorBounds[1]}
@@ -684,6 +733,10 @@ export function NavbarCatalogSearch() {
                       </div>
                     </div>
                     <Range
+                      ariaLabelGroupForHandles={[
+                        'Course number lower bound',
+                        'Course number upper bound',
+                      ]}
                       className={clsx(styles.range, styles.advancedRange)}
                       min={defaultFilters.numBounds[0]}
                       max={defaultFilters.numBounds[1]}
@@ -717,8 +770,14 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}
-                  <div className={styles.advancedLabel}>School:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-school`}
+                  >
+                    School:
+                  </div>
                   <CustomSelect
+                    aria-labelledby={`${formLabelId}-school`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
@@ -734,8 +793,14 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Course Credit Multi-Select */}
-                  <div className={styles.advancedLabel}>Credit:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-credit`}
+                  >
+                    Credit:
+                  </div>
                   <CustomSelect
+                    aria-labelledby={`${formLabelId}-credit`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
@@ -757,8 +822,14 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Course Information Attributes Multi-Select */}
-                  <div className={styles.advancedLabel}>Info:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-info`}
+                  >
+                    Info:
+                  </div>
                   <CustomSelect
+                    aria-labelledby={`${formLabelId}-info`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti

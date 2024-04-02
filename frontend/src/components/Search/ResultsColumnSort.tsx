@@ -13,11 +13,13 @@ import {
 } from '../../contexts/searchContext';
 import styles from './ResultsColumnSort.module.css';
 
-type Props = {
+function ResultsColumnSort({
+  selectOption,
+  renderActive = true,
+}: {
   readonly selectOption: SortByOption;
-};
-
-function ResultsColumnSort({ selectOption }: Props) {
+  readonly renderActive?: boolean;
+}) {
   const [localSortOrder, setLocalSortOrder] = useState(
     defaultFilters.sortOrder,
   );
@@ -48,7 +50,7 @@ function ResultsColumnSort({ selectOption }: Props) {
       className={clsx(
         styles.button,
         'ml-1 my-auto',
-        active && styles.buttonActive,
+        renderActive && active && styles.buttonActive,
       )}
       onClick={() => {
         // If not sorting by this option previously, start sorting this option
@@ -65,6 +67,7 @@ function ResultsColumnSort({ selectOption }: Props) {
           setLocalSortOrder('asc');
         }
       }}
+      aria-label={`${selectOption.label} ${localSortOrder === 'asc' ? 'ascending' : 'descending'}`}
     >
       {!selectOption.numeric ? (
         localSortOrder === 'asc' ? (
