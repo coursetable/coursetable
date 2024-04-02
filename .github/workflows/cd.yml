@@ -42,7 +42,7 @@ jobs:
 
   frontend-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend }}
 
     environment:
       name: Production
@@ -72,7 +72,7 @@ jobs:
 
   api-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.api == 'true' || inputs.api == 'true' }}
+    if: ${{ needs.changes.outputs.api == 'true' || inputs.api }}
 
     environment:
       name: Production
