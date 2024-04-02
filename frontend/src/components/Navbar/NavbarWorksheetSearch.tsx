@@ -4,6 +4,7 @@ import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import {
   components as selectComponents,
   type SingleValueProps,
+  type OptionProps,
 } from 'react-select';
 import { toast } from 'react-toastify';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
@@ -258,6 +259,77 @@ function AddFriendDropdown({
     );
   };
 
+  function OptionComponent(props: OptionProps<OptionType, false>) {
+    const { children, data, innerProps } = props;
+
+    const preventOptionSelection = (
+      e: React.MouseEvent | React.KeyboardEvent,
+    ) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const addFriendClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      void addFriend(data.value);
+    };
+
+    const removeFriendClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      removeFriend(data.value, true);
+    };
+
+    if (data.type === 'searchResult') {
+      return (
+        <div
+          {...innerProps}
+          className={styles.friendOption}
+          role="button"
+          tabIndex={0}
+          onKeyDown={preventOptionSelection}
+          onClick={preventOptionSelection}
+        >
+          <span className={styles.friendOptionText}>{children}</span>
+          <MdPersonAdd
+            className={styles.addFriendIcon}
+            onClick={addFriendClick}
+            title="Send friend request"
+          />
+        </div>
+      );
+    }
+
+    // For incoming requests
+    if (data.type === 'incomingRequest') {
+      return (
+        <div
+          {...innerProps}
+          className={styles.friendOption}
+          role="button"
+          tabIndex={0}
+          onKeyDown={preventOptionSelection}
+          onClick={preventOptionSelection}
+        >
+          <span className={styles.friendOptionText}>{children}</span>
+          <MdPersonAdd
+            className={styles.addFriendIcon}
+            onClick={addFriendClick}
+            title="Accept friend request"
+          />
+          <MdPersonRemove
+            className={styles.removeFriendIcon}
+            onClick={removeFriendClick}
+            title="Decline friend request"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <selectComponents.Option {...props}>{children}</selectComponents.Option>
+    );
+  }
+
   return (
     <Popout buttonText="Add Friend" notifications={user.friendRequests?.length}>
       <PopoutSelect
@@ -269,66 +341,7 @@ function AddFriendDropdown({
         ]}
         onInputChange={(newValue) => setSearchText(newValue)}
         components={{
-          Option({ children, ...props }) {
-            // Prevent the option from being selected when clicked
-            const onOptionClick = (e: React.MouseEvent) => {
-              e.preventDefault();
-              // Prevents the select's onChange event
-              e.stopPropagation();
-            };
-
-            if (props.data.type === 'searchResult') {
-              return (
-                <div
-                  {...props.innerProps}
-                  className={styles.friendOption}
-                  onClick={onOptionClick}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }
-                  }}
-                >
-                  <span className={styles.friendOptionText}>{children}</span>
-                  {!isFriend(props.data.value) && (
-                    <MdPersonAdd
-                      className={styles.addFriendIcon}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        void requestAddFriend(props.data.value);
-                      }}
-                      title="Send friend request"
-                    />
-                  )}
-                </div>
-              );
-            }
-            // For incoming requests
-            return (
-              <selectComponents.Option {...props}>
-                {children}
-                <MdPersonAdd
-                  className={styles.addFriendIcon}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    void addFriend(props.data.value);
-                  }}
-                  title="Accept friend request"
-                />
-                <MdPersonRemove
-                  className={styles.removeFriendIcon}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeFriend(props.data.value, true);
-                  }}
-                  title="Decline friend request"
-                />
-              </selectComponents.Option>
-            );
-          },
+          Option: OptionComponent,
           SingleValue: customSingleValue,
           NoOptionsMessage({ children, ...props }) {
             if (isLoading) {
