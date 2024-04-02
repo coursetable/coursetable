@@ -42,6 +42,17 @@ function DropdownItem({
   readonly externalLink?: boolean;
   readonly onClick?: (e: React.MouseEvent) => void;
 }) {
+  const innerText = (
+    <HoverText>
+      <Icon
+        className="mr-2 my-auto"
+        size={20}
+        style={{ paddingLeft: '2px', paddingBottom: '2px' }}
+        color={iconColor}
+      />
+      {children}
+    </HoverText>
+  );
   return (
     <Row className="pb-3 m-auto">
       <TextComponent type="secondary">
@@ -51,15 +62,7 @@ function DropdownItem({
             className={styles.collapseText}
             onClick={onClick ?? scrollToTop}
           >
-            <HoverText>
-              <Icon
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px', paddingBottom: '2px' }}
-                color={iconColor}
-              />
-              {children}
-            </HoverText>
+            {innerText}
           </NavLink>
         ) : href ? (
           // eslint-disable-next-line react/jsx-no-target-blank
@@ -71,29 +74,18 @@ function DropdownItem({
               rel: 'noreferrer noopener',
             })}
           >
-            <HoverText>
-              <Icon
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px', paddingBottom: '2px' }}
-                color={iconColor}
-              />
-              {children}
-            </HoverText>
+            {innerText}
           </a>
-        ) : (
-          <HoverText
-            {...(onClick && { onClick })}
+        ) : onClick ? (
+          <button
+            type="button"
+            onClick={onClick}
             className={styles.collapseText}
           >
-            <Icon
-              className="mr-2 my-auto"
-              size={20}
-              style={{ paddingLeft: '2px', paddingBottom: '2px' }}
-              color={iconColor}
-            />
-            {children}
-          </HoverText>
+            {innerText}
+          </button>
+        ) : (
+          <span className={styles.collapseText}>{innerText}</span>
         )}
       </TextComponent>
     </Row>
