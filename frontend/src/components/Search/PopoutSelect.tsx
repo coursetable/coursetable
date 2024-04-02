@@ -24,7 +24,7 @@ export function PopoutSelect<
       popout
       {...props}
       isMulti={isMulti}
-      // TODO
+      // This is not DOM auto focus
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       backspaceRemovesValue={false}

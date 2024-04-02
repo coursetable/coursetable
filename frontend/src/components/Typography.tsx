@@ -122,8 +122,14 @@ export function RatingBubble({
 export function LinkLikeText({
   className,
   ...props
-}: React.ComponentProps<'span'>) {
-  return <span {...props} className={clsx(styles.linkText, className)} />;
+}: React.ComponentProps<'button'>) {
+  return (
+    <button
+      type="button"
+      {...props}
+      className={clsx(styles.linkText, className)}
+    />
+  );
 }
 
 // Show Primary color on hover

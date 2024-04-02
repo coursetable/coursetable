@@ -163,12 +163,11 @@ function Tutorial() {
             />
           )}
           {video && (
-            // TODO
-            // eslint-disable-next-line jsx-a11y/media-has-caption
             <video
               className={styles.stepVideo}
               autoPlay
               loop
+              muted
               key={selector}
               width="116%"
               height="270"

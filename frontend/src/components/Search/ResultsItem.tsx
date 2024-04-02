@@ -99,9 +99,8 @@ function ResultsItem({
   );
 
   return (
-    // TODO
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
+      role="button"
       className={clsx(
         styles.resultItem,
         inWorksheet && styles.inWorksheetResultItem,
@@ -115,8 +114,6 @@ function ResultsItem({
           return prev;
         });
       }}
-      // TODO
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
       style={style}
     >

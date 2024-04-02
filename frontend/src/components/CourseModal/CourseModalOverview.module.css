@@ -9,7 +9,8 @@
   white-space: nowrap;
 }
 
-.metadata {
+.metadata,
+.metadata * {
   font-weight: 600;
 }
 
