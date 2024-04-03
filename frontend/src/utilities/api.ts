@@ -9,149 +9,169 @@ import { API_ENDPOINT } from '../config';
 import type { ListingRatingsFragment } from '../generated/graphql';
 import type { Season, Crn, Listing, NetId } from './common';
 
-// This utility function performs a fetch request and validates the response
-// with the given Zod schema.
+type BaseFetchOptions = {
+  breadcrumb: Sentry.Breadcrumb & {
+    message: string;
+    category: string;
+  };
+  /**
+   * Receives the parsed error code. If it returns true, the error is considered
+   * handled and no further reporting is done. Only HTTP errors can be handled.
+   */
+  handleErrorCode?: (errCode: string) => boolean;
+};
+
+/**
+ * Performs a POST request to the API. No schema provided means no response body
+ * is expected. In this case, it returns a boolean indicating whether the
+ * request was successful (200 status code).
+ */
+async function fetchAPI(
+  endpointSuffix: string,
+  options: BaseFetchOptions & { body: {} },
+): Promise<boolean>;
+/**
+ * Performs a GET request to the API. Returns a non-null value containing the
+ * response body (without validation) if the request was successful, or
+ * undefined if an error occurred.
+ */
+async function fetchAPI(
+  endpointSuffix: string,
+  options: BaseFetchOptions,
+): Promise<{} | undefined>;
+/**
+ * Performs either a GET or POST request to the API, depending on whether a body
+ * is present. A response body is expected and will be parsed.
+ * Returns the parsed response if successful, or undefined if an error occurred.
+ */
 async function fetchAPI<T>(
+  endpointSuffix: string,
+  options: BaseFetchOptions & { body?: {}; schema: z.ZodType<T> },
+): Promise<T | undefined>;
+async function fetchAPI(
   endpointSuffix: string,
   {
     body,
     schema,
     breadcrumb,
-  }: {
-    body?: unknown;
-    schema: z.ZodType<T>;
-    breadcrumb: Sentry.Breadcrumb & {
-      message: string;
-      category: string;
-    };
+    handleErrorCode,
+  }: BaseFetchOptions & {
+    body?: {};
+    schema?: z.ZodType<unknown>;
   },
-): Promise<T | undefined> {
-  const method = body ? 'POST' : 'GET';
-
+): Promise<unknown> {
+  const payload = JSON.stringify(body);
+  const noResExpected = !schema && Boolean(body);
   try {
-    const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, {
-      method,
-      credentials: 'include',
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
-      body: body ? JSON.stringify(body) : null,
-    });
+    const fetchInit: FetchRequestInit = body
+      ? {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: payload,
+        }
+      : {
+          credentials: 'include',
+        };
+    const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, fetchInit);
+    if (!res.ok) {
+      let errorCode = '';
+      // First: try to parse out a structured error code
+      try {
+        errorCode = String(
+          ((await res.json()) as { error?: unknown } | null)?.error ?? '',
+        );
+      } catch {}
+      // Fall back to status text
+      errorCode ||= res.statusText;
+      // Let the handler handle it first
+      if (handleErrorCode?.(errorCode))
+        return noResExpected ? false : undefined;
+      throw new Error(errorCode);
+    }
+    // If no res body is expected, return early
+    if (noResExpected) return true;
     const rawData: unknown = await res.json();
-    if (!res.ok)
-      throw new Error((rawData as { error?: string }).error ?? res.statusText);
+    // Only parse if a schema is provided
+    if (!schema) return rawData;
     return schema.parse(rawData);
   } catch (err) {
     Sentry.addBreadcrumb({
       level: 'info',
       ...breadcrumb,
+      message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
     });
     Sentry.captureException(err);
     toast.error(
       `Failed while ${breadcrumb.message.toLowerCase()}: ${String(err)}`,
     );
-    return undefined;
+    return noResExpected ? false : undefined;
   }
 }
 
-export async function toggleBookmark(payload: {
+export function toggleBookmark(body: {
   action: 'add' | 'remove';
   season: Season;
   crn: Crn;
   worksheetNumber: number;
   color: string;
 }): Promise<boolean> {
-  const body = JSON.stringify(payload);
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body,
-    });
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      switch (data.error) {
+  return fetchAPI('/user/toggleBookmark', {
+    body,
+    handleErrorCode(err) {
+      switch (err) {
         // These errors can be triggered if the user clicks the button twice
         // in a row
         // TODO: we should debounce the request instead
         case 'ALREADY_BOOKMARKED':
           toast.error('You have already added this class to your worksheet');
-          break;
+          return true;
         case 'NOT_BOOKMARKED':
           toast.error('You have already remove this class from your worksheet');
-          break;
+          return true;
         default:
-          throw new Error(data.error ?? res.statusText);
+          return false;
       }
-      return false;
-    }
-    return true;
-  } catch (err) {
-    Sentry.addBreadcrumb({
+    },
+    breadcrumb: {
       category: 'worksheet',
-      message: `Updating worksheet: ${body}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to update worksheet. ${String(err)}`);
-    return false;
-  }
+      message: 'Updating worksheet',
+    },
+  });
 }
 
 export async function fetchCatalog(season: Season) {
-  try {
-    const res = await fetch(
-      `${API_ENDPOINT}/api/static/catalogs/public/${season}.json`,
-      {
-        credentials: 'include',
-      },
-    );
-
-    if (!res.ok) throw new Error(res.statusText);
-    const data = (await res.json()) as Listing[];
-    const info = new Map<Crn, Listing>();
-    for (const listing of data) info.set(listing.crn, listing);
-    return info;
-  } catch (err) {
-    Sentry.addBreadcrumb({
+  const res = await fetchAPI(`/static/catalogs/public/${season}.json`, {
+    breadcrumb: {
       category: 'catalog',
       message: `Fetching catalog ${season}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to fetch ${season} catalog. ${String(err)}`);
-    return undefined;
-  }
+    },
+  });
+  if (!res) return undefined;
+  const data = res as Listing[];
+  const info = new Map<Crn, Listing>();
+  for (const listing of data) info.set(listing.crn, listing);
+  return info;
 }
 
 export async function fetchEvals(season: Season) {
-  try {
-    const res = await fetch(
-      `${API_ENDPOINT}/api/static/catalogs/evals/${season}.json`,
-      {
-        credentials: 'include',
-      },
-    );
-
-    if (!res.ok) throw new Error(res.statusText);
-    const data = (await res.json()) as ListingRatingsFragment[];
-    const info = new Map<Crn, ListingRatingsFragment>();
-    for (const listing of data) info.set(listing.crn as Crn, listing);
-    return info;
-  } catch (err) {
-    Sentry.addBreadcrumb({
+  const res = await fetchAPI(`/static/catalogs/evals/${season}.json`, {
+    breadcrumb: {
       category: 'evals',
       message: `Fetching evals ${season}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to fetch ${season} evals. ${String(err)}`);
-    return undefined;
-  }
+    },
+  });
+  if (!res) return undefined;
+  const data = res as ListingRatingsFragment[];
+  const info = new Map<Crn, ListingRatingsFragment>();
+  for (const listing of data) info.set(listing.crn as Crn, listing);
+  return info;
 }
 
 export async function logout() {
+  // TODO: this should be a POST with no body
   try {
     const res = await fetch(`${API_ENDPOINT}/api/auth/logout`, {
       credentials: 'include',
@@ -192,29 +212,21 @@ export async function requestChallenge(): Promise<
   | { status: 'success'; data: z.infer<typeof requestResSchema> }
   | { status: 'error'; message?: string }
 > {
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/challenge/request`, {
-      credentials: 'include',
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok) {
-      return {
-        status: 'error',
-        message: (rawData as { error?: string }).error ?? res.statusText,
-      };
-    }
-    const data = requestResSchema.parse(rawData);
-    return { status: 'success', data };
-  } catch (err) {
-    Sentry.addBreadcrumb({
+  let message: string | undefined = undefined;
+  const res = await fetchAPI('/challenge/request', {
+    schema: requestResSchema,
+    breadcrumb: {
       category: 'challenge',
       message: 'Requesting challenge',
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to request challenge. ${String(err)}`);
-    return { status: 'error' };
-  }
+    },
+    handleErrorCode(err) {
+      message = err;
+      // Intercept all errors
+      return true;
+    },
+  });
+  if (!res) return { status: 'error', message };
+  return { status: 'success', data: res };
 }
 
 const verifyResSchema = z.object({
@@ -223,7 +235,7 @@ const verifyResSchema = z.object({
   maxChallengeTries: z.number(),
 });
 
-export async function verifyChallenge(payload: {
+export async function verifyChallenge(body: {
   token: string;
   salt: string;
   answers: {
@@ -234,38 +246,26 @@ export async function verifyChallenge(payload: {
 }): Promise<
   | { status: 'accepted' }
   | { status: 'rejected'; data: z.infer<typeof verifyResSchema> }
-  | { status: 'error'; message?: string }
+  | { status: 'error'; message: string | undefined }
 > {
-  const body = JSON.stringify(payload);
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/challenge/verify`, {
-      method: 'POST',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok) {
-      return {
-        status: 'error',
-        message: (rawData as { error?: string }).error ?? res.statusText,
-      };
-    }
-    const data = verifyResSchema.parse(rawData);
-    if (data.results.every((x) => x)) return { status: 'accepted' };
-    return { status: 'rejected', data };
-  } catch (err) {
-    Sentry.addBreadcrumb({
+  let message: string | undefined = undefined;
+  const res = await fetchAPI('/challenge/verify', {
+    body,
+    schema: verifyResSchema,
+    breadcrumb: {
       category: 'challenge',
-      message: `Verifying challenge ${body}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to verify challenge. ${String(err)}`);
-    return { status: 'error' };
-  }
+      message: 'Verifying challenge',
+    },
+    handleErrorCode(err) {
+      message = err;
+      // Intercept all errors
+      return true;
+    },
+  });
+  if (!res) return { status: 'error', message };
+  return res.results.every((x) => x)
+    ? { status: 'accepted' }
+    : { status: 'rejected', data: res };
 }
 
 const userWorksheetsSchema = z.record(
@@ -350,104 +350,50 @@ export function fetchAllNames() {
   });
 }
 
-export async function addFriend(friendNetId: NetId) {
-  const body = JSON.stringify({ friendNetId });
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/friends/add`, {
-      method: 'POST',
-      credentials: 'include',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      // The only way for users to legally interact with this API is through
-      // the requests dropdown, so anything that doesn't seem right should be
-      // reported to us
-      throw new Error(data.error ?? res.statusText);
-    }
-    toast.info(`Added friend: ${friendNetId}`);
-  } catch (err) {
-    Sentry.addBreadcrumb({
+export function addFriend(friendNetId: NetId) {
+  return fetchAPI('/friends/add', {
+    body: { friendNetId },
+    breadcrumb: {
       category: 'friends',
-      message: `Adding friend ${body}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to add friend. ${String(err)}`);
-  }
+      message: 'Adding friend',
+    },
+    // TODO: handleErrorCode
+  });
 }
 
-export async function requestAddFriend(friendNetId: NetId) {
-  const body = JSON.stringify({ friendNetId });
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/friends/request`, {
-      method: 'POST',
-      credentials: 'include',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      switch (data.error) {
+export function requestAddFriend(friendNetId: NetId) {
+  return fetchAPI('/friends/request', {
+    body: { friendNetId },
+    breadcrumb: {
+      category: 'friends',
+      message: 'Requesting friend',
+    },
+    handleErrorCode(err) {
+      switch (err) {
         case 'FRIEND_NOT_FOUND':
           toast.error(`The net ID ${friendNetId} does not exist.`);
-          break;
+          return true;
         case 'ALREADY_SENT_REQUEST':
           toast.error(
             `You already sent a friend request to ${friendNetId}. Wait for them to accept it!`,
           );
-          break;
-        // Other error codes should be already prevented client-side; if
-        // not, better figure out why
+          return true;
         default:
-          throw new Error(data.error ?? res.statusText);
+          // TODO: handle other errors
+          return false;
       }
-      return;
-    }
-    toast.info(`Sent friend request: ${friendNetId}`);
-  } catch (err) {
-    Sentry.addBreadcrumb({
-      category: 'friends',
-      message: `Requesting friend ${body}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to request friend. ${String(err)}`);
-  }
+    },
+  });
 }
 
-export async function removeFriend(friendNetId: string, isRequest: boolean) {
-  const body = JSON.stringify({ friendNetId });
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/friends/remove`, {
-      method: 'POST',
-      credentials: 'include',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      throw new Error(data.error ?? res.statusText);
-    }
-    toast.info(
-      `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
-    );
-  } catch (err) {
-    Sentry.addBreadcrumb({
+export function removeFriend(friendNetId: string) {
+  return fetchAPI('/friends/remove', {
+    body: { friendNetId },
+    breadcrumb: {
       category: 'friends',
-      message: `Removing friend ${body}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to remove friend. ${String(err)}`);
-  }
+      message: 'Removing friend',
+    },
+  });
 }
 
 export async function checkAuth() {
