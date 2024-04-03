@@ -15,19 +15,19 @@ function FriendsDropdownMobile({
   viewedPerson,
 }: {
   readonly options: Option<NetId | 'me'>[];
-  readonly viewedPerson: Option<NetId | 'me'>;
+  readonly viewedPerson: Option<NetId> | null;
 }) {
   const { handlePersonChange } = useWorksheet();
   return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={viewedPerson.label}
+        title={viewedPerson?.label ?? "Friends' worksheets"}
         onSelect={(p) => {
           if (p) handlePersonChange(p as NetId | 'me');
         }}
       >
-        {options.map(({ value, label }) => (
+        {[{ value: 'me', label: 'Me' }, ...options].map(({ value, label }) => (
           <Dropdown.Item
             key={value}
             eventKey={value}
@@ -35,7 +35,9 @@ function FriendsDropdownMobile({
             // Styling if this is the current person
             style={{
               backgroundColor:
-                value === viewedPerson.value ? 'var(--color-primary)' : '',
+                value === (viewedPerson?.value ?? 'me')
+                  ? 'var(--color-primary)'
+                  : '',
             }}
           >
             <div className="mx-auto">{label}</div>
@@ -52,7 +54,7 @@ function FriendsDropdownDesktop({
   removeFriend,
 }: {
   readonly options: Option<NetId | 'me'>[];
-  readonly viewedPerson: Option<NetId | 'me'>;
+  readonly viewedPerson: Option<NetId> | null;
   readonly removeFriend: (netId: NetId, isRequest: boolean) => void;
 }) {
   const { handlePersonChange } = useWorksheet();
@@ -129,8 +131,7 @@ function FriendsDropdown({
 
   const viewedPerson = useMemo(() => {
     // I don't think the second condition is possible
-    if (person === 'me' || !user.friends?.[person])
-      return { value: 'me' as const, label: 'Me' };
+    if (person === 'me' || !user.friends?.[person]) return null;
     return { value: person, label: user.friends[person]!.name };
   }, [person, user.friends]);
 
@@ -139,7 +140,7 @@ function FriendsDropdown({
     if (!user.friends) return [];
     const options = Object.entries(user.friends)
       .map(
-        ([friendNetId, { name }]): Option<NetId | 'me'> => ({
+        ([friendNetId, { name }]): Option<NetId> => ({
           value: friendNetId as NetId,
           label: name,
         }),
@@ -147,7 +148,6 @@ function FriendsDropdown({
       .sort((a, b) =>
         a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
       );
-    options.unshift({ value: 'me', label: 'Me' });
     return options;
   }, [user.friends]);
   if (mobile) {
