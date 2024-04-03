@@ -1,0 +1,24 @@
+name: Staging Timeout
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/staging_timeout.yml'
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: 2 Hour Staging Timeout
+        working-directory: ./.github/workflows/
+        run: |
+          docker ps --filter "name=staging" --format="{{.Status}} {{.Names}}" | grep hours | sed s/"(healthy) "// | awk -v num_hours="$NUM_HOURS" -F: '{if($1>num_hours)print$1}' | awk ' {print $4} ' | xargs docker kill || true
+        env:
+          NUM_HOURS: 2
