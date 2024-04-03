@@ -12,7 +12,7 @@ import GCalIcon from '../../images/gcal.svg';
 function GoogleCalendarButton(): JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
-  const { curSeason, hiddenCourses, courses } = useWorksheet();
+  const { curSeason, courses } = useWorksheet();
   const exportButtonRef = useRef<HTMLButtonElement>(null);
   const exportEvents = useCallback(async () => {
     if (!gapi) {
