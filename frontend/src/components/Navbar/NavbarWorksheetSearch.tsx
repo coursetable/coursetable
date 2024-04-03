@@ -11,13 +11,14 @@ import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { LinkLikeText } from '../Typography';
+import FriendsDropdown from '../Worksheet/FriendsDropdown';
+import SeasonDropdown from '../Worksheet/SeasonDropdown';
+import WorksheetNumDropdown from '../Worksheet/WorksheetNumberDropdown';
 
-import { isOption, type Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toSeasonString } from '../../utilities/course';
 import { fetchAllNames } from '../../utilities/api';
 import { useUser } from '../../contexts/userContext';
-import type { NetId, Season } from '../../utilities/common';
+import type { NetId } from '../../utilities/common';
 import styles from './NavbarWorksheetSearch.module.css';
 
 type FriendNames = {
@@ -31,155 +32,6 @@ interface OptionType {
   value: NetId;
   label: string;
   type: string;
-}
-
-function SeasonDropdown() {
-  const { seasonCodes, curSeason, changeSeason } = useWorksheet();
-
-  const selectedSeason = useMemo(() => {
-    if (curSeason) {
-      return {
-        value: curSeason,
-        label: toSeasonString(curSeason),
-      };
-    }
-    return null;
-  }, [curSeason]);
-
-  return (
-    <Popout
-      buttonText="Season"
-      displayOptionLabel
-      maxDisplayOptions={1}
-      selectedOptions={selectedSeason}
-      clearIcon={false}
-    >
-      <PopoutSelect<Option<Season>, false>
-        isClearable={false}
-        hideSelectedOptions={false}
-        value={selectedSeason}
-        options={seasonCodes.map((seasonCode) => ({
-          value: seasonCode,
-          label: toSeasonString(seasonCode),
-        }))}
-        placeholder="Last 5 Years"
-        onChange={(selectedOption) => {
-          if (isOption(selectedOption))
-            changeSeason(selectedOption.value as Season | null);
-        }}
-      />
-    </Popout>
-  );
-}
-
-function WorksheetNumDropdown() {
-  const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
-
-  return (
-    <Popout
-      buttonText="Worksheet"
-      displayOptionLabel
-      selectedOptions={worksheetOptions[worksheetNumber]}
-      clearIcon={false}
-    >
-      <PopoutSelect
-        isClearable={false}
-        hideSelectedOptions={false}
-        value={worksheetOptions[worksheetNumber]}
-        options={worksheetOptions}
-        onChange={(selectedOption) => {
-          if (isOption(selectedOption)) changeWorksheet(selectedOption.value);
-        }}
-      />
-    </Popout>
-  );
-}
-
-function FriendsDropdown({
-  removeFriend,
-}: {
-  readonly removeFriend: (netId: NetId, isRequest: boolean) => void;
-}) {
-  const { user } = useUser();
-  const { person, handlePersonChange } = useWorksheet();
-
-  // List of friend options. Initialize with me option
-  const friendOptions = useMemo(() => {
-    if (!user.friends) return [];
-    return Object.entries(user.friends)
-      .map(
-        ([friendNetId, { name }]): Option<NetId> => ({
-          value: friendNetId as NetId,
-          label: name,
-        }),
-      )
-      .sort((a, b) =>
-        a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
-      );
-  }, [user.friends]);
-
-  const selectedPerson = useMemo(() => {
-    if (person === 'me' || !user.friends?.[person]) return null;
-    return {
-      value: person,
-      label: user.friends[person]!.name,
-    };
-  }, [person, user.friends]);
-
-  return (
-    <Popout
-      buttonText="Friends' courses"
-      displayOptionLabel
-      selectedOptions={selectedPerson}
-      onReset={() => {
-        handlePersonChange('me');
-      }}
-    >
-      <PopoutSelect<Option<NetId | 'me'>, false>
-        hideSelectedOptions={false}
-        menuIsOpen
-        placeholder="My worksheets"
-        value={selectedPerson}
-        options={friendOptions}
-        onChange={(selectedOption) => {
-          if (!selectedOption) handlePersonChange('me');
-          else if (isOption(selectedOption))
-            handlePersonChange(selectedOption.value);
-        }}
-        components={{
-          NoOptionsMessage: ({ children, ...props }) => (
-            <selectComponents.NoOptionsMessage {...props}>
-              No friends found
-            </selectComponents.NoOptionsMessage>
-          ),
-          Option({ children, ...props }) {
-            if (props.data.value === 'me') {
-              return (
-                <selectComponents.Option {...props}>
-                  {children}
-                </selectComponents.Option>
-              );
-            }
-            return (
-              <selectComponents.Option {...props}>
-                {children}
-                <MdPersonRemove
-                  className={styles.removeFriendIcon}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeFriend(props.data.value as NetId, false);
-                  }}
-                  title="Remove friend"
-                />
-              </selectComponents.Option>
-            );
-          },
-        }}
-        isDisabled={false}
-      />
-    </Popout>
-  );
 }
 
 function AddFriendDropdown({
@@ -441,9 +293,12 @@ export function NavbarWorksheetSearch() {
                 List
               </ToggleButton>
             </ToggleButtonGroup>
-            <SeasonDropdown />
-            <WorksheetNumDropdown />
-            <FriendsDropdown removeFriend={removeFriendWithConfirmation} />
+            <SeasonDropdown mobile={false} />
+            <WorksheetNumDropdown mobile={false} />
+            <FriendsDropdown
+              mobile={false}
+              removeFriend={removeFriendWithConfirmation}
+            />
             <AddFriendDropdown removeFriend={removeFriendWithConfirmation} />
           </div>
         </Row>

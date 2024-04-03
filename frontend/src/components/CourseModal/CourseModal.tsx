@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Col, Container, Row, Modal } from 'react-bootstrap';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  Col,
+  Container,
+  Row,
+  Modal,
+  DropdownButton,
+  Dropdown,
+} from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
-import { IoMdArrowRoundBack } from 'react-icons/io';
+import { IoMdArrowRoundBack, IoIosMore } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 
@@ -49,6 +56,31 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
     >
       <FaRegShareFromSquare size={20} color="#007bff" />
     </button>
+  );
+}
+
+function MoreButton({ hide }: { readonly hide: () => void }) {
+  const navigate = useNavigate();
+  return (
+    <DropdownButton
+      as="div"
+      drop="down"
+      title={<IoIosMore size={20} color="#007bff" />}
+      variant="none"
+      className={styles.moreDropdown}
+    >
+      <Dropdown.Item eventKey="1">
+        <button
+          type="button"
+          onClick={() => {
+            hide();
+            navigate('/faq#how_do_i_report_a_data_error');
+          }}
+        >
+          Report an error
+        </button>
+      </Dropdown.Item>
+    </DropdownButton>
   );
 }
 
@@ -126,6 +158,14 @@ function CourseModal() {
     300,
     'No description available',
   );
+  const hide = () => {
+    setHistory([]);
+    setView('overview');
+    setSearchParams((prev) => {
+      prev.delete('course-modal');
+      return prev;
+    });
+  };
   return (
     <div className="d-flex justify-content-center">
       <Helmet>
@@ -135,14 +175,7 @@ function CourseModal() {
       <Modal
         show={Boolean(listing)}
         scrollable
-        onHide={() => {
-          setHistory([]);
-          setView('overview');
-          setSearchParams((prev) => {
-            prev.delete('course-modal');
-            return prev;
-          });
-        }}
+        onHide={hide}
         dialogClassName={styles.dialog}
         animation={false}
         centered
@@ -215,6 +248,7 @@ function CourseModal() {
               <div className={styles.toolBar}>
                 <WorksheetToggleButton listing={listing} modal />
                 <ShareButton courseCode={listing.course_code} />
+                <MoreButton hide={hide} />
               </div>
             </Row>
           </Container>

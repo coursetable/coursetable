@@ -1,11 +1,53 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 import { toSeasonString } from '../../utilities/course';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { isOption, type Option } from '../../contexts/searchContext';
 import type { Season } from '../../utilities/common';
 
-function SeasonDropdown() {
+function SeasonDropdownDesktop() {
+  const { seasonCodes, curSeason, changeSeason } = useWorksheet();
+
+  const selectedSeason = useMemo(() => {
+    if (curSeason) {
+      return {
+        value: curSeason,
+        label: toSeasonString(curSeason),
+      };
+    }
+    return null;
+  }, [curSeason]);
+
+  return (
+    <Popout
+      buttonText="Season"
+      displayOptionLabel
+      maxDisplayOptions={1}
+      selectedOptions={selectedSeason}
+      clearIcon={false}
+    >
+      <PopoutSelect<Option<Season>, false>
+        isClearable={false}
+        hideSelectedOptions={false}
+        value={selectedSeason}
+        options={seasonCodes.map((seasonCode) => ({
+          value: seasonCode,
+          label: toSeasonString(seasonCode),
+        }))}
+        placeholder="Last 5 Years"
+        onChange={(selectedOption) => {
+          if (isOption(selectedOption))
+            changeSeason(selectedOption.value as Season | null);
+        }}
+      />
+    </Popout>
+  );
+}
+
+function SeasonDropdownMobile() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();
 
   return (
@@ -32,6 +74,10 @@ function SeasonDropdown() {
       </DropdownButton>
     </div>
   );
+}
+
+function SeasonDropdown({ mobile }: { readonly mobile: boolean }) {
+  return mobile ? <SeasonDropdownMobile /> : <SeasonDropdownDesktop />;
 }
 
 export default SeasonDropdown;

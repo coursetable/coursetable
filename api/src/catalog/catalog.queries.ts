@@ -69,3 +69,13 @@ export const catalogBySeasonQuery = gql`
     }
   }
 `;
+
+export const courseAttributesQuery = gql`
+  query courseAttributes {
+    course_flags(distinct_on: [flag_id]) {
+      flag {
+        flag_text
+      }
+    }
+  }
+`;
