@@ -1,9 +1,35 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
+import { isOption } from '../../contexts/searchContext';
 import styles from './WorksheetNumberDropdown.module.css';
 
-function WorksheetNumDropdown() {
+function WorksheetNumDropdownDesktop() {
+  const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
+
+  return (
+    <Popout
+      buttonText="Worksheet"
+      displayOptionLabel
+      selectedOptions={worksheetOptions[worksheetNumber]}
+      clearIcon={false}
+    >
+      <PopoutSelect
+        isClearable={false}
+        hideSelectedOptions={false}
+        value={worksheetOptions[worksheetNumber]}
+        options={worksheetOptions}
+        onChange={(selectedOption) => {
+          if (isOption(selectedOption)) changeWorksheet(selectedOption.value);
+        }}
+      />
+    </Popout>
+  );
+}
+
+function WorksheetNumDropdownMobile() {
   const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
 
   return (
@@ -24,7 +50,7 @@ function WorksheetNumDropdown() {
             // Styling if this is the current number
             style={{
               backgroundColor:
-                Number(value) === worksheetNumber ? 'var(--color-primary)' : '',
+                value === worksheetNumber ? 'var(--color-primary)' : '',
             }}
           >
             <div className="mx-auto">{label}</div>
@@ -32,6 +58,14 @@ function WorksheetNumDropdown() {
         ))}
       </DropdownButton>
     </div>
+  );
+}
+
+function WorksheetNumDropdown({ mobile }: { readonly mobile: boolean }) {
+  return mobile ? (
+    <WorksheetNumDropdownMobile />
+  ) : (
+    <WorksheetNumDropdownDesktop />
   );
 }
 

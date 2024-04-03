@@ -23,13 +23,13 @@ function WorksheetMobile() {
   return (
     <Row className={clsx(styles.accordion, 'm-0 p-3')}>
       <Col className="p-0">
-        <WorksheetNumDropdown />
+        <WorksheetNumDropdown mobile />
         <Row className="mx-auto">
           <Col xs={6} className="m-0 p-0">
-            <SeasonDropdown />
+            <SeasonDropdown mobile />
           </Col>
           <Col xs={6} className="m-0 p-0">
-            <FriendsDropdown />
+            <FriendsDropdown mobile />
           </Col>
         </Row>
         <SurfaceComponent className={styles.mobileCalendar}>
