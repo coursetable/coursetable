@@ -95,14 +95,19 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const { authStatus } = useUser();
+  const {
+    authStatus,
+    user: { hasEvals },
+  } = useUser();
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {
       const fetches = requestedSeasons.map(async (season) => {
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;
-        const includeEvals = authStatus === 'authenticated';
+        const includeEvals = Boolean(
+          authStatus === 'authenticated' && hasEvals,
+        );
         // As long as there is one request in progress, don't fire another
         if (
           catalogLoadAttempted.has(season) &&
@@ -124,7 +129,7 @@ export function FerryProvider({
         setErrors((e) => [...e, err as {}]);
       });
     },
-    [authStatus],
+    [authStatus, hasEvals],
   );
 
   // If there's any error, we want to immediately stop "loading" and start
