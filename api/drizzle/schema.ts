@@ -34,12 +34,12 @@ export const studentFriendRequests = mysqlTable(
     friendNetId: char('friendNetId', { length: 8 }).notNull(),
   },
   (table) => ({
-      netId: index('netId').on(table.netId),
-      netIdFriendNetId: unique('netId_friendNetId').on(
-        table.netId,
-        table.friendNetId,
-      ),
-    }),
+    netId: index('netId').on(table.netId),
+    netIdFriendNetId: unique('netId_friendNetId').on(
+      table.netId,
+      table.friendNetId,
+    ),
+  }),
 );
 
 export const studentFriends = mysqlTable(
@@ -50,12 +50,12 @@ export const studentFriends = mysqlTable(
     friendNetId: char('friendNetId', { length: 8 }).notNull(),
   },
   (table) => ({
-      netId: index('netId').on(table.netId),
-      netIdFriendNetId: unique('netId_friendNetId').on(
-        table.netId,
-        table.friendNetId,
-      ),
-    }),
+    netId: index('netId').on(table.netId),
+    netIdFriendNetId: unique('netId_friendNetId').on(
+      table.netId,
+      table.friendNetId,
+    ),
+  }),
 );
 
 export const worksheetCourses = mysqlTable(
@@ -69,9 +69,9 @@ export const worksheetCourses = mysqlTable(
     color: varchar('color', { length: 32 }).notNull(),
   },
   (table) => ({
-      netId: index('netId').on(table.netId),
-      netIdCrnSeasonWorksheetNumber: unique(
-        'netId_crn_season_worksheetNumber',
-      ).on(table.netId, table.crn, table.season, table.worksheetNumber),
-    }),
+    netId: index('netId').on(table.netId),
+    netIdCrnSeasonWorksheetNumber: unique(
+      'netId_crn_season_worksheetNumber',
+    ).on(table.netId, table.crn, table.season, table.worksheetNumber),
+  }),
 );
