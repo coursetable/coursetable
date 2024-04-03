@@ -136,9 +136,7 @@
       "indexes": {
         "netId": {
           "name": "netId",
-          "columns": [
-            "netId"
-          ],
+          "columns": ["netId"],
           "isUnique": false
         }
       },
@@ -146,10 +144,7 @@
       "uniqueConstraints": {
         "netId_friendNetId": {
           "name": "netId_friendNetId",
-          "columns": [
-            "netId",
-            "friendNetId"
-          ]
+          "columns": ["netId", "friendNetId"]
         }
       }
     },
@@ -182,9 +177,7 @@
       "indexes": {
         "netId": {
           "name": "netId",
-          "columns": [
-            "netId"
-          ],
+          "columns": ["netId"],
           "isUnique": false
         }
       },
@@ -192,10 +185,7 @@
       "uniqueConstraints": {
         "netId_friendNetId": {
           "name": "netId_friendNetId",
-          "columns": [
-            "netId",
-            "friendNetId"
-          ]
+          "columns": ["netId", "friendNetId"]
         }
       }
     },
@@ -250,9 +240,7 @@
       "indexes": {
         "netId": {
           "name": "netId",
-          "columns": [
-            "netId"
-          ],
+          "columns": ["netId"],
           "isUnique": false
         }
       },
@@ -260,12 +248,7 @@
       "uniqueConstraints": {
         "netId_crn_season_worksheetNumber": {
           "name": "netId_crn_season_worksheetNumber",
-          "columns": [
-            "netId",
-            "crn",
-            "season",
-            "worksheetNumber"
-          ]
+          "columns": ["netId", "crn", "season", "worksheetNumber"]
         }
       }
     }
