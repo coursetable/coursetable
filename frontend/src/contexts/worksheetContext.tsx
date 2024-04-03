@@ -17,10 +17,10 @@ import { useUser, type UserWorksheets } from './userContext';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
-const hiddenCoursesStorage =
+export const hiddenCoursesStorage =
   createLocalStorageSlot<HiddenCourses>('hiddenCourses');
 
-export type HiddenCourses = {
+type HiddenCourses = {
   [seasonCode: Season]: { [crn: Crn]: boolean };
 };
 type WorksheetView = 'calendar' | 'list';
@@ -96,7 +96,7 @@ export function WorksheetProvider({
     loading: worksheetLoading,
     error: worksheetError,
     data: tmpCourses,
-  } = useWorksheetInfo(curWorksheet, curSeason, viewedPerson, worksheetNumber);
+  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
 
   const [courses, setCourses] = useLocalStorageState('courses', tmpCourses);
 
@@ -124,14 +124,9 @@ export function WorksheetProvider({
         });
         setCourses(courses.map((course) => ({ ...course, hidden: true })));
       } else if (crn === 'show all') {
-        hiddenCourses[curSeason] ??= {};
-        courses.forEach((listing) => {
-          hiddenCourses[curSeason]![listing.crn] = false;
-        });
+        delete hiddenCourses[curSeason];
         setCourses(courses.map((course) => ({ ...course, hidden: false })));
       } else {
-        hiddenCourses[curSeason] ??= {};
-
         if (hiddenCourses[curSeason]![crn])
           delete hiddenCourses[curSeason]![crn];
         else hiddenCourses[curSeason]![crn] = true;

@@ -31,7 +31,6 @@ function CourseConflictIcon({
   const { data } = useWorksheetInfo(
     user.worksheets,
     listing.season_code,
-    'me',
     worksheetNumber,
   );
 

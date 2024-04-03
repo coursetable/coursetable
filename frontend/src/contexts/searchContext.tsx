@@ -374,7 +374,6 @@ export function SearchProvider({
   const { data: worksheetInfo } = useWorksheetInfo(
     user.worksheets,
     processedSeasons,
-    'me',
     worksheetNumber,
   );
 

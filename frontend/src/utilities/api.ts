@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import z from 'zod';
 
 import { API_ENDPOINT } from '../config';
+import { hiddenCoursesStorage } from '../contexts/worksheetContext';
 import type { ListingRatingsFragment } from '../generated/graphql';
 import type { Season, Crn, Listing, NetId } from './common';
 
@@ -274,13 +275,15 @@ const userWorksheetsSchema = z.record(
       z.object({
         crn: z.number(),
         color: z.string(),
+        // This currently is not sent by the backend.
+        hidden: z.boolean().optional().default(false),
       }),
     ),
   ),
 );
 
-export function fetchUserWorksheets() {
-  return fetchAPI('/user/worksheets', {
+export async function fetchUserWorksheets() {
+  const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
       netId: z.string(),
       // This cannot be null in the real application, because the site creates a
@@ -295,6 +298,17 @@ export function fetchUserWorksheets() {
       message: 'Fetching user data',
     },
   });
+  if (!res) return undefined;
+  const hiddenCourses = hiddenCoursesStorage.get();
+  for (const season in res.data) {
+    for (const num in res.data[season]) {
+      for (const course of res.data[season]![num]!) {
+        course.hidden =
+          hiddenCourses?.[season as Season]?.[course.crn as Crn] ?? false;
+      }
+    }
+  }
+  return res;
 }
 
 export function fetchFriendWorksheets() {

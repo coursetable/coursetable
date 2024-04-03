@@ -13,14 +13,8 @@ import * as Sentry from '@sentry/react';
 import { fetchCatalog, fetchEvals } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
-import type { WorksheetCourse, HiddenCourses } from './worksheetContext';
-import type { Crn, Season, Listing, NetId } from '../utilities/common';
-import { createLocalStorageSlot } from '../utilities/browserStorage';
-
-// TODO: for now, hidden courses are still in local storage.
-// It should be moved to the backend.
-const hiddenCoursesStorage =
-  createLocalStorageSlot<HiddenCourses>('hiddenCourses');
+import type { WorksheetCourse } from './worksheetContext';
+import type { Crn, Season, Listing } from '../utilities/common';
 
 export const seasons = seasonsData as Season[];
 
@@ -176,11 +170,8 @@ export const useCourseData = (requestedSeasons: Season[]) => {
 export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
   season: Season | Season[],
-  person: 'me' | NetId,
   worksheetNumber = 0,
 ) {
-  const hiddenCourses = useMemo(() => hiddenCoursesStorage.get() ?? {}, []);
-
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
     if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
@@ -200,7 +191,7 @@ export function useWorksheetInfo(
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      for (const { crn, color } of worksheet) {
+      for (const { crn, color, hidden } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
         if (!listing) {
           // This error is unactionable.
@@ -210,20 +201,12 @@ export function useWorksheetInfo(
           //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
           //   ),
           // );
-        } else if (person === 'me') {
-          const locallyHidden = hiddenCourses[seasonCode]?.[crn] ?? false;
-          dataReturn.push({
-            crn,
-            color,
-            listing,
-            hidden: locallyHidden,
-          });
         } else {
           dataReturn.push({
             crn,
             color,
             listing,
-            hidden: false,
+            hidden,
           });
         }
       }
@@ -231,15 +214,6 @@ export function useWorksheetInfo(
     return dataReturn.sort((a, b) =>
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
-  }, [
-    requestedSeasons,
-    courses,
-    worksheets,
-    worksheetNumber,
-    loading,
-    error,
-    person,
-    hiddenCourses,
-  ]);
+  }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error]);
   return { loading, error, data };
 }
