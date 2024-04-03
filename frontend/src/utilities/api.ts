@@ -15,7 +15,6 @@ export async function toggleBookmark(payload: {
   crn: Crn;
   worksheetNumber: number;
   color: string;
-  hidden: boolean;
 }): Promise<boolean> {
   const body = JSON.stringify(payload);
   try {
@@ -232,7 +231,6 @@ const userWorksheetsSchema = z.record(
       z.object({
         crn: z.number(),
         color: z.string(),
-        hidden: z.boolean(),
       }),
     ),
   ),

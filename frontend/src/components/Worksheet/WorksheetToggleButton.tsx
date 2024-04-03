@@ -31,8 +31,8 @@ function CourseConflictIcon({
   const { data } = useWorksheetInfo(
     user.worksheets,
     listing.season_code,
-    worksheetNumber,
     'me',
+    worksheetNumber,
   );
 
   const warning = useMemo(() => {
@@ -135,7 +135,6 @@ function WorksheetToggleButton({
         worksheetNumber: selectedWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
-        hidden: isHidden,
       });
       if (success) await userRefresh();
     },

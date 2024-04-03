@@ -373,8 +373,8 @@ export function SearchProvider({
   const { data: worksheetInfo } = useWorksheetInfo(
     user.worksheets,
     processedSeasons,
-    worksheetNumber,
     'me',
+    worksheetNumber,
   );
 
   const queryEvaluator = useMemo(

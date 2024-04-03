@@ -74,8 +74,7 @@ CREATE TABLE `WorksheetCourses` (
   `crn` mediumint(8) UNSIGNED NOT NULL,
   `season` mediumint(8) UNSIGNED NOT NULL,
   `worksheetNumber` mediumint(8) UNSIGNED DEFAULT 0 COMMENT 'Which of the user''s worksheets for this season this belongs to',
-  `color` varchar(32) NOT NULL COMMENT 'Color of course on worksheet',
-  `hidden` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Whether course is hidden'
+  `color` varchar(32) NOT NULL COMMENT 'Color of course on worksheet'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
