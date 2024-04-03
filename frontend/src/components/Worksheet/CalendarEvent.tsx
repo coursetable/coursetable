@@ -11,7 +11,6 @@ const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const course = event.listing;
-
   const { person } = useWorksheet();
 
   return (
@@ -31,7 +30,6 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
           <small className={styles.locationText}>{event.location}</small>
         </div>
       </CourseInfoPopover>
-
       {person === 'me' && (
         <div className={styles.worksheetHideButton}>
           <WorksheetHideButton

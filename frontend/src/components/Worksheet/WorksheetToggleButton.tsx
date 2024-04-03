@@ -122,9 +122,9 @@ function WorksheetToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWorksheet ? 'remove' : 'add';
 
-      const isHidden =
-        courses.filter((course) => course.crn === listing.crn && course.hidden)
-          .length > 0;
+      const isHidden = courses.find(
+        (course) => course.crn === listing.crn,
+      )?.hidden;
 
       // Remove it from hidden courses before removing from worksheet
       if (inWorksheet && isHidden) toggleCourse(listing.crn);

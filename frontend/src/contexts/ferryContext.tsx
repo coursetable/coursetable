@@ -17,6 +17,8 @@ import type { WorksheetCourse, HiddenCourses } from './worksheetContext';
 import type { Crn, Season, Listing, NetId } from '../utilities/common';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 
+// TODO: for now, hidden courses are still in local storage.
+// It should be moved to the backend.
 const hiddenCoursesStorage =
   createLocalStorageSlot<HiddenCourses>('hiddenCourses');
 
@@ -193,7 +195,7 @@ export function useWorksheetInfo(
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      for (const { crn, color, hidden } of worksheet) {
+      for (const { crn, color } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
         if (!listing) {
           // This error is unactionable.
@@ -216,7 +218,7 @@ export function useWorksheetInfo(
             crn,
             color,
             listing,
-            hidden,
+            hidden: false,
           });
         }
       }

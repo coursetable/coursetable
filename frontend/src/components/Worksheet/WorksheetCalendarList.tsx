@@ -38,7 +38,7 @@ function WorksheetCalendarList() {
   );
 
   const areHidden = useMemo(
-    () => courses.filter((course) => course.hidden).length > 0,
+    () => courses.length > 0 && courses.every((course) => course.hidden),
     [courses],
   );
 
