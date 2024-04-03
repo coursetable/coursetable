@@ -4,12 +4,8 @@ import React, {
   useContext,
   useMemo,
   useState,
-  useEffect,
 } from 'react';
-import {
-  useLocalStorageState,
-  useSessionStorageState,
-} from '../utilities/browserStorage';
+import { useSessionStorageState } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
@@ -58,7 +54,7 @@ export function WorksheetProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
-  const { user } = useUser();
+  const { user, userRefresh } = useUser();
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'person',
     'me',
@@ -89,14 +85,11 @@ export function WorksheetProvider({
   const {
     loading: worksheetLoading,
     error: worksheetError,
-    data: tmpCourses,
+    data: courses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
 
-  const [courses, setCourses] = useLocalStorageState('courses', tmpCourses);
-
-  useEffect(() => {
-    setCourses(tmpCourses);
-  }, [tmpCourses, setCourses]); // `count` is a dependency
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [rerender, setRerender] = useState(0);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -109,32 +102,24 @@ export function WorksheetProvider({
   );
 
   const toggleCourse = useCallback(
-    (crn: Crn | 'hide all' | 'show all') => {
+    async (crn: Crn | 'hide all' | 'show all') => {
       const hiddenCourses = hiddenCoursesStorage.get() ?? {};
       if (crn === 'hide all') {
         hiddenCourses[curSeason] ??= {};
         courses.forEach((listing) => {
           hiddenCourses[curSeason]![listing.crn] = true;
         });
-        setCourses(courses.map((course) => ({ ...course, hidden: true })));
       } else if (crn === 'show all') {
         delete hiddenCourses[curSeason];
-        setCourses(courses.map((course) => ({ ...course, hidden: false })));
+      } else if (hiddenCourses[curSeason]![crn]) {
+        delete hiddenCourses[curSeason]![crn];
       } else {
-        if (hiddenCourses[curSeason]![crn])
-          delete hiddenCourses[curSeason]![crn];
-        else hiddenCourses[curSeason]![crn] = true;
-        setCourses(
-          courses.map((course) => {
-            if (course.crn === crn)
-              return { ...course, hidden: !course.hidden };
-            return course;
-          }),
-        );
+        hiddenCourses[curSeason]![crn] = true;
       }
       hiddenCoursesStorage.set(hiddenCourses);
+      await userRefresh();
     },
-    [courses, curSeason, setCourses],
+    [courses, curSeason, userRefresh],
   );
 
   const handleWorksheetView = useCallback(
