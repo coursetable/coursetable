@@ -9,6 +9,49 @@ import { API_ENDPOINT } from '../config';
 import type { ListingRatingsFragment } from '../generated/graphql';
 import type { Season, Crn, Listing, NetId } from './common';
 
+// This utility function performs a fetch request and validates the response
+// with the given Zod schema.
+async function fetchAPI<T>(
+  endpointSuffix: string,
+  {
+    body,
+    schema,
+    breadcrumb,
+  }: {
+    body?: unknown;
+    schema: z.ZodType<T>;
+    breadcrumb: Sentry.Breadcrumb & {
+      message: string;
+      category: string;
+    };
+  },
+): Promise<T | undefined> {
+  const method = body ? 'POST' : 'GET';
+
+  try {
+    const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, {
+      method,
+      credentials: 'include',
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : null,
+    });
+    const rawData: unknown = await res.json();
+    if (!res.ok)
+      throw new Error((rawData as { error?: string }).error ?? res.statusText);
+    return schema.parse(rawData);
+  } catch (err) {
+    Sentry.addBreadcrumb({
+      level: 'info',
+      ...breadcrumb,
+    });
+    Sentry.captureException(err);
+    toast.error(
+      `Failed while ${breadcrumb.message.toLowerCase()}: ${String(err)}`,
+    );
+    return undefined;
+  }
+}
+
 export async function toggleBookmark(payload: {
   action: 'add' | 'remove';
   season: Season;
@@ -236,113 +279,75 @@ const userWorksheetsSchema = z.record(
   ),
 );
 
-const userWorksheetsResSchema = z.object({
-  netId: z.string(),
-  // This cannot be null in the real application, because the site creates a
-  // user if one doesn't exist. This is purely for completeness.
-  evaluationsEnabled: z.union([z.boolean(), z.null()]),
-  year: z.union([z.number(), z.null()]),
-  school: z.union([z.string(), z.null()]),
-  data: userWorksheetsSchema,
-});
-
-export async function fetchUserWorksheets() {
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/user/worksheets`, {
-      credentials: 'include',
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok)
-      throw new Error((rawData as { error?: string }).error ?? res.statusText);
-    const data = userWorksheetsResSchema.parse(rawData);
-    return data;
-  } catch (err) {
-    Sentry.addBreadcrumb({
+export function fetchUserWorksheets() {
+  return fetchAPI('/user/worksheets', {
+    schema: z.object({
+      netId: z.string(),
+      // This cannot be null in the real application, because the site creates a
+      // user if one doesn't exist. This is purely for completeness.
+      evaluationsEnabled: z.union([z.boolean(), z.null()]),
+      year: z.union([z.number(), z.null()]),
+      school: z.union([z.string(), z.null()]),
+      data: userWorksheetsSchema,
+    }),
+    breadcrumb: {
       category: 'user',
       message: 'Fetching user data',
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    Sentry.getCurrentScope().clear();
-    toast.error(`Failed to fetch user data. ${String(err)}`);
-    return undefined;
-  }
+    },
+  });
 }
 
-// This utility function performs a fetch request and validates the response with the given Zod schema.
-async function fetchWithSchemaValidation<T>(
-  endpointSuffix: string,
-  schema: z.ZodType<T>,
-  body?: any,
-): Promise<T | undefined> {
-  const method = body ? 'POST' : 'GET';
-
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, {
-      method,
-      credentials: 'include',
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
-      body: body ? JSON.stringify(body) : null,
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok)
-      throw new Error((rawData as { error?: string }).error ?? res.statusText);
-    return schema.parse(rawData);
-  } catch (err) {
-    Sentry.captureException(err);
-    toast.error(`Request failed: ${String(err)}`);
-    return undefined;
-  }
-}
-
-const friendsResSchema = z.object({
-  friends: z.record(
-    z.object({
-      name: z.string(),
-      worksheets: userWorksheetsSchema,
+export function fetchFriendWorksheets() {
+  return fetchAPI('/friends/worksheets', {
+    schema: z.object({
+      friends: z.record(
+        z.object({
+          name: z.string(),
+          worksheets: userWorksheetsSchema,
+        }),
+      ),
     }),
-  ),
-});
-
-export async function fetchFriendWorksheets() {
-  return fetchWithSchemaValidation<z.infer<typeof friendsResSchema>>(
-    '/friends/worksheets',
-    friendsResSchema,
-  );
+    breadcrumb: {
+      category: 'friends',
+      message: 'Fetching friends data',
+    },
+  });
 }
 
-const friendRequestsSchema = z.object({
-  requests: z.array(
-    z.object({
-      netId: z.string(),
-      name: z.string(),
+export function fetchFriendReqs() {
+  return fetchAPI('/friends/getRequests', {
+    schema: z.object({
+      requests: z.array(
+        z.object({
+          netId: z.string(),
+          name: z.string(),
+        }),
+      ),
     }),
-  ),
-});
-
-export async function fetchFriendReqs() {
-  return fetchWithSchemaValidation<z.infer<typeof friendRequestsSchema>>(
-    '/friends/getRequests',
-    friendRequestsSchema,
-  );
+    breadcrumb: {
+      category: 'friends',
+      message: 'Fetching friend requests',
+    },
+  });
 }
 
-const friendsNamesResSchema = z.object({
-  names: z.array(
-    z.object({
-      netId: z.string(),
-      first: z.union([z.string(), z.null()]),
-      last: z.union([z.string(), z.null()]),
-      college: z.union([z.string(), z.null()]),
+export function fetchAllNames() {
+  return fetchAPI('/friends/names', {
+    schema: z.object({
+      names: z.array(
+        z.object({
+          netId: z.string(),
+          first: z.union([z.string(), z.null()]),
+          last: z.union([z.string(), z.null()]),
+          college: z.union([z.string(), z.null()]),
+        }),
+      ),
     }),
-  ),
-});
-
-export async function fetchAllNames() {
-  return fetchWithSchemaValidation<z.infer<typeof friendsNamesResSchema>>(
-    '/friends/names',
-    friendsNamesResSchema,
-  );
+    breadcrumb: {
+      category: 'friends',
+      message: 'Fetching all user names',
+    },
+  });
 }
 
 export async function addFriend(friendNetId: NetId) {
@@ -445,46 +450,35 @@ export async function removeFriend(friendNetId: string, isRequest: boolean) {
   }
 }
 
-const authCheckResSchema = z.union([
-  z.object({
-    auth: z.literal(true),
-    netId: z.string(),
-    user: z.object({
-      netId: z.string(),
-      evals: z.boolean(),
-      email: z.string().optional(),
-      firstName: z.string().optional(),
-      lastName: z.string().optional(),
-    }),
-  }),
-  z.object({
-    auth: z.literal(false),
-    netId: z.null(),
-    user: z.null(),
-  }),
-]);
-
 export async function checkAuth() {
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/auth/check`, {
-      credentials: 'include',
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok)
-      throw new Error((rawData as { error?: string }).error ?? res.statusText);
-    const data = authCheckResSchema.parse(rawData);
-    if (!data.auth) return false;
-    Sentry.setUser({ username: data.netId });
-    return true;
-  } catch (err) {
-    Sentry.addBreadcrumb({
+  const res = await fetchAPI('/auth/check', {
+    schema: z.union([
+      z.object({
+        auth: z.literal(true),
+        netId: z.string(),
+        user: z.object({
+          netId: z.string(),
+          evals: z.boolean(),
+          email: z.string().optional(),
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+        }),
+      }),
+      z.object({
+        auth: z.literal(false),
+        netId: z.null(),
+        user: z.null(),
+      }),
+    ]),
+    breadcrumb: {
       category: 'user',
       message: 'Fetching user login status',
-      level: 'info',
-    });
-    Sentry.captureException(err);
+    },
+  });
+  if (!res) {
     Sentry.getCurrentScope().clear();
-    toast.error(`Failed to fetch login status. ${String(err)}`);
     return false;
   }
+  if (res.auth) Sentry.setUser({ username: res.netId });
+  return res.auth;
 }
