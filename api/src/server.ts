@@ -7,7 +7,6 @@ import https from 'https';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
-import * as Sentry from '@sentry/node';
 
 import {
   SECURE_PORT,
@@ -32,24 +31,6 @@ import challenge from './challenge/challenge.routes.js';
 import { fetchCatalog } from './catalog/catalog.utils.js';
 
 const app = express();
-
-Sentry.init({
-  dsn: 'https://0ceb92b3c55a418131f3fcf02eabf00d@o476134.ingest.us.sentry.io/4506913066975232',
-  integrations: [
-    // Enable HTTP calls tracing
-    new Sentry.Integrations.Http({ tracing: true }),
-    // Enable Express.js middleware tracing
-    new Sentry.Integrations.Express({ app }),
-  ],
-  // Performance Monitoring
-  tracesSampleRate: 1.0, //  Capture 100% of the transactions
-});
-
-// The request handler must be the first middleware on the app
-app.use(Sentry.Handlers.requestHandler());
-
-// TracingHandler creates a trace for every incoming request
-app.use(Sentry.Handlers.tracingHandler());
 
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
@@ -180,7 +161,6 @@ app.get('/api/ping', (req, res) => {
 
 // The error handler must be registered before
 // any other error middleware and after all controllers
-app.use(Sentry.Handlers.errorHandler());
 
 app.use(
   (
@@ -192,7 +172,6 @@ app.use(
   ) => {
     winston.error(err);
     // TODO: maybe this is not necessary given the errorHandler above?
-    Sentry.captureException(err, { user: req.user });
     res.status(500).json({ error: String(err) });
   },
 );
