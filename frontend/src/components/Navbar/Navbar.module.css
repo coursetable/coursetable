@@ -38,7 +38,6 @@
   height: 30px;
   border-radius: 15px;
   display: flex;
-  cursor: pointer;
   background-color: rgb(1 1 1 / 10%);
   color: var(--color-text-secondary);
   transition:
@@ -76,7 +75,6 @@
 .navLink {
   padding: 0.5rem 1rem 0.5rem 0;
   user-select: none;
-  cursor: pointer;
   font-weight: 500;
   font-size: 1rem;
   color: var(--color-text-secondary);

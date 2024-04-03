@@ -6,6 +6,14 @@ on:
     paths:
       - 'frontend/**'
       - 'api/**'
+  workflow_dispatch:
+    inputs:
+      api:
+        description: 'Deploy API'
+        type: boolean
+      frontend:
+        description: 'Deploy Frontend'
+        type: boolean
 
 jobs:
   changes:
@@ -20,7 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          fetch-depth: 2
+          ref: ${{ github.ref }}
 
       - uses: dorny/paths-filter@v3
         id: filter
@@ -33,7 +42,7 @@ jobs:
 
   frontend-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend }}
 
     environment:
       name: Staging
@@ -47,7 +56,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref }}
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
         with:
@@ -63,7 +72,7 @@ jobs:
 
   api-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.api == 'true' }}
+    if: ${{ needs.changes.outputs.api == 'true' || inputs.api }}
 
     environment:
       name: Staging
@@ -73,7 +82,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref }}
 
       - name: Build and Deploy Docker containers
         working-directory: ./api

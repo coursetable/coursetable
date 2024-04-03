@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { Element, scroller } from 'react-scroll';
-import clsx from 'clsx';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
@@ -44,30 +42,16 @@ function Search() {
   // TODO: add state if courseLoadError is present
   return (
     <div className={styles.searchBase}>
-      <Row
-        className={clsx(
-          'p-0 m-0',
-          !isMobile && 'd-flex flex-row-reverse flex-nowrap',
-        )}
-      >
-        {isMobile && <MobileSearchForm onSubmit={scrollToResults} />}
-        <Col
-          md={12}
-          className={clsx(
-            'm-0',
-            styles.resultsCol,
-            isMobile ? 'p-3' : 'px-0 pb-3',
-          )}
-        >
-          <Element name="catalog" className="d-flex justify-content-center">
-            <Results
-              data={searchData}
-              loading={coursesLoading}
-              multiSeasons={multiSeasons}
-            />
-          </Element>
-        </Col>
-      </Row>
+      {isMobile && <MobileSearchForm onSubmit={scrollToResults} />}
+      <div className={styles.resultsCol}>
+        <Element name="catalog" className="d-flex justify-content-center">
+          <Results
+            data={searchData}
+            loading={coursesLoading}
+            multiSeasons={multiSeasons}
+          />
+        </Element>
+      </div>
     </div>
   );
 }

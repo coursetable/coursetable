@@ -80,8 +80,8 @@ export const ratingColormap = chroma
   .scale(['#f8696b', '#ffeb84', '#63b37b'])
   .domain([1, 5]);
 export const workloadColormap = chroma
-  .scale(['#63b37b', '#ffeb84', '#f8696b'])
-  .domain([1, 5]);
+  .scale(['#f8696b', '#ffeb84', '#63b37b'])
+  .domain([5, 1]);
 
 export const credits = [0.5, 1, 1.5, 2];
 

@@ -1,7 +1,6 @@
 version: '3'
 services:
   api:
-    restart: always
     ports:
       - '${INSECURE_PORT:-8040}:${INSECURE_PORT:-8040}'
     environment:
@@ -15,13 +14,9 @@ services:
       - api
 
   graphql-engine:
-    restart: always
     networks:
       - ferry
       - api
-
-  redis:
-    restart: always
 
 networks:
   traefik:

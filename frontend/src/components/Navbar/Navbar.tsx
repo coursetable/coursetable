@@ -58,7 +58,7 @@ export default function CourseTableNavbar() {
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
   const { elemRef, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible<HTMLDivElement>(false);
+    useComponentVisible<HTMLButtonElement>(false);
   const { isMobile, isLgDesktop } = useWindowDimensions();
   const showSearch =
     !isMobile &&
@@ -200,42 +200,43 @@ export default function CourseTableNavbar() {
                     )}
                   >
                     <div className={styles.navbarMe}>
-                      {/* TODO */}
-                      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-                      <div
+                      <button
+                        type="button"
                         ref={elemRef}
                         className={clsx(styles.meIcon, 'm-auto')}
                         onClick={() =>
                           setIsComponentVisible(!isComponentVisible)
                         }
+                        aria-label="Profile"
                       >
                         <BsFillPersonFill
                           className="m-auto"
                           size={20}
                           color={isComponentVisible ? '#007bff' : undefined}
                         />
-                      </div>
+                      </button>
                     </div>
                   </div>
                   {/* Sign in/out buttons. Show if mobile */}
                   <div className="d-md-none">
                     {authStatus !== 'authenticated' ? (
-                      // TODO
-                      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                      <div
+                      <button
+                        type="button"
                         className={styles.signInOutButton}
                         onClick={() => {
                           window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
                         }}
                       >
                         Sign In
-                      </div>
+                      </button>
                     ) : (
-                      // TODO
-                      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                      <div className={styles.signInOutButton} onClick={logout}>
+                      <button
+                        type="button"
+                        className={styles.signInOutButton}
+                        onClick={logout}
+                      >
                         Sign Out
-                      </div>
+                      </button>
                     )}
                   </div>
                 </Nav>

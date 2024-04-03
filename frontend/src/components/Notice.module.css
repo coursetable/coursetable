@@ -24,5 +24,4 @@
 .banner .closeButton {
   width: 30px;
   transition: 0.33s ease-out;
-  cursor: pointer;
 }

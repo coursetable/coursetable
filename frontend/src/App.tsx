@@ -79,10 +79,10 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={4}
+        id={5}
       >
-        Basic course information is now publicly available without login! Share
-        courses with your family and friends with ease ;)
+        You can now add friends by just searching their name! Go see what your
+        peers are taking :)
       </Notice>
       <Navbar />
       <SentryRoutes>
