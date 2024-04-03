@@ -9,7 +9,7 @@ import { useSessionStorageState } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
-import { hiddenCoursesStorage } from '../utilities/api';
+import { toggleCourseHidden } from '../utilities/api';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
@@ -43,7 +43,7 @@ type Store = {
   handlePersonChange: (newPerson: 'me' | NetId) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<Crn | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
-  toggleCourse: (crn: Crn | 'hide all' | 'show all') => void;
+  toggleCourse: (crn: Crn | 'all', hidden: boolean) => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
@@ -88,9 +88,6 @@ export function WorksheetProvider({
     data: courses,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [rerender, setRerender] = useState(0);
-
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
     () =>
@@ -102,21 +99,13 @@ export function WorksheetProvider({
   );
 
   const toggleCourse = useCallback(
-    async (crn: Crn | 'hide all' | 'show all') => {
-      const hiddenCourses = hiddenCoursesStorage.get() ?? {};
-      if (crn === 'hide all') {
-        hiddenCourses[curSeason] ??= {};
-        courses.forEach((listing) => {
-          hiddenCourses[curSeason]![listing.crn] = true;
-        });
-      } else if (crn === 'show all') {
-        delete hiddenCourses[curSeason];
-      } else if (hiddenCourses[curSeason]![crn]) {
-        delete hiddenCourses[curSeason]![crn];
-      } else {
-        hiddenCourses[curSeason]![crn] = true;
-      }
-      hiddenCoursesStorage.set(hiddenCourses);
+    async (crn: Crn | 'all', hidden: boolean) => {
+      toggleCourseHidden({
+        season: curSeason,
+        crn,
+        hidden,
+        courses: courses.map((course) => course.listing),
+      });
       await userRefresh();
     },
     [courses, curSeason, userRefresh],

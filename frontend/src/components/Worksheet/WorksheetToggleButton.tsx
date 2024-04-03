@@ -8,7 +8,7 @@ import { useUser } from '../../contexts/userContext';
 import { worksheetColors } from '../../utilities/constants';
 import type { Listing } from '../../utilities/common';
 import { isInWorksheet, checkConflict } from '../../utilities/course';
-import { toggleBookmark, hiddenCoursesStorage } from '../../utilities/api';
+import { toggleBookmark, toggleCourseHidden } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
@@ -122,14 +122,11 @@ function WorksheetToggleButton({
 
       // Remove it from hidden courses before removing from worksheet
       if (inWorksheet) {
-        const hiddenCourses = hiddenCoursesStorage.get();
-        if (
-          hiddenCourses &&
-          hiddenCourses[listing.season_code]?.[listing.crn]
-        ) {
-          delete hiddenCourses[listing.season_code]![listing.crn];
-          hiddenCoursesStorage.set(hiddenCourses);
-        }
+        toggleCourseHidden({
+          season: listing.season_code,
+          crn: listing.crn,
+          hidden: false,
+        });
       }
       const success = await toggleBookmark({
         action: addRemove,

@@ -10,10 +10,6 @@ import { API_ENDPOINT } from '../config';
 import type { ListingRatingsFragment } from '../generated/graphql';
 import type { Season, Crn, Listing, NetId } from './common';
 
-export const hiddenCoursesStorage = createLocalStorageSlot<{
-  [seasonCode: Season]: { [crn: Crn]: boolean };
-}>('hiddenCourses');
-
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
     message: string;
@@ -145,6 +141,40 @@ export function toggleBookmark(body: {
       message: 'Updating worksheet',
     },
   });
+}
+
+const hiddenCoursesStorage = createLocalStorageSlot<{
+  [seasonCode: Season]: { [crn: Crn]: boolean };
+}>('hiddenCourses');
+
+export function toggleCourseHidden({
+  season,
+  crn,
+  hidden,
+  courses,
+}: {
+  season: Season;
+  crn: Crn | 'all';
+  hidden: boolean;
+  courses?: Listing[];
+}) {
+  const hiddenCourses = hiddenCoursesStorage.get() ?? {};
+  if (crn === 'all') {
+    if (hidden) {
+      hiddenCourses[season] ??= {};
+      courses?.forEach((listing) => {
+        hiddenCourses[season]![listing.crn] = true;
+      });
+    } else {
+      delete hiddenCourses[season];
+    }
+  } else {
+    // eslint-disable-next-line no-multi-assign
+    const curSeason = (hiddenCourses[season] ??= {});
+    if (hidden) curSeason[crn] = true;
+    else delete curSeason[crn];
+  }
+  hiddenCoursesStorage.set(hiddenCourses);
 }
 
 export async function fetchCatalog(season: Season) {
