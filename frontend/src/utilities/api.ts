@@ -269,6 +269,32 @@ export async function fetchUserWorksheets() {
   }
 }
 
+// This utility function performs a fetch request and validates the response with the given Zod schema.
+async function fetchWithSchemaValidation<T>(
+  endpointSuffix: string,
+  schema: z.ZodType<T>,
+  body?: any,
+): Promise<T | undefined> {
+  const method = body ? 'POST' : 'GET';
+
+  try {
+    const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, {
+      method,
+      credentials: 'include',
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : null,
+    });
+    const rawData: unknown = await res.json();
+    if (!res.ok)
+      throw new Error((rawData as { error?: string }).error ?? res.statusText);
+    return schema.parse(rawData);
+  } catch (err) {
+    Sentry.captureException(err);
+    toast.error(`Request failed: ${String(err)}`);
+    return undefined;
+  }
+}
+
 const friendsResSchema = z.object({
   friends: z.record(
     z.object({
@@ -279,25 +305,10 @@ const friendsResSchema = z.object({
 });
 
 export async function fetchFriendWorksheets() {
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/friends/worksheets`, {
-      credentials: 'include',
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok)
-      throw new Error((rawData as { error?: string }).error ?? res.statusText);
-    const data = friendsResSchema.parse(rawData);
-    return data;
-  } catch (err) {
-    Sentry.addBreadcrumb({
-      category: 'friends',
-      message: 'Fetching friends data',
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to fetch friends data. ${String(err)}`);
-    return undefined;
-  }
+  return fetchWithSchemaValidation<z.infer<typeof friendsResSchema>>(
+    '/friends/worksheets',
+    friendsResSchema,
+  );
 }
 
 const friendRequestsSchema = z.object({
@@ -310,25 +321,10 @@ const friendRequestsSchema = z.object({
 });
 
 export async function fetchFriendReqs() {
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/friends/getRequests`, {
-      credentials: 'include',
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok)
-      throw new Error((rawData as { error?: string }).error ?? res.statusText);
-    const data = friendRequestsSchema.parse(rawData);
-    return data;
-  } catch (err) {
-    Sentry.addBreadcrumb({
-      category: 'friends',
-      message: 'Fetching friend requests',
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to get friend requests. ${String(err)}`);
-    return undefined;
-  }
+  return fetchWithSchemaValidation<z.infer<typeof friendRequestsSchema>>(
+    '/friends/getRequests',
+    friendRequestsSchema,
+  );
 }
 
 const friendsNamesResSchema = z.object({
@@ -343,25 +339,10 @@ const friendsNamesResSchema = z.object({
 });
 
 export async function fetchAllNames() {
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/friends/names`, {
-      credentials: 'include',
-    });
-    const rawData: unknown = await res.json();
-    if (!res.ok)
-      throw new Error((rawData as { error?: string }).error ?? res.statusText);
-    const data = friendsNamesResSchema.parse(rawData);
-    return data;
-  } catch (err) {
-    Sentry.addBreadcrumb({
-      category: 'friends',
-      message: 'Fetching friend names',
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to get user names. ${String(err)}`);
-    return undefined;
-  }
+  return fetchWithSchemaValidation<z.infer<typeof friendsNamesResSchema>>(
+    '/friends/names',
+    friendsNamesResSchema,
+  );
 }
 
 export async function addFriend(friendNetId: NetId) {
