@@ -1,24 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { FaChevronRight } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { HoverText, TextComponent } from '../components/Typography';
 import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities/display';
 
-function ContextAwareToggle({
-  eventKey,
-  question,
-}: {
-  readonly eventKey: string;
-  readonly question: string;
-}) {
+function ContextAwareToggle({ question }: { readonly question: string }) {
   const currentEventKey = useContext(AccordionContext);
-  const decoratedOnClick = useAccordionToggle(eventKey, () => {});
-  const isCurrentEventKey = currentEventKey === eventKey;
+  const navigate = useNavigate();
+  const decoratedOnClick = useAccordionToggle(question, () => {
+    navigate(`#${toId(question)}`);
+  });
+  const isCurrentEventKey = currentEventKey === question;
 
   return (
     <HoverText
@@ -27,6 +24,7 @@ function ContextAwareToggle({
         'd-flex justify-content-between py-3 px-3',
         styles.accordionHoverHeader,
       )}
+      id={toId(question)}
       onClick={decoratedOnClick}
     >
       {question}
@@ -240,6 +238,28 @@ const faqs = [
         ),
       },
       {
+        title: 'How do I report a data error?',
+        contents: (
+          <>
+            <p>
+              First, make sure there is an <b>inconsistency</b> between
+              CourseTable and the Yale Course Search. If you believe that the
+              data on YCS is wrong too, you should report to the professor
+              and/or department to get it fixed on YCS, and CourseTable will
+              automatically update.
+            </p>
+            <p>
+              Then, make sure to give up to 24 hours for new changes on YCS to
+              take effect on CourseTable.
+            </p>
+            <p>
+              After doing the above, you can let us know through our{' '}
+              <a href="https://feedback.coursetable.com">feedback form</a>.
+            </p>
+          </>
+        ),
+      },
+      {
         title: "Can I use CourseTable's data for a project?",
         contents: (
           <>
@@ -305,7 +325,26 @@ const faqs = [
   },
 ];
 
+function toId(title: string): string {
+  return title
+    .replaceAll(' ', '_')
+    .replace(/[^a-z_]/giu, '')
+    .toLowerCase();
+}
+
 function FAQ() {
+  const location = useLocation();
+  const id = location.hash.slice(1);
+  useEffect(() => {
+    if (id) {
+      const element = document.getElementById(id);
+      if (!element || element.offsetTop < window.scrollY) return;
+      element.scrollIntoView({
+        block: 'center',
+        behavior: 'smooth',
+      });
+    }
+  }, [id]);
   return (
     <div className={clsx('mx-auto', styles.container)}>
       <h1 className={clsx(styles.faqHeader, 'mt-5 mb-1')}>
@@ -318,16 +357,17 @@ function FAQ() {
       {faqs.map((section) => (
         <React.Fragment key={section.section}>
           <h2 className="my-4">{section.section}</h2>
-          <Accordion>
-            {section.items.map((faq, idx) => (
+          <Accordion
+            defaultActiveKey={
+              id && section.items.find((faq) => toId(faq.title) === id)?.title
+            }
+          >
+            {section.items.map((faq) => (
               <Card className={styles.card} key={faq.title}>
                 <div>
-                  <ContextAwareToggle
-                    eventKey={String(idx)}
-                    question={faq.title}
-                  />
+                  <ContextAwareToggle question={faq.title} />
                 </div>
-                <Accordion.Collapse eventKey={String(idx)}>
+                <Accordion.Collapse eventKey={faq.title}>
                   <Card.Body className="py-3">
                     <TextComponent type="secondary">
                       {faq.contents}
