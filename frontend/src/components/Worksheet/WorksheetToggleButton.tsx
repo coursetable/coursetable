@@ -8,7 +8,7 @@ import { useUser } from '../../contexts/userContext';
 import { worksheetColors } from '../../utilities/constants';
 import type { Listing } from '../../utilities/common';
 import { isInWorksheet, checkConflict } from '../../utilities/course';
-import { toggleBookmark } from '../../utilities/api';
+import { toggleBookmark, hiddenCoursesStorage } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
@@ -84,8 +84,7 @@ function WorksheetToggleButton({
 }) {
   const { user, userRefresh } = useUser();
 
-  const { courses, toggleCourse, worksheetNumber, worksheetOptions } =
-    useWorksheet();
+  const { worksheetNumber, worksheetOptions } = useWorksheet();
 
   // In the modal, the select can override the "currently viewed" worksheet
   const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
@@ -121,12 +120,17 @@ function WorksheetToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWorksheet ? 'remove' : 'add';
 
-      const isHidden = courses.find(
-        (course) => course.crn === listing.crn,
-      )?.hidden;
-
       // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet && isHidden) toggleCourse(listing.crn);
+      if (inWorksheet) {
+        const hiddenCourses = hiddenCoursesStorage.get();
+        if (
+          hiddenCourses &&
+          hiddenCourses[listing.season_code]?.[listing.crn]
+        ) {
+          delete hiddenCourses[listing.season_code]![listing.crn];
+          hiddenCoursesStorage.set(hiddenCourses);
+        }
+      }
       const success = await toggleBookmark({
         action: addRemove,
         season: listing.season_code,
@@ -139,10 +143,8 @@ function WorksheetToggleButton({
     },
     [
       inWorksheet,
-      courses,
       listing.crn,
       listing.season_code,
-      toggleCourse,
       selectedWorksheet,
       userRefresh,
     ],

@@ -5,10 +5,14 @@ import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import z from 'zod';
 
+import { createLocalStorageSlot } from './browserStorage';
 import { API_ENDPOINT } from '../config';
-import { hiddenCoursesStorage } from '../contexts/worksheetContext';
 import type { ListingRatingsFragment } from '../generated/graphql';
 import type { Season, Crn, Listing, NetId } from './common';
+
+export const hiddenCoursesStorage = createLocalStorageSlot<{
+  [seasonCode: Season]: { [crn: Crn]: boolean };
+}>('hiddenCourses');
 
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
@@ -300,11 +304,13 @@ export async function fetchUserWorksheets() {
   });
   if (!res) return undefined;
   const hiddenCourses = hiddenCoursesStorage.get();
+  if (!hiddenCourses) return res;
   for (const season in res.data) {
+    if (!hiddenCourses[season as Season]) continue;
     for (const num in res.data[season]) {
       for (const course of res.data[season]![num]!) {
         course.hidden =
-          hiddenCourses?.[season as Season]?.[course.crn as Crn] ?? false;
+          hiddenCourses[season as Season]?.[course.crn as Crn] ?? false;
       }
     }
   }

@@ -9,20 +9,14 @@ import React, {
 import {
   useLocalStorageState,
   useSessionStorageState,
-  createLocalStorageSlot,
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
+import { hiddenCoursesStorage } from '../utilities/api';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
-export const hiddenCoursesStorage =
-  createLocalStorageSlot<HiddenCourses>('hiddenCourses');
-
-type HiddenCourses = {
-  [seasonCode: Season]: { [crn: Crn]: boolean };
-};
 type WorksheetView = 'calendar' | 'list';
 
 export type WorksheetCourse = {
