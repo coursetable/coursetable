@@ -1,4 +1,3 @@
-import path from 'path';
 import winston from 'winston';
 import { isDev } from '../config.js';
 
@@ -39,7 +38,7 @@ const transports = [
 
   // Error-only file logs
   new winston.transports.File({
-    filename: path.join(__dirname, '../../logs/error.log'),
+    filename: await import.meta.resolve('../../logs/error.log'),
     level: 'error',
     maxsize: 5242880, // 5MB
     maxFiles: 10,
@@ -48,7 +47,7 @@ const transports = [
 
   // All logs
   new winston.transports.File({
-    filename: path.join(__dirname, '../../logs/all.log'),
+    filename: await import.meta.resolve('../../logs/all.log'),
     maxsize: 5242880, // 5MB
     maxFiles: 10,
     handleExceptions: true, // Log unhandled exceptions

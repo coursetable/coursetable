@@ -1,8 +1,9 @@
 {
   "extends": "..",
   "compilerOptions": {
-    "target": "es2020",
-    "lib": ["es2020"],
+    "target": "es2023",
+    "module": "node16",
+    "lib": ["es2023"],
   },
   "include": ["src", "drizzle.config.ts", "drizzle", "drizzle/schema.ts"],
   "exclude": [],
