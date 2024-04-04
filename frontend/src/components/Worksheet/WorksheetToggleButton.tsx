@@ -8,7 +8,7 @@ import { useUser } from '../../contexts/userContext';
 import { worksheetColors } from '../../utilities/constants';
 import type { Listing } from '../../utilities/common';
 import { isInWorksheet, checkConflict } from '../../utilities/course';
-import { toggleBookmark } from '../../utilities/api';
+import { toggleBookmark, toggleCourseHidden } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
@@ -84,13 +84,7 @@ function WorksheetToggleButton({
 }) {
   const { user, userRefresh } = useUser();
 
-  const {
-    curSeason,
-    hiddenCourses,
-    toggleCourse,
-    worksheetNumber,
-    worksheetOptions,
-  } = useWorksheet();
+  const { worksheetNumber, worksheetOptions } = useWorksheet();
 
   // In the modal, the select can override the "currently viewed" worksheet
   const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
@@ -127,8 +121,13 @@ function WorksheetToggleButton({
       const addRemove = inWorksheet ? 'remove' : 'add';
 
       // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet && hiddenCourses[curSeason]?.[listing.crn])
-        toggleCourse(listing.crn);
+      if (inWorksheet) {
+        toggleCourseHidden({
+          season: listing.season_code,
+          crn: listing.crn,
+          hidden: false,
+        });
+      }
       const success = await toggleBookmark({
         action: addRemove,
         season: listing.season_code,
@@ -141,11 +140,8 @@ function WorksheetToggleButton({
     },
     [
       inWorksheet,
-      hiddenCourses,
-      curSeason,
       listing.crn,
       listing.season_code,
-      toggleCourse,
       selectedWorksheet,
       userRefresh,
     ],

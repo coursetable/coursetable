@@ -22,7 +22,7 @@ import ICSExportButton from './ICSExportButton';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, curSeason, hiddenCourses, toggleCourse } = useWorksheet();
+  const { courses, toggleCourse, person } = useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(
@@ -31,16 +31,16 @@ function WorksheetCalendarList() {
         <WorksheetCalendarListItem
           key={i}
           course={course.listing}
-          hidden={hiddenCourses[curSeason]?.[course.crn] ?? false}
+          hidden={course.hidden}
         />
       )),
-    [courses, hiddenCourses, curSeason],
+    [courses],
   );
 
-  const areHidden = useMemo(() => {
-    if (!(curSeason in hiddenCourses)) return false;
-    return Object.keys(hiddenCourses[curSeason]!).length === courses.length;
-  }, [hiddenCourses, courses, curSeason]);
+  const areHidden = useMemo(
+    () => courses.length > 0 && courses.every((course) => course.hidden),
+    [courses],
+  );
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
@@ -51,27 +51,27 @@ function WorksheetCalendarList() {
         <SurfaceComponent elevated className={clsx(styles.container, 'mx-1')}>
           <div className="shadow-sm p-2">
             <ButtonGroup className="w-100">
-              <OverlayTrigger
-                placement="top"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>{areHidden ? 'Show' : 'Hide'} all</span>
-                  </Tooltip>
-                )}
-              >
-                <Button
-                  onClick={() =>
-                    toggleCourse(areHidden ? 'show all' : 'hide all')
-                  }
-                  variant="none"
-                  className={clsx(styles.button, 'px-3 w-100')}
+              {person === 'me' && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="button-tooltip" {...props}>
+                      <span>{areHidden ? 'Show' : 'Hide'} all</span>
+                    </Tooltip>
+                  )}
                 >
-                  <HideShowIcon
-                    className={clsx(styles.icon, 'my-auto pr-2')}
-                    size={32}
-                  />
-                </Button>
-              </OverlayTrigger>
+                  <Button
+                    onClick={() => toggleCourse('all', !areHidden)}
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                  >
+                    <HideShowIcon
+                      className={clsx(styles.icon, 'my-auto pr-2')}
+                      size={32}
+                    />
+                  </Button>
+                </OverlayTrigger>
+              )}
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
