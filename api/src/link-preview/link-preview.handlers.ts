@@ -14,14 +14,17 @@ const defaultMetadata = {
   title: 'CourseTable',
   description:
     'CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It is run by a small team of volunteers within the Yale Computer Society and is completely open source.',
+  image: 'https://coursetable.com/favicon.png',
 };
 
 function renderTemplate({
   title,
   description,
+  image,
 }: {
   title: string;
   description: string;
+  image: string;
 }): string {
   // TODO: use summary_large_image for Twitter cards once we have images
   return html`
@@ -34,8 +37,11 @@ function renderTemplate({
         <meta name="description" content="${description}" />
         <meta name="og:title" content="${title}" />
         <meta name="og:description" content="${description}" />
+        <meta name="og:locale" content="en" />
+        <meta name="og:image" content="${image}" />
         <meta name="og:type" content="website" />
         <meta name="twitter:card" content="summary" />
+        <meta name="twitter:image" content="${image}" />
       </head>
       <body>
         <h1>${title}</h1>
@@ -69,6 +75,7 @@ async function getMetadata(query: unknown) {
       300,
       'No description available',
     ),
+    image: 'https://coursetable.com/favicon.png',
   };
 }
 
