@@ -13,6 +13,7 @@ function FloatingWorksheet() {
     'overlayVisible',
     false,
   );
+  const label = `${overlayVisible ? 'Hide' : 'Show'} worksheet`;
 
   return (
     <>
@@ -20,7 +21,7 @@ function FloatingWorksheet() {
         placement="top"
         overlay={(props) => (
           <Tooltip id="overlay-tooltip" {...props}>
-            {overlayVisible ? 'Hide' : 'Show'} Worksheet
+            {label}
           </Tooltip>
         )}
       >
@@ -29,6 +30,7 @@ function FloatingWorksheet() {
             setOverlayVisible(!overlayVisible);
           }}
           className={styles.worksheetOverlayButton}
+          aria-label={label}
         >
           {overlayVisible ? (
             <IoClose style={{ marginBottom: '2px' }} />
@@ -46,7 +48,7 @@ function FloatingWorksheet() {
         )}
       >
         <div className={styles.expandBtn}>
-          <NavLink to="/worksheet">
+          <NavLink to="/worksheet" aria-label="Expand worksheet">
             <FaExpandAlt
               className={styles.expandIcon}
               size={12}
