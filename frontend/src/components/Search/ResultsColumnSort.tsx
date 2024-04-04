@@ -30,6 +30,7 @@ function ResultsColumnSort({
     filters: { selectSortBy, sortOrder },
   } = useSearch();
 
+  // TODO this is not an effect
   useEffect(() => {
     if (firstTime) {
       if (selectSortBy.value.value === selectOption.value) {
