@@ -5,25 +5,21 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {
-  useLocalStorageState,
-  useSessionStorageState,
-} from '../utilities/browserStorage';
+import { useSessionStorageState } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type UserWorksheets } from './userContext';
+import { toggleCourseHidden } from '../utilities/api';
 import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
-export type HiddenCourses = {
-  [seasonCode: Season]: { [crn: Crn]: boolean };
-};
 type WorksheetView = 'calendar' | 'list';
 
 export type WorksheetCourse = {
   crn: Crn;
   color: string;
   listing: Listing;
+  hidden: boolean;
 };
 
 type Store = {
@@ -38,7 +34,6 @@ type Store = {
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
-  hiddenCourses: HiddenCourses;
   hoverCourse: Crn | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
@@ -48,7 +43,7 @@ type Store = {
   handlePersonChange: (newPerson: 'me' | NetId) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<Crn | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
-  toggleCourse: (crn: Crn | 'hide all' | 'show all') => void;
+  toggleCourse: (crn: Crn | 'all', hidden: boolean) => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
@@ -59,15 +54,12 @@ export function WorksheetProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
-  const { user } = useUser();
+  const { user, userRefresh } = useUser();
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'person',
     'me',
   );
-  const [hiddenCourses, setHiddenCourses] = useLocalStorageState<HiddenCourses>(
-    'hiddenCourses',
-    {},
-  );
+
   const [hoverCourse, setHoverCourse] = useState<Crn | null>(null);
   const [worksheetView, setWorksheetView] =
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
@@ -107,36 +99,16 @@ export function WorksheetProvider({
   );
 
   const toggleCourse = useCallback(
-    (crn: Crn | 'hide all' | 'show all') => {
-      if (crn === 'hide all') {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] ??= {};
-
-          courses.forEach((listing) => {
-            newHiddenCourses[curSeason]![listing.crn] = true;
-          });
-          return newHiddenCourses;
-        });
-      } else if (crn === 'show all') {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] = {};
-          return newHiddenCourses;
-        });
-      } else {
-        setHiddenCourses((oldHiddenCourses) => {
-          const newHiddenCourses = { ...oldHiddenCourses };
-          newHiddenCourses[curSeason] ??= {};
-
-          if (newHiddenCourses[curSeason]![crn])
-            delete newHiddenCourses[curSeason]![crn];
-          else newHiddenCourses[curSeason]![crn] = true;
-          return newHiddenCourses;
-        });
-      }
+    async (crn: Crn | 'all', hidden: boolean) => {
+      toggleCourseHidden({
+        season: curSeason,
+        crn,
+        hidden,
+        courses: courses.map((course) => course.listing),
+      });
+      await userRefresh();
     },
-    [setHiddenCourses, courses, curSeason],
+    [courses, curSeason, userRefresh],
   );
 
   const handleWorksheetView = useCallback(
@@ -177,7 +149,6 @@ export function WorksheetProvider({
       worksheetNumber,
       person: viewedPerson,
       courses,
-      hiddenCourses,
       hoverCourse,
       worksheetView,
       worksheetLoading,
@@ -197,7 +168,6 @@ export function WorksheetProvider({
       worksheetNumber,
       viewedPerson,
       courses,
-      hiddenCourses,
       hoverCourse,
       worksheetView,
       worksheetLoading,

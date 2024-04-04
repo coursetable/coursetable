@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import z from 'zod';
 
+import { createLocalStorageSlot } from './browserStorage';
 import { API_ENDPOINT } from '../config';
 import type { ListingRatingsFragment } from '../generated/graphql';
 import type { Season, Crn, Listing, NetId } from './common';
@@ -142,6 +143,40 @@ export function toggleBookmark(body: {
   });
 }
 
+const hiddenCoursesStorage = createLocalStorageSlot<{
+  [seasonCode: Season]: { [crn: Crn]: boolean };
+}>('hiddenCourses');
+
+export function toggleCourseHidden({
+  season,
+  crn,
+  hidden,
+  courses,
+}: {
+  season: Season;
+  crn: Crn | 'all';
+  hidden: boolean;
+  courses?: Listing[];
+}) {
+  const hiddenCourses = hiddenCoursesStorage.get() ?? {};
+  if (crn === 'all') {
+    if (hidden) {
+      hiddenCourses[season] ??= {};
+      courses?.forEach((listing) => {
+        hiddenCourses[season]![listing.crn] = true;
+      });
+    } else {
+      delete hiddenCourses[season];
+    }
+  } else {
+    // eslint-disable-next-line no-multi-assign
+    const curSeason = (hiddenCourses[season] ??= {});
+    if (hidden) curSeason[crn] = true;
+    else delete curSeason[crn];
+  }
+  hiddenCoursesStorage.set(hiddenCourses);
+}
+
 export async function fetchCatalog(season: Season) {
   const res = await fetchAPI(`/static/catalogs/public/${season}.json`, {
     breadcrumb: {
@@ -274,13 +309,15 @@ const userWorksheetsSchema = z.record(
       z.object({
         crn: z.number(),
         color: z.string(),
+        // This currently is not sent by the backend.
+        hidden: z.boolean().optional().default(false),
       }),
     ),
   ),
 );
 
-export function fetchUserWorksheets() {
-  return fetchAPI('/user/worksheets', {
+export async function fetchUserWorksheets() {
+  const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
       netId: z.string(),
       // This cannot be null in the real application, because the site creates a
@@ -295,6 +332,19 @@ export function fetchUserWorksheets() {
       message: 'Fetching user data',
     },
   });
+  if (!res) return undefined;
+  const hiddenCourses = hiddenCoursesStorage.get();
+  if (!hiddenCourses) return res;
+  for (const season in res.data) {
+    if (!hiddenCourses[season as Season]) continue;
+    for (const num in res.data[season]) {
+      for (const course of res.data[season]![num]!) {
+        course.hidden =
+          hiddenCourses[season as Season]?.[course.crn as Crn] ?? false;
+      }
+    }
+  }
+  return res;
 }
 
 export function fetchFriendWorksheets() {

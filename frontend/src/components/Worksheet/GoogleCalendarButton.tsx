@@ -12,7 +12,7 @@ import GCalIcon from '../../images/gcal.svg';
 function GoogleCalendarButton(): JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
-  const { curSeason, hiddenCourses, courses } = useWorksheet();
+  const { curSeason, courses } = useWorksheet();
   const exportButtonRef = useRef<HTMLButtonElement>(null);
   const exportEvents = useCallback(async () => {
     if (!gapi) {
@@ -63,12 +63,7 @@ function GoogleCalendarButton(): JSX.Element {
           }),
         );
       }
-      const events = getCalendarEvents(
-        'gcal',
-        courses,
-        curSeason,
-        hiddenCourses,
-      );
+      const events = getCalendarEvents('gcal', courses, curSeason);
       await Promise.all(
         events.map(async (event) => {
           try {
@@ -99,7 +94,7 @@ function GoogleCalendarButton(): JSX.Element {
     } finally {
       setExporting(false);
     }
-  }, [courses, gapi, curSeason, hiddenCourses]);
+  }, [courses, gapi, curSeason]);
 
   useEffect(() => {
     if (!authInstance || user || !exportButtonRef.current) return;

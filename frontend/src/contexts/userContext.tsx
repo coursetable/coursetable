@@ -24,6 +24,7 @@ export type UserWorksheets = {
     [worksheetNumber: number]: {
       crn: Crn;
       color: string;
+      hidden: boolean;
     }[];
   };
 };

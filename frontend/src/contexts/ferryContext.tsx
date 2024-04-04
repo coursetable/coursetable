@@ -191,7 +191,7 @@ export function useWorksheetInfo(
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      for (const { crn, color } of worksheet) {
+      for (const { crn, color, hidden } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
         if (!listing) {
           // This error is unactionable.
@@ -206,6 +206,7 @@ export function useWorksheetInfo(
             crn,
             color,
             listing,
+            hidden,
           });
         }
       }
