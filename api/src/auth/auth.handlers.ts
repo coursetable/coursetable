@@ -76,6 +76,7 @@ export const passportConfig = (
           netId: profile.user,
           evaluationsEnabled: 0,
         });
+        // TODO: Finish this port
         // const existingUser = await prisma.studentBluebookSettings.upsert({
         //   where: {
         //     netId: profile.user,
