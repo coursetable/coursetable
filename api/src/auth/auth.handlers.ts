@@ -3,7 +3,10 @@ import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
 
 import winston from '../logging/winston.js';
-import { YALIES_API_KEY, prisma } from '../config.js';
+import { YALIES_API_KEY } from '../config.js';
+
+import { db } from '../../drizzle/db.js';
+import { studentBluebookSettings } from '../../drizzle/schema.js';
 
 // TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
 export type YaliesResponse =
@@ -69,16 +72,20 @@ export const passportConfig = (
       async (profile, done) => {
         // Create or update user's profile
         winston.info("Creating user's profile");
-        const existingUser = await prisma.studentBluebookSettings.upsert({
-          where: {
-            netId: profile.user,
-          },
-          update: {},
-          create: {
-            netId: profile.user,
-            evaluationsEnabled: false,
-          },
+        const existingUser = await db.insert(studentBluebookSettings).values({
+          netId: profile.user,
+          evaluationsEnabled: 0,
         });
+        // const existingUser = await prisma.studentBluebookSettings.upsert({
+        //   where: {
+        //     netId: profile.user,
+        //   },
+        //   update: {},
+        //   create: {
+        //     netId: profile.user,
+        //     evaluationsEnabled: false,
+        //   },
+        // });
 
         winston.info("Getting user's enrollment status from Yalies.io");
         try {

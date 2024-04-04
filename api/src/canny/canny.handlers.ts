@@ -1,13 +1,13 @@
 import type express from 'express';
 import jwt from 'jsonwebtoken';
-import {
-  YALIES_API_KEY,
-  CANNY_KEY,
-  FRONTEND_ENDPOINT,
-  prisma,
-} from '../config.js';
+import { eq } from 'drizzle-orm';
+
+import { YALIES_API_KEY, CANNY_KEY, FRONTEND_ENDPOINT } from '../config.js';
 import type { YaliesResponse } from '../auth/auth.handlers.js';
 import winston from '../logging/winston.js';
+
+import { db } from '../../drizzle/db.js';
+import { studentBluebookSettings } from '../../drizzle/schema.js';
 
 // Create a JWT-signed Canny token with user info
 const createCannyToken = (user: Express.User) => {
@@ -59,13 +59,11 @@ export const cannyIdentify = async (
     const user = data[0]!;
 
     winston.info(`Updating profile for ${netId}`);
-    await prisma.studentBluebookSettings.update({
-      where: {
-        netId,
-      },
-      data: {
+    await db
+      .update(studentBluebookSettings)
+      .set({
         // Enable evaluations if user has a school code
-        evaluationsEnabled: Boolean(user.school_code),
+        evaluationsEnabled: user.school_code ? 1 : 0,
         firstName: user.first_name,
         lastName: user.last_name,
         email: user.email,
@@ -75,8 +73,8 @@ export const cannyIdentify = async (
         college: user.college,
         major: user.major,
         curriculum: user.curriculum,
-      },
-    });
+      })
+      .where(eq(studentBluebookSettings.netId, netId));
 
     const token = createCannyToken({
       netId,

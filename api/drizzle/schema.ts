@@ -1,77 +1,87 @@
 import {
-  mysqlTable,
-  mysqlSchema,
-  AnyMySqlColumn,
+  pgTable,
   char,
-  tinyint,
+  boolean,
   varchar,
-  int,
+  bigint,
+  uniqueIndex,
   index,
-  unique,
-} from 'drizzle-orm/mysql-core';
+  bigserial,
+  serial,
+  integer,
+} from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
-export const studentBluebookSettings = mysqlTable('StudentBluebookSettings', {
-  netId: char('netId', { length: 8 }).notNull(),
-  evaluationsEnabled: tinyint('evaluationsEnabled').notNull(),
-  firstName: varchar('firstName', { length: 256 }).default('NULL'),
-  lastName: varchar('lastName', { length: 256 }).default('NULL'),
-  email: varchar('email', { length: 256 }).default('NULL'),
-  upi: int('upi').default('NULL'),
-  school: varchar('school', { length: 256 }).default('NULL'),
-  year: int('year').default('NULL'),
-  college: varchar('college', { length: 256 }).default('NULL'),
-  major: varchar('major', { length: 256 }).default('NULL'),
-  curriculum: varchar('curriculum', { length: 256 }).default('NULL'),
-  challengeTries: int('challengeTries').default(0).notNull(),
+export const studentbluebooksettings = pgTable('studentbluebooksettings', {
+  netid: char('netid', { length: 8 }).primaryKey().notNull(),
+  evaluationsenabled: boolean('evaluationsenabled').notNull(),
+  firstname: varchar('firstname', { length: 256 }).default(sql`NULL`),
+  lastname: varchar('lastname', { length: 256 }).default(sql`NULL`),
+  email: varchar('email', { length: 256 }).default(sql`NULL`),
+  // You can use { mode: "bigint" }
+  // if numbers are exceeding js number limitations
+  upi: bigint('upi', { mode: 'number' }),
+  school: varchar('school', { length: 256 }).default(sql`NULL`),
+  year: bigint('year', { mode: 'number' }),
+  college: varchar('college', { length: 256 }).default(sql`NULL`),
+  major: varchar('major', { length: 256 }).default(sql`NULL`),
+  curriculum: varchar('curriculum', { length: 256 }).default(sql`NULL`),
+  challengetries: bigint('challengetries', { mode: 'number' })
+    .default(0)
+    .notNull(),
 });
 
-export const studentFriendRequests = mysqlTable(
-  'StudentFriendRequests',
+export const studentfriendrequests = pgTable(
+  'studentfriendrequests',
   {
-    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
-    netId: char('netId', { length: 8 }).notNull(),
-    friendNetId: char('friendNetId', { length: 8 }).notNull(),
+    id: bigserial('id', { mode: 'bigint' }).primaryKey().notNull(),
+    netid: char('netid', { length: 8 }).notNull(),
+    friendnetid: char('friendnetid', { length: 8 }).notNull(),
   },
   (table) => ({
-    netId: index('netId').on(table.netId),
-    netIdFriendNetId: unique('netId_friendNetId').on(
-      table.netId,
-      table.friendNetId,
+    friendRequestsUniqueIndex: uniqueIndex('friend_requests_unique_idx').on(
+      table.netid,
+      table.friendnetid,
+    ),
+    friendRequestsNetidIndex: index('friend_requests_netid_idx').on(
+      table.netid,
     ),
   }),
 );
 
-export const studentFriends = mysqlTable(
-  'StudentFriends',
+export const studentfriends = pgTable(
+  'studentfriends',
   {
-    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
-    netId: char('netId', { length: 8 }).notNull(),
-    friendNetId: char('friendNetId', { length: 8 }).notNull(),
+    id: bigserial('id', { mode: 'bigint' }).primaryKey().notNull(),
+    netid: char('netid', { length: 8 }).notNull(),
+    friendnetid: char('friendnetid', { length: 8 }).notNull(),
   },
   (table) => ({
-    netId: index('netId').on(table.netId),
-    netIdFriendNetId: unique('netId_friendNetId').on(
-      table.netId,
-      table.friendNetId,
+    friendsUniqueIndex: uniqueIndex('friends_unique_idx').on(
+      table.netid,
+      table.friendnetid,
     ),
+    friendsNetidIndex: index('friends_netid_idx').on(table.netid),
   }),
 );
 
-export const worksheetCourses = mysqlTable(
-  'WorksheetCourses',
+export const worksheetcourses = pgTable(
+  'worksheetcourses',
   {
-    id: mediumint('id').autoincrement().notNull(),
-    netId: char('netId', { length: 8 }).notNull(),
-    crn: mediumint('crn').notNull(),
-    season: mediumint('season').notNull(),
-    worksheetNumber: mediumint('worksheetNumber'),
+    id: serial('id').primaryKey().notNull(),
+    netid: char('netid', { length: 8 }).notNull(),
+    crn: integer('crn').notNull(),
+    season: integer('season').notNull(),
+    worksheetnumber: integer('worksheetnumber').default(0),
     color: varchar('color', { length: 32 }).notNull(),
   },
   (table) => ({
-    netId: index('netId').on(table.netId),
-    netIdCrnSeasonWorksheetNumber: unique(
-      'netId_crn_season_worksheetNumber',
-    ).on(table.netId, table.crn, table.season, table.worksheetNumber),
+    worksheetNetidIndex: index('worksheet_netid_idx').on(table.netid),
+    worksheetUniqueIndex: uniqueIndex('worksheet_unique_idx').on(
+      table.netid,
+      table.crn,
+      table.season,
+      table.worksheetnumber,
+    ),
   }),
 );

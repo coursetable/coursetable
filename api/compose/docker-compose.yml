@@ -15,11 +15,7 @@ services:
       FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
       GRAPHQL_ENDPOINT: http://${GRAPHQL_ENGINE_HOST?graphql-engine}:8080/v1/graphql
       REDIS_HOST: ${REDIS_HOST?redis}
-      MYSQL_HOST: ${MYSQL_HOST?host}
-      MYSQL_PORT: ${MYSQL_PORT?port}
-      MYSQL_USER: ${MYSQL_USERNAME?username}
-      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
-      MYSQL_URL: ${MYSQL_URL?mysql_url}
+      DB_URL: ${DB_URL?db_url}
       NODE_ENV: development
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus

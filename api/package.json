@@ -4,11 +4,9 @@
   "scripts": {
     "start": "tsx watch src/server.ts",
     "start:prod": "tsx src/server.ts",
-    "generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "db:push": "drizzle-kit push:pg"
   },
   "dependencies": {
-    "@prisma/client": "^5.11.0",
     "@sentry/node": "^7.109.0",
     "chroma-js": "^2.4.2",
     "connect-redis": "^7.1.1",
@@ -23,10 +21,9 @@
     "http-proxy-middleware": "^2.0.6",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "mysql2": "^3.9.3",
     "passport": "0.5.0",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
-    "prisma": "^5.11.0",
+    "pg": "^8.11.5",
     "redis": "^4.6.13",
     "tsx": "^4.7.1",
     "winston": "^3.12.0",
@@ -44,6 +41,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.4",
     "@types/passport": "^1.0.16",
+    "@types/pg": "^8.11.4",
     "drizzle-kit": "^0.20.14"
   }
 }

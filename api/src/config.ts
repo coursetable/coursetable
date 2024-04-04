@@ -1,5 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
@@ -66,8 +64,6 @@ export const { FERRY_SECRET } = process.env;
 // Location of statically generated files. This is relative
 // to the working directory, which is api.
 export const STATIC_FILE_DIR = './static';
-
-export const prisma = new PrismaClient();
 
 export const SENTRY_DSN = getEnv('SENTRY_DSN');
 

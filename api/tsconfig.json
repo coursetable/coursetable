@@ -4,6 +4,6 @@
     "target": "es2020",
     "lib": ["es2020"],
   },
-  "include": ["src", "drizzle.config.ts", "drizzle"],
+  "include": ["src", "drizzle.config.ts", "drizzle", "drizzle/schema.ts"],
   "exclude": [],
 }
