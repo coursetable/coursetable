@@ -4,7 +4,8 @@
   "scripts": {
     "start": "tsx watch src/server.ts",
     "start:prod": "tsx src/server.ts",
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0",
