@@ -1,5 +1,6 @@
 import type express from 'express';
 import { request } from 'graphql-request';
+import winston from '../logging/winston.js';
 import { GRAPHQL_ENDPOINT } from '../config.js';
 import { courseMetadataQuery } from './link-preview.queries.js';
 
@@ -28,8 +29,10 @@ function renderTemplate({
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="${description}" />
         <title>${title}</title>
+        <meta name="description" content="${description}" />
+        <meta name="og:title" content="${title}" />
+        <meta name="og:description" content="${description}" />
       </head>
       <body>
         <h1>${title}</h1>
@@ -43,6 +46,9 @@ export async function generateLinkPreview(
   req: express.Request,
   res: express.Response,
 ): Promise<void> {
+  winston.info(
+    `Generating link preview for ${String(req.query['course-modal'] ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
+  );
   const courseModalParam = String(req.query['course-modal'] ?? '');
   if (!courseModalParam) {
     res
@@ -84,6 +90,7 @@ export async function generateLinkPreview(
     300,
     'No description available',
   );
+  winston.info(`Generated link preview for ${title}`);
 
   res
     .header('Content-Type', 'text/html; charset=utf-8')
