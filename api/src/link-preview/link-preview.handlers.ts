@@ -23,6 +23,7 @@ function renderTemplate({
   title: string;
   description: string;
 }): string {
+  // TODO: use summary_large_image for Twitter cards once we have images
   return html`
     <!doctype html>
     <html lang="en">
@@ -33,6 +34,8 @@ function renderTemplate({
         <meta name="description" content="${description}" />
         <meta name="og:title" content="${title}" />
         <meta name="og:description" content="${description}" />
+        <meta name="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
       </head>
       <body>
         <h1>${title}</h1>
@@ -42,29 +45,10 @@ function renderTemplate({
   `;
 }
 
-export async function generateLinkPreview(
-  req: express.Request,
-  res: express.Response,
-): Promise<void> {
-  winston.info(
-    `Generating link preview for ${String(req.query['course-modal'] ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
-  );
-  const courseModalParam = String(req.query['course-modal'] ?? '');
-  if (!courseModalParam) {
-    res
-      .header('Content-Type', 'text/html; charset=utf-8')
-      .send(renderTemplate(defaultMetadata));
-    return;
-  }
-
-  const [seasonCode, crn] = courseModalParam.split('-');
-  if (!seasonCode || !crn) {
-    res
-      .header('Content-Type', 'text/html; charset=utf-8')
-      .send(renderTemplate(defaultMetadata));
-    return;
-  }
-
+async function getMetadata(query: unknown) {
+  if (!query) return defaultMetadata;
+  const [seasonCode, crn] = String(query).split('-');
+  if (!seasonCode || !crn) return defaultMetadata;
   const data = await request<{
     computed_listing_info: {
       course_code: string;
@@ -76,25 +60,31 @@ export async function generateLinkPreview(
     seasonCode,
     crn: Number(crn),
   });
-
-  if (!data.computed_listing_info.length) {
-    res
-      .header('Content-Type', 'text/html; charset=utf-8')
-      .send(renderTemplate(defaultMetadata));
-    return;
-  }
+  if (!data.computed_listing_info.length) return defaultMetadata;
   const course = data.computed_listing_info[0]!;
-  const title = `${course.course_code} ${course.section.padStart(2, '0')} ${course.title} | CourseTable`;
-  const description = truncatedText(
-    course.description,
-    300,
-    'No description available',
+  return {
+    title: `${course.course_code} ${course.section.padStart(2, '0')} ${course.title} | CourseTable`,
+    description: truncatedText(
+      course.description,
+      300,
+      'No description available',
+    ),
+  };
+}
+
+export async function generateLinkPreview(
+  req: express.Request,
+  res: express.Response,
+): Promise<void> {
+  winston.info(
+    `Generating link preview for ${String(req.query['course-modal'] ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
   );
-  winston.info(`Generated link preview for ${title}`);
+  const metadata = await getMetadata(req.query['course-modal']);
+  winston.info(`Generated link preview for ${metadata.title}`);
 
   res
     .header('Content-Type', 'text/html; charset=utf-8')
-    .send(renderTemplate({ title, description }));
+    .send(renderTemplate(metadata));
 }
 
 function truncatedText(
