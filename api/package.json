@@ -1,6 +1,7 @@
 {
   "name": "api",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "start": "tsx watch src/server.ts",
     "start:prod": "tsx src/server.ts",
