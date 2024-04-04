@@ -15,7 +15,7 @@ import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, hoverCourse, hiddenCourses, curSeason } = useWorksheet();
+  const { courses, hoverCourse, curSeason } = useWorksheet();
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
@@ -41,12 +41,7 @@ function WorksheetCalendar() {
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents(
-      'rbc',
-      courses,
-      curSeason,
-      hiddenCourses,
-    );
+    const parsedCourses = getCalendarEvents('rbc', courses, curSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -69,7 +64,7 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, hiddenCourses, curSeason]);
+  }, [courses, curSeason]);
 
   return (
     <Calendar

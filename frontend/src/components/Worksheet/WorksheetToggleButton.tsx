@@ -8,7 +8,7 @@ import { useUser } from '../../contexts/userContext';
 import { worksheetColors } from '../../utilities/constants';
 import type { Listing } from '../../utilities/common';
 import { isInWorksheet, checkConflict } from '../../utilities/course';
-import { toggleBookmark } from '../../utilities/api';
+import { toggleBookmark, toggleCourseHidden } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
@@ -84,13 +84,7 @@ function WorksheetToggleButton({
 }) {
   const { user, userRefresh } = useUser();
 
-  const {
-    curSeason,
-    hiddenCourses,
-    toggleCourse,
-    worksheetNumber,
-    worksheetOptions,
-  } = useWorksheet();
+  const { worksheetNumber, worksheetOptions } = useWorksheet();
 
   // In the modal, the select can override the "currently viewed" worksheet
   const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
@@ -127,8 +121,13 @@ function WorksheetToggleButton({
       const addRemove = inWorksheet ? 'remove' : 'add';
 
       // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet && hiddenCourses[curSeason]?.[listing.crn])
-        toggleCourse(listing.crn);
+      if (inWorksheet) {
+        toggleCourseHidden({
+          season: listing.season_code,
+          crn: listing.crn,
+          hidden: false,
+        });
+      }
       const success = await toggleBookmark({
         action: addRemove,
         season: listing.season_code,
@@ -141,11 +140,8 @@ function WorksheetToggleButton({
     },
     [
       inWorksheet,
-      hiddenCourses,
-      curSeason,
       listing.crn,
       listing.season_code,
-      toggleCourse,
       selectedWorksheet,
       userRefresh,
     ],
@@ -153,21 +149,21 @@ function WorksheetToggleButton({
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
+  const buttonLabel = user.worksheets
+    ? `${inWorksheet ? 'Remove from' : 'Add to'} my ${worksheetOptions[selectedWorksheet]!.label}`
+    : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in
   if (!user.worksheets) {
     return (
       <OverlayTrigger
         placement="top"
-        overlay={
-          <Tooltip id="tooltip-disabled">
-            Log in to add to your worksheet
-          </Tooltip>
-        }
+        overlay={<Tooltip id="tooltip-disabled">{buttonLabel}</Tooltip>}
       >
         <Button
           className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
           disabled
+          aria-label={buttonLabel}
         >
           <FaPlus size={size} className={styles.disabledButtonIcon} />
         </Button>
@@ -188,10 +184,7 @@ function WorksheetToggleButton({
         delay={modal ? { show: 300, hide: 0 } : undefined}
         overlay={(props) => (
           <Tooltip id="button-tooltip" {...props}>
-            <small>
-              {inWorksheet ? 'Remove from' : 'Add to'} my{' '}
-              {worksheetOptions[selectedWorksheet]!.label}
-            </small>
+            <small>{buttonLabel}</small>
           </Tooltip>
         )}
       >
@@ -202,6 +195,7 @@ function WorksheetToggleButton({
             styles.toggleButton,
           )}
           onClick={toggleWorkSheet}
+          aria-label={buttonLabel}
         >
           {/* Only show the worksheet number select in modal */}
           {modal ? (

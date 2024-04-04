@@ -24,6 +24,7 @@ export type UserWorksheets = {
     [worksheetNumber: number]: {
       crn: Crn;
       color: string;
+      hidden: boolean;
     }[];
   };
 };
@@ -112,7 +113,8 @@ export function UserProvider({
 
   const addFriend = useCallback(
     async (friendNetId: NetId): Promise<void> => {
-      await baseAddFriend(friendNetId);
+      if (await baseAddFriend(friendNetId))
+        toast.info(`Added friend: ${friendNetId}`);
       await Promise.all([friendRefresh(), friendReqRefresh()]);
     },
     [friendRefresh, friendReqRefresh],
@@ -120,7 +122,11 @@ export function UserProvider({
 
   const removeFriend = useCallback(
     async (friendNetId: NetId, isRequest: boolean): Promise<void> => {
-      await baseRemoveFriend(friendNetId, isRequest);
+      if (await baseRemoveFriend(friendNetId)) {
+        toast.info(
+          `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
+        );
+      }
       await Promise.all([friendRefresh(), friendReqRefresh()]);
     },
     [friendRefresh, friendReqRefresh],
@@ -137,8 +143,8 @@ export function UserProvider({
         toast.error(
           `You already received a friend request from ${friendNetId}. Go approve the request instead!`,
         );
-      } else {
-        await baseRequestAddFriend(friendNetId);
+      } else if (await baseRequestAddFriend(friendNetId)) {
+        toast.info(`Sent friend request: ${friendNetId}`);
       }
     },
     [netId, friends, friendRequests],

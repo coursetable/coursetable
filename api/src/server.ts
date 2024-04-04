@@ -16,6 +16,9 @@ import {
   CORS_OPTIONS,
   STATIC_FILE_DIR,
   REDIS_HOST,
+  isDev,
+  SENTRY_DSN,
+  SENTRY_ENVIRONMENT,
 } from './config.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
@@ -28,13 +31,15 @@ import friends from './friends/friends.routes.js';
 import canny from './canny/canny.routes.js';
 import user from './user/user.routes.js';
 import challenge from './challenge/challenge.routes.js';
+import linkPreview from './link-preview/link-preview.routes.js';
 
 import { fetchCatalog } from './catalog/catalog.utils.js';
 
 const app = express();
 
+// Initialize Sentry
 Sentry.init({
-  dsn: 'https://0ceb92b3c55a418131f3fcf02eabf00d@o476134.ingest.us.sentry.io/4506913066975232',
+  dsn: SENTRY_DSN,
   integrations: [
     // Enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),
@@ -42,18 +47,20 @@ Sentry.init({
     new Sentry.Integrations.Express({ app }),
   ],
   // Performance Monitoring
-  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  tracesSampleRate: 0.15, //  Capture 15% of the transactions
+  enabled: !isDev,
+  environment: SENTRY_ENVIRONMENT,
 });
+
+// Trust the proxy.
+// See https://expressjs.com/en/guide/behind-proxies.html.
+app.set('trust proxy', true);
 
 // The request handler must be the first middleware on the app
 app.use(Sentry.Handlers.requestHandler());
 
 // TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler());
-
-// Trust the proxy.
-// See https://expressjs.com/en/guide/behind-proxies.html.
-app.set('trust proxy', true);
 
 // Enable url-encoding
 app.use(express.urlencoded({ extended: true }));
@@ -150,6 +157,7 @@ casAuth(app);
 friends(app);
 canny(app);
 user(app);
+linkPreview(app);
 
 // Evals data require NetID authentication
 app.use(
@@ -192,7 +200,6 @@ app.use(
   ) => {
     winston.error(err);
     // TODO: maybe this is not necessary given the errorHandler above?
-    Sentry.captureException(err, { user: req.user });
     res.status(500).json({ error: String(err) });
   },
 );

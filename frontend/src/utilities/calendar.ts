@@ -8,10 +8,7 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type {
-  HiddenCourses,
-  WorksheetCourse,
-} from '../contexts/worksheetContext';
+import type { WorksheetCourse } from '../contexts/worksheetContext';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -234,25 +231,21 @@ export function getCalendarEvents(
   type: 'gcal',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ): GCalEvent[];
 export function getCalendarEvents(
   type: 'ics',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ): ICSEvent[];
 export function getCalendarEvents(
   type: 'rbc',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ): RBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ) {
   const seasonString = toSeasonString(curSeason);
   const semester = academicCalendars[curSeason] as SeasonCalendar | undefined;
@@ -262,9 +255,7 @@ export function getCalendarEvents(
     );
     return [];
   }
-  const visibleCourses = courses.filter(
-    (course) => !hiddenCourses[curSeason]?.[course.crn],
-  );
+  const visibleCourses = courses.filter((course) => !course.hidden);
   if (visibleCourses.length === 0) {
     if (type !== 'rbc') toast.error(`No courses in ${seasonString} to export!`);
     return [];
