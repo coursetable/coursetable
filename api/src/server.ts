@@ -18,6 +18,7 @@ import {
   REDIS_HOST,
   isDev,
   SENTRY_DSN,
+  SENTRY_ENVIRONMENT,
 } from './config.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
@@ -48,6 +49,7 @@ Sentry.init({
   // Performance Monitoring
   tracesSampleRate: 0.15, //  Capture 15% of the transactions
   enabled: isDev,
+  environment: SENTRY_ENVIRONMENT,
 });
 
 // Trust the proxy.

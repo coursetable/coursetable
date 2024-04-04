@@ -28,6 +28,7 @@ services:
       INSECURE_PORT: ${INSECURE_PORT?insecure_port}
       CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
       SENTRY_DSN: ${SENTRY_DSN?sentry_dsn}
+      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT?sentry_environment}
     networks:
       - api
 
