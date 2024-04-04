@@ -19,9 +19,11 @@ const defaultMetadata = {
 function renderTemplate({
   title,
   description,
+  url,
 }: {
   title: string;
   description: string;
+  url: string;
 }): string {
   // TODO: use summary_large_image for Twitter cards once we have images
   return html`
@@ -35,6 +37,7 @@ function renderTemplate({
         <meta name="og:title" content="${title}" />
         <meta name="og:description" content="${description}" />
         <meta name="og:type" content="website" />
+        <meta name="og:url" content="${url}" />
         <meta name="twitter:card" content="summary" />
       </head>
       <body>
@@ -81,10 +84,11 @@ export async function generateLinkPreview(
   );
   const metadata = await getMetadata(req.query['course-modal']);
   winston.info(`Generated link preview for ${metadata.title}`);
+  const url = `https://coursetable.com/catalog?course-modal=${encodeURIComponent(String(req.query['course-modal']))}`;
 
   res
     .header('Content-Type', 'text/html; charset=utf-8')
-    .send(renderTemplate(metadata));
+    .send(renderTemplate({ ...metadata, url }));
 }
 
 function truncatedText(
