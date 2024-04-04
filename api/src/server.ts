@@ -27,6 +27,7 @@ import friends from './friends/friends.routes.js';
 import canny from './canny/canny.routes.js';
 import user from './user/user.routes.js';
 import challenge from './challenge/challenge.routes.js';
+import linkPreview from './link-preview/link-preview.routes.js';
 
 import { fetchCatalog } from './catalog/catalog.utils.js';
 
@@ -131,6 +132,7 @@ casAuth(app);
 friends(app);
 canny(app);
 user(app);
+linkPreview(app);
 
 // Evals data require NetID authentication
 app.use(

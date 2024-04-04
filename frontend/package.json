@@ -15,7 +15,6 @@
     "@graphiql/toolkit": "^0.9.1",
     "@mdx-js/react": "^3.0.1",
     "@sentry/react": "^7.107.0",
-    "@vercel/edge": "^1.1.1",
     "async-lock": "^1.4.1",
     "body-scroll-lock": "^3.1.5",
     "bootstrap": "^4.5.3",
