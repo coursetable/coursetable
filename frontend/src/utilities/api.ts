@@ -64,7 +64,7 @@ async function fetchAPI(
   const payload = JSON.stringify(body);
   const noResExpected = !schema && Boolean(body);
   try {
-    const fetchInit: FetchRequestInit = body
+    const fetchInit: RequestInit = body
       ? {
           method: 'POST',
           credentials: 'include',
