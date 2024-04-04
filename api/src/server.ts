@@ -17,6 +17,7 @@ import {
   STATIC_FILE_DIR,
   REDIS_HOST,
   isDev,
+  SENTRY_DSN,
 } from './config.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
@@ -37,7 +38,7 @@ const app = express();
 
 // Initialize Sentry
 Sentry.init({
-  dsn: '',
+  dsn: SENTRY_DSN,
   integrations: [
     // Enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),
