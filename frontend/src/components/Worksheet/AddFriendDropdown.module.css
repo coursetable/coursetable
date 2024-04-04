@@ -1,0 +1,25 @@
+.addFriendIcon {
+  position: absolute;
+  right: 30px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.removeFriendIcon {
+  position: absolute;
+  right: 10px;
+  margin-top: 4px;
+}
+
+.friendOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  cursor: default;
+}
+
+.friendOptionText {
+  flex-grow: 1;
+  text-align: left;
+}
