@@ -68,3 +68,5 @@ export const { FERRY_SECRET } = process.env;
 export const STATIC_FILE_DIR = './static';
 
 export const prisma = new PrismaClient();
+
+export const SENTRY_DSN = getEnv('SENTRY_DSN');

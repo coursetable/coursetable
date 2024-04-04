@@ -7,6 +7,7 @@ import https from 'https';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
+import * as Sentry from '@sentry/node';
 
 import {
   SECURE_PORT,
@@ -15,6 +16,7 @@ import {
   CORS_OPTIONS,
   STATIC_FILE_DIR,
   REDIS_HOST,
+  isDev,
 } from './config.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
@@ -33,9 +35,29 @@ import { fetchCatalog } from './catalog/catalog.utils.js';
 
 const app = express();
 
+// Initialize Sentry
+Sentry.init({
+  dsn: '',
+  integrations: [
+    // Enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // Enable Express.js middleware tracing
+    new Sentry.Integrations.Express({ app }),
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 0.15, //  Capture 15% of the transactions
+  enabled: isDev,
+});
+
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
+
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
 
 // Enable url-encoding
 app.use(express.urlencoded({ extended: true }));
@@ -163,6 +185,7 @@ app.get('/api/ping', (req, res) => {
 
 // The error handler must be registered before
 // any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
 
 app.use(
   (
