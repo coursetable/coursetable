@@ -61,13 +61,6 @@
   color: var(--color-text-secondary);
 }
 
-@media (width < 1320px) {
-  .navLink,
-  .signInOutButton {
-    font-size: 0.9rem;
-  }
-}
-
 .signInOutButton:hover {
   color: var(--color-primary);
 }
@@ -88,4 +81,11 @@
 
 .navLink:global(.active) {
   color: var(--color-primary);
+}
+
+@media (width < 1320px) {
+  .navLink,
+  .signInOutButton {
+    font-size: 0.9rem;
+  }
 }

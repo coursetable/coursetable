@@ -100,13 +100,9 @@
 }
 
 @media (width < 1320px) {
-  .resultsItemContent {
-    font-size: 11px;
-    line-height: 28px;
-  }
-
   .tag,
-  .ratingCell {
-    font-size: 11px;
+  .ratingCell,
+  .ellipsisText {
+    font-size: 12px;
   }
 }

@@ -11,7 +11,7 @@
     rgb(99 166 208) 100%
   );
   transition: background-color 0.2s linear;
-  color: #fff;
+  color: white;
 }
 
 .banner .content {

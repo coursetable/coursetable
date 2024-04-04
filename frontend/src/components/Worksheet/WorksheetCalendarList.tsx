@@ -64,6 +64,7 @@ function WorksheetCalendarList() {
                     onClick={() => toggleCourse('all', !areHidden)}
                     variant="none"
                     className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
                   >
                     <HideShowIcon
                       className={clsx(styles.icon, 'my-auto pr-2')}
