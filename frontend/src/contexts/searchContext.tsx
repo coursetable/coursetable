@@ -745,6 +745,7 @@ export function SearchProvider({
     ],
   );
 
+  // TODO this is not an effect
   useEffect(() => {
     if (!coursesLoading) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
