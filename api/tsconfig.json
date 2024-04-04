@@ -1,7 +1,7 @@
 {
   "extends": "..",
   "compilerOptions": {
-    "target": "es2023",
+    "target": "es2022",
     "module": "node16",
     "lib": ["es2023"],
   },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import { Button } from 'react-bootstrap';
@@ -131,13 +131,8 @@ const stepsContent: Step[] = [
 ];
 
 function Tutorial() {
-  const { isTutorialOpen, toggleTutorial } = useTutorial();
-  const [currentStep, setCurrentStep] = useState(0);
-
-  // Whenever the tutorial is closed, reset the currentStep
-  useEffect(() => {
-    if (!isTutorialOpen) setCurrentStep(0);
-  }, [isTutorialOpen]);
+  const { isTutorialOpen, toggleTutorial, currentStep, setCurrentStep } =
+    useTutorial();
 
   const { theme } = useTheme();
   const location = useLocation();
@@ -238,7 +233,7 @@ function Tutorial() {
       lastStepNextButton={
         <Button className={styles.nextButton}>Finish Tutorial</Button>
       }
-      getCurrentStep={(curr) => setCurrentStep(curr)}
+      getCurrentStep={setCurrentStep}
       disableKeyboardNavigation={['esc']}
       onAfterOpen={disableBodyScroll}
       onBeforeClose={enableBodyScroll}
