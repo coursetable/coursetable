@@ -48,7 +48,7 @@ Sentry.init({
   ],
   // Performance Monitoring
   tracesSampleRate: 0.15, //  Capture 15% of the transactions
-  enabled: isDev,
+  enabled: !isDev,
   environment: SENTRY_ENVIRONMENT,
 });
 
