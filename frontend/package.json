@@ -51,6 +51,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@argos-ci/cli": "^2.0.0",
     "@argos-ci/playwright": "^3.0.0",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/introspection": "^4.0.3",

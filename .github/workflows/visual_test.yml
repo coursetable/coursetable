@@ -29,3 +29,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Set the branch when your deployment runs on "Production" environment.
           ARGOS_BRANCH: ${{ github.event.deployment_status.environment == 'Production' && 'master' || '' }}
+      - name: Upload screenshots to Argos
+        run: cd frontend && bun argos upload ./screenshots
