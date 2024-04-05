@@ -1,0 +1,27 @@
+name: Playwright + Argos Tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  run-e2es:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Install Playwright
+        run: cd frontend && bunx playwright install --with-deps
+      - name: Run tests
+        run: cd frontend && bunx playwright test
+        env:
+          # Use this environment variable as `baseUrl` in your plawright.config.ts
+          BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          # Argos uses GITHUB_TOKEN to collect branch and pull request information
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Set the branch when your deployment runs on "Production" environment.
+          ARGOS_BRANCH: ${{ github.event.deployment_status.environment == 'Production' && 'master' || '' }}
