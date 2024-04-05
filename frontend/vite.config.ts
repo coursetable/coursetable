@@ -96,7 +96,22 @@ export default defineConfig({
       }),
     },
     reactPlugin(),
-    createHtmlPlugin({ inject: dotenv.config().parsed }),
+    createHtmlPlugin({
+      inject: dotenv.config().parsed,
+      minify: {
+        collapseWhitespace: true,
+        keepClosingSlash: true,
+        // This is the only config we changed, but this plugin doesn't support
+        // partial config overrides...
+        // We need to keep the recruiting notice in the HTML
+        removeComments: false,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+        minifyCSS: true,
+      },
+    }),
     basicSsl(),
     visualizer({
       filename: 'build/bundle-map.html',
