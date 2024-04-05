@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
-import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import clsx from 'clsx';
 import Logo from './Logo';
@@ -9,26 +8,24 @@ import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../utilities/api';
-import { scrollToTop, useComponentVisible } from '../../utilities/display';
+import { scrollToTop } from '../../utilities/display';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
+import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
 import { API_ENDPOINT } from '../../config';
 import { useUser } from '../../contexts/userContext';
-import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
 function NavbarLink({
   to,
   children,
-  id,
 }: {
   readonly to: string;
   readonly children: React.ReactNode;
-  readonly id?: string;
 }) {
   return (
-    <NavLink className={styles.navLink} to={to} onClick={scrollToTop} id={id}>
+    <NavLink className={styles.navLink} to={to} onClick={scrollToTop}>
       {children}
     </NavLink>
   );
@@ -49,22 +46,10 @@ function NavCollapseWrapper({
       </div>
     );
   }
-  return <>{children}</>;
+  return children;
 }
 
-export default function CourseTableNavbar() {
-  const { authStatus } = useUser();
-  const location = useLocation();
-  const [navExpanded, setNavExpanded] = useState<boolean>(false);
-  // Ref to detect outside clicks for profile dropdown
-  const { elemRef, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible<HTMLButtonElement>(false);
-  const { isMobile, isLgDesktop } = useWindowDimensions();
-  const showSearch =
-    !isMobile &&
-    (location.pathname === '/catalog' ||
-      (authStatus === 'authenticated' && location.pathname === '/worksheet'));
-
+function LastUpdatedAt() {
   const lastUpdated = useMemo(() => {
     const now = new Date();
     // We always update at around 8:25am UTC, regardless of DST
@@ -91,6 +76,25 @@ export default function CourseTableNavbar() {
     const diffInHrs = Math.floor(diffInSecs / 3600);
     return `${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`;
   }, []);
+  return (
+    <TextComponent type="tertiary" small className="mb-2 text-right">
+      <MdUpdate className="mr-1" />
+      Updated {lastUpdated} ago
+    </TextComponent>
+  );
+}
+
+export default function CourseTableNavbar() {
+  const { authStatus } = useUser();
+  const location = useLocation();
+  const [navExpanded, setNavExpanded] = useState(false);
+  const { isMobile } = useWindowDimensions();
+
+  const showCatalogSearch = !isMobile && location.pathname === '/catalog';
+  const showWorksheetSearch =
+    !isMobile &&
+    authStatus === 'authenticated' &&
+    location.pathname === '/worksheet';
 
   return (
     <div className={styles.stickyNavbar}>
@@ -98,36 +102,17 @@ export default function CourseTableNavbar() {
         <Container fluid className="p-0">
           <Navbar
             expanded={navExpanded}
-            onToggle={(expanded: boolean) => setNavExpanded(expanded)}
+            onToggle={setNavExpanded}
             expand="md"
-            className="shadow-sm px-3 align-items-start"
-            style={
-              showSearch && location.pathname === '/catalog'
-                ? {
-                    height: isLgDesktop ? '100px' : '88px',
-                    paddingBottom: '0px',
-                  }
-                : undefined
-            }
+            className={clsx(
+              'shadow-sm px-3 align-items-start',
+              showCatalogSearch && styles.catalogSearchNavbar,
+            )}
           >
             {/* Logo in top left */}
             <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
-              <NavLink
-                to="/"
-                style={({ isActive }) =>
-                  isActive
-                    ? {
-                        textDecoration: 'none',
-                        display: 'table-cell',
-                        verticalAlign: 'middle',
-                      }
-                    : {}
-                }
-              >
-                {/* Condense logo if on home page */}
-                <span className={styles.navLogo}>
-                  <Logo icon={false} />
-                </span>
+              <NavLink to="/">
+                <Logo icon={false} />
               </NavLink>
             </Nav>
 
@@ -137,132 +122,67 @@ export default function CourseTableNavbar() {
               aria-controls="basic-navbar-nav"
             />
 
-            {/* Desktop navbar search */}
-            {showSearch && location.pathname === '/catalog' ? (
-              <NavbarCatalogSearch />
-            ) : (
-              showSearch &&
-              location.pathname === '/worksheet' && <NavbarWorksheetSearch />
-            )}
+            {showCatalogSearch && <NavbarCatalogSearch />}
+            {showWorksheetSearch && <NavbarWorksheetSearch />}
 
-            <NavCollapseWrapper wrap={!isMobile && showSearch}>
-              {/* Navbar collapse */}
+            <NavCollapseWrapper wrap={!isMobile}>
+              {/* On mobile, this will be a collapsed dropdown;
+              on desktop, it will be a navbar */}
               <Navbar.Collapse
                 id="basic-navbar-nav"
-                // Make navbar display: flex when not mobile. If mobile, normal
-                // formatting
-                className={!isMobile ? 'd-flex' : 'justify-content-end'}
-                style={!isMobile && showSearch ? { flexGrow: 0 } : undefined}
+                className={styles.navbarContent}
               >
-                {/* Close navbar on click in mobile view */}
                 <Nav
                   onClick={() => setNavExpanded(false)}
                   className={clsx(
                     isMobile && 'align-items-start pt-2',
                     'position-relative',
                   )}
-                  style={{ width: '100%' }}
                 >
-                  {/* DarkMode Button */}
-                  <DarkModeButton
-                    className={clsx(
-                      styles.navbarDarkModeBtn,
-                      'd-flex',
-                      !isMobile && 'ml-auto',
-                    )}
-                  />
-                  {authStatus === 'authenticated' && (
+                  <DarkModeButton className={styles.navbarDarkModeBtn} />
+                  <NavbarLink to="/catalog">Catalog</NavbarLink>
+                  <NavbarLink to="/worksheet">
+                    <span data-tutorial="worksheet-1">Worksheet</span>
+                  </NavbarLink>
+                  {/* Links are in the navbar on mobile and in the me dropdown
+                    on desktop */}
+                  {isMobile ? (
                     <>
-                      {/* Catalog Page */}
-                      <NavbarLink to="/catalog" id="catalog-link">
-                        Catalog
-                      </NavbarLink>
-                      {/* Worksheet Page */}
-                      <NavbarLink to="/worksheet">
-                        <span data-tutorial="worksheet-1">Worksheet</span>
-                      </NavbarLink>
-                    </>
-                  )}
-                  {(isMobile || authStatus !== 'authenticated') && (
-                    <>
-                      {/* About Page */}
                       <NavbarLink to="/about">About</NavbarLink>
-                      {/* FAQ Page */}
                       <NavbarLink to="/faq">FAQ</NavbarLink>
-                    </>
-                  )}
-                  {/* Profile Icon. Show if not mobile */}
-                  <div
-                    // Right align profile icon if not mobile
-                    className={clsx(
-                      'd-none d-md-block',
-                      !isMobile && 'align-self-end',
-                    )}
-                  >
-                    <div className={styles.navbarMe}>
+                      <a
+                        href="https://feedback.coursetable.com/"
+                        className={styles.navLink}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Feedback
+                      </a>
+                      <NavbarLink to="/releases">Release Notes</NavbarLink>
                       <button
                         type="button"
-                        ref={elemRef}
-                        className={clsx(styles.meIcon, 'm-auto')}
-                        onClick={() =>
-                          setIsComponentVisible(!isComponentVisible)
+                        className={styles.signInOutButton}
+                        onClick={
+                          authStatus !== 'authenticated'
+                            ? () => {
+                                window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
+                              }
+                            : logout
                         }
-                        aria-label="Profile"
                       >
-                        <BsFillPersonFill
-                          className="m-auto"
-                          size={20}
-                          color={isComponentVisible ? '#007bff' : undefined}
-                        />
+                        Sign {authStatus !== 'authenticated' ? 'In' : 'Out'}
                       </button>
-                    </div>
-                  </div>
-                  {/* Sign in/out buttons. Show if mobile */}
-                  <div className="d-md-none">
-                    {authStatus !== 'authenticated' ? (
-                      <button
-                        type="button"
-                        className={styles.signInOutButton}
-                        onClick={() => {
-                          window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
-                        }}
-                      >
-                        Sign In
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className={styles.signInOutButton}
-                        onClick={logout}
-                      >
-                        Sign Out
-                      </button>
-                    )}
-                  </div>
+                    </>
+                  ) : (
+                    <MeDropdown />
+                  )}
                 </Nav>
               </Navbar.Collapse>
-              {/* Last updated ago text for desktop */}
-              {showSearch && location.pathname === '/catalog' && (
-                <TextComponent
-                  type="tertiary"
-                  small
-                  className="mb-2 text-right"
-                >
-                  <MdUpdate className="mr-1" />
-                  Updated {lastUpdated} ago
-                </TextComponent>
-              )}
+              {showCatalogSearch && <LastUpdatedAt />}
             </NavCollapseWrapper>
           </Navbar>
         </Container>
       </SurfaceComponent>
-      {/* Nav link dropdown that has position: absolute */}
-      <div>
-        <MeDropdown
-          isExpanded={isComponentVisible}
-          setIsExpanded={setIsComponentVisible}
-        />
-      </div>
     </div>
   );
 }
