@@ -196,6 +196,19 @@ export const defaultFilters: Filters = {
   sortOrder: 'asc',
 };
 
+// Empty vs. default:
+// "Empty" means it won't filter any course out; "default" just means it's like
+// that on first load. Only the below three filters have different empty states.
+// Filters are rendered as "active" (blue) when they are non-empty.
+// The "cross" can reset the button to empty.
+// The only way to reset to default is to click the "reset" button.
+const emptyFilters: Filters = {
+  ...defaultFilters,
+  selectSeasons: [],
+  hideCancelled: false,
+  hideDiscussionSections: false,
+};
+
 export type FilterHandle<K extends keyof Filters> = ReturnType<
   typeof useFilterState<K>
 >;
@@ -206,8 +219,10 @@ function useFilterState<K extends keyof Filters>(key: K) {
     () => ({
       value,
       set: setValue,
-      hasChanged: !isEqual(value, defaultFilters[key]),
-      reset: () => setValue(defaultFilters[key]),
+      isDefault: isEqual(value, defaultFilters[key]),
+      isNonEmpty: !isEqual(value, emptyFilters[key]),
+      resetToDefault: () => setValue(defaultFilters[key]),
+      resetToEmpty: () => setValue(emptyFilters[key]),
     }),
     [value, setValue, key],
   );
@@ -298,10 +313,6 @@ export function SearchProvider({
         .map((token) => token.toLowerCase()),
     [searchText.value],
   );
-  const processedSubjects = useMemo(
-    () => selectSubjects.value.map((x) => x.value),
-    [selectSubjects.value],
-  );
   const processedSkillsAreas = useMemo(
     () =>
       selectSkillsAreas.value.flatMap((x) =>
@@ -317,49 +328,6 @@ export function SearchProvider({
     }
     return selectSeasons.value.map((x) => x.value);
   }, [selectSeasons.value]);
-  const processedDays = useMemo(
-    () => selectDays.value.map((x) => x.value),
-    [selectDays.value],
-  );
-  const processedSchools = useMemo(
-    () => selectSchools.value.map((x) => x.value),
-    [selectSchools.value],
-  );
-  const processedCredits = useMemo(
-    () => selectCredits.value.map((x) => x.value),
-    [selectCredits.value],
-  );
-  const processedCourseInfoAttributes = useMemo(
-    () => selectCourseInfoAttributes.value.map((x) => x.value),
-    [selectCourseInfoAttributes.value],
-  );
-  // If the bounds are unaltered, we need to set them to null
-  // to include unrated courses
-  const processedOverallBounds = useMemo(
-    () => (overallBounds.hasChanged ? overallBounds.value : null),
-    [overallBounds],
-  );
-  const processedWorkloadBounds = useMemo(
-    () => (workloadBounds.hasChanged ? workloadBounds.value : null),
-    [workloadBounds],
-  );
-  const processedProfessorBounds = useMemo(
-    () => (professorBounds.hasChanged ? professorBounds.value : null),
-    [professorBounds],
-  );
-  const processedTimeBounds = useMemo(
-    () => (timeBounds.hasChanged ? timeBounds.value : null),
-    [timeBounds],
-  );
-  const processedEnrollBounds = useMemo(
-    () => (enrollBounds.hasChanged ? enrollBounds.value : null),
-    [enrollBounds],
-  );
-  const processedNumBounds = useMemo(
-    () => (numBounds.hasChanged ? numBounds.value : null),
-    [numBounds],
-  );
-
   const {
     loading: coursesLoading,
     courses: courseData,
@@ -476,66 +444,67 @@ export function SearchProvider({
     });
 
     const filtered = listings.filter((listing) => {
-      if (processedOverallBounds !== null) {
+      // For empty bounds, don't apply filters at all to include no ratings
+      if (overallBounds.isNonEmpty) {
         const overall = getOverallRatings(listing, 'stat');
         if (overall === null) return false;
         const rounded = Math.round(overall * 10) / 10;
         if (
-          rounded < processedOverallBounds[0] ||
-          rounded > processedOverallBounds[1]
+          rounded < overallBounds.value[0] ||
+          rounded > overallBounds.value[1]
         )
           return false;
       }
 
-      if (processedWorkloadBounds !== null) {
+      if (workloadBounds.isNonEmpty) {
         const workload = getWorkloadRatings(listing, 'stat');
         if (workload === null) return false;
         const rounded = Math.round(workload * 10) / 10;
         if (
-          rounded < processedWorkloadBounds[0] ||
-          rounded > processedWorkloadBounds[1]
+          rounded < workloadBounds.value[0] ||
+          rounded > workloadBounds.value[1]
         )
           return false;
       }
 
-      if (processedProfessorBounds !== null) {
+      if (professorBounds.isNonEmpty) {
         const professorRate = getProfessorRatings(listing, 'stat');
         if (professorRate === null) return false;
         const rounded = Math.round(professorRate * 10) / 10;
         if (
-          rounded < processedProfessorBounds[0] ||
-          rounded > processedProfessorBounds[1]
+          rounded < professorBounds.value[0] ||
+          rounded > professorBounds.value[1]
         )
           return false;
       }
 
-      if (processedTimeBounds !== null) {
+      if (timeBounds.isNonEmpty) {
         const times = getDayTimes(listing);
         if (
           !times.some(
             (time) =>
-              toRangeTime(time.start) >= processedTimeBounds[0] &&
-              toRangeTime(time.end) <= processedTimeBounds[1],
+              toRangeTime(time.start) >= timeBounds.value[0] &&
+              toRangeTime(time.end) <= timeBounds.value[1],
           )
         )
           return false;
       }
 
-      if (processedEnrollBounds !== null) {
+      if (enrollBounds.isNonEmpty) {
         const enrollment = getEnrolled(listing, 'stat');
         if (
           enrollment === null ||
-          enrollment < processedEnrollBounds[0] ||
-          enrollment > processedEnrollBounds[1]
+          enrollment < enrollBounds.value[0] ||
+          enrollment > enrollBounds.value[1]
         )
           return false;
       }
 
-      if (processedNumBounds !== null) {
+      if (numBounds.isNonEmpty) {
         const number = Number(listing.number.replace(/\D/gu, ''));
         if (
-          number < processedNumBounds[0] ||
-          (processedNumBounds[1] < 1000 && number > processedNumBounds[1])
+          number < numBounds.value[0] ||
+          (numBounds.value[1] < 1000 && number > numBounds.value[1])
         )
           return false;
       }
@@ -563,16 +532,18 @@ export function SearchProvider({
       if (hideGraduateCourses.value && isGraduate(listing)) return false;
 
       if (
-        processedSubjects.length !== 0 &&
-        !processedSubjects.includes(listing.subject)
+        selectSubjects.value.length !== 0 &&
+        !selectSubjects.value.some((option) => option.value === listing.subject)
       )
         return false;
 
-      if (processedDays.length !== 0) {
+      if (selectDays.value.length !== 0) {
         const days = getDayTimes(listing).map((daytime) => daytime.day);
+        const selectDayValues = selectDays.value.map((day) => day.value);
+        // Require the two sets to be equal
         if (
-          days.some((day) => !processedDays.includes(day)) ||
-          processedDays.some((day) => !days.includes(day))
+          days.some((day) => !selectDayValues.includes(day)) ||
+          selectDayValues.some((day) => !days.includes(day))
         )
           return false;
       }
@@ -588,24 +559,24 @@ export function SearchProvider({
       }
 
       if (
-        processedCredits.length !== 0 &&
+        selectCredits.value.length !== 0 &&
         listing.credits !== null &&
-        !processedCredits.includes(listing.credits)
+        !selectCredits.value.some((option) => option.value === listing.credits)
       )
         return false;
 
       if (
-        processedCourseInfoAttributes.length !== 0 &&
-        !processedCourseInfoAttributes.some((attr) =>
-          listing.flag_info.includes(attr),
+        selectCourseInfoAttributes.value.length !== 0 &&
+        !selectCourseInfoAttributes.value.some((option) =>
+          listing.flag_info.includes(option.value),
         )
       )
         return false;
 
       if (
-        processedSchools.length !== 0 &&
+        selectSchools.value.length !== 0 &&
         listing.school !== null &&
-        !processedSchools.includes(listing.school)
+        !selectSchools.value.some((option) => option.value === listing.school)
       )
         return false;
 
@@ -667,12 +638,12 @@ export function SearchProvider({
     sortOrder.value,
     numFriends,
     courseData,
-    processedOverallBounds,
-    processedWorkloadBounds,
-    processedProfessorBounds,
-    processedTimeBounds,
-    processedEnrollBounds,
-    processedNumBounds,
+    overallBounds,
+    workloadBounds,
+    professorBounds,
+    timeBounds,
+    enrollBounds,
+    numBounds,
     hideCancelled.value,
     hideConflicting.value,
     worksheetNumber,
@@ -681,12 +652,12 @@ export function SearchProvider({
     hideDiscussionSections.value,
     hideFirstYearSeminars.value,
     hideGraduateCourses.value,
-    processedSubjects,
-    processedDays,
+    selectSubjects.value,
+    selectDays.value,
     processedSkillsAreas,
-    processedCredits,
-    processedCourseInfoAttributes,
-    processedSchools,
+    selectCredits.value,
+    selectCourseInfoAttributes.value,
+    selectSchools.value,
     quistPredicate,
     processedSearchText,
     searchDescription.value,
