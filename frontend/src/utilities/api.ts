@@ -29,7 +29,7 @@ type BaseFetchOptions = {
  */
 async function fetchAPI(
   endpointSuffix: string,
-  options: BaseFetchOptions & { body: {} },
+  options: BaseFetchOptions & ({ body: {} } | { method: 'POST' }),
 ): Promise<boolean>;
 /**
  * Performs a GET request to the API. Returns a non-null value containing the
@@ -53,29 +53,32 @@ async function fetchAPI(
   endpointSuffix: string,
   {
     body,
+    method,
     schema,
     breadcrumb,
     handleErrorCode,
   }: BaseFetchOptions & {
     body?: {};
+    method?: 'POST' | 'GET';
     schema?: z.ZodType<unknown>;
   },
 ): Promise<unknown> {
   const payload = JSON.stringify(body);
-  const noResExpected = !schema && Boolean(body);
+  const fetchInit: RequestInit = body
+    ? {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: payload,
+      }
+    : {
+        method: method ?? 'GET',
+        credentials: 'include',
+      };
+  const noResExpected = !schema && fetchInit.method === 'POST';
   try {
-    const fetchInit: RequestInit = body
-      ? {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: payload,
-        }
-      : {
-          credentials: 'include',
-        };
     const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, fetchInit);
     if (!res.ok) {
       let errorCode = '';
@@ -206,23 +209,16 @@ export async function fetchEvals(season: Season) {
 }
 
 export async function logout() {
-  // TODO: this should be a POST with no body
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/auth/logout`, {
-      credentials: 'include',
-    });
-    if (!res.ok)
-      throw new Error(((await res.json()) as { error?: string }).error);
-    // Redirect to home page and refresh as well
-    window.location.pathname = '/';
-  } catch (err) {
-    Sentry.addBreadcrumb({
+  const res = await fetchAPI('/auth/logout', {
+    method: 'POST',
+    breadcrumb: {
       category: 'user',
       message: 'Signing out',
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to sign out. ${String(err)}`);
+    },
+  });
+  if (res) {
+    // Redirect to home page and refresh as well
+    window.location.pathname = '/';
   }
 }
 
