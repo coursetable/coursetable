@@ -120,9 +120,52 @@ const faqs = [
         title: 'Who can use CourseTable?',
         contents: (
           <>
-            Anyone can use CourseTable! However, we do require you to log in
-            with your Yale ID to use all of our features such as course ratings
-            and worksheets.
+            Anyone can use CourseTable! However, to use all of our features such
+            as course ratings and worksheets, we require you to log in with your
+            Yale ID, and also confirm that you have access to course
+            evaluations.
+          </>
+        ),
+      },
+      {
+        title: 'How do I verify access to course evaluations?',
+        contents: (
+          <>
+            When you first log in, we will fetch your information from{' '}
+            <a href="https://yalies.io">Yalies</a> (which sources its data from{' '}
+            <a href="https://directory.yale.edu/">Yale Directory</a>). You will
+            be automatically deemed as having access if you are recorded as a
+            student/faculty associated with one of the following
+            schools/organizations:
+            <ul>
+              <li>Yale college</li>
+              <li>Medical school</li>
+              <li>Faculty of arts and sciences</li>
+              <li>School of medicine</li>
+              <li>Law school</li>
+              <li>Nursing school</li>
+              <li>School of the environment</li>
+              <li>Public health</li>
+              <li>Divinity school</li>
+              <li>Drama</li>
+              <li>Architecture</li>
+              <li>Art</li>
+              <li>MacMillan center</li>
+              <li>Music</li>
+              <li>Sacred music</li>
+              <li>Jackson institute</li>
+              <li>Graduate school</li>
+            </ul>
+            Otherwise, you will be asked to complete a{' '}
+            <NavLink to="/challenge" onClick={scrollToTop}>
+              challenge
+            </NavLink>{' '}
+            to verify your access. If the challenge is not working for you,
+            please{' '}
+            <a href="mailto:coursetable.at.yale@gmail.com">
+              let us know via email
+            </a>{' '}
+            and we can grant you access manually.
           </>
         ),
       },

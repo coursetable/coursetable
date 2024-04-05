@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useRef, useState, useId } from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
-import { scroller } from 'react-scroll';
 import clsx from 'clsx';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
@@ -37,7 +36,7 @@ import {
 import styles from './NavbarCatalogSearch.module.css';
 
 export function NavbarCatalogSearch() {
-  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  const { isTablet, isLgDesktop } = useWindowDimensions();
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
   const formLabelId = useId();
@@ -151,14 +150,6 @@ export function NavbarCatalogSearch() {
         className="px-0 h-100"
         onSubmit={(event) => {
           event.preventDefault();
-
-          if (isMobile) {
-            scroller.scrollTo('catalog', {
-              smooth: true,
-              duration: 500,
-              offset: -56,
-            });
-          }
         }}
         data-tutorial="catalog-1"
       >

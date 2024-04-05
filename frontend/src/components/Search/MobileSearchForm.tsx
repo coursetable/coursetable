@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import clsx from 'clsx';
+import { scroller } from 'react-scroll';
 
 import styles from './MobileSearchForm.module.css';
 import Toggle from './Toggle';
@@ -21,11 +22,7 @@ import {
   sortByOptions,
 } from '../../contexts/searchContext';
 
-export default function MobileSearchForm({
-  onSubmit,
-}: {
-  readonly onSubmit: (event: React.FormEvent) => void;
-}) {
+export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
   const {
     searchText,
@@ -49,11 +46,27 @@ export default function MobileSearchForm({
   const [professorRangeValue, setProfessorRangeValue] = useState(
     professorBounds.value,
   );
+  const scrollToResults = useCallback((event?: React.FormEvent) => {
+    if (event) event.preventDefault();
+    scroller.scrollTo('catalog', {
+      smooth: true,
+      duration: 500,
+      offset: -56,
+    });
+  }, []);
+  // Scroll to the bottom when courses finish loading on initial load.
+  const [doneInitialScroll, setDoneInitialScroll] = useState(false);
+  useEffect(() => {
+    if (!coursesLoading && !doneInitialScroll) {
+      scrollToResults();
+      setDoneInitialScroll(true);
+    }
+  }, [coursesLoading, doneInitialScroll, scrollToResults]);
 
   return (
     <div className="p-3">
       <SurfaceComponent className={styles.searchContainer}>
-        <Form className="px-0" onSubmit={onSubmit}>
+        <Form className="px-0" onSubmit={scrollToResults}>
           <Row className="mx-auto pt-4 px-4">
             {/* Reset Filters Button */}
             <button
