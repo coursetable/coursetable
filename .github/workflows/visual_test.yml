@@ -3,6 +3,11 @@ name: Playwright + Argos Tests
 on:
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   run-e2es:
     runs-on: ubuntu-latest
@@ -19,7 +24,7 @@ jobs:
       - name: Run tests
         run: cd frontend && bunx playwright test
         env:
-          # Use this environment variable as `baseUrl` in your plawright.config.ts
+          # Use this environment variable as `baseUrl` in your playwright.config.ts
           BASE_URL: ${{ github.event.deployment_status.environment_url }}
           # Argos uses GITHUB_TOKEN to collect branch and pull request information
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
