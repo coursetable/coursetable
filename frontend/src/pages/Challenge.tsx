@@ -227,18 +227,23 @@ function Challenge() {
         {/* Page Description */}
         <TextComponent type="secondary">
           <p className="mb-2">
-            To confirm that you have access to course evaluations, we ask that
-            you retrieve the number of people who responded to a specific
-            question for three courses (linked below). If your responses match
-            the values in our database, you'll be good to go!
-            <br />
+            You are seeing this page because we cannot automatically confirm
+            that you have access to course evaluations. See our{' '}
+            <NavLink to="/faq#how_do_i_verify_access_to_course_evaluations">
+              FAQ
+            </NavLink>{' '}
+            for more information.
+          </p>
+          <p className="mb-2">
+            To confirm access, we ask that you retrieve the number of people who
+            responded to a specific question for three courses (linked below).
+            If your responses match the values in our database, you'll be good
+            to go!
+          </p>
+          <p className="mb-2">
             If the challenge is not working for you, please{' '}
-            <a
-              href="https://feedback.coursetable.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              let us know
+            <a href="mailto:coursetable.at.yale@gmail.com">
+              let us know via email
             </a>{' '}
             and we can grant you access manually.
           </p>
