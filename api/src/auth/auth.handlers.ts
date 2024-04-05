@@ -1,11 +1,10 @@
 import type express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
+import { eq } from 'drizzle-orm';
 
 import winston from '../logging/winston.js';
-import { YALIES_API_KEY } from '../config.js';
-
-import { db } from '../../drizzle/db.js';
+import { YALIES_API_KEY, db } from '../config.js';
 import { studentBluebookSettings } from '../../drizzle/schema.js';
 
 // TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
@@ -72,21 +71,17 @@ export const passportConfig = (
       async (profile, done) => {
         // Create or update user's profile
         winston.info("Creating user's profile");
-        const existingUser = await db.insert(studentBluebookSettings).values({
-          netId: profile.user,
-          evaluationsEnabled: 0,
-        });
-        // TODO: Finish this port
-        // const existingUser = await prisma.studentBluebookSettings.upsert({
-        //   where: {
-        //     netId: profile.user,
-        //   },
-        //   update: {},
-        //   create: {
-        //     netId: profile.user,
-        //     evaluationsEnabled: false,
-        //   },
-        // });
+
+        const existingUser = (
+          await db
+            .insert(studentBluebookSettings)
+            .values({
+              netId: profile.user,
+              evaluationsEnabled: false,
+            })
+            .onConflictDoNothing()
+            .returning()
+        )[0]!;
 
         winston.info("Getting user's enrollment status from Yalies.io");
         try {
@@ -125,11 +120,10 @@ export const passportConfig = (
             ALLOWED_ORG_CODES.includes(user.organization_code);
 
           winston.info(`Updating evaluations for ${profile.user}`);
-          await prisma.studentBluebookSettings.update({
-            where: {
-              netId: profile.user,
-            },
-            data: {
+
+          await db
+            .update(studentBluebookSettings)
+            .set({
               evaluationsEnabled: enableEvals,
               firstName: user.first_name,
               lastName: user.last_name,
@@ -140,8 +134,8 @@ export const passportConfig = (
               college: user.college,
               major: user.major,
               curriculum: user.curriculum,
-            },
-          });
+            })
+            .where(eq(studentBluebookSettings.netId, profile.user));
 
           done(null, {
             netId: profile.user,
@@ -175,22 +169,21 @@ export const passportConfig = (
     }
     const netId = String(sessionKey);
     winston.info(`Deserializing user ${netId}`);
-    const student = await prisma.studentBluebookSettings.findUnique({
-      where: {
-        netId,
-      },
-    });
-    if (!student) {
+    const student = await db
+      .selectDistinctOn([studentBluebookSettings.netId])
+      .from(studentBluebookSettings)
+      .where(eq(studentBluebookSettings.netId, netId));
+    if (!student.length) {
       done(null, null);
       return;
     }
     done(null, {
       netId,
-      evals: Boolean(student.evaluationsEnabled),
+      evals: Boolean(student[0]!.evaluationsEnabled),
       // Convert nulls to undefined
-      email: student.email ?? undefined,
-      firstName: student.firstName ?? undefined,
-      lastName: student.lastName ?? undefined,
+      email: student[0]!.email ?? undefined,
+      firstName: student[0]!.firstName ?? undefined,
+      lastName: student[0]!.lastName ?? undefined,
     });
   });
 };

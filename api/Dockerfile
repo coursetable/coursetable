@@ -3,12 +3,9 @@
 
 FROM oven/bun:slim as base
 WORKDIR /usr/src/app
-# Install openssl for prisma
-RUN apt-get update -y && apt-get install -y openssl
 
 FROM node:slim as runtime
 WORKDIR /usr/src/app
-RUN apt-get update -y && apt-get install -y openssl
 
 FROM base as install
 RUN mkdir -p /temp/dev/api /temp/dev/frontend

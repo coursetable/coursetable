@@ -12,76 +12,74 @@ import {
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
-export const studentbluebooksettings = pgTable('studentbluebooksettings', {
-  netid: char('netid', { length: 8 }).primaryKey().notNull(),
-  evaluationsenabled: boolean('evaluationsenabled').notNull(),
-  firstname: varchar('firstname', { length: 256 }).default(sql`NULL`),
-  lastname: varchar('lastname', { length: 256 }).default(sql`NULL`),
+export const studentBluebookSettings = pgTable('studentBluebookSettings', {
+  netId: char('netId', { length: 8 }).primaryKey().notNull(),
+  evaluationsEnabled: boolean('evaluationsEnabled').notNull(),
+  firstName: varchar('firstName', { length: 256 }).default(sql`NULL`),
+  lastName: varchar('lastName', { length: 256 }).default(sql`NULL`),
   email: varchar('email', { length: 256 }).default(sql`NULL`),
-  // You can use { mode: "bigint" }
-  // if numbers are exceeding js number limitations
   upi: bigint('upi', { mode: 'number' }),
   school: varchar('school', { length: 256 }).default(sql`NULL`),
   year: bigint('year', { mode: 'number' }),
   college: varchar('college', { length: 256 }).default(sql`NULL`),
   major: varchar('major', { length: 256 }).default(sql`NULL`),
   curriculum: varchar('curriculum', { length: 256 }).default(sql`NULL`),
-  challengetries: bigint('challengetries', { mode: 'number' })
+  // You can use { mode: "bigint" }
+  // if numbers are exceeding js number limitations
+  challengeTries: bigint('challengeTries', { mode: 'number' })
     .default(0)
     .notNull(),
 });
 
-export const studentfriendrequests = pgTable(
-  'studentfriendrequests',
+export const studentFriendRequests = pgTable(
+  'studentFriendRequests',
   {
     id: bigserial('id', { mode: 'bigint' }).primaryKey().notNull(),
-    netid: char('netid', { length: 8 }).notNull(),
-    friendnetid: char('friendnetid', { length: 8 }).notNull(),
+    netId: char('netId', { length: 8 }).notNull(),
+    friendNetId: char('friendNetId', { length: 8 }).notNull(),
   },
   (table) => ({
-    friendRequestsUniqueIndex: uniqueIndex('friend_requests_unique_idx').on(
-      table.netid,
-      table.friendnetid,
+    friendRequestsUniqueIdx: uniqueIndex('friend_requests_unique_idx').on(
+      table.netId,
+      table.friendNetId,
     ),
-    friendRequestsNetidIndex: index('friend_requests_netid_idx').on(
-      table.netid,
-    ),
+    friendRequestsNetidIdx: index('friend_requests_netid_idx').on(table.netId),
   }),
 );
 
-export const studentfriends = pgTable(
-  'studentfriends',
+export const studentFriends = pgTable(
+  'studentFriends',
   {
     id: bigserial('id', { mode: 'bigint' }).primaryKey().notNull(),
-    netid: char('netid', { length: 8 }).notNull(),
-    friendnetid: char('friendnetid', { length: 8 }).notNull(),
+    netId: char('netId', { length: 8 }).notNull(),
+    friendNetId: char('friendNetId', { length: 8 }).notNull(),
   },
   (table) => ({
-    friendsUniqueIndex: uniqueIndex('friends_unique_idx').on(
-      table.netid,
-      table.friendnetid,
+    friendsUniqueIdx: uniqueIndex('friends_unique_idx').on(
+      table.netId,
+      table.friendNetId,
     ),
-    friendsNetidIndex: index('friends_netid_idx').on(table.netid),
+    friendsNetidIdx: index('friends_netid_idx').on(table.netId),
   }),
 );
 
-export const worksheetcourses = pgTable(
-  'worksheetcourses',
+export const worksheetCourses = pgTable(
+  'worksheetCourses',
   {
     id: serial('id').primaryKey().notNull(),
-    netid: char('netid', { length: 8 }).notNull(),
+    netId: char('netId', { length: 8 }).notNull(),
     crn: integer('crn').notNull(),
     season: integer('season').notNull(),
-    worksheetnumber: integer('worksheetnumber').default(0),
+    worksheetNumber: integer('worksheetNumber').default(0).notNull(),
     color: varchar('color', { length: 32 }).notNull(),
   },
   (table) => ({
-    worksheetNetidIndex: index('worksheet_netid_idx').on(table.netid),
-    worksheetUniqueIndex: uniqueIndex('worksheet_unique_idx').on(
-      table.netid,
+    worksheetNetidIdx: index('worksheet_netid_idx').on(table.netId),
+    worksheetUniqueIdx: uniqueIndex('worksheet_unique_idx').on(
+      table.netId,
       table.crn,
       table.season,
-      table.worksheetnumber,
+      table.worksheetNumber,
     ),
   }),
 );

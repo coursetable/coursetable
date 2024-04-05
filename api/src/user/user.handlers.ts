@@ -1,11 +1,16 @@
 import type express from 'express';
 import z from 'zod';
 import chroma from 'chroma-js';
+import { and, eq } from 'drizzle-orm';
 
 import { worksheetCoursesToWorksheets } from './user.utils.js';
 import winston from '../logging/winston.js';
 
-import { prisma } from '../config.js';
+import { db } from '../config.js';
+import {
+  studentBluebookSettings,
+  worksheetCourses,
+} from '../../drizzle/schema.js';
 
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
@@ -31,16 +36,22 @@ export const toggleBookmark = async (
 
   const { action, season, crn, worksheetNumber, color } = bodyParseRes.data;
 
-  const existing = await prisma.worksheetCourses.findUnique({
-    where: {
-      netId_crn_season_worksheetNumber: {
-        netId,
-        crn,
-        season,
-        worksheetNumber,
-      },
-    },
-  });
+  const [existing] = await db
+    .selectDistinctOn([
+      worksheetCourses.netId,
+      worksheetCourses.crn,
+      worksheetCourses.season,
+      worksheetCourses.worksheetNumber,
+    ])
+    .from(worksheetCourses)
+    .where(
+      and(
+        eq(worksheetCourses.netId, netId),
+        eq(worksheetCourses.crn, crn),
+        eq(worksheetCourses.season, season),
+        eq(worksheetCourses.worksheetNumber, worksheetNumber),
+      ),
+    );
 
   if (action === 'add') {
     winston.info(
@@ -50,8 +61,12 @@ export const toggleBookmark = async (
       res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
       return;
     }
-    await prisma.worksheetCourses.create({
-      data: { netId, crn, season, worksheetNumber, color },
+    await db.insert(worksheetCourses).values({
+      netId,
+      crn,
+      season,
+      worksheetNumber,
+      color,
     });
   } else if (action === 'remove') {
     winston.info(
@@ -61,16 +76,16 @@ export const toggleBookmark = async (
       res.status(400).json({ error: 'NOT_BOOKMARKED' });
       return;
     }
-    await prisma.worksheetCourses.delete({
-      where: {
-        netId_crn_season_worksheetNumber: {
-          netId,
-          crn,
-          season,
-          worksheetNumber,
-        },
-      },
-    });
+    await db
+      .delete(worksheetCourses)
+      .where(
+        and(
+          eq(worksheetCourses.netId, netId),
+          eq(worksheetCourses.crn, crn),
+          eq(worksheetCourses.season, season),
+          eq(worksheetCourses.worksheetNumber, worksheetNumber),
+        ),
+      );
   } else {
     // Update data of a bookmarked course
     winston.info(
@@ -80,17 +95,17 @@ export const toggleBookmark = async (
       res.status(400).json({ error: 'NOT_BOOKMARKED' });
       return;
     }
-    await prisma.worksheetCourses.update({
-      where: {
-        netId_crn_season_worksheetNumber: {
-          netId,
-          crn,
-          season,
-          worksheetNumber,
-        },
-      },
-      data: { color },
-    });
+    await db
+      .update(worksheetCourses)
+      .set({ color })
+      .where(
+        and(
+          eq(worksheetCourses.netId, netId),
+          eq(worksheetCourses.crn, crn),
+          eq(worksheetCourses.season, season),
+          eq(worksheetCourses.worksheetNumber, worksheetNumber),
+        ),
+      );
   }
 
   res.sendStatus(200);
@@ -105,18 +120,17 @@ export const getUserWorksheet = async (
   const { netId } = req.user!;
 
   winston.info(`Getting profile for user ${netId}`);
-  const studentProfile = await prisma.studentBluebookSettings.findUnique({
-    where: {
-      netId,
-    },
-  });
+  const [studentProfile] = await db
+    .selectDistinctOn([studentBluebookSettings.netId])
+    .from(studentBluebookSettings)
+    .where(eq(studentBluebookSettings.netId, netId));
 
   winston.info(`Getting worksheets for user ${netId}`);
-  const worksheets = await prisma.worksheetCourses.findMany({
-    where: {
-      netId,
-    },
-  });
+
+  const worksheets = await db
+    .select()
+    .from(worksheetCourses)
+    .where(eq(worksheetCourses.netId, netId));
 
   res.json({
     netId,

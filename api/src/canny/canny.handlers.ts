@@ -2,11 +2,10 @@ import type express from 'express';
 import jwt from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
 
-import { YALIES_API_KEY, CANNY_KEY, FRONTEND_ENDPOINT } from '../config.js';
+import { YALIES_API_KEY, CANNY_KEY, FRONTEND_ENDPOINT, db } from '../config.js';
 import type { YaliesResponse } from '../auth/auth.handlers.js';
 import winston from '../logging/winston.js';
 
-import { db } from '../../drizzle/db.js';
 import { studentBluebookSettings } from '../../drizzle/schema.js';
 
 // Create a JWT-signed Canny token with user info
@@ -63,7 +62,7 @@ export const cannyIdentify = async (
       .update(studentBluebookSettings)
       .set({
         // Enable evaluations if user has a school code
-        evaluationsEnabled: user.school_code ? 1 : 0,
+        evaluationsEnabled: Boolean(user.school_code),
         firstName: user.first_name,
         lastName: user.last_name,
         email: user.email,
