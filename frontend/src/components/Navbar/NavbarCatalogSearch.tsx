@@ -176,7 +176,7 @@ export function NavbarCatalogSearch() {
                 className={styles.searchTextClear}
                 size={18}
                 onClick={() => {
-                  searchText.reset();
+                  searchText.resetToEmpty();
                   setStartTime(Date.now());
                 }}
               />
@@ -205,7 +205,7 @@ export function NavbarCatalogSearch() {
                 <Popout
                   buttonText="Subject"
                   onReset={() => {
-                    selectSubjects.reset();
+                    selectSubjects.resetToEmpty();
                     setStartTime(Date.now());
                   }}
                   selectedOptions={selectSubjects.value}
@@ -226,7 +226,7 @@ export function NavbarCatalogSearch() {
                 <Popout
                   buttonText="Areas/Skills"
                   onReset={() => {
-                    selectSkillsAreas.reset();
+                    selectSkillsAreas.resetToEmpty();
                     setStartTime(Date.now());
                   }}
                   selectedOptions={selectSkillsAreas.value}
@@ -259,7 +259,7 @@ export function NavbarCatalogSearch() {
                   </div>
                   <div
                     className={styles.rangeLabel}
-                    style={activeStyle(overallBounds.hasChanged)}
+                    style={activeStyle(overallBounds.isNonEmpty)}
                   >
                     Overall
                   </div>
@@ -297,7 +297,7 @@ export function NavbarCatalogSearch() {
                   </div>
                   <div
                     className={styles.rangeLabel}
-                    style={activeStyle(workloadBounds.hasChanged)}
+                    style={activeStyle(workloadBounds.isNonEmpty)}
                   >
                     Workload
                   </div>
@@ -336,7 +336,7 @@ export function NavbarCatalogSearch() {
                     </div>
                     <div
                       className={styles.rangeLabel}
-                      style={activeStyle(professorBounds.hasChanged)}
+                      style={activeStyle(professorBounds.isNonEmpty)}
                     >
                       Professor
                     </div>
@@ -375,7 +375,7 @@ export function NavbarCatalogSearch() {
                 displayOptionLabel
                 maxDisplayOptions={1}
                 onReset={() => {
-                  selectSeasons.reset();
+                  selectSeasons.resetToEmpty();
                   setStartTime(Date.now());
                 }}
                 selectedOptions={selectSeasons.value}
@@ -406,7 +406,7 @@ export function NavbarCatalogSearch() {
                       'selectSeasons',
                       'professorBounds',
                     ] as const
-                  ).forEach((k) => filters[k].reset());
+                  ).forEach((k) => filters[k].resetToEmpty());
                 }
                 (
                   [
@@ -425,10 +425,10 @@ export function NavbarCatalogSearch() {
                     'hideGraduateCourses',
                     'hideDiscussionSections',
                   ] as const
-                ).forEach((k) => filters[k].reset());
+                ).forEach((k) => filters[k].resetToEmpty());
                 if (selectSortBy.value.value === 'average_gut_rating') {
-                  selectSortBy.reset();
-                  sortOrder.reset();
+                  selectSortBy.resetToEmpty();
+                  sortOrder.resetToEmpty();
                 }
                 setTimeRangeValue(defaultFilters.timeBounds);
                 setEnrollRangeValue(
@@ -444,25 +444,25 @@ export function NavbarCatalogSearch() {
               }}
               selectedOptions={
                 [
-                  isTablet && selectSubjects.hasChanged,
-                  isTablet && selectSkillsAreas.hasChanged,
-                  isTablet && selectSeasons.hasChanged,
-                  selectDays.hasChanged,
-                  timeBounds.hasChanged,
-                  enrollBounds.hasChanged,
-                  isTablet && professorBounds.hasChanged,
-                  numBounds.hasChanged,
-                  selectSchools.hasChanged,
-                  selectCredits.hasChanged,
-                  selectCourseInfoAttributes.hasChanged,
+                  isTablet && selectSubjects.isNonEmpty,
+                  isTablet && selectSkillsAreas.isNonEmpty,
+                  isTablet && selectSeasons.isNonEmpty,
+                  selectDays.isNonEmpty,
+                  timeBounds.isNonEmpty,
+                  enrollBounds.isNonEmpty,
+                  isTablet && professorBounds.isNonEmpty,
+                  numBounds.isNonEmpty,
+                  selectSchools.isNonEmpty,
+                  selectCredits.isNonEmpty,
+                  selectCourseInfoAttributes.isNonEmpty,
                   selectSortBy.value.value === 'average_gut_rating',
-                  searchDescription.value,
-                  enableQuist.value,
-                  hideCancelled.value,
-                  hideConflicting.value,
-                  hideFirstYearSeminars.value,
-                  hideGraduateCourses.value,
-                  hideDiscussionSections.value,
+                  searchDescription.isNonEmpty,
+                  enableQuist.isNonEmpty,
+                  hideCancelled.isNonEmpty,
+                  hideConflicting.isNonEmpty,
+                  hideFirstYearSeminars.isNonEmpty,
+                  hideGraduateCourses.isNonEmpty,
+                  hideDiscussionSections.isNonEmpty,
                 ].filter(Boolean).length
               }
               dataTutorial={4}
@@ -571,7 +571,7 @@ export function NavbarCatalogSearch() {
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <div
                     className={styles.advancedLabel}
-                    style={activeStyle(timeBounds.hasChanged)}
+                    style={activeStyle(timeBounds.isNonEmpty)}
                   >
                     Time:
                   </div>
@@ -619,7 +619,7 @@ export function NavbarCatalogSearch() {
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <div
                     className={styles.advancedLabel}
-                    style={activeStyle(enrollBounds.hasChanged)}
+                    style={activeStyle(enrollBounds.isNonEmpty)}
                   >
                     # Enrolled:
                   </div>
@@ -666,7 +666,7 @@ export function NavbarCatalogSearch() {
                   <Row className="align-items-center justify-content-between mx-3 mt-3">
                     <div
                       className={styles.advancedLabel}
-                      style={activeStyle(professorBounds.hasChanged)}
+                      style={activeStyle(professorBounds.isNonEmpty)}
                     >
                       Professor:
                     </div>
@@ -707,7 +707,7 @@ export function NavbarCatalogSearch() {
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <div
                     className={styles.advancedLabel}
-                    style={activeStyle(numBounds.hasChanged)}
+                    style={activeStyle(numBounds.isNonEmpty)}
                   >
                     Course #:
                   </div>
@@ -879,11 +879,13 @@ export function NavbarCatalogSearch() {
               );
               setNumRangeValue(defaultFilters.numBounds);
               setProfessorRangeValue(defaultFilters.professorBounds);
-              Object.values(filters).forEach((filter) => filter.reset());
+              Object.values(filters).forEach((filter) =>
+                filter.resetToDefault(),
+              );
               setStartTime(Date.now());
             }}
             // Cannot reset if no filters have changed
-            disabled={Object.values(filters).every((x) => !x.hasChanged)}
+            disabled={Object.values(filters).every((x) => x.isDefault)}
           >
             Reset
           </Button>

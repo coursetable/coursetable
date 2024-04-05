@@ -76,7 +76,9 @@ export default function MobileSearchForm() {
                 setOverallRangeValue(defaultFilters.overallBounds);
                 setWorkloadRangeValue(defaultFilters.workloadBounds);
                 setProfessorRangeValue(defaultFilters.professorBounds);
-                Object.values(filters).forEach((filter) => filter.reset());
+                Object.values(filters).forEach((filter) =>
+                  filter.resetToDefault(),
+                );
               }}
             >
               Reset Filters
