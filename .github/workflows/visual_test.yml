@@ -24,8 +24,7 @@ jobs:
       - name: Run tests
         run: cd frontend && bunx playwright test
         env:
-          # Use this environment variable as `baseUrl` in your playwright.config.ts
-          BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          HEAD_REF: ${{ github.head_ref }}
           # Argos uses GITHUB_TOKEN to collect branch and pull request information
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Set the branch when your deployment runs on "Production" environment.

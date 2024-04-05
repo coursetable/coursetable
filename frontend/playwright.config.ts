@@ -1,10 +1,8 @@
 import { defineConfig } from '@playwright/test';
 
-console.log('BASE_URL:', process.env.BASE_URL);
-
 export default defineConfig({
   use: {
-    baseURL: process.env.BASE_URL,
+    baseURL: `https://${process.env.HEAD_REF!.replace(/[^\da-zA-Z-]+/gu, '-').slice(-25)}.preview.coursetable.com`,
     extraHTTPHeaders: {
       'x-vercel-skip-toolbar': '1',
     },
