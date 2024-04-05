@@ -5,7 +5,11 @@ import { ImSun } from 'react-icons/im';
 import { useTheme } from '../../contexts/themeContext';
 import styles from './DarkModeButton.module.css';
 
-function DarkModeButton({ className }: { readonly className: string }) {
+function DarkModeButton({
+  className,
+}: {
+  readonly className: string | undefined;
+}) {
   const { theme, toggleTheme } = useTheme();
   return (
     <button

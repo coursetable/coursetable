@@ -4,6 +4,17 @@
   z-index: 1000;
 }
 
+.catalogSearchNavbar {
+  height: 100px;
+  padding-bottom: 0;
+}
+
+@media (width < 1320px) {
+  .catalogSearchNavbar {
+    height: 86px;
+  }
+}
+
 .navLogo {
   font-size: 1.6rem;
   padding-top: 0.75rem;
@@ -22,36 +33,17 @@
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(219, 219, 219, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-.navbarMe {
-  /* padding-left: 1rem; */
-  height: 40px;
-  display: flex;
+@media (width >= 768px) {
+  .navbarContent {
+    display: flex;
+    flex-grow: 0;
+  }
 }
 
 .navbarDarkModeBtn {
   padding-right: 1rem !important;
   transition: 0.1s;
-}
-
-.meIcon {
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
   display: flex;
-  background-color: rgb(1 1 1 / 10%);
-  color: var(--color-text-secondary);
-  transition:
-    border-color var(--trans-dur),
-    background-color var(--trans-dur),
-    color var(--trans-dur);
-}
-
-[data-theme='dark'] .meIcon {
-  background-color: #525252;
-}
-
-.meIcon:hover {
-  color: var(--color-primary);
 }
 
 .signInOutButton {

@@ -1,8 +1,8 @@
 .collapseContainer {
   width: 200px;
   position: absolute;
-  top: 66px;
-  right: 10px;
+  top: 56px;
+  right: 0;
   z-index: calc(420 + 69);
   box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
   border-radius: 10px;
@@ -17,4 +17,31 @@
 
 .collapseText:hover {
   text-decoration: none !important;
+}
+
+.navbarMe {
+  /* padding-left: 1rem; */
+  height: 40px;
+  display: flex;
+}
+
+.meIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  background-color: rgb(1 1 1 / 10%);
+  color: var(--color-text-secondary);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+[data-theme='dark'] .meIcon {
+  background-color: #525252;
+}
+
+.meIcon:hover {
+  color: var(--color-primary);
 }
