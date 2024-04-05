@@ -12,7 +12,7 @@ export default (app: express.Express): void => {
 
   app.get('/api/auth/cas', casLogin);
 
-  app.get('/api/auth/logout', (req, res, next) => {
+  app.post('/api/auth/logout', (req, res, next) => {
     if (!req.user) return res.status(400).json({ error: 'USER_NOT_FOUND' });
     winston.info(`Logging out ${req.user.netId}`);
 
