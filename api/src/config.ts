@@ -1,6 +1,8 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import pg from 'pg';
 import * as schema from '../drizzle/schema.js';
+
+const { Pool } = pg;
 
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);

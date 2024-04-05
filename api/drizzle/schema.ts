@@ -1,6 +1,5 @@
 import {
   pgTable,
-  char,
   boolean,
   varchar,
   bigint,
@@ -13,7 +12,7 @@ import {
 import { sql } from 'drizzle-orm';
 
 export const studentBluebookSettings = pgTable('studentBluebookSettings', {
-  netId: char('netId', { length: 8 }).primaryKey().notNull(),
+  netId: varchar('netId', { length: 8 }).primaryKey().notNull(),
   evaluationsEnabled: boolean('evaluationsEnabled').notNull(),
   firstName: varchar('firstName', { length: 256 }).default(sql`NULL`),
   lastName: varchar('lastName', { length: 256 }).default(sql`NULL`),
@@ -35,8 +34,8 @@ export const studentFriendRequests = pgTable(
   'studentFriendRequests',
   {
     id: bigserial('id', { mode: 'bigint' }).primaryKey().notNull(),
-    netId: char('netId', { length: 8 }).notNull(),
-    friendNetId: char('friendNetId', { length: 8 }).notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    friendNetId: varchar('friendNetId', { length: 8 }).notNull(),
   },
   (table) => ({
     friendRequestsUniqueIdx: uniqueIndex('friend_requests_unique_idx').on(
@@ -51,8 +50,8 @@ export const studentFriends = pgTable(
   'studentFriends',
   {
     id: bigserial('id', { mode: 'bigint' }).primaryKey().notNull(),
-    netId: char('netId', { length: 8 }).notNull(),
-    friendNetId: char('friendNetId', { length: 8 }).notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    friendNetId: varchar('friendNetId', { length: 8 }).notNull(),
   },
   (table) => ({
     friendsUniqueIdx: uniqueIndex('friends_unique_idx').on(
@@ -67,7 +66,7 @@ export const worksheetCourses = pgTable(
   'worksheetCourses',
   {
     id: serial('id').primaryKey().notNull(),
-    netId: char('netId', { length: 8 }).notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
     crn: integer('crn').notNull(),
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').default(0).notNull(),

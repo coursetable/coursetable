@@ -23,7 +23,7 @@ export function worksheetCoursesToWorksheets(
     res[course.netId]![course.season] ??= {};
 
     res[course.netId]![course.season]![course.worksheetNumber] ??= [];
-    res[course.netId]![course.season]![course.worksheetNumber].push({
+    res[course.netId]![course.season]![course.worksheetNumber]!.push({
       crn: course.crn,
       color: course.color,
     });

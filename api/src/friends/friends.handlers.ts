@@ -287,10 +287,12 @@ export const getRequestsForFriend = async (
 
     const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
 
-    return await tx
-      .selectDistinctOn([studentBluebookSettings.netId])
-      .from(studentBluebookSettings)
-      .where(inArray(studentBluebookSettings.netId, reqFriends));
+    return reqFriends.length > 0
+      ? await tx
+          .selectDistinctOn([studentBluebookSettings.netId])
+          .from(studentBluebookSettings)
+          .where(inArray(studentBluebookSettings.netId, reqFriends))
+      : [];
   });
 
   const friendNames = friendInfos.map((friendInfo) => ({
@@ -323,6 +325,16 @@ export const getFriendsWorksheets = async (
       const friendNetIds = friendRecords.map(
         (friendRecord) => friendRecord.friendNetId,
       );
+
+      if (friendNetIds.length === 0) {
+        return [
+          [],
+          {} as {
+            [netId: string]: {};
+          },
+          [],
+        ];
+      }
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx

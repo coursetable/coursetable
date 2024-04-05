@@ -41,6 +41,6 @@ TODO: the course data workflow is overcomplicated. Get rid of Postgres and the e
 
 Therefore, there are a few points to watch out for:
 
-1. Any DB modification must also update `api/drizzle/schema.ts`. Please note that prod deployment must also be manual in this case.
+1. Any DB modification must also update `api/drizzle/schema.ts`. Please note that prod deployment must also be manual in this case. To sync DB modifications, run `npm run db:push` in `express`
 
 2. If you shut down the local containers and start them again, the DB is now empty. On the dev frontend, you need to log in again. If you don't want to go through the challenge process, you can visit http://localhost:8081 and modify the database. (The login password is `MYSQL_ROOT_PASSWORD` which can be found on Doppler.)
