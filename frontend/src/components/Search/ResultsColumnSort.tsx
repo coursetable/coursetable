@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import {
   FcAlphabeticalSortingAz,
@@ -6,11 +6,7 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import {
-  useSearch,
-  defaultFilters,
-  type SortByOption,
-} from '../../contexts/searchContext';
+import { useSearch, type SortByOption } from '../../contexts/searchContext';
 import styles from './ResultsColumnSort.module.css';
 
 function ResultsColumnSort({
@@ -20,30 +16,20 @@ function ResultsColumnSort({
   readonly selectOption: SortByOption;
   readonly renderActive?: boolean;
 }) {
-  const [localSortOrder, setLocalSortOrder] = useState(
-    defaultFilters.sortOrder,
-  );
-  const [firstTime, setFirstTime] = useState(true);
-  const [active, setActive] = useState(false);
-
   const {
     filters: { selectSortBy, sortOrder },
   } = useSearch();
-
-  // TODO this is not an effect
-  useEffect(() => {
-    if (firstTime) {
-      if (selectSortBy.value.value === selectOption.value) {
-        setLocalSortOrder(sortOrder.value);
-        setActive(true);
-      }
-      setFirstTime(false);
-    } else if (!active && selectSortBy.value.value === selectOption.value) {
-      setActive(true);
-    } else if (active && selectSortBy.value.value !== selectOption.value) {
-      setActive(false);
-    }
-  }, [firstTime, selectOption, selectSortBy, sortOrder, active]);
+  const isActive = selectSortBy.value.value === selectOption.value;
+  const [localSortOrder, setLocalSortOrder] = useState(
+    isActive ? sortOrder.value : 'asc',
+  );
+  const Icon = selectOption.numeric
+    ? localSortOrder === 'asc'
+      ? FcNumericalSorting12
+      : FcNumericalSorting21
+    : localSortOrder === 'asc'
+      ? FcAlphabeticalSortingAz
+      : FcAlphabeticalSortingZa;
 
   return (
     <button
@@ -51,11 +37,11 @@ function ResultsColumnSort({
       className={clsx(
         styles.button,
         'ml-1 my-auto',
-        renderActive && active && styles.buttonActive,
+        renderActive && isActive && styles.buttonActive,
       )}
       onClick={() => {
         // If not sorting by this option previously, start sorting this option
-        if (selectSortBy.value.value !== selectOption.value) {
+        if (!isActive) {
           selectSortBy.set(selectOption);
           sortOrder.set(localSortOrder);
           return;
@@ -70,17 +56,7 @@ function ResultsColumnSort({
       }}
       aria-label={`${selectOption.label} ${localSortOrder === 'asc' ? 'ascending' : 'descending'}`}
     >
-      {!selectOption.numeric ? (
-        localSortOrder === 'asc' ? (
-          <FcAlphabeticalSortingAz className="d-block" size={20} />
-        ) : (
-          <FcAlphabeticalSortingZa className="d-block" size={20} />
-        )
-      ) : localSortOrder === 'asc' ? (
-        <FcNumericalSorting12 className="d-block" size={20} />
-      ) : (
-        <FcNumericalSorting21 className="d-block" size={20} />
-      )}
+      <Icon className="d-block" size={20} />
     </button>
   );
 }
