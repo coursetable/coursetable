@@ -11,11 +11,13 @@ import {
   type RBCEvent,
 } from '../../utilities/calendar';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
   const { courses, hoverCourse, curSeason } = useWorksheet();
+  const { isMobile } = useWindowDimensions();
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
@@ -26,6 +28,8 @@ function WorksheetCalendar() {
         borderColor: color.css(),
         borderWidth: '2px',
       };
+      // Hover management is too hard on mobile and not very useful
+      if (isMobile) return { style };
       if (hoverCourse && hoverCourse === event.listing.crn) {
         style.zIndex = 2;
         style.filter = 'saturate(130%)';
@@ -36,7 +40,7 @@ function WorksheetCalendar() {
         style,
       };
     },
-    [hoverCourse],
+    [isMobile, hoverCourse],
   );
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
