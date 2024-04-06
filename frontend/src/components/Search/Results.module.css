@@ -42,11 +42,3 @@
 .gridRow {
   max-width: 1600px;
 }
-
-.searchResults {
-  overflow: hidden;
-}
-
-.searchResultsSmall {
-  height: 80vh;
-}
