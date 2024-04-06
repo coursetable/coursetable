@@ -108,9 +108,12 @@ async function fetchAPI(
       message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
     });
     Sentry.captureException(err);
-    toast.error(
-      `Failed while ${breadcrumb.message.toLowerCase()}: ${String(err)}`,
-    );
+    let message = String(err);
+    if (message.includes('INVALID_REQUEST')) {
+      message +=
+        ' Please try refreshing the page and/or reopening in a new tab.';
+    }
+    toast.error(`Failed while ${breadcrumb.message.toLowerCase()}: ${message}`);
     return noResExpected ? false : undefined;
   }
 }
