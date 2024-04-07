@@ -70,7 +70,7 @@ function App() {
         // won't see the updated content.
         id={6}
       >
-        Coursetable will be undergoing maintenance today from 6-7:00 PM EST.
+        CourseTable will be undergoing maintenance today from 6-7:00 PM EST.
         During this time, the site will be unavailable. We apologize for any
         inconvenience.
       </Notice>
