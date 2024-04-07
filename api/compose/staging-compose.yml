@@ -7,11 +7,14 @@ services:
       traefik.http.routers.coursetable-staging.tls.certResolver: ctresolver
       traefik.http.routers.coursetable-staging.middlewares: gzip-compress@file
     networks:
+      - traefik
       - db
+      - api
 
   graphql-engine:
     networks:
       - db
+      - api
 
   redis:
     volumes:
