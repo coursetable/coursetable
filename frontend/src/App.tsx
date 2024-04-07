@@ -64,16 +64,16 @@ function App() {
           content="CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It's run by a small team of volunteers within the Yale Computer Society and is completely open source."
         />
       </Helmet>
-      {/* <Notice
+      <Notice
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
         id={6}
       >
-        CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
+        {/* CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
         During this time, the site will be unavailable. We apologize for any
-        inconvenience.
-      </Notice> */}
+        inconvenience. */}
+      </Notice>
       <Navbar />
       <SentryRoutes>
         <Route
