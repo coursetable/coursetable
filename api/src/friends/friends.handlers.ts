@@ -112,7 +112,7 @@ export const removeFriend = async (
 
   const [friend] = await db
     .selectDistinctOn([studentFriends.netId, studentFriends.friendNetId])
-    .from(studentFriendRequests)
+    .from(studentFriends)
     .where(
       and(
         eq(studentFriends.netId, netId),
