@@ -91,9 +91,11 @@ function Results({
             height={window.innerHeight}
             itemCount={Math.ceil(data.length / numCols)}
             itemSize={178}
+            className="px-1 pt-3"
+            // Inline styles because react-window also injects inline styles
             style={{
               width: '100%',
-              height: '100%',
+              height: 'auto',
               display: 'inline-block',
               // https://github.com/coursetable/coursetable/issues/1628
               // We need to cancel the list div being scrollable because we
@@ -134,7 +136,7 @@ function Results({
             itemSize={isLgDesktop ? 32 : 28}
             style={{
               width: '100%',
-              height: '100%',
+              height: 'auto',
               display: 'inline-block',
               overflow: 'hidden',
             }}
@@ -170,18 +172,7 @@ function Results({
           numResults={data.length}
         />
       )}
-      <div
-        className={clsx(
-          !isListView && 'px-1 pt-3',
-          styles.searchResults,
-          data.length > 0 &&
-            data.length < 20 &&
-            isListView &&
-            styles.searchResultsSmall,
-        )}
-      >
-        {resultsListing}
-      </div>
+      {resultsListing}
       <FloatingWorksheet />
     </div>
   );
