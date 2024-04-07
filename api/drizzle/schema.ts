@@ -70,7 +70,7 @@ export const worksheetCourses = pgTable(
     crn: integer('crn').notNull(),
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').default(0).notNull(),
-    color: varchar('color', { length: 32 }).notNull(),
+    color: varchar('color', { length: 32 }).notNull().default('#31a4d4'),
   },
   (table) => ({
     worksheetNetidIdx: index('worksheet_netid_idx').on(table.netId),
