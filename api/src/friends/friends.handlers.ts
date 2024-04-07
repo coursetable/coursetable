@@ -45,8 +45,8 @@ export const addFriend = async (
       .from(studentFriendRequests)
       .where(
         and(
-          eq(studentFriendRequests.netId, netId),
-          eq(studentFriendRequests.friendNetId, friendNetId),
+          eq(studentFriendRequests.netId, friendNetId),
+          eq(studentFriendRequests.friendNetId, netId),
         ),
       );
 
@@ -111,15 +111,12 @@ export const removeFriend = async (
   }
 
   const [friend] = await db
-    .selectDistinctOn([
-      studentFriendRequests.netId,
-      studentFriendRequests.friendNetId,
-    ])
+    .selectDistinctOn([studentFriends.netId, studentFriends.friendNetId])
     .from(studentFriendRequests)
     .where(
       and(
-        eq(studentFriendRequests.netId, netId),
-        eq(studentFriendRequests.friendNetId, friendNetId),
+        eq(studentFriends.netId, netId),
+        eq(studentFriends.friendNetId, friendNetId),
       ),
     );
 
