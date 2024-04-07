@@ -47,7 +47,7 @@ jobs:
 
   frontend-build-and-deploy:
     needs: changes
-    if: ${{ ( needs.changes.outputs.frontend == 'true' || inputs.frontend ) && needs.changes.outputs.db == 'false'}}
+    if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend}}
 
     environment:
       name: Production
