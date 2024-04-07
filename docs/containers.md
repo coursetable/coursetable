@@ -33,7 +33,7 @@ Here's the data flow for course data:
 And for user data:
 
 1. In dev, we always create a new MySQL database; in prod, we use the existing one.
-2. The API directly connects to this database using Prisma.
+2. The API directly connects to this database using Drizzle.
 3. The frontend requests the Express endpoint, which then makes DB calls.
 4. If you want to make DB changes, you can do so directly from PHPMyAdmin.
 
@@ -41,12 +41,6 @@ TODO: the course data workflow is overcomplicated. Get rid of Postgres and the e
 
 Therefore, there are a few points to watch out for:
 
-1. Any DB modification requires 3 changes:
-
-   1. Updating `api/prisma/schema.prisma`
-   2. Updating `api/mysql/database.sql`, which is used to create the DB in dev.
-   3. Updating the prod DB, either by actually doing it in the prod docker, or through the PHPMyAdmin interface.
-
-   TODO: you can see how it's obviously non-ideal. We should use Prisma to automatically generate initial DB and also migrate the prod DB.
+1. Any DB modification must also update `api/drizzle/schema.ts`. Please note that prod deployment must also be manual in this case. To sync DB modifications, run `npm run db:push` in `express`
 
 2. If you shut down the local containers and start them again, the DB is now empty. On the dev frontend, you need to log in again. If you don't want to go through the challenge process, you can visit http://localhost:8081 and modify the database. (The login password is `MYSQL_ROOT_PASSWORD` which can be found on Doppler.)

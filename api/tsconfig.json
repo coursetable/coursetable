@@ -5,6 +5,6 @@
     "module": "node16",
     "lib": ["es2023"],
   },
-  "include": ["src"],
+  "include": ["src", "drizzle.config.ts", "drizzle", "drizzle/schema.ts"],
   "exclude": [],
 }

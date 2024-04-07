@@ -68,10 +68,11 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={5}
+        id={6}
       >
-        You can now add friends by just searching their name! Go see what your
-        peers are taking :)
+        CourseTable will be undergoing maintenance today from 6-7:00 PM EST.
+        During this time, the site will be unavailable. We apologize for any
+        inconvenience.
       </Notice>
       <Navbar />
       <SentryRoutes>

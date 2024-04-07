@@ -1,9 +1,16 @@
 import type express from 'express';
 import z from 'zod';
-import { prisma } from '../config.js';
+import { and, eq, inArray } from 'drizzle-orm';
 import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
 
+import { db } from '../config.js';
 import winston from '../logging/winston.js';
+import {
+  studentBluebookSettings,
+  studentFriendRequests,
+  studentFriends,
+  worksheetCourses,
+} from '../../drizzle/schema.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -28,50 +35,58 @@ export const addFriend = async (
     return;
   }
 
-  // Make sure user has a friend request to accept
-  const existingRequest = await prisma.studentFriendRequests.findUnique({
-    where: {
-      netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-    },
-  });
+  await db.transaction(async (tx) => {
+    // Make sure user has a friend request to accept
+    const [existingRequest] = await db
+      .selectDistinctOn([
+        studentFriendRequests.netId,
+        studentFriendRequests.friendNetId,
+      ])
+      .from(studentFriendRequests)
+      .where(
+        and(
+          eq(studentFriendRequests.netId, netId),
+          eq(studentFriendRequests.friendNetId, friendNetId),
+        ),
+      );
 
-  if (!existingRequest) {
-    res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
-    return;
-  }
+    if (!existingRequest) {
+      res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
+      tx.rollback();
+      return;
+    }
 
-  await prisma.$transaction([
-    prisma.studentFriends.upsert({
-      // Update (do not create a new friend) when one already matches the
-      // netId
-      where: {
-        netId_friendNetId: { netId, friendNetId },
-      },
+    // Update (do not create a new friend) when one already matches the
+    // netId
+    await tx
+      .insert(studentFriends)
       // Basic info for creation
-      create: {
+      .values({
         netId,
         friendNetId,
-      },
-      // Update people's names if they've changed
-      update: {},
-    }),
+      })
+      .onConflictDoNothing({
+        target: [studentFriends.netId, studentFriends.friendNetId],
+      });
     // Bidirectional addition
-    prisma.studentFriends.upsert({
-      where: {
-        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-      },
-      create: {
+    await tx
+      .insert(studentFriends)
+      .values({
         netId: friendNetId,
         friendNetId: netId,
-      },
-      update: {},
-    }),
-    prisma.studentFriendRequests.delete({
-      where: {
-        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-      },
-    }),
-  ]);
+      })
+      .onConflictDoNothing({
+        target: [studentFriends.netId, studentFriends.friendNetId],
+      });
+    await tx
+      .delete(studentFriendRequests)
+      .where(
+        and(
+          eq(studentFriendRequests.netId, friendNetId),
+          eq(studentFriendRequests.friendNetId, netId),
+        ),
+      );
+  });
 
   res.sendStatus(200);
 };
@@ -95,41 +110,69 @@ export const removeFriend = async (
     return;
   }
 
-  const friend = await prisma.studentFriends.findUnique({
-    where: {
-      netId_friendNetId: { netId, friendNetId },
-    },
-  });
+  const [friend] = await db
+    .selectDistinctOn([
+      studentFriendRequests.netId,
+      studentFriendRequests.friendNetId,
+    ])
+    .from(studentFriendRequests)
+    .where(
+      and(
+        eq(studentFriendRequests.netId, netId),
+        eq(studentFriendRequests.friendNetId, friendNetId),
+      ),
+    );
 
   if (!friend) {
-    const friendRequest = await prisma.studentFriendRequests.findUnique({
-      where: {
-        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-      },
-    });
-    if (!friendRequest) {
-      res.status(400).json({ error: 'NO_FRIEND' });
-      return;
-    }
-    await prisma.studentFriendRequests.delete({
-      where: {
-        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-      },
+    await db.transaction(async (tx) => {
+      const [friendRequest] = await tx
+        .selectDistinctOn([
+          studentFriendRequests.netId,
+          studentFriendRequests.friendNetId,
+        ])
+        .from(studentFriendRequests)
+        .where(
+          and(
+            eq(studentFriendRequests.netId, friendNetId),
+            eq(studentFriendRequests.friendNetId, netId),
+          ),
+        );
+
+      if (!friendRequest) {
+        res.status(400).json({ error: 'NO_FRIEND' });
+        tx.rollback();
+        return;
+      }
+
+      await tx
+        .delete(studentFriendRequests)
+        .where(
+          and(
+            eq(studentFriendRequests.netId, friendNetId),
+            eq(studentFriendRequests.friendNetId, netId),
+          ),
+        );
     });
   } else {
-    await prisma.$transaction([
-      prisma.studentFriends.delete({
-        where: {
-          netId_friendNetId: { netId, friendNetId },
-        },
-      }),
+    await db.transaction(async (tx) => {
+      await tx
+        .delete(studentFriends)
+        .where(
+          and(
+            eq(studentFriends.netId, netId),
+            eq(studentFriends.friendNetId, friendNetId),
+          ),
+        );
       // Bidirectional deletion
-      prisma.studentFriends.delete({
-        where: {
-          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-        },
-      }),
-    ]);
+      await tx
+        .delete(studentFriends)
+        .where(
+          and(
+            eq(studentFriends.netId, friendNetId),
+            eq(studentFriends.friendNetId, netId),
+          ),
+        );
+    });
   }
   res.sendStatus(200);
 };
@@ -153,60 +196,79 @@ export const requestAddFriend = async (
     return;
   }
 
-  const friendUser = await prisma.studentBluebookSettings.findUnique({
-    where: {
-      netId: friendNetId,
-    },
-  });
+  await db.transaction(async (tx) => {
+    const [friendUser] = await tx
+      .selectDistinctOn([studentBluebookSettings.netId])
+      .from(studentBluebookSettings)
+      .where(eq(studentBluebookSettings.netId, friendNetId));
 
-  if (!friendUser) {
-    res.status(400).json({ error: 'FRIEND_NOT_FOUND' });
-    return;
-  }
+    if (!friendUser) {
+      res.status(400).json({ error: 'FRIEND_NOT_FOUND' });
+      tx.rollback();
+      return;
+    }
 
-  const existingFriend = await prisma.studentFriends.findUnique({
-    where: {
-      netId_friendNetId: { netId, friendNetId },
-    },
-  });
+    const [existingFriend] = await tx
+      .selectDistinctOn([studentFriends.netId, studentFriends.friendNetId])
+      .from(studentFriends)
+      .where(
+        and(
+          eq(studentFriends.netId, netId),
+          eq(studentFriends.friendNetId, friendNetId),
+        ),
+      );
 
-  if (existingFriend) {
-    res.status(400).json({ error: 'ALREADY_FRIENDS' });
-    return;
-  }
+    if (existingFriend) {
+      res.status(400).json({ error: 'ALREADY_FRIENDS' });
+      tx.rollback();
+      return;
+    }
 
-  const existingOppositeRequest = await prisma.studentFriendRequests.findUnique(
-    {
-      where: {
-        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-      },
-    },
-  );
+    const [existingOppositeRequest] = await tx
+      .selectDistinctOn([
+        studentFriendRequests.netId,
+        studentFriendRequests.friendNetId,
+      ])
+      .from(studentFriendRequests)
+      .where(
+        and(
+          eq(studentFriendRequests.netId, friendNetId),
+          eq(studentFriendRequests.friendNetId, netId),
+        ),
+      );
 
-  if (existingOppositeRequest) {
-    res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
-    return;
-  }
+    if (existingOppositeRequest) {
+      res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
+      tx.rollback();
+      return;
+    }
 
-  const existingSameRequest = await prisma.studentFriendRequests.findUnique({
-    where: {
-      netId_friendNetId: { netId, friendNetId },
-    },
-  });
+    const [existingSameRequest] = await tx
+      .selectDistinctOn([
+        studentFriendRequests.netId,
+        studentFriendRequests.friendNetId,
+      ])
+      .from(studentFriendRequests)
+      .where(
+        and(
+          eq(studentFriendRequests.netId, netId),
+          eq(studentFriendRequests.friendNetId, friendNetId),
+        ),
+      );
 
-  if (existingSameRequest) {
-    res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
-    return;
-  }
+    if (existingSameRequest) {
+      res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
+      tx.rollback();
+      return;
+    }
 
-  await prisma.studentFriendRequests.create({
-    data: {
+    await tx.insert(studentFriendRequests).values({
       netId,
       friendNetId,
-    },
-  });
+    });
 
-  res.sendStatus(200);
+    res.sendStatus(200);
+  });
 };
 
 export const getRequestsForFriend = async (
@@ -217,20 +279,20 @@ export const getRequestsForFriend = async (
 
   const { netId } = req.user!;
 
-  const friendReqs = await prisma.studentFriendRequests.findMany({
-    where: {
-      friendNetId: netId,
-    },
-  });
+  const friendInfos = await db.transaction(async (tx) => {
+    const friendReqs = await tx
+      .select()
+      .from(studentFriendRequests)
+      .where(eq(studentFriendRequests.friendNetId, netId));
 
-  const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
+    const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
 
-  const friendInfos = await prisma.studentBluebookSettings.findMany({
-    where: {
-      netId: {
-        in: reqFriends,
-      },
-    },
+    return reqFriends.length > 0
+      ? await tx
+          .selectDistinctOn([studentBluebookSettings.netId])
+          .from(studentBluebookSettings)
+          .where(inArray(studentBluebookSettings.netId, reqFriends))
+      : [];
   });
 
   const friendNames = friendInfos.map((friendInfo) => ({
@@ -252,35 +314,47 @@ export const getFriendsWorksheets = async (
   const { netId } = req.user!;
 
   winston.info('Getting NetIDs of friends');
-  const friendRecords = await prisma.studentFriends.findMany({
-    where: {
-      netId,
-    },
-  });
 
-  const friendNetIds = friendRecords.map(
-    (friendRecord) => friendRecord.friendNetId,
+  const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction(
+    async (tx) => {
+      const friendRecords = await tx
+        .select()
+        .from(studentFriends)
+        .where(eq(studentFriends.netId, netId));
+
+      const friendNetIds = friendRecords.map(
+        (friendRecord) => friendRecord.friendNetId,
+      );
+
+      if (friendNetIds.length === 0) {
+        return [
+          [],
+          {} as {
+            [netId: string]: {};
+          },
+          [],
+        ];
+      }
+
+      winston.info('Getting worksheets of friends');
+      const friendWorksheets = await tx
+        .select()
+        .from(worksheetCourses)
+        .where(inArray(worksheetCourses.netId, friendNetIds));
+
+      const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
+
+      winston.info('Getting info of friends');
+
+      const friendInfos = await tx
+        .selectDistinctOn([studentBluebookSettings.netId])
+        .from(studentBluebookSettings)
+        .where(inArray(studentBluebookSettings.netId, friendNetIds));
+
+      return [friendInfos, friendWorksheetMap, friendNetIds];
+    },
   );
 
-  winston.info('Getting worksheets of friends');
-  const friendWorksheets = await prisma.worksheetCourses.findMany({
-    where: {
-      netId: {
-        in: friendNetIds,
-      },
-    },
-  });
-  const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
-
-  winston.info('Getting info of friends');
-
-  const friendInfos = await prisma.studentBluebookSettings.findMany({
-    where: {
-      netId: {
-        in: friendNetIds,
-      },
-    },
-  });
   const friendInfoMap = Object.fromEntries(
     friendInfos.map((friendInfo) => [
       friendInfo.netId,
@@ -309,7 +383,7 @@ export const getNames = async (
   res: express.Response,
 ): Promise<void> => {
   winston.info(`Fetching friends' names`);
-  const allNameRecords = await prisma.studentBluebookSettings.findMany();
+  const allNameRecords = await db.select().from(studentBluebookSettings);
 
   const names = allNameRecords.map((nameRecord) => ({
     netId: nameRecord.netId,

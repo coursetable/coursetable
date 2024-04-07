@@ -10,18 +10,16 @@ services:
       traefik.enable: true
     networks:
       - traefik
-      - mysql
       - api
+      - db
 
   graphql-engine:
     networks:
-      - ferry
+      - db
       - api
 
 networks:
   traefik:
     external: true
-  ferry:
-    external: true
-  mysql:
+  db:
     external: true
