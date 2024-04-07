@@ -53,3 +53,5 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
       - ../postgres/pgadmin/servers.json:/pgadmin4/servers.json
+    networks:
+      - api

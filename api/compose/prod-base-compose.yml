@@ -25,3 +25,5 @@ networks:
     external: true
   mysql:
     external: true
+  db:
+    external: true
