@@ -7,7 +7,7 @@ on:
       - 'frontend/**'
       - 'api/**'
       - '.github/workflows/cd.yml'
-      
+
   workflow_dispatch:
     inputs:
       api:
