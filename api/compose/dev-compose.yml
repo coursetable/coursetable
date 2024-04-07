@@ -42,15 +42,15 @@ services:
     networks:
       - api
 
-  # This container is only for dev! The prod container is at coursetable/infra/mysql
+  # This container is only for dev! The prod container is at coursetable/infra/db
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
     ports:
       - 8081:80
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@coursetable.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL?pgadmin@coursetable.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD?password}
     volumes:
       - ../postgres/pgadmin/servers.json:/pgadmin4/servers.json
     networks:
