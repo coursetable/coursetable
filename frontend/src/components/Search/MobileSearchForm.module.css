@@ -60,7 +60,7 @@
   font-size: 0.75rem;
   width: 1.5rem;
   color: white;
-  background-color: #2d87f3;
+  background-color: var(--color-primary);
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;

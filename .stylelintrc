@@ -7,6 +7,12 @@
       {
         "ignorePseudoClasses": ["global"]
       }
+    ],
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreProperties": ["/^--.*/"]
+      }
     ]
   }
 }

@@ -42,7 +42,7 @@ mark {
 }
 
 .tabs :global(.active) {
-  color: #468ff2 !important;
+  color: var(--color-primary) !important;
   background-color: var(--color-surface) !important;
   border-bottom: none;
 }

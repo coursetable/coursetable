@@ -49,7 +49,7 @@
 
 .button:active {
   background-color: var(--color-button-active);
-  color: var(--color-primary-hover);
+  color: var(--color-primary);
 }
 
 .dropdown {
