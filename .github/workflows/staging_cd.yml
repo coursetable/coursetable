@@ -6,6 +6,8 @@ on:
     paths:
       - 'frontend/**'
       - 'api/**'
+      - '.github/workflows/staging_cd.yml'
+
   workflow_dispatch:
     inputs:
       api:
@@ -25,7 +27,7 @@ jobs:
     outputs:
       api: ${{ steps.filter.outputs.api }}
       frontend: ${{ steps.filter.outputs.frontend }}
-      db: ${{ steps.db.outputs.db }}
+      db: ${{ steps.filter.outputs.db }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,12 +42,8 @@ jobs:
               - 'api/**'
             frontend:
               - 'frontend/**'
-      - uses: dorny/paths-filter@v3
-        id: db
-        with:
-          filters: |
             db:
-              - 'api/drizzle/schema.ts'
+                - 'api/drizzle/schema.ts'
 
   frontend-build-and-deploy:
     needs: changes
