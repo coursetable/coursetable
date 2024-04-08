@@ -1,6 +1,6 @@
 import type express from 'express';
 import z from 'zod';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
 
 import { db } from '../config.js';
@@ -11,6 +11,7 @@ import {
   studentFriends,
   worksheetCourses,
 } from '../../drizzle/schema.js';
+import { findUniqueRequest } from './friends.queries.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -37,19 +38,7 @@ export const addFriend = async (
 
   await db.transaction(async (tx) => {
     // Make sure user has a friend request to accept
-    const [existingRequest] = await db
-      .selectDistinctOn([
-        studentFriendRequests.netId,
-        studentFriendRequests.friendNetId,
-      ])
-      .from(studentFriendRequests)
-      .where(
-        and(
-          eq(studentFriendRequests.netId, friendNetId),
-          eq(studentFriendRequests.friendNetId, netId),
-        ),
-      );
-
+    const [existingRequest] = await findUniqueRequest(tx, netId, friendNetId);
     if (!existingRequest) {
       res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
       return;
@@ -64,9 +53,7 @@ export const addFriend = async (
         netId,
         friendNetId,
       })
-      .onConflictDoNothing({
-        target: [studentFriends.netId, studentFriends.friendNetId],
-      });
+      .onConflictDoNothing();
     // Bidirectional addition
     await tx
       .insert(studentFriends)
@@ -74,9 +61,7 @@ export const addFriend = async (
         netId: friendNetId,
         friendNetId: netId,
       })
-      .onConflictDoNothing({
-        target: [studentFriends.netId, studentFriends.friendNetId],
-      });
+      .onConflictDoNothing();
     await tx
       .delete(studentFriendRequests)
       .where(
@@ -121,18 +106,7 @@ export const removeFriend = async (
 
   if (!friend) {
     await db.transaction(async (tx) => {
-      const [friendRequest] = await tx
-        .selectDistinctOn([
-          studentFriendRequests.netId,
-          studentFriendRequests.friendNetId,
-        ])
-        .from(studentFriendRequests)
-        .where(
-          and(
-            eq(studentFriendRequests.netId, friendNetId),
-            eq(studentFriendRequests.friendNetId, netId),
-          ),
-        );
+      const [friendRequest] = await findUniqueRequest(tx, netId, friendNetId);
 
       if (!friendRequest) {
         res.status(400).json({ error: 'NO_FRIEND' });
@@ -217,36 +191,22 @@ export const requestAddFriend = async (
       return;
     }
 
-    const [existingOppositeRequest] = await tx
-      .selectDistinctOn([
-        studentFriendRequests.netId,
-        studentFriendRequests.friendNetId,
-      ])
-      .from(studentFriendRequests)
-      .where(
-        and(
-          eq(studentFriendRequests.netId, friendNetId),
-          eq(studentFriendRequests.friendNetId, netId),
-        ),
-      );
+    const [existingOppositeRequest] = await findUniqueRequest(
+      tx,
+      netId,
+      friendNetId,
+    );
 
     if (existingOppositeRequest) {
       res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
       return;
     }
 
-    const [existingSameRequest] = await tx
-      .selectDistinctOn([
-        studentFriendRequests.netId,
-        studentFriendRequests.friendNetId,
-      ])
-      .from(studentFriendRequests)
-      .where(
-        and(
-          eq(studentFriendRequests.netId, netId),
-          eq(studentFriendRequests.friendNetId, friendNetId),
-        ),
-      );
+    const [existingSameRequest] = await findUniqueRequest(
+      tx,
+      friendNetId,
+      netId,
+    );
 
     if (existingSameRequest) {
       res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
@@ -270,9 +230,11 @@ export const getRequestsForFriend = async (
 
   const { netId } = req.user!;
 
-  const friendInfos = await db.transaction(async (tx) => {
+  const friendNames = await db.transaction(async (tx) => {
     const friendReqs = await tx
-      .select()
+      .select({
+        netId: studentFriendRequests.netId,
+      })
       .from(studentFriendRequests)
       .where(eq(studentFriendRequests.friendNetId, netId));
 
@@ -280,18 +242,14 @@ export const getRequestsForFriend = async (
 
     return reqFriends.length > 0
       ? await tx
-          .selectDistinctOn([studentBluebookSettings.netId])
+          .selectDistinctOn([studentBluebookSettings.netId], {
+            name: sql<string>`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+            netId: studentBluebookSettings.netId,
+          })
           .from(studentBluebookSettings)
           .where(inArray(studentBluebookSettings.netId, reqFriends))
       : [];
   });
-
-  const friendNames = friendInfos.map((friendInfo) => ({
-    netId: friendInfo.netId,
-    name: `${friendInfo.firstName ?? '[unknown]'} ${
-      friendInfo.lastName ?? '[unknown]'
-    }`,
-  }));
 
   res.status(200).json({ requests: friendNames });
 };
@@ -309,7 +267,9 @@ export const getFriendsWorksheets = async (
   const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction(
     async (tx) => {
       const friendRecords = await tx
-        .select()
+        .select({
+          friendNetId: studentFriends.friendNetId,
+        })
         .from(studentFriends)
         .where(eq(studentFriends.netId, netId));
 
@@ -329,7 +289,13 @@ export const getFriendsWorksheets = async (
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx
-        .select()
+        .select({
+          netId: worksheetCourses.netId,
+          crn: worksheetCourses.crn,
+          season: worksheetCourses.season,
+          worksheetNumber: worksheetCourses.worksheetNumber,
+          color: worksheetCourses.color,
+        })
         .from(worksheetCourses)
         .where(inArray(worksheetCourses.netId, friendNetIds));
 
@@ -338,7 +304,10 @@ export const getFriendsWorksheets = async (
       winston.info('Getting info of friends');
 
       const friendInfos = await tx
-        .selectDistinctOn([studentBluebookSettings.netId])
+        .selectDistinctOn([studentBluebookSettings.netId], {
+          netId: studentBluebookSettings.netId,
+          name: sql<string>`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+        })
         .from(studentBluebookSettings)
         .where(inArray(studentBluebookSettings.netId, friendNetIds));
 
@@ -350,9 +319,7 @@ export const getFriendsWorksheets = async (
     friendInfos.map((friendInfo) => [
       friendInfo.netId,
       {
-        name: `${friendInfo.firstName ?? '[unknown]'} ${
-          friendInfo.lastName ?? '[unknown]'
-        }`,
+        name: friendInfo.name,
       },
     ]),
   );
