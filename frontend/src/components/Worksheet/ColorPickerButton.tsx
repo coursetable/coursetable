@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { MdEdit } from 'react-icons/md';
 import debounce from 'lodash.debounce';
@@ -52,6 +52,7 @@ function ColorPickerButton({
   const { userRefresh } = useUser();
   const { curSeason, worksheetNumber } = useWorksheet();
   const [open, setOpen] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
 
   return (
     // TODO: accessibility
@@ -62,7 +63,15 @@ function ColorPickerButton({
         e.preventDefault();
       }}
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={() => {
+        timeoutRef.current = window.setTimeout(() => {
+          setOpen(false);
+        }, 200);
+      }}
+      // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+      onMouseEnter={() => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      }}
     >
       <button
         type="button"
