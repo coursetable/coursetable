@@ -200,7 +200,7 @@ function Tutorial() {
         toggleTutorial(false);
       }}
       startAt={0}
-      accentColor="var(--color-primary-hover)"
+      accentColor="var(--color-primary)"
       rounded={6}
       showCloseButton
       disableDotsNavigation
