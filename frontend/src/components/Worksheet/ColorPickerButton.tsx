@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { MdEdit } from 'react-icons/md';
 import debounce from 'lodash.debounce';
+import chroma from 'chroma-js';
 import { toggleBookmark } from '../../utilities/api';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -19,7 +20,6 @@ function Picker({
   return (
     <div className={styles.pickerPanel}>
       <HexColorPicker color={color} onChange={onChange} />
-
       <div className={styles.presetColors}>
         {worksheetColors.map((presetColor) => (
           <button
@@ -58,6 +58,7 @@ function ColorPickerButton({
     // TODO: accessibility
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
+      className={styles.button}
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -74,6 +75,7 @@ function ColorPickerButton({
       }}
     >
       <button
+        className={styles.button}
         type="button"
         className={className}
         onClick={() => setOpen(!open)}
@@ -91,7 +93,7 @@ function ColorPickerButton({
               season: curSeason,
               crn,
               worksheetNumber,
-              color: newColor,
+              color: chroma(newColor).hex(),
             });
             await userRefresh();
           }, 500)}

@@ -4,6 +4,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { RBCEvent } from '../../utilities/calendar';
 import { CourseInfoPopover } from '../Search/ResultsItemCommon';
@@ -14,6 +15,7 @@ const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const course = event.listing;
   const { person } = useWorksheet();
+  const { isMobile } = useWindowDimensions();
 
   return (
     <>
