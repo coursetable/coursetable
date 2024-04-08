@@ -52,7 +52,6 @@ export const addFriend = async (
 
     if (!existingRequest) {
       res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
-      tx.rollback();
       return;
     }
 
@@ -137,7 +136,6 @@ export const removeFriend = async (
 
       if (!friendRequest) {
         res.status(400).json({ error: 'NO_FRIEND' });
-        tx.rollback();
         return;
       }
 
@@ -201,7 +199,6 @@ export const requestAddFriend = async (
 
     if (!friendUser) {
       res.status(400).json({ error: 'FRIEND_NOT_FOUND' });
-      tx.rollback();
       return;
     }
 
@@ -217,7 +214,6 @@ export const requestAddFriend = async (
 
     if (existingFriend) {
       res.status(400).json({ error: 'ALREADY_FRIENDS' });
-      tx.rollback();
       return;
     }
 
@@ -236,7 +232,6 @@ export const requestAddFriend = async (
 
     if (existingOppositeRequest) {
       res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
-      tx.rollback();
       return;
     }
 
@@ -255,7 +250,6 @@ export const requestAddFriend = async (
 
     if (existingSameRequest) {
       res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
-      tx.rollback();
       return;
     }
 
@@ -380,13 +374,14 @@ export const getNames = async (
   res: express.Response,
 ): Promise<void> => {
   winston.info(`Fetching friends' names`);
-  const allNameRecords = await db.select().from(studentBluebookSettings);
+  const names = await db
+    .select({
+      netId: studentBluebookSettings.netId,
+      first: studentBluebookSettings.firstName,
+      last: studentBluebookSettings.lastName,
+      college: studentBluebookSettings.college,
+    })
+    .from(studentBluebookSettings);
 
-  const names = allNameRecords.map((nameRecord) => ({
-    netId: nameRecord.netId,
-    first: nameRecord.firstName,
-    last: nameRecord.lastName,
-    college: nameRecord.college,
-  }));
   res.status(200).json({ names });
 };
