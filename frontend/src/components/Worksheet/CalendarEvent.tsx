@@ -1,6 +1,8 @@
 import React from 'react';
+import clsx from 'clsx';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { RBCEvent } from '../../utilities/calendar';
@@ -29,12 +31,19 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         </div>
       </CourseInfoPopover>
       {person === 'me' && (
-        <WorksheetHideButton
-          crn={course.crn}
-          // Course in calendar is never hidden
-          hidden={false}
-          className={styles.worksheetHideButton}
-        />
+        <div className="d-flex gap-1 flex-direction-column">
+          <WorksheetHideButton
+            crn={course.crn}
+            // Course in calendar is never hidden
+            hidden={false}
+            className={styles.worksheetHideButton}
+          />
+          <ColorPickerButton
+            crn={course.crn}
+            color={event.color}
+            className={styles.worksheetHideButton}
+          />
+        </div>
       )}
     </>
   );

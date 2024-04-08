@@ -24,6 +24,10 @@
   opacity: 1;
 }
 
+.colorPickerButton {
+  top: 30px;
+}
+
 .courseNameText {
   font-size: 12px;
   white-space: pre-wrap;

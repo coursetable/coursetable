@@ -1,0 +1,27 @@
+.pickerPanel {
+  position: absolute;
+  z-index: 100;
+  background-color: var(--color-surface);
+  border-radius: 6px;
+}
+
+.pickerPanel :global(.react-colorful__last-control) {
+  border-radius: 0;
+}
+
+.presetColors {
+  display: flex;
+  padding: 12px;
+  flex-wrap: wrap;
+}
+
+.presetColor {
+  width: 24px;
+  height: 24px;
+  margin: 4px;
+  border: none;
+  padding: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+}

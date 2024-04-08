@@ -119,7 +119,7 @@ async function fetchAPI(
 }
 
 export function toggleBookmark(body: {
-  action: 'add' | 'remove';
+  action: 'add' | 'remove' | 'update';
   season: Season;
   crn: Crn;
   worksheetNumber: number;
