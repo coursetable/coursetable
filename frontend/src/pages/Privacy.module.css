@@ -29,7 +29,7 @@
   }
 }
 
-@media (width < 480px) {
+@media (width < 576px) {
   .container {
     width: 90vw;
   }

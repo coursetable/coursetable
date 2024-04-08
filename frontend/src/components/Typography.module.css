@@ -49,12 +49,8 @@
 }
 
 .hr {
-  border-color: #ededed;
+  border-color: var(--color-border);
   transition: border-color var(--trans-dur);
-}
-
-[data-theme='dark'] .hr {
-  border-color: #404040;
 }
 
 .infoPopover {
@@ -102,7 +98,7 @@
 
 .ratingBubble.hasRating {
   font-weight: 600;
-  color: #141414;
+  color: var(--color-text-dark);
 }
 
 .linkText {

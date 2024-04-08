@@ -10,7 +10,7 @@ const labels = {
   enableQuist: [
     // eslint-disable-next-line react/jsx-key
     <>
-      Enable <IoFlaskOutline color="var(--color-primary-hover)" />
+      Enable <IoFlaskOutline color="var(--color-primary)" />
       <Link to="/releases/quist">Quist</Link>
     </>,
     'Enable Quist',
