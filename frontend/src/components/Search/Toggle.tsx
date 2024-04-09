@@ -42,7 +42,7 @@ export default function Toggle({
       <Form.Check.Label
         className={styles.label}
         onClick={() => {
-          filters[handle].set((x) => !x);
+          filters[handle].set(!filters[handle].value);
           setStartTime(Date.now());
         }}
       >
