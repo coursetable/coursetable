@@ -1,13 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { HexColorPicker } from 'react-colorful';
 import { MdEdit } from 'react-icons/md';
-import debounce from 'lodash.debounce';
 import chroma from 'chroma-js';
-import { toggleBookmark } from '../../utilities/api';
+import debounce from 'lodash.debounce';
+import { HexColorPicker } from 'react-colorful';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { worksheetColors } from '../../utilities/constants';
+import { toggleBookmark } from '../../utilities/api';
 import type { Crn } from '../../utilities/common';
+import { worksheetColors } from '../../utilities/constants';
 import styles from './ColorPickerButton.module.css';
 
 function Picker({
@@ -56,7 +56,7 @@ function ColorPickerButton({
 
   return (
     // TODO: accessibility
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
     <div
       className={styles.button}
       onClick={(e) => {
@@ -67,7 +67,7 @@ function ColorPickerButton({
       onMouseLeave={() => {
         timeoutRef.current = window.setTimeout(() => {
           setOpen(false);
-        }, 200);
+        }, 500);
       }}
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
       onMouseEnter={() => {
