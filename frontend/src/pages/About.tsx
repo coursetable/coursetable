@@ -335,7 +335,7 @@ function About() {
           evaluations, and course demand statistics in an intuitive interface.
           It's run by a small team of volunteers within the{' '}
           <a
-            href="http://yalecompsociety.org/"
+            href="http://yalecomputersociety.org/"
             target="_blank"
             rel="noopener noreferrer"
           >
