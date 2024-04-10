@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 function safeStorageAccess<A extends (...args: never[]) => unknown>(
   action: A,
@@ -25,38 +25,47 @@ type StorageSlot<T> = {
   has: () => boolean;
 };
 
-export function createSessionStorageSlot<T>(key: string): StorageSlot<T> {
+function createStorageSlot<T>(storage: Storage, key: string): StorageSlot<T> {
   return {
     get: safeStorageAccess(() => {
-      const strVal = sessionStorage.getItem(key);
+      const strVal = storage.getItem(key);
       if (strVal === null || strVal === 'undefined') return null;
       return JSON.parse(strVal) as T;
     }, null),
     set: safeStorageAccess((obj: T) => {
-      sessionStorage.setItem(key, JSON.stringify(obj));
+      storage.setItem(key, JSON.stringify(obj));
     }),
     remove: safeStorageAccess(() => {
-      sessionStorage.removeItem(key);
+      storage.removeItem(key);
     }),
-    has: safeStorageAccess(() => sessionStorage.getItem(key) !== null, false),
+    has: safeStorageAccess(() => storage.getItem(key) !== null, false),
   };
 }
 
+export function createSessionStorageSlot<T>(key: string): StorageSlot<T> {
+  return createStorageSlot(sessionStorage, key);
+}
+
 export function createLocalStorageSlot<T>(key: string): StorageSlot<T> {
-  return {
-    get: safeStorageAccess(() => {
-      const strVal = localStorage.getItem(key);
-      if (strVal === null || strVal === 'undefined') return null;
-      return JSON.parse(strVal) as T;
-    }, null),
-    set: safeStorageAccess((obj: T) => {
-      localStorage.setItem(key, JSON.stringify(obj));
-    }),
-    remove: safeStorageAccess(() => {
-      localStorage.removeItem(key);
-    }),
-    has: safeStorageAccess(() => localStorage.getItem(key) !== null, false),
-  };
+  return createStorageSlot(localStorage, key);
+}
+
+function useStorageState<T>(
+  storage: Storage,
+  key: string,
+  defaultValue: T,
+): readonly [T, (newValue: T) => void] {
+  const [value, setValue] = useState<T>(defaultValue);
+  const storageSlot = useRef(createStorageSlot<T>(storage, key));
+  useEffect(() => {
+    const ssValue = storageSlot.current.get();
+    if (ssValue !== null) setValue(ssValue);
+  }, []);
+  const setValueAndStorage = useCallback((newValue: T) => {
+    storageSlot.current.set(newValue);
+    setValue(newValue);
+  }, []);
+  return [value, setValueAndStorage] as const;
 }
 
 /**
@@ -68,18 +77,9 @@ export function createLocalStorageSlot<T>(key: string): StorageSlot<T> {
 export const useSessionStorageState = <T>(
   key: string,
   defaultValue: T,
-): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
-  const [value, setValue] = useState<T>(defaultValue);
-  const storage = useRef(createSessionStorageSlot<T>(key));
-  useEffect(() => {
-    const ssValue = storage.current.get();
-    if (ssValue !== null) setValue(ssValue);
-  }, []);
-  useEffect(() => {
-    storage.current.set(value);
-  }, [value]);
-  return [value, setValue] as const;
-};
+): readonly [T, (newValue: T) => void] =>
+  useStorageState(sessionStorage, key, defaultValue);
+
 /**
  * Syncs state with localStorage. Do not call setValue in SSR because there is
  * no storage to access. (i.e. only call it in useEffect or event handlers)
@@ -89,15 +89,5 @@ export const useSessionStorageState = <T>(
 export const useLocalStorageState = <T>(
   key: string,
   defaultValue: T,
-): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
-  const [value, setValue] = useState<T>(defaultValue);
-  const storage = useRef(createLocalStorageSlot<T>(key));
-  useEffect(() => {
-    const lsValue = storage.current.get();
-    if (lsValue !== null) setValue(lsValue);
-  }, []);
-  useEffect(() => {
-    storage.current.set(value);
-  }, [value]);
-  return [value, setValue] as const;
-};
+): readonly [T, (newValue: T) => void] =>
+  useStorageState(localStorage, key, defaultValue);

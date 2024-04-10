@@ -91,12 +91,12 @@ export function Popout({
     if (open) {
       return {
         backgroundColor: 'var(--color-button-active)',
-        color: 'var(--color-primary-hover)',
+        color: 'var(--color-primary)',
       };
     }
     if (text) {
       return {
-        color: 'var(--color-primary-hover)',
+        color: 'var(--color-primary)',
       };
     }
     return undefined;

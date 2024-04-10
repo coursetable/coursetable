@@ -90,7 +90,7 @@ export function NavbarCatalogSearch() {
   const [numRangeValue, setNumRangeValue] = useState(numBounds.value);
 
   const activeStyle = useCallback((active: boolean) => {
-    if (active) return { color: 'var(--color-primary-hover)' };
+    if (active) return { color: 'var(--color-primary)' };
     return undefined;
   }, []);
 

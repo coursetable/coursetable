@@ -23,7 +23,7 @@
   font-size: 10px !important;
   width: 55px;
   text-align: center;
-  color: #468ff2;
+  color: var(--color-primary);
 }
 
 /* Comment out below for hover statistic functionality */

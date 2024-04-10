@@ -5,7 +5,7 @@
 
 .toggleBubble {
   font-weight: 550;
-  color: #468ff2;
+  color: var(--color-primary);
   white-space: nowrap;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .filterContainer:focus-visible .evaluationsFilter {
-  outline: 2px solid #468ff2;
+  outline: 2px solid var(--color-primary);
 }
 
 .evaluationsFilter :global(.toggleOption) {
