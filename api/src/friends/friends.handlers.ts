@@ -36,7 +36,7 @@ export const addFriend = async (
   }
 
   await db.transaction(async (tx) => {
-    const deleteRes = await tx
+    const [deleteRes] = await tx
       .delete(studentFriendRequests)
       .where(
         and(
@@ -44,8 +44,8 @@ export const addFriend = async (
           eq(studentFriendRequests.friendNetId, netId),
         ),
       )
-      .returning({});
-    if (deleteRes.length === 0) {
+      .returning();
+    if (!deleteRes) {
       res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
       return;
     }
@@ -83,7 +83,7 @@ export const removeFriend = async (
   }
 
   await db.transaction(async (tx) => {
-    const friendDeleteRes = await tx
+    const [friendDeleteRes] = await tx
       .delete(studentFriends)
       .where(
         // Bidirectional deletion
@@ -98,10 +98,10 @@ export const removeFriend = async (
           ),
         ),
       )
-      .returning({});
-    if (friendDeleteRes.length === 0) {
+      .returning();
+    if (!friendDeleteRes) {
       // No existing friend; try deleting the friend request
-      const reqDeleteRes = await tx
+      const [reqDeleteRes] = await tx
         .delete(studentFriendRequests)
         .where(
           and(
@@ -109,8 +109,8 @@ export const removeFriend = async (
             eq(studentFriendRequests.friendNetId, netId),
           ),
         )
-        .returning({});
-      if (reqDeleteRes.length === 0) {
+        .returning();
+      if (!reqDeleteRes) {
         res.status(400).json({ error: 'NO_FRIEND' });
         return;
       }
