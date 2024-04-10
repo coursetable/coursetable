@@ -11,7 +11,6 @@ import {
   studentFriends,
   worksheetCourses,
 } from '../../drizzle/schema.js';
-import { findUniqueRequest } from './friends.queries.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -37,28 +36,29 @@ export const addFriend = async (
   }
 
   await db.transaction(async (tx) => {
-    // Make sure user has a friend request to accept
-    const [existingRequest] = await findUniqueRequest(tx, netId, friendNetId);
-    if (!existingRequest) {
-      res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
-      return;
-    }
-
-    // Update (do not create a new friend) when one already matches the
-    // netId
-    await tx
-      .insert(studentFriends)
-      // Bidirectional addition
-      .values([{ netId, friendNetId }, { netId: friendNetId, friendNetId: netId }])
-      .onConflictDoNothing();
-    await tx
+    const deleteRes = await tx
       .delete(studentFriendRequests)
       .where(
         and(
           eq(studentFriendRequests.netId, friendNetId),
           eq(studentFriendRequests.friendNetId, netId),
         ),
-      );
+      )
+      .returning({});
+    if (deleteRes.length === 0) {
+      res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
+      return;
+    }
+    // Update (do not create a new friend) when one already matches the
+    // netId
+    await tx
+      .insert(studentFriends)
+      // Bidirectional addition
+      .values([
+        { netId, friendNetId },
+        { netId: friendNetId, friendNetId: netId },
+      ])
+      .onConflictDoNothing();
     res.sendStatus(200);
   });
 };
@@ -82,55 +82,41 @@ export const removeFriend = async (
     return;
   }
 
-  const [friend] = await db
-    .selectDistinctOn([studentFriends.netId, studentFriends.friendNetId])
-    .from(studentFriends)
-    .where(
-      and(
-        eq(studentFriends.netId, netId),
-        eq(studentFriends.friendNetId, friendNetId),
-      ),
-    );
-
-  if (!friend) {
-    await db.transaction(async (tx) => {
-      const [friendRequest] = await findUniqueRequest(tx, netId, friendNetId);
-
-      if (!friendRequest) {
-        res.status(400).json({ error: 'NO_FRIEND' });
-        return;
-      }
-
-      await tx
+  await db.transaction(async (tx) => {
+    const friendDeleteRes = await tx
+      .delete(studentFriends)
+      .where(
+        // Bidirectional deletion
+        or(
+          and(
+            eq(studentFriends.netId, netId),
+            eq(studentFriends.friendNetId, friendNetId),
+          ),
+          and(
+            eq(studentFriends.netId, friendNetId),
+            eq(studentFriends.friendNetId, netId),
+          ),
+        ),
+      )
+      .returning({});
+    if (friendDeleteRes.length === 0) {
+      // No existing friend; try deleting the friend request
+      const reqDeleteRes = await tx
         .delete(studentFriendRequests)
         .where(
           and(
             eq(studentFriendRequests.netId, friendNetId),
             eq(studentFriendRequests.friendNetId, netId),
           ),
-        );
-      res.sendStatus(200);
-    });
-  } else {
-    await db.transaction(async (tx) => {
-      await tx
-        .delete(studentFriends)
-        .where(
-          // Bidirectional deletion
-          or(
-            and(
-              eq(studentFriends.netId, netId),
-              eq(studentFriends.friendNetId, friendNetId),
-            ),
-            and(
-              eq(studentFriends.netId, friendNetId),
-              eq(studentFriends.friendNetId, netId),
-            ),
-          ),
-        );
-      res.sendStatus(200);
-    });
-  }
+        )
+        .returning({});
+      if (reqDeleteRes.length === 0) {
+        res.status(400).json({ error: 'NO_FRIEND' });
+        return;
+      }
+    }
+    res.sendStatus(200);
+  });
 };
 
 export const requestAddFriend = async (
@@ -178,25 +164,29 @@ export const requestAddFriend = async (
       return;
     }
 
-    const [existingOppositeRequest] = await findUniqueRequest(
-      tx,
-      netId,
-      friendNetId,
-    );
+    const [existingRequest] = await tx
+      .selectDistinctOn([
+        studentFriendRequests.netId,
+        studentFriendRequests.friendNetId,
+      ])
+      .from(studentFriendRequests)
+      .where(
+        or(
+          and(
+            eq(studentFriendRequests.netId, netId),
+            eq(studentFriendRequests.friendNetId, friendNetId),
+          ),
+          and(
+            eq(studentFriendRequests.netId, friendNetId),
+            eq(studentFriendRequests.friendNetId, netId),
+          ),
+        ),
+      );
 
-    if (existingOppositeRequest) {
-      res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
-      return;
-    }
-
-    const [existingSameRequest] = await findUniqueRequest(
-      tx,
-      friendNetId,
-      netId,
-    );
-
-    if (existingSameRequest) {
-      res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
+    if (existingRequest) {
+      if (existingRequest.netId === netId)
+        res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
+      else res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
       return;
     }
 
@@ -228,7 +218,6 @@ export const getRequestsForFriend = async (
     const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
 
     if (reqFriends.length === 0) return [];
-    
 
     return tx
       .selectDistinctOn([studentBluebookSettings.netId], {
@@ -265,15 +254,8 @@ export const getFriendsWorksheets = async (
         (friendRecord) => friendRecord.friendNetId,
       );
 
-      if (friendNetIds.length === 0) {
-        return [
-          [],
-          {} as {
-            [netId: string]: {};
-          },
-          [],
-        ];
-      }
+      if (friendNetIds.length === 0)
+        return [[], {} as { [netId: string]: {} }, []];
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx
