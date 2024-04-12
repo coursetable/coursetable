@@ -24,6 +24,7 @@ services:
     volumes:
       - ../redis/data:/data
 
+  # This container is only for dev! The prod container is at coursetable/infra/db
   db:
     container_name: ${DB_HOST?db}
     image: postgres
