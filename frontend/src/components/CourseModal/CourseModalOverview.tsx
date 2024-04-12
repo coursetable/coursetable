@@ -719,9 +719,8 @@ function CourseModalOverview({
                   <span>
                     Class Enrollment
                     <br />
-                    (If the course has not occurred/completed, based on the most
-                    recent past instance of this course. a ~ means a different
-                    professor was teaching)
+                    (how many students took this class the last time it was
+                    offered. a ~ means a different professor was teaching)
                   </span>
                 ) : (
                   <span>
