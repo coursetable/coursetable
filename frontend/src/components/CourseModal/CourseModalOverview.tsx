@@ -720,14 +720,13 @@ function CourseModalOverview({
                     Class Enrollment
                     <br />
                     (how many students took this class the last time it was
-                    offered. a ~ means a different professor was teaching)
+                    offered)
                   </span>
                 ) : (
                   <span>
                     Previous Class Enrollment
                     <br />
-                    (based on the most recent past instance of this course. a ~
-                    means a different professor was teaching)
+                    (based on the most recent past instance of this course)
                   </span>
                 ),
               sortOption: 'last_enrollment',
