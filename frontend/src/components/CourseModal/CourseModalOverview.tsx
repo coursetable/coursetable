@@ -18,6 +18,7 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import clsx from 'clsx';
 
+import Spinner from '../Spinner';
 import { CUR_YEAR, CUR_SEASON } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import { useSearch } from '../../contexts/searchContext';
@@ -29,7 +30,6 @@ import {
 } from '../Typography';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import styles from './CourseModalOverview.module.css';
-import CourseModalLoading from './CourseModalLoading';
 import {
   getEnrolled,
   toSeasonString,
@@ -682,7 +682,13 @@ function CourseModalOverview({
   });
 
   // Wait until data is fetched
-  if (loading || error) return <CourseModalLoading />;
+  if (loading || error) {
+    return (
+      <Modal.Body>
+        <Spinner />
+      </Modal.Body>
+    );
+  }
 
   return (
     <Modal.Body>

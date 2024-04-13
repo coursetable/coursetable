@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
-import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { academicCalendars } from '../../config';
+import Spinner from '../../components/Spinner';
 import { useGapi } from '../../contexts/gapiContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { getCalendarEvents } from '../../utilities/calendar';
@@ -135,7 +135,7 @@ function GoogleCalendarButton(): JSX.Element {
       {authInstance && !exporting ? (
         <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
       ) : (
-        <Spinner animation="border" role="status" size="sm" />
+        <Spinner />
       )}
       &nbsp;&nbsp;Export to Google Calendar
     </button>

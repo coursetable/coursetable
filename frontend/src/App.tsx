@@ -2,13 +2,13 @@ import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
-import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
+import Spinner from './components/Spinner';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
@@ -41,15 +41,7 @@ function App() {
   const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
 
-  if (authStatus === 'loading') {
-    return (
-      <Row className="m-auto" style={{ height: '100vh' }}>
-        <Spinner className="m-auto" animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
-      </Row>
-    );
-  }
+  if (authStatus === 'loading') return <Spinner />;
 
   return (
     <>

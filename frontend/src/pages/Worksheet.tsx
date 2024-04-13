@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
@@ -16,6 +15,7 @@ import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
 import styles from './Worksheet.module.css';
 
 import ErrorPage from '../components/ErrorPage';
+import Spinner from '../components/Spinner';
 
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
@@ -90,13 +90,7 @@ function Worksheet() {
   if (worksheetLoading) {
     return (
       <div style={{ height: '93vh' }}>
-        <Spinner
-          className={styles.loadingSpinner}
-          animation="border"
-          role="status"
-        >
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <Spinner />
       </div>
     );
   }
