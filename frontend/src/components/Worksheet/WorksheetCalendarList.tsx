@@ -22,20 +22,7 @@ import ICSExportButton from './ICSExportButton';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, toggleCourse, person } = useWorksheet();
-
-  // Build the HTML for the list of courses of a given season
-  const items = useMemo(
-    () =>
-      courses.map((course, i) => (
-        <WorksheetCalendarListItem
-          key={i}
-          course={course.listing}
-          hidden={course.hidden}
-        />
-      )),
-    [courses],
-  );
+  const { courses, toggleCourse, person, curSeason } = useWorksheet();
 
   const areHidden = useMemo(
     () => courses.length > 0 && courses.every((course) => course.hidden),
@@ -107,8 +94,16 @@ function WorksheetCalendarList() {
         </SurfaceComponent>
       </div>
       <SurfaceComponent className={clsx(styles.courseList, 'mx-1')}>
-        {items.length > 0 ? (
-          <ListGroup variant="flush">{items}</ListGroup>
+        {courses.length > 0 ? (
+          <ListGroup variant="flush">
+            {courses.map((course) => (
+              <WorksheetCalendarListItem
+                key={curSeason + course.crn}
+                course={course.listing}
+                hidden={course.hidden}
+              />
+            ))}
+          </ListGroup>
         ) : (
           <NoCourses />
         )}
