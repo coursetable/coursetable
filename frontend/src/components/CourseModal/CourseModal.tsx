@@ -221,11 +221,8 @@ function CourseModal() {
                       {listing.all_course_codes.join(' • ')}
                     </TextComponent>
                   </p>
-                  {listing.skills.map((skill) => (
+                  {[...listing.skills, ...listing.areas].map((skill) => (
                     <SkillBadge skill={skill} key={skill} />
-                  ))}
-                  {listing.areas.map((area) => (
-                    <SkillBadge skill={area} key={area} />
                   ))}
                 </Row>
               </Col>
