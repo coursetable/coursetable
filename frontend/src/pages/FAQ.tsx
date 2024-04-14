@@ -170,6 +170,26 @@ const faqs = [
         ),
       },
       {
+        title: "I'm a new admit and I don't have access to evaluations.",
+        contents: (
+          <>
+            Every March to May, we receive lots of access requests from prefrosh
+            students. We have now decided to respect Yale's matriculation
+            process and not manually grant access in these circumstances. In
+            July/August, you should log out and log in again on CourseTable to
+            refresh your authentication status. Please only let us know if you
+            still cannot access evaluations afterwards. Before that, you can
+            still use CourseTable to get a sense of what courses there are, but
+            here's our suggestion:
+            <br />
+            <b>
+              Congratulations on your admission. Now take a break from academics
+              while you can. Go out! Have fun! Forget about school!
+            </b>
+          </>
+        ),
+      },
+      {
         title: 'Where can I submit feedback or report bugs?',
         contents: (
           <>
