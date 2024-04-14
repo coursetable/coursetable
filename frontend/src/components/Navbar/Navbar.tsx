@@ -17,6 +17,7 @@ import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 import { API_ENDPOINT } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
+import { NavbarWishlistSearch } from './NavbarWishlistSearch';
 
 function NavbarLink({
   to,
@@ -63,7 +64,9 @@ export default function CourseTableNavbar() {
   const showSearch =
     !isMobile &&
     (location.pathname === '/catalog' ||
-      (authStatus === 'authenticated' && location.pathname === '/worksheet'));
+      (authStatus === 'authenticated' &&
+        (location.pathname === '/worksheet' ||
+          location.pathname === '/wishlist')));
 
   const lastUpdated = useMemo(() => {
     const now = new Date();
@@ -138,11 +141,13 @@ export default function CourseTableNavbar() {
             />
 
             {/* Desktop navbar search */}
-            {showSearch && location.pathname === '/catalog' ? (
-              <NavbarCatalogSearch />
-            ) : (
-              showSearch &&
-              location.pathname === '/worksheet' && <NavbarWorksheetSearch />
+            {showSearch && (
+              <>
+                {location.pathname === '/catalog' && <NavbarCatalogSearch />}
+                {location.pathname === '/worksheet' && (
+                  <NavbarWorksheetSearch />
+                )}
+              </>
             )}
 
             <NavCollapseWrapper wrap={!isMobile && showSearch}>
@@ -181,6 +186,8 @@ export default function CourseTableNavbar() {
                       <NavbarLink to="/worksheet">
                         <span data-tutorial="worksheet-1">Worksheet</span>
                       </NavbarLink>
+                      {/* Wishlist Page */}
+                      <NavbarLink to="wishlist">Wishlist</NavbarLink>
                     </>
                   )}
                   {(isMobile || authStatus !== 'authenticated') && (

@@ -16,6 +16,7 @@ import { useFerry } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
 import { CUR_YEAR } from '../../config';
+import WishlistToggleButton from '../Wishlist/WishlistToggleButton';
 
 const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -200,6 +201,7 @@ function CourseModal() {
                 currentTab={view}
               />
               <div className={styles.toolBar}>
+                <WishlistToggleButton listing={listing} modal />
                 <WorksheetToggleButton listing={listing} modal />
                 <ShareButton courseCode={listing.course_code} />
               </div>

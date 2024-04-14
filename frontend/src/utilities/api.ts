@@ -56,6 +56,51 @@ export async function toggleBookmark(payload: {
   }
 }
 
+export async function toggleWish(payload: {
+  action: 'add' | 'remove';
+  season: Season;
+  crn: Crn;
+}): Promise<boolean> {
+  const body = JSON.stringify(payload);
+  try {
+    const res = await fetch(`${API_ENDPOINT}/api/user/toggleWish`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+    });
+    if (!res.ok) {
+      const data = (await res.json()) as { error?: string };
+      switch (data.error) {
+        // These errors can be triggered if the user clicks the button twice
+        // in a row
+        // TODO: we should debounce the request instead
+        case 'ALREADY_WISHLISTED':
+          toast.error('You have already added this class to your wishlist');
+          break;
+        case 'NOT_WISHLISTED':
+          toast.error('You have already remove this class from your wishlist');
+          break;
+        default:
+          throw new Error(data.error ?? res.statusText);
+      }
+      return false;
+    }
+    return true;
+  } catch (err) {
+    Sentry.addBreadcrumb({
+      category: 'wishlist',
+      message: `Updating wishlist: ${body}`,
+      level: 'info',
+    });
+    Sentry.captureException(err);
+    toast.error(`Failed to update wishlist. ${String(err)}`);
+    return false;
+  }
+}
+
 export async function fetchCatalog(season: Season) {
   try {
     const res = await fetch(
@@ -255,6 +300,45 @@ export async function fetchUserWorksheets() {
     if (!res.ok)
       throw new Error((rawData as { error?: string }).error ?? res.statusText);
     const data = userWorksheetsResSchema.parse(rawData);
+    return data;
+  } catch (err) {
+    Sentry.addBreadcrumb({
+      category: 'user',
+      message: 'Fetching user data',
+      level: 'info',
+    });
+    Sentry.captureException(err);
+    Sentry.getCurrentScope().clear();
+    toast.error(`Failed to fetch user data. ${String(err)}`);
+    return undefined;
+  }
+}
+
+const userWishlistSchema = z.array(
+  z.object({
+    courseCode: z.string(),
+  }),
+);
+
+const userWishlistResSchema = z.object({
+  netId: z.string(),
+  // This cannot be null in the real application, because the site creates a
+  // user if one doesn't exist. This is purely for completeness.
+  evaluationsEnabled: z.union([z.boolean(), z.null()]),
+  year: z.union([z.number(), z.null()]),
+  school: z.union([z.string(), z.null()]),
+  data: userWishlistSchema,
+});
+
+export async function fetchUserWishlist() {
+  try {
+    const res = await fetch(`${API_ENDPOINT}/api/user/wishlist`, {
+      credentials: 'include',
+    });
+    const rawData: unknown = await res.json();
+    if (!res.ok)
+      throw new Error((rawData as { error?: string }).error ?? res.statusText);
+    const data = userWishlistResSchema.parse(rawData);
     return data;
   } catch (err) {
     Sentry.addBreadcrumb({

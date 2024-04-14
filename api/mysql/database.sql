@@ -65,6 +65,18 @@ CREATE TABLE `StudentFriendRequests` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `WishlistCourses`
+--
+
+CREATE TABLE `WishlistCourses` (
+  `id` mediumint(8) UNSIGNED NOT NULL,
+  `netId` char(8) NOT NULL,
+  `courseCode` varChar(16) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `WorksheetCourses`
 --
 

@@ -26,12 +26,12 @@ function Results({
   data,
   loading = false,
   multiSeasons = false,
-  page = 'catalog',
+  page,
 }: {
   readonly data: Listing[];
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
-  readonly page?: 'catalog' | 'worksheet';
+  readonly page?: 'catalog' | 'worksheet' | 'wishlist';
 }) {
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
   const [isListView, setIsListView] = useSessionStorageState(
@@ -61,16 +61,26 @@ function Results({
           src={NoCoursesFound}
           style={{ width: '25%' }}
         />
-        {page === 'catalog' ? (
+        {page === 'catalog' && (
           <>
             <h3>No courses found</h3>
             <div>We couldn't find any courses matching your search.</div>
           </>
-        ) : (
+        )}
+        {page === 'worksheet' && (
           <>
             <h3>No courses found for {toSeasonString(curSeason)}</h3>
             <div>
               Add some courses on the <Link to="/catalog">Catalog</Link>.
+            </div>
+          </>
+        )}
+        {page === 'wishlist' && (
+          <>
+            <h3>No courses found on your wishlist</h3>
+            <div>
+              Add some courses using the bookmark icons on the{' '}
+              <Link to="/catalog">Catalog</Link>.
             </div>
           </>
         )}

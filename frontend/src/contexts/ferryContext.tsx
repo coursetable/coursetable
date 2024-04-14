@@ -11,10 +11,12 @@ import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
 import { fetchCatalog, fetchEvals } from '../utilities/api';
-import { useUser, type UserWorksheets } from './userContext';
+import { useUser, type UserWorksheets, type UserWishlist } from './userContext';
 import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse } from './worksheetContext';
 import type { Crn, Season, Listing } from '../utilities/common';
+import { UPCOMING_SEASONS } from '../config';
+import type { WishlistCourse } from './wishlistContext';
 
 export const seasons = seasonsData as Season[];
 
@@ -209,5 +211,39 @@ export function useWorksheetInfo(
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
   }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error]);
+  return { loading, error, data };
+}
+
+export function useWishlistInfo(wishlist: UserWishlist | undefined) {
+  const { loading, error, courses } = useCourseData(UPCOMING_SEASONS);
+
+  const data = useMemo(() => {
+    const dataReturn: WishlistCourse[] = [];
+    if (!wishlist) return [];
+    if (loading || error) return [];
+
+    for (const { courseCode } of wishlist) {
+      const upcomingListings: Listing[] = [];
+
+      for (const season of UPCOMING_SEASONS) {
+        const seasonData = courses[season];
+        if (!seasonData) continue;
+
+        seasonData.forEach((listing) => {
+          if (listing.all_course_codes.includes(courseCode))
+            upcomingListings.push(listing);
+        });
+      }
+
+      dataReturn.push({
+        courseCode,
+        upcomingListings,
+      });
+    }
+
+    return dataReturn.sort((a, b) =>
+      a.courseCode.localeCompare(b.courseCode, 'en-US'),
+    );
+  }, [wishlist, loading, error, courses]);
   return { loading, error, data };
 }

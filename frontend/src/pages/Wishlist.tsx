@@ -64,7 +64,7 @@ function Search() {
               data={searchData}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
-              page="catalog"
+              page="wishlist"
             />
           </Element>
         </Col>

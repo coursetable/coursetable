@@ -51,3 +51,13 @@ model WorksheetCourses {
   @@unique([netId, crn, season, worksheetNumber], map: "netId_crn_season_worksheetNumber")
   @@index([netId], map: "netId")
 }
+
+model WishlistCourses {
+  id              Int    @id @default(autoincrement()) @db.UnsignedMediumInt
+  netId           String @db.Char(8)
+  courseCode      String @db.VarChar(16)
+
+
+  @@unique([netId, courseCode], map: "netId_courseCode")
+  @@index([netId], map: "netId")
+}

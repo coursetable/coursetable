@@ -6,7 +6,11 @@ import {
   weekdays,
   type Listing,
 } from './common';
-import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
+import type {
+  FriendRecord,
+  UserWishlist,
+  UserWorksheets,
+} from '../contexts/userContext';
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 
@@ -33,6 +37,18 @@ export function isInWorksheet(
     worksheet[seasonCode]![worksheetNumber]!.some(
       (course) => course.crn === crn,
     )
+  );
+}
+
+export function isInWishlist(
+  allCourseCodes: string[],
+  wishlist: UserWishlist | undefined,
+): boolean {
+  if (!wishlist || allCourseCodes.length === 0) return false;
+
+  // Check if any course code from courseCodes is in the wishlist
+  return wishlist.some((wishlistItem) =>
+    allCourseCodes.includes(wishlistItem.courseCode),
   );
 }
 

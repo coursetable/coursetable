@@ -15,6 +15,7 @@ import {
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
   checkAuth,
+  fetchUserWishlist,
 } from '../utilities/api';
 import type { NetId, Season, Crn } from '../utilities/common';
 
@@ -27,6 +28,9 @@ export type UserWorksheets = {
     }[];
   };
 };
+export type UserWishlist = {
+  courseCode: string;
+}[];
 export type FriendRecord = {
   [netId: NetId]: {
     name: string;
@@ -45,6 +49,7 @@ type Store = {
   user: {
     netId?: NetId;
     worksheets?: UserWorksheets;
+    wishlist?: UserWishlist;
     hasEvals?: boolean;
     year?: number;
     school?: string;
@@ -73,6 +78,7 @@ export function UserProvider({
   const [worksheets, setWorksheets] = useState<UserWorksheets | undefined>(
     undefined,
   );
+  const [wishlist, setWishlist] = useState<UserWishlist | undefined>(undefined);
   const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
   const [year, setYear] = useState<number | undefined>(undefined);
   const [school, setSchool] = useState<string | undefined>(undefined);
@@ -82,13 +88,13 @@ export function UserProvider({
   >(undefined);
 
   const userRefresh = useCallback(async (): Promise<void> => {
-    const data = await fetchUserWorksheets();
-    if (data) {
-      setNetId(data.netId satisfies string as NetId);
-      setHasEvals(data.evaluationsEnabled ?? undefined);
-      setYear(data.year ?? undefined);
-      setSchool(data.school ?? undefined);
-      setWorksheets(data.data as UserWorksheets);
+    const worksheetData = await fetchUserWorksheets();
+    if (worksheetData) {
+      setNetId(worksheetData.netId satisfies string as NetId);
+      setHasEvals(worksheetData.evaluationsEnabled ?? undefined);
+      setYear(worksheetData.year ?? undefined);
+      setSchool(worksheetData.school ?? undefined);
+      setWorksheets(worksheetData.data as UserWorksheets);
     } else {
       setNetId(undefined);
       setWorksheets(undefined);
@@ -96,7 +102,10 @@ export function UserProvider({
       setYear(undefined);
       setSchool(undefined);
     }
-  }, [setWorksheets, setNetId, setHasEvals, setYear, setSchool]);
+    const wishlistData = await fetchUserWishlist();
+    if (wishlistData) setWishlist(wishlistData.data as UserWishlist);
+    else setWishlist(undefined);
+  }, [setWorksheets, setNetId, setHasEvals, setYear, setSchool, setWishlist]);
 
   const friendRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchFriendWorksheets();
@@ -162,13 +171,23 @@ export function UserProvider({
     () => ({
       netId,
       worksheets,
+      wishlist,
       hasEvals,
       year,
       school,
       friendRequests,
       friends,
     }),
-    [netId, worksheets, hasEvals, year, school, friendRequests, friends],
+    [
+      netId,
+      worksheets,
+      wishlist,
+      hasEvals,
+      year,
+      school,
+      friendRequests,
+      friends,
+    ],
   );
 
   const store = useMemo(

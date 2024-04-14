@@ -53,7 +53,7 @@ function ResultsHeaders({
   numResults,
 }: {
   readonly multiSeasons: boolean;
-  readonly page: 'catalog' | 'worksheet';
+  readonly page: 'catalog' | 'worksheet' | 'wishlist';
   readonly isListView: boolean;
   readonly setIsListView: (isList: boolean) => void;
   readonly numResults: number;
@@ -64,6 +64,10 @@ function ResultsHeaders({
     if (page === 'catalog') {
       if (isSmDesktop || isTablet) return 88;
       if (isLgDesktop) return 100;
+    }
+    if (page === 'worksheet') {
+      if (isSmDesktop || isTablet) return 58;
+      if (isLgDesktop) return 61;
     }
     if (page === 'worksheet') {
       if (isSmDesktop || isTablet) return 58;

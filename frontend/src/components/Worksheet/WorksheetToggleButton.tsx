@@ -152,6 +152,7 @@ function WorksheetToggleButton({
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const Icon = inWorksheet ? FaMinus : FaPlus;
 
   // Disabled worksheet add/remove button if not logged in
