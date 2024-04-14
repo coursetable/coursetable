@@ -33,31 +33,29 @@ function WorksheetNumDropdownMobile() {
   const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
 
   return (
-    <div className="container p-0 m-0 w-mx">
-      <DropdownButton
-        className={styles.dropdownButton}
-        variant="primary"
-        title={worksheetOptions[worksheetNumber]!.label}
-        onSelect={(v) => {
-          if (v) changeWorksheet(Number(v));
-        }}
-      >
-        {worksheetOptions.map(({ value, label }) => (
-          <Dropdown.Item
-            key={value}
-            eventKey={value}
-            className="d-flex"
-            // Styling if this is the current number
-            style={{
-              backgroundColor:
-                value === worksheetNumber ? 'var(--color-primary)' : '',
-            }}
-          >
-            <div className="mx-auto">{label}</div>
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
-    </div>
+    <DropdownButton
+      className={styles.dropdownButton}
+      variant="primary"
+      title={worksheetOptions[worksheetNumber]!.label}
+      onSelect={(v) => {
+        if (v) changeWorksheet(Number(v));
+      }}
+    >
+      {worksheetOptions.map(({ value, label }) => (
+        <Dropdown.Item
+          key={value}
+          eventKey={value}
+          className="d-flex"
+          // Styling if this is the current number
+          style={{
+            backgroundColor:
+              value === worksheetNumber ? 'var(--color-primary)' : '',
+          }}
+        >
+          <div className="mx-auto">{label}</div>
+        </Dropdown.Item>
+      ))}
+    </DropdownButton>
   );
 }
 

@@ -51,28 +51,25 @@ function SeasonDropdownMobile() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();
 
   return (
-    <div className="container p-0 m-0">
-      <DropdownButton
-        variant="dark"
-        title={toSeasonString(curSeason)}
-        onSelect={(s) => changeSeason(s as Season | null)}
-      >
-        {seasonCodes.map((season) => (
-          <Dropdown.Item
-            key={season}
-            eventKey={season}
-            className="d-flex"
-            // Styling if this is the current season
-            style={{
-              backgroundColor:
-                season === curSeason ? 'var(--color-primary)' : '',
-            }}
-          >
-            <div className="mx-auto">{toSeasonString(season)}</div>
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
-    </div>
+    <DropdownButton
+      variant="dark"
+      title={toSeasonString(curSeason)}
+      onSelect={(s) => changeSeason(s as Season | null)}
+    >
+      {seasonCodes.map((season) => (
+        <Dropdown.Item
+          key={season}
+          eventKey={season}
+          className="d-flex"
+          // Styling if this is the current season
+          style={{
+            backgroundColor: season === curSeason ? 'var(--color-primary)' : '',
+          }}
+        >
+          <div className="mx-auto">{toSeasonString(season)}</div>
+        </Dropdown.Item>
+      ))}
+    </DropdownButton>
   );
 }
 

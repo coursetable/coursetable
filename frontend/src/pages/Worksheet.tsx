@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Row, Col, Fade, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
+import WorksheetStats from '../components/Worksheet/WorksheetStats';
 import WorksheetList from '../components/Worksheet/WorksheetList';
 import { SurfaceComponent } from '../components/Typography';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
@@ -21,91 +22,56 @@ import { useWorksheet } from '../contexts/worksheetContext';
 
 function WorksheetMobile() {
   return (
-    <Row className={clsx(styles.accordion, 'm-0 p-3')}>
-      <Col className="p-0">
+    <div className={styles.mobileContainer}>
+      <div>
         <WorksheetNumDropdown mobile />
-        <Row className="mx-auto">
-          <Col xs={6} className="m-0 p-0">
-            <SeasonDropdown mobile />
-          </Col>
-          <Col xs={6} className="m-0 p-0">
-            <FriendsDropdown mobile />
-          </Col>
-        </Row>
+        <div className={styles.subDropdowns}>
+          <SeasonDropdown mobile />
+          <FriendsDropdown mobile />
+        </div>
         <SurfaceComponent className={styles.mobileCalendar}>
           <WorksheetCalendar />
         </SurfaceComponent>
-        <WorksheetCalendarList />
-      </Col>
-    </Row>
+      </div>
+      <WorksheetStats />
+      <WorksheetCalendarList />
+    </div>
   );
 }
 
 function WorksheetDesktop() {
   const { worksheetView } = useWorksheet();
   const [expanded, setExpanded] = useState(false);
-  return (
-    <Row className={worksheetView === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
-      <Col
-        md={worksheetView === 'calendar' && expanded ? 12 : 9}
-        className={clsx(
-          'mt-3 pl-0',
-          worksheetView === 'calendar' && expanded ? 'pr-0' : 'pr-3',
-          worksheetView === 'list' && styles.hidden,
-        )}
-      >
-        <SurfaceComponent className={styles.calendarContainer}>
-          <WorksheetCalendar />
-          <div className={clsx(styles.expandBtn, styles.topRight)}>
-            {!expanded ? (
-              <FaExpandAlt
-                className={styles.expandIcon}
-                size={12}
-                style={{ display: 'block' }}
-                onClick={() => {
-                  setExpanded(true);
-                }}
-              />
-            ) : (
-              <FaCompressAlt
-                className={styles.expandIcon}
-                size={12}
-                onClick={() => {
-                  setExpanded(false);
-                }}
-              />
-            )}
-          </div>
-        </SurfaceComponent>
-      </Col>
-      <Col
-        md={worksheetView === 'list' ? 12 : 3}
-        className={clsx(
-          'ml-auto px-0',
-          worksheetView === 'calendar' && expanded && styles.hidden,
-        )}
-      >
-        <Fade in={worksheetView === 'list'}>
-          <div
-            style={{
-              display: worksheetView === 'list' ? '' : 'none',
-            }}
-          >
-            {worksheetView === 'list' && <WorksheetList />}
-          </div>
-        </Fade>
-        <Fade in={worksheetView !== 'list'}>
-          <div
-            style={{
-              display: worksheetView !== 'list' ? '' : 'none',
-            }}
-          >
-            <WorksheetCalendarList />
-          </div>
-        </Fade>
-      </Col>
-    </Row>
-  );
+  switch (worksheetView) {
+    case 'list':
+      return <WorksheetList />;
+    case 'calendar': {
+      const Icon = expanded ? FaCompressAlt : FaExpandAlt;
+      return (
+        <div className={styles.desktopContainer}>
+          <SurfaceComponent className={styles.desktopCalendar}>
+            <WorksheetCalendar />
+            <button
+              type="button"
+              className={styles.expandBtn}
+              onClick={() => {
+                setExpanded((x) => !x);
+              }}
+              aria-label={`${expanded ? 'Collapse' : 'Expand'} calendar`}
+            >
+              <Icon className={styles.expandIcon} size={12} />
+            </button>
+          </SurfaceComponent>
+          {!expanded && (
+            <div className={clsx(styles.calendarSidebar)}>
+              <WorksheetStats />
+              <WorksheetCalendarList />
+            </div>
+          )}
+        </div>
+      );
+    }
+  }
 }
 
 function Worksheet() {
@@ -136,13 +102,7 @@ function Worksheet() {
   }
   // TODO: add something for when data.length === 0
 
-  return (
-    <div
-      className={clsx(styles.container, !isMobile && styles.desktopContainer)}
-    >
-      {!isMobile ? <WorksheetDesktop /> : <WorksheetMobile />}
-    </div>
-  );
+  return !isMobile ? <WorksheetDesktop /> : <WorksheetMobile />;
 }
 
 export default Worksheet;
