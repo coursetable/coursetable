@@ -6,6 +6,16 @@ on:
     paths:
       - 'frontend/**'
       - 'api/**'
+      - '.github/workflows/staging_cd.yml'
+
+  workflow_dispatch:
+    inputs:
+      api:
+        description: 'Deploy API'
+        type: boolean
+      frontend:
+        description: 'Deploy Frontend'
+        type: boolean
 
 jobs:
   changes:
@@ -17,10 +27,12 @@ jobs:
     outputs:
       api: ${{ steps.filter.outputs.api }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      db: ${{ steps.filter.outputs.db }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          fetch-depth: 2
+          ref: ${{ github.ref }}
 
       - uses: dorny/paths-filter@v3
         id: filter
@@ -30,10 +42,12 @@ jobs:
               - 'api/**'
             frontend:
               - 'frontend/**'
+            db:
+                - 'api/drizzle/schema.ts'
 
   frontend-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend}}
 
     environment:
       name: Staging
@@ -47,7 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref }}
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
         with:
@@ -63,7 +77,7 @@ jobs:
 
   api-build-and-deploy:
     needs: changes
-    if: ${{ needs.changes.outputs.api == 'true' }}
+    if: ${{ ( needs.changes.outputs.api == 'true' || inputs.api ) && needs.changes.outputs.db == 'false'}}
 
     environment:
       name: Staging
@@ -73,7 +87,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref }}
 
       - name: Build and Deploy Docker containers
         working-directory: ./api

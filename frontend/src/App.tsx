@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -19,16 +20,6 @@ import { suspended } from './utilities/display';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
-function showIfAuthorized(
-  hasEvals: boolean | undefined,
-  element: JSX.Element,
-  loginElem?: JSX.Element,
-) {
-  if (hasEvals === undefined) return loginElem ?? <Navigate to="/login" />;
-  if (!hasEvals) return <Navigate to="/challenge" />;
-  return element;
-}
-
 const Landing = suspended(() => import('./pages/Landing'));
 const About = suspended(() => import('./pages/About'));
 const FAQ = suspended(() => import('./pages/FAQ'));
@@ -36,9 +27,8 @@ const Privacy = suspended(() => import('./pages/Privacy.mdx'));
 const NotFound = suspended(() => import('./pages/NotFound'));
 const Thankyou = suspended(() => import('./pages/Thankyou'));
 const Challenge = suspended(() => import('./pages/Challenge'));
-const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
+const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
-const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
 const Join = suspended(() => import('./pages/Join'));
 const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 const Wishlist = suspended(() => import('./pages/Wishlist'));
@@ -64,14 +54,26 @@ function App() {
 
   return (
     <>
+      {/* Default metadata; can be overridden by individual pages/components
+      keep this in sync with index.html, so nothing actually changes after
+      hydration, and things get restored to the default state when those
+      components unmount */}
+      <Helmet>
+        <title>CourseTable</title>
+        <meta
+          name="description"
+          content="CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It's run by a small team of volunteers within the Yale Computer Society and is completely open source."
+        />
+      </Helmet>
       <Notice
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={4}
+        id={6}
       >
-        Basic course information is now publicly available without login! Share
-        courses with your family and friends with ease ;)
+        {/* CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
+        During this time, the site will be unavailable. We apologize for any
+        inconvenience. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -86,23 +88,31 @@ function App() {
           }
         />
 
-        {/* Authenticated routes */}
         <Route path="/catalog" element={<Search />} />
+
+        {/* Authenticated routes */}
         <Route
           path="/worksheet"
-          element={showIfAuthorized(
-            user.hasEvals,
-            <Worksheet />,
-            <WorksheetLogin />,
-          )}
+          element={
+            user.hasEvals ? (
+              <Worksheet />
+            ) : (
+              <NeedsLogin redirect="/worksheet" message="worksheets" />
+            )
+          }
         />
         <Route
           path="/graphiql"
-          element={showIfAuthorized(
-            user.hasEvals,
-            <Graphiql />,
-            <GraphiqlLogin />,
-          )}
+          element={
+            user.hasEvals ? (
+              <Graphiql />
+            ) : (
+              <NeedsLogin
+                redirect="/graphiql"
+                message="the GraphQL interface"
+              />
+            )
+          }
         />
         <Route
           path="/login"

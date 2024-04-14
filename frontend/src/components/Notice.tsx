@@ -24,17 +24,17 @@ function Notice({
       <div className={styles.content}>
         <div>{children}</div>
       </div>
-      {/* TODO */}
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <span
+      <button
+        type="button"
         className={styles.closeButton}
         onClick={() => {
           setVisible(false);
           storage.set(id);
         }}
+        aria-label="Close"
       >
         <FaTimes style={{ display: 'block' }} />
-      </span>
+      </button>
     </div>
   );
 }

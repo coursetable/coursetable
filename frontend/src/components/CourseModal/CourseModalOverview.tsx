@@ -18,7 +18,7 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import clsx from 'clsx';
 
-import { CUR_YEAR } from '../../config';
+import { CUR_YEAR, CUR_SEASON } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import { useSearch } from '../../contexts/searchContext';
 import {
@@ -241,8 +241,8 @@ function Syllabus({
       {pastSyllabi.length > 0 && (
         <Row className="m-auto pt-4 pb-2">
           <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-            <span
-              role="button"
+            <button
+              type="button"
               className={styles.toggleBubble}
               onClick={() => setShowPastSyllabi(!showPastSyllabi)}
             >
@@ -252,7 +252,7 @@ function Syllabus({
               ) : (
                 <MdExpandMore size={18} className="my-auto" />
               )}
-            </span>
+            </button>
           </Col>
           <Collapse in={showPastSyllabi}>
             <Col
@@ -625,8 +625,11 @@ function EvalsCol({
               className="m-auto py-1 justify-content-center"
             >
               <Col
+                as="button"
+                role="button"
                 xs={5}
                 className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
+                tabIndex={0}
                 onClick={() => {
                   // Note, we purposefully use the listing data fetched
                   // from GraphQL instead of the static seasons data.
@@ -708,7 +711,26 @@ function CourseModalOverview({
                 </ul>
               ) : null,
             },
-            { name: 'Enrollment', value: getEnrolled(listing, 'modal') },
+            {
+              name: 'Enrollment',
+              value: getEnrolled(listing, 'modal'),
+              tooltip:
+                CUR_SEASON === listing.season_code ? (
+                  <span>
+                    Class Enrollment
+                    <br />
+                    (how many students took this class the last time it was
+                    offered)
+                  </span>
+                ) : (
+                  <span>
+                    Previous Class Enrollment
+                    <br />
+                    (based on the most recent past instance of this course)
+                  </span>
+                ),
+              sortOption: 'last_enrollment',
+            },
             { name: 'Credits', value: listing.credits },
             { name: 'Class Notes', value: listing.classnotes },
             { name: 'Registrar Notes', value: listing.regnotes },
@@ -727,23 +749,37 @@ function CourseModalOverview({
                   ))
                 : null,
             },
-          ].map(
-            ({ name, value }) =>
-              value && (
-                <Row className="m-auto py-2" key={name}>
-                  <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                    <span className={styles.labelBubble}>{name}</span>
-                  </Col>
-                  <Col
-                    sm={12 - COL_LEN_LEFT}
-                    xs={11 - COL_LEN_LEFT}
-                    className={styles.metadata}
-                  >
-                    {value}
-                  </Col>
-                </Row>
-              ),
-          )}
+          ].map(({ name, value, tooltip }) => {
+            const content = (
+              <Row className="m-auto py-2">
+                <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+                  <span className={styles.labelBubble}>{name}</span>
+                </Col>
+                <Col
+                  sm={12 - COL_LEN_LEFT}
+                  xs={11 - COL_LEN_LEFT}
+                  className={styles.metadata}
+                >
+                  {value}
+                </Col>
+              </Row>
+            );
+
+            return (
+              value !== null &&
+              (tooltip ? (
+                <OverlayTrigger
+                  key={name}
+                  placement="top"
+                  overlay={<Tooltip id={`${name}-tooltip`}>{tooltip}</Tooltip>}
+                >
+                  {content}
+                </OverlayTrigger>
+              ) : (
+                content
+              ))
+            );
+          })}
         </Col>
         <EvalsCol gotoCourse={gotoCourse} data={data} listing={listing} />
       </Row>

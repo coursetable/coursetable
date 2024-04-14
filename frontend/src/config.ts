@@ -23,8 +23,8 @@ export type SimpleDate = [year: number, month: number, day: number];
 
 export type SeasonCalendar = {
   /**
-   * The first day of class. Note that for spring term this will be MLK day
-   * which is also a holiday, but semester starts on Monday always.
+   * The first day of class. Note that for spring term this may be MLK day
+   * which is also a holiday, but we still treat as if semester starts.
    */
   start: SimpleDate;
   /**
@@ -34,7 +34,7 @@ export type SeasonCalendar = {
   /**
    * Each entry has a start date and an end date. The start date
    * is the first day without classes, and the end date is the
-   * first day with classes.
+   * last day without classes.
    */
   breaks: { name: string; start: SimpleDate; end: SimpleDate }[];
   /**
@@ -44,8 +44,13 @@ export type SeasonCalendar = {
   transfers: { date: SimpleDate; day: number }[];
 };
 
-// TODO: instead of hardcoding every year, we should compute this, because
-// each time point is always the same day of the week.
+// TODO: instead of hardcoding every year, we should crawl this using Ferry
+// and store it in the database
+// To find historical seasons: https://registrar.yale.edu/sites/default/files/files/2021-2022_Yale%20College%20Calendar%20with%20Pertinent%20Deadlines%20_%20Yale%20University.pdf
+// (Goes back to 2016–2017)
+// Use fully-closed indexing, i.e. "start" and "end" both included
+// For breaks, the academic calendar uses wordings such as "begins after the
+// last academic obligations"—in this case, it actually starts on the next day
 export const academicCalendars: { [season: Season]: SeasonCalendar } = {
   ['202203' as Season]: {
     start: [2022, 8, 31],
@@ -54,17 +59,17 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       {
         name: 'Labor Day',
         start: [2022, 9, 5],
-        end: [2022, 9, 6],
+        end: [2022, 9, 5],
       },
       {
         name: 'October recess',
         start: [2022, 10, 19],
-        end: [2022, 10, 24],
+        end: [2022, 10, 23],
       },
       {
         name: 'November recess',
         start: [2022, 11, 19],
-        end: [2022, 11, 28],
+        end: [2022, 11, 27],
       },
     ],
     transfers: [{ date: [2022, 9, 2], day: 1 }],
@@ -76,12 +81,12 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       {
         name: 'Martin Luther King Jr. Day',
         start: [2023, 1, 16],
-        end: [2023, 1, 17],
+        end: [2023, 1, 16],
       },
       {
         name: 'Spring recess',
         start: [2023, 3, 11],
-        end: [2023, 3, 27],
+        end: [2023, 3, 26],
       },
     ],
     transfers: [{ date: [2023, 1, 20], day: 1 }],
@@ -93,17 +98,17 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       {
         name: 'Labor Day',
         start: [2023, 9, 4],
-        end: [2023, 9, 5],
+        end: [2023, 9, 4],
       },
       {
         name: 'October recess',
         start: [2023, 10, 18],
-        end: [2023, 10, 23],
+        end: [2023, 10, 22],
       },
       {
         name: 'November recess',
         start: [2023, 11, 18],
-        end: [2023, 11, 27],
+        end: [2023, 11, 26],
       },
     ],
     transfers: [{ date: [2023, 9, 1], day: 1 }],
@@ -115,12 +120,12 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       {
         name: 'Martin Luther King Jr. Day',
         start: [2024, 1, 15],
-        end: [2024, 1, 16],
+        end: [2024, 1, 15],
       },
       {
         name: 'Spring recess',
         start: [2024, 3, 9],
-        end: [2024, 3, 25],
+        end: [2024, 3, 24],
       },
     ],
     transfers: [{ date: [2024, 1, 19], day: 1 }],
@@ -132,21 +137,37 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       {
         name: 'Labor Day',
         start: [2024, 9, 2],
-        end: [2024, 9, 3],
+        end: [2024, 9, 2],
       },
       {
         name: 'October recess',
         start: [2024, 10, 16],
-        end: [2024, 10, 21],
+        end: [2024, 10, 20],
       },
       {
         name: 'November recess',
         start: [2024, 11, 23],
-        end: [2024, 12, 2],
+        end: [2024, 12, 1],
       },
     ],
     transfers: [{ date: [2024, 8, 30], day: 1 }],
   },
+  ['202501' as Season]: {
+    start: [2025, 1, 13],
+    end: [2025, 4, 25],
+    breaks: [
+      {
+        name: 'Martin Luther King Jr. Day',
+        start: [2025, 1, 20],
+        end: [2025, 1, 20],
+      },
+      {
+        name: 'Spring recess',
+        start: [2025, 3, 8],
+        end: [2025, 3, 23],
+      },
+    ],
+    transfers: [{ date: [2025, 1, 24], day: 1 }],
+  },
   // Add more entries above, but don't remove any
-  // Use zero-based indexing, i.e. "start" included, "end" excluded
 };

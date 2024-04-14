@@ -1,4 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
 is_prod=true
+second_alias=""
 
 while getopts t:a:b:d flag
 do
@@ -13,10 +17,10 @@ done
 
 if [[ $is_prod == true ]]; then
   echo "Deploying to production"
-  vercel deploy --prod --prebuilt --skip-domain --token=$token >deployment-url.txt 2>error.txt
+  vercel deploy --prod --prebuilt --skip-domain --token=$token >deployment-url.txt
 else
   echo "Deploying to development"
-  vercel deploy --prebuilt --token=$token >deployment-url.txt 2>error.txt
+  vercel deploy --prebuilt --token=$token >deployment-url.txt
 fi
  
 # check the exit code
@@ -25,7 +29,7 @@ if [ $code -eq 0 ]; then
     # Now you can use the deployment url from stdout for the next step of your workflow
     deploymentUrl=`cat deployment-url.txt`
     vercel alias set $deploymentUrl $alias --token=$token --scope=coursetable
-    if [[ -n $second_alias ]]; then
+    if [[ $second_alias ]]; then
       vercel alias set $deploymentUrl $second_alias --token=$token --scope=coursetable
     fi
 else

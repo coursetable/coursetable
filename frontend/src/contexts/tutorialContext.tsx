@@ -14,6 +14,8 @@ import { useWindowDimensions } from './windowDimensionsContext';
 type Store = {
   isTutorialOpen: boolean;
   toggleTutorial: (open: boolean) => void;
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
 const TutorialContext = createContext<Store | undefined>(undefined);
@@ -28,12 +30,14 @@ export function TutorialProvider({
   const { isMobile, isTablet } = useWindowDimensions();
   const { authStatus } = useUser();
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   const [shownTutorial, setShownTutorial] = useLocalStorageState(
     'shownTutorial',
     false,
   );
 
   // Handle whether or not to open tutorial
+  // TODO this is not an effect
   useEffect(() => {
     if (
       !isMobile &&
@@ -63,6 +67,7 @@ export function TutorialProvider({
     (open: boolean) => {
       setIsTutorialOpen(open);
       setShownTutorial(!open);
+      setCurrentStep(0);
     },
     [setShownTutorial],
   );
@@ -71,8 +76,10 @@ export function TutorialProvider({
     () => ({
       isTutorialOpen,
       toggleTutorial,
+      currentStep,
+      setCurrentStep,
     }),
-    [isTutorialOpen, toggleTutorial],
+    [isTutorialOpen, toggleTutorial, currentStep, setCurrentStep],
   );
 
   return (

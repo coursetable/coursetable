@@ -1,7 +1,6 @@
 version: '3'
 services:
   api:
-    restart: always
     ports:
       - '${INSECURE_PORT:-8040}:${INSECURE_PORT:-8040}'
     environment:
@@ -11,22 +10,16 @@ services:
       traefik.enable: true
     networks:
       - traefik
-      - mysql
       - api
+      - db
 
   graphql-engine:
-    restart: always
     networks:
-      - ferry
+      - db
       - api
-
-  redis:
-    restart: always
 
 networks:
   traefik:
     external: true
-  ferry:
-    external: true
-  mysql:
+  db:
     external: true

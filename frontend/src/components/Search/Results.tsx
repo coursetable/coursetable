@@ -92,16 +92,26 @@ function Results({
     // window, the view can still be restored to list view
     resultsListing = (
       <WindowScroller>
-        {({ ref, outerRef, style: listStyle }) => (
+        {({ ref, outerRef }) => (
           // We use a list even for grid, because we only virtualize the rows
           <FixedSizeList
             outerRef={outerRef}
             ref={ref}
+            width={window.innerWidth}
             height={window.innerHeight}
             itemCount={Math.ceil(data.length / numCols)}
             itemSize={178}
-            width={window.innerWidth}
-            style={listStyle}
+            className="px-1 pt-3"
+            // Inline styles because react-window also injects inline styles
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'inline-block',
+              // https://github.com/coursetable/coursetable/issues/1628
+              // We need to cancel the list div being scrollable because we
+              // always scroll the entire window
+              overflow: 'hidden',
+            }}
           >
             {({ index, style: itemStyle }) => (
               <div style={itemStyle}>
@@ -126,16 +136,20 @@ function Results({
   } else {
     resultsListing = (
       <WindowScroller>
-        {({ ref, outerRef, style: listStyle }) => (
+        {({ ref, outerRef }) => (
           <FixedSizeList
             outerRef={outerRef}
             ref={ref}
+            width={window.innerWidth}
             height={window.innerHeight}
             itemCount={data.length}
             itemSize={isLgDesktop ? 32 : 28}
-            width={window.innerWidth}
-            style={listStyle}
-            useIsScrolling
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'inline-block',
+              overflow: 'hidden',
+            }}
           >
             {({ index, style: itemStyle }) => (
               <ResultsItem
@@ -168,18 +182,7 @@ function Results({
           numResults={data.length}
         />
       )}
-      <div
-        className={clsx(
-          !isListView && 'px-1 pt-3',
-          styles.searchResults,
-          data.length > 0 &&
-            data.length < 20 &&
-            isListView &&
-            styles.searchResultsSmall,
-        )}
-      >
-        {resultsListing}
-      </div>
+      {resultsListing}
       <FloatingWorksheet />
     </div>
   );

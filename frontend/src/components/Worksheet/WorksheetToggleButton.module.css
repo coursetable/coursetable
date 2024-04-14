@@ -1,5 +1,9 @@
 .container {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .worksheetDropdown {
@@ -9,7 +13,6 @@
   font-weight: bold;
   border: none;
   box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
-  cursor: pointer;
   background-color: var(--color-select);
   color: var(--color-text);
 }

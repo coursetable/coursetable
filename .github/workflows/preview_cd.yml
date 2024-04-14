@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - 'frontend/**'
+      - '.github/workflows/preview_cd.yml'
 
 jobs:
   frontend-build-and-deploy:

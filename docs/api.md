@@ -156,7 +156,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - Redirects to the provided `redirect` query parameter (if it's an allowed origin), or `https://coursetable.com` otherwise
 
-### `GET` `/api/auth/logout`
+### `POST` `/api/auth/logout`
 
 #### Request
 

@@ -1,55 +1,68 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
-import * as Sentry from '@sentry/react';
+import { OverlayTrigger, Tooltip, Row } from 'react-bootstrap';
 
-import { IoMdSunny } from 'react-icons/io';
-import { FcCloseUpMode } from 'react-icons/fc';
-import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import clsx from 'clsx';
 
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import {
-  ratingColormap,
-  workloadColormap,
-  subjects,
-} from '../../utilities/constants';
-
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import SkillBadge from '../SkillBadge';
-import { TextComponent, InfoPopover, RatingBubble } from '../Typography';
+import {
+  SeasonTag,
+  CourseInfoPopover,
+  CourseCode,
+  ratingTypes,
+} from './ResultsItemCommon';
+import { RatingBubble } from '../Typography';
 
 import styles from './ResultsItem.module.css';
 import colStyles from './ResultsCols.module.css';
-import {
-  getEnrolled,
-  getOverallRatings,
-  getWorkloadRatings,
-  getProfessorRatings,
-  toSeasonString,
-  truncatedText,
-  isInWorksheet,
-} from '../../utilities/course';
+import { getEnrolled, isInWorksheet } from '../../utilities/course';
 import { generateRandomColor, type Listing } from '../../utilities/common';
 
 import { useSearch } from '../../contexts/searchContext';
 
-export function BlurRatingTooltip({
-  children,
+function Rating({
+  course,
+  hasEvals,
+  name,
 }: {
-  readonly children: JSX.Element;
+  readonly course: Listing;
+  readonly hasEvals: boolean | undefined;
+  readonly name: 'Class' | 'Professor' | 'Workload';
 }) {
+  const { getRating, colorMap } = ratingTypes[name];
+  if (hasEvals) {
+    return (
+      <RatingBubble
+        className={styles.ratingCell}
+        rating={getRating(course, 'stat')}
+        colorMap={colorMap}
+      >
+        {getRating(course, 'display')}
+      </RatingBubble>
+    );
+  }
   return (
     <OverlayTrigger
       placement="top"
-      overlay={
-        <Tooltip id="blur-rating-tooltip">
+      overlay={(props) => (
+        <Tooltip id="blur-rating-tooltip" {...props}>
           These colors are randomly generated. Sign in to see real ratings.
         </Tooltip>
-      }
+      )}
     >
-      {children}
+      <div
+        className={styles.ratingCell}
+        style={{
+          backgroundColor: generateRandomColor(
+            `${course.crn}${course.season_code}${name}`,
+          ),
+        }}
+      >
+        {/* Maybe put number here */}
+      </div>
     </OverlayTrigger>
   );
 }
@@ -74,20 +87,6 @@ function ResultsItem({
   const { numFriends } = useSearch();
   const friends = numFriends[`${course.season_code}${course.crn}`];
 
-  // Season code for this listing
-  const seasons = ['spring', 'summer', 'fall'] as const;
-  const season = Number(course.season_code[5]);
-  const year = course.season_code.substring(2, 4);
-  // Determine the icon for this season
-  const icon =
-    season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={10} />
-    ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={10} />
-    ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={10} />
-    );
-
   const inWorksheet = useMemo(
     () =>
       isInWorksheet(
@@ -99,15 +98,9 @@ function ResultsItem({
     [course.crn, course.season_code, worksheetNumber, user.worksheets],
   );
 
-  const [subjectCode, courseCode] = course.course_code.split(' ') as [
-    string,
-    string,
-  ];
-
   return (
-    // TODO
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
+      role="button"
       className={clsx(
         styles.resultItem,
         inWorksheet && styles.inWorksheetResultItem,
@@ -121,8 +114,6 @@ function ResultsItem({
           return prev;
         });
       }}
-      // TODO
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
       style={style}
     >
@@ -134,28 +125,12 @@ function ResultsItem({
       >
         {multiSeasons && (
           <div className={clsx('d-flex', colStyles.seasonCol)}>
-            <OverlayTrigger
-              placement="top"
-              overlay={(props) => (
-                <Tooltip id="button-tooltip" {...props}>
-                  <small>{toSeasonString(course.season_code)}</small>
-                </Tooltip>
-              )}
-            >
-              <div className={clsx(styles.skillsAreas, 'my-auto')}>
-                <Badge
-                  variant="secondary"
-                  className={clsx(
-                    styles.tag,
-                    styles[seasons[(season - 1) as 0 | 1 | 2]],
-                  )}
-                  key={season}
-                >
-                  <div style={{ display: 'inline-block' }}>{icon}</div>
-                  &nbsp;{`'${year}`}
-                </Badge>
-              </div>
-            </OverlayTrigger>
+            <div className="my-auto">
+              <SeasonTag
+                season={course.season_code}
+                className={styles.season}
+              />
+            </div>
           </div>
         )}
         <div
@@ -165,133 +140,28 @@ function ResultsItem({
           )}
         >
           <div className={clsx(styles.ellipsisText, 'font-weight-bold')}>
-            <OverlayTrigger
-              placement="top"
-              overlay={(props) => {
-                const subjectName = subjects[subjectCode];
-                if (!subjectName) {
-                  Sentry.captureException(
-                    new Error(`Subject ${subjectCode} has no label`),
-                  );
-                }
-                return (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <small>{subjectName ?? '[unknown]'}</small>
-                  </Tooltip>
-                );
-              }}
-            >
-              <span>{subjectCode}</span>
-            </OverlayTrigger>{' '}
-            {courseCode}
-            <TextComponent type="secondary">
-              {course.section
-                ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
-                : ''}
-            </TextComponent>
+            <CourseCode course={course} subdueSection />
           </div>
         </div>
-        <OverlayTrigger
-          placement="right"
-          overlay={(props) => (
-            <InfoPopover {...props} id="title-popover">
-              <Popover.Title>
-                <strong>
-                  {course.extra_info !== 'ACTIVE' ? (
-                    <span className={styles.cancelledText}>CANCELLED</span>
-                  ) : (
-                    ''
-                  )}
-                  {course.title}
-                </strong>
-              </Popover.Title>
-              <Popover.Content>
-                {truncatedText(course.description, 500, 'no description')}
-                <br />
-                <div className="text-danger">
-                  {truncatedText(course.requirements, 250, '')}
-                </div>
-              </Popover.Content>
-            </InfoPopover>
-          )}
-        >
+        <CourseInfoPopover course={course}>
           <div className={colStyles.titleCol}>
             <div className={styles.ellipsisText}>{course.title}</div>
           </div>
-        </OverlayTrigger>
+        </CourseInfoPopover>
         <div className="d-flex">
           <div className={colStyles.overallCol}>
-            {user.hasEvals ? (
-              <RatingBubble
-                className={styles.ratingCell}
-                rating={getOverallRatings(course, 'stat')}
-                colorMap={ratingColormap}
-              >
-                {getOverallRatings(course, 'display')}
-              </RatingBubble>
-            ) : (
-              <BlurRatingTooltip>
-                <div
-                  className={styles.ratingCell}
-                  style={{
-                    backgroundColor: generateRandomColor(
-                      `${course.crn + course.season_code}overall`,
-                    ),
-                  }}
-                >
-                  {/* Maybe put number here */}
-                </div>
-              </BlurRatingTooltip>
-            )}
+            <Rating course={course} hasEvals={user.hasEvals} name="Class" />
           </div>
           <div className={colStyles.workloadCol}>
-            {user.hasEvals ? (
-              <RatingBubble
-                className={clsx(styles.ratingCell, colStyles.workloadCol)}
-                rating={getWorkloadRatings(course, 'stat')}
-                colorMap={workloadColormap}
-              >
-                {getWorkloadRatings(course, 'display')}
-              </RatingBubble>
-            ) : (
-              <BlurRatingTooltip>
-                <div
-                  className={clsx(styles.ratingCell, colStyles.workloadCol)}
-                  style={{
-                    backgroundColor: generateRandomColor(
-                      `${course.crn + course.season_code}workload`,
-                    ),
-                  }}
-                >
-                  {/* Number maybe */}
-                </div>
-              </BlurRatingTooltip>
-            )}
+            <Rating course={course} hasEvals={user.hasEvals} name="Workload" />
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
             <div className={clsx('mr-2 h-100', styles.profRating)}>
-              {user.hasEvals ? (
-                <RatingBubble
-                  className={styles.ratingCell}
-                  rating={getProfessorRatings(course, 'stat')}
-                  colorMap={ratingColormap}
-                >
-                  {getProfessorRatings(course, 'display')}
-                </RatingBubble>
-              ) : (
-                <BlurRatingTooltip>
-                  <div
-                    className={styles.ratingCell}
-                    style={{
-                      backgroundColor: generateRandomColor(
-                        `${course.crn + course.season_code}prof`,
-                      ),
-                    }}
-                  >
-                    {/* Maybe put number here */}
-                  </div>
-                </BlurRatingTooltip>
-              )}
+              <Rating
+                course={course}
+                hasEvals={user.hasEvals}
+                name="Professor"
+              />
             </div>
             <div className={styles.ellipsisText}>
               {course.professor_names.length === 0
@@ -317,22 +187,20 @@ function ResultsItem({
           <div className={styles.ellipsisText}>{course.locations_summary}</div>
         </div>
         <div className={clsx('d-flex', colStyles.friendsCol)}>
-          <OverlayTrigger
-            placement="top"
-            overlay={(props) =>
-              friends && friends.size > 0 ? (
+          {friends && friends.size > 0 ? (
+            <OverlayTrigger
+              placement="top"
+              overlay={(props) => (
                 <Tooltip id="button-tooltip" {...props}>
                   {[...friends].join(' • ')}
                 </Tooltip>
-              ) : (
-                <div />
-              )
-            }
-          >
-            <span className="my-auto">
-              {friends && friends.size > 0 ? friends.size : ''}
-            </span>
-          </OverlayTrigger>
+              )}
+            >
+              <span className="my-auto">{friends.size}</span>
+            </OverlayTrigger>
+          ) : (
+            <span className="my-auto" />
+          )}
         </div>
         <div
           className={styles.worksheetBtn}

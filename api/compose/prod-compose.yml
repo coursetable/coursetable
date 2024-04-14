@@ -1,12 +1,17 @@
 version: '3'
 services:
   api:
+    restart: always
     labels:
       traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)
       traefik.http.routers.coursetable.tls: true
       traefik.http.routers.coursetable.tls.certResolver: ctresolver
       traefik.http.routers.coursetable.middlewares: gzip-compress@file
 
+  graphql-engine:
+    restart: always
+
   redis:
+    restart: always
     volumes:
       - /home/app/redis/prod-data:/data

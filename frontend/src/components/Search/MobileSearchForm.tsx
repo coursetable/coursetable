@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import clsx from 'clsx';
+import { scroller } from 'react-scroll';
 
 import styles from './MobileSearchForm.module.css';
 import Toggle from './Toggle';
 import CustomSelect from './CustomSelect';
-import SortBySelect from './SortBySelect';
+import ResultsColumnSort from './ResultsColumnSort';
 import { SurfaceComponent, Input, Hr, TextComponent } from '../Typography';
 import type { Season } from '../../utilities/common';
 import {
   useSearch,
   type Option,
+  isOption,
   defaultFilters,
   skillsAreasOptions,
   subjectsOptions,
   schoolsOptions,
   seasonsOptions,
+  sortByOptions,
 } from '../../contexts/searchContext';
 
-export default function MobileSearchForm({
-  onSubmit,
-}: {
-  readonly onSubmit: (event: React.FormEvent) => void;
-}) {
+export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
   const {
     searchText,
@@ -34,6 +33,7 @@ export default function MobileSearchForm({
     professorBounds,
     selectSeasons,
     selectSchools,
+    selectSortBy,
   } = filters;
   // These are exactly the same as the filters, except they update responsively
   // without triggering searching
@@ -46,26 +46,43 @@ export default function MobileSearchForm({
   const [professorRangeValue, setProfessorRangeValue] = useState(
     professorBounds.value,
   );
+  const scrollToResults = useCallback((event?: React.FormEvent) => {
+    if (event) event.preventDefault();
+    scroller.scrollTo('catalog', {
+      smooth: true,
+      duration: 500,
+      offset: -56,
+    });
+  }, []);
+  // Scroll to the bottom when courses finish loading on initial load.
+  const [doneInitialScroll, setDoneInitialScroll] = useState(false);
+  useEffect(() => {
+    if (!coursesLoading && !doneInitialScroll) {
+      scrollToResults();
+      setDoneInitialScroll(true);
+    }
+  }, [coursesLoading, doneInitialScroll, scrollToResults]);
 
   return (
-    <Col className={clsx('p-3', styles.searchColMobile)}>
-      <SurfaceComponent className={clsx('ml-1', styles.searchContainer)}>
-        <Form className="px-0" onSubmit={onSubmit}>
+    <div className="p-3">
+      <SurfaceComponent className={styles.searchContainer}>
+        <Form className="px-0" onSubmit={scrollToResults}>
           <Row className="mx-auto pt-4 px-4">
             {/* Reset Filters Button */}
-            {/* TODO */}
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-            <small
+            <button
+              type="button"
               className={clsx(styles.resetFiltersBtn, 'mr-auto')}
               onClick={() => {
                 setOverallRangeValue(defaultFilters.overallBounds);
                 setWorkloadRangeValue(defaultFilters.workloadBounds);
                 setProfessorRangeValue(defaultFilters.professorBounds);
-                Object.values(filters).forEach((filter) => filter.reset());
+                Object.values(filters).forEach((filter) =>
+                  filter.resetToDefault(),
+                );
               }}
             >
               Reset Filters
-            </small>
+            </button>
             {/* Number of results shown text */}
             <small className={clsx(styles.numResults, 'ml-auto')}>
               <TextComponent type="tertiary">
@@ -92,13 +109,26 @@ export default function MobileSearchForm({
           </Row>
           {/* Sort by option and order */}
           <Row className="mx-auto py-0 px-4">
-            <SortBySelect />
+            <div className={styles.sortByContainer}>
+              <CustomSelect
+                value={selectSortBy.value}
+                options={Object.values(sortByOptions)}
+                menuPortalTarget={document.body}
+                onChange={(options): void => {
+                  if (isOption(options)) selectSortBy.set(options);
+                }}
+              />
+            </div>
+            <ResultsColumnSort
+              selectOption={selectSortBy.value}
+              renderActive={false}
+            />
           </Row>
           <Hr />
           <Row className={clsx('mx-auto py-0 px-4', styles.multiSelects)}>
-            {/* Seasons Multi-Select */}
             <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option<Season>, true>
+                aria-label="Seasons"
                 isMulti
                 value={selectSeasons.value}
                 options={seasonsOptions}
@@ -110,9 +140,9 @@ export default function MobileSearchForm({
                 }
               />
             </div>
-            {/* Skills/Areas Multi-Select */}
             <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
+                aria-label="Skills/Areas"
                 isMulti
                 value={selectSkillsAreas.value}
                 options={skillsAreasOptions}
@@ -125,9 +155,9 @@ export default function MobileSearchForm({
                 }
               />
             </div>
-            {/* Yale Subjects Multi-Select */}
             <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
+                aria-label="Subjects"
                 isMulti
                 value={selectSubjects.value}
                 options={subjectsOptions}
@@ -140,9 +170,9 @@ export default function MobileSearchForm({
                 }
               />
             </div>
-            {/* Yale Schools Multi-Select */}
             <div className={clsx('col-md-12 p-0', styles.selectorContainer)}>
               <CustomSelect<Option, true>
+                aria-label="Schools"
                 isMulti
                 value={selectSchools.value}
                 options={schoolsOptions}
@@ -157,10 +187,13 @@ export default function MobileSearchForm({
           </Row>
           <Hr />
           <Row className={clsx('mx-auto pt-0 pb-0 px-2', styles.sliders)}>
-            {/* Class Rating Slider */}
             <Col>
               <Container style={{ paddingTop: '1px' }}>
                 <Range
+                  ariaLabelGroupForHandles={[
+                    'Overall rating lower bound',
+                    'Overall rating upper bound',
+                  ]}
                   min={defaultFilters.overallBounds[0]}
                   max={defaultFilters.overallBounds[1]}
                   step={0.1}
@@ -190,6 +223,10 @@ export default function MobileSearchForm({
             <Col>
               <Container>
                 <Range
+                  ariaLabelGroupForHandles={[
+                    'Workload rating lower bound',
+                    'Workload rating upper bound',
+                  ]}
                   min={defaultFilters.workloadBounds[0]}
                   max={defaultFilters.workloadBounds[1]}
                   step={0.1}
@@ -219,6 +256,10 @@ export default function MobileSearchForm({
             <Col>
               <Container>
                 <Range
+                  ariaLabelGroupForHandles={[
+                    'Professor rating lower bound',
+                    'Professor rating upper bound',
+                  ]}
                   min={defaultFilters.professorBounds[0]}
                   max={defaultFilters.professorBounds[1]}
                   step={0.1}
@@ -269,6 +310,6 @@ export default function MobileSearchForm({
           </div>
         </Form>
       </SurfaceComponent>
-    </Col>
+    </div>
   );
 }

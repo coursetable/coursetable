@@ -2,6 +2,7 @@ import type express from 'express';
 import { request } from 'graphql-request';
 import crypto from 'crypto';
 import z from 'zod';
+import { eq, sql } from 'drizzle-orm';
 
 import {
   GRAPHQL_ENDPOINT,
@@ -9,7 +10,7 @@ import {
   MAX_CHALLENGE_REQUESTS,
   CHALLENGE_ALGORITHM,
   CHALLENGE_PASSWORD,
-  prisma,
+  db,
 } from '../config.js';
 
 import winston from '../logging/winston.js';
@@ -20,6 +21,7 @@ import {
   verifyEvalsQuery,
   type VerifyEvalsQueryResponse,
 } from './challenge.queries.js';
+import { studentBluebookSettings } from '../../drizzle/schema.js';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
@@ -111,10 +113,12 @@ export const requestChallenge = async (
 
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled } =
-    (await prisma.studentBluebookSettings.findUnique({
-      where: { netId },
-    }))!;
+  const { challengeTries, evaluationsEnabled } = (
+    await db
+      .selectDistinctOn([studentBluebookSettings.netId])
+      .from(studentBluebookSettings)
+      .where(eq(studentBluebookSettings.netId, netId))
+  )[0]!;
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -190,10 +194,12 @@ export const verifyChallenge = async (
 
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled } =
-    (await prisma.studentBluebookSettings.findUnique({
-      where: { netId },
-    }))!;
+  const { challengeTries, evaluationsEnabled } = (
+    await db
+      .selectDistinctOn([studentBluebookSettings.netId])
+      .from(studentBluebookSettings)
+      .where(eq(studentBluebookSettings.netId, netId))
+  )[0]!;
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -242,19 +248,24 @@ export const verifyChallenge = async (
     res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
-  await prisma.studentBluebookSettings.update({
-    where: { netId },
-    data: { challengeTries: { increment: 1 } },
-  });
+
+  await db
+    .update(studentBluebookSettings)
+    .set({
+      challengeTries: sql`${studentBluebookSettings.challengeTries} + 1`,
+    })
+    .where(eq(studentBluebookSettings.netId, netId));
 
   const results = checkChallenge(trueEvals, answers);
 
   if (results.every((x) => x)) {
     // Enable evaluations and respond with success
-    await prisma.studentBluebookSettings.update({
-      where: { netId },
-      data: { evaluationsEnabled: true },
-    });
+    await db
+      .update(studentBluebookSettings)
+      .set({
+        evaluationsEnabled: true,
+      })
+      .where(eq(studentBluebookSettings.netId, netId));
   }
   res.status(200).json({
     results,

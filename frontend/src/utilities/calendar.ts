@@ -8,10 +8,7 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type {
-  HiddenCourses,
-  WorksheetCourse,
-} from '../contexts/worksheetContext';
+import type { WorksheetCourse } from '../contexts/worksheetContext';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -100,7 +97,7 @@ function datesInBreak(
     const dates: string[] = [];
     for (
       const date = start;
-      date.getTime() < end;
+      date.getTime() <= end;
       date.setUTCDate(date.getUTCDate() + 1)
     )
       if (days.includes(date.getUTCDay())) dates.push(isoString(date, time));
@@ -108,6 +105,22 @@ function datesInBreak(
   });
 }
 
+function transferDays(
+  transfers: SeasonCalendar['transfers'],
+  days: number[],
+  time: string,
+) {
+  return transfers.map((t) => {
+    const day = new Date(Date.UTC(t.date[0], t.date[1] - 1, t.date[2]));
+    if (days.includes(t.day)) return isoString(day, time);
+    return '';
+  });
+}
+
+/**
+ * A usage-agnostic representation of a calendar event. It will be converted to
+ * a usable format by one of the `to*Event` functions.
+ */
 type CalendarEvent = {
   summary: string;
   start: string;
@@ -127,7 +140,7 @@ function toGCalEvent({
   recurrence,
   description,
   location,
-}: CalendarEvent) {
+}: CalendarEvent): GCalEvent {
   return {
     id: `coursetable${uuidv4().replace(/-/gu, '')}`,
     summary,
@@ -154,7 +167,10 @@ function toICSEvent({
   location,
 }: CalendarEvent): ICSEvent {
   return `BEGIN:VEVENT
-DESCRIPTION:${description}
+DESCRIPTION:${
+    // ICS uses **CRLF**
+    description.replaceAll('\n', '\\r\\n')
+  }
 DTEND;TZID=America/New_York:${end.replace(/[:-]/gu, '')}
 DTSTART;TZID=America/New_York:${start.replace(/[:-]/gu, '')}
 LOCATION:${location}
@@ -168,7 +184,6 @@ function toRBCEvent({
   summary,
   start,
   end,
-  description,
   location,
   color,
   listing,
@@ -189,7 +204,8 @@ function toRBCEvent({
     endTimeCpy.setDate(endTimeCpy.getDate() - endTimeCpy.getDay() + day);
     return {
       title: summary,
-      description,
+      // No instructors for RBC
+      description: listing.title,
       start: startTimeCpy,
       end: endTimeCpy,
       listing,
@@ -199,7 +215,7 @@ function toRBCEvent({
   });
 }
 
-type GCalEvent = ReturnType<typeof toGCalEvent>;
+type GCalEvent = gapi.client.calendar.EventInput;
 type ICSEvent = string;
 export type RBCEvent = {
   title: string;
@@ -215,25 +231,21 @@ export function getCalendarEvents(
   type: 'gcal',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ): GCalEvent[];
 export function getCalendarEvents(
   type: 'ics',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ): ICSEvent[];
 export function getCalendarEvents(
   type: 'rbc',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ): RBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
   courses: WorksheetCourse[],
   curSeason: Season,
-  hiddenCourses: HiddenCourses,
 ) {
   const seasonString = toSeasonString(curSeason);
   const semester = academicCalendars[curSeason] as SeasonCalendar | undefined;
@@ -243,9 +255,7 @@ export function getCalendarEvents(
     );
     return [];
   }
-  const visibleCourses = courses.filter(
-    (course) => !hiddenCourses[curSeason]?.[course.crn],
-  );
+  const visibleCourses = courses.filter((course) => !course.hidden);
   if (visibleCourses.length === 0) {
     if (type !== 'rbc') toast.error(`No courses in ${seasonString} to export!`);
     return [];
@@ -271,8 +281,13 @@ export function getCalendarEvents(
               .join(',')
           : // Irrelevant for rbc
             '';
+        const rDate = semester
+          ? transferDays(semester.transfers, days, startTime)
+              .map((s) => s.replace(/[:-]/gu, ''))
+              .join(',')
+          : // Irrelevant for rbc
+            '';
 
-        // TODO: take care of transfer schedules (see semester.transfer)
         return toEvent({
           summary: c.course_code,
           start: isoString(firstMeetingDay, startTime),
@@ -280,8 +295,9 @@ export function getCalendarEvents(
           recurrence: [
             `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
             `EXDATE;TZID=America/New_York:${exDate}`,
+            ...(rDate ? [`RDATE;TZID=America/New_York:${rDate}`] : []),
           ],
-          description: c.title,
+          description: `${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
           location,
           color,
           listing: c,

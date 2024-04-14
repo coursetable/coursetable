@@ -5,10 +5,10 @@ import { getCalendarEvents } from '../../utilities/calendar';
 import ICSIcon from '../../images/ics.svg';
 
 export default function ICSExportButton() {
-  const { curSeason, hiddenCourses, courses } = useWorksheet();
+  const { curSeason, courses } = useWorksheet();
 
   const exportICS = () => {
-    const events = getCalendarEvents('ics', courses, curSeason, hiddenCourses);
+    const events = getCalendarEvents('ics', courses, curSeason);
     // Error already reported
     if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR
@@ -39,11 +39,9 @@ END:VCALENDAR`;
   };
 
   return (
-    // TODO
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div onClick={exportICS}>
+    <button type="button" onClick={exportICS}>
       <img style={{ height: '2rem' }} src={ICSIcon} alt="" />
       &nbsp;&nbsp;Download as ICS
-    </div>
+    </button>
   );
 }

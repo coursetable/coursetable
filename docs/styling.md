@@ -141,13 +141,13 @@ Tip: if your component is only rendered on tablet size and above, you can use `@
 
 Unfortunately due to our lack of CSS preprocessors, we cannot use variables in media queries. You can refer to the following table:
 
-| Size          | `>=`   | `<`    |
-| ------------- | ------ | ------ |
-| Small mobile  | 0      | 480px  |
-| Large mobile  | 480px  | 768px  |
-| Tablet        | 768px  | 1200px |
-| Small desktop | 1200px | 1320px |
-| Large desktop | 1320px | ∞      |
+| Size          | `>=`   | `<`    | Bootstrap size |
+| ------------- | ------ | ------ | -------------- |
+| Small mobile  | 0      | 576px  | `xs`           |
+| Large mobile  | 576px  | 768px  | `sm`           |
+| Tablet        | 768px  | 1200px | `md`, `lg`     |
+| Small desktop | 1200px | 1320px | `xl`           |
+| Large desktop | 1320px | ∞      | `xl`           |
 
 Try to keep your responsive design in CSS only, by using the same DOM structure and changing how they are layed out. If you need to change the markup (for example, to render a component only on large screens), you can use the `useWindowDimensions` hook:
 

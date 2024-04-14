@@ -79,14 +79,14 @@ export function useComponentVisible<T extends HTMLElement>(
 }
 
 // Detect clicks outside of a toggle and dropdown component
-export function useComponentVisibleDropdown<T extends HTMLElement>(
-  initialIsVisible: boolean,
-  callback?: (visible: boolean) => void,
-) {
+export function useComponentVisibleDropdown<
+  T extends HTMLElement,
+  U extends HTMLElement = T,
+>(initialIsVisible: boolean, callback?: (visible: boolean) => void) {
   const [isComponentVisible, setIsComponentVisible] =
     useState(initialIsVisible);
   const toggleRef = useRef<T>(null);
-  const dropdownRef = useRef<T>(null);
+  const dropdownRef = useRef<U>(null);
 
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it

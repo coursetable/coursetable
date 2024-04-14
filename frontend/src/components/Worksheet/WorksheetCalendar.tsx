@@ -11,11 +11,13 @@ import {
   type RBCEvent,
 } from '../../utilities/calendar';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, hoverCourse, hiddenCourses, curSeason } = useWorksheet();
+  const { courses, hoverCourse, curSeason } = useWorksheet();
+  const { isMobile } = useWindowDimensions();
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
@@ -26,6 +28,8 @@ function WorksheetCalendar() {
         borderColor: color.css(),
         borderWidth: '2px',
       };
+      // Hover management is too hard on mobile and not very useful
+      if (isMobile) return { style };
       if (hoverCourse && hoverCourse === event.listing.crn) {
         style.zIndex = 2;
         style.filter = 'saturate(130%)';
@@ -36,17 +40,12 @@ function WorksheetCalendar() {
         style,
       };
     },
-    [hoverCourse],
+    [isMobile, hoverCourse],
   );
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents(
-      'rbc',
-      courses,
-      curSeason,
-      hiddenCourses,
-    );
+    const parsedCourses = getCalendarEvents('rbc', courses, curSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -69,7 +68,7 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, hiddenCourses, curSeason]);
+  }, [courses, curSeason]);
 
   return (
     <Calendar

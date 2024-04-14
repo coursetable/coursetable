@@ -69,7 +69,7 @@
 }
 
 .statPill {
-  color: #141414;
+  color: var(--color-text-dark);
 }
 
 .wide {

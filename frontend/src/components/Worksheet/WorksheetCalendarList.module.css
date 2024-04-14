@@ -25,7 +25,6 @@
 
 .button {
   padding: 5px;
-  cursor: pointer;
   text-align: center;
   border: solid 2px rgb(0 0 0 / 10%);
   border-radius: 8px;
@@ -63,16 +62,6 @@
 
 .button:global(.form-control):focus {
   color: var(--color-text);
-}
-
-.button :global(.dropdown-menu),
-.button :global(.dropdown-item) {
-  color: var(--color-text);
-  background-color: var(--color-surface-elevated);
-}
-
-.button :global(.dropdown-item):hover {
-  background-color: var(--color-select-hover);
 }
 
 .button:hover .icon {

@@ -1,9 +1,35 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
+import { isOption } from '../../contexts/searchContext';
 import styles from './WorksheetNumberDropdown.module.css';
 
-function WorksheetNumDropdown() {
+function WorksheetNumDropdownDesktop() {
+  const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
+
+  return (
+    <Popout
+      buttonText="Worksheet"
+      displayOptionLabel
+      selectedOptions={worksheetOptions[worksheetNumber]}
+      clearIcon={false}
+    >
+      <PopoutSelect
+        isClearable={false}
+        hideSelectedOptions={false}
+        value={worksheetOptions[worksheetNumber]}
+        options={worksheetOptions}
+        onChange={(selectedOption) => {
+          if (isOption(selectedOption)) changeWorksheet(selectedOption.value);
+        }}
+      />
+    </Popout>
+  );
+}
+
+function WorksheetNumDropdownMobile() {
   const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
 
   return (
@@ -17,12 +43,29 @@ function WorksheetNumDropdown() {
         }}
       >
         {worksheetOptions.map(({ value, label }) => (
-          <Dropdown.Item key={value} eventKey={value} className="d-flex">
+          <Dropdown.Item
+            key={value}
+            eventKey={value}
+            className="d-flex"
+            // Styling if this is the current number
+            style={{
+              backgroundColor:
+                value === worksheetNumber ? 'var(--color-primary)' : '',
+            }}
+          >
             <div className="mx-auto">{label}</div>
           </Dropdown.Item>
         ))}
       </DropdownButton>
     </div>
+  );
+}
+
+function WorksheetNumDropdown({ mobile }: { readonly mobile: boolean }) {
+  return mobile ? (
+    <WorksheetNumDropdownMobile />
+  ) : (
+    <WorksheetNumDropdownDesktop />
   );
 }
 

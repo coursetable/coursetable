@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Col, Container, Row, Modal } from 'react-bootstrap';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  Col,
+  Container,
+  Row,
+  Modal,
+  DropdownButton,
+  Dropdown,
+} from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { IoMdArrowRoundBack } from 'react-icons/io';
+import { Helmet } from 'react-helmet';
+import { IoMdArrowRoundBack, IoIosMore } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 
@@ -11,7 +19,7 @@ import styles from './CourseModal.module.css';
 import { TextComponent, LinkLikeText } from '../Typography';
 import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
-import { toSeasonString } from '../../utilities/course';
+import { toSeasonString, truncatedText } from '../../utilities/course';
 import { useFerry } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
@@ -41,12 +49,39 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
   };
 
   return (
-    <FaRegShareFromSquare
-      onClick={copyToClipboard}
-      size={20}
-      color="#007bff"
+    <button
+      type="button"
       className={styles.shareButton}
-    />
+      onClick={copyToClipboard}
+      aria-label="Share"
+    >
+      <FaRegShareFromSquare size={20} color="#007bff" />
+    </button>
+  );
+}
+
+function MoreButton({ hide }: { readonly hide: () => void }) {
+  const navigate = useNavigate();
+  return (
+    <DropdownButton
+      as="div"
+      drop="down"
+      title={<IoIosMore size={20} color="#007bff" />}
+      variant="none"
+      className={styles.moreDropdown}
+    >
+      <Dropdown.Item eventKey="1">
+        <button
+          type="button"
+          onClick={() => {
+            hide();
+            navigate('/faq#how_do_i_report_a_data_error');
+          }}
+        >
+          Report an error
+        </button>
+      </Dropdown.Item>
+    </DropdownButton>
   );
 }
 
@@ -118,19 +153,30 @@ function CourseModal() {
   const listing = history[history.length - 1];
 
   if (!listing) return null;
+  const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.title} | CourseTable`;
+  const description = truncatedText(
+    listing.description,
+    300,
+    'No description available',
+  );
+  const hide = () => {
+    setHistory([]);
+    setView('overview');
+    setSearchParams((prev) => {
+      prev.delete('course-modal');
+      return prev;
+    });
+  };
   return (
     <div className="d-flex justify-content-center">
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Helmet>
       <Modal
         show={Boolean(listing)}
         scrollable
-        onHide={() => {
-          setHistory([]);
-          setView('overview');
-          setSearchParams((prev) => {
-            prev.delete('course-modal');
-            return prev;
-          });
-        }}
+        onHide={hide}
         dialogClassName={styles.dialog}
         animation={false}
         centered
@@ -204,6 +250,7 @@ function CourseModal() {
                 <WishlistToggleButton listing={listing} modal />
                 <WorksheetToggleButton listing={listing} modal />
                 <ShareButton courseCode={listing.course_code} />
+                <MoreButton hide={hide} />
               </div>
             </Row>
           </Container>

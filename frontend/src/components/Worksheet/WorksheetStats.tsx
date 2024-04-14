@@ -7,7 +7,11 @@ import SkillBadge from '../SkillBadge';
 import { useTheme } from '../../contexts/themeContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { ratingColormap } from '../../utilities/constants';
-import { getOverallRatings, getWorkloadRatings } from '../../utilities/course';
+import {
+  getOverallRatings,
+  getWorkloadRatings,
+  isDiscussionSection,
+} from '../../utilities/course';
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -79,7 +83,7 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, hiddenCourses, curSeason } = useWorksheet();
+  const { courses } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
@@ -89,15 +93,17 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  for (const { listing: course } of courses) {
-    // See if any of the course's codes have already been counted or if it's
-    // hidden so we don't double count
+  for (const { listing: course, hidden } of courses) {
     const alreadyCounted = course.all_course_codes.some((code) =>
       countedCourseCodes.has(code),
     );
-    const isHidden = Boolean(hiddenCourses[curSeason]?.[course.crn]);
 
-    if (alreadyCounted || isHidden || !course.credits) continue;
+    // Don't count in one of the following cases:
+    // - Cross-listing has been counted
+    // - Another section has been counted (we just randomly pick one)
+    // - Is discussion section (no ratings or credits)
+    // - Is hidden
+    if (alreadyCounted || hidden || isDiscussionSection(course)) continue;
 
     // Mark codes as counted, no double counting
     course.all_course_codes.forEach((code) => {
@@ -108,7 +114,7 @@ export default function WorksheetStats() {
     if (!courseRating) coursesWithoutRating.push(course.course_code);
     if (!courseWorkload) coursesWithoutWorkload.push(course.course_code);
     courseCnt++;
-    credits += course.credits;
+    credits += course.credits ?? 0;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
     skillsAreas.push(...course.skills, ...course.areas);

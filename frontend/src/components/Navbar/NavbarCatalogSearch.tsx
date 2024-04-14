@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState, useId } from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
-import { scroller } from 'react-scroll';
 import clsx from 'clsx';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
@@ -37,9 +36,10 @@ import {
 import styles from './NavbarCatalogSearch.module.css';
 
 export function NavbarCatalogSearch() {
-  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  const { isTablet, isLgDesktop } = useWindowDimensions();
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
+  const formLabelId = useId();
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -90,7 +90,7 @@ export function NavbarCatalogSearch() {
   const [numRangeValue, setNumRangeValue] = useState(numBounds.value);
 
   const activeStyle = useCallback((active: boolean) => {
-    if (active) return { color: 'var(--color-primary-hover)' };
+    if (active) return { color: 'var(--color-primary)' };
     return undefined;
   }, []);
 
@@ -150,14 +150,6 @@ export function NavbarCatalogSearch() {
         className="px-0 h-100"
         onSubmit={(event) => {
           event.preventDefault();
-
-          if (isMobile) {
-            scroller.scrollTo('catalog', {
-              smooth: true,
-              duration: 500,
-              offset: -56,
-            });
-          }
         }}
         data-tutorial="catalog-1"
       >
@@ -184,7 +176,7 @@ export function NavbarCatalogSearch() {
                 className={styles.searchTextClear}
                 size={18}
                 onClick={() => {
-                  searchText.reset();
+                  searchText.resetToEmpty();
                   setStartTime(Date.now());
                 }}
               />
@@ -213,7 +205,7 @@ export function NavbarCatalogSearch() {
                 <Popout
                   buttonText="Subject"
                   onReset={() => {
-                    selectSubjects.reset();
+                    selectSubjects.resetToEmpty();
                     setStartTime(Date.now());
                   }}
                   selectedOptions={selectSubjects.value}
@@ -234,7 +226,7 @@ export function NavbarCatalogSearch() {
                 <Popout
                   buttonText="Areas/Skills"
                   onReset={() => {
-                    selectSkillsAreas.reset();
+                    selectSkillsAreas.resetToEmpty();
                     setStartTime(Date.now());
                   }}
                   selectedOptions={selectSkillsAreas.value}
@@ -267,7 +259,7 @@ export function NavbarCatalogSearch() {
                   </div>
                   <div
                     className={styles.rangeLabel}
-                    style={activeStyle(overallBounds.hasChanged)}
+                    style={activeStyle(overallBounds.isNonEmpty)}
                   >
                     Overall
                   </div>
@@ -276,6 +268,10 @@ export function NavbarCatalogSearch() {
                   </div>
                 </div>
                 <Range
+                  ariaLabelGroupForHandles={[
+                    'Overall rating lower bound',
+                    'Overall rating upper bound',
+                  ]}
                   className={clsx(styles.range, styles.mainRange)}
                   min={defaultFilters.overallBounds[0]}
                   max={defaultFilters.overallBounds[1]}
@@ -301,7 +297,7 @@ export function NavbarCatalogSearch() {
                   </div>
                   <div
                     className={styles.rangeLabel}
-                    style={activeStyle(workloadBounds.hasChanged)}
+                    style={activeStyle(workloadBounds.isNonEmpty)}
                   >
                     Workload
                   </div>
@@ -310,6 +306,10 @@ export function NavbarCatalogSearch() {
                   </div>
                 </div>
                 <Range
+                  ariaLabelGroupForHandles={[
+                    'Workload rating lower bound',
+                    'Workload rating upper bound',
+                  ]}
                   className={clsx(styles.range, styles.mainRange)}
                   min={defaultFilters.workloadBounds[0]}
                   max={defaultFilters.workloadBounds[1]}
@@ -336,7 +336,7 @@ export function NavbarCatalogSearch() {
                     </div>
                     <div
                       className={styles.rangeLabel}
-                      style={activeStyle(professorBounds.hasChanged)}
+                      style={activeStyle(professorBounds.isNonEmpty)}
                     >
                       Professor
                     </div>
@@ -345,6 +345,10 @@ export function NavbarCatalogSearch() {
                     </div>
                   </div>
                   <Range
+                    ariaLabelGroupForHandles={[
+                      'Professor rating lower bound',
+                      'Professor rating upper bound',
+                    ]}
                     className={clsx(styles.range, styles.mainRange)}
                     min={defaultFilters.professorBounds[0]}
                     max={defaultFilters.professorBounds[1]}
@@ -371,7 +375,7 @@ export function NavbarCatalogSearch() {
                 displayOptionLabel
                 maxDisplayOptions={1}
                 onReset={() => {
-                  selectSeasons.reset();
+                  selectSeasons.resetToEmpty();
                   setStartTime(Date.now());
                 }}
                 selectedOptions={selectSeasons.value}
@@ -402,7 +406,7 @@ export function NavbarCatalogSearch() {
                       'selectSeasons',
                       'professorBounds',
                     ] as const
-                  ).forEach((k) => filters[k].reset());
+                  ).forEach((k) => filters[k].resetToEmpty());
                 }
                 (
                   [
@@ -421,10 +425,10 @@ export function NavbarCatalogSearch() {
                     'hideGraduateCourses',
                     'hideDiscussionSections',
                   ] as const
-                ).forEach((k) => filters[k].reset());
+                ).forEach((k) => filters[k].resetToEmpty());
                 if (selectSortBy.value.value === 'average_gut_rating') {
-                  selectSortBy.reset();
-                  sortOrder.reset();
+                  selectSortBy.resetToEmpty();
+                  sortOrder.resetToEmpty();
                 }
                 setTimeRangeValue(defaultFilters.timeBounds);
                 setEnrollRangeValue(
@@ -440,25 +444,25 @@ export function NavbarCatalogSearch() {
               }}
               selectedOptions={
                 [
-                  isTablet && selectSubjects.hasChanged,
-                  isTablet && selectSkillsAreas.hasChanged,
-                  isTablet && selectSeasons.hasChanged,
-                  selectDays.hasChanged,
-                  timeBounds.hasChanged,
-                  enrollBounds.hasChanged,
-                  isTablet && professorBounds.hasChanged,
-                  numBounds.hasChanged,
-                  selectSchools.hasChanged,
-                  selectCredits.hasChanged,
-                  selectCourseInfoAttributes.hasChanged,
+                  isTablet && selectSubjects.isNonEmpty,
+                  isTablet && selectSkillsAreas.isNonEmpty,
+                  isTablet && selectSeasons.isNonEmpty,
+                  selectDays.isNonEmpty,
+                  timeBounds.isNonEmpty,
+                  enrollBounds.isNonEmpty,
+                  isTablet && professorBounds.isNonEmpty,
+                  numBounds.isNonEmpty,
+                  selectSchools.isNonEmpty,
+                  selectCredits.isNonEmpty,
+                  selectCourseInfoAttributes.isNonEmpty,
                   selectSortBy.value.value === 'average_gut_rating',
-                  searchDescription.value,
-                  enableQuist.value,
-                  hideCancelled.value,
-                  hideConflicting.value,
-                  hideFirstYearSeminars.value,
-                  hideGraduateCourses.value,
-                  hideDiscussionSections.value,
+                  searchDescription.isNonEmpty,
+                  enableQuist.isNonEmpty,
+                  hideCancelled.isNonEmpty,
+                  hideConflicting.isNonEmpty,
+                  hideFirstYearSeminars.isNonEmpty,
+                  hideGraduateCourses.isNonEmpty,
+                  hideDiscussionSections.isNonEmpty,
                 ].filter(Boolean).length
               }
               dataTutorial={4}
@@ -468,8 +472,14 @@ export function NavbarCatalogSearch() {
                   <>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Yale Subjects Filter Dropdown */}
-                      <div className={styles.advancedLabel}>Subject:</div>
+                      <div
+                        className={styles.advancedLabel}
+                        id={`${formLabelId}-subject`}
+                      >
+                        Subject:
+                      </div>
                       <CustomSelect
+                        aria-labelledby={`${formLabelId}-subject`}
                         className={styles.advancedSelect}
                         closeMenuOnSelect
                         isMulti
@@ -485,8 +495,14 @@ export function NavbarCatalogSearch() {
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Areas/Skills Filter Dropdown */}
-                      <div className={styles.advancedLabel}>Areas/Skills:</div>
+                      <div
+                        className={styles.advancedLabel}
+                        id={`${formLabelId}-aria-skills`}
+                      >
+                        Areas/Skills:
+                      </div>
                       <CustomSelect
+                        aria-labelledby={`${formLabelId}-aria-skills`}
                         className={styles.advancedSelect}
                         useColors
                         closeMenuOnSelect
@@ -503,8 +519,14 @@ export function NavbarCatalogSearch() {
                     </Row>
                     <Row className="align-items-center justify-content-between mx-3 mt-3">
                       {/* Season Filter Dropdown */}
-                      <div className={styles.advancedLabel}>Season:</div>
+                      <div
+                        className={styles.advancedLabel}
+                        id={`${formLabelId}-season`}
+                      >
+                        Season:
+                      </div>
                       <CustomSelect
+                        aria-labelledby={`${formLabelId}-season`}
                         className={styles.advancedSelect}
                         closeMenuOnSelect
                         isMulti
@@ -522,8 +544,14 @@ export function NavbarCatalogSearch() {
                 )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Day Multi-Select */}
-                  <div className={styles.advancedLabel}>Day:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-day`}
+                  >
+                    Day:
+                  </div>
                   <CustomSelect<Option<Weekdays>, true>
+                    aria-labelledby={`${formLabelId}-day`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
@@ -543,7 +571,7 @@ export function NavbarCatalogSearch() {
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <div
                     className={styles.advancedLabel}
-                    style={activeStyle(timeBounds.hasChanged)}
+                    style={activeStyle(timeBounds.isNonEmpty)}
                   >
                     Time:
                   </div>
@@ -558,6 +586,10 @@ export function NavbarCatalogSearch() {
                       </div>
                     </div>
                     <Range
+                      ariaLabelGroupForHandles={[
+                        'Time lower bound',
+                        'Time upper bound',
+                      ]}
                       className={clsx(styles.range, styles.advancedRange)}
                       min={defaultFilters.timeBounds[0]}
                       max={defaultFilters.timeBounds[1]}
@@ -587,7 +619,7 @@ export function NavbarCatalogSearch() {
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <div
                     className={styles.advancedLabel}
-                    style={activeStyle(enrollBounds.hasChanged)}
+                    style={activeStyle(enrollBounds.isNonEmpty)}
                   >
                     # Enrolled:
                   </div>
@@ -602,6 +634,10 @@ export function NavbarCatalogSearch() {
                       </div>
                     </div>
                     <Range
+                      ariaLabelGroupForHandles={[
+                        'Enrollment lower bound',
+                        'Enrollment upper bound',
+                      ]}
                       className={clsx(styles.range, styles.advancedRange)}
                       min={Math.round(toLinear(defaultFilters.enrollBounds[0]))}
                       max={Math.round(toLinear(defaultFilters.enrollBounds[1]))}
@@ -630,7 +666,7 @@ export function NavbarCatalogSearch() {
                   <Row className="align-items-center justify-content-between mx-3 mt-3">
                     <div
                       className={styles.advancedLabel}
-                      style={activeStyle(professorBounds.hasChanged)}
+                      style={activeStyle(professorBounds.isNonEmpty)}
                     >
                       Professor:
                     </div>
@@ -645,6 +681,10 @@ export function NavbarCatalogSearch() {
                         </div>
                       </div>
                       <Range
+                        ariaLabelGroupForHandles={[
+                          'Professor rating lower bound',
+                          'Professor rating upper bound',
+                        ]}
                         className={clsx(styles.range, styles.advancedRange)}
                         min={defaultFilters.professorBounds[0]}
                         max={defaultFilters.professorBounds[1]}
@@ -667,7 +707,7 @@ export function NavbarCatalogSearch() {
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <div
                     className={styles.advancedLabel}
-                    style={activeStyle(numBounds.hasChanged)}
+                    style={activeStyle(numBounds.isNonEmpty)}
                   >
                     Course #:
                   </div>
@@ -684,6 +724,10 @@ export function NavbarCatalogSearch() {
                       </div>
                     </div>
                     <Range
+                      ariaLabelGroupForHandles={[
+                        'Course number lower bound',
+                        'Course number upper bound',
+                      ]}
                       className={clsx(styles.range, styles.advancedRange)}
                       min={defaultFilters.numBounds[0]}
                       max={defaultFilters.numBounds[1]}
@@ -717,8 +761,14 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}
-                  <div className={styles.advancedLabel}>School:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-school`}
+                  >
+                    School:
+                  </div>
                   <CustomSelect
+                    aria-labelledby={`${formLabelId}-school`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
@@ -734,8 +784,14 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Course Credit Multi-Select */}
-                  <div className={styles.advancedLabel}>Credit:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-credit`}
+                  >
+                    Credit:
+                  </div>
                   <CustomSelect
+                    aria-labelledby={`${formLabelId}-credit`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
@@ -757,8 +813,14 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Course Information Attributes Multi-Select */}
-                  <div className={styles.advancedLabel}>Info:</div>
+                  <div
+                    className={styles.advancedLabel}
+                    id={`${formLabelId}-info`}
+                  >
+                    Info:
+                  </div>
                   <CustomSelect
+                    aria-labelledby={`${formLabelId}-info`}
                     className={styles.advancedSelect}
                     closeMenuOnSelect
                     isMulti
@@ -817,11 +879,13 @@ export function NavbarCatalogSearch() {
               );
               setNumRangeValue(defaultFilters.numBounds);
               setProfessorRangeValue(defaultFilters.professorBounds);
-              Object.values(filters).forEach((filter) => filter.reset());
+              Object.values(filters).forEach((filter) =>
+                filter.resetToDefault(),
+              );
               setStartTime(Date.now());
             }}
             // Cannot reset if no filters have changed
-            disabled={Object.values(filters).every((x) => !x.hasChanged)}
+            disabled={Object.values(filters).every((x) => x.isDefault)}
           >
             Reset
           </Button>

@@ -16,13 +16,15 @@ export default function WorksheetHideButton({
   readonly hidden: boolean;
   readonly crn: Crn;
 }) {
-  const { toggleCourse } = useWorksheet();
+  const { toggleCourse, person } = useWorksheet();
+  if (person !== 'me') return null;
+  const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
   return (
     <OverlayTrigger
       placement="bottom"
       overlay={(props) => (
         <Tooltip id="button-tooltip" {...props}>
-          <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
+          <small>{buttonLabel}</small>
         </Tooltip>
       )}
     >
@@ -31,9 +33,10 @@ export default function WorksheetHideButton({
         onClick={(e) => {
           // Prevent clicking hide button from opening course modal
           e.stopPropagation();
-          toggleCourse(crn);
+          toggleCourse(crn, !hidden);
         }}
         className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
+        aria-label={buttonLabel}
       >
         {hidden ? (
           <BsEyeSlash

@@ -1,4 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import pg from 'pg';
+import * as schema from '../drizzle/schema.js';
+
+const { Pool } = pg;
 
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
@@ -26,7 +30,7 @@ export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 export const CHALLENGE_PASSWORD = getEnv('CHALLENGE_PASSWORD');
 
 export const NUM_CHALLENGE_COURSES = 3; // Number of courses to select for the challenge
-export const CHALLENGE_SEASON = '202101'; // Season to select the challenge from
+export const CHALLENGE_SEASON = '202303'; // Season to select the challenge from
 export const MAX_CHALLENGE_REQUESTS = 100; // Maximum number of allowed challenge tries
 
 // Secret for Canny SSO
@@ -67,4 +71,12 @@ export const { FERRY_SECRET } = process.env;
 // to the working directory, which is api.
 export const STATIC_FILE_DIR = './static';
 
-export const prisma = new PrismaClient();
+export const SENTRY_DSN = getEnv('SENTRY_DSN');
+
+export const SENTRY_ENVIRONMENT = getEnv('SENTRY_ENVIRONMENT');
+
+const pool = new Pool({
+  connectionString: getEnv('DB_URL'),
+});
+
+export const db = drizzle(pool, { schema });

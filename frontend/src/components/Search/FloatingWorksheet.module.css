@@ -7,7 +7,6 @@
   background-color: var(--color-primary);
   color: white;
   border: none;
-  cursor: pointer;
   box-shadow: 2px 2px 10px rgb(0 0 0 / 20%);
   z-index: 1200;
 }
@@ -55,7 +54,6 @@
 .expandBtn {
   padding: 3px;
   border-radius: 6px;
-  cursor: pointer;
   background-color: var(--color-select-multivalue);
   color: var(--color-text-secondary);
   position: absolute;

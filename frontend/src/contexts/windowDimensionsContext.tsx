@@ -9,8 +9,7 @@ import React, {
 import debounce from 'lodash.debounce';
 
 type Store = {
-  width: number;
-  height: number;
+  // No real width/height here, to prevent unnecessary re-renders
   isMobile: boolean;
   isTablet: boolean;
   isSmDesktop: boolean;
@@ -37,8 +36,6 @@ export function WindowDimensionsProvider({
   readonly children: React.ReactNode;
 }) {
   const [dimensions, setDimensions] = useState({
-    width: 0,
-    height: 0,
     isMobile: false,
     isTablet: false,
     isSmDesktop: false,
@@ -53,8 +50,6 @@ export function WindowDimensionsProvider({
     () =>
       debounce(() => {
         setDimensions({
-          width: window.innerWidth,
-          height: window.innerHeight,
           isMobile: range(window.innerWidth, 0, breakpoints.mobile),
           isTablet: range(
             window.innerWidth,

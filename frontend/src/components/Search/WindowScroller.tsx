@@ -2,22 +2,19 @@
 
 import { useRef, useEffect } from 'react';
 import throttle from 'lodash.throttle';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import type { FixedSizeList } from 'react-window';
 
 export default function WindowScroller({
   children,
-  throttleTime = 10,
 }: {
   children: (props: {
-    ref: React.RefObject<any>;
-    outerRef?: React.RefObject<any>;
-    style: React.CSSProperties;
+    ref: React.LegacyRef<FixedSizeList>;
+    outerRef?: React.RefObject<unknown>;
   }) => React.ReactNode;
   throttleTime?: number;
 }) {
-  const ref = useRef<HTMLElement>();
-  const outerRef = useRef<HTMLElement>();
-  const { isMobile } = useWindowDimensions();
+  const ref = useRef<FixedSizeList>(null);
+  const outerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleWindowScroll = throttle(() => {
@@ -26,27 +23,19 @@ export default function WindowScroller({
         (window.scrollY ||
           document.documentElement.scrollTop ||
           document.body.scrollTop ||
-          0) -
-        offsetTop -
-        // TODO: This is a hack to account for the search form height
-        (isMobile ? 400 : 0);
-      ref.current?.scrollTo(scrollTop, 0);
-    }, throttleTime);
+          0) - offsetTop;
+      ref.current?.scrollTo(scrollTop);
+    }, 10);
 
     window.addEventListener('scroll', handleWindowScroll);
     return () => {
       handleWindowScroll.cancel();
       window.removeEventListener('scroll', handleWindowScroll);
     };
-  }, [throttleTime, isMobile]);
+  }, []);
 
   return children({
     ref,
     outerRef,
-    style: {
-      width: '100%',
-      height: '100%',
-      display: 'inline-block',
-    },
   });
 }

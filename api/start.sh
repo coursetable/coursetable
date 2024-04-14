@@ -44,6 +44,7 @@ then
         export OVERWRITE_CATALOG='true'
     fi
     export HOT_RELOAD='true'
+    export SENTRY_ENVIRONMENT=development
     doppler setup -p coursetable -c dev
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api pull --ignore-buildable" # Pull the latest service images

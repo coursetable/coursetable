@@ -34,16 +34,9 @@
   min-height: 100vh;
 }
 
-.dropdowns {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  overflow: hidden;
-}
-
 .expandBtn {
   padding: 3px;
   border-radius: 6px;
-  cursor: pointer;
   background-color: var(--color-select-multivalue);
   color: var(--color-text-secondary);
   position: absolute;
