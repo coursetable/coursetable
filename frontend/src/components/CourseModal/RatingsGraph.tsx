@@ -1,5 +1,4 @@
 import React from 'react';
-import { Row } from 'react-bootstrap';
 import clsx from 'clsx';
 import styles from './RatingsGraph.module.css';
 import { barChartColors } from '../../utilities/constants';
@@ -59,20 +58,15 @@ function RatingsGraph({
   });
 
   return (
-    <Row
-      className={clsx(
-        styles.container,
-        'mx-auto px-3 mb-5 justify-content-center align-items-end',
-      )}
-    >
-      {columns}
-      <p style={{ fontSize: '12px', margin: '10px 0' }}>
+    <div className={styles.container}>
+      <div className={styles.graph}>{columns}</div>
+      <p>
         <TextComponent type="secondary">
           {totalRatings}/{enrolled} (
           {((totalRatings / enrolled) * 100).toFixed(1)}%) responses
         </TextComponent>
       </p>
-    </Row>
+    </div>
   );
 }
 

@@ -2,10 +2,14 @@
   color: inherit;
   font-weight: 600;
   font-size: 14px;
+  margin-top: 0.5rem;
 }
 
 .sortBy {
+  display: flex;
   font-size: 15px;
+  justify-content: center;
+  margin-bottom: 0.5rem;
 }
 
 .sortOptions {
@@ -55,8 +59,15 @@ mark {
   background-color: var(--color-banner);
 }
 
+.responseStats {
+  font-size: 12px;
+  margin: 0.5rem 0;
+}
+
 .commentRow {
   font-size: 14px;
   font-weight: 450;
   border-bottom: 1px solid var(--color-select-multivalue);
+  margin: auto;
+  padding: 0.5rem;
 }

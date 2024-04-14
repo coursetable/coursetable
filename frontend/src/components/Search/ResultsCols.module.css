@@ -1,15 +1,18 @@
+.controlCol {
+  display: flex;
+  justify-content: end;
+  width: 2rem;
+}
+
 .seasonCol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: var(--width-col-season);
-  padding-left: 15px;
 }
 
 .codeCol {
   width: var(--width-col-code);
-  padding-left: 15px;
-}
-
-.codeCol.multiSeasons {
-  padding-left: 0;
 }
 
 .titleCol {

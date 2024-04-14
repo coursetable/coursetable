@@ -27,7 +27,7 @@
 }
 
 .resultsContainer.resultsMultiSeasons {
-  --width-col-season: 60px;
+  --width-col-season: 50px;
 }
 
 @media (width >= 1320px) {
