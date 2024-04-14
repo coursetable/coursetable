@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  Col,
-  Container,
-  Row,
-  Modal,
-  DropdownButton,
-  Dropdown,
-} from 'react-bootstrap';
+import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
 import { IoMdArrowRoundBack, IoIosMore } from 'react-icons/io';
@@ -181,42 +174,38 @@ function CourseModal() {
         centered
       >
         <Modal.Header closeButton>
-          <Container className="p-0 ml-2" fluid>
-            <Row className={clsx('m-auto', styles.modalTop)}>
-              <Col xs="auto" className="my-auto p-0">
-                {history.length > 1 && (
-                  <LinkLikeText
-                    onClick={() => {
-                      setHistory(history.slice(0, -1));
-                      setView('overview');
-                    }}
-                    className={styles.backArrow}
-                  >
-                    <IoMdArrowRoundBack size={30} />
-                  </LinkLikeText>
-                )}
-              </Col>
-              <Col className="p-0 ml-3">
+          <div className={styles.modalHeader}>
+            <div className={styles.modalTop}>
+              {history.length > 1 && (
+                <LinkLikeText
+                  onClick={() => {
+                    setHistory(history.slice(0, -1));
+                    setView('overview');
+                  }}
+                  className={styles.backArrow}
+                >
+                  <IoMdArrowRoundBack size={30} />
+                </LinkLikeText>
+              )}
+              <div>
                 <Modal.Title>
-                  <Row className="mx-auto mt-1 align-items-center">
-                    <span className={styles.modalTitle}>
-                      {listing.extra_info !== 'ACTIVE' ? (
-                        <span className={styles.cancelledText}>
-                          {extraInfoMap[listing.extra_info]}{' '}
-                        </span>
-                      ) : (
-                        ''
-                      )}
-                      {listing.title}{' '}
-                      <TextComponent type="tertiary">
-                        ({toSeasonString(listing.season_code)})
-                      </TextComponent>
-                    </span>
-                  </Row>
+                  <div className={styles.modalTitle}>
+                    {listing.extra_info !== 'ACTIVE' ? (
+                      <span className={styles.cancelledText}>
+                        {extraInfoMap[listing.extra_info]}{' '}
+                      </span>
+                    ) : (
+                      ''
+                    )}
+                    {listing.title}{' '}
+                    <TextComponent type="tertiary">
+                      ({toSeasonString(listing.season_code)})
+                    </TextComponent>
+                  </div>
                 </Modal.Title>
 
-                <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
-                  <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
+                <div className={styles.badges}>
+                  <p className={styles.courseCodes}>
                     <TextComponent type="tertiary">
                       {listing.all_course_codes.join(' • ')}
                     </TextComponent>
@@ -224,10 +213,10 @@ function CourseModal() {
                   {[...listing.skills, ...listing.areas].map((skill) => (
                     <SkillBadge skill={skill} key={skill} />
                   ))}
-                </Row>
-              </Col>
-            </Row>
-            <Row className="ml-auto mr-2 justify-content-between flex-wrap-reverse">
+                </div>
+              </div>
+            </div>
+            <div className={styles.modalControls}>
               <ViewTabs
                 tabs={[
                   { label: 'Overview', value: 'overview' },
@@ -247,8 +236,8 @@ function CourseModal() {
                 <ShareButton courseCode={listing.course_code} />
                 <MoreButton hide={hide} />
               </div>
-            </Row>
-          </Container>
+            </div>
+          </div>
         </Modal.Header>
         {view === 'overview' ? (
           <CourseModalOverview
