@@ -1,14 +1,12 @@
 import React from 'react';
-import { Modal, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 
-function CourseModalLoading() {
+export default function LoadSpinner() {
   return (
-    <Modal.Body className="d-flex">
+    <div className="d-flex justify-content-center">
       <Spinner className="m-auto" animation="border" role="status">
         <span className="sr-only">Loading...</span>
       </Spinner>
-    </Modal.Body>
+    </div>
   );
 }
-
-export default CourseModalLoading;

@@ -54,7 +54,6 @@ export function SeasonTag({
       <div
         className={clsx(
           styles.seasonTag,
-          'ml-auto px-1 pb-0',
           {
             [styles.spring!]: seasonNum === 1,
             [styles.summer!]: seasonNum === 2,

@@ -1,3 +1,7 @@
+.description {
+  white-space: pre-wrap;
+}
+
 .labelBubble {
   font-weight: 550;
   color: rgb(136 136 136);
@@ -61,11 +65,24 @@
 .requirements {
   font-weight: 500;
   color: rgb(252 105 105);
+  margin-top: 0.5rem;
+}
+
+.friendsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .evaluationsFilter {
   background-color: var(--color-surface-elevated);
   border-color: var(--color-border);
+}
+
+.filterContainer {
+  display: flex;
+  margin: auto;
+  justify-content: center;
 }
 
 .filterContainer:focus {

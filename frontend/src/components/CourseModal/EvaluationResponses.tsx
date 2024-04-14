@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Tab, Row, Tabs } from 'react-bootstrap';
+import { Tab, Tabs } from 'react-bootstrap';
 import clsx from 'clsx';
 import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
@@ -56,18 +56,16 @@ function EvaluationResponses({
           response.toLowerCase().includes(filter.toLowerCase()),
         )
         .map((response, index) => (
-          <Row
-            key={index}
-            className={clsx(styles.commentRow, 'm-auto p-2 responses')}
-          >
+          // .responses is used for highlighting
+          <div key={index} className={clsx(styles.commentRow, 'responses')}>
             <TextComponent type="secondary">{response}</TextComponent>
-          </Row>
+          </div>
         ));
       if (filteredResps.length === 0) {
         return [
-          <Row key={0} className={clsx(styles.commentRow, 'm-auto p-2')}>
+          <div key={0} className={styles.commentRow}>
             <TextComponent type="secondary">No matches found.</TextComponent>
-          </Row>,
+          </div>,
         ];
       }
       return filteredResps;
@@ -112,9 +110,7 @@ function EvaluationResponses({
           });
         }}
       />
-      <Row
-        className={clsx(styles.sortBy, 'mx-auto mb-2 justify-content-center')}
-      >
+      <div className={styles.sortBy}>
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sortOptions}>
           <button
@@ -138,7 +134,7 @@ function EvaluationResponses({
             length
           </button>
         </div>
-      </Row>
+      </div>
       <Tabs
         className={styles.tabs}
         variant="tabs"
@@ -183,16 +179,16 @@ function EvaluationResponses({
           ({ key, title, question, responses }) =>
             responses.length !== 0 && (
               <Tab eventKey={key} title={title} key={key}>
-                <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
+                <div className={styles.questionHeader}>
                   <TextComponent>{question}</TextComponent>
-                </Row>
-                <Row style={{ fontSize: '12px', margin: '10px 0' }}>
+                </div>
+                <p className={styles.responseStats}>
                   <TextComponent type="secondary">
                     {responses.length}/{enrolled} (
                     {((responses.length / enrolled) * 100).toFixed(1)}%)
                     responses
                   </TextComponent>
-                </Row>
+                </p>
                 {responses}
               </Tab>
             ),
