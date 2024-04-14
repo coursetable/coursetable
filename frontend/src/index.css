@@ -116,7 +116,7 @@ code {
   border: none;
 }
 
-.btn:not(.btn-none) {
+.btn:not(.btn-none, .btn-dark, .btn-danger) {
   --bs-btn-bg: var(--color-primary);
 }
 
