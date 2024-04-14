@@ -42,6 +42,7 @@
   text-align: left;
   overflow: hidden;
   transition: color var(--trans-dur);
+  color: var(--color-text);
 }
 
 .courseCodeHidden {

@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Card, Button, Row } from 'react-bootstrap';
+import { Card, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
 import { TextComponent } from '../components/Typography';
@@ -357,13 +357,11 @@ function About() {
         </p>
       </TextComponent>
 
-      <Row className="mx-auto">
-        <div className="mx-auto">
-          <Link to="/joinus">
-            <Button>Join Us</Button>
-          </Link>
-        </div>
-      </Row>
+      <div className="d-flex justify-content-center">
+        <Link className="btn" to="/joinus">
+          Join Us
+        </Link>
+      </div>
 
       <h1 className="mt-3">Current Team</h1>
 

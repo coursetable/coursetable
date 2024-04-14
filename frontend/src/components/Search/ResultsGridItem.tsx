@@ -148,7 +148,7 @@ function ResultsGridItem({
             </div>
           </div>
           <div className="d-flex align-items-end">
-            <div className="ml-auto">
+            <div className="ms-auto">
               {(['Class', 'Professor', 'Workload'] as const).map((name) => (
                 <Rating
                   key={name}

@@ -84,7 +84,7 @@ const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
   (props) => (
     <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
-      <Popover.Title>
+      <Popover.Header>
         <div className="mx-auto">
           <strong>{profName}</strong>
         </div>
@@ -97,8 +97,8 @@ const profInfoPopover =
             )}
           </small>
         </div>
-      </Popover.Title>
-      <Popover.Content style={{ width: '274px' }}>
+      </Popover.Header>
+      <Popover.Body style={{ width: '274px' }}>
         <div className="d-flex mx-auto my-1">
           <Col md={6}>
             <div className="d-flex mx-auto mb-1">
@@ -122,9 +122,7 @@ const profInfoPopover =
               </strong>
             </div>
             <div className="d-flex mx-auto">
-              <small className="mx-auto text-center font-weight-bold">
-                Avg. Rating
-              </small>
+              <small className="mx-auto text-center fw-bold">Avg. Rating</small>
             </div>
           </Col>
           <Col md={6}>
@@ -134,13 +132,13 @@ const profInfoPopover =
               </strong>
             </div>
             <div className="d-flex mx-auto">
-              <small className="mx-auto text-center  font-weight-bold">
+              <small className="mx-auto text-center  fw-bold">
                 Classes Taught
               </small>
             </div>
           </Col>
         </div>
-      </Popover.Content>
+      </Popover.Body>
     </InfoPopover>
   );
 
@@ -230,7 +228,7 @@ function Syllabus({
               className="d-flex"
             >
               View Syllabus
-              <HiExternalLink size={18} className="ml-1 my-auto" />
+              <HiExternalLink size={18} className="ms-1 my-auto" />
             </a>
           ) : (
             'N/A'
@@ -269,7 +267,7 @@ function Syllabus({
                 >
                   {toSeasonString(course.season_code)} (section {course.section}
                   )
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                  <HiExternalLink size={18} className="ms-1 my-auto" />
                 </a>
               ))}
             </Col>
@@ -407,7 +405,7 @@ function TimeLocation({ listing }: { readonly listing: Listing }) {
               {locationURL ? (
                 <a target="_blank" rel="noopener noreferrer" href={locationURL}>
                   {location}
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                  <HiExternalLink size={18} className="ms-1 my-auto" />
                 </a>
               ) : (
                 location
@@ -461,7 +459,7 @@ function RatingContent({
       <Col
         key={i}
         xs={2}
-        className="px-1 ml-0 d-flex justify-content-center text-center"
+        className="px-1 ms-0 d-flex justify-content-center text-center"
       >
         <RatingBubble
           rating={rating}
@@ -486,7 +484,7 @@ function RatingContent({
       <Col
         key={i}
         xs={2}
-        className="px-1 ml-0 d-flex justify-content-center text-center"
+        className="px-1 ms-0 d-flex justify-content-center text-center"
       >
         <RatingBubble
           color={generateRandomColor(identifier)}
@@ -604,16 +602,16 @@ function EvalsCol({
       {overlapSections[filter].length !== 0 ? (
         <>
           <Row className="m-auto pb-1 justify-content-center">
-            <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
+            <Col xs={5} className="d-flex justify-content-center px-0 me-3">
               <span className={styles.evaluationHeader}>Season</span>
             </Col>
-            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Class</span>
             </Col>
-            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Prof</span>
             </Col>
-            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Work</span>
             </Col>
           </Row>
@@ -626,7 +624,7 @@ function EvalsCol({
                 as="button"
                 role="button"
                 xs={5}
-                className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
+                className={clsx(styles.ratingBubble, 'px-0 me-3 text-center')}
                 tabIndex={0}
                 onClick={() => {
                   // Note, we purposefully use the listing data fetched

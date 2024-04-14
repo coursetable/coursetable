@@ -88,7 +88,7 @@ function ResultsHeaders({
           <div className={colStyles.controlCol}>
             <button
               type="button"
-              className={clsx(styles.toggle, 'd-flex ml-auto my-auto')}
+              className={clsx(styles.toggle, 'd-flex ms-auto my-auto')}
               onClick={() => setIsListView(!isListView)}
               aria-label={
                 isListView ? 'Switch to grid view' : 'Switch to list view'

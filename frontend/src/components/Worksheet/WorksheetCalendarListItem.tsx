@@ -29,7 +29,7 @@ export default function WorksheetCalendarListItem({
         className={clsx(
           styles.courseCode,
           hidden && styles.courseCodeHidden,
-          'pl-1 pr-2',
+          'ps-1 pe-2',
         )}
         onClick={() => {
           setSearchParams((prev) => {

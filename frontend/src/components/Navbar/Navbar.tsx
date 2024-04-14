@@ -41,7 +41,7 @@ function NavCollapseWrapper({
 }) {
   if (wrap) {
     return (
-      <div className="ml-auto d-flex flex-column align-items-end justify-content-between h-100">
+      <div className="ms-auto d-flex flex-column align-items-end justify-content-between h-100">
         {children}
       </div>
     );
@@ -78,7 +78,7 @@ function LastUpdatedAt() {
   }, []);
   return (
     <TextComponent type="tertiary" small className="mb-2 text-right">
-      <MdUpdate className="mr-1" />
+      <MdUpdate className="me-1" />
       Updated {lastUpdated} ago
     </TextComponent>
   );

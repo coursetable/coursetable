@@ -14,7 +14,7 @@ export default function SkillBadge({
 }) {
   return (
     <Badge
-      variant="secondary"
+      bg="none"
       className={clsx(className, styles.tag)}
       style={{
         color: skillsAreasColors[skill],

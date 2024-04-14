@@ -32,20 +32,20 @@ export default function Toggle({
   const { filters, setStartTime } = useSearch();
   const label = labels[handle];
   return (
-    <Form.Check type="switch" className={styles.check}>
+    <Form.Check
+      type="switch"
+      className={styles.check}
+      onInput={() => {
+        filters[handle].set(!filters[handle].value);
+        setStartTime(Date.now());
+      }}
+    >
       <Form.Check.Input
         aria-label={typeof label === 'string' ? label : label[1]}
         className={styles.input}
         checked={filters[handle].value}
-        onChange={() => {}} // Dummy handler to remove warning
       />
-      <Form.Check.Label
-        className={styles.label}
-        onClick={() => {
-          filters[handle].set(!filters[handle].value);
-          setStartTime(Date.now());
-        }}
-      >
+      <Form.Check.Label className={styles.label}>
         {typeof label === 'string' ? label : label[0]}
       </Form.Check.Label>
     </Form.Check>

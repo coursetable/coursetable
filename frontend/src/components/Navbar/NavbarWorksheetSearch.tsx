@@ -62,13 +62,21 @@ export function NavbarWorksheetSearch() {
         type="radio"
         value={worksheetView}
         onChange={(val: 'calendar' | 'list') => handleWorksheetView(val)}
-        className={clsx(styles.toggleButtonGroup, 'ml-2 mr-3')}
+        className={clsx(styles.toggleButtonGroup, 'ms-2 me-3')}
         data-tutorial="worksheet-2"
       >
-        <ToggleButton className={styles.toggleButton} value="calendar">
+        <ToggleButton
+          id="view-toggle-calendar"
+          className={styles.toggleButton}
+          value="calendar"
+        >
           Calendar
         </ToggleButton>
-        <ToggleButton className={styles.toggleButton} value="list">
+        <ToggleButton
+          id="view-toggle-list"
+          className={styles.toggleButton}
+          value="list"
+        >
           List
         </ToggleButton>
       </ToggleButtonGroup>

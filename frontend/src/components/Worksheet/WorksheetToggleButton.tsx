@@ -65,7 +65,9 @@ function CourseConflictIcon({
               </Tooltip>
             )}
           >
-            <MdErrorOutline color="#fc4103" />
+            <span>
+              <MdErrorOutline color="#fc4103" />
+            </span>
           </OverlayTrigger>
         )}
       </div>

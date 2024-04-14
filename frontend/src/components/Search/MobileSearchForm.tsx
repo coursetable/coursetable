@@ -70,7 +70,7 @@ export default function MobileSearchForm() {
           {/* Reset Filters Button */}
           <button
             type="button"
-            className={clsx(styles.resetFiltersBtn, 'mr-auto')}
+            className={clsx(styles.resetFiltersBtn, 'me-auto')}
             onClick={() => {
               setOverallRangeValue(defaultFilters.overallBounds);
               setWorkloadRangeValue(defaultFilters.workloadBounds);
@@ -83,7 +83,7 @@ export default function MobileSearchForm() {
             Reset Filters
           </button>
           {/* Number of results shown text */}
-          <small className={clsx(styles.numResults, 'ml-auto')}>
+          <small className={clsx(styles.numResults, 'ms-auto')}>
             <TextComponent type="tertiary">
               {coursesLoading
                 ? 'Searching ...'

@@ -42,7 +42,7 @@ function DropdownItem({
   const innerText = (
     <HoverText>
       <Icon
-        className="mr-2 my-auto"
+        className="me-2 my-auto"
         size={20}
         style={{ paddingLeft: '2px', paddingBottom: '2px' }}
         color={iconColor}

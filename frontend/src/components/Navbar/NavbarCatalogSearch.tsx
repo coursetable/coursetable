@@ -183,7 +183,7 @@ export function NavbarCatalogSearch() {
           <TextComponent
             type="tertiary"
             small
-            className="ml-2 mb-1 d-flex align-items-end"
+            className="ms-2 mb-1 d-flex align-items-end"
             style={{ whiteSpace: 'pre-line' }}
           >
             {coursesLoading
@@ -225,7 +225,7 @@ export function NavbarCatalogSearch() {
                   setStartTime(Date.now());
                 }}
                 selectedOptions={selectSkillsAreas.value}
-                className="mr-0"
+                className="me-0"
               >
                 <PopoutSelect<Option, true>
                   useColors
