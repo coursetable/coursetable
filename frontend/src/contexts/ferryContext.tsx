@@ -223,6 +223,8 @@ export function useWorksheetInfo(
 export function useWishlistInfo(wishlist: UserWishlist | undefined) {
   const { loading, error, courses } = useCourseData(UPCOMING_SEASONS);
 
+  console.log('test');
+
   const data = useMemo(() => {
     const dataReturn: WishlistCourse[] = [];
     if (!wishlist) return [];
@@ -246,6 +248,8 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
         upcomingListings,
       });
     }
+
+    console.log(dataReturn);
 
     return dataReturn.sort((a, b) =>
       a.courseCode.localeCompare(b.courseCode, 'en-US'),

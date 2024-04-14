@@ -7,6 +7,8 @@ import {
   Modal,
   DropdownButton,
   Dropdown,
+  Tooltip,
+  OverlayTrigger,
 } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
@@ -25,6 +27,7 @@ import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
 import { CUR_YEAR } from '../../config';
 import WishlistToggleButton from '../Wishlist/WishlistToggleButton';
+import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 
 const extraInfoMap: { [info in Listing['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
@@ -49,14 +52,24 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
   };
 
   return (
-    <button
-      type="button"
-      className={styles.shareButton}
-      onClick={copyToClipboard}
-      aria-label="Share"
+    <OverlayTrigger
+      placement="top"
+      delay={{ show: 300, hide: 0 }}
+      overlay={(props) => (
+        <Tooltip id="button-tooltip" {...props}>
+          <small>Share</small>
+        </Tooltip>
+      )}
     >
-      <FaRegShareFromSquare size={20} color="#007bff" />
-    </button>
+      <button
+        type="button"
+        className={styles.shareButton}
+        onClick={copyToClipboard}
+        aria-label="Share"
+      >
+        <FaRegShareFromSquare size={20} />
+      </button>
+    </OverlayTrigger>
   );
 }
 
@@ -66,7 +79,25 @@ function MoreButton({ hide }: { readonly hide: () => void }) {
     <DropdownButton
       as="div"
       drop="down"
-      title={<IoIosMore size={20} color="#007bff" />}
+      title={
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 300, hide: 0 }}
+          overlay={(props) => (
+            <Tooltip id="button-tooltip" {...props}>
+              <small>More</small>
+            </Tooltip>
+          )}
+        >
+          <button
+            type="button"
+            className={styles.moreButton}
+            aria-label="Share"
+          >
+            <IoIosMore size={20} />
+          </button>
+        </OverlayTrigger>
+      }
       variant="none"
       className={styles.moreDropdown}
     >
@@ -247,8 +278,8 @@ function CourseModal() {
                 currentTab={view}
               />
               <div className={styles.toolBar}>
-                <WishlistToggleButton listing={listing} modal />
                 <WorksheetToggleButton listing={listing} modal />
+                <WishlistToggleButton listing={listing} modal />
                 <ShareButton courseCode={listing.course_code} />
                 <MoreButton hide={hide} />
               </div>

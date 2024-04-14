@@ -9,12 +9,12 @@ import styles from './Search.module.css';
 import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
-import { useSearch } from '../contexts/searchContext';
 import './rc-slider-override.css';
+import { useWishlist } from '../contexts/wishlistContext';
 
-function Search() {
+function Wishlist() {
   const { isMobile } = useWindowDimensions();
-  const { coursesLoading, searchData, multiSeasons } = useSearch();
+  const { courses, wishlistLoading, wishlistError } = useWishlist();
 
   const scrollToResults = useCallback(
     (event?: React.FormEvent) => {
@@ -35,11 +35,11 @@ function Search() {
   // Scroll to the bottom when courses finish loading on initial load.
   const [doneInitialScroll, setDoneInitialScroll] = useState(false);
   useEffect(() => {
-    if (!coursesLoading && !doneInitialScroll) {
+    if (!wishlistLoading && !wishlistError && !doneInitialScroll) {
       scrollToResults();
       setDoneInitialScroll(true);
     }
-  }, [coursesLoading, doneInitialScroll, scrollToResults]);
+  }, [wishlistLoading, wishlistError, doneInitialScroll, scrollToResults]);
 
   // TODO: add state if courseLoadError is present
   return (
@@ -61,9 +61,9 @@ function Search() {
         >
           <Element name="catalog" className="d-flex justify-content-center">
             <Results
-              data={searchData}
-              loading={coursesLoading}
-              multiSeasons={multiSeasons}
+              data={courses.flatMap((course) => course.upcomingListings.flat())}
+              loading={wishlistLoading}
+              multiSeasons
               page="wishlist"
             />
           </Element>
@@ -73,4 +73,4 @@ function Search() {
   );
 }
 
-export default Search;
+export default Wishlist;

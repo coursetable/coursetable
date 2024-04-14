@@ -10,14 +10,14 @@ import { toggleWish } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './WishlistToggleButton.module.css';
 
-function WorksheetToggleButton({
+function WishlistToggleButton({
   listing,
   modal,
-  inWorksheet: inWishlistProp,
+  inWishlist: inWishlistProp,
 }: {
   readonly listing: Listing;
   readonly modal: boolean;
-  readonly inWorksheet?: boolean;
+  readonly inWishlist?: boolean;
 }) {
   const { user, userRefresh } = useUser();
 
@@ -39,26 +39,25 @@ function WorksheetToggleButton({
 
       const success = await toggleWish({
         action: addRemove,
-        season: listing.season_code,
-        crn: listing.crn,
+        courseCode: listing.course_code,
       });
       if (success) await userRefresh();
     },
-    [inWishlist, listing.season_code, listing.crn, userRefresh],
+    [inWishlist, listing.course_code, userRefresh],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const Icon = inWishlist ? FaRegBookmark : FaBookmark;
+  const Icon = inWishlist ? FaBookmark : FaRegBookmark;
 
-  // Disabled worksheet add/remove button if not logged in
+  // Disabled wishlist add/remove button if not logged in
   if (!user.worksheets) {
     return (
       <OverlayTrigger
         placement="top"
         overlay={
           <Tooltip id="tooltip-disabled">
-            Log in to add to your worksheet
+            Log in to add to your wishlist
           </Tooltip>
         }
       >
@@ -100,4 +99,4 @@ function WorksheetToggleButton({
   );
 }
 
-export default WorksheetToggleButton;
+export default WishlistToggleButton;

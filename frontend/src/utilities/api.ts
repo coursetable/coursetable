@@ -183,49 +183,32 @@ export function toggleCourseHidden({
   hiddenCoursesStorage.set(hiddenCourses);
 }
 
-export async function toggleWish(payload: {
+export async function toggleWish(body: {
   action: 'add' | 'remove';
-  season: Season;
-  crn: Crn;
+  courseCode: string;
 }): Promise<boolean> {
-  const body = JSON.stringify(payload);
-  try {
-    const res = await fetch(`${API_ENDPOINT}/api/user/toggleWish`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body,
-    });
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      switch (data.error) {
+  return await fetchAPI('/user/toggleWish', {
+    body,
+    handleErrorCode(err) {
+      switch (err) {
         // These errors can be triggered if the user clicks the button twice
         // in a row
         // TODO: we should debounce the request instead
         case 'ALREADY_WISHLISTED':
           toast.error('You have already added this class to your wishlist');
-          break;
+          return true;
         case 'NOT_WISHLISTED':
           toast.error('You have already remove this class from your wishlist');
-          break;
+          return true;
         default:
-          throw new Error(data.error ?? res.statusText);
+          return false;
       }
-      return false;
-    }
-    return true;
-  } catch (err) {
-    Sentry.addBreadcrumb({
+    },
+    breadcrumb: {
       category: 'wishlist',
-      message: `Updating wishlist: ${body}`,
-      level: 'info',
-    });
-    Sentry.captureException(err);
-    toast.error(`Failed to update wishlist. ${String(err)}`);
-    return false;
-  }
+      message: 'Updating wishlist',
+    },
+  });
 }
 
 export async function fetchCatalog(season: Season) {
@@ -410,7 +393,7 @@ export async function fetchUserWishlist() {
     }),
     breadcrumb: {
       category: 'user',
-      message: 'Fetching user data',
+      message: 'Fetching user wishlist',
     },
   });
   if (!res) return undefined;

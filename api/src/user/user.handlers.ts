@@ -12,6 +12,7 @@ import winston from '../logging/winston.js';
 import { db } from '../config.js';
 import {
   studentBluebookSettings,
+  wishlistCourses,
   worksheetCourses,
 } from '../../drizzle/schema.js';
 
@@ -165,14 +166,15 @@ export const toggleWish = async (
 
   const { action, courseCode } = bodyParseRes.data;
 
-  const existing = await prisma.wishlistCourses.findUnique({
-    where: {
-      netId_courseCode: {
-        netId,
-        courseCode,
-      },
-    },
-  });
+  const [existing] = await db
+    .selectDistinctOn([wishlistCourses.netId, wishlistCourses.courseCode])
+    .from(wishlistCourses)
+    .where(
+      and(
+        eq(wishlistCourses.netId, netId),
+        eq(wishlistCourses.courseCode, courseCode),
+      ),
+    );
 
   if (action === 'add') {
     winston.info(`Wishlisting course ${courseCode} for user ${netId}`);
@@ -180,8 +182,9 @@ export const toggleWish = async (
       res.status(400).json({ error: 'ALREADY_WISHLISTED' });
       return;
     }
-    await prisma.wishlistCourses.create({
-      data: { netId, courseCode },
+    await db.insert(wishlistCourses).values({
+      netId,
+      courseCode,
     });
   } else {
     winston.info(`Removing wish for course ${courseCode} for user ${netId}`);
@@ -189,14 +192,14 @@ export const toggleWish = async (
       res.status(400).json({ error: 'NOT_WISHLISTED' });
       return;
     }
-    await prisma.wishlistCourses.delete({
-      where: {
-        netId_courseCode: {
-          netId,
-          courseCode,
-        },
-      },
-    });
+    await db
+      .delete(wishlistCourses)
+      .where(
+        and(
+          eq(wishlistCourses.netId, netId),
+          eq(wishlistCourses.courseCode, courseCode),
+        ),
+      );
   }
 
   res.sendStatus(200);
@@ -211,24 +214,23 @@ export const getUserWishlist = async (
   const { netId } = req.user!;
 
   winston.info(`Getting profile for user ${netId}`);
-  const studentProfile = await prisma.studentBluebookSettings.findUnique({
-    where: {
-      netId,
-    },
-  });
+  const [studentProfile] = await db
+    .selectDistinctOn([studentBluebookSettings.netId])
+    .from(studentBluebookSettings)
+    .where(eq(studentBluebookSettings.netId, netId));
 
   winston.info(`Getting wishlist for user ${netId}`);
-  const wishlist = await prisma.wishlistCourses.findMany({
-    where: {
-      netId,
-    },
-  });
+
+  const wishlist = await db
+    .select()
+    .from(wishlistCourses)
+    .where(eq(wishlistCourses.netId, netId));
 
   res.json({
     netId,
     evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
-    data: wishlistCoursesToWishlist(wishlist)[netId] ?? {},
+    data: wishlistCoursesToWishlist(wishlist)[netId] ?? [],
   });
 };

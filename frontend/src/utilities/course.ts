@@ -46,10 +46,7 @@ export function isInWishlist(
 ): boolean {
   if (!wishlist || allCourseCodes.length === 0) return false;
 
-  // Check if any course code from courseCodes is in the wishlist
-  return wishlist.some((wishlistItem) =>
-    allCourseCodes.includes(wishlistItem.courseCode),
-  );
+  return wishlist.some((course) => allCourseCodes.includes(course.courseCode));
 }
 
 export function toSeasonString(seasonCode: Season): string {

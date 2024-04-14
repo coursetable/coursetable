@@ -70,6 +70,17 @@
 .shareButton {
   margin-top: 1em;
   margin-bottom: 1em;
+  background-color: transparent;
+  color: var(--color-primary) !important;
+}
+
+.shareButton:active,
+.shareButton:focus {
+  box-shadow: none !important;
+}
+
+.shareButton:hover {
+  opacity: 0.5;
 }
 
 .moreDropdown {
@@ -90,6 +101,22 @@
 .moreDropdown :global(.dropdown-menu) {
   background-color: var(--color-surface);
   width: 200px;
+}
+
+.moreButton {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background-color: transparent;
+  color: var(--color-primary) !important;
+}
+
+.moreButton:active,
+.moreButton:focus {
+  box-shadow: none !important;
+}
+
+.moreButton:hover {
+  opacity: 0.5;
 }
 
 .toolBar {
