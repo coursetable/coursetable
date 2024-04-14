@@ -753,7 +753,7 @@ function CourseModalOverview({
             },
           ].map(({ name, value, tooltip }) => {
             const content = (
-              <Row className="m-auto py-2">
+              <Row className="m-auto py-2" key={name}>
                 <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                   <span className={styles.labelBubble}>{name}</span>
                 </Col>
