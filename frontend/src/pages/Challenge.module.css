@@ -3,12 +3,6 @@
   margin-bottom: 3rem;
 }
 
-.loadingSpinner {
-  position: fixed;
-  top: calc(50% - 16px);
-  left: calc(50% - 16px);
-}
-
 @media (width < 768px) {
   .container {
     width: 80vw;

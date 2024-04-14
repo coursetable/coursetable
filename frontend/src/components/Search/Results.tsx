@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Spinner } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
 import clsx from 'clsx';
 
@@ -8,8 +8,10 @@ import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
 import FloatingWorksheet from './FloatingWorksheet';
+import Spinner from '../Spinner';
 
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 
 import styles from './Results.module.css';
 
@@ -19,8 +21,6 @@ import WindowScroller from './WindowScroller';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
-
-import { useWorksheet } from '../../contexts/worksheetContext';
 
 function Results({
   data,
@@ -47,9 +47,7 @@ function Results({
   if (loading) {
     resultsListing = (
       <Row className={clsx('m-auto', data.length === 0 ? 'py-5' : 'pt-0 pb-4')}>
-        <Spinner className="m-auto" animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <Spinner />
       </Row>
     );
   } else if (data.length === 0) {

@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Row, Spinner } from 'react-bootstrap';
+import Spinner from '../components/Spinner';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function suspended<T extends React.ComponentType<any>>(
@@ -38,15 +38,7 @@ export function suspended<T extends React.ComponentType<any>>(
     }
   });
   return (props: ComponentProps<T>) => (
-    <React.Suspense
-      fallback={
-        <Row className="m-auto" style={{ width: '100%', height: '100%' }}>
-          <Spinner className="m-auto" animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </Row>
-      }
-    >
+    <React.Suspense fallback={<Spinner />}>
       <Comp {...props} />
     </React.Suspense>
   );
