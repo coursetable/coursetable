@@ -147,15 +147,13 @@ function Description({ listing }: { readonly listing: Listing }) {
   const [lines, setLines] = useState(8);
   return (
     <>
-      <div>
-        <ResponsiveEllipsis
-          className={styles.description}
-          text={listing.description ? listing.description : 'no description'}
-          maxLine={lines}
-          basedOn="words"
-          onReflow={(rleState) => setClamped(rleState.clamped)}
-        />
-      </div>
+      <ResponsiveEllipsis
+        className={styles.description}
+        text={listing.description ? listing.description : 'no description'}
+        maxLine={lines}
+        basedOn="words"
+        onReflow={(rleState) => setClamped(rleState.clamped)}
+      />
       {clamped && (
         <div className="d-flex justify-content-center">
           <LinkLikeText
@@ -622,7 +620,6 @@ function EvalsCol({
             >
               <Col
                 as="button"
-                role="button"
                 xs={5}
                 className={clsx(styles.ratingBubble, 'px-0 me-3 text-center')}
                 tabIndex={0}
@@ -635,13 +632,13 @@ function EvalsCol({
                 }}
               >
                 <strong>{toSeasonString(offering.listing.season_code)}</strong>
-                <div className={clsx(styles.details, 'mx-auto')}>
+                <span className={clsx(styles.details, 'mx-auto')}>
                   {filter === 'professor'
                     ? offering.listing.course_code
                     : filter === 'both'
                       ? `Section ${offering.listing.section}`
                       : offering.professor[0]}
-                </div>
+                </span>
               </Col>
               <RatingContent offering={offering} hasEvals={user.hasEvals} />
             </Row>

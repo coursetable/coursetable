@@ -202,39 +202,34 @@ function WorksheetToggleButton({
           onClick={toggleWorkSheet}
           aria-label={buttonLabel}
         >
-          {/* Only show the worksheet number select in modal */}
-          {modal ? (
-            <>
-              <Icon size={size} className={styles.scaleIcon} />
-              {/* TODO: use the custom select component */}
-              <select
-                value={selectedWorksheet}
-                onChange={(event) => {
-                  setSelectedWorksheet(Number(event.target.value));
-                }}
-                onClick={(e) => {
-                  // Check if the clicked target is the select element
-                  if ((e.target as HTMLSelectElement).tagName === 'SELECT')
-                    e.stopPropagation();
-                }}
-                // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-                onMouseEnter={(e) => {
-                  e.preventDefault();
-                }}
-                className={styles.worksheetDropdown}
-              >
-                {worksheetOptions.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </>
-          ) : (
-            <Icon size={size} />
-          )}
+          <Icon size={size} className={clsx(modal && styles.scaleIcon)} />
         </Button>
       </OverlayTrigger>
+      {/* TODO: use the custom select component */}
+      {modal && (
+        <select
+          value={selectedWorksheet}
+          onChange={(event) => {
+            setSelectedWorksheet(Number(event.target.value));
+          }}
+          onClick={(e) => {
+            // Check if the clicked target is the select element
+            if ((e.target as HTMLSelectElement).tagName === 'SELECT')
+              e.stopPropagation();
+          }}
+          // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+          onMouseEnter={(e) => {
+            e.preventDefault();
+          }}
+          className={styles.worksheetDropdown}
+        >
+          {worksheetOptions.map(({ value, label }) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      )}
     </div>
   );
 }
