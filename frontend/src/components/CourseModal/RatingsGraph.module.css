@@ -1,5 +1,15 @@
 .container {
-  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.graph {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 .bar {
@@ -26,22 +36,6 @@
   color: var(--color-primary);
 }
 
-/* Comment out below for hover statistic functionality */
-
-/* .value {
-  opacity: 0 !important;
-}
-
-.container:hover .value {
-  opacity: 1 !important;
-} */
-
-@media (hover: none) {
-  .value {
-    opacity: 1;
-  }
-
-  .container {
-    margin-top: 25px;
-  }
+.container > p {
+  font-size: 12px;
 }

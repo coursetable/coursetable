@@ -1,6 +1,4 @@
 import React from 'react';
-import { Row } from 'react-bootstrap';
-import clsx from 'clsx';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
 import { evalQuestions } from '../../utilities/constants';
@@ -46,14 +44,16 @@ function EvaluationRatings({
     .filter((question) => filteredRatings[question].length)
     .map((question) => (
       <div key={question}>
-        <Row className="mx-auto mb-1 pl-1 justify-content-center">
-          <strong>{evalQuestions[question].title}</strong>
-          <small className={clsx(styles.questionText, 'text-center')}>
+        <div className={styles.question}>
+          <div className={styles.questionTitle}>
+            {evalQuestions[question].title}
+          </div>
+          <div className={styles.questionText}>
             <TextComponent type="secondary">
               {evalQuestions[question].question}
             </TextComponent>
-          </small>
-        </Row>
+          </div>
+        </div>
         <RatingsGraph
           ratings={filteredRatings[question]}
           reverse={question === 'workload' || question === 'challenge'}

@@ -64,15 +64,16 @@ export function Hr({ className, ...props }: React.ComponentProps<'hr'>) {
   return <hr {...props} className={clsx(styles.hr, className)} />;
 }
 
-export const InfoPopover = forwardRef(
-  ({ className, ...props }: React.ComponentProps<typeof Popover>, ref) => (
-    <Popover
-      {...props}
-      ref={ref}
-      className={clsx(styles.infoPopover, className)}
-    />
-  ),
-);
+export const InfoPopover = forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof Popover>
+>(({ className, ...props }, ref) => (
+  <Popover
+    {...props}
+    ref={ref}
+    className={clsx(styles.infoPopover, className)}
+  />
+));
 
 // Rating bubbles in search results list item and modal
 export function RatingBubble({
@@ -119,18 +120,17 @@ export function RatingBubble({
 }
 
 // Primary Color link
-export function LinkLikeText({
-  className,
-  ...props
-}: React.ComponentProps<'button'>) {
-  return (
-    <button
-      type="button"
-      {...props}
-      className={clsx(styles.linkText, className)}
-    />
-  );
-}
+export const LinkLikeText = forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<'button'>
+>(({ className, ...props }, ref) => (
+  <button
+    type="button"
+    ref={ref}
+    {...props}
+    className={clsx(styles.linkText, className)}
+  />
+));
 
 // Show Primary color on hover
 export function HoverText({

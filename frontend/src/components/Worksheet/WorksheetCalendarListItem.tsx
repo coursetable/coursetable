@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Row, Col, ListGroup } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
 import clsx from 'clsx';
 import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
@@ -24,32 +24,30 @@ export default function WorksheetCalendarListItem({
       onMouseEnter={() => setHoverCourse(course.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
-      <Row className="align-items-center mx-auto">
-        <Col
-          className={clsx(styles.courseCode, 'pl-1 pr-2')}
-          style={{
-            color: hidden ? 'var(--color-hidden)' : 'var(--color-text)',
-          }}
-          onClick={() => {
-            setSearchParams((prev) => {
-              prev.set('course-modal', `${course.season_code}-${course.crn}`);
-              return prev;
-            });
-          }}
-        >
-          <strong>{course.course_code}</strong>
-          <br />
-          <span className={styles.courseTitle}>{course.title}</span>
-        </Col>
-        <div
-          className={clsx('mr-1 my-auto', !hidden && styles.hideButtonHidden)}
-        >
+      <button
+        type="button"
+        className={clsx(
+          styles.courseCode,
+          hidden && styles.courseCodeHidden,
+          'ps-1 pe-2',
+        )}
+        onClick={() => {
+          setSearchParams((prev) => {
+            prev.set('course-modal', `${course.season_code}-${course.crn}`);
+            return prev;
+          });
+        }}
+      >
+        <strong>{course.course_code}</strong>
+        <br />
+        <span className={styles.courseTitle}>{course.title}</span>
+      </button>
+      <div className="d-flex align-items-center">
+        <div className={clsx(!hidden && styles.hideButtonHidden)}>
           <WorksheetHideButton crn={course.crn} hidden={hidden} />
         </div>
-        <div className="my-auto">
-          <WorksheetToggleButton listing={course} modal={false} />
-        </div>
-      </Row>
+        <WorksheetToggleButton listing={course} modal={false} />
+      </div>
     </ListGroup.Item>
   );
 }

@@ -18,7 +18,8 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import clsx from 'clsx';
 
-import { CUR_YEAR } from '../../config';
+import Spinner from '../Spinner';
+import { CUR_YEAR, CUR_SEASON } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import { useSearch } from '../../contexts/searchContext';
 import {
@@ -29,7 +30,6 @@ import {
 } from '../Typography';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import styles from './CourseModalOverview.module.css';
-import CourseModalLoading from './CourseModalLoading';
 import {
   getEnrolled,
   toSeasonString,
@@ -84,11 +84,11 @@ const profInfoPopover =
   (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
   (props) => (
     <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
-      <Popover.Title>
-        <Row className="mx-auto">
+      <Popover.Header>
+        <div className="mx-auto">
           <strong>{profName}</strong>
-        </Row>
-        <Row className="mx-auto">
+        </div>
+        <div className="mx-auto">
           <small>
             {profInfo?.email ? (
               <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
@@ -96,12 +96,12 @@ const profInfoPopover =
               <TextComponent type="secondary">N/A</TextComponent>
             )}
           </small>
-        </Row>
-      </Popover.Title>
-      <Popover.Content style={{ width: '274px' }}>
-        <Row className="mx-auto my-1">
+        </div>
+      </Popover.Header>
+      <Popover.Body style={{ width: '274px' }}>
+        <div className="d-flex mx-auto my-1">
           <Col md={6}>
-            <Row className="mx-auto mb-1">
+            <div className="d-flex mx-auto mb-1">
               <strong
                 className="mx-auto"
                 style={{
@@ -120,27 +120,25 @@ const profInfoPopover =
                     : 'N/A'
                 }
               </strong>
-            </Row>
-            <Row className="mx-auto">
-              <small className="mx-auto text-center  font-weight-bold">
-                Avg. Rating
-              </small>
-            </Row>
+            </div>
+            <div className="d-flex mx-auto">
+              <small className="mx-auto text-center fw-bold">Avg. Rating</small>
+            </div>
           </Col>
           <Col md={6}>
-            <Row className="mx-auto mb-1">
+            <div className="d-flex mx-auto mb-1">
               <strong className="mx-auto">
                 {profInfo?.numCourses ?? '[unknown]'}
               </strong>
-            </Row>
-            <Row className="mx-auto">
-              <small className="mx-auto text-center  font-weight-bold">
+            </div>
+            <div className="d-flex mx-auto">
+              <small className="mx-auto text-center  fw-bold">
                 Classes Taught
               </small>
-            </Row>
+            </div>
           </Col>
-        </Row>
-      </Popover.Content>
+        </div>
+      </Popover.Body>
     </InfoPopover>
   );
 
@@ -149,19 +147,16 @@ function Description({ listing }: { readonly listing: Listing }) {
   const [lines, setLines] = useState(8);
   return (
     <>
-      <Row className="mx-auto">
-        <ResponsiveEllipsis
-          style={{ whiteSpace: 'pre-wrap' }}
-          text={listing.description ? listing.description : 'no description'}
-          maxLine={lines}
-          basedOn="words"
-          onReflow={(rleState) => setClamped(rleState.clamped)}
-        />
-      </Row>
+      <ResponsiveEllipsis
+        className={styles.description}
+        text={listing.description ? listing.description : 'no description'}
+        maxLine={lines}
+        basedOn="words"
+        onReflow={(rleState) => setClamped(rleState.clamped)}
+      />
       {clamped && (
-        <Row className="mx-auto">
+        <div className="d-flex justify-content-center">
           <LinkLikeText
-            className="mx-auto"
             onClick={() => {
               setLines(100);
             }}
@@ -169,7 +164,7 @@ function Description({ listing }: { readonly listing: Listing }) {
           >
             <IoIosArrowDown size={20} />
           </LinkLikeText>
-        </Row>
+        </div>
       )}
     </>
   );
@@ -231,7 +226,7 @@ function Syllabus({
               className="d-flex"
             >
               View Syllabus
-              <HiExternalLink size={18} className="ml-1 my-auto" />
+              <HiExternalLink size={18} className="ms-1 my-auto" />
             </a>
           ) : (
             'N/A'
@@ -270,7 +265,7 @@ function Syllabus({
                 >
                   {toSeasonString(course.season_code)} (section {course.section}
                   )
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                  <HiExternalLink size={18} className="ms-1 my-auto" />
                 </a>
               ))}
             </Col>
@@ -408,7 +403,7 @@ function TimeLocation({ listing }: { readonly listing: Listing }) {
               {locationURL ? (
                 <a target="_blank" rel="noopener noreferrer" href={locationURL}>
                   {location}
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                  <HiExternalLink size={18} className="ms-1 my-auto" />
                 </a>
               ) : (
                 location
@@ -462,7 +457,7 @@ function RatingContent({
       <Col
         key={i}
         xs={2}
-        className="px-1 ml-0 d-flex justify-content-center text-center"
+        className="px-1 ms-0 d-flex justify-content-center text-center"
       >
         <RatingBubble
           rating={rating}
@@ -487,7 +482,7 @@ function RatingContent({
       <Col
         key={i}
         xs={2}
-        className="px-1 ml-0 d-flex justify-content-center text-center"
+        className="px-1 ms-0 d-flex justify-content-center text-center"
       >
         <RatingBubble
           color={generateRandomColor(identifier)}
@@ -582,11 +577,9 @@ function EvalsCol({
   const [filter, setFilter] = useState<Filter>('both');
   return (
     <Col md={5} className="px-0 my-0">
-      <Row
-        className={clsx(
-          styles.filterContainer,
-          'm-auto justify-content-center',
-        )}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
+        className={styles.filterContainer}
         onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
           // Left/right arrow key
           const newIndx = ((optionsIndx[filter] +
@@ -594,6 +587,7 @@ function EvalsCol({
             3) as 0 | 1 | 2;
           setFilter(options[newIndx].value);
         }}
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
       >
         <MultiToggle
@@ -602,20 +596,20 @@ function EvalsCol({
           onSelectOption={(val) => setFilter(val)}
           className={clsx(styles.evaluationsFilter, 'mb-2')}
         />
-      </Row>
+      </div>
       {overlapSections[filter].length !== 0 ? (
         <>
           <Row className="m-auto pb-1 justify-content-center">
-            <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
+            <Col xs={5} className="d-flex justify-content-center px-0 me-3">
               <span className={styles.evaluationHeader}>Season</span>
             </Col>
-            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Class</span>
             </Col>
-            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Prof</span>
             </Col>
-            <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Work</span>
             </Col>
           </Row>
@@ -626,9 +620,8 @@ function EvalsCol({
             >
               <Col
                 as="button"
-                role="button"
                 xs={5}
-                className={clsx(styles.ratingBubble, 'px-0 mr-3 text-center')}
+                className={clsx(styles.ratingBubble, 'px-0 me-3 text-center')}
                 tabIndex={0}
                 onClick={() => {
                   // Note, we purposefully use the listing data fetched
@@ -639,13 +632,13 @@ function EvalsCol({
                 }}
               >
                 <strong>{toSeasonString(offering.listing.season_code)}</strong>
-                <div className={clsx(styles.details, 'mx-auto')}>
+                <span className={clsx(styles.details, 'mx-auto')}>
                   {filter === 'professor'
                     ? offering.listing.course_code
                     : filter === 'both'
                       ? `Section ${offering.listing.section}`
                       : offering.professor[0]}
-                </div>
+                </span>
               </Col>
               <RatingContent offering={offering} hasEvals={user.hasEvals} />
             </Row>
@@ -682,7 +675,13 @@ function CourseModalOverview({
   });
 
   // Wait until data is fetched
-  if (loading || error) return <CourseModalLoading />;
+  if (loading || error) {
+    return (
+      <Modal.Body>
+        <Spinner />
+      </Modal.Body>
+    );
+  }
 
   return (
     <Modal.Body>
@@ -690,11 +689,7 @@ function CourseModalOverview({
         <Col md={7} className="px-0 mt-0 mb-3">
           <Description listing={listing} />
           {listing.requirements && (
-            <Row className="mx-auto">
-              <span className={clsx(styles.requirements, 'pt-1')}>
-                {listing.requirements}
-              </span>
-            </Row>
+            <div className={styles.requirements}>{listing.requirements}</div>
           )}
           <Syllabus data={data} listing={listing} />
           <Professors data={data} listing={listing} />
@@ -711,7 +706,26 @@ function CourseModalOverview({
                 </ul>
               ) : null,
             },
-            { name: 'Enrollment', value: getEnrolled(listing, 'modal') },
+            {
+              name: 'Enrollment',
+              value: getEnrolled(listing, 'modal'),
+              tooltip:
+                CUR_SEASON === listing.season_code ? (
+                  <span>
+                    Class Enrollment
+                    <br />
+                    (how many students took this class the last time it was
+                    offered)
+                  </span>
+                ) : (
+                  <span>
+                    Previous Class Enrollment
+                    <br />
+                    (based on the most recent past instance of this course)
+                  </span>
+                ),
+              sortOption: 'last_enrollment',
+            },
             { name: 'Credits', value: listing.credits },
             { name: 'Class Notes', value: listing.classnotes },
             { name: 'Registrar Notes', value: listing.regnotes },
@@ -722,31 +736,47 @@ function CourseModalOverview({
             },
             {
               name: 'Friends',
-              value: alsoTaking.length
-                ? alsoTaking.map((friend, index) => (
-                    <Row className="m-auto" key={index}>
+              value: alsoTaking.length ? (
+                <ul className={styles.friendsList}>
+                  {alsoTaking.map((friend, index) => (
+                    <li key={index}>
                       {friend + (index === alsoTaking.length - 1 ? '' : ',')}
-                    </Row>
-                  ))
-                : null,
+                    </li>
+                  ))}
+                </ul>
+              ) : null,
             },
-          ].map(
-            ({ name, value }) =>
-              value !== null && (
-                <Row className="m-auto py-2" key={name}>
-                  <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                    <span className={styles.labelBubble}>{name}</span>
-                  </Col>
-                  <Col
-                    sm={12 - COL_LEN_LEFT}
-                    xs={11 - COL_LEN_LEFT}
-                    className={styles.metadata}
-                  >
-                    {value}
-                  </Col>
-                </Row>
-              ),
-          )}
+          ].map(({ name, value, tooltip }) => {
+            const content = (
+              <Row className="m-auto py-2" key={name}>
+                <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
+                  <span className={styles.labelBubble}>{name}</span>
+                </Col>
+                <Col
+                  sm={12 - COL_LEN_LEFT}
+                  xs={11 - COL_LEN_LEFT}
+                  className={styles.metadata}
+                >
+                  {value}
+                </Col>
+              </Row>
+            );
+
+            return (
+              value !== null &&
+              (tooltip ? (
+                <OverlayTrigger
+                  key={name}
+                  placement="top"
+                  overlay={<Tooltip id={`${name}-tooltip`}>{tooltip}</Tooltip>}
+                >
+                  {content}
+                </OverlayTrigger>
+              ) : (
+                content
+              ))
+            );
+          })}
         </Col>
         <EvalsCol gotoCourse={gotoCourse} data={data} listing={listing} />
       </Row>

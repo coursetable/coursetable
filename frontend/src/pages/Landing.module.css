@@ -1,7 +1,27 @@
 .splashpage {
   min-height: calc(100vh - 58px);
   text-align: center;
-  max-width: 900px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.content {
+  width: 450px;
+}
+
+.featureList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
 }
 
 .featureText {
@@ -48,4 +68,8 @@
 
 .stat {
   color: var(--color-primary);
+}
+
+.thumbnail {
+  max-width: 90%;
 }

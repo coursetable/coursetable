@@ -3,7 +3,6 @@
   border-radius: 8px;
   transition: border-radius 0.3s step-end;
   overflow: hidden;
-  margin-top: 1em;
 }
 
 .toggleButton {

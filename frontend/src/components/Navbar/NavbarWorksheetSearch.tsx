@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import clsx from 'clsx';
-import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { LinkLikeText } from '../Typography';
 import FriendsDropdown from '../Worksheet/FriendsDropdown';
@@ -54,44 +54,42 @@ export function NavbarWorksheetSearch() {
     [handlePersonChange, person, removeFriend],
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
   return (
-    <>
-      {/* Filters Form, no form needs reload i think */}
-      <Form onSubmit={handleSubmit} className="px-0" data-tutorial="">
-        <Row className={styles.row}>
-          <div className="d-flex align-items-center">
-            {/* Worksheet View Toggle */}
-            <ToggleButtonGroup
-              name="worksheet-view-toggle"
-              type="radio"
-              value={worksheetView}
-              onChange={(val: 'calendar' | 'list') => handleWorksheetView(val)}
-              className={clsx(styles.toggleButtonGroup, 'ml-2 mr-3')}
-              data-tutorial="worksheet-2"
-            >
-              <ToggleButton className={styles.toggleButton} value="calendar">
-                Calendar
-              </ToggleButton>
-              <ToggleButton className={styles.toggleButton} value="list">
-                List
-              </ToggleButton>
-            </ToggleButtonGroup>
-            <SeasonDropdown mobile={false} />
-            <WorksheetNumDropdown mobile={false} />
-            <FriendsDropdown
-              mobile={false}
-              removeFriend={removeFriendWithConfirmation}
-            />
-            <AddFriendDropdown
-              mobile={false}
-              removeFriend={removeFriendWithConfirmation}
-            />
-          </div>
-        </Row>
-      </Form>
-    </>
+    <div className="d-flex align-items-center">
+      {/* Worksheet View Toggle */}
+      <ToggleButtonGroup
+        name="worksheet-view-toggle"
+        type="radio"
+        value={worksheetView}
+        onChange={(val: 'calendar' | 'list') => handleWorksheetView(val)}
+        className={clsx(styles.toggleButtonGroup, 'ms-2 me-3')}
+        data-tutorial="worksheet-2"
+      >
+        <ToggleButton
+          id="view-toggle-calendar"
+          className={styles.toggleButton}
+          value="calendar"
+        >
+          Calendar
+        </ToggleButton>
+        <ToggleButton
+          id="view-toggle-list"
+          className={styles.toggleButton}
+          value="list"
+        >
+          List
+        </ToggleButton>
+      </ToggleButtonGroup>
+      <SeasonDropdown mobile={false} />
+      <WorksheetNumDropdown mobile={false} />
+      <FriendsDropdown
+        mobile={false}
+        removeFriend={removeFriendWithConfirmation}
+      />
+      <AddFriendDropdown
+        mobile={false}
+        removeFriend={removeFriendWithConfirmation}
+      />
+    </div>
   );
 }

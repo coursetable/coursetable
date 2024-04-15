@@ -1,37 +1,21 @@
-.container {
-  margin-bottom: 0;
-  border: none;
-}
-
 .desktopContainer {
-  min-height: 92vh;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
 }
 
-.loadingSpinner {
-  position: fixed;
-  top: calc(50% - 16px);
-  left: calc(50% - 16px);
-}
-
-.calendarContainer {
+.desktopCalendar {
   box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
   height: 86vh;
   position: sticky;
   top: calc(1rem + 56px);
   border-radius: 8px;
+  min-width: calc(75% - 1rem);
+  flex-grow: 1;
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
-}
-
-.hidden {
-  display: none;
-}
-
-.accordion {
-  width: 100vw;
-  min-height: 100vh;
 }
 
 .expandBtn {
@@ -41,7 +25,9 @@
   color: var(--color-text-secondary);
   position: absolute;
   top: 0%;
+  right: 0%;
   z-index: 2;
+  transform: translate(50%, -40%);
   transition:
     transform 0.05s linear,
     background-color var(--trans-dur),
@@ -52,13 +38,22 @@
   display: block;
 }
 
-.topRight {
-  right: 0%;
-  transform: translate(50%, -40%);
+.expandBtn:hover {
+  transform: translate(50%, -40%) scale(1.1);
 }
 
-.topRight:hover {
-  transform: translate(50%, -40%) scale(1.1);
+.calendarSidebar {
+  max-width: calc(25% - 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mobileContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .mobileCalendar {
@@ -66,10 +61,14 @@
   height: 75vh;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
   overflow: hidden;
+}
+
+.subDropdowns {
+  display: flex;
 }

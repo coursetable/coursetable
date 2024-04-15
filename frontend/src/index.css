@@ -31,6 +31,8 @@
     'Helvetica Neue', sans-serif;
   --font-family-monospace: source-code-pro, Menlo, Monaco, Consolas,
     'Courier New', monospace;
+  --bs-link-color: var(--color-primary) !important;
+  --bs-link-hover-color: var(--color-primary-hover) !important;
 }
 
 :root[data-theme='dark'] {
@@ -71,6 +73,7 @@ body {
 
 a {
   color: var(--color-primary);
+  text-decoration: none;
 }
 
 a:hover {
@@ -90,6 +93,7 @@ button {
 
 button:focus:not(:focus-visible) {
   outline: none !important;
+  box-shadow: none;
 }
 
 code {
@@ -102,6 +106,18 @@ code {
 
 #base {
   height: auto;
+}
+
+.form-control::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.btn {
+  border: none;
+}
+
+.btn:not(.btn-none, .btn-dark, .btn-danger) {
+  --bs-btn-bg: var(--color-primary);
 }
 
 /* TODO: can we modularized the below? */

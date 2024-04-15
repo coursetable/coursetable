@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  Col,
-  Container,
-  Row,
-  Modal,
-  DropdownButton,
-  Dropdown,
-} from 'react-bootstrap';
+import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
 import { IoMdArrowRoundBack, IoIosMore } from 'react-icons/io';
@@ -180,78 +173,69 @@ function CourseModal() {
         animation={false}
         centered
       >
-        <Modal.Header closeButton>
-          <Container className="p-0 ml-2" fluid>
-            <Row className={clsx('m-auto', styles.modalTop)}>
-              <Col xs="auto" className="my-auto p-0">
-                {history.length > 1 && (
-                  <LinkLikeText
-                    onClick={() => {
-                      setHistory(history.slice(0, -1));
-                      setView('overview');
-                    }}
-                    className={styles.backArrow}
-                  >
-                    <IoMdArrowRoundBack size={30} />
-                  </LinkLikeText>
-                )}
-              </Col>
-              <Col className="p-0 ml-3">
-                <Modal.Title>
-                  <Row className="mx-auto mt-1 align-items-center">
-                    <span className={styles.modalTitle}>
-                      {listing.extra_info !== 'ACTIVE' ? (
-                        <span className={styles.cancelledText}>
-                          {extraInfoMap[listing.extra_info]}{' '}
-                        </span>
-                      ) : (
-                        ''
-                      )}
-                      {listing.title}{' '}
-                      <TextComponent type="tertiary">
-                        ({toSeasonString(listing.season_code)})
-                      </TextComponent>
+        <Modal.Header className={styles.modalHeader} closeButton>
+          <div className={styles.modalTop}>
+            {history.length > 1 && (
+              <LinkLikeText
+                onClick={() => {
+                  setHistory(history.slice(0, -1));
+                  setView('overview');
+                }}
+                className={styles.backArrow}
+              >
+                <IoMdArrowRoundBack size={30} />
+              </LinkLikeText>
+            )}
+            <div>
+              <Modal.Title>
+                <div className={styles.modalTitle}>
+                  {listing.extra_info !== 'ACTIVE' ? (
+                    <span className={styles.cancelledText}>
+                      {extraInfoMap[listing.extra_info]}{' '}
                     </span>
-                  </Row>
-                </Modal.Title>
+                  ) : (
+                    ''
+                  )}
+                  {listing.title}{' '}
+                  <TextComponent type="tertiary">
+                    ({toSeasonString(listing.season_code)})
+                  </TextComponent>
+                </div>
+              </Modal.Title>
 
-                <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
-                  <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
-                    <TextComponent type="tertiary">
-                      {listing.all_course_codes.join(' • ')}
-                    </TextComponent>
-                  </p>
-                  {listing.skills.map((skill) => (
-                    <SkillBadge skill={skill} key={skill} />
-                  ))}
-                  {listing.areas.map((area) => (
-                    <SkillBadge skill={area} key={area} />
-                  ))}
-                </Row>
-              </Col>
-            </Row>
-            <Row className="ml-auto mr-2 justify-content-between flex-wrap-reverse">
-              <ViewTabs
-                tabs={[
-                  { label: 'Overview', value: 'overview' },
-                  {
-                    label: 'Evaluations',
-                    value: 'evals',
-                    // Don't show eval tab if it's current year or no auth
-                    hidden:
-                      CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
-                  },
-                ]}
-                onSelectTab={setView}
-                currentTab={view}
-              />
-              <div className={styles.toolBar}>
-                <WorksheetToggleButton listing={listing} modal />
-                <ShareButton courseCode={listing.course_code} />
-                <MoreButton hide={hide} />
+              <div className={styles.badges}>
+                <p className={styles.courseCodes}>
+                  <TextComponent type="tertiary">
+                    {listing.all_course_codes.join(' • ')}
+                  </TextComponent>
+                </p>
+                {[...listing.skills, ...listing.areas].map((skill) => (
+                  <SkillBadge skill={skill} key={skill} />
+                ))}
               </div>
-            </Row>
-          </Container>
+            </div>
+          </div>
+          <div className={styles.modalControls}>
+            <ViewTabs
+              tabs={[
+                { label: 'Overview', value: 'overview' },
+                {
+                  label: 'Evaluations',
+                  value: 'evals',
+                  // Don't show eval tab if it's current year or no auth
+                  hidden:
+                    CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
+                },
+              ]}
+              onSelectTab={setView}
+              currentTab={view}
+            />
+            <div className={styles.toolBar}>
+              <WorksheetToggleButton listing={listing} modal />
+              <ShareButton courseCode={listing.course_code} />
+              <MoreButton hide={hide} />
+            </div>
+          </div>
         </Modal.Header>
         {view === 'overview' ? (
           <CourseModalOverview

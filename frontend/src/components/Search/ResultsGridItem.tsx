@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import clsx from 'clsx';
 
@@ -37,9 +37,9 @@ function Rating({
         </Tooltip>
       )}
     >
-      <Row className="m-auto justify-content-end">
+      <div className="d-flex justify-content-end">
         <div
-          className={clsx(styles.rating, 'mr-1')}
+          className={styles.rating}
           style={{
             color: hasEvals
               ? rating
@@ -55,7 +55,7 @@ function Rating({
         <div className={styles.iconContainer}>
           <Icon className={styles.icon} />
         </div>
-      </Row>
+      </div>
     </OverlayTrigger>
   );
 }
@@ -87,11 +87,7 @@ function ResultsGridItem({
   );
 
   return (
-    <Col
-      md={colWidth}
-      className={clsx(styles.container, 'px-2 pt-0 pb-3')}
-      style={{ overflow: 'hidden' }}
-    >
+    <Col md={colWidth} className={styles.container}>
       <div
         role="button"
         onClick={() => {
@@ -101,75 +97,57 @@ function ResultsGridItem({
           });
         }}
         className={clsx(
-          styles.oneLine,
           styles.resultItem,
           inWorksheet && styles.inWorksheetResultItem,
           'px-3 pb-3',
         )}
         tabIndex={0}
       >
-        <Row className="m-auto">
-          <Col xs={multiSeasons ? 8 : 12} className="p-0">
-            <Row className="mx-auto mt-3">
-              <small className={styles.courseCodes}>
-                <CourseCode course={course} subdueSection={false} />
-              </small>
-            </Row>
-          </Col>
+        <div className="d-flex justify-content-between">
+          <div className={styles.courseCodes}>
+            <CourseCode course={course} subdueSection={false} />
+          </div>
           {multiSeasons && (
-            <Col xs={4} className="p-0">
-              <Row className="m-auto">
-                <SeasonTag
-                  season={course.season_code}
-                  className={styles.season}
-                />
-              </Row>
-            </Col>
+            <SeasonTag season={course.season_code} className={styles.season} />
           )}
-        </Row>
-        <Row className="m-auto">
+        </div>
+        <div>
           <strong className={styles.oneLine}>{course.title}</strong>
-        </Row>
-        <Row className="m-auto justify-content-between">
-          <Col xs={7} className="p-0">
-            <Row className="m-auto">
-              <TextComponent
-                type="secondary"
-                className={clsx(styles.oneLine, styles.professors)}
-              >
-                {course.professor_names.length > 0
-                  ? course.professor_names.join(' • ')
-                  : 'Professor: TBA'}
-              </TextComponent>
-            </Row>
-            <Row className="m-auto">
-              <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type="secondary">
-                  {course.times_summary === 'TBA'
-                    ? 'Times: TBA'
-                    : course.times_summary}
-                </TextComponent>
-              </small>
-            </Row>
-            <Row className="m-auto">
-              <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type="secondary">
-                  {course.locations_summary === 'TBA'
-                    ? 'Location: TBA'
-                    : course.locations_summary}
-                </TextComponent>
-              </small>
-            </Row>
-            <Row className="m-auto">
-              <div className={styles.skillsAreas}>
-                {[...course.skills, ...course.areas].map((skill) => (
-                  <SkillBadge skill={skill} key={skill} />
-                ))}
-              </div>
-            </Row>
-          </Col>
-          <Col xs={5} className="p-0 d-flex align-items-end">
-            <div className="ml-auto">
+        </div>
+        <div className="d-flex justify-content-between">
+          <div>
+            <TextComponent
+              type="secondary"
+              className={clsx(styles.oneLine, styles.professors)}
+            >
+              {course.professor_names.length > 0
+                ? course.professor_names.join(' • ')
+                : 'Professor: TBA'}
+            </TextComponent>
+            <TextComponent
+              type="secondary"
+              className={clsx(styles.oneLine, styles.smallText)}
+            >
+              {course.times_summary === 'TBA'
+                ? 'Times: TBA'
+                : course.times_summary}
+            </TextComponent>
+            <TextComponent
+              type="secondary"
+              className={clsx(styles.oneLine, styles.smallText)}
+            >
+              {course.locations_summary === 'TBA'
+                ? 'Location: TBA'
+                : course.locations_summary}
+            </TextComponent>
+            <div className={styles.skillsAreas}>
+              {[...course.skills, ...course.areas].map((skill) => (
+                <SkillBadge skill={skill} key={skill} />
+              ))}
+            </div>
+          </div>
+          <div className="d-flex align-items-end">
+            <div className="ms-auto">
               {(['Class', 'Professor', 'Workload'] as const).map((name) => (
                 <Rating
                   key={name}
@@ -179,8 +157,8 @@ function ResultsGridItem({
                 />
               ))}
             </div>
-          </Col>
-        </Row>
+          </div>
+        </div>
       </div>
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton

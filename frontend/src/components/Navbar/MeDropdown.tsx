@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Row, Col, Collapse } from 'react-bootstrap';
+import { Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
 import { BsFillPersonFill } from 'react-icons/bs';
 import {
@@ -42,7 +42,7 @@ function DropdownItem({
   const innerText = (
     <HoverText>
       <Icon
-        className="mr-2 my-auto"
+        className="me-2 my-auto"
         size={20}
         style={{ paddingLeft: '2px', paddingBottom: '2px' }}
         color={iconColor}
@@ -51,7 +51,7 @@ function DropdownItem({
     </HoverText>
   );
   return (
-    <Row className="pb-3 m-auto">
+    <div className="my-3">
       <TextComponent type="secondary">
         {to ? (
           <NavLink
@@ -85,7 +85,7 @@ function DropdownItem({
           <span className={styles.collapseText}>{innerText}</span>
         )}
       </TextComponent>
-    </Row>
+    </div>
   );
 }
 
@@ -109,58 +109,56 @@ function DropdownContent({
       }}
     >
       <Collapse in={isExpanded}>
-        {/* This wrapper div is important for making the collapse animation
-          smooth */}
-        <div>
-          <Col className="px-3 pt-3">
-            <DropdownItem icon={FcInfo} to="/about">
-              About
-            </DropdownItem>
-            <DropdownItem icon={FcQuestions} to="/faq">
-              FAQ
-            </DropdownItem>
+        {/* Do not add vertical spacing to this div because it will break
+          collapsing animation */}
+        <div className="px-3">
+          <DropdownItem icon={FcInfo} to="/about">
+            About
+          </DropdownItem>
+          <DropdownItem icon={FcQuestions} to="/faq">
+            FAQ
+          </DropdownItem>
+          <DropdownItem
+            icon={FcFeedback}
+            href="https://feedback.coursetable.com/"
+            externalLink
+          >
+            Feedback
+          </DropdownItem>
+          <DropdownItem icon={FcNews} to="/releases">
+            Release Notes
+          </DropdownItem>
+          {/* Try tutorial only on desktop */}
+          {!isMobile && !isTablet && authStatus === 'authenticated' && (
             <DropdownItem
-              icon={FcFeedback}
-              href="https://feedback.coursetable.com/"
-              externalLink
+              icon={FcPuzzle}
+              to="/catalog"
+              onClick={(e) => {
+                e.stopPropagation();
+                scrollToTop(e);
+                toggleTutorial(true);
+              }}
             >
-              Feedback
+              Tutorial
             </DropdownItem>
-            <DropdownItem icon={FcNews} to="/releases">
-              Release Notes
+          )}
+          {authStatus === 'authenticated' ? (
+            <DropdownItem
+              icon={FaSignOutAlt}
+              iconColor="#ed5f5f"
+              onClick={logout}
+            >
+              Sign Out
             </DropdownItem>
-            {/* Try tutorial only on desktop */}
-            {!isMobile && !isTablet && authStatus === 'authenticated' && (
-              <DropdownItem
-                icon={FcPuzzle}
-                to="/catalog"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  scrollToTop(e);
-                  toggleTutorial(true);
-                }}
-              >
-                Tutorial
-              </DropdownItem>
-            )}
-            {authStatus === 'authenticated' ? (
-              <DropdownItem
-                icon={FaSignOutAlt}
-                iconColor="#ed5f5f"
-                onClick={logout}
-              >
-                Sign Out
-              </DropdownItem>
-            ) : (
-              <DropdownItem
-                icon={FaSignInAlt}
-                iconColor="#30e36b"
-                href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
-              >
-                Sign In
-              </DropdownItem>
-            )}
-          </Col>
+          ) : (
+            <DropdownItem
+              icon={FaSignInAlt}
+              iconColor="#30e36b"
+              href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
+            >
+              Sign In
+            </DropdownItem>
+          )}
         </div>
       </Collapse>
     </SurfaceComponent>

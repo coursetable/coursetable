@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Col, Row, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaBars, FaTh } from 'react-icons/fa';
 import clsx from 'clsx';
 
@@ -33,10 +33,14 @@ function HeaderCol({
             </Tooltip>
           )}
         >
-          <span className={styles.oneLine}>{children}</span>
+          <div className={styles.oneLine}>
+            <span>{children}</span>
+          </div>
         </OverlayTrigger>
       ) : (
-        <span className={styles.oneLine}>{children}</span>
+        <div className={styles.oneLine}>
+          <span>{children}</span>
+        </div>
       )}
       {sortOption && (
         <ResultsColumnSort selectOption={sortByOptions[sortOption]} />
@@ -78,24 +82,17 @@ function ResultsHeaders({
         id="results_container"
         className={clsx('px-0 mx-0', styles.container)}
       >
-        <Row
+        <div
           className={clsx(
-            'mx-auto pl-4 pr-2',
             isLgDesktop ? 'py-2' : 'py-1',
             styles.resultsHeaderRow,
-            'justify-content-between',
           )}
           data-tutorial="catalog-5"
         >
-          <div
-            className={clsx(
-              styles.listGridToggle,
-              'd-flex ml-auto my-auto p-0',
-            )}
-          >
+          <div className={colStyles.controlCol}>
             <button
               type="button"
-              className={clsx(styles.toggle, 'd-flex ml-auto my-auto')}
+              className={clsx(styles.toggle, 'd-flex ms-auto my-auto')}
               onClick={() => setIsListView(!isListView)}
               aria-label={
                 isListView ? 'Switch to grid view' : 'Switch to list view'
@@ -114,10 +111,7 @@ function ResultsHeaders({
                 <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
               )}
               <HeaderCol
-                className={clsx(
-                  colStyles.codeCol,
-                  multiSeasons && colStyles.multiSeasons,
-                )}
+                className={colStyles.codeCol}
                 tooltip="Course Code and Section"
                 sortOption="course_code"
               >
@@ -227,15 +221,11 @@ function ResultsHeaders({
               </HeaderCol>
             </>
           ) : (
-            <Col md={10}>
-              <div className={styles.resultsHeader}>
-                {`Showing ${numResults} course${
-                  numResults === 1 ? '' : 's'
-                }...`}
-              </div>
-            </Col>
+            <div className={clsx(styles.resultsHeader, styles.resultsStat)}>
+              {`Showing ${numResults} course${numResults === 1 ? '' : 's'}...`}
+            </div>
           )}
-        </Row>
+        </div>
       </SurfaceComponent>
     </div>
   );

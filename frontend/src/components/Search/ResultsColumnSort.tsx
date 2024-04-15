@@ -36,7 +36,7 @@ function ResultsColumnSort({
       type="button"
       className={clsx(
         styles.button,
-        'ml-1 my-auto',
+        'ms-1 my-auto',
         renderActive && isActive && styles.buttonActive,
       )}
       onClick={() => {

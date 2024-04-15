@@ -1,12 +1,12 @@
 .container {
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .worksheetDropdown {
+  cursor: pointer;
   padding: 10px;
   border-radius: 5px;
   font-size: 12px;

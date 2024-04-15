@@ -119,7 +119,7 @@ export function Popout({
         {text ?? buttonText}
         {text && clearIcon ? (
           <IoClose
-            className={clsx(styles.clearIcon, 'ml-1')}
+            className={clsx(styles.clearIcon, 'ms-1')}
             onClick={(e) => {
               // Prevent parent popout button onClick from firing and opening
               // dropdown
@@ -129,9 +129,9 @@ export function Popout({
           />
         ) : arrowIcon ? (
           isComponentVisible ? (
-            <IoMdArrowDropdown className={clsx(styles.arrowIcon, 'ml-1')} />
+            <IoMdArrowDropdown className={clsx(styles.arrowIcon, 'ms-1')} />
           ) : (
-            <IoMdArrowDropup className={clsx(styles.arrowIcon, 'ml-1')} />
+            <IoMdArrowDropup className={clsx(styles.arrowIcon, 'ms-1')} />
           )
         ) : null}
         {notifications ? <NotificationIcon count={notifications} /> : null}

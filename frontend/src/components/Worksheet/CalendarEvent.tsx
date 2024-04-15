@@ -19,14 +19,12 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         <div className={styles.event}>
           <strong>{event.title}</strong>
           <br />
-          <span>
-            <ResponsiveEllipsis
-              className={styles.courseNameText}
-              text={event.description}
-              maxLine="2"
-              basedOn="words"
-            />
-          </span>
+          <ResponsiveEllipsis
+            className={styles.courseNameText}
+            text={event.description}
+            maxLine="2"
+            basedOn="words"
+          />
           <small className={styles.locationText}>{event.location}</small>
         </div>
       </CourseInfoPopover>

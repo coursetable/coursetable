@@ -19,32 +19,30 @@ function FriendsDropdownMobile({
 }) {
   const { handlePersonChange } = useWorksheet();
   return (
-    <div className="container p-0 m-0">
-      <DropdownButton
-        variant="primary"
-        title={viewedPerson?.label ?? "Friends' worksheets"}
-        onSelect={(p) => {
-          if (p) handlePersonChange(p as NetId | 'me');
-        }}
-      >
-        {[{ value: 'me', label: 'Me' }, ...options].map(({ value, label }) => (
-          <Dropdown.Item
-            key={value}
-            eventKey={value}
-            className="d-flex"
-            // Styling if this is the current person
-            style={{
-              backgroundColor:
-                value === (viewedPerson?.value ?? 'me')
-                  ? 'var(--color-primary)'
-                  : '',
-            }}
-          >
-            <div className="mx-auto">{label}</div>
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
-    </div>
+    <DropdownButton
+      variant="primary"
+      title={viewedPerson?.label ?? "Friends' worksheets"}
+      onSelect={(p) => {
+        if (p) handlePersonChange(p as NetId | 'me');
+      }}
+    >
+      {[{ value: 'me', label: 'Me' }, ...options].map(({ value, label }) => (
+        <Dropdown.Item
+          key={value}
+          eventKey={value}
+          className="d-flex"
+          // Styling if this is the current person
+          style={{
+            backgroundColor:
+              value === (viewedPerson?.value ?? 'me')
+                ? 'var(--color-primary)'
+                : '',
+          }}
+        >
+          <div className="mx-auto">{label}</div>
+        </Dropdown.Item>
+      ))}
+    </DropdownButton>
   );
 }
 

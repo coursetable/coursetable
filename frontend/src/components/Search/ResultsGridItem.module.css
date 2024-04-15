@@ -1,6 +1,8 @@
 .container {
   transition: 0.1s;
   cursor: pointer;
+  padding: 0 0.5rem 0.75rem;
+  overflow: hidden;
 }
 
 .resultItem {
@@ -37,10 +39,13 @@
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   margin-right: 27px;
+  margin-bottom: 0.75rem;
 }
 
 .courseCodes {
+  margin-top: 0.75rem;
   font-weight: 500;
+  font-size: 14px;
   color: rgb(38 131 185);
 }
 
@@ -49,6 +54,7 @@
 }
 
 .smallText {
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -62,6 +68,7 @@
 
 .rating {
   font-weight: bold;
+  margin-right: 0.25rem;
 }
 
 .skillsAreas {
@@ -69,6 +76,7 @@
   white-space: nowrap;
   overflow: hidden;
   min-height: 24px;
+  margin-top: 0.25rem;
 }
 
 .worksheetBtn {

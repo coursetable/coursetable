@@ -1,7 +1,8 @@
 .listItem {
+  display: flex;
+  justify-content: space-between;
   background-color: transparent;
   overflow: hidden;
-  cursor: pointer;
   border-color: var(--color-border);
   transition:
     border-color var(--trans-dur),
@@ -38,6 +39,12 @@
 }
 
 .courseCode {
+  text-align: left;
   overflow: hidden;
   transition: color var(--trans-dur);
+  color: var(--color-text);
+}
+
+.courseCodeHidden {
+  color: var(--color-hidden);
 }

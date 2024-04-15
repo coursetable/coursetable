@@ -3,8 +3,8 @@ import { Row, Col, Modal } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
+import Spinner from '../Spinner';
 
-import CourseModalLoading from './CourseModalLoading';
 import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
 import type { Crn, Season } from '../../utilities/common';
 
@@ -21,7 +21,13 @@ function CourseModalEvaluations({
       crn,
     },
   });
-  if (loading || error) return <CourseModalLoading />;
+  if (loading || error) {
+    return (
+      <Modal.Body>
+        <Spinner />
+      </Modal.Body>
+    );
+  }
   if ((data?.computed_listing_info.length ?? 0) > 1) {
     Sentry.captureException(
       new Error(`More than one listings returned for ${seasonCode}-${crn}`),
@@ -36,7 +42,7 @@ function CourseModalEvaluations({
           <EvaluationRatings info={info} />
         </Col>
 
-        <Col md={7} className="pr-0 pl-2 my-0">
+        <Col md={7} className="pe-0 ps-2 my-0">
           <EvaluationResponses info={info} />
         </Col>
       </Row>

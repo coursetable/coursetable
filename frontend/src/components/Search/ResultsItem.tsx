@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { OverlayTrigger, Tooltip, Row } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import clsx from 'clsx';
 
@@ -117,29 +117,24 @@ function ResultsItem({
       tabIndex={0}
       style={style}
     >
-      <Row
-        className={clsx(
-          styles.resultItemContent,
-          'mx-auto pl-4 pr-2 py-0 justify-content-between',
-        )}
-      >
+      <div className={styles.resultItemContent}>
+        <div
+          className={colStyles.controlCol}
+          data-tutorial={isFirst && 'catalog-6'}
+        >
+          <WorksheetToggleButton
+            listing={course}
+            modal={false}
+            inWorksheet={inWorksheet}
+          />
+        </div>
         {multiSeasons && (
-          <div className={clsx('d-flex', colStyles.seasonCol)}>
-            <div className="my-auto">
-              <SeasonTag
-                season={course.season_code}
-                className={styles.season}
-              />
-            </div>
+          <div className={colStyles.seasonCol}>
+            <SeasonTag season={course.season_code} className={styles.season} />
           </div>
         )}
-        <div
-          className={clsx(
-            colStyles.codeCol,
-            multiSeasons && colStyles.multiSeasons,
-          )}
-        >
-          <div className={clsx(styles.ellipsisText, 'font-weight-bold')}>
+        <div className={colStyles.codeCol}>
+          <div className={clsx(styles.ellipsisText, 'fw-bold')}>
             <CourseCode course={course} subdueSection />
           </div>
         </div>
@@ -156,7 +151,7 @@ function ResultsItem({
             <Rating course={course} hasEvals={user.hasEvals} name="Workload" />
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
-            <div className={clsx('mr-2 h-100', styles.profRating)}>
+            <div className={clsx('me-2 h-100', styles.profRating)}>
               <Rating
                 course={course}
                 hasEvals={user.hasEvals}
@@ -202,17 +197,7 @@ function ResultsItem({
             <span className="my-auto" />
           )}
         </div>
-        <div
-          className={styles.worksheetBtn}
-          data-tutorial={isFirst && 'catalog-6'}
-        >
-          <WorksheetToggleButton
-            listing={course}
-            modal={false}
-            inWorksheet={inWorksheet}
-          />
-        </div>
-      </Row>
+      </div>
     </div>
   );
 }

@@ -54,7 +54,6 @@ export function SeasonTag({
       <div
         className={clsx(
           styles.seasonTag,
-          'ml-auto px-1 pb-0',
           {
             [styles.spring!]: seasonNum === 1,
             [styles.summer!]: seasonNum === 2,
@@ -81,7 +80,7 @@ export function CourseInfoPopover({
       placement="right"
       overlay={(props) => (
         <InfoPopover {...props} id="title-popover">
-          <Popover.Title>
+          <Popover.Header>
             <strong>
               {course.extra_info !== 'ACTIVE' ? (
                 <span className={styles.cancelledText}>CANCELLED</span>
@@ -90,14 +89,14 @@ export function CourseInfoPopover({
               )}{' '}
               {course.title}
             </strong>
-          </Popover.Title>
-          <Popover.Content>
+          </Popover.Header>
+          <Popover.Body>
             {truncatedText(course.description, 300, 'no description')}
             <br />
             <div className="text-danger">
               {truncatedText(course.requirements, 250, '')}
             </div>
-          </Popover.Content>
+          </Popover.Body>
         </InfoPopover>
       )}
     >

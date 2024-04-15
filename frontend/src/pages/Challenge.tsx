@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
-import { Form, Button, Row, Spinner } from 'react-bootstrap';
+import { Form, Button, Row } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
 
 import { FiExternalLink } from 'react-icons/fi';
 import { useUser } from '../contexts/userContext';
+import Spinner from '../components/Spinner';
+import { TextComponent, SurfaceComponent } from '../components/Typography';
 import {
   requestChallenge,
   verifyChallenge,
   type RequestChallengeResBody,
 } from '../utilities/api';
+
+// TODO: use CSS more
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './Challenge.module.css';
 
 import ChallengeError from '../images/error.svg';
-import { TextComponent, SurfaceComponent } from '../components/Typography';
 
 type Answer = {
   courseRatingId: number;
@@ -223,7 +227,7 @@ function Challenge() {
     >
       <SurfaceComponent className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow">
         {/* Page Header */}
-        <h1 className="font-weight-bold mb-2">Enable evaluations</h1>
+        <h1 className="fw-bold mb-2">Enable evaluations</h1>
         {/* Page Description */}
         <TextComponent type="secondary">
           <p className="mb-2">
@@ -251,7 +255,7 @@ function Challenge() {
         {/* Track number of attempts */}
         {numTries !== null && (
           <div className="mb-2">
-            <span className="font-weight-bold mb-6">
+            <span className="fw-bold mb-6">
               {numTries}/{maxTries}
             </span>{' '}
             {numTries === 1 ? 'attempt' : 'attempts'} used
@@ -287,9 +291,9 @@ function Challenge() {
                 {/* Question with link to OCE Page */}
                 <Row className="mx-auto mb-1">
                   How many students responded to the&nbsp;
-                  <span className="font-weight-bold">"overall assessment"</span>
+                  <span className="fw-bold">"overall assessment"</span>
                   &nbsp;question with&nbsp;
-                  <span className="font-weight-bold">
+                  <span className="fw-bold">
                     "{ratingOptions[course.courseRatingIndex]}"
                   </span>
                   ?
@@ -322,13 +326,7 @@ function Challenge() {
         ) : (
           // Loading spinner while fetching questions
           <Row className="mx-auto py-5 my-5">
-            <Spinner
-              className={styles.loadingSpinner}
-              animation="border"
-              role="status"
-            >
-              <span className="sr-only">Loading...</span>
-            </Spinner>
+            <Spinner />
           </Row>
         )}
       </SurfaceComponent>
