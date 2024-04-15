@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { components as selectComponents } from 'react-select';
 import { MdPersonRemove } from 'react-icons/md';
+import Spinner from '../Spinner';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { isOption, type Option } from '../../contexts/searchContext';
@@ -53,7 +54,7 @@ function FriendsDropdownDesktop({
 }: {
   readonly options: Option<NetId | 'me'>[];
   readonly viewedPerson: Option<NetId> | null;
-  readonly removeFriend: (netId: NetId, isRequest: boolean) => void;
+  readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 }) {
   const { handlePersonChange } = useWorksheet();
   return (
@@ -76,13 +77,10 @@ function FriendsDropdownDesktop({
           if (isOption(selectedOption))
             handlePersonChange(selectedOption.value);
         }}
+        noOptionsMessage={() => 'No friends found'}
         components={{
-          NoOptionsMessage: ({ children, ...props }) => (
-            <selectComponents.NoOptionsMessage {...props}>
-              No friends found
-            </selectComponents.NoOptionsMessage>
-          ),
           Option({ children, ...props }) {
+            const [isLoading, setIsLoading] = useState(false);
             if (props.data.value === 'me') {
               return (
                 <selectComponents.Option {...props}>
@@ -93,15 +91,21 @@ function FriendsDropdownDesktop({
             return (
               <selectComponents.Option {...props}>
                 {children}
-                <MdPersonRemove
-                  className={styles.removeFriendIcon}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeFriend(props.data.value as NetId, false);
-                  }}
-                  title="Remove friend"
-                />
+                {isLoading ? (
+                  <Spinner className={styles.spinner} />
+                ) : (
+                  <MdPersonRemove
+                    className={styles.removeFriendIcon}
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsLoading(true);
+                      await removeFriend(props.data.value as NetId, false);
+                      setIsLoading(false);
+                    }}
+                    title="Remove friend"
+                  />
+                )}
               </selectComponents.Option>
             );
           },
@@ -122,7 +126,10 @@ function FriendsDropdown({
     }
   | {
       readonly mobile: false;
-      readonly removeFriend: (netId: NetId, isRequest: boolean) => void;
+      readonly removeFriend: (
+        netId: NetId,
+        isRequest: boolean,
+      ) => Promise<void>;
     }) {
   const { user } = useUser();
   const { person } = useWorksheet();
