@@ -111,7 +111,7 @@ function EvaluationResponses({
         }}
       />
       <div className={styles.sortBy}>
-        <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
+        <span className="fw-bold my-auto me-2">Sort comments by:</span>
         <div className={styles.sortOptions}>
           <button
             type="button"

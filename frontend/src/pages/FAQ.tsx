@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
@@ -10,9 +10,9 @@ import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities/display';
 
 function ContextAwareToggle({ question }: { readonly question: string }) {
-  const currentEventKey = useContext(AccordionContext);
+  const currentEventKey = useContext(AccordionContext).activeEventKey;
   const navigate = useNavigate();
-  const decoratedOnClick = useAccordionToggle(question, () => {
+  const decoratedOnClick = useAccordionButton(question, () => {
     navigate(`#${toId(question)}`);
   });
   const isCurrentEventKey = currentEventKey === question;

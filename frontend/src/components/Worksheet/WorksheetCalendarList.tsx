@@ -51,7 +51,7 @@ function WorksheetCalendarList() {
                   aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
                 >
                   <HideShowIcon
-                    className={clsx(styles.icon, 'my-auto pr-2')}
+                    className={clsx(styles.icon, 'my-auto pe-2')}
                     size={32}
                   />
                 </Button>
@@ -68,7 +68,7 @@ function WorksheetCalendarList() {
               <DropdownButton
                 as="div"
                 drop="down"
-                menuAlign="right"
+                align="end"
                 title={
                   <TbCalendarDown
                     className={clsx(styles.icon, styles.calendarIcon)}

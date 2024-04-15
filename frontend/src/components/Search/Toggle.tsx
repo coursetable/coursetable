@@ -37,7 +37,10 @@ export default function Toggle({
         aria-label={typeof label === 'string' ? label : label[1]}
         className={styles.input}
         checked={filters[handle].value}
-        onChange={() => {}} // Dummy handler to remove warning
+        onChange={() => {
+          filters[handle].set(!filters[handle].value);
+          setStartTime(Date.now());
+        }}
       />
       <Form.Check.Label
         className={styles.label}

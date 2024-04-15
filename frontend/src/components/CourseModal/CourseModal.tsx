@@ -173,69 +173,67 @@ function CourseModal() {
         animation={false}
         centered
       >
-        <Modal.Header closeButton>
-          <div className={styles.modalHeader}>
-            <div className={styles.modalTop}>
-              {history.length > 1 && (
-                <LinkLikeText
-                  onClick={() => {
-                    setHistory(history.slice(0, -1));
-                    setView('overview');
-                  }}
-                  className={styles.backArrow}
-                >
-                  <IoMdArrowRoundBack size={30} />
-                </LinkLikeText>
-              )}
-              <div>
-                <Modal.Title>
-                  <div className={styles.modalTitle}>
-                    {listing.extra_info !== 'ACTIVE' ? (
-                      <span className={styles.cancelledText}>
-                        {extraInfoMap[listing.extra_info]}{' '}
-                      </span>
-                    ) : (
-                      ''
-                    )}
-                    {listing.title}{' '}
-                    <TextComponent type="tertiary">
-                      ({toSeasonString(listing.season_code)})
-                    </TextComponent>
-                  </div>
-                </Modal.Title>
-
-                <div className={styles.badges}>
-                  <p className={styles.courseCodes}>
-                    <TextComponent type="tertiary">
-                      {listing.all_course_codes.join(' • ')}
-                    </TextComponent>
-                  </p>
-                  {[...listing.skills, ...listing.areas].map((skill) => (
-                    <SkillBadge skill={skill} key={skill} />
-                  ))}
+        <Modal.Header className={styles.modalHeader} closeButton>
+          <div className={styles.modalTop}>
+            {history.length > 1 && (
+              <LinkLikeText
+                onClick={() => {
+                  setHistory(history.slice(0, -1));
+                  setView('overview');
+                }}
+                className={styles.backArrow}
+              >
+                <IoMdArrowRoundBack size={30} />
+              </LinkLikeText>
+            )}
+            <div>
+              <Modal.Title>
+                <div className={styles.modalTitle}>
+                  {listing.extra_info !== 'ACTIVE' ? (
+                    <span className={styles.cancelledText}>
+                      {extraInfoMap[listing.extra_info]}{' '}
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                  {listing.title}{' '}
+                  <TextComponent type="tertiary">
+                    ({toSeasonString(listing.season_code)})
+                  </TextComponent>
                 </div>
+              </Modal.Title>
+
+              <div className={styles.badges}>
+                <p className={styles.courseCodes}>
+                  <TextComponent type="tertiary">
+                    {listing.all_course_codes.join(' • ')}
+                  </TextComponent>
+                </p>
+                {[...listing.skills, ...listing.areas].map((skill) => (
+                  <SkillBadge skill={skill} key={skill} />
+                ))}
               </div>
             </div>
-            <div className={styles.modalControls}>
-              <ViewTabs
-                tabs={[
-                  { label: 'Overview', value: 'overview' },
-                  {
-                    label: 'Evaluations',
-                    value: 'evals',
-                    // Don't show eval tab if it's current year or no auth
-                    hidden:
-                      CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
-                  },
-                ]}
-                onSelectTab={setView}
-                currentTab={view}
-              />
-              <div className={styles.toolBar}>
-                <WorksheetToggleButton listing={listing} modal />
-                <ShareButton courseCode={listing.course_code} />
-                <MoreButton hide={hide} />
-              </div>
+          </div>
+          <div className={styles.modalControls}>
+            <ViewTabs
+              tabs={[
+                { label: 'Overview', value: 'overview' },
+                {
+                  label: 'Evaluations',
+                  value: 'evals',
+                  // Don't show eval tab if it's current year or no auth
+                  hidden:
+                    CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
+                },
+              ]}
+              onSelectTab={setView}
+              currentTab={view}
+            />
+            <div className={styles.toolBar}>
+              <WorksheetToggleButton listing={listing} modal />
+              <ShareButton courseCode={listing.course_code} />
+              <MoreButton hide={hide} />
             </div>
           </div>
         </Modal.Header>

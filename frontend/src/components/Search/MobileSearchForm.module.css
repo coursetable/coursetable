@@ -67,7 +67,7 @@
   display: flex;
   font-weight: 500;
   gap: 2rem;
-  align-items: center;
+  align-items: top;
   justify-content: center;
   margin: 0 1rem;
 }

@@ -227,7 +227,7 @@ function Challenge() {
     >
       <SurfaceComponent className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow">
         {/* Page Header */}
-        <h1 className="font-weight-bold mb-2">Enable evaluations</h1>
+        <h1 className="fw-bold mb-2">Enable evaluations</h1>
         {/* Page Description */}
         <TextComponent type="secondary">
           <p className="mb-2">
@@ -255,7 +255,7 @@ function Challenge() {
         {/* Track number of attempts */}
         {numTries !== null && (
           <div className="mb-2">
-            <span className="font-weight-bold mb-6">
+            <span className="fw-bold mb-6">
               {numTries}/{maxTries}
             </span>{' '}
             {numTries === 1 ? 'attempt' : 'attempts'} used
@@ -291,9 +291,9 @@ function Challenge() {
                 {/* Question with link to OCE Page */}
                 <Row className="mx-auto mb-1">
                   How many students responded to the&nbsp;
-                  <span className="font-weight-bold">"overall assessment"</span>
+                  <span className="fw-bold">"overall assessment"</span>
                   &nbsp;question with&nbsp;
-                  <span className="font-weight-bold">
+                  <span className="fw-bold">
                     "{ratingOptions[course.courseRatingIndex]}"
                   </span>
                   ?

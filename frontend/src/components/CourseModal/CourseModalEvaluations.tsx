@@ -42,7 +42,7 @@ function CourseModalEvaluations({
           <EvaluationRatings info={info} />
         </Col>
 
-        <Col md={7} className="pr-0 pl-2 my-0">
+        <Col md={7} className="pe-0 ps-2 my-0">
           <EvaluationResponses info={info} />
         </Col>
       </Row>

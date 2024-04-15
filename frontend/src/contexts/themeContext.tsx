@@ -40,6 +40,9 @@ export function ThemeProvider({
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    // We don't actually use this ourselves, but it helps Bootstrap apply sane
+    // defaults for colors
+    document.documentElement.dataset.bsTheme = theme;
   }, [theme]);
 
   const store: Store = useMemo(

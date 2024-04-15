@@ -50,7 +50,15 @@
   flex-direction: column;
 }
 
+.modalHeader :global(.btn-close) {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: var(--color-text-secondary);
+}
+
 .modalTop {
+  width: calc(100% - 1rem);
   display: flex;
   align-items: center;
   gap: 1em;
@@ -64,6 +72,7 @@
 }
 
 .modalControls {
+  width: calc(100% - 1rem);
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap-reverse;

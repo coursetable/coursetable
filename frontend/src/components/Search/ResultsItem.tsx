@@ -134,7 +134,7 @@ function ResultsItem({
           </div>
         )}
         <div className={colStyles.codeCol}>
-          <div className={clsx(styles.ellipsisText, 'font-weight-bold')}>
+          <div className={clsx(styles.ellipsisText, 'fw-bold')}>
             <CourseCode course={course} subdueSection />
           </div>
         </div>
@@ -151,7 +151,7 @@ function ResultsItem({
             <Rating course={course} hasEvals={user.hasEvals} name="Workload" />
           </div>
           <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
-            <div className={clsx('mr-2 h-100', styles.profRating)}>
+            <div className={clsx('me-2 h-100', styles.profRating)}>
               <Rating
                 course={course}
                 hasEvals={user.hasEvals}
