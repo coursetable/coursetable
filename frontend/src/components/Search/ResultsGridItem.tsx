@@ -97,7 +97,6 @@ function ResultsGridItem({
           });
         }}
         className={clsx(
-          styles.oneLine,
           styles.resultItem,
           inWorksheet && styles.inWorksheetResultItem,
           'px-3 pb-3',

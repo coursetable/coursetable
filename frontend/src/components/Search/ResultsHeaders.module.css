@@ -42,7 +42,12 @@
 }
 
 .oneLine {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.oneLine span {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

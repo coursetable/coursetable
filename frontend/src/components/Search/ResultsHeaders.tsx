@@ -33,10 +33,14 @@ function HeaderCol({
             </Tooltip>
           )}
         >
-          <span className={styles.oneLine}>{children}</span>
+          <div className={styles.oneLine}>
+            <span>{children}</span>
+          </div>
         </OverlayTrigger>
       ) : (
-        <span className={styles.oneLine}>{children}</span>
+        <div className={styles.oneLine}>
+          <span>{children}</span>
+        </div>
       )}
       {sortOption && (
         <ResultsColumnSort selectOption={sortByOptions[sortOption]} />
