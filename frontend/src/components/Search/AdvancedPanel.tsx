@@ -108,12 +108,9 @@ function BaseSlider<K extends NumericFilters>(
   const handle = filters[handleName];
   // This is exactly the same as the filter handle, except it updates
   // responsively without triggering searching
-  const [rangeValue, setRangeValue] = useState(handle.value);
-  const [prevRangeValue, setPrevRangeValue] = useState(handle.value);
-  if (handle.value !== prevRangeValue) {
-    setRangeValue(handle.value);
-    setPrevRangeValue(handle.value);
-  }
+  const [rangeValue, setRangeValue] = useState(
+    handle.value.map(scaleToUniform) as [number, number],
+  );
   useImperativeHandle(ref, () => ({
     resetToDefault() {
       setRangeValue(defaultFilters[handleName]);
