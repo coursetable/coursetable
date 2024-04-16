@@ -8,13 +8,13 @@ import { IoClose } from 'react-icons/io5';
 
 import { TextComponent, Input } from '../Typography';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { Popout } from '../Search/Popout';
-import { PopoutSelect } from '../Search/PopoutSelect';
-import Toggle from '../Search/Toggle';
+import { Popout } from './Popout';
+import { PopoutSelect } from './PopoutSelect';
+import Toggle from './Toggle';
 
 import { credits, searchSpeed } from '../../utilities/constants';
 import { weekdays, type Season, type Weekdays } from '../../utilities/common';
-import CustomSelect from '../Search/CustomSelect';
+import CustomSelect from './CustomSelect';
 import {
   useSearch,
   type Option,
@@ -26,7 +26,7 @@ import {
   seasonsOptions,
   courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
-import ResultsColumnSort from '../Search/ResultsColumnSort';
+import ResultsColumnSort from './ResultsColumnSort';
 import {
   toRealTime,
   to12HourTime,

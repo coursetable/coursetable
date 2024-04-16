@@ -11,8 +11,8 @@ import { logout } from '../../utilities/api';
 import { scrollToTop } from '../../utilities/display';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, TextComponent } from '../Typography';
-import { NavbarCatalogSearch } from './NavbarCatalogSearch';
-import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
+import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
+import { NavbarWorksheetSearch } from '../Worksheet/NavbarWorksheetSearch';
 
 import { API_ENDPOINT } from '../../config';
 import { useUser } from '../../contexts/userContext';
