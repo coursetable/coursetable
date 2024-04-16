@@ -15,8 +15,11 @@ import AdvancedPanel from './AdvancedPanel';
 import { searchSpeed } from '../../utilities/constants';
 import {
   useSearch,
-  type Option,
+  filterLabels,
   type Filters,
+  type Option,
+  type CategoricalFilters,
+  type NumericFilters,
   defaultFilters,
   skillsAreasOptions,
   subjectsOptions,
@@ -24,18 +27,7 @@ import {
 } from '../../contexts/searchContext';
 import styles from './NavbarCatalogSearch.module.css';
 
-const labels = {
-  overallBounds: 'Overall',
-  workloadBounds: 'Workload',
-  professorBounds: 'Professor',
-  selectSubjects: 'Subject',
-  selectSkillsAreas: 'Areas/Skills',
-  selectSeasons: 'Season',
-};
-
-function MainSelect<
-  K extends 'selectSubjects' | 'selectSkillsAreas' | 'selectSeasons',
->({
+function Select<K extends keyof CategoricalFilters>({
   options,
   handle: handleName,
   placeholder,
@@ -44,7 +36,7 @@ function MainSelect<
   ...props
 }: Omit<React.ComponentProps<typeof Popout>, 'children' | 'buttonText'> & {
   readonly options: React.ComponentProps<
-    typeof PopoutSelect<Filters[K][number], true>
+    typeof PopoutSelect<Option<CategoricalFilters[K]>, true>
   >['options'];
   readonly handle: K;
   readonly placeholder: string;
@@ -60,7 +52,7 @@ function MainSelect<
         setStartTime(Date.now());
       }}
       selectedOptions={handle.value}
-      buttonText={labels[handleName]}
+      buttonText={filterLabels[handleName]}
       {...props}
     >
       <PopoutSelect<Option, true>
@@ -81,12 +73,8 @@ function MainSelect<
 
 export type Resettable = { resetToDefault: () => void };
 
-function BaseSlider(
-  {
-    handle: handleName,
-  }: {
-    readonly handle: 'overallBounds' | 'workloadBounds' | 'professorBounds';
-  },
+function BaseSlider<K extends NumericFilters>(
+  { handle: handleName }: { readonly handle: K },
   ref: React.ForwardedRef<Resettable>,
 ) {
   const { isLgDesktop } = useWindowDimensions();
@@ -125,14 +113,14 @@ function BaseSlider(
             handle.isNonEmpty && styles.rangeLabelActive,
           )}
         >
-          {labels[handleName]}
+          {filterLabels[handleName]}
         </div>
         <div className={styles.rangeValueLabel}>{rangeValue[1]}</div>
       </div>
       <Range
         ariaLabelGroupForHandles={[
-          `${labels[handleName]} rating lower bound`,
-          `${labels[handleName]} rating upper bound`,
+          `${filterLabels[handleName]} rating lower bound`,
+          `${filterLabels[handleName]} rating upper bound`,
         ]}
         className={clsx(styles.range, styles.mainRange)}
         min={defaultFilters[handleName][0]}
@@ -254,13 +242,13 @@ export function NavbarCatalogSearch() {
         <div className={styles.row}>
           {!isTablet && (
             <>
-              <MainSelect
+              <Select
                 options={subjectsOptions}
                 handle="selectSubjects"
                 placeholder="All Subjects"
                 dataTutorial={2}
               />
-              <MainSelect
+              <Select
                 options={skillsAreasOptions}
                 handle="selectSkillsAreas"
                 placeholder="All Areas/Skills"
@@ -279,7 +267,7 @@ export function NavbarCatalogSearch() {
             {!isTablet && <Slider handle="professorBounds" ref={range3} />}
           </div>
           {!isTablet && (
-            <MainSelect
+            <Select
               options={seasonsOptions}
               handle="selectSeasons"
               placeholder="Last 5 Years"
