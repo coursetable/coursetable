@@ -19,8 +19,8 @@ import { credits } from '../../utilities/constants';
 import { weekdays } from '../../utilities/common';
 import {
   useSearch,
+  type FilterHandle,
   type Filters,
-  type Option,
   type CategoricalFilters,
   type NumericFilters,
   filterLabels,
@@ -49,14 +49,14 @@ function Select<K extends keyof CategoricalFilters>({
 }: {
   readonly id: string;
   readonly options: React.ComponentProps<
-    typeof CustomSelect<Option<CategoricalFilters[K]>, true>
+    typeof CustomSelect<FilterHandle<K>['value'][number], true>
   >['options'];
   readonly handle: K;
   readonly placeholder: string;
   readonly useColors?: boolean;
 }) {
   const { setStartTime, filters } = useSearch();
-  const handle = filters[handleName];
+  const handle = filters[handleName] as FilterHandle<K>;
   // Prevent overlap with tooltips
   const menuPortalTarget = document.querySelector<HTMLElement>('#portal');
   return (
@@ -64,7 +64,7 @@ function Select<K extends keyof CategoricalFilters>({
       <div className={styles.advancedLabel} id={id}>
         {filterLabels[handleName]}:
       </div>
-      <CustomSelect
+      <CustomSelect<FilterHandle<K>['value'][number], true>
         aria-labelledby={id}
         className={styles.advancedSelect}
         closeMenuOnSelect
@@ -223,9 +223,7 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
     range4.current?.resetToDefault();
   }
 
-  useImperativeHandle(ref, () => ({
-    resetToDefault: resetRangeValues,
-  }));
+  useImperativeHandle(ref, () => ({ resetToDefault: resetRangeValues }));
 
   return (
     <Popout

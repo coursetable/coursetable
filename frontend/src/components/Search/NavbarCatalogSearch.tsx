@@ -16,8 +16,8 @@ import { searchSpeed } from '../../utilities/constants';
 import {
   useSearch,
   filterLabels,
+  type FilterHandle,
   type Filters,
-  type Option,
   type CategoricalFilters,
   type NumericFilters,
   defaultFilters,
@@ -36,7 +36,7 @@ function Select<K extends keyof CategoricalFilters>({
   ...props
 }: Omit<React.ComponentProps<typeof Popout>, 'children' | 'buttonText'> & {
   readonly options: React.ComponentProps<
-    typeof PopoutSelect<Option<CategoricalFilters[K]>, true>
+    typeof PopoutSelect<FilterHandle<K>['value'][number], true>
   >['options'];
   readonly handle: K;
   readonly placeholder: string;
@@ -44,7 +44,7 @@ function Select<K extends keyof CategoricalFilters>({
   readonly hideSelectedOptions?: boolean;
 }) {
   const { setStartTime, filters } = useSearch();
-  const handle = filters[handleName];
+  const handle = filters[handleName] as FilterHandle<K>;
   return (
     <Popout
       onReset={() => {
@@ -55,7 +55,7 @@ function Select<K extends keyof CategoricalFilters>({
       buttonText={filterLabels[handleName]}
       {...props}
     >
-      <PopoutSelect<Option, true>
+      <PopoutSelect<FilterHandle<K>['value'][number], true>
         isMulti
         useColors={useColors}
         value={handle.value}
