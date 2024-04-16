@@ -7,11 +7,11 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur) !important;
-    display: flex;
-    justify-content: space-between;
-    max-width: 1600px;
-    user-select: none;
-    overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  max-width: 1600px;
+  user-select: none;
+  overflow: hidden;
 }
 
 .resultsHeader {
