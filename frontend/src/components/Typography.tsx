@@ -27,14 +27,16 @@ export function SurfaceComponent({
 export function TextComponent({
   type,
   small,
+  as: As = 'span',
   className,
   ...props
 }: {
   readonly type?: 'primary' | 'secondary' | 'tertiary';
   readonly small?: boolean;
+  readonly as?: React.ElementType;
 } & React.ComponentProps<'span'>) {
   return (
-    <span
+    <As
       {...props}
       className={clsx(
         styles.text,

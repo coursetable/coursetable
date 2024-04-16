@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Nav, Navbar, Container } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { MdUpdate } from 'react-icons/md';
 import clsx from 'clsx';
@@ -97,92 +97,87 @@ export default function CourseTableNavbar() {
     location.pathname === '/worksheet';
 
   return (
-    <div className={styles.stickyNavbar}>
-      <SurfaceComponent>
-        <Container fluid className="p-0">
-          <Navbar
-            expanded={navExpanded}
-            onToggle={setNavExpanded}
-            expand="md"
-            className={clsx(
-              'shadow-sm px-3 align-items-start',
-              showCatalogSearch && styles.catalogSearchNavbar,
-            )}
-          >
-            {/* Logo in top left */}
-            <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
-              <NavLink to="/">
-                <Logo icon={false} />
-              </NavLink>
-            </Nav>
+    <SurfaceComponent className={styles.stickyNavbar}>
+      <Navbar
+        expanded={navExpanded}
+        onToggle={setNavExpanded}
+        expand="md"
+        className={clsx(
+          'shadow-sm px-3 align-items-start',
+          showCatalogSearch && styles.catalogSearchNavbar,
+        )}
+      >
+        {/* Logo in top left */}
+        <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
+          <NavLink to="/">
+            <Logo icon={false} />
+          </NavLink>
+        </Nav>
+        {showCatalogSearch && <NavbarCatalogSearch />}
+        {showWorksheetSearch && <NavbarWorksheetSearch />}
 
-            {/* Mobile nav toggle */}
-            <Navbar.Toggle
-              className={styles.navToggle}
-              aria-controls="basic-navbar-nav"
-            />
+        {/* Mobile nav toggle */}
+        <Navbar.Toggle
+          className={styles.navToggle}
+          aria-controls="basic-navbar-nav"
+        />
 
-            {showCatalogSearch && <NavbarCatalogSearch />}
-            {showWorksheetSearch && <NavbarWorksheetSearch />}
-
-            <NavCollapseWrapper wrap={!isMobile}>
-              {/* On mobile, this will be a collapsed dropdown;
+        <NavCollapseWrapper wrap={!isMobile}>
+          {/* On mobile, this will be a collapsed dropdown;
               on desktop, it will be a navbar */}
-              <Navbar.Collapse
-                id="basic-navbar-nav"
-                className={styles.navbarContent}
-              >
-                <Nav
-                  onClick={() => setNavExpanded(false)}
-                  className={clsx(
-                    isMobile && 'align-items-start pt-2',
-                    'position-relative',
-                  )}
-                >
-                  <DarkModeButton className={styles.navbarDarkModeBtn} />
-                  <NavbarLink to="/catalog">Catalog</NavbarLink>
-                  <NavbarLink to="/worksheet">
-                    <span data-tutorial="worksheet-1">Worksheet</span>
-                  </NavbarLink>
-                  {/* Links are in the navbar on mobile and in the me dropdown
-                    on desktop */}
-                  {isMobile ? (
-                    <>
-                      <NavbarLink to="/about">About</NavbarLink>
-                      <NavbarLink to="/faq">FAQ</NavbarLink>
-                      <a
-                        href="https://feedback.coursetable.com/"
-                        className={styles.navLink}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Feedback
-                      </a>
-                      <NavbarLink to="/releases">Release Notes</NavbarLink>
-                      <button
-                        type="button"
-                        className={styles.signInOutButton}
-                        onClick={
-                          authStatus !== 'authenticated'
-                            ? () => {
-                                window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
-                              }
-                            : logout
-                        }
-                      >
-                        Sign {authStatus !== 'authenticated' ? 'In' : 'Out'}
-                      </button>
-                    </>
-                  ) : (
-                    <MeDropdown />
-                  )}
-                </Nav>
-              </Navbar.Collapse>
-              {showCatalogSearch && <LastUpdatedAt />}
-            </NavCollapseWrapper>
-          </Navbar>
-        </Container>
-      </SurfaceComponent>
-    </div>
+          <Navbar.Collapse
+            id="basic-navbar-nav"
+            className={styles.navbarContent}
+          >
+            <Nav
+              onClick={() => setNavExpanded(false)}
+              className={clsx(
+                isMobile && 'align-items-start pt-2',
+                'position-relative',
+              )}
+            >
+              <DarkModeButton className={styles.navbarDarkModeBtn} />
+              <NavbarLink to="/catalog">Catalog</NavbarLink>
+              <NavbarLink to="/worksheet">
+                <span data-tutorial="worksheet-1">Worksheet</span>
+              </NavbarLink>
+              {/* Links are in the navbar on mobile and in the me dropdown
+                  on desktop */}
+              {isMobile ? (
+                <>
+                  <NavbarLink to="/about">About</NavbarLink>
+                  <NavbarLink to="/faq">FAQ</NavbarLink>
+                  <a
+                    href="https://feedback.coursetable.com/"
+                    className={styles.navLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Feedback
+                  </a>
+                  <NavbarLink to="/releases">Release Notes</NavbarLink>
+                  <button
+                    type="button"
+                    className={styles.navLink}
+                    onClick={
+                      authStatus !== 'authenticated'
+                        ? () => {
+                            window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
+                          }
+                        : logout
+                    }
+                  >
+                    Sign {authStatus !== 'authenticated' ? 'In' : 'Out'}
+                  </button>
+                </>
+              ) : (
+                <MeDropdown />
+              )}
+            </Nav>
+          </Navbar.Collapse>
+          {showCatalogSearch && <LastUpdatedAt />}
+        </NavCollapseWrapper>
+      </Navbar>
+    </SurfaceComponent>
   );
 }

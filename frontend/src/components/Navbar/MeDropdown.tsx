@@ -51,41 +51,35 @@ function DropdownItem({
     </HoverText>
   );
   return (
-    <div className="my-3">
-      <TextComponent type="secondary">
-        {to ? (
-          <NavLink
-            to={to}
-            className={styles.collapseText}
-            onClick={onClick ?? scrollToTop}
-          >
-            {innerText}
-          </NavLink>
-        ) : href ? (
-          // eslint-disable-next-line react/jsx-no-target-blank
-          <a
-            href={href}
-            className={styles.collapseText}
-            {...(externalLink && {
-              target: '_blank',
-              rel: 'noreferrer noopener',
-            })}
-          >
-            {innerText}
-          </a>
-        ) : onClick ? (
-          <button
-            type="button"
-            onClick={onClick}
-            className={styles.collapseText}
-          >
-            {innerText}
-          </button>
-        ) : (
-          <span className={styles.collapseText}>{innerText}</span>
-        )}
-      </TextComponent>
-    </div>
+    <TextComponent className="d-block my-3" type="secondary">
+      {to ? (
+        <NavLink
+          to={to}
+          className={styles.collapseText}
+          onClick={onClick ?? scrollToTop}
+        >
+          {innerText}
+        </NavLink>
+      ) : href ? (
+        // eslint-disable-next-line react/jsx-no-target-blank
+        <a
+          href={href}
+          className={styles.collapseText}
+          {...(externalLink && {
+            target: '_blank',
+            rel: 'noreferrer noopener',
+          })}
+        >
+          {innerText}
+        </a>
+      ) : onClick ? (
+        <button type="button" onClick={onClick} className={styles.collapseText}>
+          {innerText}
+        </button>
+      ) : (
+        <span className={styles.collapseText}>{innerText}</span>
+      )}
+    </TextComponent>
   );
 }
 

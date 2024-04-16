@@ -1,25 +1,17 @@
-.spacer {
-  background-color: var(--color-bg);
-  transition: background-color var(--trans-dur);
+.container {
   position: sticky;
   z-index: 2;
-}
-
-.container {
   border-top: 2px solid var(--color-border);
   border-bottom: 2px solid var(--color-border);
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur) !important;
-}
-
-.resultsHeaderRow {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1600px;
-  user-select: none;
-  overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1600px;
+    user-select: none;
+    overflow: hidden;
 }
 
 .resultsHeader {

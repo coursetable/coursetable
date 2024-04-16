@@ -77,157 +77,150 @@ function ResultsHeaders({
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
 
   return (
-    <div className={styles.spacer} style={{ top: navbarHeight }}>
-      <SurfaceComponent
-        id="results_container"
-        className={clsx('px-0 mx-0', styles.container)}
-      >
-        <div
-          className={clsx(
-            isLgDesktop ? 'py-2' : 'py-1',
-            styles.resultsHeaderRow,
-          )}
-          data-tutorial="catalog-5"
+    <SurfaceComponent
+      className={clsx(
+        'px-0 mx-0',
+        isLgDesktop ? 'py-2' : 'py-1',
+        styles.container,
+      )}
+      style={{ top: navbarHeight }}
+      data-tutorial="catalog-5"
+    >
+      <div className={colStyles.controlCol}>
+        <button
+          type="button"
+          className={clsx(styles.toggle, 'd-flex ms-auto my-auto')}
+          onClick={() => setIsListView(!isListView)}
+          aria-label={
+            isListView ? 'Switch to grid view' : 'Switch to list view'
+          }
         >
-          <div className={colStyles.controlCol}>
-            <button
-              type="button"
-              className={clsx(styles.toggle, 'd-flex ms-auto my-auto')}
-              onClick={() => setIsListView(!isListView)}
-              aria-label={
-                isListView ? 'Switch to grid view' : 'Switch to list view'
-              }
-            >
-              {!isListView ? (
-                <FaBars className="m-auto" size={15} />
-              ) : (
-                <FaTh className="m-auto" size={15} />
-              )}
-            </button>
-          </div>
-          {isListView ? (
-            <>
-              {multiSeasons && (
-                <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
-              )}
-              <HeaderCol
-                className={colStyles.codeCol}
-                tooltip="Course Code and Section"
-                sortOption="course_code"
-              >
-                Code
-              </HeaderCol>
-              <HeaderCol className={colStyles.titleCol} sortOption="title">
-                Title
-              </HeaderCol>
-              <div className="d-flex">
-                <HeaderCol
-                  className={colStyles.overallCol}
-                  tooltip={
-                    <span>
-                      Average Course Rating
-                      <br />
-                      (same professor and all cross-listed courses. If this
-                      professor hasn't taught the course before, a ~ denotes an
-                      average across all professors)
-                    </span>
-                  }
-                  sortOption="average_rating"
-                >
-                  Overall
-                </HeaderCol>
-                <HeaderCol
-                  className={colStyles.workloadCol}
-                  tooltip={
-                    <span>
-                      Average Workload Rating
-                      <br />
-                      (same professor and all cross-listed courses. If this
-                      professor hasn't taught the course before, a ~ denotes an
-                      average across all professors)
-                    </span>
-                  }
-                  sortOption="average_workload"
-                >
-                  Work
-                </HeaderCol>
-                <HeaderCol
-                  className={colStyles.profCol}
-                  tooltip={
-                    <span>
-                      Average Professor Rating and Names
-                      <br />
-                      (if there are multiple professors, we take the average
-                      between them)
-                    </span>
-                  }
-                  sortOption="average_professor"
-                >
-                  Professors
-                </HeaderCol>
-              </div>
-              <HeaderCol
-                className={colStyles.enrollCol}
-                tooltip={
-                  multiSeasons ? (
-                    <span>
-                      Class Enrollment
-                      <br />
-                      (If the course has not occurred/completed, based on the
-                      most recent past instance of this course. a ~ means a
-                      different professor was teaching)
-                    </span>
-                  ) : (
-                    <span>
-                      Previous Class Enrollment
-                      <br />
-                      (based on the most recent past instance of this course. a
-                      ~ means a different professor was teaching)
-                    </span>
-                  )
-                }
-                sortOption="last_enrollment"
-              >
-                #
-              </HeaderCol>
-              <HeaderCol className={colStyles.skillAreaCol}>
-                Skills/Areas
-              </HeaderCol>
-              <HeaderCol
-                className={colStyles.meetCol}
-                tooltip={
-                  <span>
-                    Days of the Week and Times
-                    <br />
-                    (sort order based on day and starting time)
-                  </span>
-                }
-                sortOption="times_by_day"
-              >
-                Meets
-              </HeaderCol>
-              <HeaderCol
-                className={colStyles.locCol}
-                sortOption="locations_summary"
-              >
-                Location
-              </HeaderCol>
-              <HeaderCol
-                className={colStyles.friendsCol}
-                tooltip="Number of friends shopping this course"
-                sortOption="friend"
-              >
-                #F
-              </HeaderCol>
-            </>
+          {!isListView ? (
+            <FaBars className="m-auto" size={15} />
           ) : (
-            <div className={clsx(styles.resultsHeader, styles.resultsStat)}>
-              {`Showing ${numResults} course${numResults === 1 ? '' : 's'}...`}
-            </div>
+            <FaTh className="m-auto" size={15} />
           )}
+        </button>
+      </div>
+      {isListView ? (
+        <>
+          {multiSeasons && (
+            <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
+          )}
+          <HeaderCol
+            className={colStyles.codeCol}
+            tooltip="Course Code and Section"
+            sortOption="course_code"
+          >
+            Code
+          </HeaderCol>
+          <HeaderCol className={colStyles.titleCol} sortOption="title">
+            Title
+          </HeaderCol>
+          <div className="d-flex">
+            <HeaderCol
+              className={colStyles.overallCol}
+              tooltip={
+                <span>
+                  Average Course Rating
+                  <br />
+                  (same professor and all cross-listed courses. If this
+                  professor hasn't taught the course before, a ~ denotes an
+                  average across all professors)
+                </span>
+              }
+              sortOption="average_rating"
+            >
+              Overall
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.workloadCol}
+              tooltip={
+                <span>
+                  Average Workload Rating
+                  <br />
+                  (same professor and all cross-listed courses. If this
+                  professor hasn't taught the course before, a ~ denotes an
+                  average across all professors)
+                </span>
+              }
+              sortOption="average_workload"
+            >
+              Work
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.profCol}
+              tooltip={
+                <span>
+                  Average Professor Rating and Names
+                  <br />
+                  (if there are multiple professors, we take the average between
+                  them)
+                </span>
+              }
+              sortOption="average_professor"
+            >
+              Professors
+            </HeaderCol>
+          </div>
+          <HeaderCol
+            className={colStyles.enrollCol}
+            tooltip={
+              multiSeasons ? (
+                <span>
+                  Class Enrollment
+                  <br />
+                  (If the course has not occurred/completed, based on the most
+                  recent past instance of this course. a ~ means a different
+                  professor was teaching)
+                </span>
+              ) : (
+                <span>
+                  Previous Class Enrollment
+                  <br />
+                  (based on the most recent past instance of this course. a ~
+                  means a different professor was teaching)
+                </span>
+              )
+            }
+            sortOption="last_enrollment"
+          >
+            #
+          </HeaderCol>
+          <HeaderCol className={colStyles.skillAreaCol}>Skills/Areas</HeaderCol>
+          <HeaderCol
+            className={colStyles.meetCol}
+            tooltip={
+              <span>
+                Days of the Week and Times
+                <br />
+                (sort order based on day and starting time)
+              </span>
+            }
+            sortOption="times_by_day"
+          >
+            Meets
+          </HeaderCol>
+          <HeaderCol
+            className={colStyles.locCol}
+            sortOption="locations_summary"
+          >
+            Location
+          </HeaderCol>
+          <HeaderCol
+            className={colStyles.friendsCol}
+            tooltip="Number of friends shopping this course"
+            sortOption="friend"
+          >
+            #F
+          </HeaderCol>
+        </>
+      ) : (
+        <div className={clsx(styles.resultsHeader, styles.resultsStat)}>
+          {`Showing ${numResults} course${numResults === 1 ? '' : 's'}...`}
         </div>
-      </SurfaceComponent>
-    </div>
+      )}
+    </SurfaceComponent>
   );
 }
 

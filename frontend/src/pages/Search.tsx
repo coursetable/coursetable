@@ -18,15 +18,13 @@ function Search() {
   return (
     <div className={styles.searchBase}>
       {isMobile && <MobileSearchForm />}
-      <div className={styles.resultsCol}>
-        <Element name="catalog" className="d-flex justify-content-center">
-          <Results
-            data={searchData}
-            loading={coursesLoading}
-            multiSeasons={multiSeasons}
-          />
-        </Element>
-      </div>
+      <Element name="catalog" className="d-flex justify-content-center">
+        <Results
+          data={searchData}
+          loading={coursesLoading}
+          multiSeasons={multiSeasons}
+        />
+      </Element>
     </div>
   );
 }

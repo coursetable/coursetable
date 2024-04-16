@@ -2,7 +2,3 @@
   width: 100%;
   min-height: calc(100vh - 56px);
 }
-
-.resultsCol {
-  background-color: transparent;
-}
