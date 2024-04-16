@@ -3,10 +3,10 @@ import clsx from 'clsx';
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { LinkLikeText } from '../Typography';
-import FriendsDropdown from '../Worksheet/FriendsDropdown';
-import SeasonDropdown from '../Worksheet/SeasonDropdown';
-import WorksheetNumDropdown from '../Worksheet/WorksheetNumberDropdown';
-import AddFriendDropdown from '../Worksheet/AddFriendDropdown';
+import FriendsDropdown from './FriendsDropdown';
+import SeasonDropdown from './SeasonDropdown';
+import WorksheetNumDropdown from './WorksheetNumberDropdown';
+import AddFriendDropdown from './AddFriendDropdown';
 
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { useUser } from '../../contexts/userContext';

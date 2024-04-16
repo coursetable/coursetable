@@ -1,0 +1,66 @@
+.advancedWrapper {
+  width: 440px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.advancedRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem;
+}
+
+.advancedLabel {
+  font-size: 14px;
+  margin-left: 0.25rem;
+  user-select: none;
+  cursor: default;
+}
+
+.advancedLabelActive {
+  color: var(--color-primary);
+}
+
+.range {
+  cursor: pointer;
+}
+
+.rangeValueLabel {
+  font-size: 12px;
+  user-select: none;
+  cursor: default;
+  transition: color var(--trans-dur);
+}
+
+.advancedRangeGroup {
+  width: 75%;
+  display: flex;
+  flex-grow: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.advancedRange {
+  margin-bottom: 20px;
+}
+
+.advancedSelect {
+  width: 80%;
+}
+
+.advancedToggleRow {
+  background-color: var(--color-button-active);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+@media (width < 1320px) {
+  .advancedLabel {
+    font-size: 12px;
+  }
+}

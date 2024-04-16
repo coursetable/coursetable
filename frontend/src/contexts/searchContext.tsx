@@ -144,30 +144,69 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
+export type BooleanFilters =
+  | 'searchDescription'
+  | 'enableQuist'
+  | 'hideCancelled'
+  | 'hideConflicting'
+  | 'hideFirstYearSeminars'
+  | 'hideGraduateCourses'
+  | 'hideDiscussionSections';
+
+export type CategoricalFilters = {
+  selectSubjects: string;
+  selectSkillsAreas: string;
+  selectSeasons: Season;
+  selectDays: Weekdays;
+  selectSchools: string;
+  selectCredits: number;
+  selectCourseInfoAttributes: string;
+};
+
+export type NumericFilters =
+  | 'overallBounds'
+  | 'workloadBounds'
+  | 'professorBounds'
+  | 'timeBounds'
+  | 'enrollBounds'
+  | 'numBounds';
+
 export type Filters = {
+  [P in BooleanFilters]: boolean;
+} & {
+  [P in keyof CategoricalFilters]: Option<CategoricalFilters[P]>[];
+} & {
+  [P in NumericFilters]: [number, number];
+} & {
   searchText: string;
-  selectSubjects: Option[];
-  selectSkillsAreas: Option[];
-  overallBounds: [number, number];
-  workloadBounds: [number, number];
-  professorBounds: [number, number];
-  selectSeasons: Option<Season>[];
-  selectDays: Option<Weekdays>[];
-  timeBounds: [number, number];
-  enrollBounds: [number, number];
-  numBounds: [number, number];
-  selectSchools: Option[];
-  selectCredits: Option<number>[];
-  selectCourseInfoAttributes: Option[];
-  searchDescription: boolean;
-  enableQuist: boolean;
-  hideCancelled: boolean;
-  hideConflicting: boolean;
-  hideFirstYearSeminars: boolean;
-  hideGraduateCourses: boolean;
-  hideDiscussionSections: boolean;
   selectSortBy: SortByOption;
   sortOrder: SortOrderType;
+};
+
+export const filterLabels: { [K in keyof Filters]: string } = {
+  searchText: 'Search',
+  selectSubjects: 'Subject',
+  selectSkillsAreas: 'Areas/Skills',
+  overallBounds: 'Overall',
+  workloadBounds: 'Workload',
+  professorBounds: 'Professor',
+  selectSeasons: 'Season',
+  selectDays: 'Day',
+  timeBounds: 'Time',
+  enrollBounds: '# Enrolled',
+  numBounds: 'Course #',
+  selectSchools: 'School',
+  selectCredits: 'Credit',
+  selectCourseInfoAttributes: 'Info',
+  searchDescription: 'Search in Description',
+  enableQuist: 'Enable Quist',
+  hideCancelled: 'Hide Cancelled',
+  hideConflicting: 'Hide Conflicting',
+  hideFirstYearSeminars: 'Hide First-Year Seminars',
+  hideGraduateCourses: 'Hide Graduate Courses',
+  hideDiscussionSections: 'Hide Discussion Sections',
+  selectSortBy: 'Sort By',
+  sortOrder: 'Sort Order',
 };
 
 export const defaultFilters: Filters = {
