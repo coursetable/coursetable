@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
@@ -19,9 +19,9 @@ import { TextComponent, LinkLikeText } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 
-function ShareButton({ courseCode }: { readonly courseCode: string }) {
+function ShareButton({ listing }: { readonly listing: Listing }) {
   const copyToClipboard = () => {
-    const textToCopy = `${courseCode} -- CourseTable: ${window.location.href}`;
+    const textToCopy = `${listing.course_code} -- CourseTable: ${window.location.href}`;
     navigator.clipboard.writeText(textToCopy).then(
       () => {
         toast.success('Course and URL copied to clipboard!');
@@ -44,8 +44,13 @@ function ShareButton({ courseCode }: { readonly courseCode: string }) {
   );
 }
 
-function MoreButton({ hide }: { readonly hide: () => void }) {
-  const navigate = useNavigate();
+function MoreButton({
+  listing,
+  hide,
+}: {
+  readonly listing: Listing;
+  readonly hide: () => void;
+}) {
   return (
     <DropdownButton
       as="div"
@@ -54,17 +59,29 @@ function MoreButton({ hide }: { readonly hide: () => void }) {
       variant="none"
       className={styles.moreDropdown}
     >
-      <Dropdown.Item eventKey="1">
-        <button
-          type="button"
-          onClick={() => {
-            hide();
-            navigate('/faq#how_do_i_report_a_data_error');
-          }}
-        >
-          Report an error
-        </button>
+      <Dropdown.Item
+        as={Link}
+        to="/faq#how_do_i_report_a_data_error"
+        onClick={hide}
+      >
+        Report an error
       </Dropdown.Item>
+      <Dropdown.Item
+        href={`https://courses.yale.edu/?details&srcdb=${listing.season_code}&crn=${listing.crn}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        Open in Yale Course Search
+      </Dropdown.Item>
+      {!CUR_YEAR.includes(listing.season_code) && (
+        <Dropdown.Item
+          href={`https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?termCode=${listing.season_code}&crn=${listing.crn}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open in OCE
+        </Dropdown.Item>
+      )}
     </DropdownButton>
   );
 }
@@ -224,8 +241,8 @@ function CourseModal() {
             />
             <div className={styles.toolBar}>
               <WorksheetToggleButton listing={listing} modal />
-              <ShareButton courseCode={listing.course_code} />
-              <MoreButton hide={hide} />
+              <ShareButton listing={listing} />
+              <MoreButton listing={listing} hide={hide} />
             </div>
           </div>
         </Modal.Header>

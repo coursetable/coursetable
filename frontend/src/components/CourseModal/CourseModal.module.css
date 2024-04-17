@@ -122,8 +122,7 @@
 }
 
 .moreDropdown :global(.dropdown-menu) {
-  background-color: var(--color-surface);
-  width: 200px;
+  width: 250px;
 }
 
 .toolBar {
