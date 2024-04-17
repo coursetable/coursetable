@@ -198,15 +198,15 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectSchools: 'School',
   selectCredits: 'Credit',
   selectCourseInfoAttributes: 'Info',
-  searchDescription: 'Search in Description',
+  searchDescription: 'Include descriptions in search',
   enableQuist: 'Enable Quist',
-  hideCancelled: 'Hide Cancelled',
-  hideConflicting: 'Hide Conflicting',
-  hideFirstYearSeminars: 'Hide First-Year Seminars',
-  hideGraduateCourses: 'Hide Graduate Courses',
-  hideDiscussionSections: 'Hide Discussion Sections',
-  selectSortBy: 'Sort By',
-  sortOrder: 'Sort Order',
+  hideCancelled: 'Hide cancelled courses',
+  hideConflicting: 'Hide courses with conflicting times',
+  hideFirstYearSeminars: 'Hide first-year seminars',
+  hideGraduateCourses: 'Hide graduate courses',
+  hideDiscussionSections: 'Hide discussion sections',
+  selectSortBy: 'Sort By', // Unused
+  sortOrder: 'Sort Order', // Unused
 };
 
 export const defaultFilters: Filters = {

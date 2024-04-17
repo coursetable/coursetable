@@ -21,6 +21,7 @@ import {
   useSearch,
   type FilterHandle,
   type Filters,
+  type BooleanFilters,
   type CategoricalFilters,
   type NumericFilters,
   filterLabels,
@@ -185,28 +186,7 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
   const formLabelId = useId();
   const { filters, setStartTime } = useSearch();
 
-  const {
-    selectSubjects,
-    selectSkillsAreas,
-    professorBounds,
-    selectSeasons,
-    selectDays,
-    timeBounds,
-    enrollBounds,
-    numBounds,
-    selectSchools,
-    selectCredits,
-    selectCourseInfoAttributes,
-    searchDescription,
-    enableQuist,
-    hideCancelled,
-    hideConflicting,
-    hideFirstYearSeminars,
-    hideGraduateCourses,
-    hideDiscussionSections,
-    selectSortBy,
-    sortOrder,
-  } = filters;
+  const { selectSortBy, sortOrder } = filters;
 
   const range1 = useRef<Resettable>(null);
   const range2 = useRef<Resettable>(null);
@@ -222,39 +202,41 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
 
   useImperativeHandle(ref, () => ({ resetToDefault: resetRangeValues }));
 
+  const relevantFilters: (
+    | BooleanFilters
+    | keyof CategoricalFilters
+    | NumericFilters
+  )[] = [
+    'selectDays',
+    'timeBounds',
+    'enrollBounds',
+    'numBounds',
+    'selectSchools',
+    'selectCredits',
+    'selectCourseInfoAttributes',
+    'searchDescription',
+    'enableQuist',
+    'hideCancelled',
+    'hideConflicting',
+    'hideFirstYearSeminars',
+    'hideGraduateCourses',
+    'hideDiscussionSections',
+  ];
+  if (isTablet) {
+    relevantFilters.push(
+      'selectSubjects',
+      'selectSkillsAreas',
+      'selectSeasons',
+      'professorBounds',
+    );
+  }
+
   return (
     <Popout
       buttonText="Advanced"
       arrowIcon={false}
       onReset={() => {
-        if (isTablet) {
-          (
-            [
-              'selectSubjects',
-              'selectSkillsAreas',
-              'selectSeasons',
-              'professorBounds',
-            ] as const
-          ).forEach((k) => filters[k].resetToEmpty());
-        }
-        (
-          [
-            'selectDays',
-            'timeBounds',
-            'enrollBounds',
-            'numBounds',
-            'selectSchools',
-            'selectCredits',
-            'selectCourseInfoAttributes',
-            'searchDescription',
-            'enableQuist',
-            'hideCancelled',
-            'hideConflicting',
-            'hideFirstYearSeminars',
-            'hideGraduateCourses',
-            'hideDiscussionSections',
-          ] as const
-        ).forEach((k) => filters[k].resetToEmpty());
+        relevantFilters.forEach((k) => filters[k].resetToEmpty());
         if (selectSortBy.value.value === 'average_gut_rating') {
           selectSortBy.resetToEmpty();
           sortOrder.resetToEmpty();
@@ -263,27 +245,8 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
         setStartTime(Date.now());
       }}
       selectedOptions={
-        [
-          isTablet && selectSubjects.isNonEmpty,
-          isTablet && selectSkillsAreas.isNonEmpty,
-          isTablet && selectSeasons.isNonEmpty,
-          selectDays.isNonEmpty,
-          timeBounds.isNonEmpty,
-          enrollBounds.isNonEmpty,
-          isTablet && professorBounds.isNonEmpty,
-          numBounds.isNonEmpty,
-          selectSchools.isNonEmpty,
-          selectCredits.isNonEmpty,
-          selectCourseInfoAttributes.isNonEmpty,
-          selectSortBy.value.value === 'average_gut_rating',
-          searchDescription.isNonEmpty,
-          enableQuist.isNonEmpty,
-          hideCancelled.isNonEmpty,
-          hideConflicting.isNonEmpty,
-          hideFirstYearSeminars.isNonEmpty,
-          hideGraduateCourses.isNonEmpty,
-          hideDiscussionSections.isNonEmpty,
-        ].filter(Boolean).length
+        relevantFilters.filter((k) => filters[k].isNonEmpty).length +
+        Number(selectSortBy.value.value === 'average_gut_rating')
       }
       dataTutorial={4}
     >
