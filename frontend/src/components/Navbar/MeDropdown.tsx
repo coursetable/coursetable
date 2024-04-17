@@ -41,12 +41,7 @@ function DropdownItem({
 }) {
   const innerText = (
     <HoverText>
-      <Icon
-        className="me-2 my-auto"
-        size={20}
-        style={{ paddingLeft: '2px', paddingBottom: '2px' }}
-        color={iconColor}
-      />
+      <Icon size={20} className={styles.linkIcon} color={iconColor} />
       {children}
     </HoverText>
   );
@@ -77,7 +72,7 @@ function DropdownItem({
           {innerText}
         </button>
       ) : (
-        <span className={styles.collapseText}>{innerText}</span>
+        innerText
       )}
     </TextComponent>
   );

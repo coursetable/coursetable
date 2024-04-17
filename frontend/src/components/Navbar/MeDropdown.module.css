@@ -45,3 +45,7 @@
 .meIcon:hover {
   color: var(--color-primary);
 }
+
+.linkIcon {
+  margin-right: 0.5rem;
+}

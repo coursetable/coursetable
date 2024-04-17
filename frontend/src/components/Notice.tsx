@@ -33,7 +33,7 @@ function Notice({
         }}
         aria-label="Close"
       >
-        <FaTimes style={{ display: 'block' }} />
+        <FaTimes />
       </button>
     </div>
   );

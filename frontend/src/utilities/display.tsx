@@ -17,10 +17,8 @@ export function suspended<T extends React.ComponentType<any>>(
     } catch {
       return {
         default: (() => (
-          <div style={{ width: '100%', height: '100%' }}>
-            <p style={{ fontWeight: 'bold ' }}>
-              There was a problem loading this view.
-            </p>
+          <div className="m-3">
+            <p className="fw-bold">There was a problem loading this view.</p>
             <p>
               It's possible that there was an update to our code. Please{' '}
               <a href="#!" onClick={() => window.location.reload()}>

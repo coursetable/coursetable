@@ -16,12 +16,7 @@ function Logo({
   const { theme } = useTheme();
 
   return (
-    <span
-      className={styles.coursetableLogo}
-      style={{
-        display: 'block',
-      }}
-    >
+    <span className={styles.coursetableLogo}>
       {icon && <img src={logo} alt="" className={styles.coursetableLogoImg} />}{' '}
       {wordmark && (
         <img

@@ -66,7 +66,7 @@ function NoStatsTip({
         placement="top"
         overlay={(props) => (
           <Tooltip {...props} id="conflict-icon-button-tooltip">
-            <small style={{ fontWeight: 500 }}>
+            <small>
               Computed with {coursesWithRating} course
               {coursesWithRating === 1 ? '' : 's'}.{' '}
               {formatter.format(coursesWithoutRating)} ha
@@ -75,7 +75,9 @@ function NoStatsTip({
           </Tooltip>
         )}
       >
-        <MdInfoOutline className={styles.infoIcon} />
+        <span>
+          <MdInfoOutline className={styles.infoIcon} />
+        </span>
       </OverlayTrigger>
     )
   );

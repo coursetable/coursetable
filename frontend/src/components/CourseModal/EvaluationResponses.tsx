@@ -100,7 +100,7 @@ function EvaluationResponses({
         type="text"
         placeholder="Search evaluations..."
         value={filter}
-        style={{ marginBottom: '5px' }}
+        className={styles.filterInput}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           setFilter(event.target.value);
           instance.unmark({

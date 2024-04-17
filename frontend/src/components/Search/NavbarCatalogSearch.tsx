@@ -220,13 +220,7 @@ export function NavbarCatalogSearch() {
               />
             )}
           </div>
-          {/* Number of results shown & search speed text */}
-          <TextComponent
-            type="tertiary"
-            small
-            className="ms-2 mb-1 d-flex align-items-end"
-            style={{ whiteSpace: 'pre-line' }}
-          >
+          <TextComponent type="tertiary" small className={styles.searchSpeed}>
             {coursesLoading
               ? 'Searching ...'
               : `Showing ${searchData.length} results${

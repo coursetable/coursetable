@@ -19,6 +19,7 @@
 
 .card {
   background-color: var(--color-surface);
+  height: 100%;
   transition:
     background-color var(--trans-dur),
     color var(--trans-dur);

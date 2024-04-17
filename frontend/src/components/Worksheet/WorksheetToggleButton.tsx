@@ -61,7 +61,7 @@ function CourseConflictIcon({
             placement="top"
             overlay={(props) => (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
-                <small style={{ fontWeight: 500 }}>{warning}</small>
+                <small>{warning}</small>
               </Tooltip>
             )}
           >

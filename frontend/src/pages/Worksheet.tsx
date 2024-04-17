@@ -22,14 +22,14 @@ import { useWorksheet } from '../contexts/worksheetContext';
 
 function WorksheetMobile() {
   return (
-    <div className={styles.mobileContainer}>
+    <div className={styles.container}>
       <div>
         <WorksheetNumDropdown mobile />
         <div className={styles.subDropdowns}>
           <SeasonDropdown mobile />
           <FriendsDropdown mobile />
         </div>
-        <SurfaceComponent className={styles.mobileCalendar}>
+        <SurfaceComponent className={styles.calendar}>
           <WorksheetCalendar />
         </SurfaceComponent>
       </div>
@@ -48,8 +48,8 @@ function WorksheetDesktop() {
     case 'calendar': {
       const Icon = expanded ? FaCompressAlt : FaExpandAlt;
       return (
-        <div className={styles.desktopContainer}>
-          <SurfaceComponent className={styles.desktopCalendar}>
+        <div className={styles.container}>
+          <SurfaceComponent className={styles.calendar}>
             <WorksheetCalendar />
             <button
               type="button"
@@ -81,20 +81,9 @@ function Worksheet() {
   // Wait for search query to finish
   if (worksheetError) {
     Sentry.captureException(worksheetError);
-    return (
-      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <ErrorPage message="There seems to be an issue with our server" />
-      </div>
-    );
+    return <ErrorPage message="There seems to be an issue with our server" />;
   }
-  if (worksheetLoading) {
-    return (
-      <div style={{ height: '93vh' }}>
-        <Spinner />
-      </div>
-    );
-  }
-  // TODO: add something for when data.length === 0
+  if (worksheetLoading) return <Spinner />;
 
   return !isMobile ? <WorksheetDesktop /> : <WorksheetMobile />;
 }

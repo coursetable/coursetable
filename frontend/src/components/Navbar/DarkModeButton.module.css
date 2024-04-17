@@ -1,4 +1,6 @@
 .button {
+  margin-top: auto;
+  margin-bottom: auto;
   transition: color 0.1s;
   color: var(--color-text-secondary);
 }

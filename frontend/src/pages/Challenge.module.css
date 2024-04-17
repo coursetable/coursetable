@@ -1,16 +1,7 @@
 .container {
-  width: 600px;
-  margin-bottom: 3rem;
+  background-color: rgb(168 216 34 / 50%);
 }
 
-@media (width < 768px) {
-  .container {
-    width: 80vw;
-  }
-}
-
-@media (width < 576px) {
-  .container {
-    width: 90vw;
-  }
+.containerError {
+  background-color: rgb(255 170 165 / 50%);
 }

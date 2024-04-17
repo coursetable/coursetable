@@ -49,11 +49,7 @@ function FloatingWorksheet() {
       >
         <div className={styles.expandBtn}>
           <NavLink to="/worksheet" aria-label="Expand worksheet">
-            <FaExpandAlt
-              className={styles.expandIcon}
-              size={12}
-              style={{ display: 'block' }}
-            />
+            <FaExpandAlt className={styles.expandIcon} size={12} />
           </NavLink>
         </div>
         <WorksheetCalendar />

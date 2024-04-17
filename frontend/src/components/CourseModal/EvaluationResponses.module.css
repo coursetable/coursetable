@@ -71,3 +71,7 @@ mark {
   margin: auto;
   padding: 0.5rem;
 }
+
+.filterInput {
+  margin-bottom: 5px;
+}

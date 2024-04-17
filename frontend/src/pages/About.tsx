@@ -294,7 +294,7 @@ function About() {
 
   const createCards = (person: Person, idx: number) => (
     <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-      <Card className={styles.card} style={{ height: '100%' }}>
+      <Card className={styles.card}>
         <Card.Img variant="top" src={person.image} alt={person.name} />
         <Card.Body className="p-3">
           <Card.Title className="mb-1">{person.name}</Card.Title>

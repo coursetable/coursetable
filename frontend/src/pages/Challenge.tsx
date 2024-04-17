@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
+import clsx from 'clsx';
 import { Form, Button, Row } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
@@ -14,8 +15,6 @@ import {
   type RequestChallengeResBody,
 } from '../utilities/api';
 
-// TODO: use CSS more
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './Challenge.module.css';
 
 import ChallengeError from '../images/error.svg';
@@ -203,10 +202,7 @@ function Challenge() {
     );
 
     return (
-      <div
-        className="py-5"
-        style={{ backgroundColor: 'rgba(255, 170, 165, 0.5)' }}
-      >
+      <div className={clsx(styles.containerError, 'py-5')}>
         <SurfaceComponent className="container col-sm-8 col-md-6 col-lg-4 text-center p-5 rounded shadow">
           <img
             alt="No courses found."
@@ -221,10 +217,7 @@ function Challenge() {
   }
 
   return (
-    <div
-      className="py-5"
-      style={{ backgroundColor: 'rgba(168, 216, 234, 0.5)' }}
-    >
+    <div className={clsx(styles.container, 'py-5')}>
       <SurfaceComponent className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow">
         {/* Page Header */}
         <h1 className="fw-bold mb-2">Enable evaluations</h1>

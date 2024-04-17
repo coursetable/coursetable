@@ -167,7 +167,7 @@ If you need to conditionally apply a style, use the following syntax:
 <div
   className={clsx(
     styles.container,
-    isMobile && styles.mobileContainer,
+    isActive && styles.containerActive,
     hasData ? styles.containerWithData : styles.containerWithoutData,
   )}
 >

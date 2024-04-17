@@ -56,7 +56,7 @@ const profInfoPopover =
           </small>
         </div>
       </Popover.Header>
-      <Popover.Body style={{ width: '274px' }}>
+      <Popover.Body className={styles.profInfoBody}>
         <div className="d-flex mx-auto my-1">
           <Col md={6}>
             <div className="d-flex mx-auto mb-1">

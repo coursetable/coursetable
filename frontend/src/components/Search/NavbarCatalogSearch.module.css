@@ -37,6 +37,14 @@
   color: var(--color-icon-focus-hover);
 }
 
+.searchSpeed {
+  white-space: pre-line;
+  margin-left: 0.5rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: end;
+}
+
 .sliderContainer {
   margin: 0 1rem;
   flex-grow: 0;
