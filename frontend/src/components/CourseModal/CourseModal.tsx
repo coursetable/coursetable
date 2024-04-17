@@ -13,19 +13,11 @@ import { TextComponent, LinkLikeText } from '../Typography';
 import SkillBadge from '../SkillBadge';
 import { suspended } from '../../utilities/display';
 import { toSeasonString, truncatedText } from '../../utilities/course';
+import { extraInfo } from '../../utilities/constants';
 import { useFerry } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
 import { CUR_YEAR } from '../../config';
-
-const extraInfoMap: { [info in Listing['extra_info']]: string } = {
-  ACTIVE: 'ACTIVE',
-  MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
-  CANCELLED: 'CANCELLED',
-  MOVED_TO_FALL_TERM: 'MOVED TO FALL',
-  CLOSED: 'CLOSED',
-  NUMBER_CHANGED: 'NUMBER CHANGED',
-};
 
 function ShareButton({ courseCode }: { readonly courseCode: string }) {
   const copyToClipboard = () => {
@@ -191,7 +183,7 @@ function CourseModal() {
                 <div className={styles.modalTitle}>
                   {listing.extra_info !== 'ACTIVE' ? (
                     <span className={styles.cancelledText}>
-                      {extraInfoMap[listing.extra_info]}{' '}
+                      {extraInfo[listing.extra_info]}{' '}
                     </span>
                   ) : (
                     ''

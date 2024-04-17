@@ -1,4 +1,5 @@
 import chroma from 'chroma-js';
+import type { Listing } from './common';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -303,6 +304,7 @@ export const subjects: { [code: string]: string } = {
   PSYC: 'Psychology',
   PSYT: 'Psychiatry',
   PTB: 'Program in Translational Biomedicine',
+  QMSE: 'Quantum Materials Science and Engineering',
   QUAL: 'Preparing for Qualifying Exams',
   QUAN: 'Quantitative Reasoning',
   REL: 'Religion',
@@ -379,6 +381,15 @@ export const schools: { [code: string]: string } = {
   PA: 'Physician Associate Program',
   PH: 'School of Public Health',
   SU: 'Summer Session',
+};
+
+export const extraInfo: { [key in Listing['extra_info']]: string } = {
+  ACTIVE: 'ACTIVE',
+  MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
+  CANCELLED: 'CANCELLED',
+  MOVED_TO_FALL_TERM: 'MOVED TO FALL',
+  CLOSED: 'CLOSED',
+  NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
 export const evalQuestions = {
