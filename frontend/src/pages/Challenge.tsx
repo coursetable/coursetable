@@ -2,22 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Button, Row } from 'react-bootstrap';
-import { toast } from 'react-toastify';
-import { useApolloClient } from '@apollo/client';
-
 import { FiExternalLink } from 'react-icons/fi';
-import { useUser } from '../contexts/userContext';
+import { useApolloClient } from '@apollo/client';
+import { toast } from 'react-toastify';
+
 import Spinner from '../components/Spinner';
 import { TextComponent, SurfaceComponent } from '../components/Typography';
+import { useUser } from '../contexts/userContext';
+import ChallengeError from '../images/error.svg';
 import {
   requestChallenge,
   verifyChallenge,
   type RequestChallengeResBody,
 } from '../utilities/api';
-
 import styles from './Challenge.module.css';
-
-import ChallengeError from '../images/error.svg';
 
 type Answer = {
   courseRatingId: number;

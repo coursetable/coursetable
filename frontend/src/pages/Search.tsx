@@ -3,11 +3,11 @@ import { Element } from 'react-scroll';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-import styles from './Search.module.css';
 import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';
-import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useSearch } from '../contexts/searchContext';
+import { useWindowDimensions } from '../contexts/windowDimensionsContext';
+import styles from './Search.module.css';
 import './rc-slider-override.css';
 
 function Search() {

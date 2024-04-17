@@ -4,13 +4,13 @@ import { Row, Col, Modal } from 'react-bootstrap';
 import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
-import Spinner from '../Spinner';
 import { useUser } from '../../contexts/userContext';
 import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
 import type { NarrowListing, Listing } from '../../utilities/common';
+import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
 
 export type RelatedListingInfo = Omit<

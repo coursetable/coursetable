@@ -2,8 +2,8 @@ import React from 'react';
 
 import { useTheme } from '../../contexts/themeContext';
 import logo from '../../images/brand/bluebook.svg';
-import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import wordmarkOutlinesDark from '../../images/brand/ct_white.svg';
+import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import styles from './Logo.module.css';
 
 function Logo({

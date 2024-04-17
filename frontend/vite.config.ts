@@ -1,17 +1,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { defineConfig } from 'vite';
-import reactPlugin from '@vitejs/plugin-react';
-import mdx from '@mdx-js/rollup';
-import remarkGfm from 'remark-gfm';
-import { toString } from 'mdast-util-to-string';
-import { visit } from 'unist-util-visit';
-import basicSsl from '@vitejs/plugin-basic-ssl';
-import { createHtmlPlugin } from 'vite-plugin-html';
-import { visualizer } from 'rollup-plugin-visualizer';
-import dotenv from 'dotenv';
 import dns from 'dns';
-import type { Transformer } from 'unified';
+import mdx from '@mdx-js/rollup';
+import basicSsl from '@vitejs/plugin-basic-ssl';
+import reactPlugin from '@vitejs/plugin-react';
+import dotenv from 'dotenv';
 import type { Heading, Text } from 'mdast';
+import { toString } from 'mdast-util-to-string';
+import remarkGfm from 'remark-gfm';
+import { visualizer } from 'rollup-plugin-visualizer';
+import type { Transformer } from 'unified';
+import { visit } from 'unist-util-visit';
+import { defineConfig } from 'vite';
+import { createHtmlPlugin } from 'vite-plugin-html';
 
 dns.setDefaultResultOrder('verbatim');
 

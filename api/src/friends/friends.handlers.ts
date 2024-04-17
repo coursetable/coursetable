@@ -1,16 +1,15 @@
 import type express from 'express';
-import z from 'zod';
 import { or, and, eq, inArray, sql } from 'drizzle-orm';
-import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
-
-import { db } from '../config.js';
-import winston from '../logging/winston.js';
+import z from 'zod';
 import {
   studentBluebookSettings,
   studentFriendRequests,
   studentFriends,
   worksheetCourses,
 } from '../../drizzle/schema.js';
+import { db } from '../config.js';
+import winston from '../logging/winston.js';
+import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),

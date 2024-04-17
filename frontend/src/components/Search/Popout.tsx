@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 
-import { useComponentVisibleDropdown } from '../../utilities/display';
 import { isOption, type Option } from '../../contexts/searchContext';
+import { useComponentVisibleDropdown } from '../../utilities/display';
 import styles from './Popout.module.css';
 
 type Props = {

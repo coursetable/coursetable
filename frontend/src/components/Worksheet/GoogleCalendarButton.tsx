@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
-import { academicCalendars } from '../../config';
 import Spinner from '../../components/Spinner';
+import { academicCalendars } from '../../config';
 import { useGapi } from '../../contexts/gapiContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import GCalIcon from '../../images/gcal.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
-import GCalIcon from '../../images/gcal.svg';
 
 function GoogleCalendarButton(): JSX.Element {
   const [exporting, setExporting] = useState(false);

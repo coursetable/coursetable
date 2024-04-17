@@ -1,7 +1,7 @@
 import React from 'react';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.css';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 import { CUR_SEASON, GRAPHQL_API_ENDPOINT } from '../config';
 

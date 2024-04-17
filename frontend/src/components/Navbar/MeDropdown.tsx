@@ -1,8 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import clsx from 'clsx';
 import { Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import {
   FcInfo,
   FcQuestions,
@@ -10,17 +12,15 @@ import {
   FcPuzzle,
   FcNews,
 } from 'react-icons/fc';
-import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import clsx from 'clsx';
 
-import styles from './MeDropdown.module.css';
+import { API_ENDPOINT } from '../../config';
+import { useTutorial } from '../../contexts/tutorialContext';
+import { useUser } from '../../contexts/userContext';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../utilities/api';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { useUser } from '../../contexts/userContext';
-import { useTutorial } from '../../contexts/tutorialContext';
-import { API_ENDPOINT } from '../../config';
+import styles from './MeDropdown.module.css';
 
 function DropdownItem({
   icon: Icon,

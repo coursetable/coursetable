@@ -1,13 +1,16 @@
 import React, { useContext, useEffect } from 'react';
-import { Accordion, Card } from 'react-bootstrap';
-import AccordionContext from 'react-bootstrap/AccordionContext';
-import { useAccordionButton } from 'react-bootstrap/AccordionButton';
-import { FaChevronRight } from 'react-icons/fa';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import {
+  Accordion,
+  AccordionContext,
+  Card,
+  useAccordionButton,
+} from 'react-bootstrap';
+import { FaChevronRight } from 'react-icons/fa';
 import { HoverText, TextComponent } from '../components/Typography';
-import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities/display';
+import styles from './FAQ.module.css';
 
 function ContextAwareToggle({ question }: { readonly question: string }) {
   const currentEventKey = useContext(AccordionContext).activeEventKey;

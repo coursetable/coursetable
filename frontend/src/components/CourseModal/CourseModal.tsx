@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
-import { toast } from 'react-toastify';
-import { Helmet } from 'react-helmet';
-import { IoMdArrowRoundBack, IoIosMore } from 'react-icons/io';
-import { FaRegShareFromSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
+import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
+import { FaRegShareFromSquare } from 'react-icons/fa6';
+import { IoMdArrowRoundBack, IoIosMore } from 'react-icons/io';
+import { Helmet } from 'react-helmet';
+import { toast } from 'react-toastify';
 
-import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import styles from './CourseModal.module.css';
-import { TextComponent, LinkLikeText } from '../Typography';
-import SkillBadge from '../SkillBadge';
-import { suspended } from '../../utilities/display';
-import { toSeasonString, truncatedText } from '../../utilities/course';
-import { extraInfo } from '../../utilities/constants';
+import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
-import { CUR_YEAR } from '../../config';
+import { extraInfo } from '../../utilities/constants';
+import { toSeasonString, truncatedText } from '../../utilities/course';
+import { suspended } from '../../utilities/display';
+import SkillBadge from '../SkillBadge';
+import { TextComponent, LinkLikeText } from '../Typography';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import styles from './CourseModal.module.css';
 
 function ShareButton({ courseCode }: { readonly courseCode: string }) {
   const copyToClipboard = () => {

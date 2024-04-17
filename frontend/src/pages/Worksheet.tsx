@@ -1,24 +1,22 @@
 import React, { useState } from 'react';
-import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
-
-import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
-import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
-import WorksheetStats from '../components/Worksheet/WorksheetStats';
-import WorksheetList from '../components/Worksheet/WorksheetList';
-import { SurfaceComponent } from '../components/Typography';
-import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
-import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
-import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
-
-import styles from './Worksheet.module.css';
+import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 
 import ErrorPage from '../components/ErrorPage';
 import Spinner from '../components/Spinner';
+import { SurfaceComponent } from '../components/Typography';
+import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
+import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
+import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
+import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
+import WorksheetList from '../components/Worksheet/WorksheetList';
+import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
+import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
+import styles from './Worksheet.module.css';
 
 function WorksheetMobile() {
   return (

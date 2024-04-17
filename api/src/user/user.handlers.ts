@@ -1,16 +1,16 @@
 import type express from 'express';
-import z from 'zod';
 import chroma from 'chroma-js';
 import { and, eq } from 'drizzle-orm';
+import z from 'zod';
 
 import { worksheetCoursesToWorksheets } from './user.utils.js';
-import winston from '../logging/winston.js';
 
-import { db } from '../config.js';
 import {
   studentBluebookSettings,
   worksheetCourses,
 } from '../../drizzle/schema.js';
+import { db } from '../config.js';
+import winston from '../logging/winston.js';
 
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),

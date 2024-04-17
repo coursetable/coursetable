@@ -1,8 +1,8 @@
 import React from 'react';
 import FileSaver from 'file-saver';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { getCalendarEvents } from '../../utilities/calendar';
 import ICSIcon from '../../images/ics.svg';
+import { getCalendarEvents } from '../../utilities/calendar';
 
 export default function ICSExportButton() {
   const { curSeason, courses } = useWorksheet();

@@ -1,50 +1,48 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Card, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import styles from './About.module.css';
 import { TextComponent } from '../components/Typography';
 import { useTheme } from '../contexts/themeContext';
 
-// Link Logos
-import github from '../images/link-logos/github.png';
-import githubDark from '../images/link-logos/github-light.png';
-import linkedin from '../images/link-logos/linkedin.png';
-import web from '../images/link-logos/web.png';
-import webDark from '../images/link-logos/web-light.png';
-
 // Current Member Headshots
-import lz from '../images/headshots/lily-zhou.jpg';
-import lh from '../images/headshots/lucas-huang.jpg';
-import as from '../images/headshots/alex-schapiro.jpg';
-import ae from '../images/headshots/aidan-evans.jpg';
-import ml from '../images/headshots/michelle-li.jpg';
-import jc from '../images/headshots/josh-chough.jpg';
-import dl from '../images/headshots/deyuan-li.jpg';
-import kh from '../images/headshots/kevin-hu.jpg';
-import ma from '../images/headshots/murad-avliyakulov.jpg';
 import ag from '../images/headshots/abhijit-gupta.jpg';
-import my from '../images/headshots/max-yuan.jpg';
-import sh from '../images/headshots/sidney-hirschman.jpg';
+import ae from '../images/headshots/aidan-evans.jpg';
+import as from '../images/headshots/alex-schapiro.jpg';
+import az from '../images/headshots/anna-zhang.jpg';
+import bx from '../images/headshots/ben-xu.jpg';
+import dl from '../images/headshots/deyuan-li.jpg';
+import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
-import nk from '../images/headshots/nalin-khanna.jpg';
-import ss from '../images/headshots/shayna-sragovicz.jpg';
-import lt from '../images/headshots/leck-tang.jpg';
-import az from '../images/headshots/anna-zhang.jpg';
-import ls from '../images/headshots/lauren-song.jpg';
-import js from '../images/headshots/josephine-shin.jpg';
-import hy from '../images/headshots/harry-yu.jpg';
-import px from '../images/headshots/peter-xu.jpg';
-import bx from '../images/headshots/ben-xu.jpg';
-import ns from '../images/headshots/neil-song.jpg';
-import kt from '../images/headshots/kenny-tung.jpg';
-import sc from '../images/headshots/sida-chen.jpg';
-
-// Alumni Headshots
-import hs from '../images/headshots/harshal-sheth.jpg';
 import hl from '../images/headshots/hao-li.jpg';
-import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
+import hy from '../images/headshots/harry-yu.jpg';
+import hs from '../images/headshots/harshal-sheth.jpg';
+import js from '../images/headshots/josephine-shin.jpg';
+import jc from '../images/headshots/josh-chough.jpg';
+import kt from '../images/headshots/kenny-tung.jpg';
+import kh from '../images/headshots/kevin-hu.jpg';
+import ls from '../images/headshots/lauren-song.jpg';
+import lt from '../images/headshots/leck-tang.jpg';
+import lz from '../images/headshots/lily-zhou.jpg';
+import lh from '../images/headshots/lucas-huang.jpg';
+import my from '../images/headshots/max-yuan.jpg';
+import ml from '../images/headshots/michelle-li.jpg';
+import ma from '../images/headshots/murad-avliyakulov.jpg';
+import nk from '../images/headshots/nalin-khanna.jpg';
+import ns from '../images/headshots/neil-song.jpg';
+import px from '../images/headshots/peter-xu.jpg';
+import ss from '../images/headshots/shayna-sragovicz.jpg';
+import sc from '../images/headshots/sida-chen.jpg';
+import sh from '../images/headshots/sidney-hirschman.jpg';
+
+// Link Logos
+import githubDark from '../images/link-logos/github-light.png';
+import github from '../images/link-logos/github.png';
+import linkedin from '../images/link-logos/linkedin.png';
+import webDark from '../images/link-logos/web-light.png';
+import web from '../images/link-logos/web.png';
+import styles from './About.module.css';
 
 type Person = {
   name: string;

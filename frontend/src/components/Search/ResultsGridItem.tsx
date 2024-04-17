@@ -1,19 +1,17 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import clsx from 'clsx';
 import { Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import clsx from 'clsx';
-
+import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import SkillBadge from '../SkillBadge';
-import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
-import { TextComponent } from '../Typography';
-
-import styles from './ResultsGridItem.module.css';
 import { generateRandomColor, type Listing } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
+import SkillBadge from '../SkillBadge';
+import { TextComponent } from '../Typography';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import styles from './ResultsGridItem.module.css';
 
 function Rating({
   course,

@@ -5,19 +5,19 @@ import React, {
   useContext,
   createContext,
 } from 'react';
+import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import {
   components as selectComponents,
   type SingleValueProps,
   type OptionProps,
 } from 'react-select';
-import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
+import { useUser } from '../../contexts/userContext';
+import { fetchAllNames } from '../../utilities/api';
+import type { NetId } from '../../utilities/common';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
 import Spinner from '../Spinner';
-import { fetchAllNames } from '../../utilities/api';
-import { useUser } from '../../contexts/userContext';
-import type { NetId } from '../../utilities/common';
 import styles from './AddFriendDropdown.module.css';
 
 const FriendContext = createContext<{

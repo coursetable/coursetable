@@ -1,19 +1,8 @@
-import type express from 'express';
-import { request } from 'graphql-request';
 import crypto from 'crypto';
-import z from 'zod';
+import type express from 'express';
 import { eq, sql } from 'drizzle-orm';
-
-import {
-  GRAPHQL_ENDPOINT,
-  CHALLENGE_SEASON,
-  MAX_CHALLENGE_REQUESTS,
-  CHALLENGE_ALGORITHM,
-  CHALLENGE_PASSWORD,
-  db,
-} from '../config.js';
-
-import winston from '../logging/winston.js';
+import { request } from 'graphql-request';
+import z from 'zod';
 
 import {
   requestEvalsQuery,
@@ -22,6 +11,15 @@ import {
   type VerifyEvalsQueryResponse,
 } from './challenge.queries.js';
 import { studentBluebookSettings } from '../../drizzle/schema.js';
+import {
+  GRAPHQL_ENDPOINT,
+  CHALLENGE_SEASON,
+  MAX_CHALLENGE_REQUESTS,
+  CHALLENGE_ALGORITHM,
+  CHALLENGE_PASSWORD,
+  db,
+} from '../config.js';
+import winston from '../logging/winston.js';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.

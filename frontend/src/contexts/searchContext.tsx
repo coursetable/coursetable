@@ -5,17 +5,19 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { buildEvaluator } from 'quist';
 import * as Sentry from '@sentry/react';
+import { buildEvaluator } from 'quist';
+import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
+import { useUser } from './userContext';
+import { useWorksheet } from './worksheetContext';
+import { CUR_SEASON } from '../config';
+import { useSessionStorageState } from '../utilities/browserStorage';
 import {
   isEqual,
   type Listing,
   type Season,
   type Weekdays,
 } from '../utilities/common';
-import { useSessionStorageState } from '../utilities/browserStorage';
-import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { useWorksheet } from './worksheetContext';
 import {
   skillsAreasColors,
   skillsAreas,
@@ -39,8 +41,6 @@ import {
   toSeasonString,
   type NumFriendsReturn,
 } from '../utilities/course';
-import { CUR_SEASON } from '../config';
-import { useUser } from './userContext';
 
 export type Option<T extends string | number = string> = {
   label: string;

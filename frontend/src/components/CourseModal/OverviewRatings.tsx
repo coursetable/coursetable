@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from 'react';
+import clsx from 'clsx';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
-import clsx from 'clsx';
 
 import type { RelatedListingInfo } from './CourseModalOverview';
 
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
-import { RatingBubble } from '../Typography';
-import { ratingColormap, workloadColormap } from '../../utilities/constants';
-import { toSeasonString, isDiscussionSection } from '../../utilities/course';
 import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import { generateRandomColor, type Listing } from '../../utilities/common';
+import { ratingColormap, workloadColormap } from '../../utilities/constants';
+import { toSeasonString, isDiscussionSection } from '../../utilities/course';
+import { RatingBubble } from '../Typography';
 
 import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';

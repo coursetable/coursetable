@@ -19,6 +19,41 @@ module.exports = {
     ],
     'css-modules/no-unused-class': 'error',
     'css-modules/no-undef-class': 'error',
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'sibling', 'parent', 'index'],
+        'newlines-between': 'ignore',
+        pathGroups: [
+          // Used extensively and are critical to our infra
+          {
+            pattern: '{react,react-dom/*,react-router-dom,express}',
+            group: 'external',
+            position: 'before',
+          },
+          // Important utilities but not as important
+          {
+            pattern:
+              '{clsx,react-icons,react-icons/**,react-bootstrap,react-bootstrap/**,@sentry/*}',
+            group: 'external',
+            position: 'before',
+          },
+          {
+            pattern: './**/*.css',
+            group: 'index',
+            position: 'after',
+          },
+        ],
+        pathGroupsExcludedImportTypes: [],
+        // Treat pathGroups as distinct groups, so they won't be sorted with
+        // other modules (we don't enforce blank lines for this reason)
+        distinctGroup: true,
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+      },
+    ],
     'react/jsx-child-element-spacing': 'off',
     'react/jsx-no-bind': 'off',
     // TODO: needs a lot more a11y audits

@@ -1,21 +1,21 @@
 import React, { useMemo, useState } from 'react';
-import { Nav, Navbar } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
-import { MdUpdate } from 'react-icons/md';
 import clsx from 'clsx';
-import Logo from './Logo';
+import { Nav, Navbar } from 'react-bootstrap';
+import { MdUpdate } from 'react-icons/md';
 import DarkModeButton from './DarkModeButton';
+import Logo from './Logo';
 import MeDropdown from './MeDropdown';
+import { API_ENDPOINT } from '../../config';
+import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../utilities/api';
 import { scrollToTop } from '../../utilities/display';
-import styles from './Navbar.module.css';
-import { SurfaceComponent, TextComponent } from '../Typography';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
+import { SurfaceComponent, TextComponent } from '../Typography';
 import { NavbarWorksheetSearch } from '../Worksheet/NavbarWorksheetSearch';
 
-import { API_ENDPOINT } from '../../config';
-import { useUser } from '../../contexts/userContext';
+import styles from './Navbar.module.css';
 
 function NavbarLink({
   to,

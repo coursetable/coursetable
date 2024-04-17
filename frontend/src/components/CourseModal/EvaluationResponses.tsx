@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { Tab, Tabs } from 'react-bootstrap';
 import clsx from 'clsx';
+import { Tab, Tabs } from 'react-bootstrap';
 import Mark from 'mark.js';
-import styles from './EvaluationResponses.module.css';
-import { Input, TextComponent } from '../Typography';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import { Input, TextComponent } from '../Typography';
+import styles from './EvaluationResponses.module.css';
 
 function EvaluationResponses({
   info,

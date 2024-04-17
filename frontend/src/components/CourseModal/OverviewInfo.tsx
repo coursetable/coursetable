@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import * as Sentry from '@sentry/react';
 import {
   Row,
   Col,
@@ -8,26 +9,25 @@ import {
   Popover,
 } from 'react-bootstrap';
 import type { OverlayChildren } from 'react-bootstrap/esm/Overlay';
-import * as Sentry from '@sentry/react';
+import { HiExternalLink } from 'react-icons/hi';
+import { IoIosArrowDown } from 'react-icons/io';
+import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { IoIosArrowDown } from 'react-icons/io';
-import { HiExternalLink } from 'react-icons/hi';
-import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 
 import type { RelatedListingInfo } from './CourseModalOverview';
 
 import { CUR_SEASON } from '../../config';
 import { useSearch } from '../../contexts/searchContext';
-import { TextComponent, InfoPopover, LinkLikeText } from '../Typography';
+import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
+import type { Weekdays, Listing } from '../../utilities/common';
+import { ratingColormap } from '../../utilities/constants';
 import {
   getEnrolled,
   toSeasonString,
   to12HourTime,
 } from '../../utilities/course';
-import { ratingColormap } from '../../utilities/constants';
-import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
-import type { Weekdays, Listing } from '../../utilities/common';
+import { TextComponent, InfoPopover, LinkLikeText } from '../Typography';
 import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -135,7 +135,7 @@ function DataField({
   collapsible,
   defaultExpanded = true,
 }: {
-  readonly name: React.ReactNode;
+  readonly name: string;
   readonly value: React.ReactNode;
   readonly tooltip?: React.ReactNode;
   readonly collapsible?: true;

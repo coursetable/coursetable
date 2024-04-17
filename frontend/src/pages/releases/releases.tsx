@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Row, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Card, Row, Container } from 'react-bootstrap';
 import styles from './releases.module.css';
 
 type ReleaseNote = {

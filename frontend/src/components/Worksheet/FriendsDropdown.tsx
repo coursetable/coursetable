@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { components as selectComponents } from 'react-select';
 import { MdPersonRemove } from 'react-icons/md';
-import Spinner from '../Spinner';
+import { components as selectComponents } from 'react-select';
+import { isOption, type Option } from '../../contexts/searchContext';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { isOption, type Option } from '../../contexts/searchContext';
 import type { NetId } from '../../utilities/common';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
+import Spinner from '../Spinner';
 import styles from './FriendsDropdown.module.css';
 
 function FriendsDropdownMobile({

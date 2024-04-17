@@ -1,11 +1,11 @@
 import React from 'react';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { CourseInfoPopover } from '../Search/ResultsItemCommon';
-import type { RBCEvent } from '../../utilities/calendar';
-import styles from './CalendarEvent.module.css';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import type { RBCEvent } from '../../utilities/calendar';
+import { CourseInfoPopover } from '../Search/ResultsItemCommon';
+import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 

@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { sortCourses } from '../../utilities/course';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { useSearch } from '../../contexts/searchContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import { sortCourses } from '../../utilities/course';
 import Results from '../Search/Results';
 
 function WorksheetList() {

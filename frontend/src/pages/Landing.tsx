@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 import {
   FcConferenceCall,
   FcComboChart,
   FcBookmark,
   FcSearch,
 } from 'react-icons/fc';
-import clsx from 'clsx';
 
 import { API_ENDPOINT } from '../config';
-import styles from './Landing.module.css';
 import LandingImage from '../images/landing_page.svg';
+import styles from './Landing.module.css';
 
 function Landing() {
   return (

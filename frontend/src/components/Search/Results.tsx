@@ -1,26 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 import { Row } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
-import clsx from 'clsx';
 
+import FloatingWorksheet from './FloatingWorksheet';
+import ResultsGridItem from './ResultsGridItem';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
-import ResultsGridItem from './ResultsGridItem';
-import FloatingWorksheet from './FloatingWorksheet';
-import Spinner from '../Spinner';
+import WindowScroller from './WindowScroller';
 
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-
-import styles from './Results.module.css';
-
 import NoCoursesFound from '../../images/no_courses_found.svg';
-
-import WindowScroller from './WindowScroller';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
+import Spinner from '../Spinner';
+import styles from './Results.module.css';
 
 function Results({
   data,

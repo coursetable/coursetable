@@ -1,15 +1,14 @@
 import React, { useMemo } from 'react';
+import clsx from 'clsx';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaBars, FaTh } from 'react-icons/fa';
-import clsx from 'clsx';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { SurfaceComponent } from '../Typography';
-
 import { type SortKeys, sortByOptions } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import styles from './ResultsHeaders.module.css';
+import { SurfaceComponent } from '../Typography';
 import colStyles from './ResultsCols.module.css';
+import styles from './ResultsHeaders.module.css';
 
 function HeaderCol({
   className,

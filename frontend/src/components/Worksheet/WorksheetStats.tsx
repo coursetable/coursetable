@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
-import clsx from 'clsx';
 import chroma from 'chroma-js';
-import SkillBadge from '../SkillBadge';
 import { useTheme } from '../../contexts/themeContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { ratingColormap } from '../../utilities/constants';
@@ -12,6 +11,7 @@ import {
   getWorkloadRatings,
   isDiscussionSection,
 } from '../../utilities/course';
+import SkillBadge from '../SkillBadge';
 import styles from './WorksheetStats.module.css';
 
 function StatPill({

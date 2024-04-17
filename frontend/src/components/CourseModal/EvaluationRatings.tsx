@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 import { evalQuestions } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
-import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import styles from './EvaluationRatings.module.css';
 
 const questions = Object.keys(evalQuestions) as (keyof typeof evalQuestions)[];
 

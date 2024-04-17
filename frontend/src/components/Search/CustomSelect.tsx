@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import makeAnimated from 'react-select/animated';
 import chroma from 'chroma-js';
 import Select, {
   mergeStyles,
@@ -8,6 +7,7 @@ import Select, {
   type Theme as SelectTheme,
   type ThemeConfig,
 } from 'react-select';
+import makeAnimated from 'react-select/animated';
 import type { Option } from '../../contexts/searchContext';
 
 // Styles for the select indicators

@@ -1,18 +1,14 @@
 import React, { useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
-import { GlobalHotKeys } from 'react-hotkeys';
 import clsx from 'clsx';
-import { Range } from 'rc-slider';
+import { Form, Button } from 'react-bootstrap';
 import { IoClose } from 'react-icons/io5';
+import { Range } from 'rc-slider';
+import { GlobalHotKeys } from 'react-hotkeys';
 
-import { TextComponent, Input } from '../Typography';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import AdvancedPanel from './AdvancedPanel';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
-import AdvancedPanel from './AdvancedPanel';
-
-import { searchSpeed } from '../../utilities/constants';
 import {
   useSearch,
   filterLabels,
@@ -25,6 +21,9 @@ import {
   subjectsOptions,
   seasonsOptions,
 } from '../../contexts/searchContext';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { searchSpeed } from '../../utilities/constants';
+import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
 
 function Select<K extends keyof CategoricalFilters>({

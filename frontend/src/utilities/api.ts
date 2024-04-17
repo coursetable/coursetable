@@ -6,9 +6,9 @@ import { toast } from 'react-toastify';
 import z from 'zod';
 
 import { createLocalStorageSlot } from './browserStorage';
+import type { Season, Crn, Listing, NetId } from './common';
 import { API_ENDPOINT } from '../config';
 import type { ListingRatingsFragment } from '../generated/graphql';
-import type { Season, Crn, Listing, NetId } from './common';
 
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {

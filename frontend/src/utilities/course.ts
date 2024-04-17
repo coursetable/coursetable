@@ -6,8 +6,8 @@ import {
   weekdays,
   type Listing,
 } from './common';
-import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
 import type { SortKeys } from '../contexts/searchContext';
+import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 
 export function truncatedText(

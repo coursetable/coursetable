@@ -1,11 +1,11 @@
 import type express from 'express';
+import { eq } from 'drizzle-orm';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
-import { eq } from 'drizzle-orm';
 
-import winston from '../logging/winston.js';
-import { YALIES_API_KEY, db } from '../config.js';
 import { studentBluebookSettings } from '../../drizzle/schema.js';
+import { YALIES_API_KEY, db } from '../config.js';
+import winston from '../logging/winston.js';
 
 // TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
 export type YaliesResponse =

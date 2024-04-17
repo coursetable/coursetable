@@ -1,13 +1,13 @@
 import React from 'react';
-import { BsEyeSlash, BsEye } from 'react-icons/bs';
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import clsx from 'clsx';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import type { Crn } from '../../utilities/common';
 
 // This module is "borrowed". Maybe we shouldn't do this?
 // eslint-disable-next-line css-modules/no-unused-class
 import styles from './WorksheetToggleButton.module.css';
-import type { Crn } from '../../utilities/common';
 
 export default function WorksheetHideButton({
   hidden,

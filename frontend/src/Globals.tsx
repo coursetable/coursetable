@@ -1,28 +1,27 @@
 import React from 'react';
+import * as Sentry from '@sentry/react';
 import { Row } from 'react-bootstrap';
-import { ToastContainer } from 'react-toastify';
 import {
   InMemoryCache,
   ApolloClient,
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
-import * as Sentry from '@sentry/react';
+import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
-import { FerryProvider } from './contexts/ferryContext';
-import { UserProvider } from './contexts/userContext';
-import { SearchProvider } from './contexts/searchContext';
-import { WorksheetProvider } from './contexts/worksheetContext';
-import { ThemeProvider } from './contexts/themeContext';
-import { GapiProvider } from './contexts/gapiContext';
-
-import { isDev, API_ENDPOINT } from './config';
-import './index.css';
-
 import ErrorPage from './components/ErrorPage';
+import { isDev, API_ENDPOINT } from './config';
+import { FerryProvider } from './contexts/ferryContext';
+import { GapiProvider } from './contexts/gapiContext';
+import { SearchProvider } from './contexts/searchContext';
+import { ThemeProvider } from './contexts/themeContext';
+import { UserProvider } from './contexts/userContext';
+import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
+import { WorksheetProvider } from './contexts/worksheetContext';
+
+import './index.css';
 
 const link = createHttpLink({
   uri: `${API_ENDPOINT}/ferry/v1/graphql`,

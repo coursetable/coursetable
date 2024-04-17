@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import clsx from 'clsx';
 import {
   ListGroup,
   Button,
@@ -8,16 +9,15 @@ import {
   OverlayTrigger,
   Tooltip,
 } from 'react-bootstrap';
-import clsx from 'clsx';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { TbCalendarDown } from 'react-icons/tb';
 
-import { SurfaceComponent } from '../Typography';
-import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import NoCourses from '../Search/NoCourses';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
+import WorksheetCalendarListItem from './WorksheetCalendarListItem';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import NoCourses from '../Search/NoCourses';
+import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {

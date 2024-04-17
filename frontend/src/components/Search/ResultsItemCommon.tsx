@@ -1,20 +1,19 @@
 import React from 'react';
-import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
+import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
 import { AiOutlineStar } from 'react-icons/ai';
-import { IoPersonOutline } from 'react-icons/io5';
 import { BiBookOpen } from 'react-icons/bi';
-import { IoMdSunny } from 'react-icons/io';
-import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import { InfoPopover, TextComponent } from '../Typography';
+import { FcCloseUpMode } from 'react-icons/fc';
+import { IoMdSunny } from 'react-icons/io';
+import { IoPersonOutline } from 'react-icons/io5';
+import type { Season, Listing } from '../../utilities/common';
 import {
   subjects,
   ratingColormap,
   workloadColormap,
 } from '../../utilities/constants';
-import type { Season, Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
@@ -22,6 +21,7 @@ import {
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
+import { InfoPopover, TextComponent } from '../Typography';
 import styles from './ResultsItemCommon.module.css';
 
 export function SeasonTag({

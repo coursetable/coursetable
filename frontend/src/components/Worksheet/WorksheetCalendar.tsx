@@ -1,17 +1,17 @@
 import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import chroma from 'chroma-js';
 
 import CalendarEvent from './CalendarEvent';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import {
   localizer,
   getCalendarEvents,
   type RBCEvent,
 } from '../../utilities/calendar';
-import { useWorksheet } from '../../contexts/worksheetContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {

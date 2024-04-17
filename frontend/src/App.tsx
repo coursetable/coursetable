@@ -1,21 +1,20 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import { Helmet } from 'react-helmet';
 
-import * as Sentry from '@sentry/react';
+import CourseModal from './components/CourseModal/CourseModal';
+import Footer from './components/Footer';
+import Navbar from './components/Navbar/Navbar';
+import Notice from './components/Notice';
+import Spinner from './components/Spinner';
+import { useTutorial } from './contexts/tutorialContext';
+import { useUser } from './contexts/userContext';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
-import Spinner from './components/Spinner';
-import Notice from './components/Notice';
-import Navbar from './components/Navbar/Navbar';
-import Footer from './components/Footer';
-import CourseModal from './components/CourseModal/CourseModal';
-
-import { useUser } from './contexts/userContext';
-import { useTutorial } from './contexts/tutorialContext';
 import { suspended } from './utilities/display';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);

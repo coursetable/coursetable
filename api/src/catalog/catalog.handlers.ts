@@ -1,7 +1,7 @@
 import type express from 'express';
+import { fetchCatalog } from './catalog.utils.js';
 import { FERRY_SECRET } from '../config.js';
 import winston from '../logging/winston.js';
-import { fetchCatalog } from './catalog.utils.js';
 
 export const verifyHeaders = (
   req: express.Request,

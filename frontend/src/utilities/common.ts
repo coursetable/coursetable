@@ -1,5 +1,5 @@
-import { expectType, type TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
+import { expectType, type TypeOf } from 'ts-expect';
 import type {
   ListingFragment,
   ListingRatingsFragment,

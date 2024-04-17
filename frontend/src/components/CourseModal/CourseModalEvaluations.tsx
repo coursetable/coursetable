@@ -1,12 +1,12 @@
 import React from 'react';
-import { Row, Col, Modal } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-import EvaluationResponses from './EvaluationResponses';
+import { Row, Col, Modal } from 'react-bootstrap';
 import EvaluationRatings from './EvaluationRatings';
-import Spinner from '../Spinner';
+import EvaluationResponses from './EvaluationResponses';
 
 import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
 import type { Crn, Season } from '../../utilities/common';
+import Spinner from '../Spinner';
 
 function CourseModalEvaluations({
   seasonCode,

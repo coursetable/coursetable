@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import styles from './Join.module.css';
 import { TextComponent } from '../components/Typography';
+import styles from './Join.module.css';
 
 function Join() {
   return (

@@ -8,15 +8,11 @@ import React, {
 import clsx from 'clsx';
 import { Range } from 'rc-slider';
 
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import Toggle from './Toggle';
-import { Popout } from './Popout';
 import CustomSelect from './CustomSelect';
-import ResultsColumnSort from './ResultsColumnSort';
 import type { Resettable } from './NavbarCatalogSearch';
-
-import { credits } from '../../utilities/constants';
-import { weekdays } from '../../utilities/common';
+import { Popout } from './Popout';
+import ResultsColumnSort from './ResultsColumnSort';
+import Toggle from './Toggle';
 import {
   useSearch,
   type FilterHandle,
@@ -33,6 +29,10 @@ import {
   seasonsOptions,
   courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+
+import { weekdays } from '../../utilities/common';
+import { credits } from '../../utilities/constants';
 import {
   toRealTime,
   to12HourTime,

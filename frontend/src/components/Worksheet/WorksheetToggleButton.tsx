@@ -1,19 +1,19 @@
 import React, { useMemo, useState, useCallback } from 'react';
+import clsx from 'clsx';
+import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { MdErrorOutline } from 'react-icons/md';
-import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
-import clsx from 'clsx';
 
+import { CUR_YEAR } from '../../config';
+import { useWorksheetInfo } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
-import { worksheetColors } from '../../utilities/constants';
-import type { Listing } from '../../utilities/common';
-import { isInWorksheet, checkConflict } from '../../utilities/course';
-import { toggleBookmark, toggleCourseHidden } from '../../utilities/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { useWorksheetInfo } from '../../contexts/ferryContext';
+import { toggleBookmark, toggleCourseHidden } from '../../utilities/api';
+import type { Listing } from '../../utilities/common';
+import { worksheetColors } from '../../utilities/constants';
+import { isInWorksheet, checkConflict } from '../../utilities/course';
 import styles from './WorksheetToggleButton.module.css';
-import { CUR_YEAR } from '../../config';
 
 function CourseConflictIcon({
   listing,

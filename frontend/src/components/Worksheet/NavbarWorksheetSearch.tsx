@@ -2,15 +2,15 @@ import React, { useCallback } from 'react';
 import clsx from 'clsx';
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { LinkLikeText } from '../Typography';
+import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
-import AddFriendDropdown from './AddFriendDropdown';
 
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { useUser } from '../../contexts/userContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../utilities/common';
+import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
 export function NavbarWorksheetSearch() {

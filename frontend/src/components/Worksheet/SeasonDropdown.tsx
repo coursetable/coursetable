@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
+import { isOption, type Option } from '../../contexts/searchContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import type { Season } from '../../utilities/common';
+import { toSeasonString } from '../../utilities/course';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
-import { toSeasonString } from '../../utilities/course';
-import { useWorksheet } from '../../contexts/worksheetContext';
-import { isOption, type Option } from '../../contexts/searchContext';
-import type { Season } from '../../utilities/common';
 
 function SeasonDropdownDesktop() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ListGroup } from 'react-bootstrap';
 import clsx from 'clsx';
-import styles from './WorksheetCalendarListItem.module.css';
-import WorksheetToggleButton from './WorksheetToggleButton';
+import { ListGroup } from 'react-bootstrap';
 import WorksheetHideButton from './WorksheetHideButton';
+import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Listing } from '../../utilities/common';
+import styles from './WorksheetCalendarListItem.module.css';
 
 export default function WorksheetCalendarListItem({
   course,

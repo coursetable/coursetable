@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import { useTheme } from '../contexts/themeContext';
 import { useTutorial } from '../contexts/tutorialContext';
 import styles from './Tutorial.module.css';

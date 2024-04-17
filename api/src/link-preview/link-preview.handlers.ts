@@ -1,8 +1,8 @@
 import type express from 'express';
 import { request } from 'graphql-request';
-import winston from '../logging/winston.js';
-import { GRAPHQL_ENDPOINT } from '../config.js';
 import { courseMetadataQuery } from './link-preview.queries.js';
+import { GRAPHQL_ENDPOINT } from '../config.js';
+import winston from '../logging/winston.js';
 
 // For Prettier formatting. If you add a language tag before the template
 // literal, it will recognize them as embedded languages and format those

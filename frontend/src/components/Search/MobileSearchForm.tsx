@@ -1,15 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import clsx from 'clsx';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
-import clsx from 'clsx';
 import { scroller } from 'react-scroll';
 
-import styles from './MobileSearchForm.module.css';
-import Toggle from './Toggle';
 import CustomSelect from './CustomSelect';
 import ResultsColumnSort from './ResultsColumnSort';
-import { SurfaceComponent, Input, Hr, TextComponent } from '../Typography';
-import type { Season } from '../../utilities/common';
+import Toggle from './Toggle';
 import {
   useSearch,
   type Option,
@@ -21,6 +18,9 @@ import {
   seasonsOptions,
   sortByOptions,
 } from '../../contexts/searchContext';
+import type { Season } from '../../utilities/common';
+import { SurfaceComponent, Input, Hr, TextComponent } from '../Typography';
+import styles from './MobileSearchForm.module.css';
 
 export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();

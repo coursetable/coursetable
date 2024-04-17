@@ -5,8 +5,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { program } from 'commander';
-import sharp from 'sharp';
 import imageSizeWrong from 'image-size';
+import sharp from 'sharp';
 
 // https://arethetypeswrong.github.io/?p=image-size%401.0.2
 // It declared the wrong export shape

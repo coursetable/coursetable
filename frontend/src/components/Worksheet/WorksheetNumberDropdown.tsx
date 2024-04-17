@@ -1,9 +1,9 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
+import { isOption } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
-import { isOption } from '../../contexts/searchContext';
 import styles from './WorksheetNumberDropdown.module.css';
 
 function WorksheetNumDropdownDesktop() {

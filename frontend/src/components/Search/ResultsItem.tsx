@@ -1,27 +1,24 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import clsx from 'clsx';
-
-import { useUser } from '../../contexts/userContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
-import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import SkillBadge from '../SkillBadge';
 import {
   SeasonTag,
   CourseInfoPopover,
   CourseCode,
   ratingTypes,
 } from './ResultsItemCommon';
-import { RatingBubble } from '../Typography';
-
-import styles from './ResultsItem.module.css';
-import colStyles from './ResultsCols.module.css';
-import { getEnrolled, isInWorksheet } from '../../utilities/course';
-import { generateRandomColor, type Listing } from '../../utilities/common';
-
 import { useSearch } from '../../contexts/searchContext';
+import { useUser } from '../../contexts/userContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import { generateRandomColor, type Listing } from '../../utilities/common';
+import { getEnrolled, isInWorksheet } from '../../utilities/course';
+import SkillBadge from '../SkillBadge';
+import { RatingBubble } from '../Typography';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import colStyles from './ResultsCols.module.css';
+import styles from './ResultsItem.module.css';
 
 function Rating({
   course,

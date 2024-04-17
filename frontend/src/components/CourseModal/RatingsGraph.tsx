@@ -1,8 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
-import styles from './RatingsGraph.module.css';
 import { barChartColors } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
+import styles from './RatingsGraph.module.css';
 
 function RatingsGraph({
   ratings,

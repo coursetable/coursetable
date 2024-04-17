@@ -1,14 +1,20 @@
-import express from 'express';
-import session from 'express-session';
-import RedisStore from 'connect-redis';
-import { createClient } from 'redis';
 import fs from 'fs';
 import https from 'https';
+import express from 'express';
+import * as Sentry from '@sentry/node';
+import RedisStore from 'connect-redis';
 import cors from 'cors';
+import session from 'express-session';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
-import * as Sentry from '@sentry/node';
+import { createClient } from 'redis';
 
+import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
+import casAuth from './auth/auth.routes.js';
+import canny from './canny/canny.routes.js';
+import catalog from './catalog/catalog.routes.js';
+import { fetchCatalog } from './catalog/catalog.utils.js';
+import challenge from './challenge/challenge.routes.js';
 import {
   SECURE_PORT,
   INSECURE_PORT,
@@ -20,20 +26,11 @@ import {
   SENTRY_DSN,
   SENTRY_ENVIRONMENT,
 } from './config.js';
+import friends from './friends/friends.routes.js';
+import linkPreview from './link-preview/link-preview.routes.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
-
-// Import routes
-import catalog from './catalog/catalog.routes.js';
-import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
-import casAuth from './auth/auth.routes.js';
-import friends from './friends/friends.routes.js';
-import canny from './canny/canny.routes.js';
 import user from './user/user.routes.js';
-import challenge from './challenge/challenge.routes.js';
-import linkPreview from './link-preview/link-preview.routes.js';
-
-import { fetchCatalog } from './catalog/catalog.utils.js';
 
 const app = express();
 

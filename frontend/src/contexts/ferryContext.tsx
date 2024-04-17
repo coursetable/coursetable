@@ -6,14 +6,14 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import * as Sentry from '@sentry/react';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
-import * as Sentry from '@sentry/react';
 
-import { fetchCatalog, fetchEvals } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
-import seasonsData from '../generated/seasons.json';
 import type { WorksheetCourse } from './worksheetContext';
+import seasonsData from '../generated/seasons.json';
+import { fetchCatalog, fetchEvals } from '../utilities/api';
 import type { Crn, Season, Listing } from '../utilities/common';
 
 export const seasons = seasonsData as Season[];
