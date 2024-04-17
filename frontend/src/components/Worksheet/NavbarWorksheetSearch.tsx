@@ -20,37 +20,40 @@ export function NavbarWorksheetSearch() {
   const { removeFriend } = useUser();
 
   const removeFriendWithConfirmation = useCallback(
-    (friendNetId: NetId, isRequest: boolean) => {
-      toast.warn(
-        <>
-          You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
-          {friendNetId}.{' '}
-          <b>This is irreversible without another friend request.</b> Do you
-          want to continue?
-          <br />
-          <LinkLikeText
-            className="mx-2"
-            onClick={async () => {
-              if (!isRequest && person === friendNetId)
-                handlePersonChange('me');
-              await removeFriend(friendNetId, isRequest);
-              toast.dismiss(`remove-${friendNetId}`);
-            }}
-          >
-            Yes
-          </LinkLikeText>
-          <LinkLikeText
-            className="mx-2"
-            onClick={() => {
-              toast.dismiss(`remove-${friendNetId}`);
-            }}
-          >
-            No
-          </LinkLikeText>
-        </>,
-        { autoClose: false, toastId: `remove-${friendNetId}` },
-      );
-    },
+    (friendNetId: NetId, isRequest: boolean) =>
+      new Promise<void>((resolve) => {
+        toast.warn(
+          <>
+            You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
+            {friendNetId}.{' '}
+            <b>This is irreversible without another friend request.</b> Do you
+            want to continue?
+            <br />
+            <LinkLikeText
+              className="mx-2"
+              onClick={async () => {
+                if (!isRequest && person === friendNetId)
+                  handlePersonChange('me');
+                await removeFriend(friendNetId, isRequest);
+                resolve();
+                toast.dismiss(`remove-${friendNetId}`);
+              }}
+            >
+              Yes
+            </LinkLikeText>
+            <LinkLikeText
+              className="mx-2"
+              onClick={() => {
+                toast.dismiss(`remove-${friendNetId}`);
+                resolve();
+              }}
+            >
+              No
+            </LinkLikeText>
+          </>,
+          { autoClose: false, toastId: `remove-${friendNetId}` },
+        );
+      }),
     [handlePersonChange, person, removeFriend],
   );
 
