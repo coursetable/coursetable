@@ -57,11 +57,7 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
         if (listing) {
           Object.assign(listing, ratings);
         } else {
-          Sentry.captureException(
-            new Error(
-              `Catalogs and evals are out of sync: no basic catalog for ${season}-${crn}`,
-            ),
-          );
+          // Unactionable error, courses may have failed to load
         }
       }
     }
@@ -193,21 +189,15 @@ export function useWorksheetInfo(
       if (!worksheet) continue;
       for (const { crn, color, hidden } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
-        if (!listing) {
-          // This error is unactionable.
-          // https://github.com/coursetable/coursetable/pull/1508
-          // Sentry.captureException(
-          //   new Error(
-          //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
-          //   ),
-          // );
-        } else {
+        if (listing) {
           dataReturn.push({
             crn,
             color,
             listing,
             hidden,
           });
+        } else {
+          // Unactionable error, courses may have failed to load
         }
       }
     }
