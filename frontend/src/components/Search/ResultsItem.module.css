@@ -35,10 +35,16 @@
   justify-content: space-between;
   max-width: 1600px;
   user-select: none;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
   font-size: 13px;
   line-height: 32px;
+}
+
+@media (width < 1320px) {
+  .resultItemContent {
+    line-height: 28px;
+  }
 }
 
 .ellipsisText {

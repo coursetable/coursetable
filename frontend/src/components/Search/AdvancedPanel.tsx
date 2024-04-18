@@ -1,10 +1,4 @@
-import React, {
-  useImperativeHandle,
-  useState,
-  useMemo,
-  useId,
-  useRef,
-} from 'react';
+import React, { useImperativeHandle, useState, useId, useRef } from 'react';
 import clsx from 'clsx';
 import { Range } from 'rc-slider';
 
@@ -104,7 +98,6 @@ function BaseSlider<K extends NumericFilters>(
   },
   ref: React.ForwardedRef<Resettable>,
 ) {
-  const { isLgDesktop } = useWindowDimensions();
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName];
   // This is exactly the same as the filter handle, except it updates
@@ -117,15 +110,6 @@ function BaseSlider<K extends NumericFilters>(
       setRangeValue(defaultFilters[handleName]);
     },
   }));
-  const rangeHandleStyle = useMemo(() => {
-    if (isLgDesktop) return undefined;
-    const style: React.CSSProperties = { height: '12px', width: '12px' };
-    return [style, style];
-  }, [isLgDesktop]);
-  const rangeRailStyle = useMemo((): React.CSSProperties => {
-    if (isLgDesktop) return {};
-    return { marginTop: '-1px' };
-  }, [isLgDesktop]);
 
   return (
     <div className={styles.advancedRow}>
@@ -162,9 +146,6 @@ function BaseSlider<K extends NumericFilters>(
                 )
               : undefined
           }
-          handleStyle={rangeHandleStyle}
-          railStyle={rangeRailStyle}
-          trackStyle={[rangeRailStyle]}
           value={rangeValue}
           onChange={(value) => {
             setRangeValue(value as [number, number]);

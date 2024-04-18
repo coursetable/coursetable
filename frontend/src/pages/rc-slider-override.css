@@ -7,6 +7,13 @@
   background: white !important;
 }
 
+@media (width < 1320px) {
+  .rc-slider-handle {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 .rc-slider-rail {
   left: 0 !important;
 }
