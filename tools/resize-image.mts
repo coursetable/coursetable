@@ -1,5 +1,4 @@
 // Adopted from https://github.com/facebook/docusaurus/blob/1a62b41e319845af33375d1bf7763cb83c73bb56/admin/scripts/resizeImage.js
-/* eslint-disable import/no-extraneous-dependencies */
 
 import fs from 'fs/promises';
 import path from 'path';

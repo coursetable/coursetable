@@ -116,7 +116,7 @@ function BaseSlider<K extends NumericFilters>(
           `${filterLabels[handleName]} rating lower bound`,
           `${filterLabels[handleName]} rating upper bound`,
         ]}
-        className={clsx(styles.range, styles.mainRange)}
+        className={styles.range}
         min={defaultFilters[handleName][0]}
         max={defaultFilters[handleName][1]}
         step={0.1}
