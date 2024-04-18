@@ -78,6 +78,7 @@
     "@types/uuid": "^9.0.8",
     "@vitejs/plugin-basic-ssl": "^1.1.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "dotenv": "^16.4.5",
     "mdast-util-to-string": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "rollup-plugin-visualizer": "^5.12.0",

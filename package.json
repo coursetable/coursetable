@@ -14,8 +14,8 @@
     "depcheck": "bunx depcheck . --ignore-patterns=api,frontend && bunx depcheck api && bunx depcheck frontend",
     "format": "prettier --write .",
     "format:check": "prettier -l .",
-    "lint": "eslint --fix \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
-    "lint:check": "eslint \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
+    "lint": "eslint --fix .",
+    "lint:check": "eslint .",
     "lint:css": "stylelint --fix \"**/*.css\"",
     "lint:css:check": "stylelint \"**/*.css\"",
     "resize-image": "bun tools/resize-image.mts",
@@ -29,18 +29,10 @@
   "devDependencies": {
     "@types/image-size": "^0.8.0",
     "@types/sharp": "^0.32.0",
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
-    "@typescript-eslint/parser": "^7.7.0",
     "commander": "^12.0.0",
     "eslint": "^8.56.0",
-    "eslint-config-jc": "^4.3.0",
+    "eslint-config-jc": "^5.1.0",
     "eslint-plugin-css-modules": "^2.12.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-n": "^17.2.1",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-regexp": "^2.5.0",
     "image-size": "^1.1.1",
     "prettier": "^3.2.5",
     "sharp": "^0.33.3",
@@ -48,6 +40,7 @@
     "stylelint-config-standard": "^36.0.0",
     "tsconfig-jc": "^2.3.1",
     "typescript": "~5.4.5",
+    "typescript-eslint": "^7.7.0",
     "typescript-plugin-css-modules": "^5.1.0"
   }
 }

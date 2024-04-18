@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import dns from 'dns';
 import mdx from '@mdx-js/rollup';
 import basicSsl from '@vitejs/plugin-basic-ssl';
