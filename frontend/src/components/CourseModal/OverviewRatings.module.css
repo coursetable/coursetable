@@ -1,8 +1,8 @@
 .ratingBubble {
+  color: unset;
   border-radius: 8px;
   max-height: 3rem;
   transition: max-height 0.2s ease-out;
-  cursor: pointer;
   flex: none;
   background-color: rgb(190 221 255);
 }
@@ -12,6 +12,7 @@
 }
 
 .ratingBubble:hover {
+  color: unset;
   background-color: rgb(92 168 250);
   max-height: 50px;
   transition: max-height 0.2s ease-in;

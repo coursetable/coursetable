@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
@@ -11,6 +12,7 @@ import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import { generateRandomColor, type Listing } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../utilities/course';
+import { useCourseModalLink } from '../../utilities/display';
 import { RatingBubble } from '../Typography';
 
 import styles from './OverviewRatings.module.css';
@@ -103,63 +105,39 @@ function RatingNumbers({
   ));
 }
 
-function RatingContent({
-  offerings,
+function CourseLink({
+  offering,
   filter,
   gotoCourse,
 }: {
-  readonly offerings: CourseOffering[];
+  readonly offering: CourseOffering;
   readonly filter: Filter;
   readonly gotoCourse: (x: Listing) => void;
 }) {
-  const { user } = useUser();
+  const target = useCourseModalLink(offering.listing);
   return (
-    <>
-      <Row className="m-auto pb-1 justify-content-center">
-        <Col xs={5} className="d-flex justify-content-center px-0 me-3">
-          <span className={styles.evaluationHeader}>Season</span>
-        </Col>
-        <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-          <span className={styles.evaluationHeader}>Class</span>
-        </Col>
-        <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-          <span className={styles.evaluationHeader}>Prof</span>
-        </Col>
-        <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-          <span className={styles.evaluationHeader}>Work</span>
-        </Col>
-      </Row>
-      {offerings.map((offering) => (
-        <Row
-          key={offering.listing.season_code + offering.listing.crn}
-          className="m-auto py-1 justify-content-center"
-        >
-          <Col
-            as="button"
-            xs={5}
-            className={clsx(styles.ratingBubble, 'px-0 me-3 text-center')}
-            tabIndex={0}
-            onClick={() => {
-              // Note, we purposefully use the listing data fetched
-              // from GraphQL instead of the static seasons data.
-              // This means on navigation we don't have to possibly
-              // fetch a new season and cause a loading screen.
-              gotoCourse(offering.listing);
-            }}
-          >
-            <strong>{toSeasonString(offering.listing.season_code)}</strong>
-            <span className={clsx(styles.details, 'mx-auto')}>
-              {filter === 'professor'
-                ? offering.listing.course_code
-                : filter === 'both'
-                  ? `Section ${offering.listing.section}`
-                  : offering.professor[0]}
-            </span>
-          </Col>
-          <RatingNumbers offering={offering} hasEvals={user.hasEvals} />
-        </Row>
-      ))}
-    </>
+    <Col
+      as={Link}
+      xs={5}
+      className={clsx(styles.ratingBubble, 'px-0 me-3 text-center')}
+      to={target}
+      onClick={() => {
+        // Note, we purposefully use the listing data fetched
+        // from GraphQL instead of the static seasons data.
+        // This means on navigation we don't have to possibly
+        // fetch a new season and cause a loading screen.
+        gotoCourse(offering.listing);
+      }}
+    >
+      <strong>{toSeasonString(offering.listing.season_code)}</strong>
+      <span className={clsx(styles.details, 'mx-auto')}>
+        {filter === 'professor'
+          ? offering.listing.course_code
+          : filter === 'both'
+            ? `Section ${offering.listing.section}`
+            : offering.professor[0]}
+      </span>
+    </Col>
   );
 }
 
@@ -172,6 +150,7 @@ function OverviewRatings({
   readonly listing: Listing;
   readonly data: SameCourseOrProfOfferingsQuery | undefined;
 }) {
+  const { user } = useUser();
   const overlapSections = useMemo(() => {
     const overlapSections: {
       [filter in Filter]: CourseOffering[];
@@ -267,11 +246,35 @@ function OverviewRatings({
         />
       </div>
       {overlapSections[filter].length !== 0 ? (
-        <RatingContent
-          offerings={overlapSections[filter]}
-          filter={filter}
-          gotoCourse={gotoCourse}
-        />
+        <>
+          <Row className="m-auto pb-1 justify-content-center">
+            <Col xs={5} className="d-flex justify-content-center px-0 me-3">
+              <span className={styles.evaluationHeader}>Season</span>
+            </Col>
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+              <span className={styles.evaluationHeader}>Class</span>
+            </Col>
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+              <span className={styles.evaluationHeader}>Prof</span>
+            </Col>
+            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+              <span className={styles.evaluationHeader}>Work</span>
+            </Col>
+          </Row>
+          {overlapSections[filter].map((offering) => (
+            <Row
+              key={offering.listing.season_code + offering.listing.crn}
+              className="m-auto py-1 justify-content-center"
+            >
+              <CourseLink
+                offering={offering}
+                filter={filter}
+                gotoCourse={gotoCourse}
+              />
+              <RatingNumbers offering={offering} hasEvals={user.hasEvals} />
+            </Row>
+          ))}
+        </>
       ) : (
         <Row className="m-auto justify-content-center">
           <strong>No Results</strong>

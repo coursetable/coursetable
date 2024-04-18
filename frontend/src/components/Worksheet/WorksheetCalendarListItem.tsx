@@ -1,11 +1,12 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { ListGroup } from 'react-bootstrap';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Listing } from '../../utilities/common';
+import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
 export default function WorksheetCalendarListItem({
@@ -15,7 +16,7 @@ export default function WorksheetCalendarListItem({
   readonly course: Listing;
   readonly hidden: boolean;
 }) {
-  const [, setSearchParams] = useSearchParams();
+  const target = useCourseModalLink(course);
   const { setHoverCourse } = useWorksheet();
 
   return (
@@ -24,24 +25,18 @@ export default function WorksheetCalendarListItem({
       onMouseEnter={() => setHoverCourse(course.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
-      <button
-        type="button"
+      <Link
+        to={target}
         className={clsx(
           styles.courseCode,
           hidden && styles.courseCodeHidden,
           'ps-1 pe-2',
         )}
-        onClick={() => {
-          setSearchParams((prev) => {
-            prev.set('course-modal', `${course.season_code}-${course.crn}`);
-            return prev;
-          });
-        }}
       >
         <strong>{course.course_code}</strong>
         <br />
         <span className={styles.courseTitle}>{course.title}</span>
-      </button>
+      </Link>
       <div className="d-flex align-items-center">
         <div className={clsx(!hidden && styles.hideButtonHidden)}>
           <WorksheetHideButton crn={course.crn} hidden={hidden} />

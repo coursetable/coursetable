@@ -60,6 +60,8 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
 
   if (data.type === 'searchResult') {
     return (
+      // TODO
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
       <div
         {...innerProps}
         className={styles.friendOption}
@@ -85,6 +87,8 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
   // For incoming requests
   if (data.type === 'incomingRequest') {
     return (
+      // TODO
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
       <div
         {...innerProps}
         className={styles.friendOption}

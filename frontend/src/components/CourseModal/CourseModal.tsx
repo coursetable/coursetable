@@ -13,9 +13,9 @@ import { useUser } from '../../contexts/userContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
 import { extraInfo } from '../../utilities/constants';
 import { toSeasonString, truncatedText } from '../../utilities/course';
-import { suspended } from '../../utilities/display';
+import { suspended, useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
-import { TextComponent, LinkLikeText } from '../Typography';
+import { TextComponent } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 
@@ -152,6 +152,7 @@ function CourseModal() {
     });
   }, [history.length, searchParams, requestSeasons, courses]);
   const listing = history[history.length - 1];
+  const backTarget = useCourseModalLink(history[history.length - 2]);
 
   if (!listing) return null;
   const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.title} | CourseTable`;
@@ -185,7 +186,8 @@ function CourseModal() {
         <Modal.Header className={styles.modalHeader} closeButton>
           <div className={styles.modalTop}>
             {history.length > 1 && (
-              <LinkLikeText
+              <Link
+                to={backTarget}
                 onClick={() => {
                   setHistory(history.slice(0, -1));
                   setView('overview');
@@ -193,7 +195,7 @@ function CourseModal() {
                 className={styles.backArrow}
               >
                 <IoMdArrowRoundBack size={30} />
-              </LinkLikeText>
+              </Link>
             )}
             <div>
               <Modal.Title>
@@ -256,10 +258,6 @@ function CourseModal() {
               )
                 return;
               setHistory([...history, l]);
-              setSearchParams((prev) => {
-                prev.set('course-modal', `${l.season_code}-${l.crn}`);
-                return prev;
-              });
             }}
             listing={listing}
           />

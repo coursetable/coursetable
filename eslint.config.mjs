@@ -82,11 +82,6 @@ export default tseslint.config(
       ],
       'react/jsx-child-element-spacing': 'off',
       'react/jsx-no-bind': 'off',
-      // TODO: needs a lot more a11y audits
-      'jsx-a11y/anchor-ambiguous-text': 'off',
-      'jsx-a11y/click-events-have-key-events': 'off',
-      'jsx-a11y/interactive-supports-focus': 'off',
-      'jsx-a11y/prefer-tag-over-role': 'off',
       'react/no-array-index-key': 'off',
       // TODO: we should eventually get rid of `in` operator
       'no-restricted-syntax': 'off',

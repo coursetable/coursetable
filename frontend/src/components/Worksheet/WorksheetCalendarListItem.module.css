@@ -45,6 +45,10 @@
   color: var(--color-text);
 }
 
+.courseCode:hover {
+  color: unset;
+}
+
 .courseCodeHidden {
   color: var(--color-hidden);
 }

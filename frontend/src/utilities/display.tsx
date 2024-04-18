@@ -5,6 +5,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import type { Listing } from './common';
 import Spinner from '../components/Spinner';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -117,3 +119,14 @@ export const scrollToTop: MouseEventHandler = (event) => {
 
   if (!newPage) window.scrollTo({ top: 0, left: 0 });
 };
+
+// Please use this instead of creating a new search param. This will preserve
+// existing params.
+export function useCourseModalLink(listing: Listing | undefined) {
+  const [searchParams] = useSearchParams();
+  if (!listing) return `?${searchParams.toString()}`;
+
+  const newSearch = new URLSearchParams(searchParams);
+  newSearch.set('course-modal', `${listing.season_code}-${listing.crn}`);
+  return `?${newSearch.toString()}`;
+}

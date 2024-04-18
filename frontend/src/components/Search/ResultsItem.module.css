@@ -1,9 +1,18 @@
 .resultItem {
-  outline: none !important;
+  color: unset;
   cursor: pointer;
   transition:
     background-color var(--trans-dur),
     color var(--trans-dur);
+}
+
+.resultItem:hover {
+  background-color: var(--color-select-hover) !important;
+  color: unset;
+}
+
+.resultItem:focus-visible {
+  z-index: 1;
 }
 
 .firstResultItem {
@@ -24,10 +33,6 @@
 
 .inWorksheetResultItem {
   background-color: var(--color-primary-light);
-}
-
-.resultItem:hover {
-  background-color: var(--color-select-hover) !important;
 }
 
 .resultItemContent {

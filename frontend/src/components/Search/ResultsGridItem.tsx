@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
@@ -8,6 +8,7 @@ import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { generateRandomColor, type Listing } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
+import { useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
@@ -67,7 +68,7 @@ function ResultsGridItem({
   readonly numCols: number;
   readonly multiSeasons: boolean;
 }) {
-  const [, setSearchParams] = useSearchParams();
+  const target = useCourseModalLink(course);
   // Bootstrap column width depending on the number of columns
   const colWidth = 12 / numCols;
   const { user } = useUser();
@@ -86,20 +87,13 @@ function ResultsGridItem({
 
   return (
     <Col md={colWidth} className={styles.container}>
-      <div
-        role="button"
-        onClick={() => {
-          setSearchParams((prev) => {
-            prev.set('course-modal', `${course.season_code}-${course.crn}`);
-            return prev;
-          });
-        }}
+      <Link
+        to={target}
         className={clsx(
           styles.resultItem,
           inWorksheet && styles.inWorksheetResultItem,
           'px-3 pb-3',
         )}
-        tabIndex={0}
       >
         <div className="d-flex justify-content-between">
           <div className={styles.courseCodes}>
@@ -157,7 +151,7 @@ function ResultsGridItem({
             </div>
           </div>
         </div>
-      </div>
+      </Link>
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
           listing={course}

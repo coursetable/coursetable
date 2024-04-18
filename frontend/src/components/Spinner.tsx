@@ -7,6 +7,7 @@ export default function LoadSpinner(
 ) {
   return (
     <div className="d-flex justify-content-center">
+      {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role */}
       <Spinner
         {...props}
         className={clsx(props.className, 'm-auto')}

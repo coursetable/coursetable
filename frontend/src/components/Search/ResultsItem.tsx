@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
@@ -14,6 +14,7 @@ import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { generateRandomColor, type Listing } from '../../utilities/common';
 import { getEnrolled, isInWorksheet } from '../../utilities/course';
+import { useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { RatingBubble } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
@@ -77,12 +78,12 @@ function ResultsItem({
   readonly isOdd: boolean;
   readonly style?: React.CSSProperties;
 }) {
-  const [, setSearchParams] = useSearchParams();
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
   const friends = numFriends[`${course.season_code}${course.crn}`];
+  const target = useCourseModalLink(course);
 
   const inWorksheet = useMemo(
     () =>
@@ -96,8 +97,8 @@ function ResultsItem({
   );
 
   return (
-    <div
-      role="button"
+    <Link
+      to={target}
       className={clsx(
         styles.resultItem,
         inWorksheet && styles.inWorksheetResultItem,
@@ -105,13 +106,6 @@ function ResultsItem({
         isOdd ? styles.oddResultItem : styles.evenResultItem,
         course.extra_info !== 'ACTIVE' && styles.cancelledClass,
       )}
-      onClick={() => {
-        setSearchParams((prev) => {
-          prev.set('course-modal', `${course.season_code}-${course.crn}`);
-          return prev;
-        });
-      }}
-      tabIndex={0}
       style={style}
     >
       <div className={styles.resultItemContent}>
@@ -195,7 +189,7 @@ function ResultsItem({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

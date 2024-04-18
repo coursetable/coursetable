@@ -1,11 +1,13 @@
 .container {
+  position: relative;
   transition: 0.1s;
-  cursor: pointer;
   padding: 0 0.5rem 0.75rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .resultItem {
+  display: block;
+  color: unset;
   border-radius: 8px;
   transition:
     border-color var(--trans-dur),
@@ -13,14 +15,9 @@
     color var(--trans-dur);
 }
 
-.resultItem:focus,
-.resultItem:active {
-  border: none;
-  outline: none;
-}
-
 .resultItem:hover {
   background-color: var(--color-select-hover) !important;
+  color: unset;
 }
 
 .resultItem:not(.inWorksheetResultItem) {
