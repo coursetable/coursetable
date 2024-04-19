@@ -7,27 +7,32 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur) !important;
-  display: flex;
-  justify-content: space-between;
-  max-width: 1600px;
   user-select: none;
   overflow: hidden;
 }
 
-.resultsHeader {
-  line-height: 30px;
+.resultsHeaderContent {
   display: flex;
+  align-items: center;
   flex-wrap: nowrap;
-  font-size: 14px;
-  font-weight: 600;
+  justify-content: space-between;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .resultsStat {
   flex-grow: 1;
 }
 
+.headerCol {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 30px;
+}
+
 @media (width < 1320px) {
-  .resultsHeader {
+  .headerCol {
     font-size: 12px;
     line-height: 24px;
   }

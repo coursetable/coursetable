@@ -3,6 +3,7 @@
   transition: 0.1s;
   padding: 0 0.5rem 0.75rem;
   overflow: visible;
+  height: 100%;
 }
 
 .resultItem {
@@ -13,6 +14,7 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
+  height: 100%;
 }
 
 .resultItem:hover {

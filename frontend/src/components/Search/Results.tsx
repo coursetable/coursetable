@@ -86,7 +86,6 @@ function Results({
             height={window.innerHeight}
             itemCount={Math.ceil(data.length / numCols)}
             itemSize={178}
-            className="px-1 pt-3"
             // Inline styles because react-window also injects inline styles
             style={{
               width: '100%',
@@ -138,11 +137,10 @@ function Results({
           >
             {({ index, style: itemStyle }) => (
               <ResultsItem
-                isOdd={index % 2 === 1}
+                index={index}
                 style={itemStyle}
                 course={data[index]!}
                 multiSeasons={multiSeasons}
-                isFirst={index === 0}
               />
             )}
           </FixedSizeList>

@@ -22,7 +22,7 @@ function HeaderCol({
   readonly sortOption?: SortKeys;
 }) {
   return (
-    <div className={clsx(className, styles.resultsHeader)}>
+    <span className={clsx(className, styles.headerCol, styles.oneLine)}>
       {tooltip ? (
         <OverlayTrigger
           placement="bottom"
@@ -32,19 +32,15 @@ function HeaderCol({
             </Tooltip>
           )}
         >
-          <div className={styles.oneLine}>
-            <span>{children}</span>
-          </div>
+          <span>{children}</span>
         </OverlayTrigger>
       ) : (
-        <div className={styles.oneLine}>
-          <span>{children}</span>
-        </div>
+        <span>{children}</span>
       )}
       {sortOption && (
         <ResultsColumnSort selectOption={sortByOptions[sortOption]} />
       )}
-    </div>
+    </span>
   );
 }
 
@@ -85,38 +81,34 @@ function ResultsHeaders({
       style={{ top: navbarHeight }}
       data-tutorial="catalog-5"
     >
-      <div className={colStyles.controlCol}>
-        <button
-          type="button"
-          className={clsx(styles.toggle, 'd-flex ms-auto my-auto')}
-          onClick={() => setIsListView(!isListView)}
-          aria-label={
-            isListView ? 'Switch to grid view' : 'Switch to list view'
-          }
-        >
-          {!isListView ? (
-            <FaBars className="m-auto" size={15} />
-          ) : (
-            <FaTh className="m-auto" size={15} />
-          )}
-        </button>
-      </div>
-      {isListView ? (
-        <>
-          {multiSeasons && (
-            <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
-          )}
-          <HeaderCol
-            className={colStyles.codeCol}
-            tooltip="Course Code and Section"
-            sortOption="course_code"
+      <div className={styles.resultsHeaderContent}>
+        <span className={colStyles.controlCol}>
+          <button
+            type="button"
+            className={clsx(styles.toggle, 'd-flex m-auto')}
+            onClick={() => setIsListView(!isListView)}
+            aria-label={
+              isListView ? 'Switch to grid view' : 'Switch to list view'
+            }
           >
-            Code
-          </HeaderCol>
-          <HeaderCol className={colStyles.titleCol} sortOption="title">
-            Title
-          </HeaderCol>
-          <div className="d-flex">
+            {!isListView ? <FaBars size={15} /> : <FaTh size={15} />}
+          </button>
+        </span>
+        {isListView ? (
+          <>
+            {multiSeasons && (
+              <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
+            )}
+            <HeaderCol
+              className={colStyles.codeCol}
+              tooltip="Course Code and Section"
+              sortOption="course_code"
+            >
+              Code
+            </HeaderCol>
+            <HeaderCol className={colStyles.titleCol} sortOption="title">
+              Title
+            </HeaderCol>
             <HeaderCol
               className={colStyles.overallCol}
               tooltip={
@@ -161,64 +153,66 @@ function ResultsHeaders({
             >
               Professors
             </HeaderCol>
+            <HeaderCol
+              className={colStyles.enrollCol}
+              tooltip={
+                multiSeasons ? (
+                  <span>
+                    Class Enrollment
+                    <br />
+                    (If the course has not occurred/completed, based on the most
+                    recent past instance of this course. a ~ means a different
+                    professor was teaching)
+                  </span>
+                ) : (
+                  <span>
+                    Previous Class Enrollment
+                    <br />
+                    (based on the most recent past instance of this course. a ~
+                    means a different professor was teaching)
+                  </span>
+                )
+              }
+              sortOption="last_enrollment"
+            >
+              #
+            </HeaderCol>
+            <HeaderCol className={colStyles.skillAreaCol}>
+              Skills/Areas
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.meetCol}
+              tooltip={
+                <span>
+                  Days of the Week and Times
+                  <br />
+                  (sort order based on day and starting time)
+                </span>
+              }
+              sortOption="times_by_day"
+            >
+              Meets
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.locCol}
+              sortOption="locations_summary"
+            >
+              Location
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.friendsCol}
+              tooltip="Number of friends shopping this course"
+              sortOption="friend"
+            >
+              #F
+            </HeaderCol>
+          </>
+        ) : (
+          <div className={clsx(styles.headerCol, styles.resultsStat)}>
+            {`Showing ${numResults} course${numResults === 1 ? '' : 's'}...`}
           </div>
-          <HeaderCol
-            className={colStyles.enrollCol}
-            tooltip={
-              multiSeasons ? (
-                <span>
-                  Class Enrollment
-                  <br />
-                  (If the course has not occurred/completed, based on the most
-                  recent past instance of this course. a ~ means a different
-                  professor was teaching)
-                </span>
-              ) : (
-                <span>
-                  Previous Class Enrollment
-                  <br />
-                  (based on the most recent past instance of this course. a ~
-                  means a different professor was teaching)
-                </span>
-              )
-            }
-            sortOption="last_enrollment"
-          >
-            #
-          </HeaderCol>
-          <HeaderCol className={colStyles.skillAreaCol}>Skills/Areas</HeaderCol>
-          <HeaderCol
-            className={colStyles.meetCol}
-            tooltip={
-              <span>
-                Days of the Week and Times
-                <br />
-                (sort order based on day and starting time)
-              </span>
-            }
-            sortOption="times_by_day"
-          >
-            Meets
-          </HeaderCol>
-          <HeaderCol
-            className={colStyles.locCol}
-            sortOption="locations_summary"
-          >
-            Location
-          </HeaderCol>
-          <HeaderCol
-            className={colStyles.friendsCol}
-            tooltip="Number of friends shopping this course"
-            sortOption="friend"
-          >
-            #F
-          </HeaderCol>
-        </>
-      ) : (
-        <div className={clsx(styles.resultsHeader, styles.resultsStat)}>
-          {`Showing ${numResults} course${numResults === 1 ? '' : 's'}...`}
-        </div>
-      )}
+        )}
+      </div>
     </SurfaceComponent>
   );
 }

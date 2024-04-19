@@ -1,7 +1,7 @@
 .controlCol {
   display: flex;
-  justify-content: end;
-  width: 2rem;
+  justify-content: center;
+  width: 2.5rem;
 }
 
 .seasonCol {
@@ -21,15 +21,18 @@
 
 .overallCol {
   white-space: nowrap;
+  flex-grow: 1;
   width: var(--width-col-overall);
 }
 
 .workloadCol {
   white-space: nowrap;
+  flex-grow: 1;
   width: var(--width-col-workload);
 }
 
 .profCol {
+  flex-grow: 1;
   width: var(--width-col-prof);
 }
 

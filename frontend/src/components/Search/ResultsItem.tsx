@@ -68,14 +68,12 @@ function Rating({
 function ResultsItem({
   course,
   multiSeasons,
-  isFirst,
-  isOdd,
+  index,
   style,
 }: {
   readonly course: Listing;
   readonly multiSeasons: boolean;
-  readonly isFirst: boolean;
-  readonly isOdd: boolean;
+  readonly index: number;
   readonly style?: React.CSSProperties;
 }) {
   const { user } = useUser();
@@ -102,78 +100,73 @@ function ResultsItem({
       className={clsx(
         styles.resultItem,
         inWorksheet && styles.inWorksheetResultItem,
-        isFirst && styles.firstResultItem,
-        isOdd ? styles.oddResultItem : styles.evenResultItem,
+        index % 2 === 1 ? styles.oddResultItem : styles.evenResultItem,
         course.extra_info !== 'ACTIVE' && styles.cancelledClass,
       )}
       style={style}
     >
       <div className={styles.resultItemContent}>
-        <div
+        <span
           className={colStyles.controlCol}
-          data-tutorial={isFirst && 'catalog-6'}
+          data-tutorial={index === 0 && 'catalog-6'}
         >
           <WorksheetToggleButton
             listing={course}
             modal={false}
             inWorksheet={inWorksheet}
           />
-        </div>
+        </span>
         {multiSeasons && (
-          <div className={colStyles.seasonCol}>
+          <span className={colStyles.seasonCol}>
             <SeasonTag season={course.season_code} className={styles.season} />
-          </div>
+          </span>
         )}
-        <div className={colStyles.codeCol}>
-          <div className={clsx(styles.ellipsisText, 'fw-bold')}>
+        <span className={colStyles.codeCol}>
+          <span className={clsx(styles.ellipsisText, 'fw-bold')}>
             <CourseCode course={course} subdueSection />
-          </div>
-        </div>
+          </span>
+        </span>
         <CourseInfoPopover course={course}>
-          <div className={colStyles.titleCol}>
-            <div className={styles.ellipsisText}>{course.title}</div>
-          </div>
+          <span className={colStyles.titleCol}>
+            <span className={styles.ellipsisText}>{course.title}</span>
+          </span>
         </CourseInfoPopover>
-        <div className="d-flex">
-          <div className={colStyles.overallCol}>
-            <Rating course={course} hasEvals={user.hasEvals} name="Class" />
-          </div>
-          <div className={colStyles.workloadCol}>
-            <Rating course={course} hasEvals={user.hasEvals} name="Workload" />
-          </div>
-          <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
-            <div className={clsx('me-2 h-100', styles.profRating)}>
-              <Rating
-                course={course}
-                hasEvals={user.hasEvals}
-                name="Professor"
-              />
-            </div>
-            <div className={styles.ellipsisText}>
-              {course.professor_names.length === 0
-                ? 'TBA'
-                : course.professor_names.join(' • ')}
-            </div>
-          </div>
-        </div>
-        <div className={clsx('d-flex', colStyles.enrollCol)}>
+        <span className={colStyles.overallCol}>
+          <Rating course={course} hasEvals={user.hasEvals} name="Class" />
+        </span>
+        <span className={colStyles.workloadCol}>
+          <Rating course={course} hasEvals={user.hasEvals} name="Workload" />
+        </span>
+        <span className={clsx('d-flex align-items-center', colStyles.profCol)}>
+          <span className={clsx('me-2 h-100', styles.profRating)}>
+            <Rating course={course} hasEvals={user.hasEvals} name="Professor" />
+          </span>
+          <span className={styles.ellipsisText}>
+            {course.professor_names.length === 0
+              ? 'TBA'
+              : course.professor_names.join(' • ')}
+          </span>
+        </span>
+        <span className={clsx('d-flex', colStyles.enrollCol)}>
           <span className="my-auto">{getEnrolled(course, 'display')}</span>
-        </div>
-        <div className={clsx('d-flex', colStyles.skillAreaCol)}>
+        </span>
+        <span className={clsx('d-flex', colStyles.skillAreaCol)}>
           <span className={styles.skillsAreas}>
-            {[...course.skills, ...course.areas].map((skill, index) => (
-              <SkillBadge skill={skill} className="my-auto" key={index} />
+            {[...course.skills, ...course.areas].map((skill) => (
+              <SkillBadge skill={skill} className="my-auto" key={skill} />
             ))}
           </span>
-        </div>
-        <div className={colStyles.meetCol}>
-          <div className={styles.ellipsisText}>{course.times_summary}</div>
-        </div>
-        <div className={colStyles.locCol}>
-          <div className={styles.ellipsisText}>{course.locations_summary}</div>
-        </div>
-        <div className={clsx('d-flex', colStyles.friendsCol)}>
-          {friends && friends.size > 0 ? (
+        </span>
+        <span className={colStyles.meetCol}>
+          <span className={styles.ellipsisText}>{course.times_summary}</span>
+        </span>
+        <span className={colStyles.locCol}>
+          <span className={styles.ellipsisText}>
+            {course.locations_summary}
+          </span>
+        </span>
+        <span className={colStyles.friendsCol}>
+          {friends && friends.size > 0 && (
             <OverlayTrigger
               placement="top"
               overlay={(props) => (
@@ -182,12 +175,10 @@ function ResultsItem({
                 </Tooltip>
               )}
             >
-              <span className="my-auto">{friends.size}</span>
+              <span>{friends.size}</span>
             </OverlayTrigger>
-          ) : (
-            <span className="my-auto" />
           )}
-        </div>
+        </span>
       </div>
     </Link>
   );
