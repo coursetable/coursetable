@@ -32,7 +32,7 @@ function NavbarLink({
 }
 
 //  Wrapper for nav collapse for # of results shown text
-function NavCollapseWrapper({
+function NavbarRight({
   children,
   wrap,
 }: {
@@ -46,6 +46,8 @@ function NavCollapseWrapper({
       </div>
     );
   }
+  // It's important to not render this wrapper at all, otherwise on mobile
+  // it will still be a column on the right
   return children;
 }
 
@@ -97,13 +99,14 @@ export default function CourseTableNavbar() {
     location.pathname === '/worksheet';
 
   return (
-    <SurfaceComponent className={styles.stickyNavbar}>
+    <SurfaceComponent className={styles.container}>
       <Navbar
         expanded={navExpanded}
         onToggle={setNavExpanded}
         expand="md"
         className={clsx(
           'shadow-sm px-3 align-items-start',
+          styles.navbar,
           showCatalogSearch && styles.catalogSearchNavbar,
         )}
       >
@@ -122,19 +125,18 @@ export default function CourseTableNavbar() {
           aria-controls="basic-navbar-nav"
         />
 
-        <NavCollapseWrapper wrap={!isMobile}>
+        <NavbarRight wrap={!isMobile}>
           {/* On mobile, this will be a collapsed dropdown;
               on desktop, it will be a navbar */}
           <Navbar.Collapse
             id="basic-navbar-nav"
-            className={styles.navbarContent}
+            // It must have height exactly equal to its children otherwise on
+            // desktop it won't align to the top
+            className={styles.navbarCollapse}
           >
             <Nav
               onClick={() => setNavExpanded(false)}
-              className={clsx(
-                isMobile && 'align-items-start pt-2',
-                'position-relative',
-              )}
+              className={styles.navbarLinks}
             >
               <DarkModeButton className={styles.navbarDarkModeBtn} />
               <NavbarLink to="/catalog">Catalog</NavbarLink>
@@ -176,7 +178,7 @@ export default function CourseTableNavbar() {
             </Nav>
           </Navbar.Collapse>
           {showCatalogSearch && <LastUpdatedAt />}
-        </NavCollapseWrapper>
+        </NavbarRight>
       </Navbar>
     </SurfaceComponent>
   );

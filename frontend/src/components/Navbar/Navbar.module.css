@@ -1,4 +1,4 @@
-.stickyNavbar {
+.container {
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -6,14 +6,7 @@
 }
 
 .catalogSearchNavbar {
-  height: 100px;
   padding-bottom: 0;
-}
-
-@media (width < 1320px) {
-  .catalogSearchNavbar {
-    height: 88px;
-  }
 }
 
 .navLogo {
@@ -36,7 +29,11 @@
 }
 
 @media (width >= 768px) {
-  .navbarContent {
+  .navbar {
+    height: var(--height-navbar);
+  }
+
+  .navbarCollapse {
     display: flex;
     flex-grow: 0;
   }
@@ -46,6 +43,17 @@
   padding-right: 1rem !important;
   transition: 0.1s;
   display: flex;
+}
+
+.navbarLinks {
+  position: relative;
+}
+
+@media (width < 768px) {
+  .navbarLinks {
+    align-items: start;
+    padding-top: 0.5rem;
+  }
 }
 
 .navLink {

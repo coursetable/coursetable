@@ -16,6 +16,7 @@ import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
 import { suspended } from './utilities/display';
+import styles from './App.module.css';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -43,7 +44,11 @@ function App() {
   if (authStatus === 'loading') return <Spinner />;
 
   return (
-    <>
+    <div
+      className={
+        location.pathname === '/catalog' ? styles.catalogLayout : styles.layout
+      }
+    >
       {/* Default metadata; can be overridden by individual pages/components
       keep this in sync with index.html, so nothing actually changes after
       hydration, and things get restored to the default state when those
@@ -134,7 +139,7 @@ function App() {
       {/* Globally overlaid components */}
       {isTutorialOpen && <Tutorial />}
       <CourseModal />
-    </>
+    </div>
   );
 }
 

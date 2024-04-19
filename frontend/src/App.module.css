@@ -1,0 +1,17 @@
+.layout {
+  --height-navbar: 61px;
+}
+
+.catalogLayout {
+  --height-navbar: 100px;
+}
+
+@media (width < 1320px) {
+  .layout {
+    --height-navbar: 58px;
+  }
+
+  .catalogLayout {
+    --height-navbar: 88px;
+  }
+}

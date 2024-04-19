@@ -1,5 +1,5 @@
 .splashpage {
-  min-height: calc(100vh - 58px);
+  min-height: calc(100vh - var(--height-navbar));
   text-align: center;
   max-width: 1000px;
   margin-left: auto;

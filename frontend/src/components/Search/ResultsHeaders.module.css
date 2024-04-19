@@ -1,5 +1,6 @@
 .container {
   position: sticky;
+  top: var(--height-navbar);
   z-index: 2;
   border-top: 2px solid var(--color-border);
   border-bottom: 2px solid var(--color-border);
@@ -9,6 +10,15 @@
     color var(--trans-dur) !important;
   user-select: none;
   overflow: hidden;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+@media (width < 1320px) {
+  .container {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
 }
 
 .resultsHeaderContent {

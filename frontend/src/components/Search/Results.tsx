@@ -159,7 +159,6 @@ function Results({
       {!isMobile && (
         <ResultsHeaders
           multiSeasons={multiSeasons}
-          page={page}
           isListView={isListView}
           setIsListView={setIsListView}
           numResults={data.length}

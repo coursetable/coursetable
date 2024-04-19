@@ -16,23 +16,21 @@
 }
 
 .titleCol {
+  flex-grow: 1;
   width: var(--width-col-title);
 }
 
 .overallCol {
   white-space: nowrap;
-  flex-grow: 1;
   width: var(--width-col-overall);
 }
 
 .workloadCol {
   white-space: nowrap;
-  flex-grow: 1;
   width: var(--width-col-workload);
 }
 
 .profCol {
-  flex-grow: 1;
   width: var(--width-col-prof);
 }
 

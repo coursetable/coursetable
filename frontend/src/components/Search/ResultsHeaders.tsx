@@ -1,11 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaBars, FaTh } from 'react-icons/fa';
 
 import ResultsColumnSort from './ResultsColumnSort';
 import { type SortKeys, sortByOptions } from '../../contexts/searchContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { SurfaceComponent } from '../Typography';
 import colStyles from './ResultsCols.module.css';
 import styles from './ResultsHeaders.module.css';
@@ -46,39 +45,18 @@ function HeaderCol({
 
 function ResultsHeaders({
   multiSeasons,
-  page,
   isListView,
   setIsListView,
   numResults,
 }: {
   readonly multiSeasons: boolean;
-  readonly page: 'catalog' | 'worksheet';
   readonly isListView: boolean;
   readonly setIsListView: (isList: boolean) => void;
   readonly numResults: number;
 }) {
-  const { isTablet, isLgDesktop, isSmDesktop } = useWindowDimensions();
-
-  const navbarHeight = useMemo(() => {
-    if (page === 'catalog') {
-      if (isSmDesktop || isTablet) return 88;
-      if (isLgDesktop) return 100;
-    }
-    if (page === 'worksheet') {
-      if (isSmDesktop || isTablet) return 58;
-      if (isLgDesktop) return 61;
-    }
-    return 0;
-  }, [page, isTablet, isSmDesktop, isLgDesktop]);
-
   return (
     <SurfaceComponent
-      className={clsx(
-        'px-0 mx-0',
-        isLgDesktop ? 'py-2' : 'py-1',
-        styles.container,
-      )}
-      style={{ top: navbarHeight }}
+      className={clsx('px-0 mx-0', styles.container)}
       data-tutorial="catalog-5"
     >
       <div className={styles.resultsHeaderContent}>

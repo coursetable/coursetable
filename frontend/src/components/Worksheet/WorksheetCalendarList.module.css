@@ -1,6 +1,6 @@
 .container {
   position: sticky;
-  top: 58px;
+  top: var(--height-navbar);
   z-index: 2;
   background-color: var(--color-bg);
   border-top-left-radius: 8px;
@@ -10,12 +10,6 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
-}
-
-@media (width >= 1320px) {
-  .container {
-    top: 61px;
-  }
 }
 
 .icon {
