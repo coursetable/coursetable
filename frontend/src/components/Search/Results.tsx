@@ -38,8 +38,6 @@ function Results({
 
   const { curSeason } = useWorksheet();
 
-  const numCols = isMobile ? 1 : isTablet ? 2 : 3;
-
   let resultsListing: JSX.Element | undefined = undefined;
   if (loading) {
     resultsListing = (
@@ -75,6 +73,9 @@ function Results({
     // Not list or on mobile -> use grid view
     // Do not force entering grid mode on mobile, so that when resizing the
     // window, the view can still be restored to list view
+    const numCols = isMobile ? 1 : isTablet ? 2 : 3;
+    const itemCount = Math.ceil(data.length / numCols);
+
     resultsListing = (
       <WindowScroller>
         {({ ref, outerRef }) => (
@@ -83,8 +84,8 @@ function Results({
             outerRef={outerRef}
             ref={ref}
             width={window.innerWidth}
-            height={window.innerHeight}
-            itemCount={Math.ceil(data.length / numCols)}
+            height={Math.min(window.innerHeight, itemCount * 178)}
+            itemCount={itemCount}
             itemSize={178}
             // Inline styles because react-window also injects inline styles
             style={{
@@ -118,6 +119,7 @@ function Results({
       </WindowScroller>
     );
   } else {
+    const itemSize = isLgDesktop ? 32 : 28;
     resultsListing = (
       <WindowScroller>
         {({ ref, outerRef }) => (
@@ -125,9 +127,9 @@ function Results({
             outerRef={outerRef}
             ref={ref}
             width={window.innerWidth}
-            height={window.innerHeight}
+            height={Math.min(window.innerHeight, data.length * itemSize)}
             itemCount={data.length}
-            itemSize={isLgDesktop ? 32 : 28}
+            itemSize={itemSize}
             style={{
               width: '100%',
               height: 'auto',

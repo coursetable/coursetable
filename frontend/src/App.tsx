@@ -64,6 +64,8 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
+        // When removing a notice, just remove/comment the text content below.
+        // Don't remove this wrapper.
         id={6}
       >
         {/* CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
@@ -134,8 +136,7 @@ function App() {
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
       </SentryRoutes>
-      {/* Render footer if not on catalog */}
-      {!['/catalog'].includes(location.pathname) && <Footer />}
+      <Footer />
       {/* Globally overlaid components */}
       {isTutorialOpen && <Tutorial />}
       <CourseModal />
