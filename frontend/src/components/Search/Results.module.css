@@ -1,6 +1,9 @@
 .resultsContainer {
   width: 100%;
 
+  /* Room for both navbar and footer */
+  min-height: calc(100vh - 400px);
+
   --width-total: min(1600px, 100vw);
   --width-col-season: 0px;
   --width-col-code: 90px;
