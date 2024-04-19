@@ -27,7 +27,7 @@
 .input {
   background-color: var(--color-select);
   color: var(--color-text);
-  border: solid 2px rgb(0 0 0 / 10%);
+  border: solid 2px var(--color-border-control);
   border-radius: 8px;
   padding: 0.375rem 0.75rem;
   transition:
@@ -48,11 +48,6 @@
   color: var(--color-text);
 }
 
-.hr {
-  border-color: var(--color-border);
-  transition: border-color var(--trans-dur);
-}
-
 .infoPopover {
   background-color: var(--color-surface);
   z-index: 10000;
@@ -63,7 +58,7 @@
 }
 
 .infoPopover :global(.popover-header) {
-  background-color: var(--color-banner);
+  background-color: var(--color-surface-contrast);
   color: var(--color-text-secondary);
 }
 

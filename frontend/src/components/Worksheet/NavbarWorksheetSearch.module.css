@@ -31,13 +31,13 @@
 }
 
 .toggleButton:hover {
-  background-color: var(--color-button-hover);
+  background-color: var(--color-surface-hover);
   color: var(--color-text);
   border: var(--color-primary-hover) 2px solid;
 }
 
 .toggleButton:active {
-  background-color: var(--color-button-active) !important;
+  background-color: var(--color-surface-active) !important;
   color: var(--color-text) !important;
 }
 

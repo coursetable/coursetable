@@ -90,7 +90,7 @@ export function Popout({
   const buttonStyles = (open: boolean) => {
     if (open) {
       return {
-        backgroundColor: 'var(--color-button-active)',
+        backgroundColor: 'var(--color-surface-active)',
         color: 'var(--color-primary)',
       };
     }

@@ -11,7 +11,7 @@
 }
 
 .listItem:hover {
-  background-color: var(--color-select-hover);
+  background-color: var(--color-primary-subdued);
 }
 
 /* Hides icon until you hover over the list item */

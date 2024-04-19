@@ -7,7 +7,7 @@
 }
 
 .resultItem:hover {
-  background-color: var(--color-select-hover) !important;
+  background-color: var(--color-primary-subdued) !important;
   color: unset;
 }
 
@@ -16,19 +16,15 @@
 }
 
 .oddResultItem:not(.inWorksheetResultItem) {
-  background-color: #f9f9f9;
+  background-color: var(--color-surface-contrast);
 }
 
 .evenResultItem:not(.inWorksheetResultItem) {
   background-color: var(--color-surface);
 }
 
-[data-theme='dark'] .oddResultItem:not(.inWorksheetResultItem) {
-  background-color: #202020;
-}
-
 .inWorksheetResultItem {
-  background-color: var(--color-primary-light);
+  background-color: var(--color-primary-subdued-2);
 }
 
 .resultItemContent {
@@ -56,10 +52,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-#title-popover {
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
 }
 
 .dot {

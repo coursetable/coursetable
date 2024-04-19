@@ -34,7 +34,7 @@
 }
 
 .stats li {
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
   border-radius: 8px;
   width: 45%;
   display: flex;

@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Container } from 'react-bootstrap';
 
 import Logo from './Navbar/Logo';
-import { Hr, TextComponent } from './Typography';
+import { TextComponent } from './Typography';
 import VercelBanner from '../images/powered-by-vercel.svg';
 import { scrollToTop } from '../utilities/display';
 import styles from './Footer.module.css';
@@ -49,7 +49,6 @@ const links = [
 function Footer() {
   return (
     <Container fluid>
-      <Hr />
       <footer className={clsx(styles.footer, 'py-5 px-5')}>
         <div className="row">
           <div className="col-12 col-md">

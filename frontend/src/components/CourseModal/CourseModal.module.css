@@ -97,7 +97,7 @@
 }
 
 .tabButton.tabSelected {
-  background-color: var(--color-select-hover);
+  background-color: var(--color-primary-subdued);
   color: var(--color-text);
 }
 
@@ -111,6 +111,16 @@
   margin-top: auto;
   margin-bottom: auto;
   padding: 0;
+}
+
+.moreDropdown svg,
+.shareButton svg {
+  color: var(--color-primary);
+}
+
+.moreDropdown:hover svg,
+.shareButton:hover svg {
+  color: var(--color-primary-hover);
 }
 
 .moreDropdown :global(.dropdown-toggle) {

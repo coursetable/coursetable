@@ -19,7 +19,7 @@ import {
   sortByOptions,
 } from '../../contexts/searchContext';
 import type { Season } from '../../utilities/common';
-import { SurfaceComponent, Input, Hr, TextComponent } from '../Typography';
+import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
 
 export default function MobileSearchForm() {
@@ -118,7 +118,7 @@ export default function MobileSearchForm() {
             renderActive={false}
           />
         </div>
-        <Hr />
+        <hr />
         <CustomSelect<Option<Season>, true>
           className={styles.selectorContainer}
           aria-label="Seasons"
@@ -173,7 +173,7 @@ export default function MobileSearchForm() {
             selectSchools.set(selectedOption as Option[]);
           }}
         />
-        <Hr />
+        <hr />
         <div className={styles.sliders}>
           <div>
             <Range

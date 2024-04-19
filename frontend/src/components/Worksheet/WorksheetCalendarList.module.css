@@ -5,7 +5,7 @@
   background-color: var(--color-bg);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
@@ -23,7 +23,7 @@
 .button {
   padding: 5px;
   text-align: center;
-  border: solid 2px rgb(0 0 0 / 10%);
+  border: solid 2px var(--color-border-control);
   border-radius: 8px;
   display: flex;
   justify-content: center;
@@ -39,7 +39,7 @@
 }
 
 .button:active {
-  background-color: var(--color-button-active) !important;
+  background-color: var(--color-surface-active) !important;
 }
 
 .button:disabled {
@@ -48,7 +48,7 @@
 }
 
 .button:hover {
-  background-color: var(--color-button-active) !important;
+  background-color: var(--color-surface-active) !important;
   color: var(--color-text) !important;
   border: 2px solid hsl(0deg 0% 70%);
 }
@@ -73,5 +73,5 @@
   overflow-x: hidden;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
 }

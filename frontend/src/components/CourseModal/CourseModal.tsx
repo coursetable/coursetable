@@ -39,7 +39,7 @@ function ShareButton({ listing }: { readonly listing: Listing }) {
       onClick={copyToClipboard}
       aria-label="Share"
     >
-      <FaRegShareFromSquare size={20} color="#007bff" />
+      <FaRegShareFromSquare size={20} />
     </button>
   );
 }
@@ -55,7 +55,7 @@ function MoreButton({
     <DropdownButton
       as="div"
       drop="down"
-      title={<IoIosMore size={20} color="#007bff" />}
+      title={<IoIosMore size={20} />}
       variant="none"
       className={styles.moreDropdown}
     >

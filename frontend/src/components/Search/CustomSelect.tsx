@@ -53,7 +53,7 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
       backgroundColor: isDisabled
         ? 'var(--color-disabled)'
         : 'var(--color-select)',
-      borderColor: 'rgba(0, 0, 0, 0.1)',
+      borderColor: 'var(--color-border-control)',
       borderWidth: '2px',
       transition: 'none',
       userSelect: 'none',
@@ -63,8 +63,7 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
       paddingTop: 0,
       marginTop: 0,
       borderRadius: '8px',
-      boxShadow:
-        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      boxShadow: '0 1px 3px 0 var(--color-shadow)',
     }),
     menuList: (base) => ({
       ...base,
@@ -96,7 +95,7 @@ function popoutStyles(width: number): StylesConfig<Option<number | string>> {
       backgroundColor: isDisabled
         ? 'var(--color-disabled)'
         : 'var(--color-select)',
-      borderColor: 'rgba(0, 0, 0, 0.1)',
+      borderColor: 'var(--color-border-control)',
       minWidth: width,
       margin: 8,
     }),
@@ -104,7 +103,7 @@ function popoutStyles(width: number): StylesConfig<Option<number | string>> {
       ...base,
       display: 'none',
     }),
-    menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
+    menu: () => ({ boxShadow: 'inset 0 1px 0 var(--color-shadow)' }),
     option: (base) => ({
       ...base,
       cursor: 'pointer',
@@ -193,9 +192,9 @@ function CustomSelect<
     colors: {
       ...theme.colors,
       primary50: '#85c2ff', // OptionBackground :focus
-      primary25: 'var(--color-select-hover)', // OptionBackground :hover
+      primary25: 'var(--color-primary-subdued)', // OptionBackground :hover
       neutral0: 'var(--color-select)', // AllBackground & optionText :selected
-      neutral10: 'var(--color-select-multivalue)', // SelectedOptionBackground & disabledBorder
+      neutral10: 'var(--color-bg-button)', // SelectedOptionBackground & disabledBorder
       neutral30: 'hsl(0, 0%, 70%)', // Border :hover
       neutral60: 'var(--color-text)', // DropdownIconFocus & clearIconFocus
       neutral80: 'var(--color-text)', // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover

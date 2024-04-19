@@ -21,16 +21,15 @@
   padding: 3px 5px;
   font-weight: 500;
   background-color: var(--color-border);
-  color: var(--color-text-tertiary);
 }
 
 .sortOption.activeSortOption {
-  background-color: rgb(92 168 250 / 50%);
+  background-color: var(--color-primary-subdued);
   color: var(--color-text-primary);
 }
 
 .sortOption:not(.activeSortOption):hover {
-  background-color: var(--color-select-multivalue);
+  background-color: var(--color-surface-active);
 }
 
 mark {
@@ -55,8 +54,9 @@ mark {
   color: var(--color-text);
 }
 
-.tabs :global(.nav-item):hover {
-  background-color: var(--color-banner);
+.tabs :global(.nav-item):hover button {
+  color: var(--color-primary-hover);
+  background-color: var(--color-surface-hover);
 }
 
 .responseStats {
@@ -67,7 +67,7 @@ mark {
 .commentRow {
   font-size: 14px;
   font-weight: 450;
-  border-bottom: 1px solid var(--color-select-multivalue);
+  border-bottom: 1.5px solid var(--color-border);
   margin: auto;
   padding: 0.5rem;
 }

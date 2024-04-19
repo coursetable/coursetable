@@ -12,7 +12,7 @@
   font-size: 12px;
   font-weight: bold;
   border: none;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 4px var(--color-shadow);
   background-color: var(--color-select);
   color: var(--color-text);
 }

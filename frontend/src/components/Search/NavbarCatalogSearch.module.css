@@ -21,7 +21,7 @@
 }
 
 .searchBarWithValue {
-  background-color: var(--color-select-hover);
+  background-color: var(--color-primary-subdued);
   border-color: var(--color-primary);
 }
 

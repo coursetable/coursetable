@@ -62,10 +62,6 @@ export const Input = forwardRef(
   ),
 );
 
-export function Hr({ className, ...props }: React.ComponentProps<'hr'>) {
-  return <hr {...props} className={clsx(styles.hr, className)} />;
-}
-
 export const InfoPopover = forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof Popover>

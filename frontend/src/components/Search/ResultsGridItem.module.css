@@ -18,7 +18,7 @@
 }
 
 .resultItem:hover {
-  background-color: var(--color-select-hover) !important;
+  background-color: var(--color-primary-subdued) !important;
   color: unset;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .inWorksheetResultItem {
-  background-color: var(--color-primary-light);
+  background-color: var(--color-primary-subdued-2);
 }
 
 .season {
