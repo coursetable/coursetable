@@ -276,9 +276,9 @@ function OverviewRatings({
           ))}
         </>
       ) : (
-        <Row className="m-auto justify-content-center">
+        <div className="m-auto text-center">
           <strong>No Results</strong>
-        </Row>
+        </div>
       )}
     </>
   );
