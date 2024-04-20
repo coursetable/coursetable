@@ -209,23 +209,30 @@ function comparatorReturn(
   return ordering === 'asc' ? strCmp : -strCmp;
 }
 
+// We can only sort by primitive keys by default, unless we have special support
+type ComparableKey =
+  | SortKeys
+  | keyof {
+      [K in keyof Listing as Listing[K] extends string | number ? K : never]: K;
+    };
+
 function compareByKey(
   a: Listing,
   b: Listing,
-  key: Exclude<SortKeys, 'friend'>,
+  key: Exclude<ComparableKey, 'friend'>,
   ordering: 'asc' | 'desc',
 ): number;
 function compareByKey(
   a: Listing,
   b: Listing,
-  key: SortKeys,
+  key: ComparableKey,
   ordering: 'asc' | 'desc',
   numFriends: NumFriendsReturn,
 ): number;
 function compareByKey(
   a: Listing,
   b: Listing,
-  key: SortKeys,
+  key: ComparableKey,
   ordering: 'asc' | 'desc',
   numFriends?: NumFriendsReturn,
 ) {

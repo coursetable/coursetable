@@ -44,7 +44,6 @@ import {
 export type Option<T extends string | number = string> = {
   label: string;
   value: T;
-  numeric?: boolean;
 };
 
 export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
@@ -60,36 +59,23 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
 }));
 
 const sortCriteria = {
-  course_code: { label: 'Sort by Course Code', numeric: false },
-  title: { label: 'Sort by Course Title', numeric: false },
-  friend: { label: 'Sort by Friends', numeric: true },
-  average_rating: { label: 'Sort by Course Rating', numeric: true },
-  average_professor: { label: 'Sort by Professor Rating', numeric: true },
-  average_workload: { label: 'Sort by Workload', numeric: true },
-  average_gut_rating: {
-    label: 'Sort by Guts (Overall - Workload)',
-    numeric: true,
-  },
-  last_enrollment: { label: 'Sort by Last Enrollment', numeric: true },
-  times_by_day: { label: 'Sort by Days & Times', numeric: true },
-  locations_summary: { label: 'Sort by Locations', numeric: false },
+  course_code: 'Sort by Course Code',
+  title: 'Sort by Course Title',
+  friend: 'Sort by Friends',
+  average_rating: 'Sort by Course Rating',
+  average_professor: 'Sort by Professor Rating',
+  average_workload: 'Sort by Workload',
+  average_gut_rating: 'Sort by Guts (Overall - Workload)',
+  last_enrollment: 'Sort by Last Enrollment',
+  times_by_day: 'Sort by Days & Times',
+  locations_summary: 'Sort by Locations',
 };
 
 export const sortByOptions = Object.fromEntries(
-  Object.entries(sortCriteria).map(([k, v]) => [k, { value: k, ...v }]),
-) as { [k in SortKeys]: SortByOption };
+  Object.entries(sortCriteria).map(([k, v]) => [k, { value: k, label: v }]),
+) as { [k in SortKeys]: Option<SortKeys> };
 
-// We can only sort by primitive keys by default, unless we have special support
-export type SortKeys =
-  | keyof typeof sortCriteria
-  | keyof {
-      [K in keyof Listing as Listing[K] extends string | number ? K : never]: K;
-    };
-
-export type SortByOption = Option & {
-  value: SortKeys;
-  numeric: boolean;
-};
+export type SortKeys = keyof typeof sortCriteria;
 
 export const subjectsOptions = Object.entries(subjects).map(
   ([code, name]): Option => ({
@@ -171,7 +157,7 @@ export type Filters = {
   [P in NumericFilters]: [number, number];
 } & {
   searchText: string;
-  selectSortBy: SortByOption;
+  selectSortBy: Option<SortKeys>;
   sortOrder: SortOrderType;
 };
 

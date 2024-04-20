@@ -6,14 +6,31 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import { useSearch, type SortByOption } from '../../contexts/searchContext';
+import {
+  useSearch,
+  type Option,
+  type SortKeys,
+} from '../../contexts/searchContext';
 import styles from './ResultsColumnSort.module.css';
+
+const isNumeric: { [key in SortKeys]: boolean } = {
+  course_code: false,
+  title: false,
+  friend: true,
+  average_rating: true,
+  average_professor: true,
+  average_workload: true,
+  average_gut_rating: true,
+  last_enrollment: true,
+  times_by_day: true,
+  locations_summary: false,
+};
 
 function ResultsColumnSort({
   selectOption,
   renderActive = true,
 }: {
-  readonly selectOption: SortByOption;
+  readonly selectOption: Option<SortKeys>;
   readonly renderActive?: boolean;
 }) {
   const {
@@ -23,7 +40,7 @@ function ResultsColumnSort({
   const [localSortOrder, setLocalSortOrder] = useState(
     isActive ? sortOrder.value : 'asc',
   );
-  const Icon = selectOption.numeric
+  const Icon = isNumeric[selectOption.value]
     ? localSortOrder === 'asc'
       ? FcNumericalSorting12
       : FcNumericalSorting21
