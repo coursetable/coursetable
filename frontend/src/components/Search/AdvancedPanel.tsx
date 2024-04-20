@@ -26,7 +26,7 @@ import {
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import { weekdays } from '../../utilities/common';
-import { credits } from '../../utilities/constants';
+import { credits, skillsAreasColors } from '../../utilities/constants';
 import {
   toRealTime,
   to12HourTime,
@@ -40,7 +40,7 @@ function Select<K extends keyof CategoricalFilters>({
   options,
   handle: handleName,
   placeholder,
-  useColors,
+  colors,
 }: {
   readonly id: string;
   readonly options: React.ComponentProps<
@@ -48,7 +48,7 @@ function Select<K extends keyof CategoricalFilters>({
   >['options'];
   readonly handle: K;
   readonly placeholder: string;
-  readonly useColors?: boolean;
+  readonly colors?: { [optionValue: string]: string };
 }) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName] as FilterHandle<K>;
@@ -63,7 +63,7 @@ function Select<K extends keyof CategoricalFilters>({
         aria-labelledby={id}
         className={styles.select}
         closeMenuOnSelect
-        useColors={useColors}
+        colors={colors}
         isMulti
         value={handle.value}
         options={options}
@@ -227,7 +227,7 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
               options={skillsAreasOptions}
               handle="selectSkillsAreas"
               placeholder="All Areas/Skills"
-              useColors
+              colors={skillsAreasColors}
             />
             <Select
               id={`${formLabelId}-season`}

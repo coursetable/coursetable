@@ -112,10 +112,12 @@ function popoutStyles(width: number): StylesConfig<Option<number | string>> {
 }
 
 // Styles for skills/areas select
-function colorStyles(): StylesConfig<Option<number | string>> {
+function colorStyles(colors: {
+  [optionValue: string]: string;
+}): StylesConfig<Option<number | string>> {
   return {
     multiValue(base, { data }) {
-      const backgroundColor = chroma(data.color!).alpha(0.16).css();
+      const backgroundColor = chroma(colors[data.value]!).alpha(0.16).css();
       return {
         ...base,
         backgroundColor,
@@ -123,19 +125,19 @@ function colorStyles(): StylesConfig<Option<number | string>> {
     },
     multiValueLabel: (base, { data }) => ({
       ...base,
-      color: data.color,
+      color: colors[data.value]!,
       fontWeight: 'bold',
     }),
     multiValueRemove: (base, { data }) => ({
       ...base,
-      color: data.color,
+      color: colors[data.value]!,
       ':hover': {
-        backgroundColor: data.color,
+        backgroundColor: colors[data.value]!,
         color: 'white',
       },
     }),
     option(base, { data, isDisabled, isFocused, isSelected }) {
-      const color = chroma(data.color!);
+      const color = chroma(colors[data.value]!);
       if (isDisabled) {
         return {
           ...base,
@@ -146,11 +148,11 @@ function colorStyles(): StylesConfig<Option<number | string>> {
         return {
           ...base,
           fontWeight: 'bold',
-          backgroundColor: data.color,
+          backgroundColor: colors[data.value]!,
           color: chroma.contrast(color, 'white') > 2 ? 'white' : 'black',
           ':active': {
             ...base[':active'],
-            backgroundColor: data.color,
+            backgroundColor: colors[data.value]!,
           },
         };
       }
@@ -158,7 +160,7 @@ function colorStyles(): StylesConfig<Option<number | string>> {
         ...base,
         fontWeight: 'bold',
         backgroundColor: isFocused ? color.alpha(0.1).css() : undefined,
-        color: data.color,
+        color: colors[data.value]!,
 
         ':active': {
           ...base[':active'],
@@ -171,7 +173,7 @@ function colorStyles(): StylesConfig<Option<number | string>> {
 
 type Props = {
   readonly popout?: boolean;
-  readonly useColors?: boolean;
+  readonly colors?: { [optionValue: string]: string };
   readonly isMulti?: boolean;
 };
 
@@ -180,7 +182,7 @@ function CustomSelect<
   IsMulti extends boolean = false,
 >({
   popout = false,
-  useColors = false,
+  colors,
   isMulti = false as IsMulti,
   components: componentsProp,
   ...props
@@ -213,7 +215,7 @@ function CustomSelect<
     indicatorStyles(isMulti),
     popout ? popoutStyles(400) : defaultStyles(),
   );
-  if (useColors) styles = mergeStyles(styles, colorStyles());
+  if (colors) styles = mergeStyles(styles, colorStyles(colors));
 
   return (
     <Select<T, IsMulti>

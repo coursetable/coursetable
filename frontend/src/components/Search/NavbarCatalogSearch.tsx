@@ -22,7 +22,7 @@ import {
   seasonsOptions,
 } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { searchSpeed } from '../../utilities/constants';
+import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
 import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
 
@@ -30,7 +30,7 @@ function Select<K extends keyof CategoricalFilters>({
   options,
   handle: handleName,
   placeholder,
-  useColors,
+  colors,
   hideSelectedOptions,
   ...props
 }: Omit<React.ComponentProps<typeof Popout>, 'children' | 'buttonText'> & {
@@ -39,7 +39,7 @@ function Select<K extends keyof CategoricalFilters>({
   >['options'];
   readonly handle: K;
   readonly placeholder: string;
-  readonly useColors?: boolean;
+  readonly colors?: { [optionValue: string]: string };
   readonly hideSelectedOptions?: boolean;
 }) {
   const { setStartTime, filters } = useSearch();
@@ -52,11 +52,12 @@ function Select<K extends keyof CategoricalFilters>({
       }}
       selectedOptions={handle.value}
       buttonText={filterLabels[handleName]}
+      colors={colors}
       {...props}
     >
       <PopoutSelect<FilterHandle<K>['value'][number], true>
         isMulti
-        useColors={useColors}
+        colors={colors}
         value={handle.value}
         options={options}
         placeholder={placeholder}
@@ -221,7 +222,7 @@ export function NavbarCatalogSearch() {
                 options={skillsAreasOptions}
                 handle="selectSkillsAreas"
                 placeholder="All Areas/Skills"
-                useColors
+                colors={skillsAreasColors}
                 className="me-0"
                 hideSelectedOptions
               />

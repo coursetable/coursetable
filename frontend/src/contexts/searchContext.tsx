@@ -19,7 +19,6 @@ import {
   type Weekdays,
 } from '../utilities/common';
 import {
-  skillsAreasColors,
   skillsAreas,
   subjects,
   schools,
@@ -45,7 +44,6 @@ import {
 export type Option<T extends string | number = string> = {
   label: string;
   value: T;
-  color?: string;
   numeric?: boolean;
 };
 
@@ -57,7 +55,6 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
     ([code, name]): Option => ({
       label: `${code} - ${name}`,
       value: code,
-      color: skillsAreasColors[code],
     }),
   ),
 }));

@@ -22,6 +22,7 @@ type Props = {
   readonly displayOptionLabel?: boolean;
   readonly className?: string;
   readonly notifications?: number;
+  readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
 };
 
@@ -29,6 +30,7 @@ function getText(
   selectedOptions: Props['selectedOptions'],
   maxDisplayOptions: number,
   displayOptionLabel: boolean | undefined,
+  colors: { [optionValue: string]: string } | undefined,
 ): undefined | string | JSX.Element[] {
   if (!selectedOptions) return undefined;
   if (Array.isArray(selectedOptions)) {
@@ -36,7 +38,12 @@ function getText(
     const topOptions = selectedOptions.slice(0, maxDisplayOptions);
     const text = topOptions.map((option, index) => {
       const optionLabel = displayOptionLabel ? option.label : option.value;
-      const span = <span style={{ color: option.color }}>{optionLabel}</span>;
+      const color = colors?.[option.value];
+      const span = color ? (
+        <span style={{ color }}>{optionLabel}</span>
+      ) : (
+        optionLabel
+      );
       if (index < topOptions.length - 1)
         return <React.Fragment key={index}>{span}, </React.Fragment>;
       if (
@@ -79,12 +86,18 @@ export function Popout({
   displayOptionLabel,
   className,
   notifications,
+  colors,
   dataTutorial,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLButtonElement, HTMLDivElement>(false);
-  const text = getText(selectedOptions, maxDisplayOptions, displayOptionLabel);
+  const text = getText(
+    selectedOptions,
+    maxDisplayOptions,
+    displayOptionLabel,
+    colors,
+  );
 
   // Popout button styles for open and active states
   const buttonStyles = (open: boolean) => {
@@ -101,6 +114,8 @@ export function Popout({
     }
     return undefined;
   };
+
+  const ArrowIcon = isComponentVisible ? IoMdArrowDropdown : IoMdArrowDropup;
 
   return (
     <div
@@ -128,11 +143,7 @@ export function Popout({
             }}
           />
         ) : arrowIcon ? (
-          isComponentVisible ? (
-            <IoMdArrowDropdown className={clsx(styles.arrowIcon, 'ms-1')} />
-          ) : (
-            <IoMdArrowDropup className={clsx(styles.arrowIcon, 'ms-1')} />
-          )
+          <ArrowIcon className={clsx(styles.arrowIcon, 'ms-1')} />
         ) : null}
         {notifications ? <NotificationIcon count={notifications} /> : null}
       </button>
