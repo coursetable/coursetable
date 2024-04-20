@@ -72,8 +72,7 @@ function FriendsDropdownDesktop({
         value={viewedPerson}
         options={options}
         onChange={(selectedOption) => {
-          if (!selectedOption) handlePersonChange('me');
-          handlePersonChange(selectedOption.value);
+          handlePersonChange(selectedOption?.value ?? 'me');
         }}
         noOptionsMessage={() => 'No friends found'}
         components={{

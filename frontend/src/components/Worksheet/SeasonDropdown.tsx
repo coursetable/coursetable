@@ -36,7 +36,7 @@ function SeasonDropdownDesktop() {
           label: toSeasonString(seasonCode),
         }))}
         onChange={(selectedOption) => {
-          changeSeason(selectedOption.value);
+          changeSeason(selectedOption!.value);
         }}
       />
     </Popout>

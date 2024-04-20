@@ -163,8 +163,8 @@ export default function MobileSearchForm() {
             value={selectSortBy.value}
             options={Object.values(sortByOptions)}
             menuPortalTarget={document.body}
-            onChange={(options) => {
-              selectSortBy.set(options);
+            onChange={(option) => {
+              selectSortBy.set(option!);
             }}
           />
           <ResultsColumnSort

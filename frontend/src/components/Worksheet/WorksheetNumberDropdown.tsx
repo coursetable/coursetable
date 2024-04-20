@@ -20,7 +20,7 @@ function WorksheetNumDropdownDesktop() {
         value={worksheetOptions[worksheetNumber]}
         options={worksheetOptions}
         onChange={(selectedOption) => {
-          changeWorksheet(selectedOption.value);
+          changeWorksheet(selectedOption!.value);
         }}
       />
     </Popout>
