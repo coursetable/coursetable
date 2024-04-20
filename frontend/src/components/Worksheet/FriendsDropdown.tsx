@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdPersonRemove } from 'react-icons/md';
 import { components as selectComponents } from 'react-select';
-import { isOption, type Option } from '../../contexts/searchContext';
+import type { Option } from '../../contexts/searchContext';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../utilities/common';
@@ -67,15 +67,13 @@ function FriendsDropdownDesktop({
       }}
     >
       <PopoutSelect<Option<NetId | 'me'>, false>
-        hideSelectedOptions={false}
-        menuIsOpen
+        isClearable
         placeholder="My worksheets"
         value={viewedPerson}
         options={options}
         onChange={(selectedOption) => {
           if (!selectedOption) handlePersonChange('me');
-          if (isOption(selectedOption))
-            handlePersonChange(selectedOption.value);
+          handlePersonChange(selectedOption.value);
         }}
         noOptionsMessage={() => 'No friends found'}
         components={{
@@ -110,7 +108,6 @@ function FriendsDropdownDesktop({
             );
           },
         }}
-        isDisabled={false}
       />
     </Popout>
   );

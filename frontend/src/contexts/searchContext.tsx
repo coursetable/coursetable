@@ -49,11 +49,6 @@ export type Option<T extends string | number = string> = {
   numeric?: boolean;
 };
 
-export const isOption = (x: unknown): x is Option<string | number> =>
-  // This is the only way to help with TS inference
-  // eslint-disable-next-line no-implicit-coercion
-  !!x && typeof x === 'object' && 'label' in x && 'value' in x;
-
 export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
   label: type,
   options: Object.entries(

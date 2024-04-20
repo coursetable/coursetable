@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 
-import { isOption, type Option } from '../../contexts/searchContext';
+import type { Option } from '../../contexts/searchContext';
 import { useComponentVisibleDropdown } from '../../utilities/display';
 import styles from './Popout.module.css';
 
@@ -52,7 +52,7 @@ function getText(
       return <React.Fragment key={index}>{span}</React.Fragment>;
     });
     return text;
-  } else if (isOption(selectedOptions)) {
+  } else if (typeof selectedOptions === 'object') {
     return displayOptionLabel
       ? selectedOptions.label
       : String(selectedOptions.value);

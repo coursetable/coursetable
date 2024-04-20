@@ -215,6 +215,7 @@ export function NavbarCatalogSearch() {
                 handle="selectSubjects"
                 placeholder="All Subjects"
                 dataTutorial={2}
+                hideSelectedOptions
               />
               <Select
                 options={skillsAreasOptions}
@@ -222,6 +223,7 @@ export function NavbarCatalogSearch() {
                 placeholder="All Areas/Skills"
                 useColors
                 className="me-0"
+                hideSelectedOptions
               />
             </>
           )}
@@ -242,7 +244,6 @@ export function NavbarCatalogSearch() {
               placeholder="Last 5 Years"
               displayOptionLabel
               maxDisplayOptions={1}
-              hideSelectedOptions={false}
             />
           )}
           <AdvancedPanel ref={advanced} />

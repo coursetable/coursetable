@@ -9,9 +9,10 @@ import ResultsColumnSort from './ResultsColumnSort';
 import Toggle from './Toggle';
 import {
   useSearch,
-  type Option,
+  type Filters,
+  type CategoricalFilters,
   type NumericFilters,
-  isOption,
+  type FilterHandle,
   filterLabels,
   defaultFilters,
   skillsAreasOptions,
@@ -20,9 +21,38 @@ import {
   seasonsOptions,
   sortByOptions,
 } from '../../contexts/searchContext';
-import type { Season } from '../../utilities/common';
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
+
+function Select<K extends keyof CategoricalFilters>({
+  options,
+  handle: handleName,
+  placeholder,
+}: {
+  readonly options: React.ComponentProps<
+    typeof CustomSelect<FilterHandle<K>['value'][number], true>
+  >['options'];
+  readonly handle: K;
+  readonly placeholder: string;
+}) {
+  const { filters } = useSearch();
+  const handle = filters[handleName] as FilterHandle<K>;
+  return (
+    <CustomSelect<FilterHandle<K>['value'][number], true>
+      className={styles.selectorContainer}
+      aria-label={filterLabels[handleName]}
+      isMulti
+      value={handle.value}
+      options={options}
+      placeholder={placeholder}
+      // Prevent overlap with tooltips
+      menuPortalTarget={document.body}
+      onChange={(selectedOption) => {
+        handle.set(selectedOption as Filters[K]);
+      }}
+    />
+  );
+}
 
 function Slider<K extends NumericFilters>({
   handle: handleName,
@@ -70,14 +100,7 @@ function Slider<K extends NumericFilters>({
 
 export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
-  const {
-    searchText,
-    selectSubjects,
-    selectSkillsAreas,
-    selectSeasons,
-    selectSchools,
-    selectSortBy,
-  } = filters;
+  const { searchText, selectSortBy } = filters;
   const resetKey = useRef(0);
   const scrollToResults = useCallback((event?: React.FormEvent) => {
     if (event) event.preventDefault();
@@ -140,8 +163,8 @@ export default function MobileSearchForm() {
             value={selectSortBy.value}
             options={Object.values(sortByOptions)}
             menuPortalTarget={document.body}
-            onChange={(options): void => {
-              if (isOption(options)) selectSortBy.set(options);
+            onChange={(options) => {
+              selectSortBy.set(options);
             }}
           />
           <ResultsColumnSort
@@ -150,59 +173,25 @@ export default function MobileSearchForm() {
           />
         </div>
         <hr />
-        <CustomSelect<Option<Season>, true>
-          className={styles.selectorContainer}
-          aria-label="Seasons"
-          isMulti
-          value={selectSeasons.value}
+        <Select
           options={seasonsOptions}
+          handle="selectSeasons"
           placeholder="Last 5 Years"
-          // Prevent overlap with tooltips
-          menuPortalTarget={document.body}
-          onChange={(selectedOption) =>
-            selectSeasons.set(selectedOption as Option<Season>[])
-          }
         />
-        <CustomSelect<Option, true>
-          className={styles.selectorContainer}
-          aria-label="Skills/Areas"
-          isMulti
-          value={selectSkillsAreas.value}
+        <Select
           options={skillsAreasOptions}
-          placeholder="All Skills/Areas"
-          useColors
-          // Prevent overlap with tooltips
-          menuPortalTarget={document.body}
-          onChange={(selectedOption) =>
-            selectSkillsAreas.set(selectedOption as Option[])
-          }
+          handle="selectSkillsAreas"
+          placeholder="All Areas/Skills"
         />
-        <CustomSelect<Option, true>
-          className={styles.selectorContainer}
-          aria-label="Subjects"
-          isMulti
-          value={selectSubjects.value}
+        <Select
           options={subjectsOptions}
+          handle="selectSubjects"
           placeholder="All Subjects"
-          isSearchable
-          // Prevent overlap with tooltips
-          menuPortalTarget={document.body}
-          onChange={(selectedOption) =>
-            selectSubjects.set(selectedOption as Option[])
-          }
         />
-        <CustomSelect<Option, true>
-          className={styles.selectorContainer}
-          aria-label="Schools"
-          isMulti
-          value={selectSchools.value}
+        <Select
           options={schoolsOptions}
+          handle="selectSchools"
           placeholder="All Schools"
-          // Prevent overlap with tooltips
-          menuPortalTarget={document.body}
-          onChange={(selectedOption) => {
-            selectSchools.set(selectedOption as Option[]);
-          }}
         />
         <hr />
         <div className={styles.sliders} key={resetKey.current}>

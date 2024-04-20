@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
-import { isOption, type Option } from '../../contexts/searchContext';
+import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Season } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
@@ -30,17 +30,13 @@ function SeasonDropdownDesktop() {
       clearIcon={false}
     >
       <PopoutSelect<Option<Season>, false>
-        isClearable={false}
-        hideSelectedOptions={false}
         value={selectedSeason}
         options={seasonCodes.map((seasonCode) => ({
           value: seasonCode,
           label: toSeasonString(seasonCode),
         }))}
-        placeholder="Last 5 Years"
         onChange={(selectedOption) => {
-          if (isOption(selectedOption))
-            changeSeason(selectedOption.value as Season | null);
+          changeSeason(selectedOption.value);
         }}
       />
     </Popout>

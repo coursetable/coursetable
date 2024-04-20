@@ -15,8 +15,7 @@ export function PopoutSelect<
   IsMulti extends boolean,
 >({
   isMulti = false as IsMulti,
-  isClearable = true,
-  hideSelectedOptions = true,
+  isClearable = isMulti, // Multi-selects are clearable by default
   ...props
 }: SelectProps<T, IsMulti> & Props) {
   return (
@@ -29,7 +28,6 @@ export function PopoutSelect<
       autoFocus
       backspaceRemovesValue={false}
       controlShouldRenderValue
-      hideSelectedOptions={hideSelectedOptions}
       isClearable={isClearable}
       menuIsOpen
       tabSelectsValue={false}

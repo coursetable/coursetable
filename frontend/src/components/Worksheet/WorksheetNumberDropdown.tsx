@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { isOption } from '../../contexts/searchContext';
+import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
@@ -16,13 +16,11 @@ function WorksheetNumDropdownDesktop() {
       selectedOptions={worksheetOptions[worksheetNumber]}
       clearIcon={false}
     >
-      <PopoutSelect
-        isClearable={false}
-        hideSelectedOptions={false}
+      <PopoutSelect<Option<number>, false>
         value={worksheetOptions[worksheetNumber]}
         options={worksheetOptions}
         onChange={(selectedOption) => {
-          if (isOption(selectedOption)) changeWorksheet(selectedOption.value);
+          changeWorksheet(selectedOption.value);
         }}
       />
     </Popout>
