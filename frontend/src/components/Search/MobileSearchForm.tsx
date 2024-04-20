@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { Form, InputGroup, Button } from 'react-bootstrap';
-import { Handle, Range } from 'rc-slider';
+import RCSlider from 'rc-slider';
 import { scroller } from 'react-scroll';
 
 import CustomSelect from './CustomSelect';
@@ -10,7 +10,9 @@ import Toggle from './Toggle';
 import {
   useSearch,
   type Option,
+  type NumericFilters,
   isOption,
+  filterLabels,
   defaultFilters,
   skillsAreasOptions,
   subjectsOptions,
@@ -22,30 +24,61 @@ import type { Season } from '../../utilities/common';
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
 
+function Slider<K extends NumericFilters>({
+  handle: handleName,
+}: {
+  readonly handle: K;
+}) {
+  const { filters } = useSearch();
+  const handle = filters[handleName];
+
+  return (
+    <div>
+      <RCSlider
+        range
+        ariaLabelForHandle={[
+          `${filterLabels[handleName]} rating lower bound`,
+          `${filterLabels[handleName]} rating upper bound`,
+        ]}
+        min={defaultFilters.overallBounds[0]}
+        max={defaultFilters.overallBounds[1]}
+        step={0.1}
+        defaultValue={defaultFilters.overallBounds}
+        onChangeComplete={(value) => {
+          handle.set(value as [number, number]);
+        }}
+        handleRender={(node, { value }) => (
+          <>
+            <div
+              // Map to 100% scale
+              style={{ left: `${(value - 1) * 25}%` }}
+              className={styles.sliderTooltip}
+            >
+              {value}
+            </div>
+            {node}
+          </>
+        )}
+        className={styles.slider}
+      />
+      <div className={clsx('text-center', styles.filterTitle)}>
+        {filterLabels[handleName]}
+      </div>
+    </div>
+  );
+}
+
 export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
   const {
     searchText,
     selectSubjects,
     selectSkillsAreas,
-    overallBounds,
-    workloadBounds,
-    professorBounds,
     selectSeasons,
     selectSchools,
     selectSortBy,
   } = filters;
-  // These are exactly the same as the filters, except they update responsively
-  // without triggering searching
-  const [overallRangeValue, setOverallRangeValue] = useState(
-    overallBounds.value,
-  );
-  const [workloadRangeValue, setWorkloadRangeValue] = useState(
-    workloadBounds.value,
-  );
-  const [professorRangeValue, setProfessorRangeValue] = useState(
-    professorBounds.value,
-  );
+  const resetKey = useRef(0);
   const scrollToResults = useCallback((event?: React.FormEvent) => {
     if (event) event.preventDefault();
     scroller.scrollTo('catalog', {
@@ -72,9 +105,7 @@ export default function MobileSearchForm() {
             type="button"
             className={clsx(styles.resetFiltersBtn, 'me-auto')}
             onClick={() => {
-              setOverallRangeValue(defaultFilters.overallBounds);
-              setWorkloadRangeValue(defaultFilters.workloadBounds);
-              setProfessorRangeValue(defaultFilters.professorBounds);
+              resetKey.current++;
               Object.values(filters).forEach((filter) =>
                 filter.resetToDefault(),
               );
@@ -174,99 +205,10 @@ export default function MobileSearchForm() {
           }}
         />
         <hr />
-        <div className={styles.sliders}>
-          <div>
-            <Range
-              ariaLabelGroupForHandles={[
-                'Overall rating lower bound',
-                'Overall rating upper bound',
-              ]}
-              min={defaultFilters.overallBounds[0]}
-              max={defaultFilters.overallBounds[1]}
-              step={0.1}
-              value={overallRangeValue}
-              onChange={(value) => {
-                setOverallRangeValue(value as [number, number]);
-              }}
-              onAfterChange={(value) => {
-                overallBounds.set(value as [number, number]);
-              }}
-              handle={({ value, dragging, ...e }) => (
-                // @ts-expect-error: TODO upgrade rc-slider
-                <Handle {...e} key={e.className}>
-                  <div className={clsx('shadow', styles.sliderTooltip)}>
-                    {value}
-                  </div>
-                </Handle>
-              )}
-              className={styles.slider}
-            />
-            <div className={clsx('text-center', styles.filterTitle)}>
-              Overall rating
-            </div>
-          </div>
-          {/* Workload Rating Slider */}
-          <div>
-            <Range
-              ariaLabelGroupForHandles={[
-                'Workload rating lower bound',
-                'Workload rating upper bound',
-              ]}
-              min={defaultFilters.workloadBounds[0]}
-              max={defaultFilters.workloadBounds[1]}
-              step={0.1}
-              value={workloadRangeValue}
-              onChange={(value) => {
-                setWorkloadRangeValue(value as [number, number]);
-              }}
-              onAfterChange={(value) => {
-                workloadBounds.set(value as [number, number]);
-              }}
-              handle={({ value, dragging, ...e }) => (
-                // @ts-expect-error: TODO upgrade rc-slider
-                <Handle {...e} key={e.className}>
-                  <div className={clsx('shadow', styles.sliderTooltip)}>
-                    {value}
-                  </div>
-                </Handle>
-              )}
-              className={styles.slider}
-            />
-            <div className={clsx('text-center', styles.filterTitle)}>
-              Workload
-            </div>
-          </div>
-          {/* Professor Rating Slider */}
-          <div>
-            <Range
-              ariaLabelGroupForHandles={[
-                'Professor rating lower bound',
-                'Professor rating upper bound',
-              ]}
-              min={defaultFilters.professorBounds[0]}
-              max={defaultFilters.professorBounds[1]}
-              step={0.1}
-              value={professorRangeValue}
-              onChange={(value) => {
-                setProfessorRangeValue(value as [number, number]);
-              }}
-              onAfterChange={(value) => {
-                professorBounds.set(value as [number, number]);
-              }}
-              handle={({ value, dragging, ...e }) => (
-                // @ts-expect-error: TODO upgrade rc-slider
-                <Handle {...e} key={e.className}>
-                  <div className={clsx('shadow', styles.sliderTooltip)}>
-                    {value}
-                  </div>
-                </Handle>
-              )}
-              className={styles.slider}
-            />
-            <div className={clsx('text-center', styles.filterTitle)}>
-              Professor
-            </div>
-          </div>
+        <div className={styles.sliders} key={resetKey.current}>
+          <Slider handle="overallBounds" />
+          <Slider handle="workloadBounds" />
+          <Slider handle="professorBounds" />
         </div>
         <div className={styles.booleanToggles}>
           <Toggle handle="searchDescription" />

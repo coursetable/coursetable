@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useState, useId, useRef } from 'react';
 import clsx from 'clsx';
-import { Range } from 'rc-slider';
+import RCSlider from 'rc-slider';
 
 import CustomSelect from './CustomSelect';
 import type { Resettable } from './NavbarCatalogSearch';
@@ -55,13 +55,13 @@ function Select<K extends keyof CategoricalFilters>({
   // Prevent overlap with tooltips
   const menuPortalTarget = document.querySelector<HTMLElement>('#portal');
   return (
-    <div className={styles.advancedRow}>
-      <div className={styles.advancedLabel} id={id}>
+    <div className={styles.row}>
+      <div className={styles.label} id={id}>
         {filterLabels[handleName]}:
       </div>
       <CustomSelect<FilterHandle<K>['value'][number], true>
         aria-labelledby={id}
-        className={styles.advancedSelect}
+        className={styles.select}
         closeMenuOnSelect
         useColors={useColors}
         isMulti
@@ -80,24 +80,21 @@ function Select<K extends keyof CategoricalFilters>({
 
 const identity = <T,>(x: T) => x;
 
-function BaseSlider<K extends NumericFilters>(
-  {
-    handle: handleName,
-    step,
-    marks,
-    scaleToUniform = identity,
-    scaleToReal = identity,
-    toLabel = String,
-  }: {
-    readonly handle: K;
-    readonly step: number;
-    readonly marks?: number[];
-    readonly scaleToUniform?: (value: number) => number;
-    readonly scaleToReal?: (value: number) => number;
-    readonly toLabel?: (value: number) => string;
-  },
-  ref: React.ForwardedRef<Resettable>,
-) {
+function Slider<K extends NumericFilters>({
+  handle: handleName,
+  step,
+  marks,
+  scaleToUniform = identity,
+  scaleToReal = identity,
+  toLabel = String,
+}: {
+  readonly handle: K;
+  readonly step: number;
+  readonly marks?: number[];
+  readonly scaleToUniform?: (value: number) => number;
+  readonly scaleToReal?: (value: number) => number;
+  readonly toLabel?: (value: number) => string;
+}) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName];
   // This is exactly the same as the filter handle, except it updates
@@ -105,23 +102,15 @@ function BaseSlider<K extends NumericFilters>(
   const [rangeValue, setRangeValue] = useState(
     handle.value.map(scaleToUniform) as [number, number],
   );
-  useImperativeHandle(ref, () => ({
-    resetToDefault() {
-      setRangeValue(defaultFilters[handleName]);
-    },
-  }));
 
   return (
-    <div className={styles.advancedRow}>
+    <div className={styles.row}>
       <div
-        className={clsx(
-          styles.advancedLabel,
-          handle.isNonEmpty && styles.advancedLabelActive,
-        )}
+        className={clsx(styles.label, handle.isNonEmpty && styles.labelActive)}
       >
         {filterLabels[handleName]}:
       </div>
-      <div className={styles.advancedRangeGroup}>
+      <div className={styles.rangeGroup}>
         <div className="d-flex align-items-center justify-content-between mb-1 w-100">
           <div className={styles.rangeValueLabel}>
             {toLabel(scaleToReal(rangeValue[0]))}
@@ -130,12 +119,13 @@ function BaseSlider<K extends NumericFilters>(
             {toLabel(scaleToReal(rangeValue[1]))}
           </div>
         </div>
-        <Range
-          ariaLabelGroupForHandles={[
+        <RCSlider
+          range
+          ariaLabelForHandle={[
             `${filterLabels[handleName]} lower bound`,
             `${filterLabels[handleName]} upper bound`,
           ]}
-          className={clsx(styles.range, styles.advancedRange)}
+          className={styles.range}
           min={scaleToUniform(defaultFilters[handleName][0])}
           max={scaleToUniform(defaultFilters[handleName][1])}
           step={step}
@@ -150,8 +140,10 @@ function BaseSlider<K extends NumericFilters>(
           onChange={(value) => {
             setRangeValue(value as [number, number]);
           }}
-          onAfterChange={(value) => {
-            handle.set(value.map(scaleToReal) as [number, number]);
+          onChangeComplete={(value) => {
+            handle.set(
+              (value as [number, number]).map(scaleToReal) as [number, number],
+            );
             setStartTime(Date.now());
           }}
         />
@@ -160,8 +152,6 @@ function BaseSlider<K extends NumericFilters>(
   );
 }
 
-const Slider = React.forwardRef(BaseSlider);
-
 function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
   const { isTablet } = useWindowDimensions();
   const formLabelId = useId();
@@ -169,19 +159,11 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
 
   const { selectSortBy, sortOrder } = filters;
 
-  const range1 = useRef<Resettable>(null);
-  const range2 = useRef<Resettable>(null);
-  const range3 = useRef<Resettable>(null);
-  const range4 = useRef<Resettable>(null);
+  const resetKey = useRef(0);
 
-  function resetRangeValues() {
-    range1.current?.resetToDefault();
-    range2.current?.resetToDefault();
-    range3.current?.resetToDefault();
-    range4.current?.resetToDefault();
-  }
-
-  useImperativeHandle(ref, () => ({ resetToDefault: resetRangeValues }));
+  useImperativeHandle(ref, () => ({
+    resetToDefault: () => resetKey.current++,
+  }));
 
   const relevantFilters: (
     | BooleanFilters
@@ -222,7 +204,7 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
           selectSortBy.resetToEmpty();
           sortOrder.resetToEmpty();
         }
-        resetRangeValues();
+        resetKey.current++;
         setStartTime(Date.now());
       }}
       selectedOptions={
@@ -231,7 +213,7 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
       }
       dataTutorial={4}
     >
-      <div className={styles.advancedWrapper}>
+      <div className={styles.panel}>
         {isTablet && (
           <>
             <Select
@@ -264,33 +246,30 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
           handle="selectDays"
           placeholder="All Days"
         />
-        <Slider
-          handle="timeBounds"
-          step={1}
-          marks={[84, 120, 156, 192, 228, 264]}
-          toLabel={(x) => to12HourTime(toRealTime(x))}
-          ref={range1}
-        />
-        <Slider
-          handle="enrollBounds"
-          step={10}
-          marks={[1, 18, 160, 528]}
-          scaleToUniform={(x) => Math.round(toLinear(x))}
-          scaleToReal={(x) => Math.round(toExponential(x))}
-          ref={range2}
-        />
-        {isTablet && (
-          <Slider handle="professorBounds" step={0.1} ref={range3} />
-        )}
-        <Slider
-          handle="numBounds"
-          step={10}
-          marks={[0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]}
-          toLabel={(x) =>
-            x === 1000 ? '1000+' : x.toString().padStart(3, '0')
-          }
-          ref={range4}
-        />
+        <React.Fragment key={resetKey.current}>
+          <Slider
+            handle="timeBounds"
+            step={1}
+            marks={[84, 120, 156, 192, 228, 264]}
+            toLabel={(x) => to12HourTime(toRealTime(x))}
+          />
+          <Slider
+            handle="enrollBounds"
+            step={10}
+            marks={[1, 18, 160, 528]}
+            scaleToUniform={(x) => Math.round(toLinear(x))}
+            scaleToReal={(x) => Math.round(toExponential(x))}
+          />
+          {isTablet && <Slider handle="professorBounds" step={0.1} />}
+          <Slider
+            handle="numBounds"
+            step={10}
+            marks={[0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]}
+            toLabel={(x) =>
+              x === 1000 ? '1000+' : x.toString().padStart(3, '0')
+            }
+          />
+        </React.Fragment>
         <Select
           id={`${formLabelId}-school`}
           options={schoolsOptions}
@@ -312,14 +291,14 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
           handle="selectCourseInfoAttributes"
           placeholder="Course Information Attributes"
         />
-        <div className={styles.advancedRow}>
+        <div className={styles.row}>
           {/* Sort by Guts */}
-          <div className={styles.advancedLabel}>
+          <div className={styles.label}>
             {sortByOptions.average_gut_rating.label}:
           </div>
           <ResultsColumnSort selectOption={sortByOptions.average_gut_rating} />
         </div>
-        <div className={styles.advancedToggleRow}>
+        <div className={styles.booleanToggles}>
           <Toggle handle="searchDescription" />
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
