@@ -1,29 +1,30 @@
-.advancedWrapper {
+.panel {
   width: 440px;
   max-height: 80vh;
   overflow: auto;
 }
 
-.advancedRow {
+.row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 1rem;
 }
 
-.advancedLabel {
+.label {
   font-size: 14px;
   margin-left: 0.25rem;
   user-select: none;
   cursor: default;
 }
 
-.advancedLabelActive {
+.labelActive {
   color: var(--color-primary);
 }
 
 .range {
   cursor: pointer;
+  margin-bottom: 20px;
 }
 
 .rangeValueLabel {
@@ -33,7 +34,7 @@
   transition: color var(--trans-dur);
 }
 
-.advancedRangeGroup {
+.rangeGroup {
   width: 75%;
   display: flex;
   flex-grow: 0;
@@ -42,15 +43,11 @@
   margin-right: 0.5rem;
 }
 
-.advancedRange {
-  margin-bottom: 20px;
-}
-
-.advancedSelect {
+.select {
   width: 80%;
 }
 
-.advancedToggleRow {
+.booleanToggles {
   background-color: var(--color-surface-active);
   display: flex;
   flex-direction: column;
@@ -62,7 +59,7 @@
 }
 
 @media (width < 1320px) {
-  .advancedLabel {
+  .label {
     font-size: 12px;
   }
 }

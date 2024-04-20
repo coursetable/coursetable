@@ -1,9 +1,9 @@
-import React, { useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Button } from 'react-bootstrap';
 import { IoClose } from 'react-icons/io5';
-import { Range } from 'rc-slider';
+import RCSlider from 'rc-slider';
 import { GlobalHotKeys } from 'react-hotkeys';
 
 import AdvancedPanel from './AdvancedPanel';
@@ -72,20 +72,16 @@ function Select<K extends keyof CategoricalFilters>({
 
 export type Resettable = { resetToDefault: () => void };
 
-function BaseSlider<K extends NumericFilters>(
-  { handle: handleName }: { readonly handle: K },
-  ref: React.ForwardedRef<Resettable>,
-) {
+function Slider<K extends NumericFilters>({
+  handle: handleName,
+}: {
+  readonly handle: K;
+}) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName];
   // This is exactly the same as the filter handle, except it updates
   // responsively without triggering searching
   const [rangeValue, setRangeValue] = useState(handle.value);
-  useImperativeHandle(ref, () => ({
-    resetToDefault() {
-      setRangeValue(defaultFilters[handleName]);
-    },
-  }));
 
   return (
     <div className={styles.sliderContainer}>
@@ -101,8 +97,9 @@ function BaseSlider<K extends NumericFilters>(
         </div>
         <div className={styles.rangeValueLabel}>{rangeValue[1]}</div>
       </div>
-      <Range
-        ariaLabelGroupForHandles={[
+      <RCSlider
+        range
+        ariaLabelForHandle={[
           `${filterLabels[handleName]} rating lower bound`,
           `${filterLabels[handleName]} rating upper bound`,
         ]}
@@ -114,7 +111,7 @@ function BaseSlider<K extends NumericFilters>(
         onChange={(value) => {
           setRangeValue(value as [number, number]);
         }}
-        onAfterChange={(value) => {
+        onChangeComplete={(value) => {
           handle.set(value as [number, number]);
           setStartTime(Date.now());
         }}
@@ -123,12 +120,11 @@ function BaseSlider<K extends NumericFilters>(
   );
 }
 
-const Slider = React.forwardRef(BaseSlider);
-
 export function NavbarCatalogSearch() {
   const { isTablet } = useWindowDimensions();
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
+  const resetKey = useRef(0);
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -137,9 +133,6 @@ export function NavbarCatalogSearch() {
 
   const { searchText } = filters;
 
-  const range1 = useRef<Resettable>(null);
-  const range2 = useRef<Resettable>(null);
-  const range3 = useRef<Resettable>(null);
   const advanced = useRef<Resettable>(null);
 
   const keyMap = {
@@ -234,12 +227,13 @@ export function NavbarCatalogSearch() {
           )}
 
           <div
+            key={resetKey.current}
             className="w-auto flex-grow-0 d-flex align-items-center"
             data-tutorial="catalog-3"
           >
-            <Slider handle="overallBounds" ref={range1} />
-            <Slider handle="workloadBounds" ref={range2} />
-            {!isTablet && <Slider handle="professorBounds" ref={range3} />}
+            <Slider handle="overallBounds" />
+            <Slider handle="workloadBounds" />
+            {!isTablet && <Slider handle="professorBounds" />}
           </div>
           {!isTablet && (
             <Select
@@ -258,9 +252,7 @@ export function NavbarCatalogSearch() {
             className={styles.resetButton}
             variant="danger"
             onClick={() => {
-              range1.current?.resetToDefault();
-              range2.current?.resetToDefault();
-              range3.current?.resetToDefault();
+              resetKey.current++;
               advanced.current?.resetToDefault();
               Object.values(filters).forEach((filter) =>
                 filter.resetToDefault(),

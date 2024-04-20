@@ -1,7 +1,6 @@
 import React from 'react';
 import { Element } from 'react-scroll';
 import 'rc-slider/assets/index.css';
-import 'rc-tooltip/assets/bootstrap.css';
 
 import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';

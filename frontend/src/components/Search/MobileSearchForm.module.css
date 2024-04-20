@@ -93,10 +93,8 @@
   border-radius: 6px;
   font-weight: 600;
   position: absolute;
-  z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -0.75rem;
+  bottom: 80%;
+  transform: translateX(-50%);
 }
 
 .resetFiltersBtn {
