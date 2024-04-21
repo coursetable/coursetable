@@ -224,6 +224,10 @@ function CustomSelect<
       styles={styles as StylesConfig<T, IsMulti>}
       components={animatedComponents}
       theme={themeStyles}
+      // https://github.com/coursetable/coursetable/issues/1674
+      // All our selects are used in the navbar or the mobile search form, and
+      // on mobile this is false anyway
+      menuShouldScrollIntoView={false}
     />
   );
 }
