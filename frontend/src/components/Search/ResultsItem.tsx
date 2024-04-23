@@ -53,16 +53,10 @@ function Rating({
         </Tooltip>
       )}
     >
-      <span
+      <RatingBubble
+        color={generateRandomColor(`${course.crn}${course.season_code}${name}`)}
         className={styles.ratingCell}
-        style={{
-          backgroundColor: generateRandomColor(
-            `${course.crn}${course.season_code}${name}`,
-          ),
-        }}
-      >
-        {/* Maybe put number here */}
-      </span>
+      />
     </OverlayTrigger>
   );
 }

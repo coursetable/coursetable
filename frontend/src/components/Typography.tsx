@@ -90,10 +90,10 @@ export function RatingBubble({
   | {
       readonly rating?: never;
       readonly colorMap?: never;
-      readonly color: string;
+      readonly color: chroma.Color;
     }
 ) &
-  React.ComponentProps<'span'>) {
+  Omit<React.ComponentProps<'span'>, 'color'>) {
   const { theme } = useTheme();
   return (
     <span
@@ -105,13 +105,9 @@ export function RatingBubble({
       )}
       style={{
         ...style,
-        backgroundColor:
-          color ??
-          (rating
-            ? colorMap(rating)
-                .alpha(theme === 'light' ? 1 : 0.75)
-                .css()
-            : undefined),
+        backgroundColor: (color ?? (rating ? colorMap(rating) : undefined))
+          ?.alpha(theme === 'light' ? 1 : 0.75)
+          .css(),
       }}
     />
   );

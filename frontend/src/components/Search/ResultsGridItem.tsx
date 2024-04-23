@@ -42,13 +42,18 @@ function Rating({
         <div
           className={styles.rating}
           style={{
-            color: hasEvals
-              ? rating
-                ? colorMap(rating).darken().saturate().css()
-                : '#cccccc'
-              : generateRandomColor(
-                  `${course.crn}${course.season_code}${name}`,
-                ),
+            color:
+              (hasEvals
+                ? rating
+                  ? colorMap(rating)
+                  : undefined
+                : generateRandomColor(
+                    `${course.crn}${course.season_code}${name}`,
+                  )
+              )
+                ?.darken()
+                .saturate()
+                .css() ?? '#cccccc',
           }}
         >
           {hasEvals ? getRating(course, 'display') : '???'}
