@@ -1,7 +1,8 @@
 .container {
-  transition: 0.1s;
+  transition: var(--trans-dur);
   padding: 0 0.5rem 0.75rem;
   overflow: visible;
+  list-style: none;
 }
 
 .resultItem {

@@ -87,7 +87,7 @@ function ResultsGridItem({
   if (!course) return null;
 
   return (
-    <div className={styles.container} style={style}>
+    <li className={styles.container} style={style}>
       <Link
         to={target}
         className={clsx(
@@ -153,6 +153,8 @@ function ResultsGridItem({
           </div>
         </div>
       </Link>
+      {/* Don't this inside the link because interactive elements can't be
+        nested */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
           listing={course}
@@ -160,7 +162,7 @@ function ResultsGridItem({
           inWorksheet={inWorksheet}
         />
       </div>
-    </div>
+    </li>
   );
 }
 

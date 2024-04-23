@@ -92,6 +92,7 @@ function Results({
         {({ ref, outerRef }) => (
           // @ts-expect-error: not worth making types work here
           <ListComp
+            innerElementType="ul"
             outerRef={outerRef}
             ref={ref}
             width={window.innerWidth}

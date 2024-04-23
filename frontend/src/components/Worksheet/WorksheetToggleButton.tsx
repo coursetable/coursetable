@@ -51,11 +51,7 @@ function CourseConflictIcon({
 
   return (
     <Fade in={Boolean(warning)}>
-      <div
-        className={
-          modal ? styles.courseConflictIconModal : styles.courseConflictIcon
-        }
-      >
+      <div className={styles.courseConflictIcon}>
         {warning && (
           <OverlayTrigger
             placement="top"
@@ -178,33 +174,37 @@ function WorksheetToggleButton({
 
   return (
     <div className={styles.container}>
-      <CourseConflictIcon
-        listing={listing}
-        inWorksheet={inWorksheet}
-        modal={modal}
-        worksheetNumber={selectedWorksheet}
-      />
-      <OverlayTrigger
-        placement="top"
-        delay={modal ? { show: 300, hide: 0 } : undefined}
-        overlay={(props) => (
-          <Tooltip id="button-tooltip" {...props}>
-            <small>{buttonLabel}</small>
-          </Tooltip>
-        )}
-      >
-        <Button
-          variant="toggle"
-          className={clsx(
-            'py-auto px-1 d-flex align-items-center',
-            styles.toggleButton,
+      {/* This div "anchors" the conflict icon to the plus icon instead of the
+        whole container */}
+      <div className={styles.toggleContainer}>
+        <CourseConflictIcon
+          listing={listing}
+          inWorksheet={inWorksheet}
+          modal={modal}
+          worksheetNumber={selectedWorksheet}
+        />
+        <OverlayTrigger
+          placement="top"
+          delay={modal ? { show: 300, hide: 0 } : undefined}
+          overlay={(props) => (
+            <Tooltip id="button-tooltip" {...props}>
+              <small>{buttonLabel}</small>
+            </Tooltip>
           )}
-          onClick={toggleWorkSheet}
-          aria-label={buttonLabel}
         >
-          <Icon size={size} className={clsx(modal && styles.scaleIcon)} />
-        </Button>
-      </OverlayTrigger>
+          <Button
+            variant="toggle"
+            className={clsx(
+              'py-auto px-1 d-flex align-items-center',
+              styles.toggleButton,
+            )}
+            onClick={toggleWorkSheet}
+            aria-label={buttonLabel}
+          >
+            <Icon size={size} className={clsx(modal && styles.scaleIcon)} />
+          </Button>
+        </OverlayTrigger>
+      </div>
       {/* TODO: use the custom select component */}
       {modal && (
         <select

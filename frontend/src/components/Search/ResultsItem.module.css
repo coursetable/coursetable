@@ -1,4 +1,9 @@
+.container {
+  list-style: none;
+}
+
 .resultItem {
+  display: block;
   color: unset;
   cursor: pointer;
   transition:
@@ -93,6 +98,13 @@
 
 .season {
   border-radius: 6px;
+}
+
+.worksheetBtn {
+  position: absolute;
+  width: 2.5rem;
+  left: max(calc(50vw - 800px), 0px);
+  top: 0;
 }
 
 @media (width < 1320px) {
