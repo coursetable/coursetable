@@ -157,18 +157,20 @@ function WorksheetToggleButton({
   // Disabled worksheet add/remove button if not logged in
   if (!user.worksheets) {
     return (
-      <OverlayTrigger
-        placement="top"
-        overlay={<Tooltip id="tooltip-disabled">{buttonLabel}</Tooltip>}
-      >
-        <Button
-          className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
-          disabled
-          aria-label={buttonLabel}
+      <div className={styles.container}>
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip id="tooltip-disabled">{buttonLabel}</Tooltip>}
         >
-          <FaPlus size={size} className={styles.disabledButtonIcon} />
-        </Button>
-      </OverlayTrigger>
+          <Button
+            className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
+            disabled
+            aria-label={buttonLabel}
+          >
+            <FaPlus size={size} className={styles.disabledButtonIcon} />
+          </Button>
+        </OverlayTrigger>
+      </div>
     );
   }
 

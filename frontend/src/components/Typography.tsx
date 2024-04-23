@@ -74,30 +74,27 @@ export const InfoPopover = forwardRef<
 ));
 
 // Rating bubbles in search results list item and modal
-export function RatingBubble({
-  rating,
-  colorMap,
-  className,
-  style,
-  color,
-  ...props
-}: (
-  | {
-      readonly rating: number | null;
-      readonly colorMap: chroma.Scale;
-      readonly color?: never;
-    }
-  | {
-      readonly rating?: never;
-      readonly colorMap?: never;
-      readonly color: chroma.Color;
-    }
-) &
-  Omit<React.ComponentProps<'span'>, 'color'>) {
+export const RatingBubble = forwardRef<
+  HTMLSpanElement,
+  (
+    | {
+        readonly rating: number | null;
+        readonly colorMap: chroma.Scale;
+        readonly color?: never;
+      }
+    | {
+        readonly rating?: never;
+        readonly colorMap?: never;
+        readonly color: chroma.Color;
+      }
+  ) &
+    Omit<React.ComponentProps<'span'>, 'color'>
+>(({ rating, colorMap, className, style, color, ...props }, ref) => {
   const { theme } = useTheme();
   return (
     <span
       {...props}
+      ref={ref}
       className={clsx(
         styles.ratingBubble,
         rating && styles.hasRating,
@@ -111,7 +108,7 @@ export function RatingBubble({
       }}
     />
   );
-}
+});
 
 // Primary Color link
 export const LinkLikeText = forwardRef<
