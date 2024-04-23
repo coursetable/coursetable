@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import type { GridChildComponentProps } from 'react-window';
 
+import type { ResultItemData } from './Results';
 import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -60,28 +62,29 @@ function Rating({
 }
 
 function ResultsGridItem({
-  course,
-  multiSeasons,
+  data: { courses, columnCount, multiSeasons },
+  rowIndex,
+  columnIndex,
   style,
-}: {
-  readonly course: Listing;
-  readonly multiSeasons: boolean;
-  readonly style?: React.CSSProperties;
-}) {
+}: GridChildComponentProps<ResultItemData>) {
+  const course = courses[rowIndex * columnCount + columnIndex];
   const target = useCourseModalLink(course);
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
     () =>
+      course &&
       isInWorksheet(
         course.season_code,
         course.crn,
         worksheetNumber,
         user.worksheets,
       ),
-    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+    [course, worksheetNumber, user.worksheets],
   );
+
+  if (!course) return null;
 
   return (
     <div className={styles.container} style={style}>

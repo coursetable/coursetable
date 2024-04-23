@@ -2,12 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Row } from 'react-bootstrap';
-import {
-  FixedSizeList,
-  FixedSizeGrid,
-  type ListChildComponentProps,
-  type GridChildComponentProps,
-} from 'react-window';
+import { FixedSizeList, FixedSizeGrid } from 'react-window';
 
 import FloatingWorksheet from './FloatingWorksheet';
 import ResultsGridItem from './ResultsGridItem';
@@ -23,6 +18,12 @@ import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
 import Spinner from '../Spinner';
 import styles from './Results.module.css';
+
+export type ResultItemData = {
+  readonly courses: Listing[];
+  readonly columnCount: number;
+  readonly multiSeasons: boolean;
+};
 
 function Results({
   data,
@@ -84,27 +85,7 @@ function Results({
     const rowCount = Math.ceil(data.length / columnCount);
     const rowHeight = isGrid ? 178 : isLgDesktop ? 32 : 28;
     const ListComp = isGrid ? FixedSizeGrid : FixedSizeList;
-    const InnerComp = isGrid
-      ? ({
-          rowIndex,
-          columnIndex,
-          style: itemStyle,
-        }: GridChildComponentProps) =>
-          rowIndex * columnCount + columnIndex < data.length && (
-            <ResultsGridItem
-              style={itemStyle}
-              course={data[rowIndex * columnCount + columnIndex]!}
-              multiSeasons={multiSeasons}
-            />
-          )
-      : ({ index, style: itemStyle }: ListChildComponentProps) => (
-          <ResultsItem
-            index={index}
-            style={itemStyle}
-            course={data[index]!}
-            multiSeasons={multiSeasons}
-          />
-        );
+    const InnerComp = isGrid ? ResultsGridItem : ResultsItem;
 
     resultsListing = (
       <WindowScroller isGrid={isGrid}>
@@ -115,6 +96,7 @@ function Results({
             ref={ref}
             width={window.innerWidth}
             height={Math.min(window.innerHeight, rowCount * rowHeight)}
+            itemData={{ courses: data, columnCount, multiSeasons }}
             {...(isGrid
               ? { columnCount, rowCount, rowHeight, columnWidth }
               : { itemCount: rowCount, itemSize: rowHeight })}

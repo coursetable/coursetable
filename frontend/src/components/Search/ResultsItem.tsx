@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import type { ListChildComponentProps } from 'react-window';
 
+import type { ResultItemData } from './Results';
 import {
   SeasonTag,
   CourseInfoPopover,
@@ -66,16 +68,11 @@ function Rating({
 }
 
 function ResultsItem({
-  course,
-  multiSeasons,
+  data: { courses, multiSeasons },
   index,
   style,
-}: {
-  readonly course: Listing;
-  readonly multiSeasons: boolean;
-  readonly index: number;
-  readonly style?: React.CSSProperties;
-}) {
+}: ListChildComponentProps<ResultItemData>) {
+  const course = courses[index]!;
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
