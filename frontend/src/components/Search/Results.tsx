@@ -2,7 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Row } from 'react-bootstrap';
-import { FixedSizeList } from 'react-window';
+import {
+  FixedSizeList,
+  FixedSizeGrid,
+  type ListChildComponentProps,
+  type GridChildComponentProps,
+} from 'react-window';
 
 import FloatingWorksheet from './FloatingWorksheet';
 import ResultsGridItem from './ResultsGridItem';
@@ -69,24 +74,50 @@ function Results({
         )}
       </div>
     );
-  } else if (!isListView || isMobile) {
+  } else {
     // Not list or on mobile -> use grid view
     // Do not force entering grid mode on mobile, so that when resizing the
     // window, the view can still be restored to list view
-    const numCols = isMobile ? 1 : isTablet ? 2 : 3;
-    const itemCount = Math.ceil(data.length / numCols);
+    const isGrid = !isListView || isMobile;
+    const columnCount = isGrid ? (isMobile ? 1 : isTablet ? 2 : 3) : 1;
+    const columnWidth = Math.floor(window.innerWidth / columnCount);
+    const rowCount = Math.ceil(data.length / columnCount);
+    const rowHeight = isGrid ? 178 : isLgDesktop ? 32 : 28;
+    const ListComp = isGrid ? FixedSizeGrid : FixedSizeList;
+    const InnerComp = isGrid
+      ? ({
+          rowIndex,
+          columnIndex,
+          style: itemStyle,
+        }: GridChildComponentProps) =>
+          rowIndex * columnCount + columnIndex < data.length && (
+            <ResultsGridItem
+              style={itemStyle}
+              course={data[rowIndex * columnCount + columnIndex]!}
+              multiSeasons={multiSeasons}
+            />
+          )
+      : ({ index, style: itemStyle }: ListChildComponentProps) => (
+          <ResultsItem
+            index={index}
+            style={itemStyle}
+            course={data[index]!}
+            multiSeasons={multiSeasons}
+          />
+        );
 
     resultsListing = (
-      <WindowScroller>
+      <WindowScroller isGrid={isGrid}>
         {({ ref, outerRef }) => (
-          // We use a list even for grid, because we only virtualize the rows
-          <FixedSizeList
+          // @ts-expect-error: not worth making types work here
+          <ListComp
             outerRef={outerRef}
             ref={ref}
             width={window.innerWidth}
-            height={Math.min(window.innerHeight, itemCount * 178)}
-            itemCount={itemCount}
-            itemSize={178}
+            height={Math.min(window.innerHeight, rowCount * rowHeight)}
+            {...(isGrid
+              ? { columnCount, rowCount, rowHeight, columnWidth }
+              : { itemCount: rowCount, itemSize: rowHeight })}
             // Inline styles because react-window also injects inline styles
             style={{
               width: '100%',
@@ -98,54 +129,8 @@ function Results({
               overflow: 'hidden',
             }}
           >
-            {({ index, style: itemStyle }) => (
-              <div style={itemStyle}>
-                <Row className={clsx(styles.gridRow, 'mx-auto')}>
-                  {data
-                    .slice(index * numCols, (index + 1) * numCols)
-                    .map((course) => (
-                      <ResultsGridItem
-                        course={course}
-                        numCols={numCols}
-                        multiSeasons={multiSeasons}
-                        key={course.season_code + course.crn}
-                      />
-                    ))}
-                </Row>
-              </div>
-            )}
-          </FixedSizeList>
-        )}
-      </WindowScroller>
-    );
-  } else {
-    const itemSize = isLgDesktop ? 32 : 28;
-    resultsListing = (
-      <WindowScroller>
-        {({ ref, outerRef }) => (
-          <FixedSizeList
-            outerRef={outerRef}
-            ref={ref}
-            width={window.innerWidth}
-            height={Math.min(window.innerHeight, data.length * itemSize)}
-            itemCount={data.length}
-            itemSize={itemSize}
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'inline-block',
-              overflow: 'hidden',
-            }}
-          >
-            {({ index, style: itemStyle }) => (
-              <ResultsItem
-                index={index}
-                style={itemStyle}
-                course={data[index]!}
-                multiSeasons={multiSeasons}
-              />
-            )}
-          </FixedSizeList>
+            {InnerComp}
+          </ListComp>
         )}
       </WindowScroller>
     );

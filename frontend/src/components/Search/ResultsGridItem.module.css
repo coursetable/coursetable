@@ -1,9 +1,7 @@
 .container {
-  position: relative;
   transition: 0.1s;
   padding: 0 0.5rem 0.75rem;
   overflow: visible;
-  height: 100%;
 }
 
 .resultItem {

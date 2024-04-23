@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
 import { useUser } from '../../contexts/userContext';
@@ -61,16 +61,14 @@ function Rating({
 
 function ResultsGridItem({
   course,
-  numCols,
   multiSeasons,
+  style,
 }: {
   readonly course: Listing;
-  readonly numCols: number;
   readonly multiSeasons: boolean;
+  readonly style?: React.CSSProperties;
 }) {
   const target = useCourseModalLink(course);
-  // Bootstrap column width depending on the number of columns
-  const colWidth = 12 / numCols;
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
@@ -86,7 +84,7 @@ function ResultsGridItem({
   );
 
   return (
-    <Col md={colWidth} className={styles.container}>
+    <div className={styles.container} style={style}>
       <Link
         to={target}
         className={clsx(
@@ -159,7 +157,7 @@ function ResultsGridItem({
           inWorksheet={inWorksheet}
         />
       </div>
-    </Col>
+    </div>
   );
 }
 
