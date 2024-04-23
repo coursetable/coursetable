@@ -53,7 +53,7 @@ function Rating({
         </Tooltip>
       )}
     >
-      <div
+      <span
         className={styles.ratingCell}
         style={{
           backgroundColor: generateRandomColor(
@@ -62,7 +62,7 @@ function Rating({
         }}
       >
         {/* Maybe put number here */}
-      </div>
+      </span>
     </OverlayTrigger>
   );
 }

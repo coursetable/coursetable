@@ -93,10 +93,10 @@ export function RatingBubble({
       readonly color: string;
     }
 ) &
-  React.ComponentProps<'div'>) {
+  React.ComponentProps<'span'>) {
   const { theme } = useTheme();
   return (
-    <div
+    <span
       {...props}
       className={clsx(
         styles.ratingBubble,

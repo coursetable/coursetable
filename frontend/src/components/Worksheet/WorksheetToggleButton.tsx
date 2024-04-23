@@ -62,7 +62,7 @@ function CourseConflictIcon({
             )}
           >
             <span>
-              <MdErrorOutline color="#fc4103" />
+              <MdErrorOutline color="#fc4103" size={modal ? 16 : 13} />
             </span>
           </OverlayTrigger>
         )}
