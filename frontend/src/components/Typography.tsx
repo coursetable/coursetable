@@ -122,11 +122,3 @@ export const LinkLikeText = forwardRef<
     className={clsx(styles.linkText, className)}
   />
 ));
-
-// Show Primary color on hover
-export function HoverText({
-  className,
-  ...props
-}: React.ComponentProps<'span'>) {
-  return <span {...props} className={clsx(styles.hoverText, className)} />;
-}

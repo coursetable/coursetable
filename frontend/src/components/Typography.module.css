@@ -105,21 +105,8 @@
   color: var(--color-primary-hover);
 }
 
-.hoverText {
-  user-select: none;
-  cursor: pointer;
-}
-
-.hoverText:hover {
-  color: var(--color-primary);
-}
-
 @media (width < 1320px) {
   .smallText {
     font-size: 64%;
-  }
-
-  .hoverText {
-    font-size: 0.9rem;
   }
 }

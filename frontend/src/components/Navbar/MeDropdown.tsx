@@ -19,7 +19,7 @@ import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../utilities/api';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
-import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
+import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
 
 function DropdownItem({
@@ -40,42 +40,43 @@ function DropdownItem({
   readonly onClick?: (e: React.MouseEvent) => void;
 }) {
   const innerText = (
-    <HoverText>
+    <TextComponent className={styles.itemText} type="secondary">
       <Icon size={20} className={styles.linkIcon} color={iconColor} />
       {children}
-    </HoverText>
-  );
-  return (
-    <TextComponent className="d-block my-3" type="secondary">
-      {to ? (
-        <NavLink
-          to={to}
-          className={styles.collapseText}
-          onClick={onClick ?? scrollToTop}
-        >
-          {innerText}
-        </NavLink>
-      ) : href ? (
-        // eslint-disable-next-line react/jsx-no-target-blank
-        <a
-          href={href}
-          className={styles.collapseText}
-          {...(externalLink && {
-            target: '_blank',
-            rel: 'noreferrer noopener',
-          })}
-        >
-          {innerText}
-        </a>
-      ) : onClick ? (
-        <button type="button" onClick={onClick} className={styles.collapseText}>
-          {innerText}
-        </button>
-      ) : (
-        innerText
-      )}
     </TextComponent>
   );
+  if (to) {
+    return (
+      <NavLink
+        to={to}
+        onClick={onClick ?? scrollToTop}
+        className={styles.dropdownItem}
+      >
+        {innerText}
+      </NavLink>
+    );
+  } else if (href) {
+    return (
+      // eslint-disable-next-line react/jsx-no-target-blank
+      <a
+        href={href}
+        className={styles.dropdownItem}
+        {...(externalLink && {
+          target: '_blank',
+          rel: 'noreferrer noopener',
+        })}
+      >
+        {innerText}
+      </a>
+    );
+  } else if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={styles.dropdownItem}>
+        {innerText}
+      </button>
+    );
+  }
+  throw new Error('DropdownItem must have either to, href, or onClick');
 }
 
 function DropdownContent({

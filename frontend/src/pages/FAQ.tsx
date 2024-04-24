@@ -8,7 +8,7 @@ import {
   useAccordionButton,
 } from 'react-bootstrap';
 import { FaChevronRight } from 'react-icons/fa';
-import { HoverText, TextComponent } from '../components/Typography';
+import { TextComponent } from '../components/Typography';
 import { scrollToTop } from '../utilities/display';
 import styles from './FAQ.module.css';
 
@@ -21,7 +21,8 @@ function ContextAwareToggle({ question }: { readonly question: string }) {
   const isCurrentEventKey = currentEventKey === question;
 
   return (
-    <HoverText
+    <button
+      type="button"
       className={clsx(
         isCurrentEventKey && 'active',
         'd-flex justify-content-between py-3 px-3',
@@ -39,7 +40,7 @@ function ContextAwareToggle({ question }: { readonly question: string }) {
           styles.accordionArrow,
         )}
       />
-    </HoverText>
+    </button>
   );
 }
 
@@ -430,9 +431,7 @@ function FAQ() {
           >
             {section.items.map((faq) => (
               <Card className={styles.card} key={faq.title}>
-                <div>
-                  <ContextAwareToggle question={faq.title} />
-                </div>
+                <ContextAwareToggle question={faq.title} />
                 <Accordion.Collapse eventKey={faq.title}>
                   <Card.Body className="py-3">
                     <TextComponent type="secondary">

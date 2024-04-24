@@ -9,14 +9,17 @@
   transform: translate(0, -10px);
 }
 
-.collapseText {
-  color: inherit;
-  font-weight: 500;
-  cursor: pointer;
+.dropdownItem {
+  display: block;
+  margin: 0.75rem 0;
 }
 
-.collapseText:hover {
-  text-decoration: none !important;
+.itemText {
+  font-weight: 500;
+}
+
+.dropdownItem:hover .itemText {
+  color: var(--color-primary);
 }
 
 .navbarMe {

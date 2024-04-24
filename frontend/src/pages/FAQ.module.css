@@ -20,6 +20,10 @@
   font-weight: 550;
 }
 
+.accordionHoverHeader:hover {
+  color: var(--color-primary);
+}
+
 .accordionArrow {
   transition: transform 0.4s ease;
 }
