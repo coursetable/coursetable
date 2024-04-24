@@ -12,6 +12,8 @@ import { TextComponent } from '../components/Typography';
 import { scrollToTop } from '../utilities/display';
 import styles from './FAQ.module.css';
 
+// https://www.w3.org/WAI/ARIA/apg/patterns/accordion/
+
 function ContextAwareToggle({ question }: { readonly question: string }) {
   const currentEventKey = useContext(AccordionContext).activeEventKey;
   const navigate = useNavigate();
@@ -23,6 +25,8 @@ function ContextAwareToggle({ question }: { readonly question: string }) {
   return (
     <button
       type="button"
+      aria-expanded={isCurrentEventKey}
+      aria-controls={`${toId(question)}_content`}
       className={clsx(
         isCurrentEventKey && 'active',
         'd-flex justify-content-between py-3 px-3',
@@ -431,8 +435,13 @@ function FAQ() {
           >
             {section.items.map((faq) => (
               <Card className={styles.card} key={faq.title}>
-                <ContextAwareToggle question={faq.title} />
-                <Accordion.Collapse eventKey={faq.title}>
+                <h3>
+                  <ContextAwareToggle question={faq.title} />
+                </h3>
+                <Accordion.Collapse
+                  eventKey={faq.title}
+                  id={`${toId(faq.title)}_content`}
+                >
                   <Card.Body className="py-3">
                     <TextComponent type="secondary">
                       {faq.contents}
