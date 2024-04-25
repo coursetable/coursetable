@@ -218,6 +218,7 @@ export const subjects: { [code: string]: string } = {
   HPM: 'Health Policy and Management',
   HPR: 'Health Policy Resources & Adm',
   HSAR: 'History of Art',
+  HSCI: 'Health Science in Clinical Investigation',
   HSHM: 'Hist of Science, Hist of Med',
   HSMD: 'History of Medicine',
   HSPL: 'History & Politics',
