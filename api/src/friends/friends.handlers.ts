@@ -220,7 +220,9 @@ export const getRequestsForFriend = async (
 
     return tx
       .selectDistinctOn([studentBluebookSettings.netId], {
-        name: sql<string>`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+        name: sql<
+          string | null
+        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
         netId: studentBluebookSettings.netId,
       })
       .from(studentBluebookSettings)
@@ -275,7 +277,9 @@ export const getFriendsWorksheets = async (
       const friendInfos = await tx
         .selectDistinctOn([studentBluebookSettings.netId], {
           netId: studentBluebookSettings.netId,
-          name: sql<string>`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+          name: sql<
+            string | null
+          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
         })
         .from(studentBluebookSettings)
         .where(inArray(studentBluebookSettings.netId, friendNetIds));
@@ -296,7 +300,7 @@ export const getFriendsWorksheets = async (
     friendNetIds.map((friendNetId) => [
       friendNetId,
       {
-        name: friendInfoMap[friendNetId]?.name ?? '[unknown]',
+        name: friendInfoMap[friendNetId]?.name ?? null,
         worksheets: friendWorksheetMap[friendNetId] ?? {},
       },
     ]),

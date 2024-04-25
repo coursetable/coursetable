@@ -133,7 +133,7 @@ function FriendsDropdown({
   const viewedPerson = useMemo(() => {
     // I don't think the second condition is possible
     if (person === 'me' || !user.friends?.[person]) return null;
-    return { value: person, label: user.friends[person]!.name };
+    return { value: person, label: user.friends[person]!.name ?? person };
   }, [person, user.friends]);
 
   // List of friend options. Initialize with me option
@@ -143,7 +143,7 @@ function FriendsDropdown({
       .map(
         ([friendNetId, { name }]): Option<NetId> => ({
           value: friendNetId as NetId,
-          label: name,
+          label: name ?? friendNetId,
         }),
       )
       .sort((a, b) =>

@@ -30,13 +30,13 @@ export type UserWorksheets = {
 };
 export type FriendRecord = {
   [netId: NetId]: {
-    name: string;
+    name: string | null;
     worksheets: UserWorksheets;
   };
 };
 type FriendRequests = {
   netId: NetId;
-  name: string;
+  name: string | null;
 }[];
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';

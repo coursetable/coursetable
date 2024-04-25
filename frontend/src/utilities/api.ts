@@ -351,7 +351,7 @@ export function fetchFriendWorksheets() {
     schema: z.object({
       friends: z.record(
         z.object({
-          name: z.string(),
+          name: z.string().nullable(),
           worksheets: userWorksheetsSchema,
         }),
       ),
@@ -369,7 +369,7 @@ export function fetchFriendReqs() {
       requests: z.array(
         z.object({
           netId: z.string(),
-          name: z.string(),
+          name: z.string().nullable(),
         }),
       ),
     }),

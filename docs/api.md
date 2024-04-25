@@ -130,10 +130,6 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 ### `GET` `/api/auth/check`
 
-#### Request
-
-- Needs credentials
-
 #### Response
 
 **Status: 200**
@@ -152,7 +148,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 #### Response
 
-**Status: 200**
+**Status: 302**
 
 - Redirects to the provided `redirect` query parameter (if it's an allowed origin), or `https://coursetable.com` otherwise
 
@@ -249,7 +245,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 - Body:
   - `requests`: `array`
     - `netId`: `NetId`
-    - `name`: `string`
+    - `name`: `string | null`
 
 ### `GET` `/api/friends/worksheets`
 
@@ -268,7 +264,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
     ```ts
     type Friends = {
       [netId: NetId]: {
-        name: string;
+        name: string | null;
         worksheets: {
           [season: Season]: {
             [worksheetNumber: number]: {

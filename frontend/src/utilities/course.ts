@@ -88,12 +88,12 @@ export type NumFriendsReturn = {
 // worksheet expanded list
 export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   const numFriends: NumFriendsReturn = {};
-  for (const friend of Object.values(friends)) {
+  for (const [netId, friend] of Object.entries(friends)) {
     Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
       Object.values(worksheets).forEach((w) =>
         w.forEach((course) => {
           (numFriends[`${seasonCode as Season}${course.crn}`] ??=
-            new Set()).add(friend.name);
+            new Set()).add(friend.name ?? netId);
         }),
       );
     });

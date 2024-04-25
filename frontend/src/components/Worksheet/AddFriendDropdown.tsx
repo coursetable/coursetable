@@ -188,7 +188,10 @@ function AddFriendDropdownDesktop() {
       )
       .map((name) => ({
         value: name.netId,
-        label: `${name.first ?? '[unknown]'} ${name.last ?? '[unknown]'} (${name.netId})`,
+        label:
+          name.first && name.last
+            ? `${name.first} ${name.last} (${name.netId})`
+            : name.netId,
         type: 'searchResult',
       }));
   }, [allNames, searchText, user.netId, isFriend]);
@@ -196,7 +199,7 @@ function AddFriendDropdownDesktop() {
     () =>
       user.friendRequests?.map((request) => ({
         value: request.netId,
-        label: request.name,
+        label: request.name ?? request.netId,
         type: 'incomingRequest',
       })) || [],
     [user.friendRequests],
