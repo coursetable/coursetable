@@ -1,25 +1,62 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import { Modal, Button } from 'react-bootstrap';
 import { MdEdit } from 'react-icons/md';
 import chroma from 'chroma-js';
-import debounce from 'lodash.debounce';
+import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
+import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toggleBookmark } from '../../utilities/api';
-import type { Crn } from '../../utilities/common';
+import { type RBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
+import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
+
+function ColorInput({
+  color,
+  setColor,
+}: {
+  readonly color: string;
+  readonly setColor: (newColor: string) => void;
+}) {
+  const [invalid, setInvalid] = useState(false);
+  const [value, setValue] = useState(color);
+  const [prevColor, setPrevColor] = useState(color);
+  if (color !== prevColor) {
+    setValue(color);
+    setPrevColor(color);
+  }
+  return (
+    <Input
+      type="text"
+      value={value}
+      isInvalid={invalid}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        const newColor = e.target.value;
+        if (chroma.valid(newColor)) {
+          setColor(newColor);
+          setInvalid(false);
+        } else {
+          setInvalid(true);
+        }
+        setValue(newColor);
+      }}
+    />
+  );
+}
 
 function Picker({
   color,
-  onChange,
+  setColor,
 }: {
   readonly color: string;
-  readonly onChange: (newColor: string) => void;
+  readonly setColor: (newColor: string) => void;
 }) {
   return (
     <div className={styles.pickerPanel}>
-      <HexColorPicker color={color} onChange={onChange} />
+      <ColorInput color={color} setColor={setColor} />
+      <HexColorPicker color={color} onChange={setColor} />
       <div className={styles.presetColors}>
         {worksheetColors.map((presetColor) => (
           <button
@@ -30,7 +67,7 @@ function Picker({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              onChange(presetColor);
+              setColor(presetColor);
             }}
             aria-label={`Set color to ${presetColor}`}
           />
@@ -40,65 +77,103 @@ function Picker({
   );
 }
 
-function ColorPickerButton({
-  crn,
+function Preview({
+  event,
   color,
+}: {
+  readonly event: RBCEvent;
+  readonly color: string;
+}) {
+  const eventStyleGetter = useEventStyle();
+  const tempEvent = { ...event, color };
+  return (
+    <SurfaceComponent className={styles.eventPreview}>
+      <Calendar
+        defaultView="day"
+        views={['day']}
+        events={[tempEvent]}
+        date={tempEvent.start}
+        min={tempEvent.start}
+        max={tempEvent.end}
+        localizer={localizer}
+        toolbar={false}
+        components={{ event: CalendarEventBody }}
+        eventPropGetter={eventStyleGetter}
+        tooltipAccessor={undefined}
+        onNavigate={() => {}}
+      />
+    </SurfaceComponent>
+  );
+}
+
+function ColorPickerButton({
+  event,
   className,
 }: {
-  readonly crn: Crn;
-  readonly color: string;
+  readonly event: RBCEvent;
   readonly className?: string;
 }) {
   const { userRefresh } = useUser();
   const { curSeason, worksheetNumber } = useWorksheet();
   const [open, setOpen] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
+  const [newColor, setNewColor] = useState(event.color);
+  const onClose = () => {
+    setOpen(false);
+    setNewColor(event.color);
+  };
 
   return (
-    // TODO: accessibility
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div
-      className={styles.button}
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
-      }}
-      // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-      onMouseLeave={() => {
-        timeoutRef.current = window.setTimeout(() => {
-          setOpen(false);
-        }, 500);
-      }}
-      // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-      onMouseEnter={() => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
       }}
     >
       <button
         className={styles.button}
         type="button"
         className={className}
-        onClick={() => setOpen(!open)}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          setOpen(true);
+        }}
         aria-label="Change color"
       >
         <MdEdit color="var(--color-text-dark)" />
       </button>
 
-      {open && (
-        <Picker
-          color={color}
-          onChange={debounce(async (newColor: string) => {
-            await toggleBookmark({
-              action: 'update',
-              season: curSeason,
-              crn,
-              worksheetNumber,
-              color: chroma(newColor).hex(),
-            });
-            await userRefresh();
-          }, 500)}
-        />
-      )}
+      <Modal show={open} onHide={onClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Customizing calendar event</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className={styles.modalBody}>
+          <Picker color={newColor} setColor={setNewColor} />
+          <Preview event={event} color={newColor} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            onClick={async () => {
+              await toggleBookmark({
+                action: 'update',
+                season: curSeason,
+                crn: event.listing.crn,
+                worksheetNumber,
+                color: newColor,
+              });
+              await userRefresh();
+              setOpen(false);
+            }}
+          >
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

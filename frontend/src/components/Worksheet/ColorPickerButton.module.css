@@ -3,21 +3,31 @@
   height: 100%;
 }
 
-.pickerPanel {
-  position: absolute;
-  z-index: 100;
-  background-color: var(--color-surface);
-  border-radius: 6px;
+.modalBody {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1em 2em;
 }
 
 .pickerPanel :global(.react-colorful__last-control) {
   border-radius: 0;
 }
 
+.eventPreview {
+  width: 180px;
+}
+
+.eventPreview :global(.rbc-time-gutter) {
+  display: none;
+}
+
 .presetColors {
   display: flex;
+  justify-content: center;
   padding: 12px;
   flex-wrap: wrap;
+  width: 200px;
 }
 
 .presetColor {
