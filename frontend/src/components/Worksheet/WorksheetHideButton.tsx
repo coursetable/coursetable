@@ -40,7 +40,7 @@ export default function WorksheetHideButton({
         {hidden ? (
           <BsEyeSlash color="var(--color-hidden)" size={18} />
         ) : (
-          <BsEye color="var(--color-text)" size={18} />
+          <BsEye color="var(--color-text-dark)" size={18} />
         )}
       </Button>
     </OverlayTrigger>

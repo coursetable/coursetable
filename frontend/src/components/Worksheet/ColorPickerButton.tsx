@@ -137,7 +137,6 @@ function ColorPickerButton({
       }}
     >
       <button
-        className={styles.button}
         type="button"
         className={className}
         onClick={(e) => {

@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import clsx from 'clsx';
 import chroma from 'chroma-js';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
@@ -43,7 +42,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         <CalendarEventBody event={event} />
       </CourseInfoPopover>
       {person === 'me' && (
-        <div className="d-flex gap-1 flex-direction-column">
+        <div className={styles.eventButtons}>
           <WorksheetHideButton
             crn={course.crn}
             // Course in calendar is never hidden
