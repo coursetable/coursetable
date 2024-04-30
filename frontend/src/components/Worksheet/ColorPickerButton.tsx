@@ -86,6 +86,12 @@ function Preview({
 }) {
   const eventStyleGetter = useEventStyle();
   const tempEvent = { ...event, color };
+  const start = new Date(tempEvent.start);
+  if (start.getMinutes() === 0) start.setHours(start.getHours() - 1);
+  start.setMinutes(0);
+  const end = new Date(tempEvent.end);
+  end.setHours(end.getHours() + 1);
+  end.setMinutes(0);
   return (
     <SurfaceComponent className={styles.eventPreview}>
       <Calendar
@@ -93,8 +99,8 @@ function Preview({
         views={['day']}
         events={[tempEvent]}
         date={tempEvent.start}
-        min={tempEvent.start}
-        max={tempEvent.end}
+        min={start}
+        max={end}
         localizer={localizer}
         toolbar={false}
         components={{ event: CalendarEventBody }}
