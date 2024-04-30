@@ -9,14 +9,11 @@
   position: absolute;
   top: 0;
   right: 0;
-  background-color: white;
+  background-color: white !important;
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc;
+  border: 1px solid #ccc !important;
 
   /* Make the icon always black because background is always white */
   --color-text: black;

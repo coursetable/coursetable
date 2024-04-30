@@ -14,8 +14,12 @@
   background-color: var(--color-primary-subdued);
 }
 
+.hideButton {
+  background-color: transparent;
+}
+
 /* Hides icon until you hover over the list item */
-.listItem .hideButtonHidden {
+.hideButtonHidden {
   opacity: 0;
   transition: 0.05s opacity;
 }
@@ -25,7 +29,7 @@
 }
 
 @media (width < 576px) {
-  .listItem .hideButtonHidden {
+  .hideButtonHidden {
     opacity: 1;
   }
 }

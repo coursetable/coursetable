@@ -34,9 +34,7 @@
 }
 
 .toggleButton {
-  gap: 1rem;
   background-color: transparent;
-  border-width: 0;
   color: var(--color-primary) !important;
 }
 

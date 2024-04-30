@@ -37,10 +37,15 @@ export default function WorksheetCalendarListItem({
         <br />
         <span className={styles.courseTitle}>{course.title}</span>
       </Link>
-      <div className="d-flex align-items-center">
-        <div className={clsx(!hidden && styles.hideButtonHidden)}>
-          <WorksheetHideButton crn={course.crn} hidden={hidden} />
-        </div>
+      <div className="d-flex align-items-center gap-1">
+        <WorksheetHideButton
+          crn={course.crn}
+          hidden={hidden}
+          className={clsx(
+            styles.hideButton,
+            !hidden && styles.hideButtonHidden,
+          )}
+        />
         <WorksheetToggleButton listing={course} modal={false} />
       </div>
     </ListGroup.Item>

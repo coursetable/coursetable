@@ -29,13 +29,12 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
         </div>
       </CourseInfoPopover>
       {person === 'me' && (
-        <div className={styles.worksheetHideButton}>
-          <WorksheetHideButton
-            crn={course.crn}
-            // Course in calendar is never hidden
-            hidden={false}
-          />
-        </div>
+        <WorksheetHideButton
+          crn={course.crn}
+          // Course in calendar is never hidden
+          hidden={false}
+          className={styles.worksheetHideButton}
+        />
       )}
     </>
   );
