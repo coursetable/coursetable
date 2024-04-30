@@ -150,9 +150,6 @@ function ColorPickerButton({
       </button>
 
       <Modal show={open} onHide={onClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Customizing calendar event</Modal.Title>
-        </Modal.Header>
         <Modal.Body className={styles.modalBody}>
           <Picker color={newColor} setColor={setNewColor} />
           <Preview event={event} color={newColor} />
