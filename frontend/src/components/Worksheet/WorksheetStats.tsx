@@ -25,7 +25,7 @@ function StatPill({
 }) {
   const { theme } = useTheme();
   return (
-    <span
+    <dd
       className={styles.statPill}
       style={{
         backgroundColor: colorMap(stat)
@@ -34,7 +34,7 @@ function StatPill({
       }}
     >
       {children}
-    </span>
+    </dd>
   );
 }
 
@@ -139,52 +139,52 @@ export default function WorksheetStats() {
       <Collapse in={shown}>
         <div>
           <div className={styles.stats}>
-            <ul>
-              <li>
-                <span className={styles.statName}>Total courses</span>
+            <dl>
+              <div>
+                <dt>Total courses</dt>
                 <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
                   {courseCnt}
                 </StatPill>
-              </li>
-              <li>
-                <span className={styles.statName}>Total credits</span>
+              </div>
+              <div>
+                <dt>Total credits</dt>
                 <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
                 </StatPill>
-              </li>
-              <li>
-                <span className={styles.statName}>
+              </div>
+              <div>
+                <dt>
                   Total workload
                   <NoStatsTip
                     coursesWithoutRating={coursesWithoutWorkload}
                     coursesWithRating={coursesWithWorkload}
                   />
-                </span>
+                </dt>
                 <StatPill colorMap={workloadColormap} stat={workload}>
                   {workload.toFixed(2)}
                 </StatPill>
-              </li>
-              <li>
-                <span className={styles.statName}>
+              </div>
+              <div>
+                <dt>
                   Average rating
                   <NoStatsTip
                     coursesWithoutRating={coursesWithoutRating}
                     coursesWithRating={coursesWithRating}
                   />
-                </span>
+                </dt>
                 <StatPill colorMap={ratingColormap} stat={avgRating}>
                   {avgRating.toFixed(2)}
                 </StatPill>
-              </li>
-              <li className={styles.wide}>
-                <span className={styles.statName}>Skills & Areas</span>
-                <span className={styles.statName}>
+              </div>
+              <div className={styles.wide}>
+                <dt>Skills & Areas</dt>
+                <dd>
                   {skillsAreas.sort().map((skill, i) => (
                     <SkillBadge skill={skill} key={i} />
                   ))}
-                </span>
-              </li>
-            </ul>
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </Collapse>
