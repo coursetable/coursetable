@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import * as Sentry from '@sentry/react';
-import clsx from 'clsx';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 
 import ErrorPage from '../components/ErrorPage';
@@ -18,63 +17,10 @@ import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
 import styles from './Worksheet.module.css';
 
-function WorksheetMobile() {
-  return (
-    <div className={styles.container}>
-      <div>
-        <WorksheetNumDropdown mobile />
-        <div className={styles.subDropdowns}>
-          <SeasonDropdown mobile />
-          <FriendsDropdown mobile />
-        </div>
-        <SurfaceComponent className={styles.calendar}>
-          <WorksheetCalendar />
-        </SurfaceComponent>
-      </div>
-      <WorksheetStats />
-      <WorksheetCalendarList />
-    </div>
-  );
-}
-
-function WorksheetDesktop() {
-  const { worksheetView } = useWorksheet();
-  const [expanded, setExpanded] = useState(false);
-  switch (worksheetView) {
-    case 'list':
-      return <WorksheetList />;
-    case 'calendar': {
-      const Icon = expanded ? FaCompressAlt : FaExpandAlt;
-      return (
-        <div className={styles.container}>
-          <SurfaceComponent className={styles.calendar}>
-            <WorksheetCalendar />
-            <button
-              type="button"
-              className={styles.expandBtn}
-              onClick={() => {
-                setExpanded((x) => !x);
-              }}
-              aria-label={`${expanded ? 'Collapse' : 'Expand'} calendar`}
-            >
-              <Icon className={styles.expandIcon} size={12} />
-            </button>
-          </SurfaceComponent>
-          {!expanded && (
-            <div className={clsx(styles.calendarSidebar)}>
-              <WorksheetStats />
-              <WorksheetCalendarList />
-            </div>
-          )}
-        </div>
-      );
-    }
-  }
-}
-
 function Worksheet() {
   const { isMobile } = useWindowDimensions();
-  const { worksheetLoading, worksheetError } = useWorksheet();
+  const { worksheetLoading, worksheetError, worksheetView } = useWorksheet();
+  const [expanded, setExpanded] = useState(false);
 
   // Wait for search query to finish
   if (worksheetError) {
@@ -82,8 +28,42 @@ function Worksheet() {
     return <ErrorPage message="There seems to be an issue with our server" />;
   }
   if (worksheetLoading) return <Spinner />;
-
-  return !isMobile ? <WorksheetDesktop /> : <WorksheetMobile />;
+  if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
+  const Icon = expanded ? FaCompressAlt : FaExpandAlt;
+  return (
+    <div className={styles.container}>
+      {isMobile && (
+        <div className={styles.dropdowns}>
+          <WorksheetNumDropdown mobile />
+          <div className="d-flex">
+            <SeasonDropdown mobile />
+            <FriendsDropdown mobile />
+          </div>
+        </div>
+      )}
+      <SurfaceComponent className={styles.calendar}>
+        <WorksheetCalendar />
+        {!isMobile && (
+          <button
+            type="button"
+            className={styles.expandBtn}
+            onClick={() => {
+              setExpanded((x) => !x);
+            }}
+            aria-label={`${expanded ? 'Collapse' : 'Expand'} calendar`}
+          >
+            <Icon className={styles.expandIcon} size={12} />
+          </button>
+        )}
+      </SurfaceComponent>
+      {(isMobile || !expanded) && (
+        <div className={styles.calendarSidebar}>
+          <WorksheetStats />
+          <WorksheetCalendarList />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default Worksheet;
