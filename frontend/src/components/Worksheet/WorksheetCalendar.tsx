@@ -1,47 +1,18 @@
-import React, { type CSSProperties, useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import CalendarEvent from './CalendarEvent';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import CalendarEvent, { useEventStyle } from './CalendarEvent';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import {
-  localizer,
-  getCalendarEvents,
-  type RBCEvent,
-} from '../../utilities/calendar';
+import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, hoverCourse, curSeason } = useWorksheet();
-  const { isMobile } = useWindowDimensions();
+  const { courses, curSeason } = useWorksheet();
 
-  // Custom styling for the calendar events
-  const eventStyleGetter = useCallback(
-    (event: RBCEvent) => {
-      const color = chroma(event.color);
-      const style: CSSProperties = {
-        backgroundColor: color.alpha(0.85).css(),
-        borderColor: color.css(),
-        borderWidth: '2px',
-      };
-      // Hover management is too hard on mobile and not very useful
-      if (isMobile) return { style };
-      if (hoverCourse && hoverCourse === event.listing.crn) {
-        style.zIndex = 2;
-        style.filter = 'saturate(130%)';
-      } else if (hoverCourse) {
-        style.opacity = '30%';
-      }
-      return {
-        style,
-      };
-    },
-    [isMobile, hoverCourse],
-  );
+  const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times

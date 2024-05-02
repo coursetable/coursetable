@@ -3,25 +3,28 @@
   height: 100%;
 }
 
-.worksheetHideButton {
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+.eventButtons {
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
   position: absolute;
   top: 0;
   right: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.eventButtons:hover,
+.event:hover ~ .eventButtons {
+  opacity: 1;
+}
+
+.worksheetHideButton {
   background-color: white !important;
   border-radius: 50%;
   width: 30px;
   height: 30px;
   border: 1px solid #ccc !important;
-
-  /* Make the icon always black because background is always white */
-  --color-text: black;
-}
-
-.worksheetHideButton:hover,
-.event:hover ~ .worksheetHideButton {
-  opacity: 1;
 }
 
 .courseNameText {
