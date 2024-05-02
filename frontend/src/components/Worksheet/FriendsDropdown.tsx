@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdPersonRemove } from 'react-icons/md';
 import { components as selectComponents } from 'react-select';

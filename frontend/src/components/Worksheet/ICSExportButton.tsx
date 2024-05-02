@@ -1,4 +1,3 @@
-import React from 'react';
 import FileSaver from 'file-saver';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import ICSIcon from '../../images/ics.svg';

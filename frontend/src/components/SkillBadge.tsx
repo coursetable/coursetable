@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import { Badge } from 'react-bootstrap';
 import chroma from 'chroma-js';

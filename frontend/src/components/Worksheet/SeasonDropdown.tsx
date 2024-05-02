@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import type { Option } from '../../contexts/searchContext';

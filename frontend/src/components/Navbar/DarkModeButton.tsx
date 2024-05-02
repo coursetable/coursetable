@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import { FaRegMoon } from 'react-icons/fa';
 import { ImSun } from 'react-icons/im';

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useTheme } from '../../contexts/themeContext';
 import logo from '../../images/brand/bluebook.svg';
 import wordmarkOutlinesDark from '../../images/brand/ct_white.svg';

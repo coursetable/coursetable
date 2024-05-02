@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import { TextComponent } from '../components/Typography';
 import styles from './Join.module.css';

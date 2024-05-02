@@ -119,7 +119,7 @@ export function FerryProvider({
           setRequests((r) => r - 1);
         }
       });
-      await Promise.all(fetches).catch((err) => {
+      await Promise.all(fetches).catch((err: unknown) => {
         Sentry.captureException(err);
         toast.error('Failed to fetch course information');
         setErrors((e) => [...e, err as {}]);

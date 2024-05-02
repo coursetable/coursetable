@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import type express from 'express';
 import { eq, sql } from 'drizzle-orm';
 import { request } from 'graphql-request';

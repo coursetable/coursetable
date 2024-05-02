@@ -1,5 +1,5 @@
-import fs from 'fs';
-import https from 'https';
+import fs from 'node:fs';
+import https from 'node:https';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import RedisStore from 'connect-redis';
@@ -83,6 +83,7 @@ const redisClient = createClient({
     host: REDIS_HOST,
   },
 });
+// eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
 redisClient.connect().catch(winston.error);
 
 // Initialize Redis session store.

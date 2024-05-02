@@ -1,4 +1,4 @@
-import dns from 'dns';
+import dns from 'node:dns';
 import mdx from '@mdx-js/rollup';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import reactPlugin from '@vitejs/plugin-react';

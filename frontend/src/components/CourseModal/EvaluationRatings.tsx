@@ -1,4 +1,3 @@
-import React from 'react';
 import RatingsGraph from './RatingsGraph';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 import { evalQuestions } from '../../utilities/constants';

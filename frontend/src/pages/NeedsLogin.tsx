@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { API_ENDPOINT } from '../config';
 import { useUser } from '../contexts/userContext';

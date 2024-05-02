@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { IoFlaskOutline } from 'react-icons/io5';

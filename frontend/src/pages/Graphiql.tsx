@@ -1,4 +1,3 @@
-import React from 'react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.css';

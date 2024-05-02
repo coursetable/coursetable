@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import { barChartColors } from '../../utilities/constants';
 import { TextComponent } from '../Typography';

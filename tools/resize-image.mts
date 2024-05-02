@@ -1,8 +1,8 @@
 // Adopted from https://github.com/facebook/docusaurus/blob/1a62b41e319845af33375d1bf7763cb83c73bb56/admin/scripts/resizeImage.js
 
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { program } from 'commander';
 import imageSizeWrong from 'image-size';
 import sharp from 'sharp';

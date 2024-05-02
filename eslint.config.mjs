@@ -82,6 +82,7 @@ export default tseslint.config(
       ],
       'react/jsx-child-element-spacing': 'off',
       'react/jsx-no-bind': 'off',
+      'react/jsx-uses-react': 'off',
       'react/no-array-index-key': 'off',
       // TODO: we should eventually get rid of `in` operator
       'no-restricted-syntax': 'off',

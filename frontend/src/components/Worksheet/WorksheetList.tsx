@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-
+import { useMemo } from 'react';
 import { useSearch } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { sortCourses } from '../../utilities/course';

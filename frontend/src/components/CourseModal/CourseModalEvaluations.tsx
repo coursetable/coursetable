@@ -1,4 +1,3 @@
-import React from 'react';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Modal } from 'react-bootstrap';
 import EvaluationRatings from './EvaluationRatings';

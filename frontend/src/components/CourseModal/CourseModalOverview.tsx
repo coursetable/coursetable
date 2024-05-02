@@ -1,4 +1,3 @@
-import React from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
 
 import OverviewInfo from './OverviewInfo';

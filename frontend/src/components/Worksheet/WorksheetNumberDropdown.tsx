@@ -1,4 +1,3 @@
-import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
