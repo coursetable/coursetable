@@ -16,8 +16,6 @@ services:
         condition: service_healthy
 
   graphql-engine:
-    environment:
-      HASURA_GRAPHQL_PG_CONNECTIONS: 2
     ports:
       - '127.0.0.1:8085:8080'
 

@@ -34,7 +34,6 @@ services:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_PG_CONNECTIONS: 20
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080']
       interval: 0.5s
