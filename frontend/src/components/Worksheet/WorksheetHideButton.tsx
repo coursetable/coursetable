@@ -9,10 +9,12 @@ export default function WorksheetHideButton({
   hidden,
   crn,
   className,
+  color,
 }: {
   readonly hidden: boolean;
   readonly crn: Crn;
   readonly className?: string;
+  readonly color?: string;
 }) {
   const { toggleCourse, person } = useWorksheet();
   if (person !== 'me') return null;
@@ -39,7 +41,7 @@ export default function WorksheetHideButton({
         {hidden ? (
           <BsEyeSlash color="var(--color-hidden)" size={18} />
         ) : (
-          <BsEye color="var(--color-text-dark)" size={18} />
+          <BsEye color={color} size={18} />
         )}
       </Button>
     </OverlayTrigger>

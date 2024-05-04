@@ -48,6 +48,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
             // Course in calendar is never hidden
             hidden={false}
             className={styles.worksheetHideButton}
+            color="var(--color-text-dark)"
           />
           <ColorPickerButton
             event={event}

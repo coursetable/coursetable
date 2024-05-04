@@ -12,7 +12,9 @@
 
 .calendar {
   box-shadow: 0 2px 6px 0 var(--color-shadow);
-  height: 86vh;
+
+  /* Each hour in RBC has a min-height of 40px, and a day is at most 12hr */
+  height: max(calc(100vh - var(--height-navbar) - 2rem), 480px);
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
@@ -22,7 +24,7 @@
 
 @media (width < 768px) {
   .calendar {
-    height: 75vh;
+    height: max(calc(100vh - var(--height-navbar) - 2rem - 72px), 480px);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     overflow: hidden;
