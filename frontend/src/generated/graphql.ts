@@ -1968,12 +1968,10 @@ export type Courses_Bool_Exp = {
   season: InputMaybe<Seasons_Bool_Exp>;
   seasonBySeasonCode: InputMaybe<Seasons_Bool_Exp>;
   season_code: InputMaybe<String_Comparison_Exp>;
-  short_title: InputMaybe<String_Comparison_Exp>;
   skills: InputMaybe<Json_Comparison_Exp>;
   syllabus_url: InputMaybe<String_Comparison_Exp>;
   sysem: InputMaybe<Boolean_Comparison_Exp>;
   times_by_day: InputMaybe<Json_Comparison_Exp>;
-  times_long_summary: InputMaybe<String_Comparison_Exp>;
   times_summary: InputMaybe<String_Comparison_Exp>;
   title: InputMaybe<String_Comparison_Exp>;
 };
@@ -2165,11 +2163,6 @@ export type Courses_Insert_Input = {
   /** The season the course is being taught in */
   season_code: InputMaybe<Scalars['String']['input']>;
   /**
-   * Shortened course title (first 29 characters + "...")
-   *         if the length exceeds 32, otherwise just the title itself
-   */
-  short_title: InputMaybe<Scalars['String']['input']>;
-  /**
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
@@ -2183,11 +2176,6 @@ export type Courses_Insert_Input = {
    *         tuples of `(start_time, end_time, location)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
-  /**
-   * Course times and locations, displayed in the "Meets"
-   *          row in CourseTable course modals
-   */
-  times_long_summary: InputMaybe<Scalars['String']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: InputMaybe<Scalars['String']['input']>;
   /** Complete course title */
@@ -2286,18 +2274,8 @@ export type Courses_Max_Order_By = {
   same_course_id: InputMaybe<Order_By>;
   /** The season the course is being taught in */
   season_code: InputMaybe<Order_By>;
-  /**
-   * Shortened course title (first 29 characters + "...")
-   *         if the length exceeds 32, otherwise just the title itself
-   */
-  short_title: InputMaybe<Order_By>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<Order_By>;
-  /**
-   * Course times and locations, displayed in the "Meets"
-   *          row in CourseTable course modals
-   */
-  times_long_summary: InputMaybe<Order_By>;
   /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: InputMaybe<Order_By>;
   /** Complete course title */
@@ -2396,18 +2374,8 @@ export type Courses_Min_Order_By = {
   same_course_id: InputMaybe<Order_By>;
   /** The season the course is being taught in */
   season_code: InputMaybe<Order_By>;
-  /**
-   * Shortened course title (first 29 characters + "...")
-   *         if the length exceeds 32, otherwise just the title itself
-   */
-  short_title: InputMaybe<Order_By>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<Order_By>;
-  /**
-   * Course times and locations, displayed in the "Meets"
-   *          row in CourseTable course modals
-   */
-  times_long_summary: InputMaybe<Order_By>;
   /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: InputMaybe<Order_By>;
   /** Complete course title */
@@ -2473,12 +2441,10 @@ export type Courses_Order_By = {
   season: InputMaybe<Seasons_Order_By>;
   seasonBySeasonCode: InputMaybe<Seasons_Order_By>;
   season_code: InputMaybe<Order_By>;
-  short_title: InputMaybe<Order_By>;
   skills: InputMaybe<Order_By>;
   syllabus_url: InputMaybe<Order_By>;
   sysem: InputMaybe<Order_By>;
   times_by_day: InputMaybe<Order_By>;
-  times_long_summary: InputMaybe<Order_By>;
   times_summary: InputMaybe<Order_By>;
   title: InputMaybe<Order_By>;
 };
@@ -2551,8 +2517,6 @@ export enum Courses_Select_Column {
   /** column name */
   SeasonCode = 'season_code',
   /** column name */
-  ShortTitle = 'short_title',
-  /** column name */
   Skills = 'skills',
   /** column name */
   SyllabusUrl = 'syllabus_url',
@@ -2560,8 +2524,6 @@ export enum Courses_Select_Column {
   Sysem = 'sysem',
   /** column name */
   TimesByDay = 'times_by_day',
-  /** column name */
-  TimesLongSummary = 'times_long_summary',
   /** column name */
   TimesSummary = 'times_summary',
   /** column name */
@@ -2808,11 +2770,6 @@ export type Courses_Set_Input = {
   /** The season the course is being taught in */
   season_code: InputMaybe<Scalars['String']['input']>;
   /**
-   * Shortened course title (first 29 characters + "...")
-   *         if the length exceeds 32, otherwise just the title itself
-   */
-  short_title: InputMaybe<Scalars['String']['input']>;
-  /**
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
@@ -2826,11 +2783,6 @@ export type Courses_Set_Input = {
    *         tuples of `(start_time, end_time, location)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
-  /**
-   * Course times and locations, displayed in the "Meets"
-   *          row in CourseTable course modals
-   */
-  times_long_summary: InputMaybe<Scalars['String']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: InputMaybe<Scalars['String']['input']>;
   /** Complete course title */
@@ -3141,11 +3093,6 @@ export type Courses_Stream_Cursor_Value_Input = {
   /** The season the course is being taught in */
   season_code: InputMaybe<Scalars['String']['input']>;
   /**
-   * Shortened course title (first 29 characters + "...")
-   *         if the length exceeds 32, otherwise just the title itself
-   */
-  short_title: InputMaybe<Scalars['String']['input']>;
-  /**
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
@@ -3159,11 +3106,6 @@ export type Courses_Stream_Cursor_Value_Input = {
    *         tuples of `(start_time, end_time, location)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
-  /**
-   * Course times and locations, displayed in the "Meets"
-   *          row in CourseTable course modals
-   */
-  times_long_summary: InputMaybe<Scalars['String']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: InputMaybe<Scalars['String']['input']>;
   /** Complete course title */
@@ -3297,8 +3239,6 @@ export enum Courses_Update_Column {
   /** column name */
   SeasonCode = 'season_code',
   /** column name */
-  ShortTitle = 'short_title',
-  /** column name */
   Skills = 'skills',
   /** column name */
   SyllabusUrl = 'syllabus_url',
@@ -3306,8 +3246,6 @@ export enum Courses_Update_Column {
   Sysem = 'sysem',
   /** column name */
   TimesByDay = 'times_by_day',
-  /** column name */
-  TimesLongSummary = 'times_long_summary',
   /** column name */
   TimesSummary = 'times_summary',
   /** column name */

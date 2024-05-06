@@ -22161,18 +22161,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "args": [
@@ -22241,18 +22229,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "json",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -24728,18 +24704,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "String_comparison_exp",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": null,
             "type": {
@@ -24781,18 +24745,6 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "json_comparison_exp",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "String_comparison_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -25559,18 +25511,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "type": {
@@ -25612,18 +25552,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "json",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -25977,32 +25905,8 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "syllabus_url",
             "description": "Link to the syllabus",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -26361,32 +26265,8 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "syllabus_url",
             "description": "Link to the syllabus",
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -26743,32 +26623,8 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "syllabus_url",
             "description": "Link to the syllabus",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -27127,32 +26983,8 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "syllabus_url",
             "description": "Link to the syllabus",
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -27867,18 +27699,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": null,
             "type": {
@@ -27916,18 +27736,6 @@
           },
           {
             "name": "times_by_day",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -28183,12 +27991,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": "column name",
             "isDeprecated": false,
@@ -28208,12 +28010,6 @@
           },
           {
             "name": "times_by_day",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -28998,18 +28794,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "type": {
@@ -29051,18 +28835,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "json",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -30650,18 +30422,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "Shortened course title (first 29 characters + \"...\")\n        if the length exceeds 32, otherwise just the title itself",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "type": {
@@ -30703,18 +30463,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "json",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
-            "description": "Course times and locations, displayed in the \"Meets\"\n         row in CourseTable course modals",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -31321,12 +31069,6 @@
             "deprecationReason": null
           },
           {
-            "name": "short_title",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "skills",
             "description": "column name",
             "isDeprecated": false,
@@ -31346,12 +31088,6 @@
           },
           {
             "name": "times_by_day",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "times_long_summary",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
