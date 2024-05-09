@@ -5,6 +5,7 @@ import { Tab, Tabs } from 'react-bootstrap';
 import Mark from 'mark.js';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 import { evalQuestionTags } from '../../utilities/constants';
+import { truncatedText } from '../../utilities/course';
 import { Input, TextComponent } from '../Typography';
 import styles from './EvaluationResponses.module.css';
 
@@ -54,7 +55,8 @@ function EvaluationResponses({
     );
     info.course.evaluation_narratives.forEach((data) => {
       const questionTag =
-        data.evaluation_question.tag ?? data.evaluation_question.question_text!;
+        data.evaluation_question.tag ??
+        truncatedText(data.evaluation_question.question_text, 15, '');
       const questionInfo = tempResponses[questionTag] ?? {
         questionText: data.evaluation_question.question_text!,
         responses: [],
