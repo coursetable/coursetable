@@ -5432,10 +5432,8 @@ export type SearchEvaluationNarrativesQueryVariables = Exact<{
 
 export type SearchEvaluationNarrativesQuery = {
   __typename?: 'query_root';
-  computed_listing_info: Array<{
-    __typename?: 'computed_listing_info';
-    crn: number;
-    enrolled: number | null;
+  listings: Array<{
+    __typename?: 'listings';
     course: {
       __typename?: 'courses';
       evaluation_narratives: Array<{
@@ -5457,6 +5455,10 @@ export type SearchEvaluationNarrativesQuery = {
           tag: string | null;
         };
       }>;
+      evaluation_statistic: {
+        __typename?: 'evaluation_statistics';
+        enrolled: number | null;
+      } | null;
     };
   }>;
 };
@@ -5683,10 +5685,9 @@ export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<
 >;
 export const SearchEvaluationNarrativesDocument = gql`
   query SearchEvaluationNarratives($season_code: String, $crn: Int) {
-    computed_listing_info(
+    listings(
       where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
     ) {
-      crn
       course {
         evaluation_narratives {
           comment
@@ -5703,8 +5704,10 @@ export const SearchEvaluationNarrativesDocument = gql`
             tag
           }
         }
+        evaluation_statistic {
+          enrolled
+        }
       }
-      enrolled
     }
   }
 `;

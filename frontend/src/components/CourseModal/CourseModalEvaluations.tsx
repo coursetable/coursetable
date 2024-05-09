@@ -27,12 +27,12 @@ function CourseModalEvaluations({
       </Modal.Body>
     );
   }
-  if ((data?.computed_listing_info.length ?? 0) > 1) {
+  if ((data?.listings.length ?? 0) > 1) {
     Sentry.captureException(
       new Error(`More than one listings returned for ${seasonCode}-${crn}`),
     );
   }
-  const info = data?.computed_listing_info[0];
+  const info = data?.listings[0]!.course;
 
   return (
     <Modal.Body>

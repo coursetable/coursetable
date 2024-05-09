@@ -24,10 +24,7 @@ query SameCourseOrProfOfferings(
 }
 
 query SearchEvaluationNarratives($season_code: String, $crn: Int) {
-  computed_listing_info(
-    where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
-  ) {
-    crn
+  listings(where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }) {
     course {
       evaluation_narratives {
         comment
@@ -44,8 +41,10 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
           tag
         }
       }
+      evaluation_statistic {
+        enrolled
+      }
     }
-    enrolled
   }
 }
 

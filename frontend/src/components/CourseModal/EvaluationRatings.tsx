@@ -12,11 +12,11 @@ function EvaluationRatings({
   info,
 }: {
   readonly info:
-    | SearchEvaluationNarrativesQuery['computed_listing_info'][number]
+    | SearchEvaluationNarrativesQuery['listings'][number]['course']
     | undefined;
 }) {
   if (!info) return null;
-  const ratings = info.course.evaluation_ratings.map((x) => ({
+  const ratings = info.evaluation_ratings.map((x) => ({
     tag: x.evaluation_question.tag,
     questionText: x.evaluation_question.question_text,
     rating: x.rating as number[],
@@ -43,7 +43,7 @@ function EvaluationRatings({
           ratings={rating}
           reverse={tag === 'Workload' || tag === 'Intellectual Challenge'}
           labels={options}
-          enrolled={info.enrolled ?? 0}
+          enrolled={info.evaluation_statistic?.enrolled ?? 0}
         />
       </div>
     ));

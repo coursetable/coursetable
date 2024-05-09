@@ -39,7 +39,7 @@ function EvaluationResponses({
   info,
 }: {
   readonly info:
-    | SearchEvaluationNarrativesQuery['computed_listing_info'][number]
+    | SearchEvaluationNarrativesQuery['listings'][number]['course']
     | undefined;
 }) {
   // Sort by original order or length?
@@ -53,7 +53,7 @@ function EvaluationResponses({
     } = Object.fromEntries(
       evalQuestionTags.map((tag) => [tag, { questionText: '', responses: [] }]),
     );
-    info.course.evaluation_narratives.forEach((data) => {
+    info.evaluation_narratives.forEach((data) => {
       const questionTag =
         data.evaluation_question.tag ??
         truncatedText(data.evaluation_question.question_text, 15, '');
@@ -101,7 +101,7 @@ function EvaluationResponses({
       </div>
     );
   }
-  const enrolled = info.enrolled ?? 0;
+  const enrolled = info.evaluation_statistic?.enrolled ?? 0;
 
   return (
     <div>
