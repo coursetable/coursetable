@@ -1,7 +1,12 @@
 import RatingsGraph from './RatingsGraph';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import { evalQuestionTags } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
 import styles from './EvaluationRatings.module.css';
+
+const tagIndex = Object.fromEntries(
+  evalQuestionTags.map((tag, index) => [tag, index]),
+);
 
 function EvaluationRatings({
   info,
@@ -17,6 +22,12 @@ function EvaluationRatings({
     rating: x.rating as number[],
     options: x.evaluation_question.options as string[],
   }));
+  ratings.sort((a, b) => {
+    if (a.tag && b.tag) return tagIndex[a.tag]! - tagIndex[b.tag]!;
+    if (a.tag) return -1;
+    if (b.tag) return 1;
+    return a.questionText.localeCompare(b.questionText);
+  });
 
   const items = ratings
     .filter((question) => question.rating.length)

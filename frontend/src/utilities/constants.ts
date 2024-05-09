@@ -393,6 +393,23 @@ export const extraInfo: { [key in Listing['extra_info']]: string } = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
+// This is the preferred order in which they will be displayed
+export const evalQuestionTags = [
+  'Overall',
+  'Workload',
+  'Engagement',
+  'Organization',
+  'Feedback',
+  'Intellectual challenge',
+  'Summary',
+  'Recommend',
+  'Skills',
+  'Strengths/weaknesses',
+  'Available resources',
+  'Major',
+  'Professor',
+];
+
 export const worksheetColors = [
   '#31a4d4',
   '#2cafb7',

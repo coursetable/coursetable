@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { Tab, Tabs } from 'react-bootstrap';
 import Mark from 'mark.js';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import { evalQuestionTags } from '../../utilities/constants';
 import { Input, TextComponent } from '../Typography';
 import styles from './EvaluationResponses.module.css';
 
@@ -48,7 +49,9 @@ function EvaluationResponses({
     if (!info) return [{}, {}];
     const tempResponses: {
       [tag: string]: { questionText: string; responses: string[] };
-    } = {};
+    } = Object.fromEntries(
+      evalQuestionTags.map((tag) => [tag, { questionText: '', responses: [] }]),
+    );
     info.course.evaluation_narratives.forEach((data) => {
       const questionTag =
         data.evaluation_question.tag ?? data.evaluation_question.question_text!;
@@ -56,7 +59,9 @@ function EvaluationResponses({
         questionText: data.evaluation_question.question_text!,
         responses: [],
       };
-      if (
+      if (!questionInfo.questionText) {
+        questionInfo.questionText = data.evaluation_question.question_text!;
+      } else if (
         data.evaluation_question.question_text !== questionInfo.questionText
       ) {
         Sentry.captureException(
