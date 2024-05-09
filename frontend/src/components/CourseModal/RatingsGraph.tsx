@@ -25,8 +25,6 @@ function RatingsGraph({
   const columns = ratings.map((rating, indx) => {
     // Calculate height of the bar
     const height = rating ? MIN_HEIGHT + (rating / maxVal) * 100 : 0;
-    // Skip to last color if this is the yes/no question
-    if (indx === 1 && ratings.length === 2) indx = 4;
     // Build bar
     return (
       <div key={labels[indx]} className={styles.bar}>
@@ -41,17 +39,10 @@ function RatingsGraph({
             height: `${height.toString()}px`,
           }}
         />
-        {ratings.length === 2 && (
-          <p className={clsx(styles.label, styles.value, 'm-0')}>
-            {indx === 0 ? 'yes' : 'no'}
-          </p>
-        )}
-        {ratings.length === 5 && (
-          <p className={clsx(styles.label, styles.value, 'm-0')}>
-            <span className="d-none d-sm-block">{labels[indx]}</span>
-            <span className="d-sm-none">{indx + 1}</span>
-          </p>
-        )}
+        <p className={clsx(styles.label, styles.value, 'm-0')}>
+          <span className="d-none d-sm-block">{labels[indx]}</span>
+          <span className="d-sm-none">{indx + 1}</span>
+        </p>
       </div>
     );
   });

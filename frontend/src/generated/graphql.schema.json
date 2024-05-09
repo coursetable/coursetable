@@ -1586,9 +1586,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1610,9 +1614,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1634,9 +1642,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1658,9 +1670,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1782,27 +1798,19 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "enrolled",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "args": [],
             "type": {
@@ -2122,9 +2130,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -4033,18 +4045,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "args": [],
@@ -4322,18 +4322,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -4757,18 +4745,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "Int_comparison_exp",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -5725,18 +5701,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "type": {
@@ -6097,18 +6061,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -6742,18 +6694,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extra_info",
             "description": null,
             "args": [],
@@ -7247,18 +7187,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -7772,18 +7700,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extra_info",
             "description": null,
             "args": [],
@@ -8277,18 +8193,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -8965,18 +8869,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extra_info",
             "description": null,
             "type": {
@@ -9602,12 +9494,6 @@
           },
           {
             "name": "enrolled",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -10560,18 +10446,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extra_info",
             "description": null,
             "type": {
@@ -11146,18 +11020,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "args": [],
@@ -11446,18 +11308,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "type": {
@@ -11733,18 +11583,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "args": [],
             "type": {
@@ -12044,18 +11882,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "type": {
@@ -12331,18 +12157,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "args": [],
             "type": {
@@ -12631,18 +12445,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -13041,18 +12843,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -13638,18 +13428,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "args": [],
@@ -13938,18 +13716,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "type": {
@@ -14180,12 +13946,6 @@
           },
           {
             "name": "enrolled",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -14682,18 +14442,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "args": [],
@@ -14982,18 +14730,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "type": {
@@ -15269,18 +15005,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "args": [],
             "type": {
@@ -15580,18 +15304,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_enrollment",
             "description": null,
             "type": {
@@ -15867,18 +15579,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "args": [],
             "type": {
@@ -16167,18 +15867,6 @@
           },
           {
             "name": "enrolled",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -20173,9 +19861,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -22178,9 +21870,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -22211,7 +21907,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "args": [
               {
                 "name": "path",
@@ -22227,9 +21923,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -22251,9 +21951,13 @@
             "description": "Complete course title",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -25548,7 +25252,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -28831,7 +28535,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -30459,7 +30163,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -32337,9 +32041,13 @@
             "description": "Response to the question",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32349,9 +32057,13 @@
             "description": "VADER sentiment 'compound' score (valence aggregate of neg, neu, pos)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32361,9 +32073,13 @@
             "description": "VADER sentiment 'neg' score (negativity)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32373,9 +32089,13 @@
             "description": "VADER sentiment 'neu' score (neutrality)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32385,9 +32105,13 @@
             "description": "VADER sentiment 'pos' score (positivity)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -37249,16 +36973,20 @@
             "description": "True if the question has narrative responses.\n        False if the question has categorica/numerical responses",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "options",
-            "description": "JSON array of possible responses (only if the question is not a narrative",
+            "description": "JSON array of possible responses (only if the question is not a narrative)",
             "args": [
               {
                 "name": "path",
@@ -37302,16 +37030,20 @@
             "description": "The question text",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "tag",
-            "description": "[computed] Question type (used for computing ratings, since one\n        question may be coded differently for different respondants)",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -37690,7 +37422,7 @@
           },
           {
             "name": "options",
-            "description": "JSON array of possible responses (only if the question is not a narrative",
+            "description": "JSON array of possible responses (only if the question is not a narrative)",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -37726,7 +37458,7 @@
           },
           {
             "name": "tag",
-            "description": "[computed] Question type (used for computing ratings, since one\n        question may be coded differently for different respondants)",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -37772,7 +37504,7 @@
           },
           {
             "name": "tag",
-            "description": "[computed] Question type (used for computing ratings, since one\n        question may be coded differently for different respondants)",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -37819,7 +37551,7 @@
           },
           {
             "name": "tag",
-            "description": "[computed] Question type (used for computing ratings, since one\n        question may be coded differently for different respondants)",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -38171,7 +37903,7 @@
           },
           {
             "name": "options",
-            "description": "JSON array of possible responses (only if the question is not a narrative",
+            "description": "JSON array of possible responses (only if the question is not a narrative)",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -38207,7 +37939,7 @@
           },
           {
             "name": "tag",
-            "description": "[computed] Question type (used for computing ratings, since one\n        question may be coded differently for different respondants)",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -38281,7 +38013,7 @@
           },
           {
             "name": "options",
-            "description": "JSON array of possible responses (only if the question is not a narrative",
+            "description": "JSON array of possible responses (only if the question is not a narrative)",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -38317,7 +38049,7 @@
           },
           {
             "name": "tag",
-            "description": "[computed] Question type (used for computing ratings, since one\n        question may be coded differently for different respondants)",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -38515,9 +38247,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -40645,18 +40381,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extras",
             "description": "Arbitrary additional information attached to an evaluation",
             "args": [
@@ -41004,18 +40728,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "args": [],
@@ -41176,18 +40888,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "Int_comparison_exp",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extras",
             "description": null,
             "type": {
@@ -41312,18 +41012,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "type": {
@@ -41421,18 +41109,6 @@
           {
             "name": "enrolled",
             "description": "Number of students enrolled in course",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -41549,18 +41225,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "args": [],
@@ -41646,18 +41310,6 @@
           {
             "name": "enrolled",
             "description": "Number of students enrolled in course",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -41929,18 +41581,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extras",
             "description": null,
             "type": {
@@ -42047,12 +41687,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extras",
             "description": "column name",
             "isDeprecated": false,
@@ -42130,18 +41764,6 @@
           {
             "name": "enrolled",
             "description": "Number of students enrolled in course",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -42258,18 +41880,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "args": [],
@@ -42365,18 +41975,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "args": [],
@@ -42462,18 +42060,6 @@
           {
             "name": "enrolled",
             "description": "Number of students enrolled in course",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -42619,18 +42205,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "extras",
             "description": "Arbitrary additional information attached to an evaluation",
             "type": {
@@ -42737,18 +42311,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "args": [],
@@ -42812,12 +42374,6 @@
           },
           {
             "name": "enrolled",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -42960,18 +42516,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "args": [],
@@ -43067,18 +42611,6 @@
             "deprecationReason": null
           },
           {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "no_response",
             "description": "Number of students who did not respond",
             "args": [],
@@ -43164,18 +42696,6 @@
           {
             "name": "enrolled",
             "description": "Number of students enrolled in course",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "enrollment",
-            "description": "Placeholder for compatibility (previously held JSON for enrollment)",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -45330,9 +44850,13 @@
             "description": "[computed] subject + number (e.g. \"AMST 312\")",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -57230,9 +56754,13 @@
             "description": "[computed] Season of the semester - one of spring, summer, or fall",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -57242,9 +56770,13 @@
             "description": "[computed] Year of the semester",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null

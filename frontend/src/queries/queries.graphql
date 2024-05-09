@@ -1,6 +1,3 @@
-# Note: these aren't actually used directly. Instead, we use
-# graphql-codegen to create typescript and apollo bindings.
-# These can be found in the "generated" directory.
 query SameCourseOrProfOfferings(
   $same_course_id: Int!
   $professor_ids: [String!]
@@ -32,18 +29,19 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
   ) {
     crn
     course {
-      evaluation_narratives_aggregate {
-        nodes {
-          comment
-          evaluation_question {
-            question_text
-          }
+      evaluation_narratives {
+        comment
+        evaluation_question {
+          question_text
+          tag
         }
       }
       evaluation_ratings {
         rating
         evaluation_question {
           question_text
+          options
+          tag
         }
       }
     }

@@ -393,52 +393,22 @@ export const extraInfo: { [key in Listing['extra_info']]: string } = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
-export const evalQuestions = {
-  assessment: {
-    question: 'What is your overall assessment of this course?',
-    labels: ['poor', 'fair', 'good', 'very good', 'excellent'],
-    title: 'Overall',
-  },
-  workload: {
-    question:
-      'Relative to other courses you have taken at Yale, the workload of this course was:',
-    labels: ['much less', 'less', 'same', 'greater', 'much greater'],
-    title: 'Workload',
-  },
-  engagement: {
-    question: 'Your level of engagement with the course was:',
-    labels: ['very low', 'low', 'medium', 'high', 'very high'],
-    title: 'Engagement',
-  },
-  organized: {
-    question: 'The course was well organized to facilitate student learning.',
-    labels: [
-      'strongly disagree',
-      'disagree',
-      'neutral',
-      'agree',
-      'strongly agree',
-    ],
-    title: 'Organization',
-  },
-  feedback: {
-    question: 'I received clear feedback that improved my learning.',
-    labels: [
-      'strongly disagree',
-      'disagree',
-      'neutral',
-      'agree',
-      'strongly agree',
-    ],
-    title: 'Feedback Clarity',
-  },
-  challenge: {
-    question:
-      'Relative to other courses you have taken at Yale, the level of intellectual challenge of this course was:',
-    labels: ['much less', 'less', 'same', 'greater', 'much greater'],
-    title: 'Intellectual Challenge',
-  },
-};
+// This is the preferred order in which they will be displayed
+export const evalQuestionTags = [
+  'Overall',
+  'Workload',
+  'Engagement',
+  'Organization',
+  'Feedback',
+  'Intellectual challenge',
+  'Summary',
+  'Recommend',
+  'Skills',
+  'Strengths/weaknesses',
+  'Available resources',
+  'Major',
+  'Professor',
+];
 
 export const worksheetColors = [
   '#31a4d4',
