@@ -2291,13 +2291,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -19865,9 +19861,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -21870,9 +21870,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -21903,7 +21907,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "args": [
               {
                 "name": "path",
@@ -21919,9 +21923,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -21943,9 +21951,13 @@
             "description": "Complete course title",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -25240,7 +25252,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -28523,7 +28535,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -30151,7 +30163,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -32029,9 +32041,13 @@
             "description": "Response to the question",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32041,9 +32057,13 @@
             "description": "VADER sentiment 'compound' score (valence aggregate of neg, neu, pos)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32053,9 +32073,13 @@
             "description": "VADER sentiment 'neg' score (negativity)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32065,9 +32089,13 @@
             "description": "VADER sentiment 'neu' score (neutrality)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -32077,9 +32105,13 @@
             "description": "VADER sentiment 'pos' score (positivity)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "float8",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "float8",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -36941,9 +36973,13 @@
             "description": "True if the question has narrative responses.\n        False if the question has categorica/numerical responses",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -36994,9 +37030,13 @@
             "description": "The question text",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -38207,9 +38247,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "json",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -44806,9 +44850,13 @@
             "description": "[computed] subject + number (e.g. \"AMST 312\")",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -56706,9 +56754,13 @@
             "description": "[computed] Season of the semester - one of spring, summer, or fall",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -56718,9 +56770,13 @@
             "description": "[computed] Year of the semester",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null

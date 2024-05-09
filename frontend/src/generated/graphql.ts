@@ -2153,7 +2153,7 @@ export type Courses_Insert_Input = {
   sysem: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location)`
+   *         tuples of `(start_time, end_time, location, locatio_url)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -2760,7 +2760,7 @@ export type Courses_Set_Input = {
   sysem: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location)`
+   *         tuples of `(start_time, end_time, location, locatio_url)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -3083,7 +3083,7 @@ export type Courses_Stream_Cursor_Value_Input = {
   sysem: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location)`
+   *         tuples of `(start_time, end_time, location, locatio_url)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -5440,19 +5440,19 @@ export type SearchEvaluationNarrativesQuery = {
       __typename?: 'courses';
       evaluation_narratives: Array<{
         __typename?: 'evaluation_narratives';
-        comment: string | null;
+        comment: string;
         evaluation_question: {
           __typename?: 'evaluation_questions';
-          question_text: string | null;
+          question_text: string;
           tag: string | null;
         };
       }>;
       evaluation_ratings: Array<{
         __typename?: 'evaluation_ratings';
-        rating: any | null;
+        rating: any;
         evaluation_question: {
           __typename?: 'evaluation_questions';
-          question_text: string | null;
+          question_text: string;
           options: any | null;
           tag: string | null;
         };
@@ -5526,7 +5526,7 @@ export type ListingFragment = {
   section: string;
   skills: any;
   subject: string;
-  syllabus_url: string;
+  syllabus_url: string | null;
   times_by_day: any;
   times_summary: string;
   title: string;
