@@ -18,7 +18,7 @@ function EvaluationRatings({
   if (!info) return null;
   const ratings = info.course.evaluation_ratings.map((x) => ({
     tag: x.evaluation_question.tag,
-    questionText: x.evaluation_question.question_text!,
+    questionText: x.evaluation_question.question_text,
     rating: x.rating as number[],
     options: x.evaluation_question.options as string[],
   }));

@@ -612,7 +612,7 @@ export function SearchProvider({
               .toLowerCase()
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
           (searchDescription.value &&
-            listing.description?.toLowerCase().includes(token)) ||
+            listing.description.toLowerCase().includes(token)) ||
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
             professor.toLowerCase().includes(token),

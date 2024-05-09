@@ -58,17 +58,17 @@ function EvaluationResponses({
         data.evaluation_question.tag ??
         truncatedText(data.evaluation_question.question_text, 15, '');
       const questionInfo = tempResponses[questionTag] ?? {
-        questionText: data.evaluation_question.question_text!,
+        questionText: data.evaluation_question.question_text,
         responses: [],
       };
       if (!questionInfo.questionText) {
-        questionInfo.questionText = data.evaluation_question.question_text!;
+        questionInfo.questionText = data.evaluation_question.question_text;
       } else if (
         data.evaluation_question.question_text !== questionInfo.questionText
       ) {
         Sentry.captureException(
           new Error(
-            `Question text mismatch: ${questionTag} ${data.evaluation_question.question_text!} vs. ${questionInfo.questionText}`,
+            `Question text mismatch: ${questionTag} ${data.evaluation_question.question_text} vs. ${questionInfo.questionText}`,
           ),
         );
       }
