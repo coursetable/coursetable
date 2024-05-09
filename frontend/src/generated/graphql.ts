@@ -243,7 +243,6 @@ export type Computed_Listing_Info_Avg_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -281,7 +280,6 @@ export type Computed_Listing_Info_Bool_Exp = {
   declined: InputMaybe<Int_Comparison_Exp>;
   description: InputMaybe<String_Comparison_Exp>;
   enrolled: InputMaybe<Int_Comparison_Exp>;
-  enrollment: InputMaybe<Int_Comparison_Exp>;
   extra_info: InputMaybe<String_Comparison_Exp>;
   final_exam: InputMaybe<String_Comparison_Exp>;
   flag_info: InputMaybe<Jsonb_Comparison_Exp>;
@@ -373,7 +371,6 @@ export type Computed_Listing_Info_Inc_Input = {
   crn: InputMaybe<Scalars['Int']['input']>;
   declined: InputMaybe<Scalars['Int']['input']>;
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   last_enrollment: InputMaybe<Scalars['Int']['input']>;
   last_enrollment_course_id: InputMaybe<Scalars['Int']['input']>;
   last_offered_course_id: InputMaybe<Scalars['Int']['input']>;
@@ -408,7 +405,6 @@ export type Computed_Listing_Info_Insert_Input = {
   declined: InputMaybe<Scalars['Int']['input']>;
   description: InputMaybe<Scalars['String']['input']>;
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   extra_info: InputMaybe<Scalars['String']['input']>;
   final_exam: InputMaybe<Scalars['String']['input']>;
   flag_info: InputMaybe<Scalars['jsonb']['input']>;
@@ -464,7 +460,6 @@ export type Computed_Listing_Info_Max_Order_By = {
   declined: InputMaybe<Order_By>;
   description: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   extra_info: InputMaybe<Order_By>;
   final_exam: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
@@ -510,7 +505,6 @@ export type Computed_Listing_Info_Min_Order_By = {
   declined: InputMaybe<Order_By>;
   description: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   extra_info: InputMaybe<Order_By>;
   final_exam: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
@@ -567,7 +561,6 @@ export type Computed_Listing_Info_Order_By = {
   declined: InputMaybe<Order_By>;
   description: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   extra_info: InputMaybe<Order_By>;
   final_exam: InputMaybe<Order_By>;
   flag_info: InputMaybe<Order_By>;
@@ -658,8 +651,6 @@ export enum Computed_Listing_Info_Select_Column {
   Description = 'description',
   /** column name */
   Enrolled = 'enrolled',
-  /** column name */
-  Enrollment = 'enrollment',
   /** column name */
   ExtraInfo = 'extra_info',
   /** column name */
@@ -917,7 +908,6 @@ export type Computed_Listing_Info_Set_Input = {
   declined: InputMaybe<Scalars['Int']['input']>;
   description: InputMaybe<Scalars['String']['input']>;
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   extra_info: InputMaybe<Scalars['String']['input']>;
   final_exam: InputMaybe<Scalars['String']['input']>;
   flag_info: InputMaybe<Scalars['jsonb']['input']>;
@@ -969,7 +959,6 @@ export type Computed_Listing_Info_Stddev_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -997,7 +986,6 @@ export type Computed_Listing_Info_Stddev_Pop_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -1025,7 +1013,6 @@ export type Computed_Listing_Info_Stddev_Samp_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -1067,7 +1054,6 @@ export type Computed_Listing_Info_Stream_Cursor_Value_Input = {
   declined: InputMaybe<Scalars['Int']['input']>;
   description: InputMaybe<Scalars['String']['input']>;
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   extra_info: InputMaybe<Scalars['String']['input']>;
   final_exam: InputMaybe<Scalars['String']['input']>;
   flag_info: InputMaybe<Scalars['jsonb']['input']>;
@@ -1119,7 +1105,6 @@ export type Computed_Listing_Info_Sum_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -1174,8 +1159,6 @@ export enum Computed_Listing_Info_Update_Column {
   Description = 'description',
   /** column name */
   Enrolled = 'enrolled',
-  /** column name */
-  Enrollment = 'enrollment',
   /** column name */
   ExtraInfo = 'extra_info',
   /** column name */
@@ -1278,7 +1261,6 @@ export type Computed_Listing_Info_Var_Pop_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -1306,7 +1288,6 @@ export type Computed_Listing_Info_Var_Samp_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -1334,7 +1315,6 @@ export type Computed_Listing_Info_Variance_Order_By = {
   crn: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   last_enrollment: InputMaybe<Order_By>;
   last_enrollment_course_id: InputMaybe<Order_By>;
   last_offered_course_id: InputMaybe<Order_By>;
@@ -4033,15 +4013,18 @@ export type Evaluation_Questions_Insert_Input = {
    *         False if the question has categorica/numerical responses
    */
   is_narrative: InputMaybe<Scalars['Boolean']['input']>;
-  /** JSON array of possible responses (only if the question is not a narrative */
+  /** JSON array of possible responses (only if the question is not a narrative) */
   options: InputMaybe<Scalars['json']['input']>;
   /** Question code from OCE (e.g. "YC402") */
   question_code: InputMaybe<Scalars['String']['input']>;
   /** The question text */
   question_text: InputMaybe<Scalars['String']['input']>;
   /**
-   * [computed] Question type (used for computing ratings, since one
-   *         question may be coded differently for different respondants)
+   * [computed] Question type. The 'Overall' and 'Workload' tags
+   *         are used to compute average ratings, while others are purely for
+   *         identification purposes. No other commonality, other than that they
+   *         contain similar keywords, is guaranteed—for example, they may have
+   *         different options, or even differ in being narrative or not.
    */
   tag: InputMaybe<Scalars['String']['input']>;
 };
@@ -4098,15 +4081,18 @@ export type Evaluation_Questions_Set_Input = {
    *         False if the question has categorica/numerical responses
    */
   is_narrative: InputMaybe<Scalars['Boolean']['input']>;
-  /** JSON array of possible responses (only if the question is not a narrative */
+  /** JSON array of possible responses (only if the question is not a narrative) */
   options: InputMaybe<Scalars['json']['input']>;
   /** Question code from OCE (e.g. "YC402") */
   question_code: InputMaybe<Scalars['String']['input']>;
   /** The question text */
   question_text: InputMaybe<Scalars['String']['input']>;
   /**
-   * [computed] Question type (used for computing ratings, since one
-   *         question may be coded differently for different respondants)
+   * [computed] Question type. The 'Overall' and 'Workload' tags
+   *         are used to compute average ratings, while others are purely for
+   *         identification purposes. No other commonality, other than that they
+   *         contain similar keywords, is guaranteed—for example, they may have
+   *         different options, or even differ in being narrative or not.
    */
   tag: InputMaybe<Scalars['String']['input']>;
 };
@@ -4126,15 +4112,18 @@ export type Evaluation_Questions_Stream_Cursor_Value_Input = {
    *         False if the question has categorica/numerical responses
    */
   is_narrative: InputMaybe<Scalars['Boolean']['input']>;
-  /** JSON array of possible responses (only if the question is not a narrative */
+  /** JSON array of possible responses (only if the question is not a narrative) */
   options: InputMaybe<Scalars['json']['input']>;
   /** Question code from OCE (e.g. "YC402") */
   question_code: InputMaybe<Scalars['String']['input']>;
   /** The question text */
   question_text: InputMaybe<Scalars['String']['input']>;
   /**
-   * [computed] Question type (used for computing ratings, since one
-   *         question may be coded differently for different respondants)
+   * [computed] Question type. The 'Overall' and 'Workload' tags
+   *         are used to compute average ratings, while others are purely for
+   *         identification purposes. No other commonality, other than that they
+   *         contain similar keywords, is guaranteed—for example, they may have
+   *         different options, or even differ in being narrative or not.
    */
   tag: InputMaybe<Scalars['String']['input']>;
 };
@@ -4402,7 +4391,6 @@ export type Evaluation_Statistics_Bool_Exp = {
   course_id: InputMaybe<Int_Comparison_Exp>;
   declined: InputMaybe<Int_Comparison_Exp>;
   enrolled: InputMaybe<Int_Comparison_Exp>;
-  enrollment: InputMaybe<Int_Comparison_Exp>;
   extras: InputMaybe<Json_Comparison_Exp>;
   no_response: InputMaybe<Int_Comparison_Exp>;
   responses: InputMaybe<Int_Comparison_Exp>;
@@ -4426,8 +4414,6 @@ export type Evaluation_Statistics_Inc_Input = {
   declined: InputMaybe<Scalars['Int']['input']>;
   /** Number of students enrolled in course */
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  /** Placeholder for compatibility (previously held JSON for enrollment) */
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   /** Number of students who did not respond */
   no_response: InputMaybe<Scalars['Int']['input']>;
   /** Number of responses */
@@ -4447,8 +4433,6 @@ export type Evaluation_Statistics_Insert_Input = {
   declined: InputMaybe<Scalars['Int']['input']>;
   /** Number of students enrolled in course */
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  /** Placeholder for compatibility (previously held JSON for enrollment) */
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   /** Arbitrary additional information attached to an evaluation */
   extras: InputMaybe<Scalars['json']['input']>;
   /** Number of students who did not respond */
@@ -4479,7 +4463,6 @@ export type Evaluation_Statistics_Order_By = {
   course_id: InputMaybe<Order_By>;
   declined: InputMaybe<Order_By>;
   enrolled: InputMaybe<Order_By>;
-  enrollment: InputMaybe<Order_By>;
   extras: InputMaybe<Order_By>;
   no_response: InputMaybe<Order_By>;
   responses: InputMaybe<Order_By>;
@@ -4504,8 +4487,6 @@ export enum Evaluation_Statistics_Select_Column {
   /** column name */
   Enrolled = 'enrolled',
   /** column name */
-  Enrollment = 'enrollment',
-  /** column name */
   Extras = 'extras',
   /** column name */
   NoResponse = 'no_response',
@@ -4525,8 +4506,6 @@ export type Evaluation_Statistics_Set_Input = {
   declined: InputMaybe<Scalars['Int']['input']>;
   /** Number of students enrolled in course */
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  /** Placeholder for compatibility (previously held JSON for enrollment) */
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   /** Arbitrary additional information attached to an evaluation */
   extras: InputMaybe<Scalars['json']['input']>;
   /** Number of students who did not respond */
@@ -4555,8 +4534,6 @@ export type Evaluation_Statistics_Stream_Cursor_Value_Input = {
   declined: InputMaybe<Scalars['Int']['input']>;
   /** Number of students enrolled in course */
   enrolled: InputMaybe<Scalars['Int']['input']>;
-  /** Placeholder for compatibility (previously held JSON for enrollment) */
-  enrollment: InputMaybe<Scalars['Int']['input']>;
   /** Arbitrary additional information attached to an evaluation */
   extras: InputMaybe<Scalars['json']['input']>;
   /** Number of students who did not respond */
@@ -4577,8 +4554,6 @@ export enum Evaluation_Statistics_Update_Column {
   Declined = 'declined',
   /** column name */
   Enrolled = 'enrolled',
-  /** column name */
-  Enrollment = 'enrollment',
   /** column name */
   Extras = 'extras',
   /** column name */
@@ -5463,23 +5438,23 @@ export type SearchEvaluationNarrativesQuery = {
     enrolled: number | null;
     course: {
       __typename?: 'courses';
-      evaluation_narratives_aggregate: {
-        __typename?: 'evaluation_narratives_aggregate';
-        nodes: Array<{
-          __typename?: 'evaluation_narratives';
-          comment: string | null;
-          evaluation_question: {
-            __typename?: 'evaluation_questions';
-            question_text: string | null;
-          };
-        }>;
-      };
+      evaluation_narratives: Array<{
+        __typename?: 'evaluation_narratives';
+        comment: string | null;
+        evaluation_question: {
+          __typename?: 'evaluation_questions';
+          question_text: string | null;
+          tag: string | null;
+        };
+      }>;
       evaluation_ratings: Array<{
         __typename?: 'evaluation_ratings';
         rating: any | null;
         evaluation_question: {
           __typename?: 'evaluation_questions';
           question_text: string | null;
+          options: any | null;
+          tag: string | null;
         };
       }>;
     };
@@ -5530,7 +5505,7 @@ export type ListingFragment = {
   course_code: string;
   credits: number | null;
   crn: number;
-  description: string | null;
+  description: string;
   extra_info: string;
   final_exam: string | null;
   flag_info: any;
@@ -5541,7 +5516,7 @@ export type ListingFragment = {
   professor_ids: any;
   professor_names: any;
   regnotes: string | null;
-  requirements: string | null;
+  requirements: string;
   rp_attr: string | null;
   same_course_id: number;
   same_course_and_profs_id: number;
@@ -5551,7 +5526,7 @@ export type ListingFragment = {
   section: string;
   skills: any;
   subject: string;
-  syllabus_url: string | null;
+  syllabus_url: string;
   times_by_day: any;
   times_summary: string;
   title: string;
@@ -5713,18 +5688,19 @@ export const SearchEvaluationNarrativesDocument = gql`
     ) {
       crn
       course {
-        evaluation_narratives_aggregate {
-          nodes {
-            comment
-            evaluation_question {
-              question_text
-            }
+        evaluation_narratives {
+          comment
+          evaluation_question {
+            question_text
+            tag
           }
         }
         evaluation_ratings {
           rating
           evaluation_question {
             question_text
+            options
+            tag
           }
         }
       }
