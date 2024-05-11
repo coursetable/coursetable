@@ -27,36 +27,6 @@ services:
     networks:
       - api
 
-  graphql-engine:
-    container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
-    image: hasura/graphql-engine:v2.38.1
-    environment:
-      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080']
-      interval: 0.5s
-      timeout: 10s
-      retries: 60
-    networks:
-      - api
-
-  redis:
-    container_name: ${REDIS_HOST?redis}
-    image: redis/redis-stack-server:latest
-    volumes:
-      - ../redis:/usr/local/etc/redis
-    environment:
-      - REDIS_ARGS=--save 60 1
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 0.5s
-      timeout: 10s
-      retries: 60
-    networks:
-      - api
-
 networks:
   api:
     name: ${API_NETWORK?api}

@@ -11,11 +11,7 @@ services:
       - traefik
       - api
       - db
-
-  graphql-engine:
-    networks:
-      - db
-      - api
+      - api_services
 
 networks:
   traefik:
