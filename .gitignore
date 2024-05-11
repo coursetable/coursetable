@@ -8,7 +8,6 @@ api/logs/*
 api/static/**/*.json
 api/postgres/data/*
 api/redis/data/*
-api/src/**/*.queries.ts
 
 frontend/build
 

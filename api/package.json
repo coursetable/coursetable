@@ -6,7 +6,7 @@
     "start": "npm run codegen && tsx watch src/server.ts",
     "start:prod": "npm run codegen && tsx src/server.ts",
     "db:push": "drizzle-kit push:pg",
-    "codegen": "graphql-codegen --config graphql-codegen.ts && tsx ../tools/fix-gql-generated-code.mts"
+    "codegen": "graphql-codegen --config graphql-codegen.ts && tsx ../tools/fix-gql-generated-code.mts && prettier -w src/**/*.queries.ts src/graphql-types.ts"
   },
   "dependencies": {
     "@sentry/node": "^7.112.2",

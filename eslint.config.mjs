@@ -18,7 +18,9 @@ export default tseslint.config(
       'frontend/src/generated/',
       'frontend/build',
       'patches/',
-      'api/**/*.queries.ts',
+      'api/src/**/*.queries.ts',
+      'api/src/graphql-types.ts',
+      '**/graphql-codegen.ts',
     ],
   },
   {

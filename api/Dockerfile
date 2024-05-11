@@ -22,6 +22,6 @@ COPY api/src/ ./api/src/
 COPY api/drizzle/ ./api/drizzle/
 COPY api/entry.sh api/package.json api/tsconfig.json api/drizzle.config.ts api/graphql-codegen.ts ./api/
 COPY tools/ ./tools/
-COPY tsconfig.json  ./
+COPY tsconfig.json .prettierrc.json ./
 
 ENTRYPOINT ["./api/entry.sh"]
