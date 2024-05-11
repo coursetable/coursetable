@@ -29,7 +29,7 @@ services:
 
   graphql-engine:
     container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v2.38.1
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
@@ -37,8 +37,8 @@ services:
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080']
       interval: 0.5s
-      timeout: 30s
-      retries: 180
+      timeout: 10s
+      retries: 60
     networks:
       - api
 
