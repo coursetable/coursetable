@@ -21,9 +21,9 @@ import winston from '../logging/winston.js';
 function processEvals(listing: {
   // TODO: instead of writing all the keys (not too bad since we don't care
   // about the value types), we should run graphql-codegen for api too
-  average_professor_rating: unknown;
   course: {
     average_gut_rating: unknown;
+    average_professor_rating: unknown;
     average_rating: unknown;
     average_rating_same_professors: unknown;
     average_workload: unknown;
@@ -38,7 +38,7 @@ function processEvals(listing: {
 }) {
   return {
     average_gut_rating: listing.course.average_gut_rating,
-    average_professor: listing.average_professor_rating,
+    average_professor: listing.course.average_professor_rating,
     average_rating: listing.course.average_rating,
     average_workload: listing.course.average_workload,
     average_rating_same_professors:
@@ -115,8 +115,10 @@ function processCatalog(listing: {
     listing_id: listing.listing_id,
     locations_summary: listing.course.locations_summary,
     number: listing.number,
-    professor_ids: listing.course.course_professors.map(
-      (x) => x.professor.professor_id,
+    professor_ids: listing.course.course_professors.map((x) =>
+      // This is how this API used to work.
+      // TODO: restore this to number
+      String(x.professor.professor_id),
     ),
     professor_names: listing.course.course_professors.map(
       (x) => x.professor.name,
