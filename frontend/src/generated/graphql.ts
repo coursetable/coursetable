@@ -1948,6 +1948,7 @@ export type Courses_Bool_Exp = {
   season: InputMaybe<Seasons_Bool_Exp>;
   seasonBySeasonCode: InputMaybe<Seasons_Bool_Exp>;
   season_code: InputMaybe<String_Comparison_Exp>;
+  section: InputMaybe<String_Comparison_Exp>;
   skills: InputMaybe<Json_Comparison_Exp>;
   syllabus_url: InputMaybe<String_Comparison_Exp>;
   sysem: InputMaybe<Boolean_Comparison_Exp>;
@@ -2143,6 +2144,11 @@ export type Courses_Insert_Input = {
   /** The season the course is being taught in */
   season_code: InputMaybe<Scalars['String']['input']>;
   /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
+  section: InputMaybe<Scalars['String']['input']>;
+  /**
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
@@ -2153,7 +2159,7 @@ export type Courses_Insert_Input = {
   sysem: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location, locatio_url)`
+   *         tuples of `(start_time, end_time, location, location_url)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -2254,6 +2260,11 @@ export type Courses_Max_Order_By = {
   same_course_id: InputMaybe<Order_By>;
   /** The season the course is being taught in */
   season_code: InputMaybe<Order_By>;
+  /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
+  section: InputMaybe<Order_By>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<Order_By>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -2354,6 +2365,11 @@ export type Courses_Min_Order_By = {
   same_course_id: InputMaybe<Order_By>;
   /** The season the course is being taught in */
   season_code: InputMaybe<Order_By>;
+  /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
+  section: InputMaybe<Order_By>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<Order_By>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -2421,6 +2437,7 @@ export type Courses_Order_By = {
   season: InputMaybe<Seasons_Order_By>;
   seasonBySeasonCode: InputMaybe<Seasons_Order_By>;
   season_code: InputMaybe<Order_By>;
+  section: InputMaybe<Order_By>;
   skills: InputMaybe<Order_By>;
   syllabus_url: InputMaybe<Order_By>;
   sysem: InputMaybe<Order_By>;
@@ -2496,6 +2513,8 @@ export enum Courses_Select_Column {
   SameCourseId = 'same_course_id',
   /** column name */
   SeasonCode = 'season_code',
+  /** column name */
+  Section = 'section',
   /** column name */
   Skills = 'skills',
   /** column name */
@@ -2750,6 +2769,11 @@ export type Courses_Set_Input = {
   /** The season the course is being taught in */
   season_code: InputMaybe<Scalars['String']['input']>;
   /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
+  section: InputMaybe<Scalars['String']['input']>;
+  /**
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
@@ -2760,7 +2784,7 @@ export type Courses_Set_Input = {
   sysem: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location, locatio_url)`
+   *         tuples of `(start_time, end_time, location, location_url)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -3073,6 +3097,11 @@ export type Courses_Stream_Cursor_Value_Input = {
   /** The season the course is being taught in */
   season_code: InputMaybe<Scalars['String']['input']>;
   /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
+  section: InputMaybe<Scalars['String']['input']>;
+  /**
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
@@ -3083,7 +3112,7 @@ export type Courses_Stream_Cursor_Value_Input = {
   sysem: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location, locatio_url)`
+   *         tuples of `(start_time, end_time, location, location_url)`
    */
   times_by_day: InputMaybe<Scalars['json']['input']>;
   /** Course times, displayed in the "Times" column in CourseTable */
@@ -3218,6 +3247,8 @@ export enum Courses_Update_Column {
   SameCourseId = 'same_course_id',
   /** column name */
   SeasonCode = 'season_code',
+  /** column name */
+  Section = 'section',
   /** column name */
   Skills = 'skills',
   /** column name */
@@ -4833,7 +4864,10 @@ export type Listings_Insert_Input = {
   season: InputMaybe<Seasons_Obj_Rel_Insert_Input>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<Scalars['String']['input']>;
-  /** Course section for the given subject and number */
+  /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
   section: InputMaybe<Scalars['String']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Scalars['String']['input']>;
@@ -4855,7 +4889,10 @@ export type Listings_Max_Order_By = {
   school: InputMaybe<Order_By>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<Order_By>;
-  /** Course section for the given subject and number */
+  /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
   section: InputMaybe<Order_By>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Order_By>;
@@ -4877,7 +4914,10 @@ export type Listings_Min_Order_By = {
   school: InputMaybe<Order_By>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<Order_By>;
-  /** Course section for the given subject and number */
+  /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
   section: InputMaybe<Order_By>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Order_By>;
@@ -4957,7 +4997,10 @@ export type Listings_Set_Input = {
   school: InputMaybe<Scalars['String']['input']>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<Scalars['String']['input']>;
-  /** Course section for the given subject and number */
+  /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
   section: InputMaybe<Scalars['String']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Scalars['String']['input']>;
@@ -5017,7 +5060,10 @@ export type Listings_Stream_Cursor_Value_Input = {
   school: InputMaybe<Scalars['String']['input']>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<Scalars['String']['input']>;
-  /** Course section for the given subject and number */
+  /**
+   * Course section. Note that the section number is the same for
+   *         all cross-listings.
+   */
   section: InputMaybe<Scalars['String']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Scalars['String']['input']>;

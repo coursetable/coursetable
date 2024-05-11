@@ -21853,6 +21853,22 @@
             "deprecationReason": null
           },
           {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "args": [
@@ -21907,7 +21923,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, location_url)`",
             "args": [
               {
                 "name": "path",
@@ -24408,6 +24424,18 @@
             "deprecationReason": null
           },
           {
+            "name": "section",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "skills",
             "description": null,
             "type": {
@@ -25215,6 +25243,18 @@
             "deprecationReason": null
           },
           {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "type": {
@@ -25252,7 +25292,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, location_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -25599,6 +25639,18 @@
           {
             "name": "season_code",
             "description": "The season the course is being taught in",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -25969,6 +26021,18 @@
             "deprecationReason": null
           },
           {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "syllabus_url",
             "description": "Link to the syllabus",
             "type": {
@@ -26317,6 +26381,18 @@
           {
             "name": "season_code",
             "description": "The season the course is being taught in",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -26677,6 +26753,18 @@
           {
             "name": "season_code",
             "description": "The season the course is being taught in",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -27403,6 +27491,18 @@
             "deprecationReason": null
           },
           {
+            "name": "section",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "skills",
             "description": null,
             "type": {
@@ -27690,6 +27790,12 @@
           },
           {
             "name": "season_code",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "section",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -28498,6 +28604,18 @@
             "deprecationReason": null
           },
           {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "type": {
@@ -28535,7 +28653,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, location_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -30126,6 +30244,18 @@
             "deprecationReason": null
           },
           {
+            "name": "section",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "skills",
             "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
             "type": {
@@ -30163,7 +30293,7 @@
           },
           {
             "name": "times_by_day",
-            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, locatio_url)`",
+            "description": "Course meeting times by day, with days as keys and\n        tuples of `(start_time, end_time, location, location_url)`",
             "type": {
               "kind": "SCALAR",
               "name": "json",
@@ -30768,6 +30898,12 @@
           },
           {
             "name": "season_code",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "section",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -44971,7 +45107,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -46029,7 +46165,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -46147,7 +46283,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -46267,7 +46403,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -46385,7 +46521,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -46505,7 +46641,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -47024,7 +47160,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -47464,7 +47600,7 @@
           },
           {
             "name": "section",
-            "description": "Course section for the given subject and number",
+            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
