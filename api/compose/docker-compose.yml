@@ -37,7 +37,7 @@ services:
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080']
       interval: 0.5s
-      timeout: 10s
+      timeout: 30s
       retries: 60
     networks:
       - api
