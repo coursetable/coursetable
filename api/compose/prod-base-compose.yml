@@ -18,3 +18,5 @@ networks:
     external: true
   db:
     external: true
+  api_services:
+    external: true
