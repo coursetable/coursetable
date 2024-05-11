@@ -100,6 +100,7 @@ function processCatalog(listing: {
   subject: unknown;
 }) {
   return {
+    all_course_codes: listing.course.listings.map((x) => x.course_code),
     areas: listing.course.areas,
     classnotes: listing.course.classnotes,
     colsem: listing.course.colsem,

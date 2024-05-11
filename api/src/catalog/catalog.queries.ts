@@ -19,7 +19,6 @@ export const evalsBySeasonQuery = gql`
         average_gut_rating
         average_rating
         average_rating_same_professors
-        # TODO
         average_professor_rating
         average_workload
         average_workload_same_professors
