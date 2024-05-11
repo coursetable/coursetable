@@ -4,11 +4,9 @@ import _gql from 'graphql-tag';
 const gql = _gql as unknown as typeof import('graphql-tag').default;
 
 export const listSeasonsQuery = gql`
-  query listSeasons($season: [String!]) {
+  query listSeasons {
     seasons {
       season_code
-      term
-      year
     }
   }
 `;
@@ -16,17 +14,22 @@ export const listSeasonsQuery = gql`
 // Query for data that needs eval access
 export const evalsBySeasonQuery = gql`
   query evalsBySeason($season: String!) {
-    computed_listing_info(where: { season_code: { _eq: $season } }) {
-      average_gut_rating
-      average_professor
-      average_rating
-      average_workload
-      average_rating_same_professors
-      average_workload_same_professors
+    listings(where: { season_code: { _eq: $season } }) {
+      course {
+        average_gut_rating
+        average_rating
+        average_rating_same_professors
+        # TODO
+        average_professor_rating
+        average_workload
+        average_workload_same_professors
+        evaluation_statistic {
+          enrolled
+        }
+        last_enrollment
+        last_enrollment_same_professors
+      }
       crn
-      enrolled
-      last_enrollment
-      last_enrollment_same_professors
     }
   }
 `;
@@ -34,48 +37,61 @@ export const evalsBySeasonQuery = gql`
 // Query for publicly available catalog data
 export const catalogBySeasonQuery = gql`
   query catalogBySeason($season: String!) {
-    computed_listing_info(where: { season_code: { _eq: $season } }) {
-      all_course_codes
-      areas
-      classnotes
+    listings(where: { season_code: { _eq: $season } }) {
+      course {
+        areas
+        classnotes
+        colsem
+        course_flags {
+          flag {
+            flag_text
+          }
+        }
+        course_professors {
+          professor {
+            professor_id
+            name
+          }
+        }
+        credits
+        description
+        extra_info
+        final_exam
+        fysem
+        last_offered_course_id
+        listings {
+          crn
+          course_code
+        }
+        locations_summary
+        regnotes
+        requirements
+        rp_attr
+        same_course_and_profs_id
+        same_course_id
+        skills
+        syllabus_url
+        sysem
+        times_by_day
+        times_summary
+        title
+      }
       course_code
-      credits
       crn
-      description
-      extra_info
-      final_exam
-      flag_info
-      fysem
       listing_id
-      locations_summary
       number
-      professor_ids
-      professor_names
-      regnotes
-      requirements
-      rp_attr
-      same_course_id
-      same_course_and_profs_id
-      last_offered_course_id
       school
       season_code
       section
-      skills
       subject
-      syllabus_url
-      times_by_day
-      times_summary
-      title
     }
   }
 `;
 
 export const courseAttributesQuery = gql`
   query courseAttributes {
-    course_flags(distinct_on: [flag_id]) {
-      flag {
-        flag_text
-      }
+    flags {
+      flag_text
     }
   }
 `;

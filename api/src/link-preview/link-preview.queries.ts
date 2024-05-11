@@ -5,13 +5,13 @@ const gql = _gql as unknown as typeof import('graphql-tag').default;
 
 export const courseMetadataQuery = gql`
   query courseMetadata($seasonCode: String!, $crn: Int!) {
-    computed_listing_info(
-      where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
-    ) {
+    listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
       course_code
       section
-      title
-      description
+      course {
+        title
+        description
+      }
     }
   }
 `;

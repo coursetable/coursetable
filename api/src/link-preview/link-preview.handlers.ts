@@ -56,22 +56,24 @@ async function getMetadata(query: unknown) {
   const [seasonCode, crn] = String(query).split('-');
   if (!seasonCode || !crn) return defaultMetadata;
   const data = await request<{
-    computed_listing_info: {
+    listings: {
       course_code: string;
       section: string;
-      title: string;
-      description: string | null;
+      course: {
+        title: string;
+        description: string | null;
+      };
     }[];
   }>(GRAPHQL_ENDPOINT, courseMetadataQuery, {
     seasonCode,
     crn: Number(crn),
   });
-  if (!data.computed_listing_info.length) return defaultMetadata;
-  const course = data.computed_listing_info[0]!;
+  if (!data.listings.length) return defaultMetadata;
+  const listing = data.listings[0]!;
   return {
-    title: `${course.course_code} ${course.section.padStart(2, '0')} ${course.title} | CourseTable`,
+    title: `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`,
     description: truncatedText(
-      course.description,
+      listing.course.description,
       300,
       'No description available',
     ),
