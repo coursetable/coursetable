@@ -14,6 +14,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      graphql-engine:
+        condition: service_healthy
 
   graphql-engine:
     container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}

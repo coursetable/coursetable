@@ -5,9 +5,6 @@ services:
       dockerfile: ./api/Dockerfile
     image: coursetable/api:latest
     container_name: ${EXPRESS_HOST?express}
-    depends_on:
-      graphql-engine:
-        condition: service_healthy
     environment:
       CANNY_KEY: ${CANNY_KEY?canny_key}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
