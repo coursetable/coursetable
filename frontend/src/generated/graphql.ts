@@ -1830,6 +1830,10 @@ export type Courses_Arr_Rel_Insert_Input = {
 
 /** order by avg() on columns of table "courses" */
 export type Courses_Avg_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -1898,6 +1902,8 @@ export type Courses_Bool_Exp = {
   _not: InputMaybe<Courses_Bool_Exp>;
   _or: InputMaybe<Array<Courses_Bool_Exp>>;
   areas: InputMaybe<Json_Comparison_Exp>;
+  average_gut_rating: InputMaybe<Float8_Comparison_Exp>;
+  average_professor_rating: InputMaybe<Float8_Comparison_Exp>;
   average_rating: InputMaybe<Float8_Comparison_Exp>;
   average_rating_n: InputMaybe<Int_Comparison_Exp>;
   average_rating_same_professors: InputMaybe<Float8_Comparison_Exp>;
@@ -1965,6 +1971,10 @@ export enum Courses_Constraint {
 
 /** input type for incrementing numeric columns in table "courses" */
 export type Courses_Inc_Input = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Scalars['float8']['input']>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Scalars['float8']['input']>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2031,6 +2041,10 @@ export type Courses_Inc_Input = {
 export type Courses_Insert_Input = {
   /** Course areas (humanities, social sciences, sciences) */
   areas: InputMaybe<Scalars['json']['input']>;
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Scalars['float8']['input']>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Scalars['float8']['input']>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2170,6 +2184,10 @@ export type Courses_Insert_Input = {
 
 /** order by max() on columns of table "courses" */
 export type Courses_Max_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2275,6 +2293,10 @@ export type Courses_Max_Order_By = {
 
 /** order by min() on columns of table "courses" */
 export type Courses_Min_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2395,6 +2417,8 @@ export type Courses_On_Conflict = {
 /** Ordering options when selecting data from "courses". */
 export type Courses_Order_By = {
   areas: InputMaybe<Order_By>;
+  average_gut_rating: InputMaybe<Order_By>;
+  average_professor_rating: InputMaybe<Order_By>;
   average_rating: InputMaybe<Order_By>;
   average_rating_n: InputMaybe<Order_By>;
   average_rating_same_professors: InputMaybe<Order_By>;
@@ -2455,6 +2479,10 @@ export type Courses_Pk_Columns_Input = {
 export enum Courses_Select_Column {
   /** column name */
   Areas = 'areas',
+  /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
   /** column name */
   AverageRating = 'average_rating',
   /** column name */
@@ -2532,6 +2560,10 @@ export enum Courses_Select_Column {
 /** select "courses_aggregate_bool_exp_avg_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Avg_Arguments_Columns {
   /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
+  /** column name */
   AverageRating = 'average_rating',
   /** column name */
   AverageRatingSameProfessors = 'average_rating_same_professors',
@@ -2570,6 +2602,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Bool_Or_Arguments_C
 /** select "courses_aggregate_bool_exp_corr_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Corr_Arguments_Columns {
   /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
+  /** column name */
   AverageRating = 'average_rating',
   /** column name */
   AverageRatingSameProfessors = 'average_rating_same_professors',
@@ -2583,6 +2619,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Corr_Arguments_Colu
 
 /** select "courses_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns {
+  /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
   /** column name */
   AverageRating = 'average_rating',
   /** column name */
@@ -2598,6 +2638,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Covar_Samp_Argument
 /** select "courses_aggregate_bool_exp_max_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Max_Arguments_Columns {
   /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
+  /** column name */
   AverageRating = 'average_rating',
   /** column name */
   AverageRatingSameProfessors = 'average_rating_same_professors',
@@ -2611,6 +2655,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Max_Arguments_Colum
 
 /** select "courses_aggregate_bool_exp_min_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Min_Arguments_Columns {
+  /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
   /** column name */
   AverageRating = 'average_rating',
   /** column name */
@@ -2626,6 +2674,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Min_Arguments_Colum
 /** select "courses_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns {
   /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
+  /** column name */
   AverageRating = 'average_rating',
   /** column name */
   AverageRatingSameProfessors = 'average_rating_same_professors',
@@ -2640,6 +2692,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Stddev_Samp_Argumen
 /** select "courses_aggregate_bool_exp_sum_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Sum_Arguments_Columns {
   /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
+  /** column name */
   AverageRating = 'average_rating',
   /** column name */
   AverageRatingSameProfessors = 'average_rating_same_professors',
@@ -2653,6 +2709,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Sum_Arguments_Colum
 
 /** select "courses_aggregate_bool_exp_var_samp_arguments_columns" columns of table "courses" */
 export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns {
+  /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
   /** column name */
   AverageRating = 'average_rating',
   /** column name */
@@ -2669,6 +2729,10 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Var_Samp_Arguments_
 export type Courses_Set_Input = {
   /** Course areas (humanities, social sciences, sciences) */
   areas: InputMaybe<Scalars['json']['input']>;
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Scalars['float8']['input']>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Scalars['float8']['input']>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2795,6 +2859,10 @@ export type Courses_Set_Input = {
 
 /** order by stddev() on columns of table "courses" */
 export type Courses_Stddev_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2859,6 +2927,10 @@ export type Courses_Stddev_Order_By = {
 
 /** order by stddev_pop() on columns of table "courses" */
 export type Courses_Stddev_Pop_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2923,6 +2995,10 @@ export type Courses_Stddev_Pop_Order_By = {
 
 /** order by stddev_samp() on columns of table "courses" */
 export type Courses_Stddev_Samp_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -2997,6 +3073,10 @@ export type Courses_Stream_Cursor_Input = {
 export type Courses_Stream_Cursor_Value_Input = {
   /** Course areas (humanities, social sciences, sciences) */
   areas: InputMaybe<Scalars['json']['input']>;
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Scalars['float8']['input']>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Scalars['float8']['input']>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -3123,6 +3203,10 @@ export type Courses_Stream_Cursor_Value_Input = {
 
 /** order by sum() on columns of table "courses" */
 export type Courses_Sum_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -3189,6 +3273,10 @@ export type Courses_Sum_Order_By = {
 export enum Courses_Update_Column {
   /** column name */
   Areas = 'areas',
+  /** column name */
+  AverageGutRating = 'average_gut_rating',
+  /** column name */
+  AverageProfessorRating = 'average_professor_rating',
   /** column name */
   AverageRating = 'average_rating',
   /** column name */
@@ -3274,6 +3362,10 @@ export type Courses_Updates = {
 
 /** order by var_pop() on columns of table "courses" */
 export type Courses_Var_Pop_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -3338,6 +3430,10 @@ export type Courses_Var_Pop_Order_By = {
 
 /** order by var_samp() on columns of table "courses" */
 export type Courses_Var_Samp_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings
@@ -3402,6 +3498,10 @@ export type Courses_Var_Samp_Order_By = {
 
 /** order by variance() on columns of table "courses" */
 export type Courses_Variance_Order_By = {
+  /** [computed] average_rating - average_workload */
+  average_gut_rating: InputMaybe<Order_By>;
+  /** [computed] Average of the average ratings of all professors for this course. */
+  average_professor_rating: InputMaybe<Order_By>;
   /**
    * [computed] Historical average course rating for this course code,
    *         aggregated across all cross-listings

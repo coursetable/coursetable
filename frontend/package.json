@@ -5,10 +5,10 @@
   "scripts": {
     "build": "vite build",
     "clean": "rm -rf build node_modules package-lock.json # Needed for build-size report to work",
-    "codegen": "cp ../api/static/*.json src/generated && graphql-codegen --config codegen.yml && prettier -w src/generated/*",
     "serve": "vite preview",
     "start": "vite",
-    "test": "vite test"
+    "test": "vite test",
+    "codegen": "cp ../api/static/*.json src/generated && graphql-codegen --config graphql-codegen.ts && prettier -w src/generated"
   },
   "dependencies": {
     "@apollo/client": "^3.10.1",
@@ -51,11 +51,6 @@
     "zod": "^3.23.5"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.2",
-    "@graphql-codegen/introspection": "^4.0.3",
-    "@graphql-codegen/typescript": "^4.0.6",
-    "@graphql-codegen/typescript-operations": "^4.2.0",
-    "@graphql-codegen/typescript-react-apollo": "^4.3.0",
     "@mdx-js/rollup": "^3.0.1",
     "@types/async-lock": "^1.4.2",
     "@types/body-scroll-lock": "^3.1.2",

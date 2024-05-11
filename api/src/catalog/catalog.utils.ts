@@ -1,14 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { request } from 'graphql-request';
 
 import {
-  evalsBySeasonQuery,
-  catalogBySeasonQuery,
-  listSeasonsQuery,
-  courseAttributesQuery,
+  getSdk,
+  type CatalogBySeasonQuery,
+  type EvalsBySeasonQuery,
 } from './catalog.queries.js';
-import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config.js';
+import { STATIC_FILE_DIR, graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
 /**
@@ -18,24 +16,7 @@ import winston from '../logging/winston.js';
  *
  * TODO: remove this
  */
-function processEvals(listing: {
-  // TODO: instead of writing all the keys (not too bad since we don't care
-  // about the value types), we should run graphql-codegen for api too
-  course: {
-    average_gut_rating: unknown;
-    average_professor_rating: unknown;
-    average_rating: unknown;
-    average_rating_same_professors: unknown;
-    average_workload: unknown;
-    average_workload_same_professors: unknown;
-    evaluation_statistic: {
-      enrolled: unknown;
-    } | null;
-    last_enrollment: unknown;
-    last_enrollment_same_professors: unknown;
-  };
-  crn: unknown;
-}) {
+function processEvals(listing: EvalsBySeasonQuery['listings'][number]) {
   return {
     average_gut_rating: listing.course.average_gut_rating,
     average_professor: listing.course.average_professor_rating,
@@ -53,55 +34,10 @@ function processEvals(listing: {
   };
 }
 
-function processCatalog(listing: {
-  course: {
-    areas: unknown;
-    classnotes: unknown;
-    colsem: unknown;
-    course_flags: {
-      flag: { flag_text: unknown };
-    }[];
-    course_professors: {
-      professor: {
-        professor_id: unknown;
-        name: unknown;
-      };
-    }[];
-    credits: unknown;
-    description: unknown;
-    extra_info: unknown;
-    final_exam: unknown;
-    fysem: unknown;
-    last_offered_course_id: unknown;
-    listings: {
-      crn: unknown;
-      course_code: unknown;
-    }[];
-    locations_summary: unknown;
-    regnotes: unknown;
-    requirements: unknown;
-    rp_attr: unknown;
-    same_course_and_profs_id: unknown;
-    same_course_id: unknown;
-    skills: unknown;
-    syllabus_url: unknown;
-    sysem: unknown;
-    times_by_day: unknown;
-    times_summary: unknown;
-    title: unknown;
-  };
-  course_code: unknown;
-  crn: unknown;
-  listing_id: unknown;
-  number: unknown;
-  school: unknown;
-  season_code: unknown;
-  section: unknown;
-  subject: unknown;
-}) {
+function processCatalog(listing: CatalogBySeasonQuery['listings'][number]) {
   return {
     all_course_codes: listing.course.listings.map((x) => x.course_code),
-    areas: listing.course.areas,
+    areas: listing.course.areas as string[],
     classnotes: listing.course.classnotes,
     colsem: listing.course.colsem,
     course_code: listing.course_code,
@@ -132,11 +68,11 @@ function processCatalog(listing: {
     school: listing.school,
     season_code: listing.season_code,
     section: listing.section,
-    skills: listing.course.skills,
+    skills: listing.course.skills as string[],
     subject: listing.subject,
     syllabus_url: listing.course.syllabus_url,
     sysem: listing.course.sysem,
-    times_by_day: listing.course.times_by_day,
+    times_by_day: listing.course.times_by_day as unknown,
     times_summary: listing.course.times_summary,
     title: listing.course.title,
   };
@@ -160,11 +96,10 @@ async function fetchData(
     return;
   }
   try {
-    const data = await request<{ listings: any[] }>(
-      GRAPHQL_ENDPOINT,
-      type === 'evals' ? evalsBySeasonQuery : catalogBySeasonQuery,
-      { season: seasonCode },
-    );
+    const sdk = getSdk(graphqlClient);
+    const data = await (type === 'evals'
+      ? sdk.evalsBySeason({ season: seasonCode })
+      : sdk.catalogBySeason({ season: seasonCode }));
     const postprocess: (data: any) => any =
       type === 'evals' ? processEvals : processCatalog;
     await fs.writeFile(
@@ -182,12 +117,9 @@ async function fetchData(
 export async function fetchCatalog(overwrite: boolean) {
   let seasons: string[] = [];
   try {
-    seasons = (
-      await request<{ seasons: { season_code: string }[] }>(
-        GRAPHQL_ENDPOINT,
-        listSeasonsQuery,
-      )
-    ).seasons.map((x) => x.season_code);
+    seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
+      (x) => x.season_code,
+    );
   } catch (err) {
     winston.error(err);
     throw err;
@@ -200,9 +132,7 @@ export async function fetchCatalog(overwrite: boolean) {
   );
 
   try {
-    const infoAttributes = await request<{
-      flags: { flag_text: string }[];
-    }>(GRAPHQL_ENDPOINT, courseAttributesQuery);
+    const infoAttributes = await getSdk(graphqlClient).courseAttributes();
     await fs.writeFile(
       `${STATIC_FILE_DIR}/infoAttributes.json`,
       JSON.stringify(infoAttributes.flags.map((x) => x.flag_text).sort()),

@@ -19873,6 +19873,30 @@
             "deprecationReason": null
           },
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "args": [],
@@ -23377,6 +23401,30 @@
         "description": "aggregate avg on columns",
         "fields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "args": [],
@@ -23568,6 +23616,30 @@
         "description": "order by avg() on columns of table \"courses\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -23817,6 +23889,30 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "json_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_gut_rating",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "float8_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "float8_comparison_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -24536,6 +24632,30 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "type": {
@@ -24732,6 +24852,30 @@
             "type": {
               "kind": "SCALAR",
               "name": "json",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
               "ofType": null
             },
             "defaultValue": null,
@@ -25337,6 +25481,30 @@
         "description": "aggregate max on columns",
         "fields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "args": [],
@@ -25709,6 +25877,30 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "type": {
@@ -26078,6 +26270,30 @@
         "name": "courses_min_fields",
         "description": "aggregate min on columns",
         "fields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -26450,6 +26666,30 @@
         "description": "order by min() on columns of table \"courses\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -26976,6 +27216,30 @@
         "inputFields": [
           {
             "name": "areas",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_gut_rating",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -27621,6 +27885,18 @@
             "deprecationReason": null
           },
           {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "column name",
             "isDeprecated": false,
@@ -27848,6 +28124,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "column name",
             "isDeprecated": false,
@@ -27959,6 +28247,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "column name",
             "isDeprecated": false,
@@ -27999,6 +28299,18 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
+          {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "column name",
@@ -28041,6 +28353,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "column name",
             "isDeprecated": false,
@@ -28081,6 +28405,18 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
+          {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "column name",
@@ -28123,6 +28459,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "column name",
             "isDeprecated": false,
@@ -28164,6 +28512,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "column name",
             "isDeprecated": false,
@@ -28204,6 +28564,18 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
+          {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "column name",
@@ -28249,6 +28621,30 @@
             "type": {
               "kind": "SCALAR",
               "name": "json",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
               "ofType": null
             },
             "defaultValue": null,
@@ -28698,6 +29094,30 @@
         "description": "aggregate stddev on columns",
         "fields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "args": [],
@@ -28890,6 +29310,30 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "type": {
@@ -29079,6 +29523,30 @@
         "name": "courses_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
         "fields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -29272,6 +29740,30 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "type": {
@@ -29461,6 +29953,30 @@
         "name": "courses_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
         "fields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -29653,6 +30169,30 @@
         "description": "order by stddev_samp() on columns of table \"courses\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -29889,6 +30429,30 @@
             "type": {
               "kind": "SCALAR",
               "name": "json",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
               "ofType": null
             },
             "defaultValue": null,
@@ -30338,6 +30902,30 @@
         "description": "aggregate sum on columns",
         "fields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "float8",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "args": [],
@@ -30529,6 +31117,30 @@
         "description": "order by sum() on columns of table \"courses\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -30724,6 +31336,18 @@
         "enumValues": [
           {
             "name": "areas",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_gut_rating",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -31004,6 +31628,30 @@
         "description": "aggregate var_pop on columns",
         "fields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "args": [],
@@ -31196,6 +31844,30 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "type": {
@@ -31385,6 +32057,30 @@
         "name": "courses_var_samp_fields",
         "description": "aggregate var_samp on columns",
         "fields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -31578,6 +32274,30 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
             "type": {
@@ -31767,6 +32487,30 @@
         "name": "courses_variance_fields",
         "description": "aggregate variance on columns",
         "fields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
@@ -31959,6 +32703,30 @@
         "description": "order by variance() on columns of table \"courses\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "average_gut_rating",
+            "description": "[computed] average_rating - average_workload",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "average_professor_rating",
+            "description": "[computed] Average of the average ratings of all professors for this course.",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "average_rating",
             "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",

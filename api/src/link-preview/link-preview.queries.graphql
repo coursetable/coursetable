@@ -1,0 +1,10 @@
+query courseMetadata($seasonCode: String!, $crn: Int!) {
+  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+    course_code
+    section
+    course {
+      title
+      description
+    }
+  }
+}

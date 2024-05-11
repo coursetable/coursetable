@@ -13,7 +13,14 @@ export default tseslint.config(
     node: ['api/**/*'],
     react: ['frontend/**/*'],
   }),
-  { ignores: ['frontend/src/generated/', 'frontend/build', 'patches/'] },
+  {
+    ignores: [
+      'frontend/src/generated/',
+      'frontend/build',
+      'patches/',
+      'api/**/*.queries.ts',
+    ],
+  },
   {
     plugins: {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

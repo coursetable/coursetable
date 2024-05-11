@@ -1,4 +1,5 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
+import { GraphQLClient } from 'graphql-request';
 import pg from 'pg';
 import * as schema from '../drizzle/schema.js';
 
@@ -25,6 +26,7 @@ export const REDIS_HOST = getEnv('REDIS_HOST');
 
 // Ferry GraphQL endpoint
 export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
+export const graphqlClient = new GraphQLClient(GRAPHQL_ENDPOINT);
 
 export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 export const CHALLENGE_PASSWORD = getEnv('CHALLENGE_PASSWORD');

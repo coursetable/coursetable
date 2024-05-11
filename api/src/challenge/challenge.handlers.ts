@@ -1,22 +1,21 @@
 import crypto from 'node:crypto';
 import type express from 'express';
 import { eq, sql } from 'drizzle-orm';
-import { request } from 'graphql-request';
 import z from 'zod';
 
 import {
-  requestEvalsQuery,
-  type RequestEvalsQueryResponse,
-  verifyEvalsQuery,
-  type VerifyEvalsQueryResponse,
+  getSdk,
+  type RequestEvalsQuery,
+  type VerifyEvalsQuery,
 } from './challenge.queries.js';
 import { studentBluebookSettings } from '../../drizzle/schema.js';
 import {
-  GRAPHQL_ENDPOINT,
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
   CHALLENGE_ALGORITHM,
   CHALLENGE_PASSWORD,
+  NUM_CHALLENGE_COURSES,
+  graphqlClient,
   db,
 } from '../config.js';
 import winston from '../logging/winston.js';
@@ -62,14 +61,14 @@ function getRandomInt(max: number): number {
 }
 
 const constructChallenge = (
-  evals: RequestEvalsQueryResponse,
+  evals: RequestEvalsQuery,
   challengeTries: number,
   netId: string,
 ) => {
   const courseInfo = evals.evaluation_ratings.map((x) => {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
-    if (!Number.isInteger(x.rating[ratingIndex]))
+    if (!Number.isInteger((x.rating as number[])[ratingIndex]))
       throw new Error(`Invalid rating index: ${ratingIndex}`);
 
     return {
@@ -131,25 +130,22 @@ export const requestChallenge = async (
   // Randomize the selected challenge courses by
   // randomly choosing a minimum rating
   const minRating = 1 + Math.random() * 4;
+  const evals = await getSdk(graphqlClient).requestEvals({
+    limit: NUM_CHALLENGE_COURSES,
+    season: CHALLENGE_SEASON,
+    minRating,
+  });
 
-  const evals: RequestEvalsQueryResponse = await request(
-    GRAPHQL_ENDPOINT,
-    requestEvalsQuery,
-    {
-      season: CHALLENGE_SEASON,
-      minRating,
-    },
-  );
   res.json(constructChallenge(evals, challengeTries, netId));
 };
 
 const checkChallenge = (
-  trueEvals: VerifyEvalsQueryResponse,
+  trueEvals: VerifyEvalsQuery,
   answers: VerifyEvalsReqBody['answers'],
 ): boolean[] => {
   // Mapping from question ID to ratings
   const truthById = Object.fromEntries(
-    trueEvals.evaluation_ratings.map((x) => [x.id, x.rating]),
+    trueEvals.evaluation_ratings.map((x) => [x.id, x.rating as number[]]),
   );
 
   return answers.map(
@@ -217,7 +213,7 @@ export const verifyChallenge = async (
 
   const { token, salt, answers } = bodyParseRes.data;
   // eslint-disable-next-line @typescript-eslint/init-declarations
-  let trueEvals: VerifyEvalsQueryResponse;
+  let trueEvals: VerifyEvalsQuery;
   // Catch malformed token decryption errors
   try {
     const secrets: unknown = JSON.parse(decrypt(token, salt));
@@ -239,7 +235,7 @@ export const verifyChallenge = async (
         .join(',')
     )
       throw new Error('Answer ratings IDs and indices do not match questions');
-    trueEvals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+    trueEvals = await getSdk(graphqlClient).verifyEvals({
       questionIds: ratingSecrets.map((x) => x.courseRatingId),
     });
   } catch {

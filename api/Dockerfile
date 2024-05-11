@@ -20,7 +20,8 @@ COPY --from=install /temp/dev/node_modules node_modules
 # Avoid copying static folder / anything else unneeded
 COPY api/src/ ./api/src/
 COPY api/drizzle/ ./api/drizzle/
-COPY api/entry.sh api/package.json api/tsconfig.json api/drizzle.config.ts ./api/
-COPY tsconfig.json ./
+COPY api/entry.sh api/package.json api/tsconfig.json api/drizzle.config.ts api/graphql-codegen.ts ./api/
+COPY tools/ ./tools/
+COPY tsconfig.json  ./
 
 ENTRYPOINT ["./api/entry.sh"]

@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "tsx watch src/server.ts",
-    "start:prod": "tsx src/server.ts",
-    "db:push": "drizzle-kit push:pg"
+    "start": "npm run codegen && tsx watch src/server.ts",
+    "start:prod": "npm run codegen && tsx src/server.ts",
+    "db:push": "drizzle-kit push:pg",
+    "codegen": "graphql-codegen --config graphql-codegen.ts && tsx ../tools/fix-gql-generated-code.mts"
   },
   "dependencies": {
     "@sentry/node": "^7.112.2",

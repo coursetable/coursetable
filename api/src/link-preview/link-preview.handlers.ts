@@ -1,7 +1,6 @@
 import type express from 'express';
-import { request } from 'graphql-request';
-import { courseMetadataQuery } from './link-preview.queries.js';
-import { GRAPHQL_ENDPOINT } from '../config.js';
+import { getSdk } from './link-preview.queries.js';
+import { graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
 // For Prettier formatting. If you add a language tag before the template
@@ -55,16 +54,7 @@ async function getMetadata(query: unknown) {
   if (!query) return defaultMetadata;
   const [seasonCode, crn] = String(query).split('-');
   if (!seasonCode || !crn) return defaultMetadata;
-  const data = await request<{
-    listings: {
-      course_code: string;
-      section: string;
-      course: {
-        title: string;
-        description: string | null;
-      };
-    }[];
-  }>(GRAPHQL_ENDPOINT, courseMetadataQuery, {
+  const data = await getSdk(graphqlClient).courseMetadata({
     seasonCode,
     crn: Number(crn),
   });
