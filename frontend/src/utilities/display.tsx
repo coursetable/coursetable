@@ -6,8 +6,8 @@ import React, {
   useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { Listing } from './common';
 import Spinner from '../components/Spinner';
+import type { Listings } from '../generated/graphql';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function suspended<T extends React.ComponentType<any>>(
@@ -122,7 +122,9 @@ export const scrollToTop: MouseEventHandler = (event) => {
 
 // Please use this instead of creating a new search param. This will preserve
 // existing params.
-export function useCourseModalLink(listing: Listing | undefined) {
+export function useCourseModalLink(
+  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
+) {
   const [searchParams] = useSearchParams();
   if (!listing) return `?${searchParams.toString()}`;
 

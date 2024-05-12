@@ -1,5 +1,5 @@
 import chroma from 'chroma-js';
-import type { Listing } from './common';
+import type { ExtraInfo } from '../queries/graphql-types';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -384,7 +384,7 @@ export const schools: { [code: string]: string } = {
   SU: 'Summer Session',
 };
 
-export const extraInfo: { [key in Listing['extra_info']]: string } = {
+export const extraInfo: { [key in ExtraInfo]: string } = {
   ACTIVE: 'ACTIVE',
   MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
   CANCELLED: 'CANCELLED',

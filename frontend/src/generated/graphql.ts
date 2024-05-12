@@ -1,3 +1,10 @@
+import { Crn } from '../queries/graphql-types';
+import { ExtraInfo } from '../queries/graphql-types';
+import { NumberArr } from '../queries/graphql-types';
+import { ProfessorInfo } from '../queries/graphql-types';
+import { Season } from '../queries/graphql-types';
+import { StringArr } from '../queries/graphql-types';
+import { TimesByDay } from '../queries/graphql-types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
@@ -28,6 +35,13 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  Crn: { input: Crn; output: Crn };
+  ExtraInfo: { input: ExtraInfo; output: ExtraInfo };
+  NumberArr: { input: NumberArr; output: NumberArr };
+  ProfessorInfo: { input: ProfessorInfo; output: ProfessorInfo };
+  Season: { input: Season; output: Season };
+  StringArr: { input: StringArr; output: StringArr };
+  TimesByDay: { input: TimesByDay; output: TimesByDay };
   float8: { input: number; output: number };
   json: { input: object; output: object };
   jsonb: { input: object; output: object };
@@ -95,8 +109,8 @@ export type StringComparisonExp = {
 /** columns and relationships of "computed_listing_info" */
 export type ComputedListingInfo = {
   __typename?: 'computed_listing_info';
-  all_course_codes: Scalars['jsonb']['output'];
-  areas: Scalars['jsonb']['output'];
+  all_course_codes: Scalars['StringArr']['output'];
+  areas: Scalars['StringArr']['output'];
   average_gut_rating: Maybe<Scalars['float8']['output']>;
   average_professor: Maybe<Scalars['float8']['output']>;
   average_rating: Maybe<Scalars['float8']['output']>;
@@ -114,13 +128,13 @@ export type ComputedListingInfo = {
   course_code: Scalars['String']['output'];
   course_id: Scalars['Int']['output'];
   credits: Maybe<Scalars['float8']['output']>;
-  crn: Scalars['Int']['output'];
+  crn: Scalars['Crn']['output'];
   declined: Maybe<Scalars['Int']['output']>;
   description: Scalars['String']['output'];
   enrolled: Maybe<Scalars['Int']['output']>;
-  extra_info: Scalars['String']['output'];
+  extra_info: Scalars['ExtraInfo']['output'];
   final_exam: Maybe<Scalars['String']['output']>;
-  flag_info: Scalars['jsonb']['output'];
+  flag_info: Scalars['StringArr']['output'];
   fysem: Maybe<Scalars['Boolean']['output']>;
   last_enrollment: Maybe<Scalars['Int']['output']>;
   last_enrollment_course_id: Maybe<Scalars['Int']['output']>;
@@ -133,9 +147,9 @@ export type ComputedListingInfo = {
   locations_summary: Scalars['String']['output'];
   no_response: Maybe<Scalars['Int']['output']>;
   number: Scalars['String']['output'];
-  professor_ids: Scalars['jsonb']['output'];
-  professor_info: Scalars['jsonb']['output'];
-  professor_names: Scalars['jsonb']['output'];
+  professor_ids: Scalars['StringArr']['output'];
+  professor_info: Maybe<Scalars['ProfessorInfo']['output']>;
+  professor_names: Scalars['StringArr']['output'];
   regnotes: Maybe<Scalars['String']['output']>;
   requirements: Scalars['String']['output'];
   responses: Maybe<Scalars['Int']['output']>;
@@ -143,13 +157,13 @@ export type ComputedListingInfo = {
   same_course_and_profs_id: Scalars['Int']['output'];
   same_course_id: Scalars['Int']['output'];
   school: Maybe<Scalars['String']['output']>;
-  season_code: Scalars['String']['output'];
+  season_code: Scalars['Season']['output'];
   section: Scalars['String']['output'];
-  skills: Scalars['jsonb']['output'];
+  skills: Scalars['StringArr']['output'];
   subject: Scalars['String']['output'];
   syllabus_url: Maybe<Scalars['String']['output']>;
   sysem: Maybe<Scalars['Boolean']['output']>;
-  times_by_day: Scalars['json']['output'];
+  times_by_day: Scalars['TimesByDay']['output'];
   times_summary: Scalars['String']['output'];
   title: Scalars['String']['output'];
 };
@@ -2402,8 +2416,9 @@ export type CourseProfessorsVarianceOrderBy = {
 /** columns and relationships of "courses" */
 export type Courses = {
   __typename?: 'courses';
+  all_course_codes: Scalars['StringArr']['output'];
   /** Course areas (humanities, social sciences, sciences) */
-  areas: Scalars['json']['output'];
+  areas: Scalars['StringArr']['output'];
   /** [computed] average_rating - average_workload */
   average_gut_rating: Maybe<Scalars['float8']['output']>;
   /** [computed] Average of the average ratings of all professors for this course. */
@@ -2488,7 +2503,7 @@ export type Courses = {
   /** An object relationship */
   evaluation_statistic: Maybe<EvaluationStatistics>;
   /** Additional information (indicates if class has been cancelled) */
-  extra_info: Maybe<Scalars['String']['output']>;
+  extra_info: Scalars['ExtraInfo']['output'];
   /** Final exam information */
   final_exam: Maybe<Scalars['String']['output']>;
   /** True if the course is a first-year seminar. False otherwise. */
@@ -2548,7 +2563,7 @@ export type Courses = {
   /** An object relationship */
   seasonBySeasonCode: Seasons;
   /** The season the course is being taught in */
-  season_code: Scalars['String']['output'];
+  season_code: Scalars['Season']['output'];
   /**
    * Course section. Note that the section number is the same for
    *         all cross-listings.
@@ -2558,7 +2573,7 @@ export type Courses = {
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
-  skills: Scalars['json']['output'];
+  skills: Scalars['StringArr']['output'];
   /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']['output']>;
   /** True if the course is a sophomore seminar. False otherwise. */
@@ -2567,7 +2582,7 @@ export type Courses = {
    * Course meeting times by day, with days as keys and
    *         tuples of `(start_time, end_time, location, location_url)`
    */
-  times_by_day: Scalars['json']['output'];
+  times_by_day: Scalars['TimesByDay']['output'];
   /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Scalars['String']['output']>;
   /** Complete course title */
@@ -6198,7 +6213,7 @@ export type EvaluationQuestions = {
    */
   is_narrative: Scalars['Boolean']['output'];
   /** JSON array of possible responses (only if the question is not a narrative) */
-  options: Maybe<Scalars['json']['output']>;
+  options: Scalars['StringArr']['output'];
   /** Question code from OCE (e.g. "YC402") */
   question_code: Scalars['String']['output'];
   /** The question text */
@@ -6498,7 +6513,7 @@ export type EvaluationRatings = {
   /** Question to which this rating responds */
   question_code: Scalars['String']['output'];
   /** JSON array of the response counts for each option */
-  rating: Scalars['json']['output'];
+  rating: Scalars['NumberArr']['output'];
 };
 
 /** columns and relationships of "evaluation_ratings" */
@@ -7625,7 +7640,7 @@ export type Listings = {
   /** Course that the listing refers to */
   course_id: Scalars['Int']['output'];
   /** The CRN associated with this listing */
-  crn: Scalars['Int']['output'];
+  crn: Scalars['Crn']['output'];
   /** Listing ID */
   listing_id: Scalars['Int']['output'];
   /** Course number in the given subject (e.g. "120" or "S120") */
@@ -7635,7 +7650,7 @@ export type Listings = {
   /** An object relationship */
   season: Seasons;
   /** When the course/listing is being taught, mapping to `seasons` */
-  season_code: Scalars['String']['output'];
+  season_code: Scalars['Season']['output'];
   /**
    * Course section. Note that the section number is the same for
    *         all cross-listings.
@@ -10339,7 +10354,7 @@ export type SameCourseOrProfOfferingsQuery = {
   computed_listing_info: Array<
     {
       __typename?: 'computed_listing_info';
-      professor_info?: object;
+      professor_info?: ProfessorInfo | null;
       course?: {
         __typename?: 'courses';
         evaluation_statistic: {
@@ -10375,11 +10390,11 @@ export type SearchEvaluationNarrativesQuery = {
       }>;
       evaluation_ratings: Array<{
         __typename?: 'evaluation_ratings';
-        rating: object;
+        rating: NumberArr;
         evaluation_question: {
           __typename?: 'evaluation_questions';
           question_text: string;
-          options: object | null;
+          options: StringArr;
           tag: string | null;
         };
       }>;
@@ -10421,7 +10436,7 @@ export type ListingRatingsFragment = {
   average_workload: number | null;
   average_rating_same_professors: number | null;
   average_workload_same_professors: number | null;
-  crn: number;
+  crn: Crn;
   enrolled: number | null;
   last_enrollment: number | null;
   last_enrollment_same_professors: boolean | null;
@@ -10429,22 +10444,22 @@ export type ListingRatingsFragment = {
 
 export type ListingFragment = {
   __typename?: 'computed_listing_info';
-  all_course_codes: object;
-  areas: object;
+  all_course_codes: StringArr;
+  areas: StringArr;
   classnotes: string | null;
   course_code: string;
   credits: number | null;
-  crn: number;
+  crn: Crn;
   description: string;
-  extra_info: string;
+  extra_info: ExtraInfo;
   final_exam: string | null;
-  flag_info: object;
+  flag_info: StringArr;
   fysem: boolean | null;
   listing_id: number;
   locations_summary: string;
   number: string;
-  professor_ids: object;
-  professor_names: object;
+  professor_ids: StringArr;
+  professor_names: StringArr;
   regnotes: string | null;
   requirements: string;
   rp_attr: string | null;
@@ -10452,12 +10467,12 @@ export type ListingFragment = {
   same_course_and_profs_id: number;
   last_offered_course_id: number | null;
   school: string | null;
-  season_code: string;
+  season_code: Season;
   section: string;
-  skills: object;
+  skills: StringArr;
   subject: string;
   syllabus_url: string | null;
-  times_by_day: object;
+  times_by_day: TimesByDay;
   times_summary: string;
   title: string;
 };

@@ -7,6 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import { toast } from 'react-toastify';
+import type { NetId, Season, Crn } from '../queries/graphql-types';
 import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
@@ -16,7 +17,6 @@ import {
   removeFriend as baseRemoveFriend,
   checkAuth,
 } from '../utilities/api';
-import type { NetId, Season, Crn } from '../utilities/common';
 
 // Not using z.infer because we want narrower types
 export type UserWorksheets = {

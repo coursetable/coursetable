@@ -19,8 +19,8 @@ function EvaluationRatings({
   const ratings = info.evaluation_ratings.map((x) => ({
     tag: x.evaluation_question.tag,
     questionText: x.evaluation_question.question_text,
-    rating: x.rating as number[],
-    options: x.evaluation_question.options as string[],
+    rating: x.rating,
+    options: x.evaluation_question.options,
   }));
   ratings.sort((a, b) => {
     if (a.tag && b.tag) return tagIndex[a.tag]! - tagIndex[b.tag]!;

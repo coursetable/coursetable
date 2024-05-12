@@ -8,14 +8,12 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
-import type { NarrowListing, Listing } from '../../utilities/common';
+import type { Listing } from '../../utilities/common';
 import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
 
 export type RelatedListingInfo = Omit<
-  NarrowListing<
-    SameCourseOrProfOfferingsQuery['computed_listing_info'][number]
-  >,
+  SameCourseOrProfOfferingsQuery['computed_listing_info'][number],
   'professor_info'
 > & {
   // For public may not have prof info

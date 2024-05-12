@@ -6,9 +6,13 @@ import { toast } from 'react-toastify';
 import z from 'zod';
 
 import { createLocalStorageSlot } from './browserStorage';
-import type { Season, Crn, Listing, NetId } from './common';
 import { API_ENDPOINT } from '../config';
-import type { ListingRatingsFragment } from '../generated/graphql';
+import type {
+  Listings,
+  ListingFragment,
+  ListingRatingsFragment,
+} from '../generated/graphql';
+import type { Season, Crn, NetId } from '../queries/graphql-types';
 
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
@@ -162,7 +166,7 @@ export function toggleCourseHidden({
   season: Season;
   crn: Crn | 'all';
   hidden: boolean;
-  courses?: Listing[];
+  courses?: Pick<Listings, 'crn'>[];
 }) {
   const hiddenCourses = hiddenCoursesStorage.get() ?? {};
   if (crn === 'all') {
@@ -191,8 +195,8 @@ export async function fetchCatalog(season: Season) {
     },
   });
   if (!res) return undefined;
-  const data = res as Listing[];
-  const info = new Map<Crn, Listing>();
+  const data = res as ListingFragment[];
+  const info = new Map<Crn, ListingFragment>();
   for (const listing of data) info.set(listing.crn, listing);
   return info;
 }
@@ -207,7 +211,7 @@ export async function fetchEvals(season: Season) {
   if (!res) return undefined;
   const data = res as ListingRatingsFragment[];
   const info = new Map<Crn, ListingRatingsFragment>();
-  for (const listing of data) info.set(listing.crn as Crn, listing);
+  for (const listing of data) info.set(listing.crn, listing);
   return info;
 }
 

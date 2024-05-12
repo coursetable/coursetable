@@ -25,7 +25,7 @@ import {
 } from '../../contexts/searchContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
-import { weekdays } from '../../utilities/common';
+import { weekdays } from '../../queries/graphql-types';
 import { credits, skillsAreasColors } from '../../utilities/constants';
 import {
   toRealTime,

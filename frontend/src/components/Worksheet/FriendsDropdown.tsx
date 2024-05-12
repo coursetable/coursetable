@@ -5,7 +5,7 @@ import { components as selectComponents } from 'react-select';
 import type { Option } from '../../contexts/searchContext';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { NetId } from '../../utilities/common';
+import type { NetId } from '../../queries/graphql-types';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import Spinner from '../Spinner';

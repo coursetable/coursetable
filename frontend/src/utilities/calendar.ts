@@ -1,7 +1,7 @@
 import { DateLocalizer, type DateLocalizerSpec } from 'react-big-calendar';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
-import { weekdays, type Listing, type Season, type Weekdays } from './common';
+import type { Listing } from './common';
 import { toSeasonString } from './course';
 import {
   academicCalendars,
@@ -9,6 +9,12 @@ import {
   type SeasonCalendar,
 } from '../config';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
+import {
+  weekdays,
+  type Season,
+  type Weekdays,
+  type TimesByDay,
+} from '../queries/graphql-types';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -54,7 +60,7 @@ function firstDaySince(reference: Date | SimpleDate, days: number[]) {
   return referenceDate;
 }
 
-function getTimes(timesByDay: Listing['times_by_day']) {
+function getTimes(timesByDay: TimesByDay) {
   const times: {
     days: number[];
     startTime: string;

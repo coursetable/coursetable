@@ -1,13 +1,15 @@
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
+import type { IconType } from 'react-icons';
 import { AiOutlineStar } from 'react-icons/ai';
 import { BiBookOpen } from 'react-icons/bi';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { IoPersonOutline } from 'react-icons/io5';
-import type { Season, Listing } from '../../utilities/common';
+import type { Season } from '../../queries/graphql-types';
+import type { Listing } from '../../utilities/common';
 import {
   subjects,
   ratingColormap,
@@ -142,7 +144,14 @@ export function CourseCode({
   );
 }
 
-export const ratingTypes = {
+export const ratingTypes: {
+  [type in 'Class' | 'Professor' | 'Workload']: {
+    getRating: ((course: Listing, mode: 'stat') => number | null) &
+      ((course: Listing, mode: 'display') => string);
+    colorMap: chroma.Scale;
+    Icon: IconType;
+  };
+} = {
   Class: {
     getRating: getOverallRatings,
     colorMap: ratingColormap,

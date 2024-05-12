@@ -11,13 +11,9 @@ import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useUser } from './userContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
+import type { Season, Weekdays } from '../queries/graphql-types';
 import { useSessionStorageState } from '../utilities/browserStorage';
-import {
-  isEqual,
-  type Listing,
-  type Season,
-  type Weekdays,
-} from '../utilities/common';
+import { isEqual, type Listing } from '../utilities/common';
 import {
   skillsAreas,
   subjects,

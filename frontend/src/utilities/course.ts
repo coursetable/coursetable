@@ -1,14 +1,19 @@
 // Performing various actions on the listing dictionary
+import type { Listing } from './common';
+import type { SortKeys } from '../contexts/searchContext';
+import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
+import type { WorksheetCourse } from '../contexts/worksheetContext';
+import type {
+  Courses,
+  Listings,
+  ComputedListingInfo,
+} from '../generated/graphql';
 import {
   type Crn,
   type Season,
   type Weekdays,
   weekdays,
-  type Listing,
-} from './common';
-import type { SortKeys } from '../contexts/searchContext';
-import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
-import type { WorksheetCourse } from '../contexts/worksheetContext';
+} from '../queries/graphql-types';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -47,9 +52,7 @@ export function checkConflict(
   course: Listing,
 ): Listing[] {
   const conflicts: Listing[] = [];
-  const daysToCheck = Object.keys(
-    course.times_by_day,
-  ) as (keyof Listing['times_by_day'])[];
+  const daysToCheck = Object.keys(course.times_by_day) as Weekdays[];
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
     if (worksheetCourse.season_code !== course.season_code) continue;
     for (const day of daysToCheck) {
@@ -101,13 +104,18 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   return numFriends;
 }
 
+type OverallRatingKey = 'average_rating' | 'average_rating_same_professors';
+
 export function getOverallRatings(
-  course: Listing,
+  course: Pick<Courses, OverallRatingKey>,
   usage: 'stat',
 ): number | null;
-export function getOverallRatings(course: Listing, usage: 'display'): string;
 export function getOverallRatings(
-  course: Listing,
+  course: Pick<Courses, OverallRatingKey>,
+  usage: 'display',
+): string;
+export function getOverallRatings(
+  course: Pick<Courses, OverallRatingKey>,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_rating_same_professors) {
@@ -124,13 +132,20 @@ export function getOverallRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
+type WorkloadRatingKey =
+  | 'average_workload'
+  | 'average_workload_same_professors';
+
 export function getWorkloadRatings(
-  course: Listing,
+  course: Pick<Courses, WorkloadRatingKey>,
   usage: 'stat',
 ): number | null;
-export function getWorkloadRatings(course: Listing, usage: 'display'): string;
 export function getWorkloadRatings(
-  course: Listing,
+  course: Pick<Courses, WorkloadRatingKey>,
+  usage: 'display',
+): string;
+export function getWorkloadRatings(
+  course: Pick<Courses, WorkloadRatingKey>,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_workload_same_professors) {
@@ -149,12 +164,15 @@ export function getWorkloadRatings(
 }
 
 export function getProfessorRatings(
-  course: Listing,
+  course: Pick<ComputedListingInfo, 'average_professor'>,
   usage: 'stat',
 ): number | null;
-export function getProfessorRatings(course: Listing, usage: 'display'): string;
 export function getProfessorRatings(
-  course: Listing,
+  course: Pick<ComputedListingInfo, 'average_professor'>,
+  usage: 'display',
+): string;
+export function getProfessorRatings(
+  course: Pick<ComputedListingInfo, 'average_professor'>,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_professor) {
@@ -166,7 +184,7 @@ export function getProfessorRatings(
 }
 
 export function getDayTimes(
-  course: Listing,
+  course: Pick<Courses, 'times_by_day'>,
 ): { day: Weekdays; start: string; end: string }[] {
   return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
     day: day as Weekdays,
@@ -175,7 +193,7 @@ export function getDayTimes(
   }));
 }
 
-function toDayTimeScore(course: Listing): number | null {
+function toDayTimeScore(course: Pick<Courses, 'times_by_day'>): number | null {
   const times = getDayTimes(course);
 
   if (times.length) {
@@ -300,25 +318,21 @@ export function sortCourses(
   );
 }
 
+type EnrolledKey =
+  | 'enrolled'
+  | 'last_enrollment'
+  | 'last_enrollment_same_professors';
+
 export function getEnrolled(
-  course: Pick<
-    Listing,
-    'enrolled' | 'last_enrollment' | 'last_enrollment_same_professors'
-  >,
+  course: Pick<Listing, EnrolledKey>,
   usage: 'stat',
 ): number | null;
 export function getEnrolled(
-  course: Pick<
-    Listing,
-    'enrolled' | 'last_enrollment' | 'last_enrollment_same_professors'
-  >,
+  course: Pick<Listing, EnrolledKey>,
   usage: 'display' | 'modal',
 ): string;
 export function getEnrolled(
-  course: Pick<
-    Listing,
-    'enrolled' | 'last_enrollment' | 'last_enrollment_same_professors'
-  >,
+  course: Pick<Listing, EnrolledKey>,
   usage: 'stat' | 'display' | 'modal',
 ): string | number | null {
   if (course.enrolled) {
@@ -338,12 +352,12 @@ export function getEnrolled(
   return usage === 'modal' ? 'N/A' : '';
 }
 
-export function isGraduate(listing: Pick<Listing, 'number'>): boolean {
+export function isGraduate(listing: Pick<Listings, 'number'>): boolean {
   return Number(listing.number.replace(/\D/gu, '')) >= 500;
 }
 
 export function isDiscussionSection(
-  listing: Pick<Listing, 'section'>,
+  listing: Pick<Courses, 'section'>,
 ): boolean {
   // Checks whether the section field consists only of letters -- if so, the
   // class is a discussion section.

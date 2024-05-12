@@ -1,0 +1,48 @@
+# This schema narrows the auto-generated schema by Hasura so we can have stricter
+# and better types. See https://github.com/hasura/graphql-engine/issues/3451
+# For each scalar declaration, you need to add its definition in queries/graphql-types.ts
+# and connect it in graphql-codegen.ts
+scalar Season
+scalar Crn
+scalar ExtraInfo
+scalar StringArr
+scalar NumberArr
+scalar TimesByDay
+scalar ProfessorInfo
+
+# IMPORTANT: make sure what you add here actually exists on the model!
+type computed_listing_info {
+  crn: Crn!
+  season_code: Season!
+  extra_info: ExtraInfo!
+  all_course_codes: StringArr!
+  areas: StringArr!
+  flag_info: StringArr!
+  skills: StringArr!
+  professor_ids: StringArr!
+  professor_info: ProfessorInfo
+  professor_names: StringArr!
+  times_by_day: TimesByDay!
+}
+
+type listings {
+  crn: Crn!
+  season_code: Season!
+}
+
+type courses {
+  season_code: Season!
+  extra_info: ExtraInfo!
+  all_course_codes: StringArr!
+  areas: StringArr!
+  skills: StringArr!
+  times_by_day: TimesByDay!
+}
+
+type evaluation_questions {
+  options: StringArr!
+}
+
+type evaluation_ratings {
+  rating: NumberArr!
+}

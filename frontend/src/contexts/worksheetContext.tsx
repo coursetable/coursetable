@@ -9,9 +9,10 @@ import { seasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
 import { useUser, type UserWorksheets } from './userContext';
 import { CUR_SEASON } from '../config';
+import type { Season, Crn, NetId } from '../queries/graphql-types';
 import { toggleCourseHidden } from '../utilities/api';
 import { useSessionStorageState } from '../utilities/browserStorage';
-import type { Season, Listing, Crn, NetId } from '../utilities/common';
+import type { Listing } from '../utilities/common';
 
 type WorksheetView = 'calendar' | 'list';
 

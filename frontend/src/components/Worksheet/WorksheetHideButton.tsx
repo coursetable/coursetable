@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { Crn } from '../../utilities/common';
+import type { Crn } from '../../queries/graphql-types';
 import styles from './WorksheetHideButton.module.css';
 
 export default function WorksheetHideButton({

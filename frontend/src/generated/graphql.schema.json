@@ -157,6 +157,26 @@
       },
       {
         "kind": "SCALAR",
+        "name": "Crn",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "ExtraInfo",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
         "name": "Float",
         "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
         "fields": null,
@@ -312,8 +332,48 @@
       },
       {
         "kind": "SCALAR",
+        "name": "NumberArr",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "ProfessorInfo",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Season",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
         "name": "String",
         "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "StringArr",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -571,6 +631,16 @@
             "deprecationReason": null
           }
         ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "TimesByDay",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
         "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
@@ -1509,7 +1579,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "jsonb",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -1538,7 +1608,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "jsonb",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -1774,7 +1844,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Crn",
                 "ofType": null
               }
             },
@@ -1830,7 +1900,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "ExtraInfo",
                 "ofType": null
               }
             },
@@ -1871,7 +1941,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "jsonb",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -2048,7 +2118,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "jsonb",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -2073,13 +2143,9 @@
               }
             ],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "jsonb",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "ProfessorInfo",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -2106,7 +2172,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "jsonb",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -2218,7 +2284,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Season",
                 "ofType": null
               }
             },
@@ -2263,7 +2329,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "jsonb",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -2332,7 +2398,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "json",
+                "name": "TimesByDay",
                 "ofType": null
               }
             },
@@ -19844,6 +19910,22 @@
         "description": "columns and relationships of \"courses\"",
         "fields": [
           {
+            "name": "all_course_codes",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "StringArr",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "areas",
             "description": "Course areas (humanities, social sciences, sciences)",
             "args": [
@@ -19865,7 +19947,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "json",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -21467,9 +21549,13 @@
             "description": "Additional information (indicates if class has been cancelled)",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ExtraInfo",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -21869,7 +21955,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Season",
                 "ofType": null
               }
             },
@@ -21914,7 +22000,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "json",
+                "name": "StringArr",
                 "ofType": null
               }
             },
@@ -21967,7 +22053,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "json",
+                "name": "TimesByDay",
                 "ofType": null
               }
             },
@@ -37906,9 +37992,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "json",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "StringArr",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -39155,7 +39245,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "json",
+                "name": "NumberArr",
                 "ofType": null
               }
             },
@@ -45790,7 +45880,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Crn",
                 "ofType": null
               }
             },
@@ -45866,7 +45956,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Season",
                 "ofType": null
               }
             },
@@ -62604,14 +62694,39 @@
         ]
       },
       {
+        "name": "deprecated",
+        "description": "Marks an element of a GraphQL schema as no longer supported.",
+        "isRepeatable": false,
+        "locations": [
+          "ARGUMENT_DEFINITION",
+          "ENUM_VALUE",
+          "FIELD_DEFINITION",
+          "INPUT_FIELD_DEFINITION"
+        ],
+        "args": [
+          {
+            "name": "reason",
+            "description": "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": "\"No longer supported\"",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ]
+      },
+      {
         "name": "include",
-        "description": "whether this query should be included",
+        "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
         "isRepeatable": false,
         "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
         "args": [
           {
             "name": "if",
-            "description": null,
+            "description": "Included when true.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -62629,19 +62744,43 @@
       },
       {
         "name": "skip",
-        "description": "whether this query should be skipped",
+        "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
         "isRepeatable": false,
         "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
         "args": [
           {
             "name": "if",
-            "description": null,
+            "description": "Skipped when true.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ]
+      },
+      {
+        "name": "specifiedBy",
+        "description": "Exposes a URL that specifies the behavior of this scalar.",
+        "isRepeatable": false,
+        "locations": ["SCALAR"],
+        "args": [
+          {
+            "name": "url",
+            "description": "The URL that specifies the behavior of this scalar.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },

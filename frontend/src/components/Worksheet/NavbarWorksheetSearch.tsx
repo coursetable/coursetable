@@ -9,7 +9,7 @@ import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { NetId } from '../../utilities/common';
+import type { NetId } from '../../queries/graphql-types';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 

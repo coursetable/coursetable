@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { Season } from '../../utilities/common';
+import type { Season } from '../../queries/graphql-types';
 import { toSeasonString } from '../../utilities/course';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';

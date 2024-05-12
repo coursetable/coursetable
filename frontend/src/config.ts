@@ -1,4 +1,4 @@
-import type { Season } from './utilities/common';
+import type { Season } from './queries/graphql-types';
 
 export const isDev = import.meta.env.DEV;
 

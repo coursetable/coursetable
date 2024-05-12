@@ -4,7 +4,7 @@ import EvaluationRatings from './EvaluationRatings';
 import EvaluationResponses from './EvaluationResponses';
 
 import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
-import type { Crn, Season } from '../../utilities/common';
+import type { Crn, Season } from '../../queries/graphql-types';
 import Spinner from '../Spinner';
 
 function CourseModalEvaluations({
