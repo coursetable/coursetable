@@ -21,13 +21,22 @@ function Graphiql() {
       <GraphiQL
         fetcher={fetcher}
         defaultQuery={`{
-  computed_listing_info(where: { season_code: { _eq: "${CUR_SEASON}" } }) {
-    all_course_codes
-    credits
-    crn
-    professor_names
-    times_by_day
+  courses(where: { season_code: { _eq: "${CUR_SEASON}" } }) {
     title
+    credits
+    times_by_day
+    # Get information about professors that teach this course
+    course_professors {
+      professor {
+        name
+      }
+    }
+    # Get information about all listings associated with this course
+    listings {
+      crn
+      course_code
+      section
+    }
   }
 }`}
       />

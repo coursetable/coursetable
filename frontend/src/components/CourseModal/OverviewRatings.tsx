@@ -4,8 +4,6 @@ import clsx from 'clsx';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
-import type { RelatedListingInfo } from './CourseModalOverview';
-
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
@@ -156,7 +154,7 @@ function OverviewRatings({
       [filter in Filter]: CourseOffering[];
     } = { both: [], course: [], professor: [] };
     if (!data) return overlapSections;
-    (data.computed_listing_info as RelatedListingInfo[])
+    data.computed_listing_info
       // Discussion sections have no ratings, nothing to show
       .filter((course) => !isDiscussionSection(course))
       .map((course): CourseOffering => {

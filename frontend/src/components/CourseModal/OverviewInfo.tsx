@@ -210,7 +210,7 @@ function Syllabus({
       )
         continue;
       if (!courseBySyllabus.has(course.syllabus_url))
-        courseBySyllabus.set(course.syllabus_url, course as RelatedListingInfo);
+        courseBySyllabus.set(course.syllabus_url, course);
     }
     return [...courseBySyllabus.values()].sort(
       (a, b) =>
@@ -282,7 +282,7 @@ function Professors({
     // Only count cross-listed courses once per season
     const countedCourses = new Set<string>();
     if (!data) return profInfo;
-    for (const season of data.computed_listing_info as RelatedListingInfo[]) {
+    for (const season of data.computed_listing_info) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
       if (!season.professor_info) continue;

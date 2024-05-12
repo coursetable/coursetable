@@ -12,17 +12,8 @@ import type { Listing } from '../../utilities/common';
 import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
 
-export type RelatedListingInfo = Omit<
-  SameCourseOrProfOfferingsQuery['computed_listing_info'][number],
-  'professor_info'
-> & {
-  // For public may not have prof info
-  professor_info?: {
-    average_rating: number;
-    email: string;
-    name: string;
-  }[];
-};
+export type RelatedListingInfo =
+  SameCourseOrProfOfferingsQuery['computed_listing_info'][number];
 
 function CourseModalOverview({
   gotoCourse,
