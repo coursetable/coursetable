@@ -10346,7 +10346,7 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   crn: Scalars['Int']['input'];
   same_course_id: Scalars['Int']['input'];
   professor_ids: InputMaybe<
-    Array<Scalars['String']['input']> | Scalars['String']['input']
+    Array<Scalars['Int']['input']> | Scalars['Int']['input']
   >;
   hasEval: Scalars['Boolean']['input'];
 }>;
@@ -10379,6 +10379,8 @@ export type SameCourseOrProfOfferingsQuery = {
           __typename?: 'professors';
           professor_id: number;
           name: string;
+          email: string | null;
+          average_rating?: number | null;
         };
       }>;
       course_flags: Array<{
@@ -10391,34 +10393,45 @@ export type SameCourseOrProfOfferingsQuery = {
       } | null;
     };
   }>;
-  others: Array<{
-    __typename?: 'computed_listing_info';
-    professor_info?: ProfessorInfo | null;
-    professor_names: StringArr;
-    syllabus_url: string | null;
-    season_code: Season;
-    crn: Crn;
-    title: string;
-    course_code: string;
-    all_course_codes: StringArr;
-    section: string;
-    skills: StringArr;
-    areas: StringArr;
-    extra_info: ExtraInfo;
-    description: string;
-    times_by_day: TimesByDay;
-    same_course_id: number;
-    professor_ids: StringArr;
-    course: {
+  sameCourse: Array<
+    {
       __typename?: 'courses';
-      average_professor_rating?: number | null;
-      evaluation_statistic?: {
-        __typename?: 'evaluation_statistics';
-        avg_workload: number | null;
-        avg_rating: number | null;
-      } | null;
+      syllabus_url: string | null;
+    } & RelatedCourseInfoFragment
+  >;
+  sameProf: Array<{
+    __typename?: 'course_professors';
+    course: { __typename?: 'courses' } & RelatedCourseInfoFragment;
+  }>;
+};
+
+export type RelatedCourseInfoFragment = {
+  __typename?: 'courses';
+  average_professor_rating?: number | null;
+  season_code: Season;
+  course_id: number;
+  title: string;
+  section: string;
+  skills: StringArr;
+  areas: StringArr;
+  extra_info: ExtraInfo;
+  description: string | null;
+  times_by_day: TimesByDay;
+  same_course_id: number;
+  evaluation_statistic?: {
+    __typename?: 'evaluation_statistics';
+    avg_workload: number | null;
+    avg_rating: number | null;
+  } | null;
+  course_professors: Array<{
+    __typename?: 'course_professors';
+    professor: {
+      __typename?: 'professors';
+      professor_id: number;
+      name: string;
     };
   }>;
+  listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
 };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
@@ -10459,12 +10472,41 @@ export type SearchEvaluationNarrativesQuery = {
   }>;
 };
 
+export const RelatedCourseInfoFragmentDoc = gql`
+  fragment RelatedCourseInfo on courses {
+    average_professor_rating @include(if: $hasEval)
+    evaluation_statistic @include(if: $hasEval) {
+      avg_workload
+      avg_rating
+    }
+    course_professors {
+      professor {
+        professor_id
+        name
+      }
+    }
+    season_code
+    listings {
+      crn
+      course_code
+    }
+    course_id
+    title
+    section
+    skills
+    areas
+    extra_info
+    description
+    times_by_day
+    same_course_id
+  }
+`;
 export const SameCourseOrProfOfferingsDocument = gql`
   query SameCourseOrProfOfferings(
     $seasonCode: String!
     $crn: Int!
     $same_course_id: Int!
-    $professor_ids: [String!]
+    $professor_ids: [Int!]
     $hasEval: Boolean!
   ) {
     self: listings(
@@ -10478,6 +10520,8 @@ export const SameCourseOrProfOfferingsDocument = gql`
           professor {
             professor_id
             name
+            email
+            average_rating @include(if: $hasEval)
           }
         }
         times_by_day
@@ -10503,39 +10547,19 @@ export const SameCourseOrProfOfferingsDocument = gql`
       crn
       course_code
     }
-    others: computed_listing_info(
-      where: {
-        _or: [
-          { same_course_id: { _eq: $same_course_id } }
-          { professor_ids: { _has_keys_any: $professor_ids } }
-        ]
-      }
+    sameCourse: courses(where: { same_course_id: { _eq: $same_course_id } }) {
+      ...RelatedCourseInfo
+      syllabus_url
+    }
+    sameProf: course_professors(
+      where: { professor_id: { _in: $professor_ids } }
     ) {
       course {
-        average_professor_rating @include(if: $hasEval)
-        evaluation_statistic @include(if: $hasEval) {
-          avg_workload
-          avg_rating
-        }
+        ...RelatedCourseInfo
       }
-      professor_info @include(if: $hasEval)
-      professor_names
-      syllabus_url
-      season_code
-      crn
-      title
-      course_code
-      all_course_codes
-      section
-      skills
-      areas
-      extra_info
-      description
-      times_by_day
-      same_course_id
-      professor_ids
     }
   }
+  ${RelatedCourseInfoFragmentDoc}
 `;
 
 /**
