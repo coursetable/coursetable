@@ -12,10 +12,15 @@ const config: CodegenConfig = {
         'typescript-react-apollo',
       ],
       config: {
-        onlyOperationTypes: true,
         avoidOptionals: true,
+        namingConvention: {
+          typeNames: 'change-case-all#pascalCase',
+          transformUnderscore: true,
+        },
         scalars: {
           float8: 'number',
+          json: 'object',
+          jsonb: 'object',
         },
         inlineFragmentTypes: 'combine',
       },
