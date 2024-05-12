@@ -7,13 +7,13 @@ import type {
   Listings,
   ComputedListingInfo,
 } from '../generated/graphql';
+import type { FriendRecord, UserWorksheets } from '../queries/api';
 import {
   type Crn,
   type Season,
   type Weekdays,
   weekdays,
 } from '../queries/graphql-types';
-import type { FriendRecord, UserWorksheets } from '../utilities/api';
 
 export function truncatedText(
   text: string | null | undefined,

@@ -7,7 +7,7 @@ import { HexColorPicker } from 'react-colorful';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toggleBookmark } from '../../utilities/api';
+import { toggleBookmark } from '../../queries/api';
 import { type RBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
 import { SurfaceComponent, Input } from '../Typography';

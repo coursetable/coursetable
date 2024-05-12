@@ -9,7 +9,7 @@ import MeDropdown from './MeDropdown';
 import { API_ENDPOINT } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { logout } from '../../utilities/api';
+import { logout } from '../../queries/api';
 import { scrollToTop } from '../../utilities/display';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
 import { SurfaceComponent, TextComponent } from '../Typography';

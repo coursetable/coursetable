@@ -17,7 +17,7 @@ import { API_ENDPOINT } from '../../config';
 import { useTutorial } from '../../contexts/tutorialContext';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { logout } from '../../utilities/api';
+import { logout } from '../../queries/api';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';

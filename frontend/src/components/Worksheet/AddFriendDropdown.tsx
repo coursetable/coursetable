@@ -12,8 +12,8 @@ import {
   type OptionProps,
 } from 'react-select';
 import { useUser } from '../../contexts/userContext';
+import { fetchAllNames, type UserNames } from '../../queries/api';
 import type { NetId } from '../../queries/graphql-types';
-import { fetchAllNames, type UserNames } from '../../utilities/api';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 

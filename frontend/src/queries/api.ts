@@ -5,20 +5,20 @@ import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import z from 'zod';
 
-import { createLocalStorageSlot } from './browserStorage';
-import { API_ENDPOINT } from '../config';
-import type {
-  Listings,
-  ListingFragment,
-  ListingRatingsFragment,
-} from '../generated/graphql';
 import {
   crnSchema,
   netIdSchema,
   type Season,
   type Crn,
   type NetId,
-} from '../queries/graphql-types';
+} from './graphql-types';
+import { API_ENDPOINT } from '../config';
+import type {
+  Listings,
+  ListingFragment,
+  ListingRatingsFragment,
+} from '../generated/graphql';
+import { createLocalStorageSlot } from '../utilities/browserStorage';
 
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {

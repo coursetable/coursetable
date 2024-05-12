@@ -7,7 +7,6 @@ import React, {
   useEffect,
 } from 'react';
 import { toast } from 'react-toastify';
-import type { NetId } from '../queries/graphql-types';
 import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
@@ -19,7 +18,8 @@ import {
   type UserWorksheets,
   type FriendRecord,
   type FriendRequests,
-} from '../utilities/api';
+} from '../queries/api';
+import type { NetId } from '../queries/graphql-types';
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 

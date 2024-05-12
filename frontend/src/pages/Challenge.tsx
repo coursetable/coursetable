@@ -14,7 +14,7 @@ import {
   requestChallenge,
   verifyChallenge,
   type RequestChallengeResBody,
-} from '../utilities/api';
+} from '../queries/api';
 import styles from './Challenge.module.css';
 
 type Answer = {
