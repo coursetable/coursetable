@@ -272,7 +272,15 @@ function Professors({
                   trigger="click"
                   rootClose
                   placement="right"
-                  overlay={profInfoPopover(professor, sameProf.length)}
+                  overlay={profInfoPopover(
+                    professor,
+                    sameProf.filter((o) =>
+                      o.course.course_professors.some(
+                        (p) =>
+                          p.professor.professor_id === professor.professor_id,
+                      ),
+                    ).length,
+                  )}
                 >
                   <LinkLikeText>{professor.name}</LinkLikeText>
                 </OverlayTrigger>
