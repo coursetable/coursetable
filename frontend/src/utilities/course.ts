@@ -48,10 +48,11 @@ export function toSeasonString(seasonCode: Season): string {
 
 export function checkConflict(
   worksheetData: WorksheetCourse[],
-  course: Listing,
+  course: Pick<Courses, 'times_by_day' | 'season_code'>,
 ): Listing[] {
   const conflicts: Listing[] = [];
   const daysToCheck = Object.keys(course.times_by_day) as Weekdays[];
+  if (!daysToCheck.length) return conflicts;
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
     if (worksheetCourse.season_code !== course.season_code) continue;
     for (const day of daysToCheck) {

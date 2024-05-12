@@ -10342,6 +10342,8 @@ export type SubscriptionRootSeasonsStreamArgs = {
 };
 
 export type SameCourseOrProfOfferingsQueryVariables = Exact<{
+  seasonCode: Scalars['String']['input'];
+  crn: Scalars['Int']['input'];
   same_course_id: Scalars['Int']['input'];
   professor_ids: InputMaybe<
     Array<Scalars['String']['input']> | Scalars['String']['input']
@@ -10351,7 +10353,11 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
 
 export type SameCourseOrProfOfferingsQuery = {
   __typename?: 'query_root';
-  computed_listing_info: Array<
+  self: Array<
+    { __typename?: 'computed_listing_info' } & ListingFragment &
+      ListingRatingsFragment
+  >;
+  others: Array<
     {
       __typename?: 'computed_listing_info';
       professor_info?: ProfessorInfo | null;
@@ -10506,11 +10512,19 @@ export const ListingFragmentDoc = gql`
 `;
 export const SameCourseOrProfOfferingsDocument = gql`
   query SameCourseOrProfOfferings(
+    $seasonCode: String!
+    $crn: Int!
     $same_course_id: Int!
     $professor_ids: [String!]
     $hasEval: Boolean!
   ) {
-    computed_listing_info(
+    self: computed_listing_info(
+      where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
+    ) {
+      ...Listing
+      ...ListingRatings @include(if: $hasEval)
+    }
+    others: computed_listing_info(
       where: {
         _or: [
           { same_course_id: { _eq: $same_course_id } }
@@ -10545,6 +10559,8 @@ export const SameCourseOrProfOfferingsDocument = gql`
  * @example
  * const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
  *   variables: {
+ *      seasonCode: // value for 'seasonCode'
+ *      crn: // value for 'crn'
  *      same_course_id: // value for 'same_course_id'
  *      professor_ids: // value for 'professor_ids'
  *      hasEval: // value for 'hasEval'

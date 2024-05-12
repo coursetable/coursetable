@@ -4,9 +4,10 @@ import clsx from 'clsx';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
+import type { ListingInfo, RelatedListingInfo } from './CourseModalOverview';
+
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
-import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import type { Listing } from '../../queries/api';
 import { generateRandomColor } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
@@ -143,19 +144,18 @@ function CourseLink({
 function OverviewRatings({
   gotoCourse,
   listing,
-  data,
+  others,
 }: {
-  readonly gotoCourse: (x: Listing) => void;
-  readonly listing: Listing;
-  readonly data: SameCourseOrProfOfferingsQuery | undefined;
+  readonly gotoCourse: (x: ListingInfo) => void;
+  readonly listing: ListingInfo;
+  readonly others: RelatedListingInfo[];
 }) {
   const { user } = useUser();
   const overlapSections = useMemo(() => {
     const overlapSections: {
       [filter in Filter]: CourseOffering[];
     } = { both: [], course: [], professor: [] };
-    if (!data) return overlapSections;
-    data.computed_listing_info
+    others
       // Discussion sections have no ratings, nothing to show
       .filter((course) => !isDiscussionSection(course))
       .map((course): CourseOffering => {
@@ -183,8 +183,9 @@ function OverviewRatings({
       .forEach((offering) => {
         // Skip listings in the current and future seasons that have no evals
         if (CUR_YEAR.includes(offering.listing.season_code)) return;
-        const overlappingProfs = listing.professor_names.reduce(
-          (cnt, prof) => cnt + (offering.professor.includes(prof) ? 1 : 0),
+        const overlappingProfs = listing.professor_ids.reduce(
+          (cnt, prof) =>
+            cnt + (offering.listing.professor_ids.includes(prof) ? 1 : 0),
           0,
         );
         // TODO: this whole logic is not ideal. We need to systematically
@@ -197,7 +198,7 @@ function OverviewRatings({
         const isBothOverlap =
           isCourseOverlap &&
           overlappingProfs === offering.professor.length &&
-          overlappingProfs === listing.professor_names.length;
+          overlappingProfs === listing.professor_ids.length;
         if (isBothOverlap) overlapSections.both.push(offering);
         if (isCourseOverlap) overlapSections.course.push(offering);
         if (isProfOverlap) overlapSections.professor.push(offering);
@@ -209,7 +210,7 @@ function OverviewRatings({
         // reconsideration of course relationships needed...
       });
     return overlapSections;
-  }, [data, listing]);
+  }, [others, listing]);
   const options = [
     {
       displayName: `Course (${overlapSections.course.length})`,

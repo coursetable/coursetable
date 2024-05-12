@@ -1,9 +1,15 @@
 query SameCourseOrProfOfferings(
+  $seasonCode: String!
+  $crn: Int!
   $same_course_id: Int!
   $professor_ids: [String!]
   $hasEval: Boolean!
 ) {
-  computed_listing_info(
+  self: computed_listing_info(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+    ...Listing
+    ...ListingRatings @include(if: $hasEval)
+  }
+  others: computed_listing_info(
     where: {
       _or: [
         { same_course_id: { _eq: $same_course_id } }

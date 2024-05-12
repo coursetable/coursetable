@@ -24,7 +24,7 @@ function CourseConflictIcon({
   modal,
   worksheetNumber,
 }: {
-  readonly listing: Listing;
+  readonly listing: Pick<Listing, 'season_code' | 'crn' | 'times_by_day'>;
   readonly inWorksheet: boolean;
   readonly modal: boolean;
   readonly worksheetNumber: number;
@@ -45,7 +45,6 @@ function CourseConflictIcon({
         return 'This will add to a worksheet of a semester that has already ended.';
       return undefined;
     }
-    if (listing.times_summary === 'TBA') return undefined;
     const conflicts = checkConflict(data, listing);
     if (conflicts.length > 0)
       return `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`;
@@ -79,7 +78,7 @@ function WorksheetToggleButton({
   modal,
   inWorksheet: inWorksheetProp,
 }: {
-  readonly listing: Listing;
+  readonly listing: Pick<Listing, 'season_code' | 'crn' | 'times_by_day'>;
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {

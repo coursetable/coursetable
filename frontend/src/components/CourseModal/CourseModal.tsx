@@ -10,8 +10,12 @@ import { toast } from 'react-toastify';
 import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
-import type { Listing } from '../../queries/api';
-import type { Season, Crn } from '../../queries/graphql-types';
+import type {
+  Season,
+  Crn,
+  ExtraInfo,
+  TimesByDay,
+} from '../../queries/graphql-types';
 import { extraInfo } from '../../utilities/constants';
 import { toSeasonString, truncatedText } from '../../utilities/course';
 import { suspended, useCourseModalLink } from '../../utilities/display';
@@ -20,7 +24,23 @@ import { TextComponent } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 
-function ShareButton({ listing }: { readonly listing: Listing }) {
+export type CourseModalHeaderData = {
+  readonly season_code: Season;
+  readonly crn: Crn;
+  readonly title: string;
+  readonly course_code: string;
+  readonly all_course_codes: string[];
+  readonly section: string;
+  readonly skills: string[];
+  readonly areas: string[];
+  readonly extra_info: ExtraInfo;
+  readonly description: string;
+  readonly times_by_day: TimesByDay;
+  readonly same_course_id: number;
+  readonly professor_ids: string[];
+};
+
+function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
   const copyToClipboard = () => {
     const textToCopy = `${listing.course_code} -- CourseTable: ${window.location.href}`;
     navigator.clipboard.writeText(textToCopy).then(
@@ -49,7 +69,7 @@ function MoreButton({
   listing,
   hide,
 }: {
-  readonly listing: Listing;
+  readonly listing: CourseModalHeaderData;
   readonly hide: () => void;
 }) {
   return (
@@ -140,7 +160,7 @@ function CourseModal() {
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
-  const [history, setHistory] = useState<Listing[]>([]);
+  const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -260,7 +280,7 @@ function CourseModal() {
                 return;
               setHistory([...history, l]);
             }}
-            listing={listing}
+            header={listing}
           />
         ) : (
           <CourseModalEvaluations

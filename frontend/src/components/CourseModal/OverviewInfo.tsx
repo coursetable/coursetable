@@ -15,11 +15,10 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import type { RelatedListingInfo } from './CourseModalOverview';
+import type { ListingInfo, RelatedListingInfo } from './CourseModalOverview';
 
 import { CUR_SEASON } from '../../config';
 import { useSearch } from '../../contexts/searchContext';
-import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import type { Listing } from '../../queries/api';
 import type { Weekdays } from '../../queries/graphql-types';
 import { ratingColormap } from '../../utilities/constants';
@@ -193,17 +192,16 @@ function DataField({
 }
 
 function Syllabus({
-  data,
   listing,
+  others,
 }: {
-  readonly data: SameCourseOrProfOfferingsQuery | undefined;
-  readonly listing: Listing;
+  readonly listing: ListingInfo;
+  readonly others: RelatedListingInfo[];
 }) {
   const pastSyllabi = useMemo(() => {
-    if (!data) return [];
     // Remove duplicates by syllabus URL
     const courseBySyllabus = new Map<string, RelatedListingInfo>();
-    for (const course of data.computed_listing_info) {
+    for (const course of others) {
       if (
         course.same_course_id !== listing.same_course_id ||
         !course.syllabus_url
@@ -217,7 +215,7 @@ function Syllabus({
         b.season_code.localeCompare(a.season_code, 'en-US') ||
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
-  }, [data, listing.same_course_id]);
+  }, [others, listing.same_course_id]);
 
   return (
     <div className="mt-2">
@@ -266,11 +264,11 @@ function Syllabus({
 }
 
 function Professors({
-  data,
   listing,
+  others,
 }: {
-  readonly data: SameCourseOrProfOfferingsQuery | undefined;
-  readonly listing: Listing;
+  readonly listing: ListingInfo;
+  readonly others: RelatedListingInfo[];
 }) {
   const profInfo = useMemo(() => {
     const profInfo = new Map(
@@ -281,8 +279,7 @@ function Professors({
     );
     // Only count cross-listed courses once per season
     const countedCourses = new Set<string>();
-    if (!data) return profInfo;
-    for (const season of data.computed_listing_info) {
+    for (const season of others) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
       if (!season.professor_info) continue;
@@ -299,7 +296,7 @@ function Professors({
       });
     }
     return profInfo;
-  }, [data, listing]);
+  }, [others, listing]);
 
   return (
     <DataField
@@ -325,7 +322,7 @@ function Professors({
   );
 }
 
-function TimeLocation({ listing }: { readonly listing: Listing }) {
+function TimeLocation({ listing }: { readonly listing: ListingInfo }) {
   const locations = new Map<string, string>();
   const times = new Map<string, Set<Weekdays>>();
   for (const [day, info] of Object.entries(listing.times_by_day)) {
@@ -385,10 +382,10 @@ function TimeLocation({ listing }: { readonly listing: Listing }) {
 
 function OverviewInfo({
   listing,
-  data,
+  others,
 }: {
-  readonly listing: Listing;
-  readonly data: SameCourseOrProfOfferingsQuery | undefined;
+  readonly listing: ListingInfo;
+  readonly others: RelatedListingInfo[];
 }) {
   const { numFriends } = useSearch();
   const alsoTaking = [
@@ -400,8 +397,8 @@ function OverviewInfo({
       {listing.requirements && (
         <div className={styles.requirements}>{listing.requirements}</div>
       )}
-      <Syllabus data={data} listing={listing} />
-      <Professors data={data} listing={listing} />
+      <Syllabus listing={listing} others={others} />
+      <Professors listing={listing} others={others} />
       <TimeLocation listing={listing} />
       <DataField name="Section" value={listing.section} />
       <DataField
