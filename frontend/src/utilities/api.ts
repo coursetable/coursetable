@@ -12,7 +12,13 @@ import type {
   ListingFragment,
   ListingRatingsFragment,
 } from '../generated/graphql';
-import type { Season, Crn, NetId } from '../queries/graphql-types';
+import {
+  crnSchema,
+  netIdSchema,
+  type Season,
+  type Crn,
+  type NetId,
+} from '../queries/graphql-types';
 
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
@@ -49,10 +55,10 @@ async function fetchAPI(
  * is present. A response body is expected and will be parsed.
  * Returns the parsed response if successful, or undefined if an error occurred.
  */
-async function fetchAPI<T>(
+async function fetchAPI<T extends z.ZodSchema>(
   endpointSuffix: string,
-  options: BaseFetchOptions & { body?: {}; schema: z.ZodType<T> },
-): Promise<T | undefined>;
+  options: BaseFetchOptions & { body?: {}; schema: T },
+): Promise<z.infer<T> | undefined>;
 async function fetchAPI(
   endpointSuffix: string,
   {
@@ -310,7 +316,7 @@ const userWorksheetsSchema = z.record(
   z.record(
     z.array(
       z.object({
-        crn: z.number(),
+        crn: crnSchema,
         color: z.string(),
         // This currently is not sent by the backend.
         hidden: z.boolean().optional().default(false),
@@ -319,10 +325,20 @@ const userWorksheetsSchema = z.record(
   ),
 );
 
+// Change index type to be more specific. We don't use the key type of z.record
+// on purpose; see https://github.com/colinhacks/zod/pull/2287
+export type UserWorksheets = {
+  [season: Season]: {
+    [worksheetNumber: number]: NonNullable<
+      z.infer<typeof userWorksheetsSchema>[Season]
+    >[string];
+  };
+};
+
 export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
-      netId: z.string(),
+      netId: netIdSchema,
       // This cannot be null in the real application, because the site creates a
       // user if one doesn't exist. This is purely for completeness.
       evaluationsEnabled: z.union([z.boolean(), z.null()]),
@@ -338,27 +354,34 @@ export async function fetchUserWorksheets() {
   if (!res) return undefined;
   const hiddenCourses = hiddenCoursesStorage.get();
   if (!hiddenCourses) return res;
-  for (const season in res.data) {
-    if (!hiddenCourses[season as Season]) continue;
+  for (const seasonKey in res.data) {
+    // Narrow type
+    const season = seasonKey as Season;
+    if (!hiddenCourses[season]) continue;
     for (const num in res.data[season]) {
-      for (const course of res.data[season]![num]!) {
-        course.hidden =
-          hiddenCourses[season as Season]?.[course.crn as Crn] ?? false;
-      }
+      for (const course of res.data[season]![num]!)
+        course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
     }
   }
   return res;
 }
 
+const friendsSchema = z.record(
+  z.object({
+    name: z.string().nullable(),
+    worksheets: userWorksheetsSchema,
+  }),
+);
+
+// Narrower index type
+export type FriendRecord = {
+  [netId: NetId]: NonNullable<z.infer<typeof friendsSchema>[string]>;
+};
+
 export function fetchFriendWorksheets() {
   return fetchAPI('/friends/worksheets', {
     schema: z.object({
-      friends: z.record(
-        z.object({
-          name: z.string().nullable(),
-          worksheets: userWorksheetsSchema,
-        }),
-      ),
+      friends: friendsSchema,
     }),
     breadcrumb: {
       category: 'friends',
@@ -367,15 +390,19 @@ export function fetchFriendWorksheets() {
   });
 }
 
+const friendRequestsSchema = z.array(
+  z.object({
+    netId: netIdSchema,
+    name: z.string().nullable(),
+  }),
+);
+
+export type FriendRequests = z.infer<typeof friendRequestsSchema>;
+
 export function fetchFriendReqs() {
   return fetchAPI('/friends/getRequests', {
     schema: z.object({
-      requests: z.array(
-        z.object({
-          netId: z.string(),
-          name: z.string().nullable(),
-        }),
-      ),
+      requests: friendRequestsSchema,
     }),
     breadcrumb: {
       category: 'friends',
@@ -384,17 +411,21 @@ export function fetchFriendReqs() {
   });
 }
 
+const userNamesSchema = z.array(
+  z.object({
+    netId: netIdSchema,
+    first: z.union([z.string(), z.null()]),
+    last: z.union([z.string(), z.null()]),
+    college: z.union([z.string(), z.null()]),
+  }),
+);
+
+export type UserNames = z.infer<typeof userNamesSchema>;
+
 export function fetchAllNames() {
   return fetchAPI('/friends/names', {
     schema: z.object({
-      names: z.array(
-        z.object({
-          netId: z.string(),
-          first: z.union([z.string(), z.null()]),
-          last: z.union([z.string(), z.null()]),
-          college: z.union([z.string(), z.null()]),
-        }),
-      ),
+      names: userNamesSchema,
     }),
     breadcrumb: {
       category: 'friends',
@@ -454,9 +485,9 @@ export async function checkAuth() {
     schema: z.union([
       z.object({
         auth: z.literal(true),
-        netId: z.string(),
+        netId: netIdSchema,
         user: z.object({
-          netId: z.string(),
+          netId: netIdSchema,
           evals: z.boolean(),
           email: z.string().optional(),
           firstName: z.string().optional(),

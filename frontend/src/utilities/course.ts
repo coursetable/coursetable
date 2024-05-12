@@ -1,7 +1,6 @@
 // Performing various actions on the listing dictionary
 import type { Listing } from './common';
 import type { SortKeys } from '../contexts/searchContext';
-import type { FriendRecord, UserWorksheets } from '../contexts/userContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type {
   Courses,
@@ -14,6 +13,7 @@ import {
   type Weekdays,
   weekdays,
 } from '../queries/graphql-types';
+import type { FriendRecord, UserWorksheets } from '../utilities/api';
 
 export function truncatedText(
   text: string | null | undefined,

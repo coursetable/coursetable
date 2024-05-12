@@ -13,7 +13,7 @@ import {
 } from 'react-select';
 import { useUser } from '../../contexts/userContext';
 import type { NetId } from '../../queries/graphql-types';
-import { fetchAllNames } from '../../utilities/api';
+import { fetchAllNames, type UserNames } from '../../utilities/api';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
@@ -24,13 +24,6 @@ const FriendContext = createContext<{
   isFriend: (netId: NetId) => boolean;
   removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 } | null>(null);
-
-type FriendNames = {
-  netId: NetId;
-  first: string | null;
-  last: string | null;
-  college: string | null;
-}[];
 
 interface OptionType {
   value: NetId;
@@ -158,7 +151,7 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
 function AddFriendDropdownDesktop() {
   const { user } = useUser();
   const { isFriend } = useContext(FriendContext)!;
-  const [allNames, setAllNames] = useState<FriendNames>([]);
+  const [allNames, setAllNames] = useState<UserNames>([]);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -166,7 +159,7 @@ function AddFriendDropdownDesktop() {
     setIsLoading(true);
     async function fetchNames() {
       const data = await fetchAllNames();
-      if (data) setAllNames(data.names as FriendNames);
+      if (data) setAllNames(data.names);
       setIsLoading(false);
     }
     void fetchNames();

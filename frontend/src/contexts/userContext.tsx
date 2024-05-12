@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import { toast } from 'react-toastify';
-import type { NetId, Season, Crn } from '../queries/graphql-types';
+import type { NetId } from '../queries/graphql-types';
 import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
@@ -16,28 +16,10 @@ import {
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
   checkAuth,
+  type UserWorksheets,
+  type FriendRecord,
+  type FriendRequests,
 } from '../utilities/api';
-
-// Not using z.infer because we want narrower types
-export type UserWorksheets = {
-  [season: Season]: {
-    [worksheetNumber: number]: {
-      crn: Crn;
-      color: string;
-      hidden: boolean;
-    }[];
-  };
-};
-export type FriendRecord = {
-  [netId: NetId]: {
-    name: string | null;
-    worksheets: UserWorksheets;
-  };
-};
-type FriendRequests = {
-  netId: NetId;
-  name: string | null;
-}[];
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -85,7 +67,7 @@ export function UserProvider({
   const userRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchUserWorksheets();
     if (data) {
-      setNetId(data.netId satisfies string as NetId);
+      setNetId(data.netId);
       setHasEvals(data.evaluationsEnabled ?? undefined);
       setYear(data.year ?? undefined);
       setSchool(data.school ?? undefined);
@@ -101,13 +83,13 @@ export function UserProvider({
 
   const friendRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchFriendWorksheets();
-    if (data) setFriends(data.friends as FriendRecord);
+    if (data) setFriends(data.friends);
     else setFriends(undefined);
   }, [setFriends]);
 
   const friendReqRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchFriendReqs();
-    if (data) setFriendRequests(data.requests as FriendRequests);
+    if (data) setFriendRequests(data.requests);
     else setFriendRequests(undefined);
   }, [setFriendRequests]);
 

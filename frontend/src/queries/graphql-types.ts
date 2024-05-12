@@ -1,8 +1,15 @@
-// These types are branded so you never pass the wrong thing
-declare const type: unique symbol;
-export type Season = string & { [type]: 'season' };
-export type NetId = string & { [type]: 'netid' };
-export type Crn = number & { [type]: 'crn' };
+import z from 'zod';
+
+// These types are branded because they represent opaque identifiers. You would
+// never dynamically generate them or manipulate them.
+export const seasonSchema = z.string().brand('season');
+export const netIdSchema = z.string().brand('netid');
+export const crnSchema = z.number().brand('crn');
+
+export type Season = z.infer<typeof seasonSchema>;
+export type NetId = z.infer<typeof netIdSchema>;
+export type Crn = z.infer<typeof crnSchema>;
+
 export type ExtraInfo =
   | 'ACTIVE'
   | 'MOVED_TO_SPRING_TERM'

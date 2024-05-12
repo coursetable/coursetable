@@ -7,10 +7,10 @@ import React, {
 } from 'react';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
-import { useUser, type UserWorksheets } from './userContext';
+import { useUser } from './userContext';
 import { CUR_SEASON } from '../config';
 import type { Season, Crn, NetId } from '../queries/graphql-types';
-import { toggleCourseHidden } from '../utilities/api';
+import { toggleCourseHidden, type UserWorksheets } from '../utilities/api';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import type { Listing } from '../utilities/common';
 
