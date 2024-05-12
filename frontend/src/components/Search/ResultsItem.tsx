@@ -14,7 +14,8 @@ import {
 import { useSearch } from '../../contexts/searchContext';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { generateRandomColor, type Listing } from '../../utilities/common';
+import type { Listing } from '../../queries/api';
+import { generateRandomColor } from '../../utilities/common';
 import { getEnrolled, isInWorksheet } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';

@@ -48,19 +48,6 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
   }
 }
 
-# Only used for type reference – make sure this is mirrored with the one in catalog.queries.ts
-query catalogBySeason($season: String!) {
-  computed_listing_info(where: { season_code: { _eq: $season } }) {
-    ...Listing
-  }
-}
-
-query evalsBySeason($season: String!) {
-  computed_listing_info(where: { season_code: { _eq: $season } }) {
-    ...ListingRatings
-  }
-}
-
 fragment ListingRatings on computed_listing_info {
   average_gut_rating
   average_professor

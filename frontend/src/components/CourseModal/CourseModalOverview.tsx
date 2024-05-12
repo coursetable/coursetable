@@ -8,7 +8,7 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
-import type { Listing } from '../../utilities/common';
+import type { Listing } from '../../queries/api';
 import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
 

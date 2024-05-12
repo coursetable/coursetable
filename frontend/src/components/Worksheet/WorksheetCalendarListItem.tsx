@@ -4,7 +4,7 @@ import { ListGroup } from 'react-bootstrap';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { Listing } from '../../utilities/common';
+import type { Listing } from '../../queries/api';
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import z from 'zod';
 
 import {
+  seasonSchema,
   crnSchema,
   netIdSchema,
   type Season,
@@ -13,11 +14,6 @@ import {
   type NetId,
 } from './graphql-types';
 import { API_ENDPOINT } from '../config';
-import type {
-  Listings,
-  ListingFragment,
-  ListingRatingsFragment,
-} from '../generated/graphql';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 
 type BaseFetchOptions = {
@@ -31,6 +27,27 @@ type BaseFetchOptions = {
    */
   handleErrorCode?: (errCode: string) => boolean;
 };
+
+function parseWithWarning<T extends z.ZodSchema<unknown>>(
+  schema: T,
+  data: unknown,
+  breadcrumb: Sentry.Breadcrumb & {
+    message: string;
+    category: string;
+  },
+): z.infer<T> | undefined {
+  const res = schema.safeParse(data);
+  if (res.success) return res.data;
+  Sentry.addBreadcrumb({
+    level: 'info',
+    ...breadcrumb,
+  });
+  Sentry.captureException(res.error);
+  toast.error(
+    `The server returned a response we cannot understand while ${breadcrumb.message.toLowerCase()}. Please try refreshing the page and/or reopening in a new tab.`,
+  );
+  return undefined;
+}
 
 /**
  * Performs a POST request to the API. No schema provided means no response body
@@ -110,7 +127,7 @@ async function fetchAPI(
     const rawData: unknown = await res.json();
     // Only parse if a schema is provided
     if (!schema) return rawData;
-    return schema.parse(rawData);
+    return parseWithWarning(schema, rawData, breadcrumb);
   } catch (err) {
     Sentry.addBreadcrumb({
       level: 'info',
@@ -172,7 +189,7 @@ export function toggleCourseHidden({
   season: Season;
   crn: Crn | 'all';
   hidden: boolean;
-  courses?: Pick<Listings, 'crn'>[];
+  courses?: { crn: Crn }[];
 }) {
   const hiddenCourses = hiddenCoursesStorage.get() ?? {};
   if (crn === 'all') {
@@ -193,19 +210,93 @@ export function toggleCourseHidden({
   hiddenCoursesStorage.set(hiddenCourses);
 }
 
+const catalogListingSchema = z.object({
+  all_course_codes: z.array(z.string()),
+  areas: z.array(z.string()),
+  classnotes: z.string().nullable(),
+  course_code: z.string(),
+  credits: z.number().nullable(),
+  crn: crnSchema,
+  description: z.string(),
+  extra_info: z.union([
+    z.literal('ACTIVE'),
+    z.literal('MOVED_TO_SPRING_TERM'),
+    z.literal('CANCELLED'),
+    z.literal('MOVED_TO_FALL_TERM'),
+    z.literal('CLOSED'),
+    z.literal('NUMBER_CHANGED'),
+  ]),
+  final_exam: z.string().nullable(),
+  flag_info: z.array(z.string()),
+  fysem: z.boolean().nullable(),
+  listing_id: z.number(),
+  locations_summary: z.string(),
+  number: z.string(),
+  professor_ids: z.array(z.string()),
+  professor_names: z.array(z.string()),
+  regnotes: z.string().nullable(),
+  requirements: z.string(),
+  rp_attr: z.string().nullable(),
+  same_course_id: z.number(),
+  same_course_and_profs_id: z.number(),
+  last_offered_course_id: z.number().nullable(),
+  school: z.string().nullable(),
+  season_code: seasonSchema,
+  section: z.string(),
+  skills: z.array(z.string()),
+  subject: z.string(),
+  syllabus_url: z.string().nullable(),
+  times_by_day: z.record(
+    z.union([
+      z.literal('Monday'),
+      z.literal('Tuesday'),
+      z.literal('Wednesday'),
+      z.literal('Thursday'),
+      z.literal('Friday'),
+      z.literal('Saturday'),
+      z.literal('Sunday'),
+    ]),
+    z.array(z.tuple([z.string(), z.string(), z.string(), z.string()])),
+  ),
+  times_summary: z.string(),
+  title: z.string(),
+});
+
+export type CatalogListing = z.infer<typeof catalogListingSchema>;
+
 export async function fetchCatalog(season: Season) {
+  const breadcrumb = {
+    category: 'catalog',
+    message: `Fetching catalog ${season}`,
+  };
   const res = await fetchAPI(`/static/catalogs/public/${season}.json`, {
-    breadcrumb: {
-      category: 'catalog',
-      message: `Fetching catalog ${season}`,
-    },
+    breadcrumb,
   });
   if (!res) return undefined;
-  const data = res as ListingFragment[];
-  const info = new Map<Crn, ListingFragment>();
+  const data = res as CatalogListing[];
+  // For performance, only validate the first and assume the rest are the same
+  parseWithWarning(catalogListingSchema, data[0], breadcrumb);
+  const info = new Map<Crn, CatalogListing>();
   for (const listing of data) info.set(listing.crn, listing);
   return info;
 }
+
+const listingEvalsSchema = z.object({
+  average_gut_rating: z.number().nullable(),
+  average_professor: z.number().nullable(),
+  average_rating: z.number().nullable(),
+  average_workload: z.number().nullable(),
+  average_rating_same_professors: z.number().nullable(),
+  average_workload_same_professors: z.number().nullable(),
+  crn: crnSchema,
+  enrolled: z.number().nullable(),
+  last_enrollment: z.number().nullable(),
+  last_enrollment_same_professors: z.boolean().nullable(),
+});
+
+export type ListingEvals = z.infer<typeof listingEvalsSchema>;
+
+export type Listing = CatalogListing & ListingEvals;
 
 export async function fetchEvals(season: Season) {
   const res = await fetchAPI(`/static/catalogs/evals/${season}.json`, {
@@ -215,8 +306,8 @@ export async function fetchEvals(season: Season) {
     },
   });
   if (!res) return undefined;
-  const data = res as ListingRatingsFragment[];
-  const info = new Map<Crn, ListingRatingsFragment>();
+  const data = res as ListingEvals[];
+  const info = new Map<Crn, ListingEvals>();
   for (const listing of data) info.set(listing.crn, listing);
   return info;
 }
