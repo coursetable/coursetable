@@ -8,7 +8,6 @@ import type { ListingInfo, RelatedListingInfo } from './CourseModalOverview';
 
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
-import type { Listing } from '../../queries/api';
 import { generateRandomColor } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../utilities/course';
@@ -25,7 +24,7 @@ type CourseOffering = {
   workload: number | null;
   professorRating: number | null;
   professor: string[];
-  listing: Listing;
+  listing: RelatedListingInfo;
 };
 
 // Hold index of each filter option
@@ -112,7 +111,7 @@ function CourseLink({
 }: {
   readonly offering: CourseOffering;
   readonly filter: Filter;
-  readonly gotoCourse: (x: Listing) => void;
+  readonly gotoCourse: (x: RelatedListingInfo) => void;
 }) {
   const target = useCourseModalLink(offering.listing);
   return (
@@ -146,7 +145,7 @@ function OverviewRatings({
   listing,
   others,
 }: {
-  readonly gotoCourse: (x: ListingInfo) => void;
+  readonly gotoCourse: (x: RelatedListingInfo) => void;
   readonly listing: ListingInfo;
   readonly others: RelatedListingInfo[];
 }) {

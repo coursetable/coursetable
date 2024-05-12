@@ -1,11 +1,7 @@
 // Performing various actions on the listing dictionary
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
-import type {
-  Courses,
-  Listings,
-  ComputedListingInfo,
-} from '../generated/graphql';
+import type { Courses, Listings } from '../generated/graphql';
 import type { FriendRecord, UserWorksheets, Listing } from '../queries/api';
 import {
   type Crn,
@@ -107,15 +103,15 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
 type OverallRatingKey = 'average_rating' | 'average_rating_same_professors';
 
 export function getOverallRatings(
-  course: Pick<Courses, OverallRatingKey>,
+  course: Pick<Listing, OverallRatingKey>,
   usage: 'stat',
 ): number | null;
 export function getOverallRatings(
-  course: Pick<Courses, OverallRatingKey>,
+  course: Pick<Listing, OverallRatingKey>,
   usage: 'display',
 ): string;
 export function getOverallRatings(
-  course: Pick<Courses, OverallRatingKey>,
+  course: Pick<Listing, OverallRatingKey>,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_rating_same_professors) {
@@ -137,15 +133,15 @@ type WorkloadRatingKey =
   | 'average_workload_same_professors';
 
 export function getWorkloadRatings(
-  course: Pick<Courses, WorkloadRatingKey>,
+  course: Pick<Listing, WorkloadRatingKey>,
   usage: 'stat',
 ): number | null;
 export function getWorkloadRatings(
-  course: Pick<Courses, WorkloadRatingKey>,
+  course: Pick<Listing, WorkloadRatingKey>,
   usage: 'display',
 ): string;
 export function getWorkloadRatings(
-  course: Pick<Courses, WorkloadRatingKey>,
+  course: Pick<Listing, WorkloadRatingKey>,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_workload_same_professors) {
@@ -164,15 +160,15 @@ export function getWorkloadRatings(
 }
 
 export function getProfessorRatings(
-  course: Pick<ComputedListingInfo, 'average_professor'>,
+  course: Pick<Listing, 'average_professor'>,
   usage: 'stat',
 ): number | null;
 export function getProfessorRatings(
-  course: Pick<ComputedListingInfo, 'average_professor'>,
+  course: Pick<Listing, 'average_professor'>,
   usage: 'display',
 ): string;
 export function getProfessorRatings(
-  course: Pick<ComputedListingInfo, 'average_professor'>,
+  course: Pick<Listing, 'average_professor'>,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_professor) {

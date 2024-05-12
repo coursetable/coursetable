@@ -10353,25 +10353,56 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
 
 export type SameCourseOrProfOfferingsQuery = {
   __typename?: 'query_root';
-  self: Array<
-    { __typename?: 'computed_listing_info' } & ListingFragment &
-      ListingRatingsFragment
-  >;
-  others: Array<
-    {
-      __typename?: 'computed_listing_info';
-      professor_info?: ProfessorInfo | null;
-      course?: {
-        __typename?: 'courses';
-        evaluation_statistic: {
-          __typename?: 'evaluation_statistics';
-          avg_workload: number | null;
-          avg_rating: number | null;
-        } | null;
-      };
-    } & ListingFragment &
-      ListingRatingsFragment
-  >;
+  self: Array<{
+    __typename?: 'computed_listing_info';
+    description: string;
+    requirements: string;
+    syllabus_url: string | null;
+    professor_names: StringArr;
+    times_by_day: TimesByDay;
+    section: string;
+    flag_info: StringArr;
+    enrolled?: number | null;
+    last_enrollment?: number | null;
+    last_enrollment_same_professors?: boolean | null;
+    credits: number | null;
+    classnotes: string | null;
+    regnotes: string | null;
+    rp_attr: string | null;
+    final_exam: string | null;
+    season_code: Season;
+    crn: Crn;
+    course_code: string;
+    same_course_id: number;
+    professor_ids: StringArr;
+  }>;
+  others: Array<{
+    __typename?: 'computed_listing_info';
+    professor_info?: ProfessorInfo | null;
+    professor_names: StringArr;
+    syllabus_url: string | null;
+    season_code: Season;
+    crn: Crn;
+    title: string;
+    course_code: string;
+    all_course_codes: StringArr;
+    section: string;
+    skills: StringArr;
+    areas: StringArr;
+    extra_info: ExtraInfo;
+    description: string;
+    times_by_day: TimesByDay;
+    same_course_id: number;
+    professor_ids: StringArr;
+    course?: {
+      __typename?: 'courses';
+      evaluation_statistic: {
+        __typename?: 'evaluation_statistics';
+        avg_workload: number | null;
+        avg_rating: number | null;
+      } | null;
+    };
+  }>;
 };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
@@ -10412,104 +10443,6 @@ export type SearchEvaluationNarrativesQuery = {
   }>;
 };
 
-export type ListingRatingsFragment = {
-  __typename?: 'computed_listing_info';
-  average_gut_rating: number | null;
-  average_professor: number | null;
-  average_rating: number | null;
-  average_workload: number | null;
-  average_rating_same_professors: number | null;
-  average_workload_same_professors: number | null;
-  crn: Crn;
-  enrolled: number | null;
-  last_enrollment: number | null;
-  last_enrollment_same_professors: boolean | null;
-};
-
-export type ListingFragment = {
-  __typename?: 'computed_listing_info';
-  all_course_codes: StringArr;
-  areas: StringArr;
-  classnotes: string | null;
-  course_code: string;
-  credits: number | null;
-  crn: Crn;
-  description: string;
-  extra_info: ExtraInfo;
-  final_exam: string | null;
-  flag_info: StringArr;
-  fysem: boolean | null;
-  listing_id: number;
-  locations_summary: string;
-  number: string;
-  professor_ids: StringArr;
-  professor_names: StringArr;
-  regnotes: string | null;
-  requirements: string;
-  rp_attr: string | null;
-  same_course_id: number;
-  same_course_and_profs_id: number;
-  last_offered_course_id: number | null;
-  school: string | null;
-  season_code: Season;
-  section: string;
-  skills: StringArr;
-  subject: string;
-  syllabus_url: string | null;
-  times_by_day: TimesByDay;
-  times_summary: string;
-  title: string;
-};
-
-export const ListingRatingsFragmentDoc = gql`
-  fragment ListingRatings on computed_listing_info {
-    average_gut_rating
-    average_professor
-    average_rating
-    average_workload
-    average_rating_same_professors
-    average_workload_same_professors
-    crn
-    enrolled
-    last_enrollment
-    last_enrollment_same_professors
-  }
-`;
-export const ListingFragmentDoc = gql`
-  fragment Listing on computed_listing_info {
-    all_course_codes
-    areas
-    classnotes
-    course_code
-    credits
-    crn
-    description
-    extra_info
-    final_exam
-    flag_info
-    fysem
-    listing_id
-    locations_summary
-    number
-    professor_ids
-    professor_names
-    regnotes
-    requirements
-    rp_attr
-    same_course_id
-    same_course_and_profs_id
-    last_offered_course_id
-    school
-    season_code
-    section
-    skills
-    subject
-    syllabus_url
-    times_by_day
-    times_summary
-    title
-  }
-`;
 export const SameCourseOrProfOfferingsDocument = gql`
   query SameCourseOrProfOfferings(
     $seasonCode: String!
@@ -10521,8 +10454,26 @@ export const SameCourseOrProfOfferingsDocument = gql`
     self: computed_listing_info(
       where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
     ) {
-      ...Listing
-      ...ListingRatings @include(if: $hasEval)
+      description
+      requirements
+      syllabus_url
+      professor_names
+      times_by_day
+      section
+      flag_info
+      enrolled @include(if: $hasEval)
+      last_enrollment @include(if: $hasEval)
+      last_enrollment_same_professors @include(if: $hasEval)
+      credits
+      classnotes
+      regnotes
+      rp_attr
+      final_exam
+      season_code
+      crn
+      course_code
+      same_course_id
+      professor_ids
     }
     others: computed_listing_info(
       where: {
@@ -10539,12 +10490,23 @@ export const SameCourseOrProfOfferingsDocument = gql`
         }
       }
       professor_info @include(if: $hasEval)
-      ...Listing
-      ...ListingRatings @include(if: $hasEval)
+      professor_names
+      syllabus_url
+      season_code
+      crn
+      title
+      course_code
+      all_course_codes
+      section
+      skills
+      areas
+      extra_info
+      description
+      times_by_day
+      same_course_id
+      professor_ids
     }
   }
-  ${ListingFragmentDoc}
-  ${ListingRatingsFragmentDoc}
 `;
 
 /**

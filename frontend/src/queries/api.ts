@@ -296,7 +296,7 @@ const listingEvalsSchema = z.object({
 
 export type ListingEvals = z.infer<typeof listingEvalsSchema>;
 
-export type Listing = CatalogListing & ListingEvals;
+export type Listing = CatalogListing & Partial<ListingEvals>;
 
 export async function fetchEvals(season: Season) {
   const res = await fetchAPI(`/static/catalogs/evals/${season}.json`, {

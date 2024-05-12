@@ -19,7 +19,6 @@ import type { ListingInfo, RelatedListingInfo } from './CourseModalOverview';
 
 import { CUR_SEASON } from '../../config';
 import { useSearch } from '../../contexts/searchContext';
-import type { Listing } from '../../queries/api';
 import type { Weekdays } from '../../queries/graphql-types';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -100,7 +99,7 @@ const profInfoPopover =
     </InfoPopover>
   );
 
-function Description({ listing }: { readonly listing: Listing }) {
+function Description({ listing }: { readonly listing: ListingInfo }) {
   const [clamped, setClamped] = useState(false);
   const [lines, setLines] = useState(8);
   return (
@@ -330,7 +329,7 @@ function TimeLocation({ listing }: { readonly listing: ListingInfo }) {
       if (locations.has(location) && locations.get(location) !== locationURL) {
         Sentry.captureException(
           new Error(
-            `${listing.course_code} has duplicate location ${location} with different URLs`,
+            `${listing.season_code}-${listing.crn} has duplicate location ${location} with different URLs`,
           ),
         );
       }

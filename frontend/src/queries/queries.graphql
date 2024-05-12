@@ -5,9 +5,31 @@ query SameCourseOrProfOfferings(
   $professor_ids: [String!]
   $hasEval: Boolean!
 ) {
-  self: computed_listing_info(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
-    ...Listing
-    ...ListingRatings @include(if: $hasEval)
+  self: computed_listing_info(
+    where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
+  ) {
+    description
+    requirements
+    syllabus_url
+    professor_names
+    times_by_day
+    section
+    flag_info
+    enrolled @include(if: $hasEval)
+    last_enrollment @include(if: $hasEval)
+    last_enrollment_same_professors @include(if: $hasEval)
+    credits
+    classnotes
+    regnotes
+    rp_attr
+    final_exam
+
+    # For searching/testing equality
+    season_code
+    crn
+    course_code
+    same_course_id
+    professor_ids
   }
   others: computed_listing_info(
     where: {
@@ -24,8 +46,23 @@ query SameCourseOrProfOfferings(
       }
     }
     professor_info @include(if: $hasEval)
-    ...Listing
-    ...ListingRatings @include(if: $hasEval)
+    professor_names
+    syllabus_url
+
+    # All this is needed to navigate to the next class
+    season_code
+    crn
+    title
+    course_code
+    all_course_codes
+    section
+    skills
+    areas
+    extra_info
+    description
+    times_by_day
+    same_course_id
+    professor_ids
   }
 }
 
@@ -52,51 +89,4 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
       }
     }
   }
-}
-
-fragment ListingRatings on computed_listing_info {
-  average_gut_rating
-  average_professor
-  average_rating
-  average_workload
-  average_rating_same_professors
-  average_workload_same_professors
-  crn
-  enrolled
-  last_enrollment
-  last_enrollment_same_professors
-}
-
-fragment Listing on computed_listing_info {
-  all_course_codes
-  areas
-  classnotes
-  course_code
-  credits
-  crn
-  description
-  extra_info
-  final_exam
-  flag_info
-  fysem
-  listing_id
-  locations_summary
-  number
-  professor_ids
-  professor_names
-  regnotes
-  requirements
-  rp_attr
-  same_course_id
-  same_course_and_profs_id
-  last_offered_course_id
-  school
-  season_code
-  section
-  skills
-  subject
-  syllabus_url
-  times_by_day
-  times_summary
-  title
 }
