@@ -10354,27 +10354,42 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
 export type SameCourseOrProfOfferingsQuery = {
   __typename?: 'query_root';
   self: Array<{
-    __typename?: 'computed_listing_info';
-    description: string;
-    requirements: string;
-    syllabus_url: string | null;
-    professor_names: StringArr;
-    times_by_day: TimesByDay;
-    section: string;
-    flag_info: StringArr;
-    enrolled?: number | null;
-    last_enrollment?: number | null;
-    last_enrollment_same_professors?: boolean | null;
-    credits: number | null;
-    classnotes: string | null;
-    regnotes: string | null;
-    rp_attr: string | null;
-    final_exam: string | null;
+    __typename?: 'listings';
     season_code: Season;
     crn: Crn;
     course_code: string;
-    same_course_id: number;
-    professor_ids: StringArr;
+    course: {
+      __typename?: 'courses';
+      description: string | null;
+      requirements: string | null;
+      syllabus_url: string | null;
+      times_by_day: TimesByDay;
+      section: string;
+      last_enrollment?: number | null;
+      last_enrollment_same_professors?: boolean | null;
+      credits: number | null;
+      classnotes: string | null;
+      regnotes: string | null;
+      rp_attr: string | null;
+      final_exam: string | null;
+      same_course_id: number;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: {
+          __typename?: 'professors';
+          professor_id: number;
+          name: string;
+        };
+      }>;
+      course_flags: Array<{
+        __typename?: 'course_flags';
+        flag: { __typename?: 'flags'; flag_text: string };
+      }>;
+      evaluation_statistic?: {
+        __typename?: 'evaluation_statistics';
+        enrolled: number | null;
+      } | null;
+    };
   }>;
   others: Array<{
     __typename?: 'computed_listing_info';
@@ -10394,9 +10409,10 @@ export type SameCourseOrProfOfferingsQuery = {
     times_by_day: TimesByDay;
     same_course_id: number;
     professor_ids: StringArr;
-    course?: {
+    course: {
       __typename?: 'courses';
-      evaluation_statistic: {
+      average_professor_rating?: number | null;
+      evaluation_statistic?: {
         __typename?: 'evaluation_statistics';
         avg_workload: number | null;
         avg_rating: number | null;
@@ -10451,29 +10467,41 @@ export const SameCourseOrProfOfferingsDocument = gql`
     $professor_ids: [String!]
     $hasEval: Boolean!
   ) {
-    self: computed_listing_info(
+    self: listings(
       where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
     ) {
-      description
-      requirements
-      syllabus_url
-      professor_names
-      times_by_day
-      section
-      flag_info
-      enrolled @include(if: $hasEval)
-      last_enrollment @include(if: $hasEval)
-      last_enrollment_same_professors @include(if: $hasEval)
-      credits
-      classnotes
-      regnotes
-      rp_attr
-      final_exam
+      course {
+        description
+        requirements
+        syllabus_url
+        course_professors {
+          professor {
+            professor_id
+            name
+          }
+        }
+        times_by_day
+        section
+        course_flags {
+          flag {
+            flag_text
+          }
+        }
+        evaluation_statistic @include(if: $hasEval) {
+          enrolled
+        }
+        last_enrollment @include(if: $hasEval)
+        last_enrollment_same_professors @include(if: $hasEval)
+        credits
+        classnotes
+        regnotes
+        rp_attr
+        final_exam
+        same_course_id
+      }
       season_code
       crn
       course_code
-      same_course_id
-      professor_ids
     }
     others: computed_listing_info(
       where: {
@@ -10483,8 +10511,9 @@ export const SameCourseOrProfOfferingsDocument = gql`
         ]
       }
     ) {
-      course @include(if: $hasEval) {
-        evaluation_statistic {
+      course {
+        average_professor_rating @include(if: $hasEval)
+        evaluation_statistic @include(if: $hasEval) {
           avg_workload
           avg_rating
         }

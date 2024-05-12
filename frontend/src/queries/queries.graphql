@@ -5,31 +5,44 @@ query SameCourseOrProfOfferings(
   $professor_ids: [String!]
   $hasEval: Boolean!
 ) {
-  self: computed_listing_info(
+  self: listings(
     where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
   ) {
-    description
-    requirements
-    syllabus_url
-    professor_names
-    times_by_day
-    section
-    flag_info
-    enrolled @include(if: $hasEval)
-    last_enrollment @include(if: $hasEval)
-    last_enrollment_same_professors @include(if: $hasEval)
-    credits
-    classnotes
-    regnotes
-    rp_attr
-    final_exam
+    course {
+      description
+      requirements
+      syllabus_url
+      course_professors {
+        professor {
+          professor_id
+          name
+        }
+      }
+      times_by_day
+      section
+      course_flags {
+        flag {
+          flag_text
+        }
+      }
+      evaluation_statistic @include(if: $hasEval) {
+        enrolled
+      }
+      last_enrollment @include(if: $hasEval)
+      last_enrollment_same_professors @include(if: $hasEval)
+      credits
+      classnotes
+      regnotes
+      rp_attr
+      final_exam
+
+      same_course_id
+    }
 
     # For searching/testing equality
     season_code
     crn
     course_code
-    same_course_id
-    professor_ids
   }
   others: computed_listing_info(
     where: {
@@ -39,8 +52,9 @@ query SameCourseOrProfOfferings(
       ]
     }
   ) {
-    course @include(if: $hasEval) {
-      evaluation_statistic {
+    course {
+      average_professor_rating @include(if: $hasEval)
+      evaluation_statistic @include(if: $hasEval) {
         avg_workload
         avg_rating
       }

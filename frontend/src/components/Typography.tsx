@@ -78,7 +78,7 @@ export const RatingBubble = forwardRef<
   HTMLSpanElement,
   (
     | {
-        readonly rating: number | null;
+        readonly rating: number | null | undefined;
         readonly colorMap: chroma.Scale;
         readonly color?: never;
       }

@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import * as Sentry from '@sentry/react';
 import {
   Row,
   Col,
@@ -30,6 +29,8 @@ import { TextComponent, InfoPopover, LinkLikeText } from '../Typography';
 import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
+
+type CourseInfo = ListingInfo['course'];
 
 type ProfInfo = {
   email: string;
@@ -99,14 +100,14 @@ const profInfoPopover =
     </InfoPopover>
   );
 
-function Description({ listing }: { readonly listing: ListingInfo }) {
+function Description({ course }: { readonly course: CourseInfo }) {
   const [clamped, setClamped] = useState(false);
   const [lines, setLines] = useState(8);
   return (
     <>
       <ResponsiveEllipsis
         className={styles.description}
-        text={listing.description ? listing.description : 'no description'}
+        text={course.description || 'no description'}
         maxLine={lines}
         basedOn="words"
         onReflow={(rleState) => setClamped(rleState.clamped)}
@@ -191,41 +192,38 @@ function DataField({
 }
 
 function Syllabus({
-  listing,
+  course,
   others,
 }: {
-  readonly listing: ListingInfo;
+  readonly course: CourseInfo;
   readonly others: RelatedListingInfo[];
 }) {
   const pastSyllabi = useMemo(() => {
     // Remove duplicates by syllabus URL
     const courseBySyllabus = new Map<string, RelatedListingInfo>();
-    for (const course of others) {
-      if (
-        course.same_course_id !== listing.same_course_id ||
-        !course.syllabus_url
-      )
+    for (const other of others) {
+      if (other.same_course_id !== course.same_course_id || !other.syllabus_url)
         continue;
-      if (!courseBySyllabus.has(course.syllabus_url))
-        courseBySyllabus.set(course.syllabus_url, course);
+      if (!courseBySyllabus.has(other.syllabus_url))
+        courseBySyllabus.set(other.syllabus_url, other);
     }
     return [...courseBySyllabus.values()].sort(
       (a, b) =>
         b.season_code.localeCompare(a.season_code, 'en-US') ||
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
-  }, [others, listing.same_course_id]);
+  }, [others, course.same_course_id]);
 
   return (
     <div className="mt-2">
       <DataField
         name="Syllabus"
         value={
-          listing.syllabus_url ? (
+          course.syllabus_url ? (
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href={listing.syllabus_url}
+              href={course.syllabus_url}
               className="d-flex"
             >
               View Syllabus
@@ -240,15 +238,15 @@ function Syllabus({
         name={`Past syllabi (${pastSyllabi.length})`}
         value={
           pastSyllabi.length
-            ? pastSyllabi.map((course) => (
+            ? pastSyllabi.map((c) => (
                 <a
-                  key={`${course.season_code}-${course.section}`}
+                  key={`${c.season_code}-${c.section}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={course.syllabus_url!}
+                  href={c.syllabus_url!}
                   className="d-flex"
                 >
-                  {toSeasonString(course.season_code)} (section {course.section}
+                  {toSeasonString(c.season_code)} (section {c.section}
                   )
                   <HiExternalLink size={18} className="ms-1 my-auto" />
                 </a>
@@ -263,18 +261,20 @@ function Syllabus({
 }
 
 function Professors({
-  listing,
+  course,
   others,
 }: {
-  readonly listing: ListingInfo;
+  readonly course: CourseInfo;
   readonly others: RelatedListingInfo[];
 }) {
   const profInfo = useMemo(() => {
     const profInfo = new Map(
-      listing.professor_names.map((prof): [string, ProfInfo] => [
-        prof,
-        { numCourses: 0, totalRating: 0, email: '' },
-      ]),
+      course.course_professors.map(
+        ({ professor: { name } }): [string, ProfInfo] => [
+          name,
+          { numCourses: 0, totalRating: 0, email: '' },
+        ],
+      ),
     );
     // Only count cross-listed courses once per season
     const countedCourses = new Set<string>();
@@ -295,23 +295,23 @@ function Professors({
       });
     }
     return profInfo;
-  }, [others, listing]);
+  }, [others, course]);
 
   return (
     <DataField
       name="Professor"
       value={
-        listing.professor_names.length
-          ? listing.professor_names.map((prof, index) => (
-              <React.Fragment key={prof}>
+        course.course_professors.length
+          ? course.course_professors.map(({ professor: { name } }, index) => (
+              <React.Fragment key={name}>
                 {index ? ' • ' : ''}
                 <OverlayTrigger
                   trigger="click"
                   rootClose
                   placement="right"
-                  overlay={profInfoPopover(prof, profInfo.get(prof))}
+                  overlay={profInfoPopover(name, profInfo.get(name))}
                 >
-                  <LinkLikeText>{prof}</LinkLikeText>
+                  <LinkLikeText>{name}</LinkLikeText>
                 </OverlayTrigger>
               </React.Fragment>
             ))
@@ -321,18 +321,11 @@ function Professors({
   );
 }
 
-function TimeLocation({ listing }: { readonly listing: ListingInfo }) {
+function TimeLocation({ course }: { readonly course: CourseInfo }) {
   const locations = new Map<string, string>();
   const times = new Map<string, Set<Weekdays>>();
-  for (const [day, info] of Object.entries(listing.times_by_day)) {
+  for (const [day, info] of Object.entries(course.times_by_day)) {
     for (const [startTime, endTime, location, locationURL] of info) {
-      if (locations.has(location) && locations.get(location) !== locationURL) {
-        Sentry.captureException(
-          new Error(
-            `${listing.season_code}-${listing.crn} has duplicate location ${location} with different URLs`,
-          ),
-        );
-      }
       locations.set(location, locationURL);
       const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
       if (!times.has(timespan)) times.set(timespan, new Set());
@@ -390,22 +383,23 @@ function OverviewInfo({
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
+  const { course } = listing;
   return (
     <>
-      <Description listing={listing} />
-      {listing.requirements && (
-        <div className={styles.requirements}>{listing.requirements}</div>
+      <Description course={course} />
+      {course.requirements && (
+        <div className={styles.requirements}>{course.requirements}</div>
       )}
-      <Syllabus listing={listing} others={others} />
-      <Professors listing={listing} others={others} />
-      <TimeLocation listing={listing} />
-      <DataField name="Section" value={listing.section} />
+      <Syllabus course={course} others={others} />
+      <Professors course={course} others={others} />
+      <TimeLocation course={course} />
+      <DataField name="Section" value={course.section} />
       <DataField
         name="Info"
         value={
-          listing.flag_info.length ? (
+          course.course_flags.length ? (
             <ul className={styles.flagInfo}>
-              {listing.flag_info.map((text) => (
+              {course.course_flags.map(({ flag: { flag_text: text } }) => (
                 <li key={text}>{text}</li>
               ))}
             </ul>
@@ -414,7 +408,15 @@ function OverviewInfo({
       />
       <DataField
         name="Enrollment"
-        value={getEnrolled(listing, 'modal')}
+        value={getEnrolled(
+          {
+            enrolled: course.evaluation_statistic?.enrolled,
+            last_enrollment: course.last_enrollment,
+            last_enrollment_same_professors:
+              course.last_enrollment_same_professors,
+          },
+          'modal',
+        )}
         tooltip={
           CUR_SEASON === listing.season_code ? (
             <span>
@@ -431,13 +433,13 @@ function OverviewInfo({
           )
         }
       />
-      <DataField name="Credits" value={listing.credits} />
-      <DataField name="Class Notes" value={listing.classnotes} />
-      <DataField name="Registrar Notes" value={listing.regnotes} />
-      <DataField name="Reading Period" value={listing.rp_attr} />
+      <DataField name="Credits" value={course.credits} />
+      <DataField name="Class Notes" value={course.classnotes} />
+      <DataField name="Registrar Notes" value={course.regnotes} />
+      <DataField name="Reading Period" value={course.rp_attr} />
       <DataField
         name="Final Exam"
-        value={listing.final_exam === 'HTBA' ? null : listing.final_exam}
+        value={course.final_exam === 'HTBA' ? null : course.final_exam}
       />
       <DataField
         name="Friends"
