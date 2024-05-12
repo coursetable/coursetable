@@ -1,7 +1,6 @@
 import { DateLocalizer, type DateLocalizerSpec } from 'react-big-calendar';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
-import type { Listing } from './common';
 import { toSeasonString } from './course';
 import {
   academicCalendars,
@@ -9,6 +8,7 @@ import {
   type SeasonCalendar,
 } from '../config';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
+import type { Listing } from '../queries/api';
 import {
   weekdays,
   type Season,

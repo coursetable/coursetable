@@ -1,5 +1,4 @@
 // Performing various actions on the listing dictionary
-import type { Listing } from './common';
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type {
@@ -7,7 +6,7 @@ import type {
   Listings,
   ComputedListingInfo,
 } from '../generated/graphql';
-import type { FriendRecord, UserWorksheets } from '../queries/api';
+import type { FriendRecord, UserWorksheets, Listing } from '../queries/api';
 import {
   type Crn,
   type Season,

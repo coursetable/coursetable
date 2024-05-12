@@ -8,8 +8,8 @@ import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { IoPersonOutline } from 'react-icons/io5';
+import type { Listing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
-import type { Listing } from '../../utilities/common';
 import {
   subjects,
   ratingColormap,

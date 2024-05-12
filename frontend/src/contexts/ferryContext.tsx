@@ -13,9 +13,13 @@ import { toast } from 'react-toastify';
 import { useUser } from './userContext';
 import type { WorksheetCourse } from './worksheetContext';
 import seasonsData from '../generated/seasons.json';
-import { fetchCatalog, fetchEvals, type UserWorksheets } from '../queries/api';
+import {
+  fetchCatalog,
+  fetchEvals,
+  type UserWorksheets,
+  type Listing,
+} from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
-import type { Listing } from '../utilities/common';
 
 export const seasons = seasonsData as Season[];
 

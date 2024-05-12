@@ -9,8 +9,11 @@ import { useWorksheetInfo } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
-import type { Listing } from '../../utilities/common';
+import {
+  toggleBookmark,
+  toggleCourseHidden,
+  type Listing,
+} from '../../queries/api';
 import { worksheetColors } from '../../utilities/constants';
 import { isInWorksheet, checkConflict } from '../../utilities/course';
 import styles from './WorksheetToggleButton.module.css';

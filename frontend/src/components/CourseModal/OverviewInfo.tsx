@@ -20,8 +20,8 @@ import type { RelatedListingInfo } from './CourseModalOverview';
 import { CUR_SEASON } from '../../config';
 import { useSearch } from '../../contexts/searchContext';
 import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
+import type { Listing } from '../../queries/api';
 import type { Weekdays } from '../../queries/graphql-types';
-import type { Listing } from '../../utilities/common';
 import { ratingColormap } from '../../utilities/constants';
 import {
   getEnrolled,

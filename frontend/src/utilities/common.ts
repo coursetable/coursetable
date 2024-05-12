@@ -1,11 +1,4 @@
 import chroma from 'chroma-js';
-import type {
-  ListingFragment,
-  ListingRatingsFragment,
-} from '../generated/graphql';
-
-// TODO: api should provide a typing SDK
-export type Listing = ListingFragment & ListingRatingsFragment;
 
 export function isEqual<T>(a: T, b: T): boolean {
   if (Array.isArray(a) && Array.isArray(b)) {
