@@ -8928,6 +8928,8 @@ export type Professors = {
   course_professors: Array<CourseProfessors>;
   /** An aggregate relationship */
   course_professors_aggregate: CourseProfessorsAggregate;
+  /** [computed] Number of courses taught */
+  courses_taught: Scalars['Int']['output'];
   /** Email address of the professor */
   email: Maybe<Scalars['String']['output']>;
   /** Name of the professor */
@@ -8993,6 +8995,8 @@ export type ProfessorsAvgFields = {
   average_rating: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Float']['output']>;
 };
@@ -9006,6 +9010,7 @@ export type ProfessorsBoolExp = {
   average_rating_n: InputMaybe<IntComparisonExp>;
   course_professors: InputMaybe<CourseProfessorsBoolExp>;
   course_professors_aggregate: InputMaybe<CourseProfessorsAggregateBoolExp>;
+  courses_taught: InputMaybe<IntComparisonExp>;
   email: InputMaybe<StringComparisonExp>;
   name: InputMaybe<StringComparisonExp>;
   professor_id: InputMaybe<IntComparisonExp>;
@@ -9026,6 +9031,8 @@ export type ProfessorsIncInput = {
   average_rating: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<Scalars['Int']['input']>;
+  /** [computed] Number of courses taught */
+  courses_taught: InputMaybe<Scalars['Int']['input']>;
   /** Professor ID */
   professor_id: InputMaybe<Scalars['Int']['input']>;
 };
@@ -9040,6 +9047,8 @@ export type ProfessorsInsertInput = {
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<Scalars['Int']['input']>;
   course_professors: InputMaybe<CourseProfessorsArrRelInsertInput>;
+  /** [computed] Number of courses taught */
+  courses_taught: InputMaybe<Scalars['Int']['input']>;
   /** Email address of the professor */
   email: InputMaybe<Scalars['String']['input']>;
   /** Name of the professor */
@@ -9058,6 +9067,8 @@ export type ProfessorsMaxFields = {
   average_rating: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Int']['output']>;
   /** Email address of the professor */
   email: Maybe<Scalars['String']['output']>;
   /** Name of the professor */
@@ -9076,6 +9087,8 @@ export type ProfessorsMinFields = {
   average_rating: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Int']['output']>;
   /** Email address of the professor */
   email: Maybe<Scalars['String']['output']>;
   /** Name of the professor */
@@ -9112,6 +9125,7 @@ export type ProfessorsOrderBy = {
   average_rating: InputMaybe<OrderBy>;
   average_rating_n: InputMaybe<OrderBy>;
   course_professors_aggregate: InputMaybe<CourseProfessorsAggregateOrderBy>;
+  courses_taught: InputMaybe<OrderBy>;
   email: InputMaybe<OrderBy>;
   name: InputMaybe<OrderBy>;
   professor_id: InputMaybe<OrderBy>;
@@ -9130,6 +9144,8 @@ export enum ProfessorsSelectColumn {
   /** column name */
   AverageRatingN = 'average_rating_n',
   /** column name */
+  CoursesTaught = 'courses_taught',
+  /** column name */
   Email = 'email',
   /** column name */
   Name = 'name',
@@ -9146,6 +9162,8 @@ export type ProfessorsSetInput = {
   average_rating: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<Scalars['Int']['input']>;
+  /** [computed] Number of courses taught */
+  courses_taught: InputMaybe<Scalars['Int']['input']>;
   /** Email address of the professor */
   email: InputMaybe<Scalars['String']['input']>;
   /** Name of the professor */
@@ -9164,6 +9182,8 @@ export type ProfessorsStddevFields = {
   average_rating: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Float']['output']>;
 };
@@ -9178,6 +9198,8 @@ export type ProfessorsStddevPopFields = {
   average_rating: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Float']['output']>;
 };
@@ -9192,6 +9214,8 @@ export type ProfessorsStddevSampFields = {
   average_rating: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Float']['output']>;
 };
@@ -9213,6 +9237,8 @@ export type ProfessorsStreamCursorValueInput = {
   average_rating: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<Scalars['Int']['input']>;
+  /** [computed] Number of courses taught */
+  courses_taught: InputMaybe<Scalars['Int']['input']>;
   /** Email address of the professor */
   email: InputMaybe<Scalars['String']['input']>;
   /** Name of the professor */
@@ -9231,6 +9257,8 @@ export type ProfessorsSumFields = {
   average_rating: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Int']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Int']['output']>;
 };
@@ -9241,6 +9269,8 @@ export enum ProfessorsUpdateColumn {
   AverageRating = 'average_rating',
   /** column name */
   AverageRatingN = 'average_rating_n',
+  /** column name */
+  CoursesTaught = 'courses_taught',
   /** column name */
   Email = 'email',
   /** column name */
@@ -9268,6 +9298,8 @@ export type ProfessorsVarPopFields = {
   average_rating: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Float']['output']>;
 };
@@ -9282,6 +9314,8 @@ export type ProfessorsVarSampFields = {
   average_rating: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Float']['output']>;
 };
@@ -9296,6 +9330,8 @@ export type ProfessorsVarianceFields = {
   average_rating: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id: Maybe<Scalars['Float']['output']>;
 };
@@ -10408,8 +10444,8 @@ export type SameCourseOrProfOfferingsQuery = {
 export type RelatedCourseInfoFragment = {
   __typename?: 'courses';
   average_professor_rating?: number | null;
-  season_code: Season;
   course_id: number;
+  season_code: Season;
   title: string;
   section: string;
   skills: StringArr;
@@ -10485,12 +10521,12 @@ export const RelatedCourseInfoFragmentDoc = gql`
         name
       }
     }
+    course_id
     season_code
     listings {
       crn
       course_code
     }
-    course_id
     title
     section
     skills
