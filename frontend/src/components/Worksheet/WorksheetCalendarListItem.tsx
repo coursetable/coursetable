@@ -4,7 +4,7 @@ import { ListGroup } from 'react-bootstrap';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { Listing } from '../../queries/api';
+import type { CatalogListing } from '../../queries/api';
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
@@ -12,7 +12,7 @@ export default function WorksheetCalendarListItem({
   listing,
   hidden,
 }: {
-  readonly listing: Listing;
+  readonly listing: CatalogListing;
   readonly hidden: boolean;
 }) {
   const target = useCourseModalLink(listing);

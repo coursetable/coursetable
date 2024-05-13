@@ -8,7 +8,7 @@ import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { IoPersonOutline } from 'react-icons/io5';
-import type { Listing } from '../../queries/api';
+import type { CatalogListing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
 import {
   subjects,
@@ -76,7 +76,7 @@ export function CourseInfoPopover({
   listing,
   children,
 }: {
-  readonly listing: Listing;
+  readonly listing: CatalogListing;
   readonly children: JSX.Element;
 }) {
   return (
@@ -113,7 +113,7 @@ export function CourseCode({
   listing,
   subdueSection,
 }: {
-  readonly listing: Listing;
+  readonly listing: CatalogListing;
   readonly subdueSection: boolean;
 }) {
   const section = listing.section ? ` ${listing.section.padStart(2, '0')}` : '';

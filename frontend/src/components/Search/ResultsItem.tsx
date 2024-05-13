@@ -14,7 +14,7 @@ import {
 import { useSearch } from '../../contexts/searchContext';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { Listing } from '../../queries/api';
+import type { CatalogListing } from '../../queries/api';
 import { generateRandomColor } from '../../utilities/common';
 import { getEnrolled, isInWorksheet } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
@@ -29,7 +29,7 @@ function Rating({
   hasEvals,
   name,
 }: {
-  readonly listing: Listing;
+  readonly listing: CatalogListing;
   readonly hasEvals: boolean | undefined;
   readonly name: 'Class' | 'Professor' | 'Workload';
 }) {

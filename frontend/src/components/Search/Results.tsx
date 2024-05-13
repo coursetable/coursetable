@@ -12,14 +12,14 @@ import WindowScroller from './WindowScroller';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
-import type { Listing } from '../../queries/api';
+import type { CatalogListing } from '../../queries/api';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import { toSeasonString } from '../../utilities/course';
 import Spinner from '../Spinner';
 import styles from './Results.module.css';
 
 export type ResultItemData = {
-  readonly listings: Listing[];
+  readonly listings: CatalogListing[];
   readonly columnCount: number;
   readonly multiSeasons: boolean;
 };
@@ -30,7 +30,7 @@ function Results({
   multiSeasons = false,
   page = 'catalog',
 }: {
-  readonly data: Listing[];
+  readonly data: CatalogListing[];
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
   readonly page?: 'catalog' | 'worksheet';

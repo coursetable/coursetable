@@ -11,7 +11,7 @@ import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useUser } from './userContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
-import type { Listing } from '../queries/api';
+import type { CatalogListing } from '../queries/api';
 import type { Season, Weekdays } from '../queries/graphql-types';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { isEqual } from '../utilities/common';
@@ -109,7 +109,7 @@ type Store = {
     [K in keyof Filters]: FilterHandle<K>;
   };
   coursesLoading: boolean;
-  searchData: Listing[];
+  searchData: CatalogListing[];
   multiSeasons: boolean;
   numFriends: NumFriendsReturn;
   duration: number;
@@ -361,7 +361,7 @@ export function SearchProvider({
 
   const queryEvaluator = useMemo(
     () =>
-      buildEvaluator(targetTypes, (listing: Listing, key) => {
+      buildEvaluator(targetTypes, (listing: CatalogListing, key) => {
         switch (key) {
           case 'rating':
             return getOverallRatings(listing.course, 'stat');

@@ -12,7 +12,7 @@ import { CUR_SEASON } from '../config';
 import {
   toggleCourseHidden,
   type UserWorksheets,
-  type Listing,
+  type CatalogListing,
 } from '../queries/api';
 import type { Season, Crn, NetId } from '../queries/graphql-types';
 import { useSessionStorageState } from '../utilities/browserStorage';
@@ -22,7 +22,7 @@ type WorksheetView = 'calendar' | 'list';
 export type WorksheetCourse = {
   crn: Crn;
   color: string;
-  listing: Listing;
+  listing: CatalogListing;
   hidden: boolean;
 };
 

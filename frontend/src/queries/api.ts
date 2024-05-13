@@ -213,7 +213,7 @@ export function toggleCourseHidden({
   hiddenCoursesStorage.set(hiddenCourses);
 }
 
-export type CatalogListing = CatalogBySeasonQuery['listings'][number];
+type ListingPublic = CatalogBySeasonQuery['listings'][number];
 
 export async function fetchCatalog(season: Season) {
   const breadcrumb = {
@@ -224,15 +224,15 @@ export async function fetchCatalog(season: Season) {
     breadcrumb,
   });
   if (!res) return undefined;
-  const data = res as CatalogListing[];
-  const info = new Map<Crn, CatalogListing>();
+  const data = res as ListingPublic[];
+  const info = new Map<Crn, ListingPublic>();
   for (const listing of data) info.set(listing.crn, listing);
   return info;
 }
 
-export type ListingEvals = EvalsBySeasonQuery['listings'][number];
+type ListingEvals = EvalsBySeasonQuery['listings'][number];
 
-export type Listing = CatalogListing & Partial<ListingEvals>;
+export type CatalogListing = ListingPublic & Partial<ListingEvals>;
 
 export async function fetchEvals(season: Season) {
   const res = await fetchAPI(`/catalog/evals/${season}`, {

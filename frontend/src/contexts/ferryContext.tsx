@@ -17,7 +17,7 @@ import {
   fetchCatalog,
   fetchEvals,
   type UserWorksheets,
-  type Listing,
+  type CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
 
@@ -27,7 +27,7 @@ export const seasons = seasonsData as Season[];
 const courseDataLock = new AsyncLock();
 const catalogLoadAttempted = new Set<Season>();
 const evalsLoadAttempted = new Set<Season>();
-let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
+let courseData: { [seasonCode: Season]: Map<Crn, CatalogListing> } = {};
 const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     // Both data have been loaded; nothing to do

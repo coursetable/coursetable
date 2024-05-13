@@ -2,7 +2,11 @@
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { Courses, Listings } from '../generated/graphql-types';
-import type { FriendRecord, UserWorksheets, Listing } from '../queries/api';
+import type {
+  FriendRecord,
+  UserWorksheets,
+  CatalogListing,
+} from '../queries/api';
 import {
   type Crn,
   type Season,
@@ -54,8 +58,8 @@ export type ListingWithTimes = {
 export function checkConflict(
   worksheetData: WorksheetCourse[],
   listing: ListingWithTimes,
-): Listing[] {
-  const conflicts: Listing[] = [];
+): CatalogListing[] {
+  const conflicts: CatalogListing[] = [];
   const daysToCheck = Object.keys(listing.course.times_by_day) as Weekdays[];
   if (!daysToCheck.length) return conflicts;
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
@@ -244,7 +248,7 @@ type ComparableKey =
   | 'season_code'
   | 'section'
   | keyof {
-      [K in keyof Listing['course'] as Listing['course'][K] extends
+      [K in keyof CatalogListing['course'] as CatalogListing['course'][K] extends
         | string
         | number
         ? K
@@ -252,21 +256,21 @@ type ComparableKey =
     };
 
 function compareByKey(
-  a: Listing,
-  b: Listing,
+  a: CatalogListing,
+  b: CatalogListing,
   key: Exclude<ComparableKey, 'friend'>,
   ordering: 'asc' | 'desc',
 ): number;
 function compareByKey(
-  a: Listing,
-  b: Listing,
+  a: CatalogListing,
+  b: CatalogListing,
   key: ComparableKey,
   ordering: 'asc' | 'desc',
   numFriends: NumFriendsReturn,
 ): number;
 function compareByKey(
-  a: Listing,
-  b: Listing,
+  a: CatalogListing,
+  b: CatalogListing,
   key: ComparableKey,
   ordering: 'asc' | 'desc',
   numFriends?: NumFriendsReturn,
@@ -313,8 +317,8 @@ function compareByKey(
  * Compares two listings by the specified key.
  */
 function compare(
-  a: Listing,
-  b: Listing,
+  a: CatalogListing,
+  b: CatalogListing,
   key: SortKeys,
   ordering: 'asc' | 'desc',
   numFriends: NumFriendsReturn,
@@ -330,13 +334,13 @@ function compare(
 
 // Sort courses in catalog or expanded worksheet
 export function sortCourses(
-  courses: Listing[],
+  courses: CatalogListing[],
   ordering: {
     key: SortKeys;
     type: 'desc' | 'asc';
   },
   numFriends: NumFriendsReturn,
-): Listing[] {
+): CatalogListing[] {
   return [...courses].sort((a, b) =>
     compare(a, b, ordering.key, ordering.type, numFriends),
   );

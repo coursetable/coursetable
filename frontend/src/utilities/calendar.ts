@@ -8,7 +8,7 @@ import {
   type SeasonCalendar,
 } from '../config';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
-import type { Listing } from '../queries/api';
+import type { CatalogListing } from '../queries/api';
 import {
   weekdays,
   type Season,
@@ -135,7 +135,7 @@ type CalendarEvent = {
   description: string;
   location: string;
   color: string;
-  listing: Listing;
+  listing: CatalogListing;
   days: number[];
 };
 
@@ -228,7 +228,7 @@ export type RBCEvent = {
   description: string;
   start: Date;
   end: Date;
-  listing: Listing;
+  listing: CatalogListing;
   color: string;
   location: string;
 };
