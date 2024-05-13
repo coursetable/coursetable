@@ -1,7 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Button,
+  OverlayTrigger,
+  Tooltip,
+  Popover,
+} from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
 import type { CourseModalHeaderData } from './CourseModal';
@@ -31,18 +38,16 @@ const optionsIndx = {
 };
 
 function RatingNumbers({
-  listing,
   course,
   hasEvals,
 }: {
-  readonly listing: RelatedCourseInfoFragment['listings'][number];
   readonly course: RelatedCourseInfoFragment;
   readonly hasEvals: boolean | undefined;
 }) {
   // For random seeds
-  const ratingIdentifier = `${listing.crn}${course.season_code}rating`;
-  const workloadIdentifier = `${listing.crn}${course.season_code}workload`;
-  const professorIdentifier = `${listing.crn}${course.season_code}professor`;
+  const ratingIdentifier = `${course.course_id}${course.season_code}rating`;
+  const workloadIdentifier = `${course.course_id}${course.season_code}workload`;
+  const professorIdentifier = `${course.course_id}${course.season_code}professor`;
 
   const ratingBubbles = [
     {
@@ -108,56 +113,102 @@ function CourseLink({
   filter,
   gotoCourse,
 }: {
-  readonly listing: RelatedCourseInfoFragment['listings'][number];
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly course: RelatedCourseInfoFragment;
   readonly filter: Filter;
   readonly gotoCourse: (x: CourseModalHeaderData) => void;
 }) {
-  const target = useCourseModalLink({
+  const linkTargets = useCourseModalLink(
+    course.listings.map((l) => ({
+      season_code: course.season_code,
+      crn: l.crn,
+    })),
+  );
+  // Note, we purposefully use the listing data fetched from GraphQL instead
+  // of the static seasons data. This means on navigation we don't have to
+  // possibly fetch a new season and cause a loading screen.
+  // We have to "massage" this data to fit the flat shape like the one
+  // sent by the api. This will be changed.
+  const targetCourses = course.listings.map((l) => ({
     season_code: course.season_code,
-    crn: listing.crn,
-  });
+    crn: l.crn,
+    title: course.title,
+    course_code: l.course_code,
+    all_course_codes: course.listings.map((l) => l.course_code),
+    section: course.section,
+    skills: course.skills,
+    areas: course.areas,
+    extra_info: course.extra_info,
+    description: course.description,
+    times_by_day: course.times_by_day,
+    same_course_id: course.same_course_id,
+    professor_ids: course.course_professors.map(
+      (p) => p.professor.professor_id,
+    ),
+  }));
+  const extraText =
+    filter === 'professor'
+      ? course.listings[0]!.course_code
+      : filter === 'both'
+        ? `Section ${course.section}`
+        : course.course_professors.length === 0
+          ? 'TBA'
+          : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
+  if (linkTargets.length === 1) {
+    return (
+      <Col
+        as={Link}
+        xs={5}
+        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+        to={linkTargets[0]!}
+        onClick={() => {
+          gotoCourse(targetCourses[0]!);
+        }}
+      >
+        <strong>{toSeasonString(course.season_code)}</strong>
+        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+      </Col>
+    );
+  }
   return (
-    <Col
-      as={Link}
-      xs={5}
-      className={clsx(styles.ratingBubble, 'px-0 me-3 text-center')}
-      to={target}
-      onClick={() => {
-        // Note, we purposefully use the listing data fetched
-        // from GraphQL instead of the static seasons data.
-        // This means on navigation we don't have to possibly
-        // fetch a new season and cause a loading screen.
-        // We have to "massage" this data to fit the flat shape like the one
-        // sent by the api. This will be changed.
-        gotoCourse({
-          season_code: course.season_code,
-          crn: listing.crn,
-          title: course.title,
-          course_code: listing.course_code,
-          all_course_codes: course.listings.map((l) => l.course_code),
-          section: course.section,
-          skills: course.skills,
-          areas: course.areas,
-          extra_info: course.extra_info,
-          description: course.description,
-          times_by_day: course.times_by_day,
-          same_course_id: course.same_course_id,
-          professor_ids: course.course_professors.map(
-            (p) => p.professor.professor_id,
-          ),
-        });
-      }}
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      placement="right"
+      overlay={(props) => (
+        <Popover id="cross-listing-popover" {...props}>
+          <Popover.Body>
+            This class has multiple cross-listings:
+            {course.listings.map((l, i) => (
+              <Link
+                key={i}
+                className="d-block"
+                to={linkTargets[i]!}
+                onClick={() => {
+                  gotoCourse(targetCourses[i]!);
+                }}
+              >
+                {l.course_code === listing.course_code ? (
+                  <b>{l.course_code}</b>
+                ) : (
+                  l.course_code
+                )}
+              </Link>
+            ))}
+          </Popover.Body>
+        </Popover>
+      )}
     >
-      <strong>{toSeasonString(course.season_code)}</strong>
-      <span className={clsx(styles.details, 'mx-auto')}>
-        {filter === 'professor'
-          ? listing.course_code
-          : filter === 'both'
-            ? `Section ${course.section}`
-            : course.course_professors[0]?.professor.name}
-      </span>
-    </Col>
+      <Col
+        as={Button}
+        xs={5}
+        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+        to={linkTargets[0]!}
+      >
+        <strong>{toSeasonString(course.season_code)}</strong>
+        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+      </Col>
+    </OverlayTrigger>
   );
 }
 
@@ -260,27 +311,20 @@ function OverviewRatings({
               <span className={styles.evaluationHeader}>Work</span>
             </Col>
           </Row>
-          {overlapSections[filter].map((course) =>
-            // TODO: maybe we should group each cross-listing group visually
-            course.listings.map((listing) => (
-              <Row
-                key={course.season_code + listing.crn}
-                className="m-auto py-1 justify-content-center"
-              >
-                <CourseLink
-                  listing={listing}
-                  course={course}
-                  filter={filter}
-                  gotoCourse={gotoCourse}
-                />
-                <RatingNumbers
-                  listing={listing}
-                  course={course}
-                  hasEvals={user.hasEvals}
-                />
-              </Row>
-            )),
-          )}
+          {overlapSections[filter].map((course) => (
+            <Row
+              key={course.course_id}
+              className="m-auto py-1 justify-content-center"
+            >
+              <CourseLink
+                listing={listing}
+                course={course}
+                filter={filter}
+                gotoCourse={gotoCourse}
+              />
+              <RatingNumbers course={course} hasEvals={user.hasEvals} />
+            </Row>
+          ))}
         </>
       ) : (
         <div className="m-auto text-center">
