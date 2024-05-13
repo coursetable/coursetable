@@ -53,7 +53,7 @@ services:
   # This container is only for dev! The prod container is at coursetable/infra/db
   db:
     container_name: ${DB_HOST?db}
-    image: postgres
+    image: postgres:13
     ports:
       - 5432:5432
     environment:
