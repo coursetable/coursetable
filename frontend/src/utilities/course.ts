@@ -43,14 +43,17 @@ export function toSeasonString(seasonCode: Season): string {
   return `${season} ${year}`;
 }
 
+export type ListingWithTimes = {
+  season_code: Season;
+  crn: Crn;
+  course: {
+    times_by_day: TimesByDay;
+  };
+};
+
 export function checkConflict(
   worksheetData: WorksheetCourse[],
-  listing: {
-    season_code: Season;
-    course: {
-      times_by_day: TimesByDay;
-    };
-  },
+  listing: ListingWithTimes,
 ): Listing[] {
   const conflicts: Listing[] = [];
   const daysToCheck = Object.keys(listing.course.times_by_day) as Weekdays[];

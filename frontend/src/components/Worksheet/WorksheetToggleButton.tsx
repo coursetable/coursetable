@@ -10,18 +10,13 @@ import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
-import type { Season, Crn, TimesByDay } from '../../queries/graphql-types';
 import { worksheetColors } from '../../utilities/constants';
-import { isInWorksheet, checkConflict } from '../../utilities/course';
+import {
+  isInWorksheet,
+  checkConflict,
+  type ListingWithTimes,
+} from '../../utilities/course';
 import styles from './WorksheetToggleButton.module.css';
-
-type ListingWithTimes = {
-  season_code: Season;
-  crn: Crn;
-  course: {
-    times_by_day: TimesByDay;
-  };
-};
 
 function CourseConflictIcon({
   listing,
