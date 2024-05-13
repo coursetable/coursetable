@@ -148,7 +148,7 @@ function CourseLink({
   }));
   const extraText =
     filter === 'professor'
-      ? course.listings[0]!.course_code
+      ? `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`
       : filter === 'both'
         ? `Section ${course.section}`
         : course.course_professors.length === 0

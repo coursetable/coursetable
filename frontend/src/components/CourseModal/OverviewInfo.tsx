@@ -34,8 +34,6 @@ type CourseInfo = SameCourseOrProfOfferingsQuery['self'][0]['course'];
 const profInfoPopover =
   (
     profInfo: CourseInfo['course_professors'][number]['professor'],
-    // TODO: use profInfo.courses_taught
-    numCourses: number,
   ): OverlayChildren =>
   (props) => (
     <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
@@ -79,10 +77,10 @@ const profInfoPopover =
           </Col>
           <Col md={6}>
             <div className="d-flex mx-auto mb-1">
-              <strong className="mx-auto">{numCourses}</strong>
+              <strong className="mx-auto">{profInfo.courses_taught}</strong>
             </div>
             <div className="d-flex mx-auto">
-              <small className="mx-auto text-center  fw-bold">
+              <small className="mx-auto text-center fw-bold">
                 Classes Taught
               </small>
             </div>
@@ -253,13 +251,7 @@ function Syllabus({
   );
 }
 
-function Professors({
-  course,
-  sameProf,
-}: {
-  readonly course: CourseInfo;
-  readonly sameProf: SameCourseOrProfOfferingsQuery['sameProf'];
-}) {
+function Professors({ course }: { readonly course: CourseInfo }) {
   return (
     <DataField
       name="Professor"
@@ -272,15 +264,7 @@ function Professors({
                   trigger="click"
                   rootClose
                   placement="right"
-                  overlay={profInfoPopover(
-                    professor,
-                    sameProf.filter((o) =>
-                      o.course.course_professors.some(
-                        (p) =>
-                          p.professor.professor_id === professor.professor_id,
-                      ),
-                    ).length,
-                  )}
+                  overlay={profInfoPopover(professor)}
                 >
                   <LinkLikeText>{professor.name}</LinkLikeText>
                 </OverlayTrigger>
@@ -361,7 +345,7 @@ function OverviewInfo({
         <div className={styles.requirements}>{course.requirements}</div>
       )}
       <Syllabus course={course} sameCourse={data.sameCourse} />
-      <Professors course={course} sameProf={data.sameProf} />
+      <Professors course={course} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />
       <DataField

@@ -1579,7 +1579,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "StringArr",
+                "name": "jsonb",
                 "ofType": null
               }
             },
@@ -1608,7 +1608,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "StringArr",
+                "name": "jsonb",
                 "ofType": null
               }
             },
@@ -1844,7 +1844,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Crn",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -1900,7 +1900,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ExtraInfo",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1941,7 +1941,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "StringArr",
+                "name": "jsonb",
                 "ofType": null
               }
             },
@@ -2118,7 +2118,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "StringArr",
+                "name": "jsonb",
                 "ofType": null
               }
             },
@@ -2143,9 +2143,13 @@
               }
             ],
             "type": {
-              "kind": "SCALAR",
-              "name": "ProfessorInfo",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "jsonb",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -2172,7 +2176,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "StringArr",
+                "name": "jsonb",
                 "ofType": null
               }
             },
@@ -2284,7 +2288,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Season",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -2329,7 +2333,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "StringArr",
+                "name": "jsonb",
                 "ofType": null
               }
             },
@@ -2398,7 +2402,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "TimesByDay",
+                "name": "json",
                 "ofType": null
               }
             },

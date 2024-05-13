@@ -109,8 +109,8 @@ export type StringComparisonExp = {
 /** columns and relationships of "computed_listing_info" */
 export type ComputedListingInfo = {
   __typename?: 'computed_listing_info';
-  all_course_codes: Scalars['StringArr']['output'];
-  areas: Scalars['StringArr']['output'];
+  all_course_codes: Scalars['jsonb']['output'];
+  areas: Scalars['jsonb']['output'];
   average_gut_rating: Maybe<Scalars['float8']['output']>;
   average_professor: Maybe<Scalars['float8']['output']>;
   average_rating: Maybe<Scalars['float8']['output']>;
@@ -128,13 +128,13 @@ export type ComputedListingInfo = {
   course_code: Scalars['String']['output'];
   course_id: Scalars['Int']['output'];
   credits: Maybe<Scalars['float8']['output']>;
-  crn: Scalars['Crn']['output'];
+  crn: Scalars['Int']['output'];
   declined: Maybe<Scalars['Int']['output']>;
   description: Scalars['String']['output'];
   enrolled: Maybe<Scalars['Int']['output']>;
-  extra_info: Scalars['ExtraInfo']['output'];
+  extra_info: Scalars['String']['output'];
   final_exam: Maybe<Scalars['String']['output']>;
-  flag_info: Scalars['StringArr']['output'];
+  flag_info: Scalars['jsonb']['output'];
   fysem: Maybe<Scalars['Boolean']['output']>;
   last_enrollment: Maybe<Scalars['Int']['output']>;
   last_enrollment_course_id: Maybe<Scalars['Int']['output']>;
@@ -147,9 +147,9 @@ export type ComputedListingInfo = {
   locations_summary: Scalars['String']['output'];
   no_response: Maybe<Scalars['Int']['output']>;
   number: Scalars['String']['output'];
-  professor_ids: Scalars['StringArr']['output'];
-  professor_info: Maybe<Scalars['ProfessorInfo']['output']>;
-  professor_names: Scalars['StringArr']['output'];
+  professor_ids: Scalars['jsonb']['output'];
+  professor_info: Scalars['jsonb']['output'];
+  professor_names: Scalars['jsonb']['output'];
   regnotes: Maybe<Scalars['String']['output']>;
   requirements: Scalars['String']['output'];
   responses: Maybe<Scalars['Int']['output']>;
@@ -157,13 +157,13 @@ export type ComputedListingInfo = {
   same_course_and_profs_id: Scalars['Int']['output'];
   same_course_id: Scalars['Int']['output'];
   school: Maybe<Scalars['String']['output']>;
-  season_code: Scalars['Season']['output'];
+  season_code: Scalars['String']['output'];
   section: Scalars['String']['output'];
-  skills: Scalars['StringArr']['output'];
+  skills: Scalars['jsonb']['output'];
   subject: Scalars['String']['output'];
   syllabus_url: Maybe<Scalars['String']['output']>;
   sysem: Maybe<Scalars['Boolean']['output']>;
-  times_by_day: Scalars['TimesByDay']['output'];
+  times_by_day: Scalars['json']['output'];
   times_summary: Scalars['String']['output'];
   title: Scalars['String']['output'];
 };
@@ -10416,6 +10416,7 @@ export type SameCourseOrProfOfferingsQuery = {
           professor_id: number;
           name: string;
           email: string | null;
+          courses_taught: number;
           average_rating?: number | null;
         };
       }>;
@@ -10557,6 +10558,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
             professor_id
             name
             email
+            courses_taught
             average_rating @include(if: $hasEval)
           }
         }

@@ -11,20 +11,6 @@ scalar TimesByDay
 scalar ProfessorInfo
 
 # IMPORTANT: make sure what you add here actually exists on the model!
-type computed_listing_info {
-  crn: Crn!
-  season_code: Season!
-  extra_info: ExtraInfo!
-  all_course_codes: StringArr!
-  areas: StringArr!
-  flag_info: StringArr!
-  skills: StringArr!
-  professor_ids: StringArr!
-  professor_info: ProfessorInfo
-  professor_names: StringArr!
-  times_by_day: TimesByDay!
-}
-
 type listings {
   crn: Crn!
   season_code: Season!

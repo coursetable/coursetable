@@ -17,6 +17,7 @@ query SameCourseOrProfOfferings(
           professor_id
           name
           email
+          courses_taught
           average_rating @include(if: $hasEval)
         }
       }
