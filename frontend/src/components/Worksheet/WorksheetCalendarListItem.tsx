@@ -9,19 +9,19 @@ import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
 export default function WorksheetCalendarListItem({
-  course,
+  listing,
   hidden,
 }: {
-  readonly course: Listing;
+  readonly listing: Listing;
   readonly hidden: boolean;
 }) {
-  const target = useCourseModalLink(course);
+  const target = useCourseModalLink(listing);
   const { setHoverCourse } = useWorksheet();
 
   return (
     <ListGroup.Item
       className={clsx(styles.listItem, 'py-1 px-2')}
-      onMouseEnter={() => setHoverCourse(course.crn)}
+      onMouseEnter={() => setHoverCourse(listing.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
       <Link
@@ -32,20 +32,20 @@ export default function WorksheetCalendarListItem({
           'ps-1 pe-2',
         )}
       >
-        <strong>{course.course_code}</strong>
+        <strong>{listing.course_code}</strong>
         <br />
-        <span className={styles.courseTitle}>{course.title}</span>
+        <span className={styles.courseTitle}>{listing.course.title}</span>
       </Link>
       <div className="d-flex align-items-center gap-1">
         <WorksheetHideButton
-          crn={course.crn}
+          crn={listing.crn}
           hidden={hidden}
           className={clsx(
             styles.hideButton,
             !hidden && styles.hideButtonHidden,
           )}
         />
-        <WorksheetToggleButton listing={course} modal={false} />
+        <WorksheetToggleButton listing={listing} modal={false} />
       </div>
     </ListGroup.Item>
   );

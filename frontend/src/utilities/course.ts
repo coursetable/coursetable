@@ -7,6 +7,7 @@ import {
   type Crn,
   type Season,
   type Weekdays,
+  type TimesByDay,
   weekdays,
 } from '../queries/graphql-types';
 
@@ -44,17 +45,22 @@ export function toSeasonString(seasonCode: Season): string {
 
 export function checkConflict(
   worksheetData: WorksheetCourse[],
-  course: Pick<Courses, 'times_by_day' | 'season_code'>,
+  listing: {
+    season_code: Season;
+    course: {
+      times_by_day: TimesByDay;
+    };
+  },
 ): Listing[] {
   const conflicts: Listing[] = [];
-  const daysToCheck = Object.keys(course.times_by_day) as Weekdays[];
+  const daysToCheck = Object.keys(listing.course.times_by_day) as Weekdays[];
   if (!daysToCheck.length) return conflicts;
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
-    if (worksheetCourse.season_code !== course.season_code) continue;
+    if (worksheetCourse.season_code !== listing.season_code) continue;
     for (const day of daysToCheck) {
-      const info = worksheetCourse.times_by_day[day];
+      const info = worksheetCourse.course.times_by_day[day];
       if (info === undefined) continue;
-      const courseInfo = course.times_by_day[day]!;
+      const courseInfo = listing.course.times_by_day[day]!;
       for (const [startTime, endTime] of info) {
         const listingStart = toRangeTime(startTime);
         const listingEnd = toRangeTime(endTime);
@@ -100,18 +106,21 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   return numFriends;
 }
 
-type OverallRatingKey = 'average_rating' | 'average_rating_same_professors';
+export type CourseWithOverall = Pick<
+  Courses,
+  'average_rating' | 'average_rating_same_professors'
+>;
 
 export function getOverallRatings(
-  course: Pick<Listing, OverallRatingKey>,
+  course: CourseWithOverall,
   usage: 'stat',
 ): number | null;
 export function getOverallRatings(
-  course: Pick<Listing, OverallRatingKey>,
+  course: CourseWithOverall,
   usage: 'display',
 ): string;
 export function getOverallRatings(
-  course: Pick<Listing, OverallRatingKey>,
+  course: CourseWithOverall,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_rating_same_professors) {
@@ -128,20 +137,21 @@ export function getOverallRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-type WorkloadRatingKey =
-  | 'average_workload'
-  | 'average_workload_same_professors';
+export type CourseWithWorkload = Pick<
+  Courses,
+  'average_workload' | 'average_workload_same_professors'
+>;
 
 export function getWorkloadRatings(
-  course: Pick<Listing, WorkloadRatingKey>,
+  course: CourseWithWorkload,
   usage: 'stat',
 ): number | null;
 export function getWorkloadRatings(
-  course: Pick<Listing, WorkloadRatingKey>,
+  course: CourseWithWorkload,
   usage: 'display',
 ): string;
 export function getWorkloadRatings(
-  course: Pick<Listing, WorkloadRatingKey>,
+  course: CourseWithWorkload,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_workload_same_professors) {
@@ -159,22 +169,24 @@ export function getWorkloadRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
+export type CourseWithProfRatings = Pick<Courses, 'average_professor_rating'>;
+
 export function getProfessorRatings(
-  course: Pick<Listing, 'average_professor'>,
+  course: CourseWithProfRatings,
   usage: 'stat',
 ): number | null;
 export function getProfessorRatings(
-  course: Pick<Listing, 'average_professor'>,
+  course: CourseWithProfRatings,
   usage: 'display',
 ): string;
 export function getProfessorRatings(
-  course: Pick<Listing, 'average_professor'>,
+  course: CourseWithProfRatings,
   usage: 'stat' | 'display',
 ): string | number | null {
-  if (course.average_professor) {
+  if (course.average_professor_rating) {
     return usage === 'stat'
-      ? course.average_professor
-      : course.average_professor.toFixed(1);
+      ? course.average_professor_rating
+      : course.average_professor_rating.toFixed(1);
   }
   return usage === 'stat' ? null : 'N/A';
 }
@@ -226,8 +238,14 @@ function comparatorReturn(
 // We can only sort by primitive keys by default, unless we have special support
 type ComparableKey =
   | SortKeys
+  | 'season_code'
+  | 'section'
   | keyof {
-      [K in keyof Listing as Listing[K] extends string | number ? K : never]: K;
+      [K in keyof Listing['course'] as Listing['course'][K] extends
+        | string
+        | number
+        ? K
+        : never]: K;
     };
 
 function compareByKey(
@@ -258,25 +276,32 @@ function compareByKey(
   }
   if (key === 'average_rating') {
     return comparatorReturn(
-      getOverallRatings(a, 'stat'),
-      getOverallRatings(b, 'stat'),
+      getOverallRatings(a.course, 'stat'),
+      getOverallRatings(b.course, 'stat'),
       ordering,
     );
   }
   if (key === 'average_workload') {
     return comparatorReturn(
-      getWorkloadRatings(a, 'stat'),
-      getWorkloadRatings(b, 'stat'),
+      getWorkloadRatings(a.course, 'stat'),
+      getWorkloadRatings(b.course, 'stat'),
       ordering,
     );
   }
-  if (key === 'times_by_day')
-    return comparatorReturn(toDayTimeScore(a), toDayTimeScore(b), ordering);
+  if (key === 'times_by_day') {
+    return comparatorReturn(
+      toDayTimeScore(a.course),
+      toDayTimeScore(b.course),
+      ordering,
+    );
+  }
+  if (key === 'course_code' || key === 'season_code' || key === 'section')
+    return comparatorReturn(a.course_code, b.course_code, ordering);
   // If value is 0, return null
   return comparatorReturn(
     // || is intentional: 0 also means nonexistence
-    a[key] || null,
-    b[key] || null,
+    a.course[key] || null,
+    b.course[key] || null,
     ordering,
   );
 }
@@ -314,26 +339,31 @@ export function sortCourses(
   );
 }
 
-type EnrolledKey =
-  | 'enrolled'
-  | 'last_enrollment'
-  | 'last_enrollment_same_professors';
+type CourseWithEnrolled = {
+  evaulation_statistic?: {
+    enrolled: number | null;
+  } | null;
+  last_enrollment?: number | null;
+  last_enrollment_same_professors?: boolean | null;
+};
 
 export function getEnrolled(
-  course: Pick<Listing, EnrolledKey>,
+  course: CourseWithEnrolled,
   usage: 'stat',
 ): number | null;
 export function getEnrolled(
-  course: Pick<Listing, EnrolledKey>,
+  course: CourseWithEnrolled,
   usage: 'display' | 'modal',
 ): string;
 export function getEnrolled(
-  course: Pick<Listing, EnrolledKey>,
+  course: CourseWithEnrolled,
   usage: 'stat' | 'display' | 'modal',
 ): string | number | null {
-  if (course.enrolled) {
+  if (course.evaulation_statistic?.enrolled) {
     // Use enrollment for that season if course has happened
-    return usage === 'stat' ? course.enrolled : String(course.enrolled);
+    return usage === 'stat'
+      ? course.evaulation_statistic.enrolled
+      : String(course.evaulation_statistic.enrolled);
   } else if (course.last_enrollment) {
     // Use last enrollment if course hasn't happened
     if (usage === 'stat') return course.last_enrollment;

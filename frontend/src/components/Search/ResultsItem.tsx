@@ -25,11 +25,11 @@ import colStyles from './ResultsCols.module.css';
 import styles from './ResultsItem.module.css';
 
 function Rating({
-  course,
+  listing,
   hasEvals,
   name,
 }: {
-  readonly course: Listing;
+  readonly listing: Listing;
   readonly hasEvals: boolean | undefined;
   readonly name: 'Class' | 'Professor' | 'Workload';
 }) {
@@ -38,10 +38,10 @@ function Rating({
     return (
       <RatingBubble
         className={styles.ratingCell}
-        rating={getRating(course, 'stat')}
+        rating={getRating(listing.course, 'stat')}
         colorMap={colorMap}
       >
-        {getRating(course, 'display')}
+        {getRating(listing.course, 'display')}
       </RatingBubble>
     );
   }
@@ -55,7 +55,9 @@ function Rating({
       )}
     >
       <RatingBubble
-        color={generateRandomColor(`${course.crn}${course.season_code}${name}`)}
+        color={generateRandomColor(
+          `${listing.crn}${listing.season_code}${name}`,
+        )}
         className={styles.ratingCell}
       />
     </OverlayTrigger>
@@ -63,27 +65,27 @@ function Rating({
 }
 
 function ResultsItem({
-  data: { courses, multiSeasons },
+  data: { listings, multiSeasons },
   index,
   style,
 }: ListChildComponentProps<ResultItemData>) {
-  const course = courses[index]!;
+  const listing = listings[index]!;
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
-  const friends = numFriends[`${course.season_code}${course.crn}`];
-  const target = useCourseModalLink(course);
+  const friends = numFriends[`${listing.season_code}${listing.crn}`];
+  const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
     () =>
       isInWorksheet(
-        course.season_code,
-        course.crn,
+        listing.season_code,
+        listing.crn,
         worksheetNumber,
         user.worksheets,
       ),
-    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+    [listing.crn, listing.season_code, worksheetNumber, user.worksheets],
   );
 
   return (
@@ -94,7 +96,7 @@ function ResultsItem({
           styles.resultItem,
           inWorksheet && styles.inWorksheetResultItem,
           index % 2 === 1 ? styles.oddResultItem : styles.evenResultItem,
-          course.extra_info !== 'ACTIVE' && styles.cancelledClass,
+          listing.course.extra_info !== 'ACTIVE' && styles.cancelledClass,
         )}
       >
         <div className={styles.resultItemContent}>
@@ -105,59 +107,73 @@ function ResultsItem({
           {multiSeasons && (
             <span className={colStyles.seasonCol}>
               <SeasonTag
-                season={course.season_code}
+                season={listing.season_code}
                 className={styles.season}
               />
             </span>
           )}
           <span className={colStyles.codeCol}>
             <span className={clsx(styles.ellipsisText, 'fw-bold')}>
-              <CourseCode course={course} subdueSection />
+              <CourseCode listing={listing} subdueSection />
             </span>
           </span>
-          <CourseInfoPopover course={course}>
+          <CourseInfoPopover listing={listing}>
             <span className={colStyles.titleCol}>
-              <span className={styles.ellipsisText}>{course.title}</span>
+              <span className={styles.ellipsisText}>
+                {listing.course.title}
+              </span>
             </span>
           </CourseInfoPopover>
           <span className={colStyles.overallCol}>
-            <Rating course={course} hasEvals={user.hasEvals} name="Class" />
+            <Rating listing={listing} hasEvals={user.hasEvals} name="Class" />
           </span>
           <span className={colStyles.workloadCol}>
-            <Rating course={course} hasEvals={user.hasEvals} name="Workload" />
+            <Rating
+              listing={listing}
+              hasEvals={user.hasEvals}
+              name="Workload"
+            />
           </span>
           <span
             className={clsx('d-flex align-items-center', colStyles.profCol)}
           >
             <span className={clsx('me-2 h-100', styles.profRating)}>
               <Rating
-                course={course}
+                listing={listing}
                 hasEvals={user.hasEvals}
                 name="Professor"
               />
             </span>
             <span className={styles.ellipsisText}>
-              {course.professor_names.length === 0
+              {listing.course.course_professors.length === 0
                 ? 'TBA'
-                : course.professor_names.join(' • ')}
+                : listing.course.course_professors
+                    .map((p) => p.professor.name)
+                    .join(' • ')}
             </span>
           </span>
           <span className={clsx('d-flex', colStyles.enrollCol)}>
-            <span className="my-auto">{getEnrolled(course, 'display')}</span>
+            <span className="my-auto">
+              {getEnrolled(listing.course, 'display')}
+            </span>
           </span>
           <span className={clsx('d-flex', colStyles.skillAreaCol)}>
             <span className={styles.skillsAreas}>
-              {[...course.skills, ...course.areas].map((skill) => (
-                <SkillBadge skill={skill} className="my-auto" key={skill} />
-              ))}
+              {[...listing.course.skills, ...listing.course.areas].map(
+                (skill) => (
+                  <SkillBadge skill={skill} className="my-auto" key={skill} />
+                ),
+              )}
             </span>
           </span>
           <span className={colStyles.meetCol}>
-            <span className={styles.ellipsisText}>{course.times_summary}</span>
+            <span className={styles.ellipsisText}>
+              {listing.course.times_summary}
+            </span>
           </span>
           <span className={colStyles.locCol}>
             <span className={styles.ellipsisText}>
-              {course.locations_summary}
+              {listing.course.locations_summary}
             </span>
           </span>
           <span className={colStyles.friendsCol}>
@@ -180,7 +196,7 @@ function ResultsItem({
         nested */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
-          listing={course}
+          listing={listing}
           modal={false}
           inWorksheet={inWorksheet}
         />

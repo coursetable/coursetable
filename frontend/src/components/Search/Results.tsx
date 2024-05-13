@@ -19,7 +19,7 @@ import Spinner from '../Spinner';
 import styles from './Results.module.css';
 
 export type ResultItemData = {
-  readonly courses: Listing[];
+  readonly listings: Listing[];
   readonly columnCount: number;
   readonly multiSeasons: boolean;
 };
@@ -96,7 +96,7 @@ function Results({
             ref={ref}
             width={window.innerWidth}
             height={Math.min(window.innerHeight, rowCount * rowHeight)}
-            itemData={{ courses: data, columnCount, multiSeasons }}
+            itemData={{ listings: data, columnCount, multiSeasons }}
             {...(isGrid
               ? { columnCount, rowCount, rowHeight, columnWidth }
               : { itemCount: rowCount, itemSize: rowHeight })}

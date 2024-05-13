@@ -9,14 +9,19 @@ import { useWorksheetInfo } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import {
-  toggleBookmark,
-  toggleCourseHidden,
-  type Listing,
-} from '../../queries/api';
+import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
+import type { Season, Crn, TimesByDay } from '../../queries/graphql-types';
 import { worksheetColors } from '../../utilities/constants';
 import { isInWorksheet, checkConflict } from '../../utilities/course';
 import styles from './WorksheetToggleButton.module.css';
+
+type ListingWithTimes = {
+  season_code: Season;
+  crn: Crn;
+  course: {
+    times_by_day: TimesByDay;
+  };
+};
 
 function CourseConflictIcon({
   listing,
@@ -24,7 +29,7 @@ function CourseConflictIcon({
   modal,
   worksheetNumber,
 }: {
-  readonly listing: Pick<Listing, 'season_code' | 'crn' | 'times_by_day'>;
+  readonly listing: ListingWithTimes;
   readonly inWorksheet: boolean;
   readonly modal: boolean;
   readonly worksheetNumber: number;
@@ -78,7 +83,7 @@ function WorksheetToggleButton({
   modal,
   inWorksheet: inWorksheetProp,
 }: {
-  readonly listing: Pick<Listing, 'season_code' | 'crn' | 'times_by_day'>;
+  readonly listing: ListingWithTimes;
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {

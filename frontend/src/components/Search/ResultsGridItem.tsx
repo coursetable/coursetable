@@ -18,16 +18,16 @@ import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './ResultsGridItem.module.css';
 
 function Rating({
-  course,
+  listing,
   hasEvals,
   name,
 }: {
-  readonly course: Listing;
+  readonly listing: Listing;
   readonly hasEvals: boolean | undefined;
   readonly name: 'Class' | 'Professor' | 'Workload';
 }) {
   const { Icon, getRating, colorMap } = ratingTypes[name];
-  const rating = getRating(course, 'stat');
+  const rating = getRating(listing.course, 'stat');
   return (
     <OverlayTrigger
       placement="top"
@@ -49,7 +49,7 @@ function Rating({
                   ? colorMap(rating)
                   : undefined
                 : generateRandomColor(
-                    `${course.crn}${course.season_code}${name}`,
+                    `${listing.crn}${listing.season_code}${name}`,
                   )
               )
                 ?.darken()
@@ -57,7 +57,7 @@ function Rating({
                 .css() ?? '#cccccc',
           }}
         >
-          {hasEvals ? getRating(course, 'display') : '???'}
+          {hasEvals ? getRating(listing.course, 'display') : '???'}
         </div>
         <div className={styles.iconContainer}>
           <Icon className={styles.icon} />
@@ -68,29 +68,29 @@ function Rating({
 }
 
 function ResultsGridItem({
-  data: { courses, columnCount, multiSeasons },
+  data: { listings, columnCount, multiSeasons },
   rowIndex,
   columnIndex,
   style,
 }: GridChildComponentProps<ResultItemData>) {
-  const course = courses[rowIndex * columnCount + columnIndex];
-  const target = useCourseModalLink(course);
+  const listing = listings[rowIndex * columnCount + columnIndex];
+  const target = useCourseModalLink(listing);
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
     () =>
-      course &&
+      listing &&
       isInWorksheet(
-        course.season_code,
-        course.crn,
+        listing.season_code,
+        listing.crn,
         worksheetNumber,
         user.worksheets,
       ),
-    [course, worksheetNumber, user.worksheets],
+    [listing, worksheetNumber, user.worksheets],
   );
 
-  if (!course) return null;
+  if (!listing) return null;
 
   return (
     <li className={styles.container} style={style}>
@@ -104,14 +104,14 @@ function ResultsGridItem({
       >
         <div className="d-flex justify-content-between">
           <div className={styles.courseCodes}>
-            <CourseCode course={course} subdueSection={false} />
+            <CourseCode listing={listing} subdueSection={false} />
           </div>
           {multiSeasons && (
-            <SeasonTag season={course.season_code} className={styles.season} />
+            <SeasonTag season={listing.season_code} className={styles.season} />
           )}
         </div>
         <div>
-          <strong className={styles.oneLine}>{course.title}</strong>
+          <strong className={styles.oneLine}>{listing.course.title}</strong>
         </div>
         <div className="d-flex justify-content-between">
           <div>
@@ -119,30 +119,34 @@ function ResultsGridItem({
               type="secondary"
               className={clsx(styles.oneLine, styles.professors)}
             >
-              {course.professor_names.length > 0
-                ? course.professor_names.join(' • ')
+              {listing.course.course_professors.length > 0
+                ? listing.course.course_professors
+                    .map((p) => p.professor.name)
+                    .join(' • ')
                 : 'Professor: TBA'}
             </TextComponent>
             <TextComponent
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {course.times_summary === 'TBA'
+              {listing.course.times_summary === 'TBA'
                 ? 'Times: TBA'
-                : course.times_summary}
+                : listing.course.times_summary}
             </TextComponent>
             <TextComponent
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {course.locations_summary === 'TBA'
+              {listing.course.locations_summary === 'TBA'
                 ? 'Location: TBA'
-                : course.locations_summary}
+                : listing.course.locations_summary}
             </TextComponent>
             <div className={styles.skillsAreas}>
-              {[...course.skills, ...course.areas].map((skill) => (
-                <SkillBadge skill={skill} key={skill} />
-              ))}
+              {[...listing.course.skills, ...listing.course.areas].map(
+                (skill) => (
+                  <SkillBadge skill={skill} key={skill} />
+                ),
+              )}
             </div>
           </div>
           <div className="d-flex align-items-end">
@@ -150,7 +154,7 @@ function ResultsGridItem({
               {(['Class', 'Professor', 'Workload'] as const).map((name) => (
                 <Rating
                   key={name}
-                  course={course}
+                  listing={listing}
                   hasEvals={user.hasEvals}
                   name={name}
                 />
@@ -163,7 +167,7 @@ function ResultsGridItem({
         nested */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
-          listing={course}
+          listing={listing}
           modal={false}
           inWorksheet={inWorksheet}
         />

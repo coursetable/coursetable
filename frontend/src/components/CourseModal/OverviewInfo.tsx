@@ -362,15 +362,7 @@ function OverviewInfo({
       />
       <DataField
         name="Enrollment"
-        value={getEnrolled(
-          {
-            enrolled: course.evaluation_statistic?.enrolled,
-            last_enrollment: course.last_enrollment,
-            last_enrollment_same_professors:
-              course.last_enrollment_same_professors,
-          },
-          'modal',
-        )}
+        value={getEnrolled(course, 'modal')}
         tooltip={
           CUR_SEASON === listing.season_code ? (
             <span>

@@ -211,7 +211,7 @@ function toRBCEvent({
     return {
       title: summary,
       // No instructors for RBC
-      description: listing.title,
+      description: listing.course.title,
       start: startTimeCpy,
       end: endTimeCpy,
       listing,
@@ -268,8 +268,8 @@ export function getCalendarEvents(
   }
   const toEvent =
     type === 'gcal' ? toGCalEvent : type === 'ics' ? toICSEvent : toRBCEvent;
-  const events = visibleCourses.flatMap(({ listing: c, color }) => {
-    const times = getTimes(c.times_by_day);
+  const events = visibleCourses.flatMap(({ listing: l, color }) => {
+    const times = getTimes(l.course.times_by_day);
     const endRepeat = semester
       ? isoString(semester.end, '23:59').replace(/[:-]/gu, '')
       : // Irrelevant for rbc
@@ -295,7 +295,7 @@ export function getCalendarEvents(
             '';
 
         return toEvent({
-          summary: c.course_code,
+          summary: l.course_code,
           start: isoString(firstMeetingDay, startTime),
           end: isoString(firstMeetingDay, endTime),
           recurrence: [
@@ -303,10 +303,10 @@ export function getCalendarEvents(
             `EXDATE;TZID=America/New_York:${exDate}`,
             ...(rDate ? [`RDATE;TZID=America/New_York:${rDate}`] : []),
           ],
-          description: `${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
+          description: `${l.course.title}\nInstructor: ${l.course.course_professors.map((p) => p.professor.name).join(', ')}`,
           location,
           color,
-          listing: c,
+          listing: l,
           days,
         });
       },

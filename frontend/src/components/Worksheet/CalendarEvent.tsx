@@ -33,18 +33,18 @@ export const CalendarEventBody = React.forwardRef(
 );
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
-  const course = event.listing;
+  const { listing } = event;
   const { person } = useWorksheet();
 
   return (
     <>
-      <CourseInfoPopover course={course}>
+      <CourseInfoPopover listing={listing}>
         <CalendarEventBody event={event} />
       </CourseInfoPopover>
       {person === 'me' && (
         <div className={styles.eventButtons}>
           <WorksheetHideButton
-            crn={course.crn}
+            crn={listing.crn}
             // Course in calendar is never hidden
             hidden={false}
             className={styles.worksheetHideButton}
