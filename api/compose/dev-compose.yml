@@ -19,7 +19,7 @@ services:
 
   graphql-engine:
     container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
-    image: hasura/graphql-engine:v2.38.1
+    image: hasura/graphql-engine:latest
     ports:
       - 8085:8080
     environment:
