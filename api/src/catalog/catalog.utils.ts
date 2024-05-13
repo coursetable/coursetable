@@ -78,6 +78,12 @@ function processCatalog(listing: CatalogBySeasonQuery['listings'][number]) {
   };
 }
 
+const exists = (p: string) =>
+  fs.access(p).then(
+    () => true,
+    () => false,
+  );
+
 async function fetchData(
   seasonCode: string,
   type: 'evals' | 'public',
@@ -88,13 +94,8 @@ async function fetchData(
   const filePath = `${STATIC_FILE_DIR}/catalogs/${type}/${seasonCode}.json`;
   const v2FilePath = `${STATIC_FILE_DIR}/catalogs-v2/${type}/${seasonCode}.json`;
   await fs.mkdir(path.dirname(filePath), { recursive: true });
-  if (
-    !overwrite &&
-    (await fs.access(filePath).then(
-      () => true,
-      () => false,
-    ))
-  ) {
+  await fs.mkdir(path.dirname(v2FilePath), { recursive: true });
+  if (!overwrite && (await exists(filePath)) && (await exists(v2FilePath))) {
     winston.info(`Skipping ${type} data for ${seasonCode}`);
     return;
   }
