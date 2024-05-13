@@ -8912,6 +8912,8 @@ export type Professors = {
   course_professors: Array<Course_Professors>;
   /** An aggregate relationship */
   course_professors_aggregate: Course_Professors_Aggregate;
+  /** [computed] Number of courses taught */
+  courses_taught: Scalars['Int']['output'];
   /** Email address of the professor */
   email?: Maybe<Scalars['String']['output']>;
   /** Name of the professor */
@@ -8977,6 +8979,8 @@ export type Professors_Avg_Fields = {
   average_rating?: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Float']['output']>;
 };
@@ -8990,6 +8994,7 @@ export type Professors_Bool_Exp = {
   average_rating_n?: InputMaybe<Int_Comparison_Exp>;
   course_professors?: InputMaybe<Course_Professors_Bool_Exp>;
   course_professors_aggregate?: InputMaybe<Course_Professors_Aggregate_Bool_Exp>;
+  courses_taught?: InputMaybe<Int_Comparison_Exp>;
   email?: InputMaybe<String_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   professor_id?: InputMaybe<Int_Comparison_Exp>;
@@ -9010,6 +9015,8 @@ export type Professors_Inc_Input = {
   average_rating?: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: InputMaybe<Scalars['Int']['input']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: InputMaybe<Scalars['Int']['input']>;
   /** Professor ID */
   professor_id?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -9024,6 +9031,8 @@ export type Professors_Insert_Input = {
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: InputMaybe<Scalars['Int']['input']>;
   course_professors?: InputMaybe<Course_Professors_Arr_Rel_Insert_Input>;
+  /** [computed] Number of courses taught */
+  courses_taught?: InputMaybe<Scalars['Int']['input']>;
   /** Email address of the professor */
   email?: InputMaybe<Scalars['String']['input']>;
   /** Name of the professor */
@@ -9042,6 +9051,8 @@ export type Professors_Max_Fields = {
   average_rating?: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Int']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Int']['output']>;
   /** Email address of the professor */
   email?: Maybe<Scalars['String']['output']>;
   /** Name of the professor */
@@ -9060,6 +9071,8 @@ export type Professors_Min_Fields = {
   average_rating?: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Int']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Int']['output']>;
   /** Email address of the professor */
   email?: Maybe<Scalars['String']['output']>;
   /** Name of the professor */
@@ -9096,6 +9109,7 @@ export type Professors_Order_By = {
   average_rating?: InputMaybe<Order_By>;
   average_rating_n?: InputMaybe<Order_By>;
   course_professors_aggregate?: InputMaybe<Course_Professors_Aggregate_Order_By>;
+  courses_taught?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
@@ -9114,6 +9128,8 @@ export enum Professors_Select_Column {
   /** column name */
   AverageRatingN = 'average_rating_n',
   /** column name */
+  CoursesTaught = 'courses_taught',
+  /** column name */
   Email = 'email',
   /** column name */
   Name = 'name',
@@ -9130,6 +9146,8 @@ export type Professors_Set_Input = {
   average_rating?: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: InputMaybe<Scalars['Int']['input']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: InputMaybe<Scalars['Int']['input']>;
   /** Email address of the professor */
   email?: InputMaybe<Scalars['String']['input']>;
   /** Name of the professor */
@@ -9148,6 +9166,8 @@ export type Professors_Stddev_Fields = {
   average_rating?: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Float']['output']>;
 };
@@ -9162,6 +9182,8 @@ export type Professors_Stddev_Pop_Fields = {
   average_rating?: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Float']['output']>;
 };
@@ -9176,6 +9198,8 @@ export type Professors_Stddev_Samp_Fields = {
   average_rating?: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Float']['output']>;
 };
@@ -9197,6 +9221,8 @@ export type Professors_Stream_Cursor_Value_Input = {
   average_rating?: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: InputMaybe<Scalars['Int']['input']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: InputMaybe<Scalars['Int']['input']>;
   /** Email address of the professor */
   email?: InputMaybe<Scalars['String']['input']>;
   /** Name of the professor */
@@ -9215,6 +9241,8 @@ export type Professors_Sum_Fields = {
   average_rating?: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Int']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Int']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Int']['output']>;
 };
@@ -9225,6 +9253,8 @@ export enum Professors_Update_Column {
   AverageRating = 'average_rating',
   /** column name */
   AverageRatingN = 'average_rating_n',
+  /** column name */
+  CoursesTaught = 'courses_taught',
   /** column name */
   Email = 'email',
   /** column name */
@@ -9252,6 +9282,8 @@ export type Professors_Var_Pop_Fields = {
   average_rating?: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Float']['output']>;
 };
@@ -9266,6 +9298,8 @@ export type Professors_Var_Samp_Fields = {
   average_rating?: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Float']['output']>;
 };
@@ -9280,6 +9314,8 @@ export type Professors_Variance_Fields = {
   average_rating?: Maybe<Scalars['Float']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: Maybe<Scalars['Float']['output']>;
+  /** [computed] Number of courses taught */
+  courses_taught?: Maybe<Scalars['Float']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Float']['output']>;
 };
