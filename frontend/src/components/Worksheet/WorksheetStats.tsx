@@ -95,9 +95,9 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  for (const { listing: course, hidden } of courses) {
-    const alreadyCounted = course.all_course_codes.some((code) =>
-      countedCourseCodes.has(code),
+  for (const { listing, hidden } of courses) {
+    const alreadyCounted = listing.course.listings.some((l) =>
+      countedCourseCodes.has(l.course_code),
     );
 
     // Don't count in one of the following cases:
@@ -105,21 +105,21 @@ export default function WorksheetStats() {
     // - Another section has been counted (we just randomly pick one)
     // - Is discussion section (no ratings or credits)
     // - Is hidden
-    if (alreadyCounted || hidden || isDiscussionSection(course)) continue;
+    if (alreadyCounted || hidden || isDiscussionSection(listing)) continue;
 
     // Mark codes as counted, no double counting
-    course.all_course_codes.forEach((code) => {
-      countedCourseCodes.add(code);
+    listing.course.listings.forEach((l) => {
+      countedCourseCodes.add(l.course_code);
     });
-    const courseRating = getOverallRatings(course, 'stat');
-    const courseWorkload = getWorkloadRatings(course, 'stat');
-    if (!courseRating) coursesWithoutRating.push(course.course_code);
-    if (!courseWorkload) coursesWithoutWorkload.push(course.course_code);
+    const courseRating = getOverallRatings(listing.course, 'stat');
+    const courseWorkload = getWorkloadRatings(listing.course, 'stat');
+    if (!courseRating) coursesWithoutRating.push(listing.course_code);
+    if (!courseWorkload) coursesWithoutWorkload.push(listing.course_code);
     courseCnt++;
-    credits += course.credits ?? 0;
+    credits += listing.course.credits ?? 0;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
-    skillsAreas.push(...course.skills, ...course.areas);
+    skillsAreas.push(...listing.course.skills, ...listing.course.areas);
   }
   const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
   const coursesWithRating = courseCnt - coursesWithoutRating.length;

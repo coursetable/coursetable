@@ -10,12 +10,8 @@ import { toast } from 'react-toastify';
 import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
 import { useUser } from '../../contexts/userContext';
-import type {
-  Season,
-  Crn,
-  ExtraInfo,
-  TimesByDay,
-} from '../../queries/graphql-types';
+import type { Listings } from '../../generated/graphql-types';
+import type { Season, Crn } from '../../queries/graphql-types';
 import { extraInfo } from '../../utilities/constants';
 import { toSeasonString, truncatedText } from '../../utilities/course';
 import { suspended, useCourseModalLink } from '../../utilities/display';
@@ -24,20 +20,27 @@ import { TextComponent } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 
-export type CourseModalHeaderData = {
-  readonly season_code: Season;
-  readonly crn: Crn;
-  readonly title: string;
-  readonly course_code: string;
-  readonly all_course_codes: string[];
-  readonly section: string;
-  readonly skills: string[];
-  readonly areas: string[];
-  readonly extra_info: ExtraInfo;
-  readonly description: string | null;
-  readonly times_by_day: TimesByDay;
-  readonly same_course_id: number;
-  readonly professor_ids: number[];
+export type CourseModalHeaderData = Pick<
+  Listings,
+  'season_code' | 'crn' | 'course_code' | 'section'
+> & {
+  course: Pick<
+    Listings['course'],
+    | 'title'
+    | 'skills'
+    | 'areas'
+    | 'extra_info'
+    | 'description'
+    | 'times_by_day'
+    | 'same_course_id'
+  > & {
+    listings: Pick<Listings, 'crn' | 'course_code'>[];
+    course_professors: {
+      professor: {
+        professor_id: number;
+      };
+    }[];
+  };
 };
 
 function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
@@ -169,22 +172,16 @@ function CourseModal() {
     void requestSeasons([seasonCode]).then(() => {
       const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
       if (!listingFromQuery) return;
-      setHistory([
-        {
-          ...listingFromQuery,
-          // TODO: remove once api returns numbers
-          professor_ids: listingFromQuery.professor_ids.map(Number),
-        },
-      ]);
+      setHistory([listingFromQuery]);
     });
   }, [history.length, searchParams, requestSeasons, courses]);
   const listing = history[history.length - 1];
   const backTarget = useCourseModalLink(history[history.length - 2]);
 
   if (!listing) return null;
-  const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.title} | CourseTable`;
+  const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`;
   const description = truncatedText(
-    listing.description,
+    listing.course.description,
     300,
     'No description available',
   );
@@ -227,14 +224,14 @@ function CourseModal() {
             <div>
               <Modal.Title>
                 <div className={styles.modalTitle}>
-                  {listing.extra_info !== 'ACTIVE' ? (
+                  {listing.course.extra_info !== 'ACTIVE' ? (
                     <span className={styles.cancelledText}>
-                      {extraInfo[listing.extra_info]}{' '}
+                      {extraInfo[listing.course.extra_info]}{' '}
                     </span>
                   ) : (
                     ''
                   )}
-                  {listing.title}{' '}
+                  {listing.course.title}{' '}
                   <TextComponent type="tertiary">
                     ({toSeasonString(listing.season_code)})
                   </TextComponent>
@@ -244,12 +241,16 @@ function CourseModal() {
               <div className={styles.badges}>
                 <p className={styles.courseCodes}>
                   <TextComponent type="tertiary">
-                    {listing.all_course_codes.join(' • ')}
+                    {listing.course.listings
+                      .map((l) => l.course_code)
+                      .join(' • ')}
                   </TextComponent>
                 </p>
-                {[...listing.skills, ...listing.areas].map((skill) => (
-                  <SkillBadge skill={skill} key={skill} />
-                ))}
+                {[...listing.course.skills, ...listing.course.areas].map(
+                  (skill) => (
+                    <SkillBadge skill={skill} key={skill} />
+                  ),
+                )}
               </div>
             </div>
           </div>

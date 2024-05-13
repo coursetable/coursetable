@@ -127,7 +127,7 @@ function ResultsHeaders({
                   them)
                 </span>
               }
-              sortOption="average_professor"
+              sortOption="average_professor_rating"
             >
               Professors
             </HeaderCol>

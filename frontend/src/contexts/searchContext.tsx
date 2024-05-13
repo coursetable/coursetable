@@ -60,7 +60,7 @@ const sortCriteria = {
   title: 'Sort by Course Title',
   friend: 'Sort by Friends',
   average_rating: 'Sort by Course Rating',
-  average_professor: 'Sort by Professor Rating',
+  average_professor_rating: 'Sort by Professor Rating',
   average_workload: 'Sort by Workload',
   average_gut_rating: 'Sort by Guts (Overall - Workload)',
   last_enrollment: 'Sort by Last Enrollment',
@@ -364,32 +364,34 @@ export function SearchProvider({
       buildEvaluator(targetTypes, (listing: Listing, key) => {
         switch (key) {
           case 'rating':
-            return getOverallRatings(listing, 'stat');
+            return getOverallRatings(listing.course, 'stat');
           case 'workload':
-            return getWorkloadRatings(listing, 'stat');
+            return getWorkloadRatings(listing.course, 'stat');
           case 'professor-rating':
-            return getProfessorRatings(listing, 'stat');
+            return getProfessorRatings(listing.course, 'stat');
           case 'enrollment':
-            return getEnrolled(listing, 'stat');
+            return getEnrolled(listing.course, 'stat');
           case 'days':
-            return Object.keys(listing.times_by_day).map((d) =>
+            return Object.keys(listing.course.times_by_day).map((d) =>
               ['Thursday', 'Saturday', 'Sunday'].includes(d)
                 ? d.slice(0, 2)
                 : d[0],
             );
           case 'info-attributes':
-            return listing.flag_info;
+            return listing.course.course_flags.map((f) => f.flag.flag_text);
           case 'skills':
-            return listing.skills.some((s) => s.startsWith('L'))
-              ? [...listing.skills, 'L']
-              : listing.skills;
+            return listing.course.skills.some((s) => s.startsWith('L'))
+              ? [...listing.course.skills, 'L']
+              : listing.course.skills;
           case 'subjects':
-            return listing.all_course_codes.map((code) => code.split(' ')[0]);
+            return listing.course.listings.map(
+              (l) => l.course_code.split(' ')[0],
+            );
           case 'cancelled':
-            return listing.extra_info !== 'ACTIVE';
+            return listing.course.extra_info !== 'ACTIVE';
           case 'conflicting':
             return (
-              listing.times_summary !== 'TBA' &&
+              listing.course.times_summary !== 'TBA' &&
               !isInWorksheet(
                 listing.season_code,
                 listing.crn,
@@ -403,30 +405,35 @@ export function SearchProvider({
           case 'discussion':
             return isDiscussionSection(listing);
           case 'fysem':
-            return listing.fysem !== false;
+            return listing.course.fysem !== false;
           case 'colsem':
             // TODO: query for colsem
             return false;
           case 'location':
-            return listing.locations_summary;
+            return listing.course.locations_summary;
           case 'season':
             return listing.season_code;
           case 'professor-names':
-            return listing.professor_names;
+            return listing.course.course_professors.map(
+              (p) => p.professor.name,
+            );
           case 'course-code':
             return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case 'number':
             return Number(listing.number.replace(/\D/gu, ''));
+          case 'subject':
+          case 'school':
+            return listing[key];
           case '*': {
-            const base = `${listing.subject} ${listing.number} ${listing.title} ${listing.professor_names.join(' ')}`;
-            if (searchDescription.value && listing.description)
-              return `${base} ${listing.description}`;
+            const base = `${listing.subject} ${listing.number} ${listing.course.title} ${listing.course.course_professors.map((p) => p.professor.name).join(' ')}`;
+            if (searchDescription.value && listing.course.description)
+              return `${base} ${listing.course.description}`;
             return base;
           }
           default:
-            return listing[key];
+            return listing.course[key];
         }
       }),
     [searchDescription.value, worksheetInfo, worksheetNumber, user.worksheets],
@@ -460,7 +467,7 @@ export function SearchProvider({
     const filtered = listings.filter((listing) => {
       // For empty bounds, don't apply filters at all to include no ratings
       if (overallBounds.isNonEmpty) {
-        const overall = getOverallRatings(listing, 'stat');
+        const overall = getOverallRatings(listing.course, 'stat');
         if (overall === null) return false;
         const rounded = Math.round(overall * 10) / 10;
         if (
@@ -471,7 +478,7 @@ export function SearchProvider({
       }
 
       if (workloadBounds.isNonEmpty) {
-        const workload = getWorkloadRatings(listing, 'stat');
+        const workload = getWorkloadRatings(listing.course, 'stat');
         if (workload === null) return false;
         const rounded = Math.round(workload * 10) / 10;
         if (
@@ -482,7 +489,7 @@ export function SearchProvider({
       }
 
       if (professorBounds.isNonEmpty) {
-        const professorRate = getProfessorRatings(listing, 'stat');
+        const professorRate = getProfessorRatings(listing.course, 'stat');
         if (professorRate === null) return false;
         const rounded = Math.round(professorRate * 10) / 10;
         if (
@@ -493,7 +500,7 @@ export function SearchProvider({
       }
 
       if (timeBounds.isNonEmpty) {
-        const times = getDayTimes(listing);
+        const times = getDayTimes(listing.course);
         if (
           !times.some(
             (time) =>
@@ -505,7 +512,7 @@ export function SearchProvider({
       }
 
       if (enrollBounds.isNonEmpty) {
-        const enrollment = getEnrolled(listing, 'stat');
+        const enrollment = getEnrolled(listing.course, 'stat');
         if (
           enrollment === null ||
           enrollment < enrollBounds.value[0] ||
@@ -523,11 +530,12 @@ export function SearchProvider({
           return false;
       }
 
-      if (hideCancelled.value && listing.extra_info !== 'ACTIVE') return false;
+      if (hideCancelled.value && listing.course.extra_info !== 'ACTIVE')
+        return false;
 
       if (
         hideConflicting.value &&
-        listing.times_summary !== 'TBA' &&
+        listing.course.times_summary !== 'TBA' &&
         !isInWorksheet(
           listing.season_code,
           listing.crn,
@@ -541,7 +549,8 @@ export function SearchProvider({
       if (hideDiscussionSections.value && isDiscussionSection(listing))
         return false;
 
-      if (hideFirstYearSeminars.value && listing.fysem !== false) return false;
+      if (hideFirstYearSeminars.value && listing.course.fysem !== false)
+        return false;
 
       if (hideGraduateCourses.value && isGraduate(listing)) return false;
 
@@ -552,7 +561,7 @@ export function SearchProvider({
         return false;
 
       if (selectDays.value.length !== 0) {
-        const days = getDayTimes(listing).map((daytime) => daytime.day);
+        const days = getDayTimes(listing.course).map((daytime) => daytime.day);
         const selectDayValues = selectDays.value.map((day) => day.value);
         // Require the two sets to be equal
         if (
@@ -563,7 +572,10 @@ export function SearchProvider({
       }
 
       if (processedSkillsAreas.length !== 0) {
-        const listingSkillsAreas = [...listing.areas, ...listing.skills];
+        const listingSkillsAreas = [
+          ...listing.course.areas,
+          ...listing.course.skills,
+        ];
         if (
           !processedSkillsAreas.some((area) =>
             listingSkillsAreas.includes(area),
@@ -574,15 +586,19 @@ export function SearchProvider({
 
       if (
         selectCredits.value.length !== 0 &&
-        listing.credits !== null &&
-        !selectCredits.value.some((option) => option.value === listing.credits)
+        listing.course.credits !== null &&
+        !selectCredits.value.some(
+          (option) => option.value === listing.course.credits,
+        )
       )
         return false;
 
       if (
         selectCourseInfoAttributes.value.length !== 0 &&
         !selectCourseInfoAttributes.value.some((option) =>
-          listing.flag_info.includes(option.value),
+          listing.course.course_flags.some(
+            (f) => f.flag.flag_text === option.value,
+          ),
         )
       )
         return false;
@@ -609,14 +625,14 @@ export function SearchProvider({
               .toLowerCase()
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
           (searchDescription.value &&
-            listing.description.toLowerCase().includes(token)) ||
-          listing.title.toLowerCase().includes(token) ||
-          listing.professor_names.some((professor) =>
-            professor.toLowerCase().includes(token),
+            listing.course.description?.toLowerCase().includes(token)) ||
+          listing.course.title.toLowerCase().includes(token) ||
+          listing.course.course_professors.some((p) =>
+            p.professor.name.toLowerCase().includes(token),
           ) ||
           // Use `times_by_day` instead of `locations_summary` to account for
           // multiple locations.
-          Object.values(listing.times_by_day)
+          Object.values(listing.course.times_by_day)
             .flat()
             .flatMap((x) => x[2].toLowerCase().split(' '))
             .some(

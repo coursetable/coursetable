@@ -130,21 +130,10 @@ function CourseLink({
   // We have to "massage" this data to fit the flat shape like the one
   // sent by the api. This will be changed.
   const targetCourses = course.listings.map((l) => ({
+    ...l,
     season_code: course.season_code,
-    crn: l.crn,
-    title: course.title,
-    course_code: l.course_code,
-    all_course_codes: course.listings.map((l) => l.course_code),
     section: course.section,
-    skills: course.skills,
-    areas: course.areas,
-    extra_info: course.extra_info,
-    description: course.description,
-    times_by_day: course.times_by_day,
-    same_course_id: course.same_course_id,
-    professor_ids: course.course_professors.map(
-      (p) => p.professor.professor_id,
-    ),
+    course,
   }));
   const extraText =
     filter === 'professor'

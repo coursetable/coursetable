@@ -60,7 +60,7 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
       for (const [crn, ratings] of evals) {
         const listing = seasonCatalog.get(crn);
         if (listing) {
-          Object.assign(listing, ratings);
+          Object.assign(listing.course, ratings.course);
         } else {
           // Unactionable error, courses may have failed to load
         }

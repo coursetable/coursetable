@@ -17,8 +17,11 @@ import {
 } from '../../utilities/constants';
 import {
   getOverallRatings,
+  type CourseWithOverall,
   getWorkloadRatings,
+  type CourseWithWorkload,
   getProfessorRatings,
+  type CourseWithProfRatings,
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
@@ -70,10 +73,10 @@ export function SeasonTag({
 }
 
 export function CourseInfoPopover({
-  course,
+  listing,
   children,
 }: {
-  readonly course: Listing;
+  readonly listing: Listing;
   readonly children: JSX.Element;
 }) {
   return (
@@ -83,19 +86,19 @@ export function CourseInfoPopover({
         <InfoPopover {...props} id="title-popover">
           <Popover.Header>
             <strong>
-              {course.extra_info !== 'ACTIVE' ? (
+              {listing.course.extra_info !== 'ACTIVE' ? (
                 <span className={styles.cancelledText}>CANCELLED</span>
               ) : (
                 ''
               )}{' '}
-              {course.title}
+              {listing.course.title}
             </strong>
           </Popover.Header>
           <Popover.Body>
-            {truncatedText(course.description, 300, 'no description')}
+            {truncatedText(listing.course.description, 300, 'no description')}
             <br />
             <div className="text-danger">
-              {truncatedText(course.requirements, 250, '')}
+              {truncatedText(listing.course.requirements, 250, '')}
             </div>
           </Popover.Body>
         </InfoPopover>
@@ -107,22 +110,22 @@ export function CourseInfoPopover({
 }
 
 export function CourseCode({
-  course,
+  listing,
   subdueSection,
 }: {
-  readonly course: Listing;
+  readonly listing: Listing;
   readonly subdueSection: boolean;
 }) {
-  const section = course.section ? ` ${course.section.padStart(2, '0')}` : '';
+  const section = listing.section ? ` ${listing.section.padStart(2, '0')}` : '';
   return (
     <>
       <OverlayTrigger
         placement="top"
         overlay={(props) => {
-          const subjectName = subjects[course.subject];
+          const subjectName = subjects[listing.subject];
           if (!subjectName) {
             Sentry.captureException(
-              new Error(`Subject ${course.subject} has no label`),
+              new Error(`Subject ${listing.subject} has no label`),
             );
           }
           return (
@@ -132,9 +135,9 @@ export function CourseCode({
           );
         }}
       >
-        <span>{course.subject}</span>
+        <span>{listing.subject}</span>
       </OverlayTrigger>{' '}
-      {course.number}
+      {listing.number}
       {subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (
@@ -146,8 +149,14 @@ export function CourseCode({
 
 export const ratingTypes: {
   [type in 'Class' | 'Professor' | 'Workload']: {
-    getRating: ((course: Listing, mode: 'stat') => number | null) &
-      ((course: Listing, mode: 'display') => string);
+    getRating: ((
+      course: CourseWithOverall & CourseWithWorkload & CourseWithProfRatings,
+      mode: 'stat',
+    ) => number | null) &
+      ((
+        course: CourseWithOverall & CourseWithWorkload & CourseWithProfRatings,
+        mode: 'display',
+      ) => string);
     colorMap: chroma.Scale;
     Icon: IconType;
   };

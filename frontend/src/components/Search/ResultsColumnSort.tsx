@@ -18,7 +18,7 @@ const isNumeric: { [key in SortKeys]: boolean } = {
   title: false,
   friend: true,
   average_rating: true,
-  average_professor: true,
+  average_professor_rating: true,
   average_workload: true,
   average_gut_rating: true,
   last_enrollment: true,
