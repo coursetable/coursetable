@@ -83,7 +83,10 @@ async function fetchData(
   type: 'evals' | 'public',
   overwrite: boolean,
 ) {
+  // Support two versions of the frontend.
+  // TODO: remove the legacy format and rename catalogs-v2 to catalogs
   const filePath = `${STATIC_FILE_DIR}/catalogs/${type}/${seasonCode}.json`;
+  const v2FilePath = `${STATIC_FILE_DIR}/catalogs-v2/${type}/${seasonCode}.json`;
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   if (
     !overwrite &&
@@ -106,6 +109,7 @@ async function fetchData(
       filePath,
       JSON.stringify(data.listings.map(postprocess)),
     );
+    await fs.writeFile(v2FilePath, JSON.stringify(data.listings));
     winston.info(
       `Fetched ${type} data for ${seasonCode}; n=${data.listings.length}`,
     );
@@ -126,6 +130,8 @@ export async function fetchCatalog(overwrite: boolean) {
   }
 
   winston.info(`Fetched ${seasons.length} seasons`);
+
+  // The seasons.json and infoAttributes.json files are copied to frontend
   await fs.writeFile(
     `${STATIC_FILE_DIR}/seasons.json`,
     JSON.stringify(seasons.sort((a, b) => Number(b) - Number(a))),

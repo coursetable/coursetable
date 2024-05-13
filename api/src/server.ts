@@ -9,7 +9,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
 import { createClient } from 'redis';
 
-import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
+import { passportConfig } from './auth/auth.handlers.js';
 import casAuth from './auth/auth.routes.js';
 import canny from './canny/canny.routes.js';
 import catalog from './catalog/catalog.routes.js';
@@ -20,7 +20,6 @@ import {
   INSECURE_PORT,
   SESSION_SECRET,
   CORS_OPTIONS,
-  STATIC_FILE_DIR,
   REDIS_HOST,
   isDev,
   SENTRY_DSN,
@@ -156,29 +155,6 @@ friends(app);
 canny(app);
 user(app);
 linkPreview(app);
-
-// Evals data require NetID authentication
-app.use(
-  '/api/static/catalogs/evals',
-  authWithEvals,
-  express.static(`${STATIC_FILE_DIR}/catalogs/evals`, {
-    cacheControl: true,
-    maxAge: '1h',
-    lastModified: true,
-    etag: true,
-  }),
-);
-
-// Serve public catalog files without authentication
-app.use(
-  '/api/static',
-  express.static(STATIC_FILE_DIR, {
-    cacheControl: true,
-    maxAge: '1h',
-    lastModified: true,
-    etag: true,
-  }),
-);
 
 app.get('/api/ping', (req, res) => {
   res.json('pong');
