@@ -1,13 +1,24 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Button,
+  OverlayTrigger,
+  Tooltip,
+  Popover,
+} from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
-import type { ListingInfo, RelatedListingInfo } from './CourseModalOverview';
+import type { CourseModalHeaderData } from './CourseModal';
 
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
+import type {
+  RelatedCourseInfoFragment,
+  SameCourseOrProfOfferingsQuery,
+} from '../../generated/graphql';
 import { generateRandomColor } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../utilities/course';
@@ -27,31 +38,31 @@ const optionsIndx = {
 };
 
 function RatingNumbers({
-  listing,
+  course,
   hasEvals,
 }: {
-  readonly listing: RelatedListingInfo;
+  readonly course: RelatedCourseInfoFragment;
   readonly hasEvals: boolean | undefined;
 }) {
   // For random seeds
-  const ratingIdentifier = `${listing.crn}${listing.season_code}rating`;
-  const workloadIdentifier = `${listing.crn}${listing.season_code}workload`;
-  const professorIdentifier = `${listing.crn}${listing.season_code}professor`;
+  const ratingIdentifier = `${course.course_id}${course.season_code}rating`;
+  const workloadIdentifier = `${course.course_id}${course.season_code}workload`;
+  const professorIdentifier = `${course.course_id}${course.season_code}professor`;
 
   const ratingBubbles = [
     {
       colorMap: ratingColormap,
-      rating: listing.course.evaluation_statistic?.avg_rating,
+      rating: course.evaluation_statistic?.avg_rating,
       identifier: ratingIdentifier,
     },
     {
       colorMap: ratingColormap,
-      rating: listing.course.average_professor_rating,
+      rating: course.average_professor_rating,
       identifier: professorIdentifier,
     },
     {
       colorMap: workloadColormap,
-      rating: listing.course.evaluation_statistic?.avg_workload,
+      rating: course.evaluation_statistic?.avg_workload,
       identifier: workloadIdentifier,
     },
   ];
@@ -98,92 +109,158 @@ function RatingNumbers({
 
 function CourseLink({
   listing,
+  course,
   filter,
   gotoCourse,
 }: {
-  readonly listing: RelatedListingInfo;
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+  readonly course: RelatedCourseInfoFragment;
   readonly filter: Filter;
-  readonly gotoCourse: (x: RelatedListingInfo) => void;
+  readonly gotoCourse: (x: CourseModalHeaderData) => void;
 }) {
-  const target = useCourseModalLink(listing);
+  const linkTargets = useCourseModalLink(
+    course.listings.map((l) => ({
+      season_code: course.season_code,
+      crn: l.crn,
+    })),
+  );
+  // Note, we purposefully use the listing data fetched from GraphQL instead
+  // of the static seasons data. This means on navigation we don't have to
+  // possibly fetch a new season and cause a loading screen.
+  // We have to "massage" this data to fit the flat shape like the one
+  // sent by the api. This will be changed.
+  const targetCourses = course.listings.map((l) => ({
+    season_code: course.season_code,
+    crn: l.crn,
+    title: course.title,
+    course_code: l.course_code,
+    all_course_codes: course.listings.map((l) => l.course_code),
+    section: course.section,
+    skills: course.skills,
+    areas: course.areas,
+    extra_info: course.extra_info,
+    description: course.description,
+    times_by_day: course.times_by_day,
+    same_course_id: course.same_course_id,
+    professor_ids: course.course_professors.map(
+      (p) => p.professor.professor_id,
+    ),
+  }));
+  const extraText =
+    filter === 'professor'
+      ? course.listings[0]!.course_code
+      : filter === 'both'
+        ? `Section ${course.section}`
+        : course.course_professors.length === 0
+          ? 'TBA'
+          : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
+  if (linkTargets.length === 1) {
+    return (
+      <Col
+        as={Link}
+        xs={5}
+        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+        to={linkTargets[0]!}
+        onClick={() => {
+          gotoCourse(targetCourses[0]!);
+        }}
+      >
+        <strong>{toSeasonString(course.season_code)}</strong>
+        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+      </Col>
+    );
+  }
   return (
-    <Col
-      as={Link}
-      xs={5}
-      className={clsx(styles.ratingBubble, 'px-0 me-3 text-center')}
-      to={target}
-      onClick={() => {
-        // Note, we purposefully use the listing data fetched
-        // from GraphQL instead of the static seasons data.
-        // This means on navigation we don't have to possibly
-        // fetch a new season and cause a loading screen.
-        gotoCourse(listing);
-      }}
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      placement="right"
+      overlay={(props) => (
+        <Popover id="cross-listing-popover" {...props}>
+          <Popover.Body>
+            This class has multiple cross-listings:
+            {course.listings.map((l, i) => (
+              <Link
+                key={i}
+                className="d-block"
+                to={linkTargets[i]!}
+                onClick={() => {
+                  gotoCourse(targetCourses[i]!);
+                }}
+              >
+                {l.course_code === listing.course_code ? (
+                  <b>{l.course_code}</b>
+                ) : (
+                  l.course_code
+                )}
+              </Link>
+            ))}
+          </Popover.Body>
+        </Popover>
+      )}
     >
-      <strong>{toSeasonString(listing.season_code)}</strong>
-      <span className={clsx(styles.details, 'mx-auto')}>
-        {filter === 'professor'
-          ? listing.course_code
-          : filter === 'both'
-            ? `Section ${listing.section}`
-            : listing.professor_names[0]}
-      </span>
-    </Col>
+      <Col
+        as={Button}
+        xs={5}
+        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+        to={linkTargets[0]!}
+      >
+        <strong>{toSeasonString(course.season_code)}</strong>
+        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+      </Col>
+    </OverlayTrigger>
+  );
+}
+
+function normalizeRelatedListings<T extends RelatedCourseInfoFragment>(
+  courses: T[],
+): T[] {
+  // Discussion sections have no ratings, nothing to show
+  // Skip listings in the current and future seasons that have no evals
+  return courses
+    .filter((o) => !isDiscussionSection(o) && !CUR_YEAR.includes(o.season_code))
+    .sort(
+      (a, b) =>
+        b.season_code.localeCompare(a.season_code, 'en-US') ||
+        parseInt(a.section, 10) - parseInt(b.section, 10),
+    );
+}
+
+function haveSameProfessors(
+  course1: Pick<RelatedCourseInfoFragment, 'course_professors'>,
+  course2: Pick<RelatedCourseInfoFragment, 'course_professors'>,
+) {
+  const aProfIds = course1.course_professors
+    .map((p) => p.professor.professor_id)
+    .sort((a, b) => a - b);
+  const bProfIds = course2.course_professors
+    .map((p) => p.professor.professor_id)
+    .sort((a, b) => a - b);
+  return (
+    aProfIds.length === bProfIds.length &&
+    aProfIds.every((id, i) => id === bProfIds[i])
   );
 }
 
 function OverviewRatings({
   gotoCourse,
-  listing,
-  others,
+  data,
 }: {
-  readonly gotoCourse: (x: RelatedListingInfo) => void;
-  readonly listing: ListingInfo;
-  readonly others: RelatedListingInfo[];
+  readonly gotoCourse: (x: CourseModalHeaderData) => void;
+  readonly data: SameCourseOrProfOfferingsQuery;
 }) {
   const { user } = useUser();
+  const listing = data.self[0]!;
   const overlapSections = useMemo(() => {
-    const overlapSections: {
-      [filter in Filter]: RelatedListingInfo[];
-    } = { both: [], course: [], professor: [] };
-    others
-      // Discussion sections have no ratings, nothing to show
-      .filter((other) => !isDiscussionSection(other))
-      .sort(
-        (a, b) =>
-          b.season_code.localeCompare(a.season_code, 'en-US') ||
-          parseInt(a.section, 10) - parseInt(b.section, 10),
-      )
-      .forEach((other) => {
-        // Skip listings in the current and future seasons that have no evals
-        if (CUR_YEAR.includes(other.season_code)) return;
-        const overlappingProfs = listing.course.course_professors.reduce(
-          (cnt, { professor: { professor_id: id } }) =>
-            cnt + (other.professor_ids.includes(String(id)) ? 1 : 0),
-          0,
-        );
-        // TODO: this whole logic is not ideal. We need to systematically
-        // reconsider what we mean by "same course" and "same professor".
-        // See: https://docs.google.com/document/d/1mIsanCz1U3M6SU2KbcBp9ONXRssDfeTzRtDIRzxdAOk
-        const isCourseOverlap = other.course_code === listing.course_code;
-        const isProfOverlap = overlappingProfs > 0;
-        // We require ALL professors to be the same
-        const isBothOverlap =
-          isCourseOverlap &&
-          overlappingProfs === other.professor_names.length &&
-          overlappingProfs === listing.course.course_professors.length;
-        if (isBothOverlap) overlapSections.both.push(other);
-        if (isCourseOverlap) overlapSections.course.push(other);
-        if (isProfOverlap) overlapSections.professor.push(other);
-        // Consider a course cross-listed with course codes A and B.
-        // It was taught by prof X in year 1 and prof Y in year 2.
-        // Then GraphQL would return 2-B when viewing 1-A even when they
-        // appear to not overlap.
-        // TODO: maybe we should fix this in the GraphQL layer? Again,
-        // reconsideration of course relationships needed...
-      });
-    return overlapSections;
-  }, [others, listing]);
+    const sameCourse = normalizeRelatedListings(data.sameCourse);
+    const sameProf = normalizeRelatedListings(
+      data.sameProf.map((o) => o.course),
+    );
+    const both = sameCourse.filter((o) =>
+      haveSameProfessors(o, listing.course),
+    );
+    return { course: sameCourse, professor: sameProf, both };
+  }, [data, listing]);
   const options = [
     {
       displayName: `Course (${overlapSections.course.length})`,
@@ -234,17 +311,18 @@ function OverviewRatings({
               <span className={styles.evaluationHeader}>Work</span>
             </Col>
           </Row>
-          {overlapSections[filter].map((other) => (
+          {overlapSections[filter].map((course) => (
             <Row
-              key={other.season_code + other.crn}
+              key={course.course_id}
               className="m-auto py-1 justify-content-center"
             >
               <CourseLink
-                listing={other}
+                listing={listing}
+                course={course}
                 filter={filter}
                 gotoCourse={gotoCourse}
               />
-              <RatingNumbers listing={other} hasEvals={user.hasEvals} />
+              <RatingNumbers course={course} hasEvals={user.hasEvals} />
             </Row>
           ))}
         </>

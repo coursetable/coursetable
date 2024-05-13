@@ -34,10 +34,10 @@ export type CourseModalHeaderData = {
   readonly skills: string[];
   readonly areas: string[];
   readonly extra_info: ExtraInfo;
-  readonly description: string;
+  readonly description: string | null;
   readonly times_by_day: TimesByDay;
   readonly same_course_id: number;
-  readonly professor_ids: string[];
+  readonly professor_ids: number[];
 };
 
 function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
@@ -169,7 +169,13 @@ function CourseModal() {
     void requestSeasons([seasonCode]).then(() => {
       const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
       if (!listingFromQuery) return;
-      setHistory([listingFromQuery]);
+      setHistory([
+        {
+          ...listingFromQuery,
+          // TODO: remove once api returns numbers
+          professor_ids: listingFromQuery.professor_ids.map(Number),
+        },
+      ]);
     });
   }, [history.length, searchParams, requestSeasons, courses]);
   const listing = history[history.length - 1];

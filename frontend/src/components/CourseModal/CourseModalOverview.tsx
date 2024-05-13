@@ -5,17 +5,9 @@ import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
 import { useUser } from '../../contexts/userContext';
-import {
-  useSameCourseOrProfOfferingsQuery,
-  type SameCourseOrProfOfferingsQuery,
-} from '../../generated/graphql';
+import { useSameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
-
-export type ListingInfo = SameCourseOrProfOfferingsQuery['self'][number];
-
-export type RelatedListingInfo =
-  SameCourseOrProfOfferingsQuery['others'][number];
 
 function CourseModalOverview({
   gotoCourse,
@@ -45,23 +37,14 @@ function CourseModalOverview({
     );
   }
 
-  const {
-    self: [listing],
-    others,
-  } = data;
-
   return (
     <Modal.Body>
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
-          <OverviewInfo listing={listing!} others={others} />
+          <OverviewInfo data={data} />
         </Col>
         <Col md={5} className="px-0 my-0">
-          <OverviewRatings
-            gotoCourse={gotoCourse}
-            listing={listing!}
-            others={others}
-          />
+          <OverviewRatings gotoCourse={gotoCourse} data={data} />
         </Col>
       </Row>
     </Modal.Body>

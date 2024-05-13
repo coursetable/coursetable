@@ -14,10 +14,9 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import type { ListingInfo, RelatedListingInfo } from './CourseModalOverview';
-
 import { CUR_SEASON } from '../../config';
 import { useSearch } from '../../contexts/searchContext';
+import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import type { Weekdays } from '../../queries/graphql-types';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -30,25 +29,23 @@ import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-type CourseInfo = ListingInfo['course'];
-
-type ProfInfo = {
-  email: string;
-  totalRating: number;
-  numCourses: number;
-};
+type CourseInfo = SameCourseOrProfOfferingsQuery['self'][0]['course'];
 
 const profInfoPopover =
-  (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
+  (
+    profInfo: CourseInfo['course_professors'][number]['professor'],
+    // TODO: use profInfo.courses_taught
+    numCourses: number,
+  ): OverlayChildren =>
   (props) => (
     <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
       <Popover.Header>
         <div className="mx-auto">
-          <strong>{profName}</strong>
+          <strong>{profInfo.name}</strong>
         </div>
         <div className="mx-auto">
           <small>
-            {profInfo?.email ? (
+            {profInfo.email ? (
               <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
             ) : (
               <TextComponent type="secondary">N/A</TextComponent>
@@ -63,20 +60,17 @@ const profInfoPopover =
               <strong
                 className="mx-auto"
                 style={{
-                  color: profInfo?.numCourses
-                    ? ratingColormap(profInfo.totalRating / profInfo.numCourses)
+                  color: profInfo.average_rating
+                    ? ratingColormap(profInfo.average_rating)
                         .darken()
                         .saturate()
                         .css()
                     : '#b5b5b5',
                 }}
               >
-                {
-                  // Get average rating
-                  profInfo?.numCourses
-                    ? (profInfo.totalRating / profInfo.numCourses).toFixed(1)
-                    : 'N/A'
-                }
+                {profInfo.average_rating
+                  ? profInfo.average_rating.toFixed(1)
+                  : 'N/A'}
               </strong>
             </div>
             <div className="d-flex mx-auto">
@@ -85,9 +79,7 @@ const profInfoPopover =
           </Col>
           <Col md={6}>
             <div className="d-flex mx-auto mb-1">
-              <strong className="mx-auto">
-                {profInfo?.numCourses ?? '[unknown]'}
-              </strong>
+              <strong className="mx-auto">{numCourses}</strong>
             </div>
             <div className="d-flex mx-auto">
               <small className="mx-auto text-center  fw-bold">
@@ -193,18 +185,19 @@ function DataField({
 
 function Syllabus({
   course,
-  others,
+  sameCourse,
 }: {
   readonly course: CourseInfo;
-  readonly others: RelatedListingInfo[];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
 }) {
   const pastSyllabi = useMemo(() => {
     // Remove duplicates by syllabus URL
-    const courseBySyllabus = new Map<string, RelatedListingInfo>();
-    for (const other of others) {
-      if (other.same_course_id !== course.same_course_id || !other.syllabus_url)
-        continue;
-      if (!courseBySyllabus.has(other.syllabus_url))
+    const courseBySyllabus = new Map<
+      string,
+      SameCourseOrProfOfferingsQuery['sameCourse'][number]
+    >();
+    for (const other of sameCourse) {
+      if (other.syllabus_url && !courseBySyllabus.has(other.syllabus_url))
         courseBySyllabus.set(other.syllabus_url, other);
     }
     return [...courseBySyllabus.values()].sort(
@@ -212,7 +205,7 @@ function Syllabus({
         b.season_code.localeCompare(a.season_code, 'en-US') ||
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
-  }, [others, course.same_course_id]);
+  }, [sameCourse]);
 
   return (
     <div className="mt-2">
@@ -262,56 +255,34 @@ function Syllabus({
 
 function Professors({
   course,
-  others,
+  sameProf,
 }: {
   readonly course: CourseInfo;
-  readonly others: RelatedListingInfo[];
+  readonly sameProf: SameCourseOrProfOfferingsQuery['sameProf'];
 }) {
-  const profInfo = useMemo(() => {
-    const profInfo = new Map(
-      course.course_professors.map(
-        ({ professor: { name } }): [string, ProfInfo] => [
-          name,
-          { numCourses: 0, totalRating: 0, email: '' },
-        ],
-      ),
-    );
-    // Only count cross-listed courses once per season
-    const countedCourses = new Set<string>();
-    for (const season of others) {
-      if (countedCourses.has(`${season.season_code}-${season.course_code}`))
-        continue;
-      if (!season.professor_info) continue;
-      season.professor_info.forEach((prof) => {
-        if (profInfo.has(prof.name)) {
-          const dict = profInfo.get(prof.name)!;
-          dict.numCourses++;
-          dict.totalRating += prof.average_rating;
-          dict.email = prof.email;
-          season.all_course_codes.forEach((c) => {
-            countedCourses.add(`${season.season_code}-${c}`);
-          });
-        }
-      });
-    }
-    return profInfo;
-  }, [others, course]);
-
   return (
     <DataField
       name="Professor"
       value={
         course.course_professors.length
-          ? course.course_professors.map(({ professor: { name } }, index) => (
-              <React.Fragment key={name}>
+          ? course.course_professors.map(({ professor }, index) => (
+              <React.Fragment key={professor.name}>
                 {index ? ' • ' : ''}
                 <OverlayTrigger
                   trigger="click"
                   rootClose
                   placement="right"
-                  overlay={profInfoPopover(name, profInfo.get(name))}
+                  overlay={profInfoPopover(
+                    professor,
+                    sameProf.filter((o) =>
+                      o.course.course_professors.some(
+                        (p) =>
+                          p.professor.professor_id === professor.professor_id,
+                      ),
+                    ).length,
+                  )}
                 >
-                  <LinkLikeText>{name}</LinkLikeText>
+                  <LinkLikeText>{professor.name}</LinkLikeText>
                 </OverlayTrigger>
               </React.Fragment>
             ))
@@ -373,13 +344,12 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
 }
 
 function OverviewInfo({
-  listing,
-  others,
+  data,
 }: {
-  readonly listing: ListingInfo;
-  readonly others: RelatedListingInfo[];
+  readonly data: SameCourseOrProfOfferingsQuery;
 }) {
   const { numFriends } = useSearch();
+  const listing = data.self[0]!;
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
@@ -390,8 +360,8 @@ function OverviewInfo({
       {course.requirements && (
         <div className={styles.requirements}>{course.requirements}</div>
       )}
-      <Syllabus course={course} others={others} />
-      <Professors course={course} others={others} />
+      <Syllabus course={course} sameCourse={data.sameCourse} />
+      <Professors course={course} sameProf={data.sameProf} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />
       <DataField

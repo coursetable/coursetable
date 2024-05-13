@@ -2,7 +2,7 @@ query SameCourseOrProfOfferings(
   $seasonCode: String!
   $crn: Int!
   $same_course_id: Int!
-  $professor_ids: [String!]
+  $professor_ids: [Int!]
   $hasEval: Boolean!
 ) {
   self: listings(
@@ -16,6 +16,8 @@ query SameCourseOrProfOfferings(
         professor {
           professor_id
           name
+          email
+          average_rating @include(if: $hasEval)
         }
       }
       times_by_day
@@ -44,40 +46,46 @@ query SameCourseOrProfOfferings(
     crn
     course_code
   }
-  others: computed_listing_info(
-    where: {
-      _or: [
-        { same_course_id: { _eq: $same_course_id } }
-        { professor_ids: { _has_keys_any: $professor_ids } }
-      ]
-    }
+  sameCourse: courses(where: { same_course_id: { _eq: $same_course_id } }) {
+    ...RelatedCourseInfo
+    syllabus_url
+  }
+  sameProf: course_professors(
+    where: { professor_id: { _in: $professor_ids } }
   ) {
     course {
-      average_professor_rating @include(if: $hasEval)
-      evaluation_statistic @include(if: $hasEval) {
-        avg_workload
-        avg_rating
-      }
+      ...RelatedCourseInfo
     }
-    professor_info @include(if: $hasEval)
-    professor_names
-    syllabus_url
-
-    # All this is needed to navigate to the next class
-    season_code
-    crn
-    title
-    course_code
-    all_course_codes
-    section
-    skills
-    areas
-    extra_info
-    description
-    times_by_day
-    same_course_id
-    professor_ids
   }
+}
+
+fragment RelatedCourseInfo on courses {
+  average_professor_rating @include(if: $hasEval)
+  evaluation_statistic @include(if: $hasEval) {
+    avg_workload
+    avg_rating
+  }
+  course_professors {
+    professor {
+      professor_id
+      name
+    }
+  }
+  course_id
+  # All this is needed to navigate to the next class
+  season_code
+  listings {
+    crn
+    course_code
+  }
+  title
+  section
+  skills
+  areas
+  extra_info
+  description
+  times_by_day
+  same_course_id
 }
 
 query SearchEvaluationNarratives($season_code: String, $crn: Int) {
