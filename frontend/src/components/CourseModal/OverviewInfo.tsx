@@ -16,7 +16,7 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
 import { CUR_SEASON } from '../../config';
 import { useSearch } from '../../contexts/searchContext';
-import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql';
+import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql-types';
 import type { Weekdays } from '../../queries/graphql-types';
 import { ratingColormap } from '../../utilities/constants';
 import {

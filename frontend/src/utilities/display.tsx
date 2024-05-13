@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Spinner from '../components/Spinner';
-import type { Listings } from '../generated/graphql';
+import type { Listings } from '../generated/graphql-types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function suspended<T extends React.ComponentType<any>>(

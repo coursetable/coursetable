@@ -16,6 +16,7 @@ export default tseslint.config(
   {
     ignores: [
       'frontend/src/generated/',
+      'frontend/src/queries/graphql-queries.ts',
       'frontend/build',
       'patches/',
       'api/src/**/*.queries.ts',

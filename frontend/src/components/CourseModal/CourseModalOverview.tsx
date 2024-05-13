@@ -5,7 +5,7 @@ import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
 import { useUser } from '../../contexts/userContext';
-import { useSameCourseOrProfOfferingsQuery } from '../../generated/graphql';
+import { useSameCourseOrProfOfferingsQuery } from '../../queries/graphql-queries';
 import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
 

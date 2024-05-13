@@ -18,7 +18,7 @@ import { useUser } from '../../contexts/userContext';
 import type {
   RelatedCourseInfoFragment,
   SameCourseOrProfOfferingsQuery,
-} from '../../generated/graphql';
+} from '../../generated/graphql-types';
 import { generateRandomColor } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../utilities/course';

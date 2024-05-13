@@ -1,7 +1,7 @@
 // Performing various actions on the listing dictionary
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
-import type { Courses, Listings } from '../generated/graphql';
+import type { Courses, Listings } from '../generated/graphql-types';
 import type { FriendRecord, UserWorksheets, Listing } from '../queries/api';
 import {
   type Crn,

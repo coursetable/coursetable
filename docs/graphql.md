@@ -106,7 +106,7 @@ On the frontend side, SDKs are all located in `src/generated`.
 4. Import the generated SDK in your frontend file:
 
    ```ts
-   import { useCourseMetadataQuery } from '../generated/graphql';
+   import { useCourseMetadataQuery } from '../queries/graphql-queries';
 
    const { data, loading, error } = useCourseMetadataQuery({
      variables: {

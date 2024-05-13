@@ -5,8 +5,6 @@ import { ProfessorInfo } from '../queries/graphql-types';
 import { Season } from '../queries/graphql-types';
 import { StringArr } from '../queries/graphql-types';
 import { TimesByDay } from '../queries/graphql-types';
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -27,7 +25,6 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
     };
-const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -10377,6 +10374,107 @@ export type SubscriptionRootSeasonsStreamArgs = {
   where: InputMaybe<SeasonsBoolExp>;
 };
 
+export type ListSeasonsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ListSeasonsQuery = {
+  __typename?: 'query_root';
+  seasons: Array<{ __typename?: 'seasons'; season_code: string }>;
+};
+
+export type EvalsBySeasonQueryVariables = Exact<{
+  season: Scalars['String']['input'];
+}>;
+
+export type EvalsBySeasonQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    crn: Crn;
+    course: {
+      __typename?: 'courses';
+      average_gut_rating: number | null;
+      average_rating: number | null;
+      average_rating_same_professors: number | null;
+      average_professor_rating: number | null;
+      average_workload: number | null;
+      average_workload_same_professors: number | null;
+      last_enrollment: number | null;
+      last_enrollment_same_professors: boolean | null;
+      evaluation_statistic: {
+        __typename?: 'evaluation_statistics';
+        enrolled: number | null;
+      } | null;
+    };
+  }>;
+};
+
+export type CatalogBySeasonQueryVariables = Exact<{
+  season: Scalars['String']['input'];
+}>;
+
+export type CatalogBySeasonQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    course_code: string;
+    crn: Crn;
+    listing_id: number;
+    number: string;
+    school: string | null;
+    season_code: Season;
+    section: string;
+    subject: string;
+    course: {
+      __typename?: 'courses';
+      areas: StringArr;
+      classnotes: string | null;
+      colsem: boolean | null;
+      credits: number | null;
+      description: string | null;
+      extra_info: ExtraInfo;
+      final_exam: string | null;
+      fysem: boolean | null;
+      last_offered_course_id: number | null;
+      locations_summary: string | null;
+      regnotes: string | null;
+      requirements: string | null;
+      rp_attr: string | null;
+      same_course_and_profs_id: number;
+      same_course_id: number;
+      skills: StringArr;
+      syllabus_url: string | null;
+      sysem: boolean | null;
+      times_by_day: TimesByDay;
+      times_summary: string | null;
+      title: string;
+      course_flags: Array<{
+        __typename?: 'course_flags';
+        flag: { __typename?: 'flags'; flag_text: string };
+      }>;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: {
+          __typename?: 'professors';
+          professor_id: number;
+          name: string;
+        };
+      }>;
+      listings: Array<{
+        __typename?: 'listings';
+        crn: Crn;
+        course_code: string;
+      }>;
+    };
+  }>;
+};
+
+export type CourseAttributesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CourseAttributesQuery = {
+  __typename?: 'query_root';
+  flags: Array<{ __typename?: 'flags'; flag_text: string }>;
+};
+
 export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   seasonCode: Scalars['String']['input'];
   crn: Scalars['Int']['input'];
@@ -10508,263 +10606,3 @@ export type SearchEvaluationNarrativesQuery = {
     };
   }>;
 };
-
-export const RelatedCourseInfoFragmentDoc = gql`
-  fragment RelatedCourseInfo on courses {
-    average_professor_rating @include(if: $hasEval)
-    evaluation_statistic @include(if: $hasEval) {
-      avg_workload
-      avg_rating
-    }
-    course_professors {
-      professor {
-        professor_id
-        name
-      }
-    }
-    course_id
-    season_code
-    listings {
-      crn
-      course_code
-    }
-    title
-    section
-    skills
-    areas
-    extra_info
-    description
-    times_by_day
-    same_course_id
-  }
-`;
-export const SameCourseOrProfOfferingsDocument = gql`
-  query SameCourseOrProfOfferings(
-    $seasonCode: String!
-    $crn: Int!
-    $same_course_id: Int!
-    $professor_ids: [Int!]
-    $hasEval: Boolean!
-  ) {
-    self: listings(
-      where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
-    ) {
-      course {
-        description
-        requirements
-        syllabus_url
-        course_professors {
-          professor {
-            professor_id
-            name
-            email
-            courses_taught
-            average_rating @include(if: $hasEval)
-          }
-        }
-        times_by_day
-        section
-        course_flags {
-          flag {
-            flag_text
-          }
-        }
-        evaluation_statistic @include(if: $hasEval) {
-          enrolled
-        }
-        last_enrollment @include(if: $hasEval)
-        last_enrollment_same_professors @include(if: $hasEval)
-        credits
-        classnotes
-        regnotes
-        rp_attr
-        final_exam
-        same_course_id
-      }
-      season_code
-      crn
-      course_code
-    }
-    sameCourse: courses(where: { same_course_id: { _eq: $same_course_id } }) {
-      ...RelatedCourseInfo
-      syllabus_url
-    }
-    sameProf: course_professors(
-      where: { professor_id: { _in: $professor_ids } }
-    ) {
-      course {
-        ...RelatedCourseInfo
-      }
-    }
-  }
-  ${RelatedCourseInfoFragmentDoc}
-`;
-
-/**
- * __useSameCourseOrProfOfferingsQuery__
- *
- * To run a query within a React component, call `useSameCourseOrProfOfferingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSameCourseOrProfOfferingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
- *   variables: {
- *      seasonCode: // value for 'seasonCode'
- *      crn: // value for 'crn'
- *      same_course_id: // value for 'same_course_id'
- *      professor_ids: // value for 'professor_ids'
- *      hasEval: // value for 'hasEval'
- *   },
- * });
- */
-export function useSameCourseOrProfOfferingsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  > &
-    (
-      | { variables: SameCourseOrProfOfferingsQueryVariables; skip?: boolean }
-      | { skip: boolean }
-    ),
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
-}
-export function useSameCourseOrProfOfferingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
-}
-export function useSameCourseOrProfOfferingsSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SameCourseOrProfOfferingsQuery,
-    SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
-}
-export type SameCourseOrProfOfferingsQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsQuery
->;
-export type SameCourseOrProfOfferingsLazyQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsLazyQuery
->;
-export type SameCourseOrProfOfferingsSuspenseQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsSuspenseQuery
->;
-export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<
-  SameCourseOrProfOfferingsQuery,
-  SameCourseOrProfOfferingsQueryVariables
->;
-export const SearchEvaluationNarrativesDocument = gql`
-  query SearchEvaluationNarratives($season_code: String, $crn: Int) {
-    listings(
-      where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
-    ) {
-      course {
-        evaluation_narratives {
-          comment
-          evaluation_question {
-            question_text
-            tag
-          }
-        }
-        evaluation_ratings {
-          rating
-          evaluation_question {
-            question_text
-            options
-            tag
-          }
-        }
-        evaluation_statistic {
-          enrolled
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useSearchEvaluationNarrativesQuery__
- *
- * To run a query within a React component, call `useSearchEvaluationNarrativesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchEvaluationNarrativesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchEvaluationNarrativesQuery({
- *   variables: {
- *      season_code: // value for 'season_code'
- *      crn: // value for 'crn'
- *   },
- * });
- */
-export function useSearchEvaluationNarrativesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >(SearchEvaluationNarrativesDocument, options);
-}
-export function useSearchEvaluationNarrativesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >(SearchEvaluationNarrativesDocument, options);
-}
-export function useSearchEvaluationNarrativesSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SearchEvaluationNarrativesQuery,
-    SearchEvaluationNarrativesQueryVariables
-  >(SearchEvaluationNarrativesDocument, options);
-}
-export type SearchEvaluationNarrativesQueryHookResult = ReturnType<
-  typeof useSearchEvaluationNarrativesQuery
->;
-export type SearchEvaluationNarrativesLazyQueryHookResult = ReturnType<
-  typeof useSearchEvaluationNarrativesLazyQuery
->;
-export type SearchEvaluationNarrativesSuspenseQueryHookResult = ReturnType<
-  typeof useSearchEvaluationNarrativesSuspenseQuery
->;
-export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
-  SearchEvaluationNarrativesQuery,
-  SearchEvaluationNarrativesQueryVariables
->;

@@ -1,5 +1,5 @@
 import RatingsGraph from './RatingsGraph';
-import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql-types';
 import { evalQuestionTags } from '../../utilities/constants';
 import { TextComponent } from '../Typography';
 import styles from './EvaluationRatings.module.css';
