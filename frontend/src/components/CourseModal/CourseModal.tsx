@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
@@ -14,7 +14,7 @@ import type { Listings } from '../../generated/graphql-types';
 import type { Season, Crn } from '../../queries/graphql-types';
 import { extraInfo } from '../../utilities/constants';
 import { toSeasonString, truncatedText } from '../../utilities/course';
-import { suspended, useCourseModalLink } from '../../utilities/display';
+import { suspended, createCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
@@ -164,6 +164,8 @@ function CourseModal() {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
+  // This will update when history updates
+  const listing = history[history.length - 1];
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -175,8 +177,10 @@ function CourseModal() {
       setHistory([listingFromQuery]);
     });
   }, [history.length, searchParams, requestSeasons, courses]);
-  const listing = history[history.length - 1];
-  const backTarget = useCourseModalLink(history[history.length - 2]);
+  const backTarget = createCourseModalLink(
+    history[history.length - 2],
+    searchParams,
+  );
 
   if (!listing) return null;
   const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`;
@@ -241,9 +245,33 @@ function CourseModal() {
               <div className={styles.badges}>
                 <p className={styles.courseCodes}>
                   <TextComponent type="tertiary">
-                    {listing.course.listings
-                      .map((l) => l.course_code)
-                      .join(' • ')}
+                    {listing.course.listings.map((l, i) => (
+                      <React.Fragment key={l.crn}>
+                        {i > 0 && ' • '}
+                        {l.crn === listing.crn ? (
+                          l.course_code
+                        ) : (
+                          <Link
+                            className={styles.crossListingLink}
+                            to={createCourseModalLink(
+                              { crn: l.crn, season_code: listing.season_code },
+                              searchParams,
+                            )}
+                            // We replace instead of pushing to history. I don't
+                            // think navigating between cross-listings should be
+                            // treated as an actual navigation
+                            onClick={() => {
+                              setHistory([
+                                ...history.slice(0, -1),
+                                { ...listing, ...l },
+                              ]);
+                            }}
+                          >
+                            {l.course_code}
+                          </Link>
+                        )}
+                      </React.Fragment>
+                    ))}
                   </TextComponent>
                 </p>
                 {[...listing.course.skills, ...listing.course.areas].map(
@@ -278,7 +306,7 @@ function CourseModal() {
         </Modal.Header>
         {view === 'overview' ? (
           <CourseModalOverview
-            gotoCourse={(l) => {
+            onNavigation={(l) => {
               user.hasEvals ? setView('evals') : setView('overview');
               if (
                 l.crn === listing.crn &&

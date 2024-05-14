@@ -120,32 +120,21 @@ export const scrollToTop: MouseEventHandler = (event) => {
   if (!newPage) window.scrollTo({ top: 0, left: 0 });
 };
 
-function createCourseModalLink(
-  listing: Pick<Listings, 'season_code' | 'crn'>,
+// Please use this instead of creating a new search param. This will preserve
+// existing params.
+export function createCourseModalLink(
+  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
   searchParams: URLSearchParams,
 ) {
   const newSearch = new URLSearchParams(searchParams);
+  if (!listing) return `?${searchParams.toString()}`;
   newSearch.set('course-modal', `${listing.season_code}-${listing.crn}`);
   return `?${newSearch.toString()}`;
 }
 
-// Please use this instead of creating a new search param. This will preserve
-// existing params.
 export function useCourseModalLink(
   listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
-): string;
-export function useCourseModalLink(
-  listing: Pick<Listings, 'season_code' | 'crn'>[],
-): string[];
-export function useCourseModalLink(
-  listing:
-    | Pick<Listings, 'season_code' | 'crn'>
-    | Pick<Listings, 'season_code' | 'crn'>[]
-    | undefined,
 ) {
   const [searchParams] = useSearchParams();
-  if (!listing) return `?${searchParams.toString()}`;
-  if (Array.isArray(listing))
-    return listing.map((l) => createCourseModalLink(l, searchParams));
   return createCourseModalLink(listing, searchParams);
 }
