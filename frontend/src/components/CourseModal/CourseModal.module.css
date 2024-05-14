@@ -16,6 +16,11 @@
   margin: 0 0.5rem 0 0;
 }
 
+.crossListingLink {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .cancelledText {
   color: rgb(255 98 98);
 }

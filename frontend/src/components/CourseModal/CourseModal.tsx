@@ -164,6 +164,8 @@ function CourseModal() {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
+  // This will update when history updates
+  const listing = history[history.length - 1];
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -175,7 +177,6 @@ function CourseModal() {
       setHistory([listingFromQuery]);
     });
   }, [history.length, searchParams, requestSeasons, courses]);
-  const listing = history[history.length - 1];
   const backTarget = createCourseModalLink(
     history[history.length - 2],
     searchParams,
@@ -245,16 +246,26 @@ function CourseModal() {
                 <p className={styles.courseCodes}>
                   <TextComponent type="tertiary">
                     {listing.course.listings.map((l, i) => (
-                      <React.Fragment key={i}>
+                      <React.Fragment key={l.crn}>
                         {i > 0 && ' • '}
                         {l.crn === listing.crn ? (
                           l.course_code
                         ) : (
                           <Link
+                            className={styles.crossListingLink}
                             to={createCourseModalLink(
                               { crn: l.crn, season_code: listing.season_code },
                               searchParams,
                             )}
+                            // We replace instead of pushing to history. I don't
+                            // think navigating between cross-listings should be
+                            // treated as an actual navigation
+                            onClick={() => {
+                              setHistory([
+                                ...history.slice(0, -1),
+                                { ...listing, ...l },
+                              ]);
+                            }}
                           >
                             {l.course_code}
                           </Link>
