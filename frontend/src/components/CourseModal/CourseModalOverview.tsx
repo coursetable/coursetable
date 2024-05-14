@@ -10,10 +10,10 @@ import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
 
 function CourseModalOverview({
-  gotoCourse,
+  onNavigation,
   header,
 }: {
-  readonly gotoCourse: (x: CourseModalHeaderData) => void;
+  readonly onNavigation: (x: CourseModalHeaderData) => void;
   readonly header: CourseModalHeaderData;
 }) {
   const { user } = useUser();
@@ -46,7 +46,7 @@ function CourseModalOverview({
           <OverviewInfo data={data} />
         </Col>
         <Col md={5} className="px-0 my-0">
-          <OverviewRatings gotoCourse={gotoCourse} data={data} />
+          <OverviewRatings onNavigation={onNavigation} data={data} />
         </Col>
       </Row>
     </Modal.Body>

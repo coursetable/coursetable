@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
   Row,
@@ -22,7 +22,7 @@ import type {
 import { generateRandomColor } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../utilities/course';
-import { useCourseModalLink } from '../../utilities/display';
+import { createCourseModalLink } from '../../utilities/display';
 import { RatingBubble } from '../Typography';
 
 import styles from './OverviewRatings.module.css';
@@ -111,25 +111,20 @@ function CourseLink({
   listing,
   course,
   filter,
-  gotoCourse,
+  onNavigation,
 }: {
   readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly course: RelatedCourseInfoFragment;
   readonly filter: Filter;
-  readonly gotoCourse: (x: CourseModalHeaderData) => void;
+  readonly onNavigation: (x: CourseModalHeaderData) => void;
 }) {
-  const linkTargets = useCourseModalLink(
-    course.listings.map((l) => ({
-      season_code: course.season_code,
-      crn: l.crn,
-    })),
-  );
+  const [searchParams] = useSearchParams();
   // Note, we purposefully use the listing data fetched from GraphQL instead
   // of the static seasons data. This means on navigation we don't have to
   // possibly fetch a new season and cause a loading screen.
   // We have to "massage" this data to fit the flat shape like the one
   // sent by the api. This will be changed.
-  const targetCourses = course.listings.map((l) => ({
+  const targetListings = course.listings.map((l) => ({
     ...l,
     season_code: course.season_code,
     section: course.section,
@@ -143,15 +138,15 @@ function CourseLink({
         : course.course_professors.length === 0
           ? 'TBA'
           : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
-  if (linkTargets.length === 1) {
+  if (targetListings.length === 1) {
     return (
       <Col
         as={Link}
         xs={5}
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-        to={linkTargets[0]!}
+        to={createCourseModalLink(targetListings[0], searchParams)}
         onClick={() => {
-          gotoCourse(targetCourses[0]!);
+          onNavigation(targetListings[0]!);
         }}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
@@ -168,13 +163,13 @@ function CourseLink({
         <Popover id="cross-listing-popover" {...props}>
           <Popover.Body>
             This class has multiple cross-listings:
-            {course.listings.map((l, i) => (
+            {targetListings.map((l, i) => (
               <Link
                 key={i}
                 className="d-block"
-                to={linkTargets[i]!}
+                to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  gotoCourse(targetCourses[i]!);
+                  onNavigation(l);
                 }}
               >
                 {l.course_code === listing.course_code ? (
@@ -192,7 +187,6 @@ function CourseLink({
         as={Button}
         xs={5}
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-        to={linkTargets[0]!}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
         <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
@@ -232,10 +226,10 @@ function haveSameProfessors(
 }
 
 function OverviewRatings({
-  gotoCourse,
+  onNavigation,
   data,
 }: {
-  readonly gotoCourse: (x: CourseModalHeaderData) => void;
+  readonly onNavigation: (x: CourseModalHeaderData) => void;
   readonly data: SameCourseOrProfOfferingsQuery;
 }) {
   const { user } = useUser();
@@ -309,7 +303,7 @@ function OverviewRatings({
                 listing={listing}
                 course={course}
                 filter={filter}
-                gotoCourse={gotoCourse}
+                onNavigation={onNavigation}
               />
               <RatingNumbers course={course} hasEvals={user.hasEvals} />
             </Row>
