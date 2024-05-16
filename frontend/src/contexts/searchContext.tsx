@@ -59,12 +59,12 @@ const sortCriteria = {
   course_code: 'Sort by Course Code',
   title: 'Sort by Course Title',
   friend: 'Sort by Friends',
-  average_rating: 'Sort by Course Rating',
+  overall: 'Sort by Course Rating',
   average_professor_rating: 'Sort by Professor Rating',
-  average_workload: 'Sort by Workload',
+  workload: 'Sort by Workload',
   average_gut_rating: 'Sort by Guts (Overall - Workload)',
-  last_enrollment: 'Sort by Last Enrollment',
-  times_by_day: 'Sort by Days & Times',
+  enrollment: 'Sort by Last Enrollment',
+  time: 'Sort by Days & Times',
   locations_summary: 'Sort by Locations',
 };
 

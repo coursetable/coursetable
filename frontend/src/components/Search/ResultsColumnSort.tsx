@@ -17,12 +17,12 @@ const isNumeric: { [key in SortKeys]: boolean } = {
   course_code: false,
   title: false,
   friend: true,
-  average_rating: true,
+  overall: true,
   average_professor_rating: true,
-  average_workload: true,
+  workload: true,
   average_gut_rating: true,
-  last_enrollment: true,
-  times_by_day: true,
+  enrollment: true,
+  time: true,
   locations_summary: false,
 };
 

@@ -222,11 +222,43 @@ function toDayTimeScore(course: Pick<Courses, 'times_by_day'>): number | null {
   return null;
 }
 
-function comparatorReturn(
-  aVal: number | string | null,
-  bVal: number | string | null,
-  ordering: 'asc' | 'desc',
+type ComparableKey = SortKeys | 'season_code' | 'section';
+
+function getAttributeValue(
+  l: CatalogListing,
+  key: ComparableKey,
+  numFriends: NumFriendsReturn,
 ) {
+  switch (key) {
+    case 'friend':
+      return numFriends[`${l.season_code}${l.crn}`]?.size ?? 0;
+    case 'overall':
+      return getOverallRatings(l.course, 'stat');
+    case 'workload':
+      return getWorkloadRatings(l.course, 'stat');
+    case 'enrollment':
+      return getEnrolled(l.course, 'stat');
+    case 'time':
+      return toDayTimeScore(l.course);
+    case 'course_code':
+    case 'season_code':
+    case 'section':
+      return l[key];
+    default:
+      // || is intentional: 0 also means nonexistence
+      return l.course[key] || null;
+  }
+}
+
+function compareByKey(
+  a: CatalogListing,
+  b: CatalogListing,
+  key: ComparableKey,
+  ordering: 'asc' | 'desc',
+  numFriends: NumFriendsReturn,
+) {
+  const aVal = getAttributeValue(a, key, numFriends);
+  const bVal = getAttributeValue(b, key, numFriends);
   if (aVal === null && bVal === null) return 0;
   if (aVal === null) return 1;
   if (bVal === null) return -1;
@@ -242,96 +274,6 @@ function comparatorReturn(
   return ordering === 'asc' ? strCmp : -strCmp;
 }
 
-// We can only sort by primitive keys by default, unless we have special support
-type ComparableKey =
-  | SortKeys
-  | 'season_code'
-  | 'section'
-  | keyof {
-      [K in keyof CatalogListing['course'] as CatalogListing['course'][K] extends
-        | string
-        | number
-        ? K
-        : never]: K;
-    };
-
-function compareByKey(
-  a: CatalogListing,
-  b: CatalogListing,
-  key: Exclude<ComparableKey, 'friend'>,
-  ordering: 'asc' | 'desc',
-): number;
-function compareByKey(
-  a: CatalogListing,
-  b: CatalogListing,
-  key: ComparableKey,
-  ordering: 'asc' | 'desc',
-  numFriends: NumFriendsReturn,
-): number;
-function compareByKey(
-  a: CatalogListing,
-  b: CatalogListing,
-  key: ComparableKey,
-  ordering: 'asc' | 'desc',
-  numFriends?: NumFriendsReturn,
-) {
-  if (key === 'friend') {
-    // Concatenate season code and crn to form key
-    const friendsTakingA = numFriends![`${a.season_code}${a.crn}`]?.size ?? 0;
-    const friendsTakingB = numFriends![`${b.season_code}${b.crn}`]?.size ?? 0;
-    return comparatorReturn(friendsTakingA, friendsTakingB, ordering);
-  }
-  if (key === 'average_rating') {
-    return comparatorReturn(
-      getOverallRatings(a.course, 'stat'),
-      getOverallRatings(b.course, 'stat'),
-      ordering,
-    );
-  }
-  if (key === 'average_workload') {
-    return comparatorReturn(
-      getWorkloadRatings(a.course, 'stat'),
-      getWorkloadRatings(b.course, 'stat'),
-      ordering,
-    );
-  }
-  if (key === 'times_by_day') {
-    return comparatorReturn(
-      toDayTimeScore(a.course),
-      toDayTimeScore(b.course),
-      ordering,
-    );
-  }
-  if (key === 'course_code' || key === 'season_code' || key === 'section')
-    return comparatorReturn(a.course_code, b.course_code, ordering);
-  // If value is 0, return null
-  return comparatorReturn(
-    // || is intentional: 0 also means nonexistence
-    a.course[key] || null,
-    b.course[key] || null,
-    ordering,
-  );
-}
-
-/**
- * Compares two listings by the specified key.
- */
-function compare(
-  a: CatalogListing,
-  b: CatalogListing,
-  key: SortKeys,
-  ordering: 'asc' | 'desc',
-  numFriends: NumFriendsReturn,
-): number {
-  return (
-    compareByKey(a, b, key, ordering, numFriends) ||
-    // Define a stable sort order for courses that compare equal
-    compareByKey(a, b, 'season_code', 'desc') ||
-    compareByKey(a, b, 'course_code', 'asc') ||
-    compareByKey(a, b, 'section', 'asc')
-  );
-}
-
 // Sort courses in catalog or expanded worksheet
 export function sortCourses(
   courses: CatalogListing[],
@@ -341,13 +283,18 @@ export function sortCourses(
   },
   numFriends: NumFriendsReturn,
 ): CatalogListing[] {
-  return [...courses].sort((a, b) =>
-    compare(a, b, ordering.key, ordering.type, numFriends),
+  return [...courses].sort(
+    (a, b) =>
+      compareByKey(a, b, ordering.key, ordering.type, numFriends) ||
+      // Define a stable sort order for courses that compare equal
+      compareByKey(a, b, 'season_code', 'desc', numFriends) ||
+      compareByKey(a, b, 'course_code', 'asc', numFriends) ||
+      compareByKey(a, b, 'section', 'asc', numFriends),
   );
 }
 
 type CourseWithEnrolled = {
-  evaulation_statistic?: {
+  evaluation_statistic?: {
     enrolled: number | null;
   } | null;
   last_enrollment?: number | null;
@@ -366,11 +313,11 @@ export function getEnrolled(
   course: CourseWithEnrolled,
   usage: 'stat' | 'display' | 'modal',
 ): string | number | null {
-  if (course.evaulation_statistic?.enrolled) {
+  if (course.evaluation_statistic?.enrolled) {
     // Use enrollment for that season if course has happened
     return usage === 'stat'
-      ? course.evaulation_statistic.enrolled
-      : String(course.evaulation_statistic.enrolled);
+      ? course.evaluation_statistic.enrolled
+      : String(course.evaluation_statistic.enrolled);
   } else if (course.last_enrollment) {
     // Use last enrollment if course hasn't happened
     if (usage === 'stat') return course.last_enrollment;

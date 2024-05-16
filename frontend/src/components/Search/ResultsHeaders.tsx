@@ -98,7 +98,7 @@ function ResultsHeaders({
                   average across all professors)
                 </span>
               }
-              sortOption="average_rating"
+              sortOption="overall"
             >
               Overall
             </HeaderCol>
@@ -113,7 +113,7 @@ function ResultsHeaders({
                   average across all professors)
                 </span>
               }
-              sortOption="average_workload"
+              sortOption="workload"
             >
               Work
             </HeaderCol>
@@ -151,7 +151,7 @@ function ResultsHeaders({
                   </span>
                 )
               }
-              sortOption="last_enrollment"
+              sortOption="enrollment"
             >
               #
             </HeaderCol>
@@ -167,7 +167,7 @@ function ResultsHeaders({
                   (sort order based on day and starting time)
                 </span>
               }
-              sortOption="times_by_day"
+              sortOption="time"
             >
               Meets
             </HeaderCol>
