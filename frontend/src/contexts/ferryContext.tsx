@@ -10,16 +10,17 @@ import * as Sentry from '@sentry/react';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
-import { useUser, type UserWishlist } from './userContext';
+import { useUser } from './userContext';
 import type { WorksheetCourse } from './worksheetContext';
 import seasonsData from '../generated/seasons.json';
 import {
   fetchCatalog,
   fetchEvals,
   type UserWorksheets,
+  type UserWishlist,
   type CatalogListing,
 } from '../queries/api';
-import type { Crn, Season, Listing } from '../queries/graphql-types';
+import type { Crn, Season } from '../queries/graphql-types';
 import { UPCOMING_SEASONS } from '../config';
 import type { WishlistCourse } from './wishlistContext';
 
