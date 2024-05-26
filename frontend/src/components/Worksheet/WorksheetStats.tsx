@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
-import clsx from 'clsx';
 import chroma from 'chroma-js';
-import SkillBadge from '../SkillBadge';
 import { useTheme } from '../../contexts/themeContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { ratingColormap } from '../../utilities/constants';
@@ -12,6 +11,7 @@ import {
   getWorkloadRatings,
   isDiscussionSection,
 } from '../../utilities/course';
+import SkillBadge from '../SkillBadge';
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -25,7 +25,7 @@ function StatPill({
 }) {
   const { theme } = useTheme();
   return (
-    <span
+    <dd
       className={styles.statPill}
       style={{
         backgroundColor: colorMap(stat)
@@ -34,7 +34,7 @@ function StatPill({
       }}
     >
       {children}
-    </span>
+    </dd>
   );
 }
 
@@ -66,7 +66,7 @@ function NoStatsTip({
         placement="top"
         overlay={(props) => (
           <Tooltip {...props} id="conflict-icon-button-tooltip">
-            <small style={{ fontWeight: 500 }}>
+            <small>
               Computed with {coursesWithRating} course
               {coursesWithRating === 1 ? '' : 's'}.{' '}
               {formatter.format(coursesWithoutRating)} ha
@@ -75,7 +75,9 @@ function NoStatsTip({
           </Tooltip>
         )}
       >
-        <MdInfoOutline className={styles.infoIcon} />
+        <span>
+          <MdInfoOutline className={styles.infoIcon} />
+        </span>
       </OverlayTrigger>
     )
   );
@@ -93,9 +95,9 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  for (const { listing: course, hidden } of courses) {
-    const alreadyCounted = course.all_course_codes.some((code) =>
-      countedCourseCodes.has(code),
+  for (const { listing, hidden } of courses) {
+    const alreadyCounted = listing.course.listings.some((l) =>
+      countedCourseCodes.has(l.course_code),
     );
 
     // Don't count in one of the following cases:
@@ -103,21 +105,21 @@ export default function WorksheetStats() {
     // - Another section has been counted (we just randomly pick one)
     // - Is discussion section (no ratings or credits)
     // - Is hidden
-    if (alreadyCounted || hidden || isDiscussionSection(course)) continue;
+    if (alreadyCounted || hidden || isDiscussionSection(listing)) continue;
 
     // Mark codes as counted, no double counting
-    course.all_course_codes.forEach((code) => {
-      countedCourseCodes.add(code);
+    listing.course.listings.forEach((l) => {
+      countedCourseCodes.add(l.course_code);
     });
-    const courseRating = getOverallRatings(course, 'stat');
-    const courseWorkload = getWorkloadRatings(course, 'stat');
-    if (!courseRating) coursesWithoutRating.push(course.course_code);
-    if (!courseWorkload) coursesWithoutWorkload.push(course.course_code);
+    const courseRating = getOverallRatings(listing.course, 'stat');
+    const courseWorkload = getWorkloadRatings(listing.course, 'stat');
+    if (!courseRating) coursesWithoutRating.push(listing.course_code);
+    if (!courseWorkload) coursesWithoutWorkload.push(listing.course_code);
     courseCnt++;
-    credits += course.credits ?? 0;
+    credits += listing.course.credits ?? 0;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
-    skillsAreas.push(...course.skills, ...course.areas);
+    skillsAreas.push(...listing.course.skills, ...listing.course.areas);
   }
   const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
   const coursesWithRating = courseCnt - coursesWithoutRating.length;
@@ -137,52 +139,52 @@ export default function WorksheetStats() {
       <Collapse in={shown}>
         <div>
           <div className={styles.stats}>
-            <ul>
-              <li>
-                <span className={styles.statName}>Total courses</span>
+            <dl>
+              <div>
+                <dt>Total courses</dt>
                 <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
                   {courseCnt}
                 </StatPill>
-              </li>
-              <li>
-                <span className={styles.statName}>Total credits</span>
+              </div>
+              <div>
+                <dt>Total credits</dt>
                 <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
                 </StatPill>
-              </li>
-              <li>
-                <span className={styles.statName}>
+              </div>
+              <div>
+                <dt>
                   Total workload
                   <NoStatsTip
                     coursesWithoutRating={coursesWithoutWorkload}
                     coursesWithRating={coursesWithWorkload}
                   />
-                </span>
+                </dt>
                 <StatPill colorMap={workloadColormap} stat={workload}>
                   {workload.toFixed(2)}
                 </StatPill>
-              </li>
-              <li>
-                <span className={styles.statName}>
+              </div>
+              <div>
+                <dt>
                   Average rating
                   <NoStatsTip
                     coursesWithoutRating={coursesWithoutRating}
                     coursesWithRating={coursesWithRating}
                   />
-                </span>
+                </dt>
                 <StatPill colorMap={ratingColormap} stat={avgRating}>
                   {avgRating.toFixed(2)}
                 </StatPill>
-              </li>
-              <li className={styles.wide}>
-                <span className={styles.statName}>Skills & Areas</span>
-                <span className={styles.statName}>
+              </div>
+              <div className={styles.wide}>
+                <dt>Skills & Areas</dt>
+                <dd>
                   {skillsAreas.sort().map((skill, i) => (
                     <SkillBadge skill={skill} key={i} />
                   ))}
-                </span>
-              </li>
-            </ul>
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </Collapse>

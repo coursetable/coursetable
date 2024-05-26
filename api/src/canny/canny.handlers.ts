@@ -1,12 +1,11 @@
 import type express from 'express';
-import jwt from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
-
-import { YALIES_API_KEY, CANNY_KEY, FRONTEND_ENDPOINT, db } from '../config.js';
-import type { YaliesResponse } from '../auth/auth.handlers.js';
-import winston from '../logging/winston.js';
+import jwt from 'jsonwebtoken';
 
 import { studentBluebookSettings } from '../../drizzle/schema.js';
+import type { YaliesResponse } from '../auth/auth.handlers.js';
+import { YALIES_API_KEY, CANNY_KEY, FRONTEND_ENDPOINT, db } from '../config.js';
+import winston from '../logging/winston.js';
 
 // Create a JWT-signed Canny token with user info
 const createCannyToken = (user: Express.User) => {

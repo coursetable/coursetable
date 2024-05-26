@@ -1,24 +1,28 @@
 .container {
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .worksheetDropdown {
+  cursor: pointer;
   padding: 10px;
   border-radius: 5px;
   font-size: 12px;
   font-weight: bold;
   border: none;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 4px var(--color-shadow);
   background-color: var(--color-select);
   color: var(--color-text);
 }
 
 .worksheetDropdown:hover {
   opacity: 1 !important;
+}
+
+.toggleContainer {
+  position: relative;
 }
 
 .scaleIcon {
@@ -30,9 +34,7 @@
 }
 
 .toggleButton {
-  gap: 1rem;
   background-color: transparent;
-  border-width: 0;
   color: var(--color-primary) !important;
 }
 
@@ -47,14 +49,8 @@
 
 .courseConflictIcon {
   position: absolute;
-  top: -12px;
-  left: -5px;
-}
-
-.courseConflictIconModal {
-  position: absolute;
-  top: -3px;
-  left: -8px;
+  top: -10px;
+  left: -6px;
 }
 
 .disabledButton {

@@ -27,14 +27,16 @@ export function SurfaceComponent({
 export function TextComponent({
   type,
   small,
+  as: As = 'span',
   className,
   ...props
 }: {
   readonly type?: 'primary' | 'secondary' | 'tertiary';
   readonly small?: boolean;
+  readonly as?: React.ElementType;
 } & React.ComponentProps<'span'>) {
   return (
-    <span
+    <As
       {...props}
       className={clsx(
         styles.text,
@@ -60,45 +62,39 @@ export const Input = forwardRef(
   ),
 );
 
-export function Hr({ className, ...props }: React.ComponentProps<'hr'>) {
-  return <hr {...props} className={clsx(styles.hr, className)} />;
-}
-
-export const InfoPopover = forwardRef(
-  ({ className, ...props }: React.ComponentProps<typeof Popover>, ref) => (
-    <Popover
-      {...props}
-      ref={ref}
-      className={clsx(styles.infoPopover, className)}
-    />
-  ),
-);
+export const InfoPopover = forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof Popover>
+>(({ className, ...props }, ref) => (
+  <Popover
+    {...props}
+    ref={ref}
+    className={clsx(styles.infoPopover, className)}
+  />
+));
 
 // Rating bubbles in search results list item and modal
-export function RatingBubble({
-  rating,
-  colorMap,
-  className,
-  style,
-  color,
-  ...props
-}: (
-  | {
-      readonly rating: number | null;
-      readonly colorMap: chroma.Scale;
-      readonly color?: never;
-    }
-  | {
-      readonly rating?: never;
-      readonly colorMap?: never;
-      readonly color: string;
-    }
-) &
-  React.ComponentProps<'div'>) {
+export const RatingBubble = forwardRef<
+  HTMLSpanElement,
+  (
+    | {
+        readonly rating: number | null | undefined;
+        readonly colorMap: chroma.Scale;
+        readonly color?: never;
+      }
+    | {
+        readonly rating?: never;
+        readonly colorMap?: never;
+        readonly color: chroma.Color;
+      }
+  ) &
+    Omit<React.ComponentProps<'span'>, 'color'>
+>(({ rating, colorMap, className, style, color, ...props }, ref) => {
   const { theme } = useTheme();
   return (
-    <div
+    <span
       {...props}
+      ref={ref}
       className={clsx(
         styles.ratingBubble,
         rating && styles.hasRating,
@@ -106,36 +102,23 @@ export function RatingBubble({
       )}
       style={{
         ...style,
-        backgroundColor:
-          color ??
-          (rating
-            ? colorMap(rating)
-                .alpha(theme === 'light' ? 1 : 0.75)
-                .css()
-            : undefined),
+        backgroundColor: (color ?? (rating ? colorMap(rating) : undefined))
+          ?.alpha(theme === 'light' ? 1 : 0.75)
+          .css(),
       }}
     />
   );
-}
+});
 
 // Primary Color link
-export function LinkLikeText({
-  className,
-  ...props
-}: React.ComponentProps<'button'>) {
-  return (
-    <button
-      type="button"
-      {...props}
-      className={clsx(styles.linkText, className)}
-    />
-  );
-}
-
-// Show Primary color on hover
-export function HoverText({
-  className,
-  ...props
-}: React.ComponentProps<'span'>) {
-  return <span {...props} className={clsx(styles.hoverText, className)} />;
-}
+export const LinkLikeText = forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<'button'>
+>(({ className, ...props }, ref) => (
+  <button
+    type="button"
+    ref={ref}
+    {...props}
+    className={clsx(styles.linkText, className)}
+  />
+));

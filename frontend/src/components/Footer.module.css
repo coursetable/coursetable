@@ -1,3 +1,8 @@
+.footer {
+  border-top: 1.5px solid var(--color-border);
+  transition: border-color var(--trans-dur);
+}
+
 .footerLogo {
   font-size: 2rem;
 }

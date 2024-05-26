@@ -5,10 +5,19 @@ import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import z from 'zod';
 
-import { createLocalStorageSlot } from './browserStorage';
+import {
+  crnSchema,
+  netIdSchema,
+  type Season,
+  type Crn,
+  type NetId,
+} from './graphql-types';
 import { API_ENDPOINT } from '../config';
-import type { ListingRatingsFragment } from '../generated/graphql';
-import type { Season, Crn, Listing, NetId } from './common';
+import type {
+  CatalogBySeasonQuery,
+  EvalsBySeasonQuery,
+} from '../generated/graphql-types';
+import { createLocalStorageSlot } from '../utilities/browserStorage';
 
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
@@ -21,6 +30,27 @@ type BaseFetchOptions = {
    */
   handleErrorCode?: (errCode: string) => boolean;
 };
+
+function parseWithWarning<T extends z.ZodSchema<unknown>>(
+  schema: T,
+  data: unknown,
+  breadcrumb: Sentry.Breadcrumb & {
+    message: string;
+    category: string;
+  },
+): z.infer<T> | undefined {
+  const res = schema.safeParse(data);
+  if (res.success) return res.data;
+  Sentry.addBreadcrumb({
+    level: 'info',
+    ...breadcrumb,
+  });
+  Sentry.captureException(res.error);
+  toast.error(
+    `The server returned a response we cannot understand while ${breadcrumb.message.toLowerCase()}. Please try refreshing the page and/or reopening in a new tab.`,
+  );
+  return undefined;
+}
 
 /**
  * Performs a POST request to the API. No schema provided means no response body
@@ -45,10 +75,10 @@ async function fetchAPI(
  * is present. A response body is expected and will be parsed.
  * Returns the parsed response if successful, or undefined if an error occurred.
  */
-async function fetchAPI<T>(
+async function fetchAPI<T extends z.ZodSchema>(
   endpointSuffix: string,
-  options: BaseFetchOptions & { body?: {}; schema: z.ZodType<T> },
-): Promise<T | undefined>;
+  options: BaseFetchOptions & { body?: {}; schema: T },
+): Promise<z.infer<T> | undefined>;
 async function fetchAPI(
   endpointSuffix: string,
   {
@@ -100,7 +130,7 @@ async function fetchAPI(
     const rawData: unknown = await res.json();
     // Only parse if a schema is provided
     if (!schema) return rawData;
-    return schema.parse(rawData);
+    return parseWithWarning(schema, rawData, breadcrumb);
   } catch (err) {
     Sentry.addBreadcrumb({
       level: 'info',
@@ -119,7 +149,7 @@ async function fetchAPI(
 }
 
 export function toggleBookmark(body: {
-  action: 'add' | 'remove';
+  action: 'add' | 'remove' | 'update';
   season: Season;
   crn: Crn;
   worksheetNumber: number;
@@ -162,7 +192,7 @@ export function toggleCourseHidden({
   season: Season;
   crn: Crn | 'all';
   hidden: boolean;
-  courses?: Listing[];
+  courses?: { crn: Crn }[];
 }) {
   const hiddenCourses = hiddenCoursesStorage.get() ?? {};
   if (crn === 'all') {
@@ -211,31 +241,38 @@ export async function toggleWish(body: {
   });
 }
 
+type ListingPublic = CatalogBySeasonQuery['listings'][number];
+
 export async function fetchCatalog(season: Season) {
-  const res = await fetchAPI(`/static/catalogs/public/${season}.json`, {
-    breadcrumb: {
-      category: 'catalog',
-      message: `Fetching catalog ${season}`,
-    },
+  const breadcrumb = {
+    category: 'catalog',
+    message: `Fetching catalog ${season}`,
+  };
+  const res = await fetchAPI(`/catalog/public/${season}`, {
+    breadcrumb,
   });
   if (!res) return undefined;
-  const data = res as Listing[];
-  const info = new Map<Crn, Listing>();
+  const data = res as ListingPublic[];
+  const info = new Map<Crn, ListingPublic>();
   for (const listing of data) info.set(listing.crn, listing);
   return info;
 }
 
+type ListingEvals = EvalsBySeasonQuery['listings'][number];
+
+export type CatalogListing = ListingPublic & Partial<ListingEvals>;
+
 export async function fetchEvals(season: Season) {
-  const res = await fetchAPI(`/static/catalogs/evals/${season}.json`, {
+  const res = await fetchAPI(`/catalog/evals/${season}`, {
     breadcrumb: {
       category: 'evals',
       message: `Fetching evals ${season}`,
     },
   });
   if (!res) return undefined;
-  const data = res as ListingRatingsFragment[];
-  const info = new Map<Crn, ListingRatingsFragment>();
-  for (const listing of data) info.set(listing.crn as Crn, listing);
+  const data = res as ListingEvals[];
+  const info = new Map<Crn, ListingEvals>();
+  for (const listing of data) info.set(listing.crn, listing);
   return info;
 }
 
@@ -343,10 +380,20 @@ const userWorksheetsSchema = z.record(
   ),
 );
 
+// Change index type to be more specific. We don't use the key type of z.record
+// on purpose; see https://github.com/colinhacks/zod/pull/2287
+export type UserWorksheets = {
+  [season: Season]: {
+    [worksheetNumber: number]: NonNullable<
+      z.infer<typeof userWorksheetsSchema>[Season]
+    >[string];
+  };
+};
+
 export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
-      netId: z.string(),
+      netId: netIdSchema,
       // This cannot be null in the real application, because the site creates a
       // user if one doesn't exist. This is purely for completeness.
       evaluationsEnabled: z.union([z.boolean(), z.null()]),
@@ -362,13 +409,13 @@ export async function fetchUserWorksheets() {
   if (!res) return undefined;
   const hiddenCourses = hiddenCoursesStorage.get();
   if (!hiddenCourses) return res;
-  for (const season in res.data) {
-    if (!hiddenCourses[season as Season]) continue;
+  for (const seasonKey in res.data) {
+    // Narrow type
+    const season = seasonKey as Season;
+    if (!hiddenCourses[season]) continue;
     for (const num in res.data[season]) {
-      for (const course of res.data[season]![num]!) {
-        course.hidden =
-          hiddenCourses[season as Season]?.[course.crn as Crn] ?? false;
-      }
+      for (const course of res.data[season]![num]!)
+        course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
     }
   }
   return res;
@@ -379,6 +426,10 @@ const userWishlistSchema = z.array(
     courseCode: z.string(),
   }),
 );
+
+export type UserWishlist = {
+  courseCode: string;
+}[];
 
 export async function fetchUserWishlist() {
   const res = await fetchAPI('/user/wishlist', {
@@ -399,6 +450,15 @@ export async function fetchUserWishlist() {
   if (!res) return undefined;
   return res;
 }
+
+const friendRequestsSchema = z.array(
+  z.object({
+    netId: netIdSchema,
+    name: z.string().nullable(),
+  }),
+);
+
+export type FriendRequests = z.infer<typeof friendRequestsSchema>;
 
 export function fetchFriendWorksheets() {
   return fetchAPI('/friends/worksheets', {
@@ -434,17 +494,21 @@ export function fetchFriendReqs() {
   });
 }
 
+const userNamesSchema = z.array(
+  z.object({
+    netId: netIdSchema,
+    first: z.union([z.string(), z.null()]),
+    last: z.union([z.string(), z.null()]),
+    college: z.union([z.string(), z.null()]),
+  }),
+);
+
+export type UserNames = z.infer<typeof userNamesSchema>;
+
 export function fetchAllNames() {
   return fetchAPI('/friends/names', {
     schema: z.object({
-      names: z.array(
-        z.object({
-          netId: z.string(),
-          first: z.union([z.string(), z.null()]),
-          last: z.union([z.string(), z.null()]),
-          college: z.union([z.string(), z.null()]),
-        }),
-      ),
+      names: userNamesSchema,
     }),
     breadcrumb: {
       category: 'friends',
@@ -504,9 +568,9 @@ export async function checkAuth() {
     schema: z.union([
       z.object({
         auth: z.literal(true),
-        netId: z.string(),
+        netId: netIdSchema,
         user: z.object({
-          netId: z.string(),
+          netId: netIdSchema,
           evals: z.boolean(),
           email: z.string().optional(),
           firstName: z.string().optional(),

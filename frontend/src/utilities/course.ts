@@ -1,18 +1,20 @@
 // Performing various actions on the listing dictionary
-import {
-  type Crn,
-  type Season,
-  type Weekdays,
-  weekdays,
-  type Listing,
-} from './common';
+import type { SortKeys } from '../contexts/searchContext';
+import type { WorksheetCourse } from '../contexts/worksheetContext';
+import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
   UserWishlist,
   UserWorksheets,
-} from '../contexts/userContext';
-import type { SortKeys } from '../contexts/searchContext';
-import type { WorksheetCourse } from '../contexts/worksheetContext';
+  CatalogListing,
+} from '../queries/api';
+import {
+  type Crn,
+  type Season,
+  type Weekdays,
+  type TimesByDay,
+  weekdays,
+} from '../queries/graphql-types';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -55,20 +57,27 @@ export function toSeasonString(seasonCode: Season): string {
   return `${season} ${year}`;
 }
 
+export type ListingWithTimes = {
+  season_code: Season;
+  crn: Crn;
+  course: {
+    times_by_day: TimesByDay;
+  };
+};
+
 export function checkConflict(
   worksheetData: WorksheetCourse[],
-  course: Listing,
-): Listing[] {
-  const conflicts: Listing[] = [];
-  const daysToCheck = Object.keys(
-    course.times_by_day,
-  ) as (keyof Listing['times_by_day'])[];
+  listing: ListingWithTimes,
+): CatalogListing[] {
+  const conflicts: CatalogListing[] = [];
+  const daysToCheck = Object.keys(listing.course.times_by_day) as Weekdays[];
+  if (!daysToCheck.length) return conflicts;
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
-    if (worksheetCourse.season_code !== course.season_code) continue;
+    if (worksheetCourse.season_code !== listing.season_code) continue;
     for (const day of daysToCheck) {
-      const info = worksheetCourse.times_by_day[day];
+      const info = worksheetCourse.course.times_by_day[day];
       if (info === undefined) continue;
-      const courseInfo = course.times_by_day[day]!;
+      const courseInfo = listing.course.times_by_day[day]!;
       for (const [startTime, endTime] of info) {
         const listingStart = toRangeTime(startTime);
         const listingEnd = toRangeTime(endTime);
@@ -101,12 +110,12 @@ export type NumFriendsReturn = {
 // worksheet expanded list
 export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   const numFriends: NumFriendsReturn = {};
-  for (const friend of Object.values(friends)) {
+  for (const [netId, friend] of Object.entries(friends)) {
     Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
       Object.values(worksheets).forEach((w) =>
         w.forEach((course) => {
           (numFriends[`${seasonCode as Season}${course.crn}`] ??=
-            new Set()).add(friend.name);
+            new Set()).add(friend.name ?? netId);
         }),
       );
     });
@@ -114,13 +123,21 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   return numFriends;
 }
 
+export type CourseWithOverall = Pick<
+  Courses,
+  'average_rating' | 'average_rating_same_professors'
+>;
+
 export function getOverallRatings(
-  course: Listing,
+  course: CourseWithOverall,
   usage: 'stat',
 ): number | null;
-export function getOverallRatings(course: Listing, usage: 'display'): string;
 export function getOverallRatings(
-  course: Listing,
+  course: CourseWithOverall,
+  usage: 'display',
+): string;
+export function getOverallRatings(
+  course: CourseWithOverall,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_rating_same_professors) {
@@ -137,13 +154,21 @@ export function getOverallRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
+export type CourseWithWorkload = Pick<
+  Courses,
+  'average_workload' | 'average_workload_same_professors'
+>;
+
 export function getWorkloadRatings(
-  course: Listing,
+  course: CourseWithWorkload,
   usage: 'stat',
 ): number | null;
-export function getWorkloadRatings(course: Listing, usage: 'display'): string;
 export function getWorkloadRatings(
-  course: Listing,
+  course: CourseWithWorkload,
+  usage: 'display',
+): string;
+export function getWorkloadRatings(
+  course: CourseWithWorkload,
   usage: 'stat' | 'display',
 ): string | number | null {
   if (course.average_workload_same_professors) {
@@ -161,25 +186,30 @@ export function getWorkloadRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
+export type CourseWithProfRatings = Pick<Courses, 'average_professor_rating'>;
+
 export function getProfessorRatings(
-  course: Listing,
+  course: CourseWithProfRatings,
   usage: 'stat',
 ): number | null;
-export function getProfessorRatings(course: Listing, usage: 'display'): string;
 export function getProfessorRatings(
-  course: Listing,
+  course: CourseWithProfRatings,
+  usage: 'display',
+): string;
+export function getProfessorRatings(
+  course: CourseWithProfRatings,
   usage: 'stat' | 'display',
 ): string | number | null {
-  if (course.average_professor) {
+  if (course.average_professor_rating) {
     return usage === 'stat'
-      ? course.average_professor
-      : course.average_professor.toFixed(1);
+      ? course.average_professor_rating
+      : course.average_professor_rating.toFixed(1);
   }
   return usage === 'stat' ? null : 'N/A';
 }
 
 export function getDayTimes(
-  course: Listing,
+  course: Pick<Courses, 'times_by_day'>,
 ): { day: Weekdays; start: string; end: string }[] {
   return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
     day: day as Weekdays,
@@ -188,7 +218,7 @@ export function getDayTimes(
   }));
 }
 
-function toDayTimeScore(course: Listing): number | null {
+function toDayTimeScore(course: Pick<Courses, 'times_by_day'>): number | null {
   const times = getDayTimes(course);
 
   if (times.length) {
@@ -202,11 +232,43 @@ function toDayTimeScore(course: Listing): number | null {
   return null;
 }
 
-function comparatorReturn(
-  aVal: number | string | null,
-  bVal: number | string | null,
-  ordering: 'asc' | 'desc',
+type ComparableKey = SortKeys | 'season_code' | 'section';
+
+function getAttributeValue(
+  l: CatalogListing,
+  key: ComparableKey,
+  numFriends: NumFriendsReturn,
 ) {
+  switch (key) {
+    case 'friend':
+      return numFriends[`${l.season_code}${l.crn}`]?.size ?? 0;
+    case 'overall':
+      return getOverallRatings(l.course, 'stat');
+    case 'workload':
+      return getWorkloadRatings(l.course, 'stat');
+    case 'enrollment':
+      return getEnrolled(l.course, 'stat');
+    case 'time':
+      return toDayTimeScore(l.course);
+    case 'course_code':
+    case 'season_code':
+    case 'section':
+      return l[key];
+    default:
+      // || is intentional: 0 also means nonexistence
+      return l.course[key] || null;
+  }
+}
+
+function compareByKey(
+  a: CatalogListing,
+  b: CatalogListing,
+  key: ComparableKey,
+  ordering: 'asc' | 'desc',
+  numFriends: NumFriendsReturn,
+) {
+  const aVal = getAttributeValue(a, key, numFriends);
+  const bVal = getAttributeValue(b, key, numFriends);
   if (aVal === null && bVal === null) return 0;
   if (aVal === null) return 1;
   if (bVal === null) return -1;
@@ -222,114 +284,50 @@ function comparatorReturn(
   return ordering === 'asc' ? strCmp : -strCmp;
 }
 
-function compareByKey(
-  a: Listing,
-  b: Listing,
-  key: Exclude<SortKeys, 'friend'>,
-  ordering: 'asc' | 'desc',
-): number;
-function compareByKey(
-  a: Listing,
-  b: Listing,
-  key: SortKeys,
-  ordering: 'asc' | 'desc',
-  numFriends: NumFriendsReturn,
-): number;
-function compareByKey(
-  a: Listing,
-  b: Listing,
-  key: SortKeys,
-  ordering: 'asc' | 'desc',
-  numFriends?: NumFriendsReturn,
-) {
-  if (key === 'friend') {
-    // Concatenate season code and crn to form key
-    const friendsTakingA = numFriends![`${a.season_code}${a.crn}`]?.size ?? 0;
-    const friendsTakingB = numFriends![`${b.season_code}${b.crn}`]?.size ?? 0;
-    return comparatorReturn(friendsTakingA, friendsTakingB, ordering);
-  }
-  if (key === 'average_rating') {
-    return comparatorReturn(
-      getOverallRatings(a, 'stat'),
-      getOverallRatings(b, 'stat'),
-      ordering,
-    );
-  }
-  if (key === 'average_workload') {
-    return comparatorReturn(
-      getWorkloadRatings(a, 'stat'),
-      getWorkloadRatings(b, 'stat'),
-      ordering,
-    );
-  }
-  if (key === 'times_by_day')
-    return comparatorReturn(toDayTimeScore(a), toDayTimeScore(b), ordering);
-  // If value is 0, return null
-  return comparatorReturn(
-    // || is intentional: 0 also means nonexistence
-    a[key] || null,
-    b[key] || null,
-    ordering,
-  );
-}
-
-/**
- * Compares two listings by the specified key.
- */
-function compare(
-  a: Listing,
-  b: Listing,
-  key: SortKeys,
-  ordering: 'asc' | 'desc',
-  numFriends: NumFriendsReturn,
-): number {
-  return (
-    compareByKey(a, b, key, ordering, numFriends) ||
-    // Define a stable sort order for courses that compare equal
-    compareByKey(a, b, 'season_code', 'desc') ||
-    compareByKey(a, b, 'course_code', 'asc') ||
-    compareByKey(a, b, 'section', 'asc')
-  );
-}
-
 // Sort courses in catalog or expanded worksheet
 export function sortCourses(
-  courses: Listing[],
+  courses: CatalogListing[],
   ordering: {
     key: SortKeys;
     type: 'desc' | 'asc';
   },
   numFriends: NumFriendsReturn,
-): Listing[] {
-  return [...courses].sort((a, b) =>
-    compare(a, b, ordering.key, ordering.type, numFriends),
+): CatalogListing[] {
+  return [...courses].sort(
+    (a, b) =>
+      compareByKey(a, b, ordering.key, ordering.type, numFriends) ||
+      // Define a stable sort order for courses that compare equal
+      compareByKey(a, b, 'season_code', 'desc', numFriends) ||
+      compareByKey(a, b, 'course_code', 'asc', numFriends) ||
+      compareByKey(a, b, 'section', 'asc', numFriends),
   );
 }
 
+type CourseWithEnrolled = {
+  evaluation_statistic?: {
+    enrolled: number | null;
+  } | null;
+  last_enrollment?: number | null;
+  last_enrollment_same_professors?: boolean | null;
+};
+
 export function getEnrolled(
-  course: Pick<
-    Listing,
-    'enrolled' | 'last_enrollment' | 'last_enrollment_same_professors'
-  >,
+  course: CourseWithEnrolled,
   usage: 'stat',
 ): number | null;
 export function getEnrolled(
-  course: Pick<
-    Listing,
-    'enrolled' | 'last_enrollment' | 'last_enrollment_same_professors'
-  >,
+  course: CourseWithEnrolled,
   usage: 'display' | 'modal',
 ): string;
 export function getEnrolled(
-  course: Pick<
-    Listing,
-    'enrolled' | 'last_enrollment' | 'last_enrollment_same_professors'
-  >,
+  course: CourseWithEnrolled,
   usage: 'stat' | 'display' | 'modal',
 ): string | number | null {
-  if (course.enrolled) {
+  if (course.evaluation_statistic?.enrolled) {
     // Use enrollment for that season if course has happened
-    return usage === 'stat' ? course.enrolled : String(course.enrolled);
+    return usage === 'stat'
+      ? course.evaluation_statistic.enrolled
+      : String(course.evaluation_statistic.enrolled);
   } else if (course.last_enrollment) {
     // Use last enrollment if course hasn't happened
     if (usage === 'stat') return course.last_enrollment;
@@ -344,12 +342,12 @@ export function getEnrolled(
   return usage === 'modal' ? 'N/A' : '';
 }
 
-export function isGraduate(listing: Pick<Listing, 'number'>): boolean {
+export function isGraduate(listing: Pick<Listings, 'number'>): boolean {
   return Number(listing.number.replace(/\D/gu, '')) >= 500;
 }
 
 export function isDiscussionSection(
-  listing: Pick<Listing, 'section'>,
+  listing: Pick<Courses, 'section'>,
 ): boolean {
   // Checks whether the section field consists only of letters -- if so, the
   // class is a discussion section.

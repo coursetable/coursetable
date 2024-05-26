@@ -3,7 +3,6 @@
   border-radius: 8px;
   transition: border-radius 0.3s step-end;
   overflow: hidden;
-  margin-top: 1em;
 }
 
 .toggleButton {
@@ -23,7 +22,7 @@
   padding: 1em 0.5em;
 }
 
-.stats ul {
+.stats dl {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -34,8 +33,8 @@
   justify-content: center;
 }
 
-.stats li {
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
+.stats dl > div {
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
   border-radius: 8px;
   width: 45%;
   display: flex;
@@ -43,7 +42,9 @@
   align-items: stretch;
 }
 
-.stats li > span {
+.stats dt,
+.stats dd {
+  margin: 0;
   padding: 0.5em;
   font-weight: 600;
   font-size: 14px;
@@ -53,17 +54,20 @@
   justify-content: center;
   text-align: center;
   flex-wrap: wrap;
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
 }
 
-.stats li span:first-of-type {
+.stats dt {
   border-radius: 8px 0 0 8px;
 }
 
-.stats li span:last-of-type {
+.stats dd {
   border-radius: 0 8px 8px 0;
 }
 
-.statName {
+.stats :is(dt, dd):not(.statPill) {
   background-color: var(--color-surface);
   color: var(--color-text);
 }

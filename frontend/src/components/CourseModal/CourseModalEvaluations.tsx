@@ -1,12 +1,11 @@
-import React from 'react';
-import { Row, Col, Modal } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-import EvaluationResponses from './EvaluationResponses';
+import { Row, Col, Modal } from 'react-bootstrap';
 import EvaluationRatings from './EvaluationRatings';
+import EvaluationResponses from './EvaluationResponses';
 
-import CourseModalLoading from './CourseModalLoading';
-import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
-import type { Crn, Season } from '../../utilities/common';
+import { useSearchEvaluationNarrativesQuery } from '../../queries/graphql-queries';
+import type { Crn, Season } from '../../queries/graphql-types';
+import Spinner from '../Spinner';
 
 function CourseModalEvaluations({
   seasonCode,
@@ -21,13 +20,19 @@ function CourseModalEvaluations({
       crn,
     },
   });
-  if (loading || error) return <CourseModalLoading />;
-  if ((data?.computed_listing_info.length ?? 0) > 1) {
+  if (loading || error) {
+    return (
+      <Modal.Body>
+        <Spinner />
+      </Modal.Body>
+    );
+  }
+  if ((data?.listings.length ?? 0) > 1) {
     Sentry.captureException(
       new Error(`More than one listings returned for ${seasonCode}-${crn}`),
     );
   }
-  const info = data?.computed_listing_info[0];
+  const info = data?.listings[0]!.course;
 
   return (
     <Modal.Body>
@@ -36,7 +41,7 @@ function CourseModalEvaluations({
           <EvaluationRatings info={info} />
         </Col>
 
-        <Col md={7} className="pr-0 pl-2 my-0">
+        <Col md={7} className="pe-0 ps-2 my-0">
           <EvaluationResponses info={info} />
         </Col>
       </Row>

@@ -2,18 +2,20 @@
 
 import { useRef, useEffect } from 'react';
 import throttle from 'lodash.throttle';
-import type { FixedSizeList } from 'react-window';
+import type { FixedSizeList, FixedSizeGrid } from 'react-window';
 
 export default function WindowScroller({
+  isGrid,
   children,
 }: {
+  isGrid: boolean;
   children: (props: {
-    ref: React.LegacyRef<FixedSizeList>;
+    ref: React.LegacyRef<FixedSizeList & FixedSizeGrid>;
     outerRef?: React.RefObject<unknown>;
   }) => React.ReactNode;
   throttleTime?: number;
 }) {
-  const ref = useRef<FixedSizeList>(null);
+  const ref = useRef<FixedSizeList & FixedSizeGrid>(null);
   const outerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -24,7 +26,8 @@ export default function WindowScroller({
           document.documentElement.scrollTop ||
           document.body.scrollTop ||
           0) - offsetTop;
-      ref.current?.scrollTo(scrollTop);
+      if (isGrid) ref.current?.scrollTo({ scrollTop });
+      else ref.current?.scrollTo(scrollTop);
     }, 10);
 
     window.addEventListener('scroll', handleWindowScroll);
@@ -32,7 +35,7 @@ export default function WindowScroller({
       handleWindowScroll.cancel();
       window.removeEventListener('scroll', handleWindowScroll);
     };
-  }, []);
+  }, [isGrid]);
 
   return children({
     ref,

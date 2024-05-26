@@ -1,0 +1,65 @@
+.panel {
+  width: 440px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem;
+}
+
+.label {
+  font-size: 14px;
+  margin-left: 0.25rem;
+  user-select: none;
+  cursor: default;
+}
+
+.labelActive {
+  color: var(--color-primary);
+}
+
+.range {
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.rangeValueLabel {
+  font-size: 12px;
+  user-select: none;
+  cursor: default;
+  transition: color var(--trans-dur);
+}
+
+.rangeGroup {
+  width: 75%;
+  display: flex;
+  flex-grow: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.select {
+  width: 80%;
+}
+
+.booleanToggles {
+  background-color: var(--color-surface-active);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+@media (width < 1320px) {
+  .label {
+    font-size: 12px;
+  }
+}

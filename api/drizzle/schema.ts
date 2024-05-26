@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import {
   pgTable,
   boolean,
@@ -9,7 +10,6 @@ import {
   serial,
   integer,
 } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
 
 export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   netId: varchar('netId', { length: 8 }).primaryKey().notNull(),

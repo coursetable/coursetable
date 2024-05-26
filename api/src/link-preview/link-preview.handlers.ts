@@ -1,8 +1,7 @@
 import type express from 'express';
-import { request } from 'graphql-request';
+import { getSdk } from './link-preview.queries.js';
+import { graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
-import { GRAPHQL_ENDPOINT } from '../config.js';
-import { courseMetadataQuery } from './link-preview.queries.js';
 
 // For Prettier formatting. If you add a language tag before the template
 // literal, it will recognize them as embedded languages and format those
@@ -55,23 +54,16 @@ async function getMetadata(query: unknown) {
   if (!query) return defaultMetadata;
   const [seasonCode, crn] = String(query).split('-');
   if (!seasonCode || !crn) return defaultMetadata;
-  const data = await request<{
-    computed_listing_info: {
-      course_code: string;
-      section: string;
-      title: string;
-      description: string | null;
-    }[];
-  }>(GRAPHQL_ENDPOINT, courseMetadataQuery, {
+  const data = await getSdk(graphqlClient).courseMetadata({
     seasonCode,
     crn: Number(crn),
   });
-  if (!data.computed_listing_info.length) return defaultMetadata;
-  const course = data.computed_listing_info[0]!;
+  if (!data.listings.length) return defaultMetadata;
+  const listing = data.listings[0]!;
   return {
-    title: `${course.course_code} ${course.section.padStart(2, '0')} ${course.title} | CourseTable`,
+    title: `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`,
     description: truncatedText(
-      course.description,
+      listing.course.description,
       300,
       'No description available',
     ),

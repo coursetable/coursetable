@@ -4,12 +4,22 @@
 
 .badges {
   height: auto;
+  display: flex;
+  align-items: center;
+  margin-top: 0.25rem;
 }
 
 .courseCodes {
   height: auto;
   font-size: 16px;
   line-height: 20px;
+  margin: 0 0.5rem 0 0;
+}
+
+.crossListingLink,
+.crossListingLink:hover {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .cancelledText {
@@ -40,9 +50,39 @@
   transition: transform 0.1s ease-out !important;
 }
 
+.modalHeader {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader :global(.btn-close) {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: var(--color-text-secondary);
+}
+
+.modalTop {
+  width: calc(100% - 1rem);
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+}
+
 .modalTitle {
   font-weight: 550;
   line-height: 1.2 !important;
+}
+
+.modalControls {
+  width: calc(100% - 1rem);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap-reverse;
+  margin-left: 0.5rem;
 }
 
 .tabs {
@@ -63,7 +103,7 @@
 }
 
 .tabButton.tabSelected {
-  background-color: var(--color-select-hover);
+  background-color: var(--color-primary-subdued);
   color: var(--color-text);
 }
 
@@ -90,6 +130,16 @@
   padding: 0;
 }
 
+.moreDropdown svg,
+.shareButton svg {
+  color: var(--color-primary);
+}
+
+.moreDropdown:hover svg,
+.shareButton:hover svg {
+  color: var(--color-primary-hover);
+}
+
 .moreDropdown :global(.dropdown-toggle) {
   padding: 0;
 }
@@ -99,8 +149,7 @@
 }
 
 .moreDropdown :global(.dropdown-menu) {
-  background-color: var(--color-surface);
-  width: 200px;
+  width: 250px;
 }
 
 .moreButton {
@@ -126,7 +175,10 @@
 
 @media (width < 768px) {
   .modalTop {
-    flex-direction: column !important;
+    flex-direction: column;
+    align-items: start;
+    gap: 0;
+    margin: 0.5rem;
   }
 
   .modalTitle {

@@ -5,20 +5,24 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useSessionStorageState } from '../utilities/browserStorage';
-import { CUR_SEASON } from '../config';
 import { seasons, useWorksheetInfo } from './ferryContext';
-import { useUser, type UserWorksheets } from './userContext';
-import { toggleCourseHidden } from '../utilities/api';
 import type { Option } from './searchContext';
-import type { Season, Listing, Crn, NetId } from '../utilities/common';
+import { useUser } from './userContext';
+import { CUR_SEASON } from '../config';
+import {
+  toggleCourseHidden,
+  type UserWorksheets,
+  type CatalogListing,
+} from '../queries/api';
+import type { Season, Crn, NetId } from '../queries/graphql-types';
+import { useSessionStorageState } from '../utilities/browserStorage';
 
 type WorksheetView = 'calendar' | 'list';
 
 export type WorksheetCourse = {
   crn: Crn;
   color: string;
-  listing: Listing;
+  listing: CatalogListing;
   hidden: boolean;
 };
 

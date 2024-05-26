@@ -1,11 +1,11 @@
 import type express from 'express';
+import { eq } from 'drizzle-orm';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
-import { eq } from 'drizzle-orm';
 
-import winston from '../logging/winston.js';
-import { YALIES_API_KEY, db } from '../config.js';
 import { studentBluebookSettings } from '../../drizzle/schema.js';
+import { YALIES_API_KEY, db } from '../config.js';
+import winston from '../logging/winston.js';
 
 // TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
 export type YaliesResponse =
@@ -72,16 +72,14 @@ export const passportConfig = (
         // Create or update user's profile
         winston.info("Creating user's profile");
 
-        const existingUser = (
-          await db
-            .insert(studentBluebookSettings)
-            .values({
-              netId: profile.user,
-              evaluationsEnabled: false,
-            })
-            .onConflictDoNothing()
-            .returning()
-        )[0]!;
+        const [existingUser] = await db
+          .insert(studentBluebookSettings)
+          .values({
+            netId: profile.user,
+            evaluationsEnabled: false,
+          })
+          .onConflictDoNothing()
+          .returning();
 
         winston.info("Getting user's enrollment status from Yalies.io");
         try {
@@ -115,7 +113,7 @@ export const passportConfig = (
           // or is a member of an approved organization (for faculty).
           // also leave evaluations enabled if the user already has access.
           const enableEvals =
-            existingUser.evaluationsEnabled ||
+            existingUser?.evaluationsEnabled ||
             Boolean(user.school_code) ||
             ALLOWED_ORG_CODES.includes(user.organization_code);
 
@@ -169,21 +167,21 @@ export const passportConfig = (
     }
     const netId = String(sessionKey);
     winston.info(`Deserializing user ${netId}`);
-    const student = await db
+    const [student] = await db
       .selectDistinctOn([studentBluebookSettings.netId])
       .from(studentBluebookSettings)
       .where(eq(studentBluebookSettings.netId, netId));
-    if (!student.length) {
+    if (!student) {
       done(null, null);
       return;
     }
     done(null, {
       netId,
-      evals: Boolean(student[0]!.evaluationsEnabled),
+      evals: Boolean(student.evaluationsEnabled),
       // Convert nulls to undefined
-      email: student[0]!.email ?? undefined,
-      firstName: student[0]!.firstName ?? undefined,
-      lastName: student[0]!.lastName ?? undefined,
+      email: student.email ?? undefined,
+      firstName: student.firstName ?? undefined,
+      lastName: student.lastName ?? undefined,
     });
   });
 };

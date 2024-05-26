@@ -1,24 +1,15 @@
 import React from 'react';
-import type { Props as SelectProps } from 'react-select';
 import CustomSelect from './CustomSelect';
 import type { Option } from '../../contexts/searchContext';
-
-type Props = {
-  readonly hideSelectedOptions?: boolean;
-  readonly isClearable?: boolean;
-  readonly isMulti?: boolean;
-  readonly useColors?: boolean;
-};
 
 export function PopoutSelect<
   T extends Option<number | string>,
   IsMulti extends boolean,
 >({
   isMulti = false as IsMulti,
-  isClearable = true,
-  hideSelectedOptions = true,
+  isClearable = isMulti, // Multi-selects are clearable by default
   ...props
-}: SelectProps<T, IsMulti> & Props) {
+}: React.ComponentProps<typeof CustomSelect<T, IsMulti>>) {
   return (
     <CustomSelect<T, IsMulti>
       popout
@@ -29,7 +20,6 @@ export function PopoutSelect<
       autoFocus
       backspaceRemovesValue={false}
       controlShouldRenderValue
-      hideSelectedOptions={hideSelectedOptions}
       isClearable={isClearable}
       menuIsOpen
       tabSelectsValue={false}

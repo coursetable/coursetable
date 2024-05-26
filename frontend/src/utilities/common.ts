@@ -1,69 +1,4 @@
-import { expectType, type TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
-import type {
-  ListingFragment,
-  ListingRatingsFragment,
-} from '../generated/graphql';
-
-// A couple common types.
-
-// These types are branded so you never pass the wrong thing
-declare const type: unique symbol;
-export type Season = string & { [type]: 'season' };
-export type NetId = string & { [type]: 'netid' };
-export type Crn = number & { [type]: 'crn' };
-
-export const weekdays = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
-] as const;
-export type Weekdays = (typeof weekdays)[number];
-
-// TODO: can this narrowing be done within graphql-codegen?
-export type NarrowListing<T extends ListingFragment> = Omit<
-  T,
-  keyof ListingOverrides
-> &
-  ListingOverrides;
-type ListingOverrides = {
-  crn: Crn;
-  season_code: Season;
-  extra_info:
-    | 'ACTIVE'
-    | 'MOVED_TO_SPRING_TERM'
-    | 'CANCELLED'
-    | 'MOVED_TO_FALL_TERM'
-    | 'CLOSED'
-    | 'NUMBER_CHANGED';
-
-  // Narrow some of the JSON types.
-  all_course_codes: string[];
-  areas: string[];
-  flag_info: string[];
-  skills: string[];
-  professor_ids: string[];
-  professor_names: string[];
-  times_by_day: Partial<{
-    [day in Weekdays]: [
-      startTime: string,
-      endTime: string,
-      location: string,
-      locationURL: string,
-    ][];
-  }>;
-};
-
-expectType<
-  // Make sure we don't override a key that wasn't there originally.
-  TypeOf<keyof ListingFragment, keyof ListingOverrides>
->(true);
-export type Listing = NarrowListing<ListingFragment> &
-  Partial<ListingRatingsFragment>;
 
 export function isEqual<T>(a: T, b: T): boolean {
   if (Array.isArray(a) && Array.isArray(b)) {
@@ -94,10 +29,5 @@ export function generateRandomColor(identifier: string) {
   const normalizedHash = (Math.abs(hash) % 1000) / 1000;
 
   // Interpolate between startColor and endColor based on normalizedHash
-  const color = chroma
-    .scale([startColor, endColor])(normalizedHash)
-    .alpha(0.75)
-    .css();
-
-  return color;
+  return chroma.scale([startColor, endColor])(normalizedHash);
 }

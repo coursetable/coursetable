@@ -1,28 +1,12 @@
-# API
+# Challenge
 
-This module provides an Express server that performs various back-end functions. For API endpoint documentation, see [`docs/api.md`](../docs/api.md).
+This doc describes how our challenge mechanism is implemented.
 
-## Debugging
-
-You will notice that the Express server runs on a Bun runtime. Debugging is enabled in development through [Bun's web debugger](https://bun.sh/guides/runtime/web-debugger).
-
-Please note the following when debugging Bun in Docker (see [`oven/bun #7225`](https://github.com/oven-sh/bun/issues/7225)):
-
-- Bun will log `https://debug.bun.sh/#0.0.0.0:6499/forcingPrefix` as the web debugger
-- Use `https://debug.bun.sh/#localhost:6499/forcingPrefix` instead
-
-**TODO**:
-
-- Implement Hasura access control to show/hide evaluations for CAS-authenticated users based on challenge completion
-- Update `crypto.createCipher` and `crypto.createDecipher` (now deprecated) in `challenge_utils.js` to `crypto.createCipheriv` and `crypto.createDecipheriv`.
-
-## Challenge
-
-### How it works
+## How it works
 
 To verify that users have access to course evaluations, we ask them to retrieve rating data from OCE that are then compared with the values in our database. If the responses match, then the user is granted access to CourseTable's evaluations-related data.
 
-### Requesting a challenge
+## Requesting a challenge
 
 The `/api/challenge/request` route accepts GET requests and returns a JSON object with challenge questions.
 
@@ -47,52 +31,19 @@ Once these requirements are met, a challenge is produced as follows:
    - Because the token is tied to the questions and response categories, the user cannot pick and choose which questions they want to answer.
    - Together these two properties prevent a single challenge from being used by multiple users, ensuring that each user must answer whichever challenge we give them.
 
-4. The token, salt, and an object containing the title, question, response category, and OCE URL for each token are returned. We also include the number of attempts as well as the maximum allowed. In particular, this object is of the following structure:
+4. The token, salt, and an object containing the title, question, response category, and OCE URL for each token are returned. We also include the number of attempts as well as the maximum allowed. For the exact structure of the response, see [api.md](./api.md#get-apichallengerequest)
 
-```javascript
-{
-  token: ...,
-  salt: ...,
-  course_info: [
-    {
-    courseTitle: ...,
-    courseRatingIndex: ...,
-    courseQuestionTexts: ...,
-    courseOceUrl: ...,
-    },
-    ...
-  ],
-  challengeTries: ...,
-  maxChallengeTries: ...
-}
-```
-
-### Verifying a response
+## Verifying a response
 
 The `/api/challenge/verify` route accepts POST requests and returns a JSON object specifying whether or not the responses are correct, incorrect, or otherwise malformed.
-
-This route expects a URL-encoded body containing the following:
-
-- The token and salt previously from `/api/challenge/request`.
-
-- An answers object of the following structure:
-
-  ```javascript
-  [
-    { courseRatingId: ..., courseRatingIndex: ..., answer: ... },
-  	...
-  ]
-  ```
-
-  where `courseRatingId` and `courseRatingIndex` are the question ID and response bucket previously given by `/challenge/verify`, and `answer` is the user's response to the number of responses in the given category and question.
 
 Before verifying the answers, we check that the user is logged in, within our database, does not have evaluations enabled, and has not hit the challenge attempt limit.
 
 Once these requirements are passed, we perform the following:
 
-1. The token, salt, and answers are extracted from the response body.
+1. The token, salt, and answers are extracted from the response body. For the exact structure of the request, see [api.md](./api.md#post-apichallengeverify).
 2. The token is decrypted and parsed back into a JSON object. If JSON parsing fails, an `INVALID_TOKEN` error response is given.
 3. The questions-response index combinations from the answers are extracted. If this fails, a `MALFORMED_ANSWERS` error response is given.
-4. The `netid` specified in the token is compared to that of the request header. If these are inconsistent, we assume the token has been tampered with and respond with an `INVALID_TOKEN` error.
+4. The `netId` specified in the token is compared to that of the request header. If these are inconsistent, we assume the token has been tampered with and respond with an `INVALID_TOKEN` error.
 5. The `courseRatingId` and `courseRatingIndex` values from the token and the answer are compared. If these are inconsistent, we assume the token has been tampered with and respond with an `INVALID_TOKEN` error.
 6. If everything has passed so far, we retrieve the response numbers for each question from our database. These are then compared with the values in the provided answers. If these are all correct, then a `CORRECT` response is given; otherwise, an `INCORRECT` response is returned.

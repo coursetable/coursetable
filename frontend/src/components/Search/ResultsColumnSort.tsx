@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import {
   FcAlphabeticalSortingAz,
@@ -6,14 +6,31 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import { useSearch, type SortByOption } from '../../contexts/searchContext';
+import {
+  useSearch,
+  type Option,
+  type SortKeys,
+} from '../../contexts/searchContext';
 import styles from './ResultsColumnSort.module.css';
+
+const isNumeric: { [key in SortKeys]: boolean } = {
+  course_code: false,
+  title: false,
+  friend: true,
+  overall: true,
+  average_professor_rating: true,
+  workload: true,
+  average_gut_rating: true,
+  enrollment: true,
+  time: true,
+  locations_summary: false,
+};
 
 function ResultsColumnSort({
   selectOption,
   renderActive = true,
 }: {
-  readonly selectOption: SortByOption;
+  readonly selectOption: Option<SortKeys>;
   readonly renderActive?: boolean;
 }) {
   const {
@@ -23,7 +40,7 @@ function ResultsColumnSort({
   const [localSortOrder, setLocalSortOrder] = useState(
     isActive ? sortOrder.value : 'asc',
   );
-  const Icon = selectOption.numeric
+  const Icon = isNumeric[selectOption.value]
     ? localSortOrder === 'asc'
       ? FcNumericalSorting12
       : FcNumericalSorting21
@@ -36,7 +53,7 @@ function ResultsColumnSort({
       type="button"
       className={clsx(
         styles.button,
-        'ml-1 my-auto',
+        'ms-1 my-auto',
         renderActive && isActive && styles.buttonActive,
       )}
       onClick={() => {

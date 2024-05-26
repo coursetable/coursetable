@@ -1,4 +1,3 @@
-version: '3'
 services:
   api:
     labels:
@@ -6,7 +5,3 @@ services:
       traefik.http.routers.coursetable-staging.tls: true
       traefik.http.routers.coursetable-staging.tls.certResolver: ctresolver
       traefik.http.routers.coursetable-staging.middlewares: gzip-compress@file
-
-  redis:
-    volumes:
-      - /home/app/redis/staging-data:/data

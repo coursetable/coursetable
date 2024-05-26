@@ -1,4 +1,3 @@
-import React from 'react';
 import ThankYouImage from '../images/thankyou.svg';
 
 function Thankyou() {

@@ -1,34 +1,35 @@
-import React, { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { OverlayTrigger, Tooltip, Row } from 'react-bootstrap';
-
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import type { ListChildComponentProps } from 'react-window';
 
-import { useUser } from '../../contexts/userContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
-import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import SkillBadge from '../SkillBadge';
+import type { ResultItemData } from './Results';
 import {
   SeasonTag,
   CourseInfoPopover,
   CourseCode,
   ratingTypes,
 } from './ResultsItemCommon';
-import { RatingBubble } from '../Typography';
-
-import styles from './ResultsItem.module.css';
-import colStyles from './ResultsCols.module.css';
-import { getEnrolled, isInWorksheet } from '../../utilities/course';
-import { generateRandomColor, type Listing } from '../../utilities/common';
-
 import { useSearch } from '../../contexts/searchContext';
+import { useUser } from '../../contexts/userContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import type { CatalogListing } from '../../queries/api';
+import { generateRandomColor } from '../../utilities/common';
+import { getEnrolled, isInWorksheet } from '../../utilities/course';
+import { useCourseModalLink } from '../../utilities/display';
+import SkillBadge from '../SkillBadge';
+import { RatingBubble } from '../Typography';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import colStyles from './ResultsCols.module.css';
+import styles from './ResultsItem.module.css';
 
 function Rating({
-  course,
+  listing,
   hasEvals,
   name,
 }: {
-  readonly course: Listing;
+  readonly listing: CatalogListing;
   readonly hasEvals: boolean | undefined;
   readonly name: 'Class' | 'Professor' | 'Workload';
 }) {
@@ -37,10 +38,10 @@ function Rating({
     return (
       <RatingBubble
         className={styles.ratingCell}
-        rating={getRating(course, 'stat')}
+        rating={getRating(listing.course, 'stat')}
         colorMap={colorMap}
       >
-        {getRating(course, 'display')}
+        {getRating(listing.course, 'display')}
       </RatingBubble>
     );
   }
@@ -53,167 +54,154 @@ function Rating({
         </Tooltip>
       )}
     >
-      <div
+      <RatingBubble
+        color={generateRandomColor(
+          `${listing.crn}${listing.season_code}${name}`,
+        )}
         className={styles.ratingCell}
-        style={{
-          backgroundColor: generateRandomColor(
-            `${course.crn}${course.season_code}${name}`,
-          ),
-        }}
-      >
-        {/* Maybe put number here */}
-      </div>
+      />
     </OverlayTrigger>
   );
 }
 
 function ResultsItem({
-  course,
-  multiSeasons,
-  isFirst,
-  isOdd,
+  data: { listings, multiSeasons },
+  index,
   style,
-}: {
-  readonly course: Listing;
-  readonly multiSeasons: boolean;
-  readonly isFirst: boolean;
-  readonly isOdd: boolean;
-  readonly style?: React.CSSProperties;
-}) {
-  const [, setSearchParams] = useSearchParams();
+}: ListChildComponentProps<ResultItemData>) {
+  const listing = listings[index]!;
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
-  const friends = numFriends[`${course.season_code}${course.crn}`];
+  const friends = numFriends[`${listing.season_code}${listing.crn}`];
+  const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
     () =>
       isInWorksheet(
-        course.season_code,
-        course.crn,
+        listing.season_code,
+        listing.crn,
         worksheetNumber,
         user.worksheets,
       ),
-    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+    [listing.crn, listing.season_code, worksheetNumber, user.worksheets],
   );
 
   return (
-    <div
-      role="button"
-      className={clsx(
-        styles.resultItem,
-        inWorksheet && styles.inWorksheetResultItem,
-        isFirst && styles.firstResultItem,
-        isOdd ? styles.oddResultItem : styles.evenResultItem,
-        course.extra_info !== 'ACTIVE' && styles.cancelledClass,
-      )}
-      onClick={() => {
-        setSearchParams((prev) => {
-          prev.set('course-modal', `${course.season_code}-${course.crn}`);
-          return prev;
-        });
-      }}
-      tabIndex={0}
-      style={style}
-    >
-      <Row
+    <li className={styles.container} style={style}>
+      <Link
+        to={target}
         className={clsx(
-          styles.resultItemContent,
-          'mx-auto pl-4 pr-2 py-0 justify-content-between',
+          styles.resultItem,
+          inWorksheet && styles.inWorksheetResultItem,
+          index % 2 === 1 ? styles.oddResultItem : styles.evenResultItem,
+          listing.course.extra_info !== 'ACTIVE' && styles.cancelledClass,
         )}
       >
-        {multiSeasons && (
-          <div className={clsx('d-flex', colStyles.seasonCol)}>
-            <div className="my-auto">
+        <div className={styles.resultItemContent}>
+          <span
+            className={colStyles.controlCol}
+            data-tutorial={index === 0 && 'catalog-6'}
+          />
+          {multiSeasons && (
+            <span className={colStyles.seasonCol}>
               <SeasonTag
-                season={course.season_code}
+                season={listing.season_code}
                 className={styles.season}
               />
-            </div>
-          </div>
-        )}
-        <div
-          className={clsx(
-            colStyles.codeCol,
-            multiSeasons && colStyles.multiSeasons,
+            </span>
           )}
-        >
-          <div className={clsx(styles.ellipsisText, 'font-weight-bold')}>
-            <CourseCode course={course} subdueSection />
-          </div>
-        </div>
-        <CourseInfoPopover course={course}>
-          <div className={colStyles.titleCol}>
-            <div className={styles.ellipsisText}>{course.title}</div>
-          </div>
-        </CourseInfoPopover>
-        <div className="d-flex">
-          <div className={colStyles.overallCol}>
-            <Rating course={course} hasEvals={user.hasEvals} name="Class" />
-          </div>
-          <div className={colStyles.workloadCol}>
-            <Rating course={course} hasEvals={user.hasEvals} name="Workload" />
-          </div>
-          <div className={clsx('d-flex align-items-center', colStyles.profCol)}>
-            <div className={clsx('mr-2 h-100', styles.profRating)}>
+          <span className={colStyles.codeCol}>
+            <span className={clsx(styles.ellipsisText, 'fw-bold')}>
+              <CourseCode listing={listing} subdueSection />
+            </span>
+          </span>
+          <CourseInfoPopover listing={listing}>
+            <span className={colStyles.titleCol}>
+              <span className={styles.ellipsisText}>
+                {listing.course.title}
+              </span>
+            </span>
+          </CourseInfoPopover>
+          <span className={colStyles.overallCol}>
+            <Rating listing={listing} hasEvals={user.hasEvals} name="Class" />
+          </span>
+          <span className={colStyles.workloadCol}>
+            <Rating
+              listing={listing}
+              hasEvals={user.hasEvals}
+              name="Workload"
+            />
+          </span>
+          <span
+            className={clsx('d-flex align-items-center', colStyles.profCol)}
+          >
+            <span className={clsx('me-2 h-100', styles.profRating)}>
               <Rating
-                course={course}
+                listing={listing}
                 hasEvals={user.hasEvals}
                 name="Professor"
               />
-            </div>
-            <div className={styles.ellipsisText}>
-              {course.professor_names.length === 0
+            </span>
+            <span className={styles.ellipsisText}>
+              {listing.course.course_professors.length === 0
                 ? 'TBA'
-                : course.professor_names.join(' • ')}
-            </div>
-          </div>
-        </div>
-        <div className={clsx('d-flex', colStyles.enrollCol)}>
-          <span className="my-auto">{getEnrolled(course, 'display')}</span>
-        </div>
-        <div className={clsx('d-flex', colStyles.skillAreaCol)}>
-          <span className={styles.skillsAreas}>
-            {[...course.skills, ...course.areas].map((skill, index) => (
-              <SkillBadge skill={skill} className="my-auto" key={index} />
-            ))}
+                : listing.course.course_professors
+                    .map((p) => p.professor.name)
+                    .join(' • ')}
+            </span>
+          </span>
+          <span className={clsx('d-flex', colStyles.enrollCol)}>
+            <span className="my-auto">
+              {getEnrolled(listing.course, 'display')}
+            </span>
+          </span>
+          <span className={clsx('d-flex', colStyles.skillAreaCol)}>
+            <span className={styles.skillsAreas}>
+              {[...listing.course.skills, ...listing.course.areas].map(
+                (skill) => (
+                  <SkillBadge skill={skill} className="my-auto" key={skill} />
+                ),
+              )}
+            </span>
+          </span>
+          <span className={colStyles.meetCol}>
+            <span className={styles.ellipsisText}>
+              {listing.course.times_summary}
+            </span>
+          </span>
+          <span className={colStyles.locCol}>
+            <span className={styles.ellipsisText}>
+              {listing.course.locations_summary}
+            </span>
+          </span>
+          <span className={colStyles.friendsCol}>
+            {friends && friends.size > 0 && (
+              <OverlayTrigger
+                placement="top"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    {[...friends].join(' • ')}
+                  </Tooltip>
+                )}
+              >
+                <span>{friends.size}</span>
+              </OverlayTrigger>
+            )}
           </span>
         </div>
-        <div className={colStyles.meetCol}>
-          <div className={styles.ellipsisText}>{course.times_summary}</div>
-        </div>
-        <div className={colStyles.locCol}>
-          <div className={styles.ellipsisText}>{course.locations_summary}</div>
-        </div>
-        <div className={clsx('d-flex', colStyles.friendsCol)}>
-          {friends && friends.size > 0 ? (
-            <OverlayTrigger
-              placement="top"
-              overlay={(props) => (
-                <Tooltip id="button-tooltip" {...props}>
-                  {[...friends].join(' • ')}
-                </Tooltip>
-              )}
-            >
-              <span className="my-auto">{friends.size}</span>
-            </OverlayTrigger>
-          ) : (
-            <span className="my-auto" />
-          )}
-        </div>
-        <div
-          className={styles.worksheetBtn}
-          data-tutorial={isFirst && 'catalog-6'}
-        >
-          <WorksheetToggleButton
-            listing={course}
-            modal={false}
-            inWorksheet={inWorksheet}
-          />
-        </div>
-      </Row>
-    </div>
+      </Link>
+      {/* Don't this inside the link because interactive elements can't be
+        nested */}
+      <div className={styles.worksheetBtn}>
+        <WorksheetToggleButton
+          listing={listing}
+          modal={false}
+          inWorksheet={inWorksheet}
+        />
+      </div>
+    </li>
   );
 }
 

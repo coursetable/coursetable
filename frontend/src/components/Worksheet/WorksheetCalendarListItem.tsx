@@ -1,55 +1,52 @@
-import React from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Row, Col, ListGroup } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import styles from './WorksheetCalendarListItem.module.css';
-import WorksheetToggleButton from './WorksheetToggleButton';
+import { ListGroup } from 'react-bootstrap';
 import WorksheetHideButton from './WorksheetHideButton';
+import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import type { Listing } from '../../utilities/common';
+import type { CatalogListing } from '../../queries/api';
+import { useCourseModalLink } from '../../utilities/display';
+import styles from './WorksheetCalendarListItem.module.css';
 
 export default function WorksheetCalendarListItem({
-  course,
+  listing,
   hidden,
 }: {
-  readonly course: Listing;
+  readonly listing: CatalogListing;
   readonly hidden: boolean;
 }) {
-  const [, setSearchParams] = useSearchParams();
+  const target = useCourseModalLink(listing);
   const { setHoverCourse } = useWorksheet();
 
   return (
     <ListGroup.Item
       className={clsx(styles.listItem, 'py-1 px-2')}
-      onMouseEnter={() => setHoverCourse(course.crn)}
+      onMouseEnter={() => setHoverCourse(listing.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
-      <Row className="align-items-center mx-auto">
-        <Col
-          className={clsx(styles.courseCode, 'pl-1 pr-2')}
-          style={{
-            color: hidden ? 'var(--color-hidden)' : 'var(--color-text)',
-          }}
-          onClick={() => {
-            setSearchParams((prev) => {
-              prev.set('course-modal', `${course.season_code}-${course.crn}`);
-              return prev;
-            });
-          }}
-        >
-          <strong>{course.course_code}</strong>
-          <br />
-          <span className={styles.courseTitle}>{course.title}</span>
-        </Col>
-        <div
-          className={clsx('mr-1 my-auto', !hidden && styles.hideButtonHidden)}
-        >
-          <WorksheetHideButton crn={course.crn} hidden={hidden} />
-        </div>
-        <div className="my-auto">
-          <WorksheetToggleButton listing={course} modal={false} />
-        </div>
-      </Row>
+      <Link
+        to={target}
+        className={clsx(
+          styles.courseCode,
+          hidden && styles.courseCodeHidden,
+          'ps-1 pe-2',
+        )}
+      >
+        <strong>{listing.course_code}</strong>
+        <br />
+        <span className={styles.courseTitle}>{listing.course.title}</span>
+      </Link>
+      <div className="d-flex align-items-center gap-1">
+        <WorksheetHideButton
+          crn={listing.crn}
+          hidden={hidden}
+          className={clsx(
+            styles.hideButton,
+            !hidden && styles.hideButtonHidden,
+          )}
+        />
+        <WorksheetToggleButton listing={listing} modal={false} />
+      </div>
     </ListGroup.Item>
   );
 }

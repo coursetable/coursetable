@@ -1,9 +1,3 @@
-.row {
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .toggleButtonGroup {
   width: 180px;
 }
@@ -15,7 +9,9 @@
 }
 
 .toggleButton {
-  box-shadow: none !important;
+  --bs-btn-active-bg: var(--color-primary);
+  --bs-btn-active-border-color: var(--color-primary);
+
   font-size: 14px;
   background-color: var(--color-surface);
   color: var(--color-text);
@@ -35,13 +31,13 @@
 }
 
 .toggleButton:hover {
-  background-color: var(--color-button-hover);
+  background-color: var(--color-surface-hover);
   color: var(--color-text);
   border: var(--color-primary-hover) 2px solid;
 }
 
 .toggleButton:active {
-  background-color: var(--color-button-active) !important;
+  background-color: var(--color-surface-active) !important;
   color: var(--color-text) !important;
 }
 

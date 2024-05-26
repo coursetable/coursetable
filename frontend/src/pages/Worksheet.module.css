@@ -1,47 +1,55 @@
 .container {
-  margin-bottom: 0;
-  border: none;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
 }
 
-.desktopContainer {
-  min-height: 92vh;
+@media (width < 768px) {
+  .container {
+    flex-direction: column;
+  }
 }
 
-.loadingSpinner {
-  position: fixed;
-  top: calc(50% - 16px);
-  left: calc(50% - 16px);
-}
+.calendar {
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
 
-.calendarContainer {
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
-  height: 86vh;
-  position: sticky;
-  top: calc(1rem + 56px);
-  border-radius: 8px;
+  /* Each hour in RBC has a min-height of 40px, and a day is at most 12hr */
+  height: max(calc(100vh - var(--height-navbar) - 2rem), 480px);
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
+  border-radius: 8px;
 }
 
-.hidden {
-  display: none;
+@media (width < 768px) {
+  .calendar {
+    height: max(calc(100vh - var(--height-navbar) - 2rem - 72px), 480px);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    overflow: hidden;
+  }
 }
 
-.accordion {
-  width: 100vw;
-  min-height: 100vh;
+@media (width >= 768px) {
+  .calendar {
+    position: sticky;
+    top: calc(1rem + 56px);
+    min-width: calc(75% - 1rem);
+    flex-grow: 1;
+  }
 }
 
 .expandBtn {
   padding: 3px;
   border-radius: 6px;
-  background-color: var(--color-select-multivalue);
+  background-color: var(--color-bg-button);
   color: var(--color-text-secondary);
   position: absolute;
   top: 0%;
+  right: 0%;
   z-index: 2;
+  transform: translate(50%, -40%);
   transition:
     transform 0.05s linear,
     background-color var(--trans-dur),
@@ -52,24 +60,22 @@
   display: block;
 }
 
-.topRight {
-  right: 0%;
-  transform: translate(50%, -40%);
-}
-
-.topRight:hover {
+.expandBtn:hover {
   transform: translate(50%, -40%) scale(1.1);
 }
 
-.mobileCalendar {
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 20%);
-  height: 75vh;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  padding-top: 1rem;
-  transition:
-    border-color var(--trans-dur),
-    background-color var(--trans-dur),
-    color var(--trans-dur);
-  overflow: hidden;
+.calendarSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (width >= 768px) {
+  .calendarSidebar {
+    max-width: calc(25% - 1rem);
+  }
+}
+
+.dropdowns {
+  margin-bottom: -1rem;
 }

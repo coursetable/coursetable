@@ -5,9 +5,11 @@ ignores:
   - typescript-plugin-css-modules
   - tsconfig-*
 
-  # GraphQL
+  # GraphQL (used in codegen files)
   - graphql
   - '@graphql-codegen/*'
+  - graphql-tag
+  - graphql-request
 
   # Linting
   - '@typescript-eslint/*'

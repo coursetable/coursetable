@@ -1,7 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import { toast } from 'react-toastify';
 import { DateLocalizer, type DateLocalizerSpec } from 'react-big-calendar';
-import { weekdays, type Listing, type Season, type Weekdays } from './common';
+import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
 import { toSeasonString } from './course';
 import {
   academicCalendars,
@@ -9,6 +8,13 @@ import {
   type SeasonCalendar,
 } from '../config';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
+import type { CatalogListing } from '../queries/api';
+import {
+  weekdays,
+  type Season,
+  type Weekdays,
+  type TimesByDay,
+} from '../queries/graphql-types';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -54,7 +60,7 @@ function firstDaySince(reference: Date | SimpleDate, days: number[]) {
   return referenceDate;
 }
 
-function getTimes(timesByDay: Listing['times_by_day']) {
+function getTimes(timesByDay: TimesByDay) {
   const times: {
     days: number[];
     startTime: string;
@@ -129,7 +135,7 @@ type CalendarEvent = {
   description: string;
   location: string;
   color: string;
-  listing: Listing;
+  listing: CatalogListing;
   days: number[];
 };
 
@@ -205,7 +211,7 @@ function toRBCEvent({
     return {
       title: summary,
       // No instructors for RBC
-      description: listing.title,
+      description: listing.course.title,
       start: startTimeCpy,
       end: endTimeCpy,
       listing,
@@ -222,7 +228,7 @@ export type RBCEvent = {
   description: string;
   start: Date;
   end: Date;
-  listing: Listing;
+  listing: CatalogListing;
   color: string;
   location: string;
 };
@@ -262,8 +268,8 @@ export function getCalendarEvents(
   }
   const toEvent =
     type === 'gcal' ? toGCalEvent : type === 'ics' ? toICSEvent : toRBCEvent;
-  const events = visibleCourses.flatMap(({ listing: c, color }) => {
-    const times = getTimes(c.times_by_day);
+  const events = visibleCourses.flatMap(({ listing: l, color }) => {
+    const times = getTimes(l.course.times_by_day);
     const endRepeat = semester
       ? isoString(semester.end, '23:59').replace(/[:-]/gu, '')
       : // Irrelevant for rbc
@@ -289,7 +295,7 @@ export function getCalendarEvents(
             '';
 
         return toEvent({
-          summary: c.course_code,
+          summary: l.course_code,
           start: isoString(firstMeetingDay, startTime),
           end: isoString(firstMeetingDay, endTime),
           recurrence: [
@@ -297,10 +303,10 @@ export function getCalendarEvents(
             `EXDATE;TZID=America/New_York:${exDate}`,
             ...(rDate ? [`RDATE;TZID=America/New_York:${rDate}`] : []),
           ],
-          description: `${c.title}\nInstructor: ${c.professor_names.join(', ')}`,
+          description: `${l.course.title}\nInstructor: ${l.course.course_professors.map((p) => p.professor.name).join(', ')}`,
           location,
           color,
-          listing: c,
+          listing: l,
           days,
         });
       },

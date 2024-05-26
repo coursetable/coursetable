@@ -1,4 +1,3 @@
-import React from 'react';
 import ServerError from '../images/server_error.svg';
 
 function ErrorPage({ message }: { readonly message: string }) {

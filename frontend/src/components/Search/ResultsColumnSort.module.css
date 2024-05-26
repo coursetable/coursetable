@@ -5,9 +5,9 @@
 }
 
 .button:hover {
-  background-color: var(--color-button-active);
+  background-color: var(--color-surface-active);
 }
 
 .button.buttonActive {
-  background-color: var(--color-select-hover);
+  background-color: var(--color-primary-subdued);
 }

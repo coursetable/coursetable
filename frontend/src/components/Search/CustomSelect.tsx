@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-import makeAnimated from 'react-select/animated';
+import { useMemo } from 'react';
 import chroma from 'chroma-js';
 import Select, {
   mergeStyles,
@@ -8,6 +7,7 @@ import Select, {
   type Theme as SelectTheme,
   type ThemeConfig,
 } from 'react-select';
+import makeAnimated from 'react-select/animated';
 import type { Option } from '../../contexts/searchContext';
 
 // Styles for the select indicators
@@ -53,7 +53,7 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
       backgroundColor: isDisabled
         ? 'var(--color-disabled)'
         : 'var(--color-select)',
-      borderColor: 'rgba(0, 0, 0, 0.1)',
+      borderColor: 'var(--color-border-control)',
       borderWidth: '2px',
       transition: 'none',
       userSelect: 'none',
@@ -63,8 +63,7 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
       paddingTop: 0,
       marginTop: 0,
       borderRadius: '8px',
-      boxShadow:
-        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      boxShadow: '0 1px 3px 0 var(--color-shadow)',
     }),
     menuList: (base) => ({
       ...base,
@@ -96,7 +95,7 @@ function popoutStyles(width: number): StylesConfig<Option<number | string>> {
       backgroundColor: isDisabled
         ? 'var(--color-disabled)'
         : 'var(--color-select)',
-      borderColor: 'rgba(0, 0, 0, 0.1)',
+      borderColor: 'var(--color-border-control)',
       minWidth: width,
       margin: 8,
     }),
@@ -104,7 +103,7 @@ function popoutStyles(width: number): StylesConfig<Option<number | string>> {
       ...base,
       display: 'none',
     }),
-    menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
+    menu: () => ({ boxShadow: 'inset 0 1px 0 var(--color-shadow)' }),
     option: (base) => ({
       ...base,
       cursor: 'pointer',
@@ -113,10 +112,12 @@ function popoutStyles(width: number): StylesConfig<Option<number | string>> {
 }
 
 // Styles for skills/areas select
-function colorStyles(): StylesConfig<Option<number | string>> {
+function colorStyles(colors: {
+  [optionValue: string]: string;
+}): StylesConfig<Option<number | string>> {
   return {
     multiValue(base, { data }) {
-      const backgroundColor = chroma(data.color!).alpha(0.16).css();
+      const backgroundColor = chroma(colors[data.value]!).alpha(0.16).css();
       return {
         ...base,
         backgroundColor,
@@ -124,19 +125,19 @@ function colorStyles(): StylesConfig<Option<number | string>> {
     },
     multiValueLabel: (base, { data }) => ({
       ...base,
-      color: data.color,
+      color: colors[data.value]!,
       fontWeight: 'bold',
     }),
     multiValueRemove: (base, { data }) => ({
       ...base,
-      color: data.color,
+      color: colors[data.value]!,
       ':hover': {
-        backgroundColor: data.color,
+        backgroundColor: colors[data.value]!,
         color: 'white',
       },
     }),
     option(base, { data, isDisabled, isFocused, isSelected }) {
-      const color = chroma(data.color!);
+      const color = chroma(colors[data.value]!);
       if (isDisabled) {
         return {
           ...base,
@@ -147,11 +148,11 @@ function colorStyles(): StylesConfig<Option<number | string>> {
         return {
           ...base,
           fontWeight: 'bold',
-          backgroundColor: data.color,
+          backgroundColor: colors[data.value]!,
           color: chroma.contrast(color, 'white') > 2 ? 'white' : 'black',
           ':active': {
             ...base[':active'],
-            backgroundColor: data.color,
+            backgroundColor: colors[data.value]!,
           },
         };
       }
@@ -159,7 +160,7 @@ function colorStyles(): StylesConfig<Option<number | string>> {
         ...base,
         fontWeight: 'bold',
         backgroundColor: isFocused ? color.alpha(0.1).css() : undefined,
-        color: data.color,
+        color: colors[data.value]!,
 
         ':active': {
           ...base[':active'],
@@ -172,7 +173,7 @@ function colorStyles(): StylesConfig<Option<number | string>> {
 
 type Props = {
   readonly popout?: boolean;
-  readonly useColors?: boolean;
+  readonly colors?: { [optionValue: string]: string };
   readonly isMulti?: boolean;
 };
 
@@ -181,7 +182,7 @@ function CustomSelect<
   IsMulti extends boolean = false,
 >({
   popout = false,
-  useColors = false,
+  colors,
   isMulti = false as IsMulti,
   components: componentsProp,
   ...props
@@ -193,9 +194,9 @@ function CustomSelect<
     colors: {
       ...theme.colors,
       primary50: '#85c2ff', // OptionBackground :focus
-      primary25: 'var(--color-select-hover)', // OptionBackground :hover
+      primary25: 'var(--color-primary-subdued)', // OptionBackground :hover
       neutral0: 'var(--color-select)', // AllBackground & optionText :selected
-      neutral10: 'var(--color-select-multivalue)', // SelectedOptionBackground & disabledBorder
+      neutral10: 'var(--color-bg-button)', // SelectedOptionBackground & disabledBorder
       neutral30: 'hsl(0, 0%, 70%)', // Border :hover
       neutral60: 'var(--color-text)', // DropdownIconFocus & clearIconFocus
       neutral80: 'var(--color-text)', // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover
@@ -214,7 +215,7 @@ function CustomSelect<
     indicatorStyles(isMulti),
     popout ? popoutStyles(400) : defaultStyles(),
   );
-  if (useColors) styles = mergeStyles(styles, colorStyles());
+  if (colors) styles = mergeStyles(styles, colorStyles(colors));
 
   return (
     <Select<T, IsMulti>
@@ -223,6 +224,10 @@ function CustomSelect<
       styles={styles as StylesConfig<T, IsMulti>}
       components={animatedComponents}
       theme={themeStyles}
+      // https://github.com/coursetable/coursetable/issues/1674
+      // All our selects are used in the navbar or the mobile search form, and
+      // on mobile this is false anyway
+      menuShouldScrollIntoView={false}
     />
   );
 }

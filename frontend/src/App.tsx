@@ -1,22 +1,21 @@
-import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import { Helmet } from 'react-helmet';
 
-import { Row, Spinner } from 'react-bootstrap';
-import * as Sentry from '@sentry/react';
+import CourseModal from './components/CourseModal/CourseModal';
+import Footer from './components/Footer';
+import Navbar from './components/Navbar/Navbar';
+import Notice from './components/Notice';
+import Spinner from './components/Spinner';
+import { useTutorial } from './contexts/tutorialContext';
+import { useUser } from './contexts/userContext';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
-import Notice from './components/Notice';
-import Navbar from './components/Navbar/Navbar';
-import Footer from './components/Footer';
-import CourseModal from './components/CourseModal/CourseModal';
-
-import { useUser } from './contexts/userContext';
-import { useTutorial } from './contexts/tutorialContext';
 import { suspended } from './utilities/display';
+import styles from './App.module.css';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -42,18 +41,14 @@ function App() {
   const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
 
-  if (authStatus === 'loading') {
-    return (
-      <Row className="m-auto" style={{ height: '100vh' }}>
-        <Spinner className="m-auto" animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
-      </Row>
-    );
-  }
+  if (authStatus === 'loading') return <Spinner />;
 
   return (
-    <>
+    <div
+      className={
+        location.pathname === '/catalog' ? styles.catalogLayout : styles.layout
+      }
+    >
       {/* Default metadata; can be overridden by individual pages/components
       keep this in sync with index.html, so nothing actually changes after
       hydration, and things get restored to the default state when those
@@ -69,6 +64,8 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
+        // When removing a notice, just remove/comment the text content below.
+        // Don't remove this wrapper.
         id={6}
       >
         {/* CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
@@ -140,12 +137,11 @@ function App() {
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
       </SentryRoutes>
-      {/* Render footer if not on catalog */}
-      {!['/catalog'].includes(location.pathname) && <Footer />}
+      <Footer />
       {/* Globally overlaid components */}
       {isTutorialOpen && <Tutorial />}
       <CourseModal />
-    </>
+    </div>
   );
 }
 

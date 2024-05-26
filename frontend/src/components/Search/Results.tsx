@@ -1,26 +1,28 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Spinner } from 'react-bootstrap';
-import { FixedSizeList } from 'react-window';
 import clsx from 'clsx';
+import { Row } from 'react-bootstrap';
+import { FixedSizeList, FixedSizeGrid } from 'react-window';
 
+import FloatingWorksheet from './FloatingWorksheet';
+import ResultsGridItem from './ResultsGridItem';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
-import ResultsGridItem from './ResultsGridItem';
-import FloatingWorksheet from './FloatingWorksheet';
+import WindowScroller from './WindowScroller';
 
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-
+import { useWorksheet } from '../../contexts/worksheetContext';
+import NoCoursesFound from '../../images/no_courses_found.svg';
+import type { CatalogListing } from '../../queries/api';
+import { useSessionStorageState } from '../../utilities/browserStorage';
+import { toSeasonString } from '../../utilities/course';
+import Spinner from '../Spinner';
 import styles from './Results.module.css';
 
-import NoCoursesFound from '../../images/no_courses_found.svg';
-
-import WindowScroller from './WindowScroller';
-import { useSessionStorageState } from '../../utilities/browserStorage';
-import type { Listing } from '../../utilities/common';
-import { toSeasonString } from '../../utilities/course';
-
-import { useWorksheet } from '../../contexts/worksheetContext';
+export type ResultItemData = {
+  readonly listings: CatalogListing[];
+  readonly columnCount: number;
+  readonly multiSeasons: boolean;
+};
 
 function Results({
   data,
@@ -28,7 +30,7 @@ function Results({
   multiSeasons = false,
   page,
 }: {
-  readonly data: Listing[];
+  readonly data: CatalogListing[];
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
   readonly page?: 'catalog' | 'worksheet' | 'wishlist';
@@ -41,15 +43,11 @@ function Results({
 
   const { curSeason } = useWorksheet();
 
-  const numCols = isMobile ? 1 : isTablet ? 2 : 3;
-
   let resultsListing: JSX.Element | undefined = undefined;
   if (loading) {
     resultsListing = (
       <Row className={clsx('m-auto', data.length === 0 ? 'py-5' : 'pt-0 pb-4')}>
-        <Spinner className="m-auto" animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <Spinner />
       </Row>
     );
   } else if (data.length === 0) {
@@ -86,22 +84,32 @@ function Results({
         )}
       </div>
     );
-  } else if (!isListView || isMobile) {
+  } else {
     // Not list or on mobile -> use grid view
     // Do not force entering grid mode on mobile, so that when resizing the
     // window, the view can still be restored to list view
+    const isGrid = !isListView || isMobile;
+    const columnCount = isGrid ? (isMobile ? 1 : isTablet ? 2 : 3) : 1;
+    const columnWidth = Math.floor(window.innerWidth / columnCount);
+    const rowCount = Math.ceil(data.length / columnCount);
+    const rowHeight = isGrid ? 178 : isLgDesktop ? 32 : 28;
+    const ListComp = isGrid ? FixedSizeGrid : FixedSizeList;
+    const InnerComp = isGrid ? ResultsGridItem : ResultsItem;
+
     resultsListing = (
-      <WindowScroller>
+      <WindowScroller isGrid={isGrid}>
         {({ ref, outerRef }) => (
-          // We use a list even for grid, because we only virtualize the rows
-          <FixedSizeList
+          // @ts-expect-error: not worth making types work here
+          <ListComp
+            innerElementType="ul"
             outerRef={outerRef}
             ref={ref}
             width={window.innerWidth}
-            height={window.innerHeight}
-            itemCount={Math.ceil(data.length / numCols)}
-            itemSize={178}
-            className="px-1 pt-3"
+            height={Math.min(window.innerHeight, rowCount * rowHeight)}
+            itemData={{ listings: data, columnCount, multiSeasons }}
+            {...(isGrid
+              ? { columnCount, rowCount, rowHeight, columnWidth }
+              : { itemCount: rowCount, itemSize: rowHeight })}
             // Inline styles because react-window also injects inline styles
             style={{
               width: '100%',
@@ -113,54 +121,8 @@ function Results({
               overflow: 'hidden',
             }}
           >
-            {({ index, style: itemStyle }) => (
-              <div style={itemStyle}>
-                <Row className={clsx(styles.gridRow, 'mx-auto')}>
-                  {data
-                    .slice(index * numCols, (index + 1) * numCols)
-                    .map((course) => (
-                      <ResultsGridItem
-                        course={course}
-                        numCols={numCols}
-                        multiSeasons={multiSeasons}
-                        key={course.season_code + course.crn}
-                      />
-                    ))}
-                </Row>
-              </div>
-            )}
-          </FixedSizeList>
-        )}
-      </WindowScroller>
-    );
-  } else {
-    resultsListing = (
-      <WindowScroller>
-        {({ ref, outerRef }) => (
-          <FixedSizeList
-            outerRef={outerRef}
-            ref={ref}
-            width={window.innerWidth}
-            height={window.innerHeight}
-            itemCount={data.length}
-            itemSize={isLgDesktop ? 32 : 28}
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'inline-block',
-              overflow: 'hidden',
-            }}
-          >
-            {({ index, style: itemStyle }) => (
-              <ResultsItem
-                isOdd={index % 2 === 1}
-                style={itemStyle}
-                course={data[index]!}
-                multiSeasons={multiSeasons}
-                isFirst={index === 0}
-              />
-            )}
-          </FixedSizeList>
+            {InnerComp}
+          </ListComp>
         )}
       </WindowScroller>
     );
@@ -176,7 +138,6 @@ function Results({
       {!isMobile && (
         <ResultsHeaders
           multiSeasons={multiSeasons}
-          page={page}
           isListView={isListView}
           setIsListView={setIsListView}
           numResults={data.length}

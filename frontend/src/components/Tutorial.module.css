@@ -36,11 +36,11 @@
 }
 
 .prevButton:hover {
-  background-color: var(--color-button-active);
+  background-color: var(--color-surface-active);
 }
 
 .prevButton:active {
-  background-color: var(--color-button-active) !important;
+  background-color: var(--color-surface-active) !important;
 }
 
 .prevButton:focus {

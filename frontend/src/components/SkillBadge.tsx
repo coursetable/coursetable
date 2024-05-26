@@ -1,7 +1,6 @@
-import React from 'react';
-import chroma from 'chroma-js';
 import clsx from 'clsx';
 import { Badge } from 'react-bootstrap';
+import chroma from 'chroma-js';
 import { skillsAreasColors } from '../utilities/constants';
 import styles from './SkillBadge.module.css';
 
@@ -14,7 +13,7 @@ export default function SkillBadge({
 }) {
   return (
     <Badge
-      variant="secondary"
+      bg="none"
       className={clsx(className, styles.tag)}
       style={{
         color: skillsAreasColors[skill],

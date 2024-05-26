@@ -15,33 +15,12 @@ import {
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
   checkAuth,
-  fetchUserWishlist,
-} from '../utilities/api';
-import type { NetId, Season, Crn } from '../utilities/common';
-
-// Not using z.infer because we want narrower types
-export type UserWorksheets = {
-  [season: Season]: {
-    [worksheetNumber: number]: {
-      crn: Crn;
-      color: string;
-      hidden: boolean;
-    }[];
-  };
-};
-export type UserWishlist = {
-  courseCode: string;
-}[];
-export type FriendRecord = {
-  [netId: NetId]: {
-    name: string;
-    worksheets: UserWorksheets;
-  };
-};
-type FriendRequests = {
-  netId: NetId;
-  name: string;
-}[];
+  type UserWorksheets,
+  type UserWishlist,
+  type FriendRecord,
+  type FriendRequests,
+} from '../queries/api';
+import type { NetId } from '../queries/graphql-types';
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -89,13 +68,13 @@ export function UserProvider({
   >(undefined);
 
   const userRefresh = useCallback(async (): Promise<void> => {
-    const worksheetData = await fetchUserWorksheets();
-    if (worksheetData) {
-      setNetId(worksheetData.netId satisfies string as NetId);
-      setHasEvals(worksheetData.evaluationsEnabled ?? undefined);
-      setYear(worksheetData.year ?? undefined);
-      setSchool(worksheetData.school ?? undefined);
-      setWorksheets(worksheetData.data as UserWorksheets);
+    const data = await fetchUserWorksheets();
+    if (data) {
+      setNetId(data.netId);
+      setHasEvals(data.evaluationsEnabled ?? undefined);
+      setYear(data.year ?? undefined);
+      setSchool(data.school ?? undefined);
+      setWorksheets(data.data as UserWorksheets);
     } else {
       setNetId(undefined);
       setWorksheets(undefined);
@@ -110,13 +89,13 @@ export function UserProvider({
 
   const friendRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchFriendWorksheets();
-    if (data) setFriends(data.friends as FriendRecord);
+    if (data) setFriends(data.friends);
     else setFriends(undefined);
   }, [setFriends]);
 
   const friendReqRefresh = useCallback(async (): Promise<void> => {
     const data = await fetchFriendReqs();
-    if (data) setFriendRequests(data.requests as FriendRequests);
+    if (data) setFriendRequests(data.requests);
     else setFriendRequests(undefined);
   }, [setFriendRequests]);
 

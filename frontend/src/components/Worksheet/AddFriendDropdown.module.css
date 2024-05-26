@@ -1,14 +1,15 @@
 .addFriendIcon {
   position: absolute;
-  right: 30px;
+  right: 10px;
   margin-top: 4px;
   cursor: pointer;
 }
 
 .removeFriendIcon {
   position: absolute;
-  right: 10px;
+  right: 30px;
   margin-top: 4px;
+  cursor: pointer;
 }
 
 .friendOption {
@@ -22,4 +23,9 @@
 .friendOptionText {
   flex-grow: 1;
   text-align: left;
+}
+
+.spinner {
+  height: 20px;
+  width: 20px;
 }

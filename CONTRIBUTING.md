@@ -251,6 +251,15 @@ Please read the [Bun documentation](https://bun.sh/docs/cli/install) for how to 
 
 On the frontend, we minimize the number and size of dependencies we use. You can check the [bundle map](https://coursetable.com/bundle-map.html) on our live website to find the largest dependencies in the main bundle (`entry-index-xxxxx.js`). If you really need to use heavy dependencies, make sure they are code-split and only loaded when necessary (such as the graphiql library which only loads when you open the GraphQL Playground).
 
+### Debugging API
+
+You will notice that the Express server runs on a Bun runtime. Debugging is enabled in development through [Bun's web debugger](https://bun.sh/guides/runtime/web-debugger).
+
+Please note the following when debugging Bun in Docker (see [`oven/bun #7225`](https://github.com/oven-sh/bun/issues/7225)):
+
+- Bun will log `https://debug.bun.sh/#0.0.0.0:6499/forcingPrefix` as the web debugger
+- Use `https://debug.bun.sh/#localhost:6499/forcingPrefix` instead
+
 ### Fixing linting errors
 
 We have a bunch of linting infrastructure to help you write clean and maintainable code. When you submit a PR, a GitHub action runs all checks and fails if there are any errors. All linting infrastructure is defined in the root `package.json`. You can run the following command:

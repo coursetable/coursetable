@@ -1,8 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Row, Col, Collapse } from 'react-bootstrap';
+import clsx from 'clsx';
+import { Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import {
   FcInfo,
   FcQuestions,
@@ -10,17 +12,15 @@ import {
   FcPuzzle,
   FcNews,
 } from 'react-icons/fc';
-import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import clsx from 'clsx';
 
-import styles from './MeDropdown.module.css';
-import { logout } from '../../utilities/api';
-import { scrollToTop, useComponentVisible } from '../../utilities/display';
-import { SurfaceComponent, TextComponent, HoverText } from '../Typography';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { useUser } from '../../contexts/userContext';
-import { useTutorial } from '../../contexts/tutorialContext';
 import { API_ENDPOINT } from '../../config';
+import { useTutorial } from '../../contexts/tutorialContext';
+import { useUser } from '../../contexts/userContext';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { logout } from '../../queries/api';
+import { scrollToTop, useComponentVisible } from '../../utilities/display';
+import { SurfaceComponent, TextComponent } from '../Typography';
+import styles from './MeDropdown.module.css';
 
 function DropdownItem({
   icon: Icon,
@@ -40,53 +40,43 @@ function DropdownItem({
   readonly onClick?: (e: React.MouseEvent) => void;
 }) {
   const innerText = (
-    <HoverText>
-      <Icon
-        className="mr-2 my-auto"
-        size={20}
-        style={{ paddingLeft: '2px', paddingBottom: '2px' }}
-        color={iconColor}
-      />
+    <TextComponent className={styles.itemText} type="secondary">
+      <Icon size={20} className={styles.linkIcon} color={iconColor} />
       {children}
-    </HoverText>
+    </TextComponent>
   );
-  return (
-    <Row className="pb-3 m-auto">
-      <TextComponent type="secondary">
-        {to ? (
-          <NavLink
-            to={to}
-            className={styles.collapseText}
-            onClick={onClick ?? scrollToTop}
-          >
-            {innerText}
-          </NavLink>
-        ) : href ? (
-          // eslint-disable-next-line react/jsx-no-target-blank
-          <a
-            href={href}
-            className={styles.collapseText}
-            {...(externalLink && {
-              target: '_blank',
-              rel: 'noreferrer noopener',
-            })}
-          >
-            {innerText}
-          </a>
-        ) : onClick ? (
-          <button
-            type="button"
-            onClick={onClick}
-            className={styles.collapseText}
-          >
-            {innerText}
-          </button>
-        ) : (
-          <span className={styles.collapseText}>{innerText}</span>
-        )}
-      </TextComponent>
-    </Row>
-  );
+  if (to) {
+    return (
+      <NavLink
+        to={to}
+        onClick={onClick ?? scrollToTop}
+        className={styles.dropdownItem}
+      >
+        {innerText}
+      </NavLink>
+    );
+  } else if (href) {
+    return (
+      // eslint-disable-next-line react/jsx-no-target-blank
+      <a
+        href={href}
+        className={styles.dropdownItem}
+        {...(externalLink && {
+          target: '_blank',
+          rel: 'noreferrer noopener',
+        })}
+      >
+        {innerText}
+      </a>
+    );
+  } else if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={styles.dropdownItem}>
+        {innerText}
+      </button>
+    );
+  }
+  throw new Error('DropdownItem must have either to, href, or onClick');
 }
 
 function DropdownContent({
@@ -109,58 +99,56 @@ function DropdownContent({
       }}
     >
       <Collapse in={isExpanded}>
-        {/* This wrapper div is important for making the collapse animation
-          smooth */}
-        <div>
-          <Col className="px-3 pt-3">
-            <DropdownItem icon={FcInfo} to="/about">
-              About
-            </DropdownItem>
-            <DropdownItem icon={FcQuestions} to="/faq">
-              FAQ
-            </DropdownItem>
+        {/* Do not add vertical spacing to this div because it will break
+          collapsing animation */}
+        <div className="px-3">
+          <DropdownItem icon={FcInfo} to="/about">
+            About
+          </DropdownItem>
+          <DropdownItem icon={FcQuestions} to="/faq">
+            FAQ
+          </DropdownItem>
+          <DropdownItem
+            icon={FcFeedback}
+            href="https://feedback.coursetable.com/"
+            externalLink
+          >
+            Feedback
+          </DropdownItem>
+          <DropdownItem icon={FcNews} to="/releases">
+            Release Notes
+          </DropdownItem>
+          {/* Try tutorial only on desktop */}
+          {!isMobile && !isTablet && authStatus === 'authenticated' && (
             <DropdownItem
-              icon={FcFeedback}
-              href="https://feedback.coursetable.com/"
-              externalLink
+              icon={FcPuzzle}
+              to="/catalog"
+              onClick={(e) => {
+                e.stopPropagation();
+                scrollToTop(e);
+                toggleTutorial(true);
+              }}
             >
-              Feedback
+              Tutorial
             </DropdownItem>
-            <DropdownItem icon={FcNews} to="/releases">
-              Release Notes
+          )}
+          {authStatus === 'authenticated' ? (
+            <DropdownItem
+              icon={FaSignOutAlt}
+              iconColor="#ed5f5f"
+              onClick={logout}
+            >
+              Sign Out
             </DropdownItem>
-            {/* Try tutorial only on desktop */}
-            {!isMobile && !isTablet && authStatus === 'authenticated' && (
-              <DropdownItem
-                icon={FcPuzzle}
-                to="/catalog"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  scrollToTop(e);
-                  toggleTutorial(true);
-                }}
-              >
-                Tutorial
-              </DropdownItem>
-            )}
-            {authStatus === 'authenticated' ? (
-              <DropdownItem
-                icon={FaSignOutAlt}
-                iconColor="#ed5f5f"
-                onClick={logout}
-              >
-                Sign Out
-              </DropdownItem>
-            ) : (
-              <DropdownItem
-                icon={FaSignInAlt}
-                iconColor="#30e36b"
-                href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
-              >
-                Sign In
-              </DropdownItem>
-            )}
-          </Col>
+          ) : (
+            <DropdownItem
+              icon={FaSignInAlt}
+              iconColor="#30e36b"
+              href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
+            >
+              Sign In
+            </DropdownItem>
+          )}
         </div>
       </Collapse>
     </SurfaceComponent>

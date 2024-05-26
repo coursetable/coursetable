@@ -12,7 +12,7 @@
 
 .card {
   background-color: var(--color-surface);
-  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+  box-shadow: 0 4px 6px var(--color-shadow);
   transition:
     transform 0.2s,
     box-shadow 0.2s;
@@ -20,7 +20,7 @@
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px rgb(0 0 0 / 20%);
+  box-shadow: 0 10px 15px var(--color-shadow);
 }
 
 @media (width < 768px) {

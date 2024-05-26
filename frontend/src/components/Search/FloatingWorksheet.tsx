@@ -1,9 +1,8 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { IoClose } from 'react-icons/io5';
 import { FaExpandAlt, FaCalendar } from 'react-icons/fa';
+import { IoClose } from 'react-icons/io5';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import WorksheetCalendar from '../Worksheet/WorksheetCalendar';
 import styles from './FloatingWorksheet.module.css';
@@ -49,11 +48,7 @@ function FloatingWorksheet() {
       >
         <div className={styles.expandBtn}>
           <NavLink to="/worksheet" aria-label="Expand worksheet">
-            <FaExpandAlt
-              className={styles.expandIcon}
-              size={12}
-              style={{ display: 'block' }}
-            />
+            <FaExpandAlt className={styles.expandIcon} size={12} />
           </NavLink>
         </div>
         <WorksheetCalendar />

@@ -1,4 +1,5 @@
 import chroma from 'chroma-js';
+import type { ExtraInfo } from '../queries/graphql-types';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -217,6 +218,7 @@ export const subjects: { [code: string]: string } = {
   HPM: 'Health Policy and Management',
   HPR: 'Health Policy Resources & Adm',
   HSAR: 'History of Art',
+  HSCI: 'Health Science in Clinical Investigation',
   HSHM: 'Hist of Science, Hist of Med',
   HSMD: 'History of Medicine',
   HSPL: 'History & Politics',
@@ -303,6 +305,7 @@ export const subjects: { [code: string]: string } = {
   PSYC: 'Psychology',
   PSYT: 'Psychiatry',
   PTB: 'Program in Translational Biomedicine',
+  QMSE: 'Quantum Materials Science and Engineering',
   QUAL: 'Preparing for Qualifying Exams',
   QUAN: 'Quantitative Reasoning',
   REL: 'Religion',
@@ -381,52 +384,31 @@ export const schools: { [code: string]: string } = {
   SU: 'Summer Session',
 };
 
-export const evalQuestions = {
-  assessment: {
-    question: 'What is your overall assessment of this course?',
-    labels: ['poor', 'fair', 'good', 'very good', 'excellent'],
-    title: 'Overall',
-  },
-  workload: {
-    question:
-      'Relative to other courses you have taken at Yale, the workload of this course was:',
-    labels: ['much less', 'less', 'same', 'greater', 'much greater'],
-    title: 'Workload',
-  },
-  engagement: {
-    question: 'Your level of engagement with the course was:',
-    labels: ['very low', 'low', 'medium', 'high', 'very high'],
-    title: 'Engagement',
-  },
-  organized: {
-    question: 'The course was well organized to facilitate student learning.',
-    labels: [
-      'strongly disagree',
-      'disagree',
-      'neutral',
-      'agree',
-      'strongly agree',
-    ],
-    title: 'Organization',
-  },
-  feedback: {
-    question: 'I received clear feedback that improved my learning.',
-    labels: [
-      'strongly disagree',
-      'disagree',
-      'neutral',
-      'agree',
-      'strongly agree',
-    ],
-    title: 'Feedback Clarity',
-  },
-  challenge: {
-    question:
-      'Relative to other courses you have taken at Yale, the level of intellectual challenge of this course was:',
-    labels: ['much less', 'less', 'same', 'greater', 'much greater'],
-    title: 'Intellectual Challenge',
-  },
+export const extraInfo: { [key in ExtraInfo]: string } = {
+  ACTIVE: 'ACTIVE',
+  MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
+  CANCELLED: 'CANCELLED',
+  MOVED_TO_FALL_TERM: 'MOVED TO FALL',
+  CLOSED: 'CLOSED',
+  NUMBER_CHANGED: 'NUMBER CHANGED',
 };
+
+// This is the preferred order in which they will be displayed
+export const evalQuestionTags = [
+  'Overall',
+  'Workload',
+  'Engagement',
+  'Organization',
+  'Feedback',
+  'Intellectual challenge',
+  'Summary',
+  'Recommend',
+  'Skills',
+  'Strengths/weaknesses',
+  'Available resources',
+  'Major',
+  'Professor',
+];
 
 export const worksheetColors = [
   '#31a4d4',

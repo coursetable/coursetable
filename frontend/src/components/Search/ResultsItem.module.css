@@ -1,42 +1,54 @@
+.container {
+  list-style: none;
+}
+
 .resultItem {
-  outline: none !important;
+  display: block;
+  color: unset;
   cursor: pointer;
   transition:
     background-color var(--trans-dur),
     color var(--trans-dur);
 }
 
-.firstResultItem {
-  border-top: 1px solid transparent !important;
+.resultItem:hover {
+  background-color: var(--color-primary-subdued) !important;
+  color: unset;
+}
+
+.resultItem:focus-visible {
+  z-index: 1;
 }
 
 .oddResultItem:not(.inWorksheetResultItem) {
-  background-color: #f9f9f9;
+  background-color: var(--color-surface-contrast);
 }
 
 .evenResultItem:not(.inWorksheetResultItem) {
   background-color: var(--color-surface);
 }
 
-[data-theme='dark'] .oddResultItem:not(.inWorksheetResultItem) {
-  background-color: #202020;
-}
-
 .inWorksheetResultItem {
-  background-color: var(--color-primary-light);
-}
-
-.resultItem:hover {
-  background-color: var(--color-select-hover) !important;
+  background-color: var(--color-primary-subdued-2);
 }
 
 .resultItemContent {
+  display: flex;
+  justify-content: space-between;
   max-width: 1600px;
   user-select: none;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
   font-size: 13px;
   line-height: 32px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (width < 1320px) {
+  .resultItemContent {
+    line-height: 28px;
+  }
 }
 
 .ellipsisText {
@@ -45,10 +57,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-#title-popover {
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
 }
 
 .dot {
@@ -63,13 +71,6 @@
 
 .none {
   background-color: rgb(102 102 102) !important;
-}
-
-.worksheetBtn {
-  position: absolute;
-  left: 8px;
-  height: 100%;
-  display: flex;
 }
 
 .conflictError {
@@ -97,6 +98,13 @@
 
 .season {
   border-radius: 6px;
+}
+
+.worksheetBtn {
+  position: absolute;
+  width: 2.5rem;
+  left: max(calc(50vw - 800px), 0px);
+  top: 0;
 }
 
 @media (width < 1320px) {

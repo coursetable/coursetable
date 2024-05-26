@@ -1,0 +1,115 @@
+query SameCourseOrProfOfferings(
+  $seasonCode: String!
+  $crn: Int!
+  $same_course_id: Int!
+  $professor_ids: [Int!]
+  $hasEval: Boolean!
+) {
+  self: listings(
+    where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
+  ) {
+    course {
+      description
+      requirements
+      syllabus_url
+      course_professors {
+        professor {
+          professor_id
+          name
+          email
+          courses_taught
+          average_rating @include(if: $hasEval)
+        }
+      }
+      times_by_day
+      section
+      course_flags {
+        flag {
+          flag_text
+        }
+      }
+      evaluation_statistic @include(if: $hasEval) {
+        enrolled
+      }
+      last_enrollment @include(if: $hasEval)
+      last_enrollment_same_professors @include(if: $hasEval)
+      credits
+      classnotes
+      regnotes
+      rp_attr
+      final_exam
+
+      same_course_id
+    }
+
+    # For searching/testing equality
+    season_code
+    crn
+    course_code
+  }
+  sameCourse: courses(where: { same_course_id: { _eq: $same_course_id } }) {
+    ...RelatedCourseInfo
+    syllabus_url
+  }
+  sameProf: course_professors(
+    where: { professor_id: { _in: $professor_ids } }
+  ) {
+    course {
+      ...RelatedCourseInfo
+    }
+  }
+}
+
+fragment RelatedCourseInfo on courses {
+  average_professor_rating @include(if: $hasEval)
+  evaluation_statistic @include(if: $hasEval) {
+    avg_workload
+    avg_rating
+  }
+  course_professors {
+    professor {
+      professor_id
+      name
+    }
+  }
+  course_id
+  # All this is needed to navigate to the next class
+  season_code
+  listings {
+    crn
+    course_code
+  }
+  title
+  section
+  skills
+  areas
+  extra_info
+  description
+  times_by_day
+  same_course_id
+}
+
+query SearchEvaluationNarratives($season_code: String, $crn: Int) {
+  listings(where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }) {
+    course {
+      evaluation_narratives {
+        comment
+        evaluation_question {
+          question_text
+          tag
+        }
+      }
+      evaluation_ratings {
+        rating
+        evaluation_question {
+          question_text
+          options
+          tag
+        }
+      }
+      evaluation_statistic {
+        enrolled
+      }
+    }
+  }
+}

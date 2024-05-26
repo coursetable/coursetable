@@ -1,34 +1,15 @@
-.labelBubble {
-  font-weight: 550;
-  color: rgb(136 136 136);
-}
-
-.toggleBubble {
-  font-weight: 550;
-  color: var(--color-primary);
-  white-space: nowrap;
-}
-
-.metadata,
-.metadata * {
-  font-weight: 600;
-}
-
 .ratingBubble {
+  color: unset;
   border-radius: 8px;
   max-height: 3rem;
   transition: max-height 0.2s ease-out;
-  cursor: pointer;
   flex: none;
-  background-color: rgb(190 221 255);
-}
-
-[data-theme='dark'] .ratingBubble {
-  background-color: var(--color-select-hover);
+  background-color: var(--color-primary-subdued);
 }
 
 .ratingBubble:hover {
-  background-color: rgb(92 168 250);
+  color: unset;
+  background-color: var(--color-primary-light);
   max-height: 50px;
   transition: max-height 0.2s ease-in;
 }
@@ -58,14 +39,15 @@
   font-weight: 500;
 }
 
-.requirements {
-  font-weight: 500;
-  color: rgb(252 105 105);
-}
-
 .evaluationsFilter {
   background-color: var(--color-surface-elevated);
   border-color: var(--color-border);
+}
+
+.filterContainer {
+  display: flex;
+  margin: auto;
+  justify-content: center;
 }
 
 .filterContainer:focus {
@@ -91,9 +73,4 @@
     height: 3rem;
     transition: max-height 0s;
   }
-}
-
-.flagInfo {
-  margin-bottom: 0;
-  padding-left: 1em;
 }

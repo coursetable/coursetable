@@ -43,12 +43,12 @@
 }
 
 .button:hover {
-  background-color: var(--color-button-hover);
+  background-color: var(--color-surface-hover);
   color: var(--color-primary-hover);
 }
 
 .button:active {
-  background-color: var(--color-button-active);
+  background-color: var(--color-surface-active);
   color: var(--color-primary);
 }
 

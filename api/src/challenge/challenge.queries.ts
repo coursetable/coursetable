@@ -1,21 +1,67 @@
+import * as Types from '../graphql-types.js';
+
+import { GraphQLClient, RequestOptions } from 'graphql-request';
 import _gql from 'graphql-tag';
 
-import { NUM_CHALLENGE_COURSES } from '../config.js';
-
-// TODO: https://arethetypeswrong.github.io/?p=graphql-tag%402.12.6
 const gql = _gql as unknown as typeof import('graphql-tag').default;
+type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
+export type RequestEvalsQueryVariables = Types.Exact<{
+  limit: Types.Scalars['Int']['input'];
+  season: Types.InputMaybe<Types.Scalars['String']['input']>;
+  minRating: Types.InputMaybe<Types.Scalars['float8']['input']>;
+}>;
 
-// Query for selecting courses to test
-export const requestEvalsQuery = gql`
-  query($season: String, $minRating: float8) {
+export type RequestEvalsQuery = {
+  __typename?: 'query_root';
+  evaluation_ratings: Array<{
+    __typename?: 'evaluation_ratings';
+    rating: any;
+    id: number;
+    course: {
+      __typename?: 'courses';
+      season_code: string;
+      title: string;
+      listings: Array<{
+        __typename?: 'listings';
+        crn: number;
+        course_code: string;
+      }>;
+    };
+    evaluation_question: {
+      __typename?: 'evaluation_questions';
+      question_text: string;
+    };
+  }>;
+};
+
+export type VerifyEvalsQueryVariables = Types.Exact<{
+  questionIds: Types.InputMaybe<
+    Array<Types.Scalars['Int']['input']> | Types.Scalars['Int']['input']
+  >;
+}>;
+
+export type VerifyEvalsQuery = {
+  __typename?: 'query_root';
+  evaluation_ratings: Array<{
+    __typename?: 'evaluation_ratings';
+    id: number;
+    rating: any;
+  }>;
+};
+
+export const RequestEvalsDocument = gql`
+  query requestEvals($limit: Int!, $season: String, $minRating: float8) {
     evaluation_ratings(
-      limit: ${NUM_CHALLENGE_COURSES}
+      limit: $limit
       where: {
-        course: { season_code: { _eq: $season }, average_rating: {_gt: $minRating} }
-        evaluation_question: {tag: {_eq: "rating"}}
+        course: {
+          season_code: { _eq: $season }
+          average_rating: { _gt: $minRating }
+        }
+        evaluation_question: { tag: { _eq: "rating" } }
         rating: { _is_null: false }
       }
-      order_by: {course: {average_rating: asc}}
+      order_by: { course: { average_rating: asc } }
     ) {
       rating
       course {
@@ -33,28 +79,8 @@ export const requestEvalsQuery = gql`
     }
   }
 `;
-
-export interface RequestEvalsQueryResponse {
-  evaluation_ratings: {
-    rating: number[];
-    course: {
-      season_code: number;
-      title: string;
-      listings: {
-        crn: number;
-        course_code: string;
-      }[];
-    };
-    id: number;
-    evaluation_question: {
-      question_text: string;
-    };
-  }[];
-}
-
-// Query for retrieving course enrollment data again
-export const verifyEvalsQuery = gql`
-  query ($questionIds: [Int!]) {
+export const VerifyEvalsDocument = gql`
+  query verifyEvals($questionIds: [Int!]) {
     evaluation_ratings(where: { id: { _in: $questionIds } }) {
       id
       rating
@@ -62,9 +88,55 @@ export const verifyEvalsQuery = gql`
   }
 `;
 
-export interface VerifyEvalsQueryResponse {
-  evaluation_ratings: {
-    id: number;
-    rating: number[];
-  }[];
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string,
+  operationType?: string,
+  variables?: any,
+) => Promise<T>;
+
+const defaultWrapper: SdkFunctionWrapper = (
+  action,
+  _operationName,
+  _operationType,
+  _variables,
+) => action();
+
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper,
+) {
+  return {
+    requestEvals(
+      variables: RequestEvalsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<RequestEvalsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<RequestEvalsQuery>(RequestEvalsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'requestEvals',
+        'query',
+        variables,
+      );
+    },
+    verifyEvals(
+      variables?: VerifyEvalsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<VerifyEvalsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<VerifyEvalsQuery>(VerifyEvalsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'verifyEvals',
+        'query',
+        variables,
+      );
+    },
+  };
 }
+export type Sdk = ReturnType<typeof getSdk>;

@@ -1,27 +1,31 @@
-import React from 'react';
-import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
+import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
+import type { IconType } from 'react-icons';
 import { AiOutlineStar } from 'react-icons/ai';
-import { IoPersonOutline } from 'react-icons/io5';
 import { BiBookOpen } from 'react-icons/bi';
-import { IoMdSunny } from 'react-icons/io';
-import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import { InfoPopover, TextComponent } from '../Typography';
+import { FcCloseUpMode } from 'react-icons/fc';
+import { IoMdSunny } from 'react-icons/io';
+import { IoPersonOutline } from 'react-icons/io5';
+import type { CatalogListing } from '../../queries/api';
+import type { Season } from '../../queries/graphql-types';
 import {
   subjects,
   ratingColormap,
   workloadColormap,
 } from '../../utilities/constants';
-import type { Season, Listing } from '../../utilities/common';
 import {
   getOverallRatings,
+  type CourseWithOverall,
   getWorkloadRatings,
+  type CourseWithWorkload,
   getProfessorRatings,
+  type CourseWithProfRatings,
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
+import { InfoPopover, TextComponent } from '../Typography';
 import styles from './ResultsItemCommon.module.css';
 
 export function SeasonTag({
@@ -54,7 +58,6 @@ export function SeasonTag({
       <div
         className={clsx(
           styles.seasonTag,
-          'ml-auto px-1 pb-0',
           {
             [styles.spring!]: seasonNum === 1,
             [styles.summer!]: seasonNum === 2,
@@ -70,10 +73,10 @@ export function SeasonTag({
 }
 
 export function CourseInfoPopover({
-  course,
+  listing,
   children,
 }: {
-  readonly course: Listing;
+  readonly listing: CatalogListing;
   readonly children: JSX.Element;
 }) {
   return (
@@ -81,23 +84,23 @@ export function CourseInfoPopover({
       placement="right"
       overlay={(props) => (
         <InfoPopover {...props} id="title-popover">
-          <Popover.Title>
+          <Popover.Header>
             <strong>
-              {course.extra_info !== 'ACTIVE' ? (
+              {listing.course.extra_info !== 'ACTIVE' ? (
                 <span className={styles.cancelledText}>CANCELLED</span>
               ) : (
                 ''
               )}{' '}
-              {course.title}
+              {listing.course.title}
             </strong>
-          </Popover.Title>
-          <Popover.Content>
-            {truncatedText(course.description, 300, 'no description')}
+          </Popover.Header>
+          <Popover.Body>
+            {truncatedText(listing.course.description, 300, 'no description')}
             <br />
             <div className="text-danger">
-              {truncatedText(course.requirements, 250, '')}
+              {truncatedText(listing.course.requirements, 250, '')}
             </div>
-          </Popover.Content>
+          </Popover.Body>
         </InfoPopover>
       )}
     >
@@ -107,22 +110,22 @@ export function CourseInfoPopover({
 }
 
 export function CourseCode({
-  course,
+  listing,
   subdueSection,
 }: {
-  readonly course: Listing;
+  readonly listing: CatalogListing;
   readonly subdueSection: boolean;
 }) {
-  const section = course.section ? ` ${course.section.padStart(2, '0')}` : '';
+  const section = listing.section ? ` ${listing.section.padStart(2, '0')}` : '';
   return (
     <>
       <OverlayTrigger
         placement="top"
         overlay={(props) => {
-          const subjectName = subjects[course.subject];
+          const subjectName = subjects[listing.subject];
           if (!subjectName) {
             Sentry.captureException(
-              new Error(`Subject ${course.subject} has no label`),
+              new Error(`Subject ${listing.subject} has no label`),
             );
           }
           return (
@@ -132,9 +135,9 @@ export function CourseCode({
           );
         }}
       >
-        <span>{course.subject}</span>
+        <span>{listing.subject}</span>
       </OverlayTrigger>{' '}
-      {course.number}
+      {listing.number}
       {subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (
@@ -144,7 +147,20 @@ export function CourseCode({
   );
 }
 
-export const ratingTypes = {
+export const ratingTypes: {
+  [type in 'Class' | 'Professor' | 'Workload']: {
+    getRating: ((
+      course: CourseWithOverall & CourseWithWorkload & CourseWithProfRatings,
+      mode: 'stat',
+    ) => number | null) &
+      ((
+        course: CourseWithOverall & CourseWithWorkload & CourseWithProfRatings,
+        mode: 'display',
+      ) => string);
+    colorMap: chroma.Scale;
+    Icon: IconType;
+  };
+} = {
   Class: {
     getRating: getOverallRatings,
     colorMap: ratingColormap,

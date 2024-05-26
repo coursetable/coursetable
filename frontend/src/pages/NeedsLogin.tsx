@@ -1,9 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import { API_ENDPOINT } from '../config';
 import { useUser } from '../contexts/userContext';
 import Authentication from '../images/authentication.svg';
-
-import { API_ENDPOINT } from '../config';
 
 function NeedsLogin({
   redirect,

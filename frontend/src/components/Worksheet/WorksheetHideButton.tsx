@@ -1,20 +1,20 @@
-import React from 'react';
-import { BsEyeSlash, BsEye } from 'react-icons/bs';
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import clsx from 'clsx';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { useWorksheet } from '../../contexts/worksheetContext';
-
-// This module is "borrowed". Maybe we shouldn't do this?
-// eslint-disable-next-line css-modules/no-unused-class
-import styles from './WorksheetToggleButton.module.css';
-import type { Crn } from '../../utilities/common';
+import type { Crn } from '../../queries/graphql-types';
+import styles from './WorksheetHideButton.module.css';
 
 export default function WorksheetHideButton({
   hidden,
   crn,
+  className,
+  color,
 }: {
   readonly hidden: boolean;
   readonly crn: Crn;
+  readonly className?: string;
+  readonly color?: string;
 }) {
   const { toggleCourse, person } = useWorksheet();
   if (person !== 'me') return null;
@@ -35,21 +35,13 @@ export default function WorksheetHideButton({
           e.stopPropagation();
           toggleCourse(crn, !hidden);
         }}
-        className={clsx('p-1 d-flex align-items-center', styles.toggleButton)}
+        className={clsx(styles.toggleButton, className)}
         aria-label={buttonLabel}
       >
         {hidden ? (
-          <BsEyeSlash
-            color="var(--color-hidden)"
-            size={18}
-            className={styles.scaleIcon}
-          />
+          <BsEyeSlash color="var(--color-hidden)" size={18} />
         ) : (
-          <BsEye
-            color="var(--color-text)"
-            size={18}
-            className={styles.scaleIcon}
-          />
+          <BsEye color={color} size={18} />
         )}
       </Button>
     </OverlayTrigger>

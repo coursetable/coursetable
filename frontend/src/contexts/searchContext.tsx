@@ -5,19 +5,17 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { buildEvaluator } from 'quist';
 import * as Sentry from '@sentry/react';
-import {
-  isEqual,
-  type Listing,
-  type Season,
-  type Weekdays,
-} from '../utilities/common';
-import { useSessionStorageState } from '../utilities/browserStorage';
+import { buildEvaluator } from 'quist';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
+import { useUser } from './userContext';
 import { useWorksheet } from './worksheetContext';
+import { CUR_SEASON } from '../config';
+import type { CatalogListing } from '../queries/api';
+import type { Season, Weekdays } from '../queries/graphql-types';
+import { useSessionStorageState } from '../utilities/browserStorage';
+import { isEqual } from '../utilities/common';
 import {
-  skillsAreasColors,
   skillsAreas,
   subjects,
   schools,
@@ -39,20 +37,11 @@ import {
   toSeasonString,
   type NumFriendsReturn,
 } from '../utilities/course';
-import { CUR_SEASON } from '../config';
-import { useUser } from './userContext';
 
 export type Option<T extends string | number = string> = {
   label: string;
   value: T;
-  color?: string;
-  numeric?: boolean;
 };
-
-export const isOption = (x: unknown): x is Option<string | number> =>
-  // This is the only way to help with TS inference
-  // eslint-disable-next-line no-implicit-coercion
-  !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
 export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
   label: type,
@@ -62,42 +51,28 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
     ([code, name]): Option => ({
       label: `${code} - ${name}`,
       value: code,
-      color: skillsAreasColors[code],
     }),
   ),
 }));
 
 const sortCriteria = {
-  course_code: { label: 'Sort by Course Code', numeric: false },
-  title: { label: 'Sort by Course Title', numeric: false },
-  friend: { label: 'Sort by Friends', numeric: true },
-  average_rating: { label: 'Sort by Course Rating', numeric: true },
-  average_professor: { label: 'Sort by Professor Rating', numeric: true },
-  average_workload: { label: 'Sort by Workload', numeric: true },
-  average_gut_rating: {
-    label: 'Sort by Guts (Overall - Workload)',
-    numeric: true,
-  },
-  last_enrollment: { label: 'Sort by Last Enrollment', numeric: true },
-  times_by_day: { label: 'Sort by Days & Times', numeric: true },
-  locations_summary: { label: 'Sort by Locations', numeric: false },
+  course_code: 'Sort by Course Code',
+  title: 'Sort by Course Title',
+  friend: 'Sort by Friends',
+  overall: 'Sort by Course Rating',
+  average_professor_rating: 'Sort by Professor Rating',
+  workload: 'Sort by Workload',
+  average_gut_rating: 'Sort by Guts (Overall - Workload)',
+  enrollment: 'Sort by Last Enrollment',
+  time: 'Sort by Days & Times',
+  locations_summary: 'Sort by Locations',
 };
 
 export const sortByOptions = Object.fromEntries(
-  Object.entries(sortCriteria).map(([k, v]) => [k, { value: k, ...v }]),
-) as { [k in SortKeys]: SortByOption };
+  Object.entries(sortCriteria).map(([k, v]) => [k, { value: k, label: v }]),
+) as { [k in SortKeys]: Option<SortKeys> };
 
-// We can only sort by primitive keys by default, unless we have special support
-export type SortKeys =
-  | keyof typeof sortCriteria
-  | keyof {
-      [K in keyof Listing as Listing[K] extends string | number ? K : never]: K;
-    };
-
-export type SortByOption = Option & {
-  value: SortKeys;
-  numeric: boolean;
-};
+export type SortKeys = keyof typeof sortCriteria;
 
 export const subjectsOptions = Object.entries(subjects).map(
   ([code, name]): Option => ({
@@ -134,7 +109,7 @@ type Store = {
     [K in keyof Filters]: FilterHandle<K>;
   };
   coursesLoading: boolean;
-  searchData: Listing[];
+  searchData: CatalogListing[];
   multiSeasons: boolean;
   numFriends: NumFriendsReturn;
   duration: number;
@@ -144,30 +119,69 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
+export type BooleanFilters =
+  | 'searchDescription'
+  | 'enableQuist'
+  | 'hideCancelled'
+  | 'hideConflicting'
+  | 'hideFirstYearSeminars'
+  | 'hideGraduateCourses'
+  | 'hideDiscussionSections';
+
+export type CategoricalFilters = {
+  selectSubjects: string;
+  selectSkillsAreas: string;
+  selectSeasons: Season;
+  selectDays: Weekdays;
+  selectSchools: string;
+  selectCredits: number;
+  selectCourseInfoAttributes: string;
+};
+
+export type NumericFilters =
+  | 'overallBounds'
+  | 'workloadBounds'
+  | 'professorBounds'
+  | 'timeBounds'
+  | 'enrollBounds'
+  | 'numBounds';
+
 export type Filters = {
+  [P in BooleanFilters]: boolean;
+} & {
+  [P in keyof CategoricalFilters]: Option<CategoricalFilters[P]>[];
+} & {
+  [P in NumericFilters]: [number, number];
+} & {
   searchText: string;
-  selectSubjects: Option[];
-  selectSkillsAreas: Option[];
-  overallBounds: [number, number];
-  workloadBounds: [number, number];
-  professorBounds: [number, number];
-  selectSeasons: Option<Season>[];
-  selectDays: Option<Weekdays>[];
-  timeBounds: [number, number];
-  enrollBounds: [number, number];
-  numBounds: [number, number];
-  selectSchools: Option[];
-  selectCredits: Option<number>[];
-  selectCourseInfoAttributes: Option[];
-  searchDescription: boolean;
-  enableQuist: boolean;
-  hideCancelled: boolean;
-  hideConflicting: boolean;
-  hideFirstYearSeminars: boolean;
-  hideGraduateCourses: boolean;
-  hideDiscussionSections: boolean;
-  selectSortBy: SortByOption;
+  selectSortBy: Option<SortKeys>;
   sortOrder: SortOrderType;
+};
+
+export const filterLabels: { [K in keyof Filters]: string } = {
+  searchText: 'Search',
+  selectSubjects: 'Subject',
+  selectSkillsAreas: 'Areas/Skills',
+  overallBounds: 'Overall',
+  workloadBounds: 'Workload',
+  professorBounds: 'Professor',
+  selectSeasons: 'Season',
+  selectDays: 'Day',
+  timeBounds: 'Time',
+  enrollBounds: '# Enrolled',
+  numBounds: 'Course #',
+  selectSchools: 'School',
+  selectCredits: 'Credit',
+  selectCourseInfoAttributes: 'Info',
+  searchDescription: 'Include descriptions in search',
+  enableQuist: 'Enable Quist',
+  hideCancelled: 'Hide cancelled courses',
+  hideConflicting: 'Hide courses with conflicting times',
+  hideFirstYearSeminars: 'Hide first-year seminars',
+  hideGraduateCourses: 'Hide graduate courses',
+  hideDiscussionSections: 'Hide discussion sections',
+  selectSortBy: 'Sort By', // Unused
+  sortOrder: 'Sort Order', // Unused
 };
 
 export const defaultFilters: Filters = {
@@ -347,35 +361,37 @@ export function SearchProvider({
 
   const queryEvaluator = useMemo(
     () =>
-      buildEvaluator(targetTypes, (listing: Listing, key) => {
+      buildEvaluator(targetTypes, (listing: CatalogListing, key) => {
         switch (key) {
           case 'rating':
-            return getOverallRatings(listing, 'stat');
+            return getOverallRatings(listing.course, 'stat');
           case 'workload':
-            return getWorkloadRatings(listing, 'stat');
+            return getWorkloadRatings(listing.course, 'stat');
           case 'professor-rating':
-            return getProfessorRatings(listing, 'stat');
+            return getProfessorRatings(listing.course, 'stat');
           case 'enrollment':
-            return getEnrolled(listing, 'stat');
+            return getEnrolled(listing.course, 'stat');
           case 'days':
-            return Object.keys(listing.times_by_day).map((d) =>
+            return Object.keys(listing.course.times_by_day).map((d) =>
               ['Thursday', 'Saturday', 'Sunday'].includes(d)
                 ? d.slice(0, 2)
                 : d[0],
             );
           case 'info-attributes':
-            return listing.flag_info;
+            return listing.course.course_flags.map((f) => f.flag.flag_text);
           case 'skills':
-            return listing.skills.some((s) => s.startsWith('L'))
-              ? [...listing.skills, 'L']
-              : listing.skills;
+            return listing.course.skills.some((s) => s.startsWith('L'))
+              ? [...listing.course.skills, 'L']
+              : listing.course.skills;
           case 'subjects':
-            return listing.all_course_codes.map((code) => code.split(' ')[0]);
+            return listing.course.listings.map(
+              (l) => l.course_code.split(' ')[0],
+            );
           case 'cancelled':
-            return listing.extra_info !== 'ACTIVE';
+            return listing.course.extra_info !== 'ACTIVE';
           case 'conflicting':
             return (
-              listing.times_summary !== 'TBA' &&
+              listing.course.times_summary !== 'TBA' &&
               !isInWorksheet(
                 listing.season_code,
                 listing.crn,
@@ -389,30 +405,35 @@ export function SearchProvider({
           case 'discussion':
             return isDiscussionSection(listing);
           case 'fysem':
-            return listing.fysem !== false;
+            return listing.course.fysem !== false;
           case 'colsem':
             // TODO: query for colsem
             return false;
           case 'location':
-            return listing.locations_summary;
+            return listing.course.locations_summary;
           case 'season':
             return listing.season_code;
           case 'professor-names':
-            return listing.professor_names;
+            return listing.course.course_professors.map(
+              (p) => p.professor.name,
+            );
           case 'course-code':
             return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case 'number':
             return Number(listing.number.replace(/\D/gu, ''));
+          case 'subject':
+          case 'school':
+            return listing[key];
           case '*': {
-            const base = `${listing.subject} ${listing.number} ${listing.title} ${listing.professor_names.join(' ')}`;
-            if (searchDescription.value && listing.description)
-              return `${base} ${listing.description}`;
+            const base = `${listing.subject} ${listing.number} ${listing.course.title} ${listing.course.course_professors.map((p) => p.professor.name).join(' ')}`;
+            if (searchDescription.value && listing.course.description)
+              return `${base} ${listing.course.description}`;
             return base;
           }
           default:
-            return listing[key];
+            return listing.course[key];
         }
       }),
     [searchDescription.value, worksheetInfo, worksheetNumber, user.worksheets],
@@ -446,7 +467,7 @@ export function SearchProvider({
     const filtered = listings.filter((listing) => {
       // For empty bounds, don't apply filters at all to include no ratings
       if (overallBounds.isNonEmpty) {
-        const overall = getOverallRatings(listing, 'stat');
+        const overall = getOverallRatings(listing.course, 'stat');
         if (overall === null) return false;
         const rounded = Math.round(overall * 10) / 10;
         if (
@@ -457,7 +478,7 @@ export function SearchProvider({
       }
 
       if (workloadBounds.isNonEmpty) {
-        const workload = getWorkloadRatings(listing, 'stat');
+        const workload = getWorkloadRatings(listing.course, 'stat');
         if (workload === null) return false;
         const rounded = Math.round(workload * 10) / 10;
         if (
@@ -468,7 +489,7 @@ export function SearchProvider({
       }
 
       if (professorBounds.isNonEmpty) {
-        const professorRate = getProfessorRatings(listing, 'stat');
+        const professorRate = getProfessorRatings(listing.course, 'stat');
         if (professorRate === null) return false;
         const rounded = Math.round(professorRate * 10) / 10;
         if (
@@ -479,7 +500,7 @@ export function SearchProvider({
       }
 
       if (timeBounds.isNonEmpty) {
-        const times = getDayTimes(listing);
+        const times = getDayTimes(listing.course);
         if (
           !times.some(
             (time) =>
@@ -491,7 +512,7 @@ export function SearchProvider({
       }
 
       if (enrollBounds.isNonEmpty) {
-        const enrollment = getEnrolled(listing, 'stat');
+        const enrollment = getEnrolled(listing.course, 'stat');
         if (
           enrollment === null ||
           enrollment < enrollBounds.value[0] ||
@@ -509,11 +530,12 @@ export function SearchProvider({
           return false;
       }
 
-      if (hideCancelled.value && listing.extra_info !== 'ACTIVE') return false;
+      if (hideCancelled.value && listing.course.extra_info !== 'ACTIVE')
+        return false;
 
       if (
         hideConflicting.value &&
-        listing.times_summary !== 'TBA' &&
+        listing.course.times_summary !== 'TBA' &&
         !isInWorksheet(
           listing.season_code,
           listing.crn,
@@ -527,7 +549,8 @@ export function SearchProvider({
       if (hideDiscussionSections.value && isDiscussionSection(listing))
         return false;
 
-      if (hideFirstYearSeminars.value && listing.fysem !== false) return false;
+      if (hideFirstYearSeminars.value && listing.course.fysem !== false)
+        return false;
 
       if (hideGraduateCourses.value && isGraduate(listing)) return false;
 
@@ -538,7 +561,7 @@ export function SearchProvider({
         return false;
 
       if (selectDays.value.length !== 0) {
-        const days = getDayTimes(listing).map((daytime) => daytime.day);
+        const days = getDayTimes(listing.course).map((daytime) => daytime.day);
         const selectDayValues = selectDays.value.map((day) => day.value);
         // Require the two sets to be equal
         if (
@@ -549,7 +572,10 @@ export function SearchProvider({
       }
 
       if (processedSkillsAreas.length !== 0) {
-        const listingSkillsAreas = [...listing.areas, ...listing.skills];
+        const listingSkillsAreas = [
+          ...listing.course.areas,
+          ...listing.course.skills,
+        ];
         if (
           !processedSkillsAreas.some((area) =>
             listingSkillsAreas.includes(area),
@@ -560,15 +586,19 @@ export function SearchProvider({
 
       if (
         selectCredits.value.length !== 0 &&
-        listing.credits !== null &&
-        !selectCredits.value.some((option) => option.value === listing.credits)
+        listing.course.credits !== null &&
+        !selectCredits.value.some(
+          (option) => option.value === listing.course.credits,
+        )
       )
         return false;
 
       if (
         selectCourseInfoAttributes.value.length !== 0 &&
         !selectCourseInfoAttributes.value.some((option) =>
-          listing.flag_info.includes(option.value),
+          listing.course.course_flags.some(
+            (f) => f.flag.flag_text === option.value,
+          ),
         )
       )
         return false;
@@ -595,14 +625,14 @@ export function SearchProvider({
               .toLowerCase()
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
           (searchDescription.value &&
-            listing.description?.toLowerCase().includes(token)) ||
-          listing.title.toLowerCase().includes(token) ||
-          listing.professor_names.some((professor) =>
-            professor.toLowerCase().includes(token),
+            listing.course.description?.toLowerCase().includes(token)) ||
+          listing.course.title.toLowerCase().includes(token) ||
+          listing.course.course_professors.some((p) =>
+            p.professor.name.toLowerCase().includes(token),
           ) ||
           // Use `times_by_day` instead of `locations_summary` to account for
           // multiple locations.
-          Object.values(listing.times_by_day)
+          Object.values(listing.course.times_by_day)
             .flat()
             .flatMap((x) => x[2].toLowerCase().split(' '))
             .some(

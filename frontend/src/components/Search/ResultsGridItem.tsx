@@ -1,31 +1,33 @@
-import React, { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
-
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import type { GridChildComponentProps } from 'react-window';
 
+import type { ResultItemData } from './Results';
+import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import SkillBadge from '../SkillBadge';
-import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
-import { TextComponent } from '../Typography';
-
-import styles from './ResultsGridItem.module.css';
-import { generateRandomColor, type Listing } from '../../utilities/common';
+import type { CatalogListing } from '../../queries/api';
+import { generateRandomColor } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
+import { useCourseModalLink } from '../../utilities/display';
+import SkillBadge from '../SkillBadge';
+import { TextComponent } from '../Typography';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import styles from './ResultsGridItem.module.css';
 
 function Rating({
-  course,
+  listing,
   hasEvals,
   name,
 }: {
-  readonly course: Listing;
+  readonly listing: CatalogListing;
   readonly hasEvals: boolean | undefined;
   readonly name: 'Class' | 'Professor' | 'Workload';
 }) {
   const { Icon, getRating, colorMap } = ratingTypes[name];
-  const rating = getRating(course, 'stat');
+  const rating = getRating(listing.course, 'stat');
   return (
     <OverlayTrigger
       placement="top"
@@ -37,159 +39,140 @@ function Rating({
         </Tooltip>
       )}
     >
-      <Row className="m-auto justify-content-end">
+      <div className="d-flex justify-content-end">
         <div
-          className={clsx(styles.rating, 'mr-1')}
+          className={styles.rating}
           style={{
-            color: hasEvals
-              ? rating
-                ? colorMap(rating).darken().saturate().css()
-                : '#cccccc'
-              : generateRandomColor(
-                  `${course.crn}${course.season_code}${name}`,
-                ),
+            color:
+              (hasEvals
+                ? rating
+                  ? colorMap(rating)
+                  : undefined
+                : generateRandomColor(
+                    `${listing.crn}${listing.season_code}${name}`,
+                  )
+              )
+                ?.darken()
+                .saturate()
+                .css() ?? '#cccccc',
           }}
         >
-          {hasEvals ? getRating(course, 'display') : '???'}
+          {hasEvals ? getRating(listing.course, 'display') : '???'}
         </div>
         <div className={styles.iconContainer}>
           <Icon className={styles.icon} />
         </div>
-      </Row>
+      </div>
     </OverlayTrigger>
   );
 }
 
 function ResultsGridItem({
-  course,
-  numCols,
-  multiSeasons,
-}: {
-  readonly course: Listing;
-  readonly numCols: number;
-  readonly multiSeasons: boolean;
-}) {
-  const [, setSearchParams] = useSearchParams();
-  // Bootstrap column width depending on the number of columns
-  const colWidth = 12 / numCols;
+  data: { listings, columnCount, multiSeasons },
+  rowIndex,
+  columnIndex,
+  style,
+}: GridChildComponentProps<ResultItemData>) {
+  const listing = listings[rowIndex * columnCount + columnIndex];
+  const target = useCourseModalLink(listing);
   const { user } = useUser();
   const { worksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
     () =>
+      listing &&
       isInWorksheet(
-        course.season_code,
-        course.crn,
+        listing.season_code,
+        listing.crn,
         worksheetNumber,
         user.worksheets,
       ),
-    [course.crn, course.season_code, worksheetNumber, user.worksheets],
+    [listing, worksheetNumber, user.worksheets],
   );
 
+  if (!listing) return null;
+
   return (
-    <Col
-      md={colWidth}
-      className={clsx(styles.container, 'px-2 pt-0 pb-3')}
-      style={{ overflow: 'hidden' }}
-    >
-      <div
-        role="button"
-        onClick={() => {
-          setSearchParams((prev) => {
-            prev.set('course-modal', `${course.season_code}-${course.crn}`);
-            return prev;
-          });
-        }}
+    <li className={styles.container} style={style}>
+      <Link
+        to={target}
         className={clsx(
-          styles.oneLine,
           styles.resultItem,
           inWorksheet && styles.inWorksheetResultItem,
           'px-3 pb-3',
         )}
-        tabIndex={0}
       >
-        <Row className="m-auto">
-          <Col xs={multiSeasons ? 8 : 12} className="p-0">
-            <Row className="mx-auto mt-3">
-              <small className={styles.courseCodes}>
-                <CourseCode course={course} subdueSection={false} />
-              </small>
-            </Row>
-          </Col>
+        <div className="d-flex justify-content-between">
+          <div className={styles.courseCodes}>
+            <CourseCode listing={listing} subdueSection={false} />
+          </div>
           {multiSeasons && (
-            <Col xs={4} className="p-0">
-              <Row className="m-auto">
-                <SeasonTag
-                  season={course.season_code}
-                  className={styles.season}
-                />
-              </Row>
-            </Col>
+            <SeasonTag season={listing.season_code} className={styles.season} />
           )}
-        </Row>
-        <Row className="m-auto">
-          <strong className={styles.oneLine}>{course.title}</strong>
-        </Row>
-        <Row className="m-auto justify-content-between">
-          <Col xs={7} className="p-0">
-            <Row className="m-auto">
-              <TextComponent
-                type="secondary"
-                className={clsx(styles.oneLine, styles.professors)}
-              >
-                {course.professor_names.length > 0
-                  ? course.professor_names.join(' • ')
-                  : 'Professor: TBA'}
-              </TextComponent>
-            </Row>
-            <Row className="m-auto">
-              <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type="secondary">
-                  {course.times_summary === 'TBA'
-                    ? 'Times: TBA'
-                    : course.times_summary}
-                </TextComponent>
-              </small>
-            </Row>
-            <Row className="m-auto">
-              <small className={clsx(styles.oneLine, styles.smallText)}>
-                <TextComponent type="secondary">
-                  {course.locations_summary === 'TBA'
-                    ? 'Location: TBA'
-                    : course.locations_summary}
-                </TextComponent>
-              </small>
-            </Row>
-            <Row className="m-auto">
-              <div className={styles.skillsAreas}>
-                {[...course.skills, ...course.areas].map((skill) => (
+        </div>
+        <div>
+          <strong className={styles.oneLine}>{listing.course.title}</strong>
+        </div>
+        <div className="d-flex justify-content-between">
+          <div>
+            <TextComponent
+              type="secondary"
+              className={clsx(styles.oneLine, styles.professors)}
+            >
+              {listing.course.course_professors.length > 0
+                ? listing.course.course_professors
+                    .map((p) => p.professor.name)
+                    .join(' • ')
+                : 'Professor: TBA'}
+            </TextComponent>
+            <TextComponent
+              type="secondary"
+              className={clsx(styles.oneLine, styles.smallText)}
+            >
+              {listing.course.times_summary === 'TBA'
+                ? 'Times: TBA'
+                : listing.course.times_summary}
+            </TextComponent>
+            <TextComponent
+              type="secondary"
+              className={clsx(styles.oneLine, styles.smallText)}
+            >
+              {listing.course.locations_summary === 'TBA'
+                ? 'Location: TBA'
+                : listing.course.locations_summary}
+            </TextComponent>
+            <div className={styles.skillsAreas}>
+              {[...listing.course.skills, ...listing.course.areas].map(
+                (skill) => (
                   <SkillBadge skill={skill} key={skill} />
-                ))}
-              </div>
-            </Row>
-          </Col>
-          <Col xs={5} className="p-0 d-flex align-items-end">
-            <div className="ml-auto">
+                ),
+              )}
+            </div>
+          </div>
+          <div className="d-flex align-items-end">
+            <div className="ms-auto">
               {(['Class', 'Professor', 'Workload'] as const).map((name) => (
                 <Rating
                   key={name}
-                  course={course}
+                  listing={listing}
                   hasEvals={user.hasEvals}
                   name={name}
                 />
               ))}
             </div>
-          </Col>
-        </Row>
-      </div>
+          </div>
+        </div>
+      </Link>
+      {/* Don't this inside the link because interactive elements can't be
+        nested */}
       <div className={styles.worksheetBtn}>
         <WorksheetToggleButton
-          listing={course}
+          listing={listing}
           modal={false}
           inWorksheet={inWorksheet}
         />
       </div>
-    </Col>
+    </li>
   );
 }
 

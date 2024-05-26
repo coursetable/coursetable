@@ -61,9 +61,9 @@
   border: none !important;
 }
 
-/* .rbc-event {
-  transition: transform 0.1s, background-color 0.1s, opacity 0.1s;
-} */
+.rbc-event {
+  overflow: visible !important;
+}
 
 .rbc-event:hover {
   filter: brightness(85%);

@@ -1,12 +1,12 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
+import type { Option } from '../../contexts/searchContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import type { Season } from '../../queries/graphql-types';
+import { toSeasonString } from '../../utilities/course';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
-import { toSeasonString } from '../../utilities/course';
-import { useWorksheet } from '../../contexts/worksheetContext';
-import { isOption, type Option } from '../../contexts/searchContext';
-import type { Season } from '../../utilities/common';
 
 function SeasonDropdownDesktop() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();
@@ -30,17 +30,13 @@ function SeasonDropdownDesktop() {
       clearIcon={false}
     >
       <PopoutSelect<Option<Season>, false>
-        isClearable={false}
-        hideSelectedOptions={false}
         value={selectedSeason}
         options={seasonCodes.map((seasonCode) => ({
           value: seasonCode,
           label: toSeasonString(seasonCode),
         }))}
-        placeholder="Last 5 Years"
         onChange={(selectedOption) => {
-          if (isOption(selectedOption))
-            changeSeason(selectedOption.value as Season | null);
+          changeSeason(selectedOption!.value);
         }}
       />
     </Popout>
@@ -51,28 +47,25 @@ function SeasonDropdownMobile() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();
 
   return (
-    <div className="container p-0 m-0">
-      <DropdownButton
-        variant="dark"
-        title={toSeasonString(curSeason)}
-        onSelect={(s) => changeSeason(s as Season | null)}
-      >
-        {seasonCodes.map((season) => (
-          <Dropdown.Item
-            key={season}
-            eventKey={season}
-            className="d-flex"
-            // Styling if this is the current season
-            style={{
-              backgroundColor:
-                season === curSeason ? 'var(--color-primary)' : '',
-            }}
-          >
-            <div className="mx-auto">{toSeasonString(season)}</div>
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
-    </div>
+    <DropdownButton
+      variant="dark"
+      title={toSeasonString(curSeason)}
+      onSelect={(s) => changeSeason(s as Season | null)}
+    >
+      {seasonCodes.map((season) => (
+        <Dropdown.Item
+          key={season}
+          eventKey={season}
+          className="d-flex"
+          // Styling if this is the current season
+          style={{
+            backgroundColor: season === curSeason ? 'var(--color-primary)' : '',
+          }}
+        >
+          <div className="mx-auto">{toSeasonString(season)}</div>
+        </Dropdown.Item>
+      ))}
+    </DropdownButton>
   );
 }
 

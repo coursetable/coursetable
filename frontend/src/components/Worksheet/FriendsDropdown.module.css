@@ -3,3 +3,11 @@
   right: 10px;
   margin-top: 4px;
 }
+
+.spinner {
+  position: absolute;
+  right: 10px;
+  top: calc(50% - 9px);
+  width: 18px;
+  height: 18px;
+}

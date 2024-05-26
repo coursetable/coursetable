@@ -7,9 +7,9 @@ import React, {
   useState,
 } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useLocalStorageState } from '../utilities/browserStorage';
 import { useUser } from './userContext';
 import { useWindowDimensions } from './windowDimensionsContext';
+import { useLocalStorageState } from '../utilities/browserStorage';
 
 type Store = {
   isTutorialOpen: boolean;

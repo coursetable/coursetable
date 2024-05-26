@@ -1,4 +1,3 @@
-version: '3'
 services:
   api:
     ports:
@@ -12,14 +11,12 @@ services:
       - traefik
       - api
       - db
-
-  graphql-engine:
-    networks:
-      - db
-      - api
+      - api_services
 
 networks:
   traefik:
     external: true
   db:
+    external: true
+  api_services:
     external: true

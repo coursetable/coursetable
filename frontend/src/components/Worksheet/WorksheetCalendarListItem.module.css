@@ -1,7 +1,8 @@
 .listItem {
+  display: flex;
+  justify-content: space-between;
   background-color: transparent;
   overflow: hidden;
-  cursor: pointer;
   border-color: var(--color-border);
   transition:
     border-color var(--trans-dur),
@@ -10,11 +11,15 @@
 }
 
 .listItem:hover {
-  background-color: var(--color-select-hover);
+  background-color: var(--color-primary-subdued);
+}
+
+.hideButton {
+  background-color: transparent;
 }
 
 /* Hides icon until you hover over the list item */
-.listItem .hideButtonHidden {
+.hideButtonHidden {
   opacity: 0;
   transition: 0.05s opacity;
 }
@@ -23,8 +28,8 @@
   opacity: 1;
 }
 
-@media (width < 576px) {
-  .listItem .hideButtonHidden {
+@media (width < 768px) {
+  .hideButtonHidden {
     opacity: 1;
   }
 }
@@ -38,6 +43,16 @@
 }
 
 .courseCode {
+  text-align: left;
   overflow: hidden;
   transition: color var(--trans-dur);
+  color: var(--color-text);
+}
+
+.courseCode:hover {
+  color: unset;
+}
+
+.courseCodeHidden {
+  color: var(--color-hidden);
 }

@@ -6,15 +6,20 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import * as Sentry from '@sentry/react';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
-import * as Sentry from '@sentry/react';
 
-import { fetchCatalog, fetchEvals } from '../utilities/api';
-import { useUser, type UserWorksheets, type UserWishlist } from './userContext';
-import seasonsData from '../generated/seasons.json';
+import { useUser, type UserWishlist } from './userContext';
 import type { WorksheetCourse } from './worksheetContext';
-import type { Crn, Season, Listing } from '../utilities/common';
+import seasonsData from '../generated/seasons.json';
+import {
+  fetchCatalog,
+  fetchEvals,
+  type UserWorksheets,
+  type CatalogListing,
+} from '../queries/api';
+import type { Crn, Season, Listing } from '../queries/graphql-types';
 import { UPCOMING_SEASONS } from '../config';
 import type { WishlistCourse } from './wishlistContext';
 
@@ -24,7 +29,7 @@ export const seasons = seasonsData as Season[];
 const courseDataLock = new AsyncLock();
 const catalogLoadAttempted = new Set<Season>();
 const evalsLoadAttempted = new Set<Season>();
-let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
+let courseData: { [seasonCode: Season]: Map<Crn, CatalogListing> } = {};
 const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     // Both data have been loaded; nothing to do
@@ -57,13 +62,9 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
       for (const [crn, ratings] of evals) {
         const listing = seasonCatalog.get(crn);
         if (listing) {
-          Object.assign(listing, ratings);
+          Object.assign(listing.course, ratings.course);
         } else {
-          Sentry.captureException(
-            new Error(
-              `Catalogs and evals are out of sync: no basic catalog for ${season}-${crn}`,
-            ),
-          );
+          // Unactionable error, courses may have failed to load
         }
       }
     }
@@ -125,7 +126,7 @@ export function FerryProvider({
           setRequests((r) => r - 1);
         }
       });
-      await Promise.all(fetches).catch((err) => {
+      await Promise.all(fetches).catch((err: unknown) => {
         Sentry.captureException(err);
         toast.error('Failed to fetch course information');
         setErrors((e) => [...e, err as {}]);
@@ -195,21 +196,15 @@ export function useWorksheetInfo(
       if (!worksheet) continue;
       for (const { crn, color, hidden } of worksheet) {
         const listing = courses[seasonCode]!.get(crn);
-        if (!listing) {
-          // This error is unactionable.
-          // https://github.com/coursetable/coursetable/pull/1508
-          // Sentry.captureException(
-          //   new Error(
-          //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
-          //   ),
-          // );
-        } else {
+        if (listing) {
           dataReturn.push({
             crn,
             color,
             listing,
             hidden,
           });
+        } else {
+          // Unactionable error, courses may have failed to load
         }
       }
     }

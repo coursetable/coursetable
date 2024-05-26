@@ -1,15 +1,13 @@
-import React, { useMemo } from 'react';
-import { Col, Row, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { FaBars, FaTh } from 'react-icons/fa';
+import React from 'react';
 import clsx from 'clsx';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { FaBars, FaTh } from 'react-icons/fa';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { SurfaceComponent } from '../Typography';
-
 import { type SortKeys, sortByOptions } from '../../contexts/searchContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import styles from './ResultsHeaders.module.css';
+import { SurfaceComponent } from '../Typography';
 import colStyles from './ResultsCols.module.css';
+import styles from './ResultsHeaders.module.css';
 
 function HeaderCol({
   className,
@@ -23,7 +21,7 @@ function HeaderCol({
   readonly sortOption?: SortKeys;
 }) {
   return (
-    <div className={clsx(className, styles.resultsHeader)}>
+    <span className={clsx(className, styles.headerCol, styles.oneLine)}>
       {tooltip ? (
         <OverlayTrigger
           placement="bottom"
@@ -33,21 +31,20 @@ function HeaderCol({
             </Tooltip>
           )}
         >
-          <span className={styles.oneLine}>{children}</span>
+          <span>{children}</span>
         </OverlayTrigger>
       ) : (
-        <span className={styles.oneLine}>{children}</span>
+        <span>{children}</span>
       )}
       {sortOption && (
         <ResultsColumnSort selectOption={sortByOptions[sortOption]} />
       )}
-    </div>
+    </span>
   );
 }
 
 function ResultsHeaders({
   multiSeasons,
-  page,
   isListView,
   setIsListView,
   numResults,
@@ -77,171 +74,143 @@ function ResultsHeaders({
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
 
   return (
-    <div className={styles.spacer} style={{ top: navbarHeight }}>
-      <SurfaceComponent
-        id="results_container"
-        className={clsx('px-0 mx-0', styles.container)}
-      >
-        <Row
-          className={clsx(
-            'mx-auto pl-4 pr-2',
-            isLgDesktop ? 'py-2' : 'py-1',
-            styles.resultsHeaderRow,
-            'justify-content-between',
-          )}
-          data-tutorial="catalog-5"
-        >
-          <div
-            className={clsx(
-              styles.listGridToggle,
-              'd-flex ml-auto my-auto p-0',
-            )}
+    <SurfaceComponent
+      className={clsx('px-0 mx-0', styles.container)}
+      data-tutorial="catalog-5"
+    >
+      <div className={styles.resultsHeaderContent}>
+        <span className={colStyles.controlCol}>
+          <button
+            type="button"
+            className={clsx(styles.toggle, 'd-flex m-auto')}
+            onClick={() => setIsListView(!isListView)}
+            aria-label={
+              isListView ? 'Switch to grid view' : 'Switch to list view'
+            }
           >
-            <button
-              type="button"
-              className={clsx(styles.toggle, 'd-flex ml-auto my-auto')}
-              onClick={() => setIsListView(!isListView)}
-              aria-label={
-                isListView ? 'Switch to grid view' : 'Switch to list view'
-              }
+            {!isListView ? <FaBars size={15} /> : <FaTh size={15} />}
+          </button>
+        </span>
+        {isListView ? (
+          <>
+            {multiSeasons && (
+              <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
+            )}
+            <HeaderCol
+              className={colStyles.codeCol}
+              tooltip="Course Code and Section"
+              sortOption="course_code"
             >
-              {!isListView ? (
-                <FaBars className="m-auto" size={15} />
-              ) : (
-                <FaTh className="m-auto" size={15} />
-              )}
-            </button>
-          </div>
-          {isListView ? (
-            <>
-              {multiSeasons && (
-                <HeaderCol className={colStyles.seasonCol}>Season</HeaderCol>
-              )}
-              <HeaderCol
-                className={clsx(
-                  colStyles.codeCol,
-                  multiSeasons && colStyles.multiSeasons,
-                )}
-                tooltip="Course Code and Section"
-                sortOption="course_code"
-              >
-                Code
-              </HeaderCol>
-              <HeaderCol className={colStyles.titleCol} sortOption="title">
-                Title
-              </HeaderCol>
-              <div className="d-flex">
-                <HeaderCol
-                  className={colStyles.overallCol}
-                  tooltip={
-                    <span>
-                      Average Course Rating
-                      <br />
-                      (same professor and all cross-listed courses. If this
-                      professor hasn't taught the course before, a ~ denotes an
-                      average across all professors)
-                    </span>
-                  }
-                  sortOption="average_rating"
-                >
-                  Overall
-                </HeaderCol>
-                <HeaderCol
-                  className={colStyles.workloadCol}
-                  tooltip={
-                    <span>
-                      Average Workload Rating
-                      <br />
-                      (same professor and all cross-listed courses. If this
-                      professor hasn't taught the course before, a ~ denotes an
-                      average across all professors)
-                    </span>
-                  }
-                  sortOption="average_workload"
-                >
-                  Work
-                </HeaderCol>
-                <HeaderCol
-                  className={colStyles.profCol}
-                  tooltip={
-                    <span>
-                      Average Professor Rating and Names
-                      <br />
-                      (if there are multiple professors, we take the average
-                      between them)
-                    </span>
-                  }
-                  sortOption="average_professor"
-                >
-                  Professors
-                </HeaderCol>
-              </div>
-              <HeaderCol
-                className={colStyles.enrollCol}
-                tooltip={
-                  multiSeasons ? (
-                    <span>
-                      Class Enrollment
-                      <br />
-                      (If the course has not occurred/completed, based on the
-                      most recent past instance of this course. a ~ means a
-                      different professor was teaching)
-                    </span>
-                  ) : (
-                    <span>
-                      Previous Class Enrollment
-                      <br />
-                      (based on the most recent past instance of this course. a
-                      ~ means a different professor was teaching)
-                    </span>
-                  )
-                }
-                sortOption="last_enrollment"
-              >
-                #
-              </HeaderCol>
-              <HeaderCol className={colStyles.skillAreaCol}>
-                Skills/Areas
-              </HeaderCol>
-              <HeaderCol
-                className={colStyles.meetCol}
-                tooltip={
+              Code
+            </HeaderCol>
+            <HeaderCol className={colStyles.titleCol} sortOption="title">
+              Title
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.overallCol}
+              tooltip={
+                <span>
+                  Average Course Rating
+                  <br />
+                  (same professor and all cross-listed courses. If this
+                  professor hasn't taught the course before, a ~ denotes an
+                  average across all professors)
+                </span>
+              }
+              sortOption="overall"
+            >
+              Overall
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.workloadCol}
+              tooltip={
+                <span>
+                  Average Workload Rating
+                  <br />
+                  (same professor and all cross-listed courses. If this
+                  professor hasn't taught the course before, a ~ denotes an
+                  average across all professors)
+                </span>
+              }
+              sortOption="workload"
+            >
+              Work
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.profCol}
+              tooltip={
+                <span>
+                  Average Professor Rating and Names
+                  <br />
+                  (if there are multiple professors, we take the average between
+                  them)
+                </span>
+              }
+              sortOption="average_professor_rating"
+            >
+              Professors
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.enrollCol}
+              tooltip={
+                multiSeasons ? (
                   <span>
-                    Days of the Week and Times
+                    Class Enrollment
                     <br />
-                    (sort order based on day and starting time)
+                    (If the course has not occurred/completed, based on the most
+                    recent past instance of this course. a ~ means a different
+                    professor was teaching)
                   </span>
-                }
-                sortOption="times_by_day"
-              >
-                Meets
-              </HeaderCol>
-              <HeaderCol
-                className={colStyles.locCol}
-                sortOption="locations_summary"
-              >
-                Location
-              </HeaderCol>
-              <HeaderCol
-                className={colStyles.friendsCol}
-                tooltip="Number of friends shopping this course"
-                sortOption="friend"
-              >
-                #F
-              </HeaderCol>
-            </>
-          ) : (
-            <Col md={10}>
-              <div className={styles.resultsHeader}>
-                {`Showing ${numResults} course${
-                  numResults === 1 ? '' : 's'
-                }...`}
-              </div>
-            </Col>
-          )}
-        </Row>
-      </SurfaceComponent>
-    </div>
+                ) : (
+                  <span>
+                    Previous Class Enrollment
+                    <br />
+                    (based on the most recent past instance of this course. a ~
+                    means a different professor was teaching)
+                  </span>
+                )
+              }
+              sortOption="enrollment"
+            >
+              #
+            </HeaderCol>
+            <HeaderCol className={colStyles.skillAreaCol}>
+              Skills/Areas
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.meetCol}
+              tooltip={
+                <span>
+                  Days of the Week and Times
+                  <br />
+                  (sort order based on day and starting time)
+                </span>
+              }
+              sortOption="time"
+            >
+              Meets
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.locCol}
+              sortOption="locations_summary"
+            >
+              Location
+            </HeaderCol>
+            <HeaderCol
+              className={colStyles.friendsCol}
+              tooltip="Number of friends shopping this course"
+              sortOption="friend"
+            >
+              #F
+            </HeaderCol>
+          </>
+        ) : (
+          <div className={clsx(styles.headerCol, styles.resultsStat)}>
+            {`Showing ${numResults} course${numResults === 1 ? '' : 's'}...`}
+          </div>
+        )}
+      </div>
+    </SurfaceComponent>
   );
 }
 

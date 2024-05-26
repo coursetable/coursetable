@@ -1,16 +1,15 @@
 import type express from 'express';
+import { or, and, eq, inArray, sql } from 'drizzle-orm';
 import z from 'zod';
-import { and, eq, inArray } from 'drizzle-orm';
-import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
-
-import { db } from '../config.js';
-import winston from '../logging/winston.js';
 import {
   studentBluebookSettings,
   studentFriendRequests,
   studentFriends,
   worksheetCourses,
 } from '../../drizzle/schema.js';
+import { db } from '../config.js';
+import winston from '../logging/winston.js';
+import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -36,58 +35,31 @@ export const addFriend = async (
   }
 
   await db.transaction(async (tx) => {
-    // Make sure user has a friend request to accept
-    const [existingRequest] = await db
-      .selectDistinctOn([
-        studentFriendRequests.netId,
-        studentFriendRequests.friendNetId,
-      ])
-      .from(studentFriendRequests)
-      .where(
-        and(
-          eq(studentFriendRequests.netId, friendNetId),
-          eq(studentFriendRequests.friendNetId, netId),
-        ),
-      );
-
-    if (!existingRequest) {
-      res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
-      return;
-    }
-
-    // Update (do not create a new friend) when one already matches the
-    // netId
-    await tx
-      .insert(studentFriends)
-      // Basic info for creation
-      .values({
-        netId,
-        friendNetId,
-      })
-      .onConflictDoNothing({
-        target: [studentFriends.netId, studentFriends.friendNetId],
-      });
-    // Bidirectional addition
-    await tx
-      .insert(studentFriends)
-      .values({
-        netId: friendNetId,
-        friendNetId: netId,
-      })
-      .onConflictDoNothing({
-        target: [studentFriends.netId, studentFriends.friendNetId],
-      });
-    await tx
+    const [deleteRes] = await tx
       .delete(studentFriendRequests)
       .where(
         and(
           eq(studentFriendRequests.netId, friendNetId),
           eq(studentFriendRequests.friendNetId, netId),
         ),
-      );
+      )
+      .returning();
+    if (!deleteRes) {
+      res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
+      return;
+    }
+    // Update (do not create a new friend) when one already matches the
+    // netId
+    await tx
+      .insert(studentFriends)
+      // Bidirectional addition
+      .values([
+        { netId, friendNetId },
+        { netId: friendNetId, friendNetId: netId },
+      ])
+      .onConflictDoNothing();
+    res.sendStatus(200);
   });
-
-  res.sendStatus(200);
 };
 
 export const removeFriend = async (
@@ -109,67 +81,41 @@ export const removeFriend = async (
     return;
   }
 
-  const [friend] = await db
-    .selectDistinctOn([studentFriends.netId, studentFriends.friendNetId])
-    .from(studentFriends)
-    .where(
-      and(
-        eq(studentFriends.netId, netId),
-        eq(studentFriends.friendNetId, friendNetId),
-      ),
-    );
-
-  if (!friend) {
-    await db.transaction(async (tx) => {
-      const [friendRequest] = await tx
-        .selectDistinctOn([
-          studentFriendRequests.netId,
-          studentFriendRequests.friendNetId,
-        ])
-        .from(studentFriendRequests)
-        .where(
+  await db.transaction(async (tx) => {
+    const [friendDeleteRes] = await tx
+      .delete(studentFriends)
+      .where(
+        // Bidirectional deletion
+        or(
           and(
-            eq(studentFriendRequests.netId, friendNetId),
-            eq(studentFriendRequests.friendNetId, netId),
+            eq(studentFriends.netId, netId),
+            eq(studentFriends.friendNetId, friendNetId),
           ),
-        );
-
-      if (!friendRequest) {
-        res.status(400).json({ error: 'NO_FRIEND' });
-        return;
-      }
-
-      await tx
+          and(
+            eq(studentFriends.netId, friendNetId),
+            eq(studentFriends.friendNetId, netId),
+          ),
+        ),
+      )
+      .returning();
+    if (!friendDeleteRes) {
+      // No existing friend; try deleting the friend request
+      const [reqDeleteRes] = await tx
         .delete(studentFriendRequests)
         .where(
           and(
             eq(studentFriendRequests.netId, friendNetId),
             eq(studentFriendRequests.friendNetId, netId),
           ),
-        );
-    });
-  } else {
-    await db.transaction(async (tx) => {
-      await tx
-        .delete(studentFriends)
-        .where(
-          and(
-            eq(studentFriends.netId, netId),
-            eq(studentFriends.friendNetId, friendNetId),
-          ),
-        );
-      // Bidirectional deletion
-      await tx
-        .delete(studentFriends)
-        .where(
-          and(
-            eq(studentFriends.netId, friendNetId),
-            eq(studentFriends.friendNetId, netId),
-          ),
-        );
-    });
-  }
-  res.sendStatus(200);
+        )
+        .returning();
+      if (!reqDeleteRes) {
+        res.status(400).json({ error: 'NO_FRIEND' });
+        return;
+      }
+    }
+    res.sendStatus(200);
+  });
 };
 
 export const requestAddFriend = async (
@@ -217,39 +163,29 @@ export const requestAddFriend = async (
       return;
     }
 
-    const [existingOppositeRequest] = await tx
+    const [existingRequest] = await tx
       .selectDistinctOn([
         studentFriendRequests.netId,
         studentFriendRequests.friendNetId,
       ])
       .from(studentFriendRequests)
       .where(
-        and(
-          eq(studentFriendRequests.netId, friendNetId),
-          eq(studentFriendRequests.friendNetId, netId),
+        or(
+          and(
+            eq(studentFriendRequests.netId, netId),
+            eq(studentFriendRequests.friendNetId, friendNetId),
+          ),
+          and(
+            eq(studentFriendRequests.netId, friendNetId),
+            eq(studentFriendRequests.friendNetId, netId),
+          ),
         ),
       );
 
-    if (existingOppositeRequest) {
-      res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
-      return;
-    }
-
-    const [existingSameRequest] = await tx
-      .selectDistinctOn([
-        studentFriendRequests.netId,
-        studentFriendRequests.friendNetId,
-      ])
-      .from(studentFriendRequests)
-      .where(
-        and(
-          eq(studentFriendRequests.netId, netId),
-          eq(studentFriendRequests.friendNetId, friendNetId),
-        ),
-      );
-
-    if (existingSameRequest) {
-      res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
+    if (existingRequest) {
+      if (existingRequest.netId === netId)
+        res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
+      else res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
       return;
     }
 
@@ -270,28 +206,28 @@ export const getRequestsForFriend = async (
 
   const { netId } = req.user!;
 
-  const friendInfos = await db.transaction(async (tx) => {
+  const friendNames = await db.transaction(async (tx) => {
     const friendReqs = await tx
-      .select()
+      .select({
+        netId: studentFriendRequests.netId,
+      })
       .from(studentFriendRequests)
       .where(eq(studentFriendRequests.friendNetId, netId));
 
     const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
 
-    return reqFriends.length > 0
-      ? await tx
-          .selectDistinctOn([studentBluebookSettings.netId])
-          .from(studentBluebookSettings)
-          .where(inArray(studentBluebookSettings.netId, reqFriends))
-      : [];
-  });
+    if (reqFriends.length === 0) return [];
 
-  const friendNames = friendInfos.map((friendInfo) => ({
-    netId: friendInfo.netId,
-    name: `${friendInfo.firstName ?? '[unknown]'} ${
-      friendInfo.lastName ?? '[unknown]'
-    }`,
-  }));
+    return tx
+      .selectDistinctOn([studentBluebookSettings.netId], {
+        name: sql<
+          string | null
+        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+        netId: studentBluebookSettings.netId,
+      })
+      .from(studentBluebookSettings)
+      .where(inArray(studentBluebookSettings.netId, reqFriends));
+  });
 
   res.status(200).json({ requests: friendNames });
 };
@@ -309,7 +245,9 @@ export const getFriendsWorksheets = async (
   const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction(
     async (tx) => {
       const friendRecords = await tx
-        .select()
+        .select({
+          friendNetId: studentFriends.friendNetId,
+        })
         .from(studentFriends)
         .where(eq(studentFriends.netId, netId));
 
@@ -317,19 +255,18 @@ export const getFriendsWorksheets = async (
         (friendRecord) => friendRecord.friendNetId,
       );
 
-      if (friendNetIds.length === 0) {
-        return [
-          [],
-          {} as {
-            [netId: string]: {};
-          },
-          [],
-        ];
-      }
+      if (friendNetIds.length === 0)
+        return [[], {} as { [netId: string]: {} }, []];
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx
-        .select()
+        .select({
+          netId: worksheetCourses.netId,
+          crn: worksheetCourses.crn,
+          season: worksheetCourses.season,
+          worksheetNumber: worksheetCourses.worksheetNumber,
+          color: worksheetCourses.color,
+        })
         .from(worksheetCourses)
         .where(inArray(worksheetCourses.netId, friendNetIds));
 
@@ -338,7 +275,12 @@ export const getFriendsWorksheets = async (
       winston.info('Getting info of friends');
 
       const friendInfos = await tx
-        .selectDistinctOn([studentBluebookSettings.netId])
+        .selectDistinctOn([studentBluebookSettings.netId], {
+          netId: studentBluebookSettings.netId,
+          name: sql<
+            string | null
+          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+        })
         .from(studentBluebookSettings)
         .where(inArray(studentBluebookSettings.netId, friendNetIds));
 
@@ -350,9 +292,7 @@ export const getFriendsWorksheets = async (
     friendInfos.map((friendInfo) => [
       friendInfo.netId,
       {
-        name: `${friendInfo.firstName ?? '[unknown]'} ${
-          friendInfo.lastName ?? '[unknown]'
-        }`,
+        name: friendInfo.name,
       },
     ]),
   );
@@ -360,7 +300,7 @@ export const getFriendsWorksheets = async (
     friendNetIds.map((friendNetId) => [
       friendNetId,
       {
-        name: friendInfoMap[friendNetId]?.name ?? '[unknown]',
+        name: friendInfoMap[friendNetId]?.name ?? null,
         worksheets: friendWorksheetMap[friendNetId] ?? {},
       },
     ]),

@@ -101,7 +101,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
   - `error`: `"NOT_FERRY"`
 
-### `GET` `/api/static/catalogs/evals/{season}.json`
+### `GET` `/api/catalog/evals/{season}`
 
 #### Request
 
@@ -112,27 +112,28 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 **Status: 200**
 
 - Body:
-  - `ListingRatings[]` (see `static` folder for examples)
+  - See the `evalsBySeason` query
 
-### `GET` `/api/static/catalogs/public/{season}.json`
-
-TODO: rename this to `/api/catalog` and remove `.json`?
+### `GET` `/api/catalog/public/{season}`
 
 #### Response
 
 **Status: 200**
 
 - Body:
-  - `Listing[]` (see `static` folder for examples)
-  - Types are available via GraphQL
+  - See the `catalogBySeason` query
+
+### `GET` `/api/static/catalogs/evals/{season}.json`
+
+DEPRECATED: use `/api/catalog/evals/{season}` instead
+
+### `GET` `/api/static/catalogs/public/{season}.json`
+
+DEPRECATED: use `/api/catalog/public/{season}` instead
 
 ## Auth
 
 ### `GET` `/api/auth/check`
-
-#### Request
-
-- Needs credentials
 
 #### Response
 
@@ -152,7 +153,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 #### Response
 
-**Status: 200**
+**Status: 302**
 
 - Redirects to the provided `redirect` query parameter (if it's an allowed origin), or `https://coursetable.com` otherwise
 
@@ -249,7 +250,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 - Body:
   - `requests`: `array`
     - `netId`: `NetId`
-    - `name`: `string`
+    - `name`: `string | null`
 
 ### `GET` `/api/friends/worksheets`
 
@@ -268,7 +269,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
     ```ts
     type Friends = {
       [netId: NetId]: {
-        name: string;
+        name: string | null;
         worksheets: {
           [season: Season]: {
             [worksheetNumber: number]: {

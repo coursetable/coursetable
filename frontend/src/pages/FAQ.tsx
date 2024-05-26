@@ -1,24 +1,32 @@
 import React, { useContext, useEffect } from 'react';
-import { Accordion, Card } from 'react-bootstrap';
-import AccordionContext from 'react-bootstrap/AccordionContext';
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import { FaChevronRight } from 'react-icons/fa';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import { HoverText, TextComponent } from '../components/Typography';
-import styles from './FAQ.module.css';
+import {
+  Accordion,
+  AccordionContext,
+  Card,
+  useAccordionButton,
+} from 'react-bootstrap';
+import { FaChevronRight } from 'react-icons/fa';
+import { TextComponent } from '../components/Typography';
 import { scrollToTop } from '../utilities/display';
+import styles from './FAQ.module.css';
+
+// https://www.w3.org/WAI/ARIA/apg/patterns/accordion/
 
 function ContextAwareToggle({ question }: { readonly question: string }) {
-  const currentEventKey = useContext(AccordionContext);
+  const currentEventKey = useContext(AccordionContext).activeEventKey;
   const navigate = useNavigate();
-  const decoratedOnClick = useAccordionToggle(question, () => {
+  const decoratedOnClick = useAccordionButton(question, () => {
     navigate(`#${toId(question)}`);
   });
   const isCurrentEventKey = currentEventKey === question;
 
   return (
-    <HoverText
+    <button
+      type="button"
+      aria-expanded={isCurrentEventKey}
+      aria-controls={`${toId(question)}_content`}
       className={clsx(
         isCurrentEventKey && 'active',
         'd-flex justify-content-between py-3 px-3',
@@ -36,7 +44,7 @@ function ContextAwareToggle({ question }: { readonly question: string }) {
           styles.accordionArrow,
         )}
       />
-    </HoverText>
+    </button>
   );
 }
 
@@ -166,6 +174,26 @@ const faqs = [
               let us know via email
             </a>{' '}
             and we can grant you access manually.
+          </>
+        ),
+      },
+      {
+        title: "I'm a new admit and I don't have access to evaluations.",
+        contents: (
+          <>
+            Every March to May, we receive lots of access requests from prefrosh
+            students. We have now decided to respect Yale's matriculation
+            process and not manually grant access in these circumstances. In
+            July/August, you should log out and log in again on CourseTable to
+            refresh your authentication status. Please only let us know if you
+            still cannot access evaluations afterwards. Before that, you can
+            still use CourseTable to get a sense of what courses there are, but
+            here's our suggestion:
+            <br />
+            <b>
+              Congratulations on your admission. Now take a break from academics
+              while you can. Go out! Have fun! Forget about school!
+            </b>
           </>
         ),
       },
@@ -407,10 +435,13 @@ function FAQ() {
           >
             {section.items.map((faq) => (
               <Card className={styles.card} key={faq.title}>
-                <div>
+                <h3>
                   <ContextAwareToggle question={faq.title} />
-                </div>
-                <Accordion.Collapse eventKey={faq.title}>
+                </h3>
+                <Accordion.Collapse
+                  eventKey={faq.title}
+                  id={`${toId(faq.title)}_content`}
+                >
                   <Card.Body className="py-3">
                     <TextComponent type="secondary">
                       {faq.contents}

@@ -1,87 +1,95 @@
 import React, { useState, useMemo } from 'react';
-import { Tab, Row, Tabs } from 'react-bootstrap';
+import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
+import { Tab, Tabs } from 'react-bootstrap';
 import Mark from 'mark.js';
-import styles from './EvaluationResponses.module.css';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql-types';
+import { evalQuestionTags } from '../../utilities/constants';
+import { truncatedText } from '../../utilities/course';
 import { Input, TextComponent } from '../Typography';
-import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import styles from './EvaluationResponses.module.css';
+
+function CommentRows({
+  responses,
+  filter,
+}: {
+  readonly responses: string[];
+  readonly filter: string;
+}) {
+  if (responses.length === 0) return [];
+  const filteredResps = responses
+    .filter((response) => response.toLowerCase().includes(filter.toLowerCase()))
+    .map((response, index) => (
+      // .responses is used for highlighting
+      <div key={index} className={clsx(styles.commentRow, 'responses')}>
+        <TextComponent type="secondary">{response}</TextComponent>
+      </div>
+    ));
+  if (filteredResps.length === 0) {
+    return [
+      <div key={0} className={styles.commentRow}>
+        <TextComponent type="secondary">No matches found.</TextComponent>
+      </div>,
+    ];
+  }
+  return filteredResps;
+}
 
 function EvaluationResponses({
   info,
 }: {
   readonly info:
-    | SearchEvaluationNarrativesQuery['computed_listing_info'][number]
+    | SearchEvaluationNarrativesQuery['listings'][number]['course']
     | undefined;
 }) {
   // Sort by original order or length?
   const [sortOrder, setSortOrder] = useState('length');
 
   // Dictionary that holds the comments for each question
-  const [responses, sortedResponses] = useMemo(() => {
+  const [origResponses, sortedResponses] = useMemo(() => {
     if (!info) return [{}, {}];
-    const tempResponses: { [questionText: string]: string[] } = {};
-    // Add comments to responses dictionary
-    info.course.evaluation_narratives_aggregate.nodes.forEach((node) => {
-      if (node.evaluation_question.question_text && node.comment) {
-        (tempResponses[node.evaluation_question.question_text] ??= []).push(
-          node.comment,
+    const tempResponses: {
+      [tag: string]: { questionText: string; responses: string[] };
+    } = Object.fromEntries(
+      evalQuestionTags.map((tag) => [tag, { questionText: '', responses: [] }]),
+    );
+    info.evaluation_narratives.forEach((data) => {
+      const questionTag =
+        data.evaluation_question.tag ??
+        truncatedText(data.evaluation_question.question_text, 15, '');
+      const questionInfo = tempResponses[questionTag] ?? {
+        questionText: data.evaluation_question.question_text,
+        responses: [],
+      };
+      if (!questionInfo.questionText) {
+        questionInfo.questionText = data.evaluation_question.question_text;
+      } else if (
+        data.evaluation_question.question_text !== questionInfo.questionText
+      ) {
+        Sentry.captureException(
+          new Error(
+            `Question text mismatch: ${questionTag} ${data.evaluation_question.question_text} vs. ${questionInfo.questionText}`,
+          ),
         );
       }
+      if (data.comment) questionInfo.responses.push(data.comment);
+      tempResponses[questionTag] = questionInfo;
     });
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
     ) as typeof tempResponses;
     for (const r of Object.values(tempResponses))
-      r.sort((a, b) => b.length - a.length);
+      r.responses.sort((a, b) => b.length - a.length);
 
     return [tempResponses, sortedResponses];
   }, [info]);
 
   // Number of questions
-  const numQuestions = Object.keys(responses).length;
+  const numQuestions = Object.keys(origResponses).length;
 
   const [filter, setFilter] = useState('');
 
-  // Generate HTML to hold the responses to each question
-  const [recommend, skills, strengths, summary] = useMemo(() => {
-    let tempRecommend: JSX.Element[] = [];
-    let tempSkills: JSX.Element[] = [];
-    let tempStrengths: JSX.Element[] = [];
-    let tempSummary: JSX.Element[] = [];
-    const curResponses = sortOrder === 'length' ? sortedResponses : responses;
-    const genTemp = (resps: string[]) => {
-      if (resps.length === 0) return [];
-      const filteredResps = resps
-        .filter((response) =>
-          response.toLowerCase().includes(filter.toLowerCase()),
-        )
-        .map((response, index) => (
-          <Row
-            key={index}
-            className={clsx(styles.commentRow, 'm-auto p-2 responses')}
-          >
-            <TextComponent type="secondary">{response}</TextComponent>
-          </Row>
-        ));
-      if (filteredResps.length === 0) {
-        return [
-          <Row key={0} className={clsx(styles.commentRow, 'm-auto p-2')}>
-            <TextComponent type="secondary">No matches found.</TextComponent>
-          </Row>,
-        ];
-      }
-      return filteredResps;
-    };
-    for (const [question, qResponses] of Object.entries(curResponses)) {
-      if (question.includes('summarize')) tempSummary = genTemp(qResponses);
-      else if (question.includes('recommend'))
-        tempRecommend = genTemp(qResponses);
-      else if (question.includes('skills')) tempSkills = genTemp(qResponses);
-      else if (question.includes('strengths'))
-        tempStrengths = genTemp(qResponses);
-    }
-    return [tempRecommend, tempSkills, tempStrengths, tempSummary];
-  }, [responses, sortOrder, sortedResponses, filter]);
+  const curResponses = sortOrder === 'length' ? sortedResponses : origResponses;
 
   const context = document.querySelectorAll('.responses');
   const instance = new Mark(context);
@@ -93,7 +101,7 @@ function EvaluationResponses({
       </div>
     );
   }
-  const enrolled = info.enrolled ?? 0;
+  const enrolled = info.evaluation_statistic?.enrolled ?? 0;
 
   return (
     <div>
@@ -102,7 +110,7 @@ function EvaluationResponses({
         type="text"
         placeholder="Search evaluations..."
         value={filter}
-        style={{ marginBottom: '5px' }}
+        className={styles.filterInput}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           setFilter(event.target.value);
           instance.unmark({
@@ -112,10 +120,8 @@ function EvaluationResponses({
           });
         }}
       />
-      <Row
-        className={clsx(styles.sortBy, 'mx-auto mb-2 justify-content-center')}
-      >
-        <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
+      <div className={styles.sortBy}>
+        <span className="fw-bold my-auto me-2">Sort comments by:</span>
         <div className={styles.sortOptions}>
           <button
             type="button"
@@ -138,7 +144,7 @@ function EvaluationResponses({
             length
           </button>
         </div>
-      </Row>
+      </div>
       <Tabs
         className={styles.tabs}
         variant="tabs"
@@ -150,50 +156,21 @@ function EvaluationResponses({
             ?.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
         }}
       >
-        {[
-          {
-            key: 'recommended',
-            title: 'Recommend?',
-            question:
-              'Would you recommend this course to another student? Please explain.',
-            responses: recommend,
-          },
-          {
-            key: 'knowledge/skills',
-            title: 'Skills',
-            question:
-              'What knowledge, skills, and insights did you develop by taking this course?',
-            responses: skills,
-          },
-          {
-            key: 'strengths/weaknesses',
-            title: 'Strengths/Weaknesses',
-            question:
-              'What are the strengths and weaknesses of this course and how could it be improved?',
-            responses: strengths,
-          },
-          {
-            key: 'summary',
-            title: 'Summary',
-            question:
-              'How would you summarize this course? Would you recommend it to another student? Why or why not?',
-            responses: summary,
-          },
-        ].map(
-          ({ key, title, question, responses }) =>
+        {Object.entries(curResponses).map(
+          ([tag, { questionText, responses }]) =>
             responses.length !== 0 && (
-              <Tab eventKey={key} title={title} key={key}>
-                <Row className={clsx(styles.questionHeader, 'm-auto pt-2')}>
-                  <TextComponent>{question}</TextComponent>
-                </Row>
-                <Row style={{ fontSize: '12px', margin: '10px 0' }}>
+              <Tab eventKey={tag} title={tag} key={tag}>
+                <div className={styles.questionHeader}>
+                  <TextComponent>{questionText}</TextComponent>
+                </div>
+                <p className={styles.responseStats}>
                   <TextComponent type="secondary">
                     {responses.length}/{enrolled} (
                     {((responses.length / enrolled) * 100).toFixed(1)}%)
                     responses
                   </TextComponent>
-                </Row>
-                {responses}
+                </p>
+                <CommentRows responses={responses} filter={filter} />
               </Tab>
             ),
         )}

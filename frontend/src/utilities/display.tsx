@@ -5,7 +5,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Row, Spinner } from 'react-bootstrap';
+import { useSearchParams } from 'react-router-dom';
+import Spinner from '../components/Spinner';
+import type { Listings } from '../generated/graphql-types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function suspended<T extends React.ComponentType<any>>(
@@ -17,10 +19,8 @@ export function suspended<T extends React.ComponentType<any>>(
     } catch {
       return {
         default: (() => (
-          <div style={{ width: '100%', height: '100%' }}>
-            <p style={{ fontWeight: 'bold ' }}>
-              There was a problem loading this view.
-            </p>
+          <div className="m-3">
+            <p className="fw-bold">There was a problem loading this view.</p>
             <p>
               It's possible that there was an update to our code. Please{' '}
               <a href="#!" onClick={() => window.location.reload()}>
@@ -38,15 +38,7 @@ export function suspended<T extends React.ComponentType<any>>(
     }
   });
   return (props: ComponentProps<T>) => (
-    <React.Suspense
-      fallback={
-        <Row className="m-auto" style={{ width: '100%', height: '100%' }}>
-          <Spinner className="m-auto" animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </Row>
-      }
-    >
+    <React.Suspense fallback={<Spinner />}>
       <Comp {...props} />
     </React.Suspense>
   );
@@ -127,3 +119,22 @@ export const scrollToTop: MouseEventHandler = (event) => {
 
   if (!newPage) window.scrollTo({ top: 0, left: 0 });
 };
+
+// Please use this instead of creating a new search param. This will preserve
+// existing params.
+export function createCourseModalLink(
+  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
+  searchParams: URLSearchParams,
+) {
+  const newSearch = new URLSearchParams(searchParams);
+  if (!listing) return `?${searchParams.toString()}`;
+  newSearch.set('course-modal', `${listing.season_code}-${listing.crn}`);
+  return `?${newSearch.toString()}`;
+}
+
+export function useCourseModalLink(
+  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
+) {
+  const [searchParams] = useSearchParams();
+  return createCourseModalLink(listing, searchParams);
+}
