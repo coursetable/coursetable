@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { Element, scroller } from 'react-scroll';
+import { Element } from 'react-scroll';
 import clsx from 'clsx';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
 import styles from './Search.module.css';
-import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import './rc-slider-override.css';
@@ -16,30 +15,12 @@ function Wishlist() {
   const { isMobile } = useWindowDimensions();
   const { courses, wishlistLoading, wishlistError } = useWishlist();
 
-  const scrollToResults = useCallback(
-    (event?: React.FormEvent) => {
-      if (event) event.preventDefault();
-
-      // Scroll down to catalog when in mobile view.
-      if (isMobile) {
-        scroller.scrollTo('catalog', {
-          smooth: true,
-          duration: 500,
-          offset: -56,
-        });
-      }
-    },
-    [isMobile],
-  );
-
   // Scroll to the bottom when courses finish loading on initial load.
   const [doneInitialScroll, setDoneInitialScroll] = useState(false);
   useEffect(() => {
-    if (!wishlistLoading && !wishlistError && !doneInitialScroll) {
-      scrollToResults();
+    if (!wishlistLoading && !wishlistError && !doneInitialScroll)
       setDoneInitialScroll(true);
-    }
-  }, [wishlistLoading, wishlistError, doneInitialScroll, scrollToResults]);
+  }, [wishlistLoading, wishlistError, doneInitialScroll]);
 
   // TODO: add state if courseLoadError is present
   return (
@@ -50,7 +31,7 @@ function Wishlist() {
           !isMobile && 'd-flex flex-row-reverse flex-nowrap',
         )}
       >
-        {isMobile && <MobileSearchForm onSubmit={scrollToResults} />}
+        {' '}
         <Col
           md={12}
           className={clsx(
@@ -61,7 +42,7 @@ function Wishlist() {
         >
           <Element name="catalog" className="d-flex justify-content-center">
             <Results
-              data={courses.flatMap((course) => course.upcomingListings.flat())}
+              wishlistData={courses}
               loading={wishlistLoading}
               multiSeasons
               page="wishlist"

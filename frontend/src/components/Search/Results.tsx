@@ -8,6 +8,7 @@ import ResultsGridItem from './ResultsGridItem';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import WindowScroller from './WindowScroller';
+import WishlistResultsItem from '../Wishlist/WishlistResultsItem';
 
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -23,17 +24,23 @@ export type ResultItemData = {
   readonly columnCount: number;
   readonly multiSeasons: boolean;
 };
+import type { WishlistCourse } from '../../contexts/wishlistContext';
+
+const defaultData: Listing[] = [];
+const defaultWishlistData: WishlistCourse[] = [];
 
 function Results({
-  data,
+  data = defaultData,
+  wishlistData = defaultWishlistData,
   loading = false,
   multiSeasons = false,
   page,
 }: {
-  readonly data: CatalogListing[];
+  readonly data?: CatalogListing[];
+  readonly wishlistData?: WishlistCourse[];
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
-  readonly page?: 'catalog' | 'worksheet' | 'wishlist';
+  readonly page: 'catalog' | 'worksheet' | 'wishlist';
 }) {
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
   const [isListView, setIsListView] = useSessionStorageState(
@@ -84,8 +91,8 @@ function Results({
         )}
       </div>
     );
-  } else {
-    // Not list or on mobile -> use grid view
+  } else if (!isListView || isMobile || page === 'wishlist') {
+    // Not list, on mobile, or in wishlist -> use grid view
     // Do not force entering grid mode on mobile, so that when resizing the
     // window, the view can still be restored to list view
     const isGrid = !isListView || isMobile;
@@ -121,8 +128,64 @@ function Results({
               overflow: 'hidden',
             }}
           >
-            {InnerComp}
+            {({ index, style: itemStyle }) => (
+              <div style={itemStyle}>
+                <Row className={clsx(styles.gridRow, 'mx-auto')}>
+                  {page === 'wishlist'
+                    ? wishlistData
+                        .slice(index * numCols, (index + 1) * numCols)
+                        .map((wishlistCourse) => (
+                          <WishlistResultsItem
+                            course={wishlistCourse}
+                            numCols={0}
+                            multiSeasons={false}
+                          />
+                        ))
+                    : data
+                        .slice(index * numCols, (index + 1) * numCols)
+                        .map((course) => (
+                          <ResultsGridItem
+                            course={course}
+                            numCols={numCols}
+                            multiSeasons={multiSeasons}
+                            key={course.season_code + course.crn}
+                          />
+                        ))}
+                </Row>
+              </div>
+            )}
           </ListComp>
+        )}
+      </WindowScroller>
+    );
+  } else {
+    resultsListing = (
+      <WindowScroller>
+        {({ ref, outerRef }) => (
+          <FixedSizeList
+            outerRef={outerRef}
+            ref={ref}
+            width={window.innerWidth}
+            height={window.innerHeight}
+            itemCount={data.length}
+            itemSize={isLgDesktop ? 32 : 28}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'inline-block',
+              overflow: 'hidden',
+            }}
+          >
+            {({ index, style: itemStyle }) => (
+              <ResultsItem
+                isOdd={index % 2 === 1}
+                style={itemStyle}
+                course={data[index]!}
+                multiSeasons={multiSeasons}
+                isFirst={index === 0}
+              />
+            )}
+          </FixedSizeList>
         )}
       </WindowScroller>
     );

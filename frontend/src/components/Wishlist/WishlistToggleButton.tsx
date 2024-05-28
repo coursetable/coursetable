@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { useUser } from '../../contexts/userContext';
 import type { Listing } from '../../utilities/common';
 import { isInWishlist } from '../../utilities/course';
-import { toggleWish } from '../../utilities/api';
+import { toggleWish } from '../../queries/api';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './WishlistToggleButton.module.css';
 
