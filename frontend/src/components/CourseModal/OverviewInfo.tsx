@@ -14,7 +14,6 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import { CUR_SEASON } from '../../config';
 import { useSearch } from '../../contexts/searchContext';
 import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql-types';
 import type { Weekdays } from '../../queries/graphql-types';
@@ -338,6 +337,7 @@ function OverviewInfo({
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
   const { course } = listing;
+  const [enrollment, isRealData] = getEnrolled(course, 'modal');
   return (
     <>
       <Description course={course} />
@@ -362,19 +362,16 @@ function OverviewInfo({
       />
       <DataField
         name="Enrollment"
-        value={getEnrolled(course, 'modal')}
+        value={enrollment}
         tooltip={
-          CUR_SEASON === listing.season_code ? (
+          isRealData ? (
             <span>
-              Class Enrollment
-              <br />
-              (how many students took this class the last time it was offered)
+              Actual number of students enrolled for this season's offering,
+              sourced from evaluations data
             </span>
           ) : (
             <span>
-              Previous Class Enrollment
-              <br />
-              (based on the most recent past instance of this course)
+              How many students took this class the last time it was offered
             </span>
           )
         }

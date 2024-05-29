@@ -198,6 +198,55 @@ export function getProfessorRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
+export function getEnrolled(
+  course: CourseWithEnrolled,
+  usage: 'stat',
+): number | null;
+export function getEnrolled(
+  course: CourseWithEnrolled,
+  usage: 'display',
+): string;
+export function getEnrolled(
+  course: CourseWithEnrolled,
+  usage: 'modal',
+): [string, boolean];
+export function getEnrolled(
+  course: CourseWithEnrolled,
+  usage: 'stat' | 'display' | 'modal',
+): string | number | null | [string, boolean] {
+  switch (usage) {
+    case 'stat':
+      // Use enrollment for that season if course has happened
+      if (course.evaluation_statistic?.enrolled)
+        return course.evaluation_statistic.enrolled;
+      if (course.last_enrollment) return course.last_enrollment;
+      return null;
+    case 'display':
+      if (course.evaluation_statistic?.enrolled)
+        return String(course.evaluation_statistic.enrolled);
+      if (course.last_enrollment) {
+        return course.last_enrollment_same_professors
+          ? String(course.last_enrollment)
+          : `~${course.last_enrollment}`;
+      }
+      return '';
+    case 'modal':
+      if (course.evaluation_statistic?.enrolled)
+        return [String(course.evaluation_statistic.enrolled), true];
+      if (course.last_enrollment) {
+        return [
+          course.last_enrollment_same_professors
+            ? String(course.last_enrollment)
+            : `${course.last_enrollment} (different professor was teaching)`,
+          false,
+        ];
+      }
+      return ['N/A', false];
+    default:
+      throw new Error('Invalid usage');
+  }
+}
+
 export function getDayTimes(
   course: Pick<Courses, 'times_by_day'>,
 ): { day: Weekdays; start: string; end: string }[] {
@@ -300,37 +349,6 @@ type CourseWithEnrolled = {
   last_enrollment?: number | null;
   last_enrollment_same_professors?: boolean | null;
 };
-
-export function getEnrolled(
-  course: CourseWithEnrolled,
-  usage: 'stat',
-): number | null;
-export function getEnrolled(
-  course: CourseWithEnrolled,
-  usage: 'display' | 'modal',
-): string;
-export function getEnrolled(
-  course: CourseWithEnrolled,
-  usage: 'stat' | 'display' | 'modal',
-): string | number | null {
-  if (course.evaluation_statistic?.enrolled) {
-    // Use enrollment for that season if course has happened
-    return usage === 'stat'
-      ? course.evaluation_statistic.enrolled
-      : String(course.evaluation_statistic.enrolled);
-  } else if (course.last_enrollment) {
-    // Use last enrollment if course hasn't happened
-    if (usage === 'stat') return course.last_enrollment;
-    return course.last_enrollment_same_professors
-      ? String(course.last_enrollment)
-      : `~${course.last_enrollment}${
-          usage === 'modal' ? ' (different professor was teaching)' : ''
-        }`;
-  }
-  // No enrollment data
-  if (usage === 'stat') return null;
-  return usage === 'modal' ? 'N/A' : '';
-}
 
 export function isGraduate(listing: Pick<Listings, 'number'>): boolean {
   return Number(listing.number.replace(/\D/gu, '')) >= 500;
