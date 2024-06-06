@@ -1,9 +1,7 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { GraphQLClient } from 'graphql-request';
-import pg from 'pg';
+import postgres from 'postgres';
 import * as schema from '../drizzle/schema.js';
-
-const { Pool } = pg;
 
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
@@ -77,8 +75,6 @@ export const SENTRY_DSN = getEnv('SENTRY_DSN');
 
 export const SENTRY_ENVIRONMENT = getEnv('SENTRY_ENVIRONMENT');
 
-const pool = new Pool({
-  connectionString: getEnv('DB_URL'),
-});
+const pool = postgres(getEnv('DB_URL'));
 
 export const db = drizzle(pool, { schema });
