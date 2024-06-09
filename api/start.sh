@@ -47,11 +47,7 @@ then
     export SENTRY_ENVIRONMENT=development
     doppler setup -p coursetable -c dev
 
-    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api pull --ignore-buildable" # Pull the latest service images
-
-    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api build --pull" # Build the latest service images and pull the latest base images
-
-    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d"
+    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d --build --pull always"
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
     
@@ -83,9 +79,7 @@ then
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME pull --ignore-buildable" # Pull the latest service images
 
-    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME build --pull" # Build the latest service images and pull the latest base images
-
-    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d"
+    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build --pull always"
     
     sentry-cli releases finalize "$VERSION"
     sentry-cli releases deploys "$VERSION" new -e $SENTRY_ENVIRONMENT
