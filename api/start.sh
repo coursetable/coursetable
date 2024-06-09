@@ -77,8 +77,6 @@ then
     sentry-cli releases new "$VERSION"
     sentry-cli releases set-commits "$VERSION" --auto
 
-    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME pull --ignore-buildable" # Pull the latest service images
-
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build --pull always"
     
     sentry-cli releases finalize "$VERSION"
