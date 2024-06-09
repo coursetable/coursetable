@@ -66,6 +66,13 @@ then
         export ADDITIONAL_DOCKER_COMPOSE_FILE="-f compose/prod-compose.yml"
     fi
 
+    if [[ $OVERWRITE == true ]]
+    then
+        export FORCE_RECREATE="--force-recreate"
+    else
+        export FORCE_RECREATE=""
+    fi
+
     doppler setup -p coursetable -c $CFG_ENV
 
     VERSION=`sentry-cli releases propose-version`
@@ -77,7 +84,7 @@ then
     sentry-cli releases new "$VERSION"
     sentry-cli releases set-commits "$VERSION" --auto
 
-    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build --pull always"
+    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build --pull always $FORCE_RECREATE"
     
     sentry-cli releases finalize "$VERSION"
     sentry-cli releases deploys "$VERSION" new -e $SENTRY_ENVIRONMENT
