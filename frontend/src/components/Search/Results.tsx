@@ -30,7 +30,7 @@ function Results({
   multiSeasons = false,
   page = 'catalog',
 }: {
-  readonly data: CatalogListing[];
+  readonly data: CatalogListing[] | null;
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
   readonly page?: 'catalog' | 'worksheet';
@@ -44,9 +44,9 @@ function Results({
   const { curSeason } = useWorksheet();
 
   let resultsListing: JSX.Element | undefined = undefined;
-  if (loading) {
+  if (loading || !data) {
     resultsListing = (
-      <Row className={clsx('m-auto', data.length === 0 ? 'py-5' : 'pt-0 pb-4')}>
+      <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>
         <Spinner />
       </Row>
     );
@@ -130,7 +130,7 @@ function Results({
           multiSeasons={multiSeasons}
           isListView={isListView}
           setIsListView={setIsListView}
-          numResults={data.length}
+          numResults={data?.length ?? 0}
         />
       )}
       {resultsListing}
