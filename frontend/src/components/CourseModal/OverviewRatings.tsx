@@ -138,7 +138,10 @@ function CourseLink({
         : course.course_professors.length === 0
           ? 'TBA'
           : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
-  if (targetListings.length === 1) {
+  if (
+    targetListings.length === 1 ||
+    targetListings.some((l) => l.course_code === listing.course_code)
+  ) {
     return (
       <Col
         as={Link}
