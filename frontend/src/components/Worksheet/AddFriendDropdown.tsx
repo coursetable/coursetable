@@ -95,15 +95,15 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
           <Spinner className={styles.spinner} />
         ) : (
           <>
-            <MdPersonRemove
-              className={styles.removeFriendIcon}
-              onClick={handler((id) => removeFriend(id, true))}
-              title="Decline friend request"
-            />
             <MdPersonAdd
               className={styles.addFriendIcon}
               onClick={handler(addFriend)}
               title="Accept friend request"
+            />
+            <MdPersonRemove
+              className={styles.removeFriendIcon}
+              onClick={handler((id) => removeFriend(id, true))}
+              title="Decline friend request"
             />
           </>
         )}
