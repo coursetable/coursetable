@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Helmet } from 'react-helmet';
 
@@ -37,18 +37,51 @@ const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
-function App() {
-  const location = useLocation();
+function AuthenticatedRoutes() {
+  useAuth();
   const { authStatus, user } = useStore(
     useShallow((state) => ({
       user: state.user,
       authStatus: state.authStatus,
     })),
   );
-  const { isTutorialOpen } = useTutorial();
-  useAuth();
+
+  const location = useLocation();
+  const messages = {
+    '/worksheet': 'your worksheet',
+    '/graphiql': 'the GraphQL interface',
+  };
 
   if (authStatus === 'loading') return <Spinner />;
+
+  switch (location.pathname) {
+    case '/catalog':
+      return <Outlet />;
+
+    case '/login':
+      if (authStatus === 'authenticated')
+        return <Navigate to="/catalog" replace />;
+      return <Outlet />;
+
+    case '/graphiql':
+    case '/worksheet':
+      if (user.hasEvals) return <Outlet />;
+      return (
+        <NeedsLogin
+          redirect={location.pathname}
+          message={messages[location.pathname]}
+        />
+      );
+
+    default:
+      if (authStatus === 'authenticated') return <Outlet />;
+      return <Navigate to="/login" replace />;
+  }
+}
+
+function App() {
+  const location = useLocation();
+  const { isTutorialOpen } = useTutorial();
 
   return (
     <div
@@ -81,49 +114,15 @@ function App() {
       </Notice>
       <Navbar />
       <SentryRoutes>
-        <Route
-          path="/"
-          element={
-            authStatus === 'authenticated' ? (
-              <Navigate to="/catalog" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+        <Route element={<AuthenticatedRoutes />}>
+          <Route path="/" element={<Navigate to="/catalog" replace />} />
 
-        <Route path="/catalog" element={<Search />} />
-
-        {/* Authenticated routes */}
-        <Route
-          path="/worksheet"
-          element={
-            user.hasEvals ? (
-              <Worksheet />
-            ) : (
-              <NeedsLogin redirect="/worksheet" message="worksheets" />
-            )
-          }
-        />
-        <Route
-          path="/graphiql"
-          element={
-            user.hasEvals ? (
-              <Graphiql />
-            ) : (
-              <NeedsLogin
-                redirect="/graphiql"
-                message="the GraphQL interface"
-              />
-            )
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            authStatus === 'authenticated' ? <Navigate to="/" /> : <Landing />
-          }
-        />
+          {/* Authenticated routes */}
+          <Route path="/worksheet" element={<Worksheet />} />
+          <Route path="/graphiql" element={<Graphiql />} />
+          <Route path="/catalog" element={<Search />} />
+          <Route path="/login" element={<Landing />} />
+        </Route>
 
         {/* Challenge handles its own auth */}
         <Route path="/challenge" element={<Challenge />} />

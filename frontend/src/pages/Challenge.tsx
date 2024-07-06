@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 
 import Spinner from '../components/Spinner';
 import { TextComponent, SurfaceComponent } from '../components/Typography';
+import { API_ENDPOINT } from '../config';
 import ChallengeError from '../images/error.svg';
 import {
   requestChallenge,
@@ -32,7 +33,7 @@ function renderRequestError(requestError: string, navigate: NavigateFunction) {
           You need to be logged in via CAS to enable your account.
           <br />
           <a
-            href="/api/auth/cas?redirect=catalog"
+            href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
             className="btn btn-primary mt-3"
           >
             Log in
