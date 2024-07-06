@@ -89,6 +89,7 @@ function AuthenticatedRoutes() {
 function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
+  useAuth();
 
   return (
     <div
