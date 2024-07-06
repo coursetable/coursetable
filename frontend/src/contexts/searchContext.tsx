@@ -320,7 +320,6 @@ export function SearchProvider({
 
   const numFriends = useMemo(() => {
     if (!user.friends) return {};
-    console.log('getNumFriends', user.friends);
     return getNumFriends(user.friends);
   }, [user.friends]);
 
