@@ -53,6 +53,10 @@ function AuthenticatedRoutes() {
   );
 
   const location = useLocation();
+  const messages = {
+    '/worksheet': 'your worksheet',
+    '/graphiql': 'the GraphQL interface',
+  };
 
   if (authStatus === 'loading') return <Spinner />;
 
@@ -60,23 +64,18 @@ function AuthenticatedRoutes() {
     case '/catalog':
       return <Outlet />;
 
-    case '/worksheet':
-      if (authStatus === 'authenticated') return <Outlet />;
-      return (
-        <NeedsLogin redirect={location.pathname} message="your worksheet" />
-      );
-
     case '/login':
       if (authStatus === 'authenticated')
         return <Navigate to="/catalog" replace />;
       return <Outlet />;
 
     case '/graphiql':
+    case '/worksheet':
       if (user.hasEvals) return <Outlet />;
       return (
         <NeedsLogin
           redirect={location.pathname}
-          message="the GraphQL interface"
+          message={messages[location.pathname]}
         />
       );
 
