@@ -10,11 +10,11 @@ import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { useUser } from './userContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
 import type { CatalogListing } from '../queries/api';
 import type { Season, Weekdays } from '../queries/graphql-types';
+import { useStore } from '../store';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { isEqual } from '../utilities/common';
 import {
@@ -316,10 +316,11 @@ export function SearchProvider({
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
 
   const numFriends = useMemo(() => {
     if (!user.friends) return {};
+    console.log('getNumFriends', user.friends);
     return getNumFriends(user.friends);
   }, [user.friends]);
 

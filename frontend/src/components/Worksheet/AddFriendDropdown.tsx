@@ -11,9 +11,10 @@ import {
   type SingleValueProps,
   type OptionProps,
 } from 'react-select';
-import { useUser } from '../../contexts/userContext';
+import { useShallow } from 'zustand/react/shallow';
 import { fetchAllNames, type UserNames } from '../../queries/api';
 import type { NetId } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
@@ -32,7 +33,12 @@ interface OptionType {
 }
 
 function OptionComponent(props: OptionProps<OptionType, false>) {
-  const { requestAddFriend, addFriend } = useUser();
+  const { requestAddFriend, addFriend } = useStore(
+    useShallow((state) => ({
+      requestAddFriend: state.requestAddFriend,
+      addFriend: state.addFriend,
+    })),
+  );
   const { children, data, innerProps } = props;
   const { removeFriend } = useContext(FriendContext)!;
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +124,7 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
 
 function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
   const { children, data } = props;
-  const { requestAddFriend } = useUser();
+  const requestAddFriend = useStore((state) => state.requestAddFriend);
   const { isFriend } = useContext(FriendContext)!;
   const [isLoading, setIsLoading] = useState(false);
 
@@ -149,7 +155,7 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
 }
 
 function AddFriendDropdownDesktop() {
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
   const { isFriend } = useContext(FriendContext)!;
   const [allNames, setAllNames] = useState<UserNames>([]);
   const [searchText, setSearchText] = useState('');
@@ -230,7 +236,7 @@ function AddFriendDropdown({
   readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
   readonly mobile: boolean;
 }) {
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
 
   const isFriend = useMemo(() => {
     const friends = new Set(Object.keys(user.friends ?? {}));

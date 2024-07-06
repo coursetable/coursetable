@@ -7,8 +7,8 @@ import React, {
   useState,
 } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useUser } from './userContext';
 import { useWindowDimensions } from './windowDimensionsContext';
+import { useStore } from '../store';
 import { useLocalStorageState } from '../utilities/browserStorage';
 
 type Store = {
@@ -28,7 +28,7 @@ export function TutorialProvider({
 }) {
   const location = useLocation();
   const { isMobile, isTablet } = useWindowDimensions();
-  const { authStatus } = useUser();
+  const authStatus = useStore((state) => state.authStatus);
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [shownTutorial, setShownTutorial] = useLocalStorageState(

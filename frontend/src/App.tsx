@@ -2,18 +2,20 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Helmet } from 'react-helmet';
 
+import { useShallow } from 'zustand/react/shallow';
 import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import Spinner from './components/Spinner';
 import { useTutorial } from './contexts/tutorialContext';
-import { useUser } from './contexts/userContext';
 
 // Popular pages are eagerly fetched
+import { useAuth } from './hooks/useAuth';
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
+import { useStore } from './store';
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
 
@@ -37,8 +39,14 @@ const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
   const location = useLocation();
-  const { authStatus, user } = useUser();
+  const { authStatus, user } = useStore(
+    useShallow((state) => ({
+      user: state.user,
+      authStatus: state.authStatus,
+    })),
+  );
   const { isTutorialOpen } = useTutorial();
+  useAuth();
 
   if (authStatus === 'loading') return <Spinner />;
 

@@ -17,7 +17,6 @@ import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
 import { ThemeProvider } from './contexts/themeContext';
-import { UserProvider } from './contexts/userContext';
 import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
 
@@ -64,22 +63,20 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
         <ApolloProvider client={client}>
           {/* FerryProvider must be inside UserProvider because the former
             depends on login status */}
-          <UserProvider>
-            <FerryProvider>
-              <WindowDimensionsProvider>
-                {/* SearchProvider must be inside WorksheetProvider because the
+          <FerryProvider>
+            <WindowDimensionsProvider>
+              {/* SearchProvider must be inside WorksheetProvider because the
                   former depends on the currently viewed worksheet */}
-                <WorksheetProvider>
-                  <SearchProvider>
-                    <ThemeProvider>
-                      <div id="base">{children}</div>
-                    </ThemeProvider>
-                  </SearchProvider>
-                </WorksheetProvider>
-                <ToastContainer toastClassName="rounded" />
-              </WindowDimensionsProvider>
-            </FerryProvider>
-          </UserProvider>
+              <WorksheetProvider>
+                <SearchProvider>
+                  <ThemeProvider>
+                    <div id="base">{children}</div>
+                  </ThemeProvider>
+                </SearchProvider>
+              </WorksheetProvider>
+              <ToastContainer toastClassName="rounded" />
+            </WindowDimensionsProvider>
+          </FerryProvider>
         </ApolloProvider>
       </GapiProvider>
       {/* </React.StrictMode> */}

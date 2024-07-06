@@ -12,9 +12,9 @@ import {
   ratingTypes,
 } from './ResultsItemCommon';
 import { useSearch } from '../../contexts/searchContext';
-import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
+import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
 import { getEnrolled, isInWorksheet } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
@@ -70,7 +70,7 @@ function ResultsItem({
   style,
 }: ListChildComponentProps<ResultItemData>) {
   const listing = listings[index]!;
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
   const { worksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();

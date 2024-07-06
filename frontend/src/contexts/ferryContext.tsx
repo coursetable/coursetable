@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/react';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
-import { useUser } from './userContext';
+import { useShallow } from 'zustand/react/shallow';
 import type { WorksheetCourse } from './worksheetContext';
 import seasonsData from '../generated/seasons.json';
 import {
@@ -20,6 +20,7 @@ import {
   type CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import { useStore } from '../store';
 
 export const seasons = seasonsData as Season[];
 
@@ -99,7 +100,12 @@ export function FerryProvider({
   const {
     authStatus,
     user: { hasEvals },
-  } = useUser();
+  } = useStore(
+    useShallow((state) => ({
+      authStatus: state.authStatus,
+      user: state.user,
+    })),
+  );
 
   const requestSeasons = useCallback(
     async (requestedSeasons: Season[]) => {

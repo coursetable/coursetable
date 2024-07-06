@@ -256,10 +256,7 @@ export async function logout() {
       message: 'Signing out',
     },
   });
-  if (res) {
-    // Redirect to home page and refresh as well
-    window.location.pathname = '/';
-  }
+  return res;
 }
 
 const requestResSchema = z.object({

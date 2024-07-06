@@ -14,11 +14,11 @@ import MultiToggle from 'react-multi-toggle';
 import type { CourseModalHeaderData } from './CourseModal';
 
 import { CUR_YEAR } from '../../config';
-import { useUser } from '../../contexts/userContext';
 import type {
   RelatedCourseInfoFragment,
   SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql-types';
+import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../utilities/course';
@@ -235,7 +235,7 @@ function OverviewRatings({
   readonly onNavigation: (x: CourseModalHeaderData) => void;
   readonly data: SameCourseOrProfOfferingsQuery;
 }) {
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
   const listing = data.self[0]!;
   const overlapSections = useMemo(() => {
     const sameCourse = normalizeRelatedListings(data.sameCourse);

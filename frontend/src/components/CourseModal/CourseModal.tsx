@@ -9,9 +9,9 @@ import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
-import { useUser } from '../../contexts/userContext';
 import type { Listings } from '../../generated/graphql-types';
 import type { Season, Crn } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { extraInfo } from '../../utilities/constants';
 import { toSeasonString, truncatedText } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
@@ -159,7 +159,7 @@ const CourseModalEvaluations = suspended(
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed

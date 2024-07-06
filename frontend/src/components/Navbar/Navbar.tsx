@@ -7,9 +7,9 @@ import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
 import { API_ENDPOINT } from '../../config';
-import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../queries/api';
+import { useStore } from '../../store';
 import { scrollToTop } from '../../utilities/display';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
 import { SurfaceComponent, TextComponent } from '../Typography';
@@ -87,7 +87,7 @@ function LastUpdatedAt() {
 }
 
 export default function CourseTableNavbar() {
-  const { authStatus } = useUser();
+  const authStatus = useStore((state) => state.authStatus);
   const location = useLocation();
   const [navExpanded, setNavExpanded] = useState(false);
   const { isMobile } = useWindowDimensions();

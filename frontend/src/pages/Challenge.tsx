@@ -8,13 +8,13 @@ import { toast } from 'react-toastify';
 
 import Spinner from '../components/Spinner';
 import { TextComponent, SurfaceComponent } from '../components/Typography';
-import { useUser } from '../contexts/userContext';
 import ChallengeError from '../images/error.svg';
 import {
   requestChallenge,
   verifyChallenge,
   type RequestChallengeResBody,
 } from '../queries/api';
+import { useStore } from '../store';
 import styles from './Challenge.module.css';
 
 type Answer = {
@@ -104,7 +104,7 @@ function renderVerifyError(verifyError: string, navigate: NavigateFunction) {
 
 function Challenge() {
   const client = useApolloClient();
-  const { userRefresh } = useUser();
+  const userRefresh = useStore((state) => state.userRefresh);
   const navigate = useNavigate();
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
