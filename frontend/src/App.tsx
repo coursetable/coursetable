@@ -90,7 +90,7 @@ function App() {
         <Route
           path="/worksheet"
           element={
-            user.hasEvals ? (
+            authStatus === 'authenticated' ? (
               <Worksheet />
             ) : (
               <NeedsLogin redirect="/worksheet" message="worksheets" />
