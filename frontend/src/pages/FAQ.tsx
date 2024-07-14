@@ -168,12 +168,18 @@ const faqs = [
             <NavLink to="/challenge" onClick={scrollToTop}>
               challenge
             </NavLink>{' '}
-            to verify your access. If the challenge is not working for you,
-            please{' '}
-            <a href="mailto:coursetable.at.yale@gmail.com">
-              let us know via email
-            </a>{' '}
-            and we can grant you access manually.
+            to verify your access.
+            <p className="fw-bold">
+              Are you a prefrosh? Read the next FAQ item please.
+            </p>
+            <p>
+              If you are not a prefrosh and the challenge is not working for
+              you, please{' '}
+              <a href="mailto:coursetable.at.yale@gmail.com">
+                let us know via email
+              </a>{' '}
+              and we may grant you access manually.
+            </p>
           </>
         ),
       },
@@ -181,19 +187,40 @@ const faqs = [
         title: "I'm a new admit and I don't have access to evaluations.",
         contents: (
           <>
-            Every March to May, we receive lots of access requests from prefrosh
-            students. We have now decided to respect Yale's matriculation
-            process and not manually grant access in these circumstances. In
-            July/August, you should log out and log in again on CourseTable to
-            refresh your authentication status. Please only let us know if you
-            still cannot access evaluations afterwards. Before that, you can
-            still use CourseTable to get a sense of what courses there are, but
-            here's our suggestion:
-            <br />
-            <b>
+            <p>
+              Every March to July, we receive lots of access requests from
+              prefrosh students. We have now decided to respect Yale's
+              matriculation process and not manually grant access in these
+              circumstances.
+            </p>
+            <p className="fw-bold">
+              We don't know exactly when Yale grants access to OCE, but if you
+              cannot access the following website:{' '}
+              <a
+                href="https://oce.app.yale.edu/ocedashboard/studentViewer"
+                rel="noreferrer noopener"
+                target="_blank"
+              >
+                https://oce.app.yale.edu/ocedashboard/studentViewer
+              </a>{' '}
+              please do not ask us to manually grant you access.
+            </p>
+            <p>
+              In July/August, once you do have access, you should log out and
+              log in again on CourseTable to refresh your authentication status.
+              Please only let us know if: (1) you can access OCE (2) you have
+              logged out and logged in again (3) you have tried{' '}
+              <NavLink to="/challenge" onClick={scrollToTop}>
+                the challenge
+              </NavLink>{' '}
+              and for whatever reason it still doesn't work. Before that, you
+              can still use CourseTable to get a sense of what courses there
+              are, but here's our suggestion:
+            </p>
+            <p className="fw-bold">
               Congratulations on your admission. Now take a break from academics
               while you can. Go out! Have fun! Forget about school!
-            </b>
+            </p>
           </>
         ),
       },

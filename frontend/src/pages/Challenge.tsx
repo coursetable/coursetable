@@ -223,11 +223,7 @@ function Challenge() {
         <TextComponent type="secondary">
           <p className="mb-2">
             You are seeing this page because we cannot automatically confirm
-            that you have access to course evaluations. See our{' '}
-            <NavLink to="/faq#how_do_i_verify_access_to_course_evaluations">
-              FAQ
-            </NavLink>{' '}
-            for more information.
+            that you have access to course evaluations.
           </p>
           <p className="mb-2">
             To confirm access, we ask that you retrieve the number of people who
@@ -235,12 +231,16 @@ function Challenge() {
             If your responses match the values in our database, you'll be good
             to go!
           </p>
-          <p className="mb-2">
-            If the challenge is not working for you, please{' '}
-            <a href="mailto:coursetable.at.yale@gmail.com">
-              let us know via email
-            </a>{' '}
-            and we can grant you access manually.
+          <p className="mb-2 fw-bold">
+            Are you an incoming first year? Please review the{' '}
+            <NavLink to="/faq#im_a_new_admit_and_i_dont_have_access_to_evaluations">
+              FAQ
+            </NavLink>{' '}
+            before contacting us. You can also find other information about the{' '}
+            <NavLink to="/faq#how_do_i_verify_access_to_course_evaluations">
+              verification process
+            </NavLink>
+            .
           </p>
         </TextComponent>
         {/* Track number of attempts */}
@@ -264,7 +264,7 @@ function Challenge() {
             {resBody.courseInfo.map((course, index) => (
               <Form.Group controlId={`question#${index + 1}`} key={index}>
                 {/* Course Title */}
-                <Row className="mx-auto">
+                <div className="mx-auto">
                   <strong>
                     <a
                       href={course.courseOceUrl}
@@ -278,9 +278,9 @@ function Challenge() {
                       />
                     </a>
                   </strong>
-                </Row>
+                </div>
                 {/* Question with link to OCE Page */}
-                <Row className="mx-auto mb-1">
+                <div className="mx-auto mb-1">
                   How many students responded to the&nbsp;
                   <span className="fw-bold">"overall assessment"</span>
                   &nbsp;question with&nbsp;
@@ -288,10 +288,11 @@ function Challenge() {
                     "{ratingOptions[course.courseRatingIndex]}"
                   </span>
                   ?
-                </Row>
+                </div>
                 {/* Number Input Box */}
                 <Form.Control
                   type="number"
+                  className="mb-3"
                   required
                   placeholder="Number of students"
                   value={answers[index]!.answer}
