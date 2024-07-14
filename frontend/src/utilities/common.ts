@@ -31,3 +31,9 @@ export function generateRandomColor(identifier: string) {
   // Interpolate between startColor and endColor based on normalizedHash
   return chroma.scale([startColor, endColor])(normalizedHash);
 }
+export function pick<T, K extends keyof T>(obj: T, keys: K[]) {
+  return keys.reduce<Partial<T>>((acc, val) => {
+    acc[val] = obj[val];
+    return acc;
+  }, {});
+}

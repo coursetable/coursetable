@@ -6,9 +6,9 @@ import type { GridChildComponentProps } from 'react-window';
 
 import type { ResultItemData } from './Results';
 import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
-import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
+import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
 import { isInWorksheet } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
@@ -75,7 +75,7 @@ function ResultsGridItem({
 }: GridChildComponentProps<ResultItemData>) {
   const listing = listings[rowIndex * columnCount + columnIndex];
   const target = useCourseModalLink(listing);
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
   const { worksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(

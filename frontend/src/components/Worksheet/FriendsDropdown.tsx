@@ -3,9 +3,9 @@ import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdPersonRemove } from 'react-icons/md';
 import { components as selectComponents } from 'react-select';
 import type { Option } from '../../contexts/searchContext';
-import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import Spinner from '../Spinner';
@@ -127,7 +127,7 @@ function FriendsDropdown({
         isRequest: boolean,
       ) => Promise<void>;
     }) {
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
   const { person } = useWorksheet();
 
   const viewedPerson = useMemo(() => {

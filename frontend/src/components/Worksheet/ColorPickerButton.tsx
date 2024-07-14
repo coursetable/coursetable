@@ -5,9 +5,9 @@ import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
-import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toggleBookmark } from '../../queries/api';
+import { useStore } from '../../store';
 import { type RBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
 import { SurfaceComponent, Input } from '../Typography';
@@ -119,7 +119,7 @@ function ColorPickerButton({
   readonly event: RBCEvent;
   readonly className?: string;
 }) {
-  const { userRefresh } = useUser();
+  const userRefresh = useStore((state) => state.userRefresh);
   const { curSeason, worksheetNumber } = useWorksheet();
   const [open, setOpen] = useState(false);
   const [newColor, setNewColor] = useState(event.color);

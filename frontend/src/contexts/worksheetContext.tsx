@@ -5,9 +5,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { seasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
-import { useUser } from './userContext';
 import { CUR_SEASON } from '../config';
 import {
   toggleCourseHidden,
@@ -15,6 +15,7 @@ import {
   type CatalogListing,
 } from '../queries/api';
 import type { Season, Crn, NetId } from '../queries/graphql-types';
+import { useStore } from '../store';
 import { useSessionStorageState } from '../utilities/browserStorage';
 
 type WorksheetView = 'calendar' | 'list';
@@ -58,7 +59,12 @@ export function WorksheetProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
-  const { user, userRefresh } = useUser();
+  const { user, userRefresh } = useStore(
+    useShallow((state) => ({
+      user: state.user,
+      userRefresh: state.userRefresh,
+    })),
+  );
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'person',
     'me',
