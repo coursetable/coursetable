@@ -189,9 +189,8 @@ const faqs = [
           <>
             <p>
               Every March to July, we receive lots of access requests from
-              prefrosh students. We have now decided to respect Yale's
-              matriculation process and not manually grant access in these
-              circumstances.
+              prefrosh students. We respect Yale's matriculation process and do
+              not manually override your access status in these circumstances.
             </p>
             <p className="fw-bold">
               We don't know exactly when Yale grants access to OCE, but if you
