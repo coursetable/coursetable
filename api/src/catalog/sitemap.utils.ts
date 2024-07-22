@@ -9,7 +9,9 @@ interface Course {
   crn: string;
 }
 
-function transformListingToCourse(listing: CatalogBySeasonQuery['listings'][number]): Course {
+function transformListingToCourse(
+  listing: CatalogBySeasonQuery['listings'][number],
+): Course {
   return {
     crn: String(listing.crn),
   };
@@ -19,12 +21,17 @@ async function generateSeasonSitemap(seasonCode: string, courses: Course[]) {
   const sitemapDir = path.join(STATIC_FILE_DIR, 'sitemaps');
   await fs.mkdir(sitemapDir, { recursive: true });
 
-  const urlset = create({ version: '1.0', encoding: 'UTF-8' })
-    .ele('urlset', { xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9' });
+  const urlset = create({ version: '1.0', encoding: 'UTF-8' }).ele('urlset', {
+    xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9',
+  });
 
   courses.forEach((course) => {
     const url = urlset.ele('url');
-    url.ele('loc').txt(`https://coursetable.com/catalog?course-modal=${seasonCode}-${course.crn}`);
+    url
+      .ele('loc')
+      .txt(
+        `https://coursetable.com/catalog?course-modal=${seasonCode}-${course.crn}`,
+      );
     url.ele('priority').txt('0.8');
   });
 

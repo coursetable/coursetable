@@ -28,7 +28,7 @@ export async function refreshCatalog(
   winston.info('Refreshing catalog');
   // Always overwrite when the refresh endpoint is hit
   await fetchCatalog(true);
-    // Generate sitemaps after fetching catalog
-    await generateSitemaps();
+  // Generate sitemaps after fetching catalog
+  await generateSitemaps();
   res.sendStatus(200);
 }
