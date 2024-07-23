@@ -1,6 +1,5 @@
 import type express from 'express';
 import { fetchCatalog } from './catalog.utils.js';
-import { generateSitemaps } from './sitemap.utils.js';
 import { FERRY_SECRET } from '../config.js';
 import winston from '../logging/winston.js';
 
@@ -28,7 +27,5 @@ export async function refreshCatalog(
   winston.info('Refreshing catalog');
   // Always overwrite when the refresh endpoint is hit
   await fetchCatalog(true);
-  // Generate sitemaps after fetching catalog
-  await generateSitemaps();
   res.sendStatus(200);
 }

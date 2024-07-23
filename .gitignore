@@ -6,6 +6,8 @@ node_modules
 
 api/logs/*
 api/static/**/*.json
+api/static/**/*.xml
+
 api/postgres/data/*
 api/redis/data/*
 
