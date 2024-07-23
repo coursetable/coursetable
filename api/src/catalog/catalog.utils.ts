@@ -11,7 +11,7 @@ import {
 import { STATIC_FILE_DIR, graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
-interface SitemapLising {
+interface SitemapListing {
   crn: string;
 }
 /**
@@ -89,18 +89,82 @@ const exists = (p: string) =>
     () => false,
   );
 
+function transformListingToSitemapListing(
+  listing: CatalogBySeasonQuery['listings'][number],
+): SitemapListing {
+  return {
+    crn: String(listing.crn),
+  };
+}
+
+async function generateSeasonSitemap(
+  seasonCode: string,
+  courses: SitemapListing[],
+): Promise<void> {
+  const sitemapDir = path.join(STATIC_FILE_DIR, 'sitemaps');
+  await fs.mkdir(sitemapDir, { recursive: true });
+
+  const links = courses.map((course: SitemapListing) => ({
+    url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
+    priority: 0.8,
+  }));
+
+  const stream = new SitemapStream({ hostname: 'https://coursetable.com' });
+  const xml = await streamToPromise(Readable.from(links).pipe(stream)).then(
+    (data: Buffer) => data.toString(),
+  );
+
+  const sitemapPath = path.join(sitemapDir, `sitemap_${seasonCode}.xml`);
+  await fs.writeFile(sitemapPath, xml, 'utf-8');
+
+  winston.info(`Sitemap generated for ${seasonCode} at ${sitemapPath}`);
+}
+
+async function generateSitemapIndex(): Promise<void> {
+  const sitemapIndexDir = path.join(STATIC_FILE_DIR, 'sitemaps');
+  await fs.mkdir(sitemapIndexDir, { recursive: true });
+
+  const sitemapFiles = await fs.readdir(sitemapIndexDir);
+  const sitemapUrls = sitemapFiles
+    .filter((file) => file.startsWith('sitemap_') && file.endsWith('.xml'))
+    .map((file) => `https://coursetable.com/static/sitemaps/${file}`);
+
+  const links = sitemapUrls.map((url) => ({ url }));
+
+  const indexStream = new SitemapIndexStream();
+
+  for (const link of links) indexStream.write(link);
+
+  indexStream.end();
+
+  const indexXml = await streamToPromise(indexStream).then((data: Buffer) =>
+    data.toString(),
+  );
+
+  const sitemapIndexPath = path.join(sitemapIndexDir, 'sitemap_index.xml');
+  await fs.writeFile(sitemapIndexPath, indexXml, 'utf-8');
+
+  winston.info(`Sitemap index generated at ${sitemapIndexPath}`);
+}
+
 async function fetchData(
   seasonCode: string,
   type: 'evals' | 'public',
   overwrite: boolean,
-) {
+): Promise<void> {
   // Support two versions of the frontend.
   // TODO: remove the legacy format and rename catalogs-v2 to catalogs
   const filePath = `${STATIC_FILE_DIR}/catalogs/${type}/${seasonCode}.json`;
   const v2FilePath = `${STATIC_FILE_DIR}/catalogs-v2/${type}/${seasonCode}.json`;
+  const sitemapFilePath = `${STATIC_FILE_DIR}/sitemaps/sitemap_${seasonCode}.xml`;
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   await fs.mkdir(path.dirname(v2FilePath), { recursive: true });
-  if (!overwrite && (await exists(filePath)) && (await exists(v2FilePath))) {
+  if (
+    !overwrite &&
+    (await exists(filePath)) &&
+    (await exists(v2FilePath)) &&
+    (await exists(sitemapFilePath))
+  ) {
     winston.info(`Skipping ${type} data for ${seasonCode}`);
     return;
   }
@@ -119,69 +183,21 @@ async function fetchData(
     winston.info(
       `Fetched ${type} data for ${seasonCode}; n=${data.listings.length}`,
     );
+
+    // Generate the season sitemap
+    if (type === 'public') {
+      const courses = (data.listings as CatalogBySeasonQuery['listings']).map(
+        transformListingToSitemapListing,
+      );
+      await generateSeasonSitemap(seasonCode, courses);
+    }
   } catch (err) {
     winston.error(`Error fetching ${type} data for ${seasonCode}: ${err}`);
   }
 }
 
-function transformListingToSitemapListing(
-  listing: CatalogBySeasonQuery['listings'][number],
-): SitemapLising {
-  return {
-    crn: String(listing.crn),
-  };
-}
-
-async function generateSeasonSitemap(
-  seasonCode: string,
-  courses: SitemapLising[],
-): Promise<string> {
-  const sitemapDir = path.join(STATIC_FILE_DIR, 'sitemaps');
-  await fs.mkdir(sitemapDir, { recursive: true });
-
-  const links = courses.map((course) => ({
-    url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
-    priority: 0.8,
-  }));
-
-  const stream = new SitemapStream({ hostname: 'https://coursetable.com' });
-  const xml = await streamToPromise(Readable.from(links).pipe(stream)).then(
-    (data: Buffer) => data.toString(),
-  );
-
-  const sitemapPath = path.join(sitemapDir, `sitemap_${seasonCode}.xml`);
-  await fs.writeFile(sitemapPath, xml, 'utf-8');
-
-  winston.info(`Sitemap generated for ${seasonCode} at ${sitemapPath}`);
-  return `https://coursetable.com/static/sitemaps/sitemap_${seasonCode}.xml`;
-}
-
-async function generateSitemapIndex(sitemapUrls: string[]): Promise<void> {
-  const sitemapIndexDir = path.join(STATIC_FILE_DIR, 'sitemaps');
-  await fs.mkdir(sitemapIndexDir, { recursive: true });
-
-  const links = sitemapUrls.map((url) => ({ url }));
-
-  const indexStream = new SitemapIndexStream();
-
-  for (const link of links) {
-    indexStream.write(link);
-  }
-  indexStream.end();
-
-  const indexXml = await streamToPromise(indexStream).then((data: Buffer) =>
-    data.toString(),
-  );
-
-  const sitemapIndexPath = path.join(sitemapIndexDir, 'sitemap_index.xml');
-  await fs.writeFile(sitemapIndexPath, indexXml, 'utf-8');
-
-  winston.info(`Sitemap index generated at ${sitemapIndexPath}`);
-}
-
 export async function fetchCatalog(overwrite: boolean) {
   let seasons: string[] = [];
-  const sitemapUrls: string[] = [];
 
   try {
     seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
@@ -220,18 +236,6 @@ export async function fetchCatalog(overwrite: boolean) {
     ),
   );
   await Promise.all(processSeasons);
-
-  for (const seasonCode of seasons) {
-    try {
-      const sdk = getSdk(graphqlClient);
-      const data = await sdk.catalogBySeason({ season: seasonCode });
-      const courses = data.listings.map(transformListingToSitemapListing);
-      const sitemapUrl = await generateSeasonSitemap(seasonCode, courses);
-      sitemapUrls.push(sitemapUrl);
-    } catch (err) {
-      winston.error(`Error generating sitemap for ${seasonCode}: ${err}`);
-    }
-  }
-
-  await generateSitemapIndex(sitemapUrls);
+  winston.info('Finished generating season sitemaps');
+  await generateSitemapIndex();
 }
