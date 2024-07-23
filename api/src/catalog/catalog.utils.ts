@@ -125,7 +125,7 @@ async function generateSitemapIndex(): Promise<void> {
   const sitemapFiles = await fs.readdir(SITEMAP_DIR);
   const sitemapUrls = sitemapFiles
     .filter((file) => file.startsWith('sitemap_') && file.endsWith('.xml'))
-    .map((file) => `https://coursetable.com/static/sitemaps/${file}`);
+    .map((file) => `https://api.coursetable.com/api/sitemaps/${file}`);
 
   const links = sitemapUrls.map((url) => ({ url }));
 
