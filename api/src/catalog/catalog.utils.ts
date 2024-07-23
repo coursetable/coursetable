@@ -135,7 +135,7 @@ function transformListingToSitemapListing(
 async function generateSeasonSitemap(
   seasonCode: string,
   courses: SitemapLising[],
-): Promise<void> {
+): Promise<string> {
   const sitemapDir = path.join(STATIC_FILE_DIR, 'sitemaps');
   await fs.mkdir(sitemapDir, { recursive: true });
 
@@ -153,10 +153,36 @@ async function generateSeasonSitemap(
   await fs.writeFile(sitemapPath, xml, 'utf-8');
 
   winston.info(`Sitemap generated for ${seasonCode} at ${sitemapPath}`);
+  return `https://coursetable.com/static/sitemaps/sitemap_${seasonCode}.xml`;
 }
 
+async function generateSitemapIndex(sitemapUrls: string[]): Promise<void> {
+  const sitemapIndexDir = path.join(STATIC_FILE_DIR, 'sitemaps');
+  await fs.mkdir(sitemapIndexDir, { recursive: true });
+
+  const links = sitemapUrls.map((url) => ({ url }));
+
+  const stream = new SitemapStream({ hostname: 'https://coursetable.com' });
+  const indexStream = new SitemapIndexStream();
+
+  for (const link of links) 
+    indexStream.write(link);
+  
+  indexStream.end();
+
+  const indexXml = await streamToPromise(indexStream).then((data: Buffer) =>
+    data.toString(),
+  );
+
+  const sitemapIndexPath = path.join(sitemapIndexDir, 'sitemap_index.xml');
+  await fs.writeFile(sitemapIndexPath, indexXml, 'utf-8');
+
+  winston.info(`Sitemap index generated at ${sitemapIndexPath}`);
+}
 export async function fetchCatalog(overwrite: boolean) {
   let seasons: string[] = [];
+  const sitemapUrls: string[] = [];
+
   try {
     seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
       (x) => x.season_code,
@@ -200,9 +226,12 @@ export async function fetchCatalog(overwrite: boolean) {
       const sdk = getSdk(graphqlClient);
       const data = await sdk.catalogBySeason({ season: seasonCode });
       const courses = data.listings.map(transformListingToSitemapListing);
-      await generateSeasonSitemap(seasonCode, courses);
+      const sitemapUrl = await generateSeasonSitemap(seasonCode, courses);
+      sitemapUrls.push(sitemapUrl);
     } catch (err) {
       winston.error(`Error generating sitemap for ${seasonCode}: ${err}`);
     }
   }
+
+  await generateSitemapIndex(sitemapUrls);
 }
