@@ -101,8 +101,7 @@ async function generateSeasonSitemap(
   seasonCode: string,
   courses: SitemapListing[],
 ): Promise<void> {
-  const sitemapDir = SITEMAP_DIR;
-  await fs.mkdir(sitemapDir, { recursive: true });
+  await fs.mkdir(SITEMAP_DIR, { recursive: true });
 
   const links = courses.map((course: SitemapListing) => ({
     url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
@@ -114,17 +113,16 @@ async function generateSeasonSitemap(
     (data: Buffer) => data.toString(),
   );
 
-  const sitemapPath = path.join(sitemapDir, `sitemap_${seasonCode}.xml`);
+  const sitemapPath = path.join(SITEMAP_DIR, `sitemap_${seasonCode}.xml`);
   await fs.writeFile(sitemapPath, xml, 'utf-8');
 
   winston.info(`Sitemap generated for ${seasonCode} at ${sitemapPath}`);
 }
 
 async function generateSitemapIndex(): Promise<void> {
-  const sitemapIndexDir = SITEMAP_DIR;
-  await fs.mkdir(sitemapIndexDir, { recursive: true });
+  await fs.mkdir(SITEMAP_DIR, { recursive: true });
 
-  const sitemapFiles = await fs.readdir(sitemapIndexDir);
+  const sitemapFiles = await fs.readdir(SITEMAP_DIR);
   const sitemapUrls = sitemapFiles
     .filter((file) => file.startsWith('sitemap_') && file.endsWith('.xml'))
     .map((file) => `https://coursetable.com/static/sitemaps/${file}`);
@@ -141,7 +139,7 @@ async function generateSitemapIndex(): Promise<void> {
     data.toString(),
   );
 
-  const sitemapIndexPath = path.join(sitemapIndexDir, 'sitemap_index.xml');
+  const sitemapIndexPath = path.join(SITEMAP_DIR, 'sitemap_index.xml');
   await fs.writeFile(sitemapIndexPath, indexXml, 'utf-8');
 
   winston.info(`Sitemap index generated at ${sitemapIndexPath}`);
