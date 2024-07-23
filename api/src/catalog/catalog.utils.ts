@@ -157,17 +157,17 @@ async function generateSeasonSitemap(
 }
 
 async function generateSitemapIndex(sitemapUrls: string[]): Promise<void> {
+  winston.info('Generating sitemap index');
   const sitemapIndexDir = path.join(STATIC_FILE_DIR, 'sitemaps');
   await fs.mkdir(sitemapIndexDir, { recursive: true });
 
   const links = sitemapUrls.map((url) => ({ url }));
 
-  const stream = new SitemapStream({ hostname: 'https://coursetable.com' });
   const indexStream = new SitemapIndexStream();
 
-  for (const link of links) 
+  for (const link of links) {
     indexStream.write(link);
-  
+  }
   indexStream.end();
 
   const indexXml = await streamToPromise(indexStream).then((data: Buffer) =>
@@ -179,6 +179,7 @@ async function generateSitemapIndex(sitemapUrls: string[]): Promise<void> {
 
   winston.info(`Sitemap index generated at ${sitemapIndexPath}`);
 }
+
 export async function fetchCatalog(overwrite: boolean) {
   let seasons: string[] = [];
   const sitemapUrls: string[] = [];
