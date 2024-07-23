@@ -249,7 +249,14 @@ function CourseModal() {
                       <React.Fragment key={l.crn}>
                         {i > 0 && ' • '}
                         {l.crn === listing.crn ? (
-                          l.course_code
+                          // Make current listing appear more important in case
+                          // of cross-listings; otherwise other links are
+                          // underlined and are more prominent than this one
+                          listing.course.listings.length > 1 ? (
+                            <b>{l.course_code}</b>
+                          ) : (
+                            l.course_code
+                          )
                         ) : (
                           <Link
                             className={styles.crossListingLink}
