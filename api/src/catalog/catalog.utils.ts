@@ -8,7 +8,7 @@ import {
   type CatalogBySeasonQuery,
   type EvalsBySeasonQuery,
 } from './catalog.queries.js';
-import { STATIC_FILE_DIR, graphqlClient } from '../config.js';
+import { STATIC_FILE_DIR, SITEMAP_DIR, graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
 interface SitemapListing {
@@ -101,7 +101,7 @@ async function generateSeasonSitemap(
   seasonCode: string,
   courses: SitemapListing[],
 ): Promise<void> {
-  const sitemapDir = path.join(STATIC_FILE_DIR, 'sitemaps');
+  const sitemapDir = SITEMAP_DIR;
   await fs.mkdir(sitemapDir, { recursive: true });
 
   const links = courses.map((course: SitemapListing) => ({
@@ -121,7 +121,7 @@ async function generateSeasonSitemap(
 }
 
 async function generateSitemapIndex(): Promise<void> {
-  const sitemapIndexDir = path.join(STATIC_FILE_DIR, 'sitemaps');
+  const sitemapIndexDir = SITEMAP_DIR;
   await fs.mkdir(sitemapIndexDir, { recursive: true });
 
   const sitemapFiles = await fs.readdir(sitemapIndexDir);
