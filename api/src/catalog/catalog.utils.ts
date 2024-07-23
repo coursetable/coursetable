@@ -137,7 +137,7 @@ async function generateSitemapIndex(): Promise<void> {
 
   indexStream.end();
 
-  const indexXml = await streamToPromise(indexStream).then((data: Buffer) =>
+  const indexXml = await streamToPromise(indexStream).then((data) =>
     data.toString(),
   );
 
