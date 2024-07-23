@@ -1,14 +1,19 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import { Readable } from 'node:stream';
+import { SitemapStream, streamToPromise, SitemapIndexStream } from 'sitemap';
 import {
   getSdk,
   type CatalogBySeasonQuery,
   type EvalsBySeasonQuery,
 } from './catalog.queries.js';
-import { STATIC_FILE_DIR, graphqlClient } from '../config.js';
+import { STATIC_FILE_DIR, SITEMAP_DIR, graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
+interface SitemapListing {
+  crn: string;
+}
 /**
  * This is the legacy "flat" data format we used. This shape seems to be easier
  * to work with, and for the purpose of API compatibility we "massage" the GQL
@@ -84,18 +89,80 @@ const exists = (p: string) =>
     () => false,
   );
 
+function transformListingToSitemapListing(
+  listing: CatalogBySeasonQuery['listings'][number],
+): SitemapListing {
+  return {
+    crn: String(listing.crn),
+  };
+}
+
+async function generateSeasonSitemap(
+  seasonCode: string,
+  courses: SitemapListing[],
+): Promise<void> {
+  await fs.mkdir(SITEMAP_DIR, { recursive: true });
+
+  const links = courses.map((course: SitemapListing) => ({
+    url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
+    priority: 0.8,
+  }));
+
+  const stream = new SitemapStream({ hostname: 'https://coursetable.com' });
+  const xml = await streamToPromise(Readable.from(links).pipe(stream)).then(
+    (data: Buffer) => data.toString(),
+  );
+
+  const sitemapPath = path.join(SITEMAP_DIR, `sitemap_${seasonCode}.xml`);
+  await fs.writeFile(sitemapPath, xml, 'utf-8');
+
+  winston.info(`Sitemap generated for ${seasonCode} at ${sitemapPath}`);
+}
+
+async function generateSitemapIndex(): Promise<void> {
+  await fs.mkdir(SITEMAP_DIR, { recursive: true });
+
+  const sitemapFiles = await fs.readdir(SITEMAP_DIR);
+  const sitemapUrls = sitemapFiles
+    .filter((file) => file.startsWith('sitemap_') && file.endsWith('.xml'))
+    .map((file) => `https://coursetable.com/static/sitemaps/${file}`);
+
+  const links = sitemapUrls.map((url) => ({ url }));
+
+  const indexStream = new SitemapIndexStream();
+
+  for (const link of links) indexStream.write(link);
+
+  indexStream.end();
+
+  const indexXml = await streamToPromise(indexStream).then((data) =>
+    data.toString(),
+  );
+
+  const sitemapIndexPath = path.join(SITEMAP_DIR, 'sitemap_index.xml');
+  await fs.writeFile(sitemapIndexPath, indexXml, 'utf-8');
+
+  winston.info(`Sitemap index generated at ${sitemapIndexPath}`);
+}
+
 async function fetchData(
   seasonCode: string,
   type: 'evals' | 'public',
   overwrite: boolean,
-) {
+): Promise<void> {
   // Support two versions of the frontend.
   // TODO: remove the legacy format and rename catalogs-v2 to catalogs
   const filePath = `${STATIC_FILE_DIR}/catalogs/${type}/${seasonCode}.json`;
   const v2FilePath = `${STATIC_FILE_DIR}/catalogs-v2/${type}/${seasonCode}.json`;
+  const sitemapFilePath = `${STATIC_FILE_DIR}/sitemaps/sitemap_${seasonCode}.xml`;
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   await fs.mkdir(path.dirname(v2FilePath), { recursive: true });
-  if (!overwrite && (await exists(filePath)) && (await exists(v2FilePath))) {
+  if (
+    !overwrite &&
+    (await exists(filePath)) &&
+    (await exists(v2FilePath)) &&
+    (await exists(sitemapFilePath))
+  ) {
     winston.info(`Skipping ${type} data for ${seasonCode}`);
     return;
   }
@@ -114,6 +181,14 @@ async function fetchData(
     winston.info(
       `Fetched ${type} data for ${seasonCode}; n=${data.listings.length}`,
     );
+
+    // Generate the season sitemap
+    if (type === 'public') {
+      const courses = (data.listings as CatalogBySeasonQuery['listings']).map(
+        transformListingToSitemapListing,
+      );
+      await generateSeasonSitemap(seasonCode, courses);
+    }
   } catch (err) {
     winston.error(`Error fetching ${type} data for ${seasonCode}: ${err}`);
   }
@@ -121,6 +196,7 @@ async function fetchData(
 
 export async function fetchCatalog(overwrite: boolean) {
   let seasons: string[] = [];
+
   try {
     seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
       (x) => x.season_code,
@@ -158,4 +234,6 @@ export async function fetchCatalog(overwrite: boolean) {
     ),
   );
   await Promise.all(processSeasons);
+  winston.info('Finished generating season sitemaps');
+  await generateSitemapIndex();
 }

@@ -70,6 +70,7 @@ export const { FERRY_SECRET } = process.env;
 // Location of statically generated files. This is relative
 // to the working directory, which is api.
 export const STATIC_FILE_DIR = './static';
+export const SITEMAP_DIR = `${STATIC_FILE_DIR}/sitemaps`;
 
 export const SENTRY_DSN = getEnv('SENTRY_DSN');
 
