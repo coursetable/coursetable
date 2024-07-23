@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { Readable } from 'node:stream';
-import { SitemapStream, streamToPromise } from 'sitemap';
+import { SitemapStream, streamToPromise, SitemapIndexStream } from 'sitemap';
 import {
   getSdk,
   type CatalogBySeasonQuery,
@@ -157,7 +157,6 @@ async function generateSeasonSitemap(
 }
 
 async function generateSitemapIndex(sitemapUrls: string[]): Promise<void> {
-  winston.info('Generating sitemap index');
   const sitemapIndexDir = path.join(STATIC_FILE_DIR, 'sitemaps');
   await fs.mkdir(sitemapIndexDir, { recursive: true });
 
