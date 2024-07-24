@@ -12,7 +12,7 @@ type ReleaseNote = {
 const releaseNotes: ReleaseNote[] = [
   // Add more releases below
   {
-    title: 'Optimizing Bot Traffic Handling for OG Tags: a Long Journey',
+    title: 'Optimizing Bot Traffic Handling for Link Previews: a Long Journey',
     summary:
       'Our recent effort to make social media links display a preview card',
     path: '/releases/link-preview',
