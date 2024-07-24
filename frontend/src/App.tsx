@@ -35,6 +35,9 @@ const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
+const LinkPreview = suspended(
+  () => import('./pages/releases/link-preview.mdx'),
+);
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function AuthenticatedRoutes() {
@@ -106,11 +109,20 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={6}
+        id={7}
       >
-        {/* CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
-        During this time, the site will be unavailable. We apologize for any
-        inconvenience. */}
+        Read our semi-technical dive into{' '}
+        <a
+          href="/releases/link-preview"
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          }}
+        >
+          how we've optimized link previews
+        </a>
+        !
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -138,6 +150,7 @@ function App() {
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
+        <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />

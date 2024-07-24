@@ -10,6 +10,14 @@ type ReleaseNote = {
 };
 
 const releaseNotes: ReleaseNote[] = [
+  // Add more releases below
+  {
+    title: 'Optimizing Bot Traffic Handling for Link Previews: a Long Journey',
+    summary:
+      'Our recent effort to make social media links display a preview card',
+    path: '/releases/link-preview',
+    date: '2024-07-24',
+  },
   {
     title: 'Quist Release',
     summary: 'Introducing Quist: our new language for advanced queries.',
@@ -23,7 +31,6 @@ const releaseNotes: ReleaseNote[] = [
     path: '/releases/fall23',
     date: '2024-01-21',
   },
-  // Add more releases here
 ];
 
 // Sort release notes by date, newest first
