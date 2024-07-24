@@ -7,11 +7,13 @@ import {
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
+import { MDXProvider } from '@mdx-js/react';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ErrorPage from './components/ErrorPage';
+import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
@@ -70,7 +72,9 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
               <WorksheetProvider>
                 <SearchProvider>
                   <ThemeProvider>
-                    <div id="base">{children}</div>
+                    <MDXProvider components={components}>
+                      <div id="base">{children}</div>
+                    </MDXProvider>
                   </ThemeProvider>
                 </SearchProvider>
               </WorksheetProvider>
