@@ -111,7 +111,7 @@ function App() {
         // Don't remove this wrapper.
         id={7}
       >
-        Read our semi-techinical dive into{' '}
+        Read our semi-technical dive into{' '}
         <a
           href="/releases/link-preview"
           style={{
