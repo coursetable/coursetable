@@ -25,6 +25,17 @@
   font-size: large;
 }
 
+.container img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+.container p img {
+  display: inline-block;
+}
+
 @media (width < 768px) {
   .container {
     width: 80vw;
