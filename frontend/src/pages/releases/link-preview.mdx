@@ -30,7 +30,7 @@ Last semester, [we gave each course a unique URL](https://coursetable.com/releas
 
 This means others still cannot understand what you are talking about, until either you explain further, or they click on the link!
 
-Understanding why it behaves like this, and getting some idea about how to improve, requires some knowledge about the technical details.
+To understand why it behaves like this, and figure out how to potentially improve this behavior, we need some knowledge about the technical details.
 
 ## Background
 
@@ -76,9 +76,9 @@ You can check the index.html in [our GitHub repo](https://github.com/coursetable
 
 Once the JavaScript loads, the user's browser starts making further requests to API endpoints at `api.coursetable.com`. This is our backend server that handles things like adding friends, storing worksheets, sending course data, etc. Unlike Vercel, it can react to whatever request in whichever way we want.
 
-So now we are in a deadlock situation.
+So now we are at an impasse.
 
-- Crawlers want nicely rendered HTML containing all data it needs without running any JavaScript.
+- Crawlers want nicely rendered HTML containing all the data they need without running any JavaScript.
 - Vercel only serves HTML that we uploaded; it can't generate HTML on the fly when a request comes in (that is called server-side rendering, or SSR—which our service doesn't provide).
 - We only ever upload one HTML file, because that's how CSR works. And even if we do generate one HTML for every single course, the problem remains that course-modal is a query string, and Vercel can't serve different HTML based on the query.
 - If Vercel doesn't want to dynamically generate HTML, we can modify the HTML after-the-fact using React in the user's browser, but crawlers don't run JavaScript.
@@ -92,7 +92,7 @@ So it seems no party is willing to collaborate and play nice. What gives?
   width={600}
 />
 
-Aside: You might ask, why don't we just change the URL to `https://coursetable.com/catalog/202403-10471`, so Vercel can serve the `catalog/202403-12309.html` file? Well there are still two problems: (1) there are probably hundreds of thousands of courses growing by several thousand every year; (2) course modals can be shown on other pages too, such as by clicking a course in your worksheet, which means… we have to have another set of HTML files that get served for `https://coursetable.com/worksheet/202403-10471`. That's a lot of HTML. We can't build so much HTML in reasonable time, and Vercel definitely has an upper bound to how much static assets we can store in it. This option was never considered or experimented with, but we did built infrastructure to statically pregenerate HTML for every URL at [#1536](https://github.com/coursetable/coursetable/pull/1536) (which Sida requested Alex's review on last year and he still hasn't…), in case it's useful for some future use case.
+Aside: You might ask, why don't we just change the URL to `https://coursetable.com/catalog/202403-10471`, so Vercel can serve the `catalog/202403-12309.html` file? Well there are still two problems: (1) there are hundreds of thousands of courses growing by several thousand every year; (2) course modals can be shown on other pages too, such as by clicking a course in your worksheet, which means… we have to have another set of HTML files that get served for `https://coursetable.com/worksheet/202403-10471`. That's a lot of HTML. We can't build so much HTML in reasonable time, and Vercel definitely has an upper bound to how much static assets we can store in it. This option was never considered or experimented with, but we did built infrastructure to statically pregenerate HTML for every URL at [#1536](https://github.com/coursetable/coursetable/pull/1536) (which Sida requested Alex's review on last year and he still hasn't…), in case it's useful for some future use case.
 
 ## Prelude: public data access
 
@@ -230,7 +230,7 @@ As promised, we are including all these funny Slack exchanges in this post, just
 We don't plan to stop here. We have several improvements in this vein in our todo list:
 
 - Currently, the preview only contains plaintext, which is straightforward to retrieve. We want to dynamically create images to show up in the preview, similar to how the image preview for a tweet is the tweet itself. We still want to figure out exactly what that image should be—whether it's purely text-based, a collage of course-related images, or a combination of both—if you have any thoughts, [let us know](https://feedback.coursetable.com/feature-requests/p/social-media-preview-image)!
-- We want to serve _real_ HTML, rendered from our frontend code, instead of a fake HTML file that only contains head metadata. This may be important because we are soon allowing search engines to index each course, and the more information we have, the more discoverable the course pages are.
+- We want to serve _real_ HTML, rendered from our frontend code, instead of a fake HTML file that only contains head metadata. This may be important because we are soon allowing search engines to index each course ([#1709](https://github.com/coursetable/coursetable/pull/1709)), and the more information we have, the more discoverable the course pages are.
 - We also plan to further enhance our general handling of metadata to include information such as last modified ([#1619](https://github.com/coursetable/coursetable/issues/1619)), professor(s), related courses, and other relevant data, which is useful for search engine display.
 
 This experience has not only improved how CourseTable links appear on social media but also enables CourseTable courses to be indexed by search engines. For us, it provides valuable insights into our tech setup and experience for handling similar issues in the future. It is a great example of why we think CourseTable is so great. Through collaboration, creativity, and perseverance, we have made CourseTable more robust and user-friendly than ever before. We continue to fulfill our goal of making course selection and sharing as seamless and informative as possible for all Yale students—all while keeping it completely open and free.
