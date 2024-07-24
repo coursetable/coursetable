@@ -35,6 +35,9 @@ const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
+const LinkPreview = suspended(
+  () => import('./pages/releases/link-preview.mdx'),
+);
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function AuthenticatedRoutes() {
@@ -138,6 +141,7 @@ function App() {
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
+        <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
