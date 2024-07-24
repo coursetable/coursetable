@@ -109,11 +109,20 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={6}
+        id={7}
       >
-        {/* CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
-        During this time, the site will be unavailable. We apologize for any
-        inconvenience. */}
+        Read our semi-techinical dive into{' '}
+        <a
+          href="/releases/link-preview"
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          }}
+        >
+          how we've optimized link previews
+        </a>
+        !
       </Notice>
       <Navbar />
       <SentryRoutes>
