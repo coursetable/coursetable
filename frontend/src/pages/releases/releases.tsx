@@ -12,9 +12,9 @@ type ReleaseNote = {
 const releaseNotes: ReleaseNote[] = [
   // Add more releases below
   {
-    title: 'Optimizing Bot Traffic Handling for Link Previews: a Long Journey',
+    title: 'Link preview release recap',
     summary:
-      'Our recent effort to make social media links display a preview card',
+      'Our recent effort to make social media links display a preview card.',
     path: '/releases/link-preview',
     date: '2024-07-24',
   },
