@@ -36,6 +36,13 @@
   display: inline-block;
 }
 
+.container blockquote {
+  margin-left: 1em;
+  padding-left: 1em;
+  color: var(--color-text-tertiary);
+  border-left: 2px solid var(--color-text-tertiary);
+}
+
 @media (width < 768px) {
   .container {
     width: 80vw;

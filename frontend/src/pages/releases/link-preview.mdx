@@ -1,17 +1,10 @@
-import clsx from 'clsx';
-import styles from './release-page.module.css';
-import { TextComponent } from '../../components/Typography';
-
-<div className={clsx(styles.container, 'mx-auto')}>
-<TextComponent type="secondary">
-
 # Optimizing Bot Traffic Handling for Link Previews: a Long Journey
 
 _2024-07-24_
 
 This post summarizes our recent effort to make social media links display a preview card. In the process, we gained a lot of insight about CourseTable's infrastructure setup. We will also share the paths we've explored and our eventual solution, hoping that these conclusions can help others in a similar situation.
 
-![An example link preview, showing a Discord message containing a CourseTable course link. An embed is shown, containing the course title, description, and the CourseTable logo.](/images/release_notes/link-preview/link-preview-demo.png)
+<img src="/images/release_notes/link-preview/link-preview-demo.png" alt="An example link preview, showing a Discord message containing a CourseTable course link. An embed is shown, containing the course title, description, and the CourseTable logo." width={600} />
 
 (Aside: you can't imagine how much CourseTable testing relies on AFAM classes, just because they are always at the top of the catalog)
 
@@ -25,7 +18,7 @@ CourseTable is a client-rendered site (more on this later). Any view change, suc
 
 Last semester, [we gave each course a unique URL](https://coursetable.com/releases/fall23), which looks like https://coursetable.com/catalog?course-modal=202403-10471. Opening that URL directly opens up the corresponding course information modal. This is great! However, in social media and messengers, the preview card that gets displayed alongside the link still shows information about CourseTable, not about the course (we took this screenshot after the feature is already live, but imagine the URL contains a query):
 
-![A Discord message containing a CourseTable course link. The embed shows the generic title and description for the entire site instead of being specific to a course.](/images/release_notes/link-preview/link-preview-orig.png)
+<img src="/images/release_notes/link-preview/link-preview-orig.png" alt="A Discord message containing a CourseTable course link. The embed shows the generic title and description for the entire site instead of being specific to a course." width={600} />
 
 This means others still cannot understand what you are talking about, until either you explain further, or they click on the link!
 
@@ -67,7 +60,7 @@ CourseTable is a typical client-side-rendered (CSR) application: the server only
 
 You can check the index.html in [our GitHub repo](https://github.com/coursetable/coursetable/blob/master/frontend/index.html). As you can see, it does contain the site-wide title and description metadata. Once the page loads in the browser, React then kicks in and fills in everything, such as reading the query string and replacing the default metadata with course-specific ones. However, this happens _after_ JavaScript loads; and, as far as we know, crawlers don't run JavaScript. They only read the initial HTML response.
 
-![Diagram showing CourseTable's architecture. The user's browser sends a GET request to Vercel, which returns HTML/JS/CSS. The JS then makes GET requests to the server, which returns JSON. JSON and HTML combined gets rendered in the browser and turns into the final UI.](/images/release_notes/link-preview/coursetable-arch-diagram.png)
+<img src="/images/release_notes/link-preview/coursetable-arch-diagram.png" alt="Diagram showing CourseTable's architecture. The user's browser sends a GET request to Vercel, which returns HTML/JS/CSS. The JS then makes GET requests to the server, which returns JSON. JSON and HTML combined gets rendered in the browser and turns into the final UI." width={1000} />
 
 Once the JavaScript loads, the user's browser starts making further requests to API endpoints at `api.coursetable.com`. This is our backend server that handles things like adding friends, storing worksheets, sending course data, etc. Unlike Vercel, it can react to whatever request in whichever way we want.
 
@@ -81,13 +74,13 @@ So now we are in a deadlock situation.
 
 So it seems no party is willing to collaborate and play nice. What gives?
 
-![Slack conversation between Alex and Sida. Alex proposes to generate HTML the first time it is requested, but doubts if it would still be crazy.](/images/release_notes/link-preview/slack-generate-html.png)
+<img src="/images/release_notes/link-preview/slack-generate-html.png" alt="Slack conversation between Alex and Sida. Alex proposes to generate HTML the first time it is requested, but doubts if it would still be crazy." width={600} />
 
 Aside: You might ask, why don't we just change the URL to `https://coursetable.com/catalog/202403-10471`, so Vercel can serve the `catalog/202403-12309.html` file? Well there are still two problems: (1) there are probably hundreds of thousands of courses growing by several thousand every year; (2) course modals can be shown on other pages too, such as by clicking a course in your worksheet, which means… we have to have another set of HTML files that get served for `https://coursetable.com/worksheet/202403-10471`. That's a lot of HTML. We can't build so much HTML in reasonable time, and Vercel definitely has an upper bound to how much static assets we can store in it. This option was never considered or experimented with, but we did built infrastructure to statically pregenerate HTML for every URL at [#1536](https://github.com/coursetable/coursetable/pull/1536) (which Sida requested Alex's review on last year and he still hasn't…), in case it's useful for some future use case.
 
 ## Prelude: public data access
 
-Concurrently, the team was also interested in making a public version of CourseTable that did not require a Yale login! However, due to our [currently-awesome-but-historically-contentious relationship with the Yale administration](https://www.nytimes.com/2014/01/22/nyregion/yale-students-tangle-with-university-over-yale-blue-book-website.html), we had to be very careful to not show any proprietary Yale data (i.e. reviews and ratings). This was another long and arduous process that may deserve its own blogpost at some point, but after [hundreds of commits](https://github.com/coursetable/coursetable/pull/1617), reconfiguring our [Hasura GraphQL engine](https://hasura.io/opensource/), and importantly getting the color of the blur to match our theme (thanks Tyler) ![Tyler suggesting on Discord that "Some coursetable blue/greys would look very nice"](/images/release_notes/link-preview/tyler-suggestion.png) we had it working.
+Concurrently, the team was also interested in making a public version of CourseTable that did not require a Yale login! However, due to our [currently-awesome-but-historically-contentious relationship with the Yale administration](https://www.nytimes.com/2014/01/22/nyregion/yale-students-tangle-with-university-over-yale-blue-book-website.html), we had to be very careful to not show any proprietary Yale data (i.e. reviews and ratings). This was another long and arduous process that may deserve its own blogpost at some point, but after [hundreds of commits](https://github.com/coursetable/coursetable/pull/1617), reconfiguring our [Hasura GraphQL engine](https://hasura.io/opensource/), and importantly getting the color of the blur to match our theme (thanks Tyler) <img src="/images/release_notes/link-preview/tyler-suggestion.png" alt='Tyler suggesting on Discord that "Some coursetable blue/greys would look very nice' width={300} /> we had it working.
 
 It's live right now, go tell your parents/non-Yale-friends-or-loved-ones to go to https://coursetable.com/catalog to help you choose your classes!
 
@@ -119,19 +112,19 @@ So in our long relay of request handling, is there a party that, based on the HT
 
 We said "Vercel is not smart enough to do the redirect". That's true by default because we only employ a simple CDN. But Vercel offers another service that allows us to hook into each request and do custom things: Vercel edge functions.
 
-![Slack conversation between Alex and Neil. Alex first proposes to add a serverless function so CourseTable is "able to render url previews when sending links of classes". The date was November 29th, 2023](/images/release_notes/link-preview/slack-vercel-function.png)
+<img src="/images/release_notes/link-preview/slack-vercel-function.png" alt='Slack conversation between Alex and Neil. Alex first proposes to add a serverless function so CourseTable is "able to render url previews when sending links of classes". The date was November 29th, 2023' width={800} />
 
 (Note the date, took months before serious work began)
 
 A Vercel edge function takes a request as input, runs some custom JavaScript, and emits a response or passes it forward to the CDN service. It does come at a cost: Vercel charges us based on the number of runs, the total execution time, resources used, etc. But we don't actually need that many edge function runs… right? We estimate that 95%—if not more—of our traffic come from human users and those can go through the old path of having no middleware. We just need the edge function to be revived and working when the User-Agent header contains a particular substring, so bot traffic can receive a different HTML.
 
-We didn't find much useful information in Vercel docs, partly because it's so coupled to [Next.js](https://nextjs.org/), their own React-based web framework, which we are not using, so it's hard to tell which APIs are available in bare Vercel and which are only available via Next.js. We contacted Vercel support, and after some back-and-forth, (thanks Sebastian) ![Sebastian's title, saying "Staff Customer Success Engineer at Vercel"](/images/release_notes/link-preview/sebastian.png) we reached the conclusion that it's not possible to only invoke the expensive edge function for certain user-agents—the way edge functions work is they would always get triggered _and then_ check the user-agent, realize it's not interesting and do nothing, but would still count against our quota. (If you are reading this and you believe we reached the wrong conclusion, please contact us and let us know.)
+We didn't find much useful information in Vercel docs, partly because it's so coupled to [Next.js](https://nextjs.org/), their own React-based web framework, which we are not using, so it's hard to tell which APIs are available in bare Vercel and which are only available via Next.js. We contacted Vercel support, and after some back-and-forth, (thanks Sebastian) <img src="/images/release_notes/link-preview/sebastian.png" alt='Sebastian&apos;s title, saying "Staff Customer Success Engineer at Vercel"' width={250} /> we reached the conclusion that it's not possible to only invoke the expensive edge function for certain user-agents—the way edge functions work is they would always get triggered _and then_ check the user-agent, realize it's not interesting and do nothing, but would still count against our quota. (If you are reading this and you believe we reached the wrong conclusion, please contact us and let us know.)
 
-![Slack post of Sida, saying that Alex and him have huge resentments about the state of things, because the middleware gets executed for every req to `/catalog` / `/worksheet`, but actually we only do meaningful things if it's bot traffic, so 99.9% of the middleware usage is wasted](/images/release_notes/link-preview/slack-vercel-conclusion.png)
+<img src="/images/release_notes/link-preview/slack-vercel-conclusion.png" alt="Slack post of Sida, saying that Alex and him have huge resentments about the state of things, because the middleware gets executed for every req to `/catalog` / `/worksheet`, but actually we only do meaningful things if it's bot traffic, so 99.9% of the middleware usage is wasted" width={800} />
 
 We don't really know how much Vercel traffic we are getting, but it would be _a lot_, since every time you open a course modal or go to a different one, the server would get a separate request. We don't want to risk our bill and experiment, because Yale Computer Society is not a money-printing machine.
 
-![Slack conversation between Alex and Sida. Sida says that Vercel offers 1M/mo, while Alex says we are expecting 5M/mo max, so 10M/mo would be safer.](/images/release_notes/link-preview/slack-vercel-budget.png)
+<img src="/images/release_notes/link-preview/slack-vercel-budget.png" alt="Slack conversation between Alex and Sida. Sida says that Vercel offers 1M/mo, while Alex says we are expecting 5M/mo max, so 10M/mo would be safer." width={800} />
 
 (1M as in 1M of free request quota, not 1M$)
 
@@ -139,7 +132,7 @@ We don't really know how much Vercel traffic we are getting, but it would be _a 
 
 While Alex and Sida are scratching their heads thinking it's not possible without handing money to Vercel despite them actually not doing much useful, our all-time-hero, Neil, casually pointed out another service we missed: Cloudflare!
 
-![Slack post of Neil, sharing a link to a cloudflare community discussion about redirecting search bots to another URL, and suggesting we should do this](/images/release_notes/link-preview/slack-neil-proposal.png)
+<img src="/images/release_notes/link-preview/slack-neil-proposal.png" alt="Slack post of Neil, sharing a link to a cloudflare community discussion about redirecting search bots to another URL, and suggesting we should do this" width={800} />
 
 We always painted Cloudflare as "just a DNS" that takes a URL and returns a server address. But as many of you may be aware, it is capable of doing much more, and we discovered one of the things it could do: [conditional redirects based on user-agents](https://community.cloudflare.com/t/redirct-search-engine-bots-to-another-url/423680), also completely free in our plan! This is _exactly_ what we were looking for. We all got super hyped.
 
@@ -149,7 +142,7 @@ It's not a single configuration addition, though. There were a few hiccups.
 
 Cloudflare offers two similar services, one called "Transform Rules" and one called "Redirect Rules". Confusingly, "Redirect Rules" was _not_ the one we want: crawlers refuse to follow redirects. If the server returns a [301](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/301) or [302](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/302) response, the crawler would just bail.
 
-![Screenshot of Facebook debugger console, displaying a warning that says "URL requested a HTTP redirect, but it could not be followed." for the CourseTable course URL.](/images/release_notes/link-preview/crawler-fail-redirect.png)
+<img src="/images/release_notes/link-preview/crawler-fail-redirect.png" alt='Screenshot of Facebook debugger console, displaying a warning that says "URL requested a HTTP redirect, but it could not be followed." for the CourseTable course URL.' width={1000} />
 
 Therefore, instead of asking the crawler to follow the redirection to another URL, we needed to do the redirection under the hood and pretend to the crawler that the resource (with the correct metadata) is the exact link it is crawling. "Transform Rule" turned out to be what we need, per Cloudflare's description:
 
@@ -162,23 +155,23 @@ However, we then discovered that Cloudflare transform can only be used across th
 
 We thought we had solved it. But still, the link preview showed up with the default title/description for CourseTable (from our homepage)—even for the API endpoint URL itself?! We were baffled because it means the API was correctly wired, but the query with the course information got removed. We spent a while looking for logs, but it was nowhere to be found.
 
-![Slack conversation between Alex and Sida. Sida asks why is the log empty? And then remarks "Are logs just a dream?"](/images/release_notes/link-preview/slack-finding-logs.png)
+<img src="/images/release_notes/link-preview/slack-finding-logs.png" alt='Slack conversation between Alex and Sida. Sida asks why is the log empty? And then remarks "Are logs just a dream?"' width={800} />
 
 It was hard to test this in a browser too, because browsers set the user agent by default. Nevertheless, it's at least possible to [set the user agent string manually in Chrome](https://developer.chrome.com/docs/devtools/device-mode/override-user-agent). So we added `facebook` to our user agent and ran manual tests. Finally, through lots of manual inspection, we figured out that page rules actually drop queries by default: we have to use a wildcard to preserve everything that comes afterwards, like this: `coursetable.com/link-preview* -> https://api.coursetable.com/api/link-preview$1`
 
 Finally, 5 months since the idea was first brought up, everything seemed to work!
 
-![Slack post of Sida, saying "OHHHHHH" and posting a CourseTable course link](/images/release_notes/link-preview/slack-success.png)
+<img src="/images/release_notes/link-preview/slack-success.png" alt='Slack post of Sida, saying "OHHHHHH" and posting a CourseTable course link' width={600} />
 
 One final struggle was figuring out the right user agent strings to search for. We discovered that Cloudflare rule expressions match strings case-sensitively, and [fancy matching requires business plans](https://developers.cloudflare.com/ruleset-engine/rules-language/values/#case-sensitivity-and-regular-expressions-in-values) :( So we had to actually search for the user agent strings for every bot, because in one camp we have `facebook`, `pinterest`, and `discord`, while in the other camp we have `LinkedIn`, `Twitter`, and `WhatsApp`. It was a quick struggle though, and we cobbled together something working on all platforms we cared about.
 
 Above all, it's all FREE, so we have more budget to spend on funsies:
 
-![Slack post of Alex saying "now lets use that extra money we saved for our BARCELONA DINNER"](/images/release_notes/link-preview/slack-saved-money.png)
+<img src="/images/release_notes/link-preview/slack-saved-money.png" alt='Slack post of Alex saying "now lets use that extra money we saved for our BARCELONA DINNER"' width={600} />
 
 As promised, we are including all these funny Slack exchanges in this post, just to show you what we have been through:
 
-![Slack post of Alex, saying "all of these slack messages can be included in the blog when we finally get this"](/images/release_notes/link-preview/slack-slack-message.png)
+<img src="/images/release_notes/link-preview/slack-slack-message.png" alt='Slack post of Alex, saying "all of these slack messages can be included in the blog when we finally get this"' width={800} />
 
 ## Further improvements
 
@@ -192,9 +185,6 @@ This experience has not only improved how CourseTable links appear on social med
 
 If you enjoyed this blog post and/or are a regular user of CourseTable, consider supporting our work through [buymeacoffee](https://www.buymeacoffee.com/coursetable)! And if you found this post to be _thrilling_ and aligned with your interests, consider applying to join the team next fall! We are always looking for talented and passionate individuals who want to dedicate time to working on a project that virtually all their peers use.
 
-![Conversation of Alex, Sida, and Neil. Sida says he's going to merge the PR because "Can't test it except in prod". Alex says this should all be in a semi-technical blog post summarizing the ups and downs.](/images/release_notes/link-preview/slack-merge-pr.png)
+<img src="/images/release_notes/link-preview/slack-merge-pr.png" alt="Conversation of Alex, Sida, and Neil. Sida says he's going to merge the PR because &quot;Can't test it except in prod&quot;. Alex says this should all be in a semi-technical blog post summarizing the ups and downs." width={800} />
 
 ---
-
-</TextComponent>
-</div>
