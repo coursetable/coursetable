@@ -106,9 +106,6 @@ export async function generateLinkPreview(
 ): Promise<void> {
   // log url accessed
   winston.info(
-    `Preview request sent to url: ${req.url} by ${req.headers['user-agent'] ?? 'unknown'}`,
-  );
-  winston.info(
     `Generating link preview for ${String(req.query['course-modal'] ?? req.query.url ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
   );
   let metadata = defaultMetadata;
