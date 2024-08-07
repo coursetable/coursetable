@@ -13,7 +13,9 @@ import winston from '../logging/winston.js';
 
 interface SitemapListing {
   crn: string;
+  lastmod: string;
 }
+
 /**
  * This is the legacy "flat" data format we used. This shape seems to be easier
  * to work with, and for the purpose of API compatibility we "massage" the GQL
@@ -92,8 +94,16 @@ const exists = (p: string) =>
 function transformListingToSitemapListing(
   listing: CatalogBySeasonQuery['listings'][number],
 ): SitemapListing {
+  const year = parseInt(listing.season_code.substring(0, 4), 10);
+  const season = listing.season_code.substring(4);
+
+  let lastmod = '';
+  if (season === '03' || season === '02') lastmod = `${year}-01-01`;
+  else lastmod = `${year - 1}-10-01`;
+
   return {
     crn: String(listing.crn),
+    lastmod,
   };
 }
 
@@ -105,6 +115,7 @@ async function generateSeasonSitemap(
 
   const links = courses.map((course: SitemapListing) => ({
     url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
+    lastmod: course.lastmod,
     priority: 0.8,
   }));
 
