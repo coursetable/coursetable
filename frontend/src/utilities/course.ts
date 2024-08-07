@@ -5,6 +5,7 @@ import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
   UserWorksheets,
+  UserWishlist,
   CatalogListing,
 } from '../queries/api';
 import {
@@ -39,6 +40,15 @@ export function isInWorksheet(
       (course) => course.crn === crn,
     )
   );
+}
+
+export function isInWishlist(
+  allCourseCodes: string[],
+  wishlist: UserWishlist | undefined,
+): boolean {
+  if (!wishlist || allCourseCodes.length === 0) return false;
+
+  return wishlist.some((course) => allCourseCodes.includes(course.courseCode));
 }
 
 export function toSeasonString(seasonCode: Season): string {

@@ -166,7 +166,9 @@ export function toggleBookmark(body: {
           toast.error('You have already added this class to your worksheet');
           return true;
         case 'NOT_BOOKMARKED':
-          toast.error('You have already remove this class from your worksheet');
+          toast.error(
+            'You have already removed this class from your worksheet',
+          );
           return true;
         default:
           return false;
@@ -175,6 +177,34 @@ export function toggleBookmark(body: {
     breadcrumb: {
       category: 'worksheet',
       message: 'Updating worksheet',
+    },
+  });
+}
+
+export async function toggleWish(body: {
+  action: 'add' | 'remove';
+  courseCode: string;
+}): Promise<boolean> {
+  return await fetchAPI('/user/toggleWish', {
+    body,
+    handleErrorCode(err) {
+      switch (err) {
+        // These errors can be triggered if the user clicks the button twice
+        // in a row
+        // TODO: we should debounce the request instead
+        case 'ALREADY_WISHLISTED':
+          toast.error('You have already added this class to your wishlist');
+          return true;
+        case 'NOT_WISHLISTED':
+          toast.error('You have already removed this class from your wishlist');
+          return true;
+        default:
+          return false;
+      }
+    },
+    breadcrumb: {
+      category: 'wishlist',
+      message: 'Updating wishlist',
     },
   });
 }
@@ -387,6 +417,32 @@ export async function fetchUserWorksheets() {
         course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
     }
   }
+  return res;
+}
+
+const userWishlistSchema = z.array(
+  z.object({
+    courseCode: z.string(),
+  }),
+);
+
+export type UserWishlist = { courseCode: string }[];
+
+export async function fetchUserWishlist() {
+  const res = await fetchAPI('/user/wishlist', {
+    schema: z.object({
+      netId: netIdSchema,
+      evaluationsEnabled: z.union([z.boolean(), z.null()]),
+      year: z.union([z.number(), z.null()]),
+      school: z.union([z.string(), z.null()]),
+      data: userWishlistSchema,
+    }),
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching user wishlist',
+    },
+  });
+  if (!res) return undefined;
   return res;
 }
 

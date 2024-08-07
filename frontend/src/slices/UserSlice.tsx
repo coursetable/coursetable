@@ -4,10 +4,12 @@ import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
   fetchFriendReqs,
+  fetchUserWishlist,
   addFriend as baseAddFriend,
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
   type UserWorksheets,
+  type UserWishlist,
   type FriendRecord,
   type FriendRequests,
 } from '../queries/api';
@@ -18,6 +20,7 @@ interface UserState {
   user: {
     netId?: NetId;
     worksheets?: UserWorksheets;
+    wishlist?: UserWishlist;
     hasEvals?: boolean;
     year?: number;
     school?: string;
@@ -44,6 +47,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   user: {
     netId: undefined,
     worksheets: undefined,
+    wishlist: undefined,
     hasEvals: undefined,
     year: undefined,
     school: undefined,
@@ -51,16 +55,19 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
     friends: undefined,
   },
   async userRefresh() {
-    const fetchedUser = await fetchUserWorksheets();
-    if (fetchedUser) {
+    // TODO: combine these two API calls into one, if possible.
+    const fetchedUserWorksheets = await fetchUserWorksheets();
+    const fetchedUserWishlist = await fetchUserWishlist();
+    if (fetchedUserWorksheets) {
       set({
         user: {
           ...get().user,
-          netId: fetchedUser.netId,
-          hasEvals: fetchedUser.evaluationsEnabled ?? undefined,
-          year: fetchedUser.year ?? undefined,
-          school: fetchedUser.school ?? undefined,
-          worksheets: fetchedUser.data as UserWorksheets,
+          netId: fetchedUserWorksheets.netId,
+          hasEvals: fetchedUserWorksheets.evaluationsEnabled ?? undefined,
+          year: fetchedUserWorksheets.year ?? undefined,
+          school: fetchedUserWorksheets.school ?? undefined,
+          worksheets: fetchedUserWorksheets.data as UserWorksheets,
+          wishlist: fetchedUserWishlist?.data as UserWishlist,
         },
       });
     } else {
@@ -71,6 +78,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
           year: undefined,
           school: undefined,
           worksheets: undefined,
+          wishlist: undefined,
         },
       });
     }

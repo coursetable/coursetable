@@ -11,12 +11,15 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
+import type { WishlistCourse } from './wishlistContext';
 import type { WorksheetCourse } from './worksheetContext';
+import { UPCOMING_SEASONS } from '../config';
 import seasonsData from '../generated/seasons.json';
 import {
   fetchCatalog,
   fetchEvals,
   type UserWorksheets,
+  type UserWishlist,
   type CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
@@ -216,5 +219,42 @@ export function useWorksheetInfo(
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
   }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error]);
+  return { loading, error, data };
+}
+
+export function useWishlistInfo(wishlist: UserWishlist | undefined) {
+  const { loading, error, courses } = useCourseData(UPCOMING_SEASONS);
+
+  const data = useMemo(() => {
+    const dataReturn: WishlistCourse[] = [];
+    if (!wishlist) return [];
+    if (loading || error) return [];
+
+    for (const { courseCode } of wishlist) {
+      const upcomingListings: CatalogListing[] = [];
+
+      for (const seasonCode of UPCOMING_SEASONS) {
+        const seasonData = courses[seasonCode];
+        if (!seasonData) continue;
+
+        seasonData.forEach((listing) => {
+          const allListings = listing.course.listings;
+          if (allListings.some((l) => l.course_code === courseCode))
+            upcomingListings.push(listing);
+        });
+      }
+
+      dataReturn.push({
+        courseCode,
+        upcomingListings,
+      });
+    }
+
+    console.log(dataReturn);
+
+    return dataReturn.sort((a, b) =>
+      a.courseCode.localeCompare(b.courseCode, 'en-US'),
+    );
+  }, [wishlist, loading, error, courses]);
   return { loading, error, data };
 }

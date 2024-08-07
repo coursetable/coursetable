@@ -21,6 +21,7 @@ import { SearchProvider } from './contexts/searchContext';
 import { ThemeProvider } from './contexts/themeContext';
 import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
+import { WishlistProvider } from './contexts/wishlistContext';
 
 import './index.css';
 
@@ -70,13 +71,15 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
               {/* SearchProvider must be inside WorksheetProvider because the
                   former depends on the currently viewed worksheet */}
               <WorksheetProvider>
-                <SearchProvider>
-                  <ThemeProvider>
-                    <MDXProvider components={components}>
-                      <div id="base">{children}</div>
-                    </MDXProvider>
-                  </ThemeProvider>
-                </SearchProvider>
+                <WishlistProvider>
+                  <SearchProvider>
+                    <ThemeProvider>
+                      <MDXProvider components={components}>
+                        <div id="base">{children}</div>
+                      </MDXProvider>
+                    </ThemeProvider>
+                  </SearchProvider>
+                </WishlistProvider>
               </WorksheetProvider>
               <ToastContainer toastClassName="rounded" />
             </WindowDimensionsProvider>
