@@ -91,4 +91,10 @@ jobs:
 
       - name: Build and Deploy Docker containers
         working-directory: ./api
+        if: github.event_name == 'push'
         run: ./start.sh -s
+
+      - name: Build and Deploy Docker containers (Manual)
+        working-directory: ./api
+        if: github.event_name == 'workflow_dispatch'
+        run: ./start.sh -s -o

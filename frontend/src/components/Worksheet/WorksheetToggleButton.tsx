@@ -4,12 +4,13 @@ import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { MdErrorOutline } from 'react-icons/md';
 
+import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
-import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
+import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
   isInWorksheet,
@@ -29,7 +30,7 @@ function CourseConflictIcon({
   readonly modal: boolean;
   readonly worksheetNumber: number;
 }) {
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
 
   const { data } = useWorksheetInfo(
     user.worksheets,
@@ -82,7 +83,12 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  const { user, userRefresh } = useUser();
+  const { user, userRefresh } = useStore(
+    useShallow((state) => ({
+      user: state.user,
+      userRefresh: state.userRefresh,
+    })),
+  );
 
   const { worksheetNumber, worksheetOptions } = useWorksheet();
 

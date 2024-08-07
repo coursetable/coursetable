@@ -1,19 +1,21 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Helmet } from 'react-helmet';
 
+import { useShallow } from 'zustand/react/shallow';
 import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import Spinner from './components/Spinner';
 import { useTutorial } from './contexts/tutorialContext';
-import { useUser } from './contexts/userContext';
 
 // Popular pages are eagerly fetched
+import { useAuth } from './hooks/useAuth';
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
+import { useStore } from './store';
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
 
@@ -34,14 +36,56 @@ const Wishlist = suspended(() => import('./pages/Wishlist'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
+const LinkPreview = suspended(
+  () => import('./pages/releases/link-preview.mdx'),
+);
 const Tutorial = suspended(() => import('./components/Tutorial'));
+
+function AuthenticatedRoutes() {
+  useAuth();
+  const { authStatus, user } = useStore(
+    useShallow((state) => ({
+      user: state.user,
+      authStatus: state.authStatus,
+    })),
+  );
+
+  const location = useLocation();
+  const messages = {
+    '/worksheet': 'your worksheet',
+    '/graphiql': 'the GraphQL interface',
+  };
+
+  if (authStatus === 'loading') return <Spinner />;
+
+  switch (location.pathname) {
+    case '/catalog':
+      return <Outlet />;
+
+    case '/login':
+      if (authStatus === 'authenticated')
+        return <Navigate to="/catalog" replace />;
+      return <Outlet />;
+
+    case '/graphiql':
+    case '/worksheet':
+      if (user.hasEvals) return <Outlet />;
+      return (
+        <NeedsLogin
+          redirect={location.pathname}
+          message={messages[location.pathname]}
+        />
+      );
+
+    default:
+      if (authStatus === 'authenticated') return <Outlet />;
+      return <Navigate to="/login" replace />;
+  }
+}
 
 function App() {
   const location = useLocation();
-  const { authStatus, user } = useUser();
   const { isTutorialOpen } = useTutorial();
-
-  if (authStatus === 'loading') return <Spinner />;
 
   return (
     <div
@@ -66,57 +110,32 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={6}
+        id={7}
       >
-        {/* CourseTable will be undergoing maintenance today from 6-7:00 PM EDT.
-        During this time, the site will be unavailable. We apologize for any
-        inconvenience. */}
+        Read our semi-technical dive into{' '}
+        <a
+          href="/releases/link-preview"
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          }}
+        >
+          how we've optimized link previews
+        </a>
+        !
       </Notice>
       <Navbar />
       <SentryRoutes>
-        <Route
-          path="/"
-          element={
-            authStatus === 'authenticated' ? (
-              <Navigate to="/catalog" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+        <Route element={<AuthenticatedRoutes />}>
+          <Route path="/" element={<Navigate to="/catalog" replace />} />
 
-        <Route path="/catalog" element={<Search />} />
-
-        {/* Authenticated routes */}
-        <Route
-          path="/worksheet"
-          element={
-            user.hasEvals ? (
-              <Worksheet />
-            ) : (
-              <NeedsLogin redirect="/worksheet" message="worksheets" />
-            )
-          }
-        />
-        <Route
-          path="/graphiql"
-          element={
-            user.hasEvals ? (
-              <Graphiql />
-            ) : (
-              <NeedsLogin
-                redirect="/graphiql"
-                message="the GraphQL interface"
-              />
-            )
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            authStatus === 'authenticated' ? <Navigate to="/" /> : <Landing />
-          }
-        />
+          {/* Authenticated routes */}
+          <Route path="/worksheet" element={<Worksheet />} />
+          <Route path="/graphiql" element={<Graphiql />} />
+          <Route path="/catalog" element={<Search />} />
+          <Route path="/login" element={<Landing />} />
+        </Route>
 
         {/* Challenge handles its own auth */}
         <Route path="/challenge" element={<Challenge />} />
@@ -132,6 +151,7 @@ function App() {
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
+        <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         <Route path="/wishlist" element={<Wishlist />} />
         {/* Catch-all Route to NotFound Page */}

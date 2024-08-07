@@ -12,7 +12,7 @@ export const GRAPHQL_API_ENDPOINT = isDev
 export const CUR_SEASON = '202403' as Season;
 
 // Courses in the current year have no evaluations yet
-export const CUR_YEAR = ['202401', '202402', '202403', '202501'] as Season[];
+export const CUR_YEAR = ['202402', '202403', '202501'] as Season[];
 
 // Courses that have not yet begun
 export const UPCOMING_SEASONS = ['202402', '202403', '202501'] as Season[];

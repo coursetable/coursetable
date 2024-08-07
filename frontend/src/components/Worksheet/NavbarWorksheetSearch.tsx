@@ -7,9 +7,9 @@ import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
-import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
@@ -17,7 +17,7 @@ export function NavbarWorksheetSearch() {
   const { worksheetView, handleWorksheetView, person, handlePersonChange } =
     useWorksheet();
 
-  const { removeFriend } = useUser();
+  const removeFriend = useStore((state) => state.removeFriend);
 
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>

@@ -14,11 +14,11 @@ import MultiToggle from 'react-multi-toggle';
 import type { CourseModalHeaderData } from './CourseModal';
 
 import { CUR_YEAR } from '../../config';
-import { useUser } from '../../contexts/userContext';
 import type {
   RelatedCourseInfoFragment,
   SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql-types';
+import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../utilities/course';
@@ -138,15 +138,22 @@ function CourseLink({
         : course.course_professors.length === 0
           ? 'TBA'
           : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
-  if (targetListings.length === 1) {
+  // Avoid showing the popup if there's something we can link to with high
+  // priority
+  // TODO: once we have the concept of "primary" cross-listing, we should
+  // just link to that by default
+  const targetListingDefinite =
+    targetListings.find((l) => l.course_code === listing.course_code) ??
+    (targetListings.length === 1 ? targetListings[0] : undefined);
+  if (targetListingDefinite) {
     return (
       <Col
         as={Link}
         xs={5}
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-        to={createCourseModalLink(targetListings[0], searchParams)}
+        to={createCourseModalLink(targetListingDefinite, searchParams)}
         onClick={() => {
-          onNavigation(targetListings[0]!);
+          onNavigation(targetListingDefinite);
         }}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
@@ -172,11 +179,7 @@ function CourseLink({
                   onNavigation(l);
                 }}
               >
-                {l.course_code === listing.course_code ? (
-                  <b>{l.course_code}</b>
-                ) : (
-                  l.course_code
-                )}
+                {l.course_code}
               </Link>
             ))}
           </Popover.Body>
@@ -232,7 +235,7 @@ function OverviewRatings({
   readonly onNavigation: (x: CourseModalHeaderData) => void;
   readonly data: SameCourseOrProfOfferingsQuery;
 }) {
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
   const listing = data.self[0]!;
   const overlapSections = useMemo(() => {
     const sameCourse = normalizeRelatedListings(data.sameCourse);

@@ -7,17 +7,18 @@ import {
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
+import { MDXProvider } from '@mdx-js/react';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ErrorPage from './components/ErrorPage';
+import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
 import { ThemeProvider } from './contexts/themeContext';
-import { UserProvider } from './contexts/userContext';
 import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
 import { WishlistProvider } from './contexts/wishlistContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
@@ -65,24 +66,24 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
         <ApolloProvider client={client}>
           {/* FerryProvider must be inside UserProvider because the former
             depends on login status */}
-          <UserProvider>
-            <FerryProvider>
-              <WindowDimensionsProvider>
-                {/* SearchProvider must be inside WorksheetProvider because the
+          <FerryProvider>
+            <WindowDimensionsProvider>
+              {/* SearchProvider must be inside WorksheetProvider because the
                   former depends on the currently viewed worksheet */}
-                <WorksheetProvider>
-                  <WishlistProvider>
-                    <SearchProvider>
-                      <ThemeProvider>
+              <WorksheetProvider>
+                <WishlistProvider>
+                  <SearchProvider>
+                    <ThemeProvider>
+                      <MDXProvider components={components}>
                         <div id="base">{children}</div>
-                      </ThemeProvider>
-                    </SearchProvider>
-                  </WishlistProvider>
-                </WorksheetProvider>
-                <ToastContainer toastClassName="rounded" />
-              </WindowDimensionsProvider>
-            </FerryProvider>
-          </UserProvider>
+                      </MDXProvider>
+                    </ThemeProvider>
+                  </SearchProvider>
+                </WishlistProvider>
+              </WorksheetProvider>
+              <ToastContainer toastClassName="rounded" />
+            </WindowDimensionsProvider>
+          </FerryProvider>
         </ApolloProvider>
       </GapiProvider>
       {/* </React.StrictMode> */}

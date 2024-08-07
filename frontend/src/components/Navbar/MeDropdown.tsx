@@ -15,9 +15,9 @@ import {
 
 import { API_ENDPOINT } from '../../config';
 import { useTutorial } from '../../contexts/tutorialContext';
-import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../queries/api';
+import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
@@ -87,7 +87,8 @@ function DropdownContent({
   readonly setIsExpanded: (visible: boolean) => void;
 }) {
   const { isMobile, isTablet } = useWindowDimensions();
-  const { authStatus } = useUser();
+  const authStatus = useStore((state) => state.authStatus);
+  const refreshAuth = useStore((state) => state.refreshAuth);
   const { toggleTutorial } = useTutorial();
 
   return (
@@ -136,7 +137,11 @@ function DropdownContent({
             <DropdownItem
               icon={FaSignOutAlt}
               iconColor="#ed5f5f"
-              onClick={logout}
+              onClick={async () => {
+                await logout();
+                await refreshAuth();
+                window.location.href = '/';
+              }}
             >
               Sign Out
             </DropdownItem>

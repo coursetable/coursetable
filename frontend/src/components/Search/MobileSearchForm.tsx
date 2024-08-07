@@ -141,7 +141,7 @@ export default function MobileSearchForm() {
             <TextComponent type="tertiary">
               {coursesLoading
                 ? 'Searching ...'
-                : `Showing ${searchData.length} results`}
+                : `Showing ${searchData?.length ?? 0} results`}
             </TextComponent>
           </small>
         </div>

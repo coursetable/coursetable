@@ -203,7 +203,7 @@ export function NavbarCatalogSearch() {
           <TextComponent type="tertiary" small className={styles.searchSpeed}>
             {coursesLoading
               ? 'Searching ...'
-              : `Showing ${searchData.length} results${
+              : `Showing ${searchData?.length ?? 0} results${
                   !isTablet ? `${speed.length > 20 ? '\n' : ' '}(${speed})` : ''
                 }`}
           </TextComponent>

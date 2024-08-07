@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 import { API_ENDPOINT } from '../config';
-import { useUser } from '../contexts/userContext';
 import Authentication from '../images/authentication.svg';
+import { useStore } from '../store';
 
 function NeedsLogin({
   redirect,
@@ -10,7 +11,9 @@ function NeedsLogin({
   readonly redirect: string;
   readonly message: string;
 }) {
-  const { authStatus, user } = useUser();
+  const { authStatus, user } = useStore(
+    useShallow((state) => ({ authStatus: state.authStatus, user: state.user })),
+  );
   return (
     <div className="text-center py-5">
       <h3>No access</h3>

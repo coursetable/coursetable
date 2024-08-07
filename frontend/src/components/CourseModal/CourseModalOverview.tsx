@@ -4,8 +4,8 @@ import type { CourseModalHeaderData } from './CourseModal';
 import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
-import { useUser } from '../../contexts/userContext';
 import { useSameCourseOrProfOfferingsQuery } from '../../queries/graphql-queries';
+import { useStore } from '../../store';
 import Spinner from '../Spinner';
 import './react-multi-toggle-override.css';
 
@@ -16,7 +16,7 @@ function CourseModalOverview({
   readonly onNavigation: (x: CourseModalHeaderData) => void;
   readonly header: CourseModalHeaderData;
 }) {
-  const { user } = useUser();
+  const user = useStore((state) => state.user);
 
   const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
     variables: {

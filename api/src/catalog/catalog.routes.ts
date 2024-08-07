@@ -28,6 +28,16 @@ export default (app: express.Express): void => {
   // Serve public catalog files without authentication
   app.use('/api/catalog/public', staticJSON('/catalogs-v2/public'));
 
+  app.use(
+    '/api/sitemaps',
+    express.static(`${STATIC_FILE_DIR}/sitemaps`, {
+      cacheControl: true,
+      maxAge: '1h',
+      lastModified: true,
+      etag: true,
+    }),
+  );
+
   // Legacy data formats
   // TODO: remove
   app.use(
