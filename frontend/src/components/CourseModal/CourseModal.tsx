@@ -183,7 +183,7 @@ function CourseModal() {
   );
 
   if (!listing) return null;
-  const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`;
+  const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
     300,
