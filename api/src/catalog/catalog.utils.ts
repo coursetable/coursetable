@@ -95,11 +95,18 @@ function transformListingToSitemapListing(
   listing: CatalogBySeasonQuery['listings'][number],
 ): SitemapListing {
   const year = parseInt(listing.season_code.substring(0, 4), 10);
+  const [today] = new Date().toISOString().split('T');
+  if (!today) throw new Error('Unable to determine the current date.');
+
   const season = listing.season_code.substring(4);
 
-  let lastmod = '';
-  if (season === '03' || season === '02') lastmod = `${year}-01-01`;
-  else lastmod = `${year - 1}-10-01`;
+  let semesterStartDate = '';
+  if (season === '01') semesterStartDate = `${year}-01-15`;
+  else if (season === '02') semesterStartDate = `${year}-05-25`;
+  else if (season === '03') semesterStartDate = `${year}-08-25`;
+  else throw new Error(`Unknown season code: ${listing.season_code}`);
+
+  const lastmod = semesterStartDate <= today ? semesterStartDate : today;
 
   return {
     crn: String(listing.crn),
@@ -111,14 +118,13 @@ async function generateSeasonSitemap(
   seasonCode: string,
   courses: SitemapListing[],
 ): Promise<void> {
-  await fs.mkdir(SITEMAP_DIR, { recursive: true });
-
+  const [today] = new Date().toISOString().split('T');
   const links = courses.map((course: SitemapListing) => ({
     url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
     lastmod: course.lastmod,
     priority: 0.8,
+    changefreq: course.lastmod === today ? 'daily' : 'never',
   }));
-
   const stream = new SitemapStream({ hostname: 'https://coursetable.com' });
   const xml = await streamToPromise(Readable.from(links).pipe(stream)).then(
     (data: Buffer) => data.toString(),
@@ -166,6 +172,7 @@ async function fetchData(
   type: 'evals' | 'public',
   overwrite: boolean,
 ): Promise<void> {
+  await fs.mkdir(SITEMAP_DIR, { recursive: true });
   // Support two versions of the frontend.
   // TODO: remove the legacy format and rename catalogs-v2 to catalogs
   const filePath = `${STATIC_FILE_DIR}/catalogs/${type}/${seasonCode}.json`;
