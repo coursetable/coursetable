@@ -182,32 +182,8 @@ function CourseModal() {
     searchParams,
   );
 
-  function getSeasonDetails(seasonCode: string): {
-    seasonName: string;
-    seasonYear: string;
-  } {
-    const year = seasonCode.substring(0, 4);
-    const season = seasonCode.substring(4);
-
-    let seasonName = '';
-    switch (season) {
-      case '01':
-        seasonName = 'Spring';
-        return { seasonName, seasonYear: year };
-      case '02':
-        seasonName = 'Summer';
-        return { seasonName, seasonYear: year };
-      case '03':
-        seasonName = 'Fall';
-        return { seasonName, seasonYear: year };
-      default:
-        throw new Error(`Unknown season code: ${seasonCode}`);
-    }
-  }
-
   if (!listing) return null;
-  const { seasonName, seasonYear } = getSeasonDetails(listing.season_code);
-  const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} -- Yale ${seasonName} ${seasonYear} | CourseTable`;
+  const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
     300,
