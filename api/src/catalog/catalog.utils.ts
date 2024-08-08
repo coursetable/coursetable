@@ -118,6 +118,7 @@ async function generateSeasonSitemap(
   seasonCode: string,
   courses: SitemapListing[],
 ): Promise<void> {
+  await fs.mkdir(SITEMAP_DIR, { recursive: true });
   const [today] = new Date().toISOString().split('T');
   const links = courses.map((course: SitemapListing) => ({
     url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
@@ -137,8 +138,6 @@ async function generateSeasonSitemap(
 }
 
 async function generateSitemapIndex(): Promise<void> {
-  await fs.mkdir(SITEMAP_DIR, { recursive: true });
-
   const sitemapFiles = await fs.readdir(SITEMAP_DIR);
   const sitemapUrls = sitemapFiles
     .filter(
