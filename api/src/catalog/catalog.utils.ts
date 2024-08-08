@@ -171,7 +171,6 @@ async function fetchData(
   type: 'evals' | 'public',
   overwrite: boolean,
 ): Promise<void> {
-  await fs.mkdir(SITEMAP_DIR, { recursive: true });
   // Support two versions of the frontend.
   // TODO: remove the legacy format and rename catalogs-v2 to catalogs
   const filePath = `${STATIC_FILE_DIR}/catalogs/${type}/${seasonCode}.json`;
