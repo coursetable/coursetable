@@ -138,6 +138,7 @@ async function generateSeasonSitemap(
 }
 
 async function generateSitemapIndex(): Promise<void> {
+  await fs.mkdir(SITEMAP_DIR, { recursive: true });
   const sitemapFiles = await fs.readdir(SITEMAP_DIR);
   const sitemapUrls = sitemapFiles
     .filter(
