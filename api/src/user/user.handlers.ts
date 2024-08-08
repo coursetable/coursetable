@@ -1,6 +1,6 @@
 import type express from 'express';
 import chroma from 'chroma-js';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
 import {
@@ -147,7 +147,8 @@ export const getUserWorksheet = async (
 
 const ToggleWishReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove')]),
-  courseCode: z.string(),
+  // We must pass all course codes to check for any match with the wishlist.
+  allCourseCodes: z.array(z.string()),
 });
 
 export const toggleWish = async (
@@ -164,7 +165,12 @@ export const toggleWish = async (
     return;
   }
 
-  const { action, courseCode } = bodyParseRes.data;
+  const { action, allCourseCodes } = bodyParseRes.data;
+
+  if (allCourseCodes.length === 0) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
 
   const [existing] = await db
     .selectDistinctOn([wishlistCourses.netId, wishlistCourses.courseCode])
@@ -172,32 +178,35 @@ export const toggleWish = async (
     .where(
       and(
         eq(wishlistCourses.netId, netId),
-        eq(wishlistCourses.courseCode, courseCode),
+        inArray(wishlistCourses.courseCode, allCourseCodes),
       ),
     );
 
   if (action === 'add') {
-    winston.info(`Wishlisting course ${courseCode} for user ${netId}`);
+    const defaultCourseCode = allCourseCodes.find((code) => code !== '')!;
+    winston.info(`Wishlisting course ${defaultCourseCode} for user ${netId}`);
     if (existing) {
       res.status(400).json({ error: 'ALREADY_WISHLISTED' });
       return;
     }
     await db.insert(wishlistCourses).values({
       netId,
-      courseCode,
+      courseCode: defaultCourseCode,
     });
   } else {
-    winston.info(`Removing wish for course ${courseCode} for user ${netId}`);
     if (!existing) {
       res.status(400).json({ error: 'NOT_WISHLISTED' });
       return;
     }
+    winston.info(
+      `Removing wish for course ${existing.courseCode} for user ${netId}`,
+    );
     await db
       .delete(wishlistCourses)
       .where(
         and(
           eq(wishlistCourses.netId, netId),
-          eq(wishlistCourses.courseCode, courseCode),
+          eq(wishlistCourses.courseCode, existing.courseCode),
         ),
       );
   }

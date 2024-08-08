@@ -183,7 +183,7 @@ export function toggleBookmark(body: {
 
 export async function toggleWish(body: {
   action: 'add' | 'remove';
-  courseCode: string;
+  allCourseCodes: string[];
 }): Promise<boolean> {
   return await fetchAPI('/user/toggleWish', {
     body,

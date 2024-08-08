@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
+import {
+  Modal,
+  DropdownButton,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import { IoMdArrowRoundBack, IoIosMore } from 'react-icons/io';
 import { Helmet } from 'react-helmet';
@@ -17,6 +23,7 @@ import { toSeasonString, truncatedText } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
+import WishlistToggleButton from '../Wishlist/WishlistToggleButton';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import styles from './CourseModal.module.css';
 
@@ -79,7 +86,25 @@ function MoreButton({
     <DropdownButton
       as="div"
       drop="down"
-      title={<IoIosMore size={20} />}
+      title={
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 300, hide: 0 }}
+          overlay={(props) => (
+            <Tooltip id="button-tooltip" {...props}>
+              <small>More</small>
+            </Tooltip>
+          )}
+        >
+          <button
+            type="button"
+            className={styles.moreButton}
+            aria-label="Share"
+          >
+            <IoIosMore size={20} />
+          </button>
+        </OverlayTrigger>
+      }
       variant="none"
       className={styles.moreDropdown}
     >
@@ -306,6 +331,7 @@ function CourseModal() {
             />
             <div className={styles.toolBar}>
               <WorksheetToggleButton listing={listing} modal />
+              <WishlistToggleButton listing={listing} modal />
               <ShareButton listing={listing} />
               <MoreButton listing={listing} hide={hide} />
             </div>

@@ -143,6 +143,7 @@ export default function CourseTableNavbar() {
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
               </NavbarLink>
+              <NavbarLink to="/wishlist">Wishlist</NavbarLink>
               {/* Links are in the navbar on mobile and in the me dropdown
                   on desktop */}
               {isMobile ? (

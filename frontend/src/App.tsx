@@ -14,6 +14,7 @@ import { useTutorial } from './contexts/tutorialContext';
 import { useAuth } from './hooks/useAuth';
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
+import Wishlist from './pages/Wishlist';
 
 import { useStore } from './store';
 import { suspended } from './utilities/display';
@@ -131,6 +132,7 @@ function App() {
 
           {/* Authenticated routes */}
           <Route path="/worksheet" element={<Worksheet />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/graphiql" element={<Graphiql />} />
           <Route path="/catalog" element={<Search />} />
           <Route path="/login" element={<Landing />} />
