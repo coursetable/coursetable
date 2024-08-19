@@ -74,14 +74,6 @@
   max-width: 90%;
 }
 
-.testimonialSection {
-  margin-top: 2rem;
-  font-size: 1.1rem;
-  color: #555;
-  position: relative;
-  width: 100%;
-}
-
 .testimonialWrapper {
   transition: height 0.5s ease;
   overflow: hidden;

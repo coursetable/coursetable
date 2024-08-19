@@ -27,8 +27,8 @@ function Landing() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [slideDirection, setSlideDirection] = useState('slide-in');
   const [containerHeight, setContainerHeight] = useState('auto');
-  const testimonialRef: React.MutableRefObject<HTMLParagraphElement | null> =
-    useRef(null);
+  const testimonialRef = useRef<HTMLParagraphElement | null>(null);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setSlideDirection('slide-out');
@@ -45,6 +45,9 @@ function Landing() {
     if (testimonialRef.current)
       setContainerHeight(`${testimonialRef.current.scrollHeight}px`);
   }, [currentTestimonial]);
+
+  const slideClass =
+    slideDirection === 'slide-in' ? styles['slide-in'] : styles['slide-out'];
 
   return (
     <div className={styles.splashpage}>
@@ -94,7 +97,7 @@ function Landing() {
         >
           <p
             ref={testimonialRef}
-            className={clsx(styles.testimonialText, styles[slideDirection])}
+            className={clsx(styles.testimonialText, slideClass)}
           >
             "{testimonials[currentTestimonial]}"
           </p>
