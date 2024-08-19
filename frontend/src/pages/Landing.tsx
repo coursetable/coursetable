@@ -37,6 +37,9 @@ const testimonials = [
   {
     text: 'U guys rock',
   },
+  {
+    text: 'I would pay 10 bucks a year for this service. Yale should pay you guys lol',
+  },
 ];
 
 function Landing() {
