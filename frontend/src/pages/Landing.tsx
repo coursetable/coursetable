@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -13,102 +13,91 @@ import LandingImage from '../images/landing_page.svg';
 import styles from './Landing.module.css';
 
 const testimonials = [
-  "Thank you for making this website!! It's a life saver every semester.",
-  'I started off the semester with 80 courses in my course table! Thank you so much for your incredible website :)',
-  'Appreciate all that you do! Course table is a life saver',
-  'Thank you for making my life so much easier! Appreciate it immensely <3',
-  'This should not be free',
-  'CourseTable has been SOOOO helpful in helping me choose good classes over the years. I would been overwhelmed every semester without it.',
-  'Thank you for your service 🙏',
-  'U guys rock',
+  {
+    text: "Thank you for making this website!! It's a life saver every semester.",
+  },
+  {
+    text: 'I started off the semester with 80 courses in my course table! Thank you so much for your incredible website :)',
+  },
+  {
+    text: 'Appreciate all that you do! Course table is a life saver',
+  },
+  {
+    text: 'Thank you for making my life so much easier! Appreciate it immensely <3',
+  },
+  {
+    text: 'This should not be free',
+  },
+  {
+    text: 'CourseTable has been SOOOO helpful in helping me choose good classes over the years. I would been overwhelmed every semester without it.',
+  },
+  {
+    text: 'Thank you for your service 🙏',
+  },
+  {
+    text: 'U guys rock',
+  },
 ];
 
 function Landing() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [slideDirection, setSlideDirection] = useState('slide-in');
-  const [containerHeight, setContainerHeight] = useState('auto');
-  const testimonialRef = useRef<HTMLParagraphElement | null>(null);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setSlideDirection('slide-out');
-      setTimeout(() => {
-        setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-        setSlideDirection('slide-in');
-      }, 500); // Duration of the slide-out animation
-    }, 4000); // Change testimonial every 4 seconds
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    if (testimonialRef.current)
-      setContainerHeight(`${testimonialRef.current.scrollHeight}px`);
-  }, [currentTestimonial]);
-
-  const slideClass =
-    slideDirection === 'slide-in' ? styles['slide-in'] : styles['slide-out'];
-
   return (
     <div className={styles.splashpage}>
-      <div className={styles.content}>
-        <h1 className="fw-bold text-md-left mb-4">
-          The best place to shop for classes at Yale.
-        </h1>
-        <ul className={styles.featureList}>
-          <li className={styles.featureText}>
-            <FcSearch className="me-2 my-auto" size={20} />
-            Browse our catalog of <span className={styles.stat}>
-              80,000+
-            </span>{' '}
-            classes
-          </li>
-          <li className={styles.featureText}>
-            <FcComboChart className="me-2 my-auto" size={20} />
-            Read from <span className={styles.stat}>600,000+</span> student
-            evaluation comments
-          </li>
-          <li className={styles.featureText}>
-            <FcBookmark className="me-2 my-auto" size={20} />
-            Save and view classes in your worksheet
-          </li>
-          <li className={styles.featureText}>
-            <FcConferenceCall className="me-2 my-auto" size={20} />
-            See what classes your friends are interested in
-          </li>
-        </ul>
-        <div className="d-flex mx-auto mt-3 justify-content-md-start justify-content-center">
-          <a
-            href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
-            className={clsx(styles.btn, styles.login, 'me-2')}
-          >
-            Login with CAS
-          </a>
-          <Link to="/about" className={clsx(styles.btn, styles.about)}>
-            About Us
-          </Link>
-          <Link to="/catalog" className={clsx(styles.btn, styles.guest)}>
-            Guest
-          </Link>
+      <div className={styles.topSection}>
+        <div className={styles.content}>
+          <h1 className="fw-bold text-md-left mb-4">
+            The best place to shop for classes at Yale.
+          </h1>
+          <ul className={styles.featureList}>
+            <li className={styles.featureText}>
+              <FcSearch className="me-2 my-auto" size={20} />
+              Browse our catalog of <span className={styles.stat}>
+                80,000+
+              </span>{' '}
+              classes
+            </li>
+            <li className={styles.featureText}>
+              <FcComboChart className="me-2 my-auto" size={20} />
+              Read from <span className={styles.stat}>600,000+</span> student
+              evaluation comments
+            </li>
+            <li className={styles.featureText}>
+              <FcBookmark className="me-2 my-auto" size={20} />
+              Save and view classes in your worksheet
+            </li>
+            <li className={styles.featureText}>
+              <FcConferenceCall className="me-2 my-auto" size={20} />
+              See what classes your friends are interested in
+            </li>
+          </ul>
+          <div className="d-flex mx-auto mt-3 justify-content-md-start justify-content-center">
+            <a
+              href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
+              className={clsx(styles.btn, styles.login, 'me-2')}
+            >
+              Login with CAS
+            </a>
+            <Link to="/about" className={clsx(styles.btn, styles.about)}>
+              About Us
+            </Link>
+            <Link to="/catalog" className={clsx(styles.btn, styles.guest)}>
+              Guest
+            </Link>
+          </div>
         </div>
-        <div
-          className={styles.testimonialWrapper}
-          style={{ height: containerHeight }}
-        >
-          <p
-            ref={testimonialRef}
-            className={clsx(styles.testimonialText, slideClass)}
-          >
-            "{testimonials[currentTestimonial]}"
-          </p>
-        </div>
+        <img
+          alt="Landing page"
+          src={LandingImage}
+          width={450}
+          className={styles.thumbnail}
+        />
       </div>
-      <img
-        alt="Landing page"
-        src={LandingImage}
-        width={450}
-        className={styles.thumbnail}
-      />
+      <div className={styles.testimonialGrid}>
+        {testimonials.map((testimonial, index) => (
+          <div key={index} className={styles.testimonialCard}>
+            <p className={styles.testimonialText}>"{testimonial.text}"</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
