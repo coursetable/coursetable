@@ -35,7 +35,7 @@ function Rating({
         <Tooltip id={`${name}-tooltip`} {...props}>
           {hasEvals
             ? name
-            : `${name} (These colors are randomly generated. Sign in to see real ratings)`}
+            : `${name} (These colors are randomly generated. ${hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see real ratings)`}
         </Tooltip>
       )}
     >
