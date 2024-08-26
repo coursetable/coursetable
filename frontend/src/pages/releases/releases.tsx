@@ -12,6 +12,13 @@ type ReleaseNote = {
 const releaseNotes: ReleaseNote[] = [
   // Add more releases below
   {
+    title: 'Spring 2024 Release',
+    summary:
+      'Discover the latest features and improvements in our Spring 2024 update.',
+    path: '/releases/spring24',
+    date: '2024-08-26',
+  },
+  {
     title: 'Link preview release recap',
     summary:
       'Our recent effort to make social media links display a preview card.',
