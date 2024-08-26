@@ -1,0 +1,117 @@
+# CourseTable 24 Spring/Summer Release Notes
+
+_2024-08-26_
+
+Hi everyone!
+
+You may be already on campus. Or enjoying the last bit of summer at home. Or anywhere around the world. Wherever you are, the CourseTable team hopes you have had a great summer—welcome, and welcome back! Add/drop period just opened and we hope CourseTable will be a great resource for you to get into the classes you are most interested in.
+
+In January, [we documented what we did in the fall semester](https://coursetable.com/releases/fall23), and since then we have made even more great changes to existing systems and developed new features. We document the most notable changes here.
+
+We also are looking for interested and talented developers to join our team! If this sounds like you, [please apply here.](https://coursetable.com/joinus)
+
+As always, [let us know](https://feedback.coursetable.com/) what you want to see next!
+
+Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)) & Sida Chen ([@Josh-Cena](https://github.com/josh-cena))<br />
+On behalf of the CourseTable team
+
+## Public course info access
+
+CourseTable used to only be accessible to Yale students. This was for a variety of reasons, chiefly because Yale demanded ratings and review data to be private. However, the rest of our course catalog is not sensitive and can be publicly available—in fact, Yale Course Search already displays course information without authentication. Now, non-Yale affiliates can also browse the catalog without signing in (just without the sensitive data). Have your family help you plan your schedule next semester!
+
+This feature is contributed by Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)) and Sida Chen ([@Josh-Cena](https://github.com/josh-cena)).
+
+## Experimental Quist
+
+We shipped a new query language, Quist, which we wrote [an entire post](https://coursetable.com/releases/quist) about, so we would not repeat ourselves here. Since then, we have received many pieces of feedback. We'd like to take this opportunity to thank everyone who tried it and found it either useful or not, and gave us suggestions. We have no timeline to bring it out of experimental status, but we are continuing to work on the user experience so it becomes more accessible to every user.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)).
+
+## Professor rating slider
+
+You now have a slider to filter by certain ranges of professor ratings akin to the existing sliders for workload and overall.
+
+This feature is contributed by Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)).
+
+## Advanced filter for course flags
+
+We've introduced an advanced filter for major course attributes, allowing you to easily filter courses for major requirements, such as "YC LING Depth: Syntax" in the linguistics department. This update ensures that our information aligns closely with all the details available on Yale Course Search (YCS), making it easier for you to find the courses that meet your needs.
+
+This feature is contributed by Humphrey Xu ([@Etherite1](http://github.com/etherite1)).
+
+## Redesigned course modal
+
+With each course modal getting its own unique URL, we think it's also time to make cross-modal navigation less confusing. We made several changes, motivated by feedback we received:
+
+- Some complained that it's not easy to navigate between "overview" and "evaluations" for the same course. You see a course's average rating in the table, click on the course, but there's no straightforward way to see the rating details. Similarly, when you go to the ratings of a related course, it's not easy to go to the overview of that course. We have added a new "tab selection" in the header so you can readily switch between the two views. We hope this change encourages users to read evaluations in more detail to understand the average rating statistics.
+- A course can have several codes (cross-listings). Although cross-listings' information are otherwise exactly identical, we are aware that some departments may require you to enroll with one particular course code to fulfill requirements, so you sometimes care about the course codes in your worksheet. Now, the modal header contains links to the cross-listings, and the "related course" links also ask you which course code you want to go to. All of these ensure you can always find the exact course you want.
+- In the "related courses" list, if a course has more than one code/professor, a "+n" is displayed so the extra information is not silently lost.
+- The "evaluations" view now shows the percentage of enrolled students who left a review. We hope this can be a useful metric particularly when the numbers are small—4/10 students leaving a review and 4/4 leaving a review may have entirely different implications.
+- We have added some little "action links" to the course modal. In the header, next to the "share" button, you can click on the ellipsis to find a dropdown with two/three links: report an error, open in Yale Course Search, and open in OCE. We hope these links can help you speed up registration, get more information about evaluation statistics, and ensure the correctness of our data.
+
+This series of updates are contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)).
+
+## Customizable worksheet colors
+
+The colors used to be randomly assigned to each course in the worksheet. Sometimes, people want to use colors to group related classes, indicate priority, or anything else. With the recent friends feature, we also want to make sure friends can see the worksheets in the exact same way as you do. To serve these use cases, we now allow you to freely change courses' colors—go to the worksheet page, hover over any course, and click the "edit" button. You can select one of the preset colors, or choose your own using the editor. (In order to add these colors to the database, which were previously only in the browser, we had to randomly re-assign colors in the database and ignore any colors you were having previously—sorry to those who care a lot about their courses' colors!)
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)).
+
+## Worksheet split view on catalog
+
+We've added a new split view feature that lets you see the course catalog and your worksheet side by side on the same page. This makes it easier to manage and compare courses as you plan your schedule, streamlining the process of adding courses to your worksheet.
+
+This feature is contributed by Bradley Lewis ([@BradleyLewis08](http://github.com/BradleyLewis08)).
+
+## Link previews
+
+We've optimized the way CourseTable links display previews on social media platforms. Now, when you share a course link, it generates a preview card with specific details about the course, making it easier for others to see exactly what you're sharing. This improvement enhances the user experience and makes course information more accessible and shareable. For a deeper look into how we achieved this, refer to our semi-technical blog post, ["Optimizing Bot Traffic Handling for Link Previews: a Long Journey,"](https://coursetable.com/releases/link-preview) which details the process and challenges we encountered.
+
+This feature is contributed by Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)).
+
+## Search engine optimization
+
+We've implemented automatic sitemap generation to enhance our site's SEO and improve Google indexing. This ensures that all our course pages are easily discoverable by search engines, helping users find relevant course information more efficiently. With this update, CourseTable is now more search-friendly than ever before.
+
+This feature is contributed by Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)).
+
+## Accessibility
+
+We addressed some old accessibility audit issues. Now, CourseTable is fully keyboard-accessible and screen-reader-friendly. We also made sure we use proper document structure and semantics, so that we can take advantage of platform-native user interactions such as tap-hold for link preview on iOS. This is more important than ever, because CourseTable is now open to the public.
+
+There's nothing as perfect in accessibility, and we've only done what we have discovered to the best of our knowledge. If you have more suggestions on the accessibility of CourseTable, we always welcome them and will address them with top priority.
+
+This polishing is contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)).
+
+## Ferry v2
+
+[Ferry](https://github.com/coursetable/ferry) is the lesser-known buddy of CourseTable that crawls Yale websites once a day and updates our course info database. It is the core backend service of CourseTable that allows you to see every course's ratings and information, both past and current. It has been working for several years, but there were a lot of problems: dependencies were outdated, the code was slow (very slow—multiple hour execution time), the code style was bad, and it did not permit a lot of changes we were planning to implement.
+
+Ferry has now been rewritten from the ground up with parallel execution, efficient processing, and most importantly, accurate and descriptive documentation. We have reduced total daily runtime from around 2-3 hours to below 15 minutes. Ferry also used to run statefully on our production setup, but it has now been moved onto infrastructure that provisions on-demand, increasing service reliability, uptime, and observability.
+
+We are also in the process of formalizing and documenting our analysis algorithms, such as which course offerings are considered "the same course", or how we compute average ratings.
+
+The rewrite is done by Neil Song ([@neilsong](http://github.com/neilsong)), Sida Chen ([@Josh-Cena](https://github.com/josh-cena)), and Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)).
+
+## Bug fixes & polishings
+
+- We fixed a small bug where if you shrink your browser window and then expand it, the catalog would stay in the "grid" view rather than the "table" view. Now, it would always restore to the view before grid view was force-entered.
+- Previously, the schedule conflicts were always calculated using the main worksheet. Now, it uses the "active worksheet" (the one courses are added to) instead. In addition, the "add to worksheet" button now also tells you which worksheet it will be added to.
+- There used to be a noticeable "jank" on the catalog page if the network and/or device is slow. We've minimized the layout shifts throughout CourseTable pages.
+- We have fixed our usage of local data persistence to be compatible with some private browsing modes.
+- The friends feature, introduced last semester, got a little redesign. We consolidated the feature into two dropdowns, one for selecting worksheets and the other for managing them—requesting, removing, approving requests, etc. We fixed some little hiccups like an error getting generated if you click a button twice. You can also search for people by name.
+- The GCal feature, introduced last semester, got several polishings. We now record "transfer schedules", e.g. classes that meet on Monday meet for one particular Friday due to holidays. We also continue to improve the title and description. Author: Ben Xu ([@benzuzu](https://github.com/benzuzu))
+
+## Infrastructure changes
+
+We continue to make more changes to make sure our contributors can make changes as smoothly as possible. We have removed a lot of indirections and external dependencies in our codebase, in favor of simpler setups and platform-native solutions, so that newly onboarded contributors can get up to speed more quickly.
+
+In the same spirit, we completed our internal documentation for the CourseTable codebase and infrastructure, so wisdom about project setup will no longer be lost among generations.
+
+We used to have two databases: one in MySQL for user data and one in PostgresQL for course data. We have migrated user data to PostgresQL too, thanks to the efforts by Neil Song ([@neilsong](http://github.com/neilsong)).
+
+We continue to iterate on our continuous deployment infrastructure to make sure it's fast, reliable, convenient, and above all, minimally disruptive to users. Neil Song ([@neilsong](http://github.com/neilsong)) is a driving force behind all this, and we are all immensely grateful for his behind-the-scenes work. None of the changes you have read about would be possible without him.
+
+CourseTable is more developer-friendly now than it ever has been before, so if you are interested in contributing, please feel free to reach out to us.
+
+If you enjoyed this blog post and/or are a regular user of CourseTable, consider supporting our work through [buymeacoffee](https://www.buymeacoffee.com/coursetable)!

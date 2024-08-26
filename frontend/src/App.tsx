@@ -38,6 +38,9 @@ const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
 const LinkPreview = suspended(
   () => import('./pages/releases/link-preview.mdx'),
 );
+const Spring24Release = suspended(
+  () => import('./pages/releases/spring24.mdx'),
+);
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function AuthenticatedRoutes() {
@@ -152,6 +155,7 @@ function App() {
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
         <Route path="/releases/link-preview" element={<LinkPreview />} />
+        <Route path="/releases/spring24" element={<Spring24Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
