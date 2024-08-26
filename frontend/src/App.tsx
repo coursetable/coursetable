@@ -113,18 +113,17 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={7}
+        id={8}
       >
-        Read our semi-technical dive into{' '}
         <a
-          href="/releases/link-preview"
+          href="/releases/spring24"
           style={{
             color: 'white',
             fontWeight: 'bold',
             textDecoration: 'underline',
           }}
         >
-          how we've optimized link previews
+          Read about what we've done in spring 2024
         </a>
         !
       </Notice>
