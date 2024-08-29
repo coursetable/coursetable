@@ -418,6 +418,11 @@ export function SearchProvider({
           case 'season':
             return listing.season_code;
           case 'professor-names':
+            // "No processors" is displayed in catalog as "TBA"
+            // so it seems easiest to make Quist reflect this reality, although
+            // "TBA" is not a real value
+            // TODO: we should make something like "professor-names:empty"
+            if (!listing.course.course_professors.length) return ['TBA'];
             return listing.course.course_professors.map(
               (p) => p.professor.name,
             );
