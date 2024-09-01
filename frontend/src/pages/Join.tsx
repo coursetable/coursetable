@@ -8,8 +8,15 @@ function Join() {
       <h1 className={clsx(styles.joinHeader, 'mt-5 mb-3')}>Join Us!</h1>
       <p className={clsx(styles.joinDescription, 'mb-5')}>
         <TextComponent type="secondary">
-          Our application process will be opening soon for the fall! Stay tuned
-          for updates.
+          Our applications are live!{' '}
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSd8vyeaux2ia9CgvDH6Os6wsbuO_uIX1axE7udcSZKoMD0m4w/viewform?usp=sf_link"
+          >
+            {' '}
+            Apply here.
+          </a>
         </TextComponent>
       </p>
       <p className={clsx(styles.joinDescription, 'mb-5')}>

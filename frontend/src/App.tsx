@@ -113,19 +113,18 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={8}
+        id={9}
       >
         <a
-          href="/releases/spring24"
+          href="/joinus"
           style={{
             color: 'white',
             fontWeight: 'bold',
             textDecoration: 'underline',
           }}
         >
-          Read about what we've done in spring 2024
+          Y/CS applications are live. Apply to join the CourseTable team!
         </a>
-        !
       </Notice>
       <Navbar />
       <SentryRoutes>
