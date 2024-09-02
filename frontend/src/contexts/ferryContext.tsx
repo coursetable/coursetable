@@ -247,7 +247,7 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
 
       // We assume UPCOMING_SEASONS is always up to date (latest seasons)
       let seasonIndex = UPCOMING_SEASONS.length;
-      while (seasonIndex < 15) {
+      while (seasonIndex < 45) {
         const prevSeasonCode = seasons[seasonIndex]!;
         const prevSeasonData = courses[prevSeasonCode];
 
