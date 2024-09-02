@@ -6,8 +6,11 @@ import React, {
   useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { createSessionStorageSlot } from './browserStorage';
 import Spinner from '../components/Spinner';
 import type { Listings } from '../generated/graphql-types';
+
+const hasAutoReloaded = createSessionStorageSlot<boolean>('autoReloaded');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function suspended<T extends React.ComponentType<any>>(
@@ -17,6 +20,12 @@ export function suspended<T extends React.ComponentType<any>>(
     try {
       return await factory();
     } catch {
+      // Prevent infinite reloading
+      if (!hasAutoReloaded.get()) {
+        hasAutoReloaded.set(true);
+        window.location.reload();
+      }
+      hasAutoReloaded.remove();
       return {
         default: (() => (
           <div className="m-3">

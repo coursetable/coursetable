@@ -13,7 +13,9 @@ import winston from '../logging/winston.js';
 
 interface SitemapListing {
   crn: string;
+  lastmod: string;
 }
+
 /**
  * This is the legacy "flat" data format we used. This shape seems to be easier
  * to work with, and for the purpose of API compatibility we "massage" the GQL
@@ -92,8 +94,23 @@ const exists = (p: string) =>
 function transformListingToSitemapListing(
   listing: CatalogBySeasonQuery['listings'][number],
 ): SitemapListing {
+  const year = parseInt(listing.season_code.substring(0, 4), 10);
+  const [today] = new Date().toISOString().split('T');
+  if (!today) throw new Error('Unable to determine the current date.');
+
+  const season = listing.season_code.substring(4);
+
+  let semesterStartDate = '';
+  if (season === '01') semesterStartDate = `${year}-01-15`;
+  else if (season === '02') semesterStartDate = `${year}-05-25`;
+  else if (season === '03') semesterStartDate = `${year}-08-25`;
+  else throw new Error(`Unknown season code: ${listing.season_code}`);
+
+  const lastmod = semesterStartDate <= today ? semesterStartDate : today;
+
   return {
     crn: String(listing.crn),
+    lastmod,
   };
 }
 
@@ -102,12 +119,13 @@ async function generateSeasonSitemap(
   courses: SitemapListing[],
 ): Promise<void> {
   await fs.mkdir(SITEMAP_DIR, { recursive: true });
-
+  const [today] = new Date().toISOString().split('T');
   const links = courses.map((course: SitemapListing) => ({
     url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
+    lastmod: course.lastmod,
     priority: 0.8,
+    changefreq: course.lastmod === today ? 'daily' : 'never',
   }));
-
   const stream = new SitemapStream({ hostname: 'https://coursetable.com' });
   const xml = await streamToPromise(Readable.from(links).pipe(stream)).then(
     (data: Buffer) => data.toString(),
@@ -121,7 +139,6 @@ async function generateSeasonSitemap(
 
 async function generateSitemapIndex(): Promise<void> {
   await fs.mkdir(SITEMAP_DIR, { recursive: true });
-
   const sitemapFiles = await fs.readdir(SITEMAP_DIR);
   const sitemapUrls = sitemapFiles
     .filter(
