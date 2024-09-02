@@ -5,10 +5,27 @@
   list-style: none;
 }
 
+.ratingBubble {
+  color: unset;
+  border-radius: 8px;
+  max-height: 3rem;
+  transition: max-height 0.2s ease-out;
+  flex: none;
+  background-color: var(--color-primary-subdued);
+}
+
+.ratingBubble:hover {
+  color: unset;
+  background-color: var(--color-primary-light);
+  max-height: 50px;
+  transition: max-height 0.2s ease-in;
+}
+
 .wishlistItem {
   display: block;
   color: unset;
   border-radius: 8px;
+  padding-left: 0.5rem; 
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
@@ -60,6 +77,15 @@
   text-overflow: ellipsis;
 }
 
+.details {
+  display: block;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
 .rating {
   font-weight: bold;
   margin-right: 0.25rem;
@@ -94,5 +120,16 @@
   .container:hover {
     transform: none;
     cursor: none;
+  }
+
+  .ratingBubble {
+    max-height: 3rem;
+    height: 3rem;
+  }
+
+  .ratingBubble:hover {
+    max-height: 3rem;
+    height: 3rem;
+    transition: max-height 0s;
   }
 }

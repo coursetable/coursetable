@@ -42,7 +42,7 @@ function WishlistGrid({
       </div>
     );
   } else {
-    const columnCount = 2;
+    const columnCount = 4;
     const columnWidth = Math.floor(window.innerWidth / columnCount);
     const rowCount = Math.ceil(data.length / columnCount);
     const rowHeight = 178;

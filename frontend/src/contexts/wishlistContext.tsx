@@ -6,6 +6,7 @@ import { useStore } from '../store';
 export type WishlistCourse = {
   courseCode: string;
   upcomingListings: CatalogListing[];
+  lastListing: CatalogListing[]; // Type array for section-based courses
 };
 
 type Store = {

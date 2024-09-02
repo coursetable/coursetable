@@ -223,7 +223,7 @@ export function useWorksheetInfo(
 }
 
 export function useWishlistInfo(wishlist: UserWishlist | undefined) {
-  const { loading, error, courses } = useCourseData(UPCOMING_SEASONS);
+  const { loading, error, courses } = useCourseData(seasons.slice(0, 15));
 
   const data = useMemo(() => {
     const dataReturn: WishlistCourse[] = [];
@@ -232,6 +232,7 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
 
     for (const { courseCode } of wishlist) {
       const upcomingListings: CatalogListing[] = [];
+      const lastListing: CatalogListing[] = [];
 
       for (const seasonCode of UPCOMING_SEASONS) {
         const seasonData = courses[seasonCode];
@@ -244,9 +245,31 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
         });
       }
 
+      // We assume UPCOMING_SEASONS is always up to date (latest seasons)
+      let seasonIndex = UPCOMING_SEASONS.length;
+      while (seasonIndex < 15) {
+        const prevSeasonCode = seasons[seasonIndex]!;
+        const prevSeasonData = courses[prevSeasonCode];
+
+        seasonIndex++;
+        if (!prevSeasonData) continue;
+
+        let foundListing = false;
+        prevSeasonData.forEach((listing) => {
+          const allListings = listing.course.listings;
+          if (allListings.some((l) => l.course_code === courseCode)) {
+            lastListing.push(listing);
+            foundListing = true;
+          }
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (foundListing) break;
+      }
+
       dataReturn.push({
         courseCode,
         upcomingListings,
+        lastListing,
       });
     }
 
