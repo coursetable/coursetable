@@ -16825,7 +16825,7 @@
         "enumValues": [
           {
             "name": "pk_course_flags_staged",
-            "description": "unique or primary key constraint on columns \"course_id\", \"flag_id\"",
+            "description": "unique or primary key constraint on columns \"flag_id\", \"course_id\"",
             "isDeprecated": false,
             "deprecationReason": null
           }
