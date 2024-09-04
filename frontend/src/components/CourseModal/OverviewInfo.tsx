@@ -131,11 +131,13 @@ type Segment =
 
 function parsePrereqs(requirements: string | null) {
   if (!requirements) return null;
+  // We don't want to match "and 223", but we want to match "math 223"
+  // We want to match "CHEM 134L" but not "CPSC 223a" (CPSC 381 says this)
   const codePattern =
-    /\b(?<subject>(?!and|AND)[A-Za-z&]{3,4}) ?(?<number>\d{3,4})(?!\d)/uy;
+    /\b(?<subject>(?!and|AND)[A-Za-z&]{3,4}) ?(?<number>\d{3,4}[A-Z]?)(?!\d)/uy;
   // Prereqs often say "MATH 225 or 226" and we want to match on "226", where
   // the subject is implied (taken from the previous match)
-  const partialCodePattern = /\b\d{3,4}(?!\d)/uy;
+  const partialCodePattern = /\b\d{3,4}[A-Z]?(?!\d)/uy;
   let lastSubject = '';
   const segments: Segment[] = [];
   let lastIndex = 0;
