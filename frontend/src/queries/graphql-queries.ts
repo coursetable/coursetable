@@ -265,3 +265,97 @@ export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
   Types.SearchEvaluationNarrativesQuery,
   Types.SearchEvaluationNarrativesQueryVariables
 >;
+export const PrereqLinkInfoDocument = gql`
+  query PrereqLinkInfo($course_codes: [String!]) {
+    listings(where: { course_code: { _in: $course_codes } }) {
+      course {
+        title
+        skills
+        areas
+        extra_info
+        description
+        times_by_day
+        same_course_id
+        listings {
+          course_code
+          crn
+        }
+        course_professors {
+          professor {
+            professor_id
+          }
+        }
+      }
+      season_code
+      crn
+      course_code
+      section
+    }
+  }
+`;
+
+/**
+ * __usePrereqLinkInfoQuery__
+ *
+ * To run a query within a React component, call `usePrereqLinkInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrereqLinkInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePrereqLinkInfoQuery({
+ *   variables: {
+ *      course_codes: // value for 'course_codes'
+ *   },
+ * });
+ */
+export function usePrereqLinkInfoQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    Types.PrereqLinkInfoQuery,
+    Types.PrereqLinkInfoQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.PrereqLinkInfoQuery,
+    Types.PrereqLinkInfoQueryVariables
+  >(PrereqLinkInfoDocument, options);
+}
+export function usePrereqLinkInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.PrereqLinkInfoQuery,
+    Types.PrereqLinkInfoQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.PrereqLinkInfoQuery,
+    Types.PrereqLinkInfoQueryVariables
+  >(PrereqLinkInfoDocument, options);
+}
+export function usePrereqLinkInfoSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    Types.PrereqLinkInfoQuery,
+    Types.PrereqLinkInfoQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.PrereqLinkInfoQuery,
+    Types.PrereqLinkInfoQueryVariables
+  >(PrereqLinkInfoDocument, options);
+}
+export type PrereqLinkInfoQueryHookResult = ReturnType<
+  typeof usePrereqLinkInfoQuery
+>;
+export type PrereqLinkInfoLazyQueryHookResult = ReturnType<
+  typeof usePrereqLinkInfoLazyQuery
+>;
+export type PrereqLinkInfoSuspenseQueryHookResult = ReturnType<
+  typeof usePrereqLinkInfoSuspenseQuery
+>;
+export type PrereqLinkInfoQueryResult = Apollo.QueryResult<
+  Types.PrereqLinkInfoQuery,
+  Types.PrereqLinkInfoQueryVariables
+>;

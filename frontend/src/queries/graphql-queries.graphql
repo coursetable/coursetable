@@ -113,3 +113,30 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
     }
   }
 }
+
+query PrereqLinkInfo($course_codes: [String!]) {
+  listings(where: { course_code: { _in: $course_codes } }) {
+    course {
+      title
+      skills
+      areas
+      extra_info
+      description
+      times_by_day
+      same_course_id
+      listings {
+        course_code
+        crn
+      }
+      course_professors {
+        professor {
+          professor_id
+        }
+      }
+    }
+    season_code
+    crn
+    course_code
+    section
+  }
+}

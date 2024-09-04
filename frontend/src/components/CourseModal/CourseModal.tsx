@@ -313,8 +313,10 @@ function CourseModal() {
         </Modal.Header>
         {view === 'overview' ? (
           <CourseModalOverview
-            onNavigation={(l) => {
-              user.hasEvals ? setView('evals') : setView('overview');
+            onNavigation={(l, goToEvals) => {
+              user.hasEvals && goToEvals
+                ? setView('evals')
+                : setView('overview');
               if (
                 l.crn === listing.crn &&
                 l.season_code === listing.season_code
