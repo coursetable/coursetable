@@ -133,7 +133,9 @@ function parsePrereqs(requirements: string | null) {
   if (!requirements) return null;
   const codePattern =
     /\b(?<subject>(?!and|AND)[A-Za-z&]{3,4}) ?(?<number>\d{3,4})(?!\d)/uy;
-  const partialCodePattern = /\b\d+\b/uy;
+  // Prereqs often say "MATH 225 or 226" and we want to match on "226", where
+  // the subject is implied (taken from the previous match)
+  const partialCodePattern = /\b\d{3,4}(?!\d)/uy;
   let lastSubject = '';
   const segments: Segment[] = [];
   let lastIndex = 0;
@@ -176,9 +178,11 @@ type PrereqLinkInfo = PrereqLinkInfoQuery['listings'][number];
 
 function Prereqs({
   course,
+  season,
   onNavigation,
 }: {
   readonly course: CourseInfo;
+  readonly season: string;
   readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
 }) {
   const segments = parsePrereqs(course.requirements);
@@ -186,7 +190,13 @@ function Prereqs({
   const { data, error, loading } = usePrereqLinkInfoQuery({
     variables: {
       course_codes:
-        segments?.filter((s) => s.type === 'course').map((s) => s.course) ?? [],
+        segments
+          ?.filter(
+            // TODO: remove after TS 5.5
+            (s): s is Extract<Segment, { type: 'course' }> =>
+              s.type === 'course',
+          )
+          .map((s) => s.course) ?? [],
     },
     skip: !segments,
   });
@@ -205,7 +215,16 @@ function Prereqs({
     <div className={styles.requirements}>
       {segments.map((s, i) => {
         if (s.type === 'text') return s.text;
-        const info = codeToListings.get(s.course)?.[0];
+        const allInfo = codeToListings.get(s.course);
+        // Choose the first listing that was offered *before* this one.
+        // We do this instead of showing the latest:
+        // - Course codes may be reused, so the latest listing may be incorrect
+        // - Syllabus/description may have changed
+        // - ...
+        // Usually they can still navigate to the latest one from the modal,
+        // so it's not a big problem
+        const info =
+          allInfo?.find((l) => l.season_code <= season) ?? allInfo?.[0];
         return (
           <OverlayTrigger
             key={i}
@@ -468,7 +487,11 @@ function OverviewInfo({
   return (
     <>
       <Description course={course} />
-      <Prereqs course={course} onNavigation={onNavigation} />
+      <Prereqs
+        course={course}
+        season={listing.season_code}
+        onNavigation={onNavigation}
+      />
       <Syllabus course={course} sameCourse={data.sameCourse} />
       <Professors course={course} />
       <TimeLocation course={course} />
