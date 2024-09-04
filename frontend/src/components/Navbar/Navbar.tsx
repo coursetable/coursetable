@@ -88,6 +88,7 @@ function LastUpdatedAt() {
 
 export default function CourseTableNavbar() {
   const authStatus = useStore((state) => state.authStatus);
+  const hasEvals = useStore((state) => state.user.hasEvals);
   const location = useLocation();
   const [navExpanded, setNavExpanded] = useState(false);
   const { isMobile } = useWindowDimensions();
@@ -143,6 +144,14 @@ export default function CourseTableNavbar() {
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
               </NavbarLink>
+              {hasEvals === false && (
+                <NavbarLink to="/challenge">
+                  <span style={{ position: 'relative' }}>
+                    <span className={styles.challengeIndicator} />
+                    Challenge
+                  </span>
+                </NavbarLink>
+              )}
               {/* Links are in the navbar on mobile and in the me dropdown
                   on desktop */}
               {isMobile ? (

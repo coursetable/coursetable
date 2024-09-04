@@ -82,6 +82,17 @@ export const passportConfig = (
           .returning();
 
         winston.info("Getting user's enrollment status from Yalies.io");
+        const user = {
+          netId: profile.user,
+          // If we already have evaluations enabled in DB, never disable it
+          // TODO: temporary; we should have three states, manually enabled for
+          // faculty (never revoke), automatically synced from Yalies
+          // (expiring based on Yalies data), and disabled
+          evals: Boolean(existingUser?.evaluationsEnabled),
+          email: existingUser?.email ?? null,
+          firstName: existingUser?.firstName ?? null,
+          lastName: existingUser?.lastName ?? null,
+        };
         try {
           const data = (await fetch('https://yalies.io/api/people', {
             method: 'POST',
@@ -98,57 +109,46 @@ export const passportConfig = (
             if (!res.ok) throw new Error(res.statusText);
             return res.json();
           })) as YaliesResponse;
-          // If no user found, do not grant access
+          // If no user found, only use existing data
           if (data === null || data.length === 0) {
-            done(null, {
-              netId: profile.user,
-              evals: false,
-            });
+            done(null, user);
             return;
           }
-
-          const user = data[0]!;
-
+          const yaliesUserData = data[0]!;
           // Enable evaluations if user has a school code
           // or is a member of an approved organization (for faculty).
           // also leave evaluations enabled if the user already has access.
-          const enableEvals =
-            existingUser?.evaluationsEnabled ||
-            Boolean(user.school_code) ||
-            ALLOWED_ORG_CODES.includes(user.organization_code);
+          user.evals ||=
+            Boolean(yaliesUserData.school_code) ||
+            ALLOWED_ORG_CODES.includes(yaliesUserData.organization_code);
+          // TODO: these should be customizable by the user via profile page
+          user.firstName = yaliesUserData.first_name ?? user.firstName;
+          user.lastName = yaliesUserData.last_name ?? user.lastName;
+          user.email = yaliesUserData.email ?? user.email;
 
           winston.info(`Updating evaluations for ${profile.user}`);
 
           await db
             .update(studentBluebookSettings)
             .set({
-              evaluationsEnabled: enableEvals,
-              firstName: user.first_name,
-              lastName: user.last_name,
+              evaluationsEnabled: user.evals,
+              firstName: user.firstName,
+              lastName: user.lastName,
               email: user.email,
-              upi: user.upi,
-              school: user.school,
-              year: user.year,
-              college: user.college,
-              major: user.major,
-              curriculum: user.curriculum,
+              // These are not sent in the API response so we can transparently
+              // use Yalies data, but in the future they should be customizable
+              upi: yaliesUserData.upi,
+              school: yaliesUserData.school,
+              year: yaliesUserData.year,
+              college: yaliesUserData.college,
+              major: yaliesUserData.major,
+              curriculum: yaliesUserData.curriculum,
             })
             .where(eq(studentBluebookSettings.netId, profile.user));
-
-          done(null, {
-            netId: profile.user,
-            evals: enableEvals,
-            email: user.email,
-            firstName: user.first_name,
-            lastName: user.last_name,
-          });
         } catch (err) {
           winston.error(`Yalies connection error: ${String(err)}`);
-          done(null, {
-            netId: profile.user,
-            evals: false,
-          });
         }
+        done(null, user);
       },
     ),
   );

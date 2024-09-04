@@ -1891,7 +1891,7 @@ export type CourseFlagsBoolExp = {
 
 /** unique or primary key constraints on table "course_flags" */
 export enum CourseFlagsConstraint {
-  /** unique or primary key constraint on columns "course_id", "flag_id" */
+  /** unique or primary key constraint on columns "flag_id", "course_id" */
   PkCourseFlagsStaged = 'pk_course_flags_staged',
 }
 

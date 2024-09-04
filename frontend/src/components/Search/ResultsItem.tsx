@@ -50,7 +50,9 @@ function Rating({
       placement="top"
       overlay={(props) => (
         <Tooltip id="blur-rating-tooltip" {...props}>
-          These colors are randomly generated. Sign in to see real ratings.
+          These colors are randomly generated.{' '}
+          {hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see
+          real ratings.
         </Tooltip>
       )}
     >

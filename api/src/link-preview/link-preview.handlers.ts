@@ -104,7 +104,7 @@ export async function generateLinkPreview(
   req: express.Request,
   res: express.Response,
 ): Promise<void> {
-  // log url accessed
+  // Log url accessed
   winston.info(
     `Generating link preview for ${String(req.query['course-modal'] ?? req.query.url ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
   );

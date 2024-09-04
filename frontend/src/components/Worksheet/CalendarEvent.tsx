@@ -7,30 +7,27 @@ import WorksheetHideButton from './WorksheetHideButton';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { RBCEvent } from '../../utilities/calendar';
-import { CourseInfoPopover } from '../Search/ResultsItemCommon';
 import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export const CalendarEventBody = React.forwardRef(
-  ({ event }: { readonly event: RBCEvent }, ref: React.Ref<HTMLDivElement>) => {
-    const textColor =
-      chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
-    return (
-      <div className={styles.event} ref={ref} style={{ color: textColor }}>
-        <strong>{event.title}</strong>
-        <br />
-        <ResponsiveEllipsis
-          className={styles.courseNameText}
-          text={event.description}
-          maxLine="2"
-          basedOn="words"
-        />
-        <small className={styles.locationText}>{event.location}</small>
-      </div>
-    );
-  },
-);
+export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
+  const textColor =
+    chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
+  return (
+    <div className={styles.event} style={{ color: textColor }}>
+      <strong>{event.title}</strong>
+      <br />
+      <ResponsiveEllipsis
+        className={styles.courseNameText}
+        text={event.description}
+        maxLine="2"
+        basedOn="words"
+      />
+      <small className={styles.locationText}>{event.location}</small>
+    </div>
+  );
+}
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { listing } = event;
@@ -38,9 +35,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
 
   return (
     <>
-      <CourseInfoPopover listing={listing}>
-        <CalendarEventBody event={event} />
-      </CourseInfoPopover>
+      <CalendarEventBody event={event} />
       {person === 'me' && (
         <div className={styles.eventButtons}>
           <WorksheetHideButton

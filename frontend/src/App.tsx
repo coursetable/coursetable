@@ -38,6 +38,9 @@ const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
 const LinkPreview = suspended(
   () => import('./pages/releases/link-preview.mdx'),
 );
+const Spring24Release = suspended(
+  () => import('./pages/releases/spring24.mdx'),
+);
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function AuthenticatedRoutes() {
@@ -50,10 +53,6 @@ function AuthenticatedRoutes() {
   );
 
   const location = useLocation();
-  const messages = {
-    '/worksheet': 'your worksheet',
-    '/graphiql': 'the GraphQL interface',
-  };
 
   if (authStatus === 'loading') return <Spinner />;
 
@@ -61,18 +60,23 @@ function AuthenticatedRoutes() {
     case '/catalog':
       return <Outlet />;
 
+    case '/worksheet':
+      if (authStatus === 'authenticated') return <Outlet />;
+      return (
+        <NeedsLogin redirect={location.pathname} message="your worksheet" />
+      );
+
     case '/login':
       if (authStatus === 'authenticated')
         return <Navigate to="/catalog" replace />;
       return <Outlet />;
 
     case '/graphiql':
-    case '/worksheet':
       if (user.hasEvals) return <Outlet />;
       return (
         <NeedsLogin
           redirect={location.pathname}
-          message={messages[location.pathname]}
+          message="the GraphQL interface"
         />
       );
 
@@ -109,20 +113,18 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={7}
+        id={9}
       >
-        Read our semi-technical dive into{' '}
         <a
-          href="/releases/link-preview"
+          href="/joinus"
           style={{
             color: 'white',
             fontWeight: 'bold',
             textDecoration: 'underline',
           }}
         >
-          how we've optimized link previews
+          Y/CS applications are live. Apply to join the CourseTable team!
         </a>
-        !
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -151,6 +153,7 @@ function App() {
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
         <Route path="/releases/link-preview" element={<LinkPreview />} />
+        <Route path="/releases/spring24" element={<Spring24Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
