@@ -174,7 +174,7 @@ export function toggleBookmark(body: {
     },
     breadcrumb: {
       category: 'worksheet',
-      message: 'Updating worksheet',
+      message: 'Toggling bookmark in worksheet',
     },
   });
 }
@@ -205,7 +205,7 @@ export function updateBookmark(body: UpdateBookmarkActionWithData & {
     },
     breadcrumb: {
       category: 'worksheet',
-      message: 'Updating worksheet',
+      message: 'Updating course in worksheet',
     },
   });
 }
