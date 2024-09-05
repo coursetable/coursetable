@@ -71,6 +71,7 @@ export const worksheetCourses = pgTable(
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').notNull(),
     color: varchar('color', { length: 32 }).notNull(),
+    hidden: boolean('hidden').notNull(),
   },
   (table) => ({
     worksheetNetidIdx: index('worksheet_netid_idx').on(table.netId),
@@ -79,6 +80,7 @@ export const worksheetCourses = pgTable(
       table.crn,
       table.season,
       table.worksheetNumber,
+      table.hidden,
     ),
   }),
 );

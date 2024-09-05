@@ -149,7 +149,7 @@ async function fetchAPI(
 }
 
 export function toggleBookmark(body: {
-  action: 'add' | 'remove' | 'update';
+  action: 'add' | 'remove';
   season: Season;
   crn: Crn;
   worksheetNumber: number;
@@ -166,7 +166,38 @@ export function toggleBookmark(body: {
           toast.error('You have already added this class to your worksheet');
           return true;
         case 'NOT_BOOKMARKED':
-          toast.error('You have already remove this class from your worksheet');
+          toast.error('You have already removed this class from your worksheet');
+          return true;
+        default:
+          return false;
+      }
+    },
+    breadcrumb: {
+      category: 'worksheet',
+      message: 'Updating worksheet',
+    },
+  });
+}
+
+// When updating a bookmark, ensure it comes with its relevant update data
+type UpdateBookmarkActionWithData = 
+  | { action: 'color'; color: string }
+  | { action: 'hidden'; hidden: boolean };
+
+export function updateBookmark(body: UpdateBookmarkActionWithData & {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+}): Promise<boolean> {
+  return fetchAPI('/user/updateBookmark', {
+    body,
+    handleErrorCode(err) {
+      switch (err) {
+        // These errors can be triggered if the user clicks the button twice
+        // in a row
+        // TODO: we should debounce the request instead
+        case 'NOT_BOOKMARKED':
+          toast.error('You have already removed this class from your worksheet');
           return true;
         default:
           return false;
