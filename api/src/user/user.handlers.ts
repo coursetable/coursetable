@@ -9,7 +9,10 @@ import {
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
-import { ToggleBookmarkReqBodySchema, UpdateBookmarkReqBodySchema } from './user.schemas.js';
+import {
+  ToggleBookmarkReqBodySchema,
+  UpdateBookmarkReqBodySchema,
+} from './user.schemas.js';
 
 export const toggleBookmark = async (
   req: express.Request,
@@ -58,7 +61,7 @@ export const toggleBookmark = async (
       season,
       worksheetNumber,
       color,
-      hidden: false
+      hidden: false,
     });
   } else if (action === 'remove') {
     winston.info(
@@ -78,7 +81,7 @@ export const toggleBookmark = async (
           eq(worksheetCourses.worksheetNumber, worksheetNumber),
         ),
       );
-    }
+  }
 
   res.sendStatus(200);
 };
@@ -128,7 +131,8 @@ export const updateBookmark = async (
     return;
   }
 
-  const { action, season, crn, worksheetNumber, color, hidden } = bodyParseRes.data;
+  const { action, season, crn, worksheetNumber, color, hidden } =
+    bodyParseRes.data;
 
   const [existing] = await db
     .selectDistinctOn([
@@ -146,7 +150,7 @@ export const updateBookmark = async (
         eq(worksheetCourses.worksheetNumber, worksheetNumber),
       ),
     );
-  
+
   if (!existing) {
     res.status(400).json({ error: 'NOT_BOOKMARKED' });
     return;
@@ -155,35 +159,35 @@ export const updateBookmark = async (
   winston.info(
     `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
   );
-  
+
   switch (action) {
     case 'color':
       // Update color of a course
       await db
-      .update(worksheetCourses)
-      .set({ color })
-      .where(
-        and(
-          eq(worksheetCourses.netId, netId),
-          eq(worksheetCourses.crn, crn),
-          eq(worksheetCourses.season, season),
-          eq(worksheetCourses.worksheetNumber, worksheetNumber),
-        ),
-      );
+        .update(worksheetCourses)
+        .set({ color })
+        .where(
+          and(
+            eq(worksheetCourses.netId, netId),
+            eq(worksheetCourses.crn, crn),
+            eq(worksheetCourses.season, season),
+            eq(worksheetCourses.worksheetNumber, worksheetNumber),
+          ),
+        );
       break;
     case 'hidden':
       // Update hidden state of a course
       await db
-      .update(worksheetCourses)
-      .set({ hidden })
-      .where(
-        and(
-          eq(worksheetCourses.netId, netId),
-          eq(worksheetCourses.crn, crn),
-          eq(worksheetCourses.season, season),
-          eq(worksheetCourses.worksheetNumber, worksheetNumber),
-        ),
-      );
+        .update(worksheetCourses)
+        .set({ hidden })
+        .where(
+          and(
+            eq(worksheetCourses.netId, netId),
+            eq(worksheetCourses.crn, crn),
+            eq(worksheetCourses.season, season),
+            eq(worksheetCourses.worksheetNumber, worksheetNumber),
+          ),
+        );
       break;
   }
   res.sendStatus(200);

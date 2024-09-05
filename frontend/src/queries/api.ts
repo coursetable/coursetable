@@ -166,7 +166,9 @@ export function toggleBookmark(body: {
           toast.error('You have already added this class to your worksheet');
           return true;
         case 'NOT_BOOKMARKED':
-          toast.error('You have already removed this class from your worksheet');
+          toast.error(
+            'You have already removed this class from your worksheet',
+          );
           return true;
         default:
           return false;
@@ -180,15 +182,17 @@ export function toggleBookmark(body: {
 }
 
 // When updating a bookmark, ensure it comes with its relevant update data
-type UpdateBookmarkActionWithData = 
+type UpdateBookmarkActionWithData =
   | { action: 'color'; color: string }
   | { action: 'hidden'; hidden: boolean };
 
-export function updateBookmark(body: UpdateBookmarkActionWithData & {
-  season: Season;
-  crn: Crn;
-  worksheetNumber: number;
-}): Promise<boolean> {
+export function updateBookmark(
+  body: UpdateBookmarkActionWithData & {
+    season: Season;
+    crn: Crn;
+    worksheetNumber: number;
+  },
+): Promise<boolean> {
   return fetchAPI('/user/updateBookmark', {
     body,
     handleErrorCode(err) {

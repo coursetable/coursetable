@@ -14,6 +14,9 @@ export const UpdateBookmarkReqBodySchema = z.object({
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
   worksheetNumber: z.number(),
-  color: z.string().refine((val) => chroma.valid(val)).optional(),
+  color: z
+    .string()
+    .refine((val) => chroma.valid(val))
+    .optional(),
   hidden: z.boolean().optional(),
 });

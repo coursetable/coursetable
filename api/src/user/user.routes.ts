@@ -1,7 +1,11 @@
 import type express from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { toggleBookmark, getUserWorksheet, updateBookmark } from './user.handlers.js';
+import {
+  toggleBookmark,
+  getUserWorksheet,
+  updateBookmark,
+} from './user.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
 export default (app: express.Express): void => {
