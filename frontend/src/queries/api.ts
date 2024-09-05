@@ -197,7 +197,7 @@ export function updateBookmark(body: UpdateBookmarkActionWithData & {
         // in a row
         // TODO: we should debounce the request instead
         case 'NOT_BOOKMARKED':
-          toast.error('You have already removed this class from your worksheet');
+          toast.error('This class does not exist in your worksheet');
           return true;
         default:
           return false;
