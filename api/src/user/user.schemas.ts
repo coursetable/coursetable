@@ -1,5 +1,5 @@
-import z from 'zod';
 import chroma from 'chroma-js';
+import z from 'zod';
 
 export const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
@@ -9,7 +9,7 @@ export const ToggleBookmarkReqBodySchema = z.object({
   color: z.string().refine((val) => chroma.valid(val)),
 });
 
-export const UpdateBookmarkReqBodySchema = z.array(
+export const UpdateBookmarkBatchReqBodySchema = z.array(
   z.object({
     action: z.union([z.literal('color'), z.literal('hidden')]),
     season: z.string().transform((val) => parseInt(val, 10)),

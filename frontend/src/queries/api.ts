@@ -181,7 +181,7 @@ export function toggleBookmark(body: {
   });
 }
 
-export function updateBookmark(
+export function updateBookmarkBatch(
   body: [
     {
       action: 'color' | 'hidden';
@@ -193,7 +193,7 @@ export function updateBookmark(
     },
   ],
 ): Promise<boolean> {
-  return fetchAPI('/user/updateBookmark', {
+  return fetchAPI('/user/updateBookmarkBatch', {
     body,
     handleErrorCode(err) {
       switch (err) {

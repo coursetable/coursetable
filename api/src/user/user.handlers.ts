@@ -1,18 +1,16 @@
 import type express from 'express';
 import { and, eq } from 'drizzle-orm';
-
+import {
+  ToggleBookmarkReqBodySchema,
+  UpdateBookmarkBatchReqBodySchema,
+} from './user.schemas.js';
 import { worksheetCoursesToWorksheets } from './user.utils.js';
-
 import {
   studentBluebookSettings,
   worksheetCourses,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
-import {
-  ToggleBookmarkReqBodySchema,
-  UpdateBookmarkReqBodySchema,
-} from './user.schemas.js';
 
 export const toggleBookmark = async (
   req: express.Request,
@@ -116,7 +114,7 @@ export const getUserWorksheet = async (
   });
 };
 
-export const updateBookmark = async (
+export const updateBookmarkBatch = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
@@ -124,7 +122,7 @@ export const updateBookmark = async (
 
   const { netId } = req.user!;
 
-  const bodyParseRes = UpdateBookmarkReqBodySchema.safeParse(req.body);
+  const bodyParseRes = UpdateBookmarkBatchReqBodySchema.safeParse(req.body);
   if (!bodyParseRes.success) {
     winston.info(bodyParseRes.error.issues);
     res.status(400).json({ error: 'INVALID_REQUEST' });
