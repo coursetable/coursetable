@@ -131,64 +131,66 @@ export const updateBookmark = async (
     return;
   }
 
-  const { action, season, crn, worksheetNumber, color, hidden } =
-    bodyParseRes.data;
+  bodyParseRes.data.forEach(async (update) => {
+    const { action, season, crn, worksheetNumber, color, hidden } = update;
 
-  const [existing] = await db
-    .selectDistinctOn([
-      worksheetCourses.netId,
-      worksheetCourses.crn,
-      worksheetCourses.season,
-      worksheetCourses.worksheetNumber,
-    ])
-    .from(worksheetCourses)
-    .where(
-      and(
-        eq(worksheetCourses.netId, netId),
-        eq(worksheetCourses.crn, crn),
-        eq(worksheetCourses.season, season),
-        eq(worksheetCourses.worksheetNumber, worksheetNumber),
-      ),
+    const [existing] = await db
+      .selectDistinctOn([
+        worksheetCourses.netId,
+        worksheetCourses.crn,
+        worksheetCourses.season,
+        worksheetCourses.worksheetNumber,
+      ])
+      .from(worksheetCourses)
+      .where(
+        and(
+          eq(worksheetCourses.netId, netId),
+          eq(worksheetCourses.crn, crn),
+          eq(worksheetCourses.season, season),
+          eq(worksheetCourses.worksheetNumber, worksheetNumber),
+        ),
+      );
+
+    if (!existing) {
+      res.status(400).json({ error: 'NOT_BOOKMARKED' });
+      return;
+    }
+
+    winston.info(
+      `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
 
-  if (!existing) {
-    res.status(400).json({ error: 'NOT_BOOKMARKED' });
-    return;
-  }
+    switch (action) {
+      case 'color':
+        // Update color of a course
+        await db
+          .update(worksheetCourses)
+          .set({ color })
+          .where(
+            and(
+              eq(worksheetCourses.netId, netId),
+              eq(worksheetCourses.crn, crn),
+              eq(worksheetCourses.season, season),
+              eq(worksheetCourses.worksheetNumber, worksheetNumber),
+            ),
+          );
+        break;
+      case 'hidden':
+        // Update hidden state of a course
+        await db
+          .update(worksheetCourses)
+          .set({ hidden })
+          .where(
+            and(
+              eq(worksheetCourses.netId, netId),
+              eq(worksheetCourses.crn, crn),
+              eq(worksheetCourses.season, season),
+              eq(worksheetCourses.worksheetNumber, worksheetNumber),
+            ),
+          );
+        break;
+      }
+  });
 
-  winston.info(
-    `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-  );
-
-  switch (action) {
-    case 'color':
-      // Update color of a course
-      await db
-        .update(worksheetCourses)
-        .set({ color })
-        .where(
-          and(
-            eq(worksheetCourses.netId, netId),
-            eq(worksheetCourses.crn, crn),
-            eq(worksheetCourses.season, season),
-            eq(worksheetCourses.worksheetNumber, worksheetNumber),
-          ),
-        );
-      break;
-    case 'hidden':
-      // Update hidden state of a course
-      await db
-        .update(worksheetCourses)
-        .set({ hidden })
-        .where(
-          and(
-            eq(worksheetCourses.netId, netId),
-            eq(worksheetCourses.crn, crn),
-            eq(worksheetCourses.season, season),
-            eq(worksheetCourses.worksheetNumber, worksheetNumber),
-          ),
-        );
-      break;
-  }
   res.sendStatus(200);
 };

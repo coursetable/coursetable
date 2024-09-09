@@ -181,17 +181,15 @@ export function toggleBookmark(body: {
   });
 }
 
-// When updating a bookmark, ensure it comes with its relevant update data
-type UpdateBookmarkActionWithData =
-  | { action: 'color'; color: string }
-  | { action: 'hidden'; hidden: boolean };
-
 export function updateBookmark(
-  body: UpdateBookmarkActionWithData & {
+  body: [{
+    action: 'color' | 'hidden';
     season: Season;
     crn: Crn;
     worksheetNumber: number;
-  },
+    color: string;
+    hidden: boolean;
+  }],
 ): Promise<boolean> {
   return fetchAPI('/user/updateBookmark', {
     body,

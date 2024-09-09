@@ -106,7 +106,7 @@ function Preview({
         components={{ event: CalendarEventBody }}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
-        onNavigate={() => {}}
+        onNavigate={() => { }}
       />
     </SurfaceComponent>
   );
@@ -161,13 +161,14 @@ function ColorPickerButton({
           <Button
             variant="primary"
             onClick={async () => {
-              await updateBookmark({
+              await updateBookmark([{
                 action: 'color',
                 season: curSeason,
                 crn: event.listing.crn,
                 worksheetNumber,
                 color: newColor,
-              });
+                hidden: false,
+              }]);
               await userRefresh();
               setOpen(false);
             }}

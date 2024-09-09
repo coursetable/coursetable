@@ -9,14 +9,13 @@ export const ToggleBookmarkReqBodySchema = z.object({
   color: z.string().refine((val) => chroma.valid(val)),
 });
 
-export const UpdateBookmarkReqBodySchema = z.object({
+export const UpdateBookmarkReqBodySchema = z.array(z.object({
   action: z.union([z.literal('color'), z.literal('hidden')]),
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
   worksheetNumber: z.number(),
   color: z
     .string()
-    .refine((val) => chroma.valid(val))
-    .optional(),
-  hidden: z.boolean().optional(),
-});
+    .refine((val) => chroma.valid(val)),
+  hidden: z.boolean(),
+}));
