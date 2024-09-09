@@ -182,14 +182,16 @@ export function toggleBookmark(body: {
 }
 
 export function updateBookmark(
-  body: [{
-    action: 'color' | 'hidden';
-    season: Season;
-    crn: Crn;
-    worksheetNumber: number;
-    color: string;
-    hidden: boolean;
-  }],
+  body: [
+    {
+      action: 'color' | 'hidden';
+      season: Season;
+      crn: Crn;
+      worksheetNumber: number;
+      color: string;
+      hidden: boolean;
+    },
+  ],
 ): Promise<boolean> {
   return fetchAPI('/user/updateBookmark', {
     body,

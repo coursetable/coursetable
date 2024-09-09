@@ -189,7 +189,7 @@ export const updateBookmark = async (
             ),
           );
         break;
-      }
+    }
   });
 
   res.sendStatus(200);
