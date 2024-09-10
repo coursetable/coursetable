@@ -65,6 +65,7 @@ function About() {
       links: {
         github: 'https://github.com/bearsyankees',
         linkedin: 'https://www.linkedin.com/in/aschap/',
+        website: 'https://alexschapiro.com/',
       },
     },
     {
