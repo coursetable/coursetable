@@ -115,7 +115,7 @@ function App() {
         // Don't remove this wrapper.
         id={9}
       >
-        <a
+        {/* <a
           href="/joinus"
           style={{
             color: 'white',
@@ -124,7 +124,7 @@ function App() {
           }}
         >
           Y/CS applications are live. Apply to join the CourseTable team!
-        </a>
+        </a> */}
       </Notice>
       <Navbar />
       <SentryRoutes>
