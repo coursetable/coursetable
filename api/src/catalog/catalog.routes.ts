@@ -32,7 +32,7 @@ export default (app: express.Express): void => {
   // Serve public catalog files without authentication
   app.use('/api/catalog/public', staticJSON('/catalogs-v2/public'));
 
-  app.use(
+  app.get(
     '/api/catalog/csv/:seasonCode(\\d{6}).csv',
     authWithEvals,
     asyncHandler(generateCSVCatalog),
