@@ -13,6 +13,7 @@
     "chroma-js": "^2.4.2",
     "connect-redis": "^7.1.1",
     "cors": "^2.8.5",
+    "csv-writer": "^1.6.0",
     "drizzle-orm": "^0.30.10",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",

@@ -9,6 +9,7 @@ import {
 } from 'react-bootstrap';
 import { FaChevronRight } from 'react-icons/fa';
 import { TextComponent } from '../components/Typography';
+import { API_ENDPOINT, CUR_SEASON } from '../config';
 import { scrollToTop } from '../utilities/display';
 import styles from './FAQ.module.css';
 
@@ -383,6 +384,65 @@ const faqs = [
             <a href="mailto:coursetable.at.yale@gmail.com">shoot us an email</a>{' '}
             with a brief description of your project, so we can keep in touch
             and understand how we may help.
+          </>
+        ),
+      },
+      {
+        title:
+          "I want to use CourseTable data, but I don't know how to use GraphQL.",
+        contents: (
+          <>
+            <p>
+              First, we strongly encourage you to try GraphQL because it's a
+              really powerful tool that you can adjust for your own needs. Each
+              of our static data files is a few metabytes large, and processing
+              it is a huge overhead even when you only need a slice of it.
+              However, if you really want to, our data is also available
+              statically as JSON and CSV.
+            </p>
+            <ul>
+              <li>
+                For <b>public data</b> in JSON format: go to{' '}
+                <a
+                  href={`${API_ENDPOINT}/api/catalog/public/${CUR_SEASON}`}
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  {API_ENDPOINT}/api/catalog/public/{CUR_SEASON}
+                </a>
+                . Replace {CUR_SEASON} with the season code you want (four-digit
+                year + two-digit season, 01 = spring, 02 = summer, 03 = fall).
+                Press <kbd>Ctrl</kbd> + <kbd>S</kbd> to save the data to a local
+                file.
+              </li>
+              <li>
+                For <b>evaluations data</b> in JSON format: go to{' '}
+                <a
+                  href={`${API_ENDPOINT}/api/catalog/evals/${CUR_SEASON}`}
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  {API_ENDPOINT}/api/catalog/evals/{CUR_SEASON}
+                </a>
+                . Replace {CUR_SEASON} with the season code you want. (This URL
+                likely doesn't work because the current season doesn't have
+                evaluations yet.) Press <kbd>Ctrl</kbd> + <kbd>S</kbd> to save
+                the data to a local file. Note that you must be signed in on
+                CourseTable to access this data.
+              </li>
+              <li>
+                For <b>all data</b> in CSV format: go to{' '}
+                <a
+                  href={`${API_ENDPOINT}/api/catalog/csv/${CUR_SEASON}.csv`}
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  {API_ENDPOINT}/api/catalog/csv/{CUR_SEASON}.csv
+                </a>
+                . Replace {CUR_SEASON} with the season code you want. The CSV
+                should be automatically downloaded.
+              </li>
+            </ul>
           </>
         ),
       },

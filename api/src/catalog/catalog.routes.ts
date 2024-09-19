@@ -1,6 +1,10 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { verifyHeaders, refreshCatalog } from './catalog.handlers.js';
+import {
+  verifyHeaders,
+  generateCSVCatalog,
+  refreshCatalog,
+} from './catalog.handlers.js';
 import { authWithEvals } from '../auth/auth.handlers.js';
 import { STATIC_FILE_DIR } from '../config.js';
 
@@ -27,6 +31,12 @@ export default (app: express.Express): void => {
 
   // Serve public catalog files without authentication
   app.use('/api/catalog/public', staticJSON('/catalogs-v2/public'));
+
+  app.use(
+    '/api/catalog/csv/:seasonCode(\\d{6}).csv',
+    authWithEvals,
+    asyncHandler(generateCSVCatalog),
+  );
 
   app.use(
     '/api/sitemaps',
