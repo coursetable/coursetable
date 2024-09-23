@@ -7,7 +7,6 @@ import { MdErrorOutline } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
 import { useStore } from '../../store';
@@ -119,7 +118,7 @@ function WorksheetToggleButton({
     ],
   );
 
-  const { isLgDesktop } = useWindowDimensions();
+  const isLgDesktop = useStore((state) => state.isLgDesktop);
 
   const toggleWorkSheet = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {

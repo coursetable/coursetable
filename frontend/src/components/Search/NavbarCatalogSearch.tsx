@@ -21,7 +21,7 @@ import {
   subjectsOptions,
   seasonsOptions,
 } from '../../contexts/searchContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { useStore } from '../../store';
 import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
 import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
@@ -122,7 +122,7 @@ function Slider<K extends NumericFilters>({
 }
 
 export function NavbarCatalogSearch() {
-  const { isTablet } = useWindowDimensions();
+  const isTablet = useStore((state) => state.isTablet);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
   const resetKey = useRef(0);

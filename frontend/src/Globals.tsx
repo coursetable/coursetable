@@ -18,8 +18,6 @@ import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
-import { ThemeProvider } from './contexts/themeContext';
-import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
 
 import './index.css';
@@ -66,20 +64,16 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
           {/* FerryProvider must be inside UserProvider because the former
             depends on login status */}
           <FerryProvider>
-            <WindowDimensionsProvider>
-              {/* SearchProvider must be inside WorksheetProvider because the
+            {/* SearchProvider must be inside WorksheetProvider because the
                   former depends on the currently viewed worksheet */}
-              <WorksheetProvider>
-                <SearchProvider>
-                  <ThemeProvider>
-                    <MDXProvider components={components}>
-                      <div id="base">{children}</div>
-                    </MDXProvider>
-                  </ThemeProvider>
-                </SearchProvider>
-              </WorksheetProvider>
-              <ToastContainer toastClassName="rounded" />
-            </WindowDimensionsProvider>
+            <WorksheetProvider>
+              <SearchProvider>
+                <MDXProvider components={components}>
+                  <div id="base">{children}</div>
+                </MDXProvider>
+              </SearchProvider>
+            </WorksheetProvider>
+            <ToastContainer toastClassName="rounded" />
           </FerryProvider>
         </ApolloProvider>
       </GapiProvider>

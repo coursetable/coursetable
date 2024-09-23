@@ -23,9 +23,9 @@ import {
   seasonsOptions,
   courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import { weekdays } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { credits, skillsAreasColors } from '../../utilities/constants';
 import {
   toRealTime,
@@ -153,7 +153,7 @@ function Slider<K extends NumericFilters>({
 }
 
 function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
-  const { isTablet } = useWindowDimensions();
+  const isTablet = useStore((state) => state.isTablet);
   const formLabelId = useId();
   const { filters, setStartTime } = useSearch();
 
