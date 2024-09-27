@@ -2,7 +2,7 @@
   width: 180px;
 }
 
-@media (width < 1200px) {
+@media (max-width: calc(1200px - 0.001px)) {
   .toggleButtonGroup {
     width: 140px;
   }
@@ -24,7 +24,7 @@
   width: 50%;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.001px)) {
   .toggleButton {
     font-size: 12px;
   }

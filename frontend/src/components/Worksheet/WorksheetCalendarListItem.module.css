@@ -28,7 +28,7 @@
   opacity: 1;
 }
 
-@media (width < 768px) {
+@media (max-width: calc(768px - 0.001px)) {
   .hideButtonHidden {
     opacity: 1;
   }

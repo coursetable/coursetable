@@ -47,13 +47,13 @@
   transition: border-color var(--trans-dur);
 }
 
-@media (width < 768px) {
+@media (max-width: calc(768px - 0.001px)) {
   .container {
     width: 80vw;
   }
 }
 
-@media (width < 576px) {
+@media (max-width: calc(576px - 0.001px)) {
   .container {
     width: 95vw;
   }

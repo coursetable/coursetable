@@ -33,7 +33,7 @@
   --width-col-season: 50px;
 }
 
-@media (width >= 1320px) {
+@media (min-width: 1320px) {
   .resultsContainer {
     --width-col-code: 110px;
     --width-col-overall: 92px;

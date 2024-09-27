@@ -14,7 +14,7 @@
   padding-bottom: 0.5rem;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.001px)) {
   .container {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
@@ -41,7 +41,7 @@
   line-height: 30px;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.001px)) {
   .headerCol {
     font-size: 12px;
     line-height: 24px;

@@ -45,7 +45,7 @@
   margin-right: auto;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.001px)) {
   .resultItemContent {
     line-height: 28px;
   }
@@ -107,7 +107,7 @@
   top: 0;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.001px)) {
   .tag,
   .ratingCell,
   .ellipsisText {

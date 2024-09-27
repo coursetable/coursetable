@@ -27,7 +27,7 @@
   border-radius: 10px;
 }
 
-@media (width < 768px) {
+@media (max-width: calc(768px - 0.001px)) {
   .overlayModal {
     width: 100%;
   }
@@ -39,7 +39,7 @@
   box-shadow: none;
 }
 
-@media (width < 768px) {
+@media (max-width: calc(768px - 0.001px)) {
   .overlayModalHidden {
     right: 0%;
     bottom: -100%;
