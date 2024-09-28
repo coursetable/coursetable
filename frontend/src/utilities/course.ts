@@ -1,5 +1,6 @@
 // Performing various actions on the listing dictionary
 import type { SortKeys } from '../contexts/searchContext';
+import type { WishlistCourse } from '../contexts/wishlistContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
@@ -41,6 +42,16 @@ export function isInWorksheet(
   );
 }
 
+export function isInWishlist(
+  allCourseCodes: string[],
+  wishlist: WishlistCourse[] | undefined,
+): boolean {
+  if (!wishlist || allCourseCodes.length === 0) return false;
+  return wishlist.some((wishlistCourse) =>
+    allCourseCodes.some((code) => code === wishlistCourse.courseCode),
+  );
+}
+
 export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
   const season = ['Spring', 'Summer', 'Fall'][Number(seasonCode[5]) - 1]!;
@@ -52,6 +63,12 @@ export type ListingWithTimes = {
   crn: Crn;
   course: {
     times_by_day: TimesByDay;
+  };
+};
+
+export type ListingWithOtherListings = {
+  course: {
+    listings: { course_code: string }[];
   };
 };
 
