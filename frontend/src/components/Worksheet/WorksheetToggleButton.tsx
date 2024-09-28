@@ -144,6 +144,7 @@ function WorksheetToggleButton({
         worksheetNumber: selectedWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
+        hidden: false,
       });
       if (success) await userRefresh();
     },

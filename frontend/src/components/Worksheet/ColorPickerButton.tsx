@@ -6,7 +6,7 @@ import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { updateBookmarkBatch } from '../../queries/api';
+import { toggleBookmark } from '../../queries/api';
 import { useStore } from '../../store';
 import { type RBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
@@ -161,16 +161,14 @@ function ColorPickerButton({
           <Button
             variant="primary"
             onClick={async () => {
-              await updateBookmarkBatch([
-                {
-                  action: 'color',
-                  season: curSeason,
-                  crn: event.listing.crn,
-                  worksheetNumber,
-                  color: newColor,
-                  hidden: false,
-                },
-              ]);
+              await toggleBookmark({
+                action: 'update',
+                season: curSeason,
+                crn: event.listing.crn,
+                worksheetNumber,
+                color: newColor,
+                hidden: false,
+              });
               await userRefresh();
               setOpen(false);
             }}

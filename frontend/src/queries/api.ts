@@ -149,11 +149,12 @@ async function fetchAPI(
 }
 
 export function toggleBookmark(body: {
-  action: 'add' | 'remove';
+  action: 'add' | 'remove' | 'update';
   season: Season;
   crn: Crn;
   worksheetNumber: number;
   color: string;
+  hidden: boolean;
 }): Promise<boolean> {
   return fetchAPI('/user/toggleBookmark', {
     body,
@@ -176,40 +177,7 @@ export function toggleBookmark(body: {
     },
     breadcrumb: {
       category: 'worksheet',
-      message: 'Toggling bookmark in worksheet',
-    },
-  });
-}
-
-export function updateBookmarkBatch(
-  body: [
-    {
-      action: 'color' | 'hidden';
-      season: Season;
-      crn: Crn;
-      worksheetNumber: number;
-      color: string;
-      hidden: boolean;
-    },
-  ],
-): Promise<boolean> {
-  return fetchAPI('/user/updateBookmarkBatch', {
-    body,
-    handleErrorCode(err) {
-      switch (err) {
-        // These errors can be triggered if the user clicks the button twice
-        // in a row
-        // TODO: we should debounce the request instead
-        case 'NOT_BOOKMARKED':
-          toast.error('This class does not exist in your worksheet');
-          return true;
-        default:
-          return false;
-      }
-    },
-    breadcrumb: {
-      category: 'worksheet',
-      message: 'Updating course in worksheet',
+      message: 'Updating worksheet',
     },
   });
 }

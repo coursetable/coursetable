@@ -1,9 +1,7 @@
 import type express from 'express';
+import chroma from 'chroma-js';
 import { and, eq } from 'drizzle-orm';
-import {
-  ToggleBookmarkReqBodySchema,
-  UpdateBookmarkBatchReqBodySchema,
-} from './user.schemas.js';
+import z from 'zod';
 import { worksheetCoursesToWorksheets } from './user.utils.js';
 import {
   studentBluebookSettings,
@@ -12,22 +10,31 @@ import {
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
 
-export const toggleBookmark = async (
-  req: express.Request,
-  res: express.Response,
-): Promise<void> => {
-  winston.info('Toggling course bookmark');
+const UpdateBookmarkReqItemSchema = z.object({
+  action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  crn: z.number(),
+  worksheetNumber: z.number(),
+  color: z.string().refine((val) => chroma.valid(val)),
+  hidden: z.boolean(),
+});
 
-  const { netId } = req.user!;
+const UpdateBookmarkReqBodySchema = z.union([
+  UpdateBookmarkReqItemSchema,
+  z.array(UpdateBookmarkReqItemSchema),
+]);
 
-  const bodyParseRes = ToggleBookmarkReqBodySchema.safeParse(req.body);
-  if (!bodyParseRes.success) {
-    res.status(400).json({ error: 'INVALID_REQUEST' });
-    return;
-  }
-
-  const { action, season, crn, worksheetNumber, color } = bodyParseRes.data;
-
+async function updateBookmark(
+  {
+    action,
+    season,
+    crn,
+    worksheetNumber,
+    color,
+    hidden,
+  }: z.infer<typeof UpdateBookmarkReqItemSchema>,
+  netId: string,
+): Promise<string | undefined> {
   const [existing] = await db
     .selectDistinctOn([
       worksheetCourses.netId,
@@ -49,26 +56,20 @@ export const toggleBookmark = async (
     winston.info(
       `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
-    if (existing) {
-      res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
-      return;
-    }
+    if (existing) return 'ALREADY_BOOKMARKED';
     await db.insert(worksheetCourses).values({
       netId,
       crn,
       season,
       worksheetNumber,
       color,
-      hidden: false,
+      hidden,
     });
   } else if (action === 'remove') {
     winston.info(
       `Removing bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
-    if (!existing) {
-      res.status(400).json({ error: 'NOT_BOOKMARKED' });
-      return;
-    }
+    if (!existing) return 'NOT_BOOKMARKED';
     await db
       .delete(worksheetCourses)
       .where(
@@ -79,8 +80,59 @@ export const toggleBookmark = async (
           eq(worksheetCourses.worksheetNumber, worksheetNumber),
         ),
       );
+  } else {
+    // Update data of a bookmarked course
+    winston.info(
+      `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
+    );
+    if (!existing) return 'NOT_BOOKMARKED';
+    await db
+      .update(worksheetCourses)
+      .set({ color, hidden })
+      .where(
+        and(
+          eq(worksheetCourses.netId, netId),
+          eq(worksheetCourses.crn, crn),
+          eq(worksheetCourses.season, season),
+          eq(worksheetCourses.worksheetNumber, worksheetNumber),
+        ),
+      );
   }
+  return undefined;
+}
 
+export const updateBookmarks = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  winston.info('Toggling course bookmark');
+
+  const { netId } = req.user!;
+
+  const bodyParseRes = UpdateBookmarkReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+  if (!Array.isArray(bodyParseRes.data)) {
+    const result = await updateBookmark(bodyParseRes.data, netId);
+    if (result) {
+      res.status(400).json({ error: result });
+      return;
+    }
+  } else {
+    const results = await Promise.all(
+      bodyParseRes.data.map((item) => updateBookmark(item, netId)),
+    );
+    if (results.some((r) => r !== undefined)) {
+      res.status(400).json({
+        error: Object.fromEntries(
+          [...results.entries()].filter((x) => x[1] !== undefined),
+        ),
+      });
+      return;
+    }
+  }
   res.sendStatus(200);
 };
 
@@ -112,83 +164,4 @@ export const getUserWorksheet = async (
     school: studentProfile?.school ?? null,
     data: worksheetCoursesToWorksheets(worksheets)[netId] ?? {},
   });
-};
-
-export const updateBookmarkBatch = async (
-  req: express.Request,
-  res: express.Response,
-): Promise<void> => {
-  winston.info('Updating course bookmark');
-
-  const { netId } = req.user!;
-
-  const bodyParseRes = UpdateBookmarkBatchReqBodySchema.safeParse(req.body);
-  if (!bodyParseRes.success) {
-    winston.info(bodyParseRes.error.issues);
-    res.status(400).json({ error: 'INVALID_REQUEST' });
-    return;
-  }
-
-  bodyParseRes.data.forEach(async (update) => {
-    const { action, season, crn, worksheetNumber, color, hidden } = update;
-
-    const [existing] = await db
-      .selectDistinctOn([
-        worksheetCourses.netId,
-        worksheetCourses.crn,
-        worksheetCourses.season,
-        worksheetCourses.worksheetNumber,
-      ])
-      .from(worksheetCourses)
-      .where(
-        and(
-          eq(worksheetCourses.netId, netId),
-          eq(worksheetCourses.crn, crn),
-          eq(worksheetCourses.season, season),
-          eq(worksheetCourses.worksheetNumber, worksheetNumber),
-        ),
-      );
-
-    if (!existing) {
-      res.status(400).json({ error: 'NOT_BOOKMARKED' });
-      return;
-    }
-
-    winston.info(
-      `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-    );
-
-    switch (action) {
-      case 'color':
-        // Update color of a course
-        await db
-          .update(worksheetCourses)
-          .set({ color })
-          .where(
-            and(
-              eq(worksheetCourses.netId, netId),
-              eq(worksheetCourses.crn, crn),
-              eq(worksheetCourses.season, season),
-              eq(worksheetCourses.worksheetNumber, worksheetNumber),
-            ),
-          );
-        break;
-      case 'hidden':
-        // Update hidden state of a course
-        await db
-          .update(worksheetCourses)
-          .set({ hidden })
-          .where(
-            and(
-              eq(worksheetCourses.netId, netId),
-              eq(worksheetCourses.crn, crn),
-              eq(worksheetCourses.season, season),
-              eq(worksheetCourses.worksheetNumber, worksheetNumber),
-            ),
-          );
-        break;
-    }
-  });
-
-  res.sendStatus(200);
 };
