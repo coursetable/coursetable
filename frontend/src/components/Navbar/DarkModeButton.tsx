@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { FaRegMoon } from 'react-icons/fa';
 import { ImSun } from 'react-icons/im';
-import { useTheme } from '../../contexts/themeContext';
+import { useShallow } from 'zustand/react/shallow';
+import { useStore } from '../../store';
 import styles from './DarkModeButton.module.css';
 
 function DarkModeButton({
@@ -9,7 +10,12 @@ function DarkModeButton({
 }: {
   readonly className: string | undefined;
 }) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useStore(
+    useShallow((state) => ({
+      theme: state.theme,
+      toggleTheme: state.toggleTheme,
+    })),
+  );
   const Icon = theme === 'dark' ? FaRegMoon : ImSun;
   const label = `To ${theme === 'dark' ? 'light' : 'dark'} mode`;
   return (

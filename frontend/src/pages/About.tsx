@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Card, Row } from 'react-bootstrap';
 import { TextComponent } from '../components/Typography';
-import { useTheme } from '../contexts/themeContext';
 
 // Current Member Headshots
 import ag from '../images/headshots/abhijit-gupta.jpg';
@@ -41,6 +40,7 @@ import github from '../images/link-logos/github.png';
 import linkedin from '../images/link-logos/linkedin.png';
 import webDark from '../images/link-logos/web-light.png';
 import web from '../images/link-logos/web.png';
+import { useStore } from '../store';
 import styles from './About.module.css';
 
 type Person = {
@@ -55,7 +55,7 @@ type Person = {
 };
 
 function About() {
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
 
   const current: Person[] = [
     {

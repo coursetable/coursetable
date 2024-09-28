@@ -323,9 +323,6 @@ function formatTime(a: Date) {
   }${hours < 12 ? 'a' : 'p'}m`;
 }
 
-// @ts-expect-error: you actually don't need to implement everything to make
-// things work! The type declares everything as required but react-big-calendar
-// actually provides defaults
 export const localizer = new DateLocalizer({
   firstOfWeek() {
     return 0;

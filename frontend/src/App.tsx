@@ -12,6 +12,8 @@ import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
 import { useAuth } from './hooks/useAuth';
+import { useDimensions } from './hooks/useDimensions';
+import { useTheme } from './hooks/useTheme';
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
@@ -89,6 +91,9 @@ function AuthenticatedRoutes() {
 function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
+  useAuth();
+  useTheme();
+  useDimensions();
 
   return (
     <div

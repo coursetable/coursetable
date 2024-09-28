@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
-import { useTheme } from '../contexts/themeContext';
 import { useTutorial } from '../contexts/tutorialContext';
+import { useStore } from '../store';
 import styles from './Tutorial.module.css';
 import './reactour-override.css';
 
@@ -134,7 +134,7 @@ function Tutorial() {
   const { isTutorialOpen, toggleTutorial, currentStep, setCurrentStep } =
     useTutorial();
 
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
   const location = useLocation();
 
   const steps = stepsContent.map(

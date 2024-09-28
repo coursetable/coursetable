@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import clsx from 'clsx';
 import { FormControl, Popover } from 'react-bootstrap';
 import type chroma from 'chroma-js';
-import { useTheme } from '../contexts/themeContext';
+import { useStore } from '../store';
 import styles from './Typography.module.css';
 
 export function SurfaceComponent({
@@ -90,7 +90,7 @@ export const RatingBubble = forwardRef<
   ) &
     Omit<React.ComponentProps<'span'>, 'color'>
 >(({ rating, colorMap, className, style, color, ...props }, ref) => {
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
   return (
     <span
       {...props}

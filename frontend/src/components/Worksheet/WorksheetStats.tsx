@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
-import { useTheme } from '../../contexts/themeContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
   getOverallRatings,
@@ -12,6 +12,7 @@ import {
   isDiscussionSection,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
+
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -23,7 +24,7 @@ function StatPill({
   readonly stat: number;
   readonly children: React.ReactNode;
 }) {
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
   return (
     <dd
       className={styles.statPill}
