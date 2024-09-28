@@ -260,13 +260,7 @@ export const getFriendsWorksheets = async (
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx
-        .select({
-          netId: worksheetCourses.netId,
-          crn: worksheetCourses.crn,
-          season: worksheetCourses.season,
-          worksheetNumber: worksheetCourses.worksheetNumber,
-          color: worksheetCourses.color,
-        })
+        .select()
         .from(worksheetCourses)
         .where(inArray(worksheetCourses.netId, friendNetIds));
 
