@@ -123,6 +123,18 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
   - See the `catalogBySeason` query
 
+### `GET` `/api/catalog/csv/{season}.csv`
+
+#### Request
+
+- Needs eval access
+
+#### Response
+
+**Status: 200**
+
+- Body: CSV file
+
 ### `GET` `/api/static/catalogs/evals/{season}.json`
 
 DEPRECATED: use `/api/catalog/evals/{season}` instead
