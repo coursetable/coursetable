@@ -33,6 +33,7 @@ async function updateBookmark(
     crn,
     worksheetNumber,
     color,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     hidden,
   }: z.infer<typeof ToggleBookmarkReqItemSchema>,
   netId: string,
@@ -65,7 +66,10 @@ async function updateBookmark(
       season,
       worksheetNumber,
       color,
-      hidden,
+      // Currently the frontend is not capable of actually syncing the hidden
+      // state so we keep it as null. This allows it to be properly synced in
+      // the future
+      hidden: null,
     });
   } else if (action === 'remove') {
     winston.info(
@@ -90,7 +94,10 @@ async function updateBookmark(
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      .set({ color, hidden })
+      // Currently the frontend is not capable of actually syncing the hidden
+      // state so we keep it as null. This allows it to be properly synced in
+      // the future
+      .set({ color, hidden: null })
       .where(
         and(
           eq(worksheetCourses.netId, netId),
