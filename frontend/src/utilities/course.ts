@@ -50,9 +50,10 @@ export function toSeasonString(seasonCode: Season): string {
 // A "best guess" for when the season's courses are first published.
 // TODO this should be pulled from Ferry once Ferry records this info
 export function toSeasonDate(seasonCode: Season): string {
-  const date = ['11-01', '01-02', '04-01'][Number(seasonCode[5]) - 1]!;
+  const season = Number(seasonCode[5]);
+  const date = ['11-01', '01-02', '04-01'][season - 1]!;
   let year = Number(seasonCode.substring(0, 4));
-  if (seasonCode[5] === '1') year--;
+  if (season === 1) year--;
   return `${year}-${date}`;
 }
 
