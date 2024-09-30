@@ -201,22 +201,19 @@ function CourseModal() {
       return prev;
     });
   };
-  const structuredJSON = () => {
-    const data = {
-      '@context': 'https://schema.org/',
-      name: { title },
-      description: { description },
-      datePublished: toSeasonDate(listing.season_code),
-    };
-    return JSON.stringify(data);
-  };
+  const structuredJSON = JSON.stringify({
+    '@context': 'https://schema.org/',
+    name: { title },
+    description: { description },
+    datePublished: toSeasonDate(listing.season_code),
+  });
   return (
     <div className="d-flex justify-content-center">
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
         <script className="structured-data-list" type="application/ld+json">
-          {structuredJSON()}
+          {structuredJSON}
         </script>
       </Helmet>
       <Modal
