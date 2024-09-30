@@ -12,7 +12,7 @@ import {
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
 
-const ToggleBookmarkReqItemSchema = z.object({
+const UpdateWorksheetReqItemSchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
@@ -21,12 +21,12 @@ const ToggleBookmarkReqItemSchema = z.object({
   hidden: z.boolean(),
 });
 
-const ToggleBookmarkReqBodySchema = z.union([
-  ToggleBookmarkReqItemSchema,
-  z.array(ToggleBookmarkReqItemSchema),
+const UpdateWorksheetReqBodySchema = z.union([
+  UpdateWorksheetReqItemSchema,
+  z.array(UpdateWorksheetReqItemSchema),
 ]);
 
-async function updateBookmark(
+async function updateWorksheet(
   {
     action,
     season,
@@ -35,7 +35,7 @@ async function updateBookmark(
     color,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     hidden,
-  }: z.infer<typeof ToggleBookmarkReqItemSchema>,
+  }: z.infer<typeof UpdateWorksheetReqItemSchema>,
   netId: string,
 ): Promise<string | undefined> {
   const [existing] = await db
@@ -110,7 +110,7 @@ async function updateBookmark(
   return undefined;
 }
 
-export const updateBookmarks = async (
+export const updateWorksheets = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
@@ -118,20 +118,20 @@ export const updateBookmarks = async (
 
   const { netId } = req.user!;
 
-  const bodyParseRes = ToggleBookmarkReqBodySchema.safeParse(req.body);
+  const bodyParseRes = UpdateWorksheetReqBodySchema.safeParse(req.body);
   if (!bodyParseRes.success) {
     res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
   if (!Array.isArray(bodyParseRes.data)) {
-    const result = await updateBookmark(bodyParseRes.data, netId);
+    const result = await updateWorksheet(bodyParseRes.data, netId);
     if (result) {
       res.status(400).json({ error: result });
       return;
     }
   } else {
     const results = await Promise.all(
-      bodyParseRes.data.map((item) => updateBookmark(item, netId)),
+      bodyParseRes.data.map((item) => updateWorksheet(item, netId)),
     );
     if (results.some((r) => r !== undefined)) {
       res.status(400).json({

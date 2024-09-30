@@ -148,7 +148,7 @@ async function fetchAPI(
   }
 }
 
-export function toggleBookmark(body: {
+export function updateWorksheet(body: {
   action: 'add' | 'remove' | 'update';
   season: Season;
   crn: Crn;
@@ -156,7 +156,7 @@ export function toggleBookmark(body: {
   color: string;
   hidden: boolean;
 }): Promise<boolean> {
-  return fetchAPI('/user/toggleBookmark', {
+  return fetchAPI('/user/updateWorksheet', {
     body,
     handleErrorCode(err) {
       switch (err) {

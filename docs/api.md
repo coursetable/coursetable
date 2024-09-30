@@ -308,7 +308,7 @@ DEPRECATED: use `/api/catalog/public/{season}` instead
 
 ## Worksheet
 
-### `POST` `/api/user/toggleBookmark`
+### `POST` `/api/user/updateWorksheet`
 
 #### Request
 

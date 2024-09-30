@@ -6,7 +6,7 @@ import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toggleBookmark } from '../../queries/api';
+import { updateWorksheet } from '../../queries/api';
 import { useStore } from '../../store';
 import { type RBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
@@ -106,7 +106,7 @@ function Preview({
         components={{ event: CalendarEventBody }}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
-        onNavigate={() => {}}
+        onNavigate={() => { }}
       />
     </SurfaceComponent>
   );
@@ -161,7 +161,7 @@ function ColorPickerButton({
           <Button
             variant="primary"
             onClick={async () => {
-              await toggleBookmark({
+              await updateWorksheet({
                 action: 'update',
                 season: curSeason,
                 crn: event.listing.crn,

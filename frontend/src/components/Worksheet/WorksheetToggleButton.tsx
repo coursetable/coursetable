@@ -9,7 +9,7 @@ import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
+import { updateWorksheet, toggleCourseHidden } from '../../queries/api';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
@@ -137,7 +137,7 @@ function WorksheetToggleButton({
           hidden: false,
         });
       }
-      const success = await toggleBookmark({
+      const success = await updateWorksheet({
         action: addRemove,
         season: listing.season_code,
         crn: listing.crn,
