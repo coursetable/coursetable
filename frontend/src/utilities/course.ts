@@ -48,10 +48,10 @@ export function toSeasonString(seasonCode: Season): string {
 }
 
 export function toSeasonDate(seasonCode: Season): string {
-  const date = ['11-01', '01-02', '04-01'][Number(seasonCode[5])-1]!;
-  let year = seasonCode.substring(0,4);
-  if (Number(seasonCode[5]) === 1) year = (Number(year)-1).toString();
-  return `${year}-${date}`
+  const date = ['11-01', '01-02', '04-01'][Number(seasonCode[5]) - 1]!;
+  let year = seasonCode.substring(0, 4);
+  if (Number(seasonCode[5]) === 1) year = (Number(year) - 1).toString();
+  return `${year}-${date}`;
 }
 
 export type ListingWithTimes = {
