@@ -320,17 +320,20 @@ DEPRECATED: use `/api/catalog/public/{season}` instead
 
 ## Worksheet
 
-### `POST` `/api/user/toggleBookmark`
+### `POST` `/api/user/updateWorksheet`
 
 #### Request
 
 - Needs credentials
 - Body:
-  - `action`: `"add" | "remove" | "update"`
-  - `season`: `string`
-  - `crn`: `number`
-  - `worksheetNumber`: `number`
-  - `color`: `string` (must be a valid color string)
+  - Option 1 (single update):
+    - `action`: `"add" | "remove" | "update"`
+    - `season`: `string`
+    - `crn`: `number`
+    - `worksheetNumber`: `number`
+    - `color`: `string` (must be a valid color string)
+    - `hidden`: `boolean`
+  - Option 2 (bulk update): array containing objects with the same shape as the single update
 
 #### Response
 
@@ -342,7 +345,10 @@ DEPRECATED: use `/api/catalog/public/{season}` instead
 
 - When the request body is invalid
 - Body:
-  - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
+  - Option 1 (single update):
+    - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
+  - Option 2 (bulk update):
+    - `error`: an object where each key is an index in the request array, and the value is one of the above errors
 
 ### `GET` `/api/user/worksheets`
 

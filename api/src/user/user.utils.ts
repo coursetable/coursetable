@@ -5,6 +5,7 @@ export function worksheetCoursesToWorksheets(
     season: number;
     worksheetNumber: number;
     color: string;
+    hidden: boolean | null;
   }[],
 ) {
   const res: {

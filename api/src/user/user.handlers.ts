@@ -12,30 +12,32 @@ import {
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
 
-const ToggleBookmarkReqBodySchema = z.object({
+const UpdateWorksheetReqItemSchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
   worksheetNumber: z.number(),
   color: z.string().refine((val) => chroma.valid(val)),
+  hidden: z.boolean(),
 });
 
-export const toggleBookmark = async (
-  req: express.Request,
-  res: express.Response,
-): Promise<void> => {
-  winston.info('Toggling course bookmark');
+const UpdateWorksheetReqBodySchema = z.union([
+  UpdateWorksheetReqItemSchema,
+  z.array(UpdateWorksheetReqItemSchema),
+]);
 
-  const { netId } = req.user!;
-
-  const bodyParseRes = ToggleBookmarkReqBodySchema.safeParse(req.body);
-  if (!bodyParseRes.success) {
-    res.status(400).json({ error: 'INVALID_REQUEST' });
-    return;
-  }
-
-  const { action, season, crn, worksheetNumber, color } = bodyParseRes.data;
-
+async function updateWorksheet(
+  {
+    action,
+    season,
+    crn,
+    worksheetNumber,
+    color,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    hidden,
+  }: z.infer<typeof UpdateWorksheetReqItemSchema>,
+  netId: string,
+): Promise<string | undefined> {
   const [existing] = await db
     .selectDistinctOn([
       worksheetCourses.netId,
@@ -57,25 +59,23 @@ export const toggleBookmark = async (
     winston.info(
       `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
-    if (existing) {
-      res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
-      return;
-    }
+    if (existing) return 'ALREADY_BOOKMARKED';
     await db.insert(worksheetCourses).values({
       netId,
       crn,
       season,
       worksheetNumber,
       color,
+      // Currently the frontend is not capable of actually syncing the hidden
+      // state so we keep it as null. This allows it to be properly synced in
+      // the future
+      hidden: null,
     });
   } else if (action === 'remove') {
     winston.info(
       `Removing bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
-    if (!existing) {
-      res.status(400).json({ error: 'NOT_BOOKMARKED' });
-      return;
-    }
+    if (!existing) return 'NOT_BOOKMARKED';
     await db
       .delete(worksheetCourses)
       .where(
@@ -91,13 +91,13 @@ export const toggleBookmark = async (
     winston.info(
       `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
-    if (!existing) {
-      res.status(400).json({ error: 'NOT_BOOKMARKED' });
-      return;
-    }
+    if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      .set({ color })
+      // Currently the frontend is not capable of actually syncing the hidden
+      // state so we keep it as null. This allows it to be properly synced in
+      // the future
+      .set({ color, hidden: null })
       .where(
         and(
           eq(worksheetCourses.netId, netId),
@@ -107,7 +107,41 @@ export const toggleBookmark = async (
         ),
       );
   }
+  return undefined;
+}
 
+export const updateWorksheets = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  winston.info('Toggling course bookmark');
+
+  const { netId } = req.user!;
+
+  const bodyParseRes = UpdateWorksheetReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+  if (!Array.isArray(bodyParseRes.data)) {
+    const result = await updateWorksheet(bodyParseRes.data, netId);
+    if (result) {
+      res.status(400).json({ error: result });
+      return;
+    }
+  } else {
+    const results = await Promise.all(
+      bodyParseRes.data.map((item) => updateWorksheet(item, netId)),
+    );
+    if (results.some((r) => r !== undefined)) {
+      res.status(400).json({
+        error: Object.fromEntries(
+          [...results.entries()].filter((x) => x[1] !== undefined),
+        ),
+      });
+      return;
+    }
+  }
   res.sendStatus(200);
 };
 
