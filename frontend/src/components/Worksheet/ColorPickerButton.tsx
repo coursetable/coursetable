@@ -106,7 +106,7 @@ function Preview({
         components={{ event: CalendarEventBody }}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
-        onNavigate={() => { }}
+        onNavigate={() => {}}
       />
     </SurfaceComponent>
   );
