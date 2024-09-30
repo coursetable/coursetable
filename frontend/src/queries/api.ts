@@ -345,8 +345,7 @@ const userWorksheetsSchema = z.record(
       z.object({
         crn: crnSchema,
         color: z.string(),
-        // This currently is not sent by the backend.
-        hidden: z.boolean().optional().default(false),
+        hidden: z.boolean().nullable(),
       }),
     ),
   ),

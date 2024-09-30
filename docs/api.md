@@ -287,6 +287,7 @@ DEPRECATED: use `/api/catalog/public/{season}` instead
             [worksheetNumber: number]: {
               crn: Crn;
               color: string;
+              hidden: boolean | null;
             }[];
           };
         };
@@ -374,6 +375,7 @@ DEPRECATED: use `/api/catalog/public/{season}` instead
         [worksheetNumber: number]: {
           crn: Crn;
           color: string;
+          hidden: boolean | null;
         }[];
       };
     };

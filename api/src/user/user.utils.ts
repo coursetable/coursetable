@@ -14,6 +14,7 @@ export function worksheetCoursesToWorksheets(
         [worksheetNumber: number]: {
           crn: number;
           color: string;
+          hidden: boolean | null;
         }[];
       };
     };
@@ -27,6 +28,7 @@ export function worksheetCoursesToWorksheets(
     res[course.netId]![course.season]![course.worksheetNumber]!.push({
       crn: course.crn,
       color: course.color,
+      hidden: course.hidden,
     });
   }
   return res;
