@@ -147,6 +147,13 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ./start.sh -d
    ```
 
+   **Important**: Run with `--seed_ferry` to seed your local Postgres database for first time setup:
+
+   ```sh
+   cd api
+   ./start.sh -d --seed_ferry
+   ```
+
    Optionally, to overwrite your cached catalogs:
 
    ```sh
