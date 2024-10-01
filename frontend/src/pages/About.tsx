@@ -16,6 +16,7 @@ import eh from '../images/headshots/evan-hu.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import hs from '../images/headshots/harshal-sheth.jpg';
+import hx from '../images/headshots/humphrey-xu.jpg';
 import js from '../images/headshots/josephine-shin.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
 import kt from '../images/headshots/kenny-tung.jpg';
@@ -104,6 +105,15 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/tungk/',
         github: 'https://github.com/kentng01/',
         website: 'https://kenneru.netlify.app/',
+      },
+    },
+    {
+      name: 'Humphrey Xu',
+      image: hx,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
+        github: 'https://github.com/Etherite1',
       },
     },
   ];
