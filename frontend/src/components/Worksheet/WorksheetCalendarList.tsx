@@ -96,7 +96,7 @@ function WorksheetCalendarList() {
               <WorksheetCalendarListItem
                 key={curSeason + course.crn}
                 listing={course.listing}
-                hidden={course.hidden}
+                hidden={course.hidden ?? false}
               />
             ))}
           </ListGroup>
