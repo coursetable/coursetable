@@ -16,7 +16,7 @@ import eh from '../images/headshots/evan-hu.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import hs from '../images/headshots/harshal-sheth.jpg';
-import hx from '../images/headshots/humphrey-xu.jpg'
+import hx from '../images/headshots/humphrey-xu.jpg';
 import js from '../images/headshots/josephine-shin.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
 import kt from '../images/headshots/kenny-tung.jpg';
