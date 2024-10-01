@@ -18,12 +18,20 @@ on:
         type: boolean
 
 jobs:
+  cancel-previous-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.2
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+          cancel_future: false
+
   changes:
     runs-on: ubuntu-latest
-    # Required permissions
+    needs: cancel-previous-runs
     permissions:
       pull-requests: read
-    # Set job outputs to values from filter step
     outputs:
       api: ${{ steps.filter.outputs.api }}
       frontend: ${{ steps.filter.outputs.frontend }}
@@ -48,16 +56,13 @@ jobs:
   frontend-build-and-deploy:
     needs: changes
     if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend}}
-
     environment:
       name: Production
       url: https://coursetable.com
     runs-on: ubuntu-latest
-
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -78,22 +83,18 @@ jobs:
   api-build-and-deploy:
     needs: changes
     if: ${{ ( needs.changes.outputs.api == 'true' || inputs.api ) && needs.changes.outputs.db == 'false'}}
-
     environment:
       name: Production
       url: https://coursetable.com
     runs-on: self-hosted
-
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-
       - name: Build and Deploy Docker containers
         working-directory: ./api
         if: github.event_name == 'push'
         run: ./start.sh -p
-
       - name: Build and Deploy Docker containers (Manual)
         working-directory: ./api
         if: github.event_name == 'workflow_dispatch'
