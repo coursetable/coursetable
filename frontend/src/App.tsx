@@ -118,18 +118,19 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={9}
+        id={10}
       >
-        {/* <a
-          href="/joinus"
+        We want to hear from you. How can we make CourseTable better?{' '}
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
           style={{
             color: 'white',
             fontWeight: 'bold',
             textDecoration: 'underline',
           }}
         >
-          Y/CS applications are live. Apply to join the CourseTable team!
-        </a> */}
+          Fill out this quick survey!
+        </a>
       </Notice>
       <Navbar />
       <SentryRoutes>
