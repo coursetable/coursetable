@@ -26,7 +26,7 @@ jobs:
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
           cancel_future: false
-
+          only_status: 'waiting'
   changes:
     runs-on: ubuntu-latest
     needs: cancel-previous-runs
