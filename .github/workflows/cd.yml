@@ -25,7 +25,6 @@ jobs:
         uses: styfle/cancel-workflow-action@0.12.1
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
-          cancel_future: false
           only_status: 'waiting'
   changes:
     runs-on: ubuntu-latest
