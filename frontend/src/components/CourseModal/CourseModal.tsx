@@ -330,7 +330,7 @@ function CourseModal() {
                         ),
                       );
                     }}
-                    defaultValue={listing.section}
+                    value={listing.section}
                   >
                     {sections.map((course) => (
                       <option key={course.section} value={course.section}>
