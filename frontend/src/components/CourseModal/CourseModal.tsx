@@ -181,16 +181,22 @@ function CourseModal() {
       const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
       if (!listingFromQuery) return;
       setHistory([listingFromQuery]);
-      const crossSections: CourseModalHeaderData[] = [];
-      courses[seasonCode]?.forEach((course: CourseModalHeaderData) => {
-        if (course.course_code === listingFromQuery.course_code)
-          crossSections.push(course);
-      });
-      setSections(
-        crossSections.sort((a, b) => a.section.localeCompare(b.section)),
-      );
     });
   }, [history.length, searchParams, requestSeasons, courses]);
+  useEffect(() => {
+    const crossSections: CourseModalHeaderData[] = [];
+    const courseModal = searchParams.get('course-modal');
+    if (!courseModal) return;
+    const seasonCode = courseModal.split('-')[0] as Season;
+    courses[seasonCode]?.forEach((course: CourseModalHeaderData) => {
+      if (course.course_code === listing?.course_code)
+        crossSections.push(course);
+    });
+    setSections(
+      crossSections.sort((a, b) => a.section.localeCompare(b.section)),
+    );
+  }, [listing, courses, searchParams]);
+
   const backTarget = createCourseModalLink(
     history[history.length - 2],
     searchParams,
