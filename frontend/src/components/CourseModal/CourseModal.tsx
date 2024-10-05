@@ -188,14 +188,16 @@ function CourseModal() {
     const courseModal = searchParams.get('course-modal');
     if (!courseModal) return;
     const seasonCode = courseModal.split('-')[0] as Season;
-    courses[seasonCode]?.forEach((course: CourseModalHeaderData) => {
-      if (course.course_code === listing?.course_code)
-        crossSections.push(course);
+    void requestSeasons([seasonCode]).then(() => {
+      courses[seasonCode]?.forEach((course: CourseModalHeaderData) => {
+        if (course.course_code === listing?.course_code)
+          crossSections.push(course);
+      });
+      setSections(
+        crossSections.sort((a, b) => a.section.localeCompare(b.section)),
+      );
     });
-    setSections(
-      crossSections.sort((a, b) => a.section.localeCompare(b.section)),
-    );
-  }, [listing, courses, searchParams]);
+  }, [listing, courses, searchParams, requestSeasons]);
 
   const backTarget = createCourseModalLink(
     history[history.length - 2],
