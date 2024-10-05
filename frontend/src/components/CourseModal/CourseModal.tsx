@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
@@ -164,12 +164,14 @@ function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
   const user = useStore((state) => state.user);
+  const navigate = useNavigate();
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
   // This will update when history updates
   const listing = history[history.length - 1];
+  const [sections, setSections] = useState<CourseModalHeaderData[]>([]);
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -179,6 +181,14 @@ function CourseModal() {
       const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
       if (!listingFromQuery) return;
       setHistory([listingFromQuery]);
+      const crossSections: CourseModalHeaderData[] = [];
+      courses[seasonCode]?.forEach((course: CourseModalHeaderData) => {
+        if (course.course_code === listingFromQuery.course_code)
+          crossSections.push(course);
+      });
+      setSections(
+        crossSections.sort((a, b) => a.section.localeCompare(b.section)),
+      );
     });
   }, [history.length, searchParams, requestSeasons, courses]);
   const backTarget = createCourseModalLink(
@@ -293,6 +303,33 @@ function CourseModal() {
                       </React.Fragment>
                     ))}
                   </TextComponent>
+                </p>
+                <p className={styles.sections}>
+                  <select
+                    className={styles.sectionsDropdown}
+                    onChange={(event) => {
+                      const section = sections.find(
+                        (course) => course.section === event.target.value,
+                      )!;
+                      setHistory([...history.slice(0, -1), section]);
+                      navigate(
+                        createCourseModalLink(
+                          {
+                            crn: section.crn,
+                            season_code: listing.season_code,
+                          },
+                          searchParams,
+                        ),
+                      );
+                    }}
+                    defaultValue={listing.section}
+                  >
+                    {sections.map((course) => (
+                      <option key={course.section} value={course.section}>
+                        0{course.section}
+                      </option>
+                    ))}
+                  </select>
                 </p>
                 {[...listing.course.skills, ...listing.course.areas].map(
                   (skill) => (

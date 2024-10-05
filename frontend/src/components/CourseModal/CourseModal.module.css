@@ -141,6 +141,21 @@
   width: 250px;
 }
 
+.sections {
+  margin: 0 0.5rem 0 0;
+}
+
+.sectionsDropdown {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+  border: none;
+  font-weight: bold;
+  background-color: var(--color-select);
+  color: var(--color-text-tertiary);
+}
+
 .toolBar {
   display: flex;
   gap: 1em;
