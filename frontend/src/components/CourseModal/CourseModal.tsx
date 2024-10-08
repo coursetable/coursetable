@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
+import type { Option } from '../../contexts/searchContext';
 import type { Listings } from '../../generated/graphql-types';
 import type { Season, Crn } from '../../queries/graphql-types';
 import { useStore } from '../../store';
@@ -19,9 +20,12 @@ import {
   truncatedText,
 } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+
 import styles from './CourseModal.module.css';
 
 export type CourseModalHeaderData = Pick<
@@ -205,6 +209,15 @@ function CourseModal() {
   );
 
   if (!listing) return null;
+  const sectionsOptions: Map<string, Option> = new Map<string, Option>(
+    sections.map((section) => [
+      section.section,
+      {
+        value: section.section,
+        label: `0${section.section}`,
+      },
+    ]),
+  );
   const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
@@ -312,33 +325,24 @@ function CourseModal() {
                     ))}
                   </TextComponent>
                 </p>
-                <p className={styles.sections}>
-                  <select
-                    className={styles.sectionsDropdown}
-                    onChange={(event) => {
-                      const section = sections.find(
-                        (course) => course.section === event.target.value,
-                      )!;
-                      setHistory([...history.slice(0, -1), section]);
-                      navigate(
-                        createCourseModalLink(
-                          {
-                            crn: section.crn,
-                            season_code: listing.season_code,
-                          },
-                          searchParams,
-                        ),
+                <Popout
+                  buttonText="Sections"
+                  selectedOptions={sectionsOptions.get(listing.section)}
+                  displayOptionLabel
+                  clearIcon={false}
+                >
+                  <PopoutSelect<Option, false>
+                    value={sectionsOptions.get(listing.section)}
+                    options={sectionsOptions.values().toArray()}
+                    onChange={(selectedSection) => {
+                      const newSection = sections.find(
+                        (section) => section.section === selectedSection!.value,
                       );
+                      setHistory([...history.slice(0, -1), newSection!]);
+                      navigate(createCourseModalLink(newSection, searchParams));
                     }}
-                    value={listing.section}
-                  >
-                    {sections.map((course) => (
-                      <option key={course.section} value={course.section}>
-                        0{course.section}
-                      </option>
-                    ))}
-                  </select>
-                </p>
+                  />
+                </Popout>
                 {[...listing.course.skills, ...listing.course.areas].map(
                   (skill) => (
                     <SkillBadge skill={skill} key={skill} />
