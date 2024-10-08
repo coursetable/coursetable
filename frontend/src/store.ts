@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
 import {
   createDimensionsSlice,
@@ -27,7 +27,6 @@ export const useStore = create<Store>()(
     }),
     {
       name: 'store',
-      storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => pick(state, PersistKeys),
     },
   ),
