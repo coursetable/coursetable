@@ -11,10 +11,12 @@ import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
 import type { Listings } from '../../generated/graphql-types';
-import type { Season, Crn } from '../../queries/graphql-types';
+import { useCourseSectionsQuery } from '../../queries/graphql-queries';
+import type { Season, Crn, Weekdays } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { extraInfo } from '../../utilities/constants';
 import {
+  to12HourTime,
   toSeasonDate,
   toSeasonString,
   truncatedText,
@@ -173,9 +175,17 @@ function CourseModal() {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
+  const [sections, setSections] = useState<Listings[]>([]);
   // This will update when history updates
   const listing = history[history.length - 1];
-  const [sections, setSections] = useState<CourseModalHeaderData[]>([]);
+  const courseCode = listing?.course_code;
+  const season = listing?.season_code;
+  const { data, loading, error } = useCourseSectionsQuery({
+    variables: {
+      course_code: courseCode || '',
+      season: season || '',
+    },
+  });
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -187,21 +197,11 @@ function CourseModal() {
       setHistory([listingFromQuery]);
     });
   }, [history.length, searchParams, requestSeasons, courses]);
+
   useEffect(() => {
-    const crossSections: CourseModalHeaderData[] = [];
-    const courseModal = searchParams.get('course-modal');
-    if (!courseModal) return;
-    const seasonCode = courseModal.split('-')[0] as Season;
-    void requestSeasons([seasonCode]).then(() => {
-      courses[seasonCode]?.forEach((course: CourseModalHeaderData) => {
-        if (course.course_code === listing?.course_code)
-          crossSections.push(course);
-      });
-      setSections(
-        crossSections.sort((a, b) => a.section.localeCompare(b.section)),
-      );
-    });
-  }, [listing, courses, searchParams, requestSeasons]);
+    if (!data) return;
+    setSections(data.listings as Listings[]);
+  }, [data, courseCode, season]);
 
   const backTarget = createCourseModalLink(
     history[history.length - 2],
@@ -209,15 +209,64 @@ function CourseModal() {
   );
 
   if (!listing) return null;
-  const sectionsOptions: Map<string, Option> = new Map<string, Option>(
-    sections.map((section) => [
-      section.section,
-      {
-        value: section.section,
-        label: `0${section.section}`,
-      },
-    ]),
-  );
+
+  const sectionsDropdown = () => {
+    if (loading || error || !data) return null;
+    const sectionsOptions: Map<string, Option> = new Map<string, Option>(
+      sections.map((section) => {
+        const times = new Map<string, Set<Weekdays>>();
+        for (const [day, info] of Object.entries(section.course.times_by_day)) {
+          for (const [startTime, endTime] of info) {
+            const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
+            if (!times.has(timespan)) times.set(timespan, new Set());
+            times.get(timespan)!.add(day as Weekdays);
+          }
+        }
+        const timeString = [...times.entries()]
+          .map(
+            ([timespan, days]) =>
+              `${[...days]
+                .map((d) =>
+                  ['Thursday', 'Saturday', 'Sunday'].includes(d)
+                    ? d.slice(0, 2)
+                    : d[0],
+                )
+                .join('')} ${timespan}`,
+          )
+          .join(', ');
+        const professors =
+          section.course.course_professors
+            .map((professor) => professor.professor.name)
+            .join(' ') || 'TBD';
+        return [
+          section.section,
+          {
+            value: `0${section.section}`,
+            label: `Section 0${section.section} - ${professors}: ${timeString}`,
+          },
+        ];
+      }),
+    );
+    return (
+      <Popout
+        buttonText="Sections"
+        selectedOptions={sectionsOptions.get(listing.section)}
+        clearIcon={false}
+      >
+        <PopoutSelect<Option, false>
+          value={sectionsOptions.get(listing.section)}
+          options={sectionsOptions.values().toArray()}
+          onChange={(selectedSection) => {
+            const newSection = sections.find(
+              (section) => `0${section.section}` === selectedSection!.value,
+            );
+            setHistory([...history.slice(0, -1), newSection!]);
+            navigate(createCourseModalLink(newSection, searchParams));
+          }}
+        />
+      </Popout>
+    );
+  };
   const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
@@ -325,24 +374,7 @@ function CourseModal() {
                     ))}
                   </TextComponent>
                 </p>
-                <Popout
-                  buttonText="Sections"
-                  selectedOptions={sectionsOptions.get(listing.section)}
-                  displayOptionLabel
-                  clearIcon={false}
-                >
-                  <PopoutSelect<Option, false>
-                    value={sectionsOptions.get(listing.section)}
-                    options={sectionsOptions.values().toArray()}
-                    onChange={(selectedSection) => {
-                      const newSection = sections.find(
-                        (section) => section.section === selectedSection!.value,
-                      );
-                      setHistory([...history.slice(0, -1), newSection!]);
-                      navigate(createCourseModalLink(newSection, searchParams));
-                    }}
-                  />
-                </Popout>
+                {sectionsDropdown()}
                 {[...listing.course.skills, ...listing.course.areas].map(
                   (skill) => (
                     <SkillBadge skill={skill} key={skill} />

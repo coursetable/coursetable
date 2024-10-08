@@ -146,12 +146,17 @@ export function useSameCourseOrProfOfferingsLazyQuery(
   >(SameCourseOrProfOfferingsDocument, options);
 }
 export function useSameCourseOrProfOfferingsSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.SameCourseOrProfOfferingsQuery,
-    Types.SameCourseOrProfOfferingsQueryVariables
-  >,
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.SameCourseOrProfOfferingsQuery,
+        Types.SameCourseOrProfOfferingsQueryVariables
+      >,
 ) {
-  const options = { ...defaultOptions, ...baseOptions };
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.SameCourseOrProfOfferingsQuery,
     Types.SameCourseOrProfOfferingsQueryVariables
@@ -241,12 +246,17 @@ export function useSearchEvaluationNarrativesLazyQuery(
   >(SearchEvaluationNarrativesDocument, options);
 }
 export function useSearchEvaluationNarrativesSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.SearchEvaluationNarrativesQuery,
-    Types.SearchEvaluationNarrativesQueryVariables
-  >,
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.SearchEvaluationNarrativesQuery,
+        Types.SearchEvaluationNarrativesQueryVariables
+      >,
 ) {
-  const options = { ...defaultOptions, ...baseOptions };
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.SearchEvaluationNarrativesQuery,
     Types.SearchEvaluationNarrativesQueryVariables
@@ -335,12 +345,17 @@ export function usePrereqLinkInfoLazyQuery(
   >(PrereqLinkInfoDocument, options);
 }
 export function usePrereqLinkInfoSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.PrereqLinkInfoQuery,
-    Types.PrereqLinkInfoQueryVariables
-  >,
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.PrereqLinkInfoQuery,
+        Types.PrereqLinkInfoQueryVariables
+      >,
 ) {
-  const options = { ...defaultOptions, ...baseOptions };
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.PrereqLinkInfoQuery,
     Types.PrereqLinkInfoQueryVariables
@@ -358,4 +373,133 @@ export type PrereqLinkInfoSuspenseQueryHookResult = ReturnType<
 export type PrereqLinkInfoQueryResult = Apollo.QueryResult<
   Types.PrereqLinkInfoQuery,
   Types.PrereqLinkInfoQueryVariables
+>;
+export const CourseSectionsDocument = gql`
+  query CourseSections($course_code: String, $season: String) {
+    listings(
+      where: {
+        season_code: { _eq: $season }
+        course_code: { _eq: $course_code }
+      }
+    ) {
+      course {
+        areas
+        classnotes
+        colsem
+        course_flags {
+          flag {
+            flag_text
+          }
+        }
+        course_professors {
+          professor {
+            professor_id
+            name
+          }
+        }
+        credits
+        description
+        extra_info
+        final_exam
+        fysem
+        last_offered_course_id
+        listings {
+          crn
+          course_code
+        }
+        locations_summary
+        regnotes
+        requirements
+        rp_attr
+        same_course_and_profs_id
+        same_course_id
+        skills
+        syllabus_url
+        sysem
+        times_by_day
+        times_summary
+        title
+      }
+      course_code
+      crn
+      listing_id
+      number
+      school
+      season_code
+      section
+      subject
+    }
+  }
+`;
+
+/**
+ * __useCourseSectionsQuery__
+ *
+ * To run a query within a React component, call `useCourseSectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseSectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCourseSectionsQuery({
+ *   variables: {
+ *      course_code: // value for 'course_code'
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useCourseSectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >(CourseSectionsDocument, options);
+}
+export function useCourseSectionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >(CourseSectionsDocument, options);
+}
+export function useCourseSectionsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.CourseSectionsQuery,
+        Types.CourseSectionsQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >(CourseSectionsDocument, options);
+}
+export type CourseSectionsQueryHookResult = ReturnType<
+  typeof useCourseSectionsQuery
+>;
+export type CourseSectionsLazyQueryHookResult = ReturnType<
+  typeof useCourseSectionsLazyQuery
+>;
+export type CourseSectionsSuspenseQueryHookResult = ReturnType<
+  typeof useCourseSectionsSuspenseQuery
+>;
+export type CourseSectionsQueryResult = Apollo.QueryResult<
+  Types.CourseSectionsQuery,
+  Types.CourseSectionsQueryVariables
 >;

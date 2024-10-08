@@ -14,6 +14,7 @@
         "kind": "SCALAR",
         "name": "Boolean",
         "description": "The `Boolean` scalar type represents `true` or `false`.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -24,6 +25,7 @@
         "kind": "INPUT_OBJECT",
         "name": "Boolean_comparison_exp",
         "description": "Boolean expression to compare columns of type \"Boolean\". All fields are combined with logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -159,6 +161,7 @@
         "kind": "SCALAR",
         "name": "Crn",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -169,6 +172,7 @@
         "kind": "SCALAR",
         "name": "ExtraInfo",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -179,6 +183,7 @@
         "kind": "SCALAR",
         "name": "Float",
         "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -189,6 +194,7 @@
         "kind": "SCALAR",
         "name": "Int",
         "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -199,6 +205,7 @@
         "kind": "INPUT_OBJECT",
         "name": "Int_comparison_exp",
         "description": "Boolean expression to compare columns of type \"Int\". All fields are combined with logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -334,6 +341,7 @@
         "kind": "SCALAR",
         "name": "NumberArr",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -344,6 +352,7 @@
         "kind": "SCALAR",
         "name": "ProfessorInfo",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -354,6 +363,7 @@
         "kind": "SCALAR",
         "name": "Season",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -364,6 +374,7 @@
         "kind": "SCALAR",
         "name": "String",
         "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -374,6 +385,7 @@
         "kind": "SCALAR",
         "name": "StringArr",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -384,6 +396,7 @@
         "kind": "INPUT_OBJECT",
         "name": "String_comparison_exp",
         "description": "Boolean expression to compare columns of type \"String\". All fields are combined with logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -639,6 +652,7 @@
         "kind": "SCALAR",
         "name": "TimesByDay",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -649,6 +663,7 @@
         "kind": "OBJECT",
         "name": "__Directive",
         "description": "A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -765,6 +780,7 @@
         "kind": "ENUM",
         "name": "__DirectiveLocation",
         "description": "A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -890,6 +906,7 @@
         "kind": "OBJECT",
         "name": "__EnumValue",
         "description": "One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -957,6 +974,7 @@
         "kind": "OBJECT",
         "name": "__Field",
         "description": "Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -1077,6 +1095,7 @@
         "kind": "OBJECT",
         "name": "__InputValue",
         "description": "Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -1172,6 +1191,7 @@
         "kind": "OBJECT",
         "name": "__Schema",
         "description": "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "description",
@@ -1283,6 +1303,7 @@
         "kind": "OBJECT",
         "name": "__Type",
         "description": "The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "kind",
@@ -1486,6 +1507,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "isOneOf",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -1497,6 +1530,7 @@
         "kind": "ENUM",
         "name": "__TypeKind",
         "description": "An enum describing what kind of type a given `__Type` is.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -1556,6 +1590,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info",
         "description": "columns and relationships of \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "all_course_codes",
@@ -2451,6 +2486,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_aggregate",
         "description": "aggregated selection of \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -2498,6 +2534,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2641,6 +2678,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_avg",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2708,6 +2746,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_bool_and",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2775,6 +2814,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_bool_or",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2842,6 +2882,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_corr",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2909,6 +2950,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_corr_arguments",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2952,6 +2994,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_count",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3023,6 +3066,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_covar_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3090,6 +3134,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_covar_samp_arguments",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3133,6 +3178,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_max",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3200,6 +3246,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_min",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3267,6 +3314,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_stddev_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3334,6 +3382,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_sum",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3401,6 +3450,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_bool_exp_var_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3468,6 +3518,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_aggregate_fields",
         "description": "aggregate fields of \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -3648,6 +3699,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_aggregate_order_by",
         "description": "order by aggregate values of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3791,6 +3843,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_append_input",
         "description": "append existing jsonb value of filtered columns with new jsonb value",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3886,6 +3939,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -3933,6 +3987,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -4220,6 +4275,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_avg_order_by",
         "description": "order by avg() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -4507,6 +4563,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_bool_exp",
         "description": "Boolean expression to filter rows from the table \"computed_listing_info\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5230,6 +5287,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_constraint",
         "description": "unique or primary key constraints on table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -5247,6 +5305,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_delete_at_path_input",
         "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5398,6 +5457,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_delete_elem_input",
         "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5493,6 +5553,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_delete_key_input",
         "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5588,6 +5649,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_inc_input",
         "description": "input type for incrementing numeric columns in table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5875,6 +5937,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_insert_input",
         "description": "input type for inserting data into table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6546,6 +6609,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -7049,6 +7113,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_max_order_by",
         "description": "order by max() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -7552,6 +7617,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -8055,6 +8121,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_min_order_by",
         "description": "order by min() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -8558,6 +8625,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_mutation_response",
         "description": "response of any mutation on the table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -8609,6 +8677,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_on_conflict",
         "description": "on_conflict condition type for table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -8672,6 +8741,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_order_by",
         "description": "Ordering options when selecting data from \"computed_listing_info\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -9343,6 +9413,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_prepend_input",
         "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -9438,6 +9509,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column",
         "description": "select columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -9767,6 +9839,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_avg_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_avg_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -9820,6 +9893,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_bool_and_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_bool_and_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -9855,6 +9929,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_bool_or_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_bool_or_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -9890,6 +9965,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_corr_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_corr_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -9943,6 +10019,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_covar_samp_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_covar_samp_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -9996,6 +10073,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_max_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_max_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -10049,6 +10127,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_min_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_min_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -10102,6 +10181,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_stddev_samp_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_stddev_samp_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -10155,6 +10235,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_sum_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_sum_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -10208,6 +10289,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_select_column_computed_listing_info_aggregate_bool_exp_var_samp_arguments_columns",
         "description": "select \"computed_listing_info_aggregate_bool_exp_var_samp_arguments_columns\" columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -10261,6 +10343,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_set_input",
         "description": "input type for updating data in table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -10908,6 +10991,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -11195,6 +11279,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_stddev_order_by",
         "description": "order by stddev() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -11482,6 +11567,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -11769,6 +11855,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_stddev_pop_order_by",
         "description": "order by stddev_pop() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -12056,6 +12143,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -12343,6 +12431,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_stddev_samp_order_by",
         "description": "order by stddev_samp() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -12630,6 +12719,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_stream_cursor_input",
         "description": "Streaming cursor of the table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -12669,6 +12759,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -13316,6 +13407,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -13603,6 +13695,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_sum_order_by",
         "description": "order by sum() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -13890,6 +13983,7 @@
         "kind": "ENUM",
         "name": "computed_listing_info_update_column",
         "description": "update columns of table \"computed_listing_info\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -14219,6 +14313,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -14330,6 +14425,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -14617,6 +14713,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_var_pop_order_by",
         "description": "order by var_pop() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -14904,6 +15001,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -15191,6 +15289,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_var_samp_order_by",
         "description": "order by var_samp() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -15478,6 +15577,7 @@
         "kind": "OBJECT",
         "name": "computed_listing_info_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -15765,6 +15865,7 @@
         "kind": "INPUT_OBJECT",
         "name": "computed_listing_info_variance_order_by",
         "description": "order by variance() on columns of table \"computed_listing_info\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16052,6 +16153,7 @@
         "kind": "OBJECT",
         "name": "course_flags",
         "description": "columns and relationships of \"course_flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course",
@@ -16127,6 +16229,7 @@
         "kind": "OBJECT",
         "name": "course_flags_aggregate",
         "description": "aggregated selection of \"course_flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -16174,6 +16277,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_aggregate_bool_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16197,6 +16301,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_aggregate_bool_exp_count",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16268,6 +16373,7 @@
         "kind": "OBJECT",
         "name": "course_flags_aggregate_fields",
         "description": "aggregate fields of \"course_flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -16448,6 +16554,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_aggregate_order_by",
         "description": "order by aggregate values of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16591,6 +16698,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16638,6 +16746,7 @@
         "kind": "OBJECT",
         "name": "course_flags_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -16673,6 +16782,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_avg_order_by",
         "description": "order by avg() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16708,6 +16818,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_bool_exp",
         "description": "Boolean expression to filter rows from the table \"course_flags\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16819,6 +16930,7 @@
         "kind": "ENUM",
         "name": "course_flags_constraint",
         "description": "unique or primary key constraints on table \"course_flags\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -16836,6 +16948,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_inc_input",
         "description": "input type for incrementing numeric columns in table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16871,6 +16984,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_insert_input",
         "description": "input type for inserting data into table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -16930,6 +17044,7 @@
         "kind": "OBJECT",
         "name": "course_flags_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -16965,6 +17080,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_max_order_by",
         "description": "order by max() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17000,6 +17116,7 @@
         "kind": "OBJECT",
         "name": "course_flags_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17035,6 +17152,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_min_order_by",
         "description": "order by min() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17070,6 +17188,7 @@
         "kind": "OBJECT",
         "name": "course_flags_mutation_response",
         "description": "response of any mutation on the table \"course_flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -17121,6 +17240,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_on_conflict",
         "description": "on_conflict condition type for table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17184,6 +17304,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_order_by",
         "description": "Ordering options when selecting data from \"course_flags\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17243,6 +17364,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_pk_columns_input",
         "description": "primary key columns input for table: course_flags",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17286,6 +17408,7 @@
         "kind": "ENUM",
         "name": "course_flags_select_column",
         "description": "select columns of table \"course_flags\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -17309,6 +17432,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_set_input",
         "description": "input type for updating data in table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17344,6 +17468,7 @@
         "kind": "OBJECT",
         "name": "course_flags_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17379,6 +17504,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_stddev_order_by",
         "description": "order by stddev() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17414,6 +17540,7 @@
         "kind": "OBJECT",
         "name": "course_flags_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17449,6 +17576,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_stddev_pop_order_by",
         "description": "order by stddev_pop() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17484,6 +17612,7 @@
         "kind": "OBJECT",
         "name": "course_flags_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17519,6 +17648,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_stddev_samp_order_by",
         "description": "order by stddev_samp() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17554,6 +17684,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_stream_cursor_input",
         "description": "Streaming cursor of the table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17593,6 +17724,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17628,6 +17760,7 @@
         "kind": "OBJECT",
         "name": "course_flags_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17663,6 +17796,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_sum_order_by",
         "description": "order by sum() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17698,6 +17832,7 @@
         "kind": "ENUM",
         "name": "course_flags_update_column",
         "description": "update columns of table \"course_flags\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -17721,6 +17856,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17772,6 +17908,7 @@
         "kind": "OBJECT",
         "name": "course_flags_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17807,6 +17944,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_var_pop_order_by",
         "description": "order by var_pop() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17842,6 +17980,7 @@
         "kind": "OBJECT",
         "name": "course_flags_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17877,6 +18016,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_var_samp_order_by",
         "description": "order by var_samp() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17912,6 +18052,7 @@
         "kind": "OBJECT",
         "name": "course_flags_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -17947,6 +18088,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_flags_variance_order_by",
         "description": "order by variance() on columns of table \"course_flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -17982,6 +18124,7 @@
         "kind": "OBJECT",
         "name": "course_professors",
         "description": "columns and relationships of \"course_professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course",
@@ -18057,6 +18200,7 @@
         "kind": "OBJECT",
         "name": "course_professors_aggregate",
         "description": "aggregated selection of \"course_professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -18104,6 +18248,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_aggregate_bool_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18127,6 +18272,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_aggregate_bool_exp_count",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18198,6 +18344,7 @@
         "kind": "OBJECT",
         "name": "course_professors_aggregate_fields",
         "description": "aggregate fields of \"course_professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -18378,6 +18525,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_aggregate_order_by",
         "description": "order by aggregate values of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18521,6 +18669,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18568,6 +18717,7 @@
         "kind": "OBJECT",
         "name": "course_professors_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -18603,6 +18753,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_avg_order_by",
         "description": "order by avg() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18638,6 +18789,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_bool_exp",
         "description": "Boolean expression to filter rows from the table \"course_professors\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18749,6 +18901,7 @@
         "kind": "ENUM",
         "name": "course_professors_constraint",
         "description": "unique or primary key constraints on table \"course_professors\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -18766,6 +18919,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_inc_input",
         "description": "input type for incrementing numeric columns in table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18801,6 +18955,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_insert_input",
         "description": "input type for inserting data into table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18860,6 +19015,7 @@
         "kind": "OBJECT",
         "name": "course_professors_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -18895,6 +19051,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_max_order_by",
         "description": "order by max() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -18930,6 +19087,7 @@
         "kind": "OBJECT",
         "name": "course_professors_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -18965,6 +19123,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_min_order_by",
         "description": "order by min() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19000,6 +19159,7 @@
         "kind": "OBJECT",
         "name": "course_professors_mutation_response",
         "description": "response of any mutation on the table \"course_professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -19051,6 +19211,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_on_conflict",
         "description": "on_conflict condition type for table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19114,6 +19275,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_order_by",
         "description": "Ordering options when selecting data from \"course_professors\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19173,6 +19335,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_pk_columns_input",
         "description": "primary key columns input for table: course_professors",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19216,6 +19379,7 @@
         "kind": "ENUM",
         "name": "course_professors_select_column",
         "description": "select columns of table \"course_professors\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -19239,6 +19403,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_set_input",
         "description": "input type for updating data in table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19274,6 +19439,7 @@
         "kind": "OBJECT",
         "name": "course_professors_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -19309,6 +19475,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_stddev_order_by",
         "description": "order by stddev() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19344,6 +19511,7 @@
         "kind": "OBJECT",
         "name": "course_professors_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -19379,6 +19547,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_stddev_pop_order_by",
         "description": "order by stddev_pop() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19414,6 +19583,7 @@
         "kind": "OBJECT",
         "name": "course_professors_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -19449,6 +19619,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_stddev_samp_order_by",
         "description": "order by stddev_samp() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19484,6 +19655,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_stream_cursor_input",
         "description": "Streaming cursor of the table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19523,6 +19695,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19558,6 +19731,7 @@
         "kind": "OBJECT",
         "name": "course_professors_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -19593,6 +19767,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_sum_order_by",
         "description": "order by sum() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19628,6 +19803,7 @@
         "kind": "ENUM",
         "name": "course_professors_update_column",
         "description": "update columns of table \"course_professors\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -19651,6 +19827,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19702,6 +19879,7 @@
         "kind": "OBJECT",
         "name": "course_professors_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -19737,6 +19915,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_var_pop_order_by",
         "description": "order by var_pop() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19772,6 +19951,7 @@
         "kind": "OBJECT",
         "name": "course_professors_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -19807,6 +19987,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_var_samp_order_by",
         "description": "order by var_samp() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19842,6 +20023,7 @@
         "kind": "OBJECT",
         "name": "course_professors_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -19877,6 +20059,7 @@
         "kind": "INPUT_OBJECT",
         "name": "course_professors_variance_order_by",
         "description": "order by variance() on columns of table \"course_professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -19912,6 +20095,7 @@
         "kind": "OBJECT",
         "name": "courses",
         "description": "columns and relationships of \"courses\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "all_course_codes",
@@ -22102,6 +22286,7 @@
         "kind": "OBJECT",
         "name": "courses_aggregate",
         "description": "aggregated selection of \"courses\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -22149,6 +22334,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22292,6 +22478,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_avg",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22359,6 +22546,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_bool_and",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22426,6 +22614,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_bool_or",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22493,6 +22682,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_corr",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22560,6 +22750,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_corr_arguments",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22603,6 +22794,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_count",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22674,6 +22866,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_covar_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22741,6 +22934,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_covar_samp_arguments",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22784,6 +22978,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_max",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22851,6 +23046,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_min",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22918,6 +23114,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_stddev_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -22985,6 +23182,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_sum",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -23052,6 +23250,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_bool_exp_var_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -23119,6 +23318,7 @@
         "kind": "OBJECT",
         "name": "courses_aggregate_fields",
         "description": "aggregate fields of \"courses\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -23299,6 +23499,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_aggregate_order_by",
         "description": "order by aggregate values of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -23442,6 +23643,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -23489,6 +23691,7 @@
         "kind": "OBJECT",
         "name": "courses_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -23704,6 +23907,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_avg_order_by",
         "description": "order by avg() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -23919,6 +24123,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_bool_exp",
         "description": "Boolean expression to filter rows from the table \"courses\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -24702,6 +24907,7 @@
         "kind": "ENUM",
         "name": "courses_constraint",
         "description": "unique or primary key constraints on table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -24719,6 +24925,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_inc_input",
         "description": "input type for incrementing numeric columns in table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -24934,6 +25141,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_insert_input",
         "description": "input type for inserting data into table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -25569,6 +25777,7 @@
         "kind": "OBJECT",
         "name": "courses_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -25964,6 +26173,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_max_order_by",
         "description": "order by max() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -26359,6 +26569,7 @@
         "kind": "OBJECT",
         "name": "courses_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -26754,6 +26965,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_min_order_by",
         "description": "order by min() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -27149,6 +27361,7 @@
         "kind": "OBJECT",
         "name": "courses_mutation_response",
         "description": "response of any mutation on the table \"courses\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -27200,6 +27413,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_obj_rel_insert_input",
         "description": "input type for inserting object relation for remote table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -27239,6 +27453,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_on_conflict",
         "description": "on_conflict condition type for table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -27302,6 +27517,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_order_by",
         "description": "Ordering options when selecting data from \"courses\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -27937,6 +28153,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_pk_columns_input",
         "description": "primary key columns input for table: courses",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -27964,6 +28181,7 @@
         "kind": "ENUM",
         "name": "courses_select_column",
         "description": "select columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28209,6 +28427,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_avg_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_avg_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28262,6 +28481,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_bool_and_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_bool_and_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28297,6 +28517,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_bool_or_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_bool_or_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28332,6 +28553,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_corr_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_corr_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28385,6 +28607,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_covar_samp_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_covar_samp_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28438,6 +28661,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_max_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_max_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28491,6 +28715,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_min_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_min_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28544,6 +28769,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_stddev_samp_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_stddev_samp_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28597,6 +28823,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_sum_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_sum_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28650,6 +28877,7 @@
         "kind": "ENUM",
         "name": "courses_select_column_courses_aggregate_bool_exp_var_samp_arguments_columns",
         "description": "select \"courses_aggregate_bool_exp_var_samp_arguments_columns\" columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -28703,6 +28931,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_set_input",
         "description": "input type for updating data in table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -29182,6 +29411,7 @@
         "kind": "OBJECT",
         "name": "courses_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -29397,6 +29627,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_stddev_order_by",
         "description": "order by stddev() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -29612,6 +29843,7 @@
         "kind": "OBJECT",
         "name": "courses_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -29827,6 +30059,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_stddev_pop_order_by",
         "description": "order by stddev_pop() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -30042,6 +30275,7 @@
         "kind": "OBJECT",
         "name": "courses_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -30257,6 +30491,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_stddev_samp_order_by",
         "description": "order by stddev_samp() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -30472,6 +30707,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_stream_cursor_input",
         "description": "Streaming cursor of the table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -30511,6 +30747,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -30990,6 +31227,7 @@
         "kind": "OBJECT",
         "name": "courses_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -31205,6 +31443,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_sum_order_by",
         "description": "order by sum() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -31420,6 +31659,7 @@
         "kind": "ENUM",
         "name": "courses_update_column",
         "description": "update columns of table \"courses\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -31665,6 +31905,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -31716,6 +31957,7 @@
         "kind": "OBJECT",
         "name": "courses_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -31931,6 +32173,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_var_pop_order_by",
         "description": "order by var_pop() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -32146,6 +32389,7 @@
         "kind": "OBJECT",
         "name": "courses_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -32361,6 +32605,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_var_samp_order_by",
         "description": "order by var_samp() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -32576,6 +32821,7 @@
         "kind": "OBJECT",
         "name": "courses_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_gut_rating",
@@ -32791,6 +33037,7 @@
         "kind": "INPUT_OBJECT",
         "name": "courses_variance_order_by",
         "description": "order by variance() on columns of table \"courses\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33006,6 +33253,7 @@
         "kind": "ENUM",
         "name": "cursor_ordering",
         "description": "ordering argument of a cursor",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -33029,6 +33277,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives",
         "description": "columns and relationships of \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment",
@@ -33200,6 +33449,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_aggregate",
         "description": "aggregated selection of \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -33247,6 +33497,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33366,6 +33617,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_avg",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33433,6 +33685,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_corr",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33500,6 +33753,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_corr_arguments",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33543,6 +33797,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_count",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33614,6 +33869,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_covar_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33681,6 +33937,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_covar_samp_arguments",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33724,6 +33981,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_max",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33791,6 +34049,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_min",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33858,6 +34117,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_stddev_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33925,6 +34185,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_sum",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -33992,6 +34253,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_bool_exp_var_samp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -34059,6 +34321,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_aggregate_fields",
         "description": "aggregate fields of \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -34239,6 +34502,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_aggregate_order_by",
         "description": "order by aggregate values of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -34382,6 +34646,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -34429,6 +34694,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -34512,6 +34778,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_avg_order_by",
         "description": "order by avg() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -34595,6 +34862,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_bool_exp",
         "description": "Boolean expression to filter rows from the table \"evaluation_narratives\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -34778,6 +35046,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_constraint",
         "description": "unique or primary key constraints on table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -34795,6 +35064,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_inc_input",
         "description": "input type for incrementing numeric columns in table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -34878,6 +35148,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_insert_input",
         "description": "input type for inserting data into table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -35009,6 +35280,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment",
@@ -35116,6 +35388,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_max_order_by",
         "description": "order by max() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -35223,6 +35496,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment",
@@ -35330,6 +35604,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_min_order_by",
         "description": "order by min() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -35437,6 +35712,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_mutation_response",
         "description": "response of any mutation on the table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -35488,6 +35764,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_on_conflict",
         "description": "on_conflict condition type for table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -35551,6 +35828,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_order_by",
         "description": "Ordering options when selecting data from \"evaluation_narratives\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -35682,6 +35960,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_pk_columns_input",
         "description": "primary key columns input for table: evaluation_narratives",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -35709,6 +35988,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column",
         "description": "select columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -35768,6 +36048,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_avg_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_avg_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -35803,6 +36084,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_corr_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_corr_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -35838,6 +36120,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_covar_samp_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_covar_samp_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -35873,6 +36156,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_max_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_max_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -35908,6 +36192,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_min_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_min_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -35943,6 +36228,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_stddev_samp_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_stddev_samp_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -35978,6 +36264,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_sum_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_sum_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -36013,6 +36300,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_select_column_evaluation_narratives_aggregate_bool_exp_var_samp_arguments_columns",
         "description": "select \"evaluation_narratives_aggregate_bool_exp_var_samp_arguments_columns\" columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -36048,6 +36336,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_set_input",
         "description": "input type for updating data in table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -36155,6 +36444,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -36238,6 +36528,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_stddev_order_by",
         "description": "order by stddev() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -36321,6 +36612,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -36404,6 +36696,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_stddev_pop_order_by",
         "description": "order by stddev_pop() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -36487,6 +36780,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -36570,6 +36864,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_stddev_samp_order_by",
         "description": "order by stddev_samp() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -36653,6 +36948,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_stream_cursor_input",
         "description": "Streaming cursor of the table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -36692,6 +36988,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -36799,6 +37096,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -36882,6 +37180,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_sum_order_by",
         "description": "order by sum() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -36965,6 +37264,7 @@
         "kind": "ENUM",
         "name": "evaluation_narratives_update_column",
         "description": "update columns of table \"evaluation_narratives\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -37024,6 +37324,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -37075,6 +37376,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -37158,6 +37460,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_var_pop_order_by",
         "description": "order by var_pop() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -37241,6 +37544,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -37324,6 +37628,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_var_samp_order_by",
         "description": "order by var_samp() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -37407,6 +37712,7 @@
         "kind": "OBJECT",
         "name": "evaluation_narratives_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment_compound",
@@ -37490,6 +37796,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_narratives_variance_order_by",
         "description": "order by variance() on columns of table \"evaluation_narratives\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -37573,6 +37880,7 @@
         "kind": "OBJECT",
         "name": "evaluation_questions",
         "description": "columns and relationships of \"evaluation_questions\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "evaluation_narratives",
@@ -38061,6 +38369,7 @@
         "kind": "OBJECT",
         "name": "evaluation_questions_aggregate",
         "description": "aggregated selection of \"evaluation_questions\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -38108,6 +38417,7 @@
         "kind": "OBJECT",
         "name": "evaluation_questions_aggregate_fields",
         "description": "aggregate fields of \"evaluation_questions\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "count",
@@ -38192,6 +38502,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_bool_exp",
         "description": "Boolean expression to filter rows from the table \"evaluation_questions\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38363,6 +38674,7 @@
         "kind": "ENUM",
         "name": "evaluation_questions_constraint",
         "description": "unique or primary key constraints on table \"evaluation_questions\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -38380,6 +38692,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_insert_input",
         "description": "input type for inserting data into table \"evaluation_questions\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38475,6 +38788,7 @@
         "kind": "OBJECT",
         "name": "evaluation_questions_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "question_code",
@@ -38522,6 +38836,7 @@
         "kind": "OBJECT",
         "name": "evaluation_questions_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "question_code",
@@ -38569,6 +38884,7 @@
         "kind": "OBJECT",
         "name": "evaluation_questions_mutation_response",
         "description": "response of any mutation on the table \"evaluation_questions\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -38620,6 +38936,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_obj_rel_insert_input",
         "description": "input type for inserting object relation for remote table \"evaluation_questions\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38659,6 +38976,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_on_conflict",
         "description": "on_conflict condition type for table \"evaluation_questions\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38722,6 +39040,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_order_by",
         "description": "Ordering options when selecting data from \"evaluation_questions\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38817,6 +39136,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_pk_columns_input",
         "description": "primary key columns input for table: evaluation_questions",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38844,6 +39164,7 @@
         "kind": "ENUM",
         "name": "evaluation_questions_select_column",
         "description": "select columns of table \"evaluation_questions\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -38885,6 +39206,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_set_input",
         "description": "input type for updating data in table \"evaluation_questions\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38956,6 +39278,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_stream_cursor_input",
         "description": "Streaming cursor of the table \"evaluation_questions\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -38995,6 +39318,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39066,6 +39390,7 @@
         "kind": "ENUM",
         "name": "evaluation_questions_update_column",
         "description": "update columns of table \"evaluation_questions\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -39107,6 +39432,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_questions_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39146,6 +39472,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings",
         "description": "columns and relationships of \"evaluation_ratings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course",
@@ -39266,6 +39593,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_aggregate",
         "description": "aggregated selection of \"evaluation_ratings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -39313,6 +39641,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_aggregate_bool_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39336,6 +39665,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_aggregate_bool_exp_count",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39407,6 +39737,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_aggregate_fields",
         "description": "aggregate fields of \"evaluation_ratings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -39587,6 +39918,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_aggregate_order_by",
         "description": "order by aggregate values of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39730,6 +40062,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39777,6 +40110,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -39812,6 +40146,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_avg_order_by",
         "description": "order by avg() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39847,6 +40182,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_bool_exp",
         "description": "Boolean expression to filter rows from the table \"evaluation_ratings\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -39982,6 +40318,7 @@
         "kind": "ENUM",
         "name": "evaluation_ratings_constraint",
         "description": "unique or primary key constraints on table \"evaluation_ratings\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -39999,6 +40336,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_inc_input",
         "description": "input type for incrementing numeric columns in table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40034,6 +40372,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_insert_input",
         "description": "input type for inserting data into table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40117,6 +40456,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -40164,6 +40504,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_max_order_by",
         "description": "order by max() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40211,6 +40552,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -40258,6 +40600,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_min_order_by",
         "description": "order by min() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40305,6 +40648,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_mutation_response",
         "description": "response of any mutation on the table \"evaluation_ratings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -40356,6 +40700,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_on_conflict",
         "description": "on_conflict condition type for table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40419,6 +40764,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_order_by",
         "description": "Ordering options when selecting data from \"evaluation_ratings\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40502,6 +40848,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_pk_columns_input",
         "description": "primary key columns input for table: evaluation_ratings",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40529,6 +40876,7 @@
         "kind": "ENUM",
         "name": "evaluation_ratings_select_column",
         "description": "select columns of table \"evaluation_ratings\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -40564,6 +40912,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_set_input",
         "description": "input type for updating data in table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40623,6 +40972,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -40658,6 +41008,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_stddev_order_by",
         "description": "order by stddev() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40693,6 +41044,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -40728,6 +41080,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_stddev_pop_order_by",
         "description": "order by stddev_pop() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40763,6 +41116,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -40798,6 +41152,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_stddev_samp_order_by",
         "description": "order by stddev_samp() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40833,6 +41188,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_stream_cursor_input",
         "description": "Streaming cursor of the table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40872,6 +41228,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -40931,6 +41288,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -40966,6 +41324,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_sum_order_by",
         "description": "order by sum() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -41001,6 +41360,7 @@
         "kind": "ENUM",
         "name": "evaluation_ratings_update_column",
         "description": "update columns of table \"evaluation_ratings\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -41036,6 +41396,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -41087,6 +41448,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -41122,6 +41484,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_var_pop_order_by",
         "description": "order by var_pop() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -41157,6 +41520,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -41192,6 +41556,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_var_samp_order_by",
         "description": "order by var_samp() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -41227,6 +41592,7 @@
         "kind": "OBJECT",
         "name": "evaluation_ratings_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -41262,6 +41628,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_ratings_variance_order_by",
         "description": "order by variance() on columns of table \"evaluation_ratings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -41297,6 +41664,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics",
         "description": "columns and relationships of \"evaluation_statistics\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -41437,6 +41805,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_aggregate",
         "description": "aggregated selection of \"evaluation_statistics\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -41484,6 +41853,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_aggregate_fields",
         "description": "aggregate fields of \"evaluation_statistics\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -41664,6 +42034,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -41759,6 +42130,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_bool_exp",
         "description": "Boolean expression to filter rows from the table \"evaluation_statistics\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -41930,6 +42302,7 @@
         "kind": "ENUM",
         "name": "evaluation_statistics_constraint",
         "description": "unique or primary key constraints on table \"evaluation_statistics\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -41947,6 +42320,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_inc_input",
         "description": "input type for incrementing numeric columns in table \"evaluation_statistics\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -42042,6 +42416,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_insert_input",
         "description": "input type for inserting data into table \"evaluation_statistics\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -42161,6 +42536,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -42256,6 +42632,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -42351,6 +42728,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_mutation_response",
         "description": "response of any mutation on the table \"evaluation_statistics\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -42402,6 +42780,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_obj_rel_insert_input",
         "description": "input type for inserting object relation for remote table \"evaluation_statistics\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -42441,6 +42820,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_on_conflict",
         "description": "on_conflict condition type for table \"evaluation_statistics\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -42504,6 +42884,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_order_by",
         "description": "Ordering options when selecting data from \"evaluation_statistics\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -42623,6 +43004,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_pk_columns_input",
         "description": "primary key columns input for table: evaluation_statistics",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -42650,6 +43032,7 @@
         "kind": "ENUM",
         "name": "evaluation_statistics_select_column",
         "description": "select columns of table \"evaluation_statistics\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -42709,6 +43092,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_set_input",
         "description": "input type for updating data in table \"evaluation_statistics\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -42816,6 +43200,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -42911,6 +43296,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -43006,6 +43392,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -43101,6 +43488,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_stream_cursor_input",
         "description": "Streaming cursor of the table \"evaluation_statistics\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -43140,6 +43528,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -43247,6 +43636,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -43342,6 +43732,7 @@
         "kind": "ENUM",
         "name": "evaluation_statistics_update_column",
         "description": "update columns of table \"evaluation_statistics\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -43401,6 +43792,7 @@
         "kind": "INPUT_OBJECT",
         "name": "evaluation_statistics_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -43452,6 +43844,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -43547,6 +43940,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -43642,6 +44036,7 @@
         "kind": "OBJECT",
         "name": "evaluation_statistics_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg_rating",
@@ -43737,6 +44132,7 @@
         "kind": "OBJECT",
         "name": "flags",
         "description": "columns and relationships of \"flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_flags",
@@ -43974,6 +44370,7 @@
         "kind": "OBJECT",
         "name": "flags_aggregate",
         "description": "aggregated selection of \"flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -44021,6 +44418,7 @@
         "kind": "OBJECT",
         "name": "flags_aggregate_fields",
         "description": "aggregate fields of \"flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -44201,6 +44599,7 @@
         "kind": "OBJECT",
         "name": "flags_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -44224,6 +44623,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_bool_exp",
         "description": "Boolean expression to filter rows from the table \"flags\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44335,6 +44735,7 @@
         "kind": "ENUM",
         "name": "flags_constraint",
         "description": "unique or primary key constraints on table \"flags\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -44352,6 +44753,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_inc_input",
         "description": "input type for incrementing numeric columns in table \"flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44375,6 +44777,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_insert_input",
         "description": "input type for inserting data into table \"flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44422,6 +44825,7 @@
         "kind": "OBJECT",
         "name": "flags_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -44457,6 +44861,7 @@
         "kind": "OBJECT",
         "name": "flags_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -44492,6 +44897,7 @@
         "kind": "OBJECT",
         "name": "flags_mutation_response",
         "description": "response of any mutation on the table \"flags\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -44543,6 +44949,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_obj_rel_insert_input",
         "description": "input type for inserting object relation for remote table \"flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44582,6 +44989,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_on_conflict",
         "description": "on_conflict condition type for table \"flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44645,6 +45053,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_order_by",
         "description": "Ordering options when selecting data from \"flags\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44692,6 +45101,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_pk_columns_input",
         "description": "primary key columns input for table: flags",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44719,6 +45129,7 @@
         "kind": "ENUM",
         "name": "flags_select_column",
         "description": "select columns of table \"flags\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -44742,6 +45153,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_set_input",
         "description": "input type for updating data in table \"flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44777,6 +45189,7 @@
         "kind": "OBJECT",
         "name": "flags_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -44800,6 +45213,7 @@
         "kind": "OBJECT",
         "name": "flags_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -44823,6 +45237,7 @@
         "kind": "OBJECT",
         "name": "flags_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -44846,6 +45261,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_stream_cursor_input",
         "description": "Streaming cursor of the table \"flags\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44885,6 +45301,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -44920,6 +45337,7 @@
         "kind": "OBJECT",
         "name": "flags_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -44943,6 +45361,7 @@
         "kind": "ENUM",
         "name": "flags_update_column",
         "description": "update columns of table \"flags\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -44966,6 +45385,7 @@
         "kind": "INPUT_OBJECT",
         "name": "flags_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -45017,6 +45437,7 @@
         "kind": "OBJECT",
         "name": "flags_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -45040,6 +45461,7 @@
         "kind": "OBJECT",
         "name": "flags_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -45063,6 +45485,7 @@
         "kind": "OBJECT",
         "name": "flags_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "flag_id",
@@ -45086,6 +45509,7 @@
         "kind": "SCALAR",
         "name": "float8",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -45096,6 +45520,7 @@
         "kind": "INPUT_OBJECT",
         "name": "float8_comparison_exp",
         "description": "Boolean expression to compare columns of type \"float8\". All fields are combined with logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -45231,6 +45656,7 @@
         "kind": "SCALAR",
         "name": "json",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -45241,6 +45667,7 @@
         "kind": "INPUT_OBJECT",
         "name": "json_comparison_exp",
         "description": "Boolean expression to compare columns of type \"json\". All fields are combined with logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -45376,6 +45803,7 @@
         "kind": "SCALAR",
         "name": "jsonb",
         "description": null,
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -45386,6 +45814,7 @@
         "kind": "INPUT_OBJECT",
         "name": "jsonb_cast_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -45409,6 +45838,7 @@
         "kind": "INPUT_OBJECT",
         "name": "jsonb_comparison_exp",
         "description": "Boolean expression to compare columns of type \"jsonb\". All fields are combined with logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -45632,6 +46062,7 @@
         "kind": "OBJECT",
         "name": "listings",
         "description": "columns and relationships of \"listings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "computed_listing_infos",
@@ -46009,6 +46440,7 @@
         "kind": "OBJECT",
         "name": "listings_aggregate",
         "description": "aggregated selection of \"listings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -46056,6 +46488,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_aggregate_bool_exp",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -46079,6 +46512,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_aggregate_bool_exp_count",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -46150,6 +46584,7 @@
         "kind": "OBJECT",
         "name": "listings_aggregate_fields",
         "description": "aggregate fields of \"listings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -46330,6 +46765,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_aggregate_order_by",
         "description": "order by aggregate values of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -46473,6 +46909,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -46520,6 +46957,7 @@
         "kind": "OBJECT",
         "name": "listings_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -46567,6 +47005,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_avg_order_by",
         "description": "order by avg() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -46614,6 +47053,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_bool_exp",
         "description": "Boolean expression to filter rows from the table \"listings\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -46833,6 +47273,7 @@
         "kind": "ENUM",
         "name": "listings_constraint",
         "description": "unique or primary key constraints on table \"listings\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -46856,6 +47297,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_inc_input",
         "description": "input type for incrementing numeric columns in table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -46903,6 +47345,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_insert_input",
         "description": "input type for inserting data into table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -47058,6 +47501,7 @@
         "kind": "OBJECT",
         "name": "listings_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_code",
@@ -47177,6 +47621,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_max_order_by",
         "description": "order by max() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -47296,6 +47741,7 @@
         "kind": "OBJECT",
         "name": "listings_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_code",
@@ -47415,6 +47861,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_min_order_by",
         "description": "order by min() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -47534,6 +47981,7 @@
         "kind": "OBJECT",
         "name": "listings_mutation_response",
         "description": "response of any mutation on the table \"listings\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -47585,6 +48033,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_obj_rel_insert_input",
         "description": "input type for inserting object relation for remote table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -47624,6 +48073,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_on_conflict",
         "description": "on_conflict condition type for table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -47687,6 +48137,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_order_by",
         "description": "Ordering options when selecting data from \"listings\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -47842,6 +48293,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_pk_columns_input",
         "description": "primary key columns input for table: listings",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -47869,6 +48321,7 @@
         "kind": "ENUM",
         "name": "listings_select_column",
         "description": "select columns of table \"listings\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -47934,6 +48387,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_set_input",
         "description": "input type for updating data in table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48053,6 +48507,7 @@
         "kind": "OBJECT",
         "name": "listings_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -48100,6 +48555,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_stddev_order_by",
         "description": "order by stddev() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48147,6 +48603,7 @@
         "kind": "OBJECT",
         "name": "listings_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -48194,6 +48651,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_stddev_pop_order_by",
         "description": "order by stddev_pop() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48241,6 +48699,7 @@
         "kind": "OBJECT",
         "name": "listings_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -48288,6 +48747,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_stddev_samp_order_by",
         "description": "order by stddev_samp() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48335,6 +48795,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_stream_cursor_input",
         "description": "Streaming cursor of the table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48374,6 +48835,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48493,6 +48955,7 @@
         "kind": "OBJECT",
         "name": "listings_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -48540,6 +49003,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_sum_order_by",
         "description": "order by sum() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48587,6 +49051,7 @@
         "kind": "ENUM",
         "name": "listings_update_column",
         "description": "update columns of table \"listings\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -48652,6 +49117,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48703,6 +49169,7 @@
         "kind": "OBJECT",
         "name": "listings_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -48750,6 +49217,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_var_pop_order_by",
         "description": "order by var_pop() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48797,6 +49265,7 @@
         "kind": "OBJECT",
         "name": "listings_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -48844,6 +49313,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_var_samp_order_by",
         "description": "order by var_samp() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48891,6 +49361,7 @@
         "kind": "OBJECT",
         "name": "listings_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "course_id",
@@ -48938,6 +49409,7 @@
         "kind": "INPUT_OBJECT",
         "name": "listings_variance_order_by",
         "description": "order by variance() on columns of table \"listings\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -48985,6 +49457,7 @@
         "kind": "OBJECT",
         "name": "mutation_root",
         "description": "mutation root",
+        "isOneOf": null,
         "fields": [
           {
             "name": "delete_computed_listing_info",
@@ -52522,6 +52995,7 @@
         "kind": "ENUM",
         "name": "order_by",
         "description": "column ordering options",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -52569,6 +53043,7 @@
         "kind": "OBJECT",
         "name": "professors",
         "description": "columns and relationships of \"professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -52858,6 +53333,7 @@
         "kind": "OBJECT",
         "name": "professors_aggregate",
         "description": "aggregated selection of \"professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -52905,6 +53381,7 @@
         "kind": "OBJECT",
         "name": "professors_aggregate_fields",
         "description": "aggregate fields of \"professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -53085,6 +53562,7 @@
         "kind": "OBJECT",
         "name": "professors_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -53144,6 +53622,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_bool_exp",
         "description": "Boolean expression to filter rows from the table \"professors\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -53303,6 +53782,7 @@
         "kind": "ENUM",
         "name": "professors_constraint",
         "description": "unique or primary key constraints on table \"professors\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -53320,6 +53800,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_inc_input",
         "description": "input type for incrementing numeric columns in table \"professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -53379,6 +53860,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_insert_input",
         "description": "input type for inserting data into table \"professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -53474,6 +53956,7 @@
         "kind": "OBJECT",
         "name": "professors_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -53557,6 +54040,7 @@
         "kind": "OBJECT",
         "name": "professors_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -53640,6 +54124,7 @@
         "kind": "OBJECT",
         "name": "professors_mutation_response",
         "description": "response of any mutation on the table \"professors\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -53691,6 +54176,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_obj_rel_insert_input",
         "description": "input type for inserting object relation for remote table \"professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -53730,6 +54216,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_on_conflict",
         "description": "on_conflict condition type for table \"professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -53793,6 +54280,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_order_by",
         "description": "Ordering options when selecting data from \"professors\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -53888,6 +54376,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_pk_columns_input",
         "description": "primary key columns input for table: professors",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -53915,6 +54404,7 @@
         "kind": "ENUM",
         "name": "professors_select_column",
         "description": "select columns of table \"professors\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -53962,6 +54452,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_set_input",
         "description": "input type for updating data in table \"professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -54045,6 +54536,7 @@
         "kind": "OBJECT",
         "name": "professors_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -54104,6 +54596,7 @@
         "kind": "OBJECT",
         "name": "professors_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -54163,6 +54656,7 @@
         "kind": "OBJECT",
         "name": "professors_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -54222,6 +54716,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_stream_cursor_input",
         "description": "Streaming cursor of the table \"professors\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -54261,6 +54756,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -54344,6 +54840,7 @@
         "kind": "OBJECT",
         "name": "professors_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -54403,6 +54900,7 @@
         "kind": "ENUM",
         "name": "professors_update_column",
         "description": "update columns of table \"professors\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -54450,6 +54948,7 @@
         "kind": "INPUT_OBJECT",
         "name": "professors_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -54501,6 +55000,7 @@
         "kind": "OBJECT",
         "name": "professors_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -54560,6 +55060,7 @@
         "kind": "OBJECT",
         "name": "professors_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -54619,6 +55120,7 @@
         "kind": "OBJECT",
         "name": "professors_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "average_rating",
@@ -54678,6 +55180,7 @@
         "kind": "OBJECT",
         "name": "query_root",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "computed_listing_info",
@@ -57368,6 +57871,7 @@
         "kind": "OBJECT",
         "name": "seasons",
         "description": "columns and relationships of \"seasons\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "courses",
@@ -58009,6 +58513,7 @@
         "kind": "OBJECT",
         "name": "seasons_aggregate",
         "description": "aggregated selection of \"seasons\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "aggregate",
@@ -58056,6 +58561,7 @@
         "kind": "OBJECT",
         "name": "seasons_aggregate_fields",
         "description": "aggregate fields of \"seasons\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "avg",
@@ -58236,6 +58742,7 @@
         "kind": "OBJECT",
         "name": "seasons_avg_fields",
         "description": "aggregate avg on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -58259,6 +58766,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_bool_exp",
         "description": "Boolean expression to filter rows from the table \"seasons\". All fields are combined with a logical 'AND'.",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58430,6 +58938,7 @@
         "kind": "ENUM",
         "name": "seasons_constraint",
         "description": "unique or primary key constraints on table \"seasons\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -58447,6 +58956,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_inc_input",
         "description": "input type for incrementing numeric columns in table \"seasons\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58470,6 +58980,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_insert_input",
         "description": "input type for inserting data into table \"seasons\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58553,6 +59064,7 @@
         "kind": "OBJECT",
         "name": "seasons_max_fields",
         "description": "aggregate max on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "season_code",
@@ -58600,6 +59112,7 @@
         "kind": "OBJECT",
         "name": "seasons_min_fields",
         "description": "aggregate min on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "season_code",
@@ -58647,6 +59160,7 @@
         "kind": "OBJECT",
         "name": "seasons_mutation_response",
         "description": "response of any mutation on the table \"seasons\"",
+        "isOneOf": null,
         "fields": [
           {
             "name": "affected_rows",
@@ -58698,6 +59212,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_obj_rel_insert_input",
         "description": "input type for inserting object relation for remote table \"seasons\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58737,6 +59252,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_on_conflict",
         "description": "on_conflict condition type for table \"seasons\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58800,6 +59316,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_order_by",
         "description": "Ordering options when selecting data from \"seasons\".",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58883,6 +59400,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_pk_columns_input",
         "description": "primary key columns input for table: seasons",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58910,6 +59428,7 @@
         "kind": "ENUM",
         "name": "seasons_select_column",
         "description": "select columns of table \"seasons\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -58939,6 +59458,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_set_input",
         "description": "input type for updating data in table \"seasons\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -58986,6 +59506,7 @@
         "kind": "OBJECT",
         "name": "seasons_stddev_fields",
         "description": "aggregate stddev on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -59009,6 +59530,7 @@
         "kind": "OBJECT",
         "name": "seasons_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -59032,6 +59554,7 @@
         "kind": "OBJECT",
         "name": "seasons_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -59055,6 +59578,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_stream_cursor_input",
         "description": "Streaming cursor of the table \"seasons\"",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -59094,6 +59618,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -59141,6 +59666,7 @@
         "kind": "OBJECT",
         "name": "seasons_sum_fields",
         "description": "aggregate sum on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -59164,6 +59690,7 @@
         "kind": "ENUM",
         "name": "seasons_update_column",
         "description": "update columns of table \"seasons\"",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -59193,6 +59720,7 @@
         "kind": "INPUT_OBJECT",
         "name": "seasons_updates",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -59244,6 +59772,7 @@
         "kind": "OBJECT",
         "name": "seasons_var_pop_fields",
         "description": "aggregate var_pop on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -59267,6 +59796,7 @@
         "kind": "OBJECT",
         "name": "seasons_var_samp_fields",
         "description": "aggregate var_samp on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -59290,6 +59820,7 @@
         "kind": "OBJECT",
         "name": "seasons_variance_fields",
         "description": "aggregate variance on columns",
+        "isOneOf": null,
         "fields": [
           {
             "name": "year",
@@ -59313,6 +59844,7 @@
         "kind": "OBJECT",
         "name": "subscription_root",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "computed_listing_info",
@@ -62965,6 +63497,13 @@
             "deprecationReason": null
           }
         ]
+      },
+      {
+        "name": "oneOf",
+        "description": "Indicates exactly one field must be supplied and this field must not be `null`.",
+        "isRepeatable": false,
+        "locations": ["INPUT_OBJECT"],
+        "args": []
       },
       {
         "name": "skip",

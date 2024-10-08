@@ -10642,3 +10642,64 @@ export type PrereqLinkInfoQuery = {
     };
   }>;
 };
+
+export type CourseSectionsQueryVariables = Exact<{
+  course_code: InputMaybe<Scalars['String']['input']>;
+  season: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type CourseSectionsQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    course_code: string;
+    crn: Crn;
+    listing_id: number;
+    number: string;
+    school: string | null;
+    season_code: Season;
+    section: string;
+    subject: string;
+    course: {
+      __typename?: 'courses';
+      areas: StringArr;
+      classnotes: string | null;
+      colsem: boolean | null;
+      credits: number | null;
+      description: string | null;
+      extra_info: ExtraInfo;
+      final_exam: string | null;
+      fysem: boolean | null;
+      last_offered_course_id: number | null;
+      locations_summary: string | null;
+      regnotes: string | null;
+      requirements: string | null;
+      rp_attr: string | null;
+      same_course_and_profs_id: number;
+      same_course_id: number;
+      skills: StringArr;
+      syllabus_url: string | null;
+      sysem: boolean | null;
+      times_by_day: TimesByDay;
+      times_summary: string | null;
+      title: string;
+      course_flags: Array<{
+        __typename?: 'course_flags';
+        flag: { __typename?: 'flags'; flag_text: string };
+      }>;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: {
+          __typename?: 'professors';
+          professor_id: number;
+          name: string;
+        };
+      }>;
+      listings: Array<{
+        __typename?: 'listings';
+        crn: Crn;
+        course_code: string;
+      }>;
+    };
+  }>;
+};
