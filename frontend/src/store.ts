@@ -27,7 +27,6 @@ export const useStore = create<Store>()(
     }),
     {
       name: 'store',
-      storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => pick(state, PersistKeys),
     },
   ),
