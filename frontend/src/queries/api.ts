@@ -385,8 +385,8 @@ export async function fetchUserWorksheets() {
     const season = seasonKey as Season;
     if (!hiddenCourses[season]) continue;
     for (const num in res.data[season]) {
-      for (const course of res.data[season][num]!)
-        course.hidden = hiddenCourses[season][course.crn] ?? false;
+      for (const course of res.data[season]![num]!)
+        course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
     }
   }
   return res;

@@ -334,7 +334,7 @@ export const localizer = new DateLocalizer({
   },
   formats: {
     dayFormat: (a) =>
-      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][a.getDay()],
+      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][a.getDay()]!,
     timeGutterFormat: (a) => formatTime(a),
     selectRangeFormat: ({ start, end }) =>
       `${formatTime(start)} – ${formatTime(end)}`,
@@ -343,4 +343,7 @@ export const localizer = new DateLocalizer({
     eventTimeRangeStartFormat: ({ start }) => `${formatTime(start)} – `,
     eventTimeRangeEndFormat: ({ end }) => ` – ${formatTime(end)}`,
   },
-} as DateLocalizerSpec);
+} satisfies Pick<
+  DateLocalizerSpec,
+  'firstOfWeek' | 'startOfWeek' | 'format' | 'formats'
+> as unknown as DateLocalizerSpec);

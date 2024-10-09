@@ -1,6 +1,7 @@
 {
   "extends": ["stylelint-config-standard"],
   "rules": {
+    "media-feature-range-notation": null,
     "selector-class-pattern": null,
     "selector-pseudo-class-no-unknown": [
       true,
