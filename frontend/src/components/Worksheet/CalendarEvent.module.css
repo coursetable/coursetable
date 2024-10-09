@@ -36,7 +36,7 @@
   font-weight: 500;
 }
 
-@media (max-width: calc(768px - 0.3px)) {
+@media (max-width: calc(768px - 0.5px)) {
   .locationText {
     display: none;
   }

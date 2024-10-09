@@ -23,13 +23,13 @@
   box-shadow: 0 10px 15px var(--color-shadow);
 }
 
-@media (max-width: calc(768px - 0.3px)) {
+@media (max-width: calc(768px - 0.5px)) {
   .title {
     font-size: 24px;
   }
 }
 
-@media (max-width: calc(576px - 0.3px)) {
+@media (max-width: calc(576px - 0.5px)) {
   .container {
     padding-top: 1rem;
     padding-bottom: 2rem;

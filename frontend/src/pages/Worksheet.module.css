@@ -4,7 +4,7 @@
   padding: 1rem;
 }
 
-@media (max-width: calc(768px - 0.3px)) {
+@media (max-width: calc(768px - 0.5px)) {
   .container {
     flex-direction: column;
   }
@@ -22,7 +22,7 @@
   border-radius: 8px;
 }
 
-@media (max-width: calc(768px - 0.3px)) {
+@media (max-width: calc(768px - 0.5px)) {
   .calendar {
     height: max(calc(100vh - var(--height-navbar) - 2rem - 72px), 480px);
     border-top-left-radius: 0;
