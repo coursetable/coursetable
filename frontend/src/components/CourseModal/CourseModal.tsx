@@ -175,7 +175,6 @@ function CourseModal() {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
-  const [sections, setSections] = useState<Listings[]>([]);
   // This will update when history updates
   const listing = history[history.length - 1];
   const courseCode = listing?.course_code;
@@ -186,6 +185,7 @@ function CourseModal() {
       season: season || '',
     },
   });
+  const sections = loading || error ? [] : data?.listings || [];
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -197,11 +197,6 @@ function CourseModal() {
       setHistory([listingFromQuery]);
     });
   }, [history.length, searchParams, requestSeasons, courses]);
-
-  useEffect(() => {
-    if (!data) return;
-    setSections(data.listings as Listings[]);
-  }, [data, courseCode, season]);
 
   const backTarget = createCourseModalLink(
     history[history.length - 2],
@@ -255,7 +250,7 @@ function CourseModal() {
       >
         <PopoutSelect<Option, false>
           value={sectionsOptions.get(listing.section)}
-          options={sectionsOptions.values().toArray()}
+          options={[...sectionsOptions.values()]}
           onChange={(selectedSection) => {
             const newSection = sections.find(
               (section) => `0${section.section}` === selectedSection!.value,
