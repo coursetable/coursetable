@@ -22,8 +22,11 @@ services:
     image: hasura/graphql-engine:latest
     ports:
       - 8085:8080
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?postgres_uri}
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
     healthcheck:
@@ -58,14 +61,14 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD?password}
-      POSTGRES_DB: ${DB_NAME?coursetable}
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 0.5s
+      test: ['CMD-SHELL', 'pg_isready -U postgres -h 127.0.0.1']
+      interval: 1s
       timeout: 10s
-      retries: 60
+      retries: 100
     volumes:
       - ../postgres/data:/var/lib/postgresql/data
+      - ../postgres/init:/docker-entrypoint-initdb.d
     networks:
       - api
 

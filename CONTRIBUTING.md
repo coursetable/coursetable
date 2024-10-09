@@ -147,6 +147,13 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ./start.sh -d
    ```
 
+   **Important**: Run with `--seed_ferry` to seed your local Postgres database for first time setup:
+
+   ```sh
+   cd api
+   ./start.sh -d --seed_ferry
+   ```
+
    Optionally, to overwrite your cached catalogs:
 
    ```sh
@@ -163,6 +170,16 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    - Generating some JSON data files
 
    You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
+
+1. In a separate terminal window, connect to the `express` container's execution context and seed the Postgres DB:
+
+   ```sh
+   docker exec -it express sh
+   # Inside the express container's terminal
+   cd api && npm run db:push
+   ```
+
+   Make sure to complete any confirmation dialogs that appear. Remember that any changes to `api/drizzle/schema.ts` will require running this step again.
 
 1. In a separate terminal window, start the frontend:
 
@@ -201,6 +218,10 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
   ```
 
   Try using `sudo doppler update`.
+
+- `relation "studentBluebookSettings" does not exist`
+
+  Make sure to seed the Postgres database (`npm run db:push`) after starting the containers.
 
 ## Contributing
 

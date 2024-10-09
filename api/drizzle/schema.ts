@@ -71,6 +71,10 @@ export const worksheetCourses = pgTable(
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').notNull(),
     color: varchar('color', { length: 32 }).notNull(),
+    // Hidden can be null, which means the hidden status is unknown.
+    // In the past hidden status was stored in client side, so unless
+    // the user has synced hidden state with the server, it will be null.
+    hidden: boolean('hidden'),
   },
   (table) => ({
     worksheetNetidIdx: index('worksheet_netid_idx').on(table.netId),
@@ -79,6 +83,7 @@ export const worksheetCourses = pgTable(
       table.crn,
       table.season,
       table.worksheetNumber,
+      table.hidden,
     ),
   }),
 );

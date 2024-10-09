@@ -148,14 +148,15 @@ async function fetchAPI(
   }
 }
 
-export function toggleBookmark(body: {
+export function updateWorksheet(body: {
   action: 'add' | 'remove' | 'update';
   season: Season;
   crn: Crn;
   worksheetNumber: number;
   color: string;
+  hidden: boolean;
 }): Promise<boolean> {
-  return fetchAPI('/user/toggleBookmark', {
+  return fetchAPI('/user/updateWorksheet', {
     body,
     handleErrorCode(err) {
       switch (err) {
@@ -166,7 +167,9 @@ export function toggleBookmark(body: {
           toast.error('You have already added this class to your worksheet');
           return true;
         case 'NOT_BOOKMARKED':
-          toast.error('You have already remove this class from your worksheet');
+          toast.error(
+            'You have already removed this class from your worksheet',
+          );
           return true;
         default:
           return false;
@@ -342,8 +345,7 @@ const userWorksheetsSchema = z.record(
       z.object({
         crn: crnSchema,
         color: z.string(),
-        // This currently is not sent by the backend.
-        hidden: z.boolean().optional().default(false),
+        hidden: z.boolean().nullable(),
       }),
     ),
   ),
@@ -383,8 +385,8 @@ export async function fetchUserWorksheets() {
     const season = seasonKey as Season;
     if (!hiddenCourses[season]) continue;
     for (const num in res.data[season]) {
-      for (const course of res.data[season]![num]!)
-        course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
+      for (const course of res.data[season][num]!)
+        course.hidden = hiddenCourses[season][course.crn] ?? false;
     }
   }
   return res;

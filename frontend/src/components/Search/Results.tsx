@@ -3,16 +3,17 @@ import clsx from 'clsx';
 import { Row } from 'react-bootstrap';
 import { FixedSizeList, FixedSizeGrid } from 'react-window';
 
+import { useShallow } from 'zustand/react/shallow';
 import FloatingWorksheet from './FloatingWorksheet';
 import ResultsGridItem from './ResultsGridItem';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import WindowScroller from './WindowScroller';
 
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import type { CatalogListing } from '../../queries/api';
+import { useStore } from '../../store';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import { toSeasonString } from '../../utilities/course';
 import Spinner from '../Spinner';
@@ -35,7 +36,13 @@ function Results({
   readonly multiSeasons?: boolean;
   readonly page?: 'catalog' | 'worksheet';
 }) {
-  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  const { isMobile, isTablet, isLgDesktop } = useStore(
+    useShallow((state) => ({
+      isMobile: state.isMobile,
+      isTablet: state.isTablet,
+      isLgDesktop: state.isLgDesktop,
+    })),
+  );
   const [isListView, setIsListView] = useSessionStorageState(
     'isListView',
     true,

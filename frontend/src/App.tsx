@@ -12,6 +12,8 @@ import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
 import { useAuth } from './hooks/useAuth';
+import { useDimensions } from './hooks/useDimensions';
+import { useTheme } from './hooks/useTheme';
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
@@ -89,6 +91,9 @@ function AuthenticatedRoutes() {
 function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
+  useAuth();
+  useTheme();
+  useDimensions();
 
   return (
     <div
@@ -113,18 +118,21 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={9}
+        id={10}
       >
-        {/* <a
-          href="/joinus"
+        We want to hear from you. How can we make CourseTable better?{' '}
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
+          target="_blank"
+          rel="noreferrer"
           style={{
             color: 'white',
             fontWeight: 'bold',
             textDecoration: 'underline',
           }}
         >
-          Y/CS applications are live. Apply to join the CourseTable team!
-        </a> */}
+          Fill out this quick survey!
+        </a>
       </Notice>
       <Navbar />
       <SentryRoutes>

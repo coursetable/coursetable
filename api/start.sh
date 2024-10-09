@@ -10,6 +10,7 @@ function ctrl_c() {
 
 ENV=""
 OVERWRITE=false
+FERRY_SEED=false
 
 for ARGS in "$@"; do
 shift
@@ -18,16 +19,18 @@ shift
         "--staging") set -- "$@" "-s" ;;
         "--prod") set -- "$@" "-p" ;;
         "--overwrite") set -- "$@" "-o" ;;
+        "--ferry_seed") set -- "$@" "-f" ;;
         *) set -- "$@" "$ARGS"
     esac
 done
 
-while getopts 'dspo' flag; do
+while getopts 'dspof' flag; do
     case "${flag}" in
         d) ENV="dev" ;;
         s) ENV="staging" ;;
         p) ENV="prod" ;;
         o) OVERWRITE=true ;;
+        f) FERRY_SEED=true ;;
     esac
 done
 
@@ -46,6 +49,12 @@ then
     export HOT_RELOAD='true'
     export SENTRY_ENVIRONMENT=development
     doppler setup -p coursetable -c dev
+
+    if [[ $FERRY_SEED == true ]]
+    then
+        doppler run --command 'curl "$FERRY_DUMP_URL" -o ./postgres/init/a.sql'
+        export OVERWRITE_CATALOG='true'
+    fi
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d --build --pull always"
 

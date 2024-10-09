@@ -43,7 +43,7 @@ const port = process.env.FRONT_END_PORT ?? 3000;
 // Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
   ? `https://localhost:${port}`
-  : process.env.FRONTEND_ENDPOINT ?? 'https://coursetable.com';
+  : (process.env.FRONTEND_ENDPOINT ?? 'https://coursetable.com');
 
 // CORS options so frontend can interface with server
 export const CORS_OPTIONS = {

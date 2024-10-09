@@ -207,7 +207,7 @@ export const defaultFilters: Filters = {
   hideConflicting: false,
   hideFirstYearSeminars: false,
   hideGraduateCourses: false,
-  hideDiscussionSections: true,
+  hideDiscussionSections: false,
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
 };

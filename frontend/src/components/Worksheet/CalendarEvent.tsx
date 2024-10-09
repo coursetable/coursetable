@@ -4,8 +4,8 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 
@@ -57,7 +57,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
 
 export function useEventStyle() {
   const { hoverCourse } = useWorksheet();
-  const { isMobile } = useWindowDimensions();
+  const isMobile = useStore((state) => state.isMobile);
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event: RBCEvent) => {

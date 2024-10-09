@@ -133,7 +133,7 @@ function FriendsDropdown({
   const viewedPerson = useMemo(() => {
     // I don't think the second condition is possible
     if (person === 'me' || !user.friends?.[person]) return null;
-    return { value: person, label: user.friends[person]!.name ?? person };
+    return { value: person, label: user.friends[person].name ?? person };
   }, [person, user.friends]);
 
   // List of friend options. Initialize with me option
