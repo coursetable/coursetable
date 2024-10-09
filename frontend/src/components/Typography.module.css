@@ -71,7 +71,7 @@
   border-left-color: var(--color-surface);
 }
 
-@media (max-width: calc(768px - 0.001px)) {
+@media (max-width: calc(768px - 0.3px)) {
   .infoPopover :global(.popover-header),
   .infoPopover :global(.popover-body),
   .infoPopover :global(.arrow)::before,
@@ -105,7 +105,7 @@
   color: var(--color-primary-hover);
 }
 
-@media (max-width: calc(1320px - 0.001px)) {
+@media (max-width: calc(1320px - 0.3px)) {
   .smallText {
     font-size: 64%;
   }

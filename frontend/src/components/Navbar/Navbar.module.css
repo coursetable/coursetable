@@ -49,7 +49,7 @@
   position: relative;
 }
 
-@media (max-width: calc(768px - 0.001px)) {
+@media (max-width: calc(768px - 0.3px)) {
   .navbarLinks {
     align-items: start;
     padding-top: 0.5rem;
@@ -84,7 +84,7 @@
   background-color: var(--color-primary);
 }
 
-@media (max-width: calc(1320px - 0.001px)) {
+@media (max-width: calc(1320px - 0.3px)) {
   .navLink {
     font-size: 0.9rem;
   }

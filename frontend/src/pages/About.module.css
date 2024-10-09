@@ -25,13 +25,13 @@
     color var(--trans-dur);
 }
 
-@media (max-width: calc(768px - 0.001px)) {
+@media (max-width: calc(768px - 0.3px)) {
   .container {
     width: 80vw;
   }
 }
 
-@media (max-width: calc(576px - 0.001px)) {
+@media (max-width: calc(576px - 0.3px)) {
   .container {
     width: 90vw;
   }

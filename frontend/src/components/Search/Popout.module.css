@@ -36,7 +36,7 @@
     color var(--trans-dur);
 }
 
-@media (max-width: calc(1320px - 0.001px)) {
+@media (max-width: calc(1320px - 0.3px)) {
   .button {
     font-size: 12px;
   }
