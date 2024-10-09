@@ -112,3 +112,19 @@
   color: #555;
   text-align: left;
 }
+
+.buyMeACoffeeAttribution {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #555;
+}
+
+.buyMeACoffeeAttribution a {
+  color: #1084ff;
+  text-decoration: none;
+}
+
+.buyMeACoffeeAttribution a:hover {
+  text-decoration: underline;
+}

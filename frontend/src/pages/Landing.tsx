@@ -101,6 +101,19 @@ function Landing() {
           </div>
         ))}
       </div>
+      {/* Attribution Message */}
+      <div className={styles.buyMeACoffeeAttribution}>
+        <p>
+          Testimonials sourced from{' '}
+          <a
+            href="https://www.buymeacoffee.com/coursetable"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Buy Me A Coffee
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
