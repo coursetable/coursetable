@@ -360,8 +360,8 @@ type CourseWithEnrolled = {
   last_enrollment_same_professors?: boolean | null;
 };
 
-export function isGraduate(listing: Pick<Listings, 'number'>): boolean {
-  return Number(listing.number.replace(/\D/gu, '')) >= 500;
+export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
+  return listing.school !== "YC";
 }
 
 export function isDiscussionSection(
