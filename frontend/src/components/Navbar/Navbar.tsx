@@ -7,7 +7,6 @@ import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
 import { API_ENDPOINT } from '../../config';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop } from '../../utilities/display';
@@ -91,7 +90,7 @@ export default function CourseTableNavbar() {
   const hasEvals = useStore((state) => state.user.hasEvals);
   const location = useLocation();
   const [navExpanded, setNavExpanded] = useState(false);
-  const { isMobile } = useWindowDimensions();
+  const isMobile = useStore((state) => state.isMobile);
 
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
   const showWorksheetSearch =

@@ -13,7 +13,7 @@ function CourseModalOverview({
   onNavigation,
   header,
 }: {
-  readonly onNavigation: (x: CourseModalHeaderData) => void;
+  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
   readonly header: CourseModalHeaderData;
 }) {
   const user = useStore((state) => state.user);
@@ -43,7 +43,7 @@ function CourseModalOverview({
     <Modal.Body>
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
-          <OverviewInfo data={data} />
+          <OverviewInfo onNavigation={onNavigation} data={data} />
         </Col>
         <Col md={5} className="px-0 my-0">
           <OverviewRatings onNavigation={onNavigation} data={data} />

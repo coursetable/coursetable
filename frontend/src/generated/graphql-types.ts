@@ -10606,3 +10606,39 @@ export type SearchEvaluationNarrativesQuery = {
     };
   }>;
 };
+
+export type PrereqLinkInfoQueryVariables = Exact<{
+  course_codes: InputMaybe<
+    Array<Scalars['String']['input']> | Scalars['String']['input']
+  >;
+}>;
+
+export type PrereqLinkInfoQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    season_code: Season;
+    crn: Crn;
+    course_code: string;
+    section: string;
+    course: {
+      __typename?: 'courses';
+      title: string;
+      skills: StringArr;
+      areas: StringArr;
+      extra_info: ExtraInfo;
+      description: string | null;
+      times_by_day: TimesByDay;
+      same_course_id: number;
+      listings: Array<{
+        __typename?: 'listings';
+        course_code: string;
+        crn: Crn;
+      }>;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: { __typename?: 'professors'; professor_id: number };
+      }>;
+    };
+  }>;
+};

@@ -7,9 +7,8 @@ import { MdErrorOutline } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
+import { updateWorksheet, toggleCourseHidden } from '../../queries/api';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
@@ -119,7 +118,7 @@ function WorksheetToggleButton({
     ],
   );
 
-  const { isLgDesktop } = useWindowDimensions();
+  const isLgDesktop = useStore((state) => state.isLgDesktop);
 
   const toggleWorkSheet = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -137,13 +136,14 @@ function WorksheetToggleButton({
           hidden: false,
         });
       }
-      const success = await toggleBookmark({
+      const success = await updateWorksheet({
         action: addRemove,
         season: listing.season_code,
         crn: listing.crn,
         worksheetNumber: selectedWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
+        hidden: false,
       });
       if (success) await userRefresh();
     },

@@ -13,9 +13,9 @@ import {
   FcNews,
 } from 'react-icons/fc';
 
+import { useShallow } from 'zustand/react/shallow';
 import { API_ENDPOINT } from '../../config';
 import { useTutorial } from '../../contexts/tutorialContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
@@ -86,7 +86,12 @@ function DropdownContent({
   readonly isExpanded: boolean;
   readonly setIsExpanded: (visible: boolean) => void;
 }) {
-  const { isMobile, isTablet } = useWindowDimensions();
+  const { isMobile, isTablet } = useStore(
+    useShallow((state) => ({
+      isMobile: state.isMobile,
+      isTablet: state.isTablet,
+    })),
+  );
   const authStatus = useStore((state) => state.authStatus);
   const refreshAuth = useStore((state) => state.refreshAuth);
   const { toggleTutorial } = useTutorial();

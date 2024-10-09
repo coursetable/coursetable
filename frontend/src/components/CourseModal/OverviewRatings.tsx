@@ -118,7 +118,7 @@ function CourseLink({
   readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly course: RelatedCourseInfoFragment;
   readonly filter: Filter;
-  readonly onNavigation: (x: CourseModalHeaderData) => void;
+  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
 }) {
   const [searchParams] = useSearchParams();
   // Note, we purposefully use the listing data fetched from GraphQL instead
@@ -155,7 +155,7 @@ function CourseLink({
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
         to={createCourseModalLink(targetListingDefinite, searchParams)}
         onClick={() => {
-          onNavigation(targetListingDefinite);
+          onNavigation(targetListingDefinite, true);
         }}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
@@ -178,7 +178,7 @@ function CourseLink({
                 className="d-block"
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  onNavigation(l);
+                  onNavigation(l, true);
                 }}
               >
                 {l.course_code}
@@ -234,7 +234,7 @@ function OverviewRatings({
   onNavigation,
   data,
 }: {
-  readonly onNavigation: (x: CourseModalHeaderData) => void;
+  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
   readonly data: SameCourseOrProfOfferingsQuery;
 }) {
   const user = useStore((state) => state.user);

@@ -24,7 +24,7 @@ export type WorksheetCourse = {
   crn: Crn;
   color: string;
   listing: CatalogListing;
-  hidden: boolean;
+  hidden: boolean | null;
 };
 
 type Store = {

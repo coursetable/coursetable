@@ -47,6 +47,16 @@ export function toSeasonString(seasonCode: Season): string {
   return `${season} ${year}`;
 }
 
+// A "best guess" for when the season's courses are first published.
+// TODO this should be pulled from Ferry once Ferry records this info
+export function toSeasonDate(seasonCode: Season): string {
+  const season = Number(seasonCode[5]);
+  const date = ['11-01', '01-02', '04-01'][season - 1]!;
+  let year = Number(seasonCode.substring(0, 4));
+  if (season === 1) year--;
+  return `${year}-${date}`;
+}
+
 export type ListingWithTimes = {
   season_code: Season;
   crn: Crn;
@@ -350,8 +360,8 @@ type CourseWithEnrolled = {
   last_enrollment_same_professors?: boolean | null;
 };
 
-export function isGraduate(listing: Pick<Listings, 'number'>): boolean {
-  return Number(listing.number.replace(/\D/gu, '')) >= 500;
+export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
+  return listing.school !== 'YC';
 }
 
 export function isDiscussionSection(

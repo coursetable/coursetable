@@ -74,7 +74,7 @@
   display: none !important;
 }
 
-@media (width < 768px) {
+@media (max-width: calc(768px - 0.5px)) {
   .rbc-calendar {
     margin: 0 0 0.5rem;
   }

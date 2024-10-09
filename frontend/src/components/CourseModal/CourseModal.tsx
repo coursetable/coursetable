@@ -13,7 +13,11 @@ import type { Listings } from '../../generated/graphql-types';
 import type { Season, Crn } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { extraInfo } from '../../utilities/constants';
-import { toSeasonString, truncatedText } from '../../utilities/course';
+import {
+  toSeasonDate,
+  toSeasonString,
+  truncatedText,
+} from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
@@ -197,11 +201,20 @@ function CourseModal() {
       return prev;
     });
   };
+  const structuredJSON = JSON.stringify({
+    '@context': 'https://schema.org/',
+    name: { title },
+    description: { description },
+    datePublished: toSeasonDate(listing.season_code),
+  });
   return (
     <div className="d-flex justify-content-center">
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <script className="structured-data-list" type="application/ld+json">
+          {structuredJSON}
+        </script>
       </Helmet>
       <Modal
         show={Boolean(listing)}
@@ -313,8 +326,10 @@ function CourseModal() {
         </Modal.Header>
         {view === 'overview' ? (
           <CourseModalOverview
-            onNavigation={(l) => {
-              user.hasEvals ? setView('evals') : setView('overview');
+            onNavigation={(l, goToEvals) => {
+              user.hasEvals && goToEvals
+                ? setView('evals')
+                : setView('overview');
               if (
                 l.crn === listing.crn &&
                 l.season_code === listing.season_code

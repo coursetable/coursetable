@@ -13,12 +13,12 @@ import WorksheetList from '../components/Worksheet/WorksheetList';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
-import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
+import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
 function Worksheet() {
-  const { isMobile } = useWindowDimensions();
+  const isMobile = useStore((state) => state.isMobile);
   const { worksheetLoading, worksheetError, worksheetView } = useWorksheet();
   const [expanded, setExpanded] = useState(false);
 

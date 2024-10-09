@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Card, Row } from 'react-bootstrap';
 import { TextComponent } from '../components/Typography';
-import { useTheme } from '../contexts/themeContext';
 
 // Current Member Headshots
 import ag from '../images/headshots/abhijit-gupta.jpg';
@@ -17,6 +16,7 @@ import eh from '../images/headshots/evan-hu.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import hs from '../images/headshots/harshal-sheth.jpg';
+import hx from '../images/headshots/humphrey-xu.jpg';
 import js from '../images/headshots/josephine-shin.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
 import kt from '../images/headshots/kenny-tung.jpg';
@@ -41,6 +41,7 @@ import github from '../images/link-logos/github.png';
 import linkedin from '../images/link-logos/linkedin.png';
 import webDark from '../images/link-logos/web-light.png';
 import web from '../images/link-logos/web.png';
+import { useStore } from '../store';
 import styles from './About.module.css';
 
 type Person = {
@@ -55,7 +56,7 @@ type Person = {
 };
 
 function About() {
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
 
   const current: Person[] = [
     {
@@ -65,6 +66,7 @@ function About() {
       links: {
         github: 'https://github.com/bearsyankees',
         linkedin: 'https://www.linkedin.com/in/aschap/',
+        website: 'https://alexschapiro.com/',
       },
     },
     {
@@ -103,6 +105,15 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/tungk/',
         github: 'https://github.com/kentng01/',
         website: 'https://kenneru.netlify.app/',
+      },
+    },
+    {
+      name: 'Humphrey Xu',
+      image: hx,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
+        github: 'https://github.com/Etherite1',
       },
     },
   ];

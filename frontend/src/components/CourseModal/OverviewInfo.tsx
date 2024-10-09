@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Row,
   Col,
@@ -14,8 +15,14 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
+import type { CourseModalHeaderData } from './CourseModal';
+
 import { useSearch } from '../../contexts/searchContext';
-import type { SameCourseOrProfOfferingsQuery } from '../../generated/graphql-types';
+import type {
+  SameCourseOrProfOfferingsQuery,
+  PrereqLinkInfoQuery,
+} from '../../generated/graphql-types';
+import { usePrereqLinkInfoQuery } from '../../queries/graphql-queries';
 import type { Weekdays } from '../../queries/graphql-types';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -23,6 +30,7 @@ import {
   toSeasonString,
   to12HourTime,
 } from '../../utilities/course';
+import { createCourseModalLink } from '../../utilities/display';
 import { TextComponent, InfoPopover, LinkLikeText } from '../Typography';
 import styles from './OverviewInfo.module.css';
 
@@ -114,6 +122,144 @@ function Description({ course }: { readonly course: CourseInfo }) {
         </div>
       )}
     </>
+  );
+}
+
+type Segment =
+  | { type: 'text'; text: string }
+  | { type: 'course'; text: string; course: string };
+
+function parsePrereqs(requirements: string | null) {
+  if (!requirements) return null;
+  // We don't want to match "and 223", but we want to match "math 223"
+  // We want to match "CHEM 134L" but not "CPSC 223a" (CPSC 381 says this)
+  const codePattern =
+    /\b(?<subject>(?!and|AND)[A-Za-z&]{3,4}) ?(?<number>\d{3,4}[A-Z]?)(?!\d)/uy;
+  // Prereqs often say "MATH 225 or 226" and we want to match on "226", where
+  // the subject is implied (taken from the previous match)
+  const partialCodePattern = /\b\d{3,4}[A-Z]?(?!\d)/uy;
+  let lastSubject = '';
+  const segments: Segment[] = [];
+  let lastIndex = 0;
+  for (let i = 0; i < requirements.length; i++) {
+    codePattern.lastIndex = i;
+    partialCodePattern.lastIndex = i;
+    const match = codePattern.exec(requirements);
+    if (!match) {
+      if (!lastSubject) continue;
+      const partialMatch = partialCodePattern.exec(requirements);
+      if (!partialMatch) continue;
+      segments.push({ type: 'text', text: requirements.slice(lastIndex, i) });
+      segments.push({
+        type: 'course',
+        text: partialMatch[0],
+        course: `${lastSubject} ${partialMatch[0]}`,
+      });
+      i += partialMatch[0].length;
+      lastIndex = i;
+      continue;
+    }
+    let subject = match.groups!.subject!;
+    const number = match.groups!.number!;
+    subject = subject.toUpperCase();
+    lastSubject = subject;
+    segments.push({ type: 'text', text: requirements.slice(lastIndex, i) });
+    segments.push({
+      type: 'course',
+      text: match[0],
+      course: `${subject} ${number}`,
+    });
+    i += match[0].length;
+    lastIndex = i;
+  }
+  segments.push({ type: 'text', text: requirements.slice(lastIndex) });
+  return segments;
+}
+
+type PrereqLinkInfo = PrereqLinkInfoQuery['listings'][number];
+
+function Prereqs({
+  course,
+  season,
+  onNavigation,
+}: {
+  readonly course: CourseInfo;
+  readonly season: string;
+  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
+}) {
+  const segments = parsePrereqs(course.requirements);
+  const [searchParams] = useSearchParams();
+  const { data, error, loading } = usePrereqLinkInfoQuery({
+    variables: {
+      course_codes:
+        segments
+          ?.filter(
+            // TODO: remove after TS 5.5
+            (s): s is Extract<Segment, { type: 'course' }> =>
+              s.type === 'course',
+          )
+          .map((s) => s.course) ?? [],
+    },
+    skip: !segments,
+  });
+  if (!segments) return null;
+  const codeToListings = new Map<string, PrereqLinkInfo[]>();
+  if (data) {
+    for (const l of data.listings) {
+      const data = codeToListings.get(l.course_code) ?? [];
+      data.push(l);
+      codeToListings.set(l.course_code, data);
+    }
+    for (const listings of codeToListings.values())
+      listings.sort((a, b) => b.season_code.localeCompare(a.season_code));
+  }
+  return (
+    <div className={styles.requirements}>
+      {segments.map((s, i) => {
+        if (s.type === 'text') return s.text;
+        const allInfo = codeToListings.get(s.course);
+        // Choose the first listing that was offered *before* this one.
+        // We do this instead of showing the latest:
+        // - Course codes may be reused, so the latest listing may be incorrect
+        // - Syllabus/description may have changed
+        // - ...
+        // Usually they can still navigate to the latest one from the modal,
+        // so it's not a big problem
+        const info =
+          allInfo?.find((l) => l.season_code <= season) ?? allInfo?.[0];
+        return (
+          <OverlayTrigger
+            key={i}
+            placement="top"
+            overlay={(props) => (
+              <Tooltip id={`${s.course}-tooltip`} {...props}>
+                {s.course}{' '}
+                {info
+                  ? info.course.title
+                  : error
+                    ? '(Error)'
+                    : loading
+                      ? '(Loading)'
+                      : '(Not found)'}
+              </Tooltip>
+            )}
+          >
+            {info ? (
+              <Link
+                to={createCourseModalLink(info, searchParams)}
+                onClick={() => {
+                  onNavigation(info, false);
+                }}
+              >
+                {s.text}
+              </Link>
+            ) : (
+              <span className={styles.loadingLink}>{s.text}</span>
+            )}
+          </OverlayTrigger>
+        );
+      })}
+    </div>
   );
 }
 
@@ -327,8 +473,10 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
 }
 
 function OverviewInfo({
+  onNavigation,
   data,
 }: {
+  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
   readonly data: SameCourseOrProfOfferingsQuery;
 }) {
   const { numFriends } = useSearch();
@@ -341,9 +489,11 @@ function OverviewInfo({
   return (
     <>
       <Description course={course} />
-      {course.requirements && (
-        <div className={styles.requirements}>{course.requirements}</div>
-      )}
+      <Prereqs
+        course={course}
+        season={listing.season_code}
+        onNavigation={onNavigation}
+      />
       <Syllabus course={course} sameCourse={data.sameCourse} />
       <Professors course={course} />
       <TimeLocation course={course} />

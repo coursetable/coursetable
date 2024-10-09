@@ -1,7 +1,7 @@
-import { useTheme } from '../../contexts/themeContext';
 import logo from '../../images/brand/bluebook.svg';
 import wordmarkOutlinesDark from '../../images/brand/ct_white.svg';
 import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
+import { useStore } from '../../store';
 import styles from './Logo.module.css';
 
 function Logo({
@@ -11,7 +11,7 @@ function Logo({
   readonly icon?: boolean;
   readonly wordmark?: boolean;
 }) {
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
 
   return (
     <span className={styles.coursetableLogo}>

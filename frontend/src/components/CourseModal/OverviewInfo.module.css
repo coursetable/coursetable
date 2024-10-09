@@ -24,6 +24,12 @@
   margin-top: 0.5rem;
 }
 
+.requirements a,
+.requirements .loadingLink {
+  color: rgb(252 105 105);
+  text-decoration: underline;
+}
+
 .friendsList {
   list-style: none;
   margin: 0;
