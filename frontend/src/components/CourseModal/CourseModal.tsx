@@ -10,7 +10,10 @@ import { toast } from 'react-toastify';
 import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
-import type { Listings } from '../../generated/graphql-types';
+import type {
+  CourseSectionsQuery,
+  Listings,
+} from '../../generated/graphql-types';
 import { useCourseSectionsQuery } from '../../queries/graphql-queries';
 import type { Season, Crn, Weekdays } from '../../queries/graphql-types';
 import { useStore } from '../../store';
@@ -52,6 +55,65 @@ export type CourseModalHeaderData = Pick<
     }[];
   };
 };
+
+function SectionsDropdown({
+  listing,
+  sections,
+  onSelect,
+}: {
+  readonly listing: CourseModalHeaderData;
+  readonly sections: CourseSectionsQuery['listings'];
+  readonly onSelect: (option: Option | null) => void;
+}) {
+  const sectionsOptions: Map<string, Option> = new Map<string, Option>(
+    sections.map((section) => {
+      const times = new Map<string, Set<Weekdays>>();
+      for (const [day, info] of Object.entries(section.course.times_by_day)) {
+        for (const [startTime, endTime] of info) {
+          const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
+          if (!times.has(timespan)) times.set(timespan, new Set());
+          times.get(timespan)!.add(day as Weekdays);
+        }
+      }
+      const timeString = [...times.entries()]
+        .map(
+          ([timespan, days]) =>
+            `${[...days]
+              .map((d) =>
+                ['Thursday', 'Saturday', 'Sunday'].includes(d)
+                  ? d.slice(0, 2)
+                  : d[0],
+              )
+              .join('')} ${timespan}`,
+        )
+        .join(', ');
+      const professors =
+        section.course.course_professors
+          .map((professor) => professor.professor.name)
+          .join(' ') || 'TBD';
+      return [
+        section.section,
+        {
+          value: `0${section.section}`,
+          label: `Section 0${section.section} - ${professors}: ${timeString}`,
+        },
+      ];
+    }),
+  );
+  return (
+    <Popout
+      buttonText="Sections"
+      selectedOptions={sectionsOptions.get(listing.section)}
+      clearIcon={false}
+    >
+      <PopoutSelect<Option, false>
+        value={sectionsOptions.get(listing.section)}
+        options={[...sectionsOptions.values()]}
+        onChange={onSelect}
+      />
+    </Popout>
+  );
+}
 
 function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
   const copyToClipboard = () => {
@@ -184,6 +246,7 @@ function CourseModal() {
       course_code: courseCode || '',
       season: season || '',
     },
+    skip: !courseCode || !season,
   });
   const sections = loading || error ? [] : data?.listings || [];
   useEffect(() => {
@@ -205,63 +268,6 @@ function CourseModal() {
 
   if (!listing) return null;
 
-  const sectionsDropdown = () => {
-    if (loading || error || !data) return null;
-    const sectionsOptions: Map<string, Option> = new Map<string, Option>(
-      sections.map((section) => {
-        const times = new Map<string, Set<Weekdays>>();
-        for (const [day, info] of Object.entries(section.course.times_by_day)) {
-          for (const [startTime, endTime] of info) {
-            const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
-            if (!times.has(timespan)) times.set(timespan, new Set());
-            times.get(timespan)!.add(day as Weekdays);
-          }
-        }
-        const timeString = [...times.entries()]
-          .map(
-            ([timespan, days]) =>
-              `${[...days]
-                .map((d) =>
-                  ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                    ? d.slice(0, 2)
-                    : d[0],
-                )
-                .join('')} ${timespan}`,
-          )
-          .join(', ');
-        const professors =
-          section.course.course_professors
-            .map((professor) => professor.professor.name)
-            .join(' ') || 'TBD';
-        return [
-          section.section,
-          {
-            value: `0${section.section}`,
-            label: `Section 0${section.section} - ${professors}: ${timeString}`,
-          },
-        ];
-      }),
-    );
-    return (
-      <Popout
-        buttonText="Sections"
-        selectedOptions={sectionsOptions.get(listing.section)}
-        clearIcon={false}
-      >
-        <PopoutSelect<Option, false>
-          value={sectionsOptions.get(listing.section)}
-          options={[...sectionsOptions.values()]}
-          onChange={(selectedSection) => {
-            const newSection = sections.find(
-              (section) => `0${section.section}` === selectedSection!.value,
-            );
-            setHistory([...history.slice(0, -1), newSection!]);
-            navigate(createCourseModalLink(newSection, searchParams));
-          }}
-        />
-      </Popout>
-    );
-  };
   const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
@@ -369,7 +375,18 @@ function CourseModal() {
                     ))}
                   </TextComponent>
                 </p>
-                {sectionsDropdown()}
+                <SectionsDropdown
+                  listing={listing}
+                  sections={sections}
+                  onSelect={(selectedSection) => {
+                    const newSection = sections.find(
+                      (section) =>
+                        `0${section.section}` === selectedSection!.value,
+                    );
+                    setHistory([...history.slice(0, -1), newSection!]);
+                    navigate(createCourseModalLink(newSection, searchParams));
+                  }}
+                />
                 {[...listing.course.skills, ...listing.course.areas].map(
                   (skill) => (
                     <SkillBadge skill={skill} key={skill} />
