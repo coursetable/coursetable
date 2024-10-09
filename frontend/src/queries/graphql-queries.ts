@@ -146,17 +146,12 @@ export function useSameCourseOrProfOfferingsLazyQuery(
   >(SameCourseOrProfOfferingsDocument, options);
 }
 export function useSameCourseOrProfOfferingsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.SameCourseOrProfOfferingsQuery,
-        Types.SameCourseOrProfOfferingsQueryVariables
-      >,
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    Types.SameCourseOrProfOfferingsQuery,
+    Types.SameCourseOrProfOfferingsQueryVariables
+  >,
 ) {
-  const options =
-    baseOptions === Apollo.skipToken
-      ? baseOptions
-      : { ...defaultOptions, ...baseOptions };
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.SameCourseOrProfOfferingsQuery,
     Types.SameCourseOrProfOfferingsQueryVariables
@@ -246,17 +241,12 @@ export function useSearchEvaluationNarrativesLazyQuery(
   >(SearchEvaluationNarrativesDocument, options);
 }
 export function useSearchEvaluationNarrativesSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.SearchEvaluationNarrativesQuery,
-        Types.SearchEvaluationNarrativesQueryVariables
-      >,
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    Types.SearchEvaluationNarrativesQuery,
+    Types.SearchEvaluationNarrativesQueryVariables
+  >,
 ) {
-  const options =
-    baseOptions === Apollo.skipToken
-      ? baseOptions
-      : { ...defaultOptions, ...baseOptions };
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.SearchEvaluationNarrativesQuery,
     Types.SearchEvaluationNarrativesQueryVariables
@@ -345,17 +335,12 @@ export function usePrereqLinkInfoLazyQuery(
   >(PrereqLinkInfoDocument, options);
 }
 export function usePrereqLinkInfoSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.PrereqLinkInfoQuery,
-        Types.PrereqLinkInfoQueryVariables
-      >,
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    Types.PrereqLinkInfoQuery,
+    Types.PrereqLinkInfoQueryVariables
+  >,
 ) {
-  const options =
-    baseOptions === Apollo.skipToken
-      ? baseOptions
-      : { ...defaultOptions, ...baseOptions };
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.PrereqLinkInfoQuery,
     Types.PrereqLinkInfoQueryVariables
@@ -384,50 +369,27 @@ export const CourseSectionsDocument = gql`
     ) {
       course {
         areas
-        classnotes
-        colsem
-        course_flags {
-          flag {
-            flag_text
-          }
-        }
         course_professors {
           professor {
             professor_id
             name
           }
         }
-        credits
         description
         extra_info
-        final_exam
-        fysem
-        last_offered_course_id
         listings {
           crn
           course_code
         }
-        locations_summary
-        regnotes
-        requirements
-        rp_attr
-        same_course_and_profs_id
         same_course_id
         skills
-        syllabus_url
-        sysem
         times_by_day
-        times_summary
         title
       }
       course_code
       crn
-      listing_id
-      number
-      school
       season_code
       section
-      subject
     }
   }
 `;
@@ -474,17 +436,12 @@ export function useCourseSectionsLazyQuery(
   >(CourseSectionsDocument, options);
 }
 export function useCourseSectionsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.CourseSectionsQuery,
-        Types.CourseSectionsQueryVariables
-      >,
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >,
 ) {
-  const options =
-    baseOptions === Apollo.skipToken
-      ? baseOptions
-      : { ...defaultOptions, ...baseOptions };
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.CourseSectionsQuery,
     Types.CourseSectionsQueryVariables
