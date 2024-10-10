@@ -1,7 +1,7 @@
 import type express from 'express';
+import { Strategy as CasStrategy } from '@coursetable/passport-cas';
 import { eq } from 'drizzle-orm';
 import passport from 'passport';
-import { Strategy as CasStrategy } from 'passport-cas';
 
 import { studentBluebookSettings } from '../../drizzle/schema.js';
 import { YALIES_API_KEY, db } from '../config.js';
