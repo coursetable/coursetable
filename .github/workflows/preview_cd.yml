@@ -47,6 +47,7 @@ jobs:
       - name: Deploy to Vercel with Branch
         run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -b ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -d
       - name: Deploy to Vercel with SHA
+        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -b ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -d
 
   comment:
     name: Preview Comment
