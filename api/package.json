@@ -15,7 +15,7 @@
     "connect-redis": "^7.1.1",
     "cors": "^2.8.5",
     "csv-writer": "^1.6.0",
-    "drizzle-orm": "^0.34.1",
+    "drizzle-orm": "^0.30.10",
     "express": "^4.21.1",
     "express-async-handler": "^1.2.0",
     "express-session": "^1.18.1",
@@ -45,6 +45,6 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.7.5",
     "@types/passport": "^1.0.16",
-    "drizzle-kit": "^0.25.0"
+    "drizzle-kit": "^0.20.18"
   }
 }
