@@ -45,11 +45,10 @@ const ALLOWED_ORG_CODES: unknown[] = [
 ];
 
 const extractHostname = (url: string): string => {
-  let hostname = '';
+  let hostname = url.split('/')[0]!;
   // Find & remove protocol (http, ftp, etc.) and get hostname
 
   if (url.includes('//')) hostname = url.split('/')[2]!;
-  else hostname = url.split('/')[0]!;
 
   // Find & remove port number
   hostname = hostname.split(':')[0]!;

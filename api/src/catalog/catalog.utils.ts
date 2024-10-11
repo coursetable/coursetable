@@ -100,11 +100,13 @@ function transformListingToSitemapListing(
 
   const season = listing.season_code.substring(4);
 
-  let semesterStartDate = '';
-  if (season === '01') semesterStartDate = `${year}-01-15`;
-  else if (season === '02') semesterStartDate = `${year}-05-25`;
-  else if (season === '03') semesterStartDate = `${year}-08-25`;
-  else throw new Error(`Unknown season code: ${listing.season_code}`);
+  const semesterStartDate = {
+    '01': `${year}-01-15`,
+    '02': `${year}-05-25`,
+    '03': `${year}-08-25`,
+  }[season];
+  if (!semesterStartDate)
+    throw new Error(`Unknown season code: ${listing.season_code}`);
 
   const lastmod = semesterStartDate <= today ? semesterStartDate : today;
 
