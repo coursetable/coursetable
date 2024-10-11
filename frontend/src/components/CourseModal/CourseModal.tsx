@@ -122,7 +122,7 @@ function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
       () => {
         toast.success('Course and URL copied to clipboard!');
       },
-      (err) => {
+      (err: unknown) => {
         console.error('Error copying to clipboard: ', err);
       },
     );

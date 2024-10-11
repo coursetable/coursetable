@@ -34,7 +34,7 @@ ${events.join('\n')}
 END:VCALENDAR`;
     // Download to user's computer
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, `${curSeason}_worksheet.ics`);
+    FileSaver.saveAs(blob, `${curSeason}_worksheet.ics`, { autoBom: false });
   };
 
   return (

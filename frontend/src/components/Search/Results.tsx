@@ -50,7 +50,8 @@ function Results({
 
   const { curSeason } = useWorksheet();
 
-  let resultsListing: JSX.Element | undefined = undefined;
+  // eslint-disable-next-line no-useless-assignment
+  let resultsListing: React.JSX.Element | undefined = undefined;
   if (loading || !data) {
     resultsListing = (
       <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>

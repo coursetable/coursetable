@@ -77,7 +77,7 @@ export function CourseInfoPopover({
   children,
 }: {
   readonly listing: CatalogListing;
-  readonly children: JSX.Element;
+  readonly children: React.JSX.Element;
 }) {
   return (
     <OverlayTrigger

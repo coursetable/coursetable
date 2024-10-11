@@ -256,7 +256,7 @@ export const getFriendsWorksheets = async (
       );
 
       if (friendNetIds.length === 0)
-        return [[], {} as { [netId: string]: {} }, []];
+        return [[], {} as ReturnType<typeof worksheetCoursesToWorksheets>, []];
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx

@@ -37,10 +37,6 @@ const links = [
       { name: 'Join Us', to: '/joinus' },
       { name: 'GitHub', to: 'https://github.com/coursetable' },
       { name: 'LinkedIn', to: 'https://www.linkedin.com/company/coursetable/' },
-      {
-        name: 'Support CourseTable',
-        to: 'https://www.buymeacoffee.com/coursetable',
-      },
     ],
   },
 ];
@@ -60,11 +56,20 @@ function Footer() {
 
             <a href="https://vercel.com/?utm_source=coursetable&utm_campaign=oss">
               <img
-                style={{ height: '2rem' }}
+                style={{ height: '2.5rem' }}
                 src={VercelBanner}
                 alt="Powered by Vercel"
               />
             </a>
+            <div className="mt-3">
+              <a href="https://www.buymeacoffee.com/coursetable">
+                <img
+                  style={{ height: '2.5rem' }}
+                  src="https://img.buymeacoffee.com/button-api/?text=Buy us a textbook&emoji=📘&slug=coursetable&button_colour=1084ff&font_colour=ffffff&font_family=Cookie&outline_colour=ffffff&coffee_colour=FFDD00"
+                  alt="Buy us a textbook"
+                />
+              </a>
+            </div>
           </div>
           {links.map(({ section, items }) => (
             <div key={section} className="col-6 col-md">

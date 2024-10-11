@@ -40,6 +40,7 @@ function ResultsColumnSort({
   const [localSortOrder, setLocalSortOrder] = useState(
     isActive ? sortOrder.value : 'asc',
   );
+  // eslint-disable-next-line no-useless-assignment
   const Icon = isNumeric[selectOption.value]
     ? localSortOrder === 'asc'
       ? FcNumericalSorting12

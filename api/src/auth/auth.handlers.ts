@@ -1,7 +1,7 @@
 import type express from 'express';
+import { Strategy as CasStrategy } from '@coursetable/passport-cas';
 import { eq } from 'drizzle-orm';
 import passport from 'passport';
-import { Strategy as CasStrategy } from 'passport-cas';
 
 import { studentBluebookSettings } from '../../drizzle/schema.js';
 import { YALIES_API_KEY, db } from '../config.js';
@@ -45,11 +45,10 @@ const ALLOWED_ORG_CODES: unknown[] = [
 ];
 
 const extractHostname = (url: string): string => {
-  let hostname = '';
+  let hostname = url.split('/')[0]!;
   // Find & remove protocol (http, ftp, etc.) and get hostname
 
   if (url.includes('//')) hostname = url.split('/')[2]!;
-  else hostname = url.split('/')[0]!;
 
   // Find & remove port number
   hostname = hostname.split(':')[0]!;
