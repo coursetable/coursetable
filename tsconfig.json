@@ -3,6 +3,7 @@
   "compilerOptions": {
     "noEmit": true,
     "module": "node16",
+    "allowJs": true,
     "plugins": [
       {
         "name": "typescript-plugin-css-modules",
