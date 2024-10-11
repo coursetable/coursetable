@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@coursetable/passport-cas": "^0.1.2",
-    "@sentry/node": "^8.33.1",
+    "@sentry/node": "^8.34.0",
     "chroma-js": "^3.1.1",
     "connect-redis": "^7.1.1",
     "cors": "^2.8.5",

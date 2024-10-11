@@ -9,6 +9,9 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
 import { createClient } from 'redis';
 
+// Import this at the top before any user modules
+import './sentry-instrument.js';
+
 import { passportConfig } from './auth/auth.handlers.js';
 import casAuth from './auth/auth.routes.js';
 import canny from './canny/canny.routes.js';
@@ -21,9 +24,6 @@ import {
   SESSION_SECRET,
   CORS_OPTIONS,
   REDIS_HOST,
-  isDev,
-  SENTRY_DSN,
-  SENTRY_ENVIRONMENT,
 } from './config.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
@@ -33,30 +33,9 @@ import user from './user/user.routes.js';
 
 const app = express();
 
-// Initialize Sentry
-Sentry.init({
-  dsn: SENTRY_DSN,
-  integrations: [
-    // Enable HTTP calls tracing
-    new Sentry.Integrations.Http({ tracing: true }),
-    // Enable Express.js middleware tracing
-    new Sentry.Integrations.Express({ app }),
-  ],
-  // Performance Monitoring
-  tracesSampleRate: 0.15, //  Capture 15% of the transactions
-  enabled: !isDev,
-  environment: SENTRY_ENVIRONMENT,
-});
-
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
-
-// The request handler must be the first middleware on the app
-app.use(Sentry.Handlers.requestHandler());
-
-// TracingHandler creates a trace for every incoming request
-app.use(Sentry.Handlers.tracingHandler());
 
 // Enable url-encoding
 app.use(express.urlencoded({ extended: true }));
@@ -162,7 +141,7 @@ app.get('/api/ping', (req, res) => {
 
 // The error handler must be registered before
 // any other error middleware and after all controllers
-app.use(Sentry.Handlers.errorHandler());
+Sentry.setupExpressErrorHandler(app);
 
 app.use(
   (
