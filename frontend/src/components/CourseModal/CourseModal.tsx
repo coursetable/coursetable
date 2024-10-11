@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
@@ -9,19 +9,28 @@ import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../config';
 import { useFerry } from '../../contexts/ferryContext';
-import type { Listings } from '../../generated/graphql-types';
-import type { Season, Crn } from '../../queries/graphql-types';
+import type { Option } from '../../contexts/searchContext';
+import type {
+  CourseSectionsQuery,
+  Listings,
+} from '../../generated/graphql-types';
+import { useCourseSectionsQuery } from '../../queries/graphql-queries';
+import type { Season, Crn, Weekdays } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { extraInfo } from '../../utilities/constants';
 import {
+  to12HourTime,
   toSeasonDate,
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+
 import styles from './CourseModal.module.css';
 
 export type CourseModalHeaderData = Pick<
@@ -46,6 +55,65 @@ export type CourseModalHeaderData = Pick<
     }[];
   };
 };
+
+function SectionsDropdown({
+  listing,
+  sections,
+  onSelect,
+}: {
+  readonly listing: CourseModalHeaderData;
+  readonly sections: CourseSectionsQuery['listings'];
+  readonly onSelect: (option: Option | null) => void;
+}) {
+  const sectionsOptions: Map<string, Option> = new Map<string, Option>(
+    sections.map((section) => {
+      const times = new Map<string, Set<Weekdays>>();
+      for (const [day, info] of Object.entries(section.course.times_by_day)) {
+        for (const [startTime, endTime] of info) {
+          const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
+          if (!times.has(timespan)) times.set(timespan, new Set());
+          times.get(timespan)!.add(day as Weekdays);
+        }
+      }
+      const timeString = [...times.entries()]
+        .map(
+          ([timespan, days]) =>
+            `${[...days]
+              .map((d) =>
+                ['Thursday', 'Saturday', 'Sunday'].includes(d)
+                  ? d.slice(0, 2)
+                  : d[0],
+              )
+              .join('')} ${timespan}`,
+        )
+        .join(', ');
+      const professors =
+        section.course.course_professors
+          .map((professor) => professor.professor.name)
+          .join(' ') || 'TBD';
+      return [
+        section.section,
+        {
+          value: `0${section.section}`,
+          label: `Section 0${section.section} - ${professors}: ${timeString}`,
+        },
+      ];
+    }),
+  );
+  return (
+    <Popout
+      buttonText="Sections"
+      selectedOptions={sectionsOptions.get(listing.section)}
+      clearIcon={false}
+    >
+      <PopoutSelect<Option, false>
+        value={sectionsOptions.get(listing.section)}
+        options={[...sectionsOptions.values()]}
+        onChange={onSelect}
+      />
+    </Popout>
+  );
+}
 
 function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
   const copyToClipboard = () => {
@@ -164,12 +232,23 @@ function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
   const user = useStore((state) => state.user);
+  const navigate = useNavigate();
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
   // This will update when history updates
   const listing = history[history.length - 1];
+  const courseCode = listing?.course_code;
+  const season = listing?.season_code;
+  const { data, loading, error } = useCourseSectionsQuery({
+    variables: {
+      course_code: courseCode || '',
+      season: season || '',
+    },
+    skip: !courseCode || !season,
+  });
+  const sections = loading || error ? [] : data?.listings || [];
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
@@ -181,12 +260,14 @@ function CourseModal() {
       setHistory([listingFromQuery]);
     });
   }, [history.length, searchParams, requestSeasons, courses]);
+
   const backTarget = createCourseModalLink(
     history[history.length - 2],
     searchParams,
   );
 
   if (!listing) return null;
+
   const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
@@ -294,6 +375,18 @@ function CourseModal() {
                     ))}
                   </TextComponent>
                 </p>
+                <SectionsDropdown
+                  listing={listing}
+                  sections={sections}
+                  onSelect={(selectedSection) => {
+                    const newSection = sections.find(
+                      (section) =>
+                        `0${section.section}` === selectedSection!.value,
+                    );
+                    setHistory([...history.slice(0, -1), newSection!]);
+                    navigate(createCourseModalLink(newSection, searchParams));
+                  }}
+                />
                 {[...listing.course.skills, ...listing.course.areas].map(
                   (skill) => (
                     <SkillBadge skill={skill} key={skill} />
