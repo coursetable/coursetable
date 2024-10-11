@@ -327,7 +327,6 @@ export const localizer = new DateLocalizer({
   firstOfWeek() {
     return 0;
   },
-  startOfWeek: 0,
   format() {
     // Everything is already in formats
     return '';
@@ -345,5 +344,5 @@ export const localizer = new DateLocalizer({
   },
 } satisfies Pick<
   DateLocalizerSpec,
-  'firstOfWeek' | 'startOfWeek' | 'format' | 'formats'
+  'firstOfWeek' | 'format' | 'formats'
 > as unknown as DateLocalizerSpec);
