@@ -9,7 +9,7 @@ import GCalIcon from '../../images/gcal.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
 
-function GoogleCalendarButton(): JSX.Element {
+function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
   const { curSeason, courses } = useWorksheet();

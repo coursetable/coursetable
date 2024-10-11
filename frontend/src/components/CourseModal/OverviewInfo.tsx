@@ -206,9 +206,9 @@ function Prereqs({
   const codeToListings = new Map<string, PrereqLinkInfo[]>();
   if (data) {
     for (const l of data.listings) {
-      const data = codeToListings.get(l.course_code) ?? [];
-      data.push(l);
-      codeToListings.set(l.course_code, data);
+      const codeData = codeToListings.get(l.course_code) ?? [];
+      codeData.push(l);
+      codeToListings.set(l.course_code, codeData);
     }
     for (const listings of codeToListings.values())
       listings.sort((a, b) => b.season_code.localeCompare(a.season_code));

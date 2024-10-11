@@ -31,7 +31,7 @@ function getText(
   maxDisplayOptions: number,
   displayOptionLabel: boolean | undefined,
   colors: { [optionValue: string]: string } | undefined,
-): undefined | string | JSX.Element[] {
+): undefined | string | React.JSX.Element[] {
   if (!selectedOptions) return undefined;
   if (Array.isArray(selectedOptions)) {
     if (selectedOptions.length === 0) return undefined;
@@ -115,6 +115,7 @@ export function Popout({
     return undefined;
   };
 
+  // eslint-disable-next-line no-useless-assignment
   const ArrowIcon = isComponentVisible ? IoMdArrowDropdown : IoMdArrowDropup;
 
   return (
