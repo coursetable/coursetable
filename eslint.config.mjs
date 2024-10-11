@@ -4,6 +4,8 @@
 // @ts-check
 
 import jcRules from 'eslint-config-jc';
+
+// @ts-expect-error: no typings yet
 import cssModulesPlugin from 'eslint-plugin-css-modules';
 import tseslint from 'typescript-eslint';
 
