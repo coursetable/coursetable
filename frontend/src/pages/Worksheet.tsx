@@ -29,6 +29,7 @@ function Worksheet() {
   }
   if (worksheetLoading) return <Spinner />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
+  // eslint-disable-next-line no-useless-assignment
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
   return (
     <div className={styles.container}>

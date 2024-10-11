@@ -17,7 +17,7 @@ function HeaderCol({
 }: {
   readonly className: string | undefined;
   readonly children: React.ReactNode;
-  readonly tooltip?: string | JSX.Element;
+  readonly tooltip?: string | React.JSX.Element;
   readonly sortOption?: SortKeys;
 }) {
   return (

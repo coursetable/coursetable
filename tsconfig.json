@@ -11,7 +11,7 @@
     // TODO: enable these
     "exactOptionalPropertyTypes": false,
   },
-  "include": ["./**/*", "./.eslintrc.js"],
+  "include": ["./**/*", "./eslint.config.mjs"],
   // These have their own tsconfig
   "exclude": ["./api", "./frontend"],
 }

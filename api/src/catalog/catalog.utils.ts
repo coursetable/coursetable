@@ -195,7 +195,7 @@ async function fetchData(
     const data = await (type === 'evals'
       ? sdk.evalsBySeason({ season: seasonCode })
       : sdk.catalogBySeason({ season: seasonCode }));
-    const postprocess: (data: any) => any =
+    const postprocess: (d: any) => any =
       type === 'evals' ? processEvals : processCatalog;
     await fs.writeFile(
       filePath,
@@ -214,50 +214,45 @@ async function fetchData(
       await generateSeasonSitemap(seasonCode, courses);
     }
   } catch (err) {
-    winston.error(`Error fetching ${type} data for ${seasonCode}: ${err}`);
+    winston.error(`Error fetching ${type} data for ${seasonCode}`);
+    winston.error(err);
+    throw err;
   }
 }
 
 export async function fetchCatalog(overwrite: boolean) {
-  let seasons: string[] = [];
-
   try {
-    seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
+    const seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
       (x) => x.season_code,
     );
-  } catch (err) {
-    winston.error(err);
-    throw err;
-  }
 
-  winston.info(`Fetched ${seasons.length} seasons`);
+    winston.info(`Fetched ${seasons.length} seasons`);
 
-  // The seasons.json and infoAttributes.json files are copied to frontend
-  await fs.writeFile(
-    `${STATIC_FILE_DIR}/seasons.json`,
-    JSON.stringify(seasons.sort((a, b) => Number(b) - Number(a))),
-  );
+    // The seasons.json and infoAttributes.json files are copied to frontend
+    await fs.writeFile(
+      `${STATIC_FILE_DIR}/seasons.json`,
+      JSON.stringify(seasons.sort((a, b) => Number(b) - Number(a))),
+    );
 
-  try {
     const infoAttributes = await getSdk(graphqlClient).courseAttributes();
     await fs.writeFile(
       `${STATIC_FILE_DIR}/infoAttributes.json`,
       JSON.stringify(infoAttributes.flags.map((x) => x.flag_text).sort()),
     );
+
+    // For each season, fetch all courses inside it and save
+    // (if overwrite = true or if file does not exist)
+
+    const processSeasons = seasons.flatMap((season) =>
+      (['evals', 'public'] as const).map((type) =>
+        fetchData(season, type, overwrite),
+      ),
+    );
+    await Promise.all(processSeasons);
+    winston.info('Finished generating season sitemaps');
+    await generateSitemapIndex();
   } catch (err) {
     winston.error(err);
     throw err;
   }
-
-  // For each season, fetch all courses inside it and save
-  // (if overwrite = true or if file does not exist)
-
-  const processSeasons = seasons.flatMap((season) =>
-    (['evals', 'public'] as const).map((type) =>
-      fetchData(season, type, overwrite),
-    ),
-  );
-  await Promise.all(processSeasons);
-  winston.info('Finished generating season sitemaps');
-  await generateSitemapIndex();
 }

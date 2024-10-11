@@ -16,6 +16,7 @@ function DarkModeButton({
       toggleTheme: state.toggleTheme,
     })),
   );
+  // eslint-disable-next-line no-useless-assignment
   const Icon = theme === 'dark' ? FaRegMoon : ImSun;
   const label = `To ${theme === 'dark' ? 'light' : 'dark'} mode`;
   return (
