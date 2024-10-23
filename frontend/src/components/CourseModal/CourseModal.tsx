@@ -90,12 +90,14 @@ function SectionsDropdown({
       const professors =
         section.course.course_professors
           .map((professor) => professor.professor.name)
-          .join(' ') || 'TBD';
+          .join(' ') || 'TBA';
       return [
         section.section,
         {
           value: `0${section.section}`,
-          label: `Section 0${section.section} - ${professors}: ${timeString}`,
+          label: `Section 0${section.section} - ${professors}${
+            timeString ? `: ${timeString}` : ``
+          }`,
         },
       ];
     }),
@@ -105,11 +107,14 @@ function SectionsDropdown({
       buttonText="Sections"
       selectedOptions={sectionsOptions.get(listing.section)}
       clearIcon={false}
+      className={styles.sectionsDropdown}
     >
       <PopoutSelect<Option, false>
         value={sectionsOptions.get(listing.section)}
         options={[...sectionsOptions.values()]}
         onChange={onSelect}
+        isSearchable={false}
+        showControl={false}
       />
     </Popout>
   );
@@ -337,6 +342,18 @@ function CourseModal() {
               </Modal.Title>
 
               <div className={styles.badges}>
+                <SectionsDropdown
+                  listing={listing}
+                  sections={sections}
+                  onSelect={(selectedSection) => {
+                    const newSection = sections.find(
+                      (section) =>
+                        `0${section.section}` === selectedSection!.value,
+                    );
+                    setHistory([...history.slice(0, -1), newSection!]);
+                    navigate(createCourseModalLink(newSection, searchParams));
+                  }}
+                />
                 <p className={styles.courseCodes}>
                   <TextComponent type="tertiary">
                     {listing.course.listings.map((l, i) => (
@@ -375,18 +392,6 @@ function CourseModal() {
                     ))}
                   </TextComponent>
                 </p>
-                <SectionsDropdown
-                  listing={listing}
-                  sections={sections}
-                  onSelect={(selectedSection) => {
-                    const newSection = sections.find(
-                      (section) =>
-                        `0${section.section}` === selectedSection!.value,
-                    );
-                    setHistory([...history.slice(0, -1), newSection!]);
-                    navigate(createCourseModalLink(newSection, searchParams));
-                  }}
-                />
                 {[...listing.course.skills, ...listing.course.areas].map(
                   (skill) => (
                     <SkillBadge skill={skill} key={skill} />
