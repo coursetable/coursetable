@@ -32,6 +32,7 @@ function Select<K extends keyof CategoricalFilters>({
   placeholder,
   colors,
   hideSelectedOptions,
+  minSelectWidth,
   ...props
 }: Omit<React.ComponentProps<typeof Popout>, 'children' | 'buttonText'> & {
   readonly options: React.ComponentProps<
@@ -41,6 +42,7 @@ function Select<K extends keyof CategoricalFilters>({
   readonly placeholder: string;
   readonly colors?: { [optionValue: string]: string };
   readonly hideSelectedOptions?: boolean;
+  readonly minSelectWidth?: number;
 }) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName] as FilterHandle<K>;
@@ -66,6 +68,7 @@ function Select<K extends keyof CategoricalFilters>({
           setStartTime(Date.now());
         }}
         hideSelectedOptions={hideSelectedOptions}
+        minWidth={minSelectWidth}
       />
     </Popout>
   );
@@ -225,6 +228,7 @@ export function NavbarCatalogSearch() {
                 colors={skillsAreasColors}
                 className="me-0"
                 hideSelectedOptions
+                minSelectWidth={300}
               />
             </>
           )}
@@ -245,6 +249,7 @@ export function NavbarCatalogSearch() {
               placeholder="Last 5 Years"
               displayOptionLabel
               maxDisplayOptions={1}
+              minSelectWidth={200}
             />
           )}
           <AdvancedPanel ref={advanced} />

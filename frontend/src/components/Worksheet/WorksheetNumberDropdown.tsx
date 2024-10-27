@@ -21,6 +21,8 @@ function WorksheetNumDropdownDesktop() {
         onChange={(selectedOption) => {
           changeWorksheet(selectedOption!.value);
         }}
+        showControl={false}
+        minWidth={200}
       />
     </Popout>
   );
