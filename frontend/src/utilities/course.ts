@@ -57,6 +57,12 @@ export function toSeasonDate(seasonCode: Season): string {
   return `${year}-${date}`;
 }
 
+export function abbreviateWorkdays(days: Weekdays[]): string[] {
+  return days.map((d) =>
+    ['Thursday', 'Saturday', 'Sunday'].includes(d) ? d.slice(0, 2) : d[0]!,
+  );
+}
+
 export type ListingWithTimes = {
   season_code: Season;
   crn: Crn;

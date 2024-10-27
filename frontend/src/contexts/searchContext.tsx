@@ -24,6 +24,7 @@ import {
   courseInfoAttributes,
 } from '../utilities/constants';
 import {
+  abbreviateWorkdays,
   isInWorksheet,
   checkConflict,
   getDayTimes,
@@ -376,10 +377,8 @@ export function SearchProvider({
           case 'enrollment':
             return getEnrolled(listing.course, 'stat');
           case 'days':
-            return Object.keys(listing.course.times_by_day).map((d) =>
-              ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                ? d.slice(0, 2)
-                : d[0],
+            return abbreviateWorkdays(
+              Object.keys(listing.course.times_by_day) as Weekdays[],
             );
           case 'info-attributes':
             return listing.course.course_flags.map((f) => f.flag.flag_text);
