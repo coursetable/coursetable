@@ -59,6 +59,7 @@ function parseWithWarning<T extends z.ZodSchema<unknown>>(
  */
 async function fetchAPI(
   endpointSuffix: string,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   options: BaseFetchOptions & ({ body: {} } | { method: 'POST' }),
 ): Promise<boolean>;
 /**
@@ -69,6 +70,7 @@ async function fetchAPI(
 async function fetchAPI(
   endpointSuffix: string,
   options: BaseFetchOptions,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 ): Promise<{} | undefined>;
 /**
  * Performs either a GET or POST request to the API, depending on whether a body
@@ -77,6 +79,7 @@ async function fetchAPI(
  */
 async function fetchAPI<T extends z.ZodSchema>(
   endpointSuffix: string,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   options: BaseFetchOptions & { body?: {}; schema: T },
 ): Promise<z.infer<T> | undefined>;
 async function fetchAPI(
@@ -88,6 +91,7 @@ async function fetchAPI(
     breadcrumb,
     handleErrorCode,
   }: BaseFetchOptions & {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     body?: {};
     method?: 'POST' | 'GET';
     schema?: z.ZodType<unknown>;

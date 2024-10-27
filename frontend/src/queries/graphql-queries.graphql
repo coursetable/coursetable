@@ -51,9 +51,7 @@ query SameCourseOrProfOfferings(
     ...RelatedCourseInfo
     syllabus_url
   }
-  sameProf: course_professors(
-    where: { professor_id: { _in: $professorIds } }
-  ) {
+  sameProf: course_professors(where: { professor_id: { _in: $professorIds } }) {
     course {
       ...RelatedCourseInfo
     }
