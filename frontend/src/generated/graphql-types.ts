@@ -10478,8 +10478,8 @@ export type CourseAttributesQuery = {
 export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   seasonCode: Scalars['String']['input'];
   crn: Scalars['Int']['input'];
-  same_course_id: Scalars['Int']['input'];
-  professor_ids: InputMaybe<
+  sameCourseId: Scalars['Int']['input'];
+  professorIds: InputMaybe<
     Array<Scalars['Int']['input']> | Scalars['Int']['input']
   >;
   hasEval: Scalars['Boolean']['input'];
@@ -10570,7 +10570,7 @@ export type RelatedCourseInfoFragment = {
 };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
-  season_code: InputMaybe<Scalars['String']['input']>;
+  seasonCode: InputMaybe<Scalars['String']['input']>;
   crn: InputMaybe<Scalars['Int']['input']>;
 }>;
 
@@ -10608,7 +10608,7 @@ export type SearchEvaluationNarrativesQuery = {
 };
 
 export type PrereqLinkInfoQueryVariables = Exact<{
-  course_codes: InputMaybe<
+  courseCodes: InputMaybe<
     Array<Scalars['String']['input']> | Scalars['String']['input']
   >;
 }>;

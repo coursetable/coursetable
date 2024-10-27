@@ -191,7 +191,7 @@ function Prereqs({
   const [searchParams] = useSearchParams();
   const { data, error, loading } = usePrereqLinkInfoQuery({
     variables: {
-      course_codes:
+      courseCodes:
         segments
           ?.filter(
             // TODO: remove after TS 5.5

@@ -23,8 +23,8 @@ function CourseModalOverview({
       seasonCode: header.season_code,
       crn: header.crn,
       hasEval: Boolean(user.hasEvals),
-      same_course_id: header.course.same_course_id,
-      professor_ids: header.course.course_professors.map(
+      sameCourseId: header.course.same_course_id,
+      professorIds: header.course.course_professors.map(
         (p) => p.professor.professor_id,
       ),
     },

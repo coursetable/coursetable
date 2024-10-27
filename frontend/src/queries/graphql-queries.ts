@@ -36,8 +36,8 @@ export const SameCourseOrProfOfferingsDocument = gql`
   query SameCourseOrProfOfferings(
     $seasonCode: String!
     $crn: Int!
-    $same_course_id: Int!
-    $professor_ids: [Int!]
+    $sameCourseId: Int!
+    $professorIds: [Int!]
     $hasEval: Boolean!
   ) {
     self: listings(
@@ -79,12 +79,12 @@ export const SameCourseOrProfOfferingsDocument = gql`
       crn
       course_code
     }
-    sameCourse: courses(where: { same_course_id: { _eq: $same_course_id } }) {
+    sameCourse: courses(where: { same_course_id: { _eq: $sameCourseId } }) {
       ...RelatedCourseInfo
       syllabus_url
     }
     sameProf: course_professors(
-      where: { professor_id: { _in: $professor_ids } }
+      where: { professor_id: { _in: $professorIds } }
     ) {
       course {
         ...RelatedCourseInfo
@@ -108,8 +108,8 @@ export const SameCourseOrProfOfferingsDocument = gql`
  *   variables: {
  *      seasonCode: // value for 'seasonCode'
  *      crn: // value for 'crn'
- *      same_course_id: // value for 'same_course_id'
- *      professor_ids: // value for 'professor_ids'
+ *      sameCourseId: // value for 'sameCourseId'
+ *      professorIds: // value for 'professorIds'
  *      hasEval: // value for 'hasEval'
  *   },
  * });
@@ -146,12 +146,17 @@ export function useSameCourseOrProfOfferingsLazyQuery(
   >(SameCourseOrProfOfferingsDocument, options);
 }
 export function useSameCourseOrProfOfferingsSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.SameCourseOrProfOfferingsQuery,
-    Types.SameCourseOrProfOfferingsQueryVariables
-  >,
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.SameCourseOrProfOfferingsQuery,
+        Types.SameCourseOrProfOfferingsQueryVariables
+      >,
 ) {
-  const options = { ...defaultOptions, ...baseOptions };
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.SameCourseOrProfOfferingsQuery,
     Types.SameCourseOrProfOfferingsQueryVariables
@@ -171,10 +176,8 @@ export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<
   Types.SameCourseOrProfOfferingsQueryVariables
 >;
 export const SearchEvaluationNarrativesDocument = gql`
-  query SearchEvaluationNarratives($season_code: String, $crn: Int) {
-    listings(
-      where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }
-    ) {
+  query SearchEvaluationNarratives($seasonCode: String, $crn: Int) {
+    listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
       course {
         evaluation_narratives {
           comment
@@ -211,7 +214,7 @@ export const SearchEvaluationNarrativesDocument = gql`
  * @example
  * const { data, loading, error } = useSearchEvaluationNarrativesQuery({
  *   variables: {
- *      season_code: // value for 'season_code'
+ *      seasonCode: // value for 'seasonCode'
  *      crn: // value for 'crn'
  *   },
  * });
@@ -241,12 +244,17 @@ export function useSearchEvaluationNarrativesLazyQuery(
   >(SearchEvaluationNarrativesDocument, options);
 }
 export function useSearchEvaluationNarrativesSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.SearchEvaluationNarrativesQuery,
-    Types.SearchEvaluationNarrativesQueryVariables
-  >,
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.SearchEvaluationNarrativesQuery,
+        Types.SearchEvaluationNarrativesQueryVariables
+      >,
 ) {
-  const options = { ...defaultOptions, ...baseOptions };
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.SearchEvaluationNarrativesQuery,
     Types.SearchEvaluationNarrativesQueryVariables
@@ -266,8 +274,8 @@ export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
   Types.SearchEvaluationNarrativesQueryVariables
 >;
 export const PrereqLinkInfoDocument = gql`
-  query PrereqLinkInfo($course_codes: [String!]) {
-    listings(where: { course_code: { _in: $course_codes } }) {
+  query PrereqLinkInfo($courseCodes: [String!]) {
+    listings(where: { course_code: { _in: $courseCodes } }) {
       course {
         title
         skills
@@ -306,7 +314,7 @@ export const PrereqLinkInfoDocument = gql`
  * @example
  * const { data, loading, error } = usePrereqLinkInfoQuery({
  *   variables: {
- *      course_codes: // value for 'course_codes'
+ *      courseCodes: // value for 'courseCodes'
  *   },
  * });
  */
@@ -335,12 +343,17 @@ export function usePrereqLinkInfoLazyQuery(
   >(PrereqLinkInfoDocument, options);
 }
 export function usePrereqLinkInfoSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.PrereqLinkInfoQuery,
-    Types.PrereqLinkInfoQueryVariables
-  >,
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.PrereqLinkInfoQuery,
+        Types.PrereqLinkInfoQueryVariables
+      >,
 ) {
-  const options = { ...defaultOptions, ...baseOptions };
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.PrereqLinkInfoQuery,
     Types.PrereqLinkInfoQueryVariables
