@@ -120,7 +120,9 @@ export function Popout({
 
   return (
     <div
-      data-tutorial={dataTutorial ? `catalog-${dataTutorial}-observe` : ''}
+      data-tutorial={
+        dataTutorial ? `catalog-${dataTutorial}-observe` : undefined
+      }
       className={styles.wrapper}
     >
       {/* Popout Button */}

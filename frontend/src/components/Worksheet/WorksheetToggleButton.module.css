@@ -6,13 +6,9 @@
 }
 
 .worksheetDropdown {
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
-  border: none;
-  box-shadow: 0 2px 4px var(--color-shadow);
+  text-wrap: nowrap;
   background-color: var(--color-select);
   color: var(--color-text);
 }

@@ -88,7 +88,7 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
 
 // Styles for popout select
 function popoutStyles(
-  width: number,
+  minWidth: number,
   showControl = true,
 ): StylesConfig<Option<number | string>> {
   return {
@@ -100,7 +100,7 @@ function popoutStyles(
         ? 'var(--color-disabled)'
         : 'var(--color-select)',
       borderColor: 'var(--color-border-control)',
-      minWidth: width,
+      minWidth,
       margin: 8,
     }),
     dropdownIndicator: (base) => ({
@@ -112,7 +112,7 @@ function popoutStyles(
     option: (base) => ({
       ...base,
       cursor: 'pointer',
-      minWidth: width,
+      minWidth,
     }),
   };
 }
@@ -182,6 +182,7 @@ type Props = {
   readonly colors?: { [optionValue: string]: string };
   readonly isMulti?: boolean;
   readonly showControl?: boolean;
+  readonly minWidth?: number;
 };
 
 function CustomSelect<
@@ -191,9 +192,9 @@ function CustomSelect<
   popout = false,
   colors,
   isMulti = false as IsMulti,
-  isSearchable = true,
   showControl = true,
   components: componentsProp,
+  minWidth = 400,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
   // All the default theme colors
@@ -222,7 +223,7 @@ function CustomSelect<
 
   let styles = mergeStyles(
     indicatorStyles(isMulti),
-    popout ? popoutStyles(400, showControl) : defaultStyles(),
+    popout ? popoutStyles(minWidth, showControl) : defaultStyles(),
   );
   if (colors) styles = mergeStyles(styles, colorStyles(colors));
 
@@ -237,7 +238,7 @@ function CustomSelect<
       // All our selects are used in the navbar or the mobile search form, and
       // on mobile this is false anyway
       menuShouldScrollIntoView={false}
-      isSearchable={isSearchable}
+      isSearchable={showControl}
     />
   );
 }

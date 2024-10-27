@@ -7,6 +7,7 @@ import { MdErrorOutline } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
+import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { updateWorksheet, toggleCourseHidden } from '../../queries/api';
 import { useStore } from '../../store';
@@ -16,6 +17,8 @@ import {
   checkConflict,
   type ListingWithTimes,
 } from '../../utilities/course';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 import styles from './WorksheetToggleButton.module.css';
 
 function CourseConflictIcon({
@@ -215,30 +218,24 @@ function WorksheetToggleButton({
           </Button>
         </OverlayTrigger>
       </div>
-      {/* TODO: use the custom select component */}
       {modal && (
-        <select
-          value={selectedWorksheet}
-          onChange={(event) => {
-            setSelectedWorksheet(Number(event.target.value));
-          }}
-          onClick={(e) => {
-            // Check if the clicked target is the select element
-            if ((e.target as HTMLSelectElement).tagName === 'SELECT')
-              e.stopPropagation();
-          }}
-          // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-          onMouseEnter={(e) => {
-            e.preventDefault();
-          }}
+        <Popout
+          buttonText="Worksheet"
+          selectedOptions={worksheetOptions.find(
+            (x) => x.value === selectedWorksheet,
+          )}
+          clearIcon={false}
+          displayOptionLabel
           className={styles.worksheetDropdown}
         >
-          {worksheetOptions.map(({ value, label }) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          <PopoutSelect<Option<number>, false>
+            value={worksheetOptions.find((x) => x.value === selectedWorksheet)}
+            options={worksheetOptions}
+            onChange={(option) => setSelectedWorksheet(option!.value)}
+            showControl={false}
+            minWidth={200}
+          />
+        </Popout>
       )}
     </div>
   );
