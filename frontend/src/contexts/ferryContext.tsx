@@ -78,6 +78,7 @@ type Store = {
   requests: number;
   loading: boolean;
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   error: {} | null;
   courses: typeof courseData;
   requestSeasons: (requestedSeasons: Season[]) => Promise<void>;

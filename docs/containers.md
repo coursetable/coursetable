@@ -8,7 +8,7 @@ CourseTable uses the following Docker containers for core functionality, so they
 - `redis`: this is a Redis stack server that stores all user sessions from Express.
 - `pgadmin`: this is a pgadmin instance that allows you to view the Postgres database managed by API. It is useful for debugging and DB manipulation.
 
-Note that we have two databases: a database managed by API, which stores user data, and a database managed by Ferry, which stores course data. The latter is exposed as a GraphQL API by the Hasura engine. Therefore, you need to be connected to the Internet to even start CourseTable locally, because the GraphQL engine used in dev still communicates with the remote Postgres database.
+Note that we have two databases: a database managed by API, which stores user data, and a database managed by Ferry, which stores course data. The latter is exposed as a GraphQL API by the Hasura engine, while the former is accessed directly by the Express app via Drizzle.
 
 In `coursetable/api`, we only manage the `express` container. We do provide development versions of the `db`, `pgadmin`, `graphql-engine`, and `redis` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra`](https://github.com/coursetable/infra/).
 
@@ -16,7 +16,7 @@ Here's the data flow for course data:
 
 1. Ferry writes course data to [`ferry-data`](https://github.com/coursetable/ferry-data) in JSON.
 2. Ferry then writes the data to a Postgres database on the prod server.
-3. The Postgres database exposes itself to the Internet.
+3. The prod database is regularly dumped into an endpoint. The dev `start.sh` script will pull data from this endpoint to populate the local Postgres database, if invoking `start.sh` with the `--ferry_seed` (`-f`) flag.
 4. During development and prod, we spin up a Hasura engine that wraps the Postgres database and exposes a GraphQL API.
    <details>
    <summary>Additional Details</summary>
@@ -27,7 +27,7 @@ Here's the data flow for course data:
 
    </details>
 
-5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. These are cached locally unless you run `./start.sh -d -o`.
+5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. This data is only overwritten in dev by running `start.sh` with the `--overwrite` (`-o`) flag, or in prod by Ferry requesting the `/api/catalog/refresh` endpoint. The idea of this step is to aggressively cache the GQL responses so every frontend request doesn't have to hit the GQL API. It also powers the client-side course search.
 6. The frontend requests the Express endpoint, which serves these JSON files.
 
 And for user data:
@@ -36,8 +36,6 @@ And for user data:
 2. The API directly connects to this database using Drizzle.
 3. The frontend requests the Express endpoint, which then makes DB calls.
 4. If you want to make DB changes, you can do so directly from pgadmin.
-
-TODO: the course data workflow is overcomplicated. Get rid of the entire "Ferry emits JSON" process. Maybe API can stop emitting plain JSON too (depends on whether the result can be cached), so that in the end it's Ferry writes to Postgres -> GraphQL wraps Postgres -> Frontend queries GraphQL.
 
 Therefore, there are a few points to watch out for:
 

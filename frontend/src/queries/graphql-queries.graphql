@@ -1,8 +1,8 @@
 query SameCourseOrProfOfferings(
   $seasonCode: String!
   $crn: Int!
-  $same_course_id: Int!
-  $professor_ids: [Int!]
+  $sameCourseId: Int!
+  $professorIds: [Int!]
   $hasEval: Boolean!
 ) {
   self: listings(
@@ -47,13 +47,11 @@ query SameCourseOrProfOfferings(
     crn
     course_code
   }
-  sameCourse: courses(where: { same_course_id: { _eq: $same_course_id } }) {
+  sameCourse: courses(where: { same_course_id: { _eq: $sameCourseId } }) {
     ...RelatedCourseInfo
     syllabus_url
   }
-  sameProf: course_professors(
-    where: { professor_id: { _in: $professor_ids } }
-  ) {
+  sameProf: course_professors(where: { professor_id: { _in: $professorIds } }) {
     course {
       ...RelatedCourseInfo
     }
@@ -89,8 +87,8 @@ fragment RelatedCourseInfo on courses {
   same_course_id
 }
 
-query SearchEvaluationNarratives($season_code: String, $crn: Int) {
-  listings(where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }) {
+query SearchEvaluationNarratives($seasonCode: String, $crn: Int) {
+  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
     course {
       evaluation_narratives {
         comment
@@ -114,8 +112,8 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
   }
 }
 
-query PrereqLinkInfo($course_codes: [String!]) {
-  listings(where: { course_code: { _in: $course_codes } }) {
+query PrereqLinkInfo($courseCodes: [String!]) {
+  listings(where: { course_code: { _in: $courseCodes } }) {
     course {
       title
       skills

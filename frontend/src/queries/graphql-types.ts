@@ -38,8 +38,3 @@ export type TimesByDay = {
     locationURL: string,
   ][];
 };
-export type ProfessorInfo = {
-  average_rating: number;
-  email: string;
-  name: string;
-}[];

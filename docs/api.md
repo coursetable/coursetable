@@ -135,14 +135,6 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 - Body: CSV file
 
-### `GET` `/api/static/catalogs/evals/{season}.json`
-
-DEPRECATED: use `/api/catalog/evals/{season}` instead
-
-### `GET` `/api/static/catalogs/public/{season}.json`
-
-DEPRECATED: use `/api/catalog/public/{season}` instead
-
 ## Auth
 
 ### `GET` `/api/auth/check`

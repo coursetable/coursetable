@@ -42,6 +42,7 @@ type Store = {
   hoverCourse: Crn | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   worksheetError: {} | null;
   changeSeason: (seasonCode: Season | null) => void;
   changeWorksheet: (worksheetNumber: number) => void;

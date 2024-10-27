@@ -16,7 +16,7 @@ function CourseModalEvaluations({
 }) {
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
-      season_code: seasonCode,
+      seasonCode,
       crn,
     },
   });
