@@ -19,6 +19,7 @@ import type { Season, Crn, Weekdays } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { extraInfo } from '../../utilities/constants';
 import {
+  abbreviateWorkdays,
   to12HourTime,
   toSeasonDate,
   toSeasonString,
@@ -68,13 +69,7 @@ function getSectionData(section: CourseSectionsQuery['listings'][number]) {
   const timeString = [...times.entries()]
     .map(
       ([timespan, days]) =>
-        `${[...days]
-          .map((d) =>
-            ['Thursday', 'Saturday', 'Sunday'].includes(d)
-              ? d.slice(0, 2)
-              : d[0],
-          )
-          .join('')} ${timespan}`,
+        `${abbreviateWorkdays([...days]).join('')} ${timespan}`,
     )
     .join(', ');
   const professors =
