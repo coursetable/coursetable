@@ -56,6 +56,39 @@ export type CourseModalHeaderData = Pick<
   };
 };
 
+function getSectionData(section: CourseSectionsQuery['listings'][number]) {
+  const times = new Map<string, Set<Weekdays>>();
+  for (const [day, info] of Object.entries(section.course.times_by_day)) {
+    for (const [startTime, endTime] of info) {
+      const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
+      if (!times.has(timespan)) times.set(timespan, new Set());
+      times.get(timespan)!.add(day as Weekdays);
+    }
+  }
+  const timeString = [...times.entries()]
+    .map(
+      ([timespan, days]) =>
+        `${[...days]
+          .map((d) =>
+            ['Thursday', 'Saturday', 'Sunday'].includes(d)
+              ? d.slice(0, 2)
+              : d[0],
+          )
+          .join('')} ${timespan}`,
+    )
+    .join(', ');
+  const professors =
+    section.course.course_professors
+      .map((professor) => professor.professor.name)
+      .join(' ') || 'TBA';
+  return {
+    value: `0${section.section}`,
+    label: `Section 0${section.section} - ${professors}${
+      timeString ? `: ${timeString}` : ``
+    }`,
+  };
+}
+
 function SectionsDropdown({
   listing,
   sections,
@@ -66,41 +99,7 @@ function SectionsDropdown({
   readonly onSelect: (option: Option | null) => void;
 }) {
   const sectionsOptions: Map<string, Option> = new Map<string, Option>(
-    sections.map((section) => {
-      const times = new Map<string, Set<Weekdays>>();
-      for (const [day, info] of Object.entries(section.course.times_by_day)) {
-        for (const [startTime, endTime] of info) {
-          const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
-          if (!times.has(timespan)) times.set(timespan, new Set());
-          times.get(timespan)!.add(day as Weekdays);
-        }
-      }
-      const timeString = [...times.entries()]
-        .map(
-          ([timespan, days]) =>
-            `${[...days]
-              .map((d) =>
-                ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                  ? d.slice(0, 2)
-                  : d[0],
-              )
-              .join('')} ${timespan}`,
-        )
-        .join(', ');
-      const professors =
-        section.course.course_professors
-          .map((professor) => professor.professor.name)
-          .join(' ') || 'TBA';
-      return [
-        section.section,
-        {
-          value: `0${section.section}`,
-          label: `Section 0${section.section} - ${professors}${
-            timeString ? `: ${timeString}` : ``
-          }`,
-        },
-      ];
-    }),
+    sections.map((section) => [section.section, getSectionData(section)]),
   );
   return (
     <Popout
@@ -111,7 +110,7 @@ function SectionsDropdown({
     >
       <PopoutSelect<Option, false>
         value={sectionsOptions.get(listing.section)}
-        options={[...sectionsOptions.values()]}
+        options={sections.map(getSectionData)}
         onChange={onSelect}
         isSearchable={false}
         showControl={false}

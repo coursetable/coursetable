@@ -92,33 +92,23 @@ function popoutStyles(
   showControl = true,
 ): StylesConfig<Option<number | string>> {
   return {
-    control(base, { isDisabled }) {
-      const style = {
-        ...base,
-        cursor: isDisabled ? 'not-allowed' : 'pointer',
-        backgroundColor: isDisabled
-          ? 'var(--color-disabled)'
-          : 'var(--color-select)',
-        borderColor: 'var(--color-border-control)',
-        minWidth: width,
-        margin: 8,
-      };
-      if (!showControl) style.display = 'none';
-      return style;
-    },
+    control: (base, { isDisabled }) => ({
+      ...base,
+      ...(!showControl && { display: 'none' }),
+      cursor: isDisabled ? 'not-allowed' : 'pointer',
+      backgroundColor: isDisabled
+        ? 'var(--color-disabled)'
+        : 'var(--color-select)',
+      borderColor: 'var(--color-border-control)',
+      minWidth: width,
+      margin: 8,
+    }),
     dropdownIndicator: (base) => ({
       ...base,
       display: 'none',
     }),
     menu: () =>
       showControl ? { boxShadow: 'inset 0 1px 0 var(--color-shadow)' } : {},
-    menuList: (provided) =>
-      showControl
-        ? provided
-        : {
-            ...provided,
-            paddingTop: 0,
-          },
     option: (base) => ({
       ...base,
       cursor: 'pointer',
