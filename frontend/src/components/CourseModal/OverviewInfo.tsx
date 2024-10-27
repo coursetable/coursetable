@@ -26,6 +26,7 @@ import { usePrereqLinkInfoQuery } from '../../queries/graphql-queries';
 import type { Weekdays } from '../../queries/graphql-types';
 import { ratingColormap } from '../../utilities/constants';
 import {
+  abbreviateWorkdays,
   getEnrolled,
   toSeasonString,
   to12HourTime,
@@ -442,14 +443,7 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
         name="Time"
         value={[...times.entries()].map(([timespan, days]) => (
           <div key={timespan}>
-            {[...days]
-              .map((d) =>
-                ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                  ? d.slice(0, 2)
-                  : d[0],
-              )
-              .join('')}{' '}
-            {timespan}
+            {abbreviateWorkdays([...days]).join('')} {timespan}
           </div>
         ))}
       />
