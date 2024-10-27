@@ -57,7 +57,10 @@ export type CourseModalHeaderData = Pick<
   };
 };
 
-function getSectionData(section: CourseSectionsQuery['listings'][number]) {
+function getSectionData(
+  section: CourseSectionsQuery['listings'][number],
+  hasDifferentTitles: boolean,
+) {
   const times = new Map<string, Set<Weekdays>>();
   for (const [day, info] of Object.entries(section.course.times_by_day)) {
     for (const [startTime, endTime] of info) {
@@ -77,10 +80,28 @@ function getSectionData(section: CourseSectionsQuery['listings'][number]) {
       .map((professor) => professor.professor.name)
       .join(' ') || 'TBA';
   return {
-    value: `0${section.section}`,
-    label: `Section 0${section.section} - ${professors}${
-      timeString ? `: ${timeString}` : ``
-    }`,
+    value: section.section.padStart(2, '0'),
+    label: hasDifferentTitles ? (
+      <span title={section.course.title}>
+        <b>{section.section.padStart(2, '0')}</b>{' '}
+        {truncatedText(section.course.title, 40, '')}
+        <br />
+        <small>
+          {professors}
+          {timeString ? ' - ' : ''}
+          {timeString}
+        </small>
+      </span>
+    ) : (
+      <span>
+        <b>{section.section.padStart(2, '0')}</b>{' '}
+        <small>
+          {professors}
+          {timeString ? ' - ' : ''}
+          {timeString}
+        </small>
+      </span>
+    ),
   };
 }
 
@@ -93,8 +114,14 @@ function SectionsDropdown({
   readonly sections: CourseSectionsQuery['listings'];
   readonly onSelect: (option: Option | null) => void;
 }) {
+  const hasDifferentTitles =
+    new Set(sections.map((section) => section.course.title)).size > 1;
   const sectionsOptions: Map<string, Option> = new Map<string, Option>(
-    sections.map((section) => [section.section, getSectionData(section)]),
+    // @ts-expect-error: TODO it actually works to have a ReactNode as label
+    sections.map((section) => [
+      section.section,
+      getSectionData(section, hasDifferentTitles),
+    ]),
   );
   return (
     <Popout
@@ -105,7 +132,7 @@ function SectionsDropdown({
     >
       <PopoutSelect<Option, false>
         value={sectionsOptions.get(listing.section)}
-        options={sections.map(getSectionData)}
+        options={[...sectionsOptions.values()]}
         onChange={onSelect}
         isSearchable={false}
         showControl={false}
@@ -247,7 +274,12 @@ function CourseModal() {
     },
     skip: !courseCode || !season,
   });
-  const sections = loading || error ? [] : data?.listings || [];
+  const sections =
+    loading || error || !data?.listings
+      ? []
+      : [...data.listings].sort((a, b) =>
+          a.section.localeCompare(b.section, 'en-US', { numeric: true }),
+        );
   useEffect(() => {
     if (history.length !== 0) return;
     const courseModal = searchParams.get('course-modal');
