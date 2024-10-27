@@ -7,8 +7,6 @@ export function PopoutSelect<
   IsMulti extends boolean,
 >({
   isMulti = false as IsMulti,
-  isSearchable = true,
-  showControl = true,
   isClearable = isMulti, // Multi-selects are clearable by default
   ...props
 }: React.ComponentProps<typeof CustomSelect<T, IsMulti>>) {
@@ -17,14 +15,12 @@ export function PopoutSelect<
       popout
       {...props}
       isMulti={isMulti}
-      showControl={showControl}
       // This is not DOM auto focus
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       backspaceRemovesValue={false}
       controlShouldRenderValue
       isClearable={isClearable}
-      isSearchable={isSearchable}
       menuIsOpen
       tabSelectsValue={false}
       closeMenuOnSelect={!isMulti}
