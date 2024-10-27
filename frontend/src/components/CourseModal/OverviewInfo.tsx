@@ -254,7 +254,7 @@ function Prereqs({
                 {s.text}
               </Link>
             ) : (
-              <span className={styles.loadingLink}>{s.text}</span>
+              <span className={styles.unavailableLink}>{s.text}</span>
             )}
           </OverlayTrigger>
         );

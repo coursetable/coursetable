@@ -24,8 +24,12 @@
   margin-top: 0.5rem;
 }
 
+.unavailableLink {
+  cursor: not-allowed;
+}
+
 .requirements a,
-.requirements .loadingLink {
+.requirements .unavailableLink {
   color: rgb(252 105 105);
   text-decoration: underline;
 }
