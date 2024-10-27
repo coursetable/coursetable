@@ -81,20 +81,15 @@ function getSectionData(
       .join(' ') || 'TBA';
   return {
     value: section.section.padStart(2, '0'),
-    label: hasDifferentTitles ? (
-      <span title={section.course.title}>
+    label: (
+      <span title={hasDifferentTitles ? section.course.title : undefined}>
         <b>{section.section.padStart(2, '0')}</b>{' '}
-        {truncatedText(section.course.title, 40, '')}
-        <br />
-        <small>
-          {professors}
-          {timeString ? ' - ' : ''}
-          {timeString}
-        </small>
-      </span>
-    ) : (
-      <span>
-        <b>{section.section.padStart(2, '0')}</b>{' '}
+        {hasDifferentTitles && (
+          <>
+            {truncatedText(section.course.title, 40, '')}
+            <br />
+          </>
+        )}
         <small>
           {professors}
           {timeString ? ' - ' : ''}
