@@ -78,7 +78,7 @@ function getSectionData(
   const professors =
     section.course.course_professors
       .map((professor) => professor.professor.name)
-      .join(' ') || 'TBA';
+      .join(' • ') || 'TBA';
   return {
     value: section.section.padStart(2, '0'),
     label: (
