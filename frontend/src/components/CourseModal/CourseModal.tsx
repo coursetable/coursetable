@@ -125,7 +125,7 @@ function SectionsDropdown({
   );
   return (
     <Popout
-      buttonText="Sections"
+      buttonText={listing.section.padStart(2, '0')}
       selectedOptions={sectionsOptions.get(listing.section)}
       clearIcon={false}
       className={styles.sectionsDropdown}
