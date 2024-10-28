@@ -193,13 +193,7 @@ function Prereqs({
   const { data, error, loading } = usePrereqLinkInfoQuery({
     variables: {
       courseCodes:
-        segments
-          ?.filter(
-            // TODO: remove after TS 5.5
-            (s): s is Extract<Segment, { type: 'course' }> =>
-              s.type === 'course',
-          )
-          .map((s) => s.course) ?? [],
+        segments?.filter((s) => s.type === 'course').map((s) => s.course) ?? [],
     },
     skip: !segments,
   });
