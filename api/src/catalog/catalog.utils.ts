@@ -96,6 +96,21 @@ async function generateSitemapIndex(): Promise<void> {
   winston.info(`Sitemap index generated at ${sitemapIndexPath}`);
 }
 
+async function generateMetadata() {
+  // Note: the metadata does not read the psql metadata on purpose:
+  // It indicates the last time the static files were updated.
+  // If there's significant deviation between this time and the psql metadata,
+  // then it would be a bug.
+  // TODO: add a check for this in the future.
+  const metadata = {
+    last_update: new Date().toISOString(),
+  };
+  await fs.writeFile(
+    `${STATIC_FILE_DIR}/metadata.json`,
+    JSON.stringify(metadata),
+  );
+}
+
 async function fetchData(
   seasonCode: string,
   type: 'evals' | 'public',
@@ -168,6 +183,7 @@ export async function fetchCatalog(overwrite: boolean) {
     await Promise.all(processSeasons);
     winston.info('Finished generating season sitemaps');
     await generateSitemapIndex();
+    await generateMetadata();
   } catch (err) {
     winston.error(err);
     throw err;

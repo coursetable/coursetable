@@ -83,6 +83,15 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 ## Catalog
 
+### `GET` `/api/catalog/metadata`
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `last_update`: `string` (ISO date string)
+
 ### `GET` `/api/catalog/refresh`
 
 #### Request

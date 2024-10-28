@@ -15,24 +15,23 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import type { CourseModalHeaderData } from './CourseModal';
-
-import { useSearch } from '../../contexts/searchContext';
+import { useSearch } from '../../../contexts/searchContext';
 import type {
   SameCourseOrProfOfferingsQuery,
   PrereqLinkInfoQuery,
-} from '../../generated/graphql-types';
-import { usePrereqLinkInfoQuery } from '../../queries/graphql-queries';
-import type { Weekdays } from '../../queries/graphql-types';
-import { ratingColormap } from '../../utilities/constants';
+} from '../../../generated/graphql-types';
+import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
+import type { Weekdays } from '../../../queries/graphql-types';
+import { ratingColormap } from '../../../utilities/constants';
 import {
   abbreviateWorkdays,
   getEnrolled,
   toSeasonString,
   to12HourTime,
-} from '../../utilities/course';
-import { createCourseModalLink } from '../../utilities/display';
-import { TextComponent, InfoPopover, LinkLikeText } from '../Typography';
+} from '../../../utilities/course';
+import { createCourseModalLink } from '../../../utilities/display';
+import { TextComponent, InfoPopover, LinkLikeText } from '../../Typography';
+import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -186,20 +185,14 @@ function Prereqs({
 }: {
   readonly course: CourseInfo;
   readonly season: string;
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
+  readonly onNavigation: ModalNavigationFunction;
 }) {
   const segments = parsePrereqs(course.requirements);
   const [searchParams] = useSearchParams();
   const { data, error, loading } = usePrereqLinkInfoQuery({
     variables: {
       courseCodes:
-        segments
-          ?.filter(
-            // TODO: remove after TS 5.5
-            (s): s is Extract<Segment, { type: 'course' }> =>
-              s.type === 'course',
-          )
-          .map((s) => s.course) ?? [],
+        segments?.filter((s) => s.type === 'course').map((s) => s.course) ?? [],
     },
     skip: !segments,
   });
@@ -249,7 +242,7 @@ function Prereqs({
               <Link
                 to={createCourseModalLink(info, searchParams)}
                 onClick={() => {
-                  onNavigation(info, false);
+                  onNavigation('push', info, 'overview');
                 }}
               >
                 {s.text}
@@ -470,7 +463,7 @@ function OverviewInfo({
   onNavigation,
   data,
 }: {
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
+  readonly onNavigation: ModalNavigationFunction;
   readonly data: SameCourseOrProfOfferingsQuery;
 }) {
   const { numFriends } = useSearch();

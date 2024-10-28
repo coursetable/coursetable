@@ -28,6 +28,8 @@ export default (app: express.Express): void => {
   // Serve public catalog files without authentication
   app.use('/api/catalog/public', staticJSON('/catalogs/public'));
 
+  app.use('/api/catalog/metadata', staticJSON('/metadata.json'));
+
   app.get(
     '/api/catalog/csv/:seasonCode(\\d{6}).csv',
     authWithEvals,

@@ -1,0 +1,65 @@
+.backArrow {
+  height: 30px;
+}
+
+.badges {
+  height: auto;
+  display: flex;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.sectionsDropdown {
+  min-width: 55px;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: bold;
+
+  /* box-shadow: 0 2px 4px var(--color-shadow) !important; */
+}
+
+.courseCodes {
+  height: auto;
+  font-size: 16px;
+  line-height: 20px;
+  margin: 0 0.5rem 0 0;
+}
+
+.crossListingLink,
+.crossListingLink:hover {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.cancelledText {
+  color: rgb(255 98 98);
+}
+
+.modalTop {
+  width: calc(100% - 1rem);
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.modalTitle {
+  font-weight: 550;
+  line-height: 1.2 !important;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .modalTop {
+    flex-direction: column;
+    align-items: start;
+    gap: 0;
+    margin: 0.5rem;
+  }
+
+  .modalTitle {
+    line-height: 1 !important;
+    font-size: 18px !important;
+  }
+}
