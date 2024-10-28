@@ -11,19 +11,18 @@ import {
 } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
-import type { CourseModalHeaderData } from './CourseModal';
-
-import { CUR_YEAR } from '../../config';
+import { CUR_YEAR } from '../../../config';
 import type {
   RelatedCourseInfoFragment,
   SameCourseOrProfOfferingsQuery,
-} from '../../generated/graphql-types';
-import { useStore } from '../../store';
-import { generateRandomColor } from '../../utilities/common';
-import { ratingColormap, workloadColormap } from '../../utilities/constants';
-import { toSeasonString, isDiscussionSection } from '../../utilities/course';
-import { createCourseModalLink } from '../../utilities/display';
-import { RatingBubble } from '../Typography';
+} from '../../../generated/graphql-types';
+import { useStore } from '../../../store';
+import { generateRandomColor } from '../../../utilities/common';
+import { ratingColormap, workloadColormap } from '../../../utilities/constants';
+import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
+import { createCourseModalLink } from '../../../utilities/display';
+import { RatingBubble } from '../../Typography';
+import type { ModalNavigationFunction } from '../CourseModal';
 
 import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';
@@ -118,7 +117,7 @@ function CourseLink({
   readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly course: RelatedCourseInfoFragment;
   readonly filter: Filter;
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
+  readonly onNavigation: ModalNavigationFunction;
 }) {
   const [searchParams] = useSearchParams();
   // Note, we purposefully use the listing data fetched from GraphQL instead
@@ -155,7 +154,7 @@ function CourseLink({
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
         to={createCourseModalLink(targetListingDefinite, searchParams)}
         onClick={() => {
-          onNavigation(targetListingDefinite, true);
+          onNavigation('push', targetListingDefinite, 'evals');
         }}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
@@ -178,7 +177,7 @@ function CourseLink({
                 className="d-block"
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  onNavigation(l, true);
+                  onNavigation('push', l, 'evals');
                 }}
               >
                 {l.course_code}
@@ -234,7 +233,7 @@ function OverviewRatings({
   onNavigation,
   data,
 }: {
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
+  readonly onNavigation: ModalNavigationFunction;
   readonly data: SameCourseOrProfOfferingsQuery;
 }) {
   const user = useStore((state) => state.user);
