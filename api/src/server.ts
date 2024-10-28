@@ -109,7 +109,9 @@ app.use(
   '/ferry',
   (req, res, next) => {
     const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
-    req.headers['X-Hasura-Role'] = hasuraRole;
+    // Important: all headers must be lowercase; otherwise it will not override
+    // existing headers on the request.
+    req.headers['x-hasura-role'] = hasuraRole;
     next();
   },
   createProxyMiddleware({
