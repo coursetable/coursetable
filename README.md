@@ -9,6 +9,9 @@
 [![Staging CD](https://github.com/coursetable/coursetable/actions/workflows/staging_cd.yml/badge.svg?branch=master)](https://github.com/coursetable/coursetable/actions/workflows/staging_cd.yml)
 [![Ferry Run](https://github.com/coursetable/ferry/actions/workflows/ferry.yml/badge.svg)](https://github.com/coursetable/ferry/actions/workflows/ferry.yml)
 
+[![Ferry DB Snapshot](https://github.com/coursetable/infra/actions/workflows/ferry_db_snapshot.yml/badge.svg)](https://github.com/coursetable/infra/actions/workflows/ferry_db_snapshot.yml)
+[![User DB Backup](https://github.com/coursetable/infra/actions/workflows/user_db_backup.yml/badge.svg)](https://github.com/coursetable/infra/actions/workflows/user_db_backup.yml)
+
 Coursetable is made of two big parts:
 
 1.  **Website**: The site you see when you go to [coursetable.com](https://coursetable.com). The code for this – the front-end site as well as the back-end server that handle user actions – is contained within this repository.
