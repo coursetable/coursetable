@@ -13,10 +13,18 @@
   min-width: 55px;
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 14px;
-  font-weight: bold;
+  display: inline-block;
 
   /* box-shadow: 0 2px 4px var(--color-shadow) !important; */
+}
+
+.sectionsDropdown > button {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sectionsDropdown > div {
+  font-size: 14px;
 }
 
 .courseCodes {

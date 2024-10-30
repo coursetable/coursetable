@@ -91,7 +91,7 @@ function SectionsDropdown({
       buttonText={listing.section.padStart(2, '0')}
       selectedOptions={sectionsOptions.get(listing.section)}
       clearIcon={false}
-      className={styles.sectionsDropdown}
+      wrapperClassName={styles.sectionsDropdown}
     >
       <PopoutSelect<Option, false>
         value={sectionsOptions.get(listing.section)}
@@ -156,21 +156,21 @@ export default function ModalHeaderInfo({
             <TextComponent type="tertiary">
               ({toSeasonString(listing.season_code)})
             </TextComponent>
+            <SectionsDropdown
+              listing={listing}
+              sections={sections}
+              onSelect={(selectedSection) => {
+                const newSection = sections.find(
+                  (section) => `0${section.section}` === selectedSection!.value,
+                )!;
+                onNavigation('replace', newSection, 'overview');
+                navigate(createCourseModalLink(newSection, searchParams));
+              }}
+            />
           </div>
         </Modal.Title>
 
         <div className={styles.badges}>
-          <SectionsDropdown
-            listing={listing}
-            sections={sections}
-            onSelect={(selectedSection) => {
-              const newSection = sections.find(
-                (section) => `0${section.section}` === selectedSection!.value,
-              )!;
-              onNavigation('replace', newSection, 'overview');
-              navigate(createCourseModalLink(newSection, searchParams));
-            }}
-          />
           <p className={styles.courseCodes}>
             <TextComponent type="tertiary">
               {listing.course.listings.map((l, i) => (

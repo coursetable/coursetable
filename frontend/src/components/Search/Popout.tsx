@@ -21,6 +21,7 @@ type Props = {
   readonly maxDisplayOptions?: number;
   readonly displayOptionLabel?: boolean;
   readonly className?: string;
+  readonly wrapperClassName?: string;
   readonly notifications?: number;
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
@@ -85,6 +86,7 @@ export function Popout({
   maxDisplayOptions = 3,
   displayOptionLabel,
   className,
+  wrapperClassName,
   notifications,
   colors,
   dataTutorial,
@@ -123,7 +125,7 @@ export function Popout({
       data-tutorial={
         dataTutorial ? `catalog-${dataTutorial}-observe` : undefined
       }
-      className={styles.wrapper}
+      className={clsx(styles.wrapper, wrapperClassName)}
     >
       {/* Popout Button */}
       <button
