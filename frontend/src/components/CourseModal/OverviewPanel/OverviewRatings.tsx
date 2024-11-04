@@ -139,6 +139,27 @@ function CourseLink({
         : course.course_professors.length === 0
           ? 'TBA'
           : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
+  if (course.listings.some((l) => l.crn === listing.crn)) {
+    return (
+      <OverlayTrigger
+        trigger="hover"
+        placement="right"
+        overlay={(props) => (
+          <Popover id="self-popover" {...props}>
+            <Popover.Body>The current class</Popover.Body>
+          </Popover>
+        )}
+      >
+        <Col
+          xs={5}
+          className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+        >
+          <strong>{toSeasonString(course.season_code)}</strong>
+          <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+        </Col>
+      </OverlayTrigger>
+    );
+  }
   // Avoid showing the popup if there's something we can link to with high
   // priority
   // TODO: once we have the concept of "primary" cross-listing, we should
@@ -154,7 +175,13 @@ function CourseLink({
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
         to={createCourseModalLink(targetListingDefinite, searchParams)}
         onClick={() => {
-          onNavigation('push', targetListingDefinite, 'evals');
+          onNavigation(
+            'push',
+            targetListingDefinite,
+            CUR_YEAR.includes(targetListingDefinite.season_code)
+              ? 'overview'
+              : 'evals',
+          );
         }}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
@@ -177,7 +204,11 @@ function CourseLink({
                 className="d-block"
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  onNavigation('push', l, 'evals');
+                  onNavigation(
+                    'push',
+                    l,
+                    CUR_YEAR.includes(l.season_code) ? 'overview' : 'evals',
+                  );
                 }}
               >
                 {l.course_code}
@@ -203,9 +234,8 @@ function normalizeRelatedListings<T extends RelatedCourseInfoFragment>(
   courses: T[],
 ): T[] {
   // Discussion sections have no ratings, nothing to show
-  // Skip listings in the current and future seasons that have no evals
   return courses
-    .filter((o) => !isDiscussionSection(o) && !CUR_YEAR.includes(o.season_code))
+    .filter((o) => !isDiscussionSection(o))
     .sort(
       (a, b) =>
         b.season_code.localeCompare(a.season_code, 'en-US') ||

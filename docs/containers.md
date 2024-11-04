@@ -8,7 +8,7 @@ CourseTable uses the following Docker containers for core functionality, so they
 - `redis`: this is a Redis stack server that stores all user sessions from Express.
 - `pgadmin`: this is a pgadmin instance that allows you to view the Postgres database managed by API. It is useful for debugging and DB manipulation.
 
-Note that we have two databases: a database managed by API, which stores user data, and a database managed by Ferry, which stores course data. The latter is exposed as a GraphQL API by the Hasura engine, while the former is accessed directly by the Express app via Drizzle.
+Note that we have two databases: a database managed by API, which stores user data, and a database managed by Ferry, which stores course data. The latter is exposed as a GraphQL API by the Hasura engine, while the former is accessed directly by the Express app via Drizzle. Under the hood, these are both stored in the `db` Postgres container.
 
 In `coursetable/api`, we only manage the `express` container. We do provide development versions of the `db`, `pgadmin`, `graphql-engine`, and `redis` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra`](https://github.com/coursetable/infra/).
 
@@ -35,7 +35,7 @@ And for user data:
 1. In dev, we always create a new Postgres database; in prod, we use the existing one.
 2. The API directly connects to this database using Drizzle.
 3. The frontend requests the Express endpoint, which then makes DB calls.
-4. If you want to make DB changes, you can do so directly from pgadmin.
+4. If you want to make DB changes, you can do so directly from `pgadmin`.
 
 Therefore, there are a few points to watch out for:
 

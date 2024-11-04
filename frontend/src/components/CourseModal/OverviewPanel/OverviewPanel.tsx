@@ -33,7 +33,31 @@ function OverviewPanel({
   });
 
   // Wait until data is fetched
-  if (loading || error || !data) return <Spinner />;
+  if (loading) return <Spinner />;
+
+  if (error) {
+    return (
+      <Row className="m-auto">
+        <Col>
+          <p>Failed to load data: {error.message}</p>
+        </Col>
+      </Row>
+    );
+  }
+
+  if (!data || data.self.length === 0) {
+    return (
+      <Row className="m-auto">
+        <Col>
+          <p>Unexpected: no data returned.</p>
+          <p>
+            There could be some issues with our servers. Please allow for up to
+            10 minutes for course information to become available again.
+          </p>
+        </Col>
+      </Row>
+    );
+  }
 
   return (
     <Row className="m-auto">
