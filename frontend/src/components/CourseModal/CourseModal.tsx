@@ -16,6 +16,7 @@ import {
 } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
 import styles from './CourseModal.module.css';
+import { CourseInfo } from './DefaultView/OverviewPanel/OverviewInfo';
 
 // This data contains all the "critical data" that must be prefetched before
 // navigation. This ensures the user sees some content rather than a loading
@@ -64,7 +65,9 @@ function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
 
-  const [professorView, setProfessorView] = useState<boolean>(false);
+  const [professorView, setProfessorView] = useState<
+    CourseInfo['course_professors'][number]['professor'] | null
+  >(null);
 
   const user = useStore((state) => state.user);
 

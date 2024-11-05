@@ -3,9 +3,9 @@ import { Row, Col } from 'react-bootstrap';
 import EvaluationRatings from './EvaluationRatings';
 import EvaluationResponses from './EvaluationResponses';
 
-import { useSearchEvaluationNarrativesQuery } from '../../../queries/graphql-queries';
-import type { Crn, Season } from '../../../queries/graphql-types';
-import Spinner from '../../Spinner';
+import { useSearchEvaluationNarrativesQuery } from '../../../../queries/graphql-queries';
+import type { Crn, Season } from '../../../../queries/graphql-types';
+import Spinner from '../../../Spinner';
 
 function EvaluationsPanel({
   seasonCode,

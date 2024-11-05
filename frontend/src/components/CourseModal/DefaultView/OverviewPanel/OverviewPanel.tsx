@@ -1,6 +1,6 @@
 import { Row, Col } from 'react-bootstrap';
 
-import OverviewInfo from './OverviewInfo';
+import OverviewInfo, { CourseInfo } from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
 import { useSameCourseOrProfOfferingsQuery } from '../../../../queries/graphql-queries';
@@ -18,7 +18,11 @@ function OverviewPanel({
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly header: CourseModalHeaderData;
-  readonly setProfessorView: React.Dispatch<React.SetStateAction<boolean>>;
+  setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
 }) {
   const user = useStore((state) => state.user);
 

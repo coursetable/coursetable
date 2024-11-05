@@ -36,7 +36,7 @@ import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-type CourseInfo = SameCourseOrProfOfferingsQuery['self'][0]['course'];
+export type CourseInfo = SameCourseOrProfOfferingsQuery['self'][0]['course'];
 
 const profInfoPopover =
   (
@@ -395,7 +395,11 @@ function Professors({
   setProfessorView,
 }: {
   readonly course: CourseInfo;
-  setProfessorView: React.Dispatch<React.SetStateAction<boolean>>;
+  setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
 }) {
   return (
     <DataField
@@ -411,7 +415,7 @@ function Professors({
                   placement="right"
                   overlay={profInfoPopover(professor)}
                 > */}
-                <LinkLikeText onClick={() => setProfessorView(true)}>
+                <LinkLikeText onClick={() => setProfessorView(professor)}>
                   {professor.name}
                 </LinkLikeText>
                 {/* </OverlayTrigger> */}
@@ -474,7 +478,11 @@ function OverviewInfo({
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly data: SameCourseOrProfOfferingsQuery;
-  readonly setProfessorView: React.Dispatch<React.SetStateAction<boolean>>;
+  setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
 }) {
   const { numFriends } = useSearch();
   const listing = data.self[0]!;

@@ -3,10 +3,10 @@ import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { Tab, Tabs } from 'react-bootstrap';
 import Mark from 'mark.js';
-import type { SearchEvaluationNarrativesQuery } from '../../../generated/graphql-types';
-import { evalQuestionTags } from '../../../utilities/constants';
-import { truncatedText } from '../../../utilities/course';
-import { Input, TextComponent } from '../../Typography';
+import type { SearchEvaluationNarrativesQuery } from '../../../../generated/graphql-types';
+import { evalQuestionTags } from '../../../../utilities/constants';
+import { truncatedText } from '../../../../utilities/course';
+import { Input, TextComponent } from '../../../Typography';
 import styles from './EvaluationResponses.module.css';
 
 function CommentRows({

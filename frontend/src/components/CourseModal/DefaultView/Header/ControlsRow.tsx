@@ -5,10 +5,10 @@ import { FaRegShareFromSquare } from 'react-icons/fa6';
 import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
-import { CUR_YEAR } from '../../../config';
-import type { Listings } from '../../../generated/graphql-types';
-import { useStore } from '../../../store';
-import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
+import { CUR_YEAR } from '../../../../config';
+import type { Listings } from '../../../../generated/graphql-types';
+import { useStore } from '../../../../store';
+import WorksheetToggleButton from '../../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
 export type CourseModalHeaderData = Pick<

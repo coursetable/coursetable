@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { barChartColors } from '../../../utilities/constants';
-import { TextComponent } from '../../Typography';
+import { barChartColors } from '../../../../utilities/constants';
+import { TextComponent } from '../../../Typography';
 import styles from './RatingsGraph.module.css';
 
 function RatingsGraph({

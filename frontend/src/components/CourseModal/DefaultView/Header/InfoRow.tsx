@@ -3,15 +3,15 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
-import { extraInfo } from '../../../utilities/constants';
-import { toSeasonString } from '../../../utilities/course';
-import { createCourseModalLink } from '../../../utilities/display';
-import SkillBadge from '../../SkillBadge';
-import { TextComponent } from '../../Typography';
+import { extraInfo } from '../../../../utilities/constants';
+import { toSeasonString } from '../../../../utilities/course';
+import { createCourseModalLink } from '../../../../utilities/display';
+import SkillBadge from '../../../SkillBadge';
+import { TextComponent } from '../../../Typography';
 import type {
   ModalNavigationFunction,
   CourseModalHeaderData,
-} from '../CourseModal';
+} from '../../CourseModal';
 import styles from './InfoRow.module.css';
 
 export default function ModalHeaderInfo({

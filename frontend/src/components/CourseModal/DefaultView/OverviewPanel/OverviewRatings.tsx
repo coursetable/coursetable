@@ -11,18 +11,24 @@ import {
 } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
-import { CUR_YEAR } from '../../../config';
+import { CUR_YEAR } from '../../../../config';
 import type {
   RelatedCourseInfoFragment,
   SameCourseOrProfOfferingsQuery,
-} from '../../../generated/graphql-types';
-import { useStore } from '../../../store';
-import { generateRandomColor } from '../../../utilities/common';
-import { ratingColormap, workloadColormap } from '../../../utilities/constants';
-import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
-import { createCourseModalLink } from '../../../utilities/display';
-import { RatingBubble } from '../../Typography';
-import type { ModalNavigationFunction } from '../CourseModal';
+} from '../../../../generated/graphql-types';
+import { useStore } from '../../../../store';
+import { generateRandomColor } from '../../../../utilities/common';
+import {
+  ratingColormap,
+  workloadColormap,
+} from '../../../../utilities/constants';
+import {
+  toSeasonString,
+  isDiscussionSection,
+} from '../../../../utilities/course';
+import { createCourseModalLink } from '../../../../utilities/display';
+import { RatingBubble } from '../../../Typography';
+import type { ModalNavigationFunction } from '../../CourseModal';
 
 import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';
