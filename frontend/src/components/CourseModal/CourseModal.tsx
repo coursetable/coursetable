@@ -17,6 +17,7 @@ import {
 import { suspended, createCourseModalLink } from '../../utilities/display';
 import styles from './CourseModal.module.css';
 import { CourseInfo } from './DefaultView/OverviewPanel/OverviewInfo';
+import ProfessorModalHeaderInfo from './ProfessorView/Header/ProfessorInfoRow';
 
 // This data contains all the "critical data" that must be prefetched before
 // navigation. This ensures the user sees some content rather than a loading
@@ -118,6 +119,7 @@ function CourseModal() {
       prev.delete('course-modal');
       return prev;
     });
+    setProfessorView(null);
   };
   const structuredJSON = JSON.stringify({
     '@context': 'https://schema.org/',
@@ -144,7 +146,20 @@ function CourseModal() {
         centered
       >
         {professorView ? (
-          <p>Professor view here</p>
+          <Modal.Header className={styles.modalHeader} closeButton>
+            <ProfessorModalHeaderInfo
+              listing={listing}
+              professor={professorView}
+              backTarget={backTarget}
+              onNavigation={onNavigation}
+            />
+            <ModalHeaderControls
+              listing={listing}
+              view={view}
+              setView={setView}
+              hide={hide}
+            />
+          </Modal.Header>
         ) : (
           <>
             <Modal.Header className={styles.modalHeader} closeButton>

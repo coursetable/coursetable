@@ -1,0 +1,68 @@
+.modalControls {
+  width: calc(100% - 1rem);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap-reverse;
+  margin-left: 0.5rem;
+}
+
+.tabs {
+  width: 220px;
+  display: flex;
+  align-items: end;
+}
+
+.tabButton {
+  width: 50%;
+  padding: 0.5em 0;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.tabButton.tabSelected {
+  background-color: var(--color-primary-subdued);
+  color: var(--color-text);
+}
+
+.shareButton {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.moreDropdown {
+  cursor: pointer;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 0;
+}
+
+.moreDropdown svg,
+.shareButton svg {
+  color: var(--color-primary);
+}
+
+.moreDropdown:hover svg,
+.shareButton:hover svg {
+  color: var(--color-primary-hover);
+}
+
+.moreDropdown :global(.dropdown-toggle) {
+  padding: 0;
+}
+
+.moreDropdown :global(.dropdown-toggle)::after {
+  display: none;
+}
+
+.moreDropdown :global(.dropdown-menu) {
+  width: 250px;
+}
+
+.toolBar {
+  display: flex;
+  gap: 1em;
+}
