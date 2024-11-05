@@ -18,18 +18,20 @@ import { CourseInfo } from '../../DefaultView/OverviewPanel/OverviewInfo';
 export default function ProfessorModalHeaderInfo({
   listing,
   professor,
+  disableProfessorView,
   backTarget,
   onNavigation,
 }: {
   readonly listing: CourseModalHeaderData;
   professor: CourseInfo['course_professors'][number]['professor'] | null;
+  disableProfessorView: () => void;
   readonly backTarget: string | undefined;
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const [searchParams] = useSearchParams();
   return (
     <div className={styles.modalTop}>
-      {backTarget && (
+      {/* {backTarget && (
         <Link
           to={backTarget}
           onClick={() => {
@@ -39,7 +41,17 @@ export default function ProfessorModalHeaderInfo({
         >
           <IoMdArrowRoundBack size={30} />
         </Link>
-      )}
+      )} */}
+      <Link
+        to="#"
+        onClick={(e) => {
+          e.preventDefault();
+          disableProfessorView();
+        }}
+        className={styles.backArrow}
+      >
+        <IoMdArrowRoundBack size={30} />
+      </Link>
       <div>
         <Modal.Title>
           <div className={styles.modalTitle}>
@@ -56,7 +68,7 @@ export default function ProfessorModalHeaderInfo({
             </TextComponent> */}
           </div>
         </Modal.Title>
-
+        <TextComponent type="tertiary">{professor?.email}</TextComponent>
         <div className={styles.badges}>
           <p className={styles.courseCodes}>
             <TextComponent type="tertiary">
@@ -97,7 +109,6 @@ export default function ProfessorModalHeaderInfo({
               ))}{' '}
               | {toSeasonString(listing.season_code)}
             </TextComponent>
-            <TextComponent type="tertiary"></TextComponent>
           </p>
           {[...listing.course.skills, ...listing.course.areas].map((skill) => (
             <SkillBadge skill={skill} key={skill} />

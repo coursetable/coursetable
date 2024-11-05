@@ -150,6 +150,7 @@ function CourseModal() {
             <ProfessorModalHeaderInfo
               listing={listing}
               professor={professorView}
+              disableProfessorView={() => setProfessorView(null)}
               backTarget={backTarget}
               onNavigation={onNavigation}
             />
