@@ -3,20 +3,22 @@ import { Row, Col } from 'react-bootstrap';
 import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
-import { useSameCourseOrProfOfferingsQuery } from '../../../queries/graphql-queries';
-import { useStore } from '../../../store';
-import Spinner from '../../Spinner';
+import { useSameCourseOrProfOfferingsQuery } from '../../../../queries/graphql-queries';
+import { useStore } from '../../../../store';
+import Spinner from '../../../Spinner';
 import type {
   ModalNavigationFunction,
   CourseModalHeaderData,
-} from '../CourseModal';
+} from '../../CourseModal';
 
 function OverviewPanel({
   onNavigation,
   header,
+  setProfessorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly header: CourseModalHeaderData;
+  readonly setProfessorView: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const user = useStore((state) => state.user);
 
@@ -61,8 +63,12 @@ function OverviewPanel({
 
   return (
     <Row className="m-auto">
-      <Col md={7} className="px-0 mt-0 mb-3">
-        <OverviewInfo onNavigation={onNavigation} data={data} />
+      <Col md={7} className="px-0 mt-0 mb-10">
+        <OverviewInfo
+          onNavigation={onNavigation}
+          data={data}
+          setProfessorView={setProfessorView}
+        />
       </Col>
       <Col md={5} className="px-0 my-0">
         <OverviewRatings onNavigation={onNavigation} data={data} />

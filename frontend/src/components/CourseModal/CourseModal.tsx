@@ -3,8 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
-import ModalHeaderControls from './Header/ControlsRow';
-import ModalHeaderInfo from './Header/InfoRow';
+import ModalHeaderControls from './DefaultView/Header/ControlsRow';
+import ModalHeaderInfo from './DefaultView/Header/InfoRow';
 import { useFerry } from '../../contexts/ferryContext';
 import type { Listings } from '../../generated/graphql-types';
 import type { Season, Crn } from '../../queries/graphql-types';
@@ -46,9 +46,11 @@ export type CourseModalHeaderData = Pick<
 // We can only split subviews of CourseModal because CourseModal contains core
 // logic that determines whether itself is visible.
 // Maybe we should split more code into the subviews?
-const OverviewPanel = suspended(() => import('./OverviewPanel/OverviewPanel'));
+const OverviewPanel = suspended(
+  () => import('./DefaultView/OverviewPanel/OverviewPanel'),
+);
 const EvaluationsPanel = suspended(
-  () => import('./EvaluationsPanel/EvaluationsPanel'),
+  () => import('./DefaultView/EvaluationsPanel/EvaluationsPanel'),
 );
 
 export type ModalNavigationFunction = ((
@@ -61,6 +63,9 @@ export type ModalNavigationFunction = ((
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
+
+  const [professorView, setProfessorView] = useState<boolean>(false);
+
   const user = useStore((state) => state.user);
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
@@ -117,6 +122,7 @@ function CourseModal() {
     description: { description },
     datePublished: toSeasonDate(listing.season_code),
   });
+
   return (
     <div className="d-flex justify-content-center">
       <Helmet>
@@ -149,7 +155,11 @@ function CourseModal() {
         </Modal.Header>
         <Modal.Body>
           {view === 'overview' ? (
-            <OverviewPanel onNavigation={onNavigation} header={listing} />
+            <OverviewPanel
+              onNavigation={onNavigation}
+              header={listing}
+              setProfessorView={setProfessorView}
+            />
           ) : (
             <EvaluationsPanel
               seasonCode={listing.season_code}

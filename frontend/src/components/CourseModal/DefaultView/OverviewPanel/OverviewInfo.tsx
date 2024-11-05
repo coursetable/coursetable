@@ -15,23 +15,23 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import { useSearch } from '../../../contexts/searchContext';
+import { useSearch } from '../../../../contexts/searchContext';
 import type {
   SameCourseOrProfOfferingsQuery,
   PrereqLinkInfoQuery,
-} from '../../../generated/graphql-types';
-import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
-import type { Weekdays } from '../../../queries/graphql-types';
-import { ratingColormap } from '../../../utilities/constants';
+} from '../../../../generated/graphql-types';
+import { usePrereqLinkInfoQuery } from '../../../../queries/graphql-queries';
+import type { Weekdays } from '../../../../queries/graphql-types';
+import { ratingColormap } from '../../../../utilities/constants';
 import {
   abbreviateWorkdays,
   getEnrolled,
   toSeasonString,
   to12HourTime,
-} from '../../../utilities/course';
-import { createCourseModalLink } from '../../../utilities/display';
-import { TextComponent, InfoPopover, LinkLikeText } from '../../Typography';
-import type { ModalNavigationFunction } from '../CourseModal';
+} from '../../../../utilities/course';
+import { createCourseModalLink } from '../../../../utilities/display';
+import { TextComponent, InfoPopover, LinkLikeText } from '../../../Typography';
+import type { ModalNavigationFunction } from '../../CourseModal';
 import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -390,7 +390,13 @@ function Syllabus({
   );
 }
 
-function Professors({ course }: { readonly course: CourseInfo }) {
+function Professors({
+  course,
+  setProfessorView,
+}: {
+  readonly course: CourseInfo;
+  setProfessorView: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <DataField
       name="Professor"
@@ -399,14 +405,16 @@ function Professors({ course }: { readonly course: CourseInfo }) {
           ? course.course_professors.map(({ professor }, index) => (
               <React.Fragment key={professor.name}>
                 {index ? ' • ' : ''}
-                <OverlayTrigger
+                {/* <OverlayTrigger
                   trigger="click"
                   rootClose
                   placement="right"
                   overlay={profInfoPopover(professor)}
-                >
-                  <LinkLikeText>{professor.name}</LinkLikeText>
-                </OverlayTrigger>
+                > */}
+                <LinkLikeText onClick={() => setProfessorView(true)}>
+                  {professor.name}
+                </LinkLikeText>
+                {/* </OverlayTrigger> */}
               </React.Fragment>
             ))
           : 'TBA'
@@ -462,9 +470,11 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
 function OverviewInfo({
   onNavigation,
   data,
+  setProfessorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly data: SameCourseOrProfOfferingsQuery;
+  readonly setProfessorView: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { numFriends } = useSearch();
   const listing = data.self[0]!;
@@ -482,7 +492,7 @@ function OverviewInfo({
         onNavigation={onNavigation}
       />
       <Syllabus course={course} sameCourse={data.sameCourse} />
-      <Professors course={course} />
+      <Professors course={course} setProfessorView={setProfessorView} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />
       <DataField
