@@ -23,6 +23,9 @@
   },
   "trustedDependencies": [
     "api",
+    "core-js",
+    "es5-ext",
+    "esbuild",
     "frontend",
     "sharp"
   ],

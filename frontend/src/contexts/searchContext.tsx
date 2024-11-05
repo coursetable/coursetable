@@ -39,6 +39,7 @@ import {
   toSeasonString,
   type NumFriendsReturn,
 } from '../utilities/course';
+import { createFilterLink, paramFilter } from '../utilities/params';
 
 export type Option<T extends string | number = string> = {
   label: string;
@@ -107,9 +108,7 @@ export const courseInfoAttributesOptions = courseInfoAttributes.map(
 type SortOrderType = 'desc' | 'asc';
 
 type Store = {
-  filters: {
-    [K in keyof Filters]: FilterHandle<K>;
-  };
+  filters: FilterList;
   coursesLoading: boolean;
   searchData: CatalogListing[] | null;
   multiSeasons: boolean;
@@ -159,6 +158,8 @@ export type Filters = {
   selectSortBy: Option<SortKeys>;
   sortOrder: SortOrderType;
 };
+
+export type FilterList = { [K in keyof Filters]: FilterHandle<K> };
 
 export const filterLabels: { [K in keyof Filters]: string } = {
   searchText: 'Search',
@@ -230,15 +231,40 @@ export type FilterHandle<K extends keyof Filters> = ReturnType<
 >;
 
 function useFilterState<K extends keyof Filters>(key: K) {
-  const [value, setValue] = useSessionStorageState(key, defaultFilters[key]);
+  const [value, setValue] = useSessionStorageState(
+    key,
+    paramFilter(key, defaultFilters[key]),
+  );
+
   return useMemo(
     () => ({
       value,
-      set: setValue,
+      set(v: Filters[K]) {
+        window.history.pushState(
+          {},
+          '',
+          createFilterLink(key, v, defaultFilters[key]),
+        );
+        setValue(v);
+      },
       isDefault: isEqual(value, defaultFilters[key]),
       isNonEmpty: !isEqual(value, emptyFilters[key]),
-      resetToDefault: () => setValue(defaultFilters[key]),
-      resetToEmpty: () => setValue(emptyFilters[key]),
+      resetToDefault() {
+        window.history.pushState(
+          {},
+          '',
+          createFilterLink(key, defaultFilters[key], defaultFilters[key]),
+        );
+        setValue(defaultFilters[key]);
+      },
+      resetToEmpty() {
+        window.history.pushState(
+          {},
+          '',
+          createFilterLink(key, defaultFilters[key], defaultFilters[key]),
+        );
+        setValue(emptyFilters[key]);
+      },
     }),
     [value, setValue, key],
   );
@@ -346,6 +372,7 @@ export function SearchProvider({
     }
     return selectSeasons.value.map((x) => x.value);
   }, [selectSeasons.value]);
+
   const {
     loading: coursesLoading,
     courses: courseData,
