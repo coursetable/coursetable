@@ -6590,6 +6590,7 @@ export type SameCourseOrProfOfferingsQuery = {
   >;
   sameProf: Array<{
     __typename?: 'course_professors';
+    professor_id: number;
     course: { __typename?: 'courses' } & RelatedCourseInfoFragment;
   }>;
 };

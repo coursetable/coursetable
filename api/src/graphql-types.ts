@@ -27,7 +27,6 @@ export type Scalars = {
   Float: { input: number; output: number };
   float8: { input: any; output: any };
   json: { input: any; output: any };
-  jsonb: { input: any; output: any };
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -87,1695 +86,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']['input']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_Info = {
-  __typename?: 'computed_listing_info';
-  all_course_codes: Scalars['jsonb']['output'];
-  areas: Scalars['jsonb']['output'];
-  average_gut_rating?: Maybe<Scalars['float8']['output']>;
-  average_professor?: Maybe<Scalars['float8']['output']>;
-  average_rating?: Maybe<Scalars['float8']['output']>;
-  average_rating_n: Scalars['Int']['output'];
-  average_rating_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_rating_same_professors_n: Scalars['Int']['output'];
-  average_workload?: Maybe<Scalars['float8']['output']>;
-  average_workload_n: Scalars['Int']['output'];
-  average_workload_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_workload_same_professors_n: Scalars['Int']['output'];
-  classnotes?: Maybe<Scalars['String']['output']>;
-  colsem?: Maybe<Scalars['Boolean']['output']>;
-  /** An object relationship */
-  course: Courses;
-  course_code: Scalars['String']['output'];
-  course_id: Scalars['Int']['output'];
-  credits?: Maybe<Scalars['float8']['output']>;
-  crn: Scalars['Int']['output'];
-  declined?: Maybe<Scalars['Int']['output']>;
-  description: Scalars['String']['output'];
-  enrolled?: Maybe<Scalars['Int']['output']>;
-  extra_info: Scalars['String']['output'];
-  final_exam?: Maybe<Scalars['String']['output']>;
-  flag_info: Scalars['jsonb']['output'];
-  fysem?: Maybe<Scalars['Boolean']['output']>;
-  last_enrollment?: Maybe<Scalars['Int']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Int']['output']>;
-  last_enrollment_same_professors?: Maybe<Scalars['Boolean']['output']>;
-  last_enrollment_season_code?: Maybe<Scalars['String']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Int']['output']>;
-  /** An object relationship */
-  listing: Listings;
-  listing_id: Scalars['Int']['output'];
-  locations_summary: Scalars['String']['output'];
-  no_response?: Maybe<Scalars['Int']['output']>;
-  number: Scalars['String']['output'];
-  professor_ids: Scalars['jsonb']['output'];
-  professor_info: Scalars['jsonb']['output'];
-  professor_names: Scalars['jsonb']['output'];
-  regnotes?: Maybe<Scalars['String']['output']>;
-  requirements: Scalars['String']['output'];
-  responses?: Maybe<Scalars['Int']['output']>;
-  rp_attr?: Maybe<Scalars['String']['output']>;
-  same_course_and_profs_id: Scalars['Int']['output'];
-  same_course_id: Scalars['Int']['output'];
-  school?: Maybe<Scalars['String']['output']>;
-  season_code: Scalars['String']['output'];
-  section: Scalars['String']['output'];
-  skills: Scalars['jsonb']['output'];
-  subject: Scalars['String']['output'];
-  syllabus_url?: Maybe<Scalars['String']['output']>;
-  sysem?: Maybe<Scalars['Boolean']['output']>;
-  times_by_day: Scalars['json']['output'];
-  times_summary: Scalars['String']['output'];
-  title: Scalars['String']['output'];
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoAll_Course_CodesArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoAreasArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoFlag_InfoArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoProfessor_IdsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoProfessor_InfoArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoProfessor_NamesArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoSkillsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "computed_listing_info" */
-export type Computed_Listing_InfoTimes_By_DayArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregated selection of "computed_listing_info" */
-export type Computed_Listing_Info_Aggregate = {
-  __typename?: 'computed_listing_info_aggregate';
-  aggregate?: Maybe<Computed_Listing_Info_Aggregate_Fields>;
-  nodes: Array<Computed_Listing_Info>;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp = {
-  avg?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Avg>;
-  bool_and?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Bool_And>;
-  bool_or?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Bool_Or>;
-  corr?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Corr>;
-  count?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Count>;
-  covar_samp?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Covar_Samp>;
-  max?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Max>;
-  min?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Min>;
-  stddev_samp?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Stddev_Samp>;
-  sum?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Sum>;
-  var_samp?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp_Var_Samp>;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Avg = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Avg_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Bool_And = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Bool_Or = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Corr = {
-  arguments: Computed_Listing_Info_Aggregate_Bool_Exp_Corr_Arguments;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Corr_Arguments = {
-  X: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Corr_Arguments_Columns;
-  Y: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Corr_Arguments_Columns;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Covar_Samp = {
-  arguments: Computed_Listing_Info_Aggregate_Bool_Exp_Covar_Samp_Arguments;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Covar_Samp_Arguments = {
-  X: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns;
-  Y: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Max = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Max_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Min = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Min_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Stddev_Samp = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Sum = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Sum_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Computed_Listing_Info_Aggregate_Bool_Exp_Var_Samp = {
-  arguments: Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-/** aggregate fields of "computed_listing_info" */
-export type Computed_Listing_Info_Aggregate_Fields = {
-  __typename?: 'computed_listing_info_aggregate_fields';
-  avg?: Maybe<Computed_Listing_Info_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Computed_Listing_Info_Max_Fields>;
-  min?: Maybe<Computed_Listing_Info_Min_Fields>;
-  stddev?: Maybe<Computed_Listing_Info_Stddev_Fields>;
-  stddev_pop?: Maybe<Computed_Listing_Info_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Computed_Listing_Info_Stddev_Samp_Fields>;
-  sum?: Maybe<Computed_Listing_Info_Sum_Fields>;
-  var_pop?: Maybe<Computed_Listing_Info_Var_Pop_Fields>;
-  var_samp?: Maybe<Computed_Listing_Info_Var_Samp_Fields>;
-  variance?: Maybe<Computed_Listing_Info_Variance_Fields>;
-};
-
-/** aggregate fields of "computed_listing_info" */
-export type Computed_Listing_Info_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** order by aggregate values of table "computed_listing_info" */
-export type Computed_Listing_Info_Aggregate_Order_By = {
-  avg?: InputMaybe<Computed_Listing_Info_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Computed_Listing_Info_Max_Order_By>;
-  min?: InputMaybe<Computed_Listing_Info_Min_Order_By>;
-  stddev?: InputMaybe<Computed_Listing_Info_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Computed_Listing_Info_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Computed_Listing_Info_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Computed_Listing_Info_Sum_Order_By>;
-  var_pop?: InputMaybe<Computed_Listing_Info_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Computed_Listing_Info_Var_Samp_Order_By>;
-  variance?: InputMaybe<Computed_Listing_Info_Variance_Order_By>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Computed_Listing_Info_Append_Input = {
-  all_course_codes?: InputMaybe<Scalars['jsonb']['input']>;
-  areas?: InputMaybe<Scalars['jsonb']['input']>;
-  flag_info?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_ids?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_info?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_names?: InputMaybe<Scalars['jsonb']['input']>;
-  skills?: InputMaybe<Scalars['jsonb']['input']>;
-};
-
-/** input type for inserting array relation for remote table "computed_listing_info" */
-export type Computed_Listing_Info_Arr_Rel_Insert_Input = {
-  data: Array<Computed_Listing_Info_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Computed_Listing_Info_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type Computed_Listing_Info_Avg_Fields = {
-  __typename?: 'computed_listing_info_avg_fields';
-  average_gut_rating?: Maybe<Scalars['Float']['output']>;
-  average_professor?: Maybe<Scalars['Float']['output']>;
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  average_workload?: Maybe<Scalars['Float']['output']>;
-  average_workload_n?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  course_id?: Maybe<Scalars['Float']['output']>;
-  credits?: Maybe<Scalars['Float']['output']>;
-  crn?: Maybe<Scalars['Float']['output']>;
-  declined?: Maybe<Scalars['Float']['output']>;
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  last_enrollment?: Maybe<Scalars['Float']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Float']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Float']['output']>;
-  listing_id?: Maybe<Scalars['Float']['output']>;
-  no_response?: Maybe<Scalars['Float']['output']>;
-  responses?: Maybe<Scalars['Float']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Float']['output']>;
-  same_course_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by avg() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Avg_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "computed_listing_info". All fields are combined with a logical 'AND'. */
-export type Computed_Listing_Info_Bool_Exp = {
-  _and?: InputMaybe<Array<Computed_Listing_Info_Bool_Exp>>;
-  _not?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  _or?: InputMaybe<Array<Computed_Listing_Info_Bool_Exp>>;
-  all_course_codes?: InputMaybe<Jsonb_Comparison_Exp>;
-  areas?: InputMaybe<Jsonb_Comparison_Exp>;
-  average_gut_rating?: InputMaybe<Float8_Comparison_Exp>;
-  average_professor?: InputMaybe<Float8_Comparison_Exp>;
-  average_rating?: InputMaybe<Float8_Comparison_Exp>;
-  average_rating_n?: InputMaybe<Int_Comparison_Exp>;
-  average_rating_same_professors?: InputMaybe<Float8_Comparison_Exp>;
-  average_rating_same_professors_n?: InputMaybe<Int_Comparison_Exp>;
-  average_workload?: InputMaybe<Float8_Comparison_Exp>;
-  average_workload_n?: InputMaybe<Int_Comparison_Exp>;
-  average_workload_same_professors?: InputMaybe<Float8_Comparison_Exp>;
-  average_workload_same_professors_n?: InputMaybe<Int_Comparison_Exp>;
-  classnotes?: InputMaybe<String_Comparison_Exp>;
-  colsem?: InputMaybe<Boolean_Comparison_Exp>;
-  course?: InputMaybe<Courses_Bool_Exp>;
-  course_code?: InputMaybe<String_Comparison_Exp>;
-  course_id?: InputMaybe<Int_Comparison_Exp>;
-  credits?: InputMaybe<Float8_Comparison_Exp>;
-  crn?: InputMaybe<Int_Comparison_Exp>;
-  declined?: InputMaybe<Int_Comparison_Exp>;
-  description?: InputMaybe<String_Comparison_Exp>;
-  enrolled?: InputMaybe<Int_Comparison_Exp>;
-  extra_info?: InputMaybe<String_Comparison_Exp>;
-  final_exam?: InputMaybe<String_Comparison_Exp>;
-  flag_info?: InputMaybe<Jsonb_Comparison_Exp>;
-  fysem?: InputMaybe<Boolean_Comparison_Exp>;
-  last_enrollment?: InputMaybe<Int_Comparison_Exp>;
-  last_enrollment_course_id?: InputMaybe<Int_Comparison_Exp>;
-  last_enrollment_same_professors?: InputMaybe<Boolean_Comparison_Exp>;
-  last_enrollment_season_code?: InputMaybe<String_Comparison_Exp>;
-  last_offered_course_id?: InputMaybe<Int_Comparison_Exp>;
-  listing?: InputMaybe<Listings_Bool_Exp>;
-  listing_id?: InputMaybe<Int_Comparison_Exp>;
-  locations_summary?: InputMaybe<String_Comparison_Exp>;
-  no_response?: InputMaybe<Int_Comparison_Exp>;
-  number?: InputMaybe<String_Comparison_Exp>;
-  professor_ids?: InputMaybe<Jsonb_Comparison_Exp>;
-  professor_info?: InputMaybe<Jsonb_Comparison_Exp>;
-  professor_names?: InputMaybe<Jsonb_Comparison_Exp>;
-  regnotes?: InputMaybe<String_Comparison_Exp>;
-  requirements?: InputMaybe<String_Comparison_Exp>;
-  responses?: InputMaybe<Int_Comparison_Exp>;
-  rp_attr?: InputMaybe<String_Comparison_Exp>;
-  same_course_and_profs_id?: InputMaybe<Int_Comparison_Exp>;
-  same_course_id?: InputMaybe<Int_Comparison_Exp>;
-  school?: InputMaybe<String_Comparison_Exp>;
-  season_code?: InputMaybe<String_Comparison_Exp>;
-  section?: InputMaybe<String_Comparison_Exp>;
-  skills?: InputMaybe<Jsonb_Comparison_Exp>;
-  subject?: InputMaybe<String_Comparison_Exp>;
-  syllabus_url?: InputMaybe<String_Comparison_Exp>;
-  sysem?: InputMaybe<Boolean_Comparison_Exp>;
-  times_by_day?: InputMaybe<Json_Comparison_Exp>;
-  times_summary?: InputMaybe<String_Comparison_Exp>;
-  title?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "computed_listing_info" */
-export enum Computed_Listing_Info_Constraint {
-  /** unique or primary key constraint on columns "listing_id" */
-  IdxComputedListingListingId = 'idx_computed_listing_listing_id',
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Computed_Listing_Info_Delete_At_Path_Input = {
-  all_course_codes?: InputMaybe<Array<Scalars['String']['input']>>;
-  areas?: InputMaybe<Array<Scalars['String']['input']>>;
-  flag_info?: InputMaybe<Array<Scalars['String']['input']>>;
-  professor_ids?: InputMaybe<Array<Scalars['String']['input']>>;
-  professor_info?: InputMaybe<Array<Scalars['String']['input']>>;
-  professor_names?: InputMaybe<Array<Scalars['String']['input']>>;
-  skills?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Computed_Listing_Info_Delete_Elem_Input = {
-  all_course_codes?: InputMaybe<Scalars['Int']['input']>;
-  areas?: InputMaybe<Scalars['Int']['input']>;
-  flag_info?: InputMaybe<Scalars['Int']['input']>;
-  professor_ids?: InputMaybe<Scalars['Int']['input']>;
-  professor_info?: InputMaybe<Scalars['Int']['input']>;
-  professor_names?: InputMaybe<Scalars['Int']['input']>;
-  skills?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Computed_Listing_Info_Delete_Key_Input = {
-  all_course_codes?: InputMaybe<Scalars['String']['input']>;
-  areas?: InputMaybe<Scalars['String']['input']>;
-  flag_info?: InputMaybe<Scalars['String']['input']>;
-  professor_ids?: InputMaybe<Scalars['String']['input']>;
-  professor_info?: InputMaybe<Scalars['String']['input']>;
-  professor_names?: InputMaybe<Scalars['String']['input']>;
-  skills?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** input type for incrementing numeric columns in table "computed_listing_info" */
-export type Computed_Listing_Info_Inc_Input = {
-  average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_professor?: InputMaybe<Scalars['float8']['input']>;
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  average_rating_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  credits?: InputMaybe<Scalars['float8']['input']>;
-  crn?: InputMaybe<Scalars['Int']['input']>;
-  declined?: InputMaybe<Scalars['Int']['input']>;
-  enrolled?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment_course_id?: InputMaybe<Scalars['Int']['input']>;
-  last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
-  listing_id?: InputMaybe<Scalars['Int']['input']>;
-  no_response?: InputMaybe<Scalars['Int']['input']>;
-  responses?: InputMaybe<Scalars['Int']['input']>;
-  same_course_and_profs_id?: InputMaybe<Scalars['Int']['input']>;
-  same_course_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "computed_listing_info" */
-export type Computed_Listing_Info_Insert_Input = {
-  all_course_codes?: InputMaybe<Scalars['jsonb']['input']>;
-  areas?: InputMaybe<Scalars['jsonb']['input']>;
-  average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_professor?: InputMaybe<Scalars['float8']['input']>;
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  average_rating_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  classnotes?: InputMaybe<Scalars['String']['input']>;
-  colsem?: InputMaybe<Scalars['Boolean']['input']>;
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  course_code?: InputMaybe<Scalars['String']['input']>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  credits?: InputMaybe<Scalars['float8']['input']>;
-  crn?: InputMaybe<Scalars['Int']['input']>;
-  declined?: InputMaybe<Scalars['Int']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  enrolled?: InputMaybe<Scalars['Int']['input']>;
-  extra_info?: InputMaybe<Scalars['String']['input']>;
-  final_exam?: InputMaybe<Scalars['String']['input']>;
-  flag_info?: InputMaybe<Scalars['jsonb']['input']>;
-  fysem?: InputMaybe<Scalars['Boolean']['input']>;
-  last_enrollment?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment_course_id?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment_same_professors?: InputMaybe<Scalars['Boolean']['input']>;
-  last_enrollment_season_code?: InputMaybe<Scalars['String']['input']>;
-  last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
-  listing?: InputMaybe<Listings_Obj_Rel_Insert_Input>;
-  listing_id?: InputMaybe<Scalars['Int']['input']>;
-  locations_summary?: InputMaybe<Scalars['String']['input']>;
-  no_response?: InputMaybe<Scalars['Int']['input']>;
-  number?: InputMaybe<Scalars['String']['input']>;
-  professor_ids?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_info?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_names?: InputMaybe<Scalars['jsonb']['input']>;
-  regnotes?: InputMaybe<Scalars['String']['input']>;
-  requirements?: InputMaybe<Scalars['String']['input']>;
-  responses?: InputMaybe<Scalars['Int']['input']>;
-  rp_attr?: InputMaybe<Scalars['String']['input']>;
-  same_course_and_profs_id?: InputMaybe<Scalars['Int']['input']>;
-  same_course_id?: InputMaybe<Scalars['Int']['input']>;
-  school?: InputMaybe<Scalars['String']['input']>;
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  section?: InputMaybe<Scalars['String']['input']>;
-  skills?: InputMaybe<Scalars['jsonb']['input']>;
-  subject?: InputMaybe<Scalars['String']['input']>;
-  syllabus_url?: InputMaybe<Scalars['String']['input']>;
-  sysem?: InputMaybe<Scalars['Boolean']['input']>;
-  times_by_day?: InputMaybe<Scalars['json']['input']>;
-  times_summary?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate max on columns */
-export type Computed_Listing_Info_Max_Fields = {
-  __typename?: 'computed_listing_info_max_fields';
-  average_gut_rating?: Maybe<Scalars['float8']['output']>;
-  average_professor?: Maybe<Scalars['float8']['output']>;
-  average_rating?: Maybe<Scalars['float8']['output']>;
-  average_rating_n?: Maybe<Scalars['Int']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Int']['output']>;
-  average_workload?: Maybe<Scalars['float8']['output']>;
-  average_workload_n?: Maybe<Scalars['Int']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Int']['output']>;
-  classnotes?: Maybe<Scalars['String']['output']>;
-  course_code?: Maybe<Scalars['String']['output']>;
-  course_id?: Maybe<Scalars['Int']['output']>;
-  credits?: Maybe<Scalars['float8']['output']>;
-  crn?: Maybe<Scalars['Int']['output']>;
-  declined?: Maybe<Scalars['Int']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  enrolled?: Maybe<Scalars['Int']['output']>;
-  extra_info?: Maybe<Scalars['String']['output']>;
-  final_exam?: Maybe<Scalars['String']['output']>;
-  last_enrollment?: Maybe<Scalars['Int']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Int']['output']>;
-  last_enrollment_season_code?: Maybe<Scalars['String']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Int']['output']>;
-  listing_id?: Maybe<Scalars['Int']['output']>;
-  locations_summary?: Maybe<Scalars['String']['output']>;
-  no_response?: Maybe<Scalars['Int']['output']>;
-  number?: Maybe<Scalars['String']['output']>;
-  regnotes?: Maybe<Scalars['String']['output']>;
-  requirements?: Maybe<Scalars['String']['output']>;
-  responses?: Maybe<Scalars['Int']['output']>;
-  rp_attr?: Maybe<Scalars['String']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Int']['output']>;
-  same_course_id?: Maybe<Scalars['Int']['output']>;
-  school?: Maybe<Scalars['String']['output']>;
-  season_code?: Maybe<Scalars['String']['output']>;
-  section?: Maybe<Scalars['String']['output']>;
-  subject?: Maybe<Scalars['String']['output']>;
-  syllabus_url?: Maybe<Scalars['String']['output']>;
-  times_summary?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-};
-
-/** order by max() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Max_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  classnotes?: InputMaybe<Order_By>;
-  course_code?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  extra_info?: InputMaybe<Order_By>;
-  final_exam?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_enrollment_season_code?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  locations_summary?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  number?: InputMaybe<Order_By>;
-  regnotes?: InputMaybe<Order_By>;
-  requirements?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  rp_attr?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-  school?: InputMaybe<Order_By>;
-  season_code?: InputMaybe<Order_By>;
-  section?: InputMaybe<Order_By>;
-  subject?: InputMaybe<Order_By>;
-  syllabus_url?: InputMaybe<Order_By>;
-  times_summary?: InputMaybe<Order_By>;
-  title?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Computed_Listing_Info_Min_Fields = {
-  __typename?: 'computed_listing_info_min_fields';
-  average_gut_rating?: Maybe<Scalars['float8']['output']>;
-  average_professor?: Maybe<Scalars['float8']['output']>;
-  average_rating?: Maybe<Scalars['float8']['output']>;
-  average_rating_n?: Maybe<Scalars['Int']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Int']['output']>;
-  average_workload?: Maybe<Scalars['float8']['output']>;
-  average_workload_n?: Maybe<Scalars['Int']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Int']['output']>;
-  classnotes?: Maybe<Scalars['String']['output']>;
-  course_code?: Maybe<Scalars['String']['output']>;
-  course_id?: Maybe<Scalars['Int']['output']>;
-  credits?: Maybe<Scalars['float8']['output']>;
-  crn?: Maybe<Scalars['Int']['output']>;
-  declined?: Maybe<Scalars['Int']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  enrolled?: Maybe<Scalars['Int']['output']>;
-  extra_info?: Maybe<Scalars['String']['output']>;
-  final_exam?: Maybe<Scalars['String']['output']>;
-  last_enrollment?: Maybe<Scalars['Int']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Int']['output']>;
-  last_enrollment_season_code?: Maybe<Scalars['String']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Int']['output']>;
-  listing_id?: Maybe<Scalars['Int']['output']>;
-  locations_summary?: Maybe<Scalars['String']['output']>;
-  no_response?: Maybe<Scalars['Int']['output']>;
-  number?: Maybe<Scalars['String']['output']>;
-  regnotes?: Maybe<Scalars['String']['output']>;
-  requirements?: Maybe<Scalars['String']['output']>;
-  responses?: Maybe<Scalars['Int']['output']>;
-  rp_attr?: Maybe<Scalars['String']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Int']['output']>;
-  same_course_id?: Maybe<Scalars['Int']['output']>;
-  school?: Maybe<Scalars['String']['output']>;
-  season_code?: Maybe<Scalars['String']['output']>;
-  section?: Maybe<Scalars['String']['output']>;
-  subject?: Maybe<Scalars['String']['output']>;
-  syllabus_url?: Maybe<Scalars['String']['output']>;
-  times_summary?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-};
-
-/** order by min() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Min_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  classnotes?: InputMaybe<Order_By>;
-  course_code?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  extra_info?: InputMaybe<Order_By>;
-  final_exam?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_enrollment_season_code?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  locations_summary?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  number?: InputMaybe<Order_By>;
-  regnotes?: InputMaybe<Order_By>;
-  requirements?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  rp_attr?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-  school?: InputMaybe<Order_By>;
-  season_code?: InputMaybe<Order_By>;
-  section?: InputMaybe<Order_By>;
-  subject?: InputMaybe<Order_By>;
-  syllabus_url?: InputMaybe<Order_By>;
-  times_summary?: InputMaybe<Order_By>;
-  title?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "computed_listing_info" */
-export type Computed_Listing_Info_Mutation_Response = {
-  __typename?: 'computed_listing_info_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Computed_Listing_Info>;
-};
-
-/** on_conflict condition type for table "computed_listing_info" */
-export type Computed_Listing_Info_On_Conflict = {
-  constraint: Computed_Listing_Info_Constraint;
-  update_columns?: Array<Computed_Listing_Info_Update_Column>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "computed_listing_info". */
-export type Computed_Listing_Info_Order_By = {
-  all_course_codes?: InputMaybe<Order_By>;
-  areas?: InputMaybe<Order_By>;
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  classnotes?: InputMaybe<Order_By>;
-  colsem?: InputMaybe<Order_By>;
-  course?: InputMaybe<Courses_Order_By>;
-  course_code?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  extra_info?: InputMaybe<Order_By>;
-  final_exam?: InputMaybe<Order_By>;
-  flag_info?: InputMaybe<Order_By>;
-  fysem?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_enrollment_same_professors?: InputMaybe<Order_By>;
-  last_enrollment_season_code?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing?: InputMaybe<Listings_Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  locations_summary?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  number?: InputMaybe<Order_By>;
-  professor_ids?: InputMaybe<Order_By>;
-  professor_info?: InputMaybe<Order_By>;
-  professor_names?: InputMaybe<Order_By>;
-  regnotes?: InputMaybe<Order_By>;
-  requirements?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  rp_attr?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-  school?: InputMaybe<Order_By>;
-  season_code?: InputMaybe<Order_By>;
-  section?: InputMaybe<Order_By>;
-  skills?: InputMaybe<Order_By>;
-  subject?: InputMaybe<Order_By>;
-  syllabus_url?: InputMaybe<Order_By>;
-  sysem?: InputMaybe<Order_By>;
-  times_by_day?: InputMaybe<Order_By>;
-  times_summary?: InputMaybe<Order_By>;
-  title?: InputMaybe<Order_By>;
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Computed_Listing_Info_Prepend_Input = {
-  all_course_codes?: InputMaybe<Scalars['jsonb']['input']>;
-  areas?: InputMaybe<Scalars['jsonb']['input']>;
-  flag_info?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_ids?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_info?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_names?: InputMaybe<Scalars['jsonb']['input']>;
-  skills?: InputMaybe<Scalars['jsonb']['input']>;
-};
-
-/** select columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column {
-  /** column name */
-  AllCourseCodes = 'all_course_codes',
-  /** column name */
-  Areas = 'areas',
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingN = 'average_rating_n',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageRatingSameProfessorsN = 'average_rating_same_professors_n',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadN = 'average_workload_n',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  AverageWorkloadSameProfessorsN = 'average_workload_same_professors_n',
-  /** column name */
-  Classnotes = 'classnotes',
-  /** column name */
-  Colsem = 'colsem',
-  /** column name */
-  CourseCode = 'course_code',
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Credits = 'credits',
-  /** column name */
-  Crn = 'crn',
-  /** column name */
-  Declined = 'declined',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Enrolled = 'enrolled',
-  /** column name */
-  ExtraInfo = 'extra_info',
-  /** column name */
-  FinalExam = 'final_exam',
-  /** column name */
-  FlagInfo = 'flag_info',
-  /** column name */
-  Fysem = 'fysem',
-  /** column name */
-  LastEnrollment = 'last_enrollment',
-  /** column name */
-  LastEnrollmentCourseId = 'last_enrollment_course_id',
-  /** column name */
-  LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
-  /** column name */
-  LastEnrollmentSeasonCode = 'last_enrollment_season_code',
-  /** column name */
-  LastOfferedCourseId = 'last_offered_course_id',
-  /** column name */
-  ListingId = 'listing_id',
-  /** column name */
-  LocationsSummary = 'locations_summary',
-  /** column name */
-  NoResponse = 'no_response',
-  /** column name */
-  Number = 'number',
-  /** column name */
-  ProfessorIds = 'professor_ids',
-  /** column name */
-  ProfessorInfo = 'professor_info',
-  /** column name */
-  ProfessorNames = 'professor_names',
-  /** column name */
-  Regnotes = 'regnotes',
-  /** column name */
-  Requirements = 'requirements',
-  /** column name */
-  Responses = 'responses',
-  /** column name */
-  RpAttr = 'rp_attr',
-  /** column name */
-  SameCourseAndProfsId = 'same_course_and_profs_id',
-  /** column name */
-  SameCourseId = 'same_course_id',
-  /** column name */
-  School = 'school',
-  /** column name */
-  SeasonCode = 'season_code',
-  /** column name */
-  Section = 'section',
-  /** column name */
-  Skills = 'skills',
-  /** column name */
-  Subject = 'subject',
-  /** column name */
-  SyllabusUrl = 'syllabus_url',
-  /** column name */
-  Sysem = 'sysem',
-  /** column name */
-  TimesByDay = 'times_by_day',
-  /** column name */
-  TimesSummary = 'times_summary',
-  /** column name */
-  Title = 'title',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_avg_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Avg_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_bool_and_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
-  /** column name */
-  Colsem = 'colsem',
-  /** column name */
-  Fysem = 'fysem',
-  /** column name */
-  LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
-  /** column name */
-  Sysem = 'sysem',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_bool_or_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
-  /** column name */
-  Colsem = 'colsem',
-  /** column name */
-  Fysem = 'fysem',
-  /** column name */
-  LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
-  /** column name */
-  Sysem = 'sysem',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_corr_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Corr_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_max_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Max_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_min_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Min_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_sum_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Sum_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** select "computed_listing_info_aggregate_bool_exp_var_samp_arguments_columns" columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Select_Column_Computed_Listing_Info_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns {
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  Credits = 'credits',
-}
-
-/** input type for updating data in table "computed_listing_info" */
-export type Computed_Listing_Info_Set_Input = {
-  all_course_codes?: InputMaybe<Scalars['jsonb']['input']>;
-  areas?: InputMaybe<Scalars['jsonb']['input']>;
-  average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_professor?: InputMaybe<Scalars['float8']['input']>;
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  average_rating_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  classnotes?: InputMaybe<Scalars['String']['input']>;
-  colsem?: InputMaybe<Scalars['Boolean']['input']>;
-  course_code?: InputMaybe<Scalars['String']['input']>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  credits?: InputMaybe<Scalars['float8']['input']>;
-  crn?: InputMaybe<Scalars['Int']['input']>;
-  declined?: InputMaybe<Scalars['Int']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  enrolled?: InputMaybe<Scalars['Int']['input']>;
-  extra_info?: InputMaybe<Scalars['String']['input']>;
-  final_exam?: InputMaybe<Scalars['String']['input']>;
-  flag_info?: InputMaybe<Scalars['jsonb']['input']>;
-  fysem?: InputMaybe<Scalars['Boolean']['input']>;
-  last_enrollment?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment_course_id?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment_same_professors?: InputMaybe<Scalars['Boolean']['input']>;
-  last_enrollment_season_code?: InputMaybe<Scalars['String']['input']>;
-  last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
-  listing_id?: InputMaybe<Scalars['Int']['input']>;
-  locations_summary?: InputMaybe<Scalars['String']['input']>;
-  no_response?: InputMaybe<Scalars['Int']['input']>;
-  number?: InputMaybe<Scalars['String']['input']>;
-  professor_ids?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_info?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_names?: InputMaybe<Scalars['jsonb']['input']>;
-  regnotes?: InputMaybe<Scalars['String']['input']>;
-  requirements?: InputMaybe<Scalars['String']['input']>;
-  responses?: InputMaybe<Scalars['Int']['input']>;
-  rp_attr?: InputMaybe<Scalars['String']['input']>;
-  same_course_and_profs_id?: InputMaybe<Scalars['Int']['input']>;
-  same_course_id?: InputMaybe<Scalars['Int']['input']>;
-  school?: InputMaybe<Scalars['String']['input']>;
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  section?: InputMaybe<Scalars['String']['input']>;
-  skills?: InputMaybe<Scalars['jsonb']['input']>;
-  subject?: InputMaybe<Scalars['String']['input']>;
-  syllabus_url?: InputMaybe<Scalars['String']['input']>;
-  sysem?: InputMaybe<Scalars['Boolean']['input']>;
-  times_by_day?: InputMaybe<Scalars['json']['input']>;
-  times_summary?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate stddev on columns */
-export type Computed_Listing_Info_Stddev_Fields = {
-  __typename?: 'computed_listing_info_stddev_fields';
-  average_gut_rating?: Maybe<Scalars['Float']['output']>;
-  average_professor?: Maybe<Scalars['Float']['output']>;
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  average_workload?: Maybe<Scalars['Float']['output']>;
-  average_workload_n?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  course_id?: Maybe<Scalars['Float']['output']>;
-  credits?: Maybe<Scalars['Float']['output']>;
-  crn?: Maybe<Scalars['Float']['output']>;
-  declined?: Maybe<Scalars['Float']['output']>;
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  last_enrollment?: Maybe<Scalars['Float']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Float']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Float']['output']>;
-  listing_id?: Maybe<Scalars['Float']['output']>;
-  no_response?: Maybe<Scalars['Float']['output']>;
-  responses?: Maybe<Scalars['Float']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Float']['output']>;
-  same_course_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddev() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Stddev_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Computed_Listing_Info_Stddev_Pop_Fields = {
-  __typename?: 'computed_listing_info_stddev_pop_fields';
-  average_gut_rating?: Maybe<Scalars['Float']['output']>;
-  average_professor?: Maybe<Scalars['Float']['output']>;
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  average_workload?: Maybe<Scalars['Float']['output']>;
-  average_workload_n?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  course_id?: Maybe<Scalars['Float']['output']>;
-  credits?: Maybe<Scalars['Float']['output']>;
-  crn?: Maybe<Scalars['Float']['output']>;
-  declined?: Maybe<Scalars['Float']['output']>;
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  last_enrollment?: Maybe<Scalars['Float']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Float']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Float']['output']>;
-  listing_id?: Maybe<Scalars['Float']['output']>;
-  no_response?: Maybe<Scalars['Float']['output']>;
-  responses?: Maybe<Scalars['Float']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Float']['output']>;
-  same_course_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddev_pop() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Stddev_Pop_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Computed_Listing_Info_Stddev_Samp_Fields = {
-  __typename?: 'computed_listing_info_stddev_samp_fields';
-  average_gut_rating?: Maybe<Scalars['Float']['output']>;
-  average_professor?: Maybe<Scalars['Float']['output']>;
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  average_workload?: Maybe<Scalars['Float']['output']>;
-  average_workload_n?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  course_id?: Maybe<Scalars['Float']['output']>;
-  credits?: Maybe<Scalars['Float']['output']>;
-  crn?: Maybe<Scalars['Float']['output']>;
-  declined?: Maybe<Scalars['Float']['output']>;
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  last_enrollment?: Maybe<Scalars['Float']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Float']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Float']['output']>;
-  listing_id?: Maybe<Scalars['Float']['output']>;
-  no_response?: Maybe<Scalars['Float']['output']>;
-  responses?: Maybe<Scalars['Float']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Float']['output']>;
-  same_course_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddev_samp() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Stddev_Samp_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "computed_listing_info" */
-export type Computed_Listing_Info_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Computed_Listing_Info_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Computed_Listing_Info_Stream_Cursor_Value_Input = {
-  all_course_codes?: InputMaybe<Scalars['jsonb']['input']>;
-  areas?: InputMaybe<Scalars['jsonb']['input']>;
-  average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_professor?: InputMaybe<Scalars['float8']['input']>;
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  average_rating_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_rating_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_n?: InputMaybe<Scalars['Int']['input']>;
-  average_workload_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  average_workload_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  classnotes?: InputMaybe<Scalars['String']['input']>;
-  colsem?: InputMaybe<Scalars['Boolean']['input']>;
-  course_code?: InputMaybe<Scalars['String']['input']>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  credits?: InputMaybe<Scalars['float8']['input']>;
-  crn?: InputMaybe<Scalars['Int']['input']>;
-  declined?: InputMaybe<Scalars['Int']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  enrolled?: InputMaybe<Scalars['Int']['input']>;
-  extra_info?: InputMaybe<Scalars['String']['input']>;
-  final_exam?: InputMaybe<Scalars['String']['input']>;
-  flag_info?: InputMaybe<Scalars['jsonb']['input']>;
-  fysem?: InputMaybe<Scalars['Boolean']['input']>;
-  last_enrollment?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment_course_id?: InputMaybe<Scalars['Int']['input']>;
-  last_enrollment_same_professors?: InputMaybe<Scalars['Boolean']['input']>;
-  last_enrollment_season_code?: InputMaybe<Scalars['String']['input']>;
-  last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
-  listing_id?: InputMaybe<Scalars['Int']['input']>;
-  locations_summary?: InputMaybe<Scalars['String']['input']>;
-  no_response?: InputMaybe<Scalars['Int']['input']>;
-  number?: InputMaybe<Scalars['String']['input']>;
-  professor_ids?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_info?: InputMaybe<Scalars['jsonb']['input']>;
-  professor_names?: InputMaybe<Scalars['jsonb']['input']>;
-  regnotes?: InputMaybe<Scalars['String']['input']>;
-  requirements?: InputMaybe<Scalars['String']['input']>;
-  responses?: InputMaybe<Scalars['Int']['input']>;
-  rp_attr?: InputMaybe<Scalars['String']['input']>;
-  same_course_and_profs_id?: InputMaybe<Scalars['Int']['input']>;
-  same_course_id?: InputMaybe<Scalars['Int']['input']>;
-  school?: InputMaybe<Scalars['String']['input']>;
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  section?: InputMaybe<Scalars['String']['input']>;
-  skills?: InputMaybe<Scalars['jsonb']['input']>;
-  subject?: InputMaybe<Scalars['String']['input']>;
-  syllabus_url?: InputMaybe<Scalars['String']['input']>;
-  sysem?: InputMaybe<Scalars['Boolean']['input']>;
-  times_by_day?: InputMaybe<Scalars['json']['input']>;
-  times_summary?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Computed_Listing_Info_Sum_Fields = {
-  __typename?: 'computed_listing_info_sum_fields';
-  average_gut_rating?: Maybe<Scalars['float8']['output']>;
-  average_professor?: Maybe<Scalars['float8']['output']>;
-  average_rating?: Maybe<Scalars['float8']['output']>;
-  average_rating_n?: Maybe<Scalars['Int']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Int']['output']>;
-  average_workload?: Maybe<Scalars['float8']['output']>;
-  average_workload_n?: Maybe<Scalars['Int']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['float8']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Int']['output']>;
-  course_id?: Maybe<Scalars['Int']['output']>;
-  credits?: Maybe<Scalars['float8']['output']>;
-  crn?: Maybe<Scalars['Int']['output']>;
-  declined?: Maybe<Scalars['Int']['output']>;
-  enrolled?: Maybe<Scalars['Int']['output']>;
-  last_enrollment?: Maybe<Scalars['Int']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Int']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Int']['output']>;
-  listing_id?: Maybe<Scalars['Int']['output']>;
-  no_response?: Maybe<Scalars['Int']['output']>;
-  responses?: Maybe<Scalars['Int']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Int']['output']>;
-  same_course_id?: Maybe<Scalars['Int']['output']>;
-};
-
-/** order by sum() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Sum_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "computed_listing_info" */
-export enum Computed_Listing_Info_Update_Column {
-  /** column name */
-  AllCourseCodes = 'all_course_codes',
-  /** column name */
-  Areas = 'areas',
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessor = 'average_professor',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingN = 'average_rating_n',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageRatingSameProfessorsN = 'average_rating_same_professors_n',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadN = 'average_workload_n',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  AverageWorkloadSameProfessorsN = 'average_workload_same_professors_n',
-  /** column name */
-  Classnotes = 'classnotes',
-  /** column name */
-  Colsem = 'colsem',
-  /** column name */
-  CourseCode = 'course_code',
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Credits = 'credits',
-  /** column name */
-  Crn = 'crn',
-  /** column name */
-  Declined = 'declined',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Enrolled = 'enrolled',
-  /** column name */
-  ExtraInfo = 'extra_info',
-  /** column name */
-  FinalExam = 'final_exam',
-  /** column name */
-  FlagInfo = 'flag_info',
-  /** column name */
-  Fysem = 'fysem',
-  /** column name */
-  LastEnrollment = 'last_enrollment',
-  /** column name */
-  LastEnrollmentCourseId = 'last_enrollment_course_id',
-  /** column name */
-  LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
-  /** column name */
-  LastEnrollmentSeasonCode = 'last_enrollment_season_code',
-  /** column name */
-  LastOfferedCourseId = 'last_offered_course_id',
-  /** column name */
-  ListingId = 'listing_id',
-  /** column name */
-  LocationsSummary = 'locations_summary',
-  /** column name */
-  NoResponse = 'no_response',
-  /** column name */
-  Number = 'number',
-  /** column name */
-  ProfessorIds = 'professor_ids',
-  /** column name */
-  ProfessorInfo = 'professor_info',
-  /** column name */
-  ProfessorNames = 'professor_names',
-  /** column name */
-  Regnotes = 'regnotes',
-  /** column name */
-  Requirements = 'requirements',
-  /** column name */
-  Responses = 'responses',
-  /** column name */
-  RpAttr = 'rp_attr',
-  /** column name */
-  SameCourseAndProfsId = 'same_course_and_profs_id',
-  /** column name */
-  SameCourseId = 'same_course_id',
-  /** column name */
-  School = 'school',
-  /** column name */
-  SeasonCode = 'season_code',
-  /** column name */
-  Section = 'section',
-  /** column name */
-  Skills = 'skills',
-  /** column name */
-  Subject = 'subject',
-  /** column name */
-  SyllabusUrl = 'syllabus_url',
-  /** column name */
-  Sysem = 'sysem',
-  /** column name */
-  TimesByDay = 'times_by_day',
-  /** column name */
-  TimesSummary = 'times_summary',
-  /** column name */
-  Title = 'title',
-}
-
-export type Computed_Listing_Info_Updates = {
-  /** append existing jsonb value of filtered columns with new jsonb value */
-  _append?: InputMaybe<Computed_Listing_Info_Append_Input>;
-  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-  _delete_at_path?: InputMaybe<Computed_Listing_Info_Delete_At_Path_Input>;
-  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-  _delete_elem?: InputMaybe<Computed_Listing_Info_Delete_Elem_Input>;
-  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
-  _delete_key?: InputMaybe<Computed_Listing_Info_Delete_Key_Input>;
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Computed_Listing_Info_Inc_Input>;
-  /** prepend existing jsonb value of filtered columns with new jsonb value */
-  _prepend?: InputMaybe<Computed_Listing_Info_Prepend_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Computed_Listing_Info_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Computed_Listing_Info_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Computed_Listing_Info_Var_Pop_Fields = {
-  __typename?: 'computed_listing_info_var_pop_fields';
-  average_gut_rating?: Maybe<Scalars['Float']['output']>;
-  average_professor?: Maybe<Scalars['Float']['output']>;
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  average_workload?: Maybe<Scalars['Float']['output']>;
-  average_workload_n?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  course_id?: Maybe<Scalars['Float']['output']>;
-  credits?: Maybe<Scalars['Float']['output']>;
-  crn?: Maybe<Scalars['Float']['output']>;
-  declined?: Maybe<Scalars['Float']['output']>;
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  last_enrollment?: Maybe<Scalars['Float']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Float']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Float']['output']>;
-  listing_id?: Maybe<Scalars['Float']['output']>;
-  no_response?: Maybe<Scalars['Float']['output']>;
-  responses?: Maybe<Scalars['Float']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Float']['output']>;
-  same_course_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by var_pop() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Var_Pop_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Computed_Listing_Info_Var_Samp_Fields = {
-  __typename?: 'computed_listing_info_var_samp_fields';
-  average_gut_rating?: Maybe<Scalars['Float']['output']>;
-  average_professor?: Maybe<Scalars['Float']['output']>;
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  average_workload?: Maybe<Scalars['Float']['output']>;
-  average_workload_n?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  course_id?: Maybe<Scalars['Float']['output']>;
-  credits?: Maybe<Scalars['Float']['output']>;
-  crn?: Maybe<Scalars['Float']['output']>;
-  declined?: Maybe<Scalars['Float']['output']>;
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  last_enrollment?: Maybe<Scalars['Float']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Float']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Float']['output']>;
-  listing_id?: Maybe<Scalars['Float']['output']>;
-  no_response?: Maybe<Scalars['Float']['output']>;
-  responses?: Maybe<Scalars['Float']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Float']['output']>;
-  same_course_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by var_samp() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Var_Samp_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Computed_Listing_Info_Variance_Fields = {
-  __typename?: 'computed_listing_info_variance_fields';
-  average_gut_rating?: Maybe<Scalars['Float']['output']>;
-  average_professor?: Maybe<Scalars['Float']['output']>;
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_rating_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  average_workload?: Maybe<Scalars['Float']['output']>;
-  average_workload_n?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors?: Maybe<Scalars['Float']['output']>;
-  average_workload_same_professors_n?: Maybe<Scalars['Float']['output']>;
-  course_id?: Maybe<Scalars['Float']['output']>;
-  credits?: Maybe<Scalars['Float']['output']>;
-  crn?: Maybe<Scalars['Float']['output']>;
-  declined?: Maybe<Scalars['Float']['output']>;
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  last_enrollment?: Maybe<Scalars['Float']['output']>;
-  last_enrollment_course_id?: Maybe<Scalars['Float']['output']>;
-  last_offered_course_id?: Maybe<Scalars['Float']['output']>;
-  listing_id?: Maybe<Scalars['Float']['output']>;
-  no_response?: Maybe<Scalars['Float']['output']>;
-  responses?: Maybe<Scalars['Float']['output']>;
-  same_course_and_profs_id?: Maybe<Scalars['Float']['output']>;
-  same_course_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by variance() on columns of table "computed_listing_info" */
-export type Computed_Listing_Info_Variance_Order_By = {
-  average_gut_rating?: InputMaybe<Order_By>;
-  average_professor?: InputMaybe<Order_By>;
-  average_rating?: InputMaybe<Order_By>;
-  average_rating_n?: InputMaybe<Order_By>;
-  average_rating_same_professors?: InputMaybe<Order_By>;
-  average_rating_same_professors_n?: InputMaybe<Order_By>;
-  average_workload?: InputMaybe<Order_By>;
-  average_workload_n?: InputMaybe<Order_By>;
-  average_workload_same_professors?: InputMaybe<Order_By>;
-  average_workload_same_professors_n?: InputMaybe<Order_By>;
-  course_id?: InputMaybe<Order_By>;
-  credits?: InputMaybe<Order_By>;
-  crn?: InputMaybe<Order_By>;
-  declined?: InputMaybe<Order_By>;
-  enrolled?: InputMaybe<Order_By>;
-  last_enrollment?: InputMaybe<Order_By>;
-  last_enrollment_course_id?: InputMaybe<Order_By>;
-  last_offered_course_id?: InputMaybe<Order_By>;
-  listing_id?: InputMaybe<Order_By>;
-  no_response?: InputMaybe<Order_By>;
-  responses?: InputMaybe<Order_By>;
-  same_course_and_profs_id?: InputMaybe<Order_By>;
-  same_course_id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "course_flags" */
@@ -1878,7 +188,7 @@ export type Course_Flags_Bool_Exp = {
 /** unique or primary key constraints on table "course_flags" */
 export enum Course_Flags_Constraint {
   /** unique or primary key constraint on columns "flag_id", "course_id" */
-  PkCourseFlagsStaged = 'pk_course_flags_staged',
+  PkCourseFlags = 'pk_course_flags',
 }
 
 /** input type for incrementing numeric columns in table "course_flags" */
@@ -2187,7 +497,7 @@ export type Course_Professors_Bool_Exp = {
 /** unique or primary key constraints on table "course_professors" */
 export enum Course_Professors_Constraint {
   /** unique or primary key constraint on columns "course_id", "professor_id" */
-  PkCourseProfessorsStaged = 'pk_course_professors_staged',
+  PkCourseProfessors = 'pk_course_professors',
 }
 
 /** input type for incrementing numeric columns in table "course_professors" */
@@ -2443,10 +753,6 @@ export type Courses = {
   classnotes?: Maybe<Scalars['String']['output']>;
   /** True if the course is a college seminar. False otherwise. */
   colsem?: Maybe<Scalars['Boolean']['output']>;
-  /** An array relationship */
-  computed_listing_infos: Array<Computed_Listing_Info>;
-  /** An aggregate relationship */
-  computed_listing_infos_aggregate: Computed_Listing_Info_Aggregate;
   /** An object relationship */
   course?: Maybe<Courses>;
   /** An object relationship */
@@ -2574,24 +880,6 @@ export type Courses = {
 /** columns and relationships of "courses" */
 export type CoursesAreasArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesComputed_Listing_InfosArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesComputed_Listing_Infos_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
 };
 
 /** columns and relationships of "courses" */
@@ -3037,8 +1325,6 @@ export type Courses_Bool_Exp = {
   average_workload_same_professors_n?: InputMaybe<Int_Comparison_Exp>;
   classnotes?: InputMaybe<String_Comparison_Exp>;
   colsem?: InputMaybe<Boolean_Comparison_Exp>;
-  computed_listing_infos?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  computed_listing_infos_aggregate?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp>;
   course?: InputMaybe<Courses_Bool_Exp>;
   courseByLastOfferedCourseId?: InputMaybe<Courses_Bool_Exp>;
   course_flags?: InputMaybe<Course_Flags_Bool_Exp>;
@@ -3089,7 +1375,7 @@ export type Courses_Bool_Exp = {
 /** unique or primary key constraints on table "courses" */
 export enum Courses_Constraint {
   /** unique or primary key constraint on columns "course_id" */
-  PkCoursesStaged = 'pk_courses_staged',
+  PkCourses = 'pk_courses',
 }
 
 /** input type for incrementing numeric columns in table "courses" */
@@ -3206,7 +1492,6 @@ export type Courses_Insert_Input = {
   classnotes?: InputMaybe<Scalars['String']['input']>;
   /** True if the course is a college seminar. False otherwise. */
   colsem?: InputMaybe<Scalars['Boolean']['input']>;
-  computed_listing_infos?: InputMaybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   courseByLastOfferedCourseId?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   course_flags?: InputMaybe<Course_Flags_Arr_Rel_Insert_Input>;
@@ -3781,7 +2066,6 @@ export type Courses_Order_By = {
   average_workload_same_professors_n?: InputMaybe<Order_By>;
   classnotes?: InputMaybe<Order_By>;
   colsem?: InputMaybe<Order_By>;
-  computed_listing_infos_aggregate?: InputMaybe<Computed_Listing_Info_Aggregate_Order_By>;
   course?: InputMaybe<Courses_Order_By>;
   courseByLastOfferedCourseId?: InputMaybe<Courses_Order_By>;
   course_flags_aggregate?: InputMaybe<Course_Flags_Aggregate_Order_By>;
@@ -5429,6 +3713,8 @@ export type Evaluation_Narratives = {
   id: Scalars['Int']['output'];
   /** Question to which this narrative comment responds */
   question_code: Scalars['String']['output'];
+  /** The number of the response for the given course and question */
+  response_number: Scalars['Int']['output'];
 };
 
 /** aggregated selection of "evaluation_narratives" */
@@ -5581,6 +3867,8 @@ export type Evaluation_Narratives_Avg_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "evaluation_narratives" */
@@ -5596,6 +3884,8 @@ export type Evaluation_Narratives_Avg_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "evaluation_narratives". All fields are combined with a logical 'AND'. */
@@ -5613,12 +3903,13 @@ export type Evaluation_Narratives_Bool_Exp = {
   evaluation_question?: InputMaybe<Evaluation_Questions_Bool_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   question_code?: InputMaybe<String_Comparison_Exp>;
+  response_number?: InputMaybe<Int_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "evaluation_narratives" */
 export enum Evaluation_Narratives_Constraint {
   /** unique or primary key constraint on columns "id" */
-  PkEvaluationNarrativesStaged = 'pk_evaluation_narratives_staged',
+  PkEvaluationNarratives = 'pk_evaluation_narratives',
 }
 
 /** input type for incrementing numeric columns in table "evaluation_narratives" */
@@ -5634,6 +3925,8 @@ export type Evaluation_Narratives_Inc_Input = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Scalars['Int']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** input type for inserting data into table "evaluation_narratives" */
@@ -5655,6 +3948,8 @@ export type Evaluation_Narratives_Insert_Input = {
   id?: InputMaybe<Scalars['Int']['input']>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Scalars['String']['input']>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate max on columns */
@@ -5675,6 +3970,8 @@ export type Evaluation_Narratives_Max_Fields = {
   id?: Maybe<Scalars['Int']['output']>;
   /** Question to which this narrative comment responds */
   question_code?: Maybe<Scalars['String']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "evaluation_narratives" */
@@ -5694,6 +3991,8 @@ export type Evaluation_Narratives_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -5714,6 +4013,8 @@ export type Evaluation_Narratives_Min_Fields = {
   id?: Maybe<Scalars['Int']['output']>;
   /** Question to which this narrative comment responds */
   question_code?: Maybe<Scalars['String']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "evaluation_narratives" */
@@ -5733,6 +4034,8 @@ export type Evaluation_Narratives_Min_Order_By = {
   id?: InputMaybe<Order_By>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "evaluation_narratives" */
@@ -5763,6 +4066,7 @@ export type Evaluation_Narratives_Order_By = {
   evaluation_question?: InputMaybe<Evaluation_Questions_Order_By>;
   id?: InputMaybe<Order_By>;
   question_code?: InputMaybe<Order_By>;
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: evaluation_narratives */
@@ -5788,6 +4092,8 @@ export enum Evaluation_Narratives_Select_Column {
   Id = 'id',
   /** column name */
   QuestionCode = 'question_code',
+  /** column name */
+  ResponseNumber = 'response_number',
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_avg_arguments_columns" columns of table "evaluation_narratives" */
@@ -5903,6 +4209,8 @@ export type Evaluation_Narratives_Set_Input = {
   id?: InputMaybe<Scalars['Int']['input']>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Scalars['String']['input']>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -5919,6 +4227,8 @@ export type Evaluation_Narratives_Stddev_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "evaluation_narratives" */
@@ -5934,6 +4244,8 @@ export type Evaluation_Narratives_Stddev_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
@@ -5950,6 +4262,8 @@ export type Evaluation_Narratives_Stddev_Pop_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_pop() on columns of table "evaluation_narratives" */
@@ -5965,6 +4279,8 @@ export type Evaluation_Narratives_Stddev_Pop_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
@@ -5981,6 +4297,8 @@ export type Evaluation_Narratives_Stddev_Samp_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "evaluation_narratives" */
@@ -5996,6 +4314,8 @@ export type Evaluation_Narratives_Stddev_Samp_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "evaluation_narratives" */
@@ -6023,6 +4343,8 @@ export type Evaluation_Narratives_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['Int']['input']>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Scalars['String']['input']>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -6039,6 +4361,8 @@ export type Evaluation_Narratives_Sum_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "evaluation_narratives" */
@@ -6054,6 +4378,8 @@ export type Evaluation_Narratives_Sum_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "evaluation_narratives" */
@@ -6074,6 +4400,8 @@ export enum Evaluation_Narratives_Update_Column {
   Id = 'id',
   /** column name */
   QuestionCode = 'question_code',
+  /** column name */
+  ResponseNumber = 'response_number',
 }
 
 export type Evaluation_Narratives_Updates = {
@@ -6099,6 +4427,8 @@ export type Evaluation_Narratives_Var_Pop_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "evaluation_narratives" */
@@ -6114,6 +4444,8 @@ export type Evaluation_Narratives_Var_Pop_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
@@ -6130,6 +4462,8 @@ export type Evaluation_Narratives_Var_Samp_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_samp() on columns of table "evaluation_narratives" */
@@ -6145,6 +4479,8 @@ export type Evaluation_Narratives_Var_Samp_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate variance on columns */
@@ -6161,6 +4497,8 @@ export type Evaluation_Narratives_Variance_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "evaluation_narratives" */
@@ -6176,6 +4514,8 @@ export type Evaluation_Narratives_Variance_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "evaluation_questions" */
@@ -6291,7 +4631,7 @@ export type Evaluation_Questions_Bool_Exp = {
 /** unique or primary key constraints on table "evaluation_questions" */
 export enum Evaluation_Questions_Constraint {
   /** unique or primary key constraint on columns "question_code" */
-  PkEvaluationQuestionsStaged = 'pk_evaluation_questions_staged',
+  PkEvaluationQuestions = 'pk_evaluation_questions',
 }
 
 /** input type for inserting data into table "evaluation_questions" */
@@ -6596,7 +4936,7 @@ export type Evaluation_Ratings_Bool_Exp = {
 /** unique or primary key constraints on table "evaluation_ratings" */
 export enum Evaluation_Ratings_Constraint {
   /** unique or primary key constraint on columns "id" */
-  PkEvaluationRatingsStaged = 'pk_evaluation_ratings_staged',
+  PkEvaluationRatings = 'pk_evaluation_ratings',
 }
 
 /** input type for incrementing numeric columns in table "evaluation_ratings" */
@@ -6951,7 +5291,7 @@ export type Evaluation_Statistics_Bool_Exp = {
 /** unique or primary key constraints on table "evaluation_statistics" */
 export enum Evaluation_Statistics_Constraint {
   /** unique or primary key constraint on columns "course_id" */
-  PkEvaluationStatisticsStaged = 'pk_evaluation_statistics_staged',
+  PkEvaluationStatistics = 'pk_evaluation_statistics',
 }
 
 /** input type for incrementing numeric columns in table "evaluation_statistics" */
@@ -7384,7 +5724,7 @@ export type Flags_Bool_Exp = {
 /** unique or primary key constraints on table "flags" */
 export enum Flags_Constraint {
   /** unique or primary key constraint on columns "flag_id" */
-  PkFlagsStaged = 'pk_flags_staged',
+  PkFlags = 'pk_flags',
 }
 
 /** input type for incrementing numeric columns in table "flags" */
@@ -7580,41 +5920,9 @@ export type Json_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['json']['input']>>;
 };
 
-export type Jsonb_Cast_Exp = {
-  String?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
-export type Jsonb_Comparison_Exp = {
-  _cast?: InputMaybe<Jsonb_Cast_Exp>;
-  /** is the column contained in the given json value */
-  _contained_in?: InputMaybe<Scalars['jsonb']['input']>;
-  /** does the column contain the given json value at the top level */
-  _contains?: InputMaybe<Scalars['jsonb']['input']>;
-  _eq?: InputMaybe<Scalars['jsonb']['input']>;
-  _gt?: InputMaybe<Scalars['jsonb']['input']>;
-  _gte?: InputMaybe<Scalars['jsonb']['input']>;
-  /** does the string exist as a top-level key in the column */
-  _has_key?: InputMaybe<Scalars['String']['input']>;
-  /** do all of these strings exist as top-level keys in the column */
-  _has_keys_all?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** do any of these strings exist as top-level keys in the column */
-  _has_keys_any?: InputMaybe<Array<Scalars['String']['input']>>;
-  _in?: InputMaybe<Array<Scalars['jsonb']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['jsonb']['input']>;
-  _lte?: InputMaybe<Scalars['jsonb']['input']>;
-  _neq?: InputMaybe<Scalars['jsonb']['input']>;
-  _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
-};
-
 /** columns and relationships of "listings" */
 export type Listings = {
   __typename?: 'listings';
-  /** An array relationship */
-  computed_listing_infos: Array<Computed_Listing_Info>;
-  /** An aggregate relationship */
-  computed_listing_infos_aggregate: Computed_Listing_Info_Aggregate;
   /** An object relationship */
   course: Courses;
   /** [computed] subject + number (e.g. "AMST 312") */
@@ -7640,24 +5948,6 @@ export type Listings = {
   section: Scalars['String']['output'];
   /** Subject the course is listed under (e.g. "AMST") */
   subject: Scalars['String']['output'];
-};
-
-/** columns and relationships of "listings" */
-export type ListingsComputed_Listing_InfosArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-};
-
-/** columns and relationships of "listings" */
-export type ListingsComputed_Listing_Infos_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
 };
 
 /** aggregated selection of "listings" */
@@ -7748,8 +6038,6 @@ export type Listings_Bool_Exp = {
   _and?: InputMaybe<Array<Listings_Bool_Exp>>;
   _not?: InputMaybe<Listings_Bool_Exp>;
   _or?: InputMaybe<Array<Listings_Bool_Exp>>;
-  computed_listing_infos?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-  computed_listing_infos_aggregate?: InputMaybe<Computed_Listing_Info_Aggregate_Bool_Exp>;
   course?: InputMaybe<Courses_Bool_Exp>;
   course_code?: InputMaybe<String_Comparison_Exp>;
   course_id?: InputMaybe<Int_Comparison_Exp>;
@@ -7768,7 +6056,7 @@ export enum Listings_Constraint {
   /** unique or primary key constraint on columns "crn", "season_code" */
   IdxSeasonCodeCrnUnique = 'idx_season_code_crn_unique',
   /** unique or primary key constraint on columns "listing_id" */
-  PkListingsStaged = 'pk_listings_staged',
+  PkListings = 'pk_listings',
 }
 
 /** input type for incrementing numeric columns in table "listings" */
@@ -7783,7 +6071,6 @@ export type Listings_Inc_Input = {
 
 /** input type for inserting data into table "listings" */
 export type Listings_Insert_Input = {
-  computed_listing_infos?: InputMaybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
   /** [computed] subject + number (e.g. "AMST 312") */
   course_code?: InputMaybe<Scalars['String']['input']>;
@@ -7920,13 +6207,6 @@ export type Listings_Mutation_Response = {
   returning: Array<Listings>;
 };
 
-/** input type for inserting object relation for remote table "listings" */
-export type Listings_Obj_Rel_Insert_Input = {
-  data: Listings_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Listings_On_Conflict>;
-};
-
 /** on_conflict condition type for table "listings" */
 export type Listings_On_Conflict = {
   constraint: Listings_Constraint;
@@ -7936,7 +6216,6 @@ export type Listings_On_Conflict = {
 
 /** Ordering options when selecting data from "listings". */
 export type Listings_Order_By = {
-  computed_listing_infos_aggregate?: InputMaybe<Computed_Listing_Info_Aggregate_Order_By>;
   course?: InputMaybe<Courses_Order_By>;
   course_code?: InputMaybe<Order_By>;
   course_id?: InputMaybe<Order_By>;
@@ -8217,8 +6496,6 @@ export type Listings_Variance_Order_By = {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
-  /** delete data from the table: "computed_listing_info" */
-  delete_computed_listing_info?: Maybe<Computed_Listing_Info_Mutation_Response>;
   /** delete data from the table: "course_flags" */
   delete_course_flags?: Maybe<Course_Flags_Mutation_Response>;
   /** delete single row from the table: "course_flags" */
@@ -8263,10 +6540,6 @@ export type Mutation_Root = {
   delete_seasons?: Maybe<Seasons_Mutation_Response>;
   /** delete single row from the table: "seasons" */
   delete_seasons_by_pk?: Maybe<Seasons>;
-  /** insert data into the table: "computed_listing_info" */
-  insert_computed_listing_info?: Maybe<Computed_Listing_Info_Mutation_Response>;
-  /** insert a single row into the table: "computed_listing_info" */
-  insert_computed_listing_info_one?: Maybe<Computed_Listing_Info>;
   /** insert data into the table: "course_flags" */
   insert_course_flags?: Maybe<Course_Flags_Mutation_Response>;
   /** insert a single row into the table: "course_flags" */
@@ -8311,12 +6584,6 @@ export type Mutation_Root = {
   insert_seasons?: Maybe<Seasons_Mutation_Response>;
   /** insert a single row into the table: "seasons" */
   insert_seasons_one?: Maybe<Seasons>;
-  /** update data of the table: "computed_listing_info" */
-  update_computed_listing_info?: Maybe<Computed_Listing_Info_Mutation_Response>;
-  /** update multiples rows of table: "computed_listing_info" */
-  update_computed_listing_info_many?: Maybe<
-    Array<Maybe<Computed_Listing_Info_Mutation_Response>>
-  >;
   /** update data of the table: "course_flags" */
   update_course_flags?: Maybe<Course_Flags_Mutation_Response>;
   /** update single row of the table: "course_flags" */
@@ -8395,11 +6662,6 @@ export type Mutation_Root = {
   update_seasons_by_pk?: Maybe<Seasons>;
   /** update multiples rows of table: "seasons" */
   update_seasons_many?: Maybe<Array<Maybe<Seasons_Mutation_Response>>>;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Computed_Listing_InfoArgs = {
-  where: Computed_Listing_Info_Bool_Exp;
 };
 
 /** mutation root */
@@ -8512,18 +6774,6 @@ export type Mutation_RootDelete_SeasonsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Seasons_By_PkArgs = {
   season_code: Scalars['String']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Computed_Listing_InfoArgs = {
-  objects: Array<Computed_Listing_Info_Insert_Input>;
-  on_conflict?: InputMaybe<Computed_Listing_Info_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Computed_Listing_Info_OneArgs = {
-  object: Computed_Listing_Info_Insert_Input;
-  on_conflict?: InputMaybe<Computed_Listing_Info_On_Conflict>;
 };
 
 /** mutation root */
@@ -8656,23 +6906,6 @@ export type Mutation_RootInsert_SeasonsArgs = {
 export type Mutation_RootInsert_Seasons_OneArgs = {
   object: Seasons_Insert_Input;
   on_conflict?: InputMaybe<Seasons_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Computed_Listing_InfoArgs = {
-  _append?: InputMaybe<Computed_Listing_Info_Append_Input>;
-  _delete_at_path?: InputMaybe<Computed_Listing_Info_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Computed_Listing_Info_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Computed_Listing_Info_Delete_Key_Input>;
-  _inc?: InputMaybe<Computed_Listing_Info_Inc_Input>;
-  _prepend?: InputMaybe<Computed_Listing_Info_Prepend_Input>;
-  _set?: InputMaybe<Computed_Listing_Info_Set_Input>;
-  where: Computed_Listing_Info_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Computed_Listing_Info_ManyArgs = {
-  updates: Array<Computed_Listing_Info_Updates>;
 };
 
 /** mutation root */
@@ -9003,7 +7236,7 @@ export type Professors_Bool_Exp = {
 /** unique or primary key constraints on table "professors" */
 export enum Professors_Constraint {
   /** unique or primary key constraint on columns "professor_id" */
-  PkProfessorsStaged = 'pk_professors_staged',
+  PkProfessors = 'pk_professors',
 }
 
 /** input type for incrementing numeric columns in table "professors" */
@@ -9322,10 +7555,6 @@ export type Professors_Variance_Fields = {
 
 export type Query_Root = {
   __typename?: 'query_root';
-  /** fetch data from the table: "computed_listing_info" */
-  computed_listing_info: Array<Computed_Listing_Info>;
-  /** fetch aggregated fields from the table: "computed_listing_info" */
-  computed_listing_info_aggregate: Computed_Listing_Info_Aggregate;
   /** An array relationship */
   course_flags: Array<Course_Flags>;
   /** An aggregate relationship */
@@ -9392,22 +7621,6 @@ export type Query_Root = {
   seasons_aggregate: Seasons_Aggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk?: Maybe<Seasons>;
-};
-
-export type Query_RootComputed_Listing_InfoArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-};
-
-export type Query_RootComputed_Listing_Info_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
 };
 
 export type Query_RootCourse_FlagsArgs = {
@@ -9764,7 +7977,7 @@ export type Seasons_Bool_Exp = {
 /** unique or primary key constraints on table "seasons" */
 export enum Seasons_Constraint {
   /** unique or primary key constraint on columns "season_code" */
-  PkSeasonsStaged = 'pk_seasons_staged',
+  PkSeasons = 'pk_seasons',
 }
 
 /** input type for incrementing numeric columns in table "seasons" */
@@ -9955,12 +8168,6 @@ export type Seasons_Variance_Fields = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
-  /** fetch data from the table: "computed_listing_info" */
-  computed_listing_info: Array<Computed_Listing_Info>;
-  /** fetch aggregated fields from the table: "computed_listing_info" */
-  computed_listing_info_aggregate: Computed_Listing_Info_Aggregate;
-  /** fetch data from the table in a streaming manner: "computed_listing_info" */
-  computed_listing_info_stream: Array<Computed_Listing_Info>;
   /** An array relationship */
   course_flags: Array<Course_Flags>;
   /** An aggregate relationship */
@@ -10049,28 +8256,6 @@ export type Subscription_Root = {
   seasons_by_pk?: Maybe<Seasons>;
   /** fetch data from the table in a streaming manner: "seasons" */
   seasons_stream: Array<Seasons>;
-};
-
-export type Subscription_RootComputed_Listing_InfoArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-};
-
-export type Subscription_RootComputed_Listing_Info_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Computed_Listing_Info_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Computed_Listing_Info_Order_By>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
-};
-
-export type Subscription_RootComputed_Listing_Info_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Computed_Listing_Info_Stream_Cursor_Input>>;
-  where?: InputMaybe<Computed_Listing_Info_Bool_Exp>;
 };
 
 export type Subscription_RootCourse_FlagsArgs = {
