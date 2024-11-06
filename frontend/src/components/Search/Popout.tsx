@@ -133,7 +133,7 @@ export function Popout({
     else if (dropdownRect.right > window.innerWidth)
       dropdownRef.current.style.transform = `translateX(${window.innerWidth - dropdownRect.right}px)`;
     else dropdownRef.current.style.transform = '';
-  }, [isComponentVisible]);
+  }, [isComponentVisible, dropdownRef]);
 
   return (
     <div
