@@ -309,6 +309,10 @@ function getAttributeValue(
     case 'season_code':
     case 'section':
       return l[key];
+    case 'title':
+    case 'average_professor_rating':
+    case 'average_gut_rating':
+    case 'locations_summary':
     default:
       // || is intentional: 0 also means nonexistence
       return l.course[key] || null;

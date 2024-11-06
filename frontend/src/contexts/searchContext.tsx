@@ -440,6 +440,10 @@ export function SearchProvider({
               return `${base} ${listing.course.description}`;
             return base;
           }
+          case 'title':
+          case 'areas':
+          case 'description':
+          case 'credits':
           default:
             return listing.course[key];
         }
