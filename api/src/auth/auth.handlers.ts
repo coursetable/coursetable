@@ -157,7 +157,7 @@ export const passportConfig = (
     done(null, user.netId);
   });
 
-  passport.deserializeUser(async (sessionKey: unknown, done) => {
+  passport.deserializeUser(async (sessionKey: string | null, done) => {
     if (!sessionKey) {
       // Return `null`/`false` to denote no user; don't use `undefined`
       // https://github.com/jaredhanson/passport/pull/975
