@@ -18,12 +18,18 @@ export function suspended<T extends React.ComponentType<any>>(
 ) {
   const Comp = React.lazy(async () => {
     try {
-      return await factory();
+      const result = await factory();
+      // If this request succeeded, then the next failure is a new one that
+      // should try autoreloading
+      hasAutoReloaded.remove();
+      return result;
     } catch {
-      // Prevent infinite reloading
+      // Prevent infinite reloading: if we haven't auto reloaded, then auto
+      // reload once. The next time show an error message.
       if (!hasAutoReloaded.get()) {
         hasAutoReloaded.set(true);
         window.location.reload();
+        return { default: (() => null) as unknown as T };
       }
       hasAutoReloaded.remove();
       return {
