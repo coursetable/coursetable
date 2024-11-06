@@ -22,12 +22,24 @@
 .sectionsDropdown > button {
   font-size: calc(100% - 2px);
   font-weight: bold;
-  margin: 0;
-  padding: 0 0 0 0.5rem;
+  margin: 0 0 0 0.5rem;
+  padding: 0;
 }
 
 .sectionsDropdown > div {
   font-size: 14px;
+}
+
+.sectionsDropdown div[role='option'] {
+  padding: 0;
+}
+
+.sectionsDropdown a {
+  padding: 8px 12px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  color: var(--color-text);
 }
 
 .courseCodes {
