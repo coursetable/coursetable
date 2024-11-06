@@ -20,8 +20,10 @@
 }
 
 .sectionsDropdown > button {
-  font-size: 18px;
+  font-size: calc(100% - 2px);
   font-weight: bold;
+  margin: 0;
+  padding: 0 0 0 0.5rem;
 }
 
 .sectionsDropdown > div {
