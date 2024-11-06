@@ -25,12 +25,16 @@ import type {
 } from '../CourseModal';
 import styles from './InfoRow.module.css';
 
-function getSectionData(
-  section: CourseSectionsQuery['listings'][number],
-  hasDifferentTitles: boolean,
-  searchParams: URLSearchParams,
-  onNavigation: ModalNavigationFunction,
-) {
+function SectionLink({
+  section,
+  hasDifferentTitles,
+  onNavigation,
+}: {
+  readonly section: CourseSectionsQuery['listings'][number];
+  readonly hasDifferentTitles: boolean;
+  readonly onNavigation: ModalNavigationFunction;
+}) {
+  const [searchParams] = useSearchParams();
   const times = new Map<string, Set<Weekdays>>();
   for (const [day, info] of Object.entries(section.course.times_by_day)) {
     for (const [startTime, endTime] of info) {
@@ -49,32 +53,30 @@ function getSectionData(
     section.course.course_professors
       .map((professor) => professor.professor.name)
       .join(' • ') || 'TBA';
-  return {
-    value: section.section.padStart(2, '0'),
-    label: (
-      <Link
-        to={createCourseModalLink(section, searchParams)}
-        onClick={() => {
-          onNavigation('replace', section, 'overview');
-        }}
-      >
-        <span title={hasDifferentTitles ? section.course.title : undefined}>
-          <b>{section.section.padStart(2, '0')}</b>{' '}
-          {hasDifferentTitles && (
-            <>
-              {truncatedText(section.course.title, 40, '')}
-              <br />
-            </>
-          )}
-          <small>
-            {professors}
-            {timeString ? ' - ' : ''}
-            {timeString}
-          </small>
-        </span>
-      </Link>
-    ),
-  };
+  return (
+    <Link
+      to={createCourseModalLink(section, searchParams)}
+      onClick={() => {
+        onNavigation('replace', section, 'overview');
+      }}
+      className={styles.sectionLink}
+    >
+      <span title={hasDifferentTitles ? section.course.title : undefined}>
+        <b>{section.section.padStart(2, '0')}</b>{' '}
+        {hasDifferentTitles && (
+          <>
+            {truncatedText(section.course.title, 40, '')}
+            <br />
+          </>
+        )}
+        <small>
+          {professors}
+          {timeString ? ' - ' : ''}
+          {timeString}
+        </small>
+      </span>
+    </Link>
+  );
 }
 
 function SectionsDropdown({
@@ -86,14 +88,22 @@ function SectionsDropdown({
   readonly sections: CourseSectionsQuery['listings'];
   readonly onNavigation: ModalNavigationFunction;
 }) {
-  const [searchParams] = useSearchParams();
   const hasDifferentTitles =
     new Set(sections.map((section) => section.course.title)).size > 1;
   const sectionsOptions: Map<string, Option> = new Map<string, Option>(
     // @ts-expect-error: TODO it actually works to have a ReactNode as label
     sections.map((section) => [
       section.section,
-      getSectionData(section, hasDifferentTitles, searchParams, onNavigation),
+      {
+        value: section.section.padStart(2, '0'),
+        label: (
+          <SectionLink
+            section={section}
+            hasDifferentTitles={hasDifferentTitles}
+            onNavigation={onNavigation}
+          />
+        ),
+      },
     ]),
   );
   return (
@@ -101,9 +111,11 @@ function SectionsDropdown({
       buttonText={listing.section.padStart(2, '0')}
       selectedOptions={sectionsOptions.get(listing.section)}
       clearIcon={false}
+      className={styles.sectionsDropdownButton}
       wrapperClassName={styles.sectionsDropdown}
     >
       <PopoutSelect<Option, false>
+        className={styles.sectionsDropdownSelect}
         value={sectionsOptions.get(listing.section)}
         options={[...sectionsOptions.values()]}
         isSearchable={false}
