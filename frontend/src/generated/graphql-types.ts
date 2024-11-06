@@ -6697,3 +6697,42 @@ export type PrereqLinkInfoQuery = {
     };
   }>;
 };
+
+export type CourseSectionsQueryVariables = Exact<{
+  course_code: InputMaybe<Scalars['String']['input']>;
+  season: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type CourseSectionsQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    course_code: string;
+    crn: Crn;
+    season_code: Season;
+    section: string;
+    course: {
+      __typename?: 'courses';
+      areas: StringArr;
+      description: string | null;
+      extra_info: ExtraInfo;
+      same_course_id: number;
+      skills: StringArr;
+      times_by_day: TimesByDay;
+      title: string;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: {
+          __typename?: 'professors';
+          professor_id: number;
+          name: string;
+        };
+      }>;
+      listings: Array<{
+        __typename?: 'listings';
+        crn: Crn;
+        course_code: string;
+      }>;
+    };
+  }>;
+};

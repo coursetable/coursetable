@@ -373,3 +373,104 @@ export type PrereqLinkInfoQueryResult = Apollo.QueryResult<
   Types.PrereqLinkInfoQuery,
   Types.PrereqLinkInfoQueryVariables
 >;
+export const CourseSectionsDocument = gql`
+  query CourseSections($course_code: String, $season: String) {
+    listings(
+      where: {
+        season_code: { _eq: $season }
+        course_code: { _eq: $course_code }
+      }
+    ) {
+      course {
+        areas
+        course_professors {
+          professor {
+            professor_id
+            name
+          }
+        }
+        description
+        extra_info
+        listings {
+          crn
+          course_code
+        }
+        same_course_id
+        skills
+        times_by_day
+        title
+      }
+      course_code
+      crn
+      season_code
+      section
+    }
+  }
+`;
+
+/**
+ * __useCourseSectionsQuery__
+ *
+ * To run a query within a React component, call `useCourseSectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseSectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCourseSectionsQuery({
+ *   variables: {
+ *      course_code: // value for 'course_code'
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useCourseSectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >(CourseSectionsDocument, options);
+}
+export function useCourseSectionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >(CourseSectionsDocument, options);
+}
+export function useCourseSectionsSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.CourseSectionsQuery,
+    Types.CourseSectionsQueryVariables
+  >(CourseSectionsDocument, options);
+}
+export type CourseSectionsQueryHookResult = ReturnType<
+  typeof useCourseSectionsQuery
+>;
+export type CourseSectionsLazyQueryHookResult = ReturnType<
+  typeof useCourseSectionsLazyQuery
+>;
+export type CourseSectionsSuspenseQueryHookResult = ReturnType<
+  typeof useCourseSectionsSuspenseQuery
+>;
+export type CourseSectionsQueryResult = Apollo.QueryResult<
+  Types.CourseSectionsQuery,
+  Types.CourseSectionsQueryVariables
+>;
