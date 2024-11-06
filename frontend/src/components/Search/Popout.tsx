@@ -121,17 +121,16 @@ export function Popout({
   const ArrowIcon = isComponentVisible ? IoMdArrowDropdown : IoMdArrowDropup;
 
   useEffect(() => {
-    // Avoid the dropdown going out of the viewport
+    // Avoid the dropdown going out of the viewport. By default it's left-
+    // aligned with the trigger button, but we may have to left-shift it.
     // Note: we only reposition the dropdown once when it becomes visible.
     // this is on purpose: when resizing the window, the resize event fires
     // before reflow happens, so the dropdown tends to flicker and become
     // unstable.
     if (!dropdownRef.current) return;
     const dropdownRect = dropdownRef.current.getBoundingClientRect();
-    if (dropdownRect.left < 0)
-      dropdownRef.current.style.transform = `translateX(${-dropdownRect.left}px)`;
-    else if (dropdownRect.right > window.innerWidth)
-      dropdownRef.current.style.transform = `translateX(${window.innerWidth - dropdownRect.right}px)`;
+    if (dropdownRect.right > window.innerWidth)
+      dropdownRef.current.style.transform = `translateX(${Math.max(-dropdownRect.left, window.innerWidth - dropdownRect.right)}px)`;
     else dropdownRef.current.style.transform = '';
   }, [isComponentVisible, dropdownRef]);
 
