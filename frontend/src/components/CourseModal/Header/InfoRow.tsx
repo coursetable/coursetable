@@ -161,7 +161,8 @@ export default function ModalHeaderInfo({
               sections={sections}
               onSelect={(selectedSection) => {
                 const newSection = sections.find(
-                  (section) => `0${section.section}` === selectedSection!.value,
+                  (section) =>
+                    section.section.padStart(2, '0') === selectedSection!.value,
                 )!;
                 onNavigation('replace', newSection, 'overview');
                 navigate(createCourseModalLink(newSection, searchParams));
