@@ -154,13 +154,6 @@ export type Course_Flags_Aggregate_Order_By = {
   variance?: InputMaybe<Course_Flags_Variance_Order_By>;
 };
 
-/** input type for inserting array relation for remote table "course_flags" */
-export type Course_Flags_Arr_Rel_Insert_Input = {
-  data: Array<Course_Flags_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Course_Flags_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Course_Flags_Avg_Fields = {
   __typename?: 'course_flags_avg_fields';
@@ -183,26 +176,6 @@ export type Course_Flags_Bool_Exp = {
   course_id?: InputMaybe<Int_Comparison_Exp>;
   flag?: InputMaybe<Flags_Bool_Exp>;
   flag_id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "course_flags" */
-export enum Course_Flags_Constraint {
-  /** unique or primary key constraint on columns "flag_id", "course_id" */
-  PkCourseFlags = 'pk_course_flags',
-}
-
-/** input type for incrementing numeric columns in table "course_flags" */
-export type Course_Flags_Inc_Input = {
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  flag_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "course_flags" */
-export type Course_Flags_Insert_Input = {
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  flag?: InputMaybe<Flags_Obj_Rel_Insert_Input>;
-  flag_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate max on columns */
@@ -231,34 +204,12 @@ export type Course_Flags_Min_Order_By = {
   flag_id?: InputMaybe<Order_By>;
 };
 
-/** response of any mutation on the table "course_flags" */
-export type Course_Flags_Mutation_Response = {
-  __typename?: 'course_flags_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Course_Flags>;
-};
-
-/** on_conflict condition type for table "course_flags" */
-export type Course_Flags_On_Conflict = {
-  constraint: Course_Flags_Constraint;
-  update_columns?: Array<Course_Flags_Update_Column>;
-  where?: InputMaybe<Course_Flags_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "course_flags". */
 export type Course_Flags_Order_By = {
   course?: InputMaybe<Courses_Order_By>;
   course_id?: InputMaybe<Order_By>;
   flag?: InputMaybe<Flags_Order_By>;
   flag_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: course_flags */
-export type Course_Flags_Pk_Columns_Input = {
-  course_id: Scalars['Int']['input'];
-  flag_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "course_flags" */
@@ -268,12 +219,6 @@ export enum Course_Flags_Select_Column {
   /** column name */
   FlagId = 'flag_id',
 }
-
-/** input type for updating data in table "course_flags" */
-export type Course_Flags_Set_Input = {
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  flag_id?: InputMaybe<Scalars['Int']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Course_Flags_Stddev_Fields = {
@@ -339,23 +284,6 @@ export type Course_Flags_Sum_Fields = {
 export type Course_Flags_Sum_Order_By = {
   course_id?: InputMaybe<Order_By>;
   flag_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "course_flags" */
-export enum Course_Flags_Update_Column {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  FlagId = 'flag_id',
-}
-
-export type Course_Flags_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Course_Flags_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Course_Flags_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Course_Flags_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */
@@ -463,13 +391,6 @@ export type Course_Professors_Aggregate_Order_By = {
   variance?: InputMaybe<Course_Professors_Variance_Order_By>;
 };
 
-/** input type for inserting array relation for remote table "course_professors" */
-export type Course_Professors_Arr_Rel_Insert_Input = {
-  data: Array<Course_Professors_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Course_Professors_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Course_Professors_Avg_Fields = {
   __typename?: 'course_professors_avg_fields';
@@ -492,26 +413,6 @@ export type Course_Professors_Bool_Exp = {
   course_id?: InputMaybe<Int_Comparison_Exp>;
   professor?: InputMaybe<Professors_Bool_Exp>;
   professor_id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "course_professors" */
-export enum Course_Professors_Constraint {
-  /** unique or primary key constraint on columns "course_id", "professor_id" */
-  PkCourseProfessors = 'pk_course_professors',
-}
-
-/** input type for incrementing numeric columns in table "course_professors" */
-export type Course_Professors_Inc_Input = {
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  professor_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "course_professors" */
-export type Course_Professors_Insert_Input = {
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  professor?: InputMaybe<Professors_Obj_Rel_Insert_Input>;
-  professor_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate max on columns */
@@ -540,34 +441,12 @@ export type Course_Professors_Min_Order_By = {
   professor_id?: InputMaybe<Order_By>;
 };
 
-/** response of any mutation on the table "course_professors" */
-export type Course_Professors_Mutation_Response = {
-  __typename?: 'course_professors_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Course_Professors>;
-};
-
-/** on_conflict condition type for table "course_professors" */
-export type Course_Professors_On_Conflict = {
-  constraint: Course_Professors_Constraint;
-  update_columns?: Array<Course_Professors_Update_Column>;
-  where?: InputMaybe<Course_Professors_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "course_professors". */
 export type Course_Professors_Order_By = {
   course?: InputMaybe<Courses_Order_By>;
   course_id?: InputMaybe<Order_By>;
   professor?: InputMaybe<Professors_Order_By>;
   professor_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: course_professors */
-export type Course_Professors_Pk_Columns_Input = {
-  course_id: Scalars['Int']['input'];
-  professor_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "course_professors" */
@@ -577,12 +456,6 @@ export enum Course_Professors_Select_Column {
   /** column name */
   ProfessorId = 'professor_id',
 }
-
-/** input type for updating data in table "course_professors" */
-export type Course_Professors_Set_Input = {
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  professor_id?: InputMaybe<Scalars['Int']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Course_Professors_Stddev_Fields = {
@@ -648,23 +521,6 @@ export type Course_Professors_Sum_Fields = {
 export type Course_Professors_Sum_Order_By = {
   course_id?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "course_professors" */
-export enum Course_Professors_Update_Column {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  ProfessorId = 'professor_id',
-}
-
-export type Course_Professors_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Course_Professors_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Course_Professors_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Course_Professors_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */
@@ -1163,13 +1019,6 @@ export type Courses_Aggregate_Order_By = {
   variance?: InputMaybe<Courses_Variance_Order_By>;
 };
 
-/** input type for inserting array relation for remote table "courses" */
-export type Courses_Arr_Rel_Insert_Input = {
-  data: Array<Courses_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Courses_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Courses_Avg_Fields = {
   __typename?: 'courses_avg_fields';
@@ -1370,224 +1219,6 @@ export type Courses_Bool_Exp = {
   times_by_day?: InputMaybe<Json_Comparison_Exp>;
   times_summary?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "courses" */
-export enum Courses_Constraint {
-  /** unique or primary key constraint on columns "course_id" */
-  PkCourses = 'pk_courses',
-}
-
-/** input type for incrementing numeric columns in table "courses" */
-export type Courses_Inc_Input = {
-  /** [computed] average_rating - average_workload */
-  average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Average of the average ratings of all professors for this course. */
-  average_professor_rating?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
-  average_rating_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
-  average_rating_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
-  average_workload?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_workload` */
-  average_workload_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
-  average_workload_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
-  average_workload_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of course credits */
-  credits?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of students enrolled in last offering of course */
-  last_enrollment?: InputMaybe<Scalars['Int']['input']>;
-  /** [computed] Course from which last enrollment offering was pulled */
-  last_enrollment_course_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
-  last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
-  same_course_and_profs_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
-  same_course_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "courses" */
-export type Courses_Insert_Input = {
-  /** Course areas (humanities, social sciences, sciences) */
-  areas?: InputMaybe<Scalars['json']['input']>;
-  /** [computed] average_rating - average_workload */
-  average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Average of the average ratings of all professors for this course. */
-  average_professor_rating?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
-  average_rating_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
-  average_rating_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
-  average_workload?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_workload` */
-  average_workload_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
-  average_workload_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
-  average_workload_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  /** Additional class notes */
-  classnotes?: InputMaybe<Scalars['String']['input']>;
-  /** True if the course is a college seminar. False otherwise. */
-  colsem?: InputMaybe<Scalars['Boolean']['input']>;
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  courseByLastOfferedCourseId?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  course_flags?: InputMaybe<Course_Flags_Arr_Rel_Insert_Input>;
-  /** Link to the course homepage */
-  course_home_url?: InputMaybe<Scalars['String']['input']>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  course_professors?: InputMaybe<Course_Professors_Arr_Rel_Insert_Input>;
-  courses?: InputMaybe<Courses_Arr_Rel_Insert_Input>;
-  coursesByLastOfferedCourseId?: InputMaybe<Courses_Arr_Rel_Insert_Input>;
-  /** Number of course credits */
-  credits?: InputMaybe<Scalars['float8']['input']>;
-  /** Course description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  evaluation_narratives?: InputMaybe<Evaluation_Narratives_Arr_Rel_Insert_Input>;
-  evaluation_ratings?: InputMaybe<Evaluation_Ratings_Arr_Rel_Insert_Input>;
-  evaluation_statistic?: InputMaybe<Evaluation_Statistics_Obj_Rel_Insert_Input>;
-  /** Additional information (indicates if class has been cancelled) */
-  extra_info?: InputMaybe<Scalars['String']['input']>;
-  /** Final exam information */
-  final_exam?: InputMaybe<Scalars['String']['input']>;
-  /** True if the course is a first-year seminar. False otherwise. */
-  fysem?: InputMaybe<Scalars['Boolean']['input']>;
-  /** [computed] Number of students enrolled in last offering of course */
-  last_enrollment?: InputMaybe<Scalars['Int']['input']>;
-  /** [computed] Course from which last enrollment offering was pulled */
-  last_enrollment_course_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Whether last enrollment offering
-   *         is with same professor as current.
-   */
-  last_enrollment_same_professors?: InputMaybe<Scalars['Boolean']['input']>;
-  /** [computed] Season in which last enrollment offering is from */
-  last_enrollment_season_code?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
-  last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
-  listings?: InputMaybe<Listings_Arr_Rel_Insert_Input>;
-  /**
-   * If single location, is `<location>`; otherwise is
-   *         `<location> + <n_other_locations>` where the first location is the one
-   *         with the greatest number of days. Displayed in the "Locations" column
-   *         in CourseTable.
-   */
-  locations_summary?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Registrar's notes (e.g. preference selection links,
-   *         optional writing credits, etc.)
-   */
-  regnotes?: InputMaybe<Scalars['String']['input']>;
-  /** Recommended requirements/prerequisites for the course */
-  requirements?: InputMaybe<Scalars['String']['input']>;
-  /** Reading period notes */
-  rp_attr?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
-  same_course_and_profs_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
-  same_course_id?: InputMaybe<Scalars['Int']['input']>;
-  season?: InputMaybe<Seasons_Obj_Rel_Insert_Input>;
-  seasonBySeasonCode?: InputMaybe<Seasons_Obj_Rel_Insert_Input>;
-  /** The season the course is being taught in */
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
-  section?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Skills that the course fulfills (e.g. writing,
-   *         quantitative reasoning, language levels)
-   */
-  skills?: InputMaybe<Scalars['json']['input']>;
-  /** Link to the syllabus */
-  syllabus_url?: InputMaybe<Scalars['String']['input']>;
-  /** True if the course is a sophomore seminar. False otherwise. */
-  sysem?: InputMaybe<Scalars['Boolean']['input']>;
-  /**
-   * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location, location_url)`
-   */
-  times_by_day?: InputMaybe<Scalars['json']['input']>;
-  /** Course times, displayed in the "Times" column in CourseTable */
-  times_summary?: InputMaybe<Scalars['String']['input']>;
-  /** Complete course title */
-  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
@@ -2028,29 +1659,6 @@ export type Courses_Min_Order_By = {
   title?: InputMaybe<Order_By>;
 };
 
-/** response of any mutation on the table "courses" */
-export type Courses_Mutation_Response = {
-  __typename?: 'courses_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Courses>;
-};
-
-/** input type for inserting object relation for remote table "courses" */
-export type Courses_Obj_Rel_Insert_Input = {
-  data: Courses_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Courses_On_Conflict>;
-};
-
-/** on_conflict condition type for table "courses" */
-export type Courses_On_Conflict = {
-  constraint: Courses_Constraint;
-  update_columns?: Array<Courses_Update_Column>;
-  where?: InputMaybe<Courses_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "courses". */
 export type Courses_Order_By = {
   areas?: InputMaybe<Order_By>;
@@ -2104,11 +1712,6 @@ export type Courses_Order_By = {
   times_by_day?: InputMaybe<Order_By>;
   times_summary?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: courses */
-export type Courses_Pk_Columns_Input = {
-  course_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "courses" */
@@ -2360,138 +1963,6 @@ export enum Courses_Select_Column_Courses_Aggregate_Bool_Exp_Var_Samp_Arguments_
   /** column name */
   Credits = 'credits',
 }
-
-/** input type for updating data in table "courses" */
-export type Courses_Set_Input = {
-  /** Course areas (humanities, social sciences, sciences) */
-  areas?: InputMaybe<Scalars['json']['input']>;
-  /** [computed] average_rating - average_workload */
-  average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Average of the average ratings of all professors for this course. */
-  average_professor_rating?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
-  average_rating_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
-  average_rating_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
-  average_workload?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_workload` */
-  average_workload_n?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
-  average_workload_same_professors?: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
-  average_workload_same_professors_n?: InputMaybe<Scalars['Int']['input']>;
-  /** Additional class notes */
-  classnotes?: InputMaybe<Scalars['String']['input']>;
-  /** True if the course is a college seminar. False otherwise. */
-  colsem?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Link to the course homepage */
-  course_home_url?: InputMaybe<Scalars['String']['input']>;
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of course credits */
-  credits?: InputMaybe<Scalars['float8']['input']>;
-  /** Course description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Additional information (indicates if class has been cancelled) */
-  extra_info?: InputMaybe<Scalars['String']['input']>;
-  /** Final exam information */
-  final_exam?: InputMaybe<Scalars['String']['input']>;
-  /** True if the course is a first-year seminar. False otherwise. */
-  fysem?: InputMaybe<Scalars['Boolean']['input']>;
-  /** [computed] Number of students enrolled in last offering of course */
-  last_enrollment?: InputMaybe<Scalars['Int']['input']>;
-  /** [computed] Course from which last enrollment offering was pulled */
-  last_enrollment_course_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Whether last enrollment offering
-   *         is with same professor as current.
-   */
-  last_enrollment_same_professors?: InputMaybe<Scalars['Boolean']['input']>;
-  /** [computed] Season in which last enrollment offering is from */
-  last_enrollment_season_code?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
-  last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * If single location, is `<location>`; otherwise is
-   *         `<location> + <n_other_locations>` where the first location is the one
-   *         with the greatest number of days. Displayed in the "Locations" column
-   *         in CourseTable.
-   */
-  locations_summary?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Registrar's notes (e.g. preference selection links,
-   *         optional writing credits, etc.)
-   */
-  regnotes?: InputMaybe<Scalars['String']['input']>;
-  /** Recommended requirements/prerequisites for the course */
-  requirements?: InputMaybe<Scalars['String']['input']>;
-  /** Reading period notes */
-  rp_attr?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
-  same_course_and_profs_id?: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
-  same_course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** The season the course is being taught in */
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
-  section?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Skills that the course fulfills (e.g. writing,
-   *         quantitative reasoning, language levels)
-   */
-  skills?: InputMaybe<Scalars['json']['input']>;
-  /** Link to the syllabus */
-  syllabus_url?: InputMaybe<Scalars['String']['input']>;
-  /** True if the course is a sophomore seminar. False otherwise. */
-  sysem?: InputMaybe<Scalars['Boolean']['input']>;
-  /**
-   * Course meeting times by day, with days as keys and
-   *         tuples of `(start_time, end_time, location, location_url)`
-   */
-  times_by_day?: InputMaybe<Scalars['json']['input']>;
-  /** Course times, displayed in the "Times" column in CourseTable */
-  times_summary?: InputMaybe<Scalars['String']['input']>;
-  /** Complete course title */
-  title?: InputMaybe<Scalars['String']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Courses_Stddev_Fields = {
@@ -3181,97 +2652,6 @@ export type Courses_Sum_Order_By = {
   same_course_id?: InputMaybe<Order_By>;
 };
 
-/** update columns of table "courses" */
-export enum Courses_Update_Column {
-  /** column name */
-  Areas = 'areas',
-  /** column name */
-  AverageGutRating = 'average_gut_rating',
-  /** column name */
-  AverageProfessorRating = 'average_professor_rating',
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingN = 'average_rating_n',
-  /** column name */
-  AverageRatingSameProfessors = 'average_rating_same_professors',
-  /** column name */
-  AverageRatingSameProfessorsN = 'average_rating_same_professors_n',
-  /** column name */
-  AverageWorkload = 'average_workload',
-  /** column name */
-  AverageWorkloadN = 'average_workload_n',
-  /** column name */
-  AverageWorkloadSameProfessors = 'average_workload_same_professors',
-  /** column name */
-  AverageWorkloadSameProfessorsN = 'average_workload_same_professors_n',
-  /** column name */
-  Classnotes = 'classnotes',
-  /** column name */
-  Colsem = 'colsem',
-  /** column name */
-  CourseHomeUrl = 'course_home_url',
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Credits = 'credits',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  ExtraInfo = 'extra_info',
-  /** column name */
-  FinalExam = 'final_exam',
-  /** column name */
-  Fysem = 'fysem',
-  /** column name */
-  LastEnrollment = 'last_enrollment',
-  /** column name */
-  LastEnrollmentCourseId = 'last_enrollment_course_id',
-  /** column name */
-  LastEnrollmentSameProfessors = 'last_enrollment_same_professors',
-  /** column name */
-  LastEnrollmentSeasonCode = 'last_enrollment_season_code',
-  /** column name */
-  LastOfferedCourseId = 'last_offered_course_id',
-  /** column name */
-  LocationsSummary = 'locations_summary',
-  /** column name */
-  Regnotes = 'regnotes',
-  /** column name */
-  Requirements = 'requirements',
-  /** column name */
-  RpAttr = 'rp_attr',
-  /** column name */
-  SameCourseAndProfsId = 'same_course_and_profs_id',
-  /** column name */
-  SameCourseId = 'same_course_id',
-  /** column name */
-  SeasonCode = 'season_code',
-  /** column name */
-  Section = 'section',
-  /** column name */
-  Skills = 'skills',
-  /** column name */
-  SyllabusUrl = 'syllabus_url',
-  /** column name */
-  Sysem = 'sysem',
-  /** column name */
-  TimesByDay = 'times_by_day',
-  /** column name */
-  TimesSummary = 'times_summary',
-  /** column name */
-  Title = 'title',
-}
-
-export type Courses_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Courses_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Courses_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Courses_Bool_Exp;
-};
-
 /** aggregate var_pop on columns */
 export type Courses_Var_Pop_Fields = {
   __typename?: 'courses_var_pop_fields';
@@ -3846,13 +3226,6 @@ export type Evaluation_Narratives_Aggregate_Order_By = {
   variance?: InputMaybe<Evaluation_Narratives_Variance_Order_By>;
 };
 
-/** input type for inserting array relation for remote table "evaluation_narratives" */
-export type Evaluation_Narratives_Arr_Rel_Insert_Input = {
-  data: Array<Evaluation_Narratives_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Evaluation_Narratives_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Evaluation_Narratives_Avg_Fields = {
   __typename?: 'evaluation_narratives_avg_fields';
@@ -3904,52 +3277,6 @@ export type Evaluation_Narratives_Bool_Exp = {
   id?: InputMaybe<Int_Comparison_Exp>;
   question_code?: InputMaybe<String_Comparison_Exp>;
   response_number?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "evaluation_narratives" */
-export enum Evaluation_Narratives_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  PkEvaluationNarratives = 'pk_evaluation_narratives',
-}
-
-/** input type for incrementing numeric columns in table "evaluation_narratives" */
-export type Evaluation_Narratives_Inc_Input = {
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: InputMaybe<Scalars['float8']['input']>;
-  /** The course to which this narrative comment applies */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  /** The number of the response for the given course and question */
-  response_number?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "evaluation_narratives" */
-export type Evaluation_Narratives_Insert_Input = {
-  /** Response to the question */
-  comment?: InputMaybe<Scalars['String']['input']>;
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: InputMaybe<Scalars['float8']['input']>;
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  /** The course to which this narrative comment applies */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  evaluation_question?: InputMaybe<Evaluation_Questions_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  /** Question to which this narrative comment responds */
-  question_code?: InputMaybe<Scalars['String']['input']>;
-  /** The number of the response for the given course and question */
-  response_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate max on columns */
@@ -4038,22 +3365,6 @@ export type Evaluation_Narratives_Min_Order_By = {
   response_number?: InputMaybe<Order_By>;
 };
 
-/** response of any mutation on the table "evaluation_narratives" */
-export type Evaluation_Narratives_Mutation_Response = {
-  __typename?: 'evaluation_narratives_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Evaluation_Narratives>;
-};
-
-/** on_conflict condition type for table "evaluation_narratives" */
-export type Evaluation_Narratives_On_Conflict = {
-  constraint: Evaluation_Narratives_Constraint;
-  update_columns?: Array<Evaluation_Narratives_Update_Column>;
-  where?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "evaluation_narratives". */
 export type Evaluation_Narratives_Order_By = {
   comment?: InputMaybe<Order_By>;
@@ -4067,11 +3378,6 @@ export type Evaluation_Narratives_Order_By = {
   id?: InputMaybe<Order_By>;
   question_code?: InputMaybe<Order_By>;
   response_number?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: evaluation_narratives */
-export type Evaluation_Narratives_Pk_Columns_Input = {
-  id: Scalars['Int']['input'];
 };
 
 /** select columns of table "evaluation_narratives" */
@@ -4191,27 +3497,6 @@ export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_
   /** column name */
   CommentPos = 'comment_pos',
 }
-
-/** input type for updating data in table "evaluation_narratives" */
-export type Evaluation_Narratives_Set_Input = {
-  /** Response to the question */
-  comment?: InputMaybe<Scalars['String']['input']>;
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: InputMaybe<Scalars['float8']['input']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: InputMaybe<Scalars['float8']['input']>;
-  /** The course to which this narrative comment applies */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  /** Question to which this narrative comment responds */
-  question_code?: InputMaybe<Scalars['String']['input']>;
-  /** The number of the response for the given course and question */
-  response_number?: InputMaybe<Scalars['Int']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Evaluation_Narratives_Stddev_Fields = {
@@ -4380,37 +3665,6 @@ export type Evaluation_Narratives_Sum_Order_By = {
   id?: InputMaybe<Order_By>;
   /** The number of the response for the given course and question */
   response_number?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Update_Column {
-  /** column name */
-  Comment = 'comment',
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  QuestionCode = 'question_code',
-  /** column name */
-  ResponseNumber = 'response_number',
-}
-
-export type Evaluation_Narratives_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Evaluation_Narratives_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Evaluation_Narratives_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Evaluation_Narratives_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */
@@ -4628,37 +3882,6 @@ export type Evaluation_Questions_Bool_Exp = {
   tag?: InputMaybe<String_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "evaluation_questions" */
-export enum Evaluation_Questions_Constraint {
-  /** unique or primary key constraint on columns "question_code" */
-  PkEvaluationQuestions = 'pk_evaluation_questions',
-}
-
-/** input type for inserting data into table "evaluation_questions" */
-export type Evaluation_Questions_Insert_Input = {
-  evaluation_narratives?: InputMaybe<Evaluation_Narratives_Arr_Rel_Insert_Input>;
-  evaluation_ratings?: InputMaybe<Evaluation_Ratings_Arr_Rel_Insert_Input>;
-  /**
-   * True if the question has narrative responses.
-   *         False if the question has categorica/numerical responses
-   */
-  is_narrative?: InputMaybe<Scalars['Boolean']['input']>;
-  /** JSON array of possible responses (only if the question is not a narrative) */
-  options?: InputMaybe<Scalars['json']['input']>;
-  /** Question code from OCE (e.g. "YC402") */
-  question_code?: InputMaybe<Scalars['String']['input']>;
-  /** The question text */
-  question_text?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
-  tag?: InputMaybe<Scalars['String']['input']>;
-};
-
 /** aggregate max on columns */
 export type Evaluation_Questions_Max_Fields = {
   __typename?: 'evaluation_questions_max_fields';
@@ -4693,29 +3916,6 @@ export type Evaluation_Questions_Min_Fields = {
   tag?: Maybe<Scalars['String']['output']>;
 };
 
-/** response of any mutation on the table "evaluation_questions" */
-export type Evaluation_Questions_Mutation_Response = {
-  __typename?: 'evaluation_questions_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Evaluation_Questions>;
-};
-
-/** input type for inserting object relation for remote table "evaluation_questions" */
-export type Evaluation_Questions_Obj_Rel_Insert_Input = {
-  data: Evaluation_Questions_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Evaluation_Questions_On_Conflict>;
-};
-
-/** on_conflict condition type for table "evaluation_questions" */
-export type Evaluation_Questions_On_Conflict = {
-  constraint: Evaluation_Questions_Constraint;
-  update_columns?: Array<Evaluation_Questions_Update_Column>;
-  where?: InputMaybe<Evaluation_Questions_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "evaluation_questions". */
 export type Evaluation_Questions_Order_By = {
   evaluation_narratives_aggregate?: InputMaybe<Evaluation_Narratives_Aggregate_Order_By>;
@@ -4725,12 +3925,6 @@ export type Evaluation_Questions_Order_By = {
   question_code?: InputMaybe<Order_By>;
   question_text?: InputMaybe<Order_By>;
   tag?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: evaluation_questions */
-export type Evaluation_Questions_Pk_Columns_Input = {
-  /** Question code from OCE (e.g. "YC402") */
-  question_code: Scalars['String']['input'];
 };
 
 /** select columns of table "evaluation_questions" */
@@ -4746,29 +3940,6 @@ export enum Evaluation_Questions_Select_Column {
   /** column name */
   Tag = 'tag',
 }
-
-/** input type for updating data in table "evaluation_questions" */
-export type Evaluation_Questions_Set_Input = {
-  /**
-   * True if the question has narrative responses.
-   *         False if the question has categorica/numerical responses
-   */
-  is_narrative?: InputMaybe<Scalars['Boolean']['input']>;
-  /** JSON array of possible responses (only if the question is not a narrative) */
-  options?: InputMaybe<Scalars['json']['input']>;
-  /** Question code from OCE (e.g. "YC402") */
-  question_code?: InputMaybe<Scalars['String']['input']>;
-  /** The question text */
-  question_text?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
-  tag?: InputMaybe<Scalars['String']['input']>;
-};
 
 /** Streaming cursor of the table "evaluation_questions" */
 export type Evaluation_Questions_Stream_Cursor_Input = {
@@ -4799,27 +3970,6 @@ export type Evaluation_Questions_Stream_Cursor_Value_Input = {
    *         different options, or even differ in being narrative or not.
    */
   tag?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** update columns of table "evaluation_questions" */
-export enum Evaluation_Questions_Update_Column {
-  /** column name */
-  IsNarrative = 'is_narrative',
-  /** column name */
-  Options = 'options',
-  /** column name */
-  QuestionCode = 'question_code',
-  /** column name */
-  QuestionText = 'question_text',
-  /** column name */
-  Tag = 'tag',
-}
-
-export type Evaluation_Questions_Updates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Evaluation_Questions_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Evaluation_Questions_Bool_Exp;
 };
 
 /** columns and relationships of "evaluation_ratings" */
@@ -4898,13 +4048,6 @@ export type Evaluation_Ratings_Aggregate_Order_By = {
   variance?: InputMaybe<Evaluation_Ratings_Variance_Order_By>;
 };
 
-/** input type for inserting array relation for remote table "evaluation_ratings" */
-export type Evaluation_Ratings_Arr_Rel_Insert_Input = {
-  data: Array<Evaluation_Ratings_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Evaluation_Ratings_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Evaluation_Ratings_Avg_Fields = {
   __typename?: 'evaluation_ratings_avg_fields';
@@ -4931,32 +4074,6 @@ export type Evaluation_Ratings_Bool_Exp = {
   id?: InputMaybe<Int_Comparison_Exp>;
   question_code?: InputMaybe<String_Comparison_Exp>;
   rating?: InputMaybe<Json_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "evaluation_ratings" */
-export enum Evaluation_Ratings_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  PkEvaluationRatings = 'pk_evaluation_ratings',
-}
-
-/** input type for incrementing numeric columns in table "evaluation_ratings" */
-export type Evaluation_Ratings_Inc_Input = {
-  /** The course to which this rating applies */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "evaluation_ratings" */
-export type Evaluation_Ratings_Insert_Input = {
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  /** The course to which this rating applies */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  evaluation_question?: InputMaybe<Evaluation_Questions_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  /** Question to which this rating responds */
-  question_code?: InputMaybe<Scalars['String']['input']>;
-  /** JSON array of the response counts for each option */
-  rating?: InputMaybe<Scalars['json']['input']>;
 };
 
 /** aggregate max on columns */
@@ -4997,22 +4114,6 @@ export type Evaluation_Ratings_Min_Order_By = {
   question_code?: InputMaybe<Order_By>;
 };
 
-/** response of any mutation on the table "evaluation_ratings" */
-export type Evaluation_Ratings_Mutation_Response = {
-  __typename?: 'evaluation_ratings_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Evaluation_Ratings>;
-};
-
-/** on_conflict condition type for table "evaluation_ratings" */
-export type Evaluation_Ratings_On_Conflict = {
-  constraint: Evaluation_Ratings_Constraint;
-  update_columns?: Array<Evaluation_Ratings_Update_Column>;
-  where?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "evaluation_ratings". */
 export type Evaluation_Ratings_Order_By = {
   course?: InputMaybe<Courses_Order_By>;
@@ -5021,11 +4122,6 @@ export type Evaluation_Ratings_Order_By = {
   id?: InputMaybe<Order_By>;
   question_code?: InputMaybe<Order_By>;
   rating?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: evaluation_ratings */
-export type Evaluation_Ratings_Pk_Columns_Input = {
-  id: Scalars['Int']['input'];
 };
 
 /** select columns of table "evaluation_ratings" */
@@ -5039,17 +4135,6 @@ export enum Evaluation_Ratings_Select_Column {
   /** column name */
   Rating = 'rating',
 }
-
-/** input type for updating data in table "evaluation_ratings" */
-export type Evaluation_Ratings_Set_Input = {
-  /** The course to which this rating applies */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  /** Question to which this rating responds */
-  question_code?: InputMaybe<Scalars['String']['input']>;
-  /** JSON array of the response counts for each option */
-  rating?: InputMaybe<Scalars['json']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Evaluation_Ratings_Stddev_Fields = {
@@ -5128,27 +4213,6 @@ export type Evaluation_Ratings_Sum_Order_By = {
   /** The course to which this rating applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "evaluation_ratings" */
-export enum Evaluation_Ratings_Update_Column {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  QuestionCode = 'question_code',
-  /** column name */
-  Rating = 'rating',
-}
-
-export type Evaluation_Ratings_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Evaluation_Ratings_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Evaluation_Ratings_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Evaluation_Ratings_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */
@@ -5288,51 +4352,6 @@ export type Evaluation_Statistics_Bool_Exp = {
   responses?: InputMaybe<Int_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "evaluation_statistics" */
-export enum Evaluation_Statistics_Constraint {
-  /** unique or primary key constraint on columns "course_id" */
-  PkEvaluationStatistics = 'pk_evaluation_statistics',
-}
-
-/** input type for incrementing numeric columns in table "evaluation_statistics" */
-export type Evaluation_Statistics_Inc_Input = {
-  /** [computed] Average overall rating */
-  avg_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Average workload rating */
-  avg_workload?: InputMaybe<Scalars['float8']['input']>;
-  /** The course associated with these statistics */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students who declined to respond */
-  declined?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students enrolled in course */
-  enrolled?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students who did not respond */
-  no_response?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of responses */
-  responses?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "evaluation_statistics" */
-export type Evaluation_Statistics_Insert_Input = {
-  /** [computed] Average overall rating */
-  avg_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Average workload rating */
-  avg_workload?: InputMaybe<Scalars['float8']['input']>;
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  /** The course associated with these statistics */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students who declined to respond */
-  declined?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students enrolled in course */
-  enrolled?: InputMaybe<Scalars['Int']['input']>;
-  /** Arbitrary additional information attached to an evaluation */
-  extras?: InputMaybe<Scalars['json']['input']>;
-  /** Number of students who did not respond */
-  no_response?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of responses */
-  responses?: InputMaybe<Scalars['Int']['input']>;
-};
-
 /** aggregate max on columns */
 export type Evaluation_Statistics_Max_Fields = {
   __typename?: 'evaluation_statistics_max_fields';
@@ -5371,29 +4390,6 @@ export type Evaluation_Statistics_Min_Fields = {
   responses?: Maybe<Scalars['Int']['output']>;
 };
 
-/** response of any mutation on the table "evaluation_statistics" */
-export type Evaluation_Statistics_Mutation_Response = {
-  __typename?: 'evaluation_statistics_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Evaluation_Statistics>;
-};
-
-/** input type for inserting object relation for remote table "evaluation_statistics" */
-export type Evaluation_Statistics_Obj_Rel_Insert_Input = {
-  data: Evaluation_Statistics_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Evaluation_Statistics_On_Conflict>;
-};
-
-/** on_conflict condition type for table "evaluation_statistics" */
-export type Evaluation_Statistics_On_Conflict = {
-  constraint: Evaluation_Statistics_Constraint;
-  update_columns?: Array<Evaluation_Statistics_Update_Column>;
-  where?: InputMaybe<Evaluation_Statistics_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "evaluation_statistics". */
 export type Evaluation_Statistics_Order_By = {
   avg_rating?: InputMaybe<Order_By>;
@@ -5405,12 +4401,6 @@ export type Evaluation_Statistics_Order_By = {
   extras?: InputMaybe<Order_By>;
   no_response?: InputMaybe<Order_By>;
   responses?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: evaluation_statistics */
-export type Evaluation_Statistics_Pk_Columns_Input = {
-  /** The course associated with these statistics */
-  course_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "evaluation_statistics" */
@@ -5432,26 +4422,6 @@ export enum Evaluation_Statistics_Select_Column {
   /** column name */
   Responses = 'responses',
 }
-
-/** input type for updating data in table "evaluation_statistics" */
-export type Evaluation_Statistics_Set_Input = {
-  /** [computed] Average overall rating */
-  avg_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Average workload rating */
-  avg_workload?: InputMaybe<Scalars['float8']['input']>;
-  /** The course associated with these statistics */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students who declined to respond */
-  declined?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students enrolled in course */
-  enrolled?: InputMaybe<Scalars['Int']['input']>;
-  /** Arbitrary additional information attached to an evaluation */
-  extras?: InputMaybe<Scalars['json']['input']>;
-  /** Number of students who did not respond */
-  no_response?: InputMaybe<Scalars['Int']['input']>;
-  /** Number of responses */
-  responses?: InputMaybe<Scalars['Int']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Evaluation_Statistics_Stddev_Fields = {
@@ -5555,35 +4525,6 @@ export type Evaluation_Statistics_Sum_Fields = {
   no_response?: Maybe<Scalars['Int']['output']>;
   /** Number of responses */
   responses?: Maybe<Scalars['Int']['output']>;
-};
-
-/** update columns of table "evaluation_statistics" */
-export enum Evaluation_Statistics_Update_Column {
-  /** column name */
-  AvgRating = 'avg_rating',
-  /** column name */
-  AvgWorkload = 'avg_workload',
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Declined = 'declined',
-  /** column name */
-  Enrolled = 'enrolled',
-  /** column name */
-  Extras = 'extras',
-  /** column name */
-  NoResponse = 'no_response',
-  /** column name */
-  Responses = 'responses',
-}
-
-export type Evaluation_Statistics_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Evaluation_Statistics_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Evaluation_Statistics_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Evaluation_Statistics_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */
@@ -5721,27 +4662,6 @@ export type Flags_Bool_Exp = {
   flag_text?: InputMaybe<String_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "flags" */
-export enum Flags_Constraint {
-  /** unique or primary key constraint on columns "flag_id" */
-  PkFlags = 'pk_flags',
-}
-
-/** input type for incrementing numeric columns in table "flags" */
-export type Flags_Inc_Input = {
-  /** Flag ID */
-  flag_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "flags" */
-export type Flags_Insert_Input = {
-  course_flags?: InputMaybe<Course_Flags_Arr_Rel_Insert_Input>;
-  /** Flag ID */
-  flag_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Flag text */
-  flag_text?: InputMaybe<Scalars['String']['input']>;
-};
-
 /** aggregate max on columns */
 export type Flags_Max_Fields = {
   __typename?: 'flags_max_fields';
@@ -5760,40 +4680,11 @@ export type Flags_Min_Fields = {
   flag_text?: Maybe<Scalars['String']['output']>;
 };
 
-/** response of any mutation on the table "flags" */
-export type Flags_Mutation_Response = {
-  __typename?: 'flags_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Flags>;
-};
-
-/** input type for inserting object relation for remote table "flags" */
-export type Flags_Obj_Rel_Insert_Input = {
-  data: Flags_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Flags_On_Conflict>;
-};
-
-/** on_conflict condition type for table "flags" */
-export type Flags_On_Conflict = {
-  constraint: Flags_Constraint;
-  update_columns?: Array<Flags_Update_Column>;
-  where?: InputMaybe<Flags_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "flags". */
 export type Flags_Order_By = {
   course_flags_aggregate?: InputMaybe<Course_Flags_Aggregate_Order_By>;
   flag_id?: InputMaybe<Order_By>;
   flag_text?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: flags */
-export type Flags_Pk_Columns_Input = {
-  /** Flag ID */
-  flag_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "flags" */
@@ -5803,14 +4694,6 @@ export enum Flags_Select_Column {
   /** column name */
   FlagText = 'flag_text',
 }
-
-/** input type for updating data in table "flags" */
-export type Flags_Set_Input = {
-  /** Flag ID */
-  flag_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Flag text */
-  flag_text?: InputMaybe<Scalars['String']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Flags_Stddev_Fields = {
@@ -5854,23 +4737,6 @@ export type Flags_Sum_Fields = {
   __typename?: 'flags_sum_fields';
   /** Flag ID */
   flag_id?: Maybe<Scalars['Int']['output']>;
-};
-
-/** update columns of table "flags" */
-export enum Flags_Update_Column {
-  /** column name */
-  FlagId = 'flag_id',
-  /** column name */
-  FlagText = 'flag_text',
-}
-
-export type Flags_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Flags_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Flags_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Flags_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */
@@ -6005,13 +4871,6 @@ export type Listings_Aggregate_Order_By = {
   variance?: InputMaybe<Listings_Variance_Order_By>;
 };
 
-/** input type for inserting array relation for remote table "listings" */
-export type Listings_Arr_Rel_Insert_Input = {
-  data: Array<Listings_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Listings_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Listings_Avg_Fields = {
   __typename?: 'listings_avg_fields';
@@ -6049,51 +4908,6 @@ export type Listings_Bool_Exp = {
   season_code?: InputMaybe<String_Comparison_Exp>;
   section?: InputMaybe<String_Comparison_Exp>;
   subject?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "listings" */
-export enum Listings_Constraint {
-  /** unique or primary key constraint on columns "crn", "season_code" */
-  IdxSeasonCodeCrnUnique = 'idx_season_code_crn_unique',
-  /** unique or primary key constraint on columns "listing_id" */
-  PkListings = 'pk_listings',
-}
-
-/** input type for incrementing numeric columns in table "listings" */
-export type Listings_Inc_Input = {
-  /** Course that the listing refers to */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** The CRN associated with this listing */
-  crn?: InputMaybe<Scalars['Int']['input']>;
-  /** Listing ID */
-  listing_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "listings" */
-export type Listings_Insert_Input = {
-  course?: InputMaybe<Courses_Obj_Rel_Insert_Input>;
-  /** [computed] subject + number (e.g. "AMST 312") */
-  course_code?: InputMaybe<Scalars['String']['input']>;
-  /** Course that the listing refers to */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** The CRN associated with this listing */
-  crn?: InputMaybe<Scalars['Int']['input']>;
-  /** Listing ID */
-  listing_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Course number in the given subject (e.g. "120" or "S120") */
-  number?: InputMaybe<Scalars['String']['input']>;
-  /** School (e.g. YC, GS, MG) that the course is listed under */
-  school?: InputMaybe<Scalars['String']['input']>;
-  season?: InputMaybe<Seasons_Obj_Rel_Insert_Input>;
-  /** When the course/listing is being taught, mapping to `seasons` */
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
-  section?: InputMaybe<Scalars['String']['input']>;
-  /** Subject the course is listed under (e.g. "AMST") */
-  subject?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
@@ -6198,22 +5012,6 @@ export type Listings_Min_Order_By = {
   subject?: InputMaybe<Order_By>;
 };
 
-/** response of any mutation on the table "listings" */
-export type Listings_Mutation_Response = {
-  __typename?: 'listings_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Listings>;
-};
-
-/** on_conflict condition type for table "listings" */
-export type Listings_On_Conflict = {
-  constraint: Listings_Constraint;
-  update_columns?: Array<Listings_Update_Column>;
-  where?: InputMaybe<Listings_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "listings". */
 export type Listings_Order_By = {
   course?: InputMaybe<Courses_Order_By>;
@@ -6227,12 +5025,6 @@ export type Listings_Order_By = {
   season_code?: InputMaybe<Order_By>;
   section?: InputMaybe<Order_By>;
   subject?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: listings */
-export type Listings_Pk_Columns_Input = {
-  /** Listing ID */
-  listing_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "listings" */
@@ -6256,31 +5048,6 @@ export enum Listings_Select_Column {
   /** column name */
   Subject = 'subject',
 }
-
-/** input type for updating data in table "listings" */
-export type Listings_Set_Input = {
-  /** [computed] subject + number (e.g. "AMST 312") */
-  course_code?: InputMaybe<Scalars['String']['input']>;
-  /** Course that the listing refers to */
-  course_id?: InputMaybe<Scalars['Int']['input']>;
-  /** The CRN associated with this listing */
-  crn?: InputMaybe<Scalars['Int']['input']>;
-  /** Listing ID */
-  listing_id?: InputMaybe<Scalars['Int']['input']>;
-  /** Course number in the given subject (e.g. "120" or "S120") */
-  number?: InputMaybe<Scalars['String']['input']>;
-  /** School (e.g. YC, GS, MG) that the course is listed under */
-  school?: InputMaybe<Scalars['String']['input']>;
-  /** When the course/listing is being taught, mapping to `seasons` */
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
-  section?: InputMaybe<Scalars['String']['input']>;
-  /** Subject the course is listed under (e.g. "AMST") */
-  subject?: InputMaybe<Scalars['String']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Listings_Stddev_Fields = {
@@ -6399,37 +5166,6 @@ export type Listings_Sum_Order_By = {
   listing_id?: InputMaybe<Order_By>;
 };
 
-/** update columns of table "listings" */
-export enum Listings_Update_Column {
-  /** column name */
-  CourseCode = 'course_code',
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  Crn = 'crn',
-  /** column name */
-  ListingId = 'listing_id',
-  /** column name */
-  Number = 'number',
-  /** column name */
-  School = 'school',
-  /** column name */
-  SeasonCode = 'season_code',
-  /** column name */
-  Section = 'section',
-  /** column name */
-  Subject = 'subject',
-}
-
-export type Listings_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Listings_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Listings_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Listings_Bool_Exp;
-};
-
 /** aggregate var_pop on columns */
 export type Listings_Var_Pop_Fields = {
   __typename?: 'listings_var_pop_fields';
@@ -6491,628 +5227,6 @@ export type Listings_Variance_Order_By = {
   crn?: InputMaybe<Order_By>;
   /** Listing ID */
   listing_id?: InputMaybe<Order_By>;
-};
-
-/** mutation root */
-export type Mutation_Root = {
-  __typename?: 'mutation_root';
-  /** delete data from the table: "course_flags" */
-  delete_course_flags?: Maybe<Course_Flags_Mutation_Response>;
-  /** delete single row from the table: "course_flags" */
-  delete_course_flags_by_pk?: Maybe<Course_Flags>;
-  /** delete data from the table: "course_professors" */
-  delete_course_professors?: Maybe<Course_Professors_Mutation_Response>;
-  /** delete single row from the table: "course_professors" */
-  delete_course_professors_by_pk?: Maybe<Course_Professors>;
-  /** delete data from the table: "courses" */
-  delete_courses?: Maybe<Courses_Mutation_Response>;
-  /** delete single row from the table: "courses" */
-  delete_courses_by_pk?: Maybe<Courses>;
-  /** delete data from the table: "evaluation_narratives" */
-  delete_evaluation_narratives?: Maybe<Evaluation_Narratives_Mutation_Response>;
-  /** delete single row from the table: "evaluation_narratives" */
-  delete_evaluation_narratives_by_pk?: Maybe<Evaluation_Narratives>;
-  /** delete data from the table: "evaluation_questions" */
-  delete_evaluation_questions?: Maybe<Evaluation_Questions_Mutation_Response>;
-  /** delete single row from the table: "evaluation_questions" */
-  delete_evaluation_questions_by_pk?: Maybe<Evaluation_Questions>;
-  /** delete data from the table: "evaluation_ratings" */
-  delete_evaluation_ratings?: Maybe<Evaluation_Ratings_Mutation_Response>;
-  /** delete single row from the table: "evaluation_ratings" */
-  delete_evaluation_ratings_by_pk?: Maybe<Evaluation_Ratings>;
-  /** delete data from the table: "evaluation_statistics" */
-  delete_evaluation_statistics?: Maybe<Evaluation_Statistics_Mutation_Response>;
-  /** delete single row from the table: "evaluation_statistics" */
-  delete_evaluation_statistics_by_pk?: Maybe<Evaluation_Statistics>;
-  /** delete data from the table: "flags" */
-  delete_flags?: Maybe<Flags_Mutation_Response>;
-  /** delete single row from the table: "flags" */
-  delete_flags_by_pk?: Maybe<Flags>;
-  /** delete data from the table: "listings" */
-  delete_listings?: Maybe<Listings_Mutation_Response>;
-  /** delete single row from the table: "listings" */
-  delete_listings_by_pk?: Maybe<Listings>;
-  /** delete data from the table: "professors" */
-  delete_professors?: Maybe<Professors_Mutation_Response>;
-  /** delete single row from the table: "professors" */
-  delete_professors_by_pk?: Maybe<Professors>;
-  /** delete data from the table: "seasons" */
-  delete_seasons?: Maybe<Seasons_Mutation_Response>;
-  /** delete single row from the table: "seasons" */
-  delete_seasons_by_pk?: Maybe<Seasons>;
-  /** insert data into the table: "course_flags" */
-  insert_course_flags?: Maybe<Course_Flags_Mutation_Response>;
-  /** insert a single row into the table: "course_flags" */
-  insert_course_flags_one?: Maybe<Course_Flags>;
-  /** insert data into the table: "course_professors" */
-  insert_course_professors?: Maybe<Course_Professors_Mutation_Response>;
-  /** insert a single row into the table: "course_professors" */
-  insert_course_professors_one?: Maybe<Course_Professors>;
-  /** insert data into the table: "courses" */
-  insert_courses?: Maybe<Courses_Mutation_Response>;
-  /** insert a single row into the table: "courses" */
-  insert_courses_one?: Maybe<Courses>;
-  /** insert data into the table: "evaluation_narratives" */
-  insert_evaluation_narratives?: Maybe<Evaluation_Narratives_Mutation_Response>;
-  /** insert a single row into the table: "evaluation_narratives" */
-  insert_evaluation_narratives_one?: Maybe<Evaluation_Narratives>;
-  /** insert data into the table: "evaluation_questions" */
-  insert_evaluation_questions?: Maybe<Evaluation_Questions_Mutation_Response>;
-  /** insert a single row into the table: "evaluation_questions" */
-  insert_evaluation_questions_one?: Maybe<Evaluation_Questions>;
-  /** insert data into the table: "evaluation_ratings" */
-  insert_evaluation_ratings?: Maybe<Evaluation_Ratings_Mutation_Response>;
-  /** insert a single row into the table: "evaluation_ratings" */
-  insert_evaluation_ratings_one?: Maybe<Evaluation_Ratings>;
-  /** insert data into the table: "evaluation_statistics" */
-  insert_evaluation_statistics?: Maybe<Evaluation_Statistics_Mutation_Response>;
-  /** insert a single row into the table: "evaluation_statistics" */
-  insert_evaluation_statistics_one?: Maybe<Evaluation_Statistics>;
-  /** insert data into the table: "flags" */
-  insert_flags?: Maybe<Flags_Mutation_Response>;
-  /** insert a single row into the table: "flags" */
-  insert_flags_one?: Maybe<Flags>;
-  /** insert data into the table: "listings" */
-  insert_listings?: Maybe<Listings_Mutation_Response>;
-  /** insert a single row into the table: "listings" */
-  insert_listings_one?: Maybe<Listings>;
-  /** insert data into the table: "professors" */
-  insert_professors?: Maybe<Professors_Mutation_Response>;
-  /** insert a single row into the table: "professors" */
-  insert_professors_one?: Maybe<Professors>;
-  /** insert data into the table: "seasons" */
-  insert_seasons?: Maybe<Seasons_Mutation_Response>;
-  /** insert a single row into the table: "seasons" */
-  insert_seasons_one?: Maybe<Seasons>;
-  /** update data of the table: "course_flags" */
-  update_course_flags?: Maybe<Course_Flags_Mutation_Response>;
-  /** update single row of the table: "course_flags" */
-  update_course_flags_by_pk?: Maybe<Course_Flags>;
-  /** update multiples rows of table: "course_flags" */
-  update_course_flags_many?: Maybe<
-    Array<Maybe<Course_Flags_Mutation_Response>>
-  >;
-  /** update data of the table: "course_professors" */
-  update_course_professors?: Maybe<Course_Professors_Mutation_Response>;
-  /** update single row of the table: "course_professors" */
-  update_course_professors_by_pk?: Maybe<Course_Professors>;
-  /** update multiples rows of table: "course_professors" */
-  update_course_professors_many?: Maybe<
-    Array<Maybe<Course_Professors_Mutation_Response>>
-  >;
-  /** update data of the table: "courses" */
-  update_courses?: Maybe<Courses_Mutation_Response>;
-  /** update single row of the table: "courses" */
-  update_courses_by_pk?: Maybe<Courses>;
-  /** update multiples rows of table: "courses" */
-  update_courses_many?: Maybe<Array<Maybe<Courses_Mutation_Response>>>;
-  /** update data of the table: "evaluation_narratives" */
-  update_evaluation_narratives?: Maybe<Evaluation_Narratives_Mutation_Response>;
-  /** update single row of the table: "evaluation_narratives" */
-  update_evaluation_narratives_by_pk?: Maybe<Evaluation_Narratives>;
-  /** update multiples rows of table: "evaluation_narratives" */
-  update_evaluation_narratives_many?: Maybe<
-    Array<Maybe<Evaluation_Narratives_Mutation_Response>>
-  >;
-  /** update data of the table: "evaluation_questions" */
-  update_evaluation_questions?: Maybe<Evaluation_Questions_Mutation_Response>;
-  /** update single row of the table: "evaluation_questions" */
-  update_evaluation_questions_by_pk?: Maybe<Evaluation_Questions>;
-  /** update multiples rows of table: "evaluation_questions" */
-  update_evaluation_questions_many?: Maybe<
-    Array<Maybe<Evaluation_Questions_Mutation_Response>>
-  >;
-  /** update data of the table: "evaluation_ratings" */
-  update_evaluation_ratings?: Maybe<Evaluation_Ratings_Mutation_Response>;
-  /** update single row of the table: "evaluation_ratings" */
-  update_evaluation_ratings_by_pk?: Maybe<Evaluation_Ratings>;
-  /** update multiples rows of table: "evaluation_ratings" */
-  update_evaluation_ratings_many?: Maybe<
-    Array<Maybe<Evaluation_Ratings_Mutation_Response>>
-  >;
-  /** update data of the table: "evaluation_statistics" */
-  update_evaluation_statistics?: Maybe<Evaluation_Statistics_Mutation_Response>;
-  /** update single row of the table: "evaluation_statistics" */
-  update_evaluation_statistics_by_pk?: Maybe<Evaluation_Statistics>;
-  /** update multiples rows of table: "evaluation_statistics" */
-  update_evaluation_statistics_many?: Maybe<
-    Array<Maybe<Evaluation_Statistics_Mutation_Response>>
-  >;
-  /** update data of the table: "flags" */
-  update_flags?: Maybe<Flags_Mutation_Response>;
-  /** update single row of the table: "flags" */
-  update_flags_by_pk?: Maybe<Flags>;
-  /** update multiples rows of table: "flags" */
-  update_flags_many?: Maybe<Array<Maybe<Flags_Mutation_Response>>>;
-  /** update data of the table: "listings" */
-  update_listings?: Maybe<Listings_Mutation_Response>;
-  /** update single row of the table: "listings" */
-  update_listings_by_pk?: Maybe<Listings>;
-  /** update multiples rows of table: "listings" */
-  update_listings_many?: Maybe<Array<Maybe<Listings_Mutation_Response>>>;
-  /** update data of the table: "professors" */
-  update_professors?: Maybe<Professors_Mutation_Response>;
-  /** update single row of the table: "professors" */
-  update_professors_by_pk?: Maybe<Professors>;
-  /** update multiples rows of table: "professors" */
-  update_professors_many?: Maybe<Array<Maybe<Professors_Mutation_Response>>>;
-  /** update data of the table: "seasons" */
-  update_seasons?: Maybe<Seasons_Mutation_Response>;
-  /** update single row of the table: "seasons" */
-  update_seasons_by_pk?: Maybe<Seasons>;
-  /** update multiples rows of table: "seasons" */
-  update_seasons_many?: Maybe<Array<Maybe<Seasons_Mutation_Response>>>;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Course_FlagsArgs = {
-  where: Course_Flags_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Course_Flags_By_PkArgs = {
-  course_id: Scalars['Int']['input'];
-  flag_id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Course_ProfessorsArgs = {
-  where: Course_Professors_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Course_Professors_By_PkArgs = {
-  course_id: Scalars['Int']['input'];
-  professor_id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_CoursesArgs = {
-  where: Courses_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Courses_By_PkArgs = {
-  course_id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_NarrativesArgs = {
-  where: Evaluation_Narratives_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_Narratives_By_PkArgs = {
-  id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_QuestionsArgs = {
-  where: Evaluation_Questions_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_Questions_By_PkArgs = {
-  question_code: Scalars['String']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_RatingsArgs = {
-  where: Evaluation_Ratings_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_Ratings_By_PkArgs = {
-  id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_StatisticsArgs = {
-  where: Evaluation_Statistics_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Evaluation_Statistics_By_PkArgs = {
-  course_id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_FlagsArgs = {
-  where: Flags_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Flags_By_PkArgs = {
-  flag_id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_ListingsArgs = {
-  where: Listings_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Listings_By_PkArgs = {
-  listing_id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_ProfessorsArgs = {
-  where: Professors_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Professors_By_PkArgs = {
-  professor_id: Scalars['Int']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootDelete_SeasonsArgs = {
-  where: Seasons_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootDelete_Seasons_By_PkArgs = {
-  season_code: Scalars['String']['input'];
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Course_FlagsArgs = {
-  objects: Array<Course_Flags_Insert_Input>;
-  on_conflict?: InputMaybe<Course_Flags_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Course_Flags_OneArgs = {
-  object: Course_Flags_Insert_Input;
-  on_conflict?: InputMaybe<Course_Flags_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Course_ProfessorsArgs = {
-  objects: Array<Course_Professors_Insert_Input>;
-  on_conflict?: InputMaybe<Course_Professors_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Course_Professors_OneArgs = {
-  object: Course_Professors_Insert_Input;
-  on_conflict?: InputMaybe<Course_Professors_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_CoursesArgs = {
-  objects: Array<Courses_Insert_Input>;
-  on_conflict?: InputMaybe<Courses_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Courses_OneArgs = {
-  object: Courses_Insert_Input;
-  on_conflict?: InputMaybe<Courses_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_NarrativesArgs = {
-  objects: Array<Evaluation_Narratives_Insert_Input>;
-  on_conflict?: InputMaybe<Evaluation_Narratives_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_Narratives_OneArgs = {
-  object: Evaluation_Narratives_Insert_Input;
-  on_conflict?: InputMaybe<Evaluation_Narratives_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_QuestionsArgs = {
-  objects: Array<Evaluation_Questions_Insert_Input>;
-  on_conflict?: InputMaybe<Evaluation_Questions_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_Questions_OneArgs = {
-  object: Evaluation_Questions_Insert_Input;
-  on_conflict?: InputMaybe<Evaluation_Questions_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_RatingsArgs = {
-  objects: Array<Evaluation_Ratings_Insert_Input>;
-  on_conflict?: InputMaybe<Evaluation_Ratings_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_Ratings_OneArgs = {
-  object: Evaluation_Ratings_Insert_Input;
-  on_conflict?: InputMaybe<Evaluation_Ratings_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_StatisticsArgs = {
-  objects: Array<Evaluation_Statistics_Insert_Input>;
-  on_conflict?: InputMaybe<Evaluation_Statistics_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Evaluation_Statistics_OneArgs = {
-  object: Evaluation_Statistics_Insert_Input;
-  on_conflict?: InputMaybe<Evaluation_Statistics_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_FlagsArgs = {
-  objects: Array<Flags_Insert_Input>;
-  on_conflict?: InputMaybe<Flags_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Flags_OneArgs = {
-  object: Flags_Insert_Input;
-  on_conflict?: InputMaybe<Flags_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_ListingsArgs = {
-  objects: Array<Listings_Insert_Input>;
-  on_conflict?: InputMaybe<Listings_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Listings_OneArgs = {
-  object: Listings_Insert_Input;
-  on_conflict?: InputMaybe<Listings_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_ProfessorsArgs = {
-  objects: Array<Professors_Insert_Input>;
-  on_conflict?: InputMaybe<Professors_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Professors_OneArgs = {
-  object: Professors_Insert_Input;
-  on_conflict?: InputMaybe<Professors_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_SeasonsArgs = {
-  objects: Array<Seasons_Insert_Input>;
-  on_conflict?: InputMaybe<Seasons_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootInsert_Seasons_OneArgs = {
-  object: Seasons_Insert_Input;
-  on_conflict?: InputMaybe<Seasons_On_Conflict>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Course_FlagsArgs = {
-  _inc?: InputMaybe<Course_Flags_Inc_Input>;
-  _set?: InputMaybe<Course_Flags_Set_Input>;
-  where: Course_Flags_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Course_Flags_By_PkArgs = {
-  _inc?: InputMaybe<Course_Flags_Inc_Input>;
-  _set?: InputMaybe<Course_Flags_Set_Input>;
-  pk_columns: Course_Flags_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Course_Flags_ManyArgs = {
-  updates: Array<Course_Flags_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Course_ProfessorsArgs = {
-  _inc?: InputMaybe<Course_Professors_Inc_Input>;
-  _set?: InputMaybe<Course_Professors_Set_Input>;
-  where: Course_Professors_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Course_Professors_By_PkArgs = {
-  _inc?: InputMaybe<Course_Professors_Inc_Input>;
-  _set?: InputMaybe<Course_Professors_Set_Input>;
-  pk_columns: Course_Professors_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Course_Professors_ManyArgs = {
-  updates: Array<Course_Professors_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_CoursesArgs = {
-  _inc?: InputMaybe<Courses_Inc_Input>;
-  _set?: InputMaybe<Courses_Set_Input>;
-  where: Courses_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Courses_By_PkArgs = {
-  _inc?: InputMaybe<Courses_Inc_Input>;
-  _set?: InputMaybe<Courses_Set_Input>;
-  pk_columns: Courses_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Courses_ManyArgs = {
-  updates: Array<Courses_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_NarrativesArgs = {
-  _inc?: InputMaybe<Evaluation_Narratives_Inc_Input>;
-  _set?: InputMaybe<Evaluation_Narratives_Set_Input>;
-  where: Evaluation_Narratives_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Narratives_By_PkArgs = {
-  _inc?: InputMaybe<Evaluation_Narratives_Inc_Input>;
-  _set?: InputMaybe<Evaluation_Narratives_Set_Input>;
-  pk_columns: Evaluation_Narratives_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Narratives_ManyArgs = {
-  updates: Array<Evaluation_Narratives_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_QuestionsArgs = {
-  _set?: InputMaybe<Evaluation_Questions_Set_Input>;
-  where: Evaluation_Questions_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Questions_By_PkArgs = {
-  _set?: InputMaybe<Evaluation_Questions_Set_Input>;
-  pk_columns: Evaluation_Questions_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Questions_ManyArgs = {
-  updates: Array<Evaluation_Questions_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_RatingsArgs = {
-  _inc?: InputMaybe<Evaluation_Ratings_Inc_Input>;
-  _set?: InputMaybe<Evaluation_Ratings_Set_Input>;
-  where: Evaluation_Ratings_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Ratings_By_PkArgs = {
-  _inc?: InputMaybe<Evaluation_Ratings_Inc_Input>;
-  _set?: InputMaybe<Evaluation_Ratings_Set_Input>;
-  pk_columns: Evaluation_Ratings_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Ratings_ManyArgs = {
-  updates: Array<Evaluation_Ratings_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_StatisticsArgs = {
-  _inc?: InputMaybe<Evaluation_Statistics_Inc_Input>;
-  _set?: InputMaybe<Evaluation_Statistics_Set_Input>;
-  where: Evaluation_Statistics_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Statistics_By_PkArgs = {
-  _inc?: InputMaybe<Evaluation_Statistics_Inc_Input>;
-  _set?: InputMaybe<Evaluation_Statistics_Set_Input>;
-  pk_columns: Evaluation_Statistics_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Evaluation_Statistics_ManyArgs = {
-  updates: Array<Evaluation_Statistics_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_FlagsArgs = {
-  _inc?: InputMaybe<Flags_Inc_Input>;
-  _set?: InputMaybe<Flags_Set_Input>;
-  where: Flags_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Flags_By_PkArgs = {
-  _inc?: InputMaybe<Flags_Inc_Input>;
-  _set?: InputMaybe<Flags_Set_Input>;
-  pk_columns: Flags_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Flags_ManyArgs = {
-  updates: Array<Flags_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_ListingsArgs = {
-  _inc?: InputMaybe<Listings_Inc_Input>;
-  _set?: InputMaybe<Listings_Set_Input>;
-  where: Listings_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Listings_By_PkArgs = {
-  _inc?: InputMaybe<Listings_Inc_Input>;
-  _set?: InputMaybe<Listings_Set_Input>;
-  pk_columns: Listings_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Listings_ManyArgs = {
-  updates: Array<Listings_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_ProfessorsArgs = {
-  _inc?: InputMaybe<Professors_Inc_Input>;
-  _set?: InputMaybe<Professors_Set_Input>;
-  where: Professors_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Professors_By_PkArgs = {
-  _inc?: InputMaybe<Professors_Inc_Input>;
-  _set?: InputMaybe<Professors_Set_Input>;
-  pk_columns: Professors_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Professors_ManyArgs = {
-  updates: Array<Professors_Updates>;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_SeasonsArgs = {
-  _inc?: InputMaybe<Seasons_Inc_Input>;
-  _set?: InputMaybe<Seasons_Set_Input>;
-  where: Seasons_Bool_Exp;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Seasons_By_PkArgs = {
-  _inc?: InputMaybe<Seasons_Inc_Input>;
-  _set?: InputMaybe<Seasons_Set_Input>;
-  pk_columns: Seasons_Pk_Columns_Input;
-};
-
-/** mutation root */
-export type Mutation_RootUpdate_Seasons_ManyArgs = {
-  updates: Array<Seasons_Updates>;
 };
 
 /** column ordering options */
@@ -7233,47 +5347,6 @@ export type Professors_Bool_Exp = {
   professor_id?: InputMaybe<Int_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "professors" */
-export enum Professors_Constraint {
-  /** unique or primary key constraint on columns "professor_id" */
-  PkProfessors = 'pk_professors',
-}
-
-/** input type for incrementing numeric columns in table "professors" */
-export type Professors_Inc_Input = {
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: InputMaybe<Scalars['Int']['input']>;
-  /** Professor ID */
-  professor_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "professors" */
-export type Professors_Insert_Input = {
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  course_professors?: InputMaybe<Course_Professors_Arr_Rel_Insert_Input>;
-  /** [computed] Number of courses taught */
-  courses_taught?: InputMaybe<Scalars['Int']['input']>;
-  /** Email address of the professor */
-  email?: InputMaybe<Scalars['String']['input']>;
-  /** Name of the professor */
-  name?: InputMaybe<Scalars['String']['input']>;
-  /** Professor ID */
-  professor_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
 /** aggregate max on columns */
 export type Professors_Max_Fields = {
   __typename?: 'professors_max_fields';
@@ -7314,29 +5387,6 @@ export type Professors_Min_Fields = {
   professor_id?: Maybe<Scalars['Int']['output']>;
 };
 
-/** response of any mutation on the table "professors" */
-export type Professors_Mutation_Response = {
-  __typename?: 'professors_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Professors>;
-};
-
-/** input type for inserting object relation for remote table "professors" */
-export type Professors_Obj_Rel_Insert_Input = {
-  data: Professors_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Professors_On_Conflict>;
-};
-
-/** on_conflict condition type for table "professors" */
-export type Professors_On_Conflict = {
-  constraint: Professors_Constraint;
-  update_columns?: Array<Professors_Update_Column>;
-  where?: InputMaybe<Professors_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "professors". */
 export type Professors_Order_By = {
   average_rating?: InputMaybe<Order_By>;
@@ -7346,12 +5396,6 @@ export type Professors_Order_By = {
   email?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: professors */
-export type Professors_Pk_Columns_Input = {
-  /** Professor ID */
-  professor_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "professors" */
@@ -7369,25 +5413,6 @@ export enum Professors_Select_Column {
   /** column name */
   ProfessorId = 'professor_id',
 }
-
-/** input type for updating data in table "professors" */
-export type Professors_Set_Input = {
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: InputMaybe<Scalars['float8']['input']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: InputMaybe<Scalars['Int']['input']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: InputMaybe<Scalars['Int']['input']>;
-  /** Email address of the professor */
-  email?: InputMaybe<Scalars['String']['input']>;
-  /** Name of the professor */
-  name?: InputMaybe<Scalars['String']['input']>;
-  /** Professor ID */
-  professor_id?: InputMaybe<Scalars['Int']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Professors_Stddev_Fields = {
@@ -7478,31 +5503,6 @@ export type Professors_Sum_Fields = {
   courses_taught?: Maybe<Scalars['Int']['output']>;
   /** Professor ID */
   professor_id?: Maybe<Scalars['Int']['output']>;
-};
-
-/** update columns of table "professors" */
-export enum Professors_Update_Column {
-  /** column name */
-  AverageRating = 'average_rating',
-  /** column name */
-  AverageRatingN = 'average_rating_n',
-  /** column name */
-  CoursesTaught = 'courses_taught',
-  /** column name */
-  Email = 'email',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  ProfessorId = 'professor_id',
-}
-
-export type Professors_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Professors_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Professors_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Professors_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */
@@ -7974,31 +5974,6 @@ export type Seasons_Bool_Exp = {
   year?: InputMaybe<Int_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "seasons" */
-export enum Seasons_Constraint {
-  /** unique or primary key constraint on columns "season_code" */
-  PkSeasons = 'pk_seasons',
-}
-
-/** input type for incrementing numeric columns in table "seasons" */
-export type Seasons_Inc_Input = {
-  /** [computed] Year of the semester */
-  year?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "seasons" */
-export type Seasons_Insert_Input = {
-  courses?: InputMaybe<Courses_Arr_Rel_Insert_Input>;
-  coursesBySeasonCode?: InputMaybe<Courses_Arr_Rel_Insert_Input>;
-  listings?: InputMaybe<Listings_Arr_Rel_Insert_Input>;
-  /** Season code (e.g. '202001') */
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  /** [computed] Season of the semester - one of spring, summer, or fall */
-  term?: InputMaybe<Scalars['String']['input']>;
-  /** [computed] Year of the semester */
-  year?: InputMaybe<Scalars['Int']['input']>;
-};
-
 /** aggregate max on columns */
 export type Seasons_Max_Fields = {
   __typename?: 'seasons_max_fields';
@@ -8021,29 +5996,6 @@ export type Seasons_Min_Fields = {
   year?: Maybe<Scalars['Int']['output']>;
 };
 
-/** response of any mutation on the table "seasons" */
-export type Seasons_Mutation_Response = {
-  __typename?: 'seasons_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Seasons>;
-};
-
-/** input type for inserting object relation for remote table "seasons" */
-export type Seasons_Obj_Rel_Insert_Input = {
-  data: Seasons_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Seasons_On_Conflict>;
-};
-
-/** on_conflict condition type for table "seasons" */
-export type Seasons_On_Conflict = {
-  constraint: Seasons_Constraint;
-  update_columns?: Array<Seasons_Update_Column>;
-  where?: InputMaybe<Seasons_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "seasons". */
 export type Seasons_Order_By = {
   coursesBySeasonCode_aggregate?: InputMaybe<Courses_Aggregate_Order_By>;
@@ -8052,12 +6004,6 @@ export type Seasons_Order_By = {
   season_code?: InputMaybe<Order_By>;
   term?: InputMaybe<Order_By>;
   year?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: seasons */
-export type Seasons_Pk_Columns_Input = {
-  /** Season code (e.g. '202001') */
-  season_code: Scalars['String']['input'];
 };
 
 /** select columns of table "seasons" */
@@ -8069,16 +6015,6 @@ export enum Seasons_Select_Column {
   /** column name */
   Year = 'year',
 }
-
-/** input type for updating data in table "seasons" */
-export type Seasons_Set_Input = {
-  /** Season code (e.g. '202001') */
-  season_code?: InputMaybe<Scalars['String']['input']>;
-  /** [computed] Season of the semester - one of spring, summer, or fall */
-  term?: InputMaybe<Scalars['String']['input']>;
-  /** [computed] Year of the semester */
-  year?: InputMaybe<Scalars['Int']['input']>;
-};
 
 /** aggregate stddev on columns */
 export type Seasons_Stddev_Fields = {
@@ -8124,25 +6060,6 @@ export type Seasons_Sum_Fields = {
   __typename?: 'seasons_sum_fields';
   /** [computed] Year of the semester */
   year?: Maybe<Scalars['Int']['output']>;
-};
-
-/** update columns of table "seasons" */
-export enum Seasons_Update_Column {
-  /** column name */
-  SeasonCode = 'season_code',
-  /** column name */
-  Term = 'term',
-  /** column name */
-  Year = 'year',
-}
-
-export type Seasons_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Seasons_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Seasons_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Seasons_Bool_Exp;
 };
 
 /** aggregate var_pop on columns */

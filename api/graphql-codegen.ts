@@ -2,7 +2,15 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.GRAPHQL_ENDPOINT,
+  schema: [
+    {
+      [process.env.GRAPHQL_ENDPOINT!]: {
+        headers: {
+          'x-hasura-role': 'student',
+        },
+      },
+    },
+  ],
   documents: '**/*.graphql',
   emitLegacyCommonJSImports: false,
   generates: {
