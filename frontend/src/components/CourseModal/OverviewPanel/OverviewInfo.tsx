@@ -461,13 +461,14 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
 
 function OverviewInfo({
   onNavigation,
-  data,
+  listing,
+  sameCourse,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly data: SameCourseOrProfOfferingsQuery;
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
 }) {
   const { numFriends } = useSearch();
-  const listing = data.self[0]!;
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
@@ -481,7 +482,7 @@ function OverviewInfo({
         season={listing.season_code}
         onNavigation={onNavigation}
       />
-      <Syllabus course={course} sameCourse={data.sameCourse} />
+      <Syllabus course={course} sameCourse={sameCourse} />
       <Professors course={course} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />

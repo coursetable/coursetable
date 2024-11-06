@@ -86,6 +86,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
     sameProf: course_professors(
       where: { professor_id: { _in: $professorIds } }
     ) {
+      professor_id
       course {
         ...RelatedCourseInfo
       }

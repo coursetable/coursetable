@@ -261,23 +261,30 @@ function haveSameProfessors(
 
 function OverviewRatings({
   onNavigation,
-  data,
+  listing,
+  sameCourse,
+  sameProf,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly data: SameCourseOrProfOfferingsQuery;
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
+  readonly sameProf: SameCourseOrProfOfferingsQuery['sameProf'];
 }) {
   const user = useStore((state) => state.user);
-  const listing = data.self[0]!;
   const overlapSections = useMemo(() => {
-    const sameCourse = normalizeRelatedListings(data.sameCourse);
-    const sameProf = normalizeRelatedListings(
-      data.sameProf.map((o) => o.course),
+    const sameCourseNormalized = normalizeRelatedListings(sameCourse);
+    const sameProfNormalized = normalizeRelatedListings(
+      sameProf.map((o) => o.course),
     );
-    const both = sameCourse.filter((o) =>
+    const both = sameCourseNormalized.filter((o) =>
       haveSameProfessors(o, listing.course),
     );
-    return { course: sameCourse, professor: sameProf, both };
-  }, [data, listing]);
+    return {
+      course: sameCourseNormalized,
+      professor: sameProfNormalized,
+      both,
+    };
+  }, [sameCourse, sameProf, listing]);
   const options = [
     {
       displayName: `Course (${overlapSections.course.length})`,
