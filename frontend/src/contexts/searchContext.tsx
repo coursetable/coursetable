@@ -208,7 +208,7 @@ export const defaultFilters: Filters = {
   hideConflicting: false,
   hideFirstYearSeminars: false,
   hideGraduateCourses: false,
-  hideDiscussionSections: false,
+  hideDiscussionSections: true,
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
 };
@@ -223,7 +223,7 @@ const emptyFilters: Filters = {
   ...defaultFilters,
   selectSeasons: [],
   hideCancelled: false,
-  hideDiscussionSections: false,
+  hideDiscussionSections: true,
 };
 
 export type FilterHandle<K extends keyof Filters> = ReturnType<
@@ -440,6 +440,10 @@ export function SearchProvider({
               return `${base} ${listing.course.description}`;
             return base;
           }
+          case 'title':
+          case 'areas':
+          case 'description':
+          case 'credits':
           default:
             return listing.course[key];
         }

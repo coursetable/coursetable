@@ -4,7 +4,13 @@ const config: CodegenConfig = {
   overwrite: true,
   schema: [
     'src/queries/schema-overrides.graphql',
-    'http://localhost:8085/v1/graphql',
+    {
+      'http://localhost:8085/v1/graphql': {
+        headers: {
+          'x-hasura-role': 'student',
+        },
+      },
+    },
   ],
   config: {
     // Prefer existing field because we put our override first

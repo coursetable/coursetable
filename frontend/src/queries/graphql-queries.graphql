@@ -52,6 +52,7 @@ query SameCourseOrProfOfferings(
     syllabus_url
   }
   sameProf: course_professors(where: { professor_id: { _in: $professorIds } }) {
+    professor_id
     course {
       ...RelatedCourseInfo
     }
@@ -135,6 +136,36 @@ query PrereqLinkInfo($courseCodes: [String!]) {
     season_code
     crn
     course_code
+    section
+  }
+}
+
+query CourseSections($course_code: String, $season: String) {
+  listings(
+    where: { season_code: { _eq: $season }, course_code: { _eq: $course_code } }
+  ) {
+    course {
+      areas
+      course_professors {
+        professor {
+          professor_id
+          name
+        }
+      }
+      description
+      extra_info
+      listings {
+        crn
+        course_code
+      }
+      same_course_id
+      skills
+      times_by_day
+      title
+    }
+    course_code
+    crn
+    season_code
     section
   }
 }
