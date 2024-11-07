@@ -12,7 +12,7 @@ import {
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
 
-const UpdateWorksheetReqItemSchema = z.object({
+const UpdateWorksheetCourseReqItemSchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
   season: z.string().transform((val) => parseInt(val, 10)),
   crn: z.number(),
@@ -21,12 +21,12 @@ const UpdateWorksheetReqItemSchema = z.object({
   hidden: z.boolean(),
 });
 
-const UpdateWorksheetReqBodySchema = z.union([
-  UpdateWorksheetReqItemSchema,
-  z.array(UpdateWorksheetReqItemSchema),
+const UpdateWorksheetCoursesReqBodySchema = z.union([
+  UpdateWorksheetCourseReqItemSchema,
+  z.array(UpdateWorksheetCourseReqItemSchema),
 ]);
 
-async function updateWorksheet(
+async function updateWorksheetCourse(
   {
     action,
     season,
@@ -35,7 +35,7 @@ async function updateWorksheet(
     color,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     hidden,
-  }: z.infer<typeof UpdateWorksheetReqItemSchema>,
+  }: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
   netId: string,
 ): Promise<string | undefined> {
   const [existing] = await db
@@ -110,7 +110,7 @@ async function updateWorksheet(
   return undefined;
 }
 
-export const updateWorksheets = async (
+export const updateWorksheetCourses = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
@@ -118,20 +118,20 @@ export const updateWorksheets = async (
 
   const { netId } = req.user!;
 
-  const bodyParseRes = UpdateWorksheetReqBodySchema.safeParse(req.body);
+  const bodyParseRes = UpdateWorksheetCoursesReqBodySchema.safeParse(req.body);
   if (!bodyParseRes.success) {
     res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
   if (!Array.isArray(bodyParseRes.data)) {
-    const result = await updateWorksheet(bodyParseRes.data, netId);
+    const result = await updateWorksheetCourse(bodyParseRes.data, netId);
     if (result) {
       res.status(400).json({ error: result });
       return;
     }
   } else {
     const results = await Promise.all(
-      bodyParseRes.data.map((item) => updateWorksheet(item, netId)),
+      bodyParseRes.data.map((item) => updateWorksheetCourse(item, netId)),
     );
     if (results.some((r) => r !== undefined)) {
       res.status(400).json({

@@ -322,7 +322,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 ## Worksheet
 
-### `POST` `/api/user/updateWorksheet`
+### `POST` `/api/user/updateWorksheetCourses`
 
 #### Request
 
