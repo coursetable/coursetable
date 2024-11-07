@@ -8,6 +8,7 @@ import { worksheetCoursesToWorksheets } from './user.utils.js';
 import {
   studentBluebookSettings,
   worksheetCourses,
+  worksheets,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
@@ -172,5 +173,146 @@ export const getUserWorksheet = async (
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
     data: worksheetCoursesToWorksheets(worksheets)[netId] ?? {},
+  });
+};
+
+const AddWorksheetSchema = z.object({
+  action: z.literal('add'),
+  worksheetName: z.string().max(64),
+});
+
+const DeleteWorksheetSchema = z.object({
+  action: z.literal('delete'),
+  worksheetId: z.number(),
+});
+
+const RenameWorksheetSchema = z.object({
+  action: z.literal('rename'),
+  worksheetId: z.number(),
+  worksheetName: z.string().max(64),
+});
+
+const UpdateWorksheetSchema = z.union([
+  AddWorksheetSchema,
+  DeleteWorksheetSchema,
+  RenameWorksheetSchema,
+]);
+
+export const updateWorksheet = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  winston.info('Updating worksheets metadata');
+
+  const { netId } = req.user!;
+
+  const bodyParseRes = UpdateWorksheetSchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+
+  const { action } = bodyParseRes.data;
+
+  if (action === 'add') {
+    const { worksheetName } = bodyParseRes.data;
+
+    winston.info(
+      `Adding worksheet with name "${worksheetName}" for user ${netId}`,
+    );
+    await db.insert(worksheets).values({
+      netId,
+      worksheetName,
+    });
+  } else if (action === 'delete') {
+    const { worksheetId } = bodyParseRes.data;
+    const [existingWorksheet] = await db
+      .select()
+      .from(worksheets)
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.worksheetId, worksheetId),
+        ),
+      );
+
+    if (!existingWorksheet) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+
+    winston.info(`Deleting worksheet ${worksheetId} for user ${netId}`);
+    await db
+      .delete(worksheets)
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.worksheetId, worksheetId),
+        ),
+      );
+  } else if (action === 'rename') {
+    const { worksheetId, worksheetName } = bodyParseRes.data;
+    const [existingWorksheet] = await db
+      .select()
+      .from(worksheets)
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.worksheetId, worksheetId),
+        ),
+      );
+
+    if (!existingWorksheet) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+    winston.info(
+      `Renaming worksheet ${worksheetId} for user ${netId} to "${worksheetName}"`,
+    );
+    await db
+      .update(worksheets)
+      .set({ worksheetName })
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.worksheetId, worksheetId),
+        ),
+      );
+    return undefined;
+  }
+
+  res.sendStatus(200);
+};
+
+export const getUserWorksheetNames = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  winston.info(`Fetching worksheet names for user`);
+
+  const { netId } = req.user!;
+
+  const worksheetNames = await db
+    .select({
+      worksheetId: worksheets.worksheetId,
+      worksheetName: worksheets.worksheetName,
+    })
+    .from(worksheets)
+    .where(eq(worksheets.netId, netId));
+
+  winston.info(
+    `Retrieved ${worksheetNames.length} worksheets for user ${netId}`,
+  );
+
+  const worksheetMap = Object.fromEntries(
+    worksheetNames.map(({ worksheetId, worksheetName }) => [
+      worksheetId,
+      worksheetName,
+    ]),
+  );
+
+  res.json({
+    netId,
+    worksheets: worksheetMap,
   });
 };

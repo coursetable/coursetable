@@ -343,7 +343,7 @@ export async function verifyChallenge(body: {
     : { status: 'rejected', data: res };
 }
 
-const userWorksheetsSchema = z.record(
+const userWorksheetCoursesSchema = z.record(
   z.record(
     z.array(
       z.object({
@@ -360,7 +360,7 @@ const userWorksheetsSchema = z.record(
 export type UserWorksheets = {
   [season: Season]: {
     [worksheetNumber: number]: NonNullable<
-      z.infer<typeof userWorksheetsSchema>[Season]
+      z.infer<typeof userWorksheetCoursesSchema>[Season]
     >[string];
   };
 };
@@ -374,7 +374,7 @@ export async function fetchUserWorksheets() {
       evaluationsEnabled: z.union([z.boolean(), z.null()]),
       year: z.union([z.number(), z.null()]),
       school: z.union([z.string(), z.null()]),
-      data: userWorksheetsSchema,
+      data: userWorksheetCoursesSchema,
     }),
     breadcrumb: {
       category: 'user',
@@ -399,7 +399,7 @@ export async function fetchUserWorksheets() {
 const friendsSchema = z.record(
   z.object({
     name: z.string().nullable(),
-    worksheets: userWorksheetsSchema,
+    worksheets: userWorksheetCoursesSchema,
   }),
 );
 
@@ -541,4 +541,61 @@ export async function checkAuth() {
   }
   if (res.auth) Sentry.setUser({ username: res.netId });
   return res.auth;
+}
+
+export function updateWorksheet(
+  body:
+    | { action: 'add'; worksheetName: string }
+    | { action: 'delete'; worksheetId: number }
+    | { action: 'rename'; worksheetId: number; worksheetName: string },
+): Promise<boolean> {
+  return fetchAPI('/user/updateWorksheet', {
+    body,
+    handleErrorCode(err) {
+      switch (err) {
+        // These errors can be triggered if the user clicks the button twice
+        // in a row
+        // TODO: we should debounce the request instead
+        case 'WORKSHEET_NOT_FOUND':
+          toast.error('Tried to modify a non-existent worksheet');
+          return true;
+        default:
+          return false;
+      }
+    },
+    breadcrumb: {
+      category: 'worksheet',
+      message: 'Updating worksheet',
+    },
+  });
+}
+
+const userWorksheetsSchema = z.record(z.string(), z.string().max(64));
+
+const FetchUserWorksheetNamesSchema = z.object({
+  netId: z.string().length(8),
+  worksheets: userWorksheetsSchema,
+});
+
+// Frontend function to fetch and validate the worksheet names
+export async function fetchUserWorksheetNames() {
+  const res = await fetchAPI('/user/worksheetNames', {
+    schema: FetchUserWorksheetNamesSchema, // Validates the response structure
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching user worksheet names',
+    },
+  });
+
+  if (!res) return undefined;
+
+  const worksheetsNumericKeys = Object.fromEntries(
+    Object.entries(res.worksheets).map(([id, name]) => [parseInt(id, 10), name])
+  ) as Record<number, string>;
+
+  // Return the validated response data
+  return {
+    netId: res.netId,
+    worksheets: worksheetsNumericKeys,
+  };
 }
