@@ -6,6 +6,9 @@ import { authBasic } from '../auth/auth.handlers.js';
 
 export default (app: express.Express): void => {
   app.use('/api/user/*', authBasic);
-  app.post('/api/user/updateWorksheetCourses', asyncHandler(updateWorksheetCourses));
+  app.post(
+    '/api/user/updateWorksheetCourses',
+    asyncHandler(updateWorksheetCourses),
+  );
   app.get('/api/user/worksheets', asyncHandler(getUserWorksheet));
 };
