@@ -6,7 +6,7 @@ import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { updateWorksheet } from '../../queries/api';
+import { updateWorksheetCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { type RBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
@@ -161,7 +161,7 @@ function ColorPickerButton({
           <Button
             variant="primary"
             onClick={async () => {
-              await updateWorksheet({
+              await updateWorksheetCourses({
                 action: 'update',
                 season: curSeason,
                 crn: event.listing.crn,
