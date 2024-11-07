@@ -208,7 +208,7 @@ export const defaultFilters: Filters = {
   hideConflicting: false,
   hideFirstYearSeminars: false,
   hideGraduateCourses: false,
-  hideDiscussionSections: false,
+  hideDiscussionSections: true,
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
 };
@@ -223,7 +223,7 @@ const emptyFilters: Filters = {
   ...defaultFilters,
   selectSeasons: [],
   hideCancelled: false,
-  hideDiscussionSections: false,
+  hideDiscussionSections: true,
 };
 
 export type FilterHandle<K extends keyof Filters> = ReturnType<
