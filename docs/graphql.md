@@ -8,7 +8,7 @@ Here are all useful resources to help you write GraphQL queries:
 
 - [GraphQL documentation](https://graphql.org/learn/) for the general query structure.
 - [Hasura Postgres queries](https://hasura.io/docs/latest/queries/postgres/index/) for Hasura specific queries—you will see `where(season_code: { _eq: $seasonCode })` very often.
-- [Ferry DB diagram](https://github.com/coursetable/ferry/blob/master/docs/db_diagram.pdf) for the database schema. Ignore the `*_staged` suffix. For example, because there's a relationship between `listings` and `courses`, both of the following queries are valid:
+- [Ferry DB diagram](https://github.com/coursetable/ferry/blob/master/docs/db_diagram.pdf) for the database schema. For example, because there's a relationship between `listings` and `courses`, both of the following queries are valid:
 
   ```graphql
   query {
