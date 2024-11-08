@@ -26,7 +26,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:UkzId2AP4CKLdWRHxMO8L7kt3TPIES@ocean.coursetable.com:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?postgres_uri}
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
     healthcheck:
