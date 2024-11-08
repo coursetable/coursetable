@@ -6,35 +6,16 @@ import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../../config';
-import type { Listings } from '../../../generated/graphql-types';
+import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import { useStore } from '../../../store';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
-export type CourseModalHeaderData = Pick<
-  Listings,
-  'season_code' | 'crn' | 'course_code' | 'section'
-> & {
-  course: Pick<
-    Listings['course'],
-    | 'title'
-    | 'skills'
-    | 'areas'
-    | 'extra_info'
-    | 'description'
-    | 'times_by_day'
-    | 'same_course_id'
-  > & {
-    listings: Pick<Listings, 'crn' | 'course_code'>[];
-    course_professors: {
-      professor: {
-        professor_id: number;
-      };
-    }[];
-  };
-};
-
-function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
+function ShareButton({
+  listing,
+}: {
+  readonly listing: CourseModalPrefetchListingDataFragment;
+}) {
   const copyToClipboard = () => {
     const textToCopy = `${listing.course_code} -- CourseTable: ${window.location.href}`;
     navigator.clipboard.writeText(textToCopy).then(
@@ -63,7 +44,7 @@ function MoreButton({
   listing,
   hide,
 }: {
-  readonly listing: CourseModalHeaderData;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly hide: () => void;
 }) {
   return (
@@ -145,7 +126,7 @@ export default function ModalHeaderControls({
   setView,
   hide,
 }: {
-  readonly listing: CourseModalHeaderData;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly view: 'overview' | 'evals';
   readonly setView: (value: 'overview' | 'evals') => void;
   readonly hide: () => void;

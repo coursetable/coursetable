@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
 import { useFerry } from '../../contexts/ferryContext';
-import type { Listings } from '../../generated/graphql-types';
+import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import type { Season, Crn } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import {
@@ -16,32 +16,6 @@ import {
 } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
 import styles from './CourseModal.module.css';
-
-// This data contains all the "critical data" that must be prefetched before
-// navigation. This ensures the user sees some content rather than a loading
-// spinner.
-export type CourseModalHeaderData = Pick<
-  Listings,
-  'season_code' | 'crn' | 'course_code' | 'section'
-> & {
-  course: Pick<
-    Listings['course'],
-    | 'title'
-    | 'skills'
-    | 'areas'
-    | 'extra_info'
-    | 'description'
-    | 'times_by_day'
-    | 'same_course_id'
-  > & {
-    listings: Pick<Listings, 'crn' | 'course_code'>[];
-    course_professors: {
-      professor: {
-        professor_id: number;
-      };
-    }[];
-  };
-};
 
 // We can only split subviews of CourseModal because CourseModal contains core
 // logic that determines whether itself is visible.
@@ -53,7 +27,7 @@ const EvaluationsPanel = suspended(
 
 export type ModalNavigationFunction = ((
   mode: 'push' | 'replace',
-  l: CourseModalHeaderData,
+  l: CourseModalPrefetchListingDataFragment,
   target: 'evals' | 'overview',
 ) => void) &
   ((mode: 'pop', l: undefined, target: 'evals' | 'overview') => void);
@@ -65,7 +39,9 @@ function CourseModal() {
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
-  const [history, setHistory] = useState<CourseModalHeaderData[]>([]);
+  const [history, setHistory] = useState<
+    CourseModalPrefetchListingDataFragment[]
+  >([]);
   // This will update when history updates
   const listing = history[history.length - 1];
   useEffect(() => {
@@ -149,7 +125,7 @@ function CourseModal() {
         </Modal.Header>
         <Modal.Body>
           {view === 'overview' ? (
-            <OverviewPanel onNavigation={onNavigation} header={listing} />
+            <OverviewPanel onNavigation={onNavigation} prefetched={listing} />
           ) : (
             <EvaluationsPanel
               seasonCode={listing.season_code}

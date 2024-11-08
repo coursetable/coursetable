@@ -248,10 +248,14 @@ function haveSameProfessors(
   course2: Pick<RelatedCourseInfoFragment, 'course_professors'>,
 ) {
   const aProfIds = course1.course_professors
-    .map((p) => p.professor.professor_id)
+    // @ts-expect-error: the GraphQL-codegen types are wrong because it doesn't
+    // know that fragments are deep merged
+    .map((p) => p.professor.professor_id as number)
     .sort((a, b) => a - b);
   const bProfIds = course2.course_professors
-    .map((p) => p.professor.professor_id)
+    // @ts-expect-error: the GraphQL-codegen types are wrong because it doesn't
+    // know that fragments are deep merged
+    .map((p) => p.professor.professor_id as number)
     .sort((a, b) => a - b);
   return (
     aProfIds.length === bProfIds.length &&

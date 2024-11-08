@@ -4,30 +4,28 @@ import { MdWarning } from 'react-icons/md';
 import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
+import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import { useSameCourseOrProfOfferingsQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import Spinner from '../../Spinner';
-import type {
-  ModalNavigationFunction,
-  CourseModalHeaderData,
-} from '../CourseModal';
+import type { ModalNavigationFunction } from '../CourseModal';
 
 function OverviewPanel({
   onNavigation,
-  header,
+  prefetched,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly header: CourseModalHeaderData;
+  readonly prefetched: CourseModalPrefetchListingDataFragment;
 }) {
   const user = useStore((state) => state.user);
 
   const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
     variables: {
-      seasonCode: header.season_code,
-      crn: header.crn,
+      seasonCode: prefetched.season_code,
+      crn: prefetched.crn,
       hasEval: Boolean(user.hasEvals),
-      sameCourseId: header.course.same_course_id,
-      professorIds: header.course.course_professors.map(
+      sameCourseId: prefetched.course.same_course_id,
+      professorIds: prefetched.course.course_professors.map(
         (p) => p.professor.professor_id,
       ),
     },

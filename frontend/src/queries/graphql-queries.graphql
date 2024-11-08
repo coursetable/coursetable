@@ -8,6 +8,8 @@ query SameCourseOrProfOfferings(
   self: listings(
     where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
   ) {
+    # Note: here we only need to fetch the data displayed in the modal body
+    # not the modal header.
     course {
       description
       requirements
@@ -60,6 +62,9 @@ query SameCourseOrProfOfferings(
 }
 
 fragment RelatedCourseInfo on courses {
+  season_code
+  section
+  ...CourseModalPrefetchCourseData
   average_professor_rating @include(if: $hasEval)
   evaluation_statistic @include(if: $hasEval) {
     avg_workload
@@ -67,25 +72,42 @@ fragment RelatedCourseInfo on courses {
   }
   course_professors {
     professor {
-      professor_id
       name
     }
   }
   course_id
-  # All this is needed to navigate to the next class
+}
+
+# This data contains all the "critical data" that must be prefetched before
+# navigation. This ensures the user sees some content rather than a loading
+# spinner.
+fragment CourseModalPrefetchListingData on listings {
   season_code
-  listings {
-    crn
-    course_code
-  }
-  title
+  crn
+  course_code
   section
+  course {
+    ...CourseModalPrefetchCourseData
+  }
+}
+
+fragment CourseModalPrefetchCourseData on courses {
+  title
   skills
   areas
   extra_info
   description
   times_by_day
   same_course_id
+  listings {
+    crn
+    course_code
+  }
+  course_professors {
+    professor {
+      professor_id
+    }
+  }
 }
 
 query SearchEvaluationNarratives($seasonCode: String, $crn: Int) {
@@ -115,28 +137,7 @@ query SearchEvaluationNarratives($seasonCode: String, $crn: Int) {
 
 query PrereqLinkInfo($courseCodes: [String!]) {
   listings(where: { course_code: { _in: $courseCodes } }) {
-    course {
-      title
-      skills
-      areas
-      extra_info
-      description
-      times_by_day
-      same_course_id
-      listings {
-        course_code
-        crn
-      }
-      course_professors {
-        professor {
-          professor_id
-        }
-      }
-    }
-    season_code
-    crn
-    course_code
-    section
+    ...CourseModalPrefetchListingData
   }
 }
 
@@ -144,28 +145,13 @@ query CourseSections($course_code: String, $season: String) {
   listings(
     where: { season_code: { _eq: $season }, course_code: { _eq: $course_code } }
   ) {
+    ...CourseModalPrefetchListingData
     course {
-      areas
       course_professors {
         professor {
-          professor_id
           name
         }
       }
-      description
-      extra_info
-      listings {
-        crn
-        course_code
-      }
-      same_course_id
-      skills
-      times_by_day
-      title
     }
-    course_code
-    crn
-    season_code
-    section
   }
 }

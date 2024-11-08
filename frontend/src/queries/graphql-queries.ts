@@ -3,8 +3,31 @@ import * as Types from '../generated/graphql-types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export const CourseModalPrefetchCourseDataFragmentDoc = gql`
+  fragment CourseModalPrefetchCourseData on courses {
+    title
+    skills
+    areas
+    extra_info
+    description
+    times_by_day
+    same_course_id
+    listings {
+      crn
+      course_code
+    }
+    course_professors {
+      professor {
+        professor_id
+      }
+    }
+  }
+`;
 export const RelatedCourseInfoFragmentDoc = gql`
   fragment RelatedCourseInfo on courses {
+    season_code
+    section
+    ...CourseModalPrefetchCourseData
     average_professor_rating @include(if: $hasEval)
     evaluation_statistic @include(if: $hasEval) {
       avg_workload
@@ -12,25 +35,24 @@ export const RelatedCourseInfoFragmentDoc = gql`
     }
     course_professors {
       professor {
-        professor_id
         name
       }
     }
     course_id
-    season_code
-    listings {
-      crn
-      course_code
-    }
-    title
-    section
-    skills
-    areas
-    extra_info
-    description
-    times_by_day
-    same_course_id
   }
+  ${CourseModalPrefetchCourseDataFragmentDoc}
+`;
+export const CourseModalPrefetchListingDataFragmentDoc = gql`
+  fragment CourseModalPrefetchListingData on listings {
+    season_code
+    crn
+    course_code
+    section
+    course {
+      ...CourseModalPrefetchCourseData
+    }
+  }
+  ${CourseModalPrefetchCourseDataFragmentDoc}
 `;
 export const SameCourseOrProfOfferingsDocument = gql`
   query SameCourseOrProfOfferings(
@@ -277,30 +299,10 @@ export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
 export const PrereqLinkInfoDocument = gql`
   query PrereqLinkInfo($courseCodes: [String!]) {
     listings(where: { course_code: { _in: $courseCodes } }) {
-      course {
-        title
-        skills
-        areas
-        extra_info
-        description
-        times_by_day
-        same_course_id
-        listings {
-          course_code
-          crn
-        }
-        course_professors {
-          professor {
-            professor_id
-          }
-        }
-      }
-      season_code
-      crn
-      course_code
-      section
+      ...CourseModalPrefetchListingData
     }
   }
+  ${CourseModalPrefetchListingDataFragmentDoc}
 `;
 
 /**
@@ -381,31 +383,17 @@ export const CourseSectionsDocument = gql`
         course_code: { _eq: $course_code }
       }
     ) {
+      ...CourseModalPrefetchListingData
       course {
-        areas
         course_professors {
           professor {
-            professor_id
             name
           }
         }
-        description
-        extra_info
-        listings {
-          crn
-          course_code
-        }
-        same_course_id
-        skills
-        times_by_day
-        title
       }
-      course_code
-      crn
-      season_code
-      section
     }
   }
+  ${CourseModalPrefetchListingDataFragmentDoc}
 `;
 
 /**
@@ -450,12 +438,17 @@ export function useCourseSectionsLazyQuery(
   >(CourseSectionsDocument, options);
 }
 export function useCourseSectionsSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.CourseSectionsQuery,
-    Types.CourseSectionsQueryVariables
-  >,
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.CourseSectionsQuery,
+        Types.CourseSectionsQueryVariables
+      >,
 ) {
-  const options = { ...defaultOptions, ...baseOptions };
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
     Types.CourseSectionsQuery,
     Types.CourseSectionsQueryVariables
