@@ -8,7 +8,6 @@ import ModalHeaderInfo from './Header/InfoRow';
 import { useFerry } from '../../contexts/ferryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import type { Season, Crn } from '../../queries/graphql-types';
-import { useStore } from '../../store';
 import {
   toSeasonDate,
   toSeasonString,
@@ -35,7 +34,6 @@ export type ModalNavigationFunction = ((
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { requestSeasons, courses } = useFerry();
-  const user = useStore((state) => state.user);
 
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
@@ -68,11 +66,16 @@ function CourseModal() {
     'No description available',
   );
   const onNavigation: ModalNavigationFunction = (mode, l, target) => {
-    if (!user.hasEvals) setView('overview');
-    else setView(target);
     if (mode === 'pop') {
+      setView('overview');
       setHistory(history.slice(0, -1));
     } else {
+      const nextView =
+        // Only actually navigate to evals if the course has evals
+        target === 'evals' && l!.course.evaluation_statistic
+          ? 'evals'
+          : 'overview';
+      setView(nextView);
       if (l!.crn === listing.crn && l!.season_code === listing.season_code)
         return;
       if (mode === 'replace') setHistory([...history.slice(0, -1), l!]);

@@ -22,6 +22,7 @@ import type {
 } from '../../../generated/graphql-types';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import type { Weekdays } from '../../../queries/graphql-types';
+import { useStore } from '../../../store';
 import { ratingColormap } from '../../../utilities/constants';
 import {
   abbreviateWorkdays,
@@ -187,12 +188,14 @@ function Prereqs({
   readonly season: string;
   readonly onNavigation: ModalNavigationFunction;
 }) {
+  const user = useStore((state) => state.user);
   const segments = parsePrereqs(course.requirements);
   const [searchParams] = useSearchParams();
   const { data, error, loading } = usePrereqLinkInfoQuery({
     variables: {
       courseCodes:
         segments?.filter((s) => s.type === 'course').map((s) => s.course) ?? [],
+      hasEvals: Boolean(user.hasEvals),
     },
     skip: !segments,
   });

@@ -36,6 +36,11 @@ Here are all useful resources to help you write GraphQL queries:
 
 ## Generating SDKs
 
+> [!NOTE]
+> SDKs are generated against the local dev GraphQL engine. This may not reflect the production schema.
+>
+> Every time you run codegen (which means every time you start the API), make sure that the generated changes are intended. If you see unexpected changes, you may need to update your local schema. To make sure they are in sync, refer to the [containers & DB docs](./containers.md).
+
 ### API
 
 On the API side, SDKs are collocated with the API endpoints that use them.

@@ -23,7 +23,7 @@ function OverviewPanel({
     variables: {
       seasonCode: prefetched.season_code,
       crn: prefetched.crn,
-      hasEval: Boolean(user.hasEvals),
+      hasEvals: Boolean(user.hasEvals),
       sameCourseId: prefetched.course.same_course_id,
       professorIds: prefetched.course.course_professors.map(
         (p) => p.professor.professor_id,

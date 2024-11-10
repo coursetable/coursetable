@@ -6584,7 +6584,7 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   professorIds: InputMaybe<
     Array<Scalars['Int']['input']> | Scalars['Int']['input']
   >;
-  hasEval: Scalars['Boolean']['input'];
+  hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type SameCourseOrProfOfferingsQuery = {
@@ -6683,11 +6683,15 @@ export type CourseModalPrefetchCourseDataFragment = {
     __typename?: 'course_professors';
     professor: { __typename?: 'professors'; professor_id: number };
   }>;
+  evaluation_statistic?: {
+    __typename?: 'evaluation_statistics';
+    responses: number | null;
+  } | null;
 };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
-  seasonCode: InputMaybe<Scalars['String']['input']>;
-  crn: InputMaybe<Scalars['Int']['input']>;
+  seasonCode: Scalars['String']['input'];
+  crn: Scalars['Int']['input'];
 }>;
 
 export type SearchEvaluationNarrativesQuery = {
@@ -6727,6 +6731,7 @@ export type PrereqLinkInfoQueryVariables = Exact<{
   courseCodes: InputMaybe<
     Array<Scalars['String']['input']> | Scalars['String']['input']
   >;
+  hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type PrereqLinkInfoQuery = {
@@ -6737,8 +6742,9 @@ export type PrereqLinkInfoQuery = {
 };
 
 export type CourseSectionsQueryVariables = Exact<{
-  course_code: InputMaybe<Scalars['String']['input']>;
-  season: InputMaybe<Scalars['String']['input']>;
+  courseCode: Scalars['String']['input'];
+  seasonCode: Scalars['String']['input'];
+  hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type CourseSectionsQuery = {
