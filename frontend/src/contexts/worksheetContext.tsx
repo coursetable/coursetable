@@ -111,15 +111,15 @@ export function WorksheetProvider({
 
   const toggleCourse = useCallback(
     async (crn: Crn | 'all', hidden: boolean) => {
-      toggleCourseHidden({
+      await toggleCourseHidden({
         season: curSeason,
-        crn,
+        worksheetNumber,
+        crn: crn === 'all' ? courses.map((course) => course.listing.crn) : crn,
         hidden,
-        courses: courses.map((course) => course.listing),
       });
       await userRefresh();
     },
-    [courses, curSeason, userRefresh],
+    [courses, curSeason, userRefresh, worksheetNumber],
   );
 
   const handleWorksheetView = useCallback(

@@ -333,8 +333,8 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
     - `season`: `string`
     - `crn`: `number`
     - `worksheetNumber`: `number`
-    - `color`: `string` (must be a valid color string)
-    - `hidden`: `boolean`
+    - `color`: `string` (must be a valid color string; mandatory for `add`, optional for `update`, ignored for `remove`)
+    - `hidden`: `boolean` (mandatory for `add`, optional for `update`, ignored for `remove`)
   - Option 2 (bulk update): array containing objects with the same shape as the single update
 
 #### Response

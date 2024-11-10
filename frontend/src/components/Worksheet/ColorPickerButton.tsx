@@ -167,7 +167,6 @@ function ColorPickerButton({
                 crn: event.listing.crn,
                 worksheetNumber,
                 color: newColor,
-                hidden: false,
               });
               await userRefresh();
               setOpen(false);
