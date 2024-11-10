@@ -9,7 +9,7 @@ import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { updateWorksheetCourses, toggleCourseHidden } from '../../queries/api';
+import { updateWorksheetCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {

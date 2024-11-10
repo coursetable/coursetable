@@ -28,12 +28,18 @@ const UpdateWorksheetCourseReqItemSchema = z.intersection(
       action: z.literal('remove'),
       // We still allow these because the frontend sends them (it just sends
       // everything about the course for both add and remove)
-      color: z.string().refine((val) => chroma.valid(val)).optional(), // Ignored
+      color: z
+        .string()
+        .refine((val) => chroma.valid(val))
+        .optional(), // Ignored
       hidden: z.boolean().optional(), // Ignored
     }),
     z.object({
       action: z.literal('update'),
-      color: z.string().refine((val) => chroma.valid(val)).optional(),
+      color: z
+        .string()
+        .refine((val) => chroma.valid(val))
+        .optional(),
       hidden: z.boolean().optional(),
     }),
   ]),
@@ -51,7 +57,6 @@ async function updateWorksheetCourse(
     crn,
     worksheetNumber,
     color,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     hidden,
   }: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
   netId: string,

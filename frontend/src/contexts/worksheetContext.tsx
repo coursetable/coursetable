@@ -119,7 +119,7 @@ export function WorksheetProvider({
       });
       await userRefresh();
     },
-    [courses, curSeason, userRefresh],
+    [courses, curSeason, userRefresh, worksheetNumber],
   );
 
   const handleWorksheetView = useCallback(
