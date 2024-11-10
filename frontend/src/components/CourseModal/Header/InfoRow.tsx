@@ -10,6 +10,7 @@ import type {
 } from '../../../generated/graphql-types';
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
 import type { Weekdays } from '../../../queries/graphql-types';
+import { useStore } from '../../../store';
 import { extraInfo } from '../../../utilities/constants';
 import {
   abbreviateWorkdays,
@@ -134,13 +135,15 @@ export default function ModalHeaderInfo({
   readonly backTarget: string | undefined;
   readonly onNavigation: ModalNavigationFunction;
 }) {
+  const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
   const courseCode = listing.course_code;
   const season = listing.season_code;
   const { data, loading, error } = useCourseSectionsQuery({
     variables: {
-      course_code: courseCode,
-      season,
+      courseCode,
+      seasonCode: season,
+      hasEvals: Boolean(user.hasEvals),
     },
   });
   const sections =

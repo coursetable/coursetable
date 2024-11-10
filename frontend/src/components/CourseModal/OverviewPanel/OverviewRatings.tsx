@@ -11,7 +11,6 @@ import {
 } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
-import { CUR_YEAR } from '../../../config';
 import type {
   RelatedCourseInfoFragment,
   SameCourseOrProfOfferingsQuery,
@@ -175,13 +174,7 @@ function CourseLink({
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
         to={createCourseModalLink(targetListingDefinite, searchParams)}
         onClick={() => {
-          onNavigation(
-            'push',
-            targetListingDefinite,
-            CUR_YEAR.includes(targetListingDefinite.season_code)
-              ? 'overview'
-              : 'evals',
-          );
+          onNavigation('push', targetListingDefinite, 'evals');
         }}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
@@ -204,11 +197,7 @@ function CourseLink({
                 className="d-block"
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  onNavigation(
-                    'push',
-                    l,
-                    CUR_YEAR.includes(l.season_code) ? 'overview' : 'evals',
-                  );
+                  onNavigation('push', l, 'evals');
                 }}
               >
                 {l.course_code}

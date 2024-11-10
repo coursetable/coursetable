@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import {
+  DropdownButton,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../../config';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
-import { useStore } from '../../../store';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
@@ -85,7 +89,7 @@ function MoreButton({
 type Tab = {
   readonly label: string;
   readonly value: 'overview' | 'evals';
-  readonly hidden?: boolean;
+  readonly disabled?: boolean;
 };
 
 function ViewTabs({
@@ -99,8 +103,24 @@ function ViewTabs({
 }) {
   return (
     <div className={styles.tabs}>
-      {tabs.map(({ label, value, hidden }) => {
-        if (hidden) return null;
+      {tabs.map(({ label, value, disabled }) => {
+        if (disabled) {
+          return (
+            <OverlayTrigger
+              key={value}
+              placement="top"
+              overlay={(props) => (
+                <Tooltip {...props} id="popover-disabled-tab">
+                  This course has no evaluations to show.
+                </Tooltip>
+              )}
+            >
+              <span className={clsx(styles.tabButton, styles.tabDisabled)}>
+                {label}
+              </span>
+            </OverlayTrigger>
+          );
+        }
         return (
           <button
             key={value}
@@ -131,7 +151,6 @@ export default function ModalHeaderControls({
   readonly setView: (value: 'overview' | 'evals') => void;
   readonly hide: () => void;
 }) {
-  const user = useStore((state) => state.user);
   return (
     <div className={styles.modalControls}>
       <ViewTabs
@@ -140,8 +159,8 @@ export default function ModalHeaderControls({
           {
             label: 'Evaluations',
             value: 'evals',
-            // Don't show eval tab if it's current year or no auth
-            hidden: CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
+            // Don't show eval tab if there are no responses to show
+            disabled: !listing.course.evaluation_statistic,
           },
         ]}
         onSelectTab={setView}
