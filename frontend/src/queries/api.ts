@@ -152,14 +152,24 @@ async function fetchAPI(
   }
 }
 
-export function updateWorksheetCourses(body: {
-  action: 'add' | 'remove' | 'update';
-  season: Season;
-  crn: Crn;
-  worksheetNumber: number;
-  color: string;
-  hidden: boolean;
-}): Promise<boolean> {
+export function updateWorksheetCourses(
+  body: {
+    season: Season;
+    crn: Crn;
+    worksheetNumber: number;
+  } & (
+    | {
+        action: 'add';
+        color: string;
+        hidden: boolean;
+      }
+    | {
+        action: 'remove' | 'update';
+        color?: string;
+        hidden?: boolean;
+      }
+  ),
+): Promise<boolean> {
   return fetchAPI('/user/updateWorksheetCourses', {
     body,
     handleErrorCode(err) {
