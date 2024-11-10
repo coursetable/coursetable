@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -32,6 +32,7 @@ import type { ModalNavigationFunction } from '../../CourseModal';
 
 import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';
+import { CourseInfo } from './OverviewInfo';
 
 type Filter = 'both' | 'course' | 'professor';
 
@@ -268,12 +269,16 @@ function haveSameProfessors(
 function OverviewRatings({
   onNavigation,
   data,
+  professorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly data: SameCourseOrProfOfferingsQuery;
+  readonly professorView:
+    | CourseInfo['course_professors'][number]['professor']
+    | null;
 }) {
-  const user = useStore((state) => state.user);
   const listing = data.self[0]!;
+
   const overlapSections = useMemo(() => {
     const sameCourse = normalizeRelatedListings(data.sameCourse);
     const sameProf = normalizeRelatedListings(
@@ -284,7 +289,8 @@ function OverviewRatings({
     );
     return { course: sameCourse, professor: sameProf, both };
   }, [data, listing]);
-  const options = [
+
+  const defaultOptions = [
     {
       displayName: `Course (${overlapSections.course.length})`,
       value: 'course',
@@ -294,8 +300,28 @@ function OverviewRatings({
       displayName: `Prof (${overlapSections.professor.length})`,
       value: 'professor',
     },
-  ] as const;
+  ];
+
+  const professorViewOptions = [
+    { displayName: `Both (${overlapSections.both.length})`, value: 'both' },
+    {
+      displayName: `Prof (${overlapSections.professor.length})`,
+      value: 'professor',
+    },
+  ];
+
+  const user = useStore((state) => state.user);
+  const [options, setOptions] =
+    useState<Array<{ displayName: string; value: string }>>(defaultOptions);
+
   const [filter, setFilter] = useState<Filter>('both');
+
+  useEffect(() => {
+    professorView == null
+      ? setOptions(defaultOptions)
+      : setOptions(professorViewOptions);
+  }, [professorView]);
+
   return (
     <>
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
@@ -306,7 +332,10 @@ function OverviewRatings({
           const newIndx = ((optionsIndx[filter] +
             (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
             3) as 0 | 1 | 2;
-          setFilter(options[newIndx].value);
+          const newOption = options[newIndx];
+          if (newOption) {
+            setFilter(newOption.value as Filter);
+          }
         }}
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
@@ -314,7 +343,7 @@ function OverviewRatings({
         <MultiToggle
           options={options}
           selectedOption={filter}
-          onSelectOption={(val) => setFilter(val)}
+          onSelectOption={(val) => setFilter(val as Filter)}
           className={clsx(styles.evaluationsFilter, 'mb-2')}
         />
       </div>

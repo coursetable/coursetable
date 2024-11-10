@@ -145,8 +145,8 @@ function CourseModal() {
         animation={false}
         centered
       >
-        {professorView ? (
-          <Modal.Header className={styles.modalHeader} closeButton>
+        <Modal.Header className={styles.modalHeader} closeButton>
+          {professorView ? (
             <ProfessorModalHeaderInfo
               listing={listing}
               professor={professorView}
@@ -154,44 +154,35 @@ function CourseModal() {
               backTarget={backTarget}
               onNavigation={onNavigation}
             />
-            <ModalHeaderControls
+          ) : (
+            <ModalHeaderInfo
               listing={listing}
-              view={view}
-              setView={setView}
-              hide={hide}
+              backTarget={backTarget}
+              onNavigation={onNavigation}
             />
-          </Modal.Header>
-        ) : (
-          <>
-            <Modal.Header className={styles.modalHeader} closeButton>
-              <ModalHeaderInfo
-                listing={listing}
-                backTarget={backTarget}
-                onNavigation={onNavigation}
-              />
-              <ModalHeaderControls
-                listing={listing}
-                view={view}
-                setView={setView}
-                hide={hide}
-              />
-            </Modal.Header>
-            <Modal.Body>
-              {view === 'overview' ? (
-                <OverviewPanel
-                  onNavigation={onNavigation}
-                  header={listing}
-                  setProfessorView={setProfessorView}
-                />
-              ) : (
-                <EvaluationsPanel
-                  seasonCode={listing.season_code}
-                  crn={listing.crn}
-                />
-              )}
-            </Modal.Body>
-          </>
-        )}
+          )}
+          <ModalHeaderControls
+            listing={listing}
+            view={view}
+            setView={setView}
+            hide={hide}
+          />
+        </Modal.Header>
+        <Modal.Body>
+          {view === 'overview' ? (
+            <OverviewPanel
+              onNavigation={onNavigation}
+              header={listing}
+              professorView={professorView}
+              setProfessorView={setProfessorView}
+            />
+          ) : (
+            <EvaluationsPanel
+              seasonCode={listing.season_code}
+              crn={listing.crn}
+            />
+          )}
+        </Modal.Body>
       </Modal>
     </div>
   );

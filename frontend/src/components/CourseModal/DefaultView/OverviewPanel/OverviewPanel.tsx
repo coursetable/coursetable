@@ -14,10 +14,14 @@ import type {
 function OverviewPanel({
   onNavigation,
   header,
+  professorView,
   setProfessorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly header: CourseModalHeaderData;
+  readonly professorView:
+    | CourseInfo['course_professors'][number]['professor']
+    | null;
   setProfessorView: React.Dispatch<
     React.SetStateAction<
       CourseInfo['course_professors'][number]['professor'] | null
@@ -68,14 +72,22 @@ function OverviewPanel({
   return (
     <Row className="m-auto">
       <Col md={7} className="px-0 mt-0 mb-10">
-        <OverviewInfo
-          onNavigation={onNavigation}
-          data={data}
-          setProfessorView={setProfessorView}
-        />
+        {professorView ? (
+          <p>This is where the graphs will go.</p>
+        ) : (
+          <OverviewInfo
+            onNavigation={onNavigation}
+            data={data}
+            setProfessorView={setProfessorView}
+          />
+        )}
       </Col>
       <Col md={5} className="px-0 my-0">
-        <OverviewRatings onNavigation={onNavigation} data={data} />
+        <OverviewRatings
+          onNavigation={onNavigation}
+          data={data}
+          professorView={professorView}
+        />
       </Col>
     </Row>
   );
