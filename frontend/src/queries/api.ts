@@ -192,32 +192,44 @@ const hiddenCoursesStorage = createLocalStorageSlot<{
 
 export function toggleCourseHidden({
   season,
+  worksheetNumber,
   crn,
   hidden,
-  courses,
 }: {
   season: Season;
-  crn: Crn | 'all';
+  worksheetNumber: number;
+  crn: Crn | Crn[];
   hidden: boolean;
-  courses?: { crn: Crn }[];
 }): Promise<boolean> {
-  const hiddenCourses = hiddenCoursesStorage.get() ?? {};
-  if (crn === 'all') {
-    if (hidden) {
-      hiddenCourses[season] ??= {};
-      courses?.forEach((listing) => {
-        hiddenCourses[season]![listing.crn] = true;
-      });
-    } else {
-      delete hiddenCourses[season];
-    }
-  } else {
-    // eslint-disable-next-line no-multi-assign
-    const curSeason = (hiddenCourses[season] ??= {});
-    if (hidden) curSeason[crn] = true;
-    else delete curSeason[crn];
+  if (Array.isArray(crn)) {
+    const actions = crn.map((c) => ({
+      action: 'update',
+      season,
+      worksheetNumber,
+      crn: c,
+      hidden,
+    }));
+    return fetchAPI('/user/updateWorksheetCourses', {
+      body: actions,
+      breadcrumb: {
+        category: 'worksheet',
+        message: 'Batch updating worksheet hidden status',
+      },
+    });
   }
-  hiddenCoursesStorage.set(hiddenCourses);
+  return fetchAPI('/user/updateWorksheetCourses', {
+    body: {
+      action: 'update',
+      season,
+      crn,
+      worksheetNumber,
+      hidden,
+    },
+    breadcrumb: {
+      category: 'worksheet',
+      message: 'Updating worksheet hidden status',
+    },
+  });
 }
 
 type ListingPublic = CatalogBySeasonQuery['listings'][number];
@@ -382,16 +394,36 @@ export async function fetchUserWorksheets() {
     },
   });
   if (!res) return undefined;
+  // If the server doesn't know about the hidden status for any course,
+  // we pull the locally stored data and sync it with the server. This
+  // should only happen once—all future data should be in sync.
+  const actions = [];
   const hiddenCourses = hiddenCoursesStorage.get();
-  if (!hiddenCourses) return res;
   for (const seasonKey in res.data) {
-    // Narrow type
     const season = seasonKey as Season;
-    if (!hiddenCourses[season]) continue;
     for (const num in res.data[season]) {
-      for (const course of res.data[season][num]!)
-        course.hidden = hiddenCourses[season][course.crn] ?? false;
+      for (const course of res.data[season][num]!) {
+        if (course.hidden === null) {
+          course.hidden = hiddenCourses?.[season]?.[course.crn] ?? false;
+          actions.push({
+            action: 'update',
+            season,
+            crn: course.crn,
+            worksheetNumber: Number(num),
+            hidden: course.hidden,
+          });
+        }
+      }
     }
+  }
+  if (actions.length) {
+    await fetchAPI('/user/updateWorksheetCourses', {
+      body: actions,
+      breadcrumb: {
+        category: 'worksheet',
+        message: 'Syncing hidden courses',
+      },
+    });
   }
   return res;
 }
