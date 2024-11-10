@@ -128,19 +128,8 @@ function WorksheetToggleButton({
       e.preventDefault();
       e.stopPropagation();
 
-      // Determine if we are adding or removing the course
-      const addRemove = inWorksheet ? 'remove' : 'add';
-
-      // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet) {
-        toggleCourseHidden({
-          season: listing.season_code,
-          crn: listing.crn,
-          hidden: false,
-        });
-      }
       const success = await updateWorksheetCourses({
-        action: addRemove,
+        action: inWorksheet ? 'remove' : 'add',
         season: listing.season_code,
         crn: listing.crn,
         worksheetNumber: selectedWorksheet,

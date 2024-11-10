@@ -200,7 +200,7 @@ export function toggleCourseHidden({
   crn: Crn | 'all';
   hidden: boolean;
   courses?: { crn: Crn }[];
-}) {
+}): Promise<boolean> {
   const hiddenCourses = hiddenCoursesStorage.get() ?? {};
   if (crn === 'all') {
     if (hidden) {

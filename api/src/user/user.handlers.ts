@@ -12,14 +12,32 @@ import {
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
 
-const UpdateWorksheetCourseReqItemSchema = z.object({
-  action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
-  season: z.string().transform((val) => parseInt(val, 10)),
-  crn: z.number(),
-  worksheetNumber: z.number(),
-  color: z.string().refine((val) => chroma.valid(val)),
-  hidden: z.boolean(),
-});
+const UpdateWorksheetCourseReqItemSchema = z.intersection(
+  z.object({
+    season: z.string().transform((val) => parseInt(val, 10)),
+    worksheetNumber: z.number(),
+    crn: z.number(),
+  }),
+  z.union([
+    z.object({
+      action: z.literal('add'),
+      color: z.string().refine((val) => chroma.valid(val)),
+      hidden: z.boolean(),
+    }),
+    z.object({
+      action: z.literal('remove'),
+      // We still allow these because the frontend sends them (it just sends
+      // everything about the course for both add and remove)
+      color: z.string().refine((val) => chroma.valid(val)).optional(), // Ignored
+      hidden: z.boolean().optional(), // Ignored
+    }),
+    z.object({
+      action: z.literal('update'),
+      color: z.string().refine((val) => chroma.valid(val)).optional(),
+      hidden: z.boolean().optional(),
+    }),
+  ]),
+);
 
 const UpdateWorksheetCoursesReqBodySchema = z.union([
   UpdateWorksheetCourseReqItemSchema,
@@ -66,10 +84,7 @@ async function updateWorksheetCourse(
       season,
       worksheetNumber,
       color,
-      // Currently the frontend is not capable of actually syncing the hidden
-      // state so we keep it as null. This allows it to be properly synced in
-      // the future
-      hidden: null,
+      hidden,
     });
   } else if (action === 'remove') {
     winston.info(
@@ -97,7 +112,7 @@ async function updateWorksheetCourse(
       // Currently the frontend is not capable of actually syncing the hidden
       // state so we keep it as null. This allows it to be properly synced in
       // the future
-      .set({ color, hidden: null })
+      .set({ color, hidden })
       .where(
         and(
           eq(worksheetCourses.netId, netId),
