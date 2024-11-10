@@ -404,17 +404,19 @@ export async function fetchUserWorksheets() {
     },
   });
   if (!res) return undefined;
-  // If the server doesn't know about the hidden status for any course,
-  // we pull the locally stored data and sync it with the server. This
-  // should only happen once—all future data should be in sync.
-  const actions = [];
   const hiddenCourses = hiddenCoursesStorage.get();
+  if (!hiddenCourses) return res;
+  // If the server doesn't know about the hidden status for any course, but
+  // there exists locally stored data, then we use this and sync it with the
+  // server. This is a one-time operation to migrate from our old client-side
+  // logic to be server-side, to make it consistent between devices and friends.
+  const actions = [];
   for (const seasonKey in res.data) {
     const season = seasonKey as Season;
     for (const num in res.data[season]) {
       for (const course of res.data[season][num]!) {
         if (course.hidden === null) {
-          course.hidden = hiddenCourses?.[season]?.[course.crn] ?? false;
+          course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
           actions.push({
             action: 'update',
             season,
@@ -427,13 +429,20 @@ export async function fetchUserWorksheets() {
     }
   }
   if (actions.length) {
-    await fetchAPI('/user/updateWorksheetCourses', {
+    const updateRes = await fetchAPI('/user/updateWorksheetCourses', {
       body: actions,
       breadcrumb: {
         category: 'worksheet',
         message: 'Syncing hidden courses',
       },
     });
+    // No longer need this data
+    if (updateRes) hiddenCoursesStorage.remove();
+  } else {
+    // There's no data to update, which means it's already synced from another
+    // device. We use the "first-wins" strategy and only sync data from the
+    // first device that logged in, and assume that one is the primary device.
+    hiddenCoursesStorage.remove();
   }
   return res;
 }
