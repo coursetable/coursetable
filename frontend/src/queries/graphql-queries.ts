@@ -100,6 +100,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
         final_exam
         same_course_id
       }
+      school
       season_code
       crn
       course_code

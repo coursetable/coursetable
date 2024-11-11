@@ -364,7 +364,7 @@ export const subjects: { [code: string]: string } = {
 export { default as courseInfoAttributes } from '../generated/infoAttributes.json';
 
 // To get a list of abbreviations, run
-// a distinct_on:school query over computed_course_info
+// a `listings(distinct_on: [school])` GQL query
 // School labels were filled in manually
 export const schools: { [code: string]: string } = {
   YC: 'Yale College',
@@ -374,6 +374,7 @@ export const schools: { [code: string]: string } = {
   DI: 'Divinity School',
   DR: 'School of Drama',
   FS: 'School of the Environment',
+  GB: 'Jackson School of Global Affairs',
   LW: 'Law School',
   MD: 'School of Medicine',
   MG: 'School of Management',

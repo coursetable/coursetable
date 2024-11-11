@@ -103,7 +103,7 @@ On the frontend side, SDKs are all located in `src/generated`.
    ```
 
 2. Start the API service with `./start.sh -d`. The frontend codegen talks to the GraphQL server exposed by the API.
-3. In frontend, run `bun codegen`. This step needs to be done manually every time you change the query.
+3. In frontend, run `bun codegen`. This step needs to be done manually every time you change the query. Note that the codegen relies on the admin secret environment, so make sure you run: `doppler setup -p coursetable -c dev && doppler run --command "bun codegen"`.
 
    > [!NOTE]
    > We recommend you run `bun codegen` regularly because we also copy the `infoAttributes.json` and `seasons.json` files which are constantly changing.

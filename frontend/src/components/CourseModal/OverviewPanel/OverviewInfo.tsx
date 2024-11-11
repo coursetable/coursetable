@@ -23,7 +23,7 @@ import type {
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import type { Weekdays } from '../../../queries/graphql-types';
 import { useStore } from '../../../store';
-import { ratingColormap } from '../../../utilities/constants';
+import { schools, ratingColormap } from '../../../utilities/constants';
 import {
   abbreviateWorkdays,
   getEnrolled,
@@ -518,6 +518,10 @@ function OverviewInfo({
         }
       />
       <DataField name="Credits" value={course.credits} />
+      <DataField
+        name="School"
+        value={listing.school ? schools[listing.school] : undefined}
+      />
       <DataField name="Class Notes" value={course.classnotes} />
       <DataField name="Registrar Notes" value={course.regnotes} />
       <DataField name="Reading Period" value={course.rp_attr} />

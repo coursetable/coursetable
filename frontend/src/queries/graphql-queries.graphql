@@ -43,6 +43,7 @@ query SameCourseOrProfOfferings(
 
       same_course_id
     }
+    school
 
     # For searching/testing equality
     season_code

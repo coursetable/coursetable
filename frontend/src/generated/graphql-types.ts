@@ -6591,6 +6591,7 @@ export type SameCourseOrProfOfferingsQuery = {
   __typename?: 'query_root';
   self: Array<{
     __typename?: 'listings';
+    school: string | null;
     season_code: Season;
     crn: Crn;
     course_code: string;
