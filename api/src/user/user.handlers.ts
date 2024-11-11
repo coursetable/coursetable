@@ -98,7 +98,10 @@ async function updateWorksheetCourse(
       netId,
       season,
       worksheetNumber,
-      worksheetName: worksheetNumber == 0? "Main Worksheet" : `Worksheet ${worksheetNumber}`,
+      worksheetName:
+        worksheetNumber == 0
+          ? 'Main Worksheet'
+          : `Worksheet ${worksheetNumber}`,
     });
   }
 
@@ -130,7 +133,7 @@ async function updateWorksheetCourse(
           eq(worksheetCourses.worksheetNumber, worksheetNumber),
         ),
       );
-    
+
     // Cannot delete main worksheet
     if (worksheetNumber > 0) {
       const courseCountRes = await db
