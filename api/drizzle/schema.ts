@@ -65,7 +65,7 @@ export const studentFriends = pgTable(
 export const worksheets = pgTable(
   'worksheets',
   {
-    worksheetNumber: serial('id').primaryKey().notNull(),
+    worksheetNumber: serial('worksheetNumber').primaryKey().notNull(),
     netId: varchar('netId', { length: 8 }).notNull(),
     worksheetName: varchar('worksheetName', { length: 64 }).notNull(),
   },
