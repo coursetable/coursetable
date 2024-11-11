@@ -48,12 +48,12 @@ Here's the data flow for course data:
 5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. This data is only overwritten in dev by running `start.sh` with the `--overwrite` (`-o`) flag, or in prod by Ferry requesting the `/api/catalog/refresh` endpoint. The idea of this step is to aggressively cache the GQL responses so every frontend request doesn't have to hit the GQL API. It also powers the client-side course search.
 6. The frontend requests the Express endpoint, which serves these JSON files. The frontend also requests the GraphQL API directly for more complex queries.
 
-The Hasura Engine dashboard is available at `http://localhost:8085`. For security purposes, it is only exposed to the localhost loopback interface (`127.0.0.1`). Therefore, the production Hasura Engine cannot be directly accessed from the Internet. To update the prod schema, you need to temporarily connect your local dev environment to the prod engine. You can modify the `dev-compose.yml` file and update the `HASURA_GRAPHQL_DATABASE_URL` environment to point to the prod `FERRY_POSTGRES_URI` (you need to have access to the prod environment to carry this out). It is in this format: `postgres://${DB_USER}:${DB_ROOT_PASSWORD}@${dev.FERRY_HOST}:5432/postgres`.
+The Hasura Engine dashboard is available at `http://localhost:8085`. In production, it is at `http://ocean.coursetable.com:8085/`. To access the dashboard, you need to log in with the `HASURA_GRAPHQL_ADMIN_SECRET` environment variable. You can find this secret in Doppler.
 
 If you want to make changes to the courses DB schema, you would need to start by modifying Ferry, which is the only actor that can write into the DB. Then, once Ferry has done one recrawl, the DB will contain the data you want (you can go to pgadmin to make sure). Then, you can do the following to cascade this change:
 
-- Sync the prod GQL schema with the DB schema by ...
+- Sync the prod GQL schema with the DB schema by going to the Hasura dashboard and clicking "Track all" on the `public` schema.
 - Sync the dev DB with the prod DB by running `./start.sh -f`.
-- Sync the dev GQL schema with the dev DB by ...
+- Sync the dev GQL schema with the dev DB by doing the same steps as 1, but on the dev Hasura dashboard.
 
 For more changes related to GraphQL, such as how the SDKs are generated and how to make sure the SDK types reflect the latest DB schema, refer to the [GraphQL](./graphql.md) docs.
