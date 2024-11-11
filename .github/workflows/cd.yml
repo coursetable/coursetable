@@ -90,6 +90,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
+      - name: Sync Local Repository with Remote
+        run: cd /home/app/coursetable && git pull
       - name: Build and Deploy Docker containers
         working-directory: ./api
         if: github.event_name == 'push'

@@ -16,7 +16,15 @@ function Graphiql() {
     <div style={{ height: '90vh' }}>
       <div className="px-3 py-2 text-primary bg-light">
         All of our course data is available for Yale students through GraphQL.
-        Note that we truncate each query to 1,000 items for performance reasons.
+        We have{' '}
+        <a
+          href="https://github.com/coursetable/coursetable/blob/master/docs/graphql.md"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          some documentation
+        </a>{' '}
+        available to help you get started.
       </div>
       <GraphiQL
         fetcher={fetcher}

@@ -14,9 +14,11 @@ import { useShallow } from 'zustand/react/shallow';
 import type { WorksheetCourse } from './worksheetContext';
 import seasonsData from '../generated/seasons.json';
 import {
+  fetchCatalogMetadata,
   fetchCatalog,
   fetchEvals,
   type UserWorksheets,
+  type CatalogMetadata,
   type CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
@@ -28,7 +30,15 @@ export const seasons = seasonsData as Season[];
 const courseDataLock = new AsyncLock();
 const catalogLoadAttempted = new Set<Season>();
 const evalsLoadAttempted = new Set<Season>();
-let courseData: { [seasonCode: Season]: Map<Crn, CatalogListing> } = {};
+
+type CourseData = {
+  [seasonCode: Season]: {
+    metadata: CatalogMetadata;
+    data: Map<Crn, CatalogListing>;
+  };
+};
+
+let courseData: CourseData = {};
 const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     // Both data have been loaded; nothing to do
@@ -37,10 +47,15 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
       (!includeEvals || evalsLoadAttempted.has(season))
     )
       return;
-    const catalogPromise = (() => {
-      if (catalogLoadAttempted.has(season)) return Promise.resolve(null);
+    const catalogPromise = (async () => {
+      if (catalogLoadAttempted.has(season)) return null;
       catalogLoadAttempted.add(season);
-      return fetchCatalog(season);
+      const [data, metadata] = await Promise.all([
+        fetchCatalog(season),
+        fetchCatalogMetadata(),
+      ]);
+      if (!data || !metadata) return null;
+      return { metadata, data };
     })();
     const evalsPromise = (() => {
       if (evalsLoadAttempted.has(season) || !includeEvals)
@@ -59,7 +74,7 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
     if (!seasonCatalog) return;
     if (evals) {
       for (const [crn, ratings] of evals) {
-        const listing = seasonCatalog.get(crn);
+        const listing = seasonCatalog.data.get(crn);
         if (listing) {
           Object.assign(listing.course, ratings.course);
         } else {
@@ -80,7 +95,7 @@ type Store = {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   error: {} | null;
-  courses: typeof courseData;
+  courses: CourseData;
   requestSeasons: (requestedSeasons: Season[]) => Promise<void>;
 };
 
@@ -200,7 +215,7 @@ export function useWorksheetInfo(
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
       for (const { crn, color, hidden } of worksheet) {
-        const listing = courses[seasonCode]!.get(crn);
+        const listing = courses[seasonCode]!.data.get(crn);
         if (listing) {
           dataReturn.push({
             crn,
