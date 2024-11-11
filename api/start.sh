@@ -58,6 +58,11 @@ then
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d --build --pull always"
 
+    if [[ $FERRY_SEED == true ]]
+    then
+        docker exec -it express /bin/bash -c "cd api && npm run db:push"
+    fi
+
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
     
 elif [[ $ENV == 'prod' || $ENV == 'staging' ]]
