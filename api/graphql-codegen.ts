@@ -7,6 +7,7 @@ const config: CodegenConfig = {
       [process.env.GRAPHQL_ENDPOINT!]: {
         headers: {
           'x-hasura-role': 'student',
+          'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET!,
         },
       },
     },
