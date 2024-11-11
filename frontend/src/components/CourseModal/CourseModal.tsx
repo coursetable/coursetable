@@ -48,7 +48,9 @@ function CourseModal() {
     if (!courseModal) return;
     const [seasonCode, crn] = courseModal.split('-') as [Season, string];
     void requestSeasons([seasonCode]).then(() => {
-      const listingFromQuery = courses[seasonCode]?.get(Number(crn) as Crn);
+      const listingFromQuery = courses[seasonCode]?.data.get(
+        Number(crn) as Crn,
+      );
       if (!listingFromQuery) return;
       setHistory([listingFromQuery]);
     });

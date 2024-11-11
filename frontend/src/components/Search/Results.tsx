@@ -5,6 +5,7 @@ import { FixedSizeList, FixedSizeGrid } from 'react-window';
 
 import { useShallow } from 'zustand/react/shallow';
 import FloatingWorksheet from './FloatingWorksheet';
+import LastUpdated from './LastUpdated';
 import ResultsGridItem from './ResultsGridItem';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
@@ -141,6 +142,7 @@ function Results({
           numResults={data?.length ?? 0}
         />
       )}
+      {isMobile && <LastUpdated />}
       {resultsListing}
       <FloatingWorksheet />
     </div>

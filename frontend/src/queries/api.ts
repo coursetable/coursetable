@@ -242,6 +242,22 @@ export function toggleCourseHidden({
   });
 }
 
+const catalogMetadataSchema = z.object({
+  last_update: z.string().transform((x) => new Date(x)),
+});
+
+export type CatalogMetadata = z.infer<typeof catalogMetadataSchema>;
+
+export function fetchCatalogMetadata() {
+  return fetchAPI('/catalog/metadata', {
+    breadcrumb: {
+      category: 'catalog',
+      message: 'Fetching catalog metadata',
+    },
+    schema: catalogMetadataSchema,
+  });
+}
+
 type ListingPublic = CatalogBySeasonQuery['listings'][number];
 
 export async function fetchCatalog(season: Season) {
