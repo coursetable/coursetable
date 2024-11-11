@@ -52,8 +52,9 @@ function OverviewPanel({
         <Col>
           <p>Unexpected: no data returned.</p>
           <p>
-            There could be some issues with our servers. Please allow for up to
-            10 minutes for course information to become available again.
+            There could be some issues with our servers, or more likely we are
+            updating the data on course offerings. Please allow for up to 10
+            minutes for course information to become available again.
           </p>
         </Col>
       </Row>
