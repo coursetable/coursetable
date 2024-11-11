@@ -8,6 +8,7 @@ const config: CodegenConfig = {
       'http://localhost:8085/v1/graphql': {
         headers: {
           'x-hasura-role': 'student',
+          'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
         },
       },
     },

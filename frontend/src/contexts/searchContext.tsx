@@ -469,7 +469,7 @@ export function SearchProvider({
   const searchDataPredictate = useCallback(
     (processedSearchTextParam: typeof processedSearchText) => {
       const listings = processedSeasons.flatMap((seasonCode) => {
-        const data = courseData[seasonCode];
+        const data = courseData[seasonCode]?.data;
         if (!data) return [];
         return [...data.values()];
       });

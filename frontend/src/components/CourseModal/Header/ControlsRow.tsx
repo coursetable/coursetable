@@ -1,40 +1,25 @@
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import {
+  DropdownButton,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../../config';
-import type { Listings } from '../../../generated/graphql-types';
-import { useStore } from '../../../store';
+import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
-export type CourseModalHeaderData = Pick<
-  Listings,
-  'season_code' | 'crn' | 'course_code' | 'section'
-> & {
-  course: Pick<
-    Listings['course'],
-    | 'title'
-    | 'skills'
-    | 'areas'
-    | 'extra_info'
-    | 'description'
-    | 'times_by_day'
-    | 'same_course_id'
-  > & {
-    listings: Pick<Listings, 'crn' | 'course_code'>[];
-    course_professors: {
-      professor: {
-        professor_id: number;
-      };
-    }[];
-  };
-};
-
-function ShareButton({ listing }: { readonly listing: CourseModalHeaderData }) {
+function ShareButton({
+  listing,
+}: {
+  readonly listing: CourseModalPrefetchListingDataFragment;
+}) {
   const copyToClipboard = () => {
     const textToCopy = `${listing.course_code} -- CourseTable: ${window.location.href}`;
     navigator.clipboard.writeText(textToCopy).then(
@@ -63,7 +48,7 @@ function MoreButton({
   listing,
   hide,
 }: {
-  readonly listing: CourseModalHeaderData;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly hide: () => void;
 }) {
   return (
@@ -104,7 +89,7 @@ function MoreButton({
 type Tab = {
   readonly label: string;
   readonly value: 'overview' | 'evals';
-  readonly hidden?: boolean;
+  readonly disabled?: boolean;
 };
 
 function ViewTabs({
@@ -118,8 +103,24 @@ function ViewTabs({
 }) {
   return (
     <div className={styles.tabs}>
-      {tabs.map(({ label, value, hidden }) => {
-        if (hidden) return null;
+      {tabs.map(({ label, value, disabled }) => {
+        if (disabled) {
+          return (
+            <OverlayTrigger
+              key={value}
+              placement="top"
+              overlay={(props) => (
+                <Tooltip {...props} id="popover-disabled-tab">
+                  This course has no evaluations to show.
+                </Tooltip>
+              )}
+            >
+              <span className={clsx(styles.tabButton, styles.tabDisabled)}>
+                {label}
+              </span>
+            </OverlayTrigger>
+          );
+        }
         return (
           <button
             key={value}
@@ -145,12 +146,11 @@ export default function ModalHeaderControls({
   setView,
   hide,
 }: {
-  readonly listing: CourseModalHeaderData;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly view: 'overview' | 'evals';
   readonly setView: (value: 'overview' | 'evals') => void;
   readonly hide: () => void;
 }) {
-  const user = useStore((state) => state.user);
   return (
     <div className={styles.modalControls}>
       <ViewTabs
@@ -159,8 +159,8 @@ export default function ModalHeaderControls({
           {
             label: 'Evaluations',
             value: 'evals',
-            // Don't show eval tab if it's current year or no auth
-            hidden: CUR_YEAR.includes(listing.season_code) || !user.hasEvals,
+            // Don't show eval tab if there are no responses to show
+            disabled: !listing.course.evaluation_statistic,
           },
         ]}
         onSelectTab={setView}

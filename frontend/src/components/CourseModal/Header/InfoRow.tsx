@@ -4,9 +4,13 @@ import { Modal } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
 import type { Option } from '../../../contexts/searchContext';
-import type { CourseSectionsQuery } from '../../../generated/graphql-types';
+import type {
+  CourseSectionsQuery,
+  CourseModalPrefetchListingDataFragment,
+} from '../../../generated/graphql-types';
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
 import type { Weekdays } from '../../../queries/graphql-types';
+import { useStore } from '../../../store';
 import { extraInfo } from '../../../utilities/constants';
 import {
   abbreviateWorkdays,
@@ -19,10 +23,7 @@ import { Popout } from '../../Search/Popout';
 import { PopoutSelect } from '../../Search/PopoutSelect';
 import SkillBadge from '../../SkillBadge';
 import { TextComponent } from '../../Typography';
-import type {
-  ModalNavigationFunction,
-  CourseModalHeaderData,
-} from '../CourseModal';
+import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './InfoRow.module.css';
 
 function SectionLink({
@@ -84,7 +85,7 @@ function SectionsDropdown({
   sections,
   onNavigation,
 }: {
-  readonly listing: CourseModalHeaderData;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly sections: CourseSectionsQuery['listings'];
   readonly onNavigation: ModalNavigationFunction;
 }) {
@@ -130,17 +131,19 @@ export default function ModalHeaderInfo({
   backTarget,
   onNavigation,
 }: {
-  readonly listing: CourseModalHeaderData;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly backTarget: string | undefined;
   readonly onNavigation: ModalNavigationFunction;
 }) {
+  const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
   const courseCode = listing.course_code;
   const season = listing.season_code;
   const { data, loading, error } = useCourseSectionsQuery({
     variables: {
-      course_code: courseCode,
-      season,
+      courseCode,
+      seasonCode: season,
+      hasEvals: Boolean(user.hasEvals),
     },
   });
   const sections =
