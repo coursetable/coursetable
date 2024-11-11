@@ -546,8 +546,8 @@ export async function checkAuth() {
 export function updateWorksheet(
   body:
     | { action: 'add'; worksheetName: string }
-    | { action: 'delete'; worksheetId: number }
-    | { action: 'rename'; worksheetId: number; worksheetName: string },
+    | { action: 'delete'; worksheetNumber: number }
+    | { action: 'rename'; worksheetNumber: number; worksheetName: string },
 ): Promise<boolean> {
   return fetchAPI('/user/updateWorksheet', {
     body,
@@ -577,10 +577,9 @@ const FetchUserWorksheetNamesSchema = z.object({
   worksheets: userWorksheetsSchema,
 });
 
-// Frontend function to fetch and validate the worksheet names
 export async function fetchUserWorksheetNames() {
   const res = await fetchAPI('/user/worksheetNames', {
-    schema: FetchUserWorksheetNamesSchema, // Validates the response structure
+    schema: FetchUserWorksheetNamesSchema,
     breadcrumb: {
       category: 'user',
       message: 'Fetching user worksheet names',
@@ -593,7 +592,6 @@ export async function fetchUserWorksheetNames() {
     Object.entries(res.worksheets).map(([id, name]) => [parseInt(id, 10), name])
   ) as Record<number, string>;
 
-  // Return the validated response data
   return {
     netId: res.netId,
     worksheets: worksheetsNumericKeys,

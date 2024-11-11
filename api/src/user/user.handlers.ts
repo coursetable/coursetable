@@ -183,12 +183,12 @@ const AddWorksheetSchema = z.object({
 
 const DeleteWorksheetSchema = z.object({
   action: z.literal('delete'),
-  worksheetId: z.number(),
+  worksheetNumber: z.number(),
 });
 
 const RenameWorksheetSchema = z.object({
   action: z.literal('rename'),
-  worksheetId: z.number(),
+  worksheetNumber: z.number(),
   worksheetName: z.string().max(64),
 });
 
@@ -225,14 +225,14 @@ export const updateWorksheet = async (
       worksheetName,
     });
   } else if (action === 'delete') {
-    const { worksheetId } = bodyParseRes.data;
+    const { worksheetNumber } = bodyParseRes.data;
     const [existingWorksheet] = await db
       .select()
       .from(worksheets)
       .where(
         and(
           eq(worksheets.netId, netId),
-          eq(worksheets.worksheetId, worksheetId),
+          eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       );
 
@@ -241,24 +241,24 @@ export const updateWorksheet = async (
       return;
     }
 
-    winston.info(`Deleting worksheet ${worksheetId} for user ${netId}`);
+    winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     await db
       .delete(worksheets)
       .where(
         and(
           eq(worksheets.netId, netId),
-          eq(worksheets.worksheetId, worksheetId),
+          eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       );
   } else if (action === 'rename') {
-    const { worksheetId, worksheetName } = bodyParseRes.data;
+    const { worksheetNumber, worksheetName } = bodyParseRes.data;
     const [existingWorksheet] = await db
       .select()
       .from(worksheets)
       .where(
         and(
           eq(worksheets.netId, netId),
-          eq(worksheets.worksheetId, worksheetId),
+          eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       );
 
@@ -267,7 +267,7 @@ export const updateWorksheet = async (
       return;
     }
     winston.info(
-      `Renaming worksheet ${worksheetId} for user ${netId} to "${worksheetName}"`,
+      `Renaming worksheet ${worksheetNumber} for user ${netId} to "${worksheetName}"`,
     );
     await db
       .update(worksheets)
@@ -275,7 +275,7 @@ export const updateWorksheet = async (
       .where(
         and(
           eq(worksheets.netId, netId),
-          eq(worksheets.worksheetId, worksheetId),
+          eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       );
     return undefined;
@@ -294,7 +294,7 @@ export const getUserWorksheetNames = async (
 
   const worksheetNames = await db
     .select({
-      worksheetId: worksheets.worksheetId,
+      worksheetNumber: worksheets.worksheetNumber,
       worksheetName: worksheets.worksheetName,
     })
     .from(worksheets)
@@ -305,8 +305,8 @@ export const getUserWorksheetNames = async (
   );
 
   const worksheetMap = Object.fromEntries(
-    worksheetNames.map(({ worksheetId, worksheetName }) => [
-      worksheetId,
+    worksheetNames.map(({ worksheetNumber, worksheetName }) => [
+      worksheetNumber,
       worksheetName,
     ]),
   );

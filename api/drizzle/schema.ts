@@ -65,13 +65,13 @@ export const studentFriends = pgTable(
 export const worksheets = pgTable(
   'worksheets',
   {
-    worksheetId: serial('id').primaryKey().notNull(),
+    worksheetNumber: serial('id').primaryKey().notNull(),
     netId: varchar('netId', { length: 8 }).notNull(),
     worksheetName: varchar('worksheetName', { length: 64 }).notNull(),
   },
   (table) => ({
     worksheetUniqueIdx: uniqueIndex('worksheet_unique_idx').on(
-      table.worksheetId,
+      table.worksheetNumber,
       table.netId,
     ),
   }),
