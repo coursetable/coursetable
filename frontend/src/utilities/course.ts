@@ -62,6 +62,36 @@ export function toWeekdayStrings(daysOfWeek: number): string[] {
       ['Thursday', 'Saturday', 'Sunday'].includes(d) ? d.slice(0, 2) : d[0]!,
     );
 }
+// The only difference with toWeekdayStrings is that it returns 'M–F' for
+// Monday through Friday
+export function toWeekdaysDisplayString(daysOfWeek: number): string {
+  const base = toWeekdayStrings(daysOfWeek).join('');
+  if (base === 'MTWThF') return 'M–F';
+  return base;
+}
+
+export function toTimesSummary(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): string {
+  if (!course.course_meetings.length) return 'TBA';
+  const meeting = course.course_meetings[0]!;
+  const days = toWeekdaysDisplayString(meeting.days_of_week);
+  const summary = `${days} ${to12HourTime(meeting.start_time)}–${to12HourTime(
+    meeting.end_time,
+  )}`;
+  return `${summary}${course.course_meetings.length > 1 ? ` + ${course.course_meetings.length - 1}` : ''}`;
+}
+
+export function toLocationsSummary(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): string {
+  if (!course.course_meetings.length) return 'TBA';
+  const meeting = course.course_meetings[0]!;
+  const summary = meeting.location
+    ? `${meeting.location.building.code}${meeting.location.room ? ` ${meeting.location.room}` : ''}`
+    : 'TBA';
+  return `${summary}${course.course_meetings.length > 1 ? ` + ${course.course_meetings.length - 1}` : ''}`;
+}
 
 export type ListingWithTimes = {
   season_code: Season;

@@ -398,7 +398,7 @@ export function SearchProvider({
             return listing.course.extra_info !== 'ACTIVE';
           case 'conflicting':
             return (
-              listing.course.times_summary !== 'TBA' &&
+              listing.course.course_meetings.length > 0 &&
               !isInWorksheet(
                 listing.season_code,
                 listing.crn,
@@ -548,7 +548,7 @@ export function SearchProvider({
 
         if (
           hideConflicting.value &&
-          listing.course.times_summary !== 'TBA' &&
+          listing.course.course_meetings.length > 0 &&
           !isInWorksheet(
             listing.season_code,
             listing.crn,
