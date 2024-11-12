@@ -131,14 +131,6 @@ export function WorksheetProvider({
     [setWorksheetView],
   );
 
-  const handlePersonChange = useCallback(
-    (newPerson: 'me' | NetId) => {
-      changeWorksheet(0);
-      setViewedPerson(newPerson);
-    },
-    [setViewedPerson],
-  );
-
   const changeSeason = useCallback(
     (seasonCode: Season | null) => {
       if (seasonCode === null) return;
@@ -152,6 +144,14 @@ export function WorksheetProvider({
       setWorksheetNumber(newNumber);
     },
     [setWorksheetNumber],
+  );
+
+  const handlePersonChange = useCallback(
+    (newPerson: 'me' | NetId) => {
+      changeWorksheet(0);
+      setViewedPerson(newPerson);
+    },
+    [setViewedPerson, changeWorksheet],
   );
 
   const store = useMemo(
