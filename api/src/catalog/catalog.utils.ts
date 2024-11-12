@@ -66,7 +66,7 @@ async function generateSeasonSitemap(
   winston.info(`Sitemap generated for ${seasonCode} at ${sitemapPath}`);
 }
 
-async function generateSitemapIndex(): Promise<void> {
+export async function generateSitemapIndex(): Promise<void> {
   await fs.mkdir(SITEMAP_DIR, { recursive: true });
   const sitemapFiles = await fs.readdir(SITEMAP_DIR);
   const sitemapUrls = sitemapFiles
@@ -181,8 +181,6 @@ export async function fetchCatalog(overwrite: boolean) {
       ),
     );
     await Promise.all(processSeasons);
-    winston.info('Finished generating season sitemaps');
-    await generateSitemapIndex();
     await generateMetadata();
   } catch (err) {
     winston.error(err);
