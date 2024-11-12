@@ -32,7 +32,6 @@ const config: CodegenConfig = {
           'ExtraInfo',
           'StringArr',
           'NumberArr',
-          'TimesByDay',
           'ProfessorInfo',
         ].map((type) => [type, `../queries/graphql-types#${type}`]),
       ),

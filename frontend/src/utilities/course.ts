@@ -1,4 +1,5 @@
 // Performing various actions on the listing dictionary
+import { weekdays } from './constants';
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { Courses, Listings } from '../generated/graphql-types';
@@ -7,13 +8,7 @@ import type {
   UserWorksheets,
   CatalogListing,
 } from '../queries/api';
-import {
-  type Crn,
-  type Season,
-  type Weekdays,
-  type TimesByDay,
-  weekdays,
-} from '../queries/graphql-types';
+import type { Crn, Season } from '../queries/graphql-types';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -57,17 +52,56 @@ export function toSeasonDate(seasonCode: Season): string {
   return `${year}-${date}`;
 }
 
-export function abbreviateWorkdays(days: Weekdays[]): string[] {
-  return days.map((d) =>
-    ['Thursday', 'Saturday', 'Sunday'].includes(d) ? d.slice(0, 2) : d[0]!,
-  );
+// Turns a bitmask of days of the week into an array of strings.
+// For example, 42 = 0b101010 = Monday, Wednesday, Friday
+// See constants.ts for the mapping of days of the week to numbers
+export function toWeekdayStrings(daysOfWeek: number): string[] {
+  return Object.entries(weekdays)
+    .filter(([, day]) => daysOfWeek & (1 << day))
+    .map(([d]) =>
+      ['Thursday', 'Saturday', 'Sunday'].includes(d) ? d.slice(0, 2) : d[0]!,
+    );
+}
+// The only difference with toWeekdayStrings is that it returns 'M–F' for
+// Monday through Friday
+export function toWeekdaysDisplayString(daysOfWeek: number): string {
+  const base = toWeekdayStrings(daysOfWeek).join('');
+  if (base === 'MTWThF') return 'M–F';
+  return base;
+}
+
+export function toTimesSummary(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): string {
+  if (!course.course_meetings.length) return 'TBA';
+  const meeting = course.course_meetings[0]!;
+  const days = toWeekdaysDisplayString(meeting.days_of_week);
+  const summary = `${days} ${to12HourTime(meeting.start_time)}–${to12HourTime(
+    meeting.end_time,
+  )}`;
+  return `${summary}${course.course_meetings.length > 1 ? ` + ${course.course_meetings.length - 1}` : ''}`;
+}
+
+export function toLocationsSummary(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): string {
+  if (!course.course_meetings.length) return 'TBA';
+  const meeting = course.course_meetings[0]!;
+  const summary = meeting.location
+    ? `${meeting.location.building.code}${meeting.location.room ? ` ${meeting.location.room}` : ''}`
+    : 'TBA';
+  return `${summary}${course.course_meetings.length > 1 ? ` + ${course.course_meetings.length - 1}` : ''}`;
 }
 
 export type ListingWithTimes = {
   season_code: Season;
   crn: Crn;
   course: {
-    times_by_day: TimesByDay;
+    course_meetings: {
+      days_of_week: number;
+      start_time: string;
+      end_time: string;
+    }[];
   };
 };
 
@@ -76,28 +110,24 @@ export function checkConflict(
   listing: ListingWithTimes,
 ): CatalogListing[] {
   const conflicts: CatalogListing[] = [];
-  const daysToCheck = Object.keys(listing.course.times_by_day) as Weekdays[];
-  if (!daysToCheck.length) return conflicts;
+  if (!listing.course.course_meetings.length) return conflicts;
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
     if (worksheetCourse.season_code !== listing.season_code) continue;
-    for (const day of daysToCheck) {
-      const info = worksheetCourse.course.times_by_day[day];
-      if (info === undefined) continue;
-      const courseInfo = listing.course.times_by_day[day]!;
-      for (const [startTime, endTime] of info) {
-        const listingStart = toRangeTime(startTime);
-        const listingEnd = toRangeTime(endTime);
-        for (const [courseStartTime, courseEndTime] of courseInfo) {
-          const curStart = toRangeTime(courseStartTime);
-          const curEnd = toRangeTime(courseEndTime);
-          // Conflict exists
-          if (
-            !(listingStart > curEnd || curStart > listingEnd) &&
-            !conflicts.includes(worksheetCourse)
-          ) {
-            conflicts.push(worksheetCourse);
-            continue loopWorksheet;
-          }
+    for (const meeting1 of worksheetCourse.course.course_meetings) {
+      for (const meeting2 of listing.course.course_meetings) {
+        // Two meetings have no days in common
+        if (!(meeting1.days_of_week & meeting2.days_of_week)) continue;
+        const start1 = toRangeTime(meeting1.start_time);
+        const start2 = toRangeTime(meeting2.start_time);
+        const end1 = toRangeTime(meeting1.end_time);
+        const end2 = toRangeTime(meeting2.end_time);
+        // Conflict exists
+        if (
+          !(start1 > end2 || start2 > end1) &&
+          !conflicts.includes(worksheetCourse)
+        ) {
+          conflicts.push(worksheetCourse);
+          continue loopWorksheet;
         }
       }
     }
@@ -263,28 +293,20 @@ export function getEnrolled(
   }
 }
 
-export function getDayTimes(
-  course: Pick<Courses, 'times_by_day'>,
-): { day: Weekdays; start: string; end: string }[] {
-  return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
-    day: day as Weekdays,
-    start: dayTimes[0]![0],
-    end: dayTimes[0]![1],
-  }));
-}
-
-function toDayTimeScore(course: Pick<Courses, 'times_by_day'>): number | null {
-  const times = getDayTimes(course);
-
-  if (times.length) {
-    const startTime = Number(times[0]!.start.split(':').join(''));
-    const firstDay = Object.keys(course.times_by_day)[0] as Weekdays;
-    const dayScore = weekdays.indexOf(firstDay) * 10000;
-    return dayScore + startTime;
-  }
-
-  // If no times then return null
-  return null;
+function toDayTimeScore(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): number | null {
+  if (!course.course_meetings.length) return null;
+  const startTime = Number(
+    course.course_meetings[0]!.start_time.split(':').join(''),
+  );
+  const allDays = course.course_meetings.reduce(
+    (acc, m) => acc | m.days_of_week,
+    0,
+  );
+  const firstDay = Object.values(weekdays).find((day) => allDays & (1 << day))!;
+  const dayScore = firstDay * 10000;
+  return dayScore + startTime;
 }
 
 type ComparableKey = SortKeys | 'season_code' | 'section';
