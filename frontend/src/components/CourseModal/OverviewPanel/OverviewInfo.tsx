@@ -420,7 +420,7 @@ function Professors({ course }: { readonly course: CourseInfo }) {
 function TimeLocation({ course }: { readonly course: CourseInfo }) {
   return (
     <DataField
-      name="Time/Location"
+      name="Meetings"
       value={course.course_meetings.map((session, i) => (
         <div key={i}>
           {toWeekdayStrings(session.days_of_week).join('')}{' '}
