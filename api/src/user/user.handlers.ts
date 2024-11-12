@@ -98,10 +98,7 @@ async function updateWorksheetCourse(
       netId,
       season,
       worksheetNumber,
-      worksheetName:
-        worksheetNumber == 0
-          ? 'Main Worksheet'
-          : `Worksheet ${worksheetNumber}`,
+      worksheetName: `Worksheet ${worksheetNumber}`,
     });
   }
 
