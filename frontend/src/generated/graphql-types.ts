@@ -3,7 +3,6 @@ import { ExtraInfo } from '../queries/graphql-types';
 import { NumberArr } from '../queries/graphql-types';
 import { Season } from '../queries/graphql-types';
 import { StringArr } from '../queries/graphql-types';
-import { TimesByDay } from '../queries/graphql-types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -36,9 +35,9 @@ export type Scalars = {
   NumberArr: { input: NumberArr; output: NumberArr };
   Season: { input: Season; output: Season };
   StringArr: { input: StringArr; output: StringArr };
-  TimesByDay: { input: TimesByDay; output: TimesByDay };
   float8: { input: number; output: number };
   json: { input: object; output: object };
+  timestamp: { input: any; output: any };
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -98,6 +97,75 @@ export type StringComparisonExp = {
   _regex: InputMaybe<Scalars['String']['input']>;
   /** does the column match the given SQL regular expression */
   _similar: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "buildings" */
+export type Buildings = {
+  __typename?: 'buildings';
+  /** Building full name */
+  building_name: Maybe<Scalars['String']['output']>;
+  /** Building short code/abbreviation, as in YCS */
+  code: Scalars['String']['output'];
+  /** An array relationship */
+  locations: Array<Locations>;
+  /** Yale campus map URL */
+  url: Maybe<Scalars['String']['output']>;
+};
+
+/** columns and relationships of "buildings" */
+export type BuildingsLocationsArgs = {
+  distinct_on: InputMaybe<Array<LocationsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<LocationsOrderBy>>;
+  where: InputMaybe<LocationsBoolExp>;
+};
+
+/** Boolean expression to filter rows from the table "buildings". All fields are combined with a logical 'AND'. */
+export type BuildingsBoolExp = {
+  _and: InputMaybe<Array<BuildingsBoolExp>>;
+  _not: InputMaybe<BuildingsBoolExp>;
+  _or: InputMaybe<Array<BuildingsBoolExp>>;
+  building_name: InputMaybe<StringComparisonExp>;
+  code: InputMaybe<StringComparisonExp>;
+  locations: InputMaybe<LocationsBoolExp>;
+  url: InputMaybe<StringComparisonExp>;
+};
+
+/** Ordering options when selecting data from "buildings". */
+export type BuildingsOrderBy = {
+  building_name: InputMaybe<OrderBy>;
+  code: InputMaybe<OrderBy>;
+  locations_aggregate: InputMaybe<LocationsAggregateOrderBy>;
+  url: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "buildings" */
+export enum BuildingsSelectColumn {
+  /** column name */
+  BuildingName = 'building_name',
+  /** column name */
+  Code = 'code',
+  /** column name */
+  Url = 'url',
+}
+
+/** Streaming cursor of the table "buildings" */
+export type BuildingsStreamCursorInput = {
+  /** Stream column input with initial value */
+  initial_value: BuildingsStreamCursorValueInput;
+  /** cursor ordering */
+  ordering: InputMaybe<CursorOrdering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type BuildingsStreamCursorValueInput = {
+  /** Building full name */
+  building_name: InputMaybe<Scalars['String']['input']>;
+  /** Building short code/abbreviation, as in YCS */
+  code: InputMaybe<Scalars['String']['input']>;
+  /** Yale campus map URL */
+  url: InputMaybe<Scalars['String']['input']>;
 };
 
 /** columns and relationships of "course_flags" */
@@ -335,6 +403,197 @@ export type CourseFlagsVarianceFields = {
 export type CourseFlagsVarianceOrderBy = {
   course_id: InputMaybe<OrderBy>;
   flag_id: InputMaybe<OrderBy>;
+};
+
+/** columns and relationships of "course_meetings" */
+export type CourseMeetings = {
+  __typename?: 'course_meetings';
+  /** An object relationship */
+  course: Maybe<Courses>;
+  course_id: Maybe<Scalars['Int']['output']>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: Scalars['Int']['output'];
+  /** End time of this meeting session */
+  end_time: Scalars['String']['output'];
+  /** An object relationship */
+  location: Maybe<Locations>;
+  /** Location of this meeting session */
+  location_id: Maybe<Scalars['Int']['output']>;
+  /** Start time of this meeting session */
+  start_time: Scalars['String']['output'];
+};
+
+/** order by aggregate values of table "course_meetings" */
+export type CourseMeetingsAggregateOrderBy = {
+  avg: InputMaybe<CourseMeetingsAvgOrderBy>;
+  count: InputMaybe<OrderBy>;
+  max: InputMaybe<CourseMeetingsMaxOrderBy>;
+  min: InputMaybe<CourseMeetingsMinOrderBy>;
+  stddev: InputMaybe<CourseMeetingsStddevOrderBy>;
+  stddev_pop: InputMaybe<CourseMeetingsStddevPopOrderBy>;
+  stddev_samp: InputMaybe<CourseMeetingsStddevSampOrderBy>;
+  sum: InputMaybe<CourseMeetingsSumOrderBy>;
+  var_pop: InputMaybe<CourseMeetingsVarPopOrderBy>;
+  var_samp: InputMaybe<CourseMeetingsVarSampOrderBy>;
+  variance: InputMaybe<CourseMeetingsVarianceOrderBy>;
+};
+
+/** order by avg() on columns of table "course_meetings" */
+export type CourseMeetingsAvgOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "course_meetings". All fields are combined with a logical 'AND'. */
+export type CourseMeetingsBoolExp = {
+  _and: InputMaybe<Array<CourseMeetingsBoolExp>>;
+  _not: InputMaybe<CourseMeetingsBoolExp>;
+  _or: InputMaybe<Array<CourseMeetingsBoolExp>>;
+  course: InputMaybe<CoursesBoolExp>;
+  course_id: InputMaybe<IntComparisonExp>;
+  days_of_week: InputMaybe<IntComparisonExp>;
+  end_time: InputMaybe<StringComparisonExp>;
+  location: InputMaybe<LocationsBoolExp>;
+  location_id: InputMaybe<IntComparisonExp>;
+  start_time: InputMaybe<StringComparisonExp>;
+};
+
+/** order by max() on columns of table "course_meetings" */
+export type CourseMeetingsMaxOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** End time of this meeting session */
+  end_time: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+  /** Start time of this meeting session */
+  start_time: InputMaybe<OrderBy>;
+};
+
+/** order by min() on columns of table "course_meetings" */
+export type CourseMeetingsMinOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** End time of this meeting session */
+  end_time: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+  /** Start time of this meeting session */
+  start_time: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "course_meetings". */
+export type CourseMeetingsOrderBy = {
+  course: InputMaybe<CoursesOrderBy>;
+  course_id: InputMaybe<OrderBy>;
+  days_of_week: InputMaybe<OrderBy>;
+  end_time: InputMaybe<OrderBy>;
+  location: InputMaybe<LocationsOrderBy>;
+  location_id: InputMaybe<OrderBy>;
+  start_time: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "course_meetings" */
+export enum CourseMeetingsSelectColumn {
+  /** column name */
+  CourseId = 'course_id',
+  /** column name */
+  DaysOfWeek = 'days_of_week',
+  /** column name */
+  EndTime = 'end_time',
+  /** column name */
+  LocationId = 'location_id',
+  /** column name */
+  StartTime = 'start_time',
+}
+
+/** order by stddev() on columns of table "course_meetings" */
+export type CourseMeetingsStddevOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by stddev_pop() on columns of table "course_meetings" */
+export type CourseMeetingsStddevPopOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by stddev_samp() on columns of table "course_meetings" */
+export type CourseMeetingsStddevSampOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** Streaming cursor of the table "course_meetings" */
+export type CourseMeetingsStreamCursorInput = {
+  /** Stream column input with initial value */
+  initial_value: CourseMeetingsStreamCursorValueInput;
+  /** cursor ordering */
+  ordering: InputMaybe<CursorOrdering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type CourseMeetingsStreamCursorValueInput = {
+  course_id: InputMaybe<Scalars['Int']['input']>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<Scalars['Int']['input']>;
+  /** End time of this meeting session */
+  end_time: InputMaybe<Scalars['String']['input']>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<Scalars['Int']['input']>;
+  /** Start time of this meeting session */
+  start_time: InputMaybe<Scalars['String']['input']>;
+};
+
+/** order by sum() on columns of table "course_meetings" */
+export type CourseMeetingsSumOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by var_pop() on columns of table "course_meetings" */
+export type CourseMeetingsVarPopOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by var_samp() on columns of table "course_meetings" */
+export type CourseMeetingsVarSampOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by variance() on columns of table "course_meetings" */
+export type CourseMeetingsVarianceOrderBy = {
+  course_id: InputMaybe<OrderBy>;
+  /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
+  days_of_week: InputMaybe<OrderBy>;
+  /** Location of this meeting session */
+  location_id: InputMaybe<OrderBy>;
 };
 
 /** columns and relationships of "course_professors" */
@@ -622,10 +881,6 @@ export type Courses = {
   classnotes: Maybe<Scalars['String']['output']>;
   /** True if the course is a college seminar. False otherwise. */
   colsem: Maybe<Scalars['Boolean']['output']>;
-  /** An object relationship */
-  course: Maybe<Courses>;
-  /** An object relationship */
-  courseByLastOfferedCourseId: Maybe<Courses>;
   /** An array relationship */
   course_flags: Array<CourseFlags>;
   /** An aggregate relationship */
@@ -634,17 +889,11 @@ export type Courses = {
   course_home_url: Maybe<Scalars['String']['output']>;
   course_id: Scalars['Int']['output'];
   /** An array relationship */
+  course_meetings: Array<CourseMeetings>;
+  /** An array relationship */
   course_professors: Array<CourseProfessors>;
   /** An aggregate relationship */
   course_professors_aggregate: CourseProfessorsAggregate;
-  /** An array relationship */
-  courses: Array<Courses>;
-  /** An array relationship */
-  coursesByLastOfferedCourseId: Array<Courses>;
-  /** An aggregate relationship */
-  coursesByLastOfferedCourseId_aggregate: CoursesAggregate;
-  /** An aggregate relationship */
-  courses_aggregate: CoursesAggregate;
   /** Number of course credits */
   credits: Maybe<Scalars['float8']['output']>;
   /** Course description */
@@ -717,8 +966,6 @@ export type Courses = {
   same_course_id: Scalars['Int']['output'];
   /** An object relationship */
   season: Maybe<Seasons>;
-  /** An object relationship */
-  seasonBySeasonCode: Seasons;
   /** The season the course is being taught in */
   season_code: Scalars['Season']['output'];
   /**
@@ -739,7 +986,7 @@ export type Courses = {
    * Course meeting times by day, with days as keys and
    *         tuples of `(start_time, end_time, location, location_url)`
    */
-  times_by_day: Scalars['TimesByDay']['output'];
+  times_by_day: Scalars['json']['output'];
   /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Scalars['String']['output']>;
   /** Complete course title */
@@ -770,6 +1017,15 @@ export type CoursesCourseFlagsAggregateArgs = {
 };
 
 /** columns and relationships of "courses" */
+export type CoursesCourseMeetingsArgs = {
+  distinct_on: InputMaybe<Array<CourseMeetingsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<CourseMeetingsOrderBy>>;
+  where: InputMaybe<CourseMeetingsBoolExp>;
+};
+
+/** columns and relationships of "courses" */
 export type CoursesCourseProfessorsArgs = {
   distinct_on: InputMaybe<Array<CourseProfessorsSelectColumn>>;
   limit: InputMaybe<Scalars['Int']['input']>;
@@ -785,42 +1041,6 @@ export type CoursesCourseProfessorsAggregateArgs = {
   offset: InputMaybe<Scalars['Int']['input']>;
   order_by: InputMaybe<Array<CourseProfessorsOrderBy>>;
   where: InputMaybe<CourseProfessorsBoolExp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesCoursesArgs = {
-  distinct_on: InputMaybe<Array<CoursesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<CoursesOrderBy>>;
-  where: InputMaybe<CoursesBoolExp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesCoursesByLastOfferedCourseIdArgs = {
-  distinct_on: InputMaybe<Array<CoursesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<CoursesOrderBy>>;
-  where: InputMaybe<CoursesBoolExp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesCoursesByLastOfferedCourseIdAggregateArgs = {
-  distinct_on: InputMaybe<Array<CoursesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<CoursesOrderBy>>;
-  where: InputMaybe<CoursesBoolExp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesCoursesAggregateArgs = {
-  distinct_on: InputMaybe<Array<CoursesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<CoursesOrderBy>>;
-  where: InputMaybe<CoursesBoolExp>;
 };
 
 /** columns and relationships of "courses" */
@@ -1187,18 +1407,13 @@ export type CoursesBoolExp = {
   average_workload_same_professors_n: InputMaybe<IntComparisonExp>;
   classnotes: InputMaybe<StringComparisonExp>;
   colsem: InputMaybe<BooleanComparisonExp>;
-  course: InputMaybe<CoursesBoolExp>;
-  courseByLastOfferedCourseId: InputMaybe<CoursesBoolExp>;
   course_flags: InputMaybe<CourseFlagsBoolExp>;
   course_flags_aggregate: InputMaybe<CourseFlagsAggregateBoolExp>;
   course_home_url: InputMaybe<StringComparisonExp>;
   course_id: InputMaybe<IntComparisonExp>;
+  course_meetings: InputMaybe<CourseMeetingsBoolExp>;
   course_professors: InputMaybe<CourseProfessorsBoolExp>;
   course_professors_aggregate: InputMaybe<CourseProfessorsAggregateBoolExp>;
-  courses: InputMaybe<CoursesBoolExp>;
-  coursesByLastOfferedCourseId: InputMaybe<CoursesBoolExp>;
-  coursesByLastOfferedCourseId_aggregate: InputMaybe<CoursesAggregateBoolExp>;
-  courses_aggregate: InputMaybe<CoursesAggregateBoolExp>;
   credits: InputMaybe<Float8ComparisonExp>;
   description: InputMaybe<StringComparisonExp>;
   evaluation_narratives: InputMaybe<EvaluationNarrativesBoolExp>;
@@ -1223,7 +1438,6 @@ export type CoursesBoolExp = {
   same_course_and_profs_id: InputMaybe<IntComparisonExp>;
   same_course_id: InputMaybe<IntComparisonExp>;
   season: InputMaybe<SeasonsBoolExp>;
-  seasonBySeasonCode: InputMaybe<SeasonsBoolExp>;
   season_code: InputMaybe<StringComparisonExp>;
   section: InputMaybe<StringComparisonExp>;
   skills: InputMaybe<JsonComparisonExp>;
@@ -1687,14 +1901,11 @@ export type CoursesOrderBy = {
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   classnotes: InputMaybe<OrderBy>;
   colsem: InputMaybe<OrderBy>;
-  course: InputMaybe<CoursesOrderBy>;
-  courseByLastOfferedCourseId: InputMaybe<CoursesOrderBy>;
   course_flags_aggregate: InputMaybe<CourseFlagsAggregateOrderBy>;
   course_home_url: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
+  course_meetings_aggregate: InputMaybe<CourseMeetingsAggregateOrderBy>;
   course_professors_aggregate: InputMaybe<CourseProfessorsAggregateOrderBy>;
-  coursesByLastOfferedCourseId_aggregate: InputMaybe<CoursesAggregateOrderBy>;
-  courses_aggregate: InputMaybe<CoursesAggregateOrderBy>;
   credits: InputMaybe<OrderBy>;
   description: InputMaybe<OrderBy>;
   evaluation_narratives_aggregate: InputMaybe<EvaluationNarrativesAggregateOrderBy>;
@@ -1716,7 +1927,6 @@ export type CoursesOrderBy = {
   same_course_and_profs_id: InputMaybe<OrderBy>;
   same_course_id: InputMaybe<OrderBy>;
   season: InputMaybe<SeasonsOrderBy>;
-  seasonBySeasonCode: InputMaybe<SeasonsOrderBy>;
   season_code: InputMaybe<OrderBy>;
   section: InputMaybe<OrderBy>;
   skills: InputMaybe<OrderBy>;
@@ -5242,6 +5452,194 @@ export type ListingsVarianceOrderBy = {
   listing_id: InputMaybe<OrderBy>;
 };
 
+/** columns and relationships of "locations" */
+export type Locations = {
+  __typename?: 'locations';
+  /** An object relationship */
+  building: Buildings;
+  /** Building code */
+  building_code: Scalars['String']['output'];
+  /** An array relationship */
+  course_meetings: Array<CourseMeetings>;
+  location_id: Scalars['Int']['output'];
+  /** Room number */
+  room: Maybe<Scalars['String']['output']>;
+};
+
+/** columns and relationships of "locations" */
+export type LocationsCourseMeetingsArgs = {
+  distinct_on: InputMaybe<Array<CourseMeetingsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<CourseMeetingsOrderBy>>;
+  where: InputMaybe<CourseMeetingsBoolExp>;
+};
+
+/** order by aggregate values of table "locations" */
+export type LocationsAggregateOrderBy = {
+  avg: InputMaybe<LocationsAvgOrderBy>;
+  count: InputMaybe<OrderBy>;
+  max: InputMaybe<LocationsMaxOrderBy>;
+  min: InputMaybe<LocationsMinOrderBy>;
+  stddev: InputMaybe<LocationsStddevOrderBy>;
+  stddev_pop: InputMaybe<LocationsStddevPopOrderBy>;
+  stddev_samp: InputMaybe<LocationsStddevSampOrderBy>;
+  sum: InputMaybe<LocationsSumOrderBy>;
+  var_pop: InputMaybe<LocationsVarPopOrderBy>;
+  var_samp: InputMaybe<LocationsVarSampOrderBy>;
+  variance: InputMaybe<LocationsVarianceOrderBy>;
+};
+
+/** order by avg() on columns of table "locations" */
+export type LocationsAvgOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** Boolean expression to filter rows from the table "locations". All fields are combined with a logical 'AND'. */
+export type LocationsBoolExp = {
+  _and: InputMaybe<Array<LocationsBoolExp>>;
+  _not: InputMaybe<LocationsBoolExp>;
+  _or: InputMaybe<Array<LocationsBoolExp>>;
+  building: InputMaybe<BuildingsBoolExp>;
+  building_code: InputMaybe<StringComparisonExp>;
+  course_meetings: InputMaybe<CourseMeetingsBoolExp>;
+  location_id: InputMaybe<IntComparisonExp>;
+  room: InputMaybe<StringComparisonExp>;
+};
+
+/** order by max() on columns of table "locations" */
+export type LocationsMaxOrderBy = {
+  /** Building code */
+  building_code: InputMaybe<OrderBy>;
+  location_id: InputMaybe<OrderBy>;
+  /** Room number */
+  room: InputMaybe<OrderBy>;
+};
+
+/** order by min() on columns of table "locations" */
+export type LocationsMinOrderBy = {
+  /** Building code */
+  building_code: InputMaybe<OrderBy>;
+  location_id: InputMaybe<OrderBy>;
+  /** Room number */
+  room: InputMaybe<OrderBy>;
+};
+
+/** Ordering options when selecting data from "locations". */
+export type LocationsOrderBy = {
+  building: InputMaybe<BuildingsOrderBy>;
+  building_code: InputMaybe<OrderBy>;
+  course_meetings_aggregate: InputMaybe<CourseMeetingsAggregateOrderBy>;
+  location_id: InputMaybe<OrderBy>;
+  room: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "locations" */
+export enum LocationsSelectColumn {
+  /** column name */
+  BuildingCode = 'building_code',
+  /** column name */
+  LocationId = 'location_id',
+  /** column name */
+  Room = 'room',
+}
+
+/** order by stddev() on columns of table "locations" */
+export type LocationsStddevOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by stddev_pop() on columns of table "locations" */
+export type LocationsStddevPopOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by stddev_samp() on columns of table "locations" */
+export type LocationsStddevSampOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** Streaming cursor of the table "locations" */
+export type LocationsStreamCursorInput = {
+  /** Stream column input with initial value */
+  initial_value: LocationsStreamCursorValueInput;
+  /** cursor ordering */
+  ordering: InputMaybe<CursorOrdering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type LocationsStreamCursorValueInput = {
+  /** Building code */
+  building_code: InputMaybe<Scalars['String']['input']>;
+  location_id: InputMaybe<Scalars['Int']['input']>;
+  /** Room number */
+  room: InputMaybe<Scalars['String']['input']>;
+};
+
+/** order by sum() on columns of table "locations" */
+export type LocationsSumOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by var_pop() on columns of table "locations" */
+export type LocationsVarPopOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by var_samp() on columns of table "locations" */
+export type LocationsVarSampOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** order by variance() on columns of table "locations" */
+export type LocationsVarianceOrderBy = {
+  location_id: InputMaybe<OrderBy>;
+};
+
+/** columns and relationships of "metadata" */
+export type Metadata = {
+  __typename?: 'metadata';
+  id: Scalars['Int']['output'];
+  last_update: Maybe<Scalars['timestamp']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "metadata". All fields are combined with a logical 'AND'. */
+export type MetadataBoolExp = {
+  _and: InputMaybe<Array<MetadataBoolExp>>;
+  _not: InputMaybe<MetadataBoolExp>;
+  _or: InputMaybe<Array<MetadataBoolExp>>;
+  id: InputMaybe<IntComparisonExp>;
+  last_update: InputMaybe<TimestampComparisonExp>;
+};
+
+/** Ordering options when selecting data from "metadata". */
+export type MetadataOrderBy = {
+  id: InputMaybe<OrderBy>;
+  last_update: InputMaybe<OrderBy>;
+};
+
+/** select columns of table "metadata" */
+export enum MetadataSelectColumn {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastUpdate = 'last_update',
+}
+
+/** Streaming cursor of the table "metadata" */
+export type MetadataStreamCursorInput = {
+  /** Stream column input with initial value */
+  initial_value: MetadataStreamCursorValueInput;
+  /** cursor ordering */
+  ordering: InputMaybe<CursorOrdering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type MetadataStreamCursorValueInput = {
+  id: InputMaybe<Scalars['Int']['input']>;
+  last_update: InputMaybe<Scalars['timestamp']['input']>;
+};
+
 /** column ordering options */
 export enum OrderBy {
   /** in ascending order, nulls last */
@@ -5568,12 +5966,18 @@ export type ProfessorsVarianceFields = {
 
 export type QueryRoot = {
   __typename?: 'query_root';
+  /** fetch data from the table: "buildings" */
+  buildings: Array<Buildings>;
+  /** fetch data from the table: "buildings" using primary key columns */
+  buildings_by_pk: Maybe<Buildings>;
   /** An array relationship */
   course_flags: Array<CourseFlags>;
   /** An aggregate relationship */
   course_flags_aggregate: CourseFlagsAggregate;
   /** fetch data from the table: "course_flags" using primary key columns */
   course_flags_by_pk: Maybe<CourseFlags>;
+  /** An array relationship */
+  course_meetings: Array<CourseMeetings>;
   /** An array relationship */
   course_professors: Array<CourseProfessors>;
   /** An aggregate relationship */
@@ -5622,6 +6026,14 @@ export type QueryRoot = {
   listings_aggregate: ListingsAggregate;
   /** fetch data from the table: "listings" using primary key columns */
   listings_by_pk: Maybe<Listings>;
+  /** An array relationship */
+  locations: Array<Locations>;
+  /** fetch data from the table: "locations" using primary key columns */
+  locations_by_pk: Maybe<Locations>;
+  /** fetch data from the table: "metadata" */
+  metadata: Array<Metadata>;
+  /** fetch data from the table: "metadata" using primary key columns */
+  metadata_by_pk: Maybe<Metadata>;
   /** fetch data from the table: "professors" */
   professors: Array<Professors>;
   /** fetch aggregated fields from the table: "professors" */
@@ -5634,6 +6046,18 @@ export type QueryRoot = {
   seasons_aggregate: SeasonsAggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk: Maybe<Seasons>;
+};
+
+export type QueryRootBuildingsArgs = {
+  distinct_on: InputMaybe<Array<BuildingsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<BuildingsOrderBy>>;
+  where: InputMaybe<BuildingsBoolExp>;
+};
+
+export type QueryRootBuildingsByPkArgs = {
+  code: Scalars['String']['input'];
 };
 
 export type QueryRootCourseFlagsArgs = {
@@ -5655,6 +6079,14 @@ export type QueryRootCourseFlagsAggregateArgs = {
 export type QueryRootCourseFlagsByPkArgs = {
   course_id: Scalars['Int']['input'];
   flag_id: Scalars['Int']['input'];
+};
+
+export type QueryRootCourseMeetingsArgs = {
+  distinct_on: InputMaybe<Array<CourseMeetingsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<CourseMeetingsOrderBy>>;
+  where: InputMaybe<CourseMeetingsBoolExp>;
 };
 
 export type QueryRootCourseProfessorsArgs = {
@@ -5818,6 +6250,30 @@ export type QueryRootListingsByPkArgs = {
   listing_id: Scalars['Int']['input'];
 };
 
+export type QueryRootLocationsArgs = {
+  distinct_on: InputMaybe<Array<LocationsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<LocationsOrderBy>>;
+  where: InputMaybe<LocationsBoolExp>;
+};
+
+export type QueryRootLocationsByPkArgs = {
+  location_id: Scalars['Int']['input'];
+};
+
+export type QueryRootMetadataArgs = {
+  distinct_on: InputMaybe<Array<MetadataSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<MetadataOrderBy>>;
+  where: InputMaybe<MetadataBoolExp>;
+};
+
+export type QueryRootMetadataByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
 export type QueryRootProfessorsArgs = {
   distinct_on: InputMaybe<Array<ProfessorsSelectColumn>>;
   limit: InputMaybe<Scalars['Int']['input']>;
@@ -5863,10 +6319,6 @@ export type Seasons = {
   __typename?: 'seasons';
   /** An array relationship */
   courses: Array<Courses>;
-  /** An array relationship */
-  coursesBySeasonCode: Array<Courses>;
-  /** An aggregate relationship */
-  coursesBySeasonCode_aggregate: CoursesAggregate;
   /** An aggregate relationship */
   courses_aggregate: CoursesAggregate;
   /** An array relationship */
@@ -5883,24 +6335,6 @@ export type Seasons = {
 
 /** columns and relationships of "seasons" */
 export type SeasonsCoursesArgs = {
-  distinct_on: InputMaybe<Array<CoursesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<CoursesOrderBy>>;
-  where: InputMaybe<CoursesBoolExp>;
-};
-
-/** columns and relationships of "seasons" */
-export type SeasonsCoursesBySeasonCodeArgs = {
-  distinct_on: InputMaybe<Array<CoursesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<CoursesOrderBy>>;
-  where: InputMaybe<CoursesBoolExp>;
-};
-
-/** columns and relationships of "seasons" */
-export type SeasonsCoursesBySeasonCodeAggregateArgs = {
   distinct_on: InputMaybe<Array<CoursesSelectColumn>>;
   limit: InputMaybe<Scalars['Int']['input']>;
   offset: InputMaybe<Scalars['Int']['input']>;
@@ -5977,8 +6411,6 @@ export type SeasonsBoolExp = {
   _not: InputMaybe<SeasonsBoolExp>;
   _or: InputMaybe<Array<SeasonsBoolExp>>;
   courses: InputMaybe<CoursesBoolExp>;
-  coursesBySeasonCode: InputMaybe<CoursesBoolExp>;
-  coursesBySeasonCode_aggregate: InputMaybe<CoursesAggregateBoolExp>;
   courses_aggregate: InputMaybe<CoursesAggregateBoolExp>;
   listings: InputMaybe<ListingsBoolExp>;
   listings_aggregate: InputMaybe<ListingsAggregateBoolExp>;
@@ -6011,7 +6443,6 @@ export type SeasonsMinFields = {
 
 /** Ordering options when selecting data from "seasons". */
 export type SeasonsOrderBy = {
-  coursesBySeasonCode_aggregate: InputMaybe<CoursesAggregateOrderBy>;
   courses_aggregate: InputMaybe<CoursesAggregateOrderBy>;
   listings_aggregate: InputMaybe<ListingsAggregateOrderBy>;
   season_code: InputMaybe<OrderBy>;
@@ -6098,6 +6529,12 @@ export type SeasonsVarianceFields = {
 
 export type SubscriptionRoot = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "buildings" */
+  buildings: Array<Buildings>;
+  /** fetch data from the table: "buildings" using primary key columns */
+  buildings_by_pk: Maybe<Buildings>;
+  /** fetch data from the table in a streaming manner: "buildings" */
+  buildings_stream: Array<Buildings>;
   /** An array relationship */
   course_flags: Array<CourseFlags>;
   /** An aggregate relationship */
@@ -6106,6 +6543,10 @@ export type SubscriptionRoot = {
   course_flags_by_pk: Maybe<CourseFlags>;
   /** fetch data from the table in a streaming manner: "course_flags" */
   course_flags_stream: Array<CourseFlags>;
+  /** An array relationship */
+  course_meetings: Array<CourseMeetings>;
+  /** fetch data from the table in a streaming manner: "course_meetings" */
+  course_meetings_stream: Array<CourseMeetings>;
   /** An array relationship */
   course_professors: Array<CourseProfessors>;
   /** An aggregate relationship */
@@ -6170,6 +6611,18 @@ export type SubscriptionRoot = {
   listings_by_pk: Maybe<Listings>;
   /** fetch data from the table in a streaming manner: "listings" */
   listings_stream: Array<Listings>;
+  /** An array relationship */
+  locations: Array<Locations>;
+  /** fetch data from the table: "locations" using primary key columns */
+  locations_by_pk: Maybe<Locations>;
+  /** fetch data from the table in a streaming manner: "locations" */
+  locations_stream: Array<Locations>;
+  /** fetch data from the table: "metadata" */
+  metadata: Array<Metadata>;
+  /** fetch data from the table: "metadata" using primary key columns */
+  metadata_by_pk: Maybe<Metadata>;
+  /** fetch data from the table in a streaming manner: "metadata" */
+  metadata_stream: Array<Metadata>;
   /** fetch data from the table: "professors" */
   professors: Array<Professors>;
   /** fetch aggregated fields from the table: "professors" */
@@ -6186,6 +6639,24 @@ export type SubscriptionRoot = {
   seasons_by_pk: Maybe<Seasons>;
   /** fetch data from the table in a streaming manner: "seasons" */
   seasons_stream: Array<Seasons>;
+};
+
+export type SubscriptionRootBuildingsArgs = {
+  distinct_on: InputMaybe<Array<BuildingsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<BuildingsOrderBy>>;
+  where: InputMaybe<BuildingsBoolExp>;
+};
+
+export type SubscriptionRootBuildingsByPkArgs = {
+  code: Scalars['String']['input'];
+};
+
+export type SubscriptionRootBuildingsStreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<BuildingsStreamCursorInput>>;
+  where: InputMaybe<BuildingsBoolExp>;
 };
 
 export type SubscriptionRootCourseFlagsArgs = {
@@ -6213,6 +6684,20 @@ export type SubscriptionRootCourseFlagsStreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<CourseFlagsStreamCursorInput>>;
   where: InputMaybe<CourseFlagsBoolExp>;
+};
+
+export type SubscriptionRootCourseMeetingsArgs = {
+  distinct_on: InputMaybe<Array<CourseMeetingsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<CourseMeetingsOrderBy>>;
+  where: InputMaybe<CourseMeetingsBoolExp>;
+};
+
+export type SubscriptionRootCourseMeetingsStreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<CourseMeetingsStreamCursorInput>>;
+  where: InputMaybe<CourseMeetingsBoolExp>;
 };
 
 export type SubscriptionRootCourseProfessorsArgs = {
@@ -6424,6 +6909,42 @@ export type SubscriptionRootListingsStreamArgs = {
   where: InputMaybe<ListingsBoolExp>;
 };
 
+export type SubscriptionRootLocationsArgs = {
+  distinct_on: InputMaybe<Array<LocationsSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<LocationsOrderBy>>;
+  where: InputMaybe<LocationsBoolExp>;
+};
+
+export type SubscriptionRootLocationsByPkArgs = {
+  location_id: Scalars['Int']['input'];
+};
+
+export type SubscriptionRootLocationsStreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<LocationsStreamCursorInput>>;
+  where: InputMaybe<LocationsBoolExp>;
+};
+
+export type SubscriptionRootMetadataArgs = {
+  distinct_on: InputMaybe<Array<MetadataSelectColumn>>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  offset: InputMaybe<Scalars['Int']['input']>;
+  order_by: InputMaybe<Array<MetadataOrderBy>>;
+  where: InputMaybe<MetadataBoolExp>;
+};
+
+export type SubscriptionRootMetadataByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+export type SubscriptionRootMetadataStreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<MetadataStreamCursorInput>>;
+  where: InputMaybe<MetadataBoolExp>;
+};
+
 export type SubscriptionRootProfessorsArgs = {
   distinct_on: InputMaybe<Array<ProfessorsSelectColumn>>;
   limit: InputMaybe<Scalars['Int']['input']>;
@@ -6474,6 +6995,19 @@ export type SubscriptionRootSeasonsStreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<SeasonsStreamCursorInput>>;
   where: InputMaybe<SeasonsBoolExp>;
+};
+
+/** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
+export type TimestampComparisonExp = {
+  _eq: InputMaybe<Scalars['timestamp']['input']>;
+  _gt: InputMaybe<Scalars['timestamp']['input']>;
+  _gte: InputMaybe<Scalars['timestamp']['input']>;
+  _in: InputMaybe<Array<Scalars['timestamp']['input']>>;
+  _is_null: InputMaybe<Scalars['Boolean']['input']>;
+  _lt: InputMaybe<Scalars['timestamp']['input']>;
+  _lte: InputMaybe<Scalars['timestamp']['input']>;
+  _neq: InputMaybe<Scalars['timestamp']['input']>;
+  _nin: InputMaybe<Array<Scalars['timestamp']['input']>>;
 };
 
 export type ListSeasonsQueryVariables = Exact<{ [key: string]: never }>;
@@ -6546,7 +7080,6 @@ export type CatalogBySeasonQuery = {
       skills: StringArr;
       syllabus_url: string | null;
       sysem: boolean | null;
-      times_by_day: TimesByDay;
       times_summary: string | null;
       title: string;
       course_flags: Array<{
@@ -6565,6 +7098,17 @@ export type CatalogBySeasonQuery = {
         __typename?: 'listings';
         crn: Crn;
         course_code: string;
+      }>;
+      course_meetings: Array<{
+        __typename?: 'course_meetings';
+        days_of_week: number;
+        start_time: string;
+        end_time: string;
+        location: {
+          __typename?: 'locations';
+          room: string | null;
+          building: { __typename?: 'buildings'; code: string };
+        } | null;
       }>;
     };
   }>;
@@ -6600,7 +7144,6 @@ export type SameCourseOrProfOfferingsQuery = {
       description: string | null;
       requirements: string | null;
       syllabus_url: string | null;
-      times_by_day: TimesByDay;
       section: string;
       last_enrollment?: number | null;
       last_enrollment_same_professors?: boolean | null;
@@ -6620,6 +7163,22 @@ export type SameCourseOrProfOfferingsQuery = {
           courses_taught: number;
           average_rating?: number | null;
         };
+      }>;
+      course_meetings: Array<{
+        __typename?: 'course_meetings';
+        days_of_week: number;
+        start_time: string;
+        end_time: string;
+        location: {
+          __typename?: 'locations';
+          room: string | null;
+          building: {
+            __typename?: 'buildings';
+            code: string;
+            building_name: string | null;
+            url: string | null;
+          };
+        } | null;
       }>;
       course_flags: Array<{
         __typename?: 'course_flags';
@@ -6677,12 +7236,17 @@ export type CourseModalPrefetchCourseDataFragment = {
   areas: StringArr;
   extra_info: ExtraInfo;
   description: string | null;
-  times_by_day: TimesByDay;
   same_course_id: number;
   listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
   course_professors: Array<{
     __typename?: 'course_professors';
     professor: { __typename?: 'professors'; professor_id: number };
+  }>;
+  course_meetings: Array<{
+    __typename?: 'course_meetings';
+    days_of_week: number;
+    start_time: string;
+    end_time: string;
   }>;
   evaluation_statistic?: {
     __typename?: 'evaluation_statistics';

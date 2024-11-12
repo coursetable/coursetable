@@ -13,7 +13,7 @@ import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
 import type { CatalogListing } from '../queries/api';
-import type { Season, Weekdays } from '../queries/graphql-types';
+import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { isEqual } from '../utilities/common';
@@ -22,12 +22,11 @@ import {
   subjects,
   schools,
   courseInfoAttributes,
+  weekdays,
 } from '../utilities/constants';
 import {
-  abbreviateWorkdays,
   isInWorksheet,
   checkConflict,
-  getDayTimes,
   getEnrolled,
   getNumFriends,
   getOverallRatings,
@@ -38,6 +37,7 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
+  toWeekdayStrings,
   type NumFriendsReturn,
 } from '../utilities/course';
 
@@ -135,7 +135,7 @@ export interface CategoricalFilters {
   selectSubjects: string;
   selectSkillsAreas: string;
   selectSeasons: Season;
-  selectDays: Weekdays;
+  selectDays: number;
   selectSchools: string;
   selectCredits: number;
   selectCourseInfoAttributes: string;
@@ -377,8 +377,12 @@ export function SearchProvider({
           case 'enrollment':
             return getEnrolled(listing.course, 'stat');
           case 'days':
-            return abbreviateWorkdays(
-              Object.keys(listing.course.times_by_day) as Weekdays[],
+            return toWeekdayStrings(
+              listing.course.course_meetings.reduce(
+                // Each days_of_week is a bitmask. Join them to get all days.
+                (acc, m) => acc | m.days_of_week,
+                0,
+              ),
             );
           case 'info-attributes':
             return listing.course.course_flags.map((f) => f.flag.flag_text);
@@ -510,12 +514,11 @@ export function SearchProvider({
         }
 
         if (timeBounds.isNonEmpty) {
-          const times = getDayTimes(listing.course);
           if (
-            !times.some(
-              (time) =>
-                toRangeTime(time.start) >= timeBounds.value[0] &&
-                toRangeTime(time.end) <= timeBounds.value[1],
+            !listing.course.course_meetings.some(
+              (session) =>
+                toRangeTime(session.start_time) >= timeBounds.value[0] &&
+                toRangeTime(session.end_time) <= timeBounds.value[1],
             )
           )
             return false;
@@ -573,8 +576,10 @@ export function SearchProvider({
           return false;
 
         if (selectDays.value.length !== 0) {
-          const days = getDayTimes(listing.course).map(
-            (daytime) => daytime.day,
+          const days = listing.course.course_meetings.flatMap((session) =>
+            Object.values(weekdays).filter(
+              (day) => session.days_of_week & (1 << day),
+            ),
           );
           const selectDayValues = selectDays.value.map((day) => day.value);
           // Require the two sets to be equal
@@ -644,22 +649,15 @@ export function SearchProvider({
             listing.course.course_professors.some((p) =>
               p.professor.name.toLowerCase().includes(token),
             ) ||
-            // Use `times_by_day` instead of `locations_summary` to account for
-            // multiple locations.
-            Object.values(listing.course.times_by_day)
-              .flat()
-              .flatMap((x) => x[2].toLowerCase().split(' '))
-              .some(
-                (loc) =>
-                  // Never allow a number to match a room number, as numbers are
-                  // more likely to be course numbers.
-                  // TODO: this custom parsing is not ideal. `times_by_day`
-                  // should give a more structured location format.
-                  !/^\d+$/u.test(loc) &&
-                  loc !== '-' &&
-                  loc !== 'tba' &&
-                  loc.startsWith(token),
-              )
+            // Use `course_meetings` instead of `locations_summary` to account
+            // for multiple locations.
+            listing.course.course_meetings.some(({ location }) =>
+              // TODO catalog no longer stores building full name; we should
+              // fetch this as a separate query
+              // Do not match on room numbers because room numbers are more
+              // likely to be course numbers
+              location?.building.code.toLowerCase().startsWith(token),
+            )
           )
             continue;
 

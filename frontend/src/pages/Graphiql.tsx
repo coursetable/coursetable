@@ -32,7 +32,18 @@ function Graphiql() {
   courses(where: { season_code: { _eq: "${CUR_SEASON}" } }) {
     title
     credits
-    times_by_day
+    # Get information about the course's meetings
+    course_meetings {
+      days_of_week
+      start_time
+      end_time
+      location {
+        room
+        building {
+          code
+        }
+      }
+    }
     # Get information about professors that teach this course
     course_professors {
       professor {

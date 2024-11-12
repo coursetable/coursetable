@@ -19,22 +19,3 @@ export type ExtraInfo =
   | 'NUMBER_CHANGED';
 export type StringArr = string[];
 export type NumberArr = number[];
-
-export const weekdays = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
-] as const;
-export type Weekdays = (typeof weekdays)[number];
-export type TimesByDay = {
-  [day in Weekdays]?: [
-    startTime: string,
-    endTime: string,
-    location: string,
-    locationURL: string,
-  ][];
-};

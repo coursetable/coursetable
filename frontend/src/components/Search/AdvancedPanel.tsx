@@ -24,9 +24,12 @@ import {
   courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
 
-import { weekdays } from '../../queries/graphql-types';
 import { useStore } from '../../store';
-import { credits, skillsAreasColors } from '../../utilities/constants';
+import {
+  weekdays,
+  credits,
+  skillsAreasColors,
+} from '../../utilities/constants';
 import {
   toRealTime,
   to12HourTime,
@@ -239,9 +242,9 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
         )}
         <Select
           id={`${formLabelId}-day`}
-          options={weekdays.map((day) => ({
+          options={Object.entries(weekdays).map(([day, value]) => ({
             label: day,
-            value: day,
+            value,
           }))}
           handle="selectDays"
           placeholder="All Days"
