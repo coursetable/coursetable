@@ -432,15 +432,16 @@ export const barChartColors = [
   '#00e800',
 ];
 
-// This is the structure we use for the days_of_week field on course_meetings.
+// The days_of_week field on course_meetings is a bitmask where the ith bit
+// (1 << i) represents whether the course meets on the ith day of the week.
 // For example, if a course meets on Monday, Wednesday, and Friday, the value
 // will be 2 + 8 + 32 = 42.
 export const weekdays = {
-  Sunday: 1,
-  Monday: 2,
-  Tuesday: 4,
-  Wednesday: 8,
-  Thursday: 16,
-  Friday: 32,
-  Saturday: 64,
+  Sunday: 0,
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
 };

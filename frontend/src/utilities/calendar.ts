@@ -254,9 +254,9 @@ export function getCalendarEvents(
         end_time: endTime,
         location,
       }) => {
-        const days = Object.values(weekdays)
-          .filter((mask) => daysOfWeek & mask)
-          .map(Math.log2);
+        const days = Object.values(weekdays).filter(
+          (day) => daysOfWeek & (1 << day),
+        );
         const firstMeetingDay = semester
           ? firstDaySince(semester.start, days)
           : // Irrelevant for rbc, because it always uses the current date

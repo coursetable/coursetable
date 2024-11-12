@@ -135,7 +135,7 @@ export interface CategoricalFilters {
   selectSubjects: string;
   selectSkillsAreas: string;
   selectSeasons: Season;
-  selectDays: number; // A bitmask: 1, 2, 4, 8, etc.
+  selectDays: number;
   selectSchools: string;
   selectCredits: number;
   selectCourseInfoAttributes: string;
@@ -576,10 +576,9 @@ export function SearchProvider({
           return false;
 
         if (selectDays.value.length !== 0) {
-          // Note: selectDays is already a bitmask value
           const days = listing.course.course_meetings.flatMap((session) =>
             Object.values(weekdays).filter(
-              (mask) => session.days_of_week & mask,
+              (day) => session.days_of_week & (1 << day),
             ),
           );
           const selectDayValues = selectDays.value.map((day) => day.value);

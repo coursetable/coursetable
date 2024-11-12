@@ -57,7 +57,7 @@ export function toSeasonDate(seasonCode: Season): string {
 // See constants.ts for the mapping of days of the week to numbers
 export function toWeekdayStrings(daysOfWeek: number): string[] {
   return Object.entries(weekdays)
-    .filter(([, mask]) => daysOfWeek & mask)
+    .filter(([, day]) => daysOfWeek & (1 << day))
     .map(([d]) =>
       ['Thursday', 'Saturday', 'Sunday'].includes(d) ? d.slice(0, 2) : d[0]!,
     );
@@ -85,6 +85,7 @@ export function checkConflict(
     if (worksheetCourse.season_code !== listing.season_code) continue;
     for (const meeting1 of worksheetCourse.course.course_meetings) {
       for (const meeting2 of listing.course.course_meetings) {
+        // Two meetings have no days in common
         if (!(meeting1.days_of_week & meeting2.days_of_week)) continue;
         const start1 = toRangeTime(meeting1.start_time);
         const start2 = toRangeTime(meeting2.start_time);
@@ -273,7 +274,7 @@ function toDayTimeScore(
     (acc, m) => acc | m.days_of_week,
     0,
   );
-  const firstDay = Object.values(weekdays).findIndex((mask) => allDays & mask);
+  const firstDay = Object.values(weekdays).find((day) => allDays & (1 << day))!;
   const dayScore = firstDay * 10000;
   return dayScore + startTime;
 }
