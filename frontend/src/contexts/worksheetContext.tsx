@@ -133,6 +133,7 @@ export function WorksheetProvider({
 
   const handlePersonChange = useCallback(
     (newPerson: 'me' | NetId) => {
+      changeWorksheet(0);
       setViewedPerson(newPerson);
     },
     [setViewedPerson],
