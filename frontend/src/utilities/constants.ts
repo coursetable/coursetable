@@ -431,3 +431,16 @@ export const barChartColors = [
   '#aeed1a',
   '#00e800',
 ];
+
+// This is the structure we use for the days_of_week field on course_meetings.
+// For example, if a course meets on Monday, Wednesday, and Friday, the value
+// will be 2 + 8 + 32 = 42.
+export const weekdays = {
+  Sunday: 1,
+  Monday: 2,
+  Tuesday: 4,
+  Wednesday: 8,
+  Thursday: 16,
+  Friday: 32,
+  Saturday: 64,
+};

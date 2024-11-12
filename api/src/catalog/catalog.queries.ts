@@ -75,7 +75,6 @@ export type CatalogBySeasonQuery = {
       skills: any;
       syllabus_url: string | null;
       sysem: boolean | null;
-      times_by_day: any;
       times_summary: string | null;
       title: string;
       course_flags: Array<{
@@ -94,6 +93,17 @@ export type CatalogBySeasonQuery = {
         __typename?: 'listings';
         crn: number;
         course_code: string;
+      }>;
+      course_meetings: Array<{
+        __typename?: 'course_meetings';
+        days_of_week: number;
+        start_time: string;
+        end_time: string;
+        location: {
+          __typename?: 'locations';
+          room: string | null;
+          building: { __typename?: 'buildings'; code: string };
+        } | null;
       }>;
     };
   }>;
@@ -172,7 +182,17 @@ export const CatalogBySeasonDocument = gql`
         skills
         syllabus_url
         sysem
-        times_by_day
+        course_meetings {
+          days_of_week
+          start_time
+          end_time
+          location {
+            room
+            building {
+              code
+            }
+          }
+        }
         times_summary
         title
       }
