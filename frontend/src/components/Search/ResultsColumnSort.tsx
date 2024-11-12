@@ -23,7 +23,7 @@ const isNumeric: { [key in SortKeys]: boolean } = {
   average_gut_rating: true,
   enrollment: true,
   time: true,
-  locations_summary: false,
+  location: false,
 };
 
 function ResultsColumnSort({
