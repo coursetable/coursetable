@@ -33,3 +33,16 @@ export function worksheetCoursesToWorksheets(
   }
   return res;
 }
+
+export function getFirstAvailableWsNumber(worksheetNumbers: number[]) {
+  // Equivalent to finding the MEX (minimum excluded) element of this array.
+  let firstAvailableWsNumber = 1;
+  for (const existingWsNum of worksheetNumbers) {
+    if (existingWsNum === firstAvailableWsNumber) {
+      firstAvailableWsNumber += 1;
+    } else if (existingWsNum > firstAvailableWsNumber) {
+      break;
+    }
+  }
+  return firstAvailableWsNumber;
+}
