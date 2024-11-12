@@ -12,7 +12,7 @@ import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import { extraInfo } from '../../../utilities/constants';
 import {
-  toWeekdayStrings,
+  toWeekdaysDisplayString,
   to12HourTime,
   toSeasonString,
   truncatedText,
@@ -38,7 +38,7 @@ function SectionLink({
   const timeString = section.course.course_meetings
     .map(
       (session) =>
-        `${toWeekdayStrings(session.days_of_week).join('')} ${to12HourTime(session.start_time)}–${to12HourTime(session.end_time)}`,
+        `${toWeekdaysDisplayString(session.days_of_week)} ${to12HourTime(session.start_time)}–${to12HourTime(session.end_time)}`,
     )
     .join(', ');
   const professors =

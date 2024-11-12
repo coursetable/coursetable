@@ -24,7 +24,7 @@ import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import { schools, ratingColormap } from '../../../utilities/constants';
 import {
-  toWeekdayStrings,
+  toWeekdaysDisplayString,
   getEnrolled,
   toSeasonString,
   to12HourTime,
@@ -423,7 +423,7 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
       name="Meetings"
       value={course.course_meetings.map((session, i) => (
         <div key={i}>
-          {toWeekdayStrings(session.days_of_week).join('')}{' '}
+          {toWeekdaysDisplayString(session.days_of_week)}{' '}
           {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
           {session.location && (
             <>
