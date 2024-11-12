@@ -52,7 +52,6 @@ query catalogBySeason($season: String!) {
         crn
         course_code
       }
-      locations_summary
       regnotes
       requirements
       rp_attr
@@ -72,7 +71,6 @@ query catalogBySeason($season: String!) {
           }
         }
       }
-      times_summary
       title
     }
     course_code

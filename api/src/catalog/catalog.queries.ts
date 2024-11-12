@@ -66,7 +66,6 @@ export type CatalogBySeasonQuery = {
       final_exam: string | null;
       fysem: boolean | null;
       last_offered_course_id: number | null;
-      locations_summary: string | null;
       regnotes: string | null;
       requirements: string | null;
       rp_attr: string | null;
@@ -75,7 +74,6 @@ export type CatalogBySeasonQuery = {
       skills: any;
       syllabus_url: string | null;
       sysem: boolean | null;
-      times_summary: string | null;
       title: string;
       course_flags: Array<{
         __typename?: 'course_flags';
@@ -173,7 +171,6 @@ export const CatalogBySeasonDocument = gql`
           crn
           course_code
         }
-        locations_summary
         regnotes
         requirements
         rp_attr
@@ -193,7 +190,6 @@ export const CatalogBySeasonDocument = gql`
             }
           }
         }
-        times_summary
         title
       }
       course_code
