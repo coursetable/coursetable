@@ -1,6 +1,6 @@
 import type express from 'express';
 import chroma from 'chroma-js';
-import { and, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
 import { worksheetCoursesToWorksheets } from './user.utils.js';
@@ -8,6 +8,7 @@ import { worksheetCoursesToWorksheets } from './user.utils.js';
 import {
   studentBluebookSettings,
   worksheetCourses,
+  worksheetNames,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
@@ -78,6 +79,31 @@ async function updateWorksheetCourse(
       ),
     );
 
+  if (worksheetNumber > 0) {
+    const [nameExists] = await db
+      .selectDistinctOn([
+        worksheetNames.netId,
+        worksheetNames.season,
+        worksheetNames.worksheetNumber,
+      ])
+      .from(worksheetNames)
+      .where(
+        and(
+          eq(worksheetNames.netId, netId),
+          eq(worksheetNames.season, season),
+          eq(worksheetNames.worksheetNumber, worksheetNumber),
+        ),
+      );
+    if (!nameExists) {
+      await db.insert(worksheetNames).values({
+        netId,
+        season,
+        worksheetNumber,
+        worksheetName: `Worksheet ${worksheetNumber}`,
+      });
+    }
+  }
+
   if (action === 'add') {
     winston.info(
       `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
@@ -106,6 +132,33 @@ async function updateWorksheetCourse(
           eq(worksheetCourses.worksheetNumber, worksheetNumber),
         ),
       );
+
+    // Cannot delete main worksheet
+    if (worksheetNumber > 0) {
+      const courseCountRes = await db
+        .select({ courseCount: count() })
+        .from(worksheetCourses)
+        .where(
+          and(
+            eq(worksheetCourses.netId, netId),
+            eq(worksheetCourses.season, season),
+            eq(worksheetCourses.worksheetNumber, worksheetNumber),
+          ),
+        );
+
+      const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
+      if (numCoursesInCurWorksheet === 0) {
+        await db
+          .delete(worksheetNames)
+          .where(
+            and(
+              eq(worksheetNames.netId, netId),
+              eq(worksheetNames.season, season),
+              eq(worksheetNames.worksheetNumber, worksheetNumber),
+            ),
+          );
+      }
+    }
   } else {
     // Update data of a bookmarked course
     winston.info(
