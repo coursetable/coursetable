@@ -196,6 +196,42 @@ export function updateWorksheetCourses(
   });
 }
 
+export async function updateWorksheetNames(
+  body: {
+    season: Season;
+  } & (
+    | {
+        action: 'add';
+      }
+    | {
+        action: 'delete';
+        worksheetNumber: number;
+      }
+    | {
+        action: 'rename';
+        worksheetNumber: number;
+        worksheetName: string;
+      }
+  ),
+): Promise<boolean> {
+  return fetchAPI('/user/updateWorksheetNames', {
+    body,
+    breadcrumb: {
+      category: 'worksheet',
+      message: `Updating worksheet names`,
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'WORKSHEET_NOT_FOUND':
+          toast.error('Worksheet not found.');
+          return true;
+        default:
+          return false;
+      }
+    },
+  });
+}
+
 const hiddenCoursesStorage = createLocalStorageSlot<{
   [seasonCode: Season]: { [crn: Crn]: boolean };
 }>('hiddenCourses');
@@ -460,6 +496,22 @@ export async function fetchUserWorksheets() {
     // first device that logged in, and assume that one is the primary device.
     hiddenCoursesStorage.remove();
   }
+  return res;
+}
+
+export async function fetchUserWorksheetNames() {
+  const res = await fetchAPI('/user/worksheetNames', {
+    breadcrumb: {
+      category: 'worksheet',
+      message: 'Fetching user worksheet names',
+    },
+    schema: z.object({
+      netId: netIdSchema,
+      worksheetNames: z.record(z.string(), z.record(z.string(), z.string())),
+      // { [season]: { [worksheetNumber]: worksheetName } }
+    }),
+  });
+  if (!res) return undefined;
   return res;
 }
 
