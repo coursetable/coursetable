@@ -10,7 +10,6 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
     areas
     extra_info
     description
-    times_by_day
     same_course_id
     listings {
       crn
@@ -20,6 +19,11 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
       professor {
         professor_id
       }
+    }
+    course_meetings {
+      days_of_week
+      start_time
+      end_time
     }
     evaluation_statistic @include(if: $hasEvals) {
       responses
@@ -72,6 +76,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
         description
         requirements
         syllabus_url
+        section
         course_professors {
           professor {
             professor_id
@@ -81,8 +86,19 @@ export const SameCourseOrProfOfferingsDocument = gql`
             average_rating @include(if: $hasEvals)
           }
         }
-        times_by_day
-        section
+        course_meetings {
+          days_of_week
+          start_time
+          end_time
+          location {
+            room
+            building {
+              code
+              building_name
+              url
+            }
+          }
+        }
         course_flags {
           flag {
             flag_text
