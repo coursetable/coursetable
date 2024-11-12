@@ -61,7 +61,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
-            {person === 'me' && (
+            {(person === 'me' && linkCourses.length == 0) && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -105,10 +105,10 @@ function WorksheetCalendarList() {
                 className={clsx(styles.button, 'w-100 btn')}
               >
                 <Dropdown.Item eventKey="1" as="div">
-                  <GoogleCalendarButton />
+                  <GoogleCalendarButton linkCourses={linkCourses.length > 0 ? linkCourses : []} />
                 </Dropdown.Item>
                 <Dropdown.Item eventKey="2" as="div">
-                  <ICSExportButton />
+                  <ICSExportButton linkCourses={linkCourses.length > 0 ? linkCourses : []} />
                 </Dropdown.Item>
               </DropdownButton>
             </OverlayTrigger>
@@ -123,7 +123,7 @@ function WorksheetCalendarList() {
                 key={curSeason + course.crn}
                 listing={course.listing}
                 hidden={false}
-                exported={true}
+                exported={false}
               />
             ))}
           </ListGroup>
@@ -138,7 +138,7 @@ function WorksheetCalendarList() {
                 key={curSeason + course.crn}
                 listing={course.listing}
                 hidden={course.hidden ?? false}
-                exported={false}
+                exported={true}
               />
             ))}
           </ListGroup>

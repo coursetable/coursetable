@@ -1,13 +1,13 @@
 import FileSaver from 'file-saver';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
 import ICSIcon from '../../images/ics.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
 
-export default function ICSExportButton() {
+export default function ICSExportButton({linkCourses}: {linkCourses: WorksheetCourse[]}) {
   const { curSeason, courses } = useWorksheet();
 
   const exportICS = () => {
-    const events = getCalendarEvents('ics', courses, curSeason);
+    const events = getCalendarEvents('ics', (linkCourses.length != 0 ? linkCourses : courses), curSeason);
     // Error already reported
     if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR

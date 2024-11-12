@@ -4,12 +4,12 @@ import { toast } from 'react-toastify';
 import Spinner from '../../components/Spinner';
 import { academicCalendars } from '../../config';
 import { useGapi } from '../../contexts/gapiContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
 import GCalIcon from '../../images/gcal.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
 
-function GoogleCalendarButton(): React.JSX.Element {
+function GoogleCalendarButton({linkCourses}: {linkCourses: WorksheetCourse[]}): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
   const { curSeason, courses } = useWorksheet();
@@ -63,7 +63,7 @@ function GoogleCalendarButton(): React.JSX.Element {
           }),
         );
       }
-      const events = getCalendarEvents('gcal', courses, curSeason);
+      const events = getCalendarEvents('gcal', (linkCourses.length != 0 ? linkCourses : courses), curSeason);
       await Promise.all(
         events.map(async (event) => {
           try {
@@ -94,7 +94,7 @@ function GoogleCalendarButton(): React.JSX.Element {
     } finally {
       setExporting(false);
     }
-  }, [courses, gapi, curSeason]);
+  }, [courses, linkCourses, gapi, curSeason]);
 
   useEffect(() => {
     if (!authInstance || user || !exportButtonRef.current) return;
