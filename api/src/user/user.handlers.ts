@@ -1,6 +1,6 @@
 import type express from 'express';
 import chroma from 'chroma-js';
-import { and, count, eq, sql } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
 import { worksheetCoursesToWorksheets } from './user.utils.js';
@@ -79,27 +79,29 @@ async function updateWorksheetCourse(
       ),
     );
 
-  const [nameExists] = await db
-    .selectDistinctOn([
-      worksheetNames.netId,
-      worksheetNames.season,
-      worksheetNames.worksheetNumber,
-    ])
-    .from(worksheetNames)
-    .where(
-      and(
-        eq(worksheetNames.netId, netId),
-        eq(worksheetNames.season, season),
-        eq(worksheetNames.worksheetNumber, worksheetNumber),
-      ),
-    );
-  if (!nameExists && worksheetNumber > 0) {
-    await db.insert(worksheetNames).values({
-      netId,
-      season,
-      worksheetNumber,
-      worksheetName: `Worksheet ${worksheetNumber}`,
-    });
+  if (worksheetNumber > 0) {
+    const [nameExists] = await db
+      .selectDistinctOn([
+        worksheetNames.netId,
+        worksheetNames.season,
+        worksheetNames.worksheetNumber,
+      ])
+      .from(worksheetNames)
+      .where(
+        and(
+          eq(worksheetNames.netId, netId),
+          eq(worksheetNames.season, season),
+          eq(worksheetNames.worksheetNumber, worksheetNumber),
+        ),
+      );
+    if (!nameExists) {
+      await db.insert(worksheetNames).values({
+        netId,
+        season,
+        worksheetNumber,
+        worksheetName: `Worksheet ${worksheetNumber}`,
+      });
+    }
   }
 
   if (action === 'add') {
@@ -145,7 +147,7 @@ async function updateWorksheetCourse(
         );
 
       const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-      if (numCoursesInCurWorksheet == 0) {
+      if (numCoursesInCurWorksheet === 0) {
         await db
           .delete(worksheetNames)
           .where(
