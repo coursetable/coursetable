@@ -93,7 +93,7 @@ async function updateWorksheetCourse(
         eq(worksheetNames.worksheetNumber, worksheetNumber),
       ),
     );
-  if (!nameExists) {
+  if (!nameExists && worksheetNumber > 0) {
     await db.insert(worksheetNames).values({
       netId,
       season,
