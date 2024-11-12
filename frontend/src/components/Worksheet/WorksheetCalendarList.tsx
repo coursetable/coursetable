@@ -17,7 +17,7 @@ import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
-import { useCourseData } from '../../contexts/ferryContext';
+import { useCourseData, seasons } from '../../contexts/ferryContext';
 import { linkDataToCourses } from '../../utilities/course';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
@@ -43,7 +43,7 @@ function WorksheetCalendarList() {
     loading: coursesLoading,
     courses: courseData,
     error: courseLoadError,
-  } = useCourseData([curSeason]);
+  } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
     const data = searchParams.get("ws");

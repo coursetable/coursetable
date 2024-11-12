@@ -5,7 +5,7 @@ import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
-import { useCourseData } from '../../contexts/ferryContext';
+import { useCourseData, seasons } from '../../contexts/ferryContext';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -127,7 +127,7 @@ export default function WorksheetStats() {
     loading: coursesLoading,
     courses: courseData,
     error: courseLoadError,
-  } = useCourseData([curSeason]);
+  } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
     const data = searchParams.get("ws");

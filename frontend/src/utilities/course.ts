@@ -442,12 +442,13 @@ export const linkDataToCourses = (courseData: CourseData, curSeason: string & BR
   const serial = atob(data);
   const courseSerials = serial.split("|");
   console.log(courseSerials);
+  const linkSeason = courseSerials[0] as string & BRAND<"season">
   const courseObjects: WorksheetCourse[] = []
   for (const course of courseSerials.slice(1)) {
     const components = course.split("_");  // crn, color, t/f for hidden
     const crn = Number(components[0]) || 0;
     const hidden = components[2] == "t" ? true : false;
-    const seasonCourses = courseData[curSeason];
+    const seasonCourses = courseData[linkSeason];
     console.log(seasonCourses)
     const seasonCourseKeys = seasonCourses?.data.entries() || []
     for (const [crnKey, listingVal] of seasonCourseKeys) {
@@ -464,4 +465,10 @@ export const linkDataToCourses = (courseData: CourseData, curSeason: string & BR
   }
   console.log(courseObjects)
   return courseObjects
+}
+
+export const getSeasonFromLink = (data: string): string & BRAND<"season"> => {
+  const serial = atob(data);
+  const courseSerials = serial.split("|");
+  return courseSerials[0] as string & BRAND<"season">
 }

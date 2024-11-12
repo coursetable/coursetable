@@ -9,12 +9,12 @@ import { seasons, useCourseData } from '../../contexts/ferryContext';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 import { BRAND } from 'zod';
-import { linkDataToCourses } from '../../utilities/course';
+import { linkDataToCourses, getSeasonFromLink } from '../../utilities/course';
 
 function WorksheetCalendar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
-  const { courses, curSeason } = useWorksheet();
+  const { courses, curSeason, changeSeason } = useWorksheet();
 
   const eventStyleGetter = useEventStyle();
 
@@ -49,7 +49,7 @@ function WorksheetCalendar() {
     loading: coursesLoading,
     courses: courseData,
     error: courseLoadError,
-  } = useCourseData([curSeason]);
+  } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
     const data = searchParams.get("ws");
@@ -57,6 +57,7 @@ function WorksheetCalendar() {
     console.log("effect")
     const courseObjects = linkDataToCourses(courseData, curSeason, data);
     setLinkCourses(courseObjects);
+    changeSeason(getSeasonFromLink(data));
     // import courses
   }, [coursesLoading])
 
