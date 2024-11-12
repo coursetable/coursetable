@@ -98,7 +98,7 @@ export const worksheetNames = pgTable(
     worksheetName: varchar('worksheetName', { length: 64 }).notNull(),
   },
   (table) => ({
-    worksheetUniqueIdx: uniqueIndex('worksheet_unique_idx').on(
+    worksheetNamesUniqueIdx: uniqueIndex('worksheetNames_unique_idx').on(
       table.netId,
       table.season,
       table.worksheetNumber,
