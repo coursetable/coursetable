@@ -112,6 +112,8 @@ app.use(
     // Important: all headers must be lowercase; otherwise it will not override
     // existing headers on the request.
     req.headers['x-hasura-role'] = hasuraRole;
+    req.headers['x-hasura-admin-secret'] =
+      process.env.HASURA_GRAPHQL_ADMIN_SECRET!;
     next();
   },
   createProxyMiddleware({

@@ -54,10 +54,11 @@ function WorksheetCalendar() {
   useEffect(() => {
     const data = searchParams.get("ws");
     if (!data) return;
+    console.log("effect")
     const courseObjects = linkDataToCourses(courseData, curSeason, data);
     setLinkCourses(courseObjects);
     // import courses
-  }, [])
+  }, [coursesLoading])
 
   return (
     <Calendar

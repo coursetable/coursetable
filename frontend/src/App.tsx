@@ -11,13 +11,10 @@ import Spinner from './components/Spinner';
 import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
-import { useAuth } from './hooks/useAuth';
-import { useDimensions } from './hooks/useDimensions';
-import { useTheme } from './hooks/useTheme';
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 
-import { useStore } from './store';
+import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
 
@@ -46,7 +43,6 @@ const Spring24Release = suspended(
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function AuthenticatedRoutes() {
-  useAuth();
   const { authStatus, user } = useStore(
     useShallow((state) => ({
       user: state.user,
@@ -91,9 +87,7 @@ function AuthenticatedRoutes() {
 function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
-  useAuth();
-  useTheme();
-  useDimensions();
+  useInitStore();
 
   return (
     <div

@@ -3106,6 +3106,8 @@ export type EvaluationNarratives = {
   id: Scalars['Int']['output'];
   /** Question to which this narrative comment responds */
   question_code: Scalars['String']['output'];
+  /** The number of the response for the given course and question */
+  response_number: Scalars['Int']['output'];
 };
 
 /** aggregated selection of "evaluation_narratives" */
@@ -3251,6 +3253,8 @@ export type EvaluationNarrativesAvgFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']['output']>;
   id: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "evaluation_narratives" */
@@ -3266,6 +3270,8 @@ export type EvaluationNarrativesAvgOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "evaluation_narratives". All fields are combined with a logical 'AND'. */
@@ -3283,6 +3289,7 @@ export type EvaluationNarrativesBoolExp = {
   evaluation_question: InputMaybe<EvaluationQuestionsBoolExp>;
   id: InputMaybe<IntComparisonExp>;
   question_code: InputMaybe<StringComparisonExp>;
+  response_number: InputMaybe<IntComparisonExp>;
 };
 
 /** aggregate max on columns */
@@ -3303,6 +3310,8 @@ export type EvaluationNarrativesMaxFields = {
   id: Maybe<Scalars['Int']['output']>;
   /** Question to which this narrative comment responds */
   question_code: Maybe<Scalars['String']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "evaluation_narratives" */
@@ -3322,6 +3331,8 @@ export type EvaluationNarrativesMaxOrderBy = {
   id: InputMaybe<OrderBy>;
   /** Question to which this narrative comment responds */
   question_code: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
@@ -3342,6 +3353,8 @@ export type EvaluationNarrativesMinFields = {
   id: Maybe<Scalars['Int']['output']>;
   /** Question to which this narrative comment responds */
   question_code: Maybe<Scalars['String']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "evaluation_narratives" */
@@ -3361,6 +3374,8 @@ export type EvaluationNarrativesMinOrderBy = {
   id: InputMaybe<OrderBy>;
   /** Question to which this narrative comment responds */
   question_code: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** Ordering options when selecting data from "evaluation_narratives". */
@@ -3375,6 +3390,7 @@ export type EvaluationNarrativesOrderBy = {
   evaluation_question: InputMaybe<EvaluationQuestionsOrderBy>;
   id: InputMaybe<OrderBy>;
   question_code: InputMaybe<OrderBy>;
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "evaluation_narratives" */
@@ -3395,6 +3411,8 @@ export enum EvaluationNarrativesSelectColumn {
   Id = 'id',
   /** column name */
   QuestionCode = 'question_code',
+  /** column name */
+  ResponseNumber = 'response_number',
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_avg_arguments_columns" columns of table "evaluation_narratives" */
@@ -3507,6 +3525,8 @@ export type EvaluationNarrativesStddevFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']['output']>;
   id: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "evaluation_narratives" */
@@ -3522,6 +3542,8 @@ export type EvaluationNarrativesStddevOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddev_pop on columns */
@@ -3538,6 +3560,8 @@ export type EvaluationNarrativesStddevPopFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']['output']>;
   id: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_pop() on columns of table "evaluation_narratives" */
@@ -3553,6 +3577,8 @@ export type EvaluationNarrativesStddevPopOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddev_samp on columns */
@@ -3569,6 +3595,8 @@ export type EvaluationNarrativesStddevSampFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']['output']>;
   id: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "evaluation_narratives" */
@@ -3584,6 +3612,8 @@ export type EvaluationNarrativesStddevSampOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "evaluation_narratives" */
@@ -3611,6 +3641,8 @@ export type EvaluationNarrativesStreamCursorValueInput = {
   id: InputMaybe<Scalars['Int']['input']>;
   /** Question to which this narrative comment responds */
   question_code: InputMaybe<Scalars['String']['input']>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -3627,6 +3659,8 @@ export type EvaluationNarrativesSumFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Int']['output']>;
   id: Maybe<Scalars['Int']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "evaluation_narratives" */
@@ -3642,6 +3676,8 @@ export type EvaluationNarrativesSumOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** aggregate var_pop on columns */
@@ -3658,6 +3694,8 @@ export type EvaluationNarrativesVarPopFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']['output']>;
   id: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "evaluation_narratives" */
@@ -3673,6 +3711,8 @@ export type EvaluationNarrativesVarPopOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** aggregate var_samp on columns */
@@ -3689,6 +3729,8 @@ export type EvaluationNarrativesVarSampFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']['output']>;
   id: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_samp() on columns of table "evaluation_narratives" */
@@ -3704,6 +3746,8 @@ export type EvaluationNarrativesVarSampOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -3720,6 +3764,8 @@ export type EvaluationNarrativesVarianceFields = {
   /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']['output']>;
   id: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "evaluation_narratives" */
@@ -3735,6 +3781,8 @@ export type EvaluationNarrativesVarianceOrderBy = {
   /** The course to which this narrative comment applies */
   course_id: InputMaybe<OrderBy>;
   id: InputMaybe<OrderBy>;
+  /** The number of the response for the given course and question */
+  response_number: InputMaybe<OrderBy>;
 };
 
 /** columns and relationships of "evaluation_questions" */
@@ -6536,13 +6584,14 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
   professorIds: InputMaybe<
     Array<Scalars['Int']['input']> | Scalars['Int']['input']
   >;
-  hasEval: Scalars['Boolean']['input'];
+  hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type SameCourseOrProfOfferingsQuery = {
   __typename?: 'query_root';
   self: Array<{
     __typename?: 'listings';
+    school: string | null;
     season_code: Season;
     crn: Crn;
     course_code: string;
@@ -6590,23 +6639,17 @@ export type SameCourseOrProfOfferingsQuery = {
   >;
   sameProf: Array<{
     __typename?: 'course_professors';
+    professor_id: number;
     course: { __typename?: 'courses' } & RelatedCourseInfoFragment;
   }>;
 };
 
 export type RelatedCourseInfoFragment = {
   __typename?: 'courses';
+  season_code: Season;
+  section: string;
   average_professor_rating?: number | null;
   course_id: number;
-  season_code: Season;
-  title: string;
-  section: string;
-  skills: StringArr;
-  areas: StringArr;
-  extra_info: ExtraInfo;
-  description: string | null;
-  times_by_day: TimesByDay;
-  same_course_id: number;
   evaluation_statistic?: {
     __typename?: 'evaluation_statistics';
     avg_workload: number | null;
@@ -6614,18 +6657,42 @@ export type RelatedCourseInfoFragment = {
   } | null;
   course_professors: Array<{
     __typename?: 'course_professors';
-    professor: {
-      __typename?: 'professors';
-      professor_id: number;
-      name: string;
-    };
+    professor: { __typename?: 'professors'; name: string };
   }>;
+} & CourseModalPrefetchCourseDataFragment;
+
+export type CourseModalPrefetchListingDataFragment = {
+  __typename?: 'listings';
+  season_code: Season;
+  crn: Crn;
+  course_code: string;
+  section: string;
+  course: { __typename?: 'courses' } & CourseModalPrefetchCourseDataFragment;
+};
+
+export type CourseModalPrefetchCourseDataFragment = {
+  __typename?: 'courses';
+  title: string;
+  skills: StringArr;
+  areas: StringArr;
+  extra_info: ExtraInfo;
+  description: string | null;
+  times_by_day: TimesByDay;
+  same_course_id: number;
   listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
+  course_professors: Array<{
+    __typename?: 'course_professors';
+    professor: { __typename?: 'professors'; professor_id: number };
+  }>;
+  evaluation_statistic?: {
+    __typename?: 'evaluation_statistics';
+    responses: number | null;
+  } | null;
 };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
-  seasonCode: InputMaybe<Scalars['String']['input']>;
-  crn: InputMaybe<Scalars['Int']['input']>;
+  seasonCode: Scalars['String']['input'];
+  crn: Scalars['Int']['input'];
 }>;
 
 export type SearchEvaluationNarrativesQuery = {
@@ -6665,34 +6732,34 @@ export type PrereqLinkInfoQueryVariables = Exact<{
   courseCodes: InputMaybe<
     Array<Scalars['String']['input']> | Scalars['String']['input']
   >;
+  hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type PrereqLinkInfoQuery = {
   __typename?: 'query_root';
-  listings: Array<{
-    __typename?: 'listings';
-    season_code: Season;
-    crn: Crn;
-    course_code: string;
-    section: string;
-    course: {
-      __typename?: 'courses';
-      title: string;
-      skills: StringArr;
-      areas: StringArr;
-      extra_info: ExtraInfo;
-      description: string | null;
-      times_by_day: TimesByDay;
-      same_course_id: number;
-      listings: Array<{
-        __typename?: 'listings';
-        course_code: string;
-        crn: Crn;
-      }>;
-      course_professors: Array<{
-        __typename?: 'course_professors';
-        professor: { __typename?: 'professors'; professor_id: number };
-      }>;
-    };
-  }>;
+  listings: Array<
+    { __typename?: 'listings' } & CourseModalPrefetchListingDataFragment
+  >;
+};
+
+export type CourseSectionsQueryVariables = Exact<{
+  courseCode: Scalars['String']['input'];
+  seasonCode: Scalars['String']['input'];
+  hasEvals: Scalars['Boolean']['input'];
+}>;
+
+export type CourseSectionsQuery = {
+  __typename?: 'query_root';
+  listings: Array<
+    {
+      __typename?: 'listings';
+      course: {
+        __typename?: 'courses';
+        course_professors: Array<{
+          __typename?: 'course_professors';
+          professor: { __typename?: 'professors'; name: string };
+        }>;
+      };
+    } & CourseModalPrefetchListingDataFragment
+  >;
 };

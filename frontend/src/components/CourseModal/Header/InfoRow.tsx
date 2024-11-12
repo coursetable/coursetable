@@ -3,27 +3,155 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
+import type { Option } from '../../../contexts/searchContext';
+import type {
+  CourseSectionsQuery,
+  CourseModalPrefetchListingDataFragment,
+} from '../../../generated/graphql-types';
+import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
+import type { Weekdays } from '../../../queries/graphql-types';
+import { useStore } from '../../../store';
 import { extraInfo } from '../../../utilities/constants';
-import { toSeasonString } from '../../../utilities/course';
+import {
+  abbreviateWorkdays,
+  to12HourTime,
+  toSeasonString,
+  truncatedText,
+} from '../../../utilities/course';
 import { createCourseModalLink } from '../../../utilities/display';
+import { Popout } from '../../Search/Popout';
+import { PopoutSelect } from '../../Search/PopoutSelect';
 import SkillBadge from '../../SkillBadge';
 import { TextComponent } from '../../Typography';
-import type {
-  ModalNavigationFunction,
-  CourseModalHeaderData,
-} from '../CourseModal';
+import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './InfoRow.module.css';
+
+function SectionLink({
+  section,
+  hasDifferentTitles,
+  onNavigation,
+}: {
+  readonly section: CourseSectionsQuery['listings'][number];
+  readonly hasDifferentTitles: boolean;
+  readonly onNavigation: ModalNavigationFunction;
+}) {
+  const [searchParams] = useSearchParams();
+  const times = new Map<string, Set<Weekdays>>();
+  for (const [day, info] of Object.entries(section.course.times_by_day)) {
+    for (const [startTime, endTime] of info) {
+      const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
+      if (!times.has(timespan)) times.set(timespan, new Set());
+      times.get(timespan)!.add(day as Weekdays);
+    }
+  }
+  const timeString = [...times.entries()]
+    .map(
+      ([timespan, days]) =>
+        `${abbreviateWorkdays([...days]).join('')} ${timespan}`,
+    )
+    .join(', ');
+  const professors =
+    section.course.course_professors
+      .map((professor) => professor.professor.name)
+      .join(' • ') || 'TBA';
+  return (
+    <Link
+      to={createCourseModalLink(section, searchParams)}
+      onClick={() => {
+        onNavigation('replace', section, 'overview');
+      }}
+      className={styles.sectionLink}
+    >
+      <span title={hasDifferentTitles ? section.course.title : undefined}>
+        <b>{section.section.padStart(2, '0')}</b>{' '}
+        {hasDifferentTitles && (
+          <>
+            {truncatedText(section.course.title, 40, '')}
+            <br />
+          </>
+        )}
+        <small>
+          {professors}
+          {timeString ? ' - ' : ''}
+          {timeString}
+        </small>
+      </span>
+    </Link>
+  );
+}
+
+function SectionsDropdown({
+  listing,
+  sections,
+  onNavigation,
+}: {
+  readonly listing: CourseModalPrefetchListingDataFragment;
+  readonly sections: CourseSectionsQuery['listings'];
+  readonly onNavigation: ModalNavigationFunction;
+}) {
+  const hasDifferentTitles =
+    new Set(sections.map((section) => section.course.title)).size > 1;
+  const sectionsOptions: Map<string, Option> = new Map<string, Option>(
+    // @ts-expect-error: TODO it actually works to have a ReactNode as label
+    sections.map((section) => [
+      section.section,
+      {
+        value: section.section.padStart(2, '0'),
+        label: (
+          <SectionLink
+            section={section}
+            hasDifferentTitles={hasDifferentTitles}
+            onNavigation={onNavigation}
+          />
+        ),
+      },
+    ]),
+  );
+  return (
+    <Popout
+      buttonText={listing.section.padStart(2, '0')}
+      selectedOptions={sectionsOptions.get(listing.section)}
+      clearIcon={false}
+      className={styles.sectionsDropdownButton}
+      wrapperClassName={styles.sectionsDropdown}
+    >
+      <PopoutSelect<Option, false>
+        className={styles.sectionsDropdownSelect}
+        value={sectionsOptions.get(listing.section)}
+        options={[...sectionsOptions.values()]}
+        isSearchable={false}
+        showControl={false}
+      />
+    </Popout>
+  );
+}
 
 export default function ModalHeaderInfo({
   listing,
   backTarget,
   onNavigation,
 }: {
-  readonly listing: CourseModalHeaderData;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly backTarget: string | undefined;
   readonly onNavigation: ModalNavigationFunction;
 }) {
+  const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
+  const courseCode = listing.course_code;
+  const season = listing.season_code;
+  const { data, loading, error } = useCourseSectionsQuery({
+    variables: {
+      courseCode,
+      seasonCode: season,
+      hasEvals: Boolean(user.hasEvals),
+    },
+  });
+  const sections =
+    loading || error || !data?.listings
+      ? []
+      : [...data.listings].sort((a, b) =>
+          a.section.localeCompare(b.section, 'en-US', { numeric: true }),
+        );
   return (
     <div className={styles.modalTop}>
       {backTarget && (
@@ -51,6 +179,11 @@ export default function ModalHeaderInfo({
             <TextComponent type="tertiary">
               ({toSeasonString(listing.season_code)})
             </TextComponent>
+            <SectionsDropdown
+              listing={listing}
+              sections={sections}
+              onNavigation={onNavigation}
+            />
           </div>
         </Modal.Title>
 

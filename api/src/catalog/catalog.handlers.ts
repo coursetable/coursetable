@@ -64,16 +64,10 @@ export async function generateCSVCatalog(
   const seasonCode = req.params.seasonCode!;
   winston.info(`Generating CSV catalog for ${seasonCode}`);
   const publicData = await fs
-    .readFile(
-      `${STATIC_FILE_DIR}/catalogs-v2/public/${seasonCode}.json`,
-      'utf-8',
-    )
+    .readFile(`${STATIC_FILE_DIR}/catalogs/public/${seasonCode}.json`, 'utf-8')
     .then((data) => JSON.parse(data) as { [key: string]: unknown }[]);
   const evalsData = await fs
-    .readFile(
-      `${STATIC_FILE_DIR}/catalogs-v2/evals/${seasonCode}.json`,
-      'utf-8',
-    )
+    .readFile(`${STATIC_FILE_DIR}/catalogs/evals/${seasonCode}.json`, 'utf-8')
     .then((data) => JSON.parse(data) as { [key: string]: unknown }[]);
   const allData = publicData.map((listing, i) => ({
     ...flattenObject(listing),

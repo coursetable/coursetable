@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
@@ -21,6 +21,7 @@ type Props = {
   readonly maxDisplayOptions?: number;
   readonly displayOptionLabel?: boolean;
   readonly className?: string;
+  readonly wrapperClassName?: string;
   readonly notifications?: number;
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
@@ -85,6 +86,7 @@ export function Popout({
   maxDisplayOptions = 3,
   displayOptionLabel,
   className,
+  wrapperClassName,
   notifications,
   colors,
   dataTutorial,
@@ -118,12 +120,26 @@ export function Popout({
   // eslint-disable-next-line no-useless-assignment
   const ArrowIcon = isComponentVisible ? IoMdArrowDropdown : IoMdArrowDropup;
 
+  useEffect(() => {
+    // Avoid the dropdown going out of the viewport. By default it's left-
+    // aligned with the trigger button, but we may have to left-shift it.
+    // Note: we only reposition the dropdown once when it becomes visible.
+    // this is on purpose: when resizing the window, the resize event fires
+    // before reflow happens, so the dropdown tends to flicker and become
+    // unstable.
+    if (!dropdownRef.current) return;
+    const dropdownRect = dropdownRef.current.getBoundingClientRect();
+    if (dropdownRect.right > window.innerWidth)
+      dropdownRef.current.style.transform = `translateX(${Math.max(-dropdownRect.left, window.innerWidth - dropdownRect.right)}px)`;
+    else dropdownRef.current.style.transform = '';
+  }, [isComponentVisible, dropdownRef]);
+
   return (
     <div
       data-tutorial={
         dataTutorial ? `catalog-${dataTutorial}-observe` : undefined
       }
-      className={styles.wrapper}
+      className={clsx(styles.wrapper, wrapperClassName)}
     >
       {/* Popout Button */}
       <button

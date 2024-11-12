@@ -8,41 +8,52 @@ CourseTable uses the following Docker containers for core functionality, so they
 - `redis`: this is a Redis stack server that stores all user sessions from Express.
 - `pgadmin`: this is a pgadmin instance that allows you to view the Postgres database managed by API. It is useful for debugging and DB manipulation.
 
-Note that we have two databases: a database managed by API, which stores user data, and a database managed by Ferry, which stores course data. The latter is exposed as a GraphQL API by the Hasura engine, while the former is accessed directly by the Express app via Drizzle.
-
 In `coursetable/api`, we only manage the `express` container. We do provide development versions of the `db`, `pgadmin`, `graphql-engine`, and `redis` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra`](https://github.com/coursetable/infra/).
 
-Here's the data flow for course data:
+## Working with the database
 
-1. Ferry writes course data to [`ferry-data`](https://github.com/coursetable/ferry-data) in JSON.
-2. Ferry then writes the data to a Postgres database on the prod server.
-3. The prod database is regularly dumped into an endpoint. The dev `start.sh` script will pull data from this endpoint to populate the local Postgres database, if invoking `start.sh` with the `--ferry_seed` (`-f`) flag.
-4. During development and prod, we spin up a Hasura engine that wraps the Postgres database and exposes a GraphQL API.
-   <details>
-   <summary>Additional Details</summary>
+You can directly interface with our database via pgadmin. In development, you can visit `http://localhost:8081`. All credentials can be found on Doppler, by checking out the "dev" environment. You will first need to log into the dashboard, the credentials for which are the `PGADMIN_EMAIL` and `PGADMIN_PASSWORD` environment variables. Then, when you are inside, you can expand the "Servers" dropdown in the left sidebar—which should ask you for the password to connect to the DB, which is the `DB_ROOT_PASSWORD` environment variable. In prod, the steps are the same, and the dashboard is at https://pgadmin.coursetable.com/ (only admins have access to the credentials).
 
-   > For security purposes, the Hasura Engine is only exposed to the localhost loopback interface (`127.0.0.1`). Therefore, the production Hasura Engine cannot be directly accessed from the Internet.
-   >
-   > When modifying the development Hasura Engine through the console at `localhost:8085`, configuration changes are synced to a special schema in the Ferry database. To sync the changes to the production Hasura Engine, we only need to restart its container.
+When you go to "Servers > Local > Databases", you will notice that we have two databases:
 
-   </details>
+- `coursetable` is the user database managed by the API. This is accessed directly by the Express app via Drizzle.
+- `postgres` is the course database managed by Ferry. This is exposed as a GraphQL API by the Hasura engine.
 
-5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. This data is only overwritten in dev by running `start.sh` with the `--overwrite` (`-o`) flag, or in prod by Ferry requesting the `/api/catalog/refresh` endpoint. The idea of this step is to aggressively cache the GQL responses so every frontend request doesn't have to hit the GQL API. It also powers the client-side course search.
-6. The frontend requests the Express endpoint, which serves these JSON files.
+Under the hood, these are both stored in the `db` Postgres container.
 
-And for user data:
+### Working with user data
+
+Here's the data flow for user data:
 
 1. In dev, we always create a new Postgres database; in prod, we use the existing one.
 2. The API directly connects to this database using Drizzle.
 3. The frontend requests the Express endpoint, which then makes DB calls.
-4. If you want to make DB changes, you can do so directly from pgadmin.
 
-Therefore, there are a few points to watch out for:
+If you want to make changes to the DB schema, you can do so by modifying the `api/drizzle/schema.ts` file. This file is used to generate the DB schema and the TypeScript types for the API. For every update, and also for the initial setup, you need to run `npm run db:push` in the `express` container. You can do this by running:
 
-1. Any DB modification must also update `api/drizzle/schema.ts`. Please note that prod deployment must also be manual in this case. To sync DB modifications, run `npm run db:push` in `express` (in a separate terminal session):
+```bash
+docker exec -it express "cd api && npm run db:push"
+```
 
-   ```bash
-   docker exec -it express "cd api && npm run db:push"
-   ```
+Note that if you delete the local container images and start them again, the DB is now empty. You need to run `db:push` to re-initialize the DB. Then, on the dev frontend, you need to log in again because your user record does not exist anymore. If you don't want to go through the challenge process, you can visit `http://localhost:8081` and modify the database, in `studentBluebookSettings#evaluationsEnabled`.
 
-2. If you shut down the local containers and start them again, the DB is now empty. On the dev frontend, you need to log in again. If you don't want to go through the challenge process, you can visit http://localhost:8081 and modify the database. (The credentials can be found on Doppler; look for `PGADMIN_EMAIL`, `PGADMIN_PASSWORD`, and `DB_ROOT_PASSWORD`.)
+### Working with course data
+
+Here's the data flow for course data:
+
+1. Ferry writes course data to [`ferry-data`](https://github.com/coursetable/ferry-data) in JSON. This data is used to ensure reproducibility and to allow for easy debugging; it does not correspond to the actual DB schema.
+2. Ferry then writes the data to the `postgres` DB on the prod server.
+3. The prod database is regularly dumped into an endpoint. The dev `start.sh` script will pull data from this endpoint to populate the local Postgres database, if invoking `start.sh` with the `--ferry_seed` (`-f`) flag.
+4. During development and prod, we spin up a Hasura engine that wraps the Postgres database and exposes a GraphQL API.
+5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. This data is only overwritten in dev by running `start.sh` with the `--overwrite` (`-o`) flag, or in prod by Ferry requesting the `/api/catalog/refresh` endpoint. The idea of this step is to aggressively cache the GQL responses so every frontend request doesn't have to hit the GQL API. It also powers the client-side course search.
+6. The frontend requests the Express endpoint, which serves these JSON files. The frontend also requests the GraphQL API directly for more complex queries.
+
+The Hasura Engine dashboard is available at `http://localhost:8085`. In production, it is at `http://ocean.coursetable.com:8085/`. To access the dashboard, you need to log in with the `HASURA_GRAPHQL_ADMIN_SECRET` environment variable. You can find this secret in Doppler.
+
+If you want to make changes to the courses DB schema, you would need to start by modifying Ferry, which is the only actor that can write into the DB. Then, once Ferry has done one recrawl, the DB will contain the data you want (you can go to pgadmin to make sure). Then, you can do the following to cascade this change:
+
+- Sync the prod GQL schema with the DB schema by going to the Hasura dashboard and clicking "Track all" on the `public` schema.
+- Sync the dev DB with the prod DB by running `./start.sh -f`.
+- Sync the dev GQL schema with the dev DB by doing the same steps as 1, but on the dev Hasura dashboard.
+
+For more changes related to GraphQL, such as how the SDKs are generated and how to make sure the SDK types reflect the latest DB schema, refer to the [GraphQL](./graphql.md) docs.

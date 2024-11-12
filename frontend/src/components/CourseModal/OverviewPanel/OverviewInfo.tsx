@@ -22,7 +22,8 @@ import type {
 } from '../../../generated/graphql-types';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import type { Weekdays } from '../../../queries/graphql-types';
-import { ratingColormap } from '../../../utilities/constants';
+import { useStore } from '../../../store';
+import { schools, ratingColormap } from '../../../utilities/constants';
 import {
   abbreviateWorkdays,
   getEnrolled,
@@ -187,12 +188,14 @@ function Prereqs({
   readonly season: string;
   readonly onNavigation: ModalNavigationFunction;
 }) {
+  const user = useStore((state) => state.user);
   const segments = parsePrereqs(course.requirements);
   const [searchParams] = useSearchParams();
   const { data, error, loading } = usePrereqLinkInfoQuery({
     variables: {
       courseCodes:
         segments?.filter((s) => s.type === 'course').map((s) => s.course) ?? [],
+      hasEvals: Boolean(user.hasEvals),
     },
     skip: !segments,
   });
@@ -461,13 +464,14 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
 
 function OverviewInfo({
   onNavigation,
-  data,
+  listing,
+  sameCourse,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly data: SameCourseOrProfOfferingsQuery;
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
 }) {
   const { numFriends } = useSearch();
-  const listing = data.self[0]!;
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
@@ -481,7 +485,7 @@ function OverviewInfo({
         season={listing.season_code}
         onNavigation={onNavigation}
       />
-      <Syllabus course={course} sameCourse={data.sameCourse} />
+      <Syllabus course={course} sameCourse={sameCourse} />
       <Professors course={course} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />
@@ -514,6 +518,10 @@ function OverviewInfo({
         }
       />
       <DataField name="Credits" value={course.credits} />
+      <DataField
+        name="School"
+        value={listing.school ? schools[listing.school] : undefined}
+      />
       <DataField name="Class Notes" value={course.classnotes} />
       <DataField name="Registrar Notes" value={course.regnotes} />
       <DataField name="Reading Period" value={course.rp_attr} />

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
@@ -31,3 +32,67 @@ export const useStore = create<Store>()(
     },
   ),
 );
+
+// Store init effects
+const useHydration = () => {
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const unsubHydrate = useStore.persist.onHydrate(() => setHydrated(false));
+
+    const unsubFinishHydration = useStore.persist.onFinishHydration(() =>
+      setHydrated(true),
+    );
+
+    setHydrated(useStore.persist.hasHydrated());
+
+    return () => {
+      unsubHydrate();
+      unsubFinishHydration();
+    };
+  }, []);
+
+  return hydrated;
+};
+
+const useAuth = () => {
+  const refreshAuth = useStore((state) => state.refreshAuth);
+  const loaded = useHydration();
+
+  useEffect(() => {
+    if (!loaded) return;
+    void refreshAuth();
+  }, [loaded, refreshAuth]);
+};
+
+const useDimensions = () => {
+  const handleResize = useStore((state) => state.handleResize);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [handleResize]);
+};
+
+const useTheme = () => {
+  const theme = useStore((state) => state.theme);
+
+  const loaded = useHydration();
+
+  useEffect(() => {
+    if (!loaded) return;
+    document.documentElement.dataset.theme = theme;
+    // We don't actually use this ourselves, but it helps Bootstrap apply sane
+    // defaults for colors
+    document.documentElement.dataset.bsTheme = theme;
+  }, [theme, loaded]);
+};
+
+export const useInitStore = () => {
+  useAuth();
+  useDimensions();
+  useTheme();
+};

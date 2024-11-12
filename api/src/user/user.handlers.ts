@@ -1,6 +1,6 @@
 import type express from 'express';
 import chroma from 'chroma-js';
-import { and, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
 import { worksheetCoursesToWorksheets } from './user.utils.js';
@@ -8,34 +8,58 @@ import { worksheetCoursesToWorksheets } from './user.utils.js';
 import {
   studentBluebookSettings,
   worksheetCourses,
+  worksheetNames,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
 
-const UpdateWorksheetReqItemSchema = z.object({
-  action: z.union([z.literal('add'), z.literal('remove'), z.literal('update')]),
-  season: z.string().transform((val) => parseInt(val, 10)),
-  crn: z.number(),
-  worksheetNumber: z.number(),
-  color: z.string().refine((val) => chroma.valid(val)),
-  hidden: z.boolean(),
-});
+const UpdateWorksheetCourseReqItemSchema = z.intersection(
+  z.object({
+    season: z.string().transform((val) => parseInt(val, 10)),
+    worksheetNumber: z.number(),
+    crn: z.number(),
+  }),
+  z.union([
+    z.object({
+      action: z.literal('add'),
+      color: z.string().refine((val) => chroma.valid(val)),
+      hidden: z.boolean(),
+    }),
+    z.object({
+      action: z.literal('remove'),
+      // We still allow these because the frontend sends them (it just sends
+      // everything about the course for both add and remove)
+      color: z
+        .string()
+        .refine((val) => chroma.valid(val))
+        .optional(), // Ignored
+      hidden: z.boolean().optional(), // Ignored
+    }),
+    z.object({
+      action: z.literal('update'),
+      color: z
+        .string()
+        .refine((val) => chroma.valid(val))
+        .optional(),
+      hidden: z.boolean().optional(),
+    }),
+  ]),
+);
 
-const UpdateWorksheetReqBodySchema = z.union([
-  UpdateWorksheetReqItemSchema,
-  z.array(UpdateWorksheetReqItemSchema),
+const UpdateWorksheetCoursesReqBodySchema = z.union([
+  UpdateWorksheetCourseReqItemSchema,
+  z.array(UpdateWorksheetCourseReqItemSchema),
 ]);
 
-async function updateWorksheet(
+async function updateWorksheetCourse(
   {
     action,
     season,
     crn,
     worksheetNumber,
     color,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     hidden,
-  }: z.infer<typeof UpdateWorksheetReqItemSchema>,
+  }: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
   netId: string,
 ): Promise<string | undefined> {
   const [existing] = await db
@@ -55,6 +79,31 @@ async function updateWorksheet(
       ),
     );
 
+  if (worksheetNumber > 0) {
+    const [nameExists] = await db
+      .selectDistinctOn([
+        worksheetNames.netId,
+        worksheetNames.season,
+        worksheetNames.worksheetNumber,
+      ])
+      .from(worksheetNames)
+      .where(
+        and(
+          eq(worksheetNames.netId, netId),
+          eq(worksheetNames.season, season),
+          eq(worksheetNames.worksheetNumber, worksheetNumber),
+        ),
+      );
+    if (!nameExists) {
+      await db.insert(worksheetNames).values({
+        netId,
+        season,
+        worksheetNumber,
+        worksheetName: `Worksheet ${worksheetNumber}`,
+      });
+    }
+  }
+
   if (action === 'add') {
     winston.info(
       `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
@@ -66,10 +115,7 @@ async function updateWorksheet(
       season,
       worksheetNumber,
       color,
-      // Currently the frontend is not capable of actually syncing the hidden
-      // state so we keep it as null. This allows it to be properly synced in
-      // the future
-      hidden: null,
+      hidden,
     });
   } else if (action === 'remove') {
     winston.info(
@@ -86,6 +132,33 @@ async function updateWorksheet(
           eq(worksheetCourses.worksheetNumber, worksheetNumber),
         ),
       );
+
+    // Cannot delete main worksheet
+    if (worksheetNumber > 0) {
+      const courseCountRes = await db
+        .select({ courseCount: count() })
+        .from(worksheetCourses)
+        .where(
+          and(
+            eq(worksheetCourses.netId, netId),
+            eq(worksheetCourses.season, season),
+            eq(worksheetCourses.worksheetNumber, worksheetNumber),
+          ),
+        );
+
+      const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
+      if (numCoursesInCurWorksheet === 0) {
+        await db
+          .delete(worksheetNames)
+          .where(
+            and(
+              eq(worksheetNames.netId, netId),
+              eq(worksheetNames.season, season),
+              eq(worksheetNames.worksheetNumber, worksheetNumber),
+            ),
+          );
+      }
+    }
   } else {
     // Update data of a bookmarked course
     winston.info(
@@ -97,7 +170,7 @@ async function updateWorksheet(
       // Currently the frontend is not capable of actually syncing the hidden
       // state so we keep it as null. This allows it to be properly synced in
       // the future
-      .set({ color, hidden: null })
+      .set({ color, hidden })
       .where(
         and(
           eq(worksheetCourses.netId, netId),
@@ -110,7 +183,7 @@ async function updateWorksheet(
   return undefined;
 }
 
-export const updateWorksheets = async (
+export const updateWorksheetCourses = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
@@ -118,20 +191,20 @@ export const updateWorksheets = async (
 
   const { netId } = req.user!;
 
-  const bodyParseRes = UpdateWorksheetReqBodySchema.safeParse(req.body);
+  const bodyParseRes = UpdateWorksheetCoursesReqBodySchema.safeParse(req.body);
   if (!bodyParseRes.success) {
     res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
   if (!Array.isArray(bodyParseRes.data)) {
-    const result = await updateWorksheet(bodyParseRes.data, netId);
+    const result = await updateWorksheetCourse(bodyParseRes.data, netId);
     if (result) {
       res.status(400).json({ error: result });
       return;
     }
   } else {
     const results = await Promise.all(
-      bodyParseRes.data.map((item) => updateWorksheet(item, netId)),
+      bodyParseRes.data.map((item) => updateWorksheetCourse(item, netId)),
     );
     if (results.some((r) => r !== undefined)) {
       res.status(400).json({

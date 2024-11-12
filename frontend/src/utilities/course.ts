@@ -1,6 +1,7 @@
 // Performing various actions on the listing dictionary
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
+import { CourseData } from '../contexts/ferryContext'
 import type { Courses, Listings } from '../generated/graphql-types';
 import type { BRAND } from 'zod';
 import type {
@@ -310,6 +311,10 @@ function getAttributeValue(
     case 'season_code':
     case 'section':
       return l[key];
+    case 'title':
+    case 'average_professor_rating':
+    case 'average_gut_rating':
+    case 'locations_summary':
     default:
       // || is intentional: 0 also means nonexistence
       return l.course[key] || null;
@@ -433,9 +438,7 @@ export const toLinear = (number: number): number =>
 /**
  * Create array of WorksheetCourses from serialized link data
  */
-export const linkDataToCourses = (courseData: {
-  [seasonCode: string & BRAND<"season">]: Map<number & BRAND<"crn">, CatalogListing>;
-}, curSeason: string & BRAND<"season">, data: string): WorksheetCourse[] => {
+export const linkDataToCourses = (courseData: CourseData, curSeason: string & BRAND<"season">, data: string): WorksheetCourse[] => {
   const serial = atob(data);
   const courseSerials = serial.split("|");
   console.log(courseSerials);
@@ -445,7 +448,8 @@ export const linkDataToCourses = (courseData: {
     const crn = Number(components[0]) || 0;
     const hidden = components[2] == "t" ? true : false;
     const seasonCourses = courseData[curSeason];
-    const seasonCourseKeys = seasonCourses?.entries() || []
+    console.log(seasonCourses)
+    const seasonCourseKeys = seasonCourses?.data.entries() || []
     for (const [crnKey, listingVal] of seasonCourseKeys) {
       const crnNum = crnKey as number;
       if (crn == crnNum) {

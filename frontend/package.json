@@ -8,7 +8,7 @@
     "serve": "vite preview",
     "start": "vite",
     "test": "vite test",
-    "codegen": "cp ../api/static/*.json src/generated && bunx --bun graphql-codegen --config graphql-codegen.ts && prettier -w src/generated src/queries/graphql-queries.ts"
+    "codegen": "cp ../api/static/*.json src/generated && rm src/generated/metadata.json && bunx --bun graphql-codegen --config graphql-codegen.ts && prettier -w src/generated src/queries/graphql-queries.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",
