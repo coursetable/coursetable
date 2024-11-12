@@ -9,7 +9,7 @@ function toRelativeTime(date: Date) {
   if (lastUpdateTime > nowTime) lastUpdateTime -= 24 * 60 * 60;
   const diffInSecs = nowTime - lastUpdateTime;
   if (diffInSecs < 60) {
-    return `${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`;
+    return `${Math.floor(diffInSecs)} sec${Math.floor(diffInSecs) > 1 ? 's' : ''}`;
   } else if (diffInSecs < 3600) {
     const diffInMins = Math.floor(diffInSecs / 60);
     return `${diffInMins} min${diffInMins > 1 ? 's' : ''}`;
