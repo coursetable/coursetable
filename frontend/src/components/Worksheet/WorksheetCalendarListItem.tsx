@@ -11,9 +11,11 @@ import styles from './WorksheetCalendarListItem.module.css';
 export default function WorksheetCalendarListItem({
   listing,
   hidden,
+  exported,
 }: {
   readonly listing: CatalogListing;
   readonly hidden: boolean;
+  readonly exported: boolean;
 }) {
   const target = useCourseModalLink(listing);
   const { setHoverCourse } = useWorksheet();

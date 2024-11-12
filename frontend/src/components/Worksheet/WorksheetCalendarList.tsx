@@ -122,7 +122,8 @@ function WorksheetCalendarList() {
               <WorksheetCalendarListItem
                 key={curSeason + course.crn}
                 listing={course.listing}
-                hidden={course.hidden ?? false}
+                hidden={false}
+                exported={true}
               />
             ))}
           </ListGroup>
@@ -137,6 +138,7 @@ function WorksheetCalendarList() {
                 key={curSeason + course.crn}
                 listing={course.listing}
                 hidden={course.hidden ?? false}
+                exported={false}
               />
             ))}
           </ListGroup>

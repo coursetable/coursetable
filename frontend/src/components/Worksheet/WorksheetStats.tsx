@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
+import { useCourseData } from '../../contexts/ferryContext';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
   getOverallRatings,
   getWorkloadRatings,
   isDiscussionSection,
+  linkDataToCourses
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
@@ -88,6 +90,7 @@ function NoStatsTip({
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { courses, curSeason } = useWorksheet();
@@ -120,7 +123,22 @@ export default function WorksheetStats() {
     setTimeout(() => setCopied(false), 1000);
   }
 
-  for (const { listing, hidden } of courses) {
+  const {
+    loading: coursesLoading,
+    courses: courseData,
+    error: courseLoadError,
+  } = useCourseData([curSeason]);
+
+  useEffect(() => {
+    const data = searchParams.get("ws");
+    if (!data) return;
+    console.log("effect")
+    const courseObjects = linkDataToCourses(courseData, curSeason, data);
+    setLinkCourses(courseObjects);
+    // import courses
+  }, [coursesLoading])
+
+  for (const { listing, hidden } of (linkCourses.length == 0 ? courses : linkCourses)) {
     const alreadyCounted = listing.course.listings.some((l) =>
       countedCourseCodes.has(l.course_code),
     );
@@ -215,7 +233,7 @@ export default function WorksheetStats() {
             {searchParams.get("ws") ? (
               <div className={styles.wide}>
                 <dt>Viewing exported worksheet</dt>
-                <Button variant="primary" onClick={() => setSearchParams({})}>Exit</Button>
+                <Button variant="primary" onClick={() => {setSearchParams({}); setLinkCourses([])}}>Exit</Button>
               </div>
             ) : (
               <div className={styles.wide}>
