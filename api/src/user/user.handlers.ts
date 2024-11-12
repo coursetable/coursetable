@@ -3,7 +3,10 @@ import chroma from 'chroma-js';
 import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
-import { getFirstAvailableWsNumber, worksheetCoursesToWorksheets } from './user.utils.js';
+import {
+  getFirstAvailableWsNumber,
+  worksheetCoursesToWorksheets,
+} from './user.utils.js';
 
 import {
   studentBluebookSettings,
@@ -339,7 +342,7 @@ export const updateWorksheetNames = async (
           eq(worksheetNames.worksheetNumber, worksheetNumber),
         ),
       );
-  } else if (action === 'rename') {
+  } else {
     const { worksheetNumber, worksheetName } = bodyParseRes.data;
     const [existingWorksheet] = await db
       .select()
@@ -369,7 +372,6 @@ export const updateWorksheetNames = async (
           eq(worksheetNames.worksheetNumber, worksheetNumber),
         ),
       );
-    return undefined;
   }
 
   res.sendStatus(200);
@@ -397,13 +399,11 @@ export const getUserWorksheetNames = async (
   );
 
   const worksheetMap: {
-    [season: string]: { [worksheetNumber: number]: string };
+    [season: string]: { [worksheetNumber: number]: string } | undefined;
   } = {};
 
   allWorksheetNames.forEach(({ season, worksheetNumber, worksheetName }) => {
-    if (!worksheetMap[season]) {
-      worksheetMap[season] = {};
-    }
+    worksheetMap[season] ??= {};
     worksheetMap[season][worksheetNumber] = worksheetName;
   });
 

@@ -1,7 +1,12 @@
 import type express from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { updateWorksheetCourses, getUserWorksheet, updateWorksheetNames, getUserWorksheetNames } from './user.handlers.js';
+import {
+  updateWorksheetCourses,
+  getUserWorksheet,
+  updateWorksheetNames,
+  getUserWorksheetNames,
+} from './user.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
 export default (app: express.Express): void => {
