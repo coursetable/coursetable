@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -15,18 +16,42 @@ import { TbCalendarDown } from 'react-icons/tb';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
+import { useCourseData } from '../../contexts/ferryContext';
+import { linkDataToCourses } from '../../utilities/course';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
   const { courses, toggleCourse, person, curSeason } = useWorksheet();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
 
   const areHidden = useMemo(
-    () => courses.length > 0 && courses.every((course) => course.hidden),
-    [courses],
+    () => {
+      if (linkCourses.length == 0) {
+        return courses.length > 0 && courses.every((course) => course.hidden)
+      } else {
+        return linkCourses.every((course) => course.hidden)
+      }
+    },
+    [courses, linkCourses],
   );
+
+  const {
+    loading: coursesLoading,
+    courses: courseData,
+    error: courseLoadError,
+  } = useCourseData([curSeason]);
+
+  useEffect(() => {
+    const data = searchParams.get("ws");
+    if (!data) return;
+    const courseObjects = linkDataToCourses(courseData, curSeason, data);
+    setLinkCourses(courseObjects);
+    // import courses
+  }, [])
 
   // eslint-disable-next-line no-useless-assignment
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
@@ -91,7 +116,7 @@ function WorksheetCalendarList() {
         </div>
       </SurfaceComponent>
       <SurfaceComponent className={styles.courseList}>
-        {courses.length > 0 ? (
+        {(linkCourses.length == 0 && courses.length > 0) && (
           <ListGroup variant="flush">
             {courses.map((course) => (
               <WorksheetCalendarListItem
@@ -101,8 +126,20 @@ function WorksheetCalendarList() {
               />
             ))}
           </ListGroup>
-        ) : (
+        )}
+        {linkCourses.length == 0 && courses.length == 0 && (
           <NoCourses />
+        )}
+        {linkCourses.length > 0 && (
+          <ListGroup variant="flush">
+            {linkCourses.map((course) => (
+              <WorksheetCalendarListItem
+                key={curSeason + course.crn}
+                listing={course.listing}
+                hidden={course.hidden ?? false}
+              />
+            ))}
+          </ListGroup>
         )}
       </SurfaceComponent>
     </div>

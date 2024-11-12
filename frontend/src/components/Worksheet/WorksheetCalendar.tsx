@@ -1,22 +1,26 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
+import { seasons, useCourseData } from '../../contexts/ferryContext';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
+import { BRAND } from 'zod';
+import { linkDataToCourses } from '../../utilities/course';
 
 function WorksheetCalendar() {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
   const { courses, curSeason } = useWorksheet();
 
   const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents('rbc', courses, curSeason);
+    const parsedCourses = getCalendarEvents('rbc', linkCourses.length > 0 ? linkCourses : courses, curSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -39,7 +43,21 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, curSeason]);
+  }, [courses, linkCourses, curSeason]);
+
+  const {
+    loading: coursesLoading,
+    courses: courseData,
+    error: courseLoadError,
+  } = useCourseData([curSeason]);
+
+  useEffect(() => {
+    const data = searchParams.get("ws");
+    if (!data) return;
+    const courseObjects = linkDataToCourses(courseData, curSeason, data);
+    setLinkCourses(courseObjects);
+    // import courses
+  }, [])
 
   return (
     <Calendar

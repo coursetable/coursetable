@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -86,7 +87,10 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses } = useWorksheet();
+  const [copied, setCopied] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { courses, curSeason } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
@@ -95,6 +99,26 @@ export default function WorksheetStats() {
   const skillsAreas: string[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
+
+  async function handleExport(courses: WorksheetCourse[]) {
+    let wsSerial = `${curSeason}`;
+    for (const { crn, listing, hidden, color } of courses) {
+      const courseSerial = `${crn}_${color}_${hidden ? "t" : "f"}`;
+      if (wsSerial != "") {
+        wsSerial += "|";
+      }
+      wsSerial += courseSerial;
+    }
+  
+    if (!navigator.clipboard) {
+      throw new Error("Browser don't have support for native clipboard.");
+    }
+  
+    await navigator.clipboard.writeText(`https://localhost:3000/worksheet?ws=${btoa(wsSerial)}`);
+    console.log("Copied!");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1000);
+  }
 
   for (const { listing, hidden } of courses) {
     const alreadyCounted = listing.course.listings.some((l) =>
@@ -185,6 +209,21 @@ export default function WorksheetStats() {
                   ))}
                 </dd>
               </div>
+            </dl>
+            <div className={styles.spacer}></div>
+            <dl>
+            {searchParams.get("ws") ? (
+              <div className={styles.wide}>
+                <dt>Viewing exported worksheet</dt>
+                <Button variant="primary" onClick={() => setSearchParams({})}>Exit</Button>
+              </div>
+            ) : (
+              <div className={styles.wide}>
+                <dt>{copied ? "Copied!" : (courses.length == 0 ? "Nothing to export" : "Export Worksheet to URL")}</dt>
+                <Button variant="primary" disabled={courses.length == 0} onClick={() => handleExport(courses)}>Go</Button>
+              </div>
+            )}
+            
             </dl>
           </div>
         </div>

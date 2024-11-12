@@ -2,6 +2,7 @@
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { Courses, Listings } from '../generated/graphql-types';
+import type { BRAND } from 'zod';
 import type {
   FriendRecord,
   UserWorksheets,
@@ -427,3 +428,36 @@ export const toExponential = (number: number): number => 1.01 ** number;
  */
 export const toLinear = (number: number): number =>
   Math.log(number) / Math.log(1.01);
+
+
+/**
+ * Create array of WorksheetCourses from serialized link data
+ */
+export const linkDataToCourses = (courseData: {
+  [seasonCode: string & BRAND<"season">]: Map<number & BRAND<"crn">, CatalogListing>;
+}, curSeason: string & BRAND<"season">, data: string): WorksheetCourse[] => {
+  const serial = atob(data);
+  const courseSerials = serial.split("|");
+  console.log(courseSerials);
+  const courseObjects: WorksheetCourse[] = []
+  for (const course of courseSerials.slice(1)) {
+    const components = course.split("_");  // crn, color, t/f for hidden
+    const crn = Number(components[0]) || 0;
+    const hidden = components[2] == "t" ? true : false;
+    const seasonCourses = courseData[curSeason];
+    const seasonCourseKeys = seasonCourses?.entries() || []
+    for (const [crnKey, listingVal] of seasonCourseKeys) {
+      const crnNum = crnKey as number;
+      if (crn == crnNum) {
+        courseObjects.push({
+          crn: crnKey,
+          color: components[1] || "",
+          listing: listingVal,
+          hidden: hidden
+        })
+      }
+    }
+  }
+  console.log(courseObjects)
+  return courseObjects
+}
