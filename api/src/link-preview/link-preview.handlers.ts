@@ -70,7 +70,7 @@ async function getCourseMetadata(query: unknown) {
   };
 }
 
-async function getPageMetadata(url: unknown) {
+function getPageMetadata(url: string) {
   // TODO: we should probably just dynamically render these HTML pages
   switch (url) {
     case '/releases/link-preview':
@@ -106,10 +106,10 @@ export async function generateLinkPreview(
 ): Promise<void> {
   // Log url accessed
   winston.info(
-    `Generating link preview for ${String(req.query['course-modal'] ?? req.query.url ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
+    `Generating link preview for ${String(req.query['course-modal']?.toString() ?? req.query.url?.toString() ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
   );
   let metadata = defaultMetadata;
-  if (req.query.url) metadata = await getPageMetadata(req.query.url);
+  if (req.query.url) metadata = getPageMetadata(req.query.url as string);
   else if (req.query['course-modal'])
     metadata = await getCourseMetadata(req.query['course-modal']);
   winston.info(`Generated link preview for ${metadata.title}`);

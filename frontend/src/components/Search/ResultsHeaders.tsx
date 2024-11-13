@@ -171,10 +171,7 @@ function ResultsHeaders({
             >
               Meets
             </HeaderCol>
-            <HeaderCol
-              className={colStyles.locCol}
-              sortOption="locations_summary"
-            >
+            <HeaderCol className={colStyles.locCol} sortOption="location">
               Location
             </HeaderCol>
             <HeaderCol

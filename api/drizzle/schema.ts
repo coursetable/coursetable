@@ -87,3 +87,21 @@ export const worksheetCourses = pgTable(
     ),
   }),
 );
+
+export const worksheetNames = pgTable(
+  'worksheetNames',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    season: integer('season').notNull(),
+    worksheetNumber: integer('worksheetNumber').notNull(),
+    worksheetName: varchar('worksheetName', { length: 64 }).notNull(),
+  },
+  (table) => ({
+    worksheetNameUniqueIdx: uniqueIndex('worksheet_unique_name_idx').on(
+      table.netId,
+      table.season,
+      table.worksheetNumber,
+    ),
+  }),
+);

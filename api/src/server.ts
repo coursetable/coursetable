@@ -16,7 +16,7 @@ import { passportConfig } from './auth/auth.handlers.js';
 import casAuth from './auth/auth.routes.js';
 import canny from './canny/canny.routes.js';
 import catalog from './catalog/catalog.routes.js';
-import { fetchCatalog } from './catalog/catalog.utils.js';
+import { fetchCatalog, generateSitemapIndex } from './catalog/catalog.utils.js';
 import challenge from './challenge/challenge.routes.js';
 import {
   SECURE_PORT,
@@ -109,7 +109,11 @@ app.use(
   '/ferry',
   (req, res, next) => {
     const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
-    req.headers['X-Hasura-Role'] = hasuraRole;
+    // Important: all headers must be lowercase; otherwise it will not override
+    // existing headers on the request.
+    req.headers['x-hasura-role'] = hasuraRole;
+    req.headers['x-hasura-admin-secret'] =
+      process.env.HASURA_GRAPHQL_ADMIN_SECRET!;
     next();
   },
   createProxyMiddleware({
@@ -157,25 +161,36 @@ app.use(
   },
 );
 
-// Once routes have been created, start listening.
-app.listen(INSECURE_PORT, () => {
-  winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
-});
-
-// Serve dev with SSL.
-https
-  .createServer(
-    {
-      key: fs.readFileSync('./src/keys/server.key'),
-      cert: fs.readFileSync('./src/keys/server.cert'),
-    },
-    app,
-  )
-  .listen(SECURE_PORT, () => {
-    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
-  });
-
 // Generate the static catalog on start.
 winston.info('Updating static catalog');
 const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
-void fetchCatalog(overwriteCatalog);
+
+void fetchCatalog(overwriteCatalog)
+  .then(async () => {
+    winston.info('Finished updating static catalog');
+    // Once catalogs have been created, start listening.
+    app.listen(INSECURE_PORT, () => {
+      winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
+    });
+
+    // Serve dev with SSL.
+    https
+      .createServer(
+        {
+          key: fs.readFileSync('./src/keys/server.key'),
+          cert: fs.readFileSync('./src/keys/server.cert'),
+        },
+        app,
+      )
+      .listen(SECURE_PORT, () => {
+        winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
+      });
+
+    winston.info('Generating season sitemaps');
+    await generateSitemapIndex();
+    winston.info('Finished generating season sitemaps');
+  })
+  .catch((err: unknown) => {
+    winston.error('Error updating static catalog');
+    winston.error(err);
+  });

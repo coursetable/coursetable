@@ -147,21 +147,10 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ./start.sh -d
    ```
 
-   **Important**: Run with `--seed_ferry` to seed your local Postgres database for first time setup:
+   Note that there are two other relevant flags:
 
-   ```sh
-   cd api
-   ./start.sh -d --seed_ferry
-   ```
-
-   Optionally, to overwrite your cached catalogs:
-
-   ```sh
-   cd api
-   ./start.sh -d -o
-   # Ctrl + C to exit after catalogs refresh
-   ./start.sh -d # start normally
-   ```
+   - On first setup, run with `--ferry_seed` (or `-f`) to seed your local Postgres database: `./start.sh -d -f`. You can run this command again to refresh the course data.
+   - To overwrite your cached catalogs, run with `--overwrite` (or `-o`): `./start.sh -d -o`. This flag is implied by the `-f` flag.
 
 1. Wait ~2-3 minutes. If you’re curious, here's what's going on:
 

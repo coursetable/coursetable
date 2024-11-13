@@ -11,19 +11,17 @@ import {
 } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
-import type { CourseModalHeaderData } from './CourseModal';
-
-import { CUR_YEAR } from '../../config';
 import type {
   RelatedCourseInfoFragment,
   SameCourseOrProfOfferingsQuery,
-} from '../../generated/graphql-types';
-import { useStore } from '../../store';
-import { generateRandomColor } from '../../utilities/common';
-import { ratingColormap, workloadColormap } from '../../utilities/constants';
-import { toSeasonString, isDiscussionSection } from '../../utilities/course';
-import { createCourseModalLink } from '../../utilities/display';
-import { RatingBubble } from '../Typography';
+} from '../../../generated/graphql-types';
+import { useStore } from '../../../store';
+import { generateRandomColor } from '../../../utilities/common';
+import { ratingColormap, workloadColormap } from '../../../utilities/constants';
+import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
+import { createCourseModalLink } from '../../../utilities/display';
+import { RatingBubble } from '../../Typography';
+import type { ModalNavigationFunction } from '../CourseModal';
 
 import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';
@@ -118,7 +116,7 @@ function CourseLink({
   readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly course: RelatedCourseInfoFragment;
   readonly filter: Filter;
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
+  readonly onNavigation: ModalNavigationFunction;
 }) {
   const [searchParams] = useSearchParams();
   // Note, we purposefully use the listing data fetched from GraphQL instead
@@ -140,6 +138,27 @@ function CourseLink({
         : course.course_professors.length === 0
           ? 'TBA'
           : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
+  if (course.listings.some((l) => l.crn === listing.crn)) {
+    return (
+      <OverlayTrigger
+        trigger="hover"
+        placement="right"
+        overlay={(props) => (
+          <Popover id="self-popover" {...props}>
+            <Popover.Body>The current class</Popover.Body>
+          </Popover>
+        )}
+      >
+        <Col
+          xs={5}
+          className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+        >
+          <strong>{toSeasonString(course.season_code)}</strong>
+          <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+        </Col>
+      </OverlayTrigger>
+    );
+  }
   // Avoid showing the popup if there's something we can link to with high
   // priority
   // TODO: once we have the concept of "primary" cross-listing, we should
@@ -155,7 +174,7 @@ function CourseLink({
         className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
         to={createCourseModalLink(targetListingDefinite, searchParams)}
         onClick={() => {
-          onNavigation(targetListingDefinite, true);
+          onNavigation('push', targetListingDefinite, 'evals');
         }}
       >
         <strong>{toSeasonString(course.season_code)}</strong>
@@ -178,7 +197,7 @@ function CourseLink({
                 className="d-block"
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  onNavigation(l, true);
+                  onNavigation('push', l, 'evals');
                 }}
               >
                 {l.course_code}
@@ -204,9 +223,8 @@ function normalizeRelatedListings<T extends RelatedCourseInfoFragment>(
   courses: T[],
 ): T[] {
   // Discussion sections have no ratings, nothing to show
-  // Skip listings in the current and future seasons that have no evals
   return courses
-    .filter((o) => !isDiscussionSection(o) && !CUR_YEAR.includes(o.season_code))
+    .filter((o) => !isDiscussionSection(o))
     .sort(
       (a, b) =>
         b.season_code.localeCompare(a.season_code, 'en-US') ||
@@ -219,10 +237,14 @@ function haveSameProfessors(
   course2: Pick<RelatedCourseInfoFragment, 'course_professors'>,
 ) {
   const aProfIds = course1.course_professors
-    .map((p) => p.professor.professor_id)
+    // @ts-expect-error: the GraphQL-codegen types are wrong because it doesn't
+    // know that fragments are deep merged
+    .map((p) => p.professor.professor_id as number)
     .sort((a, b) => a - b);
   const bProfIds = course2.course_professors
-    .map((p) => p.professor.professor_id)
+    // @ts-expect-error: the GraphQL-codegen types are wrong because it doesn't
+    // know that fragments are deep merged
+    .map((p) => p.professor.professor_id as number)
     .sort((a, b) => a - b);
   return (
     aProfIds.length === bProfIds.length &&
@@ -232,23 +254,30 @@ function haveSameProfessors(
 
 function OverviewRatings({
   onNavigation,
-  data,
+  listing,
+  sameCourse,
+  sameProf,
 }: {
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
-  readonly data: SameCourseOrProfOfferingsQuery;
+  readonly onNavigation: ModalNavigationFunction;
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
+  readonly sameProf: SameCourseOrProfOfferingsQuery['sameProf'];
 }) {
   const user = useStore((state) => state.user);
-  const listing = data.self[0]!;
   const overlapSections = useMemo(() => {
-    const sameCourse = normalizeRelatedListings(data.sameCourse);
-    const sameProf = normalizeRelatedListings(
-      data.sameProf.map((o) => o.course),
+    const sameCourseNormalized = normalizeRelatedListings(sameCourse);
+    const sameProfNormalized = normalizeRelatedListings(
+      sameProf.map((o) => o.course),
     );
-    const both = sameCourse.filter((o) =>
+    const both = sameCourseNormalized.filter((o) =>
       haveSameProfessors(o, listing.course),
     );
-    return { course: sameCourse, professor: sameProf, both };
-  }, [data, listing]);
+    return {
+      course: sameCourseNormalized,
+      professor: sameProfNormalized,
+      both,
+    };
+  }, [sameCourse, sameProf, listing]);
   const options = [
     {
       displayName: `Course (${overlapSections.course.length})`,

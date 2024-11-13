@@ -8,7 +8,7 @@ Here are all useful resources to help you write GraphQL queries:
 
 - [GraphQL documentation](https://graphql.org/learn/) for the general query structure.
 - [Hasura Postgres queries](https://hasura.io/docs/latest/queries/postgres/index/) for Hasura specific queries—you will see `where(season_code: { _eq: $seasonCode })` very often.
-- [Ferry DB diagram](https://github.com/coursetable/ferry/blob/master/docs/db_diagram.pdf) for the database schema. Ignore the `*_staged` suffix. For example, because there's a relationship between `listings` and `courses`, both of the following queries are valid:
+- [Ferry DB diagram](https://github.com/coursetable/ferry/blob/master/docs/db_diagram.pdf) for the database schema. For example, because there's a relationship between `listings` and `courses`, both of the following queries are valid:
 
   ```graphql
   query {
@@ -35,6 +35,11 @@ Here are all useful resources to help you write GraphQL queries:
 - [GraphiQL playground](https://coursetable.com/graphiql) to test your queries. On the left sidebar, you can see the schema and the documentation for each field.
 
 ## Generating SDKs
+
+> [!NOTE]
+> SDKs are generated against the local dev GraphQL engine. This may not reflect the production schema.
+>
+> Every time you run codegen (which means every time you start the API), make sure that the generated changes are intended. If you see unexpected changes, you may need to update your local schema. To make sure they are in sync, refer to the [containers & DB docs](./containers.md).
 
 ### API
 
@@ -98,7 +103,7 @@ On the frontend side, SDKs are all located in `src/generated`.
    ```
 
 2. Start the API service with `./start.sh -d`. The frontend codegen talks to the GraphQL server exposed by the API.
-3. In frontend, run `bun codegen`. This step needs to be done manually every time you change the query.
+3. In frontend, run `bun codegen`. This step needs to be done manually every time you change the query. Note that the codegen relies on the admin secret environment, so make sure you run: `doppler setup -p coursetable -c dev && doppler run --command "bun codegen"`.
 
    > [!NOTE]
    > We recommend you run `bun codegen` regularly because we also copy the `infoAttributes.json` and `seasons.json` files which are constantly changing.

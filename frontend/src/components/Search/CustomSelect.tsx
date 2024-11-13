@@ -87,26 +87,32 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
 }
 
 // Styles for popout select
-function popoutStyles(width: number): StylesConfig<Option<number | string>> {
+function popoutStyles(
+  minWidth: number,
+  showControl = true,
+): StylesConfig<Option<number | string>> {
   return {
     control: (base, { isDisabled }) => ({
       ...base,
+      ...(!showControl && { display: 'none' }),
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       backgroundColor: isDisabled
         ? 'var(--color-disabled)'
         : 'var(--color-select)',
       borderColor: 'var(--color-border-control)',
-      minWidth: width,
+      minWidth,
       margin: 8,
     }),
     dropdownIndicator: (base) => ({
       ...base,
       display: 'none',
     }),
-    menu: () => ({ boxShadow: 'inset 0 1px 0 var(--color-shadow)' }),
+    menu: () =>
+      showControl ? { boxShadow: 'inset 0 1px 0 var(--color-shadow)' } : {},
     option: (base) => ({
       ...base,
       cursor: 'pointer',
+      minWidth,
     }),
   };
 }
@@ -175,6 +181,8 @@ type Props = {
   readonly popout?: boolean;
   readonly colors?: { [optionValue: string]: string };
   readonly isMulti?: boolean;
+  readonly showControl?: boolean;
+  readonly minWidth?: number;
 };
 
 function CustomSelect<
@@ -184,7 +192,9 @@ function CustomSelect<
   popout = false,
   colors,
   isMulti = false as IsMulti,
+  showControl = true,
   components: componentsProp,
+  minWidth = 400,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
   // All the default theme colors
@@ -213,7 +223,7 @@ function CustomSelect<
 
   let styles = mergeStyles(
     indicatorStyles(isMulti),
-    popout ? popoutStyles(400) : defaultStyles(),
+    popout ? popoutStyles(minWidth, showControl) : defaultStyles(),
   );
   if (colors) styles = mergeStyles(styles, colorStyles(colors));
 
@@ -228,6 +238,7 @@ function CustomSelect<
       // All our selects are used in the navbar or the mobile search form, and
       // on mobile this is false anyway
       menuShouldScrollIntoView={false}
+      isSearchable={showControl}
     />
   );
 }

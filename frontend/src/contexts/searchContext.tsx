@@ -13,7 +13,7 @@ import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
 import type { CatalogListing } from '../queries/api';
-import type { Season, Weekdays } from '../queries/graphql-types';
+import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { isEqual } from '../utilities/common';
@@ -22,11 +22,11 @@ import {
   subjects,
   schools,
   courseInfoAttributes,
+  weekdays,
 } from '../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
-  getDayTimes,
   getEnrolled,
   getNumFriends,
   getOverallRatings,
@@ -35,8 +35,10 @@ import {
   isGraduate,
   isDiscussionSection,
   sortCourses,
+  toLocationsSummary,
   toRangeTime,
   toSeasonString,
+  toWeekdayStrings,
   type NumFriendsReturn,
 } from '../utilities/course';
 import { createFilterLink, paramFilter } from '../utilities/params';
@@ -68,7 +70,7 @@ const sortCriteria = {
   average_gut_rating: 'Sort by Guts (Overall - Workload)',
   enrollment: 'Sort by Last Enrollment',
   time: 'Sort by Days & Times',
-  locations_summary: 'Sort by Locations',
+  location: 'Sort by Locations',
 };
 
 export const sortByOptions = Object.fromEntries(
@@ -133,7 +135,7 @@ export interface CategoricalFilters {
   selectSubjects: string;
   selectSkillsAreas: string;
   selectSeasons: Season;
-  selectDays: Weekdays;
+  selectDays: number;
   selectSchools: string;
   selectCredits: number;
   selectCourseInfoAttributes: string;
@@ -208,7 +210,7 @@ export const defaultFilters: Filters = {
   hideConflicting: false,
   hideFirstYearSeminars: false,
   hideGraduateCourses: false,
-  hideDiscussionSections: false,
+  hideDiscussionSections: true,
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
 };
@@ -223,7 +225,7 @@ const emptyFilters: Filters = {
   ...defaultFilters,
   selectSeasons: [],
   hideCancelled: false,
-  hideDiscussionSections: false,
+  hideDiscussionSections: true,
 };
 
 export type FilterHandle<K extends keyof Filters> = ReturnType<
@@ -403,10 +405,12 @@ export function SearchProvider({
           case 'enrollment':
             return getEnrolled(listing.course, 'stat');
           case 'days':
-            return Object.keys(listing.course.times_by_day).map((d) =>
-              ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                ? d.slice(0, 2)
-                : d[0],
+            return toWeekdayStrings(
+              listing.course.course_meetings.reduce(
+                // Each days_of_week is a bitmask. Join them to get all days.
+                (acc, m) => acc | m.days_of_week,
+                0,
+              ),
             );
           case 'info-attributes':
             return listing.course.course_flags.map((f) => f.flag.flag_text);
@@ -422,7 +426,7 @@ export function SearchProvider({
             return listing.course.extra_info !== 'ACTIVE';
           case 'conflicting':
             return (
-              listing.course.times_summary !== 'TBA' &&
+              listing.course.course_meetings.length > 0 &&
               !isInWorksheet(
                 listing.season_code,
                 listing.crn,
@@ -441,7 +445,7 @@ export function SearchProvider({
             // TODO: query for colsem
             return false;
           case 'location':
-            return listing.course.locations_summary;
+            return toLocationsSummary(listing.course);
           case 'season':
             return listing.season_code;
           case 'professor-names':
@@ -468,6 +472,10 @@ export function SearchProvider({
               return `${base} ${listing.course.description}`;
             return base;
           }
+          case 'title':
+          case 'areas':
+          case 'description':
+          case 'credits':
           default:
             return listing.course[key];
         }
@@ -493,7 +501,7 @@ export function SearchProvider({
   const searchDataPredictate = useCallback(
     (processedSearchTextParam: typeof processedSearchText) => {
       const listings = processedSeasons.flatMap((seasonCode) => {
-        const data = courseData[seasonCode];
+        const data = courseData[seasonCode]?.data;
         if (!data) return [];
         return [...data.values()];
       });
@@ -534,12 +542,11 @@ export function SearchProvider({
         }
 
         if (timeBounds.isNonEmpty) {
-          const times = getDayTimes(listing.course);
           if (
-            !times.some(
-              (time) =>
-                toRangeTime(time.start) >= timeBounds.value[0] &&
-                toRangeTime(time.end) <= timeBounds.value[1],
+            !listing.course.course_meetings.some(
+              (session) =>
+                toRangeTime(session.start_time) >= timeBounds.value[0] &&
+                toRangeTime(session.end_time) <= timeBounds.value[1],
             )
           )
             return false;
@@ -569,7 +576,7 @@ export function SearchProvider({
 
         if (
           hideConflicting.value &&
-          listing.course.times_summary !== 'TBA' &&
+          listing.course.course_meetings.length > 0 &&
           !isInWorksheet(
             listing.season_code,
             listing.crn,
@@ -597,8 +604,10 @@ export function SearchProvider({
           return false;
 
         if (selectDays.value.length !== 0) {
-          const days = getDayTimes(listing.course).map(
-            (daytime) => daytime.day,
+          const days = listing.course.course_meetings.flatMap((session) =>
+            Object.values(weekdays).filter(
+              (day) => session.days_of_week & (1 << day),
+            ),
           );
           const selectDayValues = selectDays.value.map((day) => day.value);
           // Require the two sets to be equal
@@ -668,22 +677,13 @@ export function SearchProvider({
             listing.course.course_professors.some((p) =>
               p.professor.name.toLowerCase().includes(token),
             ) ||
-            // Use `times_by_day` instead of `locations_summary` to account for
-            // multiple locations.
-            Object.values(listing.course.times_by_day)
-              .flat()
-              .flatMap((x) => x[2].toLowerCase().split(' '))
-              .some(
-                (loc) =>
-                  // Never allow a number to match a room number, as numbers are
-                  // more likely to be course numbers.
-                  // TODO: this custom parsing is not ideal. `times_by_day`
-                  // should give a more structured location format.
-                  !/^\d+$/u.test(loc) &&
-                  loc !== '-' &&
-                  loc !== 'tba' &&
-                  loc.startsWith(token),
-              )
+            listing.course.course_meetings.some(({ location }) =>
+              // TODO catalog no longer stores building full name; we should
+              // fetch this as a separate query
+              // Do not match on room numbers because room numbers are more
+              // likely to be course numbers
+              location?.building.code.toLowerCase().startsWith(token),
+            )
           )
             continue;
 

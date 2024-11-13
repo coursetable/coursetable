@@ -16,7 +16,12 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
-import { getEnrolled, isInWorksheet } from '../../utilities/course';
+import {
+  getEnrolled,
+  isInWorksheet,
+  toTimesSummary,
+  toLocationsSummary,
+} from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { RatingBubble } from '../Typography';
@@ -170,12 +175,12 @@ function ResultsItem({
           </span>
           <span className={colStyles.meetCol}>
             <span className={styles.ellipsisText}>
-              {listing.course.times_summary}
+              {toTimesSummary(listing.course)}
             </span>
           </span>
           <span className={colStyles.locCol}>
             <span className={styles.ellipsisText}>
-              {listing.course.locations_summary}
+              {toLocationsSummary(listing.course)}
             </span>
           </span>
           <span className={colStyles.friendsCol}>

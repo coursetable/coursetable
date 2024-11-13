@@ -42,21 +42,26 @@ fi
 
 if [[ $ENV == 'dev' ]]
 then
+    export HOT_RELOAD='true'
+    export SENTRY_ENVIRONMENT=development
+    doppler setup -p coursetable -c dev
     if [[ $OVERWRITE == true ]]
     then
         export OVERWRITE_CATALOG='true'
     fi
-    export HOT_RELOAD='true'
-    export SENTRY_ENVIRONMENT=development
-    doppler setup -p coursetable -c dev
-
     if [[ $FERRY_SEED == true ]]
     then
         doppler run --command 'curl "$FERRY_DUMP_URL" -o ./postgres/init/a.sql'
         export OVERWRITE_CATALOG='true'
+        rm -rf postgres/data/
     fi
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d --build --pull always"
+
+    if [[ $FERRY_SEED == true ]]
+    then
+        docker exec -it express /bin/bash -c "cd api && npm run db:push"
+    fi
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
     

@@ -1,38 +1,52 @@
 query SameCourseOrProfOfferings(
   $seasonCode: String!
   $crn: Int!
-  $same_course_id: Int!
-  $professor_ids: [Int!]
-  $hasEval: Boolean!
+  $sameCourseId: Int!
+  $professorIds: [Int!]
+  $hasEvals: Boolean!
 ) {
   self: listings(
     where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
   ) {
+    # Note: here we only need to fetch the data displayed in the modal body
+    # not the modal header.
     course {
       description
       requirements
       syllabus_url
+      section
       course_professors {
         professor {
           professor_id
           name
           email
           courses_taught
-          average_rating @include(if: $hasEval)
+          average_rating @include(if: $hasEvals)
         }
       }
-      times_by_day
-      section
+      course_meetings {
+        days_of_week
+        start_time
+        end_time
+        location {
+          room
+          building {
+            code
+            building_name
+            url
+          }
+        }
+      }
       course_flags {
         flag {
           flag_text
         }
       }
-      evaluation_statistic @include(if: $hasEval) {
+      evaluation_statistic @include(if: $hasEvals) {
         enrolled
       }
-      last_enrollment @include(if: $hasEval)
-      last_enrollment_same_professors @include(if: $hasEval)
+      last_enrollment @include(if: $hasEvals)
+      last_enrollment_same_professors @include(if: $hasEvals)
       credits
       classnotes
       regnotes
@@ -41,19 +55,19 @@ query SameCourseOrProfOfferings(
 
       same_course_id
     }
+    school
 
     # For searching/testing equality
     season_code
     crn
     course_code
   }
-  sameCourse: courses(where: { same_course_id: { _eq: $same_course_id } }) {
+  sameCourse: courses(where: { same_course_id: { _eq: $sameCourseId } }) {
     ...RelatedCourseInfo
     syllabus_url
   }
-  sameProf: course_professors(
-    where: { professor_id: { _in: $professor_ids } }
-  ) {
+  sameProf: course_professors(where: { professor_id: { _in: $professorIds } }) {
+    professor_id
     course {
       ...RelatedCourseInfo
     }
@@ -61,36 +75,67 @@ query SameCourseOrProfOfferings(
 }
 
 fragment RelatedCourseInfo on courses {
-  average_professor_rating @include(if: $hasEval)
-  evaluation_statistic @include(if: $hasEval) {
+  season_code
+  section
+  ...CourseModalPrefetchCourseData
+  average_professor_rating @include(if: $hasEvals)
+  evaluation_statistic @include(if: $hasEvals) {
     avg_workload
     avg_rating
   }
   course_professors {
     professor {
-      professor_id
       name
     }
   }
   course_id
-  # All this is needed to navigate to the next class
+}
+
+# This data contains all the "critical data" that must be prefetched before
+# navigation. This ensures the user sees some content rather than a loading
+# spinner. This basically is everything that is displayed in the modal header,
+# and data needed to fetch the modal body.
+fragment CourseModalPrefetchListingData on listings {
   season_code
+  crn
+  course_code
+  section
+  course {
+    ...CourseModalPrefetchCourseData
+  }
+}
+
+fragment CourseModalPrefetchCourseData on courses {
+  title
+  skills
+  areas
+  extra_info
+  # For rendering head metadata
+  description
+  same_course_id
   listings {
     crn
     course_code
   }
-  title
-  section
-  skills
-  areas
-  extra_info
-  description
-  times_by_day
-  same_course_id
+  course_professors {
+    professor {
+      professor_id
+    }
+  }
+  # This is for the add to worksheet button in the header, which needs to check
+  # conflicts with all current courses
+  course_meetings {
+    days_of_week
+    start_time
+    end_time
+  }
+  evaluation_statistic @include(if: $hasEvals) {
+    responses
+  }
 }
 
-query SearchEvaluationNarratives($season_code: String, $crn: Int) {
-  listings(where: { season_code: { _eq: $season_code }, crn: { _eq: $crn } }) {
+query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
+  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
     course {
       evaluation_narratives {
         comment
@@ -114,29 +159,30 @@ query SearchEvaluationNarratives($season_code: String, $crn: Int) {
   }
 }
 
-query PrereqLinkInfo($course_codes: [String!]) {
-  listings(where: { course_code: { _in: $course_codes } }) {
+query PrereqLinkInfo($courseCodes: [String!], $hasEvals: Boolean!) {
+  listings(where: { course_code: { _in: $courseCodes } }) {
+    ...CourseModalPrefetchListingData
+  }
+}
+
+query CourseSections(
+  $courseCode: String!
+  $seasonCode: String!
+  $hasEvals: Boolean!
+) {
+  listings(
+    where: {
+      season_code: { _eq: $seasonCode }
+      course_code: { _eq: $courseCode }
+    }
+  ) {
+    ...CourseModalPrefetchListingData
     course {
-      title
-      skills
-      areas
-      extra_info
-      description
-      times_by_day
-      same_course_id
-      listings {
-        course_code
-        crn
-      }
       course_professors {
         professor {
-          professor_id
+          name
         }
       }
     }
-    season_code
-    crn
-    course_code
-    section
   }
 }

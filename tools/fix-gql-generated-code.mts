@@ -1,4 +1,5 @@
 // TODO: https://arethetypeswrong.github.io/?p=graphql-tag%402.12.6
+// https://github.com/apollographql/graphql-tag/issues/804
 import fs from 'node:fs';
 
 const apiDir = new URL('../api/src', import.meta.url);

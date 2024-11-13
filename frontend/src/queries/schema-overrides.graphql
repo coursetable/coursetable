@@ -7,8 +7,6 @@ scalar Crn
 scalar ExtraInfo
 scalar StringArr
 scalar NumberArr
-scalar TimesByDay
-scalar ProfessorInfo
 
 # IMPORTANT: make sure what you add here actually exists on the model!
 type listings {
@@ -22,7 +20,6 @@ type courses {
   all_course_codes: StringArr!
   areas: StringArr!
   skills: StringArr!
-  times_by_day: TimesByDay!
 }
 
 type evaluation_questions {

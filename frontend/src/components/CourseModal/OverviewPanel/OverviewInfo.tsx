@@ -15,23 +15,23 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import type { CourseModalHeaderData } from './CourseModal';
-
-import { useSearch } from '../../contexts/searchContext';
+import { useSearch } from '../../../contexts/searchContext';
 import type {
   SameCourseOrProfOfferingsQuery,
   PrereqLinkInfoQuery,
-} from '../../generated/graphql-types';
-import { usePrereqLinkInfoQuery } from '../../queries/graphql-queries';
-import type { Weekdays } from '../../queries/graphql-types';
-import { ratingColormap } from '../../utilities/constants';
+} from '../../../generated/graphql-types';
+import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
+import { useStore } from '../../../store';
+import { schools, ratingColormap } from '../../../utilities/constants';
 import {
+  toWeekdaysDisplayString,
   getEnrolled,
   toSeasonString,
   to12HourTime,
-} from '../../utilities/course';
-import { createCourseModalLink } from '../../utilities/display';
-import { TextComponent, InfoPopover, LinkLikeText } from '../Typography';
+} from '../../../utilities/course';
+import { createCourseModalLink } from '../../../utilities/display';
+import { TextComponent, InfoPopover, LinkLikeText } from '../../Typography';
+import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -185,20 +185,16 @@ function Prereqs({
 }: {
   readonly course: CourseInfo;
   readonly season: string;
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
+  readonly onNavigation: ModalNavigationFunction;
 }) {
+  const user = useStore((state) => state.user);
   const segments = parsePrereqs(course.requirements);
   const [searchParams] = useSearchParams();
   const { data, error, loading } = usePrereqLinkInfoQuery({
     variables: {
-      course_codes:
-        segments
-          ?.filter(
-            // TODO: remove after TS 5.5
-            (s): s is Extract<Segment, { type: 'course' }> =>
-              s.type === 'course',
-          )
-          .map((s) => s.course) ?? [],
+      courseCodes:
+        segments?.filter((s) => s.type === 'course').map((s) => s.course) ?? [],
+      hasEvals: Boolean(user.hasEvals),
     },
     skip: !segments,
   });
@@ -248,13 +244,13 @@ function Prereqs({
               <Link
                 to={createCourseModalLink(info, searchParams)}
                 onClick={() => {
-                  onNavigation(info, false);
+                  onNavigation('push', info, 'overview');
                 }}
               >
                 {s.text}
               </Link>
             ) : (
-              <span className={styles.loadingLink}>{s.text}</span>
+              <span className={styles.unavailableLink}>{s.text}</span>
             )}
           </OverlayTrigger>
         );
@@ -422,65 +418,52 @@ function Professors({ course }: { readonly course: CourseInfo }) {
 }
 
 function TimeLocation({ course }: { readonly course: CourseInfo }) {
-  const locations = new Map<string, string>();
-  const times = new Map<string, Set<Weekdays>>();
-  for (const [day, info] of Object.entries(course.times_by_day)) {
-    for (const [startTime, endTime, location, locationURL] of info) {
-      locations.set(location, locationURL);
-      const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
-      if (!times.has(timespan)) times.set(timespan, new Set());
-
-      // Note! Some classes have multiple places at the same time, particularly
-      // if one is "online". Avoid duplicates.
-      // See for example: CDE 567, Spring 2023
-      times.get(timespan)!.add(day as Weekdays);
-    }
-  }
   return (
-    <>
-      <DataField
-        name="Time"
-        value={[...times.entries()].map(([timespan, days]) => (
-          <div key={timespan}>
-            {[...days]
-              .map((d) =>
-                ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                  ? d.slice(0, 2)
-                  : d[0],
-              )
-              .join('')}{' '}
-            {timespan}
-          </div>
-        ))}
-      />
-      <DataField
-        name="Location"
-        value={[...locations.entries()].map(([location, locationURL]) => (
-          <div key={location}>
-            {locationURL ? (
-              <a target="_blank" rel="noopener noreferrer" href={locationURL}>
-                {location}
-                <HiExternalLink size={18} className="ms-1 my-auto" />
-              </a>
-            ) : (
-              location
-            )}
-          </div>
-        ))}
-      />
-    </>
+    <DataField
+      name="Meetings"
+      value={course.course_meetings.map((session, i) => (
+        <div key={i}>
+          {toWeekdaysDisplayString(session.days_of_week)}{' '}
+          {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
+          {session.location && (
+            <>
+              {' '}
+              at{' '}
+              {session.location.building.url ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={session.location.building.url}
+                >
+                  {session.location.building.code}
+                  {/* TODO use a tooltip instead */}
+                  {session.location.building.building_name
+                    ? ` (${session.location.building.building_name})`
+                    : ''}
+                  {session.location.room ? ` ${session.location.room}` : ''}
+                  <HiExternalLink size={18} className="ms-1 my-auto" />
+                </a>
+              ) : (
+                `${session.location.building.code}${session.location.room ? ` ${session.location.room}` : ''}`
+              )}
+            </>
+          )}
+        </div>
+      ))}
+    />
   );
 }
 
 function OverviewInfo({
   onNavigation,
-  data,
+  listing,
+  sameCourse,
 }: {
-  readonly onNavigation: (x: CourseModalHeaderData, goToEvals: boolean) => void;
-  readonly data: SameCourseOrProfOfferingsQuery;
+  readonly onNavigation: ModalNavigationFunction;
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
 }) {
   const { numFriends } = useSearch();
-  const listing = data.self[0]!;
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
@@ -494,7 +477,7 @@ function OverviewInfo({
         season={listing.season_code}
         onNavigation={onNavigation}
       />
-      <Syllabus course={course} sameCourse={data.sameCourse} />
+      <Syllabus course={course} sameCourse={sameCourse} />
       <Professors course={course} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />
@@ -527,6 +510,10 @@ function OverviewInfo({
         }
       />
       <DataField name="Credits" value={course.credits} />
+      <DataField
+        name="School"
+        value={listing.school ? schools[listing.school] : undefined}
+      />
       <DataField name="Class Notes" value={course.classnotes} />
       <DataField name="Registrar Notes" value={course.regnotes} />
       <DataField name="Reading Period" value={course.rp_attr} />

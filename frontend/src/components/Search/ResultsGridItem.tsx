@@ -10,7 +10,11 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
-import { isInWorksheet } from '../../utilities/course';
+import {
+  isInWorksheet,
+  toTimesSummary,
+  toLocationsSummary,
+} from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
@@ -92,6 +96,9 @@ function ResultsGridItem({
 
   if (!listing) return null;
 
+  const timesSummary = toTimesSummary(listing.course);
+  const locationsSummary = toLocationsSummary(listing.course);
+
   return (
     <li className={styles.container} style={style}>
       <Link
@@ -129,17 +136,13 @@ function ResultsGridItem({
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {listing.course.times_summary === 'TBA'
-                ? 'Times: TBA'
-                : listing.course.times_summary}
+              {timesSummary === 'TBA' ? 'Times: TBA' : timesSummary}
             </TextComponent>
             <TextComponent
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {listing.course.locations_summary === 'TBA'
-                ? 'Location: TBA'
-                : listing.course.locations_summary}
+              {locationsSummary === 'TBA' ? 'Location: TBA' : locationsSummary}
             </TextComponent>
             <div className={styles.skillsAreas}>
               {[...listing.course.skills, ...listing.course.areas].map(
