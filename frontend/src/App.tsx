@@ -114,8 +114,15 @@ function App() {
         // Don't remove this wrapper.
         id={13}
       >
-        Happy birthday to our GOAT co-lead Sida Chen!! Send him a nice email
-        today.
+        Happy birthday to our GOAT co-lead Sida Chen!!{' '}
+        <a
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=sida.chen@yale.edu"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+        >
+          Send him a nice email today.{' '}
+        </a>
       </Notice>
       <Navbar />
       <SentryRoutes>
