@@ -112,21 +112,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={12}
+        id={13}
       >
-        We want to hear from you. How can we make CourseTable better?{' '}
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
-        >
-          Fill out this quick survey!
-        </a>
+        Happy birthday to our GOAT co-lead Sida Chen!! Send him a nice email
+        today.
       </Notice>
       <Navbar />
       <SentryRoutes>
