@@ -12,6 +12,7 @@ import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { VitePWA } from 'vite-plugin-pwa';
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -122,6 +123,26 @@ export default defineConfig({
         project: 'frontend',
         authToken: process.env.SENTRY_AUTH_TOKEN,
       }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true,
+      },
+      injectRegister: 'auto',
+      manifest: {
+        name: 'CourseTable',
+        start_url: '/',
+        icons: [
+          {
+            src: 'icon200x200.png',
+            sizes: '200x200',
+            type: 'image/png',
+          },
+        ],
+        display: 'standalone',
+        theme_color: '#ffffff',
+      },
+    }),
   ],
   build: {
     outDir: './build',
