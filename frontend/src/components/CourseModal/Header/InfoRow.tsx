@@ -9,11 +9,10 @@ import type {
   CourseModalPrefetchListingDataFragment,
 } from '../../../generated/graphql-types';
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
-import type { Weekdays } from '../../../queries/graphql-types';
 import { useStore } from '../../../store';
 import { extraInfo } from '../../../utilities/constants';
 import {
-  abbreviateWorkdays,
+  toWeekdaysDisplayString,
   to12HourTime,
   toSeasonString,
   truncatedText,
@@ -36,18 +35,10 @@ function SectionLink({
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const [searchParams] = useSearchParams();
-  const times = new Map<string, Set<Weekdays>>();
-  for (const [day, info] of Object.entries(section.course.times_by_day)) {
-    for (const [startTime, endTime] of info) {
-      const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
-      if (!times.has(timespan)) times.set(timespan, new Set());
-      times.get(timespan)!.add(day as Weekdays);
-    }
-  }
-  const timeString = [...times.entries()]
+  const timeString = section.course.course_meetings
     .map(
-      ([timespan, days]) =>
-        `${abbreviateWorkdays([...days]).join('')} ${timespan}`,
+      (session) =>
+        `${toWeekdaysDisplayString(session.days_of_week)} ${to12HourTime(session.start_time)}–${to12HourTime(session.end_time)}`,
     )
     .join(', ');
   const professors =

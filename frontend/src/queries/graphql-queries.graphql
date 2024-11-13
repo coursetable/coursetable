@@ -14,6 +14,7 @@ query SameCourseOrProfOfferings(
       description
       requirements
       syllabus_url
+      section
       course_professors {
         professor {
           professor_id
@@ -23,8 +24,19 @@ query SameCourseOrProfOfferings(
           average_rating @include(if: $hasEvals)
         }
       }
-      times_by_day
-      section
+      course_meetings {
+        days_of_week
+        start_time
+        end_time
+        location {
+          room
+          building {
+            code
+            building_name
+            url
+          }
+        }
+      }
       course_flags {
         flag {
           flag_text
@@ -81,7 +93,8 @@ fragment RelatedCourseInfo on courses {
 
 # This data contains all the "critical data" that must be prefetched before
 # navigation. This ensures the user sees some content rather than a loading
-# spinner.
+# spinner. This basically is everything that is displayed in the modal header,
+# and data needed to fetch the modal body.
 fragment CourseModalPrefetchListingData on listings {
   season_code
   crn
@@ -97,8 +110,8 @@ fragment CourseModalPrefetchCourseData on courses {
   skills
   areas
   extra_info
+  # For rendering head metadata
   description
-  times_by_day
   same_course_id
   listings {
     crn
@@ -108,6 +121,13 @@ fragment CourseModalPrefetchCourseData on courses {
     professor {
       professor_id
     }
+  }
+  # This is for the add to worksheet button in the header, which needs to check
+  # conflicts with all current courses
+  course_meetings {
+    days_of_week
+    start_time
+    end_time
   }
   evaluation_statistic @include(if: $hasEvals) {
     responses

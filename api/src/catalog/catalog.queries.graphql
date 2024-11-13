@@ -52,7 +52,6 @@ query catalogBySeason($season: String!) {
         crn
         course_code
       }
-      locations_summary
       regnotes
       requirements
       rp_attr
@@ -61,8 +60,17 @@ query catalogBySeason($season: String!) {
       skills
       syllabus_url
       sysem
-      times_by_day
-      times_summary
+      course_meetings {
+        days_of_week
+        start_time
+        end_time
+        location {
+          room
+          building {
+            code
+          }
+        }
+      }
       title
     }
     course_code
