@@ -17,6 +17,7 @@ import {
   type CategoricalFilters,
   type NumericFilters,
   defaultFilters,
+  type IntersectableFilters,
   skillsAreasOptions,
   subjectsOptions,
   seasonsOptions,
@@ -26,24 +27,38 @@ import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
 import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
 
+type SelectProps<K extends keyof CategoricalFilters> = Omit<
+  React.ComponentProps<typeof Popout>,
+  'children' | 'buttonText'
+> &
+  Pick<
+    React.ComponentProps<
+      typeof PopoutSelect<FilterHandle<K>['value'][number], true>
+    >,
+    | 'options'
+    | 'placeholder'
+    | 'colors'
+    | 'isIntersection'
+    | 'setIsIntersection'
+    | 'unionIntersectionButtonLabel'
+  > & {
+    readonly handle: K;
+    readonly hideSelectedOptions?: boolean;
+    readonly minSelectWidth?: number;
+  };
+
 function Select<K extends keyof CategoricalFilters>({
   options,
   handle: handleName,
   placeholder,
   colors,
+  isIntersection,
+  setIsIntersection,
+  unionIntersectionButtonLabel,
   hideSelectedOptions,
   minSelectWidth,
   ...props
-}: Omit<React.ComponentProps<typeof Popout>, 'children' | 'buttonText'> & {
-  readonly options: React.ComponentProps<
-    typeof PopoutSelect<FilterHandle<K>['value'][number], true>
-  >['options'];
-  readonly handle: K;
-  readonly placeholder: string;
-  readonly colors?: { [optionValue: string]: string };
-  readonly hideSelectedOptions?: boolean;
-  readonly minSelectWidth?: number;
-}) {
+}: SelectProps<K>) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName] as FilterHandle<K>;
   return (
@@ -57,6 +72,7 @@ function Select<K extends keyof CategoricalFilters>({
       colors={colors}
       {...props}
     >
+      {/* @ts-expect-error: TODO */}
       <PopoutSelect<FilterHandle<K>['value'][number], true>
         isMulti
         colors={colors}
@@ -69,8 +85,36 @@ function Select<K extends keyof CategoricalFilters>({
         }}
         hideSelectedOptions={hideSelectedOptions}
         minWidth={minSelectWidth}
+        isIntersection={isIntersection}
+        setIsIntersection={setIsIntersection}
+        unionIntersectionButtonLabel={unionIntersectionButtonLabel}
       />
     </Popout>
+  );
+}
+
+function IntersectableSelect<K extends IntersectableFilters>(
+  props: SelectProps<K>,
+) {
+  const {
+    setStartTime,
+    filters: { intersectingFilters },
+  } = useSearch();
+  return (
+    <Select
+      {...props}
+      isIntersection={intersectingFilters.value.includes(props.handle)}
+      setIsIntersection={(v) => {
+        if (v) {
+          intersectingFilters.set([...intersectingFilters.value, props.handle]);
+        } else {
+          intersectingFilters.set(
+            intersectingFilters.value.filter((x) => x !== props.handle),
+          );
+        }
+        setStartTime(Date.now());
+      }}
+    />
   );
 }
 
@@ -214,14 +258,17 @@ export function NavbarCatalogSearch() {
         <div className={styles.row}>
           {!isTablet && (
             <>
-              <Select
+              <IntersectableSelect
                 options={subjectsOptions}
                 handle="selectSubjects"
                 placeholder="All Subjects"
                 dataTutorial={2}
                 hideSelectedOptions
+                unionIntersectionButtonLabel={(isIntersection) =>
+                  `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
+                }
               />
-              <Select
+              <IntersectableSelect
                 options={skillsAreasOptions}
                 handle="selectSkillsAreas"
                 placeholder="All Areas/Skills"
@@ -229,6 +276,9 @@ export function NavbarCatalogSearch() {
                 className="me-0"
                 hideSelectedOptions
                 minSelectWidth={300}
+                unionIntersectionButtonLabel={(isIntersection) =>
+                  `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
+                }
               />
             </>
           )}

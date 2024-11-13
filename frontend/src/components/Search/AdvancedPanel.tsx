@@ -16,6 +16,7 @@ import {
   type NumericFilters,
   filterLabels,
   defaultFilters,
+  type IntersectableFilters,
   sortByOptions,
   skillsAreasOptions,
   subjectsOptions,
@@ -38,21 +39,29 @@ import {
 } from '../../utilities/course';
 import styles from './AdvancedPanel.module.css';
 
+type SelectProps<K extends keyof CategoricalFilters> = {
+  readonly id: string;
+  readonly handle: K;
+} & Pick<
+  React.ComponentProps<
+    typeof CustomSelect<FilterHandle<K>['value'][number], true>
+  >,
+  | 'options'
+  | 'placeholder'
+  | 'colors'
+  | 'isIntersection'
+  | 'setIsIntersection'
+  | 'unionIntersectionButtonLabel'
+>;
+
 function Select<K extends keyof CategoricalFilters>({
   id,
   options,
   handle: handleName,
   placeholder,
   colors,
-}: {
-  readonly id: string;
-  readonly options: React.ComponentProps<
-    typeof CustomSelect<FilterHandle<K>['value'][number], true>
-  >['options'];
-  readonly handle: K;
-  readonly placeholder: string;
-  readonly colors?: { [optionValue: string]: string };
-}) {
+  ...props
+}: SelectProps<K>) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName] as FilterHandle<K>;
   // Prevent overlap with tooltips
@@ -62,6 +71,7 @@ function Select<K extends keyof CategoricalFilters>({
       <div className={styles.label} id={id}>
         {filterLabels[handleName]}:
       </div>
+      {/* @ts-expect-error: TODO */}
       <CustomSelect<FilterHandle<K>['value'][number], true>
         aria-labelledby={id}
         className={styles.select}
@@ -76,8 +86,34 @@ function Select<K extends keyof CategoricalFilters>({
           handle.set(selectedOption as Filters[K]);
           setStartTime(Date.now());
         }}
+        {...props}
       />
     </div>
+  );
+}
+
+function IntersectableSelect<K extends IntersectableFilters>(
+  props: SelectProps<K>,
+) {
+  const {
+    setStartTime,
+    filters: { intersectingFilters },
+  } = useSearch();
+  return (
+    <Select
+      {...props}
+      isIntersection={intersectingFilters.value.includes(props.handle)}
+      setIsIntersection={(v) => {
+        if (v) {
+          intersectingFilters.set([...intersectingFilters.value, props.handle]);
+        } else {
+          intersectingFilters.set(
+            intersectingFilters.value.filter((x) => x !== props.handle),
+          );
+        }
+        setStartTime(Date.now());
+      }}
+    />
   );
 }
 
@@ -219,18 +255,24 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
       <div className={styles.panel}>
         {isTablet && (
           <>
-            <Select
+            <IntersectableSelect
               id={`${formLabelId}-subject`}
               options={subjectsOptions}
               handle="selectSubjects"
               placeholder="All Subjects"
+              unionIntersectionButtonLabel={(isIntersection) =>
+                `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
+              }
             />
-            <Select
-              id={`${formLabelId}-aria-skills`}
+            <IntersectableSelect
+              id={`${formLabelId}-area-skills`}
               options={skillsAreasOptions}
               handle="selectSkillsAreas"
               placeholder="All Areas/Skills"
               colors={skillsAreasColors}
+              unionIntersectionButtonLabel={(isIntersection) =>
+                `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
+              }
             />
             <Select
               id={`${formLabelId}-season`}
@@ -240,7 +282,7 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
             />
           </>
         )}
-        <Select
+        <IntersectableSelect
           id={`${formLabelId}-day`}
           options={Object.entries(weekdays).map(([day, value]) => ({
             label: day,
@@ -248,6 +290,9 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
           }))}
           handle="selectDays"
           placeholder="All Days"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes that meet on ${isIntersection ? 'all' : 'any'} of the selected days`
+          }
         />
         <React.Fragment key={resetKey.current}>
           <Slider
@@ -288,11 +333,14 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
           handle="selectCredits"
           placeholder="All Credits"
         />
-        <Select
+        <IntersectableSelect
           id={`${formLabelId}-info`}
           options={courseInfoAttributesOptions}
           handle="selectCourseInfoAttributes"
           placeholder="Course Information Attributes"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes that contain ${isIntersection ? 'all' : 'any'} of the selected attributes`
+          }
         />
         <div className={styles.row}>
           {/* Sort by Guts */}

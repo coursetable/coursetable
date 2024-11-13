@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import chroma from 'chroma-js';
 import Select, {
   mergeStyles,
+  components,
   type Props as SelectProps,
   type StylesConfig,
   type Theme as SelectTheme,
@@ -183,7 +185,90 @@ type Props = {
   readonly isMulti?: boolean;
   readonly showControl?: boolean;
   readonly minWidth?: number;
-};
+} & (
+  | {
+      readonly isIntersection: boolean;
+      readonly setIsIntersection: (isIntersection: boolean) => void;
+      readonly unionIntersectionButtonLabel: (
+        isIntersection: boolean,
+      ) => string;
+    }
+  | {
+      readonly isIntersection?: never;
+      readonly setIsIntersection?: never;
+      readonly unionIntersectionButtonLabel?: never;
+    }
+);
+// Not worth typing this, since it's just spread into the subcomponent
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function ControlWithUnionIndicator(props: any) {
+  const {
+    popout,
+    isIntersection,
+    setIsIntersection,
+    unionIntersectionButtonLabel,
+  } =
+    // Props injected by react-select. These are all the props passed to the
+    // *base* Select component, not Custom components. I'm casting it to Props
+    // just for convenience.
+    (props as { selectProps: Props }).selectProps;
+  // Should not happen
+  if (isIntersection === undefined) return <components.Control {...props} />;
+  const label = unionIntersectionButtonLabel(isIntersection);
+  return (
+    <div className="d-flex">
+      <div className="flex-grow-1">
+        <components.Control {...props} />
+      </div>
+      <OverlayTrigger overlay={(p) => <Tooltip {...p}>{label}</Tooltip>}>
+        <button
+          type="button"
+          style={{
+            flexShrink: 0,
+            width: 40,
+            height: 40,
+            borderRadius: 8,
+            marginRight: 4,
+            border: `${popout ? 1 : 2}px solid var(--color-border-control)`,
+            margin: popout ? '8px 8px 8px 0' : '0 0 0 4px',
+          }}
+          onClick={() => setIsIntersection(!isIntersection)}
+          aria-label={label}
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            viewBox="0 0 100 100"
+          >
+            <path
+              style={{ fill: 'var(--color-primary)' }}
+              d={
+                isIntersection
+                  ? 'M49.63,24.03c-8.96,5.19-15,14.87-15,25.98s6.04,20.79,15,25.98c8.96-5.19,15-14.87,15-25.98 S58.59,29.22,49.63,24.03z'
+                  : 'M64.63,20c-5.47,0-10.59,1.47-15,4.02c-4.41-2.55-9.53-4.02-15-4.02c-16.57,0-30,13.43-30,30s13.43,30,30,30 c5.47,0,10.59-1.47,15-4.02c4.41,2.55,9.53,4.02,15,4.02c16.57,0,30-13.43,30-30S81.2,20,64.63,20z'
+              }
+            />
+            {['35', '65'].map((cx) => (
+              <circle
+                key={cx}
+                style={{
+                  fill: 'none',
+                  stroke: 'var(--color-icon)',
+                  strokeWidth: 3,
+                }}
+                cx={cx}
+                cy="50"
+                r="30"
+              />
+            ))}
+          </svg>
+        </button>
+      </OverlayTrigger>
+    </div>
+  );
+}
 
 function CustomSelect<
   T extends Option<string | number>,
@@ -195,6 +280,9 @@ function CustomSelect<
   showControl = true,
   components: componentsProp,
   minWidth = 400,
+  isIntersection,
+  setIsIntersection,
+  unionIntersectionButtonLabel,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
   // All the default theme colors
@@ -216,9 +304,11 @@ function CustomSelect<
   const animatedComponents = useMemo(
     () => ({
       ...makeAnimated(),
+      ...(isMulti &&
+        isIntersection !== undefined && { Control: ControlWithUnionIndicator }),
       ...componentsProp,
     }),
-    [componentsProp],
+    [componentsProp, isMulti, isIntersection],
   );
 
   let styles = mergeStyles(
@@ -239,6 +329,11 @@ function CustomSelect<
       // on mobile this is false anyway
       menuShouldScrollIntoView={false}
       isSearchable={showControl}
+      // @ts-expect-error: this is passed to the control component
+      popout={popout}
+      isIntersection={isIntersection}
+      setIsIntersection={setIsIntersection}
+      unionIntersectionButtonLabel={unionIntersectionButtonLabel}
     />
   );
 }
