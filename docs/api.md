@@ -382,9 +382,9 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
     };
     ```
 
-## WorksheetNames
+## WorksheetMetadata
 
-### `POST` `/api/user/updateWorksheetNames`
+### `POST` `/api/user/updateWorksheetMetadata`
 
 #### Request
 
@@ -415,7 +415,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
   - `error`: `"INVALID_REQUEST" | "WORKSHEET_NOT_FOUND"`
 
-### `GET` `/api/user/worksheetNames`
+### `GET` `/api/user/worksheetMetadata`
 
 #### Request
 
@@ -428,7 +428,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
 
   - `netId`: `NetId`
-  - `worksheets`:
+  - `metadataForWorksheet`:
     ```ts
     [season: Season]: {
       [worksheetNumber: number]: {

@@ -196,7 +196,7 @@ export function updateWorksheetCourses(
   });
 }
 
-export async function updateWorksheetNames(
+export async function updateWorksheetMetadata(
   body: {
     season: Season;
   } & (
@@ -214,7 +214,7 @@ export async function updateWorksheetNames(
       }
   ),
 ): Promise<boolean> {
-  return fetchAPI('/user/updateWorksheetNames', {
+  return fetchAPI('/user/updateWorksheetMetadata', {
     body,
     breadcrumb: {
       category: 'worksheet',
@@ -499,15 +499,15 @@ export async function fetchUserWorksheets() {
   return res;
 }
 
-export async function fetchUserWorksheetNames() {
-  const res = await fetchAPI('/user/worksheetNames', {
+export async function fetchUserWorksheetMetadata() {
+  const res = await fetchAPI('/user/worksheetMetadata', {
     breadcrumb: {
       category: 'worksheet',
       message: 'Fetching user worksheet names',
     },
     schema: z.object({
       netId: netIdSchema,
-      worksheetNames: z.record(z.string(), z.record(z.string(), z.string())),
+      metadataForWorksheet: z.record(z.string(), z.record(z.string(), z.string())),
       // { [season]: { [worksheetNumber]: worksheetName } }
     }),
   });

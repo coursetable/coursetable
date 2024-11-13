@@ -4,8 +4,8 @@ import asyncHandler from 'express-async-handler';
 import {
   updateWorksheetCourses,
   getUserWorksheet,
-  updateWorksheetNames,
-  getUserWorksheetNames,
+  updateWorksheetMetadata,
+  getUserWorksheetMetadata,
 } from './user.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
@@ -17,8 +17,8 @@ export default (app: express.Express): void => {
   );
   app.get('/api/user/worksheets', asyncHandler(getUserWorksheet));
   app.post(
-    '/api/user/updateWorksheetNames',
-    asyncHandler(updateWorksheetNames),
+    '/api/user/updateWorksheetMetadata',
+    asyncHandler(updateWorksheetMetadata),
   );
-  app.get('/api/user/worksheetNames', asyncHandler(getUserWorksheetNames));
+  app.get('/api/user/worksheetMetadata', asyncHandler(getUserWorksheetMetadata));
 };
