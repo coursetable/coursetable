@@ -64,7 +64,7 @@ function remarkPluginAddHeadingId(): Transformer {
 
       if (!parsedId) return;
       // When there's an id, it is always in the last child node
-      // Sometimes heading is in multiple "parts" (** syntax creates a child
+      // Sometimes heading is in multiple 'parts' (** syntax creates a child
       // node):
       // ## part1 *part2* part3 (#id)
       const lastNode = headingNode.children[
@@ -119,22 +119,22 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: true
+        enabled: true,
       },
       injectRegister: 'auto',
       manifest: {
-        "name": "CourseTable",
-        "start_url": "/",
-        "icons": [
+        name: 'CourseTable',
+        start_url: '/',
+        icons: [
           {
-            "src": "icon200x200.png",
-            "sizes": "200x200",
-            "type": "image/png"
-          }
+            src: 'icon200x200.png',
+            sizes: '200x200',
+            type: 'image/png',
+          },
         ],
-        "display": "standalone",
-        "theme_color": "#ffffff"
-      }
+        display: 'standalone',
+        standalone: '#ffffff',
+      },
     }),
   ],
   build: {
