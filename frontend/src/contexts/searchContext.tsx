@@ -140,6 +140,7 @@ export interface CategoricalFilters {
   selectSchools: string;
   selectCredits: number;
   selectCourseInfoAttributes: string;
+  selectLocations: string;
 }
 
 export type NumericFilters =
@@ -177,6 +178,7 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectSchools: 'School',
   selectCredits: 'Credit',
   selectCourseInfoAttributes: 'Info',
+  selectLocations: 'Location',
   searchDescription: 'Include descriptions in search',
   enableQuist: 'Enable Quist',
   hideCancelled: 'Hide cancelled courses',
@@ -203,6 +205,7 @@ export const defaultFilters: Filters = {
   selectSchools: [],
   selectCredits: [],
   selectCourseInfoAttributes: [],
+  selectLocations: [],
   searchDescription: false,
   enableQuist: false,
   hideCancelled: true,

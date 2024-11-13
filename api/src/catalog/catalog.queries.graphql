@@ -89,3 +89,11 @@ query courseAttributes {
     flag_text
   }
 }
+
+query buildingNames {
+  buildings {
+    code
+    building_name
+    url
+  }
+}
