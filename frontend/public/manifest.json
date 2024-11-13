@@ -1,0 +1,12 @@
+{
+  "name": "CourseTable",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "icon200x200.png",
+      "sizes": "200x200",
+      "type": "image/png"
+    }
+  ],
+  "display": "standalone"
+}
