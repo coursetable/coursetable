@@ -433,7 +433,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
     [season: Season]: {
       [worksheetNumber: number]: {
         worksheetName: string
-      }[];
+      };
     };
     ```
 
