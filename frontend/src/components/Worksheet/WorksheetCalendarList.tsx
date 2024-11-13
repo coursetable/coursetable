@@ -51,7 +51,7 @@ function WorksheetCalendarList() {
     const courseObjects = linkDataToCourses(courseData, curSeason, data);
     setLinkCourses(courseObjects);
     // import courses
-  }, [])
+  }, [coursesLoading])
 
   // eslint-disable-next-line no-useless-assignment
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
