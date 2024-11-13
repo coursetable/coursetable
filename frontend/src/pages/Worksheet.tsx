@@ -17,6 +17,8 @@ import { useWorksheet } from '../contexts/worksheetContext';
 import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
+// TODO enumerate
+
 function Worksheet() {
   const isMobile = useStore((state) => state.isMobile);
   const { worksheetLoading, worksheetError, worksheetView } = useWorksheet();
