@@ -20,5 +20,8 @@ export default (app: express.Express): void => {
     '/api/user/updateWorksheetMetadata',
     asyncHandler(updateWorksheetMetadata),
   );
-  app.get('/api/user/worksheetMetadata', asyncHandler(getUserWorksheetMetadata));
+  app.get(
+    '/api/user/worksheetMetadata',
+    asyncHandler(getUserWorksheetMetadata),
+  );
 };

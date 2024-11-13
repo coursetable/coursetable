@@ -298,7 +298,10 @@ export const updateWorksheetMetadata = async (
       .select({ worksheetNumber: worksheetMetadata.worksheetNumber })
       .from(worksheetMetadata)
       .where(
-        and(eq(worksheetMetadata.netId, netId), eq(worksheetMetadata.season, season)),
+        and(
+          eq(worksheetMetadata.netId, netId),
+          eq(worksheetMetadata.season, season),
+        ),
       )
       .orderBy(worksheetMetadata.worksheetNumber);
 

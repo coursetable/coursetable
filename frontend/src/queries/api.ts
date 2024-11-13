@@ -507,7 +507,10 @@ export async function fetchUserWorksheetMetadata() {
     },
     schema: z.object({
       netId: netIdSchema,
-      metadataForWorksheet: z.record(z.string(), z.record(z.string(), z.string())),
+      metadataForWorksheet: z.record(
+        z.string(),
+        z.record(z.string(), z.string()),
+      ),
       // { [season]: { [worksheetNumber]: worksheetName } }
     }),
   });
