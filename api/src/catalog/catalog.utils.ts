@@ -172,6 +172,15 @@ export async function fetchCatalog(overwrite: boolean) {
       JSON.stringify(infoAttributes.flags.map((x) => x.flag_text).sort()),
     );
 
+    const locationAttributes = await getSdk(graphqlClient).locationAttributes();
+    await fs.writeFile(
+      `${STATIC_FILE_DIR}/locationAttributes.json`,
+      JSON.stringify(locationAttributes.buildings.map((x) => {
+        building_name: x.building_name;
+        code: x.code;
+        url: x.url;
+      }).sort()),
+    );
     // For each season, fetch all courses inside it and save
     // (if overwrite = true or if file does not exist)
 

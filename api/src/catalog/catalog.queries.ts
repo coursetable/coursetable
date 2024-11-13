@@ -116,6 +116,15 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
+export type LocationAttributesQueryVariables = Types.Exact<{
+  [key: string]: never;
+}>;
+
+export type LocationAttributesQuery = {
+  __typename?: 'query_root';
+  buildings: Array<{ __typename?: 'buildings'; code: string; building_name: string; url: string }>;
+};
+
 export const ListSeasonsDocument = gql`
   query listSeasons {
     seasons {
@@ -211,6 +220,16 @@ export const CourseAttributesDocument = gql`
   }
 `;
 
+export const LocationAttributesDocument = gql`
+  query locationAttributes {
+    buildings {
+      code
+      building_name
+      url
+    }
+  }
+`;
+
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
   operationName: string,
@@ -288,6 +307,22 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'courseAttributes',
+        'query',
+        variables,
+      );
+    },
+    locationAttributes(
+      variables?: LocationAttributesQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<LocationAttributesQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<LocationAttributesQuery>(
+            LocationAttributesDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'locationAttributes',
         'query',
         variables,
       );

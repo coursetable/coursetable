@@ -90,7 +90,7 @@ query courseAttributes {
   }
 }
 
-query buildingNames {
+query locationAttributes {
   buildings {
     code
     building_name
