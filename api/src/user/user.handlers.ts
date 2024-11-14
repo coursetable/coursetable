@@ -394,6 +394,7 @@ export const getUserWorksheetMetadata = async (
   } = {};
 
   allWorksheetMetadata.forEach(({ season, worksheetNumber, worksheetName }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     worksheetMap[season] ??= {};
     worksheetMap[season][worksheetNumber] ??= { worksheetName };
   });
