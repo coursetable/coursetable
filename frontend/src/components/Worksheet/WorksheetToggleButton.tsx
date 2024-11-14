@@ -36,7 +36,7 @@ function CourseConflictIcon({
 
   const { data } = useWorksheetInfo(
     user.worksheets,
-    listing.season_code,
+    listing.course.season_code,
     worksheetNumber,
   );
 
@@ -44,7 +44,7 @@ function CourseConflictIcon({
     // If the course is in the worksheet, we never report a conflict
     if (inWorksheet) return undefined;
     if (modal) {
-      if (!CUR_YEAR.includes(listing.season_code))
+      if (!CUR_YEAR.includes(listing.course.season_code))
         return 'This will add to a worksheet of a semester that has already ended.';
       return undefined;
     }
@@ -107,14 +107,14 @@ function WorksheetToggleButton({
     () =>
       inWorksheetProp ??
       isInWorksheet(
-        listing.season_code,
+        listing.course.season_code,
         listing.crn,
         selectedWorksheet,
         user.worksheets,
       ),
     [
       inWorksheetProp,
-      listing.season_code,
+      listing.course.season_code,
       listing.crn,
       selectedWorksheet,
       user.worksheets,
@@ -130,7 +130,7 @@ function WorksheetToggleButton({
 
       const success = await updateWorksheetCourses({
         action: inWorksheet ? 'remove' : 'add',
-        season: listing.season_code,
+        season: listing.course.season_code,
         crn: listing.crn,
         worksheetNumber: selectedWorksheet,
         color:
@@ -142,7 +142,7 @@ function WorksheetToggleButton({
     [
       inWorksheet,
       listing.crn,
-      listing.season_code,
+      listing.course.season_code,
       selectedWorksheet,
       userRefresh,
     ],

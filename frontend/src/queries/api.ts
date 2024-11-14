@@ -303,7 +303,7 @@ export function fetchCatalogMetadata() {
   });
 }
 
-type ListingPublic = CatalogBySeasonQuery['listings'][number];
+type CoursePublic = CatalogBySeasonQuery['courses'][number];
 
 export async function fetchCatalog(season: Season) {
   const breadcrumb = {
@@ -314,15 +314,17 @@ export async function fetchCatalog(season: Season) {
     breadcrumb,
   });
   if (!res) return undefined;
-  const data = res as ListingPublic[];
-  const info = new Map<Crn, ListingPublic>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as CatalogBySeasonQuery['courses'];
+  const info = new Map<number, CoursePublic>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 
-type ListingEvals = EvalsBySeasonQuery['listings'][number];
+type CourseEvals = EvalsBySeasonQuery['courses'][number];
 
-export type CatalogListing = ListingPublic & Partial<ListingEvals>;
+export type CatalogListing = CoursePublic['listings'][number] & {
+  course: CoursePublic & Partial<CourseEvals>;
+};
 
 export async function fetchEvals(season: Season) {
   const res = await fetchAPI(`/catalog/evals/${season}`, {
@@ -332,9 +334,9 @@ export async function fetchEvals(season: Season) {
     },
   });
   if (!res) return undefined;
-  const data = res as ListingEvals[];
-  const info = new Map<Crn, ListingEvals>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as EvalsBySeasonQuery['courses'];
+  const info = new Map<number, CourseEvals>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 
