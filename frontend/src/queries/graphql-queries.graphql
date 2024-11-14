@@ -75,8 +75,6 @@ query SameCourseOrProfOfferings(
 }
 
 fragment RelatedCourseInfo on courses {
-  season_code
-  section
   ...CourseModalPrefetchCourseData
   average_professor_rating @include(if: $hasEvals)
   evaluation_statistic @include(if: $hasEvals) {
@@ -96,16 +94,16 @@ fragment RelatedCourseInfo on courses {
 # spinner. This basically is everything that is displayed in the modal header,
 # and data needed to fetch the modal body.
 fragment CourseModalPrefetchListingData on listings {
-  season_code
   crn
   course_code
-  section
   course {
     ...CourseModalPrefetchCourseData
   }
 }
 
 fragment CourseModalPrefetchCourseData on courses {
+  season_code
+  section
   title
   skills
   areas
@@ -156,6 +154,16 @@ query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
         enrolled
       }
     }
+  }
+}
+
+query CourseModalFromURL(
+  $seasonCode: String!
+  $crn: Int!
+  $hasEvals: Boolean!
+) {
+  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+    ...CourseModalPrefetchListingData
   }
 }
 

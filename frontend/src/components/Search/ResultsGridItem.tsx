@@ -53,7 +53,7 @@ function Rating({
                   ? colorMap(rating)
                   : undefined
                 : generateRandomColor(
-                    `${listing.crn}${listing.season_code}${name}`,
+                    `${listing.crn}${listing.course.season_code}${name}`,
                   )
               )
                 ?.darken()
@@ -83,14 +83,7 @@ function ResultsGridItem({
   const { worksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
-    () =>
-      listing &&
-      isInWorksheet(
-        listing.season_code,
-        listing.crn,
-        worksheetNumber,
-        user.worksheets,
-      ),
+    () => listing && isInWorksheet(listing, worksheetNumber, user.worksheets),
     [listing, worksheetNumber, user.worksheets],
   );
 
@@ -114,7 +107,10 @@ function ResultsGridItem({
             <CourseCode listing={listing} subdueSection={false} />
           </div>
           {multiSeasons && (
-            <SeasonTag season={listing.season_code} className={styles.season} />
+            <SeasonTag
+              season={listing.course.season_code}
+              className={styles.season}
+            />
           )}
         </div>
         <div>

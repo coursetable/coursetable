@@ -112,7 +112,7 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={12}
+        id={13}
       >
         We want to hear from you. How can we make CourseTable better?{' '}
         <a
