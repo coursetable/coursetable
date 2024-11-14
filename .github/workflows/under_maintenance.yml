@@ -2,7 +2,7 @@ name: Under Maintenance
 
 on:
   workflow_dispatch:
- 
+
 jobs:
   under-maintenance-deploy:
     environment:

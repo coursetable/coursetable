@@ -21,17 +21,16 @@ export function truncatedText(
 }
 
 export function isInWorksheet(
-  seasonCode: Season,
-  crn: Crn,
+  listing: { crn: Crn; course: { season_code: Season } },
   worksheetNumber: number,
-  worksheet: UserWorksheets | undefined,
+  worksheets: UserWorksheets | undefined,
 ): boolean {
-  if (!worksheet) return false;
+  if (!worksheets) return false;
   return (
-    seasonCode in worksheet &&
-    worksheetNumber in worksheet[seasonCode]! &&
-    worksheet[seasonCode]![worksheetNumber]!.some(
-      (course) => course.crn === crn,
+    listing.course.season_code in worksheets &&
+    worksheetNumber in worksheets[listing.course.season_code]! &&
+    worksheets[listing.course.season_code]![worksheetNumber]!.some(
+      (course) => course.crn === listing.crn,
     )
   );
 }
