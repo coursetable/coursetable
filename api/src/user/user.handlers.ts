@@ -4,6 +4,7 @@ import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
 import {
+  flatWsMetadataToMapping,
   getNextAvailableWsNumber,
   worksheetCoursesToWorksheets,
 } from './user.utils.js';
@@ -389,18 +390,8 @@ export const getUserWorksheetMetadata = async (
     `Retrieved ${allWorksheetMetadata.length} worksheets for user ${netId}`,
   );
 
-  const worksheetMap: {
-    [season: string]: { [worksheetNumber: number]: { worksheetName: string } };
-  } = {};
-
-  allWorksheetMetadata.forEach(({ season, worksheetNumber, worksheetName }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    worksheetMap[season] ??= {};
-    worksheetMap[season][worksheetNumber] ??= { worksheetName };
-  });
-
   res.json({
     netId,
-    worksheets: worksheetMap,
+    worksheetMetadata: flatWsMetadataToMapping(allWorksheetMetadata),
   });
 };

@@ -292,6 +292,13 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
             }[];
           };
         };
+        worksheetMetadata: {
+          [season: string]: { 
+            [worksheetNumber: number]: { 
+              worksheetName: string;
+            } 
+          };
+        }
       };
     };
     ```
@@ -407,7 +414,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 **Status: 200**
 
 - If `action` == `"add"`:
-  - returns { worksheetNumber: number }
+  - returns `{ worksheetNumber: number }`
 
 **Status: 400**
 
@@ -428,7 +435,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
 
   - `netId`: `NetId`
-  - `worksheets`:
+  - `worksheetMetadata`:
     ```ts
     [season: Season]: {
       [worksheetNumber: number]: {

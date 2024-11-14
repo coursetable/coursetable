@@ -499,15 +499,11 @@ export async function fetchUserWorksheets() {
   return res;
 }
 
-const worksheetSchema = z.object({
-  worksheetName: z.string(),
-});
-
-const worksheetsSchema = z.record(
+const worksheetMetadataSchema = z.record(
   z.string(), // season
   z.record(
     z.string(), // worksheetNumber keys
-    worksheetSchema,
+    z.string(), // worksheetName
   ),
 );
 
@@ -519,7 +515,7 @@ export async function fetchUserWorksheetMetadata() {
     },
     schema: z.object({
       netId: netIdSchema,
-      worksheets: worksheetsSchema,
+      worksheets: worksheetMetadataSchema,
       // { [season]: { [worksheetNumber]: { worksheetName } } }
     }),
   });
@@ -531,6 +527,7 @@ const friendsSchema = z.record(
   z.object({
     name: z.string().nullable(),
     worksheets: userWorksheetsSchema,
+    worksheetMetadata: worksheetMetadataSchema,
   }),
 );
 

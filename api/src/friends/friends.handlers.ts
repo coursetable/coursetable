@@ -6,10 +6,16 @@ import {
   studentFriendRequests,
   studentFriends,
   worksheetCourses,
+  worksheetMetadata,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
-import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
+import {
+  worksheetCoursesToWorksheets,
+  flatWsMetadataToMapping,
+  type FlatWsMetadata,
+  type NetIdMappedWsMetadata,
+} from '../user/user.utils.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -242,45 +248,80 @@ export const getFriendsWorksheets = async (
 
   winston.info('Getting NetIDs of friends');
 
-  const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction(
-    async (tx) => {
-      const friendRecords = await tx
-        .select({
-          friendNetId: studentFriends.friendNetId,
-        })
-        .from(studentFriends)
-        .where(eq(studentFriends.netId, netId));
+  const [
+    friendInfos,
+    friendWorksheetMap,
+    mappedFriendWsMetadata,
+    friendNetIds,
+  ] = await db.transaction(async (tx) => {
+    const friendRecords = await tx
+      .select({
+        friendNetId: studentFriends.friendNetId,
+      })
+      .from(studentFriends)
+      .where(eq(studentFriends.netId, netId));
 
-      const friendNetIds = friendRecords.map(
-        (friendRecord) => friendRecord.friendNetId,
-      );
+    const friendNetIds = friendRecords.map(
+      (friendRecord) => friendRecord.friendNetId,
+    );
 
-      if (friendNetIds.length === 0)
-        return [[], {} as ReturnType<typeof worksheetCoursesToWorksheets>, []];
+    if (friendNetIds.length === 0) {
+      return [
+        [],
+        {} as ReturnType<typeof worksheetCoursesToWorksheets>,
+        {} as NetIdMappedWsMetadata,
+        [],
+      ];
+    }
 
-      winston.info('Getting worksheets of friends');
-      const friendWorksheets = await tx
-        .select()
-        .from(worksheetCourses)
-        .where(inArray(worksheetCourses.netId, friendNetIds));
+    winston.info('Getting worksheets of friends');
+    const friendWorksheets = await tx
+      .select()
+      .from(worksheetCourses)
+      .where(inArray(worksheetCourses.netId, friendNetIds));
 
-      const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
+    const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
 
-      winston.info('Getting info of friends');
+    winston.info('Getting worksheet metadata of friends');
+    const friendWsMetadata = await tx
+      .select()
+      .from(worksheetMetadata)
+      .where(inArray(worksheetCourses.netId, friendNetIds));
 
-      const friendInfos = await tx
-        .selectDistinctOn([studentBluebookSettings.netId], {
-          netId: studentBluebookSettings.netId,
-          name: sql<
-            string | null
-          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
-        })
-        .from(studentBluebookSettings)
-        .where(inArray(studentBluebookSettings.netId, friendNetIds));
+    const metadataByNetId = friendWsMetadata.reduce<{ [netId: string]: FlatWsMetadata[] }>(
+      (acc, { netId: friendNetId, season, worksheetNumber, worksheetName }) => {
+        acc[friendNetId] ??= []
+        acc[friendNetId].push({ season, worksheetNumber, worksheetName });
+        return acc;
+      },
+      {},
+    );
 
-      return [friendInfos, friendWorksheetMap, friendNetIds];
-    },
-  );
+    const mappedFriendWsMetadata: NetIdMappedWsMetadata = Object.fromEntries(
+      Object.entries(metadataByNetId).map(([friendNetId, flatMetadata]) => [
+        friendNetId,
+        { worksheetMetadata: flatWsMetadataToMapping(flatMetadata) },
+      ]),
+    );
+
+    winston.info('Getting info of friends');
+    const friendInfos = await tx
+      .selectDistinctOn([studentBluebookSettings.netId], {
+        netId: studentBluebookSettings.netId,
+        name: sql<
+          string | null
+        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+      })
+      .from(studentBluebookSettings)
+      .where(inArray(studentBluebookSettings.netId, friendNetIds));
+
+    return [
+      friendInfos,
+      friendWorksheetMap,
+      mappedFriendWsMetadata,
+      friendNetIds,
+    ];
+  });
 
   const friendInfoMap = Object.fromEntries(
     friendInfos.map((friendInfo) => [
@@ -296,6 +337,8 @@ export const getFriendsWorksheets = async (
       {
         name: friendInfoMap[friendNetId]?.name ?? null,
         worksheets: friendWorksheetMap[friendNetId] ?? {},
+        worksheetMetadata:
+          mappedFriendWsMetadata[friendNetId]?.worksheetMetadata ?? {},
       },
     ]),
   );
