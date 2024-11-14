@@ -382,6 +382,61 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
     };
     ```
 
+### `POST` `/api/user/updateWorksheetMetadata`
+
+#### Request
+
+- Needs credentials
+- Body:
+  - Option 1 (add):
+    - `action`: `"add"`
+    - `season`: `string`
+    - `worksheetName`: `string`
+  - Option 2 (delete):
+    - `action`: `"delete"`
+    - `season`: `string`
+    - `worksheetNumber`: `number`
+  - Option 3 (rename):
+    - `action`: `"rename"`
+    - `season`: `string`
+    - `worksheetNumber`: `number`
+    - `worksheetName`: `string`
+
+#### Response
+
+**Status: 200**
+
+- If `action` == `"add"`:
+  - returns { worksheetNumber: number }
+
+**Status: 400**
+
+- When the request body is invalid
+- Body:
+  - `error`: `"INVALID_REQUEST" | "WORKSHEET_NOT_FOUND"`
+
+### `GET` `/api/user/worksheetMetadata`
+
+#### Request
+
+- Needs credentials
+
+#### Response
+
+**Status: 200**
+
+- Body:
+
+  - `netId`: `NetId`
+  - `worksheets`:
+    ```ts
+    [season: Season]: {
+      [worksheetNumber: number]: {
+        worksheetName: string
+      };
+    };
+    ```
+
 ## Health check
 
 ### `GET` `/api/ping`

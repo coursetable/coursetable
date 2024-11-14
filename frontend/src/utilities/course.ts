@@ -85,7 +85,7 @@ export function toTimesSummary(
 export function toLocationsSummary(
   course: Pick<CatalogListing['course'], 'course_meetings'>,
 ): string {
-  if (!course.course_meetings.length) return 'TBA';
+  if (course.course_meetings.every((m) => !m.location)) return 'TBA';
   const meeting = course.course_meetings[0]!;
   const summary = meeting.location
     ? `${meeting.location.building.code}${meeting.location.room ? ` ${meeting.location.room}` : ''}`
@@ -327,6 +327,8 @@ function getAttributeValue(
       return getEnrolled(l.course, 'stat');
     case 'time':
       return toDayTimeScore(l.course);
+    case 'location':
+      return toLocationsSummary(l.course);
     case 'course_code':
     case 'season_code':
     case 'section':
@@ -334,7 +336,6 @@ function getAttributeValue(
     case 'title':
     case 'average_professor_rating':
     case 'average_gut_rating':
-    case 'locations_summary':
     default:
       // || is intentional: 0 also means nonexistence
       return l.course[key] || null;

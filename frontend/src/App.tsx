@@ -112,20 +112,16 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={12}
+        id={13}
       >
-        We want to hear from you. How can we make CourseTable better?{' '}
+        Happy birthday to our GOAT co-lead Sida Chen!!{' '}
         <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=sida.chen@yale.edu"
           target="_blank"
           rel="noreferrer"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
+          style={{ color: 'white', textDecoration: 'underline' }}
         >
-          Fill out this quick survey!
+          Send him a nice email today.{' '}
         </a>
       </Notice>
       <Navbar />

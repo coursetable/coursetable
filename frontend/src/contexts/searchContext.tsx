@@ -35,6 +35,7 @@ import {
   isGraduate,
   isDiscussionSection,
   sortCourses,
+  toLocationsSummary,
   toRangeTime,
   toSeasonString,
   toWeekdayStrings,
@@ -68,7 +69,7 @@ const sortCriteria = {
   average_gut_rating: 'Sort by Guts (Overall - Workload)',
   enrollment: 'Sort by Last Enrollment',
   time: 'Sort by Days & Times',
-  locations_summary: 'Sort by Locations',
+  location: 'Sort by Locations',
 };
 
 export const sortByOptions = Object.fromEntries(
@@ -417,7 +418,7 @@ export function SearchProvider({
             // TODO: query for colsem
             return false;
           case 'location':
-            return listing.course.locations_summary;
+            return toLocationsSummary(listing.course);
           case 'season':
             return listing.season_code;
           case 'professor-names':
@@ -649,8 +650,6 @@ export function SearchProvider({
             listing.course.course_professors.some((p) =>
               p.professor.name.toLowerCase().includes(token),
             ) ||
-            // Use `course_meetings` instead of `locations_summary` to account
-            // for multiple locations.
             listing.course.course_meetings.some(({ location }) =>
               // TODO catalog no longer stores building full name; we should
               // fetch this as a separate query
