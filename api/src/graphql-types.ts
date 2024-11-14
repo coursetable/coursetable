@@ -3305,6 +3305,8 @@ export type Evaluation_Narratives = {
   id: Scalars['Int']['output'];
   /** Question to which this narrative comment responds */
   question_code: Scalars['String']['output'];
+  /** The number of the response for the given course and question */
+  response_number: Scalars['Int']['output'];
 };
 
 /** aggregated selection of "evaluation_narratives" */
@@ -3450,6 +3452,8 @@ export type Evaluation_Narratives_Avg_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "evaluation_narratives" */
@@ -3465,6 +3469,8 @@ export type Evaluation_Narratives_Avg_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "evaluation_narratives". All fields are combined with a logical 'AND'. */
@@ -3482,6 +3488,7 @@ export type Evaluation_Narratives_Bool_Exp = {
   evaluation_question?: InputMaybe<Evaluation_Questions_Bool_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   question_code?: InputMaybe<String_Comparison_Exp>;
+  response_number?: InputMaybe<Int_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
@@ -3502,6 +3509,8 @@ export type Evaluation_Narratives_Max_Fields = {
   id?: Maybe<Scalars['Int']['output']>;
   /** Question to which this narrative comment responds */
   question_code?: Maybe<Scalars['String']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "evaluation_narratives" */
@@ -3521,6 +3530,8 @@ export type Evaluation_Narratives_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -3541,6 +3552,8 @@ export type Evaluation_Narratives_Min_Fields = {
   id?: Maybe<Scalars['Int']['output']>;
   /** Question to which this narrative comment responds */
   question_code?: Maybe<Scalars['String']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "evaluation_narratives" */
@@ -3560,6 +3573,8 @@ export type Evaluation_Narratives_Min_Order_By = {
   id?: InputMaybe<Order_By>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "evaluation_narratives". */
@@ -3574,6 +3589,7 @@ export type Evaluation_Narratives_Order_By = {
   evaluation_question?: InputMaybe<Evaluation_Questions_Order_By>;
   id?: InputMaybe<Order_By>;
   question_code?: InputMaybe<Order_By>;
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "evaluation_narratives" */
@@ -3594,6 +3610,8 @@ export enum Evaluation_Narratives_Select_Column {
   Id = 'id',
   /** column name */
   QuestionCode = 'question_code',
+  /** column name */
+  ResponseNumber = 'response_number',
 }
 
 /** select "evaluation_narratives_aggregate_bool_exp_avg_arguments_columns" columns of table "evaluation_narratives" */
@@ -3706,6 +3724,8 @@ export type Evaluation_Narratives_Stddev_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "evaluation_narratives" */
@@ -3721,6 +3741,8 @@ export type Evaluation_Narratives_Stddev_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
@@ -3737,6 +3759,8 @@ export type Evaluation_Narratives_Stddev_Pop_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_pop() on columns of table "evaluation_narratives" */
@@ -3752,6 +3776,8 @@ export type Evaluation_Narratives_Stddev_Pop_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
@@ -3768,6 +3794,8 @@ export type Evaluation_Narratives_Stddev_Samp_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "evaluation_narratives" */
@@ -3783,6 +3811,8 @@ export type Evaluation_Narratives_Stddev_Samp_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "evaluation_narratives" */
@@ -3810,6 +3840,8 @@ export type Evaluation_Narratives_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['Int']['input']>;
   /** Question to which this narrative comment responds */
   question_code?: InputMaybe<Scalars['String']['input']>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -3826,6 +3858,8 @@ export type Evaluation_Narratives_Sum_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "evaluation_narratives" */
@@ -3841,6 +3875,8 @@ export type Evaluation_Narratives_Sum_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
@@ -3857,6 +3893,8 @@ export type Evaluation_Narratives_Var_Pop_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "evaluation_narratives" */
@@ -3872,6 +3910,8 @@ export type Evaluation_Narratives_Var_Pop_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
@@ -3888,6 +3928,8 @@ export type Evaluation_Narratives_Var_Samp_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_samp() on columns of table "evaluation_narratives" */
@@ -3903,6 +3945,8 @@ export type Evaluation_Narratives_Var_Samp_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** aggregate variance on columns */
@@ -3919,6 +3963,8 @@ export type Evaluation_Narratives_Variance_Fields = {
   /** The course to which this narrative comment applies */
   course_id?: Maybe<Scalars['Float']['output']>;
   id?: Maybe<Scalars['Float']['output']>;
+  /** The number of the response for the given course and question */
+  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "evaluation_narratives" */
@@ -3934,6 +3980,8 @@ export type Evaluation_Narratives_Variance_Order_By = {
   /** The course to which this narrative comment applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  /** The number of the response for the given course and question */
+  response_number?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "evaluation_questions" */

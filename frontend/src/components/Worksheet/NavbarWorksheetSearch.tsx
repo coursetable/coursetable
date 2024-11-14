@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
@@ -16,6 +17,7 @@ import styles from './NavbarWorksheetSearch.module.css';
 export function NavbarWorksheetSearch() {
   const { worksheetView, handleWorksheetView, person, handlePersonChange } =
     useWorksheet();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const removeFriend = useStore((state) => state.removeFriend);
 
@@ -83,6 +85,7 @@ export function NavbarWorksheetSearch() {
           List
         </ToggleButton>
       </ToggleButtonGroup>
+      {!searchParams.get("ws") ? <>
       <SeasonDropdown mobile={false} />
       <WorksheetNumDropdown mobile={false} />
       <FriendsDropdown
@@ -93,6 +96,11 @@ export function NavbarWorksheetSearch() {
         mobile={false}
         removeFriend={removeFriendWithConfirmation}
       />
+      </> : <>
+      <div className={styles.wide}>
+      <Button variant="primary" onClick={() => {setSearchParams({}); window.location.reload()}}>Exit</Button>
+      </div>
+      </>}
     </div>
   );
 }

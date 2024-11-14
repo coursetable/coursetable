@@ -15,8 +15,11 @@ import {
   linkDataToCourses
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
+import LZMA from 'lzma-web';
 
 import styles from './WorksheetStats.module.css';
+
+const lzma = new LZMA();
 
 function StatPill({
   colorMap,
@@ -117,6 +120,10 @@ export default function WorksheetStats() {
       throw new Error("Browser don't have support for native clipboard.");
     }
   
+    // future: LZMA compression
+    //const base64: string = btoa(wsSerial);
+    //const compressed = await lzma.compress(wsSerial, 9);
+    //const binaryCompressed = Array.from(compressed, (byte) => String.fromCodePoint(byte+128)).join("")
     await navigator.clipboard.writeText(`https://localhost:3000/worksheet?ws=${btoa(wsSerial)}`);
     console.log("Copied!");
     setCopied(true);
@@ -233,7 +240,7 @@ export default function WorksheetStats() {
             {searchParams.get("ws") ? (
               <div className={styles.wide}>
                 <dt>Viewing exported worksheet</dt>
-                <Button variant="primary" onClick={() => {setSearchParams({}); setLinkCourses([])}}>Exit</Button>
+                <Button variant="primary" onClick={() => {setSearchParams({}); window.location.reload()}}>Exit</Button>
               </div>
             ) : (
               <div className={styles.wide}>

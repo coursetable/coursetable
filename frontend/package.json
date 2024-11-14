@@ -27,6 +27,7 @@
     "graphql": "^16.9.0",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
+    "lzma": "^2.3.2",
     "mark.js": "^8.11.1",
     "quist": "^0.3.0",
     "rc-slider": "^11.1.7",
