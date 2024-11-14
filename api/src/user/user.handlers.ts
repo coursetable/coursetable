@@ -321,7 +321,7 @@ export const updateWorksheetMetadata = async (
     });
     res.json({
       newWsNumber: nextAvailableWsNumber,
-    })
+    });
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
 
