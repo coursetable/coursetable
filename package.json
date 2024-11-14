@@ -1,33 +1,12 @@
 {
   "name": "coursetable-root",
-  "version": "0.0.0",
-  "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.3",
-    "@graphql-codegen/import-types-preset": "^3.0.0",
-    "@graphql-codegen/introspection": "^4.0.3",
-    "@graphql-codegen/near-operation-file-preset": "^3.0.0",
-    "@graphql-codegen/typescript": "^4.1.0",
-    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
-    "@graphql-codegen/typescript-operations": "^4.3.0",
-    "@graphql-codegen/typescript-react-apollo": "^4.3.2",
-    "@types/image-size": "^0.8.0",
-    "@types/sharp": "^0.32.0",
-    "commander": "^12.1.0",
-    "eslint": "^9.14.0",
-    "eslint-config-jc": "^6.0.1",
-    "eslint-plugin-css-modules": "^2.12.0",
-    "image-size": "^1.1.1",
-    "prettier": "^3.3.3",
-    "sharp": "^0.33.5",
-    "stylelint": "^16.10.0",
-    "stylelint-config-standard": "^36.0.1",
-    "tsconfig-jc": "^2.3.1",
-    "typescript": "~5.6.3",
-    "typescript-eslint": "^8.13.0",
-    "typescript-plugin-css-modules": "^5.1.0"
-  },
-  "license": "MIT",
   "private": true,
+  "version": "0.0.0",
+  "license": "MIT",
+  "workspaces": [
+    "api",
+    "frontend"
+  ],
   "scripts": {
     "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run lint:css:check && bun run resize-image:check && bun run typecheck",
     "checks:fix": "bun run format && bun run lint && bun run lint:css && bun run resize-image",
@@ -47,8 +26,29 @@
     "frontend",
     "sharp"
   ],
-  "workspaces": [
-    "api",
-    "frontend"
-  ]
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.3",
+    "@graphql-codegen/import-types-preset": "^3.0.0",
+    "@graphql-codegen/introspection": "^4.0.3",
+    "@graphql-codegen/near-operation-file-preset": "^3.0.0",
+    "@graphql-codegen/typescript": "^4.1.0",
+    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
+    "@graphql-codegen/typescript-operations": "^4.3.0",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.2",
+    "@types/image-size": "^0.8.0",
+    "@types/sharp": "^0.32.0",
+    "commander": "^12.1.0",
+    "eslint": "^9.12.0",
+    "eslint-config-jc": "^6.0.0",
+    "eslint-plugin-css-modules": "^2.12.0",
+    "image-size": "^1.1.1",
+    "prettier": "^3.3.3",
+    "sharp": "^0.33.5",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.1",
+    "tsconfig-jc": "^2.3.1",
+    "typescript": "~5.6.3",
+    "typescript-eslint": "^8.8.1",
+    "typescript-plugin-css-modules": "^5.1.0"
+  }
 }
