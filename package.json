@@ -50,8 +50,5 @@
   "workspaces": [
     "api",
     "frontend"
-  ],
-  "dependencies": {
-    "lzma-web": "^3.0.1"
-  }
+  ]
 }
