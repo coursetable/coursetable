@@ -35,7 +35,6 @@ export function worksheetCoursesToWorksheets(
 }
 
 export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
-  // Returns max(...worksheetNumbers) + 1, 1 if empty
   if (worksheetNumbers.length === 0) return 1;
   const last = Math.max(...worksheetNumbers);
   return last + 1;

@@ -391,6 +391,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
   - Option 1 (add):
     - `action`: `"add"`
     - `season`: `string`
+    - `worksheetName`: `string`
   - Option 2 (delete):
     - `action`: `"delete"`
     - `season`: `string`
@@ -406,7 +407,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 **Status: 200**
 
 - If `action` == `"add"`:
-  - returns the worksheet number assoc. with the new worksheet
+  - returns { worksheetNumber: number }
 
 **Status: 400**
 

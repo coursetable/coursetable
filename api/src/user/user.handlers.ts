@@ -320,7 +320,7 @@ export const updateWorksheetMetadata = async (
       worksheetName,
     });
     res.json({
-      newWsNumber: nextAvailableWsNumber,
+      worksheetNumber: nextAvailableWsNumber,
     });
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
@@ -390,15 +390,14 @@ export const getUserWorksheetMetadata = async (
   );
 
   const worksheetMap: {
-    [season: string]:
-      | { [worksheetNumber: number]: { worksheetName: string } }
-      | undefined;
+    [season: string]: { [worksheetNumber: number]: { worksheetName: string } };
   } = {};
 
   allWorksheetMetadata.forEach(({ season, worksheetNumber, worksheetName }) => {
     worksheetMap[season] ??= {};
     worksheetMap[season][worksheetNumber] ??= { worksheetName };
   });
+
   res.json({
     netId,
     worksheets: worksheetMap,

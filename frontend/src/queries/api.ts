@@ -499,6 +499,18 @@ export async function fetchUserWorksheets() {
   return res;
 }
 
+const worksheetSchema = z.object({
+  worksheetName: z.string(),
+});
+
+const worksheetsSchema = z.record(
+  z.string(), // season
+  z.record(
+    z.string(), // worksheetNumber keys
+    worksheetSchema,
+  ),
+);
+
 export async function fetchUserWorksheetMetadata() {
   const res = await fetchAPI('/user/worksheetMetadata', {
     breadcrumb: {
@@ -507,8 +519,8 @@ export async function fetchUserWorksheetMetadata() {
     },
     schema: z.object({
       netId: netIdSchema,
-      worksheets: z.record(z.string(), z.record(z.string(), z.string())),
-      // { [season]: { [worksheetNumber]: worksheetName } }
+      worksheets: worksheetsSchema,
+      // { [season]: { [worksheetNumber]: { worksheetName } } }
     }),
   });
   if (!res) return undefined;
