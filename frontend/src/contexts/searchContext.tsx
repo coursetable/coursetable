@@ -401,7 +401,7 @@ export function SearchProvider({
             return (
               listing.course.course_meetings.length > 0 &&
               !isInWorksheet(
-                listing.season_code,
+                listing.course.season_code,
                 listing.crn,
                 worksheetNumber,
                 user.worksheets,
@@ -411,7 +411,7 @@ export function SearchProvider({
           case 'grad':
             return isGraduate(listing);
           case 'discussion':
-            return isDiscussionSection(listing);
+            return isDiscussionSection(listing.course);
           case 'fysem':
             return listing.course.fysem !== false;
           case 'colsem':
@@ -420,7 +420,7 @@ export function SearchProvider({
           case 'location':
             return toLocationsSummary(listing.course);
           case 'season':
-            return listing.season_code;
+            return listing.course.season_code;
           case 'professor-names':
             // "No processors" is displayed in catalog as "TBA"
             // so it seems easiest to make Quist reflect this reality, although
@@ -551,7 +551,7 @@ export function SearchProvider({
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
           !isInWorksheet(
-            listing.season_code,
+            listing.course.season_code,
             listing.crn,
             worksheetNumber,
             user.worksheets,
@@ -560,7 +560,7 @@ export function SearchProvider({
         )
           return false;
 
-        if (hideDiscussionSections.value && isDiscussionSection(listing))
+        if (hideDiscussionSections.value && isDiscussionSection(listing.course))
           return false;
 
         if (hideFirstYearSeminars.value && listing.course.fysem !== false)

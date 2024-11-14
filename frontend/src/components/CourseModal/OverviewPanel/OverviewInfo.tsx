@@ -206,8 +206,11 @@ function Prereqs({
       codeData.push(l);
       codeToListings.set(l.course_code, codeData);
     }
-    for (const listings of codeToListings.values())
-      listings.sort((a, b) => b.season_code.localeCompare(a.season_code));
+    for (const listings of codeToListings.values()) {
+      listings.sort((a, b) =>
+        b.course.season_code.localeCompare(a.course.season_code),
+      );
+    }
   }
   return (
     <div className={styles.requirements}>
@@ -222,7 +225,7 @@ function Prereqs({
         // Usually they can still navigate to the latest one from the modal,
         // so it's not a big problem
         const info =
-          allInfo?.find((l) => l.season_code <= season) ?? allInfo?.[0];
+          allInfo?.find((l) => l.course.season_code <= season) ?? allInfo?.[0];
         return (
           <OverlayTrigger
             key={i}
