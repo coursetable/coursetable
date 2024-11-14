@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
@@ -7,7 +7,9 @@ import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
 import { useFerry } from '../../contexts/ferryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
+import { useCourseModalFromUrlQuery } from '../../queries/graphql-queries';
 import type { Season, Crn } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import {
   toSeasonDate,
   toSeasonString,
@@ -31,36 +33,50 @@ export type ModalNavigationFunction = ((
 ) => void) &
   ((mode: 'pop', l: undefined, target: 'evals' | 'overview') => void);
 
+function parseQuery(courseModalQuery: string | null) {
+  if (!courseModalQuery) return undefined;
+  const [seasonCode, crn] = courseModalQuery.split('-') as [Season, string];
+  if (!seasonCode || !crn) return undefined;
+  return { seasonCode, crn: Number(crn) as Crn };
+}
+
+function useCourseInfoFromURL(isInitial: boolean) {
+  const user = useStore((state) => state.user);
+  const [searchParams] = useSearchParams();
+  const courseModal = searchParams.get('course-modal');
+  const variables = parseQuery(courseModal);
+  const { courses } = useFerry();
+  // If the season is in the static catalog, we can just use that instead of
+  // fetching GraphQL
+  const hasStaticCatalog = variables && variables.seasonCode in courses;
+  const { data } = useCourseModalFromUrlQuery({
+    // If variables is undefined, the query will not be sent
+    variables: { ...variables!, hasEvals: Boolean(user.hasEvals) },
+    skip: !variables || !isInitial || hasStaticCatalog,
+  });
+  if (hasStaticCatalog)
+    return courses[variables.seasonCode]!.data.get(variables.crn);
+  return data?.listings[0];
+}
+
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { requestSeasons, courses } = useFerry();
-
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   // Stack for listings that the user has viewed
   const [history, setHistory] = useState<
     CourseModalPrefetchListingDataFragment[]
   >([]);
+  const infoFromURL = useCourseInfoFromURL(history.length === 0);
+  if (history.length === 0 && infoFromURL) setHistory([infoFromURL]);
+
   // This will update when history updates
   const listing = history[history.length - 1];
-  useEffect(() => {
-    if (history.length !== 0) return;
-    const courseModal = searchParams.get('course-modal');
-    if (!courseModal) return;
-    const [seasonCode, crn] = courseModal.split('-') as [Season, string];
-    void requestSeasons([seasonCode]).then(() => {
-      const listingFromQuery = courses[seasonCode]?.data.get(
-        Number(crn) as Crn,
-      );
-      if (!listingFromQuery) return;
-      setHistory([listingFromQuery]);
-    });
-  }, [history.length, searchParams, requestSeasons, courses]);
+  if (!listing) return null;
   const backTarget =
     history.length > 1
       ? createCourseModalLink(history[history.length - 2], searchParams)
       : undefined;
 
-  if (!listing) return null;
   const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,

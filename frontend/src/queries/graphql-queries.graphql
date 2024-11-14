@@ -159,6 +159,16 @@ query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
   }
 }
 
+query CourseModalFromURL(
+  $seasonCode: String!
+  $crn: Int!
+  $hasEvals: Boolean!
+) {
+  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+    ...CourseModalPrefetchListingData
+  }
+}
+
 query PrereqLinkInfo($courseCodes: [String!], $hasEvals: Boolean!) {
   listings(where: { course_code: { _in: $courseCodes } }) {
     ...CourseModalPrefetchListingData

@@ -85,7 +85,7 @@ export function toTimesSummary(
 export function toLocationsSummary(
   course: Pick<CatalogListing['course'], 'course_meetings'>,
 ): string {
-  if (!course.course_meetings.length) return 'TBA';
+  if (course.course_meetings.every((m) => !m.location)) return 'TBA';
   const meeting = course.course_meetings[0]!;
   const summary = meeting.location
     ? `${meeting.location.building.code}${meeting.location.room ? ` ${meeting.location.room}` : ''}`
