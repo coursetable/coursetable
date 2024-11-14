@@ -15,11 +15,11 @@ import {
   linkDataToCourses
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
-import LZMA from 'lzma-web';
+// import LZMA from 'lzma-web';
 
 import styles from './WorksheetStats.module.css';
 
-const lzma = new LZMA();
+// const lzma = new LZMA();
 
 function StatPill({
   colorMap,
