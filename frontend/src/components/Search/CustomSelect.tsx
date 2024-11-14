@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import chroma from 'chroma-js';
 import Select, {
@@ -11,6 +12,7 @@ import Select, {
 } from 'react-select';
 import makeAnimated from 'react-select/animated';
 import type { Option } from '../../contexts/searchContext';
+import styles from './CustomSelect.module.css';
 
 // Styles for the select indicators
 function indicatorStyles<
@@ -223,15 +225,10 @@ function ControlWithUnionIndicator(props: any) {
       <OverlayTrigger overlay={(p) => <Tooltip {...p}>{label}</Tooltip>}>
         <button
           type="button"
-          style={{
-            flexShrink: 0,
-            width: 40,
-            height: 40,
-            borderRadius: 8,
-            marginRight: 4,
-            border: `${popout ? 1 : 2}px solid var(--color-border-control)`,
-            margin: popout ? '8px 8px 8px 0' : '0 0 0 4px',
-          }}
+          className={clsx(
+            styles.unionIntersectionButton,
+            popout && styles.unionIntersectionButtonPopout,
+          )}
           onClick={() => setIsIntersection(!isIntersection)}
           aria-label={label}
         >
@@ -243,7 +240,7 @@ function ControlWithUnionIndicator(props: any) {
             viewBox="0 0 100 100"
           >
             <path
-              style={{ fill: 'var(--color-primary)' }}
+              className={styles.vennFillIndicator}
               d={
                 isIntersection
                   ? 'M49.63,24.03c-8.96,5.19-15,14.87-15,25.98s6.04,20.79,15,25.98c8.96-5.19,15-14.87,15-25.98 S58.59,29.22,49.63,24.03z'
@@ -253,11 +250,7 @@ function ControlWithUnionIndicator(props: any) {
             {['35', '65'].map((cx) => (
               <circle
                 key={cx}
-                style={{
-                  fill: 'none',
-                  stroke: 'var(--color-icon)',
-                  strokeWidth: 3,
-                }}
+                className={styles.vennCircle}
                 cx={cx}
                 cy="50"
                 r="30"
