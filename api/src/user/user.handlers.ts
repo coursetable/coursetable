@@ -4,7 +4,7 @@ import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
 import {
-  getFirstAvailableWsNumber,
+  getNextAvailableWsNumber,
   worksheetCoursesToWorksheets,
 } from './user.utils.js';
 
@@ -254,6 +254,7 @@ export const getUserWorksheet = async (
 const AddWorksheetSchema = z.object({
   action: z.literal('add'),
   season: z.string().transform((val) => parseInt(val, 10)),
+  worksheetName: z.string().max(64),
 });
 
 const DeleteWorksheetSchema = z.object({
@@ -294,6 +295,8 @@ export const updateWorksheetMetadata = async (
   if (action === 'add') {
     winston.info(`Adding worksheet for user ${netId}`);
 
+    const { worksheetName } = bodyParseRes.data;
+
     const worksheetNumbersRes = await db
       .select({ worksheetNumber: worksheetMetadata.worksheetNumber })
       .from(worksheetMetadata)
@@ -302,41 +305,28 @@ export const updateWorksheetMetadata = async (
           eq(worksheetMetadata.netId, netId),
           eq(worksheetMetadata.season, season),
         ),
-      )
-      .orderBy(worksheetMetadata.worksheetNumber);
+      );
 
     const worksheetNumbers = worksheetNumbersRes.map(
       (row) => row.worksheetNumber,
     );
 
-    const firstAvailableWsNumber = getFirstAvailableWsNumber(worksheetNumbers);
+    const nextAvailableWsNumber = getNextAvailableWsNumber(worksheetNumbers);
 
     await db.insert(worksheetMetadata).values({
       netId,
       season,
-      worksheetNumber: firstAvailableWsNumber,
-      worksheetName: 'New Worksheet',
+      worksheetNumber: nextAvailableWsNumber,
+      worksheetName,
     });
+    res.json({
+      newWsNumber: nextAvailableWsNumber,
+    })
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
-    const [existingWorksheet] = await db
-      .select()
-      .from(worksheetMetadata)
-      .where(
-        and(
-          eq(worksheetMetadata.netId, netId),
-          eq(worksheetMetadata.season, season),
-          eq(worksheetMetadata.worksheetNumber, worksheetNumber),
-        ),
-      );
-
-    if (!existingWorksheet) {
-      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
-      return;
-    }
 
     winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
-    await db
+    const deletedWorksheets = await db
       .delete(worksheetMetadata)
       .where(
         and(
@@ -344,28 +334,20 @@ export const updateWorksheetMetadata = async (
           eq(worksheetMetadata.season, season),
           eq(worksheetMetadata.worksheetNumber, worksheetNumber),
         ),
-      );
-  } else {
-    const { worksheetNumber, worksheetName } = bodyParseRes.data;
-    const [existingWorksheet] = await db
-      .select()
-      .from(worksheetMetadata)
-      .where(
-        and(
-          eq(worksheetMetadata.netId, netId),
-          eq(worksheetMetadata.season, season),
-          eq(worksheetMetadata.worksheetNumber, worksheetNumber),
-        ),
-      );
+      )
+      .returning();
 
-    if (!existingWorksheet) {
+    if (deletedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
+  } else {
+    const { worksheetNumber, worksheetName } = bodyParseRes.data;
+
     winston.info(
       `Renaming worksheet ${worksheetNumber} for user ${netId} to "${worksheetName}"`,
     );
-    await db
+    const renamedWorksheets = await db
       .update(worksheetMetadata)
       .set({ worksheetName })
       .where(
@@ -374,7 +356,13 @@ export const updateWorksheetMetadata = async (
           eq(worksheetMetadata.season, season),
           eq(worksheetMetadata.worksheetNumber, worksheetNumber),
         ),
-      );
+      )
+      .returning();
+
+    if (renamedWorksheets.length === 0) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
   }
 
   res.sendStatus(200);
@@ -402,15 +390,17 @@ export const getUserWorksheetMetadata = async (
   );
 
   const worksheetMap: {
-    [season: string]: { [worksheetNumber: number]: string } | undefined;
+    [season: string]:
+      | { [worksheetNumber: number]: { worksheetName: string } }
+      | undefined;
   } = {};
 
   allWorksheetMetadata.forEach(({ season, worksheetNumber, worksheetName }) => {
     worksheetMap[season] ??= {};
-    worksheetMap[season][worksheetNumber] = worksheetName;
+    worksheetMap[season][worksheetNumber] ??= { worksheetName };
   });
   res.json({
     netId,
-    metadataForWorksheet: worksheetMap,
+    worksheets: worksheetMap,
   });
 };

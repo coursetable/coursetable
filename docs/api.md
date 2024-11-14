@@ -382,8 +382,6 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
     };
     ```
 
-## WorksheetMetadata
-
 ### `POST` `/api/user/updateWorksheetMetadata`
 
 #### Request
@@ -407,7 +405,8 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 **Status: 200**
 
-- No body
+- If `action` == `"add"`:
+  - returns the worksheet number assoc. with the new worksheet
 
 **Status: 400**
 
@@ -428,7 +427,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
 
   - `netId`: `NetId`
-  - `metadataForWorksheet`:
+  - `worksheets`:
     ```ts
     [season: Season]: {
       [worksheetNumber: number]: {

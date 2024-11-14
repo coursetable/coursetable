@@ -34,15 +34,9 @@ export function worksheetCoursesToWorksheets(
   return res;
 }
 
-export function getFirstAvailableWsNumber(worksheetNumbers: number[]) {
-  // Equivalent to finding the MEX (minimum excluded) element of this array.
-  let firstAvailableWsNumber = 1;
-  for (const existingWsNum of worksheetNumbers) {
-    if (existingWsNum === firstAvailableWsNumber) {
-      firstAvailableWsNumber += 1;
-    } else if (existingWsNum > firstAvailableWsNumber) {
-      break;
-    }
-  }
-  return firstAvailableWsNumber;
+export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
+  // Returns max(...worksheetNumbers) + 1, 1 if empty
+  if (worksheetNumbers.length === 0) return 1;
+  const last = Math.max(...worksheetNumbers);
+  return last + 1;
 }
