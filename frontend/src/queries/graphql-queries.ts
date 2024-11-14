@@ -323,6 +323,95 @@ export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
   Types.SearchEvaluationNarrativesQuery,
   Types.SearchEvaluationNarrativesQueryVariables
 >;
+export const CourseModalFromUrlDocument = gql`
+  query CourseModalFromURL(
+    $seasonCode: String!
+    $crn: Int!
+    $hasEvals: Boolean!
+  ) {
+    listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+      ...CourseModalPrefetchListingData
+    }
+  }
+  ${CourseModalPrefetchListingDataFragmentDoc}
+`;
+
+/**
+ * __useCourseModalFromUrlQuery__
+ *
+ * To run a query within a React component, call `useCourseModalFromUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseModalFromUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCourseModalFromUrlQuery({
+ *   variables: {
+ *      seasonCode: // value for 'seasonCode'
+ *      crn: // value for 'crn'
+ *      hasEvals: // value for 'hasEvals'
+ *   },
+ * });
+ */
+export function useCourseModalFromUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  > &
+    (
+      | { variables: Types.CourseModalFromUrlQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >(CourseModalFromUrlDocument, options);
+}
+export function useCourseModalFromUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >(CourseModalFromUrlDocument, options);
+}
+export function useCourseModalFromUrlSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.CourseModalFromUrlQuery,
+        Types.CourseModalFromUrlQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >(CourseModalFromUrlDocument, options);
+}
+export type CourseModalFromUrlQueryHookResult = ReturnType<
+  typeof useCourseModalFromUrlQuery
+>;
+export type CourseModalFromUrlLazyQueryHookResult = ReturnType<
+  typeof useCourseModalFromUrlLazyQuery
+>;
+export type CourseModalFromUrlSuspenseQueryHookResult = ReturnType<
+  typeof useCourseModalFromUrlSuspenseQuery
+>;
+export type CourseModalFromUrlQueryResult = Apollo.QueryResult<
+  Types.CourseModalFromUrlQuery,
+  Types.CourseModalFromUrlQueryVariables
+>;
 export const PrereqLinkInfoDocument = gql`
   query PrereqLinkInfo($courseCodes: [String!], $hasEvals: Boolean!) {
     listings(where: { course_code: { _in: $courseCodes } }) {

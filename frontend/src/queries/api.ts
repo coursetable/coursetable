@@ -124,10 +124,22 @@ async function fetchAPI(
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
-      // Let the handler handle it first
-      if (handleErrorCode?.(errorCode))
-        return noResExpected ? false : undefined;
-      throw new Error(errorCode);
+      // Handle common errors uniformly
+      switch (errorCode) {
+        case 'USER_NOT_FOUND':
+          toast.info('Login expired. Please log in again.');
+          return noResExpected ? false : undefined;
+        case 'INVALID_REQUEST':
+          toast.error(
+            'The server did not understand this request. Please refresh the page and try again.',
+          );
+          return noResExpected ? false : undefined;
+        default:
+          // Let the handler handle it first
+          if (handleErrorCode?.(errorCode))
+            return noResExpected ? false : undefined;
+          throw new Error(errorCode);
+      }
     }
     // If no res body is expected, return early
     if (noResExpected) return true;
@@ -142,12 +154,9 @@ async function fetchAPI(
       message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
     });
     Sentry.captureException(err);
-    let message = String(err);
-    if (message.includes('INVALID_REQUEST')) {
-      message +=
-        ' Please try refreshing the page and/or reopening in a new tab.';
-    }
-    toast.error(`Failed while ${breadcrumb.message.toLowerCase()}: ${message}`);
+    toast.error(
+      `Failed while ${breadcrumb.message.toLowerCase()}: ${String(err)}`,
+    );
     return noResExpected ? false : undefined;
   }
 }
@@ -192,6 +201,42 @@ export function updateWorksheetCourses(
     breadcrumb: {
       category: 'worksheet',
       message: 'Updating worksheet',
+    },
+  });
+}
+
+export async function updateWorksheetMetadata(
+  body: {
+    season: Season;
+  } & (
+    | {
+        action: 'add';
+      }
+    | {
+        action: 'delete';
+        worksheetNumber: number;
+      }
+    | {
+        action: 'rename';
+        worksheetNumber: number;
+        worksheetName: string;
+      }
+  ),
+): Promise<boolean> {
+  return fetchAPI('/user/updateWorksheetMetadata', {
+    body,
+    breadcrumb: {
+      category: 'worksheet',
+      message: `Updating worksheet names`,
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'WORKSHEET_NOT_FOUND':
+          toast.error('Worksheet not found.');
+          return true;
+        default:
+          return false;
+      }
     },
   });
 }
@@ -460,6 +505,34 @@ export async function fetchUserWorksheets() {
     // first device that logged in, and assume that one is the primary device.
     hiddenCoursesStorage.remove();
   }
+  return res;
+}
+
+const worksheetSchema = z.object({
+  worksheetName: z.string(),
+});
+
+const worksheetsSchema = z.record(
+  z.string(), // season
+  z.record(
+    z.string(), // worksheetNumber keys
+    worksheetSchema,
+  ),
+);
+
+export async function fetchUserWorksheetMetadata() {
+  const res = await fetchAPI('/user/worksheetMetadata', {
+    breadcrumb: {
+      category: 'worksheet',
+      message: 'Fetching user worksheet names',
+    },
+    schema: z.object({
+      netId: netIdSchema,
+      worksheets: worksheetsSchema,
+      // { [season]: { [worksheetNumber]: { worksheetName } } }
+    }),
+  });
+  if (!res) return undefined;
   return res;
 }
 

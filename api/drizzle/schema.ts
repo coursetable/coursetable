@@ -88,8 +88,8 @@ export const worksheetCourses = pgTable(
   }),
 );
 
-export const worksheetNames = pgTable(
-  'worksheetNames',
+export const worksheetMetadata = pgTable(
+  'worksheetMetadata',
   {
     id: serial('id').primaryKey().notNull(),
     netId: varchar('netId', { length: 8 }).notNull(),
@@ -98,7 +98,7 @@ export const worksheetNames = pgTable(
     worksheetName: varchar('worksheetName', { length: 64 }).notNull(),
   },
   (table) => ({
-    worksheetNameUniqueIdx: uniqueIndex('worksheet_unique_name_idx').on(
+    worksheetMetadataUniqueIdx: uniqueIndex('worksheet_metadata_unique_idx').on(
       table.netId,
       table.season,
       table.worksheetNumber,

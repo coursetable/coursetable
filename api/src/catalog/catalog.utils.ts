@@ -182,6 +182,7 @@ export async function fetchCatalog(overwrite: boolean) {
     );
     await Promise.all(processSeasons);
     await generateMetadata();
+    await generateSitemapIndex();
   } catch (err) {
     winston.error(err);
     throw err;

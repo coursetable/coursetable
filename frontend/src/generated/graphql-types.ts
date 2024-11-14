@@ -7071,7 +7071,6 @@ export type CatalogBySeasonQuery = {
       final_exam: string | null;
       fysem: boolean | null;
       last_offered_course_id: number | null;
-      locations_summary: string | null;
       regnotes: string | null;
       requirements: string | null;
       rp_attr: string | null;
@@ -7080,7 +7079,6 @@ export type CatalogBySeasonQuery = {
       skills: StringArr;
       syllabus_url: string | null;
       sysem: boolean | null;
-      times_summary: string | null;
       title: string;
       course_flags: Array<{
         __typename?: 'course_flags';
@@ -7290,6 +7288,19 @@ export type SearchEvaluationNarrativesQuery = {
       } | null;
     };
   }>;
+};
+
+export type CourseModalFromUrlQueryVariables = Exact<{
+  seasonCode: Scalars['String']['input'];
+  crn: Scalars['Int']['input'];
+  hasEvals: Scalars['Boolean']['input'];
+}>;
+
+export type CourseModalFromUrlQuery = {
+  __typename?: 'query_root';
+  listings: Array<
+    { __typename?: 'listings' } & CourseModalPrefetchListingDataFragment
+  >;
 };
 
 export type PrereqLinkInfoQueryVariables = Exact<{
