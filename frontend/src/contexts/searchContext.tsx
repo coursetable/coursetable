@@ -269,6 +269,9 @@ const targetTypes = {
     'info-attributes',
     'subjects',
     'professor-names',
+    'listings.subjects',
+    'listings.course-codes',
+    'listings.schools',
   ] as const),
   boolean: new Set([
     'cancelled',
@@ -431,6 +434,12 @@ export function SearchProvider({
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case 'number':
             return Number(listing.number.replace(/\D/gu, ''));
+          case 'listings.subjects':
+            return listing.course.listings.map((l) => l.subject);
+          case 'listings.course-codes':
+            return listing.course.listings.map((l) => l.course_code);
+          case 'listings.schools':
+            return listing.course.listings.map((l) => l.school);
           case 'subject':
           case 'school':
             return listing[key];
