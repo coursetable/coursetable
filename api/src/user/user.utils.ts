@@ -1,3 +1,5 @@
+import { CourseWithMetadata, FlatWsMetadata, SeasonMappedWorksheet, SeasonMappedWsMetadata } from "./user.types.js";
+
 export function worksheetCoursesToWorksheets(
   worksheetCourses: {
     netId: string;
@@ -39,36 +41,6 @@ export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
   const last = Math.max(...worksheetNumbers);
   return last + 1;
 }
-
-type Course = {
-  crn: number;
-  color: string;
-  hidden: boolean | null;
-};
-
-type CourseWithMetadata = {
-  season: number;
-  worksheetNumber: number;
-} & Course;
-
-type FlatWsMetadata = {
-  season: number;
-  worksheetNumber: number;
-  worksheetName: string;
-};
-
-type SeasonMappedWsMetadata = {
-  [season: string]: { [worksheetNumber: number]: { worksheetName: string } };
-};
-
-type SeasonMappedWorksheet = {
-  [season: string]: {
-    [worksheetNumber: number]: {
-      worksheetName: string;
-      courses: Course[];
-    };
-  };
-};
 
 export function flatWsMetadataToMapping(
   allWorksheetMetadata: FlatWsMetadata[],
