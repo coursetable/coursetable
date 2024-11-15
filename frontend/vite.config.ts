@@ -133,7 +133,7 @@ export default defineConfig({
           },
         ],
         display: 'standalone',
-        standalone: '#ffffff',
+        theme_color: '#ffffff',
       },
     }),
   ],
