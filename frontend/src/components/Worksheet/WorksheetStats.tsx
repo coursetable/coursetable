@@ -106,7 +106,8 @@ export default function WorksheetStats() {
     // - Another section has been counted (we just randomly pick one)
     // - Is discussion section (no ratings or credits)
     // - Is hidden
-    if (alreadyCounted || hidden || isDiscussionSection(listing)) continue;
+    if (alreadyCounted || hidden || isDiscussionSection(listing.course))
+      continue;
 
     // Mark codes as counted, no double counting
     listing.course.listings.forEach((l) => {

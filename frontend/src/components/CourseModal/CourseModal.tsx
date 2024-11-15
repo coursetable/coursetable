@@ -40,7 +40,9 @@ function parseQuery(courseModalQuery: string | null) {
   return { seasonCode, crn: Number(crn) as Crn };
 }
 
-function useCourseInfoFromURL(isInitial: boolean) {
+function useCourseInfoFromURL(
+  isInitial: boolean,
+): CourseModalPrefetchListingDataFragment | undefined {
   const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
   const courseModal = searchParams.get('course-modal');
@@ -77,7 +79,7 @@ function CourseModal() {
       ? createCourseModalLink(history[history.length - 2], searchParams)
       : undefined;
 
-  const title = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.season_code)} | CourseTable`;
+  const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
     300,
@@ -94,7 +96,10 @@ function CourseModal() {
           ? 'evals'
           : 'overview';
       setView(nextView);
-      if (l!.crn === listing.crn && l!.season_code === listing.season_code)
+      if (
+        l!.crn === listing.crn &&
+        l!.course.season_code === listing.course.season_code
+      )
         return;
       if (mode === 'replace') setHistory([...history.slice(0, -1), l!]);
       else setHistory([...history, l!]);
@@ -112,7 +117,7 @@ function CourseModal() {
     '@context': 'https://schema.org/',
     name: { title },
     description: { description },
-    datePublished: toSeasonDate(listing.season_code),
+    datePublished: toSeasonDate(listing.course.season_code),
   });
   return (
     <div className="d-flex justify-content-center">
@@ -149,7 +154,7 @@ function CourseModal() {
             <OverviewPanel onNavigation={onNavigation} prefetched={listing} />
           ) : (
             <EvaluationsPanel
-              seasonCode={listing.season_code}
+              seasonCode={listing.course.season_code}
               crn={listing.crn}
             />
           )}

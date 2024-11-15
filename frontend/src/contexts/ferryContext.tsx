@@ -55,7 +55,13 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
         fetchCatalogMetadata(),
       ]);
       if (!data || !metadata) return null;
-      return { metadata, data };
+      // TODO: directly use the course-indexed data in frontend
+      const catalogOldFormat = new Map<Crn, CatalogListing>();
+      for (const course of data.values()) {
+        for (const listing of course.listings)
+          catalogOldFormat.set(listing.crn, { ...listing, course });
+      }
+      return { metadata, data: catalogOldFormat };
     })();
     const evalsPromise = (() => {
       if (evalsLoadAttempted.has(season) || !includeEvals)
@@ -73,10 +79,15 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
     const seasonCatalog = catalog ?? courseData[season];
     if (!seasonCatalog) return;
     if (evals) {
-      for (const [crn, ratings] of evals) {
-        const listing = seasonCatalog.data.get(crn);
-        if (listing) {
-          Object.assign(listing.course, ratings.course);
+      const courseById = new Map<number, CatalogListing['course']>();
+      for (const listing of seasonCatalog.data.values())
+        courseById.set(listing.course.course_id, listing.course);
+      for (const [courseId, ratings] of evals) {
+        // All listings share the same reference to this object, so this will
+        // affect the original catalog
+        const course = courseById.get(courseId);
+        if (course) {
+          Object.assign(course, ratings);
         } else {
           // Unactionable error, courses may have failed to load
         }

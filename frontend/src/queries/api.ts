@@ -124,10 +124,22 @@ async function fetchAPI(
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
-      // Let the handler handle it first
-      if (handleErrorCode?.(errorCode))
-        return noResExpected ? false : undefined;
-      throw new Error(errorCode);
+      // Handle common errors uniformly
+      switch (errorCode) {
+        case 'USER_NOT_FOUND':
+          toast.info('Login expired. Please log in again.');
+          return noResExpected ? false : undefined;
+        case 'INVALID_REQUEST':
+          toast.error(
+            'The server did not understand this request. Please refresh the page and try again.',
+          );
+          return noResExpected ? false : undefined;
+        default:
+          // Let the handler handle it first
+          if (handleErrorCode?.(errorCode))
+            return noResExpected ? false : undefined;
+          throw new Error(errorCode);
+      }
     }
     // If no res body is expected, return early
     if (noResExpected) return true;
@@ -142,12 +154,9 @@ async function fetchAPI(
       message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
     });
     Sentry.captureException(err);
-    let message = String(err);
-    if (message.includes('INVALID_REQUEST')) {
-      message +=
-        ' Please try refreshing the page and/or reopening in a new tab.';
-    }
-    toast.error(`Failed while ${breadcrumb.message.toLowerCase()}: ${message}`);
+    toast.error(
+      `Failed while ${breadcrumb.message.toLowerCase()}: ${String(err)}`,
+    );
     return noResExpected ? false : undefined;
   }
 }
@@ -294,7 +303,7 @@ export function fetchCatalogMetadata() {
   });
 }
 
-type ListingPublic = CatalogBySeasonQuery['listings'][number];
+type CoursePublic = CatalogBySeasonQuery['courses'][number];
 
 export async function fetchCatalog(season: Season) {
   const breadcrumb = {
@@ -305,15 +314,17 @@ export async function fetchCatalog(season: Season) {
     breadcrumb,
   });
   if (!res) return undefined;
-  const data = res as ListingPublic[];
-  const info = new Map<Crn, ListingPublic>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as CatalogBySeasonQuery['courses'];
+  const info = new Map<number, CoursePublic>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 
-type ListingEvals = EvalsBySeasonQuery['listings'][number];
+type CourseEvals = EvalsBySeasonQuery['courses'][number];
 
-export type CatalogListing = ListingPublic & Partial<ListingEvals>;
+export type CatalogListing = CoursePublic['listings'][number] & {
+  course: CoursePublic & Partial<CourseEvals>;
+};
 
 export async function fetchEvals(season: Season) {
   const res = await fetchAPI(`/catalog/evals/${season}`, {
@@ -323,9 +334,9 @@ export async function fetchEvals(season: Season) {
     },
   });
   if (!res) return undefined;
-  const data = res as ListingEvals[];
-  const info = new Map<Crn, ListingEvals>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as EvalsBySeasonQuery['courses'];
+  const info = new Map<number, CourseEvals>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 

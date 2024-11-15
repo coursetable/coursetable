@@ -134,22 +134,13 @@ function ResultsHeaders({
             <HeaderCol
               className={colStyles.enrollCol}
               tooltip={
-                multiSeasons ? (
-                  <span>
-                    Class Enrollment
-                    <br />
-                    (If the course has not occurred/completed, based on the most
-                    recent past instance of this course. a ~ means a different
-                    professor was teaching)
-                  </span>
-                ) : (
-                  <span>
-                    Previous Class Enrollment
-                    <br />
-                    (based on the most recent past instance of this course. a ~
-                    means a different professor was teaching)
-                  </span>
-                )
+                <span>
+                  Class Enrollment
+                  <br />
+                  (If the course has not occurred/completed, based on the most
+                  recent past instance of this course. a ~ means a different
+                  professor was teaching)
+                </span>
               }
               sortOption="enrollment"
             >

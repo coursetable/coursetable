@@ -67,15 +67,15 @@ function MoreButton({
         Report an error
       </Dropdown.Item>
       <Dropdown.Item
-        href={`https://courses.yale.edu/?details&srcdb=${listing.season_code}&crn=${listing.crn}`}
+        href={`https://courses.yale.edu/?details&srcdb=${listing.course.season_code}&crn=${listing.crn}`}
         target="_blank"
         rel="noreferrer"
       >
         Open in Yale Course Search
       </Dropdown.Item>
-      {!CUR_YEAR.includes(listing.season_code) && (
+      {!CUR_YEAR.includes(listing.course.season_code) && (
         <Dropdown.Item
-          href={`https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?termCode=${listing.season_code}&crn=${listing.crn}`}
+          href={`https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?termCode=${listing.course.season_code}&crn=${listing.crn}`}
           target="_blank"
           rel="noreferrer"
         >

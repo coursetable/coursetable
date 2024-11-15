@@ -5,6 +5,8 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export const CourseModalPrefetchCourseDataFragmentDoc = gql`
   fragment CourseModalPrefetchCourseData on courses {
+    season_code
+    section
     title
     skills
     areas
@@ -32,8 +34,6 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
 `;
 export const RelatedCourseInfoFragmentDoc = gql`
   fragment RelatedCourseInfo on courses {
-    season_code
-    section
     ...CourseModalPrefetchCourseData
     average_professor_rating @include(if: $hasEvals)
     evaluation_statistic @include(if: $hasEvals) {
@@ -51,10 +51,8 @@ export const RelatedCourseInfoFragmentDoc = gql`
 `;
 export const CourseModalPrefetchListingDataFragmentDoc = gql`
   fragment CourseModalPrefetchListingData on listings {
-    season_code
     crn
     course_code
-    section
     course {
       ...CourseModalPrefetchCourseData
     }

@@ -6,81 +6,76 @@ query listSeasons {
 
 # Query for data that needs eval access
 query evalsBySeason($season: String!) {
-  listings(where: { season_code: { _eq: $season } }) {
-    course {
-      average_gut_rating
-      average_rating
-      average_rating_same_professors
-      average_professor_rating
-      average_workload
-      average_workload_same_professors
-      evaluation_statistic {
-        enrolled
-      }
-      last_enrollment
-      last_enrollment_same_professors
+  courses(where: { season_code: { _eq: $season } }) {
+    average_gut_rating
+    average_rating
+    average_rating_same_professors
+    average_professor_rating
+    average_workload
+    average_workload_same_professors
+    course_id
+    evaluation_statistic {
+      enrolled
+      responses
     }
-    crn
+    last_enrollment
+    last_enrollment_same_professors
   }
 }
 
 # Query for publicly available catalog data
 query catalogBySeason($season: String!) {
-  listings(where: { season_code: { _eq: $season } }) {
-    course {
-      areas
-      classnotes
-      colsem
-      course_flags {
-        flag {
-          flag_text
-        }
+  courses(where: { season_code: { _eq: $season } }) {
+    areas
+    classnotes
+    colsem
+    course_flags {
+      flag {
+        flag_text
       }
-      course_professors {
-        professor {
-          professor_id
-          name
-        }
-      }
-      credits
-      description
-      extra_info
-      final_exam
-      fysem
-      last_offered_course_id
-      listings {
-        crn
-        course_code
-      }
-      regnotes
-      requirements
-      rp_attr
-      same_course_and_profs_id
-      same_course_id
-      skills
-      syllabus_url
-      sysem
-      course_meetings {
-        days_of_week
-        start_time
-        end_time
-        location {
-          room
-          building {
-            code
-          }
-        }
-      }
-      title
     }
-    course_code
-    crn
-    listing_id
-    number
-    school
+    course_id
+    course_professors {
+      professor {
+        professor_id
+        name
+      }
+    }
+    credits
+    description
+    extra_info
+    final_exam
+    fysem
+    last_offered_course_id
+    listings {
+      course_code
+      crn
+      number
+      school
+      subject
+    }
+    regnotes
+    requirements
+    rp_attr
+    same_course_and_profs_id
+    same_course_id
     season_code
     section
-    subject
+    skills
+    syllabus_url
+    sysem
+    course_meetings {
+      days_of_week
+      start_time
+      end_time
+      location {
+        room
+        building {
+          code
+        }
+      }
+    }
+    title
   }
 }
 

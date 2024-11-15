@@ -8,7 +8,7 @@ import React, {
 import { useSearchParams } from 'react-router-dom';
 import { createSessionStorageSlot } from './browserStorage';
 import Spinner from '../components/Spinner';
-import type { Listings } from '../generated/graphql-types';
+import type { Crn, Season } from '../queries/graphql-types';
 
 const hasAutoReloaded = createSessionStorageSlot<boolean>('autoReloaded');
 
@@ -138,17 +138,17 @@ export const scrollToTop: MouseEventHandler = (event) => {
 // Please use this instead of creating a new search param. This will preserve
 // existing params.
 export function createCourseModalLink(
-  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
+  listing: { crn: Crn; course: { season_code: Season } } | undefined,
   searchParams: URLSearchParams,
 ) {
   const newSearch = new URLSearchParams(searchParams);
   if (!listing) return `?${searchParams.toString()}`;
-  newSearch.set('course-modal', `${listing.season_code}-${listing.crn}`);
+  newSearch.set('course-modal', `${listing.course.season_code}-${listing.crn}`);
   return `?${newSearch.toString()}`;
 }
 
 export function useCourseModalLink(
-  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
+  listing: { crn: Crn; course: { season_code: Season } } | undefined,
 ) {
   const [searchParams] = useSearchParams();
   return createCourseModalLink(listing, searchParams);

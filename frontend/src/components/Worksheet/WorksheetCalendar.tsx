@@ -57,7 +57,7 @@ function WorksheetCalendar() {
         setSearchParams((prev) => {
           prev.set(
             'course-modal',
-            `${event.listing.season_code}-${event.listing.crn}`,
+            `${event.listing.course.season_code}-${event.listing.crn}`,
           );
           return prev;
         });

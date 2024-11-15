@@ -114,14 +114,18 @@ function App() {
         // Don't remove this wrapper.
         id={13}
       >
-        Happy birthday to our GOAT co-lead Sida Chen!!{' '}
+        We want to hear from you. How can we make CourseTable better?{' '}
         <a
-          href="https://mail.google.com/mail/?view=cm&fs=1&to=sida.chen@yale.edu"
+          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
           target="_blank"
           rel="noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          }}
         >
-          Send him a nice email today.{' '}
+          Fill out this quick survey!
         </a>
       </Notice>
       <Navbar />
