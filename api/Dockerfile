@@ -25,6 +25,8 @@ COPY tools/ ./tools/
 COPY tsconfig.json .prettierrc.json ./
 
 ARG HOT_RELOAD
+ARG GRAPHQL_ENDPOINT
+ARG HASURA_GRAPHQL_ADMIN_SECRET
 RUN if [ "$HOT_RELOAD" = "false" ]; \
   then cd api && npm run codegen; \
   fi
