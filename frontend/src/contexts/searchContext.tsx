@@ -400,12 +400,7 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(
-                listing.course.season_code,
-                listing.crn,
-                worksheetNumber,
-                user.worksheets,
-              ) &&
+              !isInWorksheet(listing, worksheetNumber, user.worksheets) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
@@ -550,12 +545,7 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(
-            listing.course.season_code,
-            listing.crn,
-            worksheetNumber,
-            user.worksheets,
-          ) &&
+          !isInWorksheet(listing, worksheetNumber, user.worksheets) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;

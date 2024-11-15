@@ -85,14 +85,8 @@ function ResultsItem({
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () =>
-      isInWorksheet(
-        listing.course.season_code,
-        listing.crn,
-        worksheetNumber,
-        user.worksheets,
-      ),
-    [listing.crn, listing.course.season_code, worksheetNumber, user.worksheets],
+    () => isInWorksheet(listing, worksheetNumber, user.worksheets),
+    [listing, worksheetNumber, user.worksheets],
   );
 
   return (

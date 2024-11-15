@@ -106,19 +106,8 @@ function WorksheetToggleButton({
   const inWorksheet = useMemo(
     () =>
       inWorksheetProp ??
-      isInWorksheet(
-        listing.course.season_code,
-        listing.crn,
-        selectedWorksheet,
-        user.worksheets,
-      ),
-    [
-      inWorksheetProp,
-      listing.course.season_code,
-      listing.crn,
-      selectedWorksheet,
-      user.worksheets,
-    ],
+      isInWorksheet(listing, selectedWorksheet, user.worksheets),
+    [inWorksheetProp, listing, selectedWorksheet, user.worksheets],
   );
 
   const isLgDesktop = useStore((state) => state.isLgDesktop);

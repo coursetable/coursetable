@@ -83,14 +83,7 @@ function ResultsGridItem({
   const { worksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
-    () =>
-      listing &&
-      isInWorksheet(
-        listing.course.season_code,
-        listing.crn,
-        worksheetNumber,
-        user.worksheets,
-      ),
+    () => listing && isInWorksheet(listing, worksheetNumber, user.worksheets),
     [listing, worksheetNumber, user.worksheets],
   );
 
