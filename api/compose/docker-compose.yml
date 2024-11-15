@@ -3,9 +3,6 @@ services:
     build:
       context: ../../
       dockerfile: ./api/Dockerfile
-      args:
-        GRAPHQL_ENDPOINT: http://host.docker.internal:8085/v1/graphql
-        HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET?admin_secret}
     image: coursetable/api:latest
     container_name: ${EXPRESS_HOST?express}
     environment:

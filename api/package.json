@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prestart": "npm run codegen",
     "start": "npm run codegen:format && tsx watch src/server.ts",
     "start:prod": "tsx src/server.ts",
     "db:push": "drizzle-kit push:pg",
