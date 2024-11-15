@@ -1,4 +1,4 @@
-import {
+import type {
   CourseWithMetadata,
   FlatWsMetadata,
   SeasonMappedWorksheet,
@@ -47,8 +47,8 @@ function flatWsMetadataToMapping(wsMetadata: FlatWsMetadata[]): {
     [netId: string]: SeasonMappedWsMetadata;
   } = {};
   wsMetadata.forEach(({ netId, season, worksheetNumber, worksheetName }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     mappedWsMetadata[netId] ??= {};
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     mappedWsMetadata[netId][season] ??= {};
     mappedWsMetadata[netId][season][worksheetNumber] ??= { worksheetName };
   });

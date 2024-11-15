@@ -214,7 +214,7 @@ export async function updateWorksheetMetadata(
       }
   ),
 ): Promise<boolean> {
-  return fetchAPI('/user/updateWorksheetMetadata', {
+  return await fetchAPI('/user/updateWorksheetMetadata', {
     body,
     breadcrumb: {
       category: 'worksheet',
