@@ -1,5 +1,8 @@
 services:
   api:
+    build:
+      args:
+        HOT_RELOAD: ${HOT_RELOAD:-'true'}
     ports:
       - '${SECURE_PORT:-3001}:${SECURE_PORT:-3001}'
       - 6499:6499

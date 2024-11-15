@@ -76,7 +76,7 @@ export const { FERRY_SECRET } = process.env;
 export const STATIC_FILE_DIR = './static';
 export const SITEMAP_DIR = `${STATIC_FILE_DIR}/sitemaps`;
 // Latest number of seasons to refresh the static files for
-export const NUM_SEASONS = 4;
+export const NUM_SEASONS = isDev ? 0 : 4;
 
 export const SENTRY_DSN = getEnv('SENTRY_DSN');
 
