@@ -39,3 +39,77 @@ export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
   const last = Math.max(...worksheetNumbers);
   return last + 1;
 }
+
+type Course = {
+  crn: number;
+  color: string;
+  hidden: boolean | null;
+};
+
+type CourseWithMetadata = {
+  season: number;
+  worksheetNumber: number;
+} & Course;
+
+type FlatWsMetadata = {
+  season: number;
+  worksheetNumber: number;
+  worksheetName: string;
+};
+
+type SeasonMappedWsMetadata = {
+  [season: string]: { [worksheetNumber: number]: { worksheetName: string } };
+};
+
+type SeasonMappedWorksheet = {
+  [season: string]: {
+    [worksheetNumber: number]: {
+      worksheetName: string;
+      courses: Course[];
+    };
+  };
+};
+
+export function flatWsMetadataToMapping(
+  allWorksheetMetadata: FlatWsMetadata[],
+): SeasonMappedWsMetadata {
+  const worksheetMap: SeasonMappedWsMetadata = {};
+
+  allWorksheetMetadata.forEach(({ season, worksheetNumber, worksheetName }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    worksheetMap[season] ??= {};
+    worksheetMap[season][worksheetNumber] ??= { worksheetName };
+  });
+
+  return worksheetMap;
+}
+
+export function constructWsWithMetadata(
+  worksheets: CourseWithMetadata[],
+  mappedWsMetadata: SeasonMappedWsMetadata,
+): SeasonMappedWorksheet | undefined {
+  const mappedWorksheets: SeasonMappedWorksheet = {};
+
+  for (const worksheet of worksheets) {
+    const { season, worksheetNumber, crn, color, hidden } =
+      worksheet;
+
+    if (!mappedWsMetadata[season]?.[worksheetNumber]) {
+      return undefined;
+    }
+
+    mappedWorksheets[season] ??= {};
+    mappedWorksheets[season][worksheetNumber] ??= {
+      worksheetName: mappedWsMetadata[season][worksheetNumber].worksheetName,
+      courses: [],
+    };
+
+    mappedWorksheets[season][worksheetNumber].courses.push({
+      crn,
+      color,
+      hidden,
+    });
+  }
+
+  return mappedWorksheets;
+}

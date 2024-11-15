@@ -4,8 +4,9 @@ import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
 import {
+  constructWsWithMetadata,
+  flatWsMetadataToMapping,
   getNextAvailableWsNumber,
-  worksheetCoursesToWorksheets,
 } from './user.utils.js';
 
 import {
@@ -242,12 +243,28 @@ export const getUserWorksheet = async (
     .from(worksheetCourses)
     .where(eq(worksheetCourses.netId, netId));
 
+  const allWorksheetMetadata = await db
+    .select({
+      season: worksheetMetadata.season,
+      worksheetNumber: worksheetMetadata.worksheetNumber,
+      worksheetName: worksheetMetadata.worksheetName,
+    })
+    .from(worksheetMetadata)
+    .where(eq(worksheetMetadata.netId, netId));
+
+  const mappedWsMetadata = flatWsMetadataToMapping(allWorksheetMetadata);
+  const wsWithMetadata = constructWsWithMetadata(worksheets, mappedWsMetadata);
+  if(!wsWithMetadata) {
+    res.status(400).json({ error: 'WORKSHEET_METADATA_NOT_FOUND' });
+    return;
+  }
+
   res.json({
     netId,
     evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
-    data: worksheetCoursesToWorksheets(worksheets)[netId] ?? {},
+    data: wsWithMetadata,
   });
 };
 
@@ -366,41 +383,4 @@ export const updateWorksheetMetadata = async (
   }
 
   res.sendStatus(200);
-};
-
-export const getUserWorksheetMetadata = async (
-  req: express.Request,
-  res: express.Response,
-): Promise<void> => {
-  winston.info(`Fetching worksheet names for user`);
-
-  const { netId } = req.user!;
-
-  const allWorksheetMetadata = await db
-    .select({
-      season: worksheetMetadata.season,
-      worksheetNumber: worksheetMetadata.worksheetNumber,
-      worksheetName: worksheetMetadata.worksheetName,
-    })
-    .from(worksheetMetadata)
-    .where(eq(worksheetMetadata.netId, netId));
-
-  winston.info(
-    `Retrieved ${allWorksheetMetadata.length} worksheets for user ${netId}`,
-  );
-
-  const worksheetMap: {
-    [season: string]: { [worksheetNumber: number]: { worksheetName: string } };
-  } = {};
-
-  allWorksheetMetadata.forEach(({ season, worksheetNumber, worksheetName }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    worksheetMap[season] ??= {};
-    worksheetMap[season][worksheetNumber] ??= { worksheetName };
-  });
-
-  res.json({
-    netId,
-    worksheets: worksheetMap,
-  });
 };

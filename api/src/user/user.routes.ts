@@ -5,7 +5,6 @@ import {
   updateWorksheetCourses,
   getUserWorksheet,
   updateWorksheetMetadata,
-  getUserWorksheetMetadata,
 } from './user.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
@@ -19,9 +18,5 @@ export default (app: express.Express): void => {
   app.post(
     '/api/user/updateWorksheetMetadata',
     asyncHandler(updateWorksheetMetadata),
-  );
-  app.get(
-    '/api/user/worksheetMetadata',
-    asyncHandler(getUserWorksheetMetadata),
   );
 };

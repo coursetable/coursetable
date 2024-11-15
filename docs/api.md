@@ -372,15 +372,24 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
     ```ts
     type Data = {
-      [season: Season]: {
+      [season: string]: {
         [worksheetNumber: number]: {
-          crn: Crn;
-          color: string;
-          hidden: boolean | null;
-        }[];
+          worksheetName: string;
+          courses: {
+            crn: number;
+            color: string;
+            hidden: boolean | null;
+          }[];
+        };
       };
     };
     ```
+
+**Status: 400**
+
+- When worksheet metadata doesn't exist for a particular course
+- Body:
+  - `error`: `"WORKSHEET_METADATA_NOT_FOUND"`
 
 ### `POST` `/api/user/updateWorksheetMetadata`
 
@@ -407,35 +416,13 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 **Status: 200**
 
 - If `action` == `"add"`:
-  - returns { worksheetNumber: number }
+  - returns `{ worksheetNumber: number }`
 
 **Status: 400**
 
 - When the request body is invalid
 - Body:
   - `error`: `"INVALID_REQUEST" | "WORKSHEET_NOT_FOUND"`
-
-### `GET` `/api/user/worksheetMetadata`
-
-#### Request
-
-- Needs credentials
-
-#### Response
-
-**Status: 200**
-
-- Body:
-
-  - `netId`: `NetId`
-  - `worksheets`:
-    ```ts
-    [season: Season]: {
-      [worksheetNumber: number]: {
-        worksheetName: string
-      };
-    };
-    ```
 
 ## Health check
 
