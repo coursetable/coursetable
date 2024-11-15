@@ -131,6 +131,7 @@ export default defineConfig({
       injectRegister: 'auto',
       manifest: {
         name: 'CourseTable',
+        short_name: 'CourseTable',
         start_url: '/',
         icons: [
           {
