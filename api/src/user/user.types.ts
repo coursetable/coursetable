@@ -7,9 +7,11 @@ export type Course = {
 export type CourseWithMetadata = {
   season: number;
   worksheetNumber: number;
+  netId: string;
 } & Course;
 
 export type FlatWsMetadata = {
+  netId: string;
   season: number;
   worksheetNumber: number;
   worksheetName: string;

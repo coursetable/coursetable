@@ -6,6 +6,7 @@ import {
   studentFriendRequests,
   studentFriends,
   worksheetCourses,
+  worksheetMetadata,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
@@ -264,7 +265,19 @@ export const getFriendsWorksheets = async (
         .from(worksheetCourses)
         .where(inArray(worksheetCourses.netId, friendNetIds));
 
-      const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
+      winston.info('Getting worksheet metadata of friends');
+      const friendWsMetadata = await tx
+        .select()
+        .from(worksheetMetadata)
+        .where(inArray(worksheetMetadata.netId, friendNetIds));
+
+      const friendWorksheetMap = worksheetCoursesToWorksheets(
+        friendWorksheets,
+        friendWsMetadata,
+      );
+      if (!friendWorksheetMap) {
+        return [undefined, undefined, undefined];
+      }
 
       winston.info('Getting info of friends');
 
@@ -281,6 +294,11 @@ export const getFriendsWorksheets = async (
       return [friendInfos, friendWorksheetMap, friendNetIds];
     },
   );
+
+  if (!friendInfos || !friendWorksheetMap || !friendNetIds) {
+    res.status(400).json({ error: 'WORKSHEET_METADATA_NOT_FOUND' });
+    return;
+  }
 
   const friendInfoMap = Object.fromEntries(
     friendInfos.map((friendInfo) => [

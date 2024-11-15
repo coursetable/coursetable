@@ -286,15 +286,24 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
         worksheets: {
           [season: Season]: {
             [worksheetNumber: number]: {
-              crn: Crn;
-              color: string;
-              hidden: boolean | null;
-            }[];
+              worksheetName: string;
+              courses: {
+                crn: number;
+                color: string;
+                hidden: boolean | null;
+              }[];
+            };
           };
         };
       };
     };
     ```
+
+**Status: 400**
+
+- When worksheet metadata doesn't exist for a particular course
+- Body:
+  - `error`: `"WORKSHEET_METADATA_NOT_FOUND"`
 
 ### `GET` `/api/friends/names`
 

@@ -4,9 +4,8 @@ import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
 import {
-  constructWsWithMetadata,
-  flatWsMetadataToMapping,
   getNextAvailableWsNumber,
+  worksheetCoursesToWorksheets,
 } from './user.utils.js';
 
 import {
@@ -245,6 +244,7 @@ export const getUserWorksheet = async (
 
   const allWorksheetMetadata = await db
     .select({
+      netId: worksheetMetadata.netId,
       season: worksheetMetadata.season,
       worksheetNumber: worksheetMetadata.worksheetNumber,
       worksheetName: worksheetMetadata.worksheetName,
@@ -252,9 +252,11 @@ export const getUserWorksheet = async (
     .from(worksheetMetadata)
     .where(eq(worksheetMetadata.netId, netId));
 
-  const mappedWsMetadata = flatWsMetadataToMapping(allWorksheetMetadata);
-  const wsWithMetadata = constructWsWithMetadata(worksheets, mappedWsMetadata);
-  if (!wsWithMetadata) {
+  const allWorksheets = worksheetCoursesToWorksheets(
+    worksheets,
+    allWorksheetMetadata,
+  );
+  if (!allWorksheets) {
     res.status(400).json({ error: 'WORKSHEET_METADATA_NOT_FOUND' });
     return;
   }
@@ -264,7 +266,7 @@ export const getUserWorksheet = async (
     evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
-    data: wsWithMetadata,
+    data: allWorksheets[netId],
   });
 };
 

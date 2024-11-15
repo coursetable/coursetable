@@ -419,13 +419,16 @@ export async function verifyChallenge(body: {
 
 const userWorksheetsSchema = z.record(
   z.record(
-    z.array(
-      z.object({
-        crn: crnSchema,
-        color: z.string(),
-        hidden: z.boolean().nullable(),
-      }),
-    ),
+    z.object({
+      worksheetName: z.string(),
+      courses: z.array(
+        z.object({
+          crn: crnSchema,
+          color: z.string(),
+          hidden: z.boolean().nullable(),
+        }),
+      ),
+    }),
   ),
 );
 
@@ -466,7 +469,7 @@ export async function fetchUserWorksheets() {
   for (const seasonKey in res.data) {
     const season = seasonKey as Season;
     for (const num in res.data[season]) {
-      for (const course of res.data[season][num]!) {
+      for (const course of res.data[season][num]!.courses) {
         if (course.hidden === null) {
           course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
           actions.push({
@@ -496,34 +499,6 @@ export async function fetchUserWorksheets() {
     // first device that logged in, and assume that one is the primary device.
     hiddenCoursesStorage.remove();
   }
-  return res;
-}
-
-const worksheetSchema = z.object({
-  worksheetName: z.string(),
-});
-
-const worksheetsSchema = z.record(
-  z.string(), // season
-  z.record(
-    z.string(), // worksheetNumber keys
-    worksheetSchema,
-  ),
-);
-
-export async function fetchUserWorksheetMetadata() {
-  const res = await fetchAPI('/user/worksheetMetadata', {
-    breadcrumb: {
-      category: 'worksheet',
-      message: 'Fetching user worksheet names',
-    },
-    schema: z.object({
-      netId: netIdSchema,
-      worksheets: worksheetsSchema,
-      // { [season]: { [worksheetNumber]: { worksheetName } } }
-    }),
-  });
-  if (!res) return undefined;
   return res;
 }
 
