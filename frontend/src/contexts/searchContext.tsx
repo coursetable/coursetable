@@ -158,8 +158,7 @@ export type IntersectableFilters =
   | 'selectSubjects'
   | 'selectSkillsAreas'
   | 'selectDays'
-  // TODO: cross-listings should include school info
-  // | 'selectSchools'
+  | 'selectSchools'
   | 'selectCourseInfoAttributes';
 
 export type Filters = {
@@ -666,8 +665,13 @@ export function SearchProvider({
 
         if (
           selectSchools.value.length !== 0 &&
-          listing.school !== null &&
-          !selectSchools.value.some((option) => option.value === listing.school)
+          !applyIntersectableFilter(
+            selectSchools.value.map((option) => option.value),
+            listing.course.listings
+              .map((l) => l.school)
+              .filter((x) => x !== null),
+            intersectingFilters.value.includes('selectSchools'),
+          )
         )
           return false;
 

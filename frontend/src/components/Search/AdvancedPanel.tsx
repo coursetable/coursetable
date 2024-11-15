@@ -318,11 +318,14 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
             }
           />
         </React.Fragment>
-        <Select
+        <IntersectableSelect
           id={`${formLabelId}-school`}
           options={schoolsOptions}
           handle="selectSchools"
           placeholder="All Schools"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
+          }
         />
         <Select
           id={`${formLabelId}-credit`}

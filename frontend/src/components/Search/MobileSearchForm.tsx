@@ -228,10 +228,13 @@ export default function MobileSearchForm() {
             `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
           }
         />
-        <Select
+        <IntersectableSelect
           options={schoolsOptions}
           handle="selectSchools"
           placeholder="All Schools"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
+          }
         />
         <hr />
         <div className={styles.sliders} key={resetKey.current}>
