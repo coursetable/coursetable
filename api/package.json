@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "prestart": "npm run codegen",
-    "start": "npm run codegen:format && tsx watch src/server.ts",
-    "start:prod": "tsx src/server.ts",
+    "start": "npm run codegen && npm run codegen:format && tsx watch src/server.ts",
+    "start:prod": "npm run codegen && tsx src/server.ts",
     "db:push": "drizzle-kit push:pg",
     "codegen": "graphql-codegen --config graphql-codegen.ts && tsx ../tools/fix-gql-generated-code.mts",
     "codegen:format": "prettier -w src/**/*.queries.ts src/graphql-types.ts"
