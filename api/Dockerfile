@@ -26,7 +26,7 @@ COPY tsconfig.json .prettierrc.json ./
 
 ARG HOT_RELOAD
 RUN if [ "$HOT_RELOAD" = "false" ]; \
-  then npm run codegen; \
+  then cd api && npm run codegen; \
   fi
 
 ENTRYPOINT ["./api/entry.sh"]
