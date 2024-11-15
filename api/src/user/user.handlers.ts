@@ -254,7 +254,7 @@ export const getUserWorksheet = async (
 
   const mappedWsMetadata = flatWsMetadataToMapping(allWorksheetMetadata);
   const wsWithMetadata = constructWsWithMetadata(worksheets, mappedWsMetadata);
-  if(!wsWithMetadata) {
+  if (!wsWithMetadata) {
     res.status(400).json({ error: 'WORKSHEET_METADATA_NOT_FOUND' });
     return;
   }

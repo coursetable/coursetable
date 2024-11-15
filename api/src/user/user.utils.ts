@@ -91,13 +91,13 @@ export function constructWsWithMetadata(
   const mappedWorksheets: SeasonMappedWorksheet = {};
 
   for (const worksheet of worksheets) {
-    const { season, worksheetNumber, crn, color, hidden } =
-      worksheet;
+    const { season, worksheetNumber, crn, color, hidden } = worksheet;
 
     if (!mappedWsMetadata[season]?.[worksheetNumber]) {
       return undefined;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     mappedWorksheets[season] ??= {};
     mappedWorksheets[season][worksheetNumber] ??= {
       worksheetName: mappedWsMetadata[season][worksheetNumber].worksheetName,
