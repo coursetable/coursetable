@@ -30,7 +30,7 @@ export function isInWorksheet(
   return (
     seasonCode in worksheet &&
     worksheetNumber in worksheet[seasonCode]! &&
-    worksheet[seasonCode]![worksheetNumber]!.some(
+    worksheet[seasonCode]![worksheetNumber]!.courses.some(
       (course) => course.crn === crn,
     )
   );
@@ -149,7 +149,7 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   for (const [netId, friend] of Object.entries(friends)) {
     Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
       Object.values(worksheets).forEach((w) =>
-        w.forEach((course) => {
+        w.courses.forEach((course) => {
           (numFriends[`${seasonCode as Season}${course.crn}`] ??=
             new Set()).add(friend.name ?? netId);
         }),

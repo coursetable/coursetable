@@ -214,7 +214,7 @@ export function useWorksheetInfo(
       const seasonWorksheets = worksheets[seasonCode]!;
       const worksheet = seasonWorksheets[worksheetNumber];
       if (!worksheet) continue;
-      for (const { crn, color, hidden } of worksheet) {
+      for (const { crn, color, hidden } of worksheet.courses) {
         const listing = courses[seasonCode]!.data.get(crn);
         if (listing) {
           dataReturn.push({
