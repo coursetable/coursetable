@@ -239,7 +239,23 @@ export function createFilterLink<K extends keyof Filters>(
 ): string {
   const params = new URLSearchParams(window.location.search);
 
-  if (value === defaultValue) return `?${params.toString()}`;
+  const isEqual = (a: Filters[K], b: Filters[K]): boolean => {
+    if (Array.isArray(a) && Array.isArray(b)) {
+      return (
+        a.length === b.length && a.every((item, index) => item === b[index])
+      );
+    }
+
+    if (typeof a === 'object' && typeof b === 'object')
+      return JSON.stringify(a) === JSON.stringify(b);
+
+    return a === b;
+  };
+
+  if (isEqual(value, defaultValue)) {
+    params.delete(key.toString());
+    return `?${params.toString()}`;
+  }
 
   if (Array.isArray(value)) {
     const values = value.map((v) => {
