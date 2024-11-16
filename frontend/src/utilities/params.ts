@@ -237,28 +237,26 @@ function handleSubjectsFilter<K extends keyof Filters>(
   );
 }
 
+const areEqualFilters = (a: unknown, b: unknown): boolean => {
+  if (
+    (typeof a === 'object' && typeof b === 'object') ||
+    (Array.isArray(a) && Array.isArray(b))
+  )
+    return JSON.stringify(a) === JSON.stringify(b);
+
+  return a === b;
+};
 export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
   defaultValue: Filters[K],
-  searchParams: URLSearchParams,
 ): string {
-  const newSearch = new URLSearchParams(searchParams);
-  const isEqual = (a: Filters[K], b: Filters[K]): boolean => {
-    if (Array.isArray(a) && Array.isArray(b)) {
-      return (
-        a.length === b.length && a.every((item, index) => item === b[index])
-      );
-    }
+  // TODO: use react-router
+  const newSearch = new URLSearchParams(window.location.search);
+  console.log(value, defaultValue);
 
-    if (typeof a === 'object' && typeof b === 'object')
-      return JSON.stringify(a) === JSON.stringify(b);
-
-    return a === b;
-  };
-
-  if (isEqual(value, defaultValue)) {
-    newSearch.delete(key.toString());
+  if (areEqualFilters(value, defaultValue)) {
+    newSearch.delete(key);
     return `?${newSearch.toString()}`;
   }
 
@@ -268,10 +266,10 @@ export function createFilterLink<K extends keyof Filters>(
       return v;
     });
 
-    newSearch.set(key.toString(), encodeURIComponent(values.join(',')));
+    newSearch.set(key, encodeURIComponent(values.join(',')));
   } else {
     newSearch.set(
-      key.toString(),
+      key,
       encodeURIComponent(
         typeof value === 'object' ? JSON.stringify(value) : value.toString(),
       ),

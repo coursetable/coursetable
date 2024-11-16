@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
@@ -234,7 +233,11 @@ export type FilterHandle<K extends keyof Filters> = ReturnType<
 >;
 
 function useFilterState<K extends keyof Filters>(key: K) {
-  const [searchParams] = useSearchParams();
+  // TODO: can't use react-router because this is outside the router
+  const searchParams = useMemo(
+    () => new URLSearchParams(window.location.search),
+    [],
+  );
   const [value, setValue] = useSessionStorageState(key, () =>
     getFilterFromParams(
       key,
@@ -242,13 +245,17 @@ function useFilterState<K extends keyof Filters>(key: K) {
       defaultFilters[key],
     ),
   );
-  const navigate = useNavigate();
   const setValueWithSync = useCallback(
     (v: Filters[K]) => {
       setValue(v);
-      navigate(createFilterLink(key, v, defaultFilters[key], searchParams));
+      // TODO: can't use react-router because this is outside the router
+      window.history.pushState(
+        null,
+        '',
+        createFilterLink(key, v, defaultFilters[key]),
+      );
     },
-    [setValue, key, navigate, searchParams],
+    [setValue, key],
   );
 
   return useMemo(

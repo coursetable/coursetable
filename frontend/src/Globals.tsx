@@ -17,6 +17,7 @@ import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
+import { SearchProvider } from './contexts/searchContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
 
 import './index.css';
@@ -66,9 +67,11 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
             {/* SearchProvider must be inside WorksheetProvider because the
                   former depends on the currently viewed worksheet */}
             <WorksheetProvider>
-              <MDXProvider components={components}>
-                <div id="base">{children}</div>
-              </MDXProvider>
+              <SearchProvider>
+                <MDXProvider components={components}>
+                  <div id="base">{children}</div>
+                </MDXProvider>
+              </SearchProvider>
             </WorksheetProvider>
             <ToastContainer toastClassName="rounded" />
           </FerryProvider>
