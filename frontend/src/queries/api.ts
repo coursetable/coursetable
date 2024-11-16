@@ -515,9 +515,9 @@ const worksheetSchema = z.object({
 });
 
 const worksheetsSchema = z.record(
-  z.string(), // season
+  z.string(), // Season
   z.record(
-    z.string(), // worksheetNumber keys
+    z.string(), // WorksheetNumber keys
     worksheetSchema,
   ),
 );
