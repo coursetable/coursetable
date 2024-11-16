@@ -1,7 +1,7 @@
 import { Row, Col } from 'react-bootstrap';
 
 import OverviewInfo, { CourseInfo } from './OverviewInfo';
-import OverviewRatings from './OverviewRatings';
+import OverviewRatings, { normalizeRelatedListings } from './OverviewRatings';
 
 import { useSameCourseOrProfOfferingsQuery } from '../../../../queries/graphql-queries';
 import { useStore } from '../../../../store';
@@ -10,6 +10,7 @@ import type {
   ModalNavigationFunction,
   CourseModalHeaderData,
 } from '../../CourseModal';
+import { useMemo } from 'react';
 
 function OverviewPanel({
   onNavigation,
@@ -73,7 +74,11 @@ function OverviewPanel({
     <Row className="m-auto">
       <Col md={7} className="px-0 mt-0 mb-10">
         {professorView ? (
-          <p>This is where the graphs will go.</p>
+          <OverviewRatings
+            onNavigation={onNavigation}
+            data={data}
+            professorView={professorView}
+          />
         ) : (
           <OverviewInfo
             onNavigation={onNavigation}
@@ -82,13 +87,15 @@ function OverviewPanel({
           />
         )}
       </Col>
-      <Col md={5} className="px-0 my-0">
-        <OverviewRatings
-          onNavigation={onNavigation}
-          data={data}
-          professorView={professorView}
-        />
-      </Col>
+      {!professorView && (
+        <Col md={5} className="px-0 my-0">
+          <OverviewRatings
+            onNavigation={onNavigation}
+            data={data}
+            professorView={professorView}
+          />
+        </Col>
+      )}
     </Row>
   );
 }
