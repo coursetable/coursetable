@@ -1,19 +1,23 @@
-import type {
-  BooleanFilters,
-  FilterHandle,
-  FilterList,
-  Filters,
-  NumericFilters,
-} from '../contexts/searchContext';
+import {
+  courseInfoAttributes,
+  credits,
+  schools,
+  skillsAreas,
+  subjects,
+  weekdays,
+} from './constants';
+import { toSeasonString } from './course';
+import { seasons } from '../contexts/ferryContext';
+import type { Filters } from '../contexts/searchContext';
 
 export function paramFilter<K extends keyof Filters>(
   key: K,
   fallback: Filters[K],
 ): Filters[K] {
   const params = new URLSearchParams(window.location.search);
-  const value = params.get(key.toString());
 
-  if (value === null) return fallback;
+  const value = decodeURIComponent(params.get(key.toString()) ?? '');
+  if (value === '') return fallback;
 
   switch (key) {
     case 'enrollBounds':
@@ -21,155 +25,237 @@ export function paramFilter<K extends keyof Filters>(
     case 'overallBounds':
     case 'professorBounds':
     case 'timeBounds':
-    case 'workloadBounds': {
-      const parts = value.split(',');
-      if (parts.length !== 2) return fallback;
+    case 'workloadBounds':
+      return handleBoundsFilter(value, fallback);
 
-      return [
-        parseFloat(parts[0] ?? ''),
-        parseFloat(parts[1] ?? ''),
-      ] as Filters[K];
-    }
     case 'enableQuist':
     case 'hideCancelled':
     case 'hideConflicting':
     case 'hideDiscussionSections':
     case 'hideFirstYearSeminars':
     case 'hideGraduateCourses':
-    case 'searchDescription': {
-      return (value === 'true') as Filters[K];
-    }
+    case 'searchDescription':
+      return handleBooleanFilter(value, fallback);
+
     case 'searchText':
-      console.log(key);
-      console.log(fallback);
-      break;
-    case 'selectCourseInfoAttributes':
-    case 'selectCredits':
-    case 'selectDays':
-    case 'selectSchools':
-    case 'selectSeasons':
-    case 'selectSkillsAreas':
+      return value as Filters[K];
+
     case 'selectSortBy':
-    case 'selectSubjects': {
-      console.log(fallback);
       break;
-    }
+
+    case 'selectCourseInfoAttributes':
+      return handleCourseAttributesFilter(value, fallback);
+
+    case 'selectCredits':
+      return handleCreditsFilter(value, fallback);
+
+    case 'selectDays':
+      return handleDaysFilter(value, fallback);
+
+    case 'selectSchools':
+      return handleSchoolsFilter(value, fallback);
+
+    case 'selectSeasons':
+      return handleSeasonsFilter(value, fallback);
+
+    case 'selectSkillsAreas':
+      return handleSkillsAreasFilter(value, fallback);
+
+    case 'selectSubjects':
+      return handleSubjectsFilter(value, fallback);
+
     case 'sortOrder':
-      console.log(key);
-      console.log(fallback);
       break;
   }
 
   return fallback;
 }
 
-export function buildParams(filters: FilterList) {
-  const params = {};
-
-  buildNumericParam(params, 'enrollment', filters.enrollBounds);
-  buildBooleanParam(params, 'cancelled', filters.hideCancelled);
-  buildBooleanParam(params, 'conflicting', filters.hideConflicting);
-  buildBooleanParam(params, 'discussion', filters.hideDiscussionSections);
-  buildBooleanParam(params, 'fysem', filters.hideFirstYearSeminars);
-  buildBooleanParam(params, 'grad', filters.hideGraduateCourses);
-  buildNumericParam(params, 'number', filters.numBounds);
-  buildNumericParam(params, 'rating', filters.overallBounds);
-  buildNumericParam(params, 'professor-rating', filters.professorBounds);
-  // TODO: filters.searchDescription
-  // TODO: filters.searchText
-  // TODO: filters.selectCourseInfoAttributes
-  // TODO: filters.selectCredits
-  // TODO: filters.selectDays
-  // TODO: filters.selectCourseInfoAttributes
-  // TODO: filters.selectCredits
-  // TODO: filters.selectDays
-  // TODO: filters.selectSchools
-  // TODO: filters.selectSeasons
-  // TODO: filters.selectSkillsAreas
-  // TODO: filters.selectSortBy
-  // TODO: filters.selectSubjects
-  // TODO: filters.sortOrder
-  // TODO: filters.timeBounds
-  buildNumericParam(params, 'workload', filters.workloadBounds);
-
-  return params;
-}
-
-export function decodeParams(params: URLSearchParams) {
-  const filters = {};
-
-  decodeNumericParam(filters, 'workload', params.get('workload'));
-  decodeBooleanParam(filters, 'cancelled', params.get('hideCancelled'));
-  decodeBooleanParam(filters, 'conflicting', params.get('hideConflicting'));
-  decodeBooleanParam(
-    filters,
-    'discussion',
-    params.get('hideDiscussionSections'),
-  );
-  decodeBooleanParam(filters, 'fysem', params.get('hideFirstYearSeminars'));
-  decodeBooleanParam(filters, 'grad', params.get('hideGraduateCourses'));
-  decodeNumericParam(filters, 'number', params.get('numBounds'));
-  decodeNumericParam(filters, 'rating', params.get('overallBounds'));
-  decodeNumericParam(
-    filters,
-    'professor-rating',
-    params.get('professorBounds'),
-  );
-  decodeNumericParam(filters, 'workload', params.get('workloadBounds'));
-
-  return filters;
-}
-
-function buildBooleanParam(
-  params: { [key: string]: string },
-  field: string,
-  filter: FilterHandle<BooleanFilters>,
-) {
-  if (!filter.isDefault) params[field] = filter.value.toString();
-}
-
-function decodeBooleanParam(
-  filters: { [key: string]: boolean },
-  field: string,
-  value: string | null,
-) {
-  if (value === null) return;
-  if (value !== 'true' && value !== 'false') return;
-
-  filters[field] = Boolean(value);
-}
-
-function buildNumericParam(
-  params: { [key: string]: string },
-  field: string,
-  filter: FilterHandle<NumericFilters>,
-) {
-  if (!filter.isDefault) params[field] = filter.value.toString();
-}
-
-function decodeNumericParam(
-  filters: { [key: string]: [number, number] },
-  field: string,
-  value: string | null,
-) {
-  if (value === null) return;
-
+function handleBoundsFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+): Filters[K] {
   const parts = value.split(',');
-  if (parts.length !== 2 || parts[0] === undefined || parts[1] === undefined)
-    return;
+  if (parts.length !== 2) return fallback;
 
-  filters[field] = [parseFloat(parts[0]), parseFloat(parts[1])];
+  const [min, max] = parts.map(parseFloat);
+  if (min === undefined || max === undefined) return fallback;
+
+  return [min, max] as Filters[K];
+}
+
+function handleBooleanFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+): Filters[K] {
+  if (value === 'true') return true as Filters[K];
+  if (value === 'false') return false as Filters[K];
+
+  return fallback;
+}
+
+function handleGenericFilter<
+  K extends keyof Filters,
+  T,
+  V extends string | number,
+>(
+  value: string,
+  fallback: Filters[K],
+  parseComponents: (comp: string[]) => T[],
+  mapSelections: (parsedComponents: T[]) => { value: V; label: string }[],
+): Filters[K] {
+  const components = value.split(',');
+  const parsed = parseComponents(components);
+
+  if (parsed.length === 0) return fallback;
+
+  const selections = mapSelections(parsed);
+
+  return selections as unknown as Filters[K];
+}
+
+function handleCourseAttributesFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+) {
+  return handleGenericFilter(
+    value,
+    fallback,
+    (comp) =>
+      courseInfoAttributes.filter((attribute) => comp.includes(attribute)),
+    (parsed) =>
+      parsed.map((attribute) => ({
+        value: attribute,
+        label: attribute,
+      })),
+  );
+}
+
+function handleCreditsFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+) {
+  return handleGenericFilter(
+    value,
+    fallback,
+    (comp) => credits.filter((credit) => comp.includes(credit.toString())),
+    (parsed) =>
+      parsed.map((credit) => ({
+        value: credit,
+        label: credit.toString(),
+      })),
+  );
+}
+
+function handleDaysFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+) {
+  return handleGenericFilter(
+    value,
+    fallback,
+    (comp) =>
+      Object.entries(weekdays).filter(([, index]) =>
+        comp.includes(index.toString()),
+      ),
+    (parsed) =>
+      parsed.map(([day, index]) => ({
+        value: index,
+        label: day,
+      })),
+  );
+}
+
+function handleSchoolsFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+) {
+  return handleGenericFilter(
+    value,
+    fallback,
+    (comp) => Object.entries(schools).filter(([code]) => comp.includes(code)),
+    (parsed) =>
+      parsed.map(([code, name]) => ({
+        value: code,
+        label: name,
+      })),
+  );
+}
+
+function handleSeasonsFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+) {
+  return handleGenericFilter(
+    value,
+    fallback,
+    (comp) => seasons.filter((season) => comp.includes(season)),
+    (parsed) =>
+      parsed.map((season) => ({
+        value: season,
+        label: toSeasonString(season),
+      })),
+  );
+}
+
+function handleSkillsAreasFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+) {
+  return handleGenericFilter(
+    value,
+    fallback,
+    (comp) =>
+      Object.entries(skillsAreas).filter(([skill]) => comp.includes(skill)),
+    (parsed) =>
+      parsed.map(([lbl, { code }]) => ({
+        value: code!,
+        label: lbl,
+      })),
+  );
+}
+
+function handleSubjectsFilter<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+) {
+  return handleGenericFilter(
+    value,
+    fallback,
+    (comp) =>
+      Object.entries(subjects).filter(([subject]) => comp.includes(subject)),
+    (parsed) =>
+      parsed.map(([val, lbl]) => ({
+        value: val,
+        label: lbl,
+      })),
+  );
 }
 
 export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
   defaultValue: Filters[K],
-) {
+): string {
   const params = new URLSearchParams(window.location.search);
 
-  if (value === defaultValue) params.delete(key.toString());
-  else params.set(key, value.toString());
+  if (value === defaultValue) return `?${params.toString()}`;
+
+  if (Array.isArray(value)) {
+    const values = value.map((v) => {
+      if (typeof v === 'object' && 'value' in v) return v.value;
+      return v;
+    });
+
+    params.set(key.toString(), encodeURIComponent(values.join(',')));
+  } else {
+    params.set(
+      key.toString(),
+      encodeURIComponent(
+        typeof value === 'object' ? JSON.stringify(value) : value.toString(),
+      ),
+    );
+  }
 
   return `?${params.toString()}`;
 }
