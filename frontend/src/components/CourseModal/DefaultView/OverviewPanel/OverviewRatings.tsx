@@ -45,6 +45,7 @@ import {
   Legend,
   ChartOptions,
 } from 'chart.js';
+import dayjs from 'dayjs';
 
 // Register the ChartJS modules
 ChartJS.register(
@@ -304,9 +305,17 @@ function CustomChart({
 }: {
   data: Array<{ year: string; rating: number }>;
 }) {
-  // Extract the years and ratings for use in the chart
-  const years = data.map((d) => d.year);
-  const ratings = data.map((d) => d.rating);
+  // Format the dates and reverse the order for the X-axis
+  const formattedData = data
+    .map((d) => ({
+      ...d,
+      formattedYear: dayjs(d.year).format('YYYY'),
+    }))
+    .sort((a, b) => a.year.localeCompare(b.year));
+
+  // Extract the formatted years and ratings
+  const years = formattedData.map((d) => d.formattedYear);
+  const ratings = formattedData.map((d) => d.rating);
 
   // Set up the data and configuration for the chart
   const chartData = {
@@ -334,6 +343,7 @@ function CustomChart({
           display: true,
           text: 'Year',
         },
+        reverse: true, // Flip the X-axis so the most recent year is on the right
         ticks: {
           autoSkip: true,
           maxTicksLimit: 10, // Limit the number of ticks shown on the X-axis
@@ -359,6 +369,10 @@ function CustomChart({
       tooltip: {
         callbacks: {
           label: (context) => `Rating: ${context.raw}`,
+          title: (tooltipItems) => {
+            // Format the date in the tooltip
+            return `Year: ${tooltipItems[0]?.label}`;
+          },
         },
       },
     },
