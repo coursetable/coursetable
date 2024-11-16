@@ -305,7 +305,6 @@ function CustomChart({
 }: {
   data: Array<{ year: string; rating: number }>;
 }) {
-  // Format the dates and reverse the order for the X-axis
   const formattedData = data
     .map((d) => ({
       ...d,
@@ -343,7 +342,7 @@ function CustomChart({
           display: true,
           text: 'Year',
         },
-        reverse: true, // Flip the X-axis so the most recent year is on the right
+        reverse: false, // Flip the X-axis so the most recent year is on the right
         ticks: {
           autoSkip: true,
           maxTicksLimit: 10, // Limit the number of ticks shown on the X-axis
@@ -352,7 +351,7 @@ function CustomChart({
       y: {
         title: {
           display: true,
-          text: 'Rating',
+          text: 'Average Rating',
         },
         beginAtZero: true,
         max: 5, // Assuming the rating is on a scale from 0 to 5
@@ -363,7 +362,7 @@ function CustomChart({
     },
     plugins: {
       legend: {
-        display: true,
+        display: false,
         position: 'top', // Use one of the allowed string literals
       },
       tooltip: {
