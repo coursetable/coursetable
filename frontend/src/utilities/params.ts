@@ -205,12 +205,19 @@ function handleSkillsAreasFilter<K extends keyof Filters>(
   return handleGenericFilter(
     value,
     fallback,
-    (comp) =>
-      Object.entries(skillsAreas).filter(([skill]) => comp.includes(skill)),
+    (components) => {
+      const allSkillsAreas = {
+        ...skillsAreas.areas,
+        ...skillsAreas.skills,
+      };
+      return Object.entries(allSkillsAreas).filter(([code]) =>
+        components.includes(code),
+      );
+    },
     (parsed) =>
-      parsed.map(([lbl, { code }]) => ({
-        value: code!,
-        label: lbl,
+      parsed.map(([code, name]) => ({
+        value: code,
+        label: `${code} - ${name}`,
       })),
   );
 }
