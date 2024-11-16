@@ -368,7 +368,10 @@ function CustomChart({
       },
       tooltip: {
         callbacks: {
-          label: (context) => `Rating: ${context.raw}`,
+          label: (context) => {
+            const rating = context.raw as number;
+            return `Rating: ${rating.toPrecision(2)}`; // Format to two significant figures
+          },
           title: (tooltipItems) => {
             // Format the date in the tooltip
             return `Year: ${tooltipItems[0]?.label}`;
