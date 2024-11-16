@@ -10,13 +10,11 @@ import { toSeasonString } from './course';
 import { seasons } from '../contexts/ferryContext';
 import type { Filters } from '../contexts/searchContext';
 
-export function paramFilter<K extends keyof Filters>(
+export function getFilterFromParams<K extends keyof Filters>(
   key: K,
+  value: string,
   fallback: Filters[K],
 ): Filters[K] {
-  const params = new URLSearchParams(window.location.search);
-
-  const value = decodeURIComponent(params.get(key.toString()) ?? '');
   if (value === '') return fallback;
 
   switch (key) {
@@ -243,9 +241,9 @@ export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
   defaultValue: Filters[K],
+  searchParams: URLSearchParams,
 ): string {
-  const params = new URLSearchParams(window.location.search);
-
+  const newSearch = new URLSearchParams(searchParams);
   const isEqual = (a: Filters[K], b: Filters[K]): boolean => {
     if (Array.isArray(a) && Array.isArray(b)) {
       return (
@@ -260,8 +258,8 @@ export function createFilterLink<K extends keyof Filters>(
   };
 
   if (isEqual(value, defaultValue)) {
-    params.delete(key.toString());
-    return `?${params.toString()}`;
+    newSearch.delete(key.toString());
+    return `?${newSearch.toString()}`;
   }
 
   if (Array.isArray(value)) {
@@ -270,9 +268,9 @@ export function createFilterLink<K extends keyof Filters>(
       return v;
     });
 
-    params.set(key.toString(), encodeURIComponent(values.join(',')));
+    newSearch.set(key.toString(), encodeURIComponent(values.join(',')));
   } else {
-    params.set(
+    newSearch.set(
       key.toString(),
       encodeURIComponent(
         typeof value === 'object' ? JSON.stringify(value) : value.toString(),
@@ -280,5 +278,5 @@ export function createFilterLink<K extends keyof Filters>(
     );
   }
 
-  return `?${params.toString()}`;
+  return `?${newSearch.toString()}`;
 }

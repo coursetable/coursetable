@@ -53,7 +53,7 @@ export function createLocalStorageSlot<T>(key: string): StorageSlot<T> {
 function useStorageState<T>(
   storage: Storage,
   key: string,
-  defaultValue: T,
+  defaultValue: T | (() => T),
 ): readonly [T, (newValue: T) => void] {
   const [value, setValue] = useState<T>(defaultValue);
   const storageSlot = useRef(createStorageSlot<T>(storage, key));
@@ -76,7 +76,7 @@ function useStorageState<T>(
  */
 export const useSessionStorageState = <T>(
   key: string,
-  defaultValue: T,
+  defaultValue: T | (() => T),
 ): readonly [T, (newValue: T) => void] =>
   useStorageState(sessionStorage, key, defaultValue);
 
@@ -88,6 +88,6 @@ export const useSessionStorageState = <T>(
  */
 export const useLocalStorageState = <T>(
   key: string,
-  defaultValue: T,
+  defaultValue: T | (() => T),
 ): readonly [T, (newValue: T) => void] =>
   useStorageState(localStorage, key, defaultValue);

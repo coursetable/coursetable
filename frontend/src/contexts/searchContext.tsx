@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
@@ -41,7 +42,7 @@ import {
   toWeekdayStrings,
   type NumFriendsReturn,
 } from '../utilities/course';
-import { createFilterLink, paramFilter } from '../utilities/params';
+import { createFilterLink, getFilterFromParams } from '../utilities/params';
 
 export type Option<T extends string | number = string> = {
   label: string;
@@ -233,42 +234,33 @@ export type FilterHandle<K extends keyof Filters> = ReturnType<
 >;
 
 function useFilterState<K extends keyof Filters>(key: K) {
-  const [value, setValue] = useSessionStorageState(
-    key,
-    paramFilter(key, defaultFilters[key]),
+  const [searchParams] = useSearchParams();
+  const [value, setValue] = useSessionStorageState(key, () =>
+    getFilterFromParams(
+      key,
+      decodeURIComponent(searchParams.get(key) ?? ''),
+      defaultFilters[key],
+    ),
+  );
+  const navigate = useNavigate();
+  const setValueWithSync = useCallback(
+    (v: Filters[K]) => {
+      setValue(v);
+      navigate(createFilterLink(key, v, defaultFilters[key], searchParams));
+    },
+    [setValue, key, navigate, searchParams],
   );
 
   return useMemo(
     () => ({
       value,
-      set(v: Filters[K]) {
-        window.history.pushState(
-          {},
-          '',
-          createFilterLink(key, v, defaultFilters[key]),
-        );
-        setValue(v);
-      },
+      set: setValueWithSync,
       isDefault: isEqual(value, defaultFilters[key]),
       isNonEmpty: !isEqual(value, emptyFilters[key]),
-      resetToDefault() {
-        window.history.pushState(
-          {},
-          '',
-          createFilterLink(key, defaultFilters[key], defaultFilters[key]),
-        );
-        setValue(defaultFilters[key]);
-      },
-      resetToEmpty() {
-        window.history.pushState(
-          {},
-          '',
-          createFilterLink(key, defaultFilters[key], defaultFilters[key]),
-        );
-        setValue(emptyFilters[key]);
-      },
+      resetToDefault: () => setValueWithSync(defaultFilters[key]),
+      resetToEmpty: () => setValueWithSync(emptyFilters[key]),
     }),
-    [value, setValue, key],
+    [value, key, setValueWithSync],
   );
 }
 
