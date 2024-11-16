@@ -16,7 +16,7 @@ import { passportConfig } from './auth/auth.handlers.js';
 import casAuth from './auth/auth.routes.js';
 import canny from './canny/canny.routes.js';
 import catalog from './catalog/catalog.routes.js';
-import { fetchCatalog, generateSitemapIndex } from './catalog/catalog.utils.js';
+import { fetchCatalog } from './catalog/catalog.utils.js';
 import challenge from './challenge/challenge.routes.js';
 import {
   SECURE_PORT,
@@ -24,6 +24,7 @@ import {
   SESSION_SECRET,
   CORS_OPTIONS,
   REDIS_HOST,
+  NUM_SEASONS,
 } from './config.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
@@ -161,36 +162,30 @@ app.use(
   },
 );
 
+winston.info('Finished updating static catalog');
+// Once catalogs have been created, start listening.
+app.listen(INSECURE_PORT, () => {
+  winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
+});
+
+// Serve dev with SSL.
+https
+  .createServer(
+    {
+      key: fs.readFileSync('./src/keys/server.key'),
+      cert: fs.readFileSync('./src/keys/server.cert'),
+    },
+    app,
+  )
+  .listen(SECURE_PORT, () => {
+    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
+  });
+
 // Generate the static catalog on start.
 winston.info('Updating static catalog');
 const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
 
-void fetchCatalog(overwriteCatalog)
-  .then(async () => {
-    winston.info('Finished updating static catalog');
-    // Once catalogs have been created, start listening.
-    app.listen(INSECURE_PORT, () => {
-      winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
-    });
-
-    // Serve dev with SSL.
-    https
-      .createServer(
-        {
-          key: fs.readFileSync('./src/keys/server.key'),
-          cert: fs.readFileSync('./src/keys/server.cert'),
-        },
-        app,
-      )
-      .listen(SECURE_PORT, () => {
-        winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
-      });
-
-    winston.info('Generating season sitemaps');
-    await generateSitemapIndex();
-    winston.info('Finished generating season sitemaps');
-  })
-  .catch((err: unknown) => {
-    winston.error('Error updating static catalog');
-    winston.error(err);
-  });
+void fetchCatalog(overwriteCatalog, NUM_SEASONS).catch((err: unknown) => {
+  winston.error('Error updating static catalog');
+  winston.error(err);
+});

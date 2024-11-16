@@ -48,7 +48,7 @@ Here's the data flow for course data:
 5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. This data is only overwritten in dev by running `start.sh` with the `--overwrite` (`-o`) flag, or in prod by Ferry requesting the `/api/catalog/refresh` endpoint. The idea of this step is to aggressively cache the GQL responses so every frontend request doesn't have to hit the GQL API. It also powers the client-side course search.
 6. The frontend requests the Express endpoint, which serves these JSON files. The frontend also requests the GraphQL API directly for more complex queries.
 
-The Hasura Engine dashboard is available at `http://localhost:8085`. In production, it is at `http://ocean.coursetable.com:8085/`. To access the dashboard, you need to log in with the `HASURA_GRAPHQL_ADMIN_SECRET` environment variable. You can find this secret in Doppler.
+The Hasura Engine dashboard is available at `http://localhost:8085`. In production, it is at `https://gql.coursetable.com/`. To access the dashboard, you need to log in with the `HASURA_GRAPHQL_ADMIN_SECRET` environment variable. You can find this secret in Doppler.
 
 If you want to make changes to the courses DB schema, you would need to start by modifying Ferry, which is the only actor that can write into the DB. Then, once Ferry has done one recrawl, the DB will contain the data you want (you can go to pgadmin to make sure). Then, you can do the following to cascade this change:
 

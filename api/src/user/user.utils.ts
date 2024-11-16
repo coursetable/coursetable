@@ -33,3 +33,9 @@ export function worksheetCoursesToWorksheets(
   }
   return res;
 }
+
+export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
+  if (worksheetNumbers.length === 0) return 1;
+  const last = Math.max(...worksheetNumbers);
+  return last + 1;
+}
