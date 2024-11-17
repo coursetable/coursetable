@@ -456,14 +456,28 @@ function OverviewRatings({
                 }}
               >
                 <TextComponent type="primary" style={{ fontWeight: 650 }}>
-                  Average rating
+                  <span
+                    className="px-2 py-1 rounded font-semibold text-white"
+                    style={{
+                      backgroundColor: '#468FF2',
+                      fontSize: '0.75rem',
+                      marginRight: '8px',
+                    }}
+                  >
+                    Beta
+                  </span>
+                  Average professor rating
                 </TextComponent>
                 <TextComponent type="secondary">
                   The following is an overview of how {professorView.name}'s
-                  rating has changed over time.
+                  rating by students has changed over time.
                 </TextComponent>
               </div>
               <CustomChart data={chartData} />
+              <TextComponent type="tertiary" style={{ fontSize: 12 }}>
+                This feature is new and in active testing. We will be adding
+                more content to the professor modal soon!
+              </TextComponent>
             </>
           ) : (
             <>
