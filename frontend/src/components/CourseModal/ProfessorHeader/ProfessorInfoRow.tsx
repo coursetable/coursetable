@@ -176,11 +176,11 @@ export default function ProfessorModalHeaderInfo({
             <TextComponent type="tertiary">
               ({toSeasonString(listing.course.season_code)})
             </TextComponent>
-            <SectionsDropdown
+            {/* <SectionsDropdown
               listing={listing}
               sections={sections}
               onNavigation={onNavigation}
-            />
+            /> */}
           </div>
         </Modal.Title>
 

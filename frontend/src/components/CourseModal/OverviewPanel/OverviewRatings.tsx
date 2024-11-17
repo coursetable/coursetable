@@ -38,6 +38,7 @@ import {
 } from 'chart.js';
 import dayjs from 'dayjs';
 import { CourseInfo } from './OverviewInfo';
+import Notice from '../../Notice';
 
 type Filter = 'both' | 'course' | 'professor';
 
