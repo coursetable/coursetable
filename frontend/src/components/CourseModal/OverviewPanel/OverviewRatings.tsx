@@ -298,7 +298,7 @@ function CustomChart({
       {
         label: 'Average Rating',
         data: ratings,
-        borderColor: 'blue',
+        borderColor: '#468FF2',
         backgroundColor: 'rgba(0, 0, 255, 0.1)',
         tension: 0.3, // Smooth curve
         pointRadius: 3,
@@ -311,6 +311,7 @@ function CustomChart({
   const chartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
+    color: 'red',
     scales: {
       x: {
         title: {
