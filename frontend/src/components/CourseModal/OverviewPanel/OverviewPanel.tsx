@@ -77,9 +77,9 @@ function OverviewPanel({
   );
 
   return (
-    <Row className="m-auto">
-      <Col md={7} className="px-0 mt-0 mb-3">
-        {professorView ? (
+    <>
+      {professorView ? (
+        <div className="p-4">
           <OverviewRatings
             onNavigation={onNavigation}
             listing={listing}
@@ -87,38 +87,43 @@ function OverviewPanel({
             sameProf={sameProf}
             professorView={professorView}
           />
-        ) : (
-          <OverviewInfo
-            onNavigation={onNavigation}
-            listing={listing}
-            sameCourse={sameCourse}
-            setProfessorView={setProfessorView}
-          />
-        )}
-      </Col>
-      {!professorView && (
-        <>
-          <Col md={5} className="px-0 my-0">
-            {isSameCourseWrong && (
-              <>
-                <div className="alert alert-warning">
-                  <MdWarning className="mr-2" />
-                  <strong>Warning:</strong> We have detected a possible error in
-                  the data returned. Try opening CourseTable in a new tab.
-                </div>
-              </>
-            )}
-            <OverviewRatings
+        </div>
+      ) : (
+        <Row className="m-auto">
+          <Col md={7} className="px-0 mt-0 mb-3">
+            <OverviewInfo
               onNavigation={onNavigation}
               listing={listing}
               sameCourse={sameCourse}
-              sameProf={sameProf}
-              professorView={professorView}
+              setProfessorView={setProfessorView}
             />
           </Col>
-        </>
+          {!professorView && (
+            <>
+              <Col md={5} className="px-0 my-0">
+                {isSameCourseWrong && (
+                  <>
+                    <div className="alert alert-warning">
+                      <MdWarning className="mr-2" />
+                      <strong>Warning:</strong> We have detected a possible
+                      error in the data returned. Try opening CourseTable in a
+                      new tab.
+                    </div>
+                  </>
+                )}
+                <OverviewRatings
+                  onNavigation={onNavigation}
+                  listing={listing}
+                  sameCourse={sameCourse}
+                  sameProf={sameProf}
+                  professorView={professorView}
+                />
+              </Col>
+            </>
+          )}
+        </Row>
       )}
-    </Row>
+    </>
   );
 }
 
