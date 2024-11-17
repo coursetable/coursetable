@@ -444,10 +444,22 @@ function OverviewRatings({
         <>
           {professorView ? (
             <>
-              <TextComponent type="secondary">
-                The following is an overview of how {professorView.name}'s
-                rating has changed over time. j
-              </TextComponent>
+              {/*fsr tailwind styles were not working here! Please fix if you can*/}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginBottom: '16px',
+                }}
+              >
+                <TextComponent type="primary" style={{ fontWeight: 650 }}>
+                  Average rating
+                </TextComponent>
+                <TextComponent type="secondary">
+                  The following is an overview of how {professorView.name}'s
+                  rating has changed over time.
+                </TextComponent>
+              </div>
               <CustomChart data={chartData} />
             </>
           ) : (
