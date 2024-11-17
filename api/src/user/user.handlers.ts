@@ -97,6 +97,7 @@ async function updateWorksheetCourse(
           eq(worksheetMetadata.worksheetNumber, worksheetNumber),
         ),
       );
+    // To be removed once add/remove/rename worksheets is pushed.
     if (!nameExists) {
       await db.insert(worksheetMetadata).values({
         netId,
@@ -260,13 +261,12 @@ export const getUserWorksheet = async (
     res.status(400).json({ error: 'WORKSHEET_METADATA_NOT_FOUND' });
     return;
   }
-
   res.json({
     netId,
     evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
-    data: allWorksheets[netId],
+    data: (netId in allWorksheets)? allWorksheets[netId] : {},
   });
 };
 
