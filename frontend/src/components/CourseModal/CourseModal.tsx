@@ -17,6 +17,8 @@ import {
 } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
 import styles from './CourseModal.module.css';
+import ProfessorModalHeaderInfo from './ProfessorHeader/ProfessorInfoRow';
+import { CourseInfo } from './OverviewPanel/OverviewInfo';
 
 // We can only split subviews of CourseModal because CourseModal contains core
 // logic that determines whether itself is visible.
@@ -70,6 +72,10 @@ function CourseModal() {
   >([]);
   const infoFromURL = useCourseInfoFromURL(history.length === 0);
   if (history.length === 0 && infoFromURL) setHistory([infoFromURL]);
+
+  const [professorView, setProfessorView] = useState<
+    CourseInfo['course_professors'][number]['professor'] | null
+  >(null);
 
   // This will update when history updates
   const listing = history[history.length - 1];
@@ -137,11 +143,20 @@ function CourseModal() {
         centered
       >
         <Modal.Header className={styles.modalHeader} closeButton>
-          <ModalHeaderInfo
-            listing={listing}
-            backTarget={backTarget}
-            onNavigation={onNavigation}
-          />
+          {professorView ? (
+            <ProfessorModalHeaderInfo
+              listing={listing}
+              professor={professorView}
+              disableProfessorView={() => setProfessorView(null)}
+              onNavigation={onNavigation}
+            />
+          ) : (
+            <ModalHeaderInfo
+              listing={listing}
+              backTarget={backTarget}
+              onNavigation={onNavigation}
+            />
+          )}
           <ModalHeaderControls
             listing={listing}
             view={view}
@@ -151,7 +166,12 @@ function CourseModal() {
         </Modal.Header>
         <Modal.Body>
           {view === 'overview' ? (
-            <OverviewPanel onNavigation={onNavigation} prefetched={listing} />
+            <OverviewPanel
+              onNavigation={onNavigation}
+              prefetched={listing}
+              professorView={professorView}
+              setProfessorView={setProfessorView}
+            />
           ) : (
             <EvaluationsPanel
               seasonCode={listing.course.season_code}

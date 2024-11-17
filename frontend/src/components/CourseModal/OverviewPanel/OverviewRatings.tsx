@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -22,9 +22,22 @@ import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
 import { createCourseModalLink } from '../../../utilities/display';
 import { RatingBubble } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
-
+import { Line } from 'react-chartjs-2';
 import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend,
+  ChartOptions,
+} from 'chart.js';
+import dayjs from 'dayjs';
+import { CourseInfo } from './OverviewInfo';
 
 type Filter = 'both' | 'course' | 'professor';
 
@@ -252,18 +265,118 @@ function haveSameProfessors(
   );
 }
 
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  ChartTooltip,
+  Legend,
+);
+
+function CustomChart({
+  data,
+}: {
+  data: Array<{ year: string; rating: number }>;
+}) {
+  const formattedData = data
+    .map((d) => ({
+      ...d,
+      formattedYear: dayjs(d.year).format('YYYY'),
+    }))
+    .sort((a, b) => a.year.localeCompare(b.year));
+
+  // Extract the formatted years and ratings
+  const years = formattedData.map((d) => d.formattedYear);
+  const ratings = formattedData.map((d) => d.rating);
+
+  // Set up the data and configuration for the chart
+  const chartData = {
+    labels: years,
+    datasets: [
+      {
+        label: 'Average Rating',
+        data: ratings,
+        borderColor: 'blue',
+        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+        tension: 0.3, // Smooth curve
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      },
+    ],
+  };
+
+  // Use the specific type for line chart options
+  const chartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Year',
+        },
+        reverse: false, // Flip the X-axis so the most recent year is on the right
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 10, // Limit the number of ticks shown on the X-axis
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Average Rating',
+        },
+        beginAtZero: true,
+        max: 5, // Assuming the rating is on a scale from 0 to 5
+        ticks: {
+          stepSize: 0.5, // Adjust the step size for better spacing
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+        position: 'top', // Use one of the allowed string literals
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const rating = context.raw as number;
+            return `Rating: ${rating.toPrecision(2)}`; // Format to two significant figures
+          },
+          title: (tooltipItems) => {
+            // Format the date in the tooltip
+            return `Year: ${tooltipItems[0]?.label}`;
+          },
+        },
+      },
+    },
+  };
+
+  return (
+    <div style={{ width: '100%', height: '400px' }}>
+      <Line data={chartData} options={chartOptions} />
+    </div>
+  );
+}
+
 function OverviewRatings({
   onNavigation,
   listing,
   sameCourse,
   sameProf,
+  professorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
   readonly sameProf: SameCourseOrProfOfferingsQuery['sameProf'];
+  readonly professorView:
+    | CourseInfo['course_professors'][number]['professor']
+    | null;
 }) {
-  const user = useStore((state) => state.user);
   const overlapSections = useMemo(() => {
     const sameCourseNormalized = normalizeRelatedListings(sameCourse);
     const sameProfNormalized = normalizeRelatedListings(
@@ -278,7 +391,8 @@ function OverviewRatings({
       both,
     };
   }, [sameCourse, sameProf, listing]);
-  const options = [
+
+  const defaultOptions = [
     {
       displayName: `Course (${overlapSections.course.length})`,
       value: 'course',
@@ -288,60 +402,104 @@ function OverviewRatings({
       displayName: `Prof (${overlapSections.professor.length})`,
       value: 'professor',
     },
-  ] as const;
+  ];
+
+  const professorViewOptions = [
+    { displayName: `Both (${overlapSections.both.length})`, value: 'both' },
+    {
+      displayName: `Prof (${overlapSections.professor.length})`,
+      value: 'professor',
+    },
+  ];
+
+  const user = useStore((state) => state.user);
+
+  const [options, setOptions] =
+    useState<Array<{ displayName: string; value: string }>>(defaultOptions);
+
   const [filter, setFilter] = useState<Filter>('both');
+  const [chartMode, setChartMode] = useState(false);
+
+  useEffect(() => {
+    professorView == null
+      ? setOptions(defaultOptions)
+      : setOptions(professorViewOptions);
+  }, [professorView]);
+
+  const handleToggleChartMode = () => {
+    setChartMode((prevMode) => !prevMode);
+  };
+
+  // Prepare data for the chart
+  const chartData = overlapSections.professor.map((course) => ({
+    year: course.season_code, // Adjust this to extract the year if necessary
+    rating: course.evaluation_statistic?.avg_rating || 0,
+  }));
+
   return (
     <>
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <div
-        className={styles.filterContainer}
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          // Left/right arrow key
-          const newIndx = ((optionsIndx[filter] +
-            (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
-            3) as 0 | 1 | 2;
-          setFilter(options[newIndx].value);
-        }}
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-        tabIndex={0}
-      >
-        <MultiToggle
-          options={options}
-          selectedOption={filter}
-          onSelectOption={(val) => setFilter(val)}
-          className={clsx(styles.evaluationsFilter, 'mb-2')}
-        />
-      </div>
       {overlapSections[filter].length !== 0 ? (
         <>
-          <Row className="m-auto pb-1 justify-content-center">
-            <Col xs={5} className="d-flex justify-content-center px-0 me-3">
-              <span className={styles.evaluationHeader}>Season</span>
-            </Col>
-            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-              <span className={styles.evaluationHeader}>Class</span>
-            </Col>
-            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-              <span className={styles.evaluationHeader}>Prof</span>
-            </Col>
-            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-              <span className={styles.evaluationHeader}>Work</span>
-            </Col>
-          </Row>
-          {overlapSections[filter].map((course) => (
-            <Row
-              key={course.course_id}
-              className="m-auto py-1 justify-content-center"
-            >
-              <CourseLink
-                listing={listing}
-                course={course}
-                filter={filter}
-                onNavigation={onNavigation}
-              />
-              <RatingNumbers course={course} hasEvals={user.hasEvals} />
-            </Row>
-          ))}
+          {professorView ? (
+            <CustomChart data={chartData} />
+          ) : (
+            <>
+              <div
+                className={styles.filterContainer}
+                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                  const newIndx = ((optionsIndx[filter] +
+                    (e.key === 'ArrowLeft'
+                      ? 2
+                      : e.key === 'ArrowRight'
+                        ? 1
+                        : 0)) %
+                    3) as 0 | 1 | 2;
+                  const newOption = options[newIndx];
+                  if (newOption) {
+                    setFilter(newOption.value as Filter);
+                  }
+                }}
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                tabIndex={0}
+              >
+                <MultiToggle
+                  options={options}
+                  selectedOption={filter}
+                  onSelectOption={(val) => setFilter(val as Filter)}
+                  className={clsx(styles.evaluationsFilter, 'mb-2')}
+                />
+              </div>
+              <Row className="m-auto pb-1 justify-content-center">
+                <Col xs={5} className="d-flex justify-content-center px-0 me-3">
+                  <span className={styles.evaluationHeader}>Season</span>
+                </Col>
+                <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+                  <span className={styles.evaluationHeader}>Class</span>
+                </Col>
+                <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+                  <span className={styles.evaluationHeader}>Prof</span>
+                </Col>
+                <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+                  <span className={styles.evaluationHeader}>Work</span>
+                </Col>
+              </Row>
+              {overlapSections[filter].map((course) => (
+                <Row
+                  key={course.course_id}
+                  className="m-auto py-1 justify-content-center"
+                >
+                  <CourseLink
+                    listing={listing}
+                    course={course}
+                    filter={filter}
+                    onNavigation={onNavigation}
+                  />
+                  <RatingNumbers course={course} hasEvals={user.hasEvals} />
+                </Row>
+              ))}
+            </>
+          )}
         </>
       ) : (
         <div className="m-auto text-center">

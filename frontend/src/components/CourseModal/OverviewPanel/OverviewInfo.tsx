@@ -36,7 +36,7 @@ import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-type CourseInfo = SameCourseOrProfOfferingsQuery['self'][0]['course'];
+export type CourseInfo = SameCourseOrProfOfferingsQuery['self'][0]['course'];
 
 const profInfoPopover =
   (
@@ -395,7 +395,17 @@ function Syllabus({
   );
 }
 
-function Professors({ course }: { readonly course: CourseInfo }) {
+function Professors({
+  course,
+  setProfessorView,
+}: {
+  readonly course: CourseInfo;
+  setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
+}) {
   return (
     <DataField
       name="Professor"
@@ -410,7 +420,9 @@ function Professors({ course }: { readonly course: CourseInfo }) {
                   placement="right"
                   overlay={profInfoPopover(professor)}
                 >
-                  <LinkLikeText>{professor.name}</LinkLikeText>
+                  <LinkLikeText onClick={() => setProfessorView(professor)}>
+                    {professor.name}
+                  </LinkLikeText>
                 </OverlayTrigger>
               </React.Fragment>
             ))
@@ -461,10 +473,16 @@ function OverviewInfo({
   onNavigation,
   listing,
   sameCourse,
+  setProfessorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
+  setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
 }) {
   const { numFriends } = useSearch();
   const alsoTaking = [
@@ -481,7 +499,7 @@ function OverviewInfo({
         onNavigation={onNavigation}
       />
       <Syllabus course={course} sameCourse={sameCourse} />
-      <Professors course={course} />
+      <Professors course={course} setProfessorView={setProfessorView} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />
       <DataField

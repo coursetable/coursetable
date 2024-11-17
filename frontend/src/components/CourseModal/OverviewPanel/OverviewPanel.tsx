@@ -1,7 +1,7 @@
 import { Row, Col } from 'react-bootstrap';
 import { MdWarning } from 'react-icons/md';
 
-import OverviewInfo from './OverviewInfo';
+import OverviewInfo, { CourseInfo } from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
@@ -13,9 +13,19 @@ import type { ModalNavigationFunction } from '../CourseModal';
 function OverviewPanel({
   onNavigation,
   prefetched,
+  professorView,
+  setProfessorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly prefetched: CourseModalPrefetchListingDataFragment;
+  readonly professorView:
+    | CourseInfo['course_professors'][number]['professor']
+    | null;
+  setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
 }) {
   const user = useStore((state) => state.user);
 
@@ -69,27 +79,45 @@ function OverviewPanel({
   return (
     <Row className="m-auto">
       <Col md={7} className="px-0 mt-0 mb-3">
-        <OverviewInfo
-          onNavigation={onNavigation}
-          listing={listing}
-          sameCourse={sameCourse}
-        />
-      </Col>
-      <Col md={5} className="px-0 my-0">
-        {isSameCourseWrong && (
-          <div className="alert alert-warning">
-            <MdWarning className="mr-2" />
-            <strong>Warning:</strong> We have detected a possible error in the
-            data returned. Try opening CourseTable in a new tab.
-          </div>
+        {professorView ? (
+          <OverviewRatings
+            onNavigation={onNavigation}
+            listing={listing}
+            sameCourse={sameCourse}
+            sameProf={sameProf}
+            professorView={professorView}
+          />
+        ) : (
+          <OverviewInfo
+            onNavigation={onNavigation}
+            listing={listing}
+            sameCourse={sameCourse}
+            setProfessorView={setProfessorView}
+          />
         )}
-        <OverviewRatings
-          onNavigation={onNavigation}
-          listing={listing}
-          sameCourse={sameCourse}
-          sameProf={sameProf}
-        />
       </Col>
+      {!professorView && (
+        <>
+          <Col md={5} className="px-0 my-0">
+            {isSameCourseWrong && (
+              <>
+                <div className="alert alert-warning">
+                  <MdWarning className="mr-2" />
+                  <strong>Warning:</strong> We have detected a possible error in
+                  the data returned. Try opening CourseTable in a new tab.
+                </div>
+              </>
+            )}
+            <OverviewRatings
+              onNavigation={onNavigation}
+              listing={listing}
+              sameCourse={sameCourse}
+              sameProf={sameProf}
+              professorView={professorView}
+            />
+          </Col>
+        </>
+      )}
     </Row>
   );
 }
