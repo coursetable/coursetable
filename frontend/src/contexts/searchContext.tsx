@@ -663,17 +663,25 @@ export function SearchProvider({
         )
           return false;
 
-        if (
-          selectSchools.value.length !== 0 &&
-          !applyIntersectableFilter(
-            selectSchools.value.map((option) => option.value),
-            listing.course.listings
-              .map((l) => l.school)
-              .filter((x) => x !== null),
-            intersectingFilters.value.includes('selectSchools'),
+        if (selectSchools.value.length !== 0) {
+          // Same as selectSubjects
+          if (
+            !selectSchools.value.some(
+              (option) => listing.school === option.value,
+            )
           )
-        )
-          return false;
+            return false;
+          if (
+            !applyIntersectableFilter(
+              selectSchools.value.map((option) => option.value),
+              listing.course.listings
+                .map((l) => l.school)
+                .filter((x) => x !== null),
+              intersectingFilters.value.includes('selectSchools'),
+            )
+          )
+            return false;
+        }
 
         if (quistPredicate) return quistPredicate(listing);
         // Handle search text. Each token must match something.

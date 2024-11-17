@@ -39,9 +39,7 @@ type SelectProps<K extends keyof CategoricalFilters> = {
 >;
 
 function Select<K extends keyof CategoricalFilters>({
-  options,
   handle: handleName,
-  placeholder,
   ...props
 }: SelectProps<K>) {
   const { filters } = useSearch();
@@ -53,8 +51,6 @@ function Select<K extends keyof CategoricalFilters>({
       aria-label={filterLabels[handleName]}
       isMulti
       value={handle.value}
-      options={options}
-      placeholder={placeholder}
       // Prevent overlap with tooltips
       menuPortalTarget={document.body}
       onChange={(selectedOption) => {

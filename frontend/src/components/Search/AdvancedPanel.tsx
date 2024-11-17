@@ -56,10 +56,7 @@ type SelectProps<K extends keyof CategoricalFilters> = {
 
 function Select<K extends keyof CategoricalFilters>({
   id,
-  options,
   handle: handleName,
-  placeholder,
-  colors,
   ...props
 }: SelectProps<K>) {
   const { setStartTime, filters } = useSearch();
@@ -76,11 +73,8 @@ function Select<K extends keyof CategoricalFilters>({
         aria-labelledby={id}
         className={styles.select}
         closeMenuOnSelect
-        colors={colors}
         isMulti
         value={handle.value}
-        options={options}
-        placeholder={placeholder}
         menuPortalTarget={menuPortalTarget}
         onChange={(selectedOption) => {
           handle.set(selectedOption as Filters[K]);

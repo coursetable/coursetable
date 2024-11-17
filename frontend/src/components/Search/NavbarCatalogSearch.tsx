@@ -27,9 +27,12 @@ import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
 import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
 
-type SelectProps<K extends keyof CategoricalFilters> = Omit<
+type SelectProps<K extends keyof CategoricalFilters> = {
+  readonly handle: K;
+  readonly minSelectWidth?: number;
+} & Pick<
   React.ComponentProps<typeof Popout>,
-  'children' | 'buttonText'
+  'dataTutorial' | 'className' | 'displayOptionLabel' | 'maxDisplayOptions'
 > &
   Pick<
     React.ComponentProps<
@@ -38,24 +41,19 @@ type SelectProps<K extends keyof CategoricalFilters> = Omit<
     | 'options'
     | 'placeholder'
     | 'colors'
+    | 'hideSelectedOptions'
     | 'isIntersection'
     | 'setIsIntersection'
     | 'unionIntersectionButtonLabel'
-  > & {
-    readonly handle: K;
-    readonly hideSelectedOptions?: boolean;
-    readonly minSelectWidth?: number;
-  };
+  >;
 
 function Select<K extends keyof CategoricalFilters>({
-  options,
+  dataTutorial,
+  className,
+  displayOptionLabel,
+  maxDisplayOptions,
   handle: handleName,
-  placeholder,
   colors,
-  isIntersection,
-  setIsIntersection,
-  unionIntersectionButtonLabel,
-  hideSelectedOptions,
   minSelectWidth,
   ...props
 }: SelectProps<K>) {
@@ -70,24 +68,22 @@ function Select<K extends keyof CategoricalFilters>({
       selectedOptions={handle.value}
       buttonText={filterLabels[handleName]}
       colors={colors}
-      {...props}
+      dataTutorial={dataTutorial}
+      className={className}
+      displayOptionLabel={displayOptionLabel}
+      maxDisplayOptions={maxDisplayOptions}
     >
       {/* @ts-expect-error: TODO */}
       <PopoutSelect<FilterHandle<K>['value'][number], true>
         isMulti
         colors={colors}
         value={handle.value}
-        options={options}
-        placeholder={placeholder}
         onChange={(selectedOption) => {
           handle.set(selectedOption as Filters[K]);
           setStartTime(Date.now());
         }}
-        hideSelectedOptions={hideSelectedOptions}
         minWidth={minSelectWidth}
-        isIntersection={isIntersection}
-        setIsIntersection={setIsIntersection}
-        unionIntersectionButtonLabel={unionIntersectionButtonLabel}
+        {...props}
       />
     </Popout>
   );
