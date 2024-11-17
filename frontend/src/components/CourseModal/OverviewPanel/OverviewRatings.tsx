@@ -20,7 +20,7 @@ import { generateRandomColor } from '../../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
 import { createCourseModalLink } from '../../../utilities/display';
-import { RatingBubble } from '../../Typography';
+import { RatingBubble, TextComponent } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import { Line } from 'react-chartjs-2';
 import styles from './OverviewRatings.module.css';
@@ -443,7 +443,13 @@ function OverviewRatings({
       {overlapSections[filter].length !== 0 ? (
         <>
           {professorView ? (
-            <CustomChart data={chartData} />
+            <>
+              <TextComponent type="secondary">
+                The following is an overview of how {professorView.name}'s
+                rating has changed over time.
+              </TextComponent>
+              <CustomChart data={chartData} />
+            </>
           ) : (
             <>
               <div

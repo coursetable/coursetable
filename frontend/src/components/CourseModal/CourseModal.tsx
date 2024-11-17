@@ -19,6 +19,7 @@ import { suspended, createCourseModalLink } from '../../utilities/display';
 import styles from './CourseModal.module.css';
 import ProfessorModalHeaderInfo from './ProfessorHeader/ProfessorInfoRow';
 import { CourseInfo } from './OverviewPanel/OverviewInfo';
+import ProfessorModalHeaderControls from './ProfessorHeader/ProfessorControlsRow';
 
 // We can only split subviews of CourseModal because CourseModal contains core
 // logic that determines whether itself is visible.
@@ -144,25 +145,36 @@ function CourseModal() {
       >
         <Modal.Header className={styles.modalHeader} closeButton>
           {professorView ? (
-            <ProfessorModalHeaderInfo
-              listing={listing}
-              professor={professorView}
-              disableProfessorView={() => setProfessorView(null)}
-              onNavigation={onNavigation}
-            />
+            <>
+              <ProfessorModalHeaderInfo
+                listing={listing}
+                professor={professorView}
+                disableProfessorView={() => setProfessorView(null)}
+                onNavigation={onNavigation}
+              />
+              <br />
+              {/* <ProfessorModalHeaderControls
+                listing={listing}
+                view={view}
+                setView={setView}
+                hide={hide}
+              /> */}
+            </>
           ) : (
-            <ModalHeaderInfo
-              listing={listing}
-              backTarget={backTarget}
-              onNavigation={onNavigation}
-            />
+            <>
+              <ModalHeaderInfo
+                listing={listing}
+                backTarget={backTarget}
+                onNavigation={onNavigation}
+              />
+              <ModalHeaderControls
+                listing={listing}
+                view={view}
+                setView={setView}
+                hide={hide}
+              />
+            </>
           )}
-          <ModalHeaderControls
-            listing={listing}
-            view={view}
-            setView={setView}
-            hide={hide}
-          />
         </Modal.Header>
         <Modal.Body>
           {view === 'overview' ? (

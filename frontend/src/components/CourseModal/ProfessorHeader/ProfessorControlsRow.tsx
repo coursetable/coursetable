@@ -140,11 +140,10 @@ function ViewTabs({
   );
 }
 
-export default function ModalHeaderControls({
+export default function ProfessorModalHeaderControls({
   listing,
   view,
   setView,
-  hide,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
   readonly view: 'overview' | 'evals';
@@ -167,9 +166,9 @@ export default function ModalHeaderControls({
         currentTab={view}
       />
       <div className={styles.toolBar}>
-        <WorksheetToggleButton listing={listing} modal />
+        {/* <WorksheetToggleButton listing={listing} modal />
         <ShareButton listing={listing} />
-        <MoreButton listing={listing} hide={hide} />
+        <MoreButton listing={listing} hide={hide} /> */}
       </div>
     </div>
   );
