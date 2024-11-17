@@ -432,10 +432,12 @@ function OverviewRatings({
   };
 
   // Prepare data for the chart
-  const chartData = overlapSections.professor.map((course) => ({
-    year: course.season_code, // Adjust this to extract the year if necessary
-    rating: course.evaluation_statistic?.avg_rating || 0,
-  }));
+  const chartData = overlapSections.professor
+    .map((course) => ({
+      year: course.season_code, // Adjust this to extract the year if necessary
+      rating: course.evaluation_statistic?.avg_rating || 0,
+    }))
+    .filter((d) => d.rating !== 0);
 
   return (
     <>
