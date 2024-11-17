@@ -210,25 +210,27 @@ export type RBCEvent = {
 export function getCalendarEvents(
   type: 'gcal',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ): GCalEvent[];
 export function getCalendarEvents(
   type: 'ics',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ): ICSEvent[];
 export function getCalendarEvents(
   type: 'rbc',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ): RBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ) {
-  const seasonString = toSeasonString(curSeason);
-  const semester = academicCalendars[curSeason] as SeasonCalendar | undefined;
+  const seasonString = toSeasonString(viewedSeason);
+  const semester = academicCalendars[viewedSeason] as
+    | SeasonCalendar
+    | undefined;
   if (!semester && type !== 'rbc') {
     toast.error(
       `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,

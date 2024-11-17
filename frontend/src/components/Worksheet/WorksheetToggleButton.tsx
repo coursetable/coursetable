@@ -92,15 +92,19 @@ function WorksheetToggleButton({
     })),
   );
 
-  const { worksheetNumber, worksheetOptions } = useWorksheet();
+  const { viewedWorksheetNumber, worksheetOptions } = useWorksheet();
 
   // In the modal, the select can override the "currently viewed" worksheet
   // Please read https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-  const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
-  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(worksheetNumber);
-  if (prevWorksheetCtx !== worksheetNumber) {
-    setSelectedWorksheet(worksheetNumber);
-    setPrevWorksheetCtx(worksheetNumber);
+  const [selectedWorksheet, setSelectedWorksheet] = useState(
+    viewedWorksheetNumber,
+  );
+  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
+    viewedWorksheetNumber,
+  );
+  if (prevWorksheetCtx !== viewedWorksheetNumber) {
+    setSelectedWorksheet(viewedWorksheetNumber);
+    setPrevWorksheetCtx(viewedWorksheetNumber);
   }
 
   const inWorksheet = useMemo(
