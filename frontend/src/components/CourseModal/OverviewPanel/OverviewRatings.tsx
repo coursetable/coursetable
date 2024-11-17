@@ -446,7 +446,7 @@ function OverviewRatings({
             <>
               <TextComponent type="secondary">
                 The following is an overview of how {professorView.name}'s
-                rating has changed over time.
+                rating has changed over time. j
               </TextComponent>
               <CustomChart data={chartData} />
             </>
