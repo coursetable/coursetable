@@ -24,6 +24,7 @@ import {
   SESSION_SECRET,
   CORS_OPTIONS,
   REDIS_HOST,
+  NUM_SEASONS,
 } from './config.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
@@ -161,32 +162,30 @@ app.use(
   },
 );
 
+winston.info('Finished updating static catalog');
+// Once catalogs have been created, start listening.
+app.listen(INSECURE_PORT, () => {
+  winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
+});
+
+// Serve dev with SSL.
+https
+  .createServer(
+    {
+      key: fs.readFileSync('./src/keys/server.key'),
+      cert: fs.readFileSync('./src/keys/server.cert'),
+    },
+    app,
+  )
+  .listen(SECURE_PORT, () => {
+    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
+  });
+
 // Generate the static catalog on start.
 winston.info('Updating static catalog');
 const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
 
-void fetchCatalog(overwriteCatalog)
-  .then(() => {
-    winston.info('Finished updating static catalog');
-    // Once catalogs have been created, start listening.
-    app.listen(INSECURE_PORT, () => {
-      winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
-    });
-
-    // Serve dev with SSL.
-    https
-      .createServer(
-        {
-          key: fs.readFileSync('./src/keys/server.key'),
-          cert: fs.readFileSync('./src/keys/server.cert'),
-        },
-        app,
-      )
-      .listen(SECURE_PORT, () => {
-        winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
-      });
-  })
-  .catch((err: unknown) => {
-    winston.error('Error updating static catalog');
-    winston.error(err);
-  });
+void fetchCatalog(overwriteCatalog, NUM_SEASONS).catch((err: unknown) => {
+  winston.error('Error updating static catalog');
+  winston.error(err);
+});

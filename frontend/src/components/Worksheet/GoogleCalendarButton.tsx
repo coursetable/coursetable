@@ -16,15 +16,15 @@ function GoogleCalendarButton({
 }): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
-  const { curSeason, courses } = useWorksheet();
+  const { viewedSeason, courses } = useWorksheet();
   const exportButtonRef = useRef<HTMLButtonElement>(null);
   const exportEvents = useCallback(async () => {
     if (!gapi) {
       Sentry.captureException(new Error('gapi not loaded'));
       return;
     }
-    const seasonString = toSeasonString(curSeason);
-    const semester = academicCalendars[curSeason];
+    const seasonString = toSeasonString(viewedSeason);
+    const semester = academicCalendars[viewedSeason];
     if (!semester) {
       toast.error(
         `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
@@ -67,11 +67,7 @@ function GoogleCalendarButton({
           }),
         );
       }
-      const events = getCalendarEvents(
-        'gcal',
-        linkCourses.length != 0 ? linkCourses : courses,
-        curSeason,
-      );
+      const events = getCalendarEvents('gcal', linkCourses.length != 0 ? linkCourses : courses, viewedSeason);
       await Promise.all(
         events.map(async (event) => {
           try {
@@ -102,7 +98,7 @@ function GoogleCalendarButton({
     } finally {
       setExporting(false);
     }
-  }, [courses, linkCourses, gapi, curSeason]);
+  }, [courses, linkCourses, gapi, viewedSeason]);
 
   useEffect(() => {
     if (!authInstance || user || !exportButtonRef.current) return;

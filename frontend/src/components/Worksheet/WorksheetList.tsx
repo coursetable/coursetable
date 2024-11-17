@@ -9,7 +9,7 @@ import Results from '../Search/Results';
 function WorksheetList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
-  const { courses, worksheetLoading, curSeason } = useWorksheet();
+  const { courses, worksheetLoading, viewedSeason } = useWorksheet();
 
   const {
     filters: { selectSortBy, sortOrder },
@@ -36,12 +36,12 @@ function WorksheetList() {
     loading: coursesLoading,
     courses: courseData,
     error: courseLoadError,
-  } = useCourseData([curSeason]);
+  } = useCourseData([viewedSeason]);
 
   useEffect(() => {
     const data = searchParams.get('ws');
     if (!data) return;
-    const courseObjects = linkDataToCourses(courseData, curSeason, data);
+    const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
     setLinkCourses(courseObjects);
   }, []);
 

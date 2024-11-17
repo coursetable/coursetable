@@ -96,7 +96,7 @@ export default function WorksheetStats() {
   const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { courses, curSeason } = useWorksheet();
+  const { courses, viewedSeason } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
@@ -107,7 +107,7 @@ export default function WorksheetStats() {
   const coursesWithoutWorkload: string[] = [];
 
   async function handleExport(courses: WorksheetCourse[]) {
-    let wsSerial = `${curSeason}`;
+    let wsSerial = `${viewedSeason}`;
     for (const { crn, listing, hidden, color } of courses) {
       const courseSerial = `${crn}_${color}_${hidden ? 't' : 'f'}`;
       if (wsSerial != '') {
@@ -142,7 +142,7 @@ export default function WorksheetStats() {
     const data = searchParams.get('ws');
     if (!data) return;
     console.log('effect');
-    const courseObjects = linkDataToCourses(courseData, curSeason, data);
+    const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
     setLinkCourses(courseObjects);
     // import courses
   }, [coursesLoading]);
@@ -159,7 +159,8 @@ export default function WorksheetStats() {
     // - Another section has been counted (we just randomly pick one)
     // - Is discussion section (no ratings or credits)
     // - Is hidden
-    if (alreadyCounted || hidden || isDiscussionSection(listing)) continue;
+    if (alreadyCounted || hidden || isDiscussionSection(listing.course))
+      continue;
 
     // Mark codes as counted, no double counting
     listing.course.listings.forEach((l) => {

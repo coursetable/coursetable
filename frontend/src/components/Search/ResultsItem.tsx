@@ -63,7 +63,7 @@ function Rating({
     >
       <RatingBubble
         color={generateRandomColor(
-          `${listing.crn}${listing.season_code}${name}`,
+          `${listing.crn}${listing.course.season_code}${name}`,
         )}
         className={styles.ratingCell}
       />
@@ -78,21 +78,15 @@ function ResultsItem({
 }: ListChildComponentProps<ResultItemData>) {
   const listing = listings[index]!;
   const user = useStore((state) => state.user);
-  const { worksheetNumber } = useWorksheet();
+  const { viewedWorksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
-  const friends = numFriends[`${listing.season_code}${listing.crn}`];
+  const friends = numFriends[`${listing.course.season_code}${listing.crn}`];
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () =>
-      isInWorksheet(
-        listing.season_code,
-        listing.crn,
-        worksheetNumber,
-        user.worksheets,
-      ),
-    [listing.crn, listing.season_code, worksheetNumber, user.worksheets],
+    () => isInWorksheet(listing, viewedWorksheetNumber, user.worksheets),
+    [listing, viewedWorksheetNumber, user.worksheets],
   );
 
   return (
@@ -114,7 +108,7 @@ function ResultsItem({
           {multiSeasons && (
             <span className={colStyles.seasonCol}>
               <SeasonTag
-                season={listing.season_code}
+                season={listing.course.season_code}
                 className={styles.season}
               />
             </span>

@@ -53,7 +53,7 @@ function Rating({
                   ? colorMap(rating)
                   : undefined
                 : generateRandomColor(
-                    `${listing.crn}${listing.season_code}${name}`,
+                    `${listing.crn}${listing.course.season_code}${name}`,
                   )
               )
                 ?.darken()
@@ -80,18 +80,12 @@ function ResultsGridItem({
   const listing = listings[rowIndex * columnCount + columnIndex];
   const target = useCourseModalLink(listing);
   const user = useStore((state) => state.user);
-  const { worksheetNumber } = useWorksheet();
+  const { viewedWorksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
     () =>
-      listing &&
-      isInWorksheet(
-        listing.season_code,
-        listing.crn,
-        worksheetNumber,
-        user.worksheets,
-      ),
-    [listing, worksheetNumber, user.worksheets],
+      listing && isInWorksheet(listing, viewedWorksheetNumber, user.worksheets),
+    [listing, viewedWorksheetNumber, user.worksheets],
   );
 
   if (!listing) return null;
@@ -114,7 +108,10 @@ function ResultsGridItem({
             <CourseCode listing={listing} subdueSection={false} />
           </div>
           {multiSeasons && (
-            <SeasonTag season={listing.season_code} className={styles.season} />
+            <SeasonTag
+              season={listing.course.season_code}
+              className={styles.season}
+            />
           )}
         </div>
         <div>

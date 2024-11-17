@@ -21,7 +21,7 @@ function OverviewPanel({
 
   const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
     variables: {
-      seasonCode: prefetched.season_code,
+      seasonCode: prefetched.course.season_code,
       crn: prefetched.crn,
       hasEvals: Boolean(user.hasEvals),
       sameCourseId: prefetched.course.same_course_id,

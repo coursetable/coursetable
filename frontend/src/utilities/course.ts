@@ -24,17 +24,16 @@ export function truncatedText(
 }
 
 export function isInWorksheet(
-  seasonCode: Season,
-  crn: Crn,
+  listing: { crn: Crn; course: { season_code: Season } },
   worksheetNumber: number,
-  worksheet: UserWorksheets | undefined,
+  worksheets: UserWorksheets | undefined,
 ): boolean {
-  if (!worksheet) return false;
+  if (!worksheets) return false;
   return (
-    seasonCode in worksheet &&
-    worksheetNumber in worksheet[seasonCode]! &&
-    worksheet[seasonCode]![worksheetNumber]!.some(
-      (course) => course.crn === crn,
+    listing.course.season_code in worksheets &&
+    worksheetNumber in worksheets[listing.course.season_code]! &&
+    worksheets[listing.course.season_code]![worksheetNumber]!.some(
+      (course) => course.crn === listing.crn,
     )
   );
 }
@@ -97,9 +96,9 @@ export function toLocationsSummary(
 }
 
 export type ListingWithTimes = {
-  season_code: Season;
   crn: Crn;
   course: {
+    season_code: Season;
     course_meetings: {
       days_of_week: number;
       start_time: string;
@@ -115,7 +114,8 @@ export function checkConflict(
   const conflicts: CatalogListing[] = [];
   if (!listing.course.course_meetings.length) return conflicts;
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
-    if (worksheetCourse.season_code !== listing.season_code) continue;
+    if (worksheetCourse.course.season_code !== listing.course.season_code)
+      continue;
     for (const meeting1 of worksheetCourse.course.course_meetings) {
       for (const meeting2 of listing.course.course_meetings) {
         // Two meetings have no days in common
@@ -162,9 +162,8 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   return numFriends;
 }
 
-export type CourseWithOverall = Pick<
-  Courses,
-  'average_rating' | 'average_rating_same_professors'
+export type CourseWithOverall = Partial<
+  Pick<Courses, 'average_rating' | 'average_rating_same_professors'>
 >;
 
 export function getOverallRatings(
@@ -193,9 +192,8 @@ export function getOverallRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-export type CourseWithWorkload = Pick<
-  Courses,
-  'average_workload' | 'average_workload_same_professors'
+export type CourseWithWorkload = Partial<
+  Pick<Courses, 'average_workload' | 'average_workload_same_professors'>
 >;
 
 export function getWorkloadRatings(
@@ -225,7 +223,9 @@ export function getWorkloadRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-export type CourseWithProfRatings = Pick<Courses, 'average_professor_rating'>;
+export type CourseWithProfRatings = Partial<
+  Pick<Courses, 'average_professor_rating'>
+>;
 
 export function getProfessorRatings(
   course: CourseWithProfRatings,
@@ -321,7 +321,7 @@ function getAttributeValue(
 ) {
   switch (key) {
     case 'friend':
-      return numFriends[`${l.season_code}${l.crn}`]?.size ?? 0;
+      return numFriends[`${l.course.season_code}${l.crn}`]?.size ?? 0;
     case 'overall':
       return getOverallRatings(l.course, 'stat');
     case 'workload':
@@ -333,12 +333,12 @@ function getAttributeValue(
     case 'location':
       return toLocationsSummary(l.course);
     case 'course_code':
-    case 'season_code':
-    case 'section':
       return l[key];
     case 'title':
     case 'average_professor_rating':
     case 'average_gut_rating':
+    case 'season_code':
+    case 'section':
     default:
       // || is intentional: 0 also means nonexistence
       return l.course[key] || null;

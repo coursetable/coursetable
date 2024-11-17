@@ -14,17 +14,13 @@ import { linkDataToCourses, getSeasonFromLink } from '../../utilities/course';
 function WorksheetCalendar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
-  const { courses, curSeason, changeSeason } = useWorksheet();
+  const { courses, viewedSeason, changeViewedSeason } = useWorksheet();
 
   const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents(
-      'rbc',
-      linkCourses.length > 0 ? linkCourses : courses,
-      curSeason,
-    );
+    const parsedCourses = getCalendarEvents('rbc', linkCourses.length > 0 ? linkCourses : courses, viewedSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -47,7 +43,7 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, linkCourses, curSeason]);
+  }, [courses, linkCourses, viewedSeason]);
 
   const {
     loading: coursesLoading,
@@ -59,9 +55,9 @@ function WorksheetCalendar() {
     const data = searchParams.get('ws');
     if (!data) return;
     console.log('effect');
-    const courseObjects = linkDataToCourses(courseData, curSeason, data);
+    const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
     setLinkCourses(courseObjects);
-    changeSeason(getSeasonFromLink(data));
+    changeViewedSeason(getSeasonFromLink(data));
     // import courses
   }, [coursesLoading]);
 
@@ -81,7 +77,7 @@ function WorksheetCalendar() {
         setSearchParams((prev) => {
           prev.set(
             'course-modal',
-            `${event.listing.season_code}-${event.listing.crn}`,
+            `${event.listing.course.season_code}-${event.listing.crn}`,
           );
           return prev;
         });

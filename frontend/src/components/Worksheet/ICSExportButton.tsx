@@ -8,13 +8,13 @@ export default function ICSExportButton({
 }: {
   linkCourses: WorksheetCourse[];
 }) {
-  const { curSeason, courses } = useWorksheet();
+  const { viewedSeason, courses } = useWorksheet();
 
   const exportICS = () => {
     const events = getCalendarEvents(
       'ics',
       linkCourses.length != 0 ? linkCourses : courses,
-      curSeason,
+      viewedSeason,
     );
     // Error already reported
     if (events.length === 0) return;
@@ -42,7 +42,7 @@ ${events.join('\n')}
 END:VCALENDAR`;
     // Download to user's computer
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, `${curSeason}_worksheet.ics`, { autoBom: false });
+    FileSaver.saveAs(blob, `${viewedSeason}_worksheet.ics`, { autoBom: false });
   };
 
   return (
