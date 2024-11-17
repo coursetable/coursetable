@@ -85,22 +85,34 @@ export function NavbarWorksheetSearch() {
           List
         </ToggleButton>
       </ToggleButtonGroup>
-      {!searchParams.get("ws") ? <>
-      <SeasonDropdown mobile={false} />
-      <WorksheetNumDropdown mobile={false} />
-      <FriendsDropdown
-        mobile={false}
-        removeFriend={removeFriendWithConfirmation}
-      />
-      <AddFriendDropdown
-        mobile={false}
-        removeFriend={removeFriendWithConfirmation}
-      />
-      </> : <>
-      <div className={styles.wide}>
-      <Button variant="primary" onClick={() => {setSearchParams({}); window.location.reload()}}>Exit</Button>
-      </div>
-      </>}
+      {!searchParams.get('ws') ? (
+        <>
+          <SeasonDropdown mobile={false} />
+          <WorksheetNumDropdown mobile={false} />
+          <FriendsDropdown
+            mobile={false}
+            removeFriend={removeFriendWithConfirmation}
+          />
+          <AddFriendDropdown
+            mobile={false}
+            removeFriend={removeFriendWithConfirmation}
+          />
+        </>
+      ) : (
+        <>
+          <div className={styles.wide}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setSearchParams({});
+                window.location.reload();
+              }}
+            >
+              Exit
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

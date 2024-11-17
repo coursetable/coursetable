@@ -16,24 +16,21 @@ function WorksheetList() {
     numFriends,
   } = useSearch();
 
-  const worksheetData = useMemo(
-    () => {
-      if (linkCourses.length == 0) {
-        return sortCourses(
-            courses.map((course) => course.listing),
-            { key: selectSortBy.value.value, type: sortOrder.value },
-            numFriends,
-          )
-      } else {
-        return sortCourses(
-          linkCourses.map((course) => course.listing),
-          { key: selectSortBy.value.value, type: sortOrder.value },
-          numFriends,
-        )
-      }
-    },
-    [selectSortBy, sortOrder, courses, linkCourses, numFriends],
-  );
+  const worksheetData = useMemo(() => {
+    if (linkCourses.length == 0) {
+      return sortCourses(
+        courses.map((course) => course.listing),
+        { key: selectSortBy.value.value, type: sortOrder.value },
+        numFriends,
+      );
+    } else {
+      return sortCourses(
+        linkCourses.map((course) => course.listing),
+        { key: selectSortBy.value.value, type: sortOrder.value },
+        numFriends,
+      );
+    }
+  }, [selectSortBy, sortOrder, courses, linkCourses, numFriends]);
 
   const {
     loading: coursesLoading,
@@ -42,11 +39,11 @@ function WorksheetList() {
   } = useCourseData([curSeason]);
 
   useEffect(() => {
-    const data = searchParams.get("ws");
+    const data = searchParams.get('ws');
     if (!data) return;
     const courseObjects = linkDataToCourses(courseData, curSeason, data);
     setLinkCourses(courseObjects);
-  }, [])
+  }, []);
 
   return (
     <Results

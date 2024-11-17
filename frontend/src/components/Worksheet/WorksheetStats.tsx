@@ -12,10 +12,10 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   isDiscussionSection,
-  linkDataToCourses
+  linkDataToCourses,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
-// import LZMA from 'lzma-web';
+import { compressToEncodedURIComponent } from 'lz-string';
 
 import styles from './WorksheetStats.module.css';
 
@@ -109,23 +109,25 @@ export default function WorksheetStats() {
   async function handleExport(courses: WorksheetCourse[]) {
     let wsSerial = `${curSeason}`;
     for (const { crn, listing, hidden, color } of courses) {
-      const courseSerial = `${crn}_${color}_${hidden ? "t" : "f"}`;
-      if (wsSerial != "") {
-        wsSerial += "|";
+      const courseSerial = `${crn}_${color}_${hidden ? 't' : 'f'}`;
+      if (wsSerial != '') {
+        wsSerial += '|';
       }
       wsSerial += courseSerial;
     }
-  
+
     if (!navigator.clipboard) {
       throw new Error("Browser don't have support for native clipboard.");
     }
-  
+
     // future: LZMA compression
     //const base64: string = btoa(wsSerial);
     //const compressed = await lzma.compress(wsSerial, 9);
     //const binaryCompressed = Array.from(compressed, (byte) => String.fromCodePoint(byte+128)).join("")
-    await navigator.clipboard.writeText(`https://localhost:3000/worksheet?ws=${btoa(wsSerial)}`);
-    console.log("Copied!");
+    await navigator.clipboard.writeText(
+      `https://localhost:3000/worksheet?ws=${compressToEncodedURIComponent(wsSerial)}`,
+    );
+    console.log('Copied!');
     setCopied(true);
     setTimeout(() => setCopied(false), 1000);
   }
@@ -137,15 +139,17 @@ export default function WorksheetStats() {
   } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
-    const data = searchParams.get("ws");
+    const data = searchParams.get('ws');
     if (!data) return;
-    console.log("effect")
+    console.log('effect');
     const courseObjects = linkDataToCourses(courseData, curSeason, data);
     setLinkCourses(courseObjects);
     // import courses
-  }, [coursesLoading])
+  }, [coursesLoading]);
 
-  for (const { listing, hidden } of (linkCourses.length == 0 ? courses : linkCourses)) {
+  for (const { listing, hidden } of linkCourses.length == 0
+    ? courses
+    : linkCourses) {
     const alreadyCounted = listing.course.listings.some((l) =>
       countedCourseCodes.has(l.course_code),
     );
@@ -237,18 +241,37 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer}></div>
             <dl>
-            {searchParams.get("ws") ? (
-              <div className={styles.wide}>
-                <dt>Viewing exported worksheet</dt>
-                <Button variant="primary" onClick={() => {setSearchParams({}); window.location.reload()}}>Exit</Button>
-              </div>
-            ) : (
-              <div className={styles.wide}>
-                <dt>{copied ? "Copied!" : (courses.length == 0 ? "Nothing to export" : "Export Worksheet to URL")}</dt>
-                <Button variant="primary" disabled={courses.length == 0} onClick={() => handleExport(courses)}>Go</Button>
-              </div>
-            )}
-            
+              {searchParams.get('ws') ? (
+                <div className={styles.wide}>
+                  <dt>Viewing exported worksheet</dt>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      setSearchParams({});
+                      window.location.reload();
+                    }}
+                  >
+                    Exit
+                  </Button>
+                </div>
+              ) : (
+                <div className={styles.wide}>
+                  <dt>
+                    {copied
+                      ? 'Copied!'
+                      : courses.length == 0
+                        ? 'Nothing to export'
+                        : 'Export Worksheet to URL'}
+                  </dt>
+                  <Button
+                    variant="primary"
+                    disabled={courses.length == 0}
+                    onClick={() => handleExport(courses)}
+                  >
+                    Go
+                  </Button>
+                </div>
+              )}
             </dl>
           </div>
         </div>

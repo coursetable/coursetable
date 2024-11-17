@@ -9,7 +9,11 @@ import GCalIcon from '../../images/gcal.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
 
-function GoogleCalendarButton({linkCourses}: {linkCourses: WorksheetCourse[]}): React.JSX.Element {
+function GoogleCalendarButton({
+  linkCourses,
+}: {
+  linkCourses: WorksheetCourse[];
+}): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
   const { curSeason, courses } = useWorksheet();
@@ -63,7 +67,11 @@ function GoogleCalendarButton({linkCourses}: {linkCourses: WorksheetCourse[]}): 
           }),
         );
       }
-      const events = getCalendarEvents('gcal', (linkCourses.length != 0 ? linkCourses : courses), curSeason);
+      const events = getCalendarEvents(
+        'gcal',
+        linkCourses.length != 0 ? linkCourses : courses,
+        curSeason,
+      );
       await Promise.all(
         events.map(async (event) => {
           try {

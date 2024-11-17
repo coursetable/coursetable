@@ -2,7 +2,7 @@
 import { weekdays } from './constants';
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
-import { CourseData } from '../contexts/ferryContext'
+import { CourseData } from '../contexts/ferryContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type { BRAND } from 'zod';
 import type {
@@ -11,6 +11,7 @@ import type {
   CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import { decompressFromEncodedURIComponent } from 'lz-string';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -457,41 +458,44 @@ export const toExponential = (number: number): number => 1.01 ** number;
 export const toLinear = (number: number): number =>
   Math.log(number) / Math.log(1.01);
 
-
 /**
  * Create array of WorksheetCourses from serialized link data
  */
-export const linkDataToCourses = (courseData: CourseData, curSeason: string & BRAND<"season">, data: string): WorksheetCourse[] => {
-  const serial = atob(data);
-  const courseSerials = serial.split("|");
+export const linkDataToCourses = (
+  courseData: CourseData,
+  curSeason: string & BRAND<'season'>,
+  data: string,
+): WorksheetCourse[] => {
+  const serial = decompressFromEncodedURIComponent(data);
+  const courseSerials = serial.split('|');
   console.log(courseSerials);
-  const linkSeason = courseSerials[0] as string & BRAND<"season">
-  const courseObjects: WorksheetCourse[] = []
+  const linkSeason = courseSerials[0] as string & BRAND<'season'>;
+  const courseObjects: WorksheetCourse[] = [];
   for (const course of courseSerials.slice(1)) {
-    const components = course.split("_");  // crn, color, t/f for hidden
+    const components = course.split('_'); // crn, color, t/f for hidden
     const crn = Number(components[0]) || 0;
-    const hidden = components[2] == "t" ? true : false;
+    const hidden = components[2] == 't' ? true : false;
     const seasonCourses = courseData[linkSeason];
-    console.log(seasonCourses)
-    const seasonCourseKeys = seasonCourses?.data.entries() || []
+    console.log(seasonCourses);
+    const seasonCourseKeys = seasonCourses?.data.entries() || [];
     for (const [crnKey, listingVal] of seasonCourseKeys) {
       const crnNum = crnKey as number;
       if (crn == crnNum) {
         courseObjects.push({
           crn: crnKey,
-          color: components[1] || "",
+          color: components[1] || '',
           listing: listingVal,
-          hidden: hidden
-        })
+          hidden: hidden,
+        });
       }
     }
   }
-  console.log(courseObjects)
-  return courseObjects
-}
+  console.log(courseObjects);
+  return courseObjects;
+};
 
-export const getSeasonFromLink = (data: string): string & BRAND<"season"> => {
-  const serial = atob(data);
-  const courseSerials = serial.split("|");
-  return courseSerials[0] as string & BRAND<"season">
-}
+export const getSeasonFromLink = (data: string): string & BRAND<'season'> => {
+  const serial = decompressFromEncodedURIComponent(data);
+  const courseSerials = serial.split('|');
+  return courseSerials[0] as string & BRAND<'season'>;
+};

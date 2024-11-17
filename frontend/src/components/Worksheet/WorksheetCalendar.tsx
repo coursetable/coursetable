@@ -20,7 +20,11 @@ function WorksheetCalendar() {
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents('rbc', linkCourses.length > 0 ? linkCourses : courses, curSeason);
+    const parsedCourses = getCalendarEvents(
+      'rbc',
+      linkCourses.length > 0 ? linkCourses : courses,
+      curSeason,
+    );
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -52,14 +56,14 @@ function WorksheetCalendar() {
   } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
-    const data = searchParams.get("ws");
+    const data = searchParams.get('ws');
     if (!data) return;
-    console.log("effect")
+    console.log('effect');
     const courseObjects = linkDataToCourses(courseData, curSeason, data);
     setLinkCourses(courseObjects);
     changeSeason(getSeasonFromLink(data));
     // import courses
-  }, [coursesLoading])
+  }, [coursesLoading]);
 
   return (
     <Calendar
