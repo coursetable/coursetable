@@ -266,7 +266,7 @@ export const getUserWorksheet = async (
     evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
-    data: (netId in allWorksheets)? allWorksheets[netId] : {},
+    data: netId in allWorksheets ? allWorksheets[netId] : {},
   });
 };
 

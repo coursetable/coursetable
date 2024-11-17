@@ -16,10 +16,14 @@ export function worksheetCoursesToWorksheets(
   for (const course of worksheetCourses) {
     // As worksheet 0 is not present in the DB, but we must return
     // something for it for courses in worksheet 0 to map properly
-    if(course.worksheetNumber == 0) {
-      mappedWsMetadata[course.netId] ??= {}
+    if (course.worksheetNumber === 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      mappedWsMetadata[course.netId] ??= {};
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       mappedWsMetadata[course.netId]![course.season] ??= {};
-      mappedWsMetadata[course.netId]![course.season]![0] ??= {worksheetName: "Main Worksheet"};
+      mappedWsMetadata[course.netId]![course.season]![0] = {
+        worksheetName: 'Main Worksheet',
+      };
     }
     if (
       !mappedWsMetadata[course.netId]?.[course.season]?.[course.worksheetNumber]
