@@ -13,6 +13,7 @@ import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
+import ff from '../images/headshots/filippo-fonseca.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -114,6 +115,15 @@ function About() {
       links: {
         linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
         github: 'https://github.com/Etherite1',
+      },
+    },
+    {
+      name: 'Filippo Fonseca',
+      image: ff,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/filippo-fonseca/',
+        github: 'https://github.com/filippo-fonseca',
       },
     },
   ];
