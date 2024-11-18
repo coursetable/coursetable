@@ -114,6 +114,7 @@ function CourseModal() {
   };
   const hide = () => {
     setHistory([]);
+    setProfessorView(null);
     setView('overview');
     setSearchParams((prev) => {
       prev.delete('course-modal');
