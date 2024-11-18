@@ -124,6 +124,7 @@ function About() {
       links: {
         linkedin: 'https://www.linkedin.com/in/filippo-fonseca/',
         github: 'https://github.com/filippo-fonseca',
+        website: 'https://filippofonseca.com/',
       },
     },
   ];
