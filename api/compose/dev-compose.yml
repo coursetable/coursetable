@@ -64,7 +64,7 @@ services:
       POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD?password}
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres -h 127.0.0.1']
-      interval: 2s
+      interval: 1s
       timeout: 10s
       retries: 100
     volumes:
