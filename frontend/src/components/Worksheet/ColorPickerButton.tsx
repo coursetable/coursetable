@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdEdit } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
@@ -120,7 +120,7 @@ function ColorPickerButton({
   readonly className?: string;
 }) {
   const userRefresh = useStore((state) => state.userRefresh);
-  const { curSeason, worksheetNumber } = useWorksheet();
+  const { viewedSeason, viewedWorksheetNumber } = useWorksheet();
   const [open, setOpen] = useState(false);
   const [newColor, setNewColor] = useState(event.color);
   const onClose = () => {
@@ -136,18 +136,27 @@ function ColorPickerButton({
         e.preventDefault();
       }}
     >
-      <button
-        type="button"
-        className={className}
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          setOpen(true);
-        }}
-        aria-label="Change color"
+      <OverlayTrigger
+        placement="bottom"
+        overlay={(props) => (
+          <Tooltip id="button-tooltip" {...props}>
+            <small>Change color</small>
+          </Tooltip>
+        )}
       >
-        <MdEdit color="var(--color-text-dark)" />
-      </button>
+        <button
+          type="button"
+          className={className}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setOpen(true);
+          }}
+          aria-label="Change color"
+        >
+          <MdEdit color="var(--color-text-dark)" />
+        </button>
+      </OverlayTrigger>
 
       <Modal show={open} onHide={onClose} centered>
         <Modal.Body className={styles.modalBody}>
@@ -163,9 +172,9 @@ function ColorPickerButton({
             onClick={async () => {
               await updateWorksheetCourses({
                 action: 'update',
-                season: curSeason,
+                season: viewedSeason,
                 crn: event.listing.crn,
-                worksheetNumber,
+                worksheetNumber: viewedWorksheetNumber,
                 color: newColor,
               });
               await userRefresh();

@@ -5,15 +5,10 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useShallow } from 'zustand/react/shallow';
-import { seasons, useWorksheetInfo } from './ferryContext';
+import { seasons as allSeasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
 import { CUR_SEASON } from '../config';
-import {
-  toggleCourseHidden,
-  type UserWorksheets,
-  type CatalogListing,
-} from '../queries/api';
+import type { UserWorksheets, CatalogListing } from '../queries/api';
 import type { Season, Crn, NetId } from '../queries/graphql-types';
 import { useStore } from '../store';
 import { useSessionStorageState } from '../utilities/browserStorage';
@@ -29,9 +24,18 @@ export type WorksheetCourse = {
 
 type Store = {
   // These define which courses the store contains
-  person: 'me' | NetId;
-  curSeason: Season;
-  worksheetNumber: number;
+  viewedPerson: 'me' | NetId;
+  viewedSeason: Season;
+  viewedWorksheetNumber: number;
+  changeViewedPerson: (newPerson: 'me' | NetId) => void;
+  changeViewedSeason: (seasonCode: Season) => void;
+  changeViewedWorksheetNumber: (worksheetNumber: number) => void;
+
+  // Affect visual display
+  worksheetView: WorksheetView;
+  hoverCourse: Crn | null;
+  changeWorksheetView: (view: WorksheetView) => void;
+  setHoverCourse: React.Dispatch<React.SetStateAction<Crn | null>>;
 
   // These are used to select the worksheet
   seasonCodes: Season[];
@@ -39,35 +43,36 @@ type Store = {
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
-  hoverCourse: Crn | null;
-  worksheetView: WorksheetView;
   worksheetLoading: boolean;
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   worksheetError: {} | null;
-  changeSeason: (seasonCode: Season | null) => void;
-  changeWorksheet: (worksheetNumber: number) => void;
-  handlePersonChange: (newPerson: 'me' | NetId) => void;
-  setHoverCourse: React.Dispatch<React.SetStateAction<Crn | null>>;
-  handleWorksheetView: (view: WorksheetView) => void;
-  toggleCourse: (crn: Crn | 'all', hidden: boolean) => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
+
+function seasonsWithDataFirst(
+  seasons: Season[],
+  worksheets: UserWorksheets | undefined,
+) {
+  if (!worksheets) return seasons;
+  return [...seasons].sort((a, b) => {
+    const aHasData = a in worksheets;
+    const bHasData = b in worksheets;
+    if (aHasData && !bHasData) return -1;
+    if (!aHasData && bHasData) return 1;
+    return Number(b) - Number(a);
+  });
+}
 
 export function WorksheetProvider({
   children,
 }: {
   readonly children: React.ReactNode;
 }) {
-  const { user, userRefresh } = useStore(
-    useShallow((state) => ({
-      user: state.user,
-      userRefresh: state.userRefresh,
-    })),
-  );
+  const user = useStore((state) => state.user);
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
-    'person',
+    'viewedPerson',
     'me',
   );
 
@@ -82,22 +87,23 @@ export function WorksheetProvider({
     return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
   }, [user.worksheets, user.friends, viewedPerson]);
 
-  // TODO: restrict to only the seasons with data
-  const seasonCodes = seasons;
-  const [curSeason, setCurSeason] = useSessionStorageState(
-    'curSeason',
+  // Maybe seasons without data should be disabled/hidden
+  const seasonCodes = useMemo(
+    () => seasonsWithDataFirst(allSeasons, user.worksheets),
+    [user.worksheets],
+  );
+  const [viewedSeason, setViewedSeason] = useSessionStorageState(
+    'viewedSeason',
     CUR_SEASON,
   );
-  const [worksheetNumber, setWorksheetNumber] = useSessionStorageState(
-    'worksheetNumber',
-    0,
-  );
+  const [viewedWorksheetNumber, setViewedWorksheetNumber] =
+    useSessionStorageState('viewedWorksheetNumber', 0);
 
   const {
     loading: worksheetLoading,
     error: worksheetError,
     data: courses,
-  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
+  } = useWorksheetInfo(curWorksheet, viewedSeason, viewedWorksheetNumber);
 
   // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
@@ -109,20 +115,7 @@ export function WorksheetProvider({
     [],
   );
 
-  const toggleCourse = useCallback(
-    async (crn: Crn | 'all', hidden: boolean) => {
-      await toggleCourseHidden({
-        season: curSeason,
-        worksheetNumber,
-        crn: crn === 'all' ? courses.map((course) => course.listing.crn) : crn,
-        hidden,
-      });
-      await userRefresh();
-    },
-    [courses, curSeason, userRefresh, worksheetNumber],
-  );
-
-  const handleWorksheetView = useCallback(
+  const changeWorksheetView = useCallback(
     (view: WorksheetView) => {
       setWorksheetView(view);
       // Scroll back to top when changing views
@@ -131,53 +124,19 @@ export function WorksheetProvider({
     [setWorksheetView],
   );
 
-  const changeSeason = useCallback(
-    (seasonCode: Season | null) => {
-      if (seasonCode === null) return;
-      setCurSeason(seasonCode);
-    },
-    [setCurSeason],
-  );
-
-  const changeWorksheet = useCallback(
-    (newNumber: number) => {
-      setWorksheetNumber(newNumber);
-    },
-    [setWorksheetNumber],
-  );
-
-  const handlePersonChange = useCallback(
+  const changeViewedPerson = useCallback(
     (newPerson: 'me' | NetId) => {
-      changeWorksheet(0);
+      setViewedWorksheetNumber(0);
       setViewedPerson(newPerson);
     },
-    [setViewedPerson, changeWorksheet],
+    [setViewedPerson, setViewedWorksheetNumber],
   );
 
   const store = useMemo(
     () => ({
       seasonCodes,
-      curSeason,
-      worksheetNumber,
-      person: viewedPerson,
-      courses,
-      hoverCourse,
-      worksheetView,
-      worksheetLoading,
-      worksheetError,
-      worksheetOptions,
-
-      changeSeason,
-      handlePersonChange,
-      setHoverCourse,
-      handleWorksheetView,
-      toggleCourse,
-      changeWorksheet,
-    }),
-    [
-      seasonCodes,
-      curSeason,
-      worksheetNumber,
+      viewedSeason,
+      viewedWorksheetNumber,
       viewedPerson,
       courses,
       hoverCourse,
@@ -185,12 +144,28 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       worksheetOptions,
-      changeSeason,
-      handlePersonChange,
+
+      changeViewedSeason: setViewedSeason,
+      changeViewedPerson,
       setHoverCourse,
-      handleWorksheetView,
-      toggleCourse,
-      changeWorksheet,
+      changeWorksheetView,
+      changeViewedWorksheetNumber: setViewedWorksheetNumber,
+    }),
+    [
+      seasonCodes,
+      viewedSeason,
+      viewedWorksheetNumber,
+      viewedPerson,
+      courses,
+      hoverCourse,
+      worksheetView,
+      worksheetLoading,
+      worksheetError,
+      worksheetOptions,
+      setViewedSeason,
+      changeViewedPerson,
+      changeWorksheetView,
+      setViewedWorksheetNumber,
     ],
   );
 

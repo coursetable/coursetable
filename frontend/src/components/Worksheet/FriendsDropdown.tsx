@@ -18,13 +18,13 @@ function FriendsDropdownMobile({
   readonly options: Option<NetId | 'me'>[];
   readonly viewedPerson: Option<NetId> | null;
 }) {
-  const { handlePersonChange } = useWorksheet();
+  const { changeViewedPerson } = useWorksheet();
   return (
     <DropdownButton
       variant="primary"
       title={viewedPerson?.label ?? "Friends' worksheets"}
       onSelect={(p) => {
-        if (p) handlePersonChange(p as NetId | 'me');
+        if (p) changeViewedPerson(p as NetId | 'me');
       }}
     >
       {[{ value: 'me', label: 'Me' }, ...options].map(({ value, label }) => (
@@ -56,14 +56,14 @@ function FriendsDropdownDesktop({
   readonly viewedPerson: Option<NetId> | null;
   readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 }) {
-  const { handlePersonChange } = useWorksheet();
+  const { changeViewedPerson } = useWorksheet();
   return (
     <Popout
       buttonText="Friends' courses"
       displayOptionLabel
       selectedOptions={viewedPerson}
       onReset={() => {
-        handlePersonChange('me');
+        changeViewedPerson('me');
       }}
     >
       <PopoutSelect<Option<NetId | 'me'>, false>
@@ -72,7 +72,7 @@ function FriendsDropdownDesktop({
         value={viewedPerson}
         options={options}
         onChange={(selectedOption) => {
-          handlePersonChange(selectedOption?.value ?? 'me');
+          changeViewedPerson(selectedOption?.value ?? 'me');
         }}
         noOptionsMessage={() => 'No friends found'}
         components={{
@@ -128,13 +128,16 @@ function FriendsDropdown({
       ) => Promise<void>;
     }) {
   const user = useStore((state) => state.user);
-  const { person } = useWorksheet();
+  const { viewedPerson } = useWorksheet();
 
-  const viewedPerson = useMemo(() => {
+  const viewedPersonOption = useMemo(() => {
     // I don't think the second condition is possible
-    if (person === 'me' || !user.friends?.[person]) return null;
-    return { value: person, label: user.friends[person].name ?? person };
-  }, [person, user.friends]);
+    if (viewedPerson === 'me' || !user.friends?.[viewedPerson]) return null;
+    return {
+      value: viewedPerson,
+      label: user.friends[viewedPerson].name ?? viewedPerson,
+    };
+  }, [viewedPerson, user.friends]);
 
   // List of friend options. Initialize with me option
   const options = useMemo(() => {
@@ -153,13 +156,16 @@ function FriendsDropdown({
   }, [user.friends]);
   if (mobile) {
     return (
-      <FriendsDropdownMobile options={options} viewedPerson={viewedPerson} />
+      <FriendsDropdownMobile
+        options={options}
+        viewedPerson={viewedPersonOption}
+      />
     );
   }
   return (
     <FriendsDropdownDesktop
       options={options}
-      viewedPerson={viewedPerson}
+      viewedPerson={viewedPersonOption}
       removeFriend={removeFriend}
     />
   );

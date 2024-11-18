@@ -269,6 +269,9 @@ const targetTypes = {
     'info-attributes',
     'subjects',
     'professor-names',
+    'listings.subjects',
+    'listings.course-codes',
+    'listings.schools',
   ] as const),
   boolean: new Set([
     'cancelled',
@@ -357,12 +360,12 @@ export function SearchProvider({
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { worksheetNumber } = useWorksheet();
+  const { viewedWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     user.worksheets,
     processedSeasons,
-    worksheetNumber,
+    viewedWorksheetNumber,
   );
 
   const queryEvaluator = useMemo(
@@ -400,18 +403,13 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(
-                listing.season_code,
-                listing.crn,
-                worksheetNumber,
-                user.worksheets,
-              ) &&
+              !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
             return isGraduate(listing);
           case 'discussion':
-            return isDiscussionSection(listing);
+            return isDiscussionSection(listing.course);
           case 'fysem':
             return listing.course.fysem !== false;
           case 'colsem':
@@ -420,7 +418,7 @@ export function SearchProvider({
           case 'location':
             return toLocationsSummary(listing.course);
           case 'season':
-            return listing.season_code;
+            return listing.course.season_code;
           case 'professor-names':
             // "No processors" is displayed in catalog as "TBA"
             // so it seems easiest to make Quist reflect this reality, although
@@ -436,6 +434,12 @@ export function SearchProvider({
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case 'number':
             return Number(listing.number.replace(/\D/gu, ''));
+          case 'listings.subjects':
+            return listing.course.listings.map((l) => l.subject);
+          case 'listings.course-codes':
+            return listing.course.listings.map((l) => l.course_code);
+          case 'listings.schools':
+            return listing.course.listings.map((l) => l.school);
           case 'subject':
           case 'school':
             return listing[key];
@@ -453,7 +457,12 @@ export function SearchProvider({
             return listing.course[key];
         }
       }),
-    [searchDescription.value, worksheetInfo, worksheetNumber, user.worksheets],
+    [
+      searchDescription.value,
+      worksheetInfo,
+      viewedWorksheetNumber,
+      user.worksheets,
+    ],
   );
 
   const quistPredicate = useMemo(() => {
@@ -550,17 +559,12 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(
-            listing.season_code,
-            listing.crn,
-            worksheetNumber,
-            user.worksheets,
-          ) &&
+          !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;
 
-        if (hideDiscussionSections.value && isDiscussionSection(listing))
+        if (hideDiscussionSections.value && isDiscussionSection(listing.course))
           return false;
 
         if (hideFirstYearSeminars.value && listing.course.fysem !== false)
@@ -688,7 +692,7 @@ export function SearchProvider({
       numBounds,
       hideCancelled.value,
       hideConflicting.value,
-      worksheetNumber,
+      viewedWorksheetNumber,
       user.worksheets,
       worksheetInfo,
       hideDiscussionSections.value,
