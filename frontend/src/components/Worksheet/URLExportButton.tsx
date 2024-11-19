@@ -26,7 +26,9 @@ export default function URLExportButton() {
     await navigator.clipboard.writeText(
       `${window.location.origin}/worksheet?ws=${compressToEncodedURIComponent(JSON.stringify(payload))}`,
     );
-    toast.success('Worksheet copied to clipboard as URL');
+    toast.success(
+      'Worksheet copied to clipboard as URL! You can share this worksheet with others. Paste the link into the address bar to view the worksheet.',
+    );
   }
 
   return (
