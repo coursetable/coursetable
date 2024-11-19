@@ -8,7 +8,7 @@ import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
-import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
@@ -103,19 +103,17 @@ export function NavbarWorksheetSearch() {
           />
         </>
       ) : (
-        <>
-          <div className={styles.wide}>
-            <Button
-              variant="primary"
-              onClick={() => {
-                setSearchParams({});
-                window.location.reload();
-              }}
-            >
-              Exit
-            </Button>
-          </div>
-        </>
+        <div>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setSearchParams({});
+              window.location.reload();
+            }}
+          >
+            Exit
+          </Button>
+        </div>
       )}
     </div>
   );

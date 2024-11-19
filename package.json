@@ -50,8 +50,5 @@
     "typescript": "~5.6.3",
     "typescript-eslint": "^8.13.0",
     "typescript-plugin-css-modules": "^5.1.0"
-  },
-  "dependencies": {
-    "lz-string": "^1.5.0"
   }
 }

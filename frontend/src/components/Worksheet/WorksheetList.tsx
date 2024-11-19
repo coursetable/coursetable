@@ -1,13 +1,16 @@
 import { useMemo, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useSearch } from '../../contexts/searchContext';
-import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
 import { useCourseData } from '../../contexts/ferryContext';
+import { useSearch } from '../../contexts/searchContext';
+import {
+  useWorksheet,
+  type WorksheetCourse,
+} from '../../contexts/worksheetContext';
 import { sortCourses, linkDataToCourses } from '../../utilities/course';
 import Results from '../Search/Results';
 
 function WorksheetList() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
   const { courses, worksheetLoading, viewedSeason } = useWorksheet();
 
@@ -17,25 +20,24 @@ function WorksheetList() {
   } = useSearch();
 
   const worksheetData = useMemo(() => {
-    if (linkCourses.length == 0) {
+    if (linkCourses.length === 0) {
       return sortCourses(
         courses.map((course) => course.listing),
         { key: selectSortBy.value.value, type: sortOrder.value },
         numFriends,
       );
-    } else {
-      return sortCourses(
-        linkCourses.map((course) => course.listing),
-        { key: selectSortBy.value.value, type: sortOrder.value },
-        numFriends,
-      );
     }
+    return sortCourses(
+      linkCourses.map((course) => course.listing),
+      { key: selectSortBy.value.value, type: sortOrder.value },
+      numFriends,
+    );
   }, [selectSortBy, sortOrder, courses, linkCourses, numFriends]);
 
   const {
-    loading: coursesLoading,
+    // TODO: unused: loading: coursesLoading,
     courses: courseData,
-    error: courseLoadError,
+    // TODO: unused: error: courseLoadError,
   } = useCourseData([viewedSeason]);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ function WorksheetList() {
     if (!data) return;
     const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
     setLinkCourses(courseObjects);
-  }, []);
+  }, [courseData, searchParams, viewedSeason]);
 
   return (
     <Results

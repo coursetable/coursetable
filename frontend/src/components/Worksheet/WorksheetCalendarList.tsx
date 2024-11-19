@@ -16,33 +16,36 @@ import { TbCalendarDown } from 'react-icons/tb';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
 import { useCourseData, seasons } from '../../contexts/ferryContext';
-import { linkDataToCourses } from '../../utilities/course';
+import {
+  useWorksheet,
+  type WorksheetCourse,
+} from '../../contexts/worksheetContext';
 import { setCourseHidden } from '../../queries/api';
 import { useStore } from '../../store';
+import { linkDataToCourses } from '../../utilities/course';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, viewedPerson, viewedSeason, viewedWorksheetNumber } = useWorksheet();
-  const [searchParams, ] = useSearchParams();
+  const { courses, viewedPerson, viewedSeason, viewedWorksheetNumber } =
+    useWorksheet();
+  const [searchParams] = useSearchParams();
   const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
   const userRefresh = useStore((state) => state.userRefresh);
 
   const areHidden = useMemo(() => {
-    if (linkCourses.length == 0) {
+    if (linkCourses.length === 0)
       return courses.length > 0 && courses.every((course) => course.hidden);
-    } else {
-      return linkCourses.every((course) => course.hidden);
-    }
+
+    return linkCourses.every((course) => course.hidden);
   }, [courses, linkCourses]);
 
   const {
     loading: coursesLoading,
     courses: courseData,
-    error: courseLoadError,
+    // TODO: unused: error: courseLoadError,
   } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
@@ -50,8 +53,8 @@ function WorksheetCalendarList() {
     if (!data) return;
     const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
     setLinkCourses(courseObjects);
-    // import courses
-  }, [coursesLoading]);
+    // Import courses
+  }, [courseData, coursesLoading, searchParams, viewedSeason]);
 
   // eslint-disable-next-line no-useless-assignment
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
@@ -61,7 +64,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
-            {viewedPerson === 'me' && linkCourses.length == 0 && (
+            {viewedPerson === 'me' && linkCourses.length === 0 && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -128,7 +131,7 @@ function WorksheetCalendarList() {
         </div>
       </SurfaceComponent>
       <SurfaceComponent className={styles.courseList}>
-        {linkCourses.length == 0 && courses.length > 0 && (
+        {linkCourses.length === 0 && courses.length > 0 && (
           <ListGroup variant="flush">
             {courses.map((course) => (
               <WorksheetCalendarListItem
@@ -140,7 +143,7 @@ function WorksheetCalendarList() {
             ))}
           </ListGroup>
         )}
-        {linkCourses.length == 0 && courses.length == 0 && <NoCourses />}
+        {linkCourses.length === 0 && courses.length === 0 && <NoCourses />}
         {linkCourses.length > 0 && (
           <ListGroup variant="flush">
             {linkCourses.map((course) => (
@@ -148,7 +151,7 @@ function WorksheetCalendarList() {
                 key={viewedSeason + course.crn}
                 listing={course.listing}
                 hidden={course.hidden ?? false}
-                exported={true}
+                exported
               />
             ))}
           </ListGroup>

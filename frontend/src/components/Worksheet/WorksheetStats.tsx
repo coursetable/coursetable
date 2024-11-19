@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
-import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
+import { compressToEncodedURIComponent } from 'lz-string';
 import { useCourseData, seasons } from '../../contexts/ferryContext';
+import {
+  useWorksheet,
+  type WorksheetCourse,
+} from '../../contexts/worksheetContext';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -15,11 +19,8 @@ import {
   linkDataToCourses,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
-import { compressToEncodedURIComponent } from 'lz-string';
 
 import styles from './WorksheetStats.module.css';
-
-// const lzma = new LZMA();
 
 function StatPill({
   colorMap,
@@ -95,7 +96,6 @@ export default function WorksheetStats() {
   const [copied, setCopied] = useState(false);
   const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { courses, viewedSeason } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
@@ -107,23 +107,18 @@ export default function WorksheetStats() {
   const coursesWithoutWorkload: string[] = [];
 
   async function handleExport(courses: WorksheetCourse[]) {
-    let wsSerial = `${viewedSeason}`;
-    for (const { crn, listing, hidden, color } of courses) {
+    let wsSerial = String(viewedSeason);
+    for (const { crn, hidden, color } of courses) {
       const courseSerial = `${crn}_${color}_${hidden ? 't' : 'f'}`;
-      if (wsSerial != '') {
-        wsSerial += '|';
-      }
+      if (wsSerial !== '') wsSerial += '|';
+
       wsSerial += courseSerial;
     }
 
-    if (!navigator.clipboard) {
-      throw new Error("Browser don't have support for native clipboard.");
-    }
-
-    // future: LZMA compression
-    //const base64: string = btoa(wsSerial);
-    //const compressed = await lzma.compress(wsSerial, 9);
-    //const binaryCompressed = Array.from(compressed, (byte) => String.fromCodePoint(byte+128)).join("")
+    // Future: LZMA compression
+    // const base64: string = btoa(wsSerial);
+    // const compressed = await lzma.compress(wsSerial, 9);
+    // const binaryCompressed = Array.from(compressed, (byte) => String.fromCodePoint(byte+128)).join("")
     await navigator.clipboard.writeText(
       `https://localhost:3000/worksheet?ws=${compressToEncodedURIComponent(wsSerial)}`,
     );
@@ -135,19 +130,18 @@ export default function WorksheetStats() {
   const {
     loading: coursesLoading,
     courses: courseData,
-    error: courseLoadError,
+    // TODO: unused: error: courseLoadError,
   } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
     const data = searchParams.get('ws');
     if (!data) return;
-    console.log('effect');
     const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
     setLinkCourses(courseObjects);
-    // import courses
-  }, [coursesLoading]);
+    // Import courses
+  }, [courseData, coursesLoading, searchParams, viewedSeason]);
 
-  for (const { listing, hidden } of linkCourses.length == 0
+  for (const { listing, hidden } of linkCourses.length === 0
     ? courses
     : linkCourses) {
     const alreadyCounted = listing.course.listings.some((l) =>
@@ -240,7 +234,7 @@ export default function WorksheetStats() {
                 </dd>
               </div>
             </dl>
-            <div className={styles.spacer}></div>
+            <div className={styles.spacer} />
             <dl>
               {searchParams.get('ws') ? (
                 <div className={styles.wide}>
@@ -260,13 +254,13 @@ export default function WorksheetStats() {
                   <dt>
                     {copied
                       ? 'Copied!'
-                      : courses.length == 0
+                      : courses.length === 0
                         ? 'Nothing to export'
                         : 'Export Worksheet to URL'}
                   </dt>
                   <Button
                     variant="primary"
-                    disabled={courses.length == 0}
+                    disabled={courses.length === 0}
                     onClick={() => handleExport(courses)}
                   >
                     Go

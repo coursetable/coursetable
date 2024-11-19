@@ -1,17 +1,16 @@
 // Performing various actions on the listing dictionary
+import { decompressFromEncodedURIComponent } from 'lz-string';
 import { weekdays } from './constants';
+import type { CourseData } from '../contexts/ferryContext';
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
-import { CourseData } from '../contexts/ferryContext';
 import type { Courses, Listings } from '../generated/graphql-types';
-import type { BRAND } from 'zod';
 import type {
   FriendRecord,
   UserWorksheets,
   CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
-import { decompressFromEncodedURIComponent } from 'lz-string';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -463,29 +462,29 @@ export const toLinear = (number: number): number =>
  */
 export const linkDataToCourses = (
   courseData: CourseData,
-  curSeason: string & BRAND<'season'>,
+  curSeason: Season,
   data: string,
 ): WorksheetCourse[] => {
   const serial = decompressFromEncodedURIComponent(data);
   const courseSerials = serial.split('|');
   console.log(courseSerials);
-  const linkSeason = courseSerials[0] as string & BRAND<'season'>;
+  const linkSeason = courseSerials[0] as Season;
   const courseObjects: WorksheetCourse[] = [];
   for (const course of courseSerials.slice(1)) {
-    const components = course.split('_'); // crn, color, t/f for hidden
-    const crn = Number(components[0]) || 0;
-    const hidden = components[2] == 't' ? true : false;
+    const components = course.split('_'); // Crn, color, t/f for hidden
+    const crn = Number(components[0]);
+    const hidden = components[2] === 't';
     const seasonCourses = courseData[linkSeason];
     console.log(seasonCourses);
     const seasonCourseKeys = seasonCourses?.data.entries() || [];
-    for (const [crnKey, listingVal] of seasonCourseKeys) {
+    for (const [crnKey, listing] of seasonCourseKeys) {
       const crnNum = crnKey as number;
-      if (crn == crnNum) {
+      if (crn === crnNum) {
         courseObjects.push({
           crn: crnKey,
           color: components[1] || '',
-          listing: listingVal,
-          hidden: hidden,
+          listing,
+          hidden,
         });
       }
     }
@@ -494,8 +493,8 @@ export const linkDataToCourses = (
   return courseObjects;
 };
 
-export const getSeasonFromLink = (data: string): string & BRAND<'season'> => {
+export const getSeasonFromLink = (data: string): Season => {
   const serial = decompressFromEncodedURIComponent(data);
   const courseSerials = serial.split('|');
-  return courseSerials[0] as string & BRAND<'season'>;
+  return courseSerials[0] as Season;
 };

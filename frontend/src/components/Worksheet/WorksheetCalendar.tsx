@@ -4,11 +4,13 @@ import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
-import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
 import { seasons, useCourseData } from '../../contexts/ferryContext';
+import {
+  useWorksheet,
+  type WorksheetCourse,
+} from '../../contexts/worksheetContext';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
-import { BRAND } from 'zod';
 import { linkDataToCourses, getSeasonFromLink } from '../../utilities/course';
 
 function WorksheetCalendar() {
@@ -20,7 +22,11 @@ function WorksheetCalendar() {
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents('rbc', linkCourses.length > 0 ? linkCourses : courses, viewedSeason);
+    const parsedCourses = getCalendarEvents(
+      'rbc',
+      linkCourses.length > 0 ? linkCourses : courses,
+      viewedSeason,
+    );
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -48,18 +54,22 @@ function WorksheetCalendar() {
   const {
     loading: coursesLoading,
     courses: courseData,
-    error: courseLoadError,
+    // TODO: Unused: error: courseLoadError,
   } = useCourseData(seasons.slice(1, 15));
 
   useEffect(() => {
     const data = searchParams.get('ws');
     if (!data) return;
-    console.log('effect');
     const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
     setLinkCourses(courseObjects);
     changeViewedSeason(getSeasonFromLink(data));
-    // import courses
-  }, [coursesLoading]);
+  }, [
+    changeViewedSeason,
+    courseData,
+    coursesLoading,
+    searchParams,
+    viewedSeason,
+  ]);
 
   return (
     <Calendar

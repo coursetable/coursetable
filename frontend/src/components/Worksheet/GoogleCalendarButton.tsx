@@ -4,7 +4,10 @@ import { toast } from 'react-toastify';
 import Spinner from '../../components/Spinner';
 import { academicCalendars } from '../../config';
 import { useGapi } from '../../contexts/gapiContext';
-import { useWorksheet, WorksheetCourse } from '../../contexts/worksheetContext';
+import {
+  useWorksheet,
+  type WorksheetCourse,
+} from '../../contexts/worksheetContext';
 import GCalIcon from '../../images/gcal.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
@@ -12,7 +15,7 @@ import { toSeasonString } from '../../utilities/course';
 function GoogleCalendarButton({
   linkCourses,
 }: {
-  linkCourses: WorksheetCourse[];
+  readonly linkCourses: WorksheetCourse[];
 }): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
@@ -67,7 +70,11 @@ function GoogleCalendarButton({
           }),
         );
       }
-      const events = getCalendarEvents('gcal', linkCourses.length != 0 ? linkCourses : courses, viewedSeason);
+      const events = getCalendarEvents(
+        'gcal',
+        linkCourses.length !== 0 ? linkCourses : courses,
+        viewedSeason,
+      );
       await Promise.all(
         events.map(async (event) => {
           try {

@@ -61,6 +61,7 @@
     "@types/gapi.calendar": "^3.0.11",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.throttle": "^4.1.9",
+    "@types/lz-string": "^1.5.0",
     "@types/mark.js": "^8.11.12",
     "@types/node": "^22.7.5",
     "@types/react": "^18.3.11",
