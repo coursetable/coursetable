@@ -1,3 +1,4 @@
+import { FaRegClipboard } from 'react-icons/fa';
 import { compressToEncodedURIComponent } from 'lz-string';
 import { toast } from 'react-toastify';
 import {
@@ -30,7 +31,10 @@ export default function URLExportButton() {
 
   return (
     <button type="button" onClick={handleExport}>
-      Copy worksheet as URL
+      <span style={{ height: '2rem', width: '2rem', display: 'inline-block' }}>
+        <FaRegClipboard style={{ height: '1.5rem', width: '1.5rem' }} />
+      </span>
+      &nbsp;&nbsp;Copy worksheet as URL
     </button>
   );
 }
