@@ -14,8 +14,12 @@ import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
 export function NavbarWorksheetSearch() {
-  const { worksheetView, handleWorksheetView, person, handlePersonChange } =
-    useWorksheet();
+  const {
+    worksheetView,
+    changeWorksheetView,
+    viewedPerson,
+    changeViewedPerson,
+  } = useWorksheet();
 
   const removeFriend = useStore((state) => state.removeFriend);
 
@@ -32,8 +36,8 @@ export function NavbarWorksheetSearch() {
             <LinkLikeText
               className="mx-2"
               onClick={async () => {
-                if (!isRequest && person === friendNetId)
-                  handlePersonChange('me');
+                if (!isRequest && viewedPerson === friendNetId)
+                  changeViewedPerson('me');
                 await removeFriend(friendNetId, isRequest);
                 resolve();
                 toast.dismiss(`remove-${friendNetId}`);
@@ -54,7 +58,7 @@ export function NavbarWorksheetSearch() {
           { autoClose: false, toastId: `remove-${friendNetId}` },
         );
       }),
-    [handlePersonChange, person, removeFriend],
+    [changeViewedPerson, viewedPerson, removeFriend],
   );
 
   return (
@@ -64,7 +68,7 @@ export function NavbarWorksheetSearch() {
         name="worksheet-view-toggle"
         type="radio"
         value={worksheetView}
-        onChange={(val: 'calendar' | 'list') => handleWorksheetView(val)}
+        onChange={(val: 'calendar' | 'list') => changeWorksheetView(val)}
         className={clsx(styles.toggleButtonGroup, 'ms-2 me-3')}
         data-tutorial="worksheet-2"
       >

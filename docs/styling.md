@@ -99,7 +99,7 @@ All pre-defined CSS variables already come with dark mode support.
 You should generally be able to achieve dark mode support with CSS only (because you only need to change the colors). In the rare occasion that you need to change the markup (for example, to use a different image source), you can use the `useTheme` hook:
 
 ```tsx
-import { useTheme } from 'path/to/src/contexts/themeContext';
+import { useTheme } from 'path/to/src/store';
 
 // ...
 const { theme } = useTheme();
@@ -124,6 +124,9 @@ To create different styles for different screen sizes, use the `@media` query:
   }
 }
 ```
+
+> [!NOTE]
+> Currently we are using the `(max-width: calc(768px - 0.5px))` syntax instead, until the range syntax gains more browser support.
 
 This will only apply to screens that are mobile size.
 

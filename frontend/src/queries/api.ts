@@ -245,7 +245,7 @@ const hiddenCoursesStorage = createLocalStorageSlot<{
   [seasonCode: Season]: { [crn: Crn]: boolean };
 }>('hiddenCourses');
 
-export function toggleCourseHidden({
+export function setCourseHidden({
   season,
   worksheetNumber,
   crn,
@@ -515,9 +515,9 @@ const worksheetSchema = z.object({
 });
 
 const worksheetsSchema = z.record(
-  z.string(), // season
+  z.string(), // Season
   z.record(
-    z.string(), // worksheetNumber keys
+    z.string(), // WorksheetNumber keys
     worksheetSchema,
   ),
 );

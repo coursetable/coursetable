@@ -152,7 +152,7 @@ async function fetchData(
   }
 }
 
-export async function fetchCatalog(overwrite: boolean) {
+export async function fetchCatalog(overwrite: boolean, latestN?: number) {
   try {
     const seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
       (x) => x.season_code,
@@ -173,11 +173,15 @@ export async function fetchCatalog(overwrite: boolean) {
     );
 
     // For each season, fetch all courses inside it and save
-    // (if overwrite = true or if file does not exist)
+    // (if overwrite, file does not exist, or season is one of the latest N)
 
-    const processSeasons = seasons.flatMap((season) =>
+    const processSeasons = seasons.flatMap((season, idx) =>
       (['evals', 'public'] as const).map((type) =>
-        fetchData(season, type, overwrite),
+        fetchData(
+          season,
+          type,
+          overwrite || idx >= seasons.length - (latestN ?? 0),
+        ),
       ),
     );
     await Promise.all(processSeasons);

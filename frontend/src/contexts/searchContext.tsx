@@ -386,12 +386,12 @@ export function SearchProvider({
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { worksheetNumber } = useWorksheet();
+  const { viewedWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     user.worksheets,
     processedSeasons,
-    worksheetNumber,
+    viewedWorksheetNumber,
   );
 
   const queryEvaluator = useMemo(
@@ -429,7 +429,7 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(listing, worksheetNumber, user.worksheets) &&
+              !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
@@ -439,8 +439,7 @@ export function SearchProvider({
           case 'fysem':
             return listing.course.fysem !== false;
           case 'colsem':
-            // TODO: query for colsem
-            return false;
+            return listing.course.colsem !== false;
           case 'location':
             return toLocationsSummary(listing.course);
           case 'season':
@@ -483,7 +482,12 @@ export function SearchProvider({
             return listing.course[key];
         }
       }),
-    [searchDescription.value, worksheetInfo, worksheetNumber, user.worksheets],
+    [
+      searchDescription.value,
+      worksheetInfo,
+      viewedWorksheetNumber,
+      user.worksheets,
+    ],
   );
 
   const quistPredicate = useMemo(() => {
@@ -580,7 +584,7 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(listing, worksheetNumber, user.worksheets) &&
+          !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;
@@ -741,7 +745,7 @@ export function SearchProvider({
       numBounds,
       hideCancelled.value,
       hideConflicting.value,
-      worksheetNumber,
+      viewedWorksheetNumber,
       user.worksheets,
       worksheetInfo,
       hideDiscussionSections.value,

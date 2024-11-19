@@ -6,6 +6,8 @@ Endpoints marked as "needs credentials" returns 401 with `error: "USER_NOT_FOUND
 
 Endpoints marked as "needs eval access" additionally returns 401 with `error: "USER_NO_EVALS"` when the user exists but has no evals access. Evals access can be granted after completing the challenge, or manually granted.
 
+Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"` when the request body fails to be validated.
+
 ## Challenge
 
 ### `GET` `/api/challenge/request`
