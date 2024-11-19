@@ -246,6 +246,7 @@ const areEqualFilters = (a: unknown, b: unknown): boolean => {
 
   return a === b;
 };
+
 export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
@@ -253,9 +254,12 @@ export function createFilterLink<K extends keyof Filters>(
 ): string {
   // TODO: use react-router
   const newSearch = new URLSearchParams(window.location.search);
-  console.log(value, defaultValue);
 
-  if (areEqualFilters(value, defaultValue)) {
+  if (
+    areEqualFilters(value, defaultValue) ||
+    key === 'selectSortBy' ||
+    key === 'sortOrder'
+  ) {
     newSearch.delete(key);
     return `?${newSearch.toString()}`;
   }
