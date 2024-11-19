@@ -413,8 +413,7 @@ export function SearchProvider({
           case 'fysem':
             return listing.course.fysem !== false;
           case 'colsem':
-            // TODO: query for colsem
-            return false;
+            return listing.course.colsem !== false;
           case 'location':
             return toLocationsSummary(listing.course);
           case 'season':
