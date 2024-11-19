@@ -197,6 +197,13 @@ export function WorksheetProvider({
 
   const exitExoticWorksheet = useCallback(() => {
     setExoticWorksheet(undefined);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete('ws');
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}${searchParams}`,
+    );
   }, []);
 
   const isExoticWorksheet = Boolean(exoticWorksheet);
