@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -20,8 +19,9 @@ export function NavbarWorksheetSearch() {
     changeWorksheetView,
     viewedPerson,
     changeViewedPerson,
+    isExoticWorksheet,
+    exitExoticWorksheet,
   } = useWorksheet();
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const removeFriend = useStore((state) => state.removeFriend);
 
@@ -89,7 +89,7 @@ export function NavbarWorksheetSearch() {
           List
         </ToggleButton>
       </ToggleButtonGroup>
-      {!searchParams.get('ws') ? (
+      {!isExoticWorksheet ? (
         <>
           <SeasonDropdown mobile={false} />
           <WorksheetNumDropdown mobile={false} />
@@ -104,13 +104,7 @@ export function NavbarWorksheetSearch() {
         </>
       ) : (
         <div>
-          <Button
-            variant="primary"
-            onClick={() => {
-              setSearchParams({});
-              window.location.reload();
-            }}
-          >
+          <Button variant="primary" onClick={exitExoticWorksheet}>
             Exit
           </Button>
         </div>

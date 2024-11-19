@@ -11,11 +11,9 @@ import styles from './WorksheetCalendarListItem.module.css';
 export default function WorksheetCalendarListItem({
   listing,
   hidden,
-  exported,
 }: {
   readonly listing: CatalogListing;
   readonly hidden: boolean;
-  readonly exported: boolean;
 }) {
   const target = useCourseModalLink(listing);
   const { setHoverCourse } = useWorksheet();
@@ -39,16 +37,14 @@ export default function WorksheetCalendarListItem({
         <span className={styles.courseTitle}>{listing.course.title}</span>
       </Link>
       <div className="d-flex align-items-center gap-1">
-        {!exported && (
-          <WorksheetHideButton
-            crn={listing.crn}
-            hidden={hidden}
-            className={clsx(
-              styles.hideButton,
-              !hidden && styles.hideButtonHidden,
-            )}
-          />
-        )}
+        <WorksheetHideButton
+          crn={listing.crn}
+          hidden={hidden}
+          className={clsx(
+            styles.hideButton,
+            !hidden && styles.hideButtonHidden,
+          )}
+        />
         <WorksheetToggleButton listing={listing} modal={false} />
       </div>
     </ListGroup.Item>

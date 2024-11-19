@@ -1,32 +1,22 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
-import { seasons, useCourseData } from '../../contexts/ferryContext';
-import {
-  useWorksheet,
-  type WorksheetCourse,
-} from '../../contexts/worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
-import { linkDataToCourses, getSeasonFromLink } from '../../utilities/course';
 
 function WorksheetCalendar() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
-  const { courses, viewedSeason, changeViewedSeason } = useWorksheet();
+  const [, setSearchParams] = useSearchParams();
+  const { courses, viewedSeason } = useWorksheet();
 
   const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents(
-      'rbc',
-      linkCourses.length > 0 ? linkCourses : courses,
-      viewedSeason,
-    );
+    const parsedCourses = getCalendarEvents('rbc', courses, viewedSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -49,27 +39,7 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, linkCourses, viewedSeason]);
-
-  const {
-    loading: coursesLoading,
-    courses: courseData,
-    // TODO: Unused: error: courseLoadError,
-  } = useCourseData(seasons.slice(1, 15));
-
-  useEffect(() => {
-    const data = searchParams.get('ws');
-    if (!data) return;
-    const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
-    setLinkCourses(courseObjects);
-    changeViewedSeason(getSeasonFromLink(data));
-  }, [
-    changeViewedSeason,
-    courseData,
-    coursesLoading,
-    searchParams,
-    viewedSeason,
-  ]);
+  }, [courses, viewedSeason]);
 
   return (
     <Calendar

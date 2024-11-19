@@ -1,7 +1,5 @@
 // Performing various actions on the listing dictionary
-import { decompressFromEncodedURIComponent } from 'lz-string';
 import { weekdays } from './constants';
-import type { CourseData } from '../contexts/ferryContext';
 import type { SortKeys } from '../contexts/searchContext';
 import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { Courses, Listings } from '../generated/graphql-types';
@@ -456,45 +454,3 @@ export const toExponential = (number: number): number => 1.01 ** number;
  */
 export const toLinear = (number: number): number =>
   Math.log(number) / Math.log(1.01);
-
-/**
- * Create array of WorksheetCourses from serialized link data
- */
-export const linkDataToCourses = (
-  courseData: CourseData,
-  curSeason: Season,
-  data: string,
-): WorksheetCourse[] => {
-  const serial = decompressFromEncodedURIComponent(data);
-  const courseSerials = serial.split('|');
-  console.log(courseSerials);
-  const linkSeason = courseSerials[0] as Season;
-  const courseObjects: WorksheetCourse[] = [];
-  for (const course of courseSerials.slice(1)) {
-    const components = course.split('_'); // Crn, color, t/f for hidden
-    const crn = Number(components[0]);
-    const hidden = components[2] === 't';
-    const seasonCourses = courseData[linkSeason];
-    console.log(seasonCourses);
-    const seasonCourseKeys = seasonCourses?.data.entries() || [];
-    for (const [crnKey, listing] of seasonCourseKeys) {
-      const crnNum = crnKey as number;
-      if (crn === crnNum) {
-        courseObjects.push({
-          crn: crnKey,
-          color: components[1] || '',
-          listing,
-          hidden,
-        });
-      }
-    }
-  }
-  console.log(courseObjects);
-  return courseObjects;
-};
-
-export const getSeasonFromLink = (data: string): Season => {
-  const serial = decompressFromEncodedURIComponent(data);
-  const courseSerials = serial.split('|');
-  return courseSerials[0] as Season;
-};

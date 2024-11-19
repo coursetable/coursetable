@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { compressToEncodedURIComponent } from 'lz-string';
-import { useCourseData, seasons } from '../../contexts/ferryContext';
 import {
   useWorksheet,
-  type WorksheetCourse,
+  type ExoticWorksheet,
 } from '../../contexts/worksheetContext';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
@@ -16,7 +14,6 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   isDiscussionSection,
-  linkDataToCourses,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
@@ -94,9 +91,13 @@ function NoStatsTip({
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { courses, viewedSeason } = useWorksheet();
+  const {
+    courses,
+    viewedSeason,
+    viewedWorksheetNumber,
+    isExoticWorksheet,
+    exitExoticWorksheet,
+  } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
@@ -105,45 +106,36 @@ export default function WorksheetStats() {
   const skillsAreas: string[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  async function handleExport(courses: WorksheetCourse[]) {
-    let wsSerial = String(viewedSeason);
-    for (const { crn, hidden, color } of courses) {
-      const courseSerial = `${crn}_${color}_${hidden ? 't' : 'f'}`;
-      if (wsSerial !== '') wsSerial += '|';
+  async function handleExport() {
+    const payload: ExoticWorksheet = {
+      season: viewedSeason,
+      name:
+        viewedWorksheetNumber === 0
+          ? 'Main Worksheet'
+          : `Worksheet ${viewedWorksheetNumber}`,
+      courses: courses.map((c) => ({
+        crn: c.listing.crn,
+        hidden: c.hidden ?? false,
+        color: c.color,
+      })),
+    };
 
-      wsSerial += courseSerial;
-    }
-
-    // Future: LZMA compression
-    // const base64: string = btoa(wsSerial);
-    // const compressed = await lzma.compress(wsSerial, 9);
-    // const binaryCompressed = Array.from(compressed, (byte) => String.fromCodePoint(byte+128)).join("")
     await navigator.clipboard.writeText(
-      `https://localhost:3000/worksheet?ws=${compressToEncodedURIComponent(wsSerial)}`,
+      `${window.location.origin}/worksheet?ws=${compressToEncodedURIComponent(JSON.stringify(payload))}`,
     );
-    console.log('Copied!');
     setCopied(true);
-    setTimeout(() => setCopied(false), 1000);
+    timeoutRef.current = setTimeout(() => setCopied(false), 1000);
   }
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    },
+    [],
+  );
 
-  const {
-    loading: coursesLoading,
-    courses: courseData,
-    // TODO: unused: error: courseLoadError,
-  } = useCourseData(seasons.slice(1, 15));
-
-  useEffect(() => {
-    const data = searchParams.get('ws');
-    if (!data) return;
-    const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
-    setLinkCourses(courseObjects);
-    // Import courses
-  }, [courseData, coursesLoading, searchParams, viewedSeason]);
-
-  for (const { listing, hidden } of linkCourses.length === 0
-    ? courses
-    : linkCourses) {
+  for (const { listing, hidden } of courses) {
     const alreadyCounted = listing.course.listings.some((l) =>
       countedCourseCodes.has(l.course_code),
     );
@@ -236,16 +228,10 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {searchParams.get('ws') ? (
+              {isExoticWorksheet ? (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      setSearchParams({});
-                      window.location.reload();
-                    }}
-                  >
+                  <Button variant="primary" onClick={exitExoticWorksheet}>
                     Exit
                   </Button>
                 </div>
@@ -261,7 +247,7 @@ export default function WorksheetStats() {
                   <Button
                     variant="primary"
                     disabled={courses.length === 0}
-                    onClick={() => handleExport(courses)}
+                    onClick={handleExport}
                   >
                     Go
                   </Button>

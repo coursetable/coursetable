@@ -1,5 +1,4 @@
-import { useMemo, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useMemo } from 'react';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -16,45 +15,22 @@ import { TbCalendarDown } from 'react-icons/tb';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import { useCourseData, seasons } from '../../contexts/ferryContext';
-import {
-  useWorksheet,
-  type WorksheetCourse,
-} from '../../contexts/worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { setCourseHidden } from '../../queries/api';
 import { useStore } from '../../store';
-import { linkDataToCourses } from '../../utilities/course';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, viewedPerson, viewedSeason, viewedWorksheetNumber } =
+  const { courses, viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
     useWorksheet();
-  const [searchParams] = useSearchParams();
-  const [linkCourses, setLinkCourses] = useState<WorksheetCourse[]>([]);
   const userRefresh = useStore((state) => state.userRefresh);
 
-  const areHidden = useMemo(() => {
-    if (linkCourses.length === 0)
-      return courses.length > 0 && courses.every((course) => course.hidden);
-
-    return linkCourses.every((course) => course.hidden);
-  }, [courses, linkCourses]);
-
-  const {
-    loading: coursesLoading,
-    courses: courseData,
-    // TODO: unused: error: courseLoadError,
-  } = useCourseData(seasons.slice(1, 15));
-
-  useEffect(() => {
-    const data = searchParams.get('ws');
-    if (!data) return;
-    const courseObjects = linkDataToCourses(courseData, viewedSeason, data);
-    setLinkCourses(courseObjects);
-    // Import courses
-  }, [courseData, coursesLoading, searchParams, viewedSeason]);
+  const areHidden = useMemo(
+    () => courses.length > 0 && courses.every((course) => course.hidden),
+    [courses],
+  );
 
   // eslint-disable-next-line no-useless-assignment
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
@@ -64,7 +40,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
-            {viewedPerson === 'me' && linkCourses.length === 0 && (
+            {!isReadonlyWorksheet && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -116,14 +92,10 @@ function WorksheetCalendarList() {
                 className={clsx(styles.button, 'w-100 btn')}
               >
                 <Dropdown.Item eventKey="1" as="div">
-                  <GoogleCalendarButton
-                    linkCourses={linkCourses.length > 0 ? linkCourses : []}
-                  />
+                  <GoogleCalendarButton />
                 </Dropdown.Item>
                 <Dropdown.Item eventKey="2" as="div">
-                  <ICSExportButton
-                    linkCourses={linkCourses.length > 0 ? linkCourses : []}
-                  />
+                  <ICSExportButton />
                 </Dropdown.Item>
               </DropdownButton>
             </OverlayTrigger>
@@ -131,30 +103,18 @@ function WorksheetCalendarList() {
         </div>
       </SurfaceComponent>
       <SurfaceComponent className={styles.courseList}>
-        {linkCourses.length === 0 && courses.length > 0 && (
+        {courses.length > 0 ? (
           <ListGroup variant="flush">
             {courses.map((course) => (
               <WorksheetCalendarListItem
                 key={viewedSeason + course.crn}
                 listing={course.listing}
-                hidden={false}
-                exported={false}
-              />
-            ))}
-          </ListGroup>
-        )}
-        {linkCourses.length === 0 && courses.length === 0 && <NoCourses />}
-        {linkCourses.length > 0 && (
-          <ListGroup variant="flush">
-            {linkCourses.map((course) => (
-              <WorksheetCalendarListItem
-                key={viewedSeason + course.crn}
-                listing={course.listing}
                 hidden={course.hidden ?? false}
-                exported
               />
             ))}
           </ListGroup>
+        ) : (
+          <NoCourses />
         )}
       </SurfaceComponent>
     </div>

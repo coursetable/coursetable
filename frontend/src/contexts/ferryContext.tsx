@@ -31,7 +31,7 @@ const courseDataLock = new AsyncLock();
 const catalogLoadAttempted = new Set<Season>();
 const evalsLoadAttempted = new Set<Season>();
 
-export type CourseData = {
+type CourseData = {
   [seasonCode: Season]: {
     metadata: CatalogMetadata;
     data: Map<Crn, CatalogListing>;
