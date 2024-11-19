@@ -1,13 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
-import { compressToEncodedURIComponent } from 'lz-string';
-import {
-  useWorksheet,
-  type ExoticWorksheet,
-} from '../../contexts/worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -90,14 +86,7 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const [copied, setCopied] = useState(false);
-  const {
-    courses,
-    viewedSeason,
-    viewedWorksheetNumber,
-    isExoticWorksheet,
-    exitExoticWorksheet,
-  } = useWorksheet();
+  const { courses, isExoticWorksheet, exitExoticWorksheet } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
@@ -106,34 +95,6 @@ export default function WorksheetStats() {
   const skillsAreas: string[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  async function handleExport() {
-    const payload: ExoticWorksheet = {
-      season: viewedSeason,
-      name:
-        viewedWorksheetNumber === 0
-          ? 'Main Worksheet'
-          : `Worksheet ${viewedWorksheetNumber}`,
-      courses: courses.map((c) => ({
-        crn: c.listing.crn,
-        hidden: c.hidden ?? false,
-        color: c.color,
-      })),
-    };
-
-    await navigator.clipboard.writeText(
-      `${window.location.origin}/worksheet?ws=${compressToEncodedURIComponent(JSON.stringify(payload))}`,
-    );
-    setCopied(true);
-    timeoutRef.current = setTimeout(() => setCopied(false), 1000);
-  }
-  useEffect(
-    () => () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    },
-    [],
-  );
 
   for (const { listing, hidden } of courses) {
     const alreadyCounted = listing.course.listings.some((l) =>
@@ -228,28 +189,11 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {isExoticWorksheet ? (
+              {isExoticWorksheet && (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
                   <Button variant="primary" onClick={exitExoticWorksheet}>
                     Exit
-                  </Button>
-                </div>
-              ) : (
-                <div className={styles.wide}>
-                  <dt>
-                    {copied
-                      ? 'Copied!'
-                      : courses.length === 0
-                        ? 'Nothing to export'
-                        : 'Export Worksheet to URL'}
-                  </dt>
-                  <Button
-                    variant="primary"
-                    disabled={courses.length === 0}
-                    onClick={handleExport}
-                  >
-                    Go
                   </Button>
                 </div>
               )}
