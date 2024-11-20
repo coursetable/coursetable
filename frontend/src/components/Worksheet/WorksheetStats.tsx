@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -86,7 +86,7 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses } = useWorksheet();
+  const { courses, isExoticWorksheet, exitExoticWorksheet } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
@@ -186,6 +186,17 @@ export default function WorksheetStats() {
                   ))}
                 </dd>
               </div>
+            </dl>
+            <div className={styles.spacer} />
+            <dl>
+              {isExoticWorksheet && (
+                <div className={styles.wide}>
+                  <dt>Viewing exported worksheet</dt>
+                  <Button variant="primary" onClick={exitExoticWorksheet}>
+                    Exit
+                  </Button>
+                </div>
+              )}
             </dl>
           </div>
         </div>

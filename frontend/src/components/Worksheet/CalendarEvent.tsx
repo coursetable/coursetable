@@ -31,12 +31,12 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { listing } = event;
-  const { viewedPerson } = useWorksheet();
+  const { isReadonlyWorksheet } = useWorksheet();
 
   return (
     <>
       <CalendarEventBody event={event} />
-      {viewedPerson === 'me' && (
+      {!isReadonlyWorksheet && (
         <div className={styles.eventButtons}>
           <WorksheetHideButton
             crn={listing.crn}
