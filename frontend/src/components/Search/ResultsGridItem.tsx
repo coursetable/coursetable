@@ -80,11 +80,12 @@ function ResultsGridItem({
   const listing = listings[rowIndex * columnCount + columnIndex];
   const target = useCourseModalLink(listing);
   const user = useStore((state) => state.user);
-  const { worksheetNumber } = useWorksheet();
+  const { viewedWorksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
-    () => listing && isInWorksheet(listing, worksheetNumber, user.worksheets),
-    [listing, worksheetNumber, user.worksheets],
+    () =>
+      listing && isInWorksheet(listing, viewedWorksheetNumber, user.worksheets),
+    [listing, viewedWorksheetNumber, user.worksheets],
   );
 
   if (!listing) return null;

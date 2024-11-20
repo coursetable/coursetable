@@ -10,13 +10,13 @@ import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, curSeason } = useWorksheet();
+  const { courses, viewedSeason } = useWorksheet();
 
   const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents('rbc', courses, curSeason);
+    const parsedCourses = getCalendarEvents('rbc', courses, viewedSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -39,7 +39,7 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, curSeason]);
+  }, [courses, viewedSeason]);
 
   return (
     <Calendar

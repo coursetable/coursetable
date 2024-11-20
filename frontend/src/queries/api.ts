@@ -245,7 +245,7 @@ const hiddenCoursesStorage = createLocalStorageSlot<{
   [seasonCode: Season]: { [crn: Crn]: boolean };
 }>('hiddenCourses');
 
-export function toggleCourseHidden({
+export function setCourseHidden({
   season,
   worksheetNumber,
   crn,

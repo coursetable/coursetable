@@ -14,14 +14,19 @@ import { TbCalendarDown } from 'react-icons/tb';
 
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
+import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { setCourseHidden } from '../../queries/api';
+import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, toggleCourse, person, curSeason } = useWorksheet();
+  const { courses, viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
+    useWorksheet();
+  const userRefresh = useStore((state) => state.userRefresh);
 
   const areHidden = useMemo(
     () => courses.length > 0 && courses.every((course) => course.hidden),
@@ -36,7 +41,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
-            {person === 'me' && (
+            {!isReadonlyWorksheet && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -46,7 +51,15 @@ function WorksheetCalendarList() {
                 )}
               >
                 <Button
-                  onClick={() => toggleCourse('all', !areHidden)}
+                  onClick={async () => {
+                    await setCourseHidden({
+                      season: viewedSeason,
+                      worksheetNumber: viewedWorksheetNumber,
+                      crn: courses.map((course) => course.listing.crn),
+                      hidden: !areHidden,
+                    });
+                    await userRefresh();
+                  }}
                   variant="none"
                   className={clsx(styles.button, 'px-3 w-100')}
                   aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
@@ -85,6 +98,9 @@ function WorksheetCalendarList() {
                 <Dropdown.Item eventKey="2" as="div">
                   <ICSExportButton />
                 </Dropdown.Item>
+                <Dropdown.Item eventKey="3" as="div">
+                  <URLExportButton />
+                </Dropdown.Item>
               </DropdownButton>
             </OverlayTrigger>
           </ButtonGroup>
@@ -95,7 +111,7 @@ function WorksheetCalendarList() {
           <ListGroup variant="flush">
             {courses.map((course) => (
               <WorksheetCalendarListItem
-                key={curSeason + course.crn}
+                key={viewedSeason + course.crn}
                 listing={course.listing}
                 hidden={course.hidden ?? false}
               />

@@ -19,7 +19,8 @@ import styles from './Worksheet.module.css';
 
 function Worksheet() {
   const isMobile = useStore((state) => state.isMobile);
-  const { worksheetLoading, worksheetError, worksheetView } = useWorksheet();
+  const { worksheetLoading, worksheetError, worksheetView, isExoticWorksheet } =
+    useWorksheet();
   const [expanded, setExpanded] = useState(false);
 
   // Wait for search query to finish
@@ -33,7 +34,7 @@ function Worksheet() {
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
   return (
     <div className={styles.container}>
-      {isMobile && (
+      {isMobile && !isExoticWorksheet && (
         <div className={styles.dropdowns}>
           <WorksheetNumDropdown mobile />
           <div className="d-flex">

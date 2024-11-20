@@ -78,15 +78,15 @@ function ResultsItem({
 }: ListChildComponentProps<ResultItemData>) {
   const listing = listings[index]!;
   const user = useStore((state) => state.user);
-  const { worksheetNumber } = useWorksheet();
+  const { viewedWorksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
   const friends = numFriends[`${listing.course.season_code}${listing.crn}`];
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () => isInWorksheet(listing, worksheetNumber, user.worksheets),
-    [listing, worksheetNumber, user.worksheets],
+    () => isInWorksheet(listing, viewedWorksheetNumber, user.worksheets),
+    [listing, viewedWorksheetNumber, user.worksheets],
   );
 
   return (
