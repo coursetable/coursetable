@@ -15,6 +15,7 @@ import {
   type FilterHandle,
   filterLabels,
   defaultFilters,
+  type IntersectableFilters,
   skillsAreasOptions,
   subjectsOptions,
   schoolsOptions,
@@ -24,31 +25,60 @@ import {
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
 
-function Select<K extends keyof CategoricalFilters>({
-  options,
-  handle: handleName,
-  placeholder,
-}: {
-  readonly options: React.ComponentProps<
-    typeof CustomSelect<FilterHandle<K>['value'][number], true>
-  >['options'];
+type SelectProps<K extends keyof CategoricalFilters> = {
   readonly handle: K;
-  readonly placeholder: string;
-}) {
+} & Pick<
+  React.ComponentProps<
+    typeof CustomSelect<FilterHandle<K>['value'][number], true>
+  >,
+  | 'options'
+  | 'placeholder'
+  | 'isIntersection'
+  | 'setIsIntersection'
+  | 'unionIntersectionButtonLabel'
+>;
+
+function Select<K extends keyof CategoricalFilters>({
+  handle: handleName,
+  ...props
+}: SelectProps<K>) {
   const { filters } = useSearch();
   const handle = filters[handleName] as FilterHandle<K>;
   return (
+    // @ts-expect-error: TODO
     <CustomSelect<FilterHandle<K>['value'][number], true>
       className={styles.selectorContainer}
       aria-label={filterLabels[handleName]}
       isMulti
       value={handle.value}
-      options={options}
-      placeholder={placeholder}
       // Prevent overlap with tooltips
       menuPortalTarget={document.body}
       onChange={(selectedOption) => {
         handle.set(selectedOption as Filters[K]);
+      }}
+      {...props}
+    />
+  );
+}
+
+function IntersectableSelect<K extends IntersectableFilters>(
+  props: SelectProps<K>,
+) {
+  const {
+    filters: { intersectingFilters },
+  } = useSearch();
+  return (
+    <Select
+      {...props}
+      isIntersection={intersectingFilters.value.includes(props.handle)}
+      setIsIntersection={(v) => {
+        if (v) {
+          intersectingFilters.set([...intersectingFilters.value, props.handle]);
+        } else {
+          intersectingFilters.set(
+            intersectingFilters.value.filter((x) => x !== props.handle),
+          );
+        }
       }}
     />
   );
@@ -178,20 +208,29 @@ export default function MobileSearchForm() {
           handle="selectSeasons"
           placeholder="Last 5 Years"
         />
-        <Select
-          options={skillsAreasOptions}
-          handle="selectSkillsAreas"
-          placeholder="All Areas/Skills"
-        />
-        <Select
+        <IntersectableSelect
           options={subjectsOptions}
           handle="selectSubjects"
           placeholder="All Subjects"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
+          }
         />
-        <Select
+        <IntersectableSelect
+          options={skillsAreasOptions}
+          handle="selectSkillsAreas"
+          placeholder="All Areas/Skills"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
+          }
+        />
+        <IntersectableSelect
           options={schoolsOptions}
           handle="selectSchools"
           placeholder="All Schools"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
+          }
         />
         <hr />
         <div className={styles.sliders} key={resetKey.current}>
