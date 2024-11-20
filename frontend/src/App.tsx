@@ -70,7 +70,7 @@ function AuthenticatedRoutes() {
       return <Outlet />;
 
     case '/graphiql':
-      if (user.hasEvals) return <Outlet />;
+      if (user?.hasEvals) return <Outlet />;
       return (
         <NeedsLogin
           redirect={location.pathname}

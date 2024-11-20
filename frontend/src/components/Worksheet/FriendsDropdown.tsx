@@ -127,22 +127,22 @@ function FriendsDropdown({
         isRequest: boolean,
       ) => Promise<void>;
     }) {
-  const user = useStore((state) => state.user);
+  const friends = useStore((state) => state.friends);
   const { viewedPerson } = useWorksheet();
 
   const viewedPersonOption = useMemo(() => {
     // I don't think the second condition is possible
-    if (viewedPerson === 'me' || !user.friends?.[viewedPerson]) return null;
+    if (viewedPerson === 'me' || !friends?.[viewedPerson]) return null;
     return {
       value: viewedPerson,
-      label: user.friends[viewedPerson].name ?? viewedPerson,
+      label: friends[viewedPerson].name ?? viewedPerson,
     };
-  }, [viewedPerson, user.friends]);
+  }, [viewedPerson, friends]);
 
   // List of friend options. Initialize with me option
   const options = useMemo(() => {
-    if (!user.friends) return [];
-    const options = Object.entries(user.friends)
+    if (!friends) return [];
+    const options = Object.entries(friends)
       .map(
         ([friendNetId, { name }]): Option<NetId> => ({
           value: friendNetId as NetId,
@@ -153,7 +153,7 @@ function FriendsDropdown({
         a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
       );
     return options;
-  }, [user.friends]);
+  }, [friends]);
   if (mobile) {
     return (
       <FriendsDropdownMobile

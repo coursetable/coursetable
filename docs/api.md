@@ -327,6 +327,26 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 
 ## Worksheet
 
+### `GET` `/api/user/info`
+
+#### Request
+
+- Needs credentials
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `netId`: `NetId`
+  - `firstName`: `string | null`
+  - `lastName`: `string | null`
+  - `email`: `string | null`
+  - `hasEvals`: `boolean`
+  - `year`: `number | null`
+  - `school`: `string | null`
+  - `major`: `string | null`
+
 ### `POST` `/api/user/updateWorksheetCourses`
 
 #### Request
@@ -369,10 +389,6 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 
 - Body:
 
-  - `netId`: `NetId`
-  - `evaluationsEnabled`: `boolean | null`
-  - `year`: `number | null`
-  - `school`: `string | null`
   - `data`:
 
     ```ts

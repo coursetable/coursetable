@@ -53,7 +53,7 @@ function useCourseInfoFromURL(
   const hasStaticCatalog = variables && variables.seasonCode in courses;
   const { data } = useCourseModalFromUrlQuery({
     // If variables is undefined, the query will not be sent
-    variables: { ...variables!, hasEvals: Boolean(user.hasEvals) },
+    variables: { ...variables!, hasEvals: Boolean(user?.hasEvals) },
     skip: !variables || !isInitial || hasStaticCatalog,
   });
   if (hasStaticCatalog)

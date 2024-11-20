@@ -8,6 +8,7 @@ import React, {
 import { decompressFromEncodedURIComponent } from 'lz-string';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
+import { useShallow } from 'zustand/react/shallow';
 import { seasons as allSeasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
 import { CUR_SEASON } from '../config';
@@ -127,7 +128,12 @@ export function WorksheetProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
-  const user = useStore((state) => state.user);
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
   const [exoticWorksheet, setExoticWorksheet] = useState(() =>
     parseCoursesFromURL(),
   );
@@ -144,15 +150,15 @@ export function WorksheetProvider({
 
   const curWorksheet: UserWorksheets = useMemo(() => {
     const whenNotDefined: UserWorksheets = {};
-    if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
+    if (viewedPerson === 'me') return worksheets ?? whenNotDefined;
 
-    return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
-  }, [user.worksheets, user.friends, viewedPerson]);
+    return friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
+  }, [worksheets, friends, viewedPerson]);
 
   // Maybe seasons without data should be disabled/hidden
   const seasonCodes = useMemo(
-    () => seasonsWithDataFirst(allSeasons, user.worksheets),
-    [user.worksheets],
+    () => seasonsWithDataFirst(allSeasons, worksheets),
+    [worksheets],
   );
   const [viewedSeason, setViewedSeason] = useSessionStorageState(
     'viewedSeason',

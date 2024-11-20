@@ -222,19 +222,43 @@ export const updateWorksheetCourses = async (
   res.sendStatus(200);
 };
 
+export const getUserInfo = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const [studentProfile] = await db
+    .select({
+      netId: studentBluebookSettings.netId,
+      firstName: studentBluebookSettings.firstName,
+      lastName: studentBluebookSettings.lastName,
+      email: studentBluebookSettings.email,
+      hasEvals: studentBluebookSettings.evaluationsEnabled,
+      year: studentBluebookSettings.year,
+      school: studentBluebookSettings.school,
+      major: studentBluebookSettings.major,
+    })
+    .from(studentBluebookSettings)
+    .where(eq(studentBluebookSettings.netId, netId));
+
+  res.json({
+    netId,
+    firstName: studentProfile?.firstName ?? null,
+    lastName: studentProfile?.lastName ?? null,
+    email: studentProfile?.email ?? null,
+    hasEvals: studentProfile?.hasEvals ?? false,
+    year: studentProfile?.year ?? null,
+    school: studentProfile?.school ?? null,
+    major: studentProfile?.major ?? null,
+  });
+};
+
 export const getUserWorksheet = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Fetching user's worksheets`);
-
   const { netId } = req.user!;
-
-  winston.info(`Getting profile for user ${netId}`);
-  const [studentProfile] = await db
-    .selectDistinctOn([studentBluebookSettings.netId])
-    .from(studentBluebookSettings)
-    .where(eq(studentBluebookSettings.netId, netId));
 
   winston.info(`Getting worksheets for user ${netId}`);
 
@@ -265,10 +289,6 @@ export const getUserWorksheet = async (
     allWorksheetMetadata,
   );
   res.json({
-    netId,
-    evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
-    year: studentProfile?.year ?? null,
-    school: studentProfile?.school ?? null,
     data: allWorksheets[netId] ?? {},
   });
 };

@@ -155,7 +155,12 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
 }
 
 function AddFriendDropdownDesktop() {
-  const user = useStore((state) => state.user);
+  const { user, friendRequests } = useStore(
+    useShallow((state) => ({
+      user: state.user,
+      friendRequests: state.friendRequests,
+    })),
+  );
   const { isFriend } = useContext(FriendContext)!;
   const [allNames, setAllNames] = useState<UserNames>([]);
   const [searchText, setSearchText] = useState('');
@@ -176,7 +181,7 @@ function AddFriendDropdownDesktop() {
     return allNames
       .filter(
         (name) =>
-          name.netId !== user.netId &&
+          name.netId !== user?.netId &&
           !isFriend(name.netId) &&
           ((name.first &&
             name.last &&
@@ -193,19 +198,19 @@ function AddFriendDropdownDesktop() {
             : name.netId,
         type: 'searchResult',
       }));
-  }, [allNames, searchText, user.netId, isFriend]);
+  }, [allNames, searchText, user?.netId, isFriend]);
   const friendRequestOptions = useMemo(
     () =>
-      user.friendRequests?.map((request) => ({
+      friendRequests?.map((request) => ({
         value: request.netId,
         label: request.name ?? request.netId,
         type: 'incomingRequest',
       })) || [],
-    [user.friendRequests],
+    [friendRequests],
   );
 
   return (
-    <Popout buttonText="Add Friend" notifications={user.friendRequests?.length}>
+    <Popout buttonText="Add Friend" notifications={friendRequests?.length}>
       <PopoutSelect
         placeholder="Enter friend's name"
         options={[
@@ -236,12 +241,12 @@ function AddFriendDropdown({
   readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
   readonly mobile: boolean;
 }) {
-  const user = useStore((state) => state.user);
+  const friends = useStore((state) => state.friends);
 
   const isFriend = useMemo(() => {
-    const friends = new Set(Object.keys(user.friends ?? {}));
-    return (netId: NetId) => friends.has(netId);
-  }, [user.friends]);
+    const friendsSet = new Set(Object.keys(friends ?? {}));
+    return (netId: NetId) => friendsSet.has(netId);
+  }, [friends]);
   const contextValue = useMemo(
     () => ({ removeFriend, isFriend }),
     [removeFriend, isFriend],

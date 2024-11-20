@@ -119,7 +119,7 @@ function ColorPickerButton({
   readonly event: RBCEvent;
   readonly className?: string;
 }) {
-  const userRefresh = useStore((state) => state.userRefresh);
+  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const { viewedSeason, viewedWorksheetNumber } = useWorksheet();
   const [open, setOpen] = useState(false);
   const [newColor, setNewColor] = useState(event.color);
@@ -177,7 +177,7 @@ function ColorPickerButton({
                 worksheetNumber: viewedWorksheetNumber,
                 color: newColor,
               });
-              await userRefresh();
+              await worksheetsRefresh();
               setOpen(false);
             }}
           >

@@ -428,6 +428,30 @@ export async function verifyChallenge(body: {
     : { status: 'rejected', data: res };
 }
 
+const userInfoSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  hasEvals: z.boolean(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+});
+
+export type UserInfo = z.infer<typeof userInfoSchema>;
+
+export async function getUserInfo() {
+  const res = await fetchAPI('/user/info', {
+    schema: userInfoSchema,
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching user info',
+    },
+  });
+  return res;
+}
+
 const userWorksheetsSchema = z.record(
   // Key: season
   z.record(
@@ -458,12 +482,6 @@ export type UserWorksheets = {
 export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
-      netId: netIdSchema,
-      // This cannot be null in the real application, because the site creates a
-      // user if one doesn't exist. This is purely for completeness.
-      evaluationsEnabled: z.union([z.boolean(), z.null()]),
-      year: z.union([z.number(), z.null()]),
-      school: z.union([z.string(), z.null()]),
       data: userWorksheetsSchema,
     }),
     breadcrumb: {

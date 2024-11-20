@@ -9,6 +9,7 @@ import React, {
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
+import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
@@ -347,12 +348,17 @@ export function SearchProvider({
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const user = useStore((state) => state.user);
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
 
   const numFriends = useMemo(() => {
-    if (!user.friends) return {};
-    return getNumFriends(user.friends);
-  }, [user.friends]);
+    if (!friends) return {};
+    return getNumFriends(friends);
+  }, [friends]);
 
   const processedSearchText = useMemo(
     () =>
@@ -389,7 +395,7 @@ export function SearchProvider({
   const { viewedWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
-    user.worksheets,
+    worksheets,
     processedSeasons,
     viewedWorksheetNumber,
   );
@@ -429,7 +435,7 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
+              !isInWorksheet(listing, viewedWorksheetNumber, worksheets) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
@@ -482,12 +488,7 @@ export function SearchProvider({
             return listing.course[key];
         }
       }),
-    [
-      searchDescription.value,
-      worksheetInfo,
-      viewedWorksheetNumber,
-      user.worksheets,
-    ],
+    [searchDescription.value, worksheetInfo, viewedWorksheetNumber, worksheets],
   );
 
   const quistPredicate = useMemo(() => {
@@ -584,7 +585,7 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
+          !isInWorksheet(listing, viewedWorksheetNumber, worksheets) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;
@@ -746,7 +747,7 @@ export function SearchProvider({
       hideCancelled.value,
       hideConflicting.value,
       viewedWorksheetNumber,
-      user.worksheets,
+      worksheets,
       worksheetInfo,
       hideDiscussionSections.value,
       hideFirstYearSeminars.value,
