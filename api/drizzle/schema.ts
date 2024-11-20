@@ -105,3 +105,19 @@ export const worksheetMetadata = pgTable(
     ),
   }),
 );
+
+export const wishlistCourses = pgTable(
+  'wishlistCourses',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    courseCode: varchar('courseCode', { length: 16 }).notNull(),
+  },
+  (table) => ({
+    wishlistNetidIdx: index('wishlist_netid_idx').on(table.netId),
+    wishlistUniqueIdx: uniqueIndex('wishlist_unique_idx').on(
+      table.netId,
+      table.courseCode,
+    ),
+  }),
+);
