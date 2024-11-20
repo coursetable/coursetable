@@ -169,20 +169,29 @@ function MeDropdown() {
   // Ref to detect outside clicks for profile dropdown
   const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLButtonElement>(false);
+  const user = useStore((state) => state.user);
+  const hasName = Boolean(user?.firstName && user.lastName);
   return (
     <div className={clsx(styles.navbarMe, 'align-self-end')}>
       <button
         type="button"
         ref={elemRef}
-        className={clsx(styles.meIcon, 'm-auto')}
+        className={clsx(hasName ? styles.meIcon : styles.anonIcon, 'm-auto')}
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         aria-label="Profile"
       >
-        <BsFillPersonFill
-          className="m-auto"
-          size={20}
-          color={isComponentVisible ? '#007bff' : undefined}
-        />
+        {hasName ? (
+          <span title={`${user!.firstName!} ${user!.lastName!}`}>
+            {user!.firstName![0]!}
+            {user!.lastName![0]!}
+          </span>
+        ) : (
+          <BsFillPersonFill
+            className="m-auto"
+            size={30}
+            color={isComponentVisible ? '#007bff' : undefined}
+          />
+        )}
       </button>
       <DropdownContent
         isExpanded={isComponentVisible}

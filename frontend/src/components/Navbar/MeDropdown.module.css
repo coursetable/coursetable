@@ -28,25 +28,49 @@
   display: flex;
 }
 
-.meIcon {
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
+.meIcon,
+.anonIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
   display: flex;
-  background-color: var(--color-bg-button);
-  color: var(--color-text-secondary);
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
 }
 
-[data-theme='dark'] .meIcon {
-  background-color: #525252;
+.meIcon {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  align-items: center;
+  justify-content: center;
+}
+
+.meIcon span {
+  font-weight: bold;
+  transform: scale(1, 1.2);
 }
 
 .meIcon:hover {
+  color: var(--color-text-light);
+}
+
+.anonIcon {
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+}
+
+.anonIcon:hover {
   color: var(--color-primary);
+}
+
+[data-theme='dark'] .anonIcon {
+  background-color: #525252;
+}
+
+[data-theme='dark'] .meIcon {
+  color: var(--color-text-dark);
 }
 
 .linkIcon {
