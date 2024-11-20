@@ -19,8 +19,9 @@ export default function WorksheetHideButton({
   readonly color?: string;
 }) {
   const userRefresh = useStore((state) => state.userRefresh);
-  const { viewedPerson, viewedSeason, viewedWorksheetNumber } = useWorksheet();
-  if (viewedPerson !== 'me') return null;
+  const { viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
+    useWorksheet();
+  if (isReadonlyWorksheet) return null;
   const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
   return (
     <OverlayTrigger
