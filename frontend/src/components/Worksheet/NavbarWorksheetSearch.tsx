@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
-import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
@@ -19,6 +19,8 @@ export function NavbarWorksheetSearch() {
     changeWorksheetView,
     viewedPerson,
     changeViewedPerson,
+    isExoticWorksheet,
+    exitExoticWorksheet,
   } = useWorksheet();
 
   const removeFriend = useStore((state) => state.removeFriend);
@@ -87,16 +89,26 @@ export function NavbarWorksheetSearch() {
           List
         </ToggleButton>
       </ToggleButtonGroup>
-      <SeasonDropdown mobile={false} />
-      <WorksheetNumDropdown mobile={false} />
-      <FriendsDropdown
-        mobile={false}
-        removeFriend={removeFriendWithConfirmation}
-      />
-      <AddFriendDropdown
-        mobile={false}
-        removeFriend={removeFriendWithConfirmation}
-      />
+      {!isExoticWorksheet ? (
+        <>
+          <SeasonDropdown mobile={false} />
+          <WorksheetNumDropdown mobile={false} />
+          <FriendsDropdown
+            mobile={false}
+            removeFriend={removeFriendWithConfirmation}
+          />
+          <AddFriendDropdown
+            mobile={false}
+            removeFriend={removeFriendWithConfirmation}
+          />
+        </>
+      ) : (
+        <div>
+          <Button variant="primary" onClick={exitExoticWorksheet}>
+            Exit
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

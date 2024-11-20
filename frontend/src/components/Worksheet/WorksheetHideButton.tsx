@@ -18,9 +18,10 @@ export default function WorksheetHideButton({
   readonly className?: string;
   readonly color?: string;
 }) {
-  const userRefresh = useStore((state) => state.userRefresh);
-  const { viewedPerson, viewedSeason, viewedWorksheetNumber } = useWorksheet();
-  if (viewedPerson !== 'me') return null;
+  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
+  const { viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
+    useWorksheet();
+  if (isReadonlyWorksheet) return null;
   const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
   return (
     <OverlayTrigger
@@ -42,7 +43,7 @@ export default function WorksheetHideButton({
             crn,
             hidden: !hidden,
           });
-          await userRefresh();
+          await worksheetsRefresh();
         }}
         className={clsx(styles.toggleButton, className)}
         aria-label={buttonLabel}

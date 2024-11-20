@@ -28,6 +28,7 @@ export const createAuthSlice: StateCreator<Store, [], [], AuthSlice> = (
     if (isAuthenticated) {
       await Promise.all([
         get().userRefresh(),
+        get().worksheetsRefresh(),
         get().friendRefresh(),
         get().friendReqRefresh(),
       ]);

@@ -339,7 +339,7 @@ function OverviewRatings({
                 filter={filter}
                 onNavigation={onNavigation}
               />
-              <RatingNumbers course={course} hasEvals={user.hasEvals} />
+              <RatingNumbers course={course} hasEvals={user?.hasEvals} />
             </Row>
           ))}
         </>

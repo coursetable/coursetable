@@ -14,6 +14,7 @@ import { TbCalendarDown } from 'react-icons/tb';
 
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
+import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { setCourseHidden } from '../../queries/api';
@@ -23,9 +24,9 @@ import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, viewedPerson, viewedSeason, viewedWorksheetNumber } =
+  const { courses, viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
     useWorksheet();
-  const userRefresh = useStore((state) => state.userRefresh);
+  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const areHidden = useMemo(
     () => courses.length > 0 && courses.every((course) => course.hidden),
@@ -40,7 +41,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
-            {viewedPerson === 'me' && (
+            {!isReadonlyWorksheet && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -57,7 +58,7 @@ function WorksheetCalendarList() {
                       crn: courses.map((course) => course.listing.crn),
                       hidden: !areHidden,
                     });
-                    await userRefresh();
+                    await worksheetsRefresh();
                   }}
                   variant="none"
                   className={clsx(styles.button, 'px-3 w-100')}
@@ -96,6 +97,9 @@ function WorksheetCalendarList() {
                 </Dropdown.Item>
                 <Dropdown.Item eventKey="2" as="div">
                   <ICSExportButton />
+                </Dropdown.Item>
+                <Dropdown.Item eventKey="3" as="div">
+                  <URLExportButton />
                 </Dropdown.Item>
               </DropdownButton>
             </OverlayTrigger>
