@@ -301,12 +301,6 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
     };
     ```
 
-**Status: 400**
-
-- When worksheet metadata doesn't exist for a particular course
-- Body:
-  - `error`: `"WORKSHEET_METADATA_NOT_FOUND"`
-
 ### `GET` `/api/friends/names`
 
 #### Request
@@ -395,12 +389,6 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
       };
     };
     ```
-
-**Status: 400**
-
-- When worksheet metadata doesn't exist for a particular course
-- Body:
-  - `error`: `"WORKSHEET_METADATA_NOT_FOUND"`
 
 ### `POST` `/api/user/updateWorksheetMetadata`
 
