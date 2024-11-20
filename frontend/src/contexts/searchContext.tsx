@@ -284,6 +284,7 @@ const targetTypes = {
     'info-attributes',
     'subjects',
     'professor-names',
+    'building-codes',
     'listings.subjects',
     'listings.course-codes',
     'listings.schools',
@@ -459,6 +460,10 @@ export function SearchProvider({
             return listing.course.course_professors.map(
               (p) => p.professor.name,
             );
+          case 'building-codes':
+            return listing.course.course_meetings
+              .map((m) => m.location?.building.code)
+              .filter((x) => x !== undefined);
           case 'course-code':
             return listing.course_code;
           case 'type':
