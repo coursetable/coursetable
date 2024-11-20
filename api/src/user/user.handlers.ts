@@ -1,17 +1,19 @@
 import type express from 'express';
 import chroma from 'chroma-js';
-import { and, count, eq } from 'drizzle-orm';
+import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
 import {
   getNextAvailableWsNumber,
   worksheetCoursesToWorksheets,
+  wishlistCoursesToWishlist,
 } from './user.utils.js';
 
 import {
   studentBluebookSettings,
   worksheetCourses,
   worksheetMetadata,
+  wishlistCourses,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
@@ -402,5 +404,104 @@ export const getUserWorksheetMetadata = async (
   res.json({
     netId,
     worksheets: worksheetMap,
+  });
+};
+
+const ToggleWishReqBodySchema = z.object({
+  action: z.union([z.literal('add'), z.literal('remove')]),
+  // We must pass all course codes to check for any match with the wishlist.
+  allCourseCodes: z.array(z.string()),
+});
+
+export const toggleWish = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  winston.info('Toggling wishlist bookmark');
+
+  const { netId } = req.user!;
+
+  const bodyParseRes = ToggleWishReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+
+  const { action, allCourseCodes } = bodyParseRes.data;
+
+  if (allCourseCodes.length === 0) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+
+  const [existing] = await db
+    .selectDistinctOn([wishlistCourses.netId, wishlistCourses.courseCode])
+    .from(wishlistCourses)
+    .where(
+      and(
+        eq(wishlistCourses.netId, netId),
+        inArray(wishlistCourses.courseCode, allCourseCodes),
+      ),
+    );
+
+  if (action === 'add') {
+    const defaultCourseCode = allCourseCodes.find((code) => code !== '')!;
+    winston.info(`Wishlisting course ${defaultCourseCode} for user ${netId}`);
+    if (existing) {
+      res.status(400).json({ error: 'ALREADY_WISHLISTED' });
+      return;
+    }
+    await db.insert(wishlistCourses).values({
+      netId,
+      courseCode: defaultCourseCode,
+    });
+  } else {
+    if (!existing) {
+      res.status(400).json({ error: 'NOT_WISHLISTED' });
+      return;
+    }
+    winston.info(
+      `Removing wish for course ${existing.courseCode} for user ${netId}`,
+    );
+    await db
+      .delete(wishlistCourses)
+      .where(
+        and(
+          eq(wishlistCourses.netId, netId),
+          eq(wishlistCourses.courseCode, existing.courseCode),
+        ),
+      );
+  }
+
+  res.sendStatus(200);
+};
+
+export const getUserWishlist = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  winston.info(`Fetching user's wishlist`);
+
+  const { netId } = req.user!;
+
+  winston.info(`Getting profile for user ${netId}`);
+  const [studentProfile] = await db
+    .selectDistinctOn([studentBluebookSettings.netId])
+    .from(studentBluebookSettings)
+    .where(eq(studentBluebookSettings.netId, netId));
+
+  winston.info(`Getting wishlist for user ${netId}`);
+
+  const wishlist = await db
+    .select()
+    .from(wishlistCourses)
+    .where(eq(wishlistCourses.netId, netId));
+
+  res.json({
+    netId,
+    evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
+    year: studentProfile?.year ?? null,
+    school: studentProfile?.school ?? null,
+    data: wishlistCoursesToWishlist(wishlist)[netId] ?? [],
   });
 };

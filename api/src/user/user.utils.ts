@@ -39,3 +39,23 @@ export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
   const last = Math.max(...worksheetNumbers);
   return last + 1;
 }
+
+export function wishlistCoursesToWishlist(
+  wishlistCourses: {
+    netId: string;
+    courseCode: string;
+  }[],
+) {
+  const res: {
+    [netId: string]: {
+      courseCode: string;
+    }[];
+  } = {};
+  for (const course of wishlistCourses) {
+    res[course.netId] ??= [];
+    res[course.netId]!.push({
+      courseCode: course.courseCode,
+    });
+  }
+  return res;
+}
