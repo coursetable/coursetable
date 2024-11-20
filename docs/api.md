@@ -288,7 +288,7 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
         worksheets: {
           [season: Season]: {
             [worksheetNumber: number]: {
-              worksheetName: string;
+              name: string;
               courses: {
                 crn: number;
                 color: string;
@@ -383,9 +383,9 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 
     ```ts
     type Data = {
-      [season: string]: {
+      [season: Season]: {
         [worksheetNumber: number]: {
-          worksheetName: string;
+          name: string;
           courses: {
             crn: number;
             color: string;
@@ -411,7 +411,7 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
   - Option 1 (add):
     - `action`: `"add"`
     - `season`: `string`
-    - `worksheetName`: `string`
+    - `name`: `string`
   - Option 2 (delete):
     - `action`: `"delete"`
     - `season`: `string`
@@ -420,7 +420,7 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
     - `action`: `"rename"`
     - `season`: `string`
     - `worksheetNumber`: `number`
-    - `worksheetName`: `string`
+    - `name`: `string`
 
 #### Response
 

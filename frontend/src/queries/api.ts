@@ -219,7 +219,7 @@ export async function updateWorksheetMetadata(
     | {
         action: 'rename';
         worksheetNumber: number;
-        worksheetName: string;
+        name: string;
       }
   ),
 ): Promise<boolean> {
@@ -429,9 +429,11 @@ export async function verifyChallenge(body: {
 }
 
 const userWorksheetsSchema = z.record(
+  // Key: season
   z.record(
+    // Key: worksheet number
     z.object({
-      worksheetName: z.string(),
+      name: z.string(),
       courses: z.array(
         z.object({
           crn: crnSchema,

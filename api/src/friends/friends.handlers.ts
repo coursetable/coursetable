@@ -243,63 +243,66 @@ export const getFriendsWorksheets = async (
 
   winston.info('Getting NetIDs of friends');
 
-  const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction<
-    [
-      { netId: string; name: string | null }[]?,
-      ReturnType<typeof worksheetCoursesToWorksheets>?,
-      string[]?,
-    ]
-  >(async (tx) => {
-    const friendRecords = await tx
-      .select({
-        friendNetId: studentFriends.friendNetId,
-      })
-      .from(studentFriends)
-      .where(eq(studentFriends.netId, netId));
+  const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction(
+    async (tx) => {
+      const friendRecords = await tx
+        .select({
+          friendNetId: studentFriends.friendNetId,
+        })
+        .from(studentFriends)
+        .where(eq(studentFriends.netId, netId));
 
-    const friendNetIds = friendRecords.map(
-      (friendRecord) => friendRecord.friendNetId,
-    );
+      const friendNetIds = friendRecords.map(
+        (friendRecord) => friendRecord.friendNetId,
+      );
 
-    if (friendNetIds.length === 0) return [[], {}, []];
+      if (friendNetIds.length === 0)
+        return [[], {} as ReturnType<typeof worksheetCoursesToWorksheets>, []];
 
-    winston.info('Getting worksheets of friends');
-    const friendWorksheets = await tx
-      .select()
-      .from(worksheetCourses)
-      .where(inArray(worksheetCourses.netId, friendNetIds));
+      winston.info('Getting worksheets of friends');
+      const friendWorksheets = await tx
+        .select({
+          netId: worksheetCourses.netId,
+          season: worksheetCourses.season,
+          worksheetNumber: worksheetCourses.worksheetNumber,
+          crn: worksheetCourses.crn,
+          color: worksheetCourses.color,
+          hidden: worksheetCourses.hidden,
+        })
+        .from(worksheetCourses)
+        .where(inArray(worksheetCourses.netId, friendNetIds));
 
-    winston.info('Getting worksheet metadata of friends');
-    const friendWsMetadata = await tx
-      .select()
-      .from(worksheetMetadata)
-      .where(inArray(worksheetMetadata.netId, friendNetIds));
+      winston.info('Getting worksheet metadata of friends');
+      const friendWsMetadata = await tx
+        .select({
+          netId: worksheetMetadata.netId,
+          season: worksheetMetadata.season,
+          worksheetNumber: worksheetMetadata.worksheetNumber,
+          name: worksheetMetadata.name,
+        })
+        .from(worksheetMetadata)
+        .where(inArray(worksheetMetadata.netId, friendNetIds));
 
-    const friendWorksheetMap = worksheetCoursesToWorksheets(
-      friendWorksheets,
-      friendWsMetadata,
-    );
-    if (!friendWorksheetMap) return [undefined, undefined, undefined];
+      const friendWorksheetMap = worksheetCoursesToWorksheets(
+        friendWorksheets,
+        friendWsMetadata,
+      );
 
-    winston.info('Getting info of friends');
+      winston.info('Getting info of friends');
 
-    const friendInfos = await tx
-      .selectDistinctOn([studentBluebookSettings.netId], {
-        netId: studentBluebookSettings.netId,
-        name: sql<
-          string | null
-        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
-      })
-      .from(studentBluebookSettings)
-      .where(inArray(studentBluebookSettings.netId, friendNetIds));
+      const friendInfos = await tx
+        .selectDistinctOn([studentBluebookSettings.netId], {
+          netId: studentBluebookSettings.netId,
+          name: sql<
+            string | null
+          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+        })
+        .from(studentBluebookSettings)
+        .where(inArray(studentBluebookSettings.netId, friendNetIds));
 
-    return [friendInfos, friendWorksheetMap, friendNetIds];
-  });
-
-  if (!friendInfos || !friendWorksheetMap || !friendNetIds) {
-    res.status(400).json({ error: 'WORKSHEET_METADATA_NOT_FOUND' });
-    return;
-  }
+      return [friendInfos, friendWorksheetMap, friendNetIds];
+    },
+  );
 
   const friendInfoMap = Object.fromEntries(
     friendInfos.map((friendInfo) => [

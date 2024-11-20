@@ -1,44 +1,48 @@
-import type {
-  CourseWithMetadata,
-  FlatWsMetadata,
-  SeasonMappedWorksheet,
-  SeasonMappedWsMetadata,
-} from './user.types.js';
+type WorksheetNamespaceProps = {
+  season: number;
+  worksheetNumber: number;
+  netId: string;
+};
+
+type WorksheetCourse = {
+  crn: number;
+  color: string;
+  hidden: boolean | null;
+};
+
+type WorksheetMetadata = {
+  name: string;
+};
 
 export function worksheetCoursesToWorksheets(
-  worksheetCourses: CourseWithMetadata[],
-  wsMetadata: FlatWsMetadata[],
+  worksheetCourses: (WorksheetNamespaceProps & WorksheetCourse)[],
+  wsMetadata: (WorksheetNamespaceProps & WorksheetMetadata)[],
 ) {
-  const mappedWsMetadata = flatWsMetadataToMapping(wsMetadata);
   const res: {
-    [netId: string]: SeasonMappedWorksheet;
-  } = {};
-  for (const course of worksheetCourses) {
-    // As worksheet 0 is not present in the DB, but we must return
-    // something for it for courses in worksheet 0 to map properly
-    if (course.worksheetNumber === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      mappedWsMetadata[course.netId] ??= {};
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      mappedWsMetadata[course.netId]![course.season] ??= {};
-      mappedWsMetadata[course.netId]![course.season]![0] = {
-        worksheetName: 'Main Worksheet',
+    [netId: string]: {
+      [season: string]: {
+        [worksheetNumber: number]: { name: string; courses: WorksheetCourse[] };
       };
-    }
-    if (
-      !mappedWsMetadata[course.netId]?.[course.season]?.[course.worksheetNumber]
-    ) {
-      // Somehow, a worksheet has no associated metadata in the DB.
-      return undefined;
-    }
+    };
+  } = {};
+  wsMetadata.forEach(({ netId, season, worksheetNumber, name }) => {
+    res[netId] ??= {};
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    res[netId][season] ??= {};
+    res[netId][season][worksheetNumber] ??= { name, courses: [] };
+  });
+  for (const course of worksheetCourses) {
     res[course.netId] ??= {};
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     res[course.netId]![course.season] ??= {};
-
     res[course.netId]![course.season]![course.worksheetNumber] ??= {
-      worksheetName:
-        mappedWsMetadata[course.netId]![course.season]![course.worksheetNumber]!
-          .worksheetName,
+      name:
+        // We don't store the name of the main worksheet in the database, so
+        // we have to hardcode it here so front end doesn't handle it
+        // differently. The main worksheet is invariant: it can't be renamed
+        course.worksheetNumber === 0
+          ? 'Main Worksheet'
+          : '[Error: name not found]',
       courses: [],
     };
     res[course.netId]![course.season]![course.worksheetNumber]!.courses.push({
@@ -48,21 +52,6 @@ export function worksheetCoursesToWorksheets(
     });
   }
   return res;
-}
-
-function flatWsMetadataToMapping(wsMetadata: FlatWsMetadata[]): {
-  [netId: string]: SeasonMappedWsMetadata;
-} {
-  const mappedWsMetadata: {
-    [netId: string]: SeasonMappedWsMetadata;
-  } = {};
-  wsMetadata.forEach(({ netId, season, worksheetNumber, worksheetName }) => {
-    mappedWsMetadata[netId] ??= {};
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    mappedWsMetadata[netId][season] ??= {};
-    mappedWsMetadata[netId][season][worksheetNumber] ??= { worksheetName };
-  });
-  return mappedWsMetadata;
 }
 
 export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
