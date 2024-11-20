@@ -113,7 +113,10 @@ function parseCoursesFromURL():
     data: courses.data,
     worksheets: {
       [courses.data.season]: {
-        0: courses.data.courses,
+        0: {
+          name: courses.data.name,
+          courses: courses.data.courses,
+        },
       },
     },
   };
