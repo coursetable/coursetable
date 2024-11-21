@@ -93,7 +93,7 @@ export default function WorksheetStats() {
   let credits = 0;
   let workload = 0;
   let rating = 0;
-  const skillsAreas: string[] = [];
+  const skillsAreas: { courseCode: string; label: string }[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
@@ -122,7 +122,12 @@ export default function WorksheetStats() {
     credits += listing.course.credits ?? 0;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
-    skillsAreas.push(...listing.course.skills, ...listing.course.areas);
+    skillsAreas.push(
+      ...[...listing.course.skills, ...listing.course.areas].map((x) => ({
+        courseCode: listing.course_code,
+        label: x,
+      })),
+    );
   }
   const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
   const coursesWithRating = courseCnt - coursesWithoutRating.length;
@@ -230,9 +235,18 @@ export default function WorksheetStats() {
               <div className={styles.wide}>
                 <dt>Skills & Areas</dt>
                 <dd>
-                  {skillsAreas.sort().map((skill, i) => (
-                    <SkillBadge skill={skill} key={i} />
-                  ))}
+                  {skillsAreas
+                    .sort((a, b) => a.label.localeCompare(b.label, 'en-US'))
+                    .map((x, i) => (
+                      <OverlayTrigger
+                        key={i}
+                        overlay={<Tooltip>{x.courseCode}</Tooltip>}
+                      >
+                        <span>
+                          <SkillBadge skill={x.label} />
+                        </span>
+                      </OverlayTrigger>
+                    ))}
                 </dd>
               </div>
             </dl>
