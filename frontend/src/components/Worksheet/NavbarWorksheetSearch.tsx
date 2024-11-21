@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
@@ -23,7 +24,12 @@ export function NavbarWorksheetSearch() {
     exitExoticWorksheet,
   } = useWorksheet();
 
-  const removeFriend = useStore((state) => state.removeFriend);
+  const { authStatus, removeFriend } = useStore(
+    useShallow((state) => ({
+      removeFriend: state.removeFriend,
+      authStatus: state.authStatus,
+    })),
+  );
 
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>
@@ -62,6 +68,8 @@ export function NavbarWorksheetSearch() {
       }),
     [changeViewedPerson, viewedPerson, removeFriend],
   );
+
+  if (authStatus !== 'authenticated' && !isExoticWorksheet) return null;
 
   return (
     <div className="d-flex align-items-center">

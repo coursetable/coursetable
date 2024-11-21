@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import { useShallow } from 'zustand/react/shallow';
 
+import NeedsLogin from './NeedsLogin';
 import ErrorPage from '../components/ErrorPage';
 import Spinner from '../components/Spinner';
 import { SurfaceComponent } from '../components/Typography';
@@ -18,7 +20,9 @@ import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
 function Worksheet() {
-  const isMobile = useStore((state) => state.isMobile);
+  const { isMobile, user } = useStore(
+    useShallow((state) => ({ isMobile: state.isMobile, user: state.user })),
+  );
   const { worksheetLoading, worksheetError, worksheetView, isExoticWorksheet } =
     useWorksheet();
   const [expanded, setExpanded] = useState(false);
@@ -29,6 +33,9 @@ function Worksheet() {
     return <ErrorPage message="There seems to be an issue with our server" />;
   }
   if (worksheetLoading) return <Spinner />;
+  // For unauthed users, they can only view exotic worksheets
+  if (!user && !isExoticWorksheet)
+    return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   // eslint-disable-next-line no-useless-assignment
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;

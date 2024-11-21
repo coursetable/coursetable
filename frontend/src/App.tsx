@@ -55,15 +55,6 @@ function AuthenticatedRoutes() {
   if (authStatus === 'loading') return <Spinner />;
 
   switch (location.pathname) {
-    case '/catalog':
-      return <Outlet />;
-
-    case '/worksheet':
-      if (authStatus === 'authenticated') return <Outlet />;
-      return (
-        <NeedsLogin redirect={location.pathname} message="your worksheet" />
-      );
-
     case '/login':
       if (authStatus === 'authenticated')
         return <Navigate to="/catalog" replace />;
@@ -134,12 +125,16 @@ function App() {
           <Route path="/" element={<Navigate to="/catalog" replace />} />
 
           {/* Authenticated routes */}
-          <Route path="/worksheet" element={<Worksheet />} />
           <Route path="/graphiql" element={<Graphiql />} />
-          <Route path="/catalog" element={<Search />} />
           <Route path="/login" element={<Landing />} />
         </Route>
 
+        {/* Catalog can be viewed by anyone; it only checks auth for displaying
+          ratings */}
+        <Route path="/catalog" element={<Search />} />
+        {/* Worksheets can only be managed by authenticated users, but anyone is
+          able to view serialized worksheets shared by others */}
+        <Route path="/worksheet" element={<Worksheet />} />
         {/* Challenge handles its own auth */}
         <Route path="/challenge" element={<Challenge />} />
 
