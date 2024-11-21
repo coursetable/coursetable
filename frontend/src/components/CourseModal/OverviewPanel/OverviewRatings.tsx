@@ -139,6 +139,23 @@ function CourseLink({
           ? 'TBA'
           : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
   if (course.listings.some((l) => l.crn === listing.crn)) {
+    // If the course has evals, then we should still switch the view to evals
+    // to make the UX more consistent
+    if (course.evaluation_statistic) {
+      return (
+        <Col
+          as={Button}
+          xs={5}
+          className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+          onClick={() => {
+            onNavigation('change-view', undefined, 'evals');
+          }}
+        >
+          <strong>{toSeasonString(course.season_code)}</strong>
+          <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+        </Col>
+      );
+    }
     return (
       <OverlayTrigger
         trigger="hover"
