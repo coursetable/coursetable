@@ -52,17 +52,14 @@ function AuthenticatedRoutes() {
 
   const location = useLocation();
 
-  if (authStatus === 'loading') return <Spinner />;
+  if (authStatus === 'loading') return <Spinner message="Authenticating..." />;
+  if (authStatus === 'initializing')
+    return <Spinner message="Fetching user info..." />;
 
   switch (location.pathname) {
     case '/catalog':
-      return <Outlet />;
-
     case '/worksheet':
-      if (authStatus === 'authenticated') return <Outlet />;
-      return (
-        <NeedsLogin redirect={location.pathname} message="your worksheet" />
-      );
+      return <Outlet />;
 
     case '/login':
       if (authStatus === 'authenticated')
@@ -134,9 +131,12 @@ function App() {
           <Route path="/" element={<Navigate to="/catalog" replace />} />
 
           {/* Authenticated routes */}
+          {/* Catalog and worksheet can be viewed by anyone; we put them under
+          authenticated routes because we want loading auth to show a loading
+          screen */}
+          <Route path="/catalog" element={<Search />} />
           <Route path="/worksheet" element={<Worksheet />} />
           <Route path="/graphiql" element={<Graphiql />} />
-          <Route path="/catalog" element={<Search />} />
           <Route path="/login" element={<Landing />} />
         </Route>
 

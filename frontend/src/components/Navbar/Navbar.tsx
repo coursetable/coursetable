@@ -58,10 +58,7 @@ export default function CourseTableNavbar() {
   const isMobile = useStore((state) => state.isMobile);
 
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
-  const showWorksheetSearch =
-    !isMobile &&
-    authStatus === 'authenticated' &&
-    location.pathname === '/worksheet';
+  const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
 
   return (
     <SurfaceComponent className={styles.container}>

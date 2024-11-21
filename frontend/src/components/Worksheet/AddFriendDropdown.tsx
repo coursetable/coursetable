@@ -32,7 +32,7 @@ interface OptionType {
   type: string;
 }
 
-function OptionComponent(props: OptionProps<OptionType, false>) {
+function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
   const { requestAddFriend, addFriend } = useStore(
     useShallow((state) => ({
       requestAddFriend: state.requestAddFriend,
@@ -71,7 +71,7 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
       >
         <span className={styles.friendOptionText}>{children}</span>
         {isLoading ? (
-          <Spinner className={styles.spinner} />
+          <Spinner className={styles.spinner} message={undefined} />
         ) : (
           <MdPersonAdd
             className={styles.addFriendIcon}
@@ -98,7 +98,7 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
       >
         <span className={styles.friendOptionText}>{children}</span>
         {isLoading ? (
-          <Spinner className={styles.spinner} />
+          <Spinner className={styles.spinner} message={undefined} />
         ) : (
           <>
             <MdPersonAdd
@@ -137,7 +137,7 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
       {children}
       {isAddable &&
         (isLoading ? (
-          <Spinner className={styles.spinner} />
+          <Spinner className={styles.spinner} message={undefined} />
         ) : (
           <MdPersonAdd
             className={styles.addFriendIcon}
@@ -226,7 +226,7 @@ function AddFriendDropdownDesktop() {
         }
         onInputChange={setSearchText}
         components={{
-          Option: OptionComponent,
+          Option: OptionWithActionButtons,
           SingleValue: SingleValueComponent,
         }}
       />

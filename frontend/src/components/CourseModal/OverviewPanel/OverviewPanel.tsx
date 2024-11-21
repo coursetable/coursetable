@@ -32,7 +32,7 @@ function OverviewPanel({
   });
 
   // Wait until data is fetched
-  if (loading) return <Spinner />;
+  if (loading) return <Spinner message="Loading course details..." />;
 
   if (error) {
     return (
