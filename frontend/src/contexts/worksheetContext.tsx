@@ -137,7 +137,6 @@ export function WorksheetProvider({
   const [exoticWorksheet, setExoticWorksheet] = useState(() =>
     parseCoursesFromURL(),
   );
-  console.log(exoticWorksheet);
 
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'viewedPerson',

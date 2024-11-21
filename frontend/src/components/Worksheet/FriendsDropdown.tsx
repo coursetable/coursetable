@@ -89,7 +89,7 @@ function FriendsDropdownDesktop({
               <selectComponents.Option {...props}>
                 {children}
                 {isLoading ? (
-                  <Spinner className={styles.spinner} />
+                  <Spinner className={styles.spinner} message={undefined} />
                 ) : (
                   <MdPersonRemove
                     className={styles.removeFriendIcon}

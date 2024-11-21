@@ -71,7 +71,7 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
       >
         <span className={styles.friendOptionText}>{children}</span>
         {isLoading ? (
-          <Spinner className={styles.spinner} />
+          <Spinner className={styles.spinner} message={undefined} />
         ) : (
           <MdPersonAdd
             className={styles.addFriendIcon}
@@ -98,7 +98,7 @@ function OptionComponent(props: OptionProps<OptionType, false>) {
       >
         <span className={styles.friendOptionText}>{children}</span>
         {isLoading ? (
-          <Spinner className={styles.spinner} />
+          <Spinner className={styles.spinner} message={undefined} />
         ) : (
           <>
             <MdPersonAdd
@@ -137,7 +137,7 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
       {children}
       {isAddable &&
         (isLoading ? (
-          <Spinner className={styles.spinner} />
+          <Spinner className={styles.spinner} message={undefined} />
         ) : (
           <MdPersonAdd
             className={styles.addFriendIcon}

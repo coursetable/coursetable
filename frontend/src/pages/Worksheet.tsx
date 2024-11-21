@@ -35,7 +35,7 @@ function Worksheet() {
     Sentry.captureException(worksheetError);
     return <ErrorPage message="There seems to be an issue with our server" />;
   }
-  if (worksheetLoading || authStatus === 'loading') return <Spinner />;
+  if (worksheetLoading) return <Spinner message="Loading worksheet data..." />;
   // For unauthed users, they can only view exotic worksheets
   if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
