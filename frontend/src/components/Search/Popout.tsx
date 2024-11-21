@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
@@ -119,6 +119,7 @@ export function Popout({
 
   // eslint-disable-next-line no-useless-assignment
   const ArrowIcon = isComponentVisible ? IoMdArrowDropdown : IoMdArrowDropup;
+  const [dropdownXOffset, setDropdownXOffset] = useState(0);
 
   useEffect(() => {
     // Avoid the dropdown going out of the viewport. By default it's left-
@@ -129,10 +130,13 @@ export function Popout({
     // unstable.
     if (!dropdownRef.current) return;
     const dropdownRect = dropdownRef.current.getBoundingClientRect();
-    if (dropdownRect.right > window.innerWidth)
-      dropdownRef.current.style.transform = `translateX(${Math.max(-dropdownRect.left, window.innerWidth - dropdownRect.right)}px)`;
-    else dropdownRef.current.style.transform = '';
-  }, [isComponentVisible, dropdownRef]);
+    // Cancel the effect of the existing x-shift
+    const realLeft = dropdownRect.left - dropdownXOffset;
+    const realRight = dropdownRect.right - dropdownXOffset;
+    if (realRight > window.innerWidth)
+      setDropdownXOffset(Math.max(-realLeft, window.innerWidth - realRight));
+    else setDropdownXOffset(0);
+  }, [isComponentVisible, dropdownRef, dropdownXOffset]);
 
   return (
     <div
@@ -168,7 +172,15 @@ export function Popout({
       </button>
       {/* Dropdown */}
       {isComponentVisible ? (
-        <div className={styles.dropdown} ref={dropdownRef}>
+        <div
+          className={styles.dropdown}
+          ref={dropdownRef}
+          style={
+            dropdownXOffset
+              ? { transform: `translateX(${dropdownXOffset}px)` }
+              : undefined
+          }
+        >
           {children}
         </div>
       ) : null}

@@ -1,9 +1,8 @@
-import React, { useImperativeHandle, useState, useId, useRef } from 'react';
+import React, { useState, useId, useEffect } from 'react';
 import clsx from 'clsx';
 import RCSlider from 'rc-slider';
 
 import CustomSelect from './CustomSelect';
-import type { Resettable } from './NavbarCatalogSearch';
 import { Popout } from './Popout';
 import ResultsColumnSort from './ResultsColumnSort';
 import Toggle from './Toggle';
@@ -135,6 +134,9 @@ function Slider<K extends NumericFilters>({
   const [rangeValue, setRangeValue] = useState(
     handle.value.map(scaleToUniform) as [number, number],
   );
+  useEffect(() => {
+    setRangeValue(handle.value.map(scaleToUniform) as [number, number]);
+  }, [handle.value, scaleToUniform]);
 
   return (
     <div className={styles.row}>
@@ -185,18 +187,12 @@ function Slider<K extends NumericFilters>({
   );
 }
 
-function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
+function AdvancedPanel() {
   const isTablet = useStore((state) => state.isTablet);
   const formLabelId = useId();
   const { filters, setStartTime } = useSearch();
 
   const { selectSortBy, sortOrder } = filters;
-
-  const resetKey = useRef(0);
-
-  useImperativeHandle(ref, () => ({
-    resetToDefault: () => resetKey.current++,
-  }));
 
   const relevantFilters: (
     | BooleanFilters
@@ -237,7 +233,6 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
           selectSortBy.resetToEmpty();
           sortOrder.resetToEmpty();
         }
-        resetKey.current++;
         setStartTime(Date.now());
       }}
       selectedOptions={
@@ -288,30 +283,28 @@ function AdvancedPanel(props: unknown, ref: React.ForwardedRef<Resettable>) {
             `Classes that meet on ${isIntersection ? 'all' : 'any'} of the selected days`
           }
         />
-        <React.Fragment key={resetKey.current}>
-          <Slider
-            handle="timeBounds"
-            step={1}
-            marks={[84, 120, 156, 192, 228, 264]}
-            toLabel={(x) => to12HourTime(toRealTime(x))}
-          />
-          <Slider
-            handle="enrollBounds"
-            step={10}
-            marks={[1, 18, 160, 528]}
-            scaleToUniform={(x) => Math.round(toLinear(x))}
-            scaleToReal={(x) => Math.round(toExponential(x))}
-          />
-          {isTablet && <Slider handle="professorBounds" step={0.1} />}
-          <Slider
-            handle="numBounds"
-            step={10}
-            marks={[0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]}
-            toLabel={(x) =>
-              x === 1000 ? '1000+' : x.toString().padStart(3, '0')
-            }
-          />
-        </React.Fragment>
+        <Slider
+          handle="timeBounds"
+          step={1}
+          marks={[84, 120, 156, 192, 228, 264]}
+          toLabel={(x) => to12HourTime(toRealTime(x))}
+        />
+        <Slider
+          handle="enrollBounds"
+          step={10}
+          marks={[1, 18, 160, 528]}
+          scaleToUniform={(x) => Math.round(toLinear(x))}
+          scaleToReal={(x) => Math.round(toExponential(x))}
+        />
+        {isTablet && <Slider handle="professorBounds" step={0.1} />}
+        <Slider
+          handle="numBounds"
+          step={10}
+          marks={[0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]}
+          toLabel={(x) =>
+            x === 1000 ? '1000+' : x.toString().padStart(3, '0')
+          }
+        />
         <IntersectableSelect
           id={`${formLabelId}-school`}
           options={schoolsOptions}

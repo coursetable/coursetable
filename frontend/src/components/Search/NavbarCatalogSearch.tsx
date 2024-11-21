@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Button } from 'react-bootstrap';
@@ -114,8 +114,6 @@ function IntersectableSelect<K extends IntersectableFilters>(
   );
 }
 
-export type Resettable = { resetToDefault: () => void };
-
 function Slider<K extends NumericFilters>({
   handle: handleName,
 }: {
@@ -126,6 +124,9 @@ function Slider<K extends NumericFilters>({
   // This is exactly the same as the filter handle, except it updates
   // responsively without triggering searching
   const [rangeValue, setRangeValue] = useState(handle.value);
+  useEffect(() => {
+    setRangeValue(handle.value);
+  }, [handle.value]);
 
   return (
     <div className={styles.sliderContainer}>
@@ -168,7 +169,6 @@ export function NavbarCatalogSearch() {
   const isTablet = useStore((state) => state.isTablet);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
-  const resetKey = useRef(0);
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -176,8 +176,6 @@ export function NavbarCatalogSearch() {
     useSearch();
 
   const { searchText } = filters;
-
-  const advanced = useRef<Resettable>(null);
 
   const keyMap = {
     FOCUS_SEARCH: ['ctrl+s', 'command+s'],
@@ -280,7 +278,6 @@ export function NavbarCatalogSearch() {
           )}
 
           <div
-            key={resetKey.current}
             className="w-auto flex-grow-0 d-flex align-items-center"
             data-tutorial="catalog-3"
           >
@@ -298,15 +295,13 @@ export function NavbarCatalogSearch() {
               minSelectWidth={200}
             />
           )}
-          <AdvancedPanel ref={advanced} />
+          <AdvancedPanel />
 
           {/* Reset Filters & Sorting Button */}
           <Button
             className={styles.resetButton}
             variant="danger"
             onClick={() => {
-              resetKey.current++;
-              advanced.current?.resetToDefault();
               Object.values(filters).forEach((filter) =>
                 filter.resetToDefault(),
               );
