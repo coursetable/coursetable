@@ -20,8 +20,11 @@ import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
 function Worksheet() {
-  const { isMobile, user } = useStore(
-    useShallow((state) => ({ isMobile: state.isMobile, user: state.user })),
+  const { isMobile, authStatus } = useStore(
+    useShallow((state) => ({
+      isMobile: state.isMobile,
+      authStatus: state.authStatus,
+    })),
   );
   const { worksheetLoading, worksheetError, worksheetView, isExoticWorksheet } =
     useWorksheet();
@@ -32,9 +35,9 @@ function Worksheet() {
     Sentry.captureException(worksheetError);
     return <ErrorPage message="There seems to be an issue with our server" />;
   }
-  if (worksheetLoading) return <Spinner />;
+  if (worksheetLoading || authStatus === 'loading') return <Spinner />;
   // For unauthed users, they can only view exotic worksheets
-  if (!user && !isExoticWorksheet)
+  if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   // eslint-disable-next-line no-useless-assignment
