@@ -7,12 +7,23 @@
   background-color: var(--color-primary-subdued);
 }
 
-.ratingBubble:hover,
-.ratingBubble:focus-visible {
+.ratingBubble:hover {
   color: unset;
   background-color: var(--color-primary-light);
   max-height: 50px;
   transition: max-height 0.2s ease-in;
+}
+
+.ratingBubble:focus-visible {
+  outline: revert;
+  box-shadow: none;
+  border: none;
+}
+
+.ratingBubble:focus-visible,
+.ratingBubble:active {
+  color: unset !important;
+  background-color: var(--color-primary-light) !important;
 }
 
 .ratingCell {
