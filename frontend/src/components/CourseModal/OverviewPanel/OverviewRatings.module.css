@@ -26,6 +26,11 @@
   background-color: var(--color-primary-light) !important;
 }
 
+.courseLink {
+  text-decoration: underline;
+  display: block;
+}
+
 .ratingCell {
   width: 100%;
   text-align: center;

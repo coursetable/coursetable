@@ -9,6 +9,10 @@ import {
   Tooltip,
   Popover,
 } from 'react-bootstrap';
+
+// @popperjs/core is provided by react-bootstrap
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { detectOverflow } from '@popperjs/core';
 import MultiToggle from 'react-multi-toggle';
 
 import type {
@@ -158,7 +162,7 @@ function CourseLink({
     }
     return (
       <OverlayTrigger
-        trigger="hover"
+        trigger={['hover', 'focus']}
         placement="right"
         overlay={(props) => (
           <Popover id="self-popover" {...props}>
@@ -169,6 +173,7 @@ function CourseLink({
         <Col
           xs={5}
           className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+          tabIndex={0}
         >
           <strong>{toSeasonString(course.season_code)}</strong>
           <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
@@ -204,14 +209,35 @@ function CourseLink({
       rootClose
       trigger="click"
       placement="right"
+      popperConfig={{
+        modifiers: [
+          {
+            name: 'resizeIfOverflow',
+            enabled: true,
+            phase: 'write',
+            requiresIfExists: ['offset'],
+            fn({ state }) {
+              const { right } = detectOverflow(state);
+              if (right < 0) return; // No overflow
+              const currentWidth = parseInt(
+                getComputedStyle(state.elements.popper).width,
+                10,
+              );
+              const newWidth = currentWidth - right;
+              state.styles.popper!.width = `${newWidth}px`;
+            },
+          },
+        ],
+      }}
       overlay={(props) => (
         <Popover id="cross-listing-popover" {...props}>
           <Popover.Body>
-            This class has multiple cross-listings:
+            This class has multiple cross-listings. Please choose from one of
+            the codes to see more details.
             {targetListings.map((l, i) => (
               <Link
                 key={i}
-                className="d-block"
+                className={styles.courseLink}
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
                   onNavigation('push', l, 'evals');
