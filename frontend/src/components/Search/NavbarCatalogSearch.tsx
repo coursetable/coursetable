@@ -9,7 +9,6 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import AdvancedPanel from './AdvancedPanel';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
-import { useFerry } from '../../contexts/ferryContext';
 import {
   useSearch,
   filterLabels,
@@ -172,7 +171,6 @@ export function NavbarCatalogSearch() {
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
   const navigate = useNavigate();
-  const { courses } = useFerry();
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -202,64 +200,14 @@ export function NavbarCatalogSearch() {
   }, [duration]);
 
   const fetchRandomCourse = () => {
-    const allCourses = Object.values(courses).flatMap((catalog) =>
-      Array.from(catalog.data.values()),
-    );
-
-    // Apply active filters to the course list
-    const filteredCourses = allCourses.filter((course) => {
-      // Example: Filter logic for each filter type
-      const matchesSubjects =
-        !filters.selectSubjects.value.length ||
-        filters.selectSubjects.value.some(
-          (subject) => course.subject === subject.value,
-        );
-      const matchesSkillsAreas =
-        !filters.selectSkillsAreas.value.length ||
-        filters.selectSkillsAreas.value.some((area) =>
-          course.course.areas.includes(area.value),
-        );
-      const matchesSeasons =
-        !filters.selectSeasons.value.length ||
-        filters.selectSeasons.value.some(
-          (season) => season.value === course.course.season_code,
-        );
-      const matchesOverall =
-        (course.course.average_rating ?? 0) >= filters.overallBounds.value[0] &&
-        (course.course.average_rating ?? 0) <= filters.overallBounds.value[1];
-      const matchesWorkload =
-        (course.course.average_workload ?? 0) >=
-          filters.workloadBounds.value[0] &&
-        (course.course.average_workload ?? 0) <=
-          filters.workloadBounds.value[1];
-      const matchesProfessor =
-        (course.course.average_professor_rating ?? 0) >=
-          filters.professorBounds.value[0] &&
-        (course.course.average_professor_rating ?? 0) <=
-          filters.professorBounds.value[1];
-
-      // Combine all conditions
-      return (
-        matchesSubjects &&
-        matchesSkillsAreas &&
-        matchesSeasons &&
-        matchesOverall &&
-        matchesWorkload &&
-        matchesProfessor
-      );
-    });
-
-    // Select a random course from the filtered list
-    if (filteredCourses.length > 0) {
+    if (searchData && searchData.length > 0) {
       const randomCourse =
-        filteredCourses[Math.floor(Math.random() * filteredCourses.length)];
+        searchData[Math.floor(Math.random() * searchData.length)];
       const courseModalLink = createCourseModalLink(
         randomCourse,
         new URLSearchParams(),
       );
       navigate(courseModalLink);
-    } else {
-      alert('No courses match the current filters!');
     }
   };
 
