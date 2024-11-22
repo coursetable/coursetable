@@ -26,7 +26,7 @@ export type Scalars = {
   Int: { input: number; output: number };
   Float: { input: number; output: number };
   float8: { input: any; output: any };
-  jsonb: { input: any; output: any };
+  json: { input: any; output: any };
   timestamp: { input: any; output: any };
 };
 
@@ -827,7 +827,7 @@ export type Course_Professors_Variance_Order_By = {
 export type Courses = {
   __typename?: 'courses';
   /** Course areas (humanities, social sciences, sciences) */
-  areas: Scalars['jsonb']['output'];
+  areas: Scalars['json']['output'];
   /** [computed] average_rating - average_workload */
   average_gut_rating?: Maybe<Scalars['float8']['output']>;
   /** [computed] Average of the average ratings of all professors for this course. */
@@ -959,7 +959,7 @@ export type Courses = {
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
-  skills: Scalars['jsonb']['output'];
+  skills: Scalars['json']['output'];
   /** Link to the syllabus */
   syllabus_url?: Maybe<Scalars['String']['output']>;
   /** True if the course is a sophomore seminar. False otherwise. */
@@ -1165,7 +1165,7 @@ export type Courses_Bool_Exp = {
   _and?: InputMaybe<Array<Courses_Bool_Exp>>;
   _not?: InputMaybe<Courses_Bool_Exp>;
   _or?: InputMaybe<Array<Courses_Bool_Exp>>;
-  areas?: InputMaybe<Jsonb_Comparison_Exp>;
+  areas?: InputMaybe<Json_Comparison_Exp>;
   average_gut_rating?: InputMaybe<Float8_Comparison_Exp>;
   average_professor_rating?: InputMaybe<Float8_Comparison_Exp>;
   average_rating?: InputMaybe<Float8_Comparison_Exp>;
@@ -1210,7 +1210,7 @@ export type Courses_Bool_Exp = {
   season?: InputMaybe<Seasons_Bool_Exp>;
   season_code?: InputMaybe<String_Comparison_Exp>;
   section?: InputMaybe<String_Comparison_Exp>;
-  skills?: InputMaybe<Jsonb_Comparison_Exp>;
+  skills?: InputMaybe<Json_Comparison_Exp>;
   syllabus_url?: InputMaybe<String_Comparison_Exp>;
   sysem?: InputMaybe<Boolean_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
@@ -1755,7 +1755,7 @@ export type Courses_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Courses_Stream_Cursor_Value_Input = {
   /** Course areas (humanities, social sciences, sciences) */
-  areas?: InputMaybe<Scalars['jsonb']['input']>;
+  areas?: InputMaybe<Scalars['json']['input']>;
   /** [computed] average_rating - average_workload */
   average_gut_rating?: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Average of the average ratings of all professors for this course. */
@@ -1861,7 +1861,7 @@ export type Courses_Stream_Cursor_Value_Input = {
    * Skills that the course fulfills (e.g. writing,
    *         quantitative reasoning, language levels)
    */
-  skills?: InputMaybe<Scalars['jsonb']['input']>;
+  skills?: InputMaybe<Scalars['json']['input']>;
   /** Link to the syllabus */
   syllabus_url?: InputMaybe<Scalars['String']['input']>;
   /** True if the course is a sophomore seminar. False otherwise. */
@@ -2868,7 +2868,7 @@ export type Evaluation_Questions = {
    */
   is_narrative: Scalars['Boolean']['output'];
   /** JSON array of possible responses (only if the question is not a narrative) */
-  options?: Maybe<Scalars['jsonb']['output']>;
+  options?: Maybe<Scalars['json']['output']>;
   /** Question code from OCE (e.g. "YC402") */
   question_code: Scalars['String']['output'];
   /** The question text */
@@ -2955,7 +2955,7 @@ export type Evaluation_Questions_Bool_Exp = {
   evaluation_ratings?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
   evaluation_ratings_aggregate?: InputMaybe<Evaluation_Ratings_Aggregate_Bool_Exp>;
   is_narrative?: InputMaybe<Boolean_Comparison_Exp>;
-  options?: InputMaybe<Jsonb_Comparison_Exp>;
+  options?: InputMaybe<Json_Comparison_Exp>;
   question_code?: InputMaybe<String_Comparison_Exp>;
   question_text?: InputMaybe<String_Comparison_Exp>;
   tag?: InputMaybe<String_Comparison_Exp>;
@@ -3036,7 +3036,7 @@ export type Evaluation_Questions_Stream_Cursor_Value_Input = {
    */
   is_narrative?: InputMaybe<Scalars['Boolean']['input']>;
   /** JSON array of possible responses (only if the question is not a narrative) */
-  options?: InputMaybe<Scalars['jsonb']['input']>;
+  options?: InputMaybe<Scalars['json']['input']>;
   /** Question code from OCE (e.g. "YC402") */
   question_code?: InputMaybe<Scalars['String']['input']>;
   /** The question text */
@@ -3064,7 +3064,7 @@ export type Evaluation_Ratings = {
   /** Question to which this rating responds */
   question_code: Scalars['String']['output'];
   /** JSON array of the response counts for each option */
-  rating: Scalars['jsonb']['output'];
+  rating: Scalars['json']['output'];
 };
 
 /** columns and relationships of "evaluation_ratings" */
@@ -3152,7 +3152,7 @@ export type Evaluation_Ratings_Bool_Exp = {
   evaluation_question?: InputMaybe<Evaluation_Questions_Bool_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   question_code?: InputMaybe<String_Comparison_Exp>;
-  rating?: InputMaybe<Jsonb_Comparison_Exp>;
+  rating?: InputMaybe<Json_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
@@ -3276,7 +3276,7 @@ export type Evaluation_Ratings_Stream_Cursor_Value_Input = {
   /** Question to which this rating responds */
   question_code?: InputMaybe<Scalars['String']['input']>;
   /** JSON array of the response counts for each option */
-  rating?: InputMaybe<Scalars['jsonb']['input']>;
+  rating?: InputMaybe<Scalars['json']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -3355,7 +3355,7 @@ export type Evaluation_Statistics = {
   /** Number of students enrolled in course */
   enrolled?: Maybe<Scalars['Int']['output']>;
   /** Arbitrary additional information attached to an evaluation */
-  extras?: Maybe<Scalars['jsonb']['output']>;
+  extras?: Maybe<Scalars['json']['output']>;
   /** Number of students who did not respond */
   no_response?: Maybe<Scalars['Int']['output']>;
   /** Number of responses */
@@ -3426,7 +3426,7 @@ export type Evaluation_Statistics_Bool_Exp = {
   course_id?: InputMaybe<Int_Comparison_Exp>;
   declined?: InputMaybe<Int_Comparison_Exp>;
   enrolled?: InputMaybe<Int_Comparison_Exp>;
-  extras?: InputMaybe<Jsonb_Comparison_Exp>;
+  extras?: InputMaybe<Json_Comparison_Exp>;
   no_response?: InputMaybe<Int_Comparison_Exp>;
   responses?: InputMaybe<Int_Comparison_Exp>;
 };
@@ -3580,7 +3580,7 @@ export type Evaluation_Statistics_Stream_Cursor_Value_Input = {
   /** Number of students enrolled in course */
   enrolled?: InputMaybe<Scalars['Int']['input']>;
   /** Arbitrary additional information attached to an evaluation */
-  extras?: InputMaybe<Scalars['jsonb']['input']>;
+  extras?: InputMaybe<Scalars['json']['input']>;
   /** Number of students who did not respond */
   no_response?: InputMaybe<Scalars['Int']['input']>;
   /** Number of responses */
@@ -3852,32 +3852,17 @@ export type Float8_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['float8']['input']>>;
 };
 
-export type Jsonb_Cast_Exp = {
-  String?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
-export type Jsonb_Comparison_Exp = {
-  _cast?: InputMaybe<Jsonb_Cast_Exp>;
-  /** is the column contained in the given json value */
-  _contained_in?: InputMaybe<Scalars['jsonb']['input']>;
-  /** does the column contain the given json value at the top level */
-  _contains?: InputMaybe<Scalars['jsonb']['input']>;
-  _eq?: InputMaybe<Scalars['jsonb']['input']>;
-  _gt?: InputMaybe<Scalars['jsonb']['input']>;
-  _gte?: InputMaybe<Scalars['jsonb']['input']>;
-  /** does the string exist as a top-level key in the column */
-  _has_key?: InputMaybe<Scalars['String']['input']>;
-  /** do all of these strings exist as top-level keys in the column */
-  _has_keys_all?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** do any of these strings exist as top-level keys in the column */
-  _has_keys_any?: InputMaybe<Array<Scalars['String']['input']>>;
-  _in?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
+export type Json_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['json']['input']>;
+  _gt?: InputMaybe<Scalars['json']['input']>;
+  _gte?: InputMaybe<Scalars['json']['input']>;
+  _in?: InputMaybe<Array<Scalars['json']['input']>>;
   _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['jsonb']['input']>;
-  _lte?: InputMaybe<Scalars['jsonb']['input']>;
-  _neq?: InputMaybe<Scalars['jsonb']['input']>;
-  _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+  _lt?: InputMaybe<Scalars['json']['input']>;
+  _lte?: InputMaybe<Scalars['json']['input']>;
+  _neq?: InputMaybe<Scalars['json']['input']>;
+  _nin?: InputMaybe<Array<Scalars['json']['input']>>;
 };
 
 /** columns and relationships of "listings" */

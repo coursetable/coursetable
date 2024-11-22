@@ -327,10 +327,12 @@ export function NavbarCatalogSearch() {
             Reset
           </Button>
 
+          {/* Random Course Button */}
           <Button
             className={styles.randomButton}
             variant="primary"
             onClick={fetchRandomCourse}
+            disabled={!searchData || searchData.length === 0}
           >
             Random Course
           </Button>
