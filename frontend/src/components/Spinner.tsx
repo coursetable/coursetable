@@ -9,6 +9,8 @@ export default function LoadSpinner(
     readonly message: string | undefined;
   },
 ) {
+  // Optimization: avoid showing a spinner if the content can be loaded quickly
+  // This makes the UI feel more responsive
   const [show, setShow] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
