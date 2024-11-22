@@ -6,20 +6,24 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 import styles from './WorksheetNumberDropdown.module.css';
 
 function WorksheetNumDropdownDesktop() {
-  const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
+  const {
+    changeViewedWorksheetNumber,
+    viewedWorksheetNumber,
+    worksheetOptions,
+  } = useWorksheet();
 
   return (
     <Popout
       buttonText="Worksheet"
       displayOptionLabel
-      selectedOptions={worksheetOptions[worksheetNumber]}
+      selectedOptions={worksheetOptions[viewedWorksheetNumber]}
       clearIcon={false}
     >
       <PopoutSelect<Option<number>, false>
-        value={worksheetOptions[worksheetNumber]}
+        value={worksheetOptions[viewedWorksheetNumber]}
         options={worksheetOptions}
         onChange={(selectedOption) => {
-          changeWorksheet(selectedOption!.value);
+          changeViewedWorksheetNumber(selectedOption!.value);
         }}
         showControl={false}
         minWidth={200}
@@ -29,15 +33,19 @@ function WorksheetNumDropdownDesktop() {
 }
 
 function WorksheetNumDropdownMobile() {
-  const { changeWorksheet, worksheetNumber, worksheetOptions } = useWorksheet();
+  const {
+    changeViewedWorksheetNumber,
+    viewedWorksheetNumber,
+    worksheetOptions,
+  } = useWorksheet();
 
   return (
     <DropdownButton
       className={styles.dropdownButton}
       variant="primary"
-      title={worksheetOptions[worksheetNumber]!.label}
+      title={worksheetOptions[viewedWorksheetNumber]!.label}
       onSelect={(v) => {
-        if (v) changeWorksheet(Number(v));
+        if (v) changeViewedWorksheetNumber(Number(v));
       }}
     >
       {worksheetOptions.map(({ value, label }) => (
@@ -48,7 +56,7 @@ function WorksheetNumDropdownMobile() {
           // Styling if this is the current number
           style={{
             backgroundColor:
-              value === worksheetNumber ? 'var(--color-primary)' : '',
+              value === viewedWorksheetNumber ? 'var(--color-primary)' : '',
           }}
         >
           <div className="mx-auto">{label}</div>

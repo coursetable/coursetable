@@ -6,13 +6,15 @@ This doc describes how our challenge mechanism is implemented.
 
 To verify that users have access to course evaluations, we ask them to retrieve rating data from OCE that are then compared with the values in our database. If the responses match, then the user is granted access to CourseTable's evaluations-related data.
 
+Note that the challenge is rarely needed. Most of the time, users are automatically granted access to evaluations data if their Net ID is identified by Yalies as a student.
+
 ## Requesting a challenge
 
 The `/api/challenge/request` route accepts GET requests and returns a JSON object with challenge questions.
 
 Before a challenge is generated, we check for a few requirements:
 
-1. The user must be logged in through CAS (managed by our reverse proxy).
+1. The user must be logged in through CAS.
 2. The user must exist within our database.
 3. The user must not already have evaluations enabled.
 4. The user's total number of request/verify attempts is below our threshold (this prevents brute-forcing).
@@ -41,9 +43,8 @@ Before verifying the answers, we check that the user is logged in, within our da
 
 Once these requirements are passed, we perform the following:
 
-1. The token, salt, and answers are extracted from the response body. For the exact structure of the request, see [api.md](./api.md#post-apichallengeverify).
-2. The token is decrypted and parsed back into a JSON object. If JSON parsing fails, an `INVALID_TOKEN` error response is given.
-3. The questions-response index combinations from the answers are extracted. If this fails, a `MALFORMED_ANSWERS` error response is given.
-4. The `netId` specified in the token is compared to that of the request header. If these are inconsistent, we assume the token has been tampered with and respond with an `INVALID_TOKEN` error.
-5. The `courseRatingId` and `courseRatingIndex` values from the token and the answer are compared. If these are inconsistent, we assume the token has been tampered with and respond with an `INVALID_TOKEN` error.
-6. If everything has passed so far, we retrieve the response numbers for each question from our database. These are then compared with the values in the provided answers. If these are all correct, then a `CORRECT` response is given; otherwise, an `INCORRECT` response is returned.
+1. The token, salt, and answers are extracted from the response body. For the exact structure of the request, see [api.md](./api.md#post-apichallengeverify). We require:
+   - The token to be decrypted and parsed to a valid JSON object.
+   - The answers and the token to have matching question-response index combinations.
+   - The net ID in the token to match the request user's net ID.
+2. We retrieve the response numbers for each question from our database. These are then compared with the values in the provided answers. If these are all correct, then a `CORRECT` response is given; otherwise, an `INCORRECT` response is returned.

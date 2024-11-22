@@ -97,13 +97,26 @@ Setup the new server as a self-hosted runner for GitHub Actions by following the
 ### Deploying to the server
 
 > [!IMPORTANT]
-> On the current CourseTable server, `~` refers to `/home/app`. If you logged in using any other user, you'll need to change the paths below.
+> On the current CourseTable server, `~` refers to `/home/app`. **Always log in with `app` user**, because our automatic CD uses `app` to run `git pull`, so if another user changed the `.git` folder, the CD will fail.
 
-The following instructions are only for manual deployments. Only use this in the case that the [GitHub Actions CD workflow](https://github.com/coursetable/coursetable/actions/workflows/cd.yml) fails.
+The following instructions are only for manual deployments. Only use this in the case that the [GitHub Actions CD workflow](https://github.com/coursetable/coursetable/actions/workflows/cd.yml) fails, or if there are manual changes that need to be made (e.g. DB schema).
 
 ```sh
-# Run these on the prod server.
+# Run these on the prod server. Make sure you log in as `app`.
 cd ~/coursetable/api
 git pull # Get changes onto server
 ./start.sh -p # Deploy the new version in prod
 ```
+
+## Troubleshooting deployment
+
+If the API server is not responding, check the logs, and go into the container to debug if necessary:
+
+```sh
+docker logs -f express-prod
+docker exec -it express-prod bash
+```
+
+You can also restart it with `./start.sh -p`, or force-recreate the container with `./start.sh -p -o`.
+
+In the case of prolonged downtime, you can put up the "under maintenance" page by manually triggering the "under maintenance" GitHub Action workflow.

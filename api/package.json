@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "npm run codegen && tsx watch src/server.ts",
-    "start:prod": "npm run codegen && tsx src/server.ts",
+    "prestart": "npm run codegen",
+    "start": "npm run codegen:format && tsx watch src/server.ts",
+    "start:prod": "tsx src/server.ts",
     "db:push": "drizzle-kit push:pg",
-    "codegen": "graphql-codegen --config graphql-codegen.ts && tsx ../tools/fix-gql-generated-code.mts && prettier -w src/**/*.queries.ts src/graphql-types.ts"
+    "codegen": "graphql-codegen --config graphql-codegen.ts && tsx ../tools/fix-gql-generated-code.mts",
+    "codegen:format": "prettier -w src/**/*.queries.ts src/graphql-types.ts"
   },
   "dependencies": {
     "@coursetable/passport-cas": "^0.1.2",

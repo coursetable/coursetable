@@ -20,7 +20,7 @@ function EvaluationsPanel({
       crn,
     },
   });
-  if (loading || error) return <Spinner />;
+  if (loading || error) return <Spinner message="Loading evaluations..." />;
   if ((data?.listings.length ?? 0) > 1) {
     Sentry.captureException(
       new Error(`More than one listings returned for ${seasonCode}-${crn}`),

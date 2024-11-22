@@ -35,6 +35,24 @@ function CommentRows({
   return filteredResps;
 }
 
+// Allow some variations in question text for the same tag, and make them
+// display the same thing. These are real cooccurrences in the data.
+function canonicalizeQuestionText(questionText: string) {
+  if (
+    questionText ===
+      'What are the strengths and weaknesses of the course and how could it be improved?' ||
+    questionText ===
+      'Looking back on this course, what is your overall assessment of the course:  What are its strengths and weaknesses, and in what ways might it be improved?'
+  )
+    return 'What are the strengths and weaknesses of this course and how could it be improved?';
+  if (
+    questionText ===
+    'How would you summarize this course for a fellow student?  Would you recommend it to another student?  Why or why not?'
+  )
+    return 'How would you summarize this course for a fellow student? Would you recommend this course to another student? Why or why not?';
+  return questionText;
+}
+
 function EvaluationResponses({
   info,
 }: {
@@ -54,21 +72,20 @@ function EvaluationResponses({
       evalQuestionTags.map((tag) => [tag, { questionText: '', responses: [] }]),
     );
     info.evaluation_narratives.forEach((data) => {
-      const questionTag =
-        data.evaluation_question.tag ??
-        truncatedText(data.evaluation_question.question_text, 15, '');
+      const questionText = canonicalizeQuestionText(
+        data.evaluation_question.question_text,
+      );
+      const questionTag = data.evaluation_question.tag ?? questionText;
       const questionInfo = tempResponses[questionTag] ?? {
-        questionText: data.evaluation_question.question_text,
+        questionText,
         responses: [],
       };
       if (!questionInfo.questionText) {
-        questionInfo.questionText = data.evaluation_question.question_text;
-      } else if (
-        data.evaluation_question.question_text !== questionInfo.questionText
-      ) {
+        questionInfo.questionText = questionText;
+      } else if (questionText !== questionInfo.questionText) {
         Sentry.captureException(
           new Error(
-            `Question text mismatch: ${questionTag} ${data.evaluation_question.question_text} vs. ${questionInfo.questionText}`,
+            `Question text mismatch: ${questionTag} ${questionText} vs. ${questionInfo.questionText}`,
           ),
         );
       }
@@ -159,7 +176,11 @@ function EvaluationResponses({
         {Object.entries(curResponses).map(
           ([tag, { questionText, responses }]) =>
             responses.length !== 0 && (
-              <Tab eventKey={tag} title={tag} key={tag}>
+              <Tab
+                eventKey={tag}
+                title={tag === questionText ? truncatedText(tag, 15, '') : tag}
+                key={tag}
+              >
                 <div className={styles.questionHeader}>
                   <TextComponent>{questionText}</TextComponent>
                 </div>

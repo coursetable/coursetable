@@ -35,7 +35,7 @@ jobs:
           script: |
             return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-25).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
       - name: Install Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       - name: Install Vercel CLI

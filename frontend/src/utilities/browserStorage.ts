@@ -65,6 +65,8 @@ function useStorageState<T>(
     storageSlot.current.set(newValue);
     setValue(newValue);
   }, []);
+  // TODO
+  // eslint-disable-next-line react-compiler/react-compiler
   return [value, setValueAndStorage] as const;
 }
 

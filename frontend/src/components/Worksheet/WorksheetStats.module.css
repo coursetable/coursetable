@@ -83,3 +83,7 @@
 .infoIcon {
   color: var(--color-primary);
 }
+
+.spacer {
+  margin: 1em;
+}

@@ -6,6 +6,7 @@ import {
   studentFriendRequests,
   studentFriends,
   worksheetCourses,
+  worksheetMetadata,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
@@ -260,11 +261,32 @@ export const getFriendsWorksheets = async (
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx
-        .select()
+        .select({
+          netId: worksheetCourses.netId,
+          season: worksheetCourses.season,
+          worksheetNumber: worksheetCourses.worksheetNumber,
+          crn: worksheetCourses.crn,
+          color: worksheetCourses.color,
+          hidden: worksheetCourses.hidden,
+        })
         .from(worksheetCourses)
         .where(inArray(worksheetCourses.netId, friendNetIds));
 
-      const friendWorksheetMap = worksheetCoursesToWorksheets(friendWorksheets);
+      winston.info('Getting worksheet metadata of friends');
+      const friendWsMetadata = await tx
+        .select({
+          netId: worksheetMetadata.netId,
+          season: worksheetMetadata.season,
+          worksheetNumber: worksheetMetadata.worksheetNumber,
+          name: worksheetMetadata.name,
+        })
+        .from(worksheetMetadata)
+        .where(inArray(worksheetMetadata.netId, friendNetIds));
+
+      const friendWorksheetMap = worksheetCoursesToWorksheets(
+        friendWorksheets,
+        friendWsMetadata,
+      );
 
       winston.info('Getting info of friends');
 

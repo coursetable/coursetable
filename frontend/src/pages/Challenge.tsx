@@ -317,9 +317,8 @@ function Challenge() {
             </Button>
           </Form>
         ) : (
-          // Loading spinner while fetching questions
           <Row className="mx-auto py-5 my-5">
-            <Spinner />
+            <Spinner message="Loading questions..." />
           </Row>
         )}
       </SurfaceComponent>

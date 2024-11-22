@@ -53,7 +53,7 @@ export function suspended<T extends React.ComponentType<any>>(
     }
   });
   return (props: ComponentProps<T>) => (
-    <React.Suspense fallback={<Spinner />}>
+    <React.Suspense fallback={<Spinner message="Loading..." />}>
       <Comp {...props} />
     </React.Suspense>
   );

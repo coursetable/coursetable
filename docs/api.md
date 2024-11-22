@@ -6,6 +6,8 @@ Endpoints marked as "needs credentials" returns 401 with `error: "USER_NOT_FOUND
 
 Endpoints marked as "needs eval access" additionally returns 401 with `error: "USER_NO_EVALS"` when the user exists but has no evals access. Evals access can be granted after completing the challenge, or manually granted.
 
+Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"` when the request body fails to be validated.
+
 ## Challenge
 
 ### `GET` `/api/challenge/request`
@@ -286,10 +288,13 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
         worksheets: {
           [season: Season]: {
             [worksheetNumber: number]: {
-              crn: Crn;
-              color: string;
-              hidden: boolean | null;
-            }[];
+              name: string;
+              courses: {
+                crn: number;
+                color: string;
+                hidden: boolean | null;
+              }[];
+            };
           };
         };
       };
@@ -321,6 +326,26 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - For internal use by Canny
 
 ## Worksheet
+
+### `GET` `/api/user/info`
+
+#### Request
+
+- Needs credentials
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `netId`: `NetId`
+  - `firstName`: `string | null`
+  - `lastName`: `string | null`
+  - `email`: `string | null`
+  - `hasEvals`: `boolean`
+  - `year`: `number | null`
+  - `school`: `string | null`
+  - `major`: `string | null`
 
 ### `POST` `/api/user/updateWorksheetCourses`
 
@@ -364,20 +389,19 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 - Body:
 
-  - `netId`: `NetId`
-  - `evaluationsEnabled`: `boolean | null`
-  - `year`: `number | null`
-  - `school`: `string | null`
   - `data`:
 
     ```ts
     type Data = {
       [season: Season]: {
         [worksheetNumber: number]: {
-          crn: Crn;
-          color: string;
-          hidden: boolean | null;
-        }[];
+          name: string;
+          courses: {
+            crn: number;
+            color: string;
+            hidden: boolean | null;
+          }[];
+        };
       };
     };
     ```
@@ -391,7 +415,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
   - Option 1 (add):
     - `action`: `"add"`
     - `season`: `string`
-    - `worksheetName`: `string`
+    - `name`: `string`
   - Option 2 (delete):
     - `action`: `"delete"`
     - `season`: `string`
@@ -400,42 +424,20 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
     - `action`: `"rename"`
     - `season`: `string`
     - `worksheetNumber`: `number`
-    - `worksheetName`: `string`
+    - `name`: `string`
 
 #### Response
 
 **Status: 200**
 
 - If `action` == `"add"`:
-  - returns { worksheetNumber: number }
+  - returns `{ worksheetNumber: number }`
 
 **Status: 400**
 
 - When the request body is invalid
 - Body:
   - `error`: `"INVALID_REQUEST" | "WORKSHEET_NOT_FOUND"`
-
-### `GET` `/api/user/worksheetMetadata`
-
-#### Request
-
-- Needs credentials
-
-#### Response
-
-**Status: 200**
-
-- Body:
-
-  - `netId`: `NetId`
-  - `worksheets`:
-    ```ts
-    [season: Season]: {
-      [worksheetNumber: number]: {
-        worksheetName: string
-      };
-    };
-    ```
 
 ## Health check
 

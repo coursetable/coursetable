@@ -1,12 +1,14 @@
 import { toast } from 'react-toastify';
 import type { StateCreator } from 'zustand';
 import {
+  getUserInfo,
   fetchUserWorksheets,
   fetchFriendWorksheets,
   fetchFriendReqs,
   addFriend as baseAddFriend,
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
+  type UserInfo,
   type UserWorksheets,
   type FriendRecord,
   type FriendRequests,
@@ -15,19 +17,15 @@ import type { NetId } from '../queries/graphql-types';
 import type { Store } from '../store';
 
 interface UserState {
-  user: {
-    netId?: NetId;
-    worksheets?: UserWorksheets;
-    hasEvals?: boolean;
-    year?: number;
-    school?: string;
-    friendRequests?: FriendRequests;
-    friends?: FriendRecord;
-  };
+  user?: UserInfo;
+  worksheets?: UserWorksheets;
+  friendRequests?: FriendRequests;
+  friends?: FriendRecord;
 }
 
 interface UserActions {
   userRefresh: () => Promise<void>;
+  worksheetsRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
   addFriend: (friendNetId: NetId) => Promise<void>;
@@ -41,57 +39,25 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   set,
   get,
 ) => ({
-  user: {
-    netId: undefined,
-    worksheets: undefined,
-    hasEvals: undefined,
-    year: undefined,
-    school: undefined,
-    friendRequests: undefined,
-    friends: undefined,
-  },
+  user: undefined,
+  worksheets: undefined,
+  friendRequests: undefined,
+  friends: undefined,
   async userRefresh() {
-    const fetchedUser = await fetchUserWorksheets();
-    if (fetchedUser) {
-      set({
-        user: {
-          ...get().user,
-          netId: fetchedUser.netId,
-          hasEvals: fetchedUser.evaluationsEnabled ?? undefined,
-          year: fetchedUser.year ?? undefined,
-          school: fetchedUser.school ?? undefined,
-          worksheets: fetchedUser.data as UserWorksheets,
-        },
-      });
-    } else {
-      set({
-        user: {
-          netId: undefined,
-          hasEvals: undefined,
-          year: undefined,
-          school: undefined,
-          worksheets: undefined,
-        },
-      });
-    }
+    const data = await getUserInfo();
+    set({ user: data });
+  },
+  async worksheetsRefresh() {
+    const data = await fetchUserWorksheets();
+    set({ worksheets: data?.data });
   },
   async friendRefresh() {
-    const friends = await fetchFriendWorksheets();
-    set({
-      user: {
-        ...get().user,
-        friends: friends?.friends ?? undefined,
-      },
-    });
+    const data = await fetchFriendWorksheets();
+    set({ friends: data?.friends });
   },
   async friendReqRefresh() {
-    const friendRequests = await fetchFriendReqs();
-    set({
-      user: {
-        ...get().user,
-        friendRequests: friendRequests?.requests ?? undefined,
-      },
-    });
+    const data = await fetchFriendReqs();
+    set({ friendRequests: data?.requests });
   },
   async addFriend(friendNetId: NetId) {
     if (await baseAddFriend(friendNetId))
@@ -107,13 +73,14 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
     await Promise.all([get().friendRefresh(), get().friendReqRefresh()]);
   },
   async requestAddFriend(friendNetId: NetId) {
-    if (friendNetId === get().user.netId) {
+    const { user } = get();
+    if (!user) {
+      toast.error('You are not logged in!');
+    } else if (friendNetId === user.netId) {
       toast.error('You cannot request yourself as friend!');
-    } else if (get().user.friends?.[friendNetId]) {
+    } else if (get().friends?.[friendNetId]) {
       toast.error(`You are already friends with ${friendNetId}.`);
-    } else if (
-      get().user.friendRequests?.find((x) => x.netId === friendNetId)
-    ) {
+    } else if (get().friendRequests?.find((x) => x.netId === friendNetId)) {
       toast.error(
         `You already received a friend request from ${friendNetId}. Go approve the request instead!`,
       );

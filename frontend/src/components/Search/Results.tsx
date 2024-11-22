@@ -49,14 +49,14 @@ function Results({
     true,
   );
 
-  const { curSeason } = useWorksheet();
+  const { viewedSeason } = useWorksheet();
 
   // eslint-disable-next-line no-useless-assignment
   let resultsListing: React.JSX.Element | undefined = undefined;
   if (loading || !data) {
     resultsListing = (
       <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>
-        <Spinner />
+        <Spinner message="Loading course catalog..." />
       </Row>
     );
   } else if (data.length === 0) {
@@ -75,7 +75,7 @@ function Results({
           </>
         ) : (
           <>
-            <h3>No courses found for {toSeasonString(curSeason)}</h3>
+            <h3>No courses found for {toSeasonString(viewedSeason)}</h3>
             <div>
               Add some courses on the <Link to="/catalog">Catalog</Link>.
             </div>

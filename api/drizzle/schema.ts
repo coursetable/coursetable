@@ -95,7 +95,7 @@ export const worksheetMetadata = pgTable(
     netId: varchar('netId', { length: 8 }).notNull(),
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').notNull(),
-    worksheetName: varchar('worksheetName', { length: 64 }).notNull(),
+    name: varchar('name', { length: 64 }).notNull(),
   },
   (table) => ({
     worksheetMetadataUniqueIdx: uniqueIndex('worksheet_metadata_unique_idx').on(

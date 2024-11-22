@@ -1,0 +1,34 @@
+.unionIntersectionButton {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border-style: solid;
+  border-color: var(--color-border-control);
+  border-width: 2px;
+  margin: 0 0 0 4px;
+}
+
+.unionIntersectionButton:hover {
+  border-color: hsl(0deg 0 70%);
+  background-color: var(--color-surface-hover);
+}
+
+.vennFillIndicator {
+  fill: var(--color-primary);
+}
+
+.vennCircle {
+  fill: none;
+  stroke: var(--color-icon);
+  stroke-width: 3px;
+}
+
+.unionIntersectionButton:hover .vennCircle {
+  stroke: var(--color-icon-hover);
+}
+
+.unionIntersectionButtonPopout {
+  border-width: 1px;
+  margin: 8px 8px 8px 0;
+}
