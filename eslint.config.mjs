@@ -123,7 +123,7 @@ export default tseslint.config(
           ],
           patterns: [
             {
-              group: ['luxon', 'moment'],
+              group: ['luxon', 'moment', 'dayjs'],
               message:
                 "Do you really need a Date library? Consider hand-rolling your own utilities. Look around for examples. We don't need anything complex because we will only possibly deal with three time zones: Yale, UTC, and user device. Maybe be on the lookout for https://tc39.es/proposal-temporal/docs/",
             },
