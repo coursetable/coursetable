@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Button } from 'react-bootstrap';
 import { IoClose } from 'react-icons/io5';
@@ -9,6 +9,7 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import AdvancedPanel from './AdvancedPanel';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
+import { useFerry } from '../../contexts/ferryContext';
 import {
   useSearch,
   filterLabels,
@@ -24,6 +25,7 @@ import {
 } from '../../contexts/searchContext';
 import { useStore } from '../../store';
 import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
+import { createCourseModalLink } from '../../utilities/display';
 import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
 
@@ -169,6 +171,8 @@ export function NavbarCatalogSearch() {
   const isTablet = useStore((state) => state.isTablet);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
+  const navigate = useNavigate();
+  const { courses } = useFerry();
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -196,6 +200,19 @@ export function NavbarCatalogSearch() {
       ];
     return pool[Math.floor(Math.random() * pool.length)]!;
   }, [duration]);
+
+  const fetchRandomCourse = () => {
+    const allCourses = Object.values(courses).flatMap((catalog) =>
+      Array.from(catalog.data.values()),
+    );
+    const randomCourse =
+      allCourses[Math.floor(Math.random() * allCourses.length)];
+    const courseModalLink = createCourseModalLink(
+      randomCourse,
+      new URLSearchParams(),
+    );
+    navigate(courseModalLink);
+  };
 
   return (
     <>
@@ -311,6 +328,14 @@ export function NavbarCatalogSearch() {
             disabled={Object.values(filters).every((x) => x.isDefault)}
           >
             Reset
+          </Button>
+
+          <Button
+            className={styles.randomButton}
+            variant="primary"
+            onClick={fetchRandomCourse}
+          >
+            Random Course
           </Button>
         </div>
       </Form>
