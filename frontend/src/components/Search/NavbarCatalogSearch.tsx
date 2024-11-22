@@ -205,13 +205,62 @@ export function NavbarCatalogSearch() {
     const allCourses = Object.values(courses).flatMap((catalog) =>
       Array.from(catalog.data.values()),
     );
-    const randomCourse =
-      allCourses[Math.floor(Math.random() * allCourses.length)];
-    const courseModalLink = createCourseModalLink(
-      randomCourse,
-      new URLSearchParams(),
-    );
-    navigate(courseModalLink);
+
+    // Apply active filters to the course list
+    const filteredCourses = allCourses.filter((course) => {
+      // Example: Filter logic for each filter type
+      const matchesSubjects =
+        !filters.selectSubjects.value.length ||
+        filters.selectSubjects.value.some(
+          (subject) => course.subject === subject.value,
+        );
+      const matchesSkillsAreas =
+        !filters.selectSkillsAreas.value.length ||
+        filters.selectSkillsAreas.value.some((area) =>
+          course.course.areas.includes(area.value),
+        );
+      const matchesSeasons =
+        !filters.selectSeasons.value.length ||
+        filters.selectSeasons.value.some(
+          (season) => season.value === course.course.season_code,
+        );
+      const matchesOverall =
+        (course.course.average_rating ?? 0) >= filters.overallBounds.value[0] &&
+        (course.course.average_rating ?? 0) <= filters.overallBounds.value[1];
+      const matchesWorkload =
+        (course.course.average_workload ?? 0) >=
+          filters.workloadBounds.value[0] &&
+        (course.course.average_workload ?? 0) <=
+          filters.workloadBounds.value[1];
+      const matchesProfessor =
+        (course.course.average_professor_rating ?? 0) >=
+          filters.professorBounds.value[0] &&
+        (course.course.average_professor_rating ?? 0) <=
+          filters.professorBounds.value[1];
+
+      // Combine all conditions
+      return (
+        matchesSubjects &&
+        matchesSkillsAreas &&
+        matchesSeasons &&
+        matchesOverall &&
+        matchesWorkload &&
+        matchesProfessor
+      );
+    });
+
+    // Select a random course from the filtered list
+    if (filteredCourses.length > 0) {
+      const randomCourse =
+        filteredCourses[Math.floor(Math.random() * filteredCourses.length)];
+      const courseModalLink = createCourseModalLink(
+        randomCourse,
+        new URLSearchParams(),
+      );
+      navigate(courseModalLink);
+    } else {
+      alert('No courses match the current filters!');
+    }
   };
 
   return (
