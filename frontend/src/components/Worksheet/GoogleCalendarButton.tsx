@@ -135,7 +135,7 @@ function GoogleCalendarButton(): React.JSX.Element {
       {authInstance && !exporting ? (
         <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
       ) : (
-        <Spinner />
+        <Spinner message={undefined} />
       )}
       &nbsp;&nbsp;Export to Google Calendar
     </button>

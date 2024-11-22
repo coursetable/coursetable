@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type { ListChildComponentProps } from 'react-window';
+import { useShallow } from 'zustand/react/shallow';
 
 import type { ResultItemData } from './Results';
 import {
@@ -77,7 +78,9 @@ function ResultsItem({
   style,
 }: ListChildComponentProps<ResultItemData>) {
   const listing = listings[index]!;
-  const user = useStore((state) => state.user);
+  const { user, worksheets } = useStore(
+    useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
+  );
   const { viewedWorksheetNumber } = useWorksheet();
 
   const { numFriends } = useSearch();
@@ -85,8 +88,8 @@ function ResultsItem({
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () => isInWorksheet(listing, viewedWorksheetNumber, user.worksheets),
-    [listing, viewedWorksheetNumber, user.worksheets],
+    () => isInWorksheet(listing, viewedWorksheetNumber, worksheets),
+    [listing, viewedWorksheetNumber, worksheets],
   );
 
   return (
@@ -126,12 +129,12 @@ function ResultsItem({
             </span>
           </CourseInfoPopover>
           <span className={colStyles.overallCol}>
-            <Rating listing={listing} hasEvals={user.hasEvals} name="Class" />
+            <Rating listing={listing} hasEvals={user?.hasEvals} name="Class" />
           </span>
           <span className={colStyles.workloadCol}>
             <Rating
               listing={listing}
-              hasEvals={user.hasEvals}
+              hasEvals={user?.hasEvals}
               name="Workload"
             />
           </span>
@@ -141,7 +144,7 @@ function ResultsItem({
             <span className={clsx('me-2 h-100', styles.profRating)}>
               <Rating
                 listing={listing}
-                hasEvals={user.hasEvals}
+                hasEvals={user?.hasEvals}
                 name="Professor"
               />
             </span>

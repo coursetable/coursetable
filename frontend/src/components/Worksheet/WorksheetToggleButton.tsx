@@ -32,10 +32,10 @@ function CourseConflictIcon({
   readonly modal: boolean;
   readonly worksheetNumber: number;
 }) {
-  const user = useStore((state) => state.user);
+  const worksheets = useStore((state) => state.worksheets);
 
   const { data } = useWorksheetInfo(
-    user.worksheets,
+    worksheets,
     listing.course.season_code,
     worksheetNumber,
   );
@@ -85,10 +85,10 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  const { user, userRefresh } = useStore(
+  const { worksheets, worksheetsRefresh } = useStore(
     useShallow((state) => ({
-      user: state.user,
-      userRefresh: state.userRefresh,
+      worksheets: state.worksheets,
+      worksheetsRefresh: state.worksheetsRefresh,
     })),
   );
 
@@ -109,9 +109,8 @@ function WorksheetToggleButton({
 
   const inWorksheet = useMemo(
     () =>
-      inWorksheetProp ??
-      isInWorksheet(listing, selectedWorksheet, user.worksheets),
-    [inWorksheetProp, listing, selectedWorksheet, user.worksheets],
+      inWorksheetProp ?? isInWorksheet(listing, selectedWorksheet, worksheets),
+    [inWorksheetProp, listing, selectedWorksheet, worksheets],
   );
 
   const isLgDesktop = useStore((state) => state.isLgDesktop);
@@ -130,25 +129,25 @@ function WorksheetToggleButton({
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
         hidden: false,
       });
-      if (success) await userRefresh();
+      if (success) await worksheetsRefresh();
     },
     [
       inWorksheet,
       listing.crn,
       listing.course.season_code,
       selectedWorksheet,
-      userRefresh,
+      worksheetsRefresh,
     ],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
-  const buttonLabel = user.worksheets
+  const buttonLabel = worksheets
     ? `${inWorksheet ? 'Remove from' : 'Add to'} my ${worksheetOptions[selectedWorksheet]!.label}`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in
-  if (!user.worksheets) {
+  if (!worksheets) {
     return (
       <div className={styles.container}>
         <OverlayTrigger

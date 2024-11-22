@@ -134,7 +134,7 @@ export default function ModalHeaderInfo({
     variables: {
       courseCode,
       seasonCode: season,
-      hasEvals: Boolean(user.hasEvals),
+      hasEvals: Boolean(user?.hasEvals),
     },
   });
   const sections =

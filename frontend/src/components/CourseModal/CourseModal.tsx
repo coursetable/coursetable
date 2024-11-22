@@ -34,7 +34,8 @@ export type ModalNavigationFunction = ((
   l: CourseModalPrefetchListingDataFragment,
   target: 'evals' | 'overview',
 ) => void) &
-  ((mode: 'pop', l: undefined, target: 'evals' | 'overview') => void);
+  ((mode: 'pop', l: undefined, target: 'evals' | 'overview') => void) &
+  ((mode: 'change-view', l: undefined, target: 'evals' | 'overview') => void);
 
 function parseQuery(courseModalQuery: string | null) {
   if (!courseModalQuery) return undefined;
@@ -56,7 +57,7 @@ function useCourseInfoFromURL(
   const hasStaticCatalog = variables && variables.seasonCode in courses;
   const { data } = useCourseModalFromUrlQuery({
     // If variables is undefined, the query will not be sent
-    variables: { ...variables!, hasEvals: Boolean(user.hasEvals) },
+    variables: { ...variables!, hasEvals: Boolean(user?.hasEvals) },
     skip: !variables || !isInitial || hasStaticCatalog,
   });
   if (hasStaticCatalog)
@@ -96,6 +97,8 @@ function CourseModal() {
     if (mode === 'pop') {
       setView('overview');
       setHistory(history.slice(0, -1));
+    } else if (mode === 'change-view') {
+      setView(target);
     } else {
       const nextView =
         // Only actually navigate to evals if the course has evals

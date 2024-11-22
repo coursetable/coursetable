@@ -97,12 +97,13 @@ async function updateWorksheetCourse(
           eq(worksheetMetadata.worksheetNumber, worksheetNumber),
         ),
       );
+    // To be removed once add/remove/rename worksheets is pushed.
     if (!nameExists) {
       await db.insert(worksheetMetadata).values({
         netId,
         season,
         worksheetNumber,
-        worksheetName: `Worksheet ${worksheetNumber}`,
+        name: `Worksheet ${worksheetNumber}`,
       });
     }
   }
@@ -221,40 +222,81 @@ export const updateWorksheetCourses = async (
   res.sendStatus(200);
 };
 
+export const getUserInfo = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const [studentProfile] = await db
+    .select({
+      netId: studentBluebookSettings.netId,
+      firstName: studentBluebookSettings.firstName,
+      lastName: studentBluebookSettings.lastName,
+      email: studentBluebookSettings.email,
+      hasEvals: studentBluebookSettings.evaluationsEnabled,
+      year: studentBluebookSettings.year,
+      school: studentBluebookSettings.school,
+      major: studentBluebookSettings.major,
+    })
+    .from(studentBluebookSettings)
+    .where(eq(studentBluebookSettings.netId, netId));
+
+  res.json({
+    netId,
+    firstName: studentProfile?.firstName ?? null,
+    lastName: studentProfile?.lastName ?? null,
+    email: studentProfile?.email ?? null,
+    hasEvals: studentProfile?.hasEvals ?? false,
+    year: studentProfile?.year ?? null,
+    school: studentProfile?.school ?? null,
+    major: studentProfile?.major ?? null,
+  });
+};
+
 export const getUserWorksheet = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Fetching user's worksheets`);
-
   const { netId } = req.user!;
-
-  winston.info(`Getting profile for user ${netId}`);
-  const [studentProfile] = await db
-    .selectDistinctOn([studentBluebookSettings.netId])
-    .from(studentBluebookSettings)
-    .where(eq(studentBluebookSettings.netId, netId));
 
   winston.info(`Getting worksheets for user ${netId}`);
 
   const worksheets = await db
-    .select()
+    .select({
+      netId: worksheetCourses.netId,
+      season: worksheetCourses.season,
+      worksheetNumber: worksheetCourses.worksheetNumber,
+      crn: worksheetCourses.crn,
+      color: worksheetCourses.color,
+      hidden: worksheetCourses.hidden,
+    })
     .from(worksheetCourses)
     .where(eq(worksheetCourses.netId, netId));
 
+  const allWorksheetMetadata = await db
+    .select({
+      netId: worksheetMetadata.netId,
+      season: worksheetMetadata.season,
+      worksheetNumber: worksheetMetadata.worksheetNumber,
+      name: worksheetMetadata.name,
+    })
+    .from(worksheetMetadata)
+    .where(eq(worksheetMetadata.netId, netId));
+
+  const allWorksheets = worksheetCoursesToWorksheets(
+    worksheets,
+    allWorksheetMetadata,
+  );
   res.json({
-    netId,
-    evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
-    year: studentProfile?.year ?? null,
-    school: studentProfile?.school ?? null,
-    data: worksheetCoursesToWorksheets(worksheets)[netId] ?? {},
+    data: allWorksheets[netId] ?? {},
   });
 };
 
 const AddWorksheetSchema = z.object({
   action: z.literal('add'),
   season: z.string().transform((val) => parseInt(val, 10)),
-  worksheetName: z.string().max(64),
+  name: z.string().max(64),
 });
 
 const DeleteWorksheetSchema = z.object({
@@ -267,7 +309,7 @@ const RenameWorksheetSchema = z.object({
   action: z.literal('rename'),
   season: z.string().transform((val) => parseInt(val, 10)),
   worksheetNumber: z.number(),
-  worksheetName: z.string().max(64),
+  name: z.string().max(64),
 });
 
 const UpdateWorksheetMetadataSchema = z.union([
@@ -295,7 +337,7 @@ export const updateWorksheetMetadata = async (
   if (action === 'add') {
     winston.info(`Adding worksheet for user ${netId}`);
 
-    const { worksheetName } = bodyParseRes.data;
+    const { name } = bodyParseRes.data;
 
     const worksheetNumbersRes = await db
       .select({ worksheetNumber: worksheetMetadata.worksheetNumber })
@@ -317,7 +359,7 @@ export const updateWorksheetMetadata = async (
       netId,
       season,
       worksheetNumber: nextAvailableWsNumber,
-      worksheetName,
+      name,
     });
     res.json({
       worksheetNumber: nextAvailableWsNumber,
@@ -342,14 +384,14 @@ export const updateWorksheetMetadata = async (
       return;
     }
   } else {
-    const { worksheetNumber, worksheetName } = bodyParseRes.data;
+    const { worksheetNumber, name } = bodyParseRes.data;
 
     winston.info(
-      `Renaming worksheet ${worksheetNumber} for user ${netId} to "${worksheetName}"`,
+      `Renaming worksheet ${worksheetNumber} for user ${netId} to "${name}"`,
     );
     const renamedWorksheets = await db
       .update(worksheetMetadata)
-      .set({ worksheetName })
+      .set({ name })
       .where(
         and(
           eq(worksheetMetadata.netId, netId),
@@ -366,41 +408,4 @@ export const updateWorksheetMetadata = async (
   }
 
   res.sendStatus(200);
-};
-
-export const getUserWorksheetMetadata = async (
-  req: express.Request,
-  res: express.Response,
-): Promise<void> => {
-  winston.info(`Fetching worksheet names for user`);
-
-  const { netId } = req.user!;
-
-  const allWorksheetMetadata = await db
-    .select({
-      season: worksheetMetadata.season,
-      worksheetNumber: worksheetMetadata.worksheetNumber,
-      worksheetName: worksheetMetadata.worksheetName,
-    })
-    .from(worksheetMetadata)
-    .where(eq(worksheetMetadata.netId, netId));
-
-  winston.info(
-    `Retrieved ${allWorksheetMetadata.length} worksheets for user ${netId}`,
-  );
-
-  const worksheetMap: {
-    [season: string]: { [worksheetNumber: number]: { worksheetName: string } };
-  } = {};
-
-  allWorksheetMetadata.forEach(({ season, worksheetNumber, worksheetName }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    worksheetMap[season] ??= {};
-    worksheetMap[season][worksheetNumber] ??= { worksheetName };
-  });
-
-  res.json({
-    netId,
-    worksheets: worksheetMap,
-  });
 };
