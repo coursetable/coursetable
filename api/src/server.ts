@@ -19,7 +19,8 @@ import catalog from './catalog/catalog.routes.js';
 import { fetchCatalog } from './catalog/catalog.utils.js';
 import challenge from './challenge/challenge.routes.js';
 import {
-  SECURE_PORT,
+  isDev,
+  API_PORT,
   SESSION_SECRET,
   CORS_OPTIONS,
   REDIS_HOST,
@@ -161,22 +162,28 @@ app.use(
   },
 );
 
-winston.info('Finished updating static catalog');
-
-// Serve dev with SSL.
-https
-  .createServer(
-    {
-      key: fs.readFileSync('./src/keys/server.key'),
-      cert: fs.readFileSync('./src/keys/server.cert'),
-    },
-    app,
-  )
-  .listen(SECURE_PORT, () => {
-    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
+if (isDev) {
+  // Serve dev with custom SSL.
+  https
+    .createServer(
+      {
+        key: fs.readFileSync('./src/keys/server.key'),
+        cert: fs.readFileSync('./src/keys/server.cert'),
+      },
+      app,
+    )
+    .listen(API_PORT, () => {
+      winston.info(`Secure dev proxy listening on port ${API_PORT}`);
+    });
+} else {
+  // In prod: just listen on the port. We use traefik to reverse proxy and
+  // provide SSL.
+  app.listen(API_PORT, () => {
+    winston.info(`Insecure API listening on port ${API_PORT}`);
   });
+}
 
-// Generate the static catalog on start.
+// Generate the static catalog on start. We do this *after* starting listening
 winston.info('Updating static catalog');
 const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
 

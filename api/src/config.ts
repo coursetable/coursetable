@@ -13,7 +13,7 @@ const getEnv = (name: string) => process.env[name] ?? die(name);
 export const isDev = process.env.NODE_ENV !== 'production';
 
 // Networking
-export const SECURE_PORT = getEnv('SECURE_PORT');
+export const API_PORT = getEnv('API_PORT');
 
 // API key for interfacing with the yalies.io API
 export const YALIES_API_KEY = getEnv('YALIES_API_KEY');

@@ -5,6 +5,8 @@ services:
       dockerfile: ./api/Dockerfile
     image: coursetable/api:latest
     container_name: ${EXPRESS_HOST?express}
+    ports:
+      - '${API_PORT?api_port}:${API_PORT?api_port}'
     environment:
       CANNY_KEY: ${CANNY_KEY?canny_key}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
@@ -16,7 +18,7 @@ services:
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
-      SECURE_PORT: ${SECURE_PORT?secure_port}
+      API_PORT: ${API_PORT?api_port}
       CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
       SENTRY_DSN: ${SENTRY_DSN?sentry_dsn}
       SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT?sentry_environment}

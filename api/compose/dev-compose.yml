@@ -1,7 +1,6 @@
 services:
   api:
     ports:
-      - '${SECURE_PORT?secure_port}:${SECURE_PORT?secure_port}'
       - 6499:6499 # For bun web debugger
     volumes:
       - ../static:/usr/src/app/api/static
