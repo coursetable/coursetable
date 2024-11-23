@@ -86,27 +86,6 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    - Run `curl -fsSL https://bun.sh/install | bash`
 
-### Aside: a quick explainer on docker-compose
-
-`docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
-
-Our setup is declared in the [docker-compose.yml](../api/docker-compose.yml) file.
-
-- The dev environment is defined in combination with the [dev-compose.yml](../api/dev-compose.yml) file.
-- The production environment is defined in combination with the [prod-compose.yml](../api/prod-compose.yml) file.
-
-Some useful commands:
-
-- `docker-compose up` starts all the services
-- `docker-compose up -d` starts everything in the background
-- `docker-compose ps` tells you what services are running
-- `docker-compose stop` stops everything
-- `docker-compose down` stops and removes everything
-- `docker-compose restart` restarts everything
-- `docker-compose logs -f` gets and "follows" (via `-f`) the logs from all the services. It's totally safe to control-C on this command - it won't stop anything
-- `docker-compose logs -f <service>` gets the logs for a specific service. For example, `docker-compose logs -f api` gets the logs for the backend API.
-- `docker-compose build` builds all the services. This probably won't be necessary for our development environment, since we're building everything on the fly
-
 ## Running CourseTable
 
 Note: if you run into issues, check the troubleshooting section at the bottom.

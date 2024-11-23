@@ -51,7 +51,7 @@ then
     fi
     if [[ $FERRY_SEED == true ]]
     then
-        doppler run --command 'curl "$FERRY_DUMP_URL" -o ./postgres/init/a.sql'
+        doppler run --command 'curl "$FERRY_DUMP_URL" -o ./postgres/init/ferry-dump.sql'
         export OVERWRITE_CATALOG='true'
         rm -rf postgres/data/
     fi

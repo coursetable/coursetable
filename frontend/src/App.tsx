@@ -109,9 +109,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={14}
+        id={13}
       >
-        {/* We want to hear from you. How can we make CourseTable better?{' '}
+        We want to hear from you. How can we make CourseTable better?{' '}
         <a
           href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
           target="_blank"
@@ -123,12 +123,7 @@ function App() {
           }}
         >
           Fill out this quick survey!
-        </a> */}
-        <b>
-          CourseTable database is under maintenance. Some functionalities may
-          not work.
-        </b>{' '}
-        We should be back very soon.
+        </a>
       </Notice>
       <Navbar />
       <SentryRoutes>
