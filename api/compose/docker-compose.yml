@@ -4,28 +4,27 @@ services:
       context: ../../
       dockerfile: ./api/Dockerfile
     image: coursetable/api:latest
-    container_name: ${EXPRESS_HOST?express}
+    container_name: ${EXPRESS_HOST?EXPRESS_HOST}
     ports:
-      - '${API_PORT?api_port}:${API_PORT?api_port}'
+      - ${API_PORT?API_PORT}:${API_PORT?API_PORT}
     environment:
-      CANNY_KEY: ${CANNY_KEY?canny_key}
-      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
-      FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
-      GRAPHQL_ENDPOINT: http://${GRAPHQL_ENGINE_HOST?graphql-engine}:8080/v1/graphql
-      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET?admin_secret}
-      REDIS_HOST: ${REDIS_HOST?redis}
-      DB_URL: ${DB_URL?db_url}
-      SESSION_SECRET: ${SESSION_SECRET?session_secret}
-      STUDENTS_DB: yaleplus
-      YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
-      API_PORT: ${API_PORT?api_port}
-      CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
-      SENTRY_DSN: ${SENTRY_DSN?sentry_dsn}
-      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT?sentry_environment}
+      CANNY_KEY: ${CANNY_KEY?CANNY_KEY}
+      FERRY_SECRET: ${FERRY_RELOAD_SECRET?FERRY_RELOAD_SECRET}
+      FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?FRONTEND_ENDPOINT}
+      GRAPHQL_ENDPOINT: http://${GRAPHQL_ENGINE_HOST?GRAPHQL_ENGINE_HOST}:8080/v1/graphql
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET?HASURA_GRAPHQL_ADMIN_SECRET}
+      REDIS_HOST: ${REDIS_HOST?REDIS_HOST}
+      DB_URL: postgresql://${DB_USER?DB_USER}:${DB_ROOT_PASSWORD?DB_ROOT_PASSWORD}@${DB_HOST?DB_HOST}:${DB_PORT?DB_PORT}/${DB_NAME?DB_NAME}
+      SESSION_SECRET: ${SESSION_SECRET?SESSION_SECRET}
+      YALIES_API_KEY: ${YALIES_API_KEY?YALIES_API_KEY}
+      API_PORT: ${API_PORT?API_PORT}
+      CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?CHALLENGE_PASSWORD}
+      SENTRY_DSN: ${SENTRY_DSN?SENTRY_DSN}
+      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT?SENTRY_ENVIRONMENT}
     networks:
       - api
 
 networks:
   api:
-    name: ${API_NETWORK?api}
+    name: ${API_NETWORK?API_NETWORK}
     driver: bridge

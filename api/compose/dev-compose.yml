@@ -19,7 +19,7 @@ services:
 
   # This container is only for dev! The prod container is at coursetable/infra/api_services
   graphql-engine:
-    container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
+    container_name: ${GRAPHQL_ENGINE_HOST?GRAPHQL_ENGINE_HOST}
     image: hasura/graphql-engine:latest
     ports:
       - 8085:8080
@@ -27,8 +27,8 @@ services:
       db:
         condition: service_healthy
     environment:
-      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET?admin_secret}
-      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?postgres_uri}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET?HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?FERRY_POSTGRES_URI}
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "true" to enable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
     healthcheck:
@@ -41,7 +41,7 @@ services:
 
   # This container is only for dev! The prod container is at coursetable/infra/api_services
   redis:
-    container_name: ${REDIS_HOST?redis}
+    container_name: ${REDIS_HOST?REDIS_HOST}
     image: redis/redis-stack-server:latest
     volumes:
       - ../redis:/usr/local/etc/redis
@@ -58,13 +58,15 @@ services:
 
   # This container is only for dev! The prod container is at coursetable/infra/db
   db:
-    container_name: ${DB_HOST?db}
+    container_name: ${DB_HOST?DB_HOST}
     image: postgres:13
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD?password}
-      POSTGRES_DB: ${FERRY_DB_NAME?ferry}
+      POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD?DB_ROOT_PASSWORD}
+      # This is because the Ferry dump needs to be loaded into the Ferry database
+      # The coursetable database is empty on start
+      POSTGRES_DB: ${FERRY_DB_NAME?FERRY_DB_NAME}
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres -h 127.0.0.1']
       interval: 1s
@@ -83,8 +85,8 @@ services:
     ports:
       - 8081:80
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL?pgadmin@coursetable.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD?password}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL?PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD?PGADMIN_PASSWORD}
     volumes:
       - ../postgres/pgadmin/servers.json:/pgadmin4/servers.json
     networks:
