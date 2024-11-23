@@ -20,7 +20,6 @@ import { fetchCatalog } from './catalog/catalog.utils.js';
 import challenge from './challenge/challenge.routes.js';
 import {
   SECURE_PORT,
-  INSECURE_PORT,
   SESSION_SECRET,
   CORS_OPTIONS,
   REDIS_HOST,
@@ -163,10 +162,6 @@ app.use(
 );
 
 winston.info('Finished updating static catalog');
-// Once catalogs have been created, start listening.
-app.listen(INSECURE_PORT, () => {
-  winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
-});
 
 // Serve dev with SSL.
 https

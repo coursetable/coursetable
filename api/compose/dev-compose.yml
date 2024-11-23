@@ -1,13 +1,14 @@
 services:
   api:
     ports:
-      - '${SECURE_PORT:-3001}:${SECURE_PORT:-3001}'
-      - 6499:6499
+      - '${SECURE_PORT?secure_port}:${SECURE_PORT?secure_port}'
+      - 6499:6499 # For bun web debugger
     volumes:
       - ../static:/usr/src/app/api/static
       - ../src:/usr/src/app/api/src
       - ../drizzle:/usr/src/app/api/drizzle
     environment:
+      NODE_ENV: development
       OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
       HOT_RELOAD: ${HOT_RELOAD:-'true'}
 

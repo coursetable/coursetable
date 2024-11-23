@@ -42,7 +42,6 @@ fi
 
 if [[ $ENV == 'dev' ]]
 then
-    export HOT_RELOAD='true'
     export SENTRY_ENVIRONMENT=development
     doppler setup -p coursetable -c dev
     if [[ $OVERWRITE == true ]]

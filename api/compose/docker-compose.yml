@@ -13,12 +13,10 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET?admin_secret}
       REDIS_HOST: ${REDIS_HOST?redis}
       DB_URL: ${DB_URL?db_url}
-      NODE_ENV: development
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
       SECURE_PORT: ${SECURE_PORT?secure_port}
-      INSECURE_PORT: ${INSECURE_PORT?insecure_port}
       CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
       SENTRY_DSN: ${SENTRY_DSN?sentry_dsn}
       SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT?sentry_environment}
