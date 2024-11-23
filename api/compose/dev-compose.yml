@@ -8,8 +8,8 @@ services:
       - ../drizzle:/usr/src/app/api/drizzle
     environment:
       NODE_ENV: development
-      OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
-      HOT_RELOAD: ${HOT_RELOAD:-'true'}
+      OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-false}
+      HOT_RELOAD: ${HOT_RELOAD:-true}
 
     depends_on:
       db:

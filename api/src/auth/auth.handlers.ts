@@ -4,7 +4,12 @@ import { eq } from 'drizzle-orm';
 import passport from 'passport';
 
 import { studentBluebookSettings } from '../../drizzle/schema.js';
-import { YALIES_API_KEY, db } from '../config.js';
+import {
+  YALIES_API_KEY,
+  db,
+  FRONTEND_ENDPOINT,
+  COURSETABLE_ORIGINS,
+} from '../config.js';
 import winston from '../logging/winston.js';
 
 // TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
@@ -43,20 +48,6 @@ const ALLOWED_ORG_CODES: unknown[] = [
   'JAC', // Jackson institute
   'GRA', // Graduate school
 ];
-
-const extractHostname = (url: string): string => {
-  let hostname = url.split('/')[0]!;
-  // Find & remove protocol (http, ftp, etc.) and get hostname
-
-  if (url.includes('//')) hostname = url.split('/')[2]!;
-
-  // Find & remove port number
-  hostname = hostname.split(':')[0]!;
-  // Find & remove "?"
-  hostname = hostname.split('?')[0]!;
-
-  return hostname;
-};
 
 export const passportConfig = (
   passportInstance: passport.PassportStatic,
@@ -185,33 +176,29 @@ export const passportConfig = (
   });
 };
 
-const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
-
 const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
   const redirect = req.query.redirect as string | undefined;
-
-  const hostName = extractHostname(redirect ?? 'coursetable.com/catalog');
-
-  if (redirect && !redirect.startsWith('//')) {
-    winston.info(`Redirecting to ${redirect}`);
-    // Prefix the redirect with a slash to avoid an open redirect vulnerability.
-    if (
-      ALLOWED_ORIGINS.includes(hostName) ||
-      hostName.endsWith('.coursetable.com') ||
-      (hostName.endsWith('-coursetable.vercel.app') &&
-        hostName.startsWith('coursetable-'))
-    ) {
-      res.redirect(redirect);
-      return;
-    }
-
-    winston.error('Redirect not in allowed origins');
-    res.redirect('https://coursetable.com');
+  if (!redirect) {
+    winston.error('No redirect provided');
+    res.redirect(FRONTEND_ENDPOINT);
     return;
   }
-  winston.error(`No redirect provided`);
-  res.redirect('https://coursetable.com');
+  try {
+    const parsed = new URL(redirect, FRONTEND_ENDPOINT);
+    if (
+      COURSETABLE_ORIGINS.some(
+        (x) =>
+          (typeof x === 'string' && parsed.origin === x) ||
+          (x instanceof RegExp && x.test(parsed.origin)),
+      )
+    ) {
+      res.redirect(parsed.toString());
+      return;
+    }
+  } catch {}
+  winston.error('Redirect not in allowed origins');
+  res.redirect(FRONTEND_ENDPOINT);
 };
 
 export const casLogin = (

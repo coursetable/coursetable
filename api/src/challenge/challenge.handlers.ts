@@ -12,13 +12,14 @@ import { studentBluebookSettings } from '../../drizzle/schema.js';
 import {
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
-  CHALLENGE_ALGORITHM,
   CHALLENGE_PASSWORD,
   NUM_CHALLENGE_COURSES,
   graphqlClient,
   db,
 } from '../config.js';
 import winston from '../logging/winston.js';
+
+const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
