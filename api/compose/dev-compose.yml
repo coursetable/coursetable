@@ -17,6 +17,7 @@ services:
       graphql-engine:
         condition: service_healthy
 
+  # This container is only for dev! The prod container is at coursetable/infra/api_services
   graphql-engine:
     container_name: ${GRAPHQL_ENGINE_HOST?graphql-engine}
     image: hasura/graphql-engine:latest
@@ -38,6 +39,7 @@ services:
     networks:
       - api
 
+  # This container is only for dev! The prod container is at coursetable/infra/api_services
   redis:
     container_name: ${REDIS_HOST?redis}
     image: redis/redis-stack-server:latest
