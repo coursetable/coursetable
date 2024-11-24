@@ -10,7 +10,7 @@ api/static/**/*.xml
 
 api/postgres/data/*
 api/redis/data/*
-api/postgres/init/ferry-dump.sql
+api/postgres/init/*ferry-dump.sql
 
 frontend/build
 
