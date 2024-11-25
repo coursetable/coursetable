@@ -5,12 +5,11 @@ import {
   studentBluebookSettings,
   studentFriendRequests,
   studentFriends,
-  worksheetCourses,
-  worksheetMetadata,
+  worksheets,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
-import { worksheetCoursesToWorksheets } from '../user/user.utils.js';
+import { worksheetListToMap } from '../user/user.utils.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -139,49 +138,39 @@ export const requestAddFriend = async (
   }
 
   await db.transaction(async (tx) => {
-    const [friendUser] = await tx
-      .selectDistinctOn([studentBluebookSettings.netId])
-      .from(studentBluebookSettings)
-      .where(eq(studentBluebookSettings.netId, friendNetId));
+    const friendUser = await tx.query.studentBluebookSettings.findFirst({
+      where: eq(studentBluebookSettings.netId, friendNetId),
+    });
 
     if (!friendUser) {
       res.status(400).json({ error: 'FRIEND_NOT_FOUND' });
       return;
     }
 
-    const [existingFriend] = await tx
-      .selectDistinctOn([studentFriends.netId, studentFriends.friendNetId])
-      .from(studentFriends)
-      .where(
-        and(
-          eq(studentFriends.netId, netId),
-          eq(studentFriends.friendNetId, friendNetId),
-        ),
-      );
+    const existingFriend = await tx.query.studentFriends.findFirst({
+      where: and(
+        eq(studentFriends.netId, netId),
+        eq(studentFriends.friendNetId, friendNetId),
+      ),
+    });
 
     if (existingFriend) {
       res.status(400).json({ error: 'ALREADY_FRIENDS' });
       return;
     }
 
-    const [existingRequest] = await tx
-      .selectDistinctOn([
-        studentFriendRequests.netId,
-        studentFriendRequests.friendNetId,
-      ])
-      .from(studentFriendRequests)
-      .where(
-        or(
-          and(
-            eq(studentFriendRequests.netId, netId),
-            eq(studentFriendRequests.friendNetId, friendNetId),
-          ),
-          and(
-            eq(studentFriendRequests.netId, friendNetId),
-            eq(studentFriendRequests.friendNetId, netId),
-          ),
+    const existingRequest = await tx.query.studentFriendRequests.findFirst({
+      where: or(
+        and(
+          eq(studentFriendRequests.netId, netId),
+          eq(studentFriendRequests.friendNetId, friendNetId),
         ),
-      );
+        and(
+          eq(studentFriendRequests.netId, friendNetId),
+          eq(studentFriendRequests.friendNetId, netId),
+        ),
+      ),
+    });
 
     if (existingRequest) {
       if (existingRequest.netId === netId)
@@ -208,26 +197,28 @@ export const getRequestsForFriend = async (
   const { netId } = req.user!;
 
   const friendNames = await db.transaction(async (tx) => {
-    const friendReqs = await tx
-      .select({
-        netId: studentFriendRequests.netId,
-      })
-      .from(studentFriendRequests)
-      .where(eq(studentFriendRequests.friendNetId, netId));
+    const friendReqs = await tx.query.studentFriendRequests.findMany({
+      where: eq(studentFriendRequests.netId, netId),
+      columns: { netId: true },
+    });
 
     const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
 
     if (reqFriends.length === 0) return [];
 
-    return tx
-      .selectDistinctOn([studentBluebookSettings.netId], {
+    return tx.query.studentBluebookSettings.findMany({
+      where: inArray(studentBluebookSettings.netId, reqFriends),
+      columns: {
+        netId: true,
+      },
+      extras: {
         name: sql<
           string | null
-        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
-        netId: studentBluebookSettings.netId,
-      })
-      .from(studentBluebookSettings)
-      .where(inArray(studentBluebookSettings.netId, reqFriends));
+        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`.as(
+          'name',
+        ),
+      },
+    });
   });
 
   res.status(200).json({ requests: friendNames });
@@ -245,60 +236,55 @@ export const getFriendsWorksheets = async (
 
   const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction(
     async (tx) => {
-      const friendRecords = await tx
-        .select({
-          friendNetId: studentFriends.friendNetId,
-        })
-        .from(studentFriends)
-        .where(eq(studentFriends.netId, netId));
+      const friendRecords = await tx.query.studentFriends.findMany({
+        where: eq(studentFriends.netId, netId),
+        columns: { friendNetId: true },
+      });
 
       const friendNetIds = friendRecords.map(
         (friendRecord) => friendRecord.friendNetId,
       );
 
       if (friendNetIds.length === 0)
-        return [[], {} as ReturnType<typeof worksheetCoursesToWorksheets>, []];
+        return [[], {} as ReturnType<typeof worksheetListToMap>, []];
 
       winston.info('Getting worksheets of friends');
-      const friendWorksheets = await tx
-        .select({
-          netId: worksheetCourses.netId,
-          season: worksheetCourses.season,
-          worksheetNumber: worksheetCourses.worksheetNumber,
-          crn: worksheetCourses.crn,
-          color: worksheetCourses.color,
-          hidden: worksheetCourses.hidden,
-        })
-        .from(worksheetCourses)
-        .where(inArray(worksheetCourses.netId, friendNetIds));
+      const friendWorksheets = await tx.query.worksheets.findMany({
+        where: inArray(worksheets.netId, friendNetIds),
+        columns: {
+          netId: true,
+          season: true,
+          worksheetNumber: true,
+          name: true,
+        },
+        with: {
+          courses: {
+            columns: {
+              crn: true,
+              color: true,
+              hidden: true,
+            },
+          },
+        },
+      });
 
-      winston.info('Getting worksheet metadata of friends');
-      const friendWsMetadata = await tx
-        .select({
-          netId: worksheetMetadata.netId,
-          season: worksheetMetadata.season,
-          worksheetNumber: worksheetMetadata.worksheetNumber,
-          name: worksheetMetadata.name,
-        })
-        .from(worksheetMetadata)
-        .where(inArray(worksheetMetadata.netId, friendNetIds));
-
-      const friendWorksheetMap = worksheetCoursesToWorksheets(
-        friendWorksheets,
-        friendWsMetadata,
-      );
+      const friendWorksheetMap = worksheetListToMap(friendWorksheets);
 
       winston.info('Getting info of friends');
 
-      const friendInfos = await tx
-        .selectDistinctOn([studentBluebookSettings.netId], {
-          netId: studentBluebookSettings.netId,
+      const friendInfos = await tx.query.studentBluebookSettings.findMany({
+        where: inArray(studentBluebookSettings.netId, friendNetIds),
+        columns: {
+          netId: true,
+        },
+        extras: {
           name: sql<
             string | null
-          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
-        })
-        .from(studentBluebookSettings)
-        .where(inArray(studentBluebookSettings.netId, friendNetIds));
+          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`.as(
+            'name',
+          ),
+        },
+      });
 
       return [friendInfos, friendWorksheetMap, friendNetIds];
     },
@@ -330,14 +316,18 @@ export const getNames = async (
   res: express.Response,
 ): Promise<void> => {
   winston.info(`Fetching friends' names`);
-  const names = await db
-    .select({
-      netId: studentBluebookSettings.netId,
-      first: studentBluebookSettings.firstName,
-      last: studentBluebookSettings.lastName,
-      college: studentBluebookSettings.college,
-    })
-    .from(studentBluebookSettings);
+  const names = await db.query.studentBluebookSettings.findMany({
+    columns: {
+      netId: true,
+      college: true,
+    },
+    extras: {
+      first: sql<string | null>`${studentBluebookSettings.firstName}`.as(
+        'first',
+      ),
+      last: sql<string | null>`${studentBluebookSettings.lastName}`.as('last'),
+    },
+  });
 
   res.status(200).json({ names });
 };

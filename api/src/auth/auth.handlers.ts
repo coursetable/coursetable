@@ -157,10 +157,15 @@ export const passportConfig = (
     }
     const netId = String(sessionKey);
     winston.info(`Deserializing user ${netId}`);
-    const [student] = await db
-      .selectDistinctOn([studentBluebookSettings.netId])
-      .from(studentBluebookSettings)
-      .where(eq(studentBluebookSettings.netId, netId));
+    const student = await db.query.studentBluebookSettings.findFirst({
+      where: eq(studentBluebookSettings.netId, netId),
+      columns: {
+        email: true,
+        firstName: true,
+        lastName: true,
+        evaluationsEnabled: true,
+      },
+    });
     if (!student) {
       done(null, null);
       return;

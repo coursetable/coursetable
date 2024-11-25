@@ -111,12 +111,14 @@ export const requestChallenge = async (
 
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled } = (
-    await db
-      .selectDistinctOn([studentBluebookSettings.netId])
-      .from(studentBluebookSettings)
-      .where(eq(studentBluebookSettings.netId, netId))
-  )[0]!;
+  const { challengeTries, evaluationsEnabled } =
+    (await db.query.studentBluebookSettings.findFirst({
+      where: eq(studentBluebookSettings.netId, netId),
+      columns: {
+        challengeTries: true,
+        evaluationsEnabled: true,
+      },
+    }))!;
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -189,12 +191,14 @@ export const verifyChallenge = async (
 
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled } = (
-    await db
-      .selectDistinctOn([studentBluebookSettings.netId])
-      .from(studentBluebookSettings)
-      .where(eq(studentBluebookSettings.netId, netId))
-  )[0]!;
+  const { challengeTries, evaluationsEnabled } =
+    (await db.query.studentBluebookSettings.findFirst({
+      where: eq(studentBluebookSettings.netId, netId),
+      columns: {
+        challengeTries: true,
+        evaluationsEnabled: true,
+      },
+    }))!;
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
