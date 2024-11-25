@@ -198,11 +198,11 @@ export const getRequestsForFriend = async (
 
   const friendNames = await db.transaction(async (tx) => {
     const friendReqs = await tx.query.studentFriendRequests.findMany({
-      where: eq(studentFriendRequests.netId, netId),
-      columns: { friendNetId: true },
+      where: eq(studentFriendRequests.friendNetId, netId),
+      columns: { netId: true },
     });
 
-    const reqFriends = friendReqs.map((friendReq) => friendReq.friendNetId);
+    const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
 
     if (reqFriends.length === 0) return [];
     return tx
