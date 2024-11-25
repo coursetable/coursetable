@@ -36,13 +36,7 @@ export function worksheetCoursesToWorksheets(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     res[course.netId]![course.season] ??= {};
     res[course.netId]![course.season]![course.worksheetNumber] ??= {
-      name:
-        // We don't store the name of the main worksheet in the database, so
-        // we have to hardcode it here so front end doesn't handle it
-        // differently. The main worksheet is invariant: it can't be renamed
-        course.worksheetNumber === 0
-          ? 'Main Worksheet'
-          : '[Error: name not found]',
+      name: '[Error: name not found]',
       courses: [],
     };
     res[course.netId]![course.season]![course.worksheetNumber]!.courses.push({

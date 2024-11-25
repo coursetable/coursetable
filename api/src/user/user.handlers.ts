@@ -82,30 +82,31 @@ async function updateWorksheetCourse(
       ),
     );
 
-  if (worksheetNumber > 0) {
-    const [nameExists] = await db
-      .selectDistinctOn([
-        worksheetMetadata.netId,
-        worksheetMetadata.season,
-        worksheetMetadata.worksheetNumber,
-      ])
-      .from(worksheetMetadata)
-      .where(
-        and(
-          eq(worksheetMetadata.netId, netId),
-          eq(worksheetMetadata.season, season),
-          eq(worksheetMetadata.worksheetNumber, worksheetNumber),
-        ),
-      );
-    // To be removed once add/remove/rename worksheets is pushed.
-    if (!nameExists) {
-      await db.insert(worksheetMetadata).values({
-        netId,
-        season,
-        worksheetNumber,
-        name: `Worksheet ${worksheetNumber}`,
-      });
-    }
+  const [nameExists] = await db
+    .selectDistinctOn([
+      worksheetMetadata.netId,
+      worksheetMetadata.season,
+      worksheetMetadata.worksheetNumber,
+    ])
+    .from(worksheetMetadata)
+    .where(
+      and(
+        eq(worksheetMetadata.netId, netId),
+        eq(worksheetMetadata.season, season),
+        eq(worksheetMetadata.worksheetNumber, worksheetNumber),
+      ),
+    );
+  // To be removed once add/remove/rename worksheets is pushed.
+  if (!nameExists) {
+    await db.insert(worksheetMetadata).values({
+      netId,
+      season,
+      worksheetNumber,
+      name:
+        worksheetNumber === 0
+          ? 'Main Worksheet'
+          : `Worksheet ${worksheetNumber}`,
+    });
   }
 
   if (action === 'add') {
@@ -138,30 +139,28 @@ async function updateWorksheetCourse(
       );
 
     // Cannot delete main worksheet
-    if (worksheetNumber > 0) {
-      const courseCountRes = await db
-        .select({ courseCount: count() })
-        .from(worksheetCourses)
+    const courseCountRes = await db
+      .select({ courseCount: count() })
+      .from(worksheetCourses)
+      .where(
+        and(
+          eq(worksheetCourses.netId, netId),
+          eq(worksheetCourses.season, season),
+          eq(worksheetCourses.worksheetNumber, worksheetNumber),
+        ),
+      );
+
+    const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
+    if (numCoursesInCurWorksheet === 0) {
+      await db
+        .delete(worksheetMetadata)
         .where(
           and(
-            eq(worksheetCourses.netId, netId),
-            eq(worksheetCourses.season, season),
-            eq(worksheetCourses.worksheetNumber, worksheetNumber),
+            eq(worksheetMetadata.netId, netId),
+            eq(worksheetMetadata.season, season),
+            eq(worksheetMetadata.worksheetNumber, worksheetNumber),
           ),
         );
-
-      const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-      if (numCoursesInCurWorksheet === 0) {
-        await db
-          .delete(worksheetMetadata)
-          .where(
-            and(
-              eq(worksheetMetadata.netId, netId),
-              eq(worksheetMetadata.season, season),
-              eq(worksheetMetadata.worksheetNumber, worksheetNumber),
-            ),
-          );
-      }
     }
   } else {
     // Update data of a bookmarked course
