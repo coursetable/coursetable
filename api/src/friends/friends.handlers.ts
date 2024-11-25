@@ -199,26 +199,21 @@ export const getRequestsForFriend = async (
   const friendNames = await db.transaction(async (tx) => {
     const friendReqs = await tx.query.studentFriendRequests.findMany({
       where: eq(studentFriendRequests.netId, netId),
-      columns: { netId: true },
+      columns: { friendNetId: true },
     });
 
-    const reqFriends = friendReqs.map((friendReq) => friendReq.netId);
+    const reqFriends = friendReqs.map((friendReq) => friendReq.friendNetId);
 
     if (reqFriends.length === 0) return [];
-
-    return tx.query.studentBluebookSettings.findMany({
-      where: inArray(studentBluebookSettings.netId, reqFriends),
-      columns: {
-        netId: true,
-      },
-      extras: {
+    return tx
+      .select({
+        netId: studentBluebookSettings.netId,
         name: sql<
           string | null
-        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`.as(
-          'name',
-        ),
-      },
-    });
+        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+      })
+      .from(studentBluebookSettings)
+      .where(inArray(studentBluebookSettings.netId, reqFriends));
   });
 
   res.status(200).json({ requests: friendNames });
@@ -272,19 +267,15 @@ export const getFriendsWorksheets = async (
 
       winston.info('Getting info of friends');
 
-      const friendInfos = await tx.query.studentBluebookSettings.findMany({
-        where: inArray(studentBluebookSettings.netId, friendNetIds),
-        columns: {
-          netId: true,
-        },
-        extras: {
+      const friendInfos = await tx
+        .select({
+          netId: studentBluebookSettings.netId,
           name: sql<
             string | null
-          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`.as(
-            'name',
-          ),
-        },
-      });
+          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+        })
+        .from(studentBluebookSettings)
+        .where(inArray(studentBluebookSettings.netId, friendNetIds));
 
       return [friendInfos, friendWorksheetMap, friendNetIds];
     },
