@@ -169,46 +169,6 @@ export type Course_Flags = {
   flag_id: Scalars['Int']['output'];
 };
 
-/** aggregated selection of "course_flags" */
-export type Course_Flags_Aggregate = {
-  __typename?: 'course_flags_aggregate';
-  aggregate?: Maybe<Course_Flags_Aggregate_Fields>;
-  nodes: Array<Course_Flags>;
-};
-
-export type Course_Flags_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Course_Flags_Aggregate_Bool_Exp_Count>;
-};
-
-export type Course_Flags_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Course_Flags_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Course_Flags_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "course_flags" */
-export type Course_Flags_Aggregate_Fields = {
-  __typename?: 'course_flags_aggregate_fields';
-  avg?: Maybe<Course_Flags_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Course_Flags_Max_Fields>;
-  min?: Maybe<Course_Flags_Min_Fields>;
-  stddev?: Maybe<Course_Flags_Stddev_Fields>;
-  stddev_pop?: Maybe<Course_Flags_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Course_Flags_Stddev_Samp_Fields>;
-  sum?: Maybe<Course_Flags_Sum_Fields>;
-  var_pop?: Maybe<Course_Flags_Var_Pop_Fields>;
-  var_samp?: Maybe<Course_Flags_Var_Samp_Fields>;
-  variance?: Maybe<Course_Flags_Variance_Fields>;
-};
-
-/** aggregate fields of "course_flags" */
-export type Course_Flags_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Course_Flags_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 /** order by aggregate values of table "course_flags" */
 export type Course_Flags_Aggregate_Order_By = {
   avg?: InputMaybe<Course_Flags_Avg_Order_By>;
@@ -222,13 +182,6 @@ export type Course_Flags_Aggregate_Order_By = {
   var_pop?: InputMaybe<Course_Flags_Var_Pop_Order_By>;
   var_samp?: InputMaybe<Course_Flags_Var_Samp_Order_By>;
   variance?: InputMaybe<Course_Flags_Variance_Order_By>;
-};
-
-/** aggregate avg on columns */
-export type Course_Flags_Avg_Fields = {
-  __typename?: 'course_flags_avg_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  flag_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "course_flags" */
@@ -248,24 +201,10 @@ export type Course_Flags_Bool_Exp = {
   flag_id?: InputMaybe<Int_Comparison_Exp>;
 };
 
-/** aggregate max on columns */
-export type Course_Flags_Max_Fields = {
-  __typename?: 'course_flags_max_fields';
-  course_id?: Maybe<Scalars['Int']['output']>;
-  flag_id?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by max() on columns of table "course_flags" */
 export type Course_Flags_Max_Order_By = {
   course_id?: InputMaybe<Order_By>;
   flag_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Course_Flags_Min_Fields = {
-  __typename?: 'course_flags_min_fields';
-  course_id?: Maybe<Scalars['Int']['output']>;
-  flag_id?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "course_flags" */
@@ -290,37 +229,16 @@ export enum Course_Flags_Select_Column {
   FlagId = 'flag_id',
 }
 
-/** aggregate stddev on columns */
-export type Course_Flags_Stddev_Fields = {
-  __typename?: 'course_flags_stddev_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev() on columns of table "course_flags" */
 export type Course_Flags_Stddev_Order_By = {
   course_id?: InputMaybe<Order_By>;
   flag_id?: InputMaybe<Order_By>;
 };
 
-/** aggregate stddev_pop on columns */
-export type Course_Flags_Stddev_Pop_Fields = {
-  __typename?: 'course_flags_stddev_pop_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev_pop() on columns of table "course_flags" */
 export type Course_Flags_Stddev_Pop_Order_By = {
   course_id?: InputMaybe<Order_By>;
   flag_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Course_Flags_Stddev_Samp_Fields = {
-  __typename?: 'course_flags_stddev_samp_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  flag_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "course_flags" */
@@ -343,24 +261,10 @@ export type Course_Flags_Stream_Cursor_Value_Input = {
   flag_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Course_Flags_Sum_Fields = {
-  __typename?: 'course_flags_sum_fields';
-  course_id?: Maybe<Scalars['Int']['output']>;
-  flag_id?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by sum() on columns of table "course_flags" */
 export type Course_Flags_Sum_Order_By = {
   course_id?: InputMaybe<Order_By>;
   flag_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type Course_Flags_Var_Pop_Fields = {
-  __typename?: 'course_flags_var_pop_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  flag_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "course_flags" */
@@ -369,24 +273,10 @@ export type Course_Flags_Var_Pop_Order_By = {
   flag_id?: InputMaybe<Order_By>;
 };
 
-/** aggregate var_samp on columns */
-export type Course_Flags_Var_Samp_Fields = {
-  __typename?: 'course_flags_var_samp_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by var_samp() on columns of table "course_flags" */
 export type Course_Flags_Var_Samp_Order_By = {
   course_id?: InputMaybe<Order_By>;
   flag_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Course_Flags_Variance_Fields = {
-  __typename?: 'course_flags_variance_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  flag_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "course_flags" */
@@ -597,46 +487,6 @@ export type Course_Professors = {
   professor_id: Scalars['Int']['output'];
 };
 
-/** aggregated selection of "course_professors" */
-export type Course_Professors_Aggregate = {
-  __typename?: 'course_professors_aggregate';
-  aggregate?: Maybe<Course_Professors_Aggregate_Fields>;
-  nodes: Array<Course_Professors>;
-};
-
-export type Course_Professors_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Course_Professors_Aggregate_Bool_Exp_Count>;
-};
-
-export type Course_Professors_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Course_Professors_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Course_Professors_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "course_professors" */
-export type Course_Professors_Aggregate_Fields = {
-  __typename?: 'course_professors_aggregate_fields';
-  avg?: Maybe<Course_Professors_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Course_Professors_Max_Fields>;
-  min?: Maybe<Course_Professors_Min_Fields>;
-  stddev?: Maybe<Course_Professors_Stddev_Fields>;
-  stddev_pop?: Maybe<Course_Professors_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Course_Professors_Stddev_Samp_Fields>;
-  sum?: Maybe<Course_Professors_Sum_Fields>;
-  var_pop?: Maybe<Course_Professors_Var_Pop_Fields>;
-  var_samp?: Maybe<Course_Professors_Var_Samp_Fields>;
-  variance?: Maybe<Course_Professors_Variance_Fields>;
-};
-
-/** aggregate fields of "course_professors" */
-export type Course_Professors_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Course_Professors_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 /** order by aggregate values of table "course_professors" */
 export type Course_Professors_Aggregate_Order_By = {
   avg?: InputMaybe<Course_Professors_Avg_Order_By>;
@@ -650,13 +500,6 @@ export type Course_Professors_Aggregate_Order_By = {
   var_pop?: InputMaybe<Course_Professors_Var_Pop_Order_By>;
   var_samp?: InputMaybe<Course_Professors_Var_Samp_Order_By>;
   variance?: InputMaybe<Course_Professors_Variance_Order_By>;
-};
-
-/** aggregate avg on columns */
-export type Course_Professors_Avg_Fields = {
-  __typename?: 'course_professors_avg_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  professor_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "course_professors" */
@@ -676,24 +519,10 @@ export type Course_Professors_Bool_Exp = {
   professor_id?: InputMaybe<Int_Comparison_Exp>;
 };
 
-/** aggregate max on columns */
-export type Course_Professors_Max_Fields = {
-  __typename?: 'course_professors_max_fields';
-  course_id?: Maybe<Scalars['Int']['output']>;
-  professor_id?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by max() on columns of table "course_professors" */
 export type Course_Professors_Max_Order_By = {
   course_id?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Course_Professors_Min_Fields = {
-  __typename?: 'course_professors_min_fields';
-  course_id?: Maybe<Scalars['Int']['output']>;
-  professor_id?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "course_professors" */
@@ -718,37 +547,16 @@ export enum Course_Professors_Select_Column {
   ProfessorId = 'professor_id',
 }
 
-/** aggregate stddev on columns */
-export type Course_Professors_Stddev_Fields = {
-  __typename?: 'course_professors_stddev_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev() on columns of table "course_professors" */
 export type Course_Professors_Stddev_Order_By = {
   course_id?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
 };
 
-/** aggregate stddev_pop on columns */
-export type Course_Professors_Stddev_Pop_Fields = {
-  __typename?: 'course_professors_stddev_pop_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev_pop() on columns of table "course_professors" */
 export type Course_Professors_Stddev_Pop_Order_By = {
   course_id?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Course_Professors_Stddev_Samp_Fields = {
-  __typename?: 'course_professors_stddev_samp_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  professor_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "course_professors" */
@@ -771,24 +579,10 @@ export type Course_Professors_Stream_Cursor_Value_Input = {
   professor_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Course_Professors_Sum_Fields = {
-  __typename?: 'course_professors_sum_fields';
-  course_id?: Maybe<Scalars['Int']['output']>;
-  professor_id?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by sum() on columns of table "course_professors" */
 export type Course_Professors_Sum_Order_By = {
   course_id?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type Course_Professors_Var_Pop_Fields = {
-  __typename?: 'course_professors_var_pop_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  professor_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "course_professors" */
@@ -797,24 +591,10 @@ export type Course_Professors_Var_Pop_Order_By = {
   professor_id?: InputMaybe<Order_By>;
 };
 
-/** aggregate var_samp on columns */
-export type Course_Professors_Var_Samp_Fields = {
-  __typename?: 'course_professors_var_samp_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by var_samp() on columns of table "course_professors" */
 export type Course_Professors_Var_Samp_Order_By = {
   course_id?: InputMaybe<Order_By>;
   professor_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Course_Professors_Variance_Fields = {
-  __typename?: 'course_professors_variance_fields';
-  course_id?: Maybe<Scalars['Float']['output']>;
-  professor_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "course_professors" */
@@ -872,8 +652,6 @@ export type Courses = {
   colsem?: Maybe<Scalars['Boolean']['output']>;
   /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** An aggregate relationship */
-  course_flags_aggregate: Course_Flags_Aggregate;
   /** Link to the course homepage */
   course_home_url?: Maybe<Scalars['String']['output']>;
   course_id: Scalars['Int']['output'];
@@ -881,20 +659,14 @@ export type Courses = {
   course_meetings: Array<Course_Meetings>;
   /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** An aggregate relationship */
-  course_professors_aggregate: Course_Professors_Aggregate;
   /** Number of course credits */
   credits?: Maybe<Scalars['float8']['output']>;
   /** Course description */
   description?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** An aggregate relationship */
-  evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** An aggregate relationship */
-  evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
   /** An object relationship */
   evaluation_statistic?: Maybe<Evaluation_Statistics>;
   /** Additional information (indicates if class has been cancelled) */
@@ -921,8 +693,6 @@ export type Courses = {
   last_offered_course_id?: Maybe<Scalars['Int']['output']>;
   /** An array relationship */
   listings: Array<Listings>;
-  /** An aggregate relationship */
-  listings_aggregate: Listings_Aggregate;
   /**
    * Registrar's notes (e.g. preference selection links,
    *         optional writing credits, etc.)
@@ -983,15 +753,6 @@ export type CoursesCourse_FlagsArgs = {
 };
 
 /** columns and relationships of "courses" */
-export type CoursesCourse_Flags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Course_Flags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Flags_Order_By>>;
-  where?: InputMaybe<Course_Flags_Bool_Exp>;
-};
-
-/** columns and relationships of "courses" */
 export type CoursesCourse_MeetingsArgs = {
   distinct_on?: InputMaybe<Array<Course_Meetings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1010,25 +771,7 @@ export type CoursesCourse_ProfessorsArgs = {
 };
 
 /** columns and relationships of "courses" */
-export type CoursesCourse_Professors_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Course_Professors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Professors_Order_By>>;
-  where?: InputMaybe<Course_Professors_Bool_Exp>;
-};
-
-/** columns and relationships of "courses" */
 export type CoursesEvaluation_NarrativesArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Narratives_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Narratives_Order_By>>;
-  where?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesEvaluation_Narratives_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Evaluation_Narratives_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -1046,25 +789,7 @@ export type CoursesEvaluation_RatingsArgs = {
 };
 
 /** columns and relationships of "courses" */
-export type CoursesEvaluation_Ratings_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Ratings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Ratings_Order_By>>;
-  where?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-};
-
-/** columns and relationships of "courses" */
 export type CoursesListingsArgs = {
-  distinct_on?: InputMaybe<Array<Listings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Listings_Order_By>>;
-  where?: InputMaybe<Listings_Bool_Exp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesListings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Listings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -1179,18 +904,14 @@ export type Courses_Bool_Exp = {
   classnotes?: InputMaybe<String_Comparison_Exp>;
   colsem?: InputMaybe<Boolean_Comparison_Exp>;
   course_flags?: InputMaybe<Course_Flags_Bool_Exp>;
-  course_flags_aggregate?: InputMaybe<Course_Flags_Aggregate_Bool_Exp>;
   course_home_url?: InputMaybe<String_Comparison_Exp>;
   course_id?: InputMaybe<Int_Comparison_Exp>;
   course_meetings?: InputMaybe<Course_Meetings_Bool_Exp>;
   course_professors?: InputMaybe<Course_Professors_Bool_Exp>;
-  course_professors_aggregate?: InputMaybe<Course_Professors_Aggregate_Bool_Exp>;
   credits?: InputMaybe<Float8_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
   evaluation_narratives?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  evaluation_narratives_aggregate?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp>;
   evaluation_ratings?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-  evaluation_ratings_aggregate?: InputMaybe<Evaluation_Ratings_Aggregate_Bool_Exp>;
   evaluation_statistic?: InputMaybe<Evaluation_Statistics_Bool_Exp>;
   extra_info?: InputMaybe<String_Comparison_Exp>;
   final_exam?: InputMaybe<String_Comparison_Exp>;
@@ -1201,7 +922,6 @@ export type Courses_Bool_Exp = {
   last_enrollment_season_code?: InputMaybe<String_Comparison_Exp>;
   last_offered_course_id?: InputMaybe<Int_Comparison_Exp>;
   listings?: InputMaybe<Listings_Bool_Exp>;
-  listings_aggregate?: InputMaybe<Listings_Aggregate_Bool_Exp>;
   regnotes?: InputMaybe<String_Comparison_Exp>;
   requirements?: InputMaybe<String_Comparison_Exp>;
   rp_attr?: InputMaybe<String_Comparison_Exp>;
@@ -2176,120 +1896,6 @@ export type Evaluation_Narratives = {
   response_number: Scalars['Int']['output'];
 };
 
-/** aggregated selection of "evaluation_narratives" */
-export type Evaluation_Narratives_Aggregate = {
-  __typename?: 'evaluation_narratives_aggregate';
-  aggregate?: Maybe<Evaluation_Narratives_Aggregate_Fields>;
-  nodes: Array<Evaluation_Narratives>;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp = {
-  avg?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Avg>;
-  corr?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Corr>;
-  count?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Count>;
-  covar_samp?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Covar_Samp>;
-  max?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Max>;
-  min?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Min>;
-  stddev_samp?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Stddev_Samp>;
-  sum?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Sum>;
-  var_samp?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp_Var_Samp>;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Avg = {
-  arguments: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Avg_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Corr = {
-  arguments: Evaluation_Narratives_Aggregate_Bool_Exp_Corr_Arguments;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Corr_Arguments = {
-  X: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Corr_Arguments_Columns;
-  Y: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Corr_Arguments_Columns;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Evaluation_Narratives_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Covar_Samp = {
-  arguments: Evaluation_Narratives_Aggregate_Bool_Exp_Covar_Samp_Arguments;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Covar_Samp_Arguments = {
-  X: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns;
-  Y: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Max = {
-  arguments: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Max_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Min = {
-  arguments: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Min_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Stddev_Samp = {
-  arguments: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Sum = {
-  arguments: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Sum_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-export type Evaluation_Narratives_Aggregate_Bool_Exp_Var_Samp = {
-  arguments: Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  predicate: Float8_Comparison_Exp;
-};
-
-/** aggregate fields of "evaluation_narratives" */
-export type Evaluation_Narratives_Aggregate_Fields = {
-  __typename?: 'evaluation_narratives_aggregate_fields';
-  avg?: Maybe<Evaluation_Narratives_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Evaluation_Narratives_Max_Fields>;
-  min?: Maybe<Evaluation_Narratives_Min_Fields>;
-  stddev?: Maybe<Evaluation_Narratives_Stddev_Fields>;
-  stddev_pop?: Maybe<Evaluation_Narratives_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Evaluation_Narratives_Stddev_Samp_Fields>;
-  sum?: Maybe<Evaluation_Narratives_Sum_Fields>;
-  var_pop?: Maybe<Evaluation_Narratives_Var_Pop_Fields>;
-  var_samp?: Maybe<Evaluation_Narratives_Var_Samp_Fields>;
-  variance?: Maybe<Evaluation_Narratives_Variance_Fields>;
-};
-
-/** aggregate fields of "evaluation_narratives" */
-export type Evaluation_Narratives_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Evaluation_Narratives_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 /** order by aggregate values of table "evaluation_narratives" */
 export type Evaluation_Narratives_Aggregate_Order_By = {
   avg?: InputMaybe<Evaluation_Narratives_Avg_Order_By>;
@@ -2303,24 +1909,6 @@ export type Evaluation_Narratives_Aggregate_Order_By = {
   var_pop?: InputMaybe<Evaluation_Narratives_Var_Pop_Order_By>;
   var_samp?: InputMaybe<Evaluation_Narratives_Var_Samp_Order_By>;
   variance?: InputMaybe<Evaluation_Narratives_Variance_Order_By>;
-};
-
-/** aggregate avg on columns */
-export type Evaluation_Narratives_Avg_Fields = {
-  __typename?: 'evaluation_narratives_avg_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['Float']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "evaluation_narratives" */
@@ -2358,28 +1946,6 @@ export type Evaluation_Narratives_Bool_Exp = {
   response_number?: InputMaybe<Int_Comparison_Exp>;
 };
 
-/** aggregate max on columns */
-export type Evaluation_Narratives_Max_Fields = {
-  __typename?: 'evaluation_narratives_max_fields';
-  /** Response to the question */
-  comment?: Maybe<Scalars['String']['output']>;
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['float8']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  /** Question to which this narrative comment responds */
-  question_code?: Maybe<Scalars['String']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by max() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Max_Order_By = {
   /** Response to the question */
@@ -2399,28 +1965,6 @@ export type Evaluation_Narratives_Max_Order_By = {
   question_code?: InputMaybe<Order_By>;
   /** The number of the response for the given course and question */
   response_number?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Evaluation_Narratives_Min_Fields = {
-  __typename?: 'evaluation_narratives_min_fields';
-  /** Response to the question */
-  comment?: Maybe<Scalars['String']['output']>;
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['float8']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  /** Question to which this narrative comment responds */
-  question_code?: Maybe<Scalars['String']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "evaluation_narratives" */
@@ -2481,120 +2025,6 @@ export enum Evaluation_Narratives_Select_Column {
   ResponseNumber = 'response_number',
 }
 
-/** select "evaluation_narratives_aggregate_bool_exp_avg_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Avg_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** select "evaluation_narratives_aggregate_bool_exp_corr_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Corr_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** select "evaluation_narratives_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** select "evaluation_narratives_aggregate_bool_exp_max_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Max_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** select "evaluation_narratives_aggregate_bool_exp_min_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Min_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** select "evaluation_narratives_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** select "evaluation_narratives_aggregate_bool_exp_sum_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Sum_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** select "evaluation_narratives_aggregate_bool_exp_var_samp_arguments_columns" columns of table "evaluation_narratives" */
-export enum Evaluation_Narratives_Select_Column_Evaluation_Narratives_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns {
-  /** column name */
-  CommentCompound = 'comment_compound',
-  /** column name */
-  CommentNeg = 'comment_neg',
-  /** column name */
-  CommentNeu = 'comment_neu',
-  /** column name */
-  CommentPos = 'comment_pos',
-}
-
-/** aggregate stddev on columns */
-export type Evaluation_Narratives_Stddev_Fields = {
-  __typename?: 'evaluation_narratives_stddev_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['Float']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Stddev_Order_By = {
   /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
@@ -2612,24 +2042,6 @@ export type Evaluation_Narratives_Stddev_Order_By = {
   response_number?: InputMaybe<Order_By>;
 };
 
-/** aggregate stddev_pop on columns */
-export type Evaluation_Narratives_Stddev_Pop_Fields = {
-  __typename?: 'evaluation_narratives_stddev_pop_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['Float']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev_pop() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Stddev_Pop_Order_By = {
   /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
@@ -2645,24 +2057,6 @@ export type Evaluation_Narratives_Stddev_Pop_Order_By = {
   id?: InputMaybe<Order_By>;
   /** The number of the response for the given course and question */
   response_number?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Evaluation_Narratives_Stddev_Samp_Fields = {
-  __typename?: 'evaluation_narratives_stddev_samp_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['Float']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "evaluation_narratives" */
@@ -2711,24 +2105,6 @@ export type Evaluation_Narratives_Stream_Cursor_Value_Input = {
   response_number?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Evaluation_Narratives_Sum_Fields = {
-  __typename?: 'evaluation_narratives_sum_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['float8']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['float8']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by sum() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Sum_Order_By = {
   /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
@@ -2744,24 +2120,6 @@ export type Evaluation_Narratives_Sum_Order_By = {
   id?: InputMaybe<Order_By>;
   /** The number of the response for the given course and question */
   response_number?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type Evaluation_Narratives_Var_Pop_Fields = {
-  __typename?: 'evaluation_narratives_var_pop_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['Float']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "evaluation_narratives" */
@@ -2781,24 +2139,6 @@ export type Evaluation_Narratives_Var_Pop_Order_By = {
   response_number?: InputMaybe<Order_By>;
 };
 
-/** aggregate var_samp on columns */
-export type Evaluation_Narratives_Var_Samp_Fields = {
-  __typename?: 'evaluation_narratives_var_samp_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['Float']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by var_samp() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Var_Samp_Order_By = {
   /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
@@ -2814,24 +2154,6 @@ export type Evaluation_Narratives_Var_Samp_Order_By = {
   id?: InputMaybe<Order_By>;
   /** The number of the response for the given course and question */
   response_number?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Evaluation_Narratives_Variance_Fields = {
-  __typename?: 'evaluation_narratives_variance_fields';
-  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
-  comment_compound?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neg' score (negativity) */
-  comment_neg?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'neu' score (neutrality) */
-  comment_neu?: Maybe<Scalars['Float']['output']>;
-  /** VADER sentiment 'pos' score (positivity) */
-  comment_pos?: Maybe<Scalars['Float']['output']>;
-  /** The course to which this narrative comment applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  /** The number of the response for the given course and question */
-  response_number?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "evaluation_narratives" */
@@ -2856,12 +2178,8 @@ export type Evaluation_Questions = {
   __typename?: 'evaluation_questions';
   /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** An aggregate relationship */
-  evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** An aggregate relationship */
-  evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
   /**
    * True if the question has narrative responses.
    *         False if the question has categorica/numerical responses
@@ -2893,25 +2211,7 @@ export type Evaluation_QuestionsEvaluation_NarrativesArgs = {
 };
 
 /** columns and relationships of "evaluation_questions" */
-export type Evaluation_QuestionsEvaluation_Narratives_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Narratives_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Narratives_Order_By>>;
-  where?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-};
-
-/** columns and relationships of "evaluation_questions" */
 export type Evaluation_QuestionsEvaluation_RatingsArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Ratings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Ratings_Order_By>>;
-  where?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-};
-
-/** columns and relationships of "evaluation_questions" */
-export type Evaluation_QuestionsEvaluation_Ratings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Evaluation_Ratings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -2924,75 +2224,18 @@ export type Evaluation_QuestionsOptionsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** aggregated selection of "evaluation_questions" */
-export type Evaluation_Questions_Aggregate = {
-  __typename?: 'evaluation_questions_aggregate';
-  aggregate?: Maybe<Evaluation_Questions_Aggregate_Fields>;
-  nodes: Array<Evaluation_Questions>;
-};
-
-/** aggregate fields of "evaluation_questions" */
-export type Evaluation_Questions_Aggregate_Fields = {
-  __typename?: 'evaluation_questions_aggregate_fields';
-  count: Scalars['Int']['output'];
-  max?: Maybe<Evaluation_Questions_Max_Fields>;
-  min?: Maybe<Evaluation_Questions_Min_Fields>;
-};
-
-/** aggregate fields of "evaluation_questions" */
-export type Evaluation_Questions_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Evaluation_Questions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 /** Boolean expression to filter rows from the table "evaluation_questions". All fields are combined with a logical 'AND'. */
 export type Evaluation_Questions_Bool_Exp = {
   _and?: InputMaybe<Array<Evaluation_Questions_Bool_Exp>>;
   _not?: InputMaybe<Evaluation_Questions_Bool_Exp>;
   _or?: InputMaybe<Array<Evaluation_Questions_Bool_Exp>>;
   evaluation_narratives?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-  evaluation_narratives_aggregate?: InputMaybe<Evaluation_Narratives_Aggregate_Bool_Exp>;
   evaluation_ratings?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-  evaluation_ratings_aggregate?: InputMaybe<Evaluation_Ratings_Aggregate_Bool_Exp>;
   is_narrative?: InputMaybe<Boolean_Comparison_Exp>;
   options?: InputMaybe<Jsonb_Comparison_Exp>;
   question_code?: InputMaybe<String_Comparison_Exp>;
   question_text?: InputMaybe<String_Comparison_Exp>;
   tag?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Evaluation_Questions_Max_Fields = {
-  __typename?: 'evaluation_questions_max_fields';
-  /** Question code from OCE (e.g. "YC402") */
-  question_code?: Maybe<Scalars['String']['output']>;
-  /** The question text */
-  question_text?: Maybe<Scalars['String']['output']>;
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
-  tag?: Maybe<Scalars['String']['output']>;
-};
-
-/** aggregate min on columns */
-export type Evaluation_Questions_Min_Fields = {
-  __typename?: 'evaluation_questions_min_fields';
-  /** Question code from OCE (e.g. "YC402") */
-  question_code?: Maybe<Scalars['String']['output']>;
-  /** The question text */
-  question_text?: Maybe<Scalars['String']['output']>;
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
-  tag?: Maybe<Scalars['String']['output']>;
 };
 
 /** Ordering options when selecting data from "evaluation_questions". */
@@ -3072,46 +2315,6 @@ export type Evaluation_RatingsRatingArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** aggregated selection of "evaluation_ratings" */
-export type Evaluation_Ratings_Aggregate = {
-  __typename?: 'evaluation_ratings_aggregate';
-  aggregate?: Maybe<Evaluation_Ratings_Aggregate_Fields>;
-  nodes: Array<Evaluation_Ratings>;
-};
-
-export type Evaluation_Ratings_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Evaluation_Ratings_Aggregate_Bool_Exp_Count>;
-};
-
-export type Evaluation_Ratings_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Evaluation_Ratings_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "evaluation_ratings" */
-export type Evaluation_Ratings_Aggregate_Fields = {
-  __typename?: 'evaluation_ratings_aggregate_fields';
-  avg?: Maybe<Evaluation_Ratings_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Evaluation_Ratings_Max_Fields>;
-  min?: Maybe<Evaluation_Ratings_Min_Fields>;
-  stddev?: Maybe<Evaluation_Ratings_Stddev_Fields>;
-  stddev_pop?: Maybe<Evaluation_Ratings_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Evaluation_Ratings_Stddev_Samp_Fields>;
-  sum?: Maybe<Evaluation_Ratings_Sum_Fields>;
-  var_pop?: Maybe<Evaluation_Ratings_Var_Pop_Fields>;
-  var_samp?: Maybe<Evaluation_Ratings_Var_Samp_Fields>;
-  variance?: Maybe<Evaluation_Ratings_Variance_Fields>;
-};
-
-/** aggregate fields of "evaluation_ratings" */
-export type Evaluation_Ratings_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Evaluation_Ratings_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 /** order by aggregate values of table "evaluation_ratings" */
 export type Evaluation_Ratings_Aggregate_Order_By = {
   avg?: InputMaybe<Evaluation_Ratings_Avg_Order_By>;
@@ -3125,14 +2328,6 @@ export type Evaluation_Ratings_Aggregate_Order_By = {
   var_pop?: InputMaybe<Evaluation_Ratings_Var_Pop_Order_By>;
   var_samp?: InputMaybe<Evaluation_Ratings_Var_Samp_Order_By>;
   variance?: InputMaybe<Evaluation_Ratings_Variance_Order_By>;
-};
-
-/** aggregate avg on columns */
-export type Evaluation_Ratings_Avg_Fields = {
-  __typename?: 'evaluation_ratings_avg_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "evaluation_ratings" */
@@ -3155,16 +2350,6 @@ export type Evaluation_Ratings_Bool_Exp = {
   rating?: InputMaybe<Jsonb_Comparison_Exp>;
 };
 
-/** aggregate max on columns */
-export type Evaluation_Ratings_Max_Fields = {
-  __typename?: 'evaluation_ratings_max_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  /** Question to which this rating responds */
-  question_code?: Maybe<Scalars['String']['output']>;
-};
-
 /** order by max() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Max_Order_By = {
   /** The course to which this rating applies */
@@ -3172,16 +2357,6 @@ export type Evaluation_Ratings_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   /** Question to which this rating responds */
   question_code?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Evaluation_Ratings_Min_Fields = {
-  __typename?: 'evaluation_ratings_min_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  /** Question to which this rating responds */
-  question_code?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by min() on columns of table "evaluation_ratings" */
@@ -3215,14 +2390,6 @@ export enum Evaluation_Ratings_Select_Column {
   Rating = 'rating',
 }
 
-/** aggregate stddev on columns */
-export type Evaluation_Ratings_Stddev_Fields = {
-  __typename?: 'evaluation_ratings_stddev_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Stddev_Order_By = {
   /** The course to which this rating applies */
@@ -3230,27 +2397,11 @@ export type Evaluation_Ratings_Stddev_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
-/** aggregate stddev_pop on columns */
-export type Evaluation_Ratings_Stddev_Pop_Fields = {
-  __typename?: 'evaluation_ratings_stddev_pop_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev_pop() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Stddev_Pop_Order_By = {
   /** The course to which this rating applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Evaluation_Ratings_Stddev_Samp_Fields = {
-  __typename?: 'evaluation_ratings_stddev_samp_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "evaluation_ratings" */
@@ -3279,27 +2430,11 @@ export type Evaluation_Ratings_Stream_Cursor_Value_Input = {
   rating?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Evaluation_Ratings_Sum_Fields = {
-  __typename?: 'evaluation_ratings_sum_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by sum() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Sum_Order_By = {
   /** The course to which this rating applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type Evaluation_Ratings_Var_Pop_Fields = {
-  __typename?: 'evaluation_ratings_var_pop_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "evaluation_ratings" */
@@ -3309,27 +2444,11 @@ export type Evaluation_Ratings_Var_Pop_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
-/** aggregate var_samp on columns */
-export type Evaluation_Ratings_Var_Samp_Fields = {
-  __typename?: 'evaluation_ratings_var_samp_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by var_samp() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Var_Samp_Order_By = {
   /** The course to which this rating applies */
   course_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Evaluation_Ratings_Variance_Fields = {
-  __typename?: 'evaluation_ratings_variance_fields';
-  /** The course to which this rating applies */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "evaluation_ratings" */
@@ -3367,54 +2486,6 @@ export type Evaluation_StatisticsExtrasArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** aggregated selection of "evaluation_statistics" */
-export type Evaluation_Statistics_Aggregate = {
-  __typename?: 'evaluation_statistics_aggregate';
-  aggregate?: Maybe<Evaluation_Statistics_Aggregate_Fields>;
-  nodes: Array<Evaluation_Statistics>;
-};
-
-/** aggregate fields of "evaluation_statistics" */
-export type Evaluation_Statistics_Aggregate_Fields = {
-  __typename?: 'evaluation_statistics_aggregate_fields';
-  avg?: Maybe<Evaluation_Statistics_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Evaluation_Statistics_Max_Fields>;
-  min?: Maybe<Evaluation_Statistics_Min_Fields>;
-  stddev?: Maybe<Evaluation_Statistics_Stddev_Fields>;
-  stddev_pop?: Maybe<Evaluation_Statistics_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Evaluation_Statistics_Stddev_Samp_Fields>;
-  sum?: Maybe<Evaluation_Statistics_Sum_Fields>;
-  var_pop?: Maybe<Evaluation_Statistics_Var_Pop_Fields>;
-  var_samp?: Maybe<Evaluation_Statistics_Var_Samp_Fields>;
-  variance?: Maybe<Evaluation_Statistics_Variance_Fields>;
-};
-
-/** aggregate fields of "evaluation_statistics" */
-export type Evaluation_Statistics_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Evaluation_Statistics_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Evaluation_Statistics_Avg_Fields = {
-  __typename?: 'evaluation_statistics_avg_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['Float']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Float']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Float']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Boolean expression to filter rows from the table "evaluation_statistics". All fields are combined with a logical 'AND'. */
 export type Evaluation_Statistics_Bool_Exp = {
   _and?: InputMaybe<Array<Evaluation_Statistics_Bool_Exp>>;
@@ -3429,44 +2500,6 @@ export type Evaluation_Statistics_Bool_Exp = {
   extras?: InputMaybe<Jsonb_Comparison_Exp>;
   no_response?: InputMaybe<Int_Comparison_Exp>;
   responses?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Evaluation_Statistics_Max_Fields = {
-  __typename?: 'evaluation_statistics_max_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['float8']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['float8']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Int']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Int']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Int']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate min on columns */
-export type Evaluation_Statistics_Min_Fields = {
-  __typename?: 'evaluation_statistics_min_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['float8']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['float8']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Int']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Int']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Int']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Ordering options when selecting data from "evaluation_statistics". */
@@ -3502,63 +2535,6 @@ export enum Evaluation_Statistics_Select_Column {
   Responses = 'responses',
 }
 
-/** aggregate stddev on columns */
-export type Evaluation_Statistics_Stddev_Fields = {
-  __typename?: 'evaluation_statistics_stddev_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['Float']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Float']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Float']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Evaluation_Statistics_Stddev_Pop_Fields = {
-  __typename?: 'evaluation_statistics_stddev_pop_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['Float']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Float']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Float']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Evaluation_Statistics_Stddev_Samp_Fields = {
-  __typename?: 'evaluation_statistics_stddev_samp_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['Float']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Float']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Float']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Streaming cursor of the table "evaluation_statistics" */
 export type Evaluation_Statistics_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -3587,89 +2563,11 @@ export type Evaluation_Statistics_Stream_Cursor_Value_Input = {
   responses?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Evaluation_Statistics_Sum_Fields = {
-  __typename?: 'evaluation_statistics_sum_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['float8']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['float8']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Int']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Int']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Int']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Evaluation_Statistics_Var_Pop_Fields = {
-  __typename?: 'evaluation_statistics_var_pop_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['Float']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Float']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Float']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Evaluation_Statistics_Var_Samp_Fields = {
-  __typename?: 'evaluation_statistics_var_samp_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['Float']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Float']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Float']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Evaluation_Statistics_Variance_Fields = {
-  __typename?: 'evaluation_statistics_variance_fields';
-  /** [computed] Average overall rating */
-  avg_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Average workload rating */
-  avg_workload?: Maybe<Scalars['Float']['output']>;
-  /** The course associated with these statistics */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who declined to respond */
-  declined?: Maybe<Scalars['Float']['output']>;
-  /** Number of students enrolled in course */
-  enrolled?: Maybe<Scalars['Float']['output']>;
-  /** Number of students who did not respond */
-  no_response?: Maybe<Scalars['Float']['output']>;
-  /** Number of responses */
-  responses?: Maybe<Scalars['Float']['output']>;
-};
-
 /** columns and relationships of "flags" */
 export type Flags = {
   __typename?: 'flags';
   /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** An aggregate relationship */
-  course_flags_aggregate: Course_Flags_Aggregate;
   /** Flag ID */
   flag_id: Scalars['Int']['output'];
   /** Flag text */
@@ -3685,78 +2583,14 @@ export type FlagsCourse_FlagsArgs = {
   where?: InputMaybe<Course_Flags_Bool_Exp>;
 };
 
-/** columns and relationships of "flags" */
-export type FlagsCourse_Flags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Course_Flags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Flags_Order_By>>;
-  where?: InputMaybe<Course_Flags_Bool_Exp>;
-};
-
-/** aggregated selection of "flags" */
-export type Flags_Aggregate = {
-  __typename?: 'flags_aggregate';
-  aggregate?: Maybe<Flags_Aggregate_Fields>;
-  nodes: Array<Flags>;
-};
-
-/** aggregate fields of "flags" */
-export type Flags_Aggregate_Fields = {
-  __typename?: 'flags_aggregate_fields';
-  avg?: Maybe<Flags_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Flags_Max_Fields>;
-  min?: Maybe<Flags_Min_Fields>;
-  stddev?: Maybe<Flags_Stddev_Fields>;
-  stddev_pop?: Maybe<Flags_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Flags_Stddev_Samp_Fields>;
-  sum?: Maybe<Flags_Sum_Fields>;
-  var_pop?: Maybe<Flags_Var_Pop_Fields>;
-  var_samp?: Maybe<Flags_Var_Samp_Fields>;
-  variance?: Maybe<Flags_Variance_Fields>;
-};
-
-/** aggregate fields of "flags" */
-export type Flags_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Flags_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Flags_Avg_Fields = {
-  __typename?: 'flags_avg_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Boolean expression to filter rows from the table "flags". All fields are combined with a logical 'AND'. */
 export type Flags_Bool_Exp = {
   _and?: InputMaybe<Array<Flags_Bool_Exp>>;
   _not?: InputMaybe<Flags_Bool_Exp>;
   _or?: InputMaybe<Array<Flags_Bool_Exp>>;
   course_flags?: InputMaybe<Course_Flags_Bool_Exp>;
-  course_flags_aggregate?: InputMaybe<Course_Flags_Aggregate_Bool_Exp>;
   flag_id?: InputMaybe<Int_Comparison_Exp>;
   flag_text?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Flags_Max_Fields = {
-  __typename?: 'flags_max_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Int']['output']>;
-  /** Flag text */
-  flag_text?: Maybe<Scalars['String']['output']>;
-};
-
-/** aggregate min on columns */
-export type Flags_Min_Fields = {
-  __typename?: 'flags_min_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Int']['output']>;
-  /** Flag text */
-  flag_text?: Maybe<Scalars['String']['output']>;
 };
 
 /** Ordering options when selecting data from "flags". */
@@ -3774,27 +2608,6 @@ export enum Flags_Select_Column {
   FlagText = 'flag_text',
 }
 
-/** aggregate stddev on columns */
-export type Flags_Stddev_Fields = {
-  __typename?: 'flags_stddev_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Flags_Stddev_Pop_Fields = {
-  __typename?: 'flags_stddev_pop_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Flags_Stddev_Samp_Fields = {
-  __typename?: 'flags_stddev_samp_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Streaming cursor of the table "flags" */
 export type Flags_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -3809,34 +2622,6 @@ export type Flags_Stream_Cursor_Value_Input = {
   flag_id?: InputMaybe<Scalars['Int']['input']>;
   /** Flag text */
   flag_text?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Flags_Sum_Fields = {
-  __typename?: 'flags_sum_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Flags_Var_Pop_Fields = {
-  __typename?: 'flags_var_pop_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Flags_Var_Samp_Fields = {
-  __typename?: 'flags_var_samp_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Flags_Variance_Fields = {
-  __typename?: 'flags_variance_fields';
-  /** Flag ID */
-  flag_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Boolean expression to compare columns of type "float8". All fields are combined with logical 'AND'. */
@@ -3910,46 +2695,6 @@ export type Listings = {
   subject: Scalars['String']['output'];
 };
 
-/** aggregated selection of "listings" */
-export type Listings_Aggregate = {
-  __typename?: 'listings_aggregate';
-  aggregate?: Maybe<Listings_Aggregate_Fields>;
-  nodes: Array<Listings>;
-};
-
-export type Listings_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Listings_Aggregate_Bool_Exp_Count>;
-};
-
-export type Listings_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Listings_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<Listings_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "listings" */
-export type Listings_Aggregate_Fields = {
-  __typename?: 'listings_aggregate_fields';
-  avg?: Maybe<Listings_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Listings_Max_Fields>;
-  min?: Maybe<Listings_Min_Fields>;
-  stddev?: Maybe<Listings_Stddev_Fields>;
-  stddev_pop?: Maybe<Listings_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Listings_Stddev_Samp_Fields>;
-  sum?: Maybe<Listings_Sum_Fields>;
-  var_pop?: Maybe<Listings_Var_Pop_Fields>;
-  var_samp?: Maybe<Listings_Var_Samp_Fields>;
-  variance?: Maybe<Listings_Variance_Fields>;
-};
-
-/** aggregate fields of "listings" */
-export type Listings_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Listings_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 /** order by aggregate values of table "listings" */
 export type Listings_Aggregate_Order_By = {
   avg?: InputMaybe<Listings_Avg_Order_By>;
@@ -3963,17 +2708,6 @@ export type Listings_Aggregate_Order_By = {
   var_pop?: InputMaybe<Listings_Var_Pop_Order_By>;
   var_samp?: InputMaybe<Listings_Var_Samp_Order_By>;
   variance?: InputMaybe<Listings_Variance_Order_By>;
-};
-
-/** aggregate avg on columns */
-export type Listings_Avg_Fields = {
-  __typename?: 'listings_avg_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Float']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "listings" */
@@ -4004,32 +2738,6 @@ export type Listings_Bool_Exp = {
   subject?: InputMaybe<String_Comparison_Exp>;
 };
 
-/** aggregate max on columns */
-export type Listings_Max_Fields = {
-  __typename?: 'listings_max_fields';
-  /** [computed] subject + number (e.g. "AMST 312") */
-  course_code?: Maybe<Scalars['String']['output']>;
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Int']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Int']['output']>;
-  /** Course number in the given subject (e.g. "120" or "S120") */
-  number?: Maybe<Scalars['String']['output']>;
-  /** School (e.g. YC, GS, MG) that the course is listed under */
-  school?: Maybe<Scalars['String']['output']>;
-  /** When the course/listing is being taught, mapping to `seasons` */
-  season_code?: Maybe<Scalars['String']['output']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
-  section?: Maybe<Scalars['String']['output']>;
-  /** Subject the course is listed under (e.g. "AMST") */
-  subject?: Maybe<Scalars['String']['output']>;
-};
-
 /** order by max() on columns of table "listings" */
 export type Listings_Max_Order_By = {
   /** [computed] subject + number (e.g. "AMST 312") */
@@ -4053,32 +2761,6 @@ export type Listings_Max_Order_By = {
   section?: InputMaybe<Order_By>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Listings_Min_Fields = {
-  __typename?: 'listings_min_fields';
-  /** [computed] subject + number (e.g. "AMST 312") */
-  course_code?: Maybe<Scalars['String']['output']>;
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Int']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Int']['output']>;
-  /** Course number in the given subject (e.g. "120" or "S120") */
-  number?: Maybe<Scalars['String']['output']>;
-  /** School (e.g. YC, GS, MG) that the course is listed under */
-  school?: Maybe<Scalars['String']['output']>;
-  /** When the course/listing is being taught, mapping to `seasons` */
-  season_code?: Maybe<Scalars['String']['output']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
-  section?: Maybe<Scalars['String']['output']>;
-  /** Subject the course is listed under (e.g. "AMST") */
-  subject?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by min() on columns of table "listings" */
@@ -4143,17 +2825,6 @@ export enum Listings_Select_Column {
   Subject = 'subject',
 }
 
-/** aggregate stddev on columns */
-export type Listings_Stddev_Fields = {
-  __typename?: 'listings_stddev_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Float']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev() on columns of table "listings" */
 export type Listings_Stddev_Order_By = {
   /** Course that the listing refers to */
@@ -4164,17 +2835,6 @@ export type Listings_Stddev_Order_By = {
   listing_id?: InputMaybe<Order_By>;
 };
 
-/** aggregate stddev_pop on columns */
-export type Listings_Stddev_Pop_Fields = {
-  __typename?: 'listings_stddev_pop_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Float']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by stddev_pop() on columns of table "listings" */
 export type Listings_Stddev_Pop_Order_By = {
   /** Course that the listing refers to */
@@ -4183,17 +2843,6 @@ export type Listings_Stddev_Pop_Order_By = {
   crn?: InputMaybe<Order_By>;
   /** Listing ID */
   listing_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Listings_Stddev_Samp_Fields = {
-  __typename?: 'listings_stddev_samp_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Float']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "listings" */
@@ -4239,17 +2888,6 @@ export type Listings_Stream_Cursor_Value_Input = {
   subject?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Listings_Sum_Fields = {
-  __typename?: 'listings_sum_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Int']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Int']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Int']['output']>;
-};
-
 /** order by sum() on columns of table "listings" */
 export type Listings_Sum_Order_By = {
   /** Course that the listing refers to */
@@ -4258,17 +2896,6 @@ export type Listings_Sum_Order_By = {
   crn?: InputMaybe<Order_By>;
   /** Listing ID */
   listing_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type Listings_Var_Pop_Fields = {
-  __typename?: 'listings_var_pop_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Float']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "listings" */
@@ -4281,17 +2908,6 @@ export type Listings_Var_Pop_Order_By = {
   listing_id?: InputMaybe<Order_By>;
 };
 
-/** aggregate var_samp on columns */
-export type Listings_Var_Samp_Fields = {
-  __typename?: 'listings_var_samp_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Float']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** order by var_samp() on columns of table "listings" */
 export type Listings_Var_Samp_Order_By = {
   /** Course that the listing refers to */
@@ -4300,17 +2916,6 @@ export type Listings_Var_Samp_Order_By = {
   crn?: InputMaybe<Order_By>;
   /** Listing ID */
   listing_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Listings_Variance_Fields = {
-  __typename?: 'listings_variance_fields';
-  /** Course that the listing refers to */
-  course_id?: Maybe<Scalars['Float']['output']>;
-  /** The CRN associated with this listing */
-  crn?: Maybe<Scalars['Float']['output']>;
-  /** Listing ID */
-  listing_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "listings" */
@@ -4539,8 +3144,6 @@ export type Professors = {
   average_rating_n?: Maybe<Scalars['Int']['output']>;
   /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** An aggregate relationship */
-  course_professors_aggregate: Course_Professors_Aggregate;
   /** [computed] Number of courses taught */
   courses_taught: Scalars['Int']['output'];
   /** Email address of the professor */
@@ -4560,60 +3163,6 @@ export type ProfessorsCourse_ProfessorsArgs = {
   where?: InputMaybe<Course_Professors_Bool_Exp>;
 };
 
-/** columns and relationships of "professors" */
-export type ProfessorsCourse_Professors_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Course_Professors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Professors_Order_By>>;
-  where?: InputMaybe<Course_Professors_Bool_Exp>;
-};
-
-/** aggregated selection of "professors" */
-export type Professors_Aggregate = {
-  __typename?: 'professors_aggregate';
-  aggregate?: Maybe<Professors_Aggregate_Fields>;
-  nodes: Array<Professors>;
-};
-
-/** aggregate fields of "professors" */
-export type Professors_Aggregate_Fields = {
-  __typename?: 'professors_aggregate_fields';
-  avg?: Maybe<Professors_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Professors_Max_Fields>;
-  min?: Maybe<Professors_Min_Fields>;
-  stddev?: Maybe<Professors_Stddev_Fields>;
-  stddev_pop?: Maybe<Professors_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Professors_Stddev_Samp_Fields>;
-  sum?: Maybe<Professors_Sum_Fields>;
-  var_pop?: Maybe<Professors_Var_Pop_Fields>;
-  var_samp?: Maybe<Professors_Var_Samp_Fields>;
-  variance?: Maybe<Professors_Variance_Fields>;
-};
-
-/** aggregate fields of "professors" */
-export type Professors_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Professors_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Professors_Avg_Fields = {
-  __typename?: 'professors_avg_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Float']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Boolean expression to filter rows from the table "professors". All fields are combined with a logical 'AND'. */
 export type Professors_Bool_Exp = {
   _and?: InputMaybe<Array<Professors_Bool_Exp>>;
@@ -4622,51 +3171,10 @@ export type Professors_Bool_Exp = {
   average_rating?: InputMaybe<Float8_Comparison_Exp>;
   average_rating_n?: InputMaybe<Int_Comparison_Exp>;
   course_professors?: InputMaybe<Course_Professors_Bool_Exp>;
-  course_professors_aggregate?: InputMaybe<Course_Professors_Aggregate_Bool_Exp>;
   courses_taught?: InputMaybe<Int_Comparison_Exp>;
   email?: InputMaybe<String_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   professor_id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Professors_Max_Fields = {
-  __typename?: 'professors_max_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['float8']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Int']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Int']['output']>;
-  /** Email address of the professor */
-  email?: Maybe<Scalars['String']['output']>;
-  /** Name of the professor */
-  name?: Maybe<Scalars['String']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate min on columns */
-export type Professors_Min_Fields = {
-  __typename?: 'professors_min_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['float8']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Int']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Int']['output']>;
-  /** Email address of the professor */
-  email?: Maybe<Scalars['String']['output']>;
-  /** Name of the professor */
-  name?: Maybe<Scalars['String']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Ordering options when selecting data from "professors". */
@@ -4696,54 +3204,6 @@ export enum Professors_Select_Column {
   ProfessorId = 'professor_id',
 }
 
-/** aggregate stddev on columns */
-export type Professors_Stddev_Fields = {
-  __typename?: 'professors_stddev_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Float']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Professors_Stddev_Pop_Fields = {
-  __typename?: 'professors_stddev_pop_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Float']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Professors_Stddev_Samp_Fields = {
-  __typename?: 'professors_stddev_samp_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Float']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Streaming cursor of the table "professors" */
 export type Professors_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -4771,70 +3231,6 @@ export type Professors_Stream_Cursor_Value_Input = {
   professor_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Professors_Sum_Fields = {
-  __typename?: 'professors_sum_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['float8']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Int']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Int']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Professors_Var_Pop_Fields = {
-  __typename?: 'professors_var_pop_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Float']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Professors_Var_Samp_Fields = {
-  __typename?: 'professors_var_samp_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Float']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Professors_Variance_Fields = {
-  __typename?: 'professors_variance_fields';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
-  average_rating?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Float']['output']>;
-  /** [computed] Number of courses taught */
-  courses_taught?: Maybe<Scalars['Float']['output']>;
-  /** Professor ID */
-  professor_id?: Maybe<Scalars['Float']['output']>;
-};
-
 export type Query_Root = {
   __typename?: 'query_root';
   /** fetch data from the table: "buildings" */
@@ -4843,16 +3239,12 @@ export type Query_Root = {
   buildings_by_pk?: Maybe<Buildings>;
   /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** An aggregate relationship */
-  course_flags_aggregate: Course_Flags_Aggregate;
   /** fetch data from the table: "course_flags" using primary key columns */
   course_flags_by_pk?: Maybe<Course_Flags>;
   /** An array relationship */
   course_meetings: Array<Course_Meetings>;
   /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** An aggregate relationship */
-  course_professors_aggregate: Course_Professors_Aggregate;
   /** fetch data from the table: "course_professors" using primary key columns */
   course_professors_by_pk?: Maybe<Course_Professors>;
   /** An array relationship */
@@ -4861,38 +3253,26 @@ export type Query_Root = {
   courses_by_pk?: Maybe<Courses>;
   /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** An aggregate relationship */
-  evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
   evaluation_narratives_by_pk?: Maybe<Evaluation_Narratives>;
   /** fetch data from the table: "evaluation_questions" */
   evaluation_questions: Array<Evaluation_Questions>;
-  /** fetch aggregated fields from the table: "evaluation_questions" */
-  evaluation_questions_aggregate: Evaluation_Questions_Aggregate;
   /** fetch data from the table: "evaluation_questions" using primary key columns */
   evaluation_questions_by_pk?: Maybe<Evaluation_Questions>;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** An aggregate relationship */
-  evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
   /** fetch data from the table: "evaluation_ratings" using primary key columns */
   evaluation_ratings_by_pk?: Maybe<Evaluation_Ratings>;
   /** fetch data from the table: "evaluation_statistics" */
   evaluation_statistics: Array<Evaluation_Statistics>;
-  /** fetch aggregated fields from the table: "evaluation_statistics" */
-  evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
   /** fetch data from the table: "evaluation_statistics" using primary key columns */
   evaluation_statistics_by_pk?: Maybe<Evaluation_Statistics>;
   /** fetch data from the table: "flags" */
   flags: Array<Flags>;
-  /** fetch aggregated fields from the table: "flags" */
-  flags_aggregate: Flags_Aggregate;
   /** fetch data from the table: "flags" using primary key columns */
   flags_by_pk?: Maybe<Flags>;
   /** An array relationship */
   listings: Array<Listings>;
-  /** An aggregate relationship */
-  listings_aggregate: Listings_Aggregate;
   /** fetch data from the table: "listings" using primary key columns */
   listings_by_pk?: Maybe<Listings>;
   /** An array relationship */
@@ -4905,14 +3285,10 @@ export type Query_Root = {
   metadata_by_pk?: Maybe<Metadata>;
   /** fetch data from the table: "professors" */
   professors: Array<Professors>;
-  /** fetch aggregated fields from the table: "professors" */
-  professors_aggregate: Professors_Aggregate;
   /** fetch data from the table: "professors" using primary key columns */
   professors_by_pk?: Maybe<Professors>;
   /** fetch data from the table: "seasons" */
   seasons: Array<Seasons>;
-  /** fetch aggregated fields from the table: "seasons" */
-  seasons_aggregate: Seasons_Aggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk?: Maybe<Seasons>;
 };
@@ -4937,14 +3313,6 @@ export type Query_RootCourse_FlagsArgs = {
   where?: InputMaybe<Course_Flags_Bool_Exp>;
 };
 
-export type Query_RootCourse_Flags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Course_Flags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Flags_Order_By>>;
-  where?: InputMaybe<Course_Flags_Bool_Exp>;
-};
-
 export type Query_RootCourse_Flags_By_PkArgs = {
   course_id: Scalars['Int']['input'];
   flag_id: Scalars['Int']['input'];
@@ -4959,14 +3327,6 @@ export type Query_RootCourse_MeetingsArgs = {
 };
 
 export type Query_RootCourse_ProfessorsArgs = {
-  distinct_on?: InputMaybe<Array<Course_Professors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Professors_Order_By>>;
-  where?: InputMaybe<Course_Professors_Bool_Exp>;
-};
-
-export type Query_RootCourse_Professors_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Course_Professors_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -4999,27 +3359,11 @@ export type Query_RootEvaluation_NarrativesArgs = {
   where?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
 };
 
-export type Query_RootEvaluation_Narratives_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Narratives_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Narratives_Order_By>>;
-  where?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-};
-
 export type Query_RootEvaluation_Narratives_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
 
 export type Query_RootEvaluation_QuestionsArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Questions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Questions_Order_By>>;
-  where?: InputMaybe<Evaluation_Questions_Bool_Exp>;
-};
-
-export type Query_RootEvaluation_Questions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Evaluation_Questions_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5039,27 +3383,11 @@ export type Query_RootEvaluation_RatingsArgs = {
   where?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
 };
 
-export type Query_RootEvaluation_Ratings_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Ratings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Ratings_Order_By>>;
-  where?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-};
-
 export type Query_RootEvaluation_Ratings_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
 
 export type Query_RootEvaluation_StatisticsArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Statistics_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Statistics_Order_By>>;
-  where?: InputMaybe<Evaluation_Statistics_Bool_Exp>;
-};
-
-export type Query_RootEvaluation_Statistics_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Evaluation_Statistics_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5079,27 +3407,11 @@ export type Query_RootFlagsArgs = {
   where?: InputMaybe<Flags_Bool_Exp>;
 };
 
-export type Query_RootFlags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Flags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Flags_Order_By>>;
-  where?: InputMaybe<Flags_Bool_Exp>;
-};
-
 export type Query_RootFlags_By_PkArgs = {
   flag_id: Scalars['Int']['input'];
 };
 
 export type Query_RootListingsArgs = {
-  distinct_on?: InputMaybe<Array<Listings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Listings_Order_By>>;
-  where?: InputMaybe<Listings_Bool_Exp>;
-};
-
-export type Query_RootListings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Listings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5143,27 +3455,11 @@ export type Query_RootProfessorsArgs = {
   where?: InputMaybe<Professors_Bool_Exp>;
 };
 
-export type Query_RootProfessors_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Professors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Professors_Order_By>>;
-  where?: InputMaybe<Professors_Bool_Exp>;
-};
-
 export type Query_RootProfessors_By_PkArgs = {
   professor_id: Scalars['Int']['input'];
 };
 
 export type Query_RootSeasonsArgs = {
-  distinct_on?: InputMaybe<Array<Seasons_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Seasons_Order_By>>;
-  where?: InputMaybe<Seasons_Bool_Exp>;
-};
-
-export type Query_RootSeasons_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Seasons_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5182,8 +3478,6 @@ export type Seasons = {
   courses: Array<Courses>;
   /** An array relationship */
   listings: Array<Listings>;
-  /** An aggregate relationship */
-  listings_aggregate: Listings_Aggregate;
   /** Season code (e.g. '202001') */
   season_code: Scalars['String']['output'];
   /** [computed] Season of the semester - one of spring, summer, or fall */
@@ -5210,51 +3504,6 @@ export type SeasonsListingsArgs = {
   where?: InputMaybe<Listings_Bool_Exp>;
 };
 
-/** columns and relationships of "seasons" */
-export type SeasonsListings_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Listings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Listings_Order_By>>;
-  where?: InputMaybe<Listings_Bool_Exp>;
-};
-
-/** aggregated selection of "seasons" */
-export type Seasons_Aggregate = {
-  __typename?: 'seasons_aggregate';
-  aggregate?: Maybe<Seasons_Aggregate_Fields>;
-  nodes: Array<Seasons>;
-};
-
-/** aggregate fields of "seasons" */
-export type Seasons_Aggregate_Fields = {
-  __typename?: 'seasons_aggregate_fields';
-  avg?: Maybe<Seasons_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Seasons_Max_Fields>;
-  min?: Maybe<Seasons_Min_Fields>;
-  stddev?: Maybe<Seasons_Stddev_Fields>;
-  stddev_pop?: Maybe<Seasons_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Seasons_Stddev_Samp_Fields>;
-  sum?: Maybe<Seasons_Sum_Fields>;
-  var_pop?: Maybe<Seasons_Var_Pop_Fields>;
-  var_samp?: Maybe<Seasons_Var_Samp_Fields>;
-  variance?: Maybe<Seasons_Variance_Fields>;
-};
-
-/** aggregate fields of "seasons" */
-export type Seasons_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Seasons_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Seasons_Avg_Fields = {
-  __typename?: 'seasons_avg_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Boolean expression to filter rows from the table "seasons". All fields are combined with a logical 'AND'. */
 export type Seasons_Bool_Exp = {
   _and?: InputMaybe<Array<Seasons_Bool_Exp>>;
@@ -5262,32 +3511,9 @@ export type Seasons_Bool_Exp = {
   _or?: InputMaybe<Array<Seasons_Bool_Exp>>;
   courses?: InputMaybe<Courses_Bool_Exp>;
   listings?: InputMaybe<Listings_Bool_Exp>;
-  listings_aggregate?: InputMaybe<Listings_Aggregate_Bool_Exp>;
   season_code?: InputMaybe<String_Comparison_Exp>;
   term?: InputMaybe<String_Comparison_Exp>;
   year?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Seasons_Max_Fields = {
-  __typename?: 'seasons_max_fields';
-  /** Season code (e.g. '202001') */
-  season_code?: Maybe<Scalars['String']['output']>;
-  /** [computed] Season of the semester - one of spring, summer, or fall */
-  term?: Maybe<Scalars['String']['output']>;
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate min on columns */
-export type Seasons_Min_Fields = {
-  __typename?: 'seasons_min_fields';
-  /** Season code (e.g. '202001') */
-  season_code?: Maybe<Scalars['String']['output']>;
-  /** [computed] Season of the semester - one of spring, summer, or fall */
-  term?: Maybe<Scalars['String']['output']>;
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Ordering options when selecting data from "seasons". */
@@ -5309,27 +3535,6 @@ export enum Seasons_Select_Column {
   Year = 'year',
 }
 
-/** aggregate stddev on columns */
-export type Seasons_Stddev_Fields = {
-  __typename?: 'seasons_stddev_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Seasons_Stddev_Pop_Fields = {
-  __typename?: 'seasons_stddev_pop_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Seasons_Stddev_Samp_Fields = {
-  __typename?: 'seasons_stddev_samp_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Streaming cursor of the table "seasons" */
 export type Seasons_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -5348,34 +3553,6 @@ export type Seasons_Stream_Cursor_Value_Input = {
   year?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** aggregate sum on columns */
-export type Seasons_Sum_Fields = {
-  __typename?: 'seasons_sum_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Int']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Seasons_Var_Pop_Fields = {
-  __typename?: 'seasons_var_pop_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Seasons_Var_Samp_Fields = {
-  __typename?: 'seasons_var_samp_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Seasons_Variance_Fields = {
-  __typename?: 'seasons_variance_fields';
-  /** [computed] Year of the semester */
-  year?: Maybe<Scalars['Float']['output']>;
-};
-
 export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** fetch data from the table: "buildings" */
@@ -5386,8 +3563,6 @@ export type Subscription_Root = {
   buildings_stream: Array<Buildings>;
   /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** An aggregate relationship */
-  course_flags_aggregate: Course_Flags_Aggregate;
   /** fetch data from the table: "course_flags" using primary key columns */
   course_flags_by_pk?: Maybe<Course_Flags>;
   /** fetch data from the table in a streaming manner: "course_flags" */
@@ -5398,8 +3573,6 @@ export type Subscription_Root = {
   course_meetings_stream: Array<Course_Meetings>;
   /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** An aggregate relationship */
-  course_professors_aggregate: Course_Professors_Aggregate;
   /** fetch data from the table: "course_professors" using primary key columns */
   course_professors_by_pk?: Maybe<Course_Professors>;
   /** fetch data from the table in a streaming manner: "course_professors" */
@@ -5412,48 +3585,36 @@ export type Subscription_Root = {
   courses_stream: Array<Courses>;
   /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** An aggregate relationship */
-  evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
   evaluation_narratives_by_pk?: Maybe<Evaluation_Narratives>;
   /** fetch data from the table in a streaming manner: "evaluation_narratives" */
   evaluation_narratives_stream: Array<Evaluation_Narratives>;
   /** fetch data from the table: "evaluation_questions" */
   evaluation_questions: Array<Evaluation_Questions>;
-  /** fetch aggregated fields from the table: "evaluation_questions" */
-  evaluation_questions_aggregate: Evaluation_Questions_Aggregate;
   /** fetch data from the table: "evaluation_questions" using primary key columns */
   evaluation_questions_by_pk?: Maybe<Evaluation_Questions>;
   /** fetch data from the table in a streaming manner: "evaluation_questions" */
   evaluation_questions_stream: Array<Evaluation_Questions>;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** An aggregate relationship */
-  evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
   /** fetch data from the table: "evaluation_ratings" using primary key columns */
   evaluation_ratings_by_pk?: Maybe<Evaluation_Ratings>;
   /** fetch data from the table in a streaming manner: "evaluation_ratings" */
   evaluation_ratings_stream: Array<Evaluation_Ratings>;
   /** fetch data from the table: "evaluation_statistics" */
   evaluation_statistics: Array<Evaluation_Statistics>;
-  /** fetch aggregated fields from the table: "evaluation_statistics" */
-  evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
   /** fetch data from the table: "evaluation_statistics" using primary key columns */
   evaluation_statistics_by_pk?: Maybe<Evaluation_Statistics>;
   /** fetch data from the table in a streaming manner: "evaluation_statistics" */
   evaluation_statistics_stream: Array<Evaluation_Statistics>;
   /** fetch data from the table: "flags" */
   flags: Array<Flags>;
-  /** fetch aggregated fields from the table: "flags" */
-  flags_aggregate: Flags_Aggregate;
   /** fetch data from the table: "flags" using primary key columns */
   flags_by_pk?: Maybe<Flags>;
   /** fetch data from the table in a streaming manner: "flags" */
   flags_stream: Array<Flags>;
   /** An array relationship */
   listings: Array<Listings>;
-  /** An aggregate relationship */
-  listings_aggregate: Listings_Aggregate;
   /** fetch data from the table: "listings" using primary key columns */
   listings_by_pk?: Maybe<Listings>;
   /** fetch data from the table in a streaming manner: "listings" */
@@ -5472,16 +3633,12 @@ export type Subscription_Root = {
   metadata_stream: Array<Metadata>;
   /** fetch data from the table: "professors" */
   professors: Array<Professors>;
-  /** fetch aggregated fields from the table: "professors" */
-  professors_aggregate: Professors_Aggregate;
   /** fetch data from the table: "professors" using primary key columns */
   professors_by_pk?: Maybe<Professors>;
   /** fetch data from the table in a streaming manner: "professors" */
   professors_stream: Array<Professors>;
   /** fetch data from the table: "seasons" */
   seasons: Array<Seasons>;
-  /** fetch aggregated fields from the table: "seasons" */
-  seasons_aggregate: Seasons_Aggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk?: Maybe<Seasons>;
   /** fetch data from the table in a streaming manner: "seasons" */
@@ -5507,14 +3664,6 @@ export type Subscription_RootBuildings_StreamArgs = {
 };
 
 export type Subscription_RootCourse_FlagsArgs = {
-  distinct_on?: InputMaybe<Array<Course_Flags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Flags_Order_By>>;
-  where?: InputMaybe<Course_Flags_Bool_Exp>;
-};
-
-export type Subscription_RootCourse_Flags_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Course_Flags_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5548,14 +3697,6 @@ export type Subscription_RootCourse_Meetings_StreamArgs = {
 };
 
 export type Subscription_RootCourse_ProfessorsArgs = {
-  distinct_on?: InputMaybe<Array<Course_Professors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Course_Professors_Order_By>>;
-  where?: InputMaybe<Course_Professors_Bool_Exp>;
-};
-
-export type Subscription_RootCourse_Professors_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Course_Professors_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5600,14 +3741,6 @@ export type Subscription_RootEvaluation_NarrativesArgs = {
   where?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
 };
 
-export type Subscription_RootEvaluation_Narratives_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Narratives_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Narratives_Order_By>>;
-  where?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
-};
-
 export type Subscription_RootEvaluation_Narratives_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
@@ -5619,14 +3752,6 @@ export type Subscription_RootEvaluation_Narratives_StreamArgs = {
 };
 
 export type Subscription_RootEvaluation_QuestionsArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Questions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Questions_Order_By>>;
-  where?: InputMaybe<Evaluation_Questions_Bool_Exp>;
-};
-
-export type Subscription_RootEvaluation_Questions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Evaluation_Questions_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5652,14 +3777,6 @@ export type Subscription_RootEvaluation_RatingsArgs = {
   where?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
 };
 
-export type Subscription_RootEvaluation_Ratings_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Ratings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Ratings_Order_By>>;
-  where?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
-};
-
 export type Subscription_RootEvaluation_Ratings_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
@@ -5671,14 +3788,6 @@ export type Subscription_RootEvaluation_Ratings_StreamArgs = {
 };
 
 export type Subscription_RootEvaluation_StatisticsArgs = {
-  distinct_on?: InputMaybe<Array<Evaluation_Statistics_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Evaluation_Statistics_Order_By>>;
-  where?: InputMaybe<Evaluation_Statistics_Bool_Exp>;
-};
-
-export type Subscription_RootEvaluation_Statistics_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Evaluation_Statistics_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5704,14 +3813,6 @@ export type Subscription_RootFlagsArgs = {
   where?: InputMaybe<Flags_Bool_Exp>;
 };
 
-export type Subscription_RootFlags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Flags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Flags_Order_By>>;
-  where?: InputMaybe<Flags_Bool_Exp>;
-};
-
 export type Subscription_RootFlags_By_PkArgs = {
   flag_id: Scalars['Int']['input'];
 };
@@ -5723,14 +3824,6 @@ export type Subscription_RootFlags_StreamArgs = {
 };
 
 export type Subscription_RootListingsArgs = {
-  distinct_on?: InputMaybe<Array<Listings_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Listings_Order_By>>;
-  where?: InputMaybe<Listings_Bool_Exp>;
-};
-
-export type Subscription_RootListings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Listings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -5792,14 +3885,6 @@ export type Subscription_RootProfessorsArgs = {
   where?: InputMaybe<Professors_Bool_Exp>;
 };
 
-export type Subscription_RootProfessors_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Professors_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Professors_Order_By>>;
-  where?: InputMaybe<Professors_Bool_Exp>;
-};
-
 export type Subscription_RootProfessors_By_PkArgs = {
   professor_id: Scalars['Int']['input'];
 };
@@ -5811,14 +3896,6 @@ export type Subscription_RootProfessors_StreamArgs = {
 };
 
 export type Subscription_RootSeasonsArgs = {
-  distinct_on?: InputMaybe<Array<Seasons_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Seasons_Order_By>>;
-  where?: InputMaybe<Seasons_Bool_Exp>;
-};
-
-export type Subscription_RootSeasons_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Seasons_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;

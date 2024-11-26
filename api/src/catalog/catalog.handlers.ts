@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import type express from 'express';
 import { createObjectCsvStringifier } from 'csv-writer';
 import { fetchCatalog } from './catalog.utils.js';
-import { FERRY_SECRET, STATIC_FILE_DIR } from '../config.js';
+import { FERRY_RELOAD_SECRET, STATIC_FILE_DIR } from '../config.js';
 import winston from '../logging/winston.js';
 
 export const verifyHeaders = (
@@ -14,7 +14,7 @@ export const verifyHeaders = (
   const authd = req.header('x-ferry-secret');
 
   // Should only be reachable if request made by Ferry
-  if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
+  if (authd !== FERRY_RELOAD_SECRET) {
     res.status(401).json({ error: 'NOT_FERRY' });
     return;
   }
