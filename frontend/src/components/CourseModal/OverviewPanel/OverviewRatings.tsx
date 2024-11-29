@@ -112,17 +112,20 @@ function RatingNumbers({
   ));
 }
 
-function CourseBubble({
-  listing,
-  course,
-  filter,
-  className,
-  ...props
-}: React.ComponentProps<typeof Col> & {
-  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
-  readonly course: RelatedCourseInfoFragment;
-  readonly filter: Filter;
-}) {
+function CourseBubbleBase(
+  {
+    listing,
+    course,
+    filter,
+    className,
+    ...props
+  }: React.ComponentProps<typeof Col> & {
+    readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+    readonly course: RelatedCourseInfoFragment;
+    readonly filter: Filter;
+  },
+  ref: React.Ref<HTMLDivElement>,
+) {
   const extraText =
     filter === 'professor'
       ? `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`
@@ -133,6 +136,7 @@ function CourseBubble({
           : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
   return (
     <Col
+      ref={ref}
       xs={5}
       className={clsx(
         className,
@@ -146,6 +150,9 @@ function CourseBubble({
     </Col>
   );
 }
+
+// @ts-expect-error: TODO
+const CourseBubble = React.forwardRef(CourseBubbleBase);
 
 function CourseLink({
   listing,
