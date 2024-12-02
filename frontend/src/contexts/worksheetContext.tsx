@@ -176,14 +176,15 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  // This will be dependent on backend data if we allow renaming
   const worksheetOptions = useMemo<Option<number>[]>(
-    () =>
-      [0, 1, 2, 3].map((x) => ({
-        label: x === 0 ? 'Main Worksheet' : `Worksheet ${x}`,
-        value: x,
-      })),
-    [],
+    () => {
+      if (!worksheets || !worksheets.get(viewedSeason)) return [];
+      return Array.from(worksheets.get(viewedSeason)!).map(([wsNumber, wsInfo]) => ({
+        label: wsInfo.name,
+        value: wsNumber,
+      }))
+    },
+    [worksheets],
   );
 
   const changeWorksheetView = useCallback(
