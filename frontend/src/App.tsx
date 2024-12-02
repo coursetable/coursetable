@@ -52,17 +52,14 @@ function AuthenticatedRoutes() {
 
   const location = useLocation();
 
-  if (authStatus === 'loading') return <Spinner />;
+  if (authStatus === 'loading') return <Spinner message="Authenticating..." />;
+  if (authStatus === 'initializing')
+    return <Spinner message="Fetching user info..." />;
 
   switch (location.pathname) {
     case '/catalog':
-      return <Outlet />;
-
     case '/worksheet':
-      if (authStatus === 'authenticated') return <Outlet />;
-      return (
-        <NeedsLogin redirect={location.pathname} message="your worksheet" />
-      );
+      return <Outlet />;
 
     case '/login':
       if (authStatus === 'authenticated')
@@ -70,7 +67,7 @@ function AuthenticatedRoutes() {
       return <Outlet />;
 
     case '/graphiql':
-      if (user.hasEvals) return <Outlet />;
+      if (user?.hasEvals) return <Outlet />;
       return (
         <NeedsLogin
           redirect={location.pathname}
@@ -114,14 +111,18 @@ function App() {
         // Don't remove this wrapper.
         id={13}
       >
-        Happy birthday to our GOAT co-lead Sida Chen!!{' '}
+        We want to hear from you. How can we make CourseTable better?{' '}
         <a
-          href="https://mail.google.com/mail/?view=cm&fs=1&to=sida.chen@yale.edu"
+          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
           target="_blank"
           rel="noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          }}
         >
-          Send him a nice email today.{' '}
+          Fill out this quick survey!
         </a>
       </Notice>
       <Navbar />
@@ -130,9 +131,12 @@ function App() {
           <Route path="/" element={<Navigate to="/catalog" replace />} />
 
           {/* Authenticated routes */}
+          {/* Catalog and worksheet can be viewed by anyone; we put them under
+          authenticated routes because we want loading auth to show a loading
+          screen */}
+          <Route path="/catalog" element={<Search />} />
           <Route path="/worksheet" element={<Worksheet />} />
           <Route path="/graphiql" element={<Graphiql />} />
-          <Route path="/catalog" element={<Search />} />
           <Route path="/login" element={<Landing />} />
         </Route>
 

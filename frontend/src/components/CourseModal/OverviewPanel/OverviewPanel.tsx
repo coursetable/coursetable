@@ -21,9 +21,9 @@ function OverviewPanel({
 
   const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
     variables: {
-      seasonCode: prefetched.season_code,
+      seasonCode: prefetched.course.season_code,
       crn: prefetched.crn,
-      hasEvals: Boolean(user.hasEvals),
+      hasEvals: Boolean(user?.hasEvals),
       sameCourseId: prefetched.course.same_course_id,
       professorIds: prefetched.course.course_professors.map(
         (p) => p.professor.professor_id,
@@ -32,7 +32,7 @@ function OverviewPanel({
   });
 
   // Wait until data is fetched
-  if (loading) return <Spinner />;
+  if (loading) return <Spinner message="Loading course details..." />;
 
   if (error) {
     return (

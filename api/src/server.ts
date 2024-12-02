@@ -7,7 +7,6 @@ import cors from 'cors';
 import session from 'express-session';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
-import { createClient } from 'redis';
 
 // Import this at the top before any user modules
 import './sentry-instrument.js';
@@ -19,11 +18,14 @@ import catalog from './catalog/catalog.routes.js';
 import { fetchCatalog } from './catalog/catalog.utils.js';
 import challenge from './challenge/challenge.routes.js';
 import {
-  SECURE_PORT,
-  INSECURE_PORT,
+  isDev,
+  API_PORT,
   SESSION_SECRET,
-  CORS_OPTIONS,
-  REDIS_HOST,
+  redisClient,
+  OVERWRITE_CATALOG,
+  HASURA_GRAPHQL_ADMIN_SECRET,
+  COURSETABLE_ORIGINS,
+  NUM_SEASONS,
 } from './config.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
@@ -42,7 +44,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable Cross-Origin Resource Sharing
 // (i.e. let the frontend call the API when it's on a different domain)
-app.use(cors(CORS_OPTIONS));
+app.use(
+  cors({
+    origin: COURSETABLE_ORIGINS,
+    credentials: true,
+    optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+  }),
+);
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
@@ -56,11 +64,6 @@ app.use((req, _, next) => {
 // Setup session management.
 
 // Initialize Redis client.
-const redisClient = createClient({
-  socket: {
-    host: REDIS_HOST,
-  },
-});
 // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
 redisClient.connect().catch(winston.error);
 
@@ -112,8 +115,7 @@ app.use(
     // Important: all headers must be lowercase; otherwise it will not override
     // existing headers on the request.
     req.headers['x-hasura-role'] = hasuraRole;
-    req.headers['x-hasura-admin-secret'] =
-      process.env.HASURA_GRAPHQL_ADMIN_SECRET!;
+    req.headers['x-hasura-admin-secret'] = HASURA_GRAPHQL_ADMIN_SECRET;
     next();
   },
   createProxyMiddleware({
@@ -161,32 +163,31 @@ app.use(
   },
 );
 
-// Generate the static catalog on start.
-winston.info('Updating static catalog');
-const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
-
-void fetchCatalog(overwriteCatalog)
-  .then(() => {
-    winston.info('Finished updating static catalog');
-    // Once catalogs have been created, start listening.
-    app.listen(INSECURE_PORT, () => {
-      winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
+if (isDev) {
+  // Serve dev with custom SSL.
+  https
+    .createServer(
+      {
+        key: fs.readFileSync('./src/keys/server.key'),
+        cert: fs.readFileSync('./src/keys/server.cert'),
+      },
+      app,
+    )
+    .listen(API_PORT, () => {
+      winston.info(`Secure dev proxy listening on port ${API_PORT}`);
     });
-
-    // Serve dev with SSL.
-    https
-      .createServer(
-        {
-          key: fs.readFileSync('./src/keys/server.key'),
-          cert: fs.readFileSync('./src/keys/server.cert'),
-        },
-        app,
-      )
-      .listen(SECURE_PORT, () => {
-        winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
-      });
-  })
-  .catch((err: unknown) => {
-    winston.error('Error updating static catalog');
-    winston.error(err);
+} else {
+  // In prod: just listen on the port. We use traefik to reverse proxy and
+  // provide SSL.
+  app.listen(API_PORT, () => {
+    winston.info(`Insecure API listening on port ${API_PORT}`);
   });
+}
+
+// Generate the static catalog on start. We do this *after* starting listening
+winston.info('Updating static catalog');
+
+void fetchCatalog(OVERWRITE_CATALOG, NUM_SEASONS).catch((err: unknown) => {
+  winston.error('Error updating static catalog');
+  winston.error(err);
+});

@@ -10,6 +10,30 @@ CourseTable uses the following Docker containers for core functionality, so they
 
 In `coursetable/api`, we only manage the `express` container. We do provide development versions of the `db`, `pgadmin`, `graphql-engine`, and `redis` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra`](https://github.com/coursetable/infra/).
 
+## A quick explainer on docker-compose
+
+`docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
+
+We have three environments: development, staging, and production. Each environment has its own docker compose file:
+
+- Dev: `docker-compose.yml` + `dev-compose.yml`
+- Staging: `docker-compose.yml` + `prod-base-compose.yml` + `staging-compose.yml`
+- Prod: `docker-compose.yml` + `prod-base-compose.yml` + `prod-compose.yml`
+
+Running `start.sh` with the right arguments will use the right compose files. For example, `./start.sh -d` will use the dev compose files, while `./start.sh -p` will use the prod compose files.
+
+Some useful commands:
+
+- `docker-compose up` starts all the services
+- `docker-compose up -d` starts everything in the background
+- `docker-compose ps` tells you what services are running
+- `docker-compose stop` stops everything
+- `docker-compose down` stops and removes everything
+- `docker-compose restart` restarts everything
+- `docker-compose logs -f` gets and "follows" (via `-f`) the logs from all the services. It's totally safe to control-C on this command - it won't stop anything
+- `docker-compose logs -f <service>` gets the logs for a specific service. For example, `docker-compose logs -f api` gets the logs for the backend API.
+- `docker-compose build` builds all the services. This probably won't be necessary for our development environment, since we're building everything on the fly
+
 ## Working with the database
 
 You can directly interface with our database via pgadmin. In development, you can visit `http://localhost:8081`. All credentials can be found on Doppler, by checking out the "dev" environment. You will first need to log into the dashboard, the credentials for which are the `PGADMIN_EMAIL` and `PGADMIN_PASSWORD` environment variables. Then, when you are inside, you can expand the "Servers" dropdown in the left sidebar—which should ask you for the password to connect to the DB, which is the `DB_ROOT_PASSWORD` environment variable. In prod, the steps are the same, and the dashboard is at https://pgadmin.coursetable.com/ (only admins have access to the credentials).
@@ -48,7 +72,7 @@ Here's the data flow for course data:
 5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. This data is only overwritten in dev by running `start.sh` with the `--overwrite` (`-o`) flag, or in prod by Ferry requesting the `/api/catalog/refresh` endpoint. The idea of this step is to aggressively cache the GQL responses so every frontend request doesn't have to hit the GQL API. It also powers the client-side course search.
 6. The frontend requests the Express endpoint, which serves these JSON files. The frontend also requests the GraphQL API directly for more complex queries.
 
-The Hasura Engine dashboard is available at `http://localhost:8085`. In production, it is at `http://ocean.coursetable.com:8085/`. To access the dashboard, you need to log in with the `HASURA_GRAPHQL_ADMIN_SECRET` environment variable. You can find this secret in Doppler.
+The Hasura Engine dashboard is available at `http://localhost:8085`. In production, it is at `https://gql.coursetable.com/`. To access the dashboard, you need to log in with the `HASURA_GRAPHQL_ADMIN_SECRET` environment variable. You can find this secret in Doppler.
 
 If you want to make changes to the courses DB schema, you would need to start by modifying Ferry, which is the only actor that can write into the DB. Then, once Ferry has done one recrawl, the DB will contain the data you want (you can go to pgadmin to make sure). Then, you can do the following to cascade this change:
 

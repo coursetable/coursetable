@@ -1,5 +1,7 @@
 services:
   api:
+    volumes:
+      - /home/app/coursetable-catalog/staging/:/usr/src/app/api/static
     labels:
       traefik.http.routers.coursetable-staging.rule: Host(`api-staging.coursetable.com`)
       traefik.http.routers.coursetable-staging.tls: true

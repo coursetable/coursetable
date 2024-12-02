@@ -1,13 +1,13 @@
-import FileSaver from 'file-saver';
+import saveFile from 'file-saver';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import ICSIcon from '../../images/ics.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
 
 export default function ICSExportButton() {
-  const { curSeason, courses } = useWorksheet();
+  const { viewedSeason, courses } = useWorksheet();
 
   const exportICS = () => {
-    const events = getCalendarEvents('ics', courses, curSeason);
+    const events = getCalendarEvents('ics', courses, viewedSeason);
     // Error already reported
     if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR
@@ -34,7 +34,7 @@ ${events.join('\n')}
 END:VCALENDAR`;
     // Download to user's computer
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, `${curSeason}_worksheet.ics`, { autoBom: false });
+    saveFile(blob, `${viewedSeason}_worksheet.ics`);
   };
 
   return (

@@ -32,11 +32,11 @@ function CourseConflictIcon({
   readonly modal: boolean;
   readonly worksheetNumber: number;
 }) {
-  const user = useStore((state) => state.user);
+  const worksheets = useStore((state) => state.worksheets);
 
   const { data } = useWorksheetInfo(
-    user.worksheets,
-    listing.season_code,
+    worksheets,
+    listing.course.season_code,
     worksheetNumber,
   );
 
@@ -44,7 +44,7 @@ function CourseConflictIcon({
     // If the course is in the worksheet, we never report a conflict
     if (inWorksheet) return undefined;
     if (modal) {
-      if (!CUR_YEAR.includes(listing.season_code))
+      if (!CUR_YEAR.includes(listing.course.season_code))
         return 'This will add to a worksheet of a semester that has already ended.';
       return undefined;
     }
@@ -85,40 +85,32 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  const { user, userRefresh } = useStore(
+  const { worksheets, worksheetsRefresh } = useStore(
     useShallow((state) => ({
-      user: state.user,
-      userRefresh: state.userRefresh,
+      worksheets: state.worksheets,
+      worksheetsRefresh: state.worksheetsRefresh,
     })),
   );
 
-  const { worksheetNumber, worksheetOptions } = useWorksheet();
+  const { viewedWorksheetNumber, worksheetOptions } = useWorksheet();
 
   // In the modal, the select can override the "currently viewed" worksheet
   // Please read https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-  const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
-  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(worksheetNumber);
-  if (prevWorksheetCtx !== worksheetNumber) {
-    setSelectedWorksheet(worksheetNumber);
-    setPrevWorksheetCtx(worksheetNumber);
+  const [selectedWorksheet, setSelectedWorksheet] = useState(
+    viewedWorksheetNumber,
+  );
+  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
+    viewedWorksheetNumber,
+  );
+  if (prevWorksheetCtx !== viewedWorksheetNumber) {
+    setSelectedWorksheet(viewedWorksheetNumber);
+    setPrevWorksheetCtx(viewedWorksheetNumber);
   }
 
   const inWorksheet = useMemo(
     () =>
-      inWorksheetProp ??
-      isInWorksheet(
-        listing.season_code,
-        listing.crn,
-        selectedWorksheet,
-        user.worksheets,
-      ),
-    [
-      inWorksheetProp,
-      listing.season_code,
-      listing.crn,
-      selectedWorksheet,
-      user.worksheets,
-    ],
+      inWorksheetProp ?? isInWorksheet(listing, selectedWorksheet, worksheets),
+    [inWorksheetProp, listing, selectedWorksheet, worksheets],
   );
 
   const isLgDesktop = useStore((state) => state.isLgDesktop);
@@ -130,32 +122,32 @@ function WorksheetToggleButton({
 
       const success = await updateWorksheetCourses({
         action: inWorksheet ? 'remove' : 'add',
-        season: listing.season_code,
+        season: listing.course.season_code,
         crn: listing.crn,
         worksheetNumber: selectedWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
         hidden: false,
       });
-      if (success) await userRefresh();
+      if (success) await worksheetsRefresh();
     },
     [
       inWorksheet,
       listing.crn,
-      listing.season_code,
+      listing.course.season_code,
       selectedWorksheet,
-      userRefresh,
+      worksheetsRefresh,
     ],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
-  const buttonLabel = user.worksheets
+  const buttonLabel = worksheets
     ? `${inWorksheet ? 'Remove from' : 'Add to'} my ${worksheetOptions[selectedWorksheet]!.label}`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in
-  if (!user.worksheets) {
+  if (!worksheets) {
     return (
       <div className={styles.container}>
         <OverlayTrigger

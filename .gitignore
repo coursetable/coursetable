@@ -10,10 +10,8 @@ api/static/**/*.xml
 
 api/postgres/data/*
 api/redis/data/*
-api/postgres/init/a.sql
+api/postgres/init/*ferry-dump.sql
 
 frontend/build
-
-sysadmin/install-scripts
 
 !**/.keep
