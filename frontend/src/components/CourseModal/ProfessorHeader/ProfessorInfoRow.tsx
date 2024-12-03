@@ -139,7 +139,7 @@ export default function ProfessorModalHeaderInfo({
     variables: {
       courseCode,
       seasonCode: season,
-      hasEvals: Boolean(user.hasEvals),
+      hasEvals: Boolean(user?.hasEvals),
     },
   });
   const sections =
