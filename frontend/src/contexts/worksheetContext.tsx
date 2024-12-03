@@ -58,7 +58,7 @@ type Store = {
 
   // These are used to select the worksheet
   seasonCodes: Season[];
-  worksheetOptions: Option<number>[];
+  worksheetOptions: Record<number, Option<number>>;
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
@@ -176,15 +176,23 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  const worksheetOptions = useMemo<Option<number>[]>(
+  const worksheetOptions = useMemo<Record<number, Option<number>>>(
     () => {
-      if (!worksheets || !worksheets.get(viewedSeason)) return [];
-      return Array.from(worksheets.get(viewedSeason)!).map(([wsNumber, wsInfo]) => ({
-        label: wsInfo.name,
-        value: wsNumber,
-      }))
+      if (!worksheets || !worksheets.get(viewedSeason)) return {};
+
+      const entries = Array.from(worksheets.get(viewedSeason)!).map(
+        ([wsNumber, wsInfo]) => [
+          wsNumber,
+          {
+            label: wsInfo.name,
+            value: wsNumber,
+          },
+        ]
+      );
+
+      return Object.fromEntries(entries);
     },
-    [worksheets],
+    [worksheets, viewedSeason]
   );
 
   const changeWorksheetView = useCallback(

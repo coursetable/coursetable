@@ -32,3 +32,10 @@
   background-color: transparent !important;
   cursor: default;
 }
+
+.deleteWorksheetIcon {
+  position: absolute;
+  right: 30px;
+  margin-top: 4px;
+  cursor: pointer;
+}

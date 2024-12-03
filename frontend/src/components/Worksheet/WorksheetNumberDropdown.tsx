@@ -11,6 +11,8 @@ import { useShallow } from 'zustand/react/shallow';
 import clsx from 'clsx';
 import { Input } from '../Typography';
 import { Season } from '../../queries/graphql-types';
+import { MdDelete } from 'react-icons/md';
+import { updateWorksheetMetadata } from '../../queries/api';
 
 type WorksheetOption = Option<number | 'add'>;
 
@@ -77,8 +79,10 @@ function CustomInput(props: CustomInputProps) {
 }
 
 type CustomOptionProps = OptionProps<WorksheetOption, false> & {
-  addWorksheet: (season: Season, name: string) => Promise<void>;
+  addWorksheet: (name: string) => Promise<boolean>;
+  deleteWorksheet: (worksheetNumber: number) => Promise<boolean>;
   worksheetsRefresh: () => Promise<void>;
+  viewedWorksheetNumber: number;
   changeViewedWorksheetNumber: (number: number) => void;
   viewedSeason: Season;
 };
@@ -87,9 +91,10 @@ function CustomOption(props: CustomOptionProps) {
   const {
     data,
     addWorksheet,
+    deleteWorksheet,
     worksheetsRefresh,
+    viewedWorksheetNumber,
     changeViewedWorksheetNumber,
-    viewedSeason,
     innerProps,
   } = props;
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
@@ -100,9 +105,29 @@ function CustomOption(props: CustomOptionProps) {
         {...props}
         innerProps={{
           ...innerProps,
-          onClick: () => changeViewedWorksheetNumber(data.value as number),
+          onClick: (e) => {
+            e.stopPropagation();
+            changeViewedWorksheetNumber(data.value as number);
+          },
         }}
-      />
+      >
+        <div className={styles.optionContent}>
+          <span>{data.label}</span>
+          {data.value !== 0 &&
+            <MdDelete
+              className={styles.deleteWorksheetIcon}
+              onClick={async (e) => {
+                e.stopPropagation();
+                await deleteWorksheet(data.value as number);
+                if (viewedWorksheetNumber == data.value as number) {
+                  changeViewedWorksheetNumber(0);
+                }
+                await worksheetsRefresh();
+              }}
+            />
+          }
+        </div>
+      </components.Option>
     );
   } else {
     if (isAddingWorksheet) {
@@ -111,7 +136,7 @@ function CustomOption(props: CustomOptionProps) {
           isModifying={isAddingWorksheet}
           enterAction={async (newWsName: string) => {
             setIsAddingWorksheet(false);
-            await addWorksheet(viewedSeason, newWsName.trim() || 'New Worksheet');
+            await addWorksheet(newWsName.trim() || 'New Worksheet');
             await worksheetsRefresh();
           }}
           onCancel={() => setIsAddingWorksheet(false)}
@@ -136,10 +161,9 @@ function CustomOption(props: CustomOptionProps) {
 }
 
 function WorksheetNumDropdownDesktop() {
-  const { worksheetsRefresh, addWorksheet } = useStore(
+  const { worksheetsRefresh } = useStore(
     useShallow((state) => ({
       worksheetsRefresh: state.worksheetsRefresh,
-      addWorksheet: state.addWorksheet,
     })),
   );
 
@@ -151,10 +175,13 @@ function WorksheetNumDropdownDesktop() {
   } = useWorksheet();
 
   const modifiedWorksheetOptions: WorksheetOption[] = useMemo(
-    () => [
-      ...worksheetOptions,
-      { value: 'add', label: '+' },
-    ],
+    () => {
+      console.log(worksheetOptions);
+      return [
+        ...Object.values(worksheetOptions),
+        { value: 'add', label: '+' },
+      ]
+    },
     [worksheetOptions],
   );
 
@@ -178,8 +205,10 @@ function WorksheetNumDropdownDesktop() {
           Option: (props) => (
             <CustomOption
               {...props}
-              addWorksheet={addWorksheet}
+              addWorksheet={async (name: string) => await updateWorksheetMetadata({ action: "add", season: viewedSeason, name })}
+              deleteWorksheet={async (worksheetNumber: number) => updateWorksheetMetadata({ action: "delete", season: viewedSeason, worksheetNumber })}
               worksheetsRefresh={worksheetsRefresh}
+              viewedWorksheetNumber={viewedWorksheetNumber}
               changeViewedWorksheetNumber={changeViewedWorksheetNumber}
               viewedSeason={viewedSeason}
             />
@@ -206,7 +235,7 @@ function WorksheetNumDropdownMobile() {
         if (v) changeViewedWorksheetNumber(Number(v));
       }}
     >
-      {worksheetOptions.map(({ value, label }) => (
+      {Object.values(worksheetOptions).map(({ value, label }) => (
         <Dropdown.Item
           key={value}
           eventKey={value}

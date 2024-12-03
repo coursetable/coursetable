@@ -202,16 +202,14 @@ function WorksheetToggleButton({
       {modal && (
         <Popout
           buttonText="Worksheet"
-          selectedOptions={worksheetOptions.find(
-            (x) => x.value === selectedWorksheet,
-          )}
+          selectedOptions={worksheetOptions[selectedWorksheet]}
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
         >
           <PopoutSelect<Option<number>, false>
-            value={worksheetOptions.find((x) => x.value === selectedWorksheet)}
-            options={worksheetOptions}
+            value={worksheetOptions[selectedWorksheet]}
+            options={Object.values(worksheetOptions)}
             onChange={(option) => setSelectedWorksheet(option!.value)}
             showControl={false}
             minWidth={200}

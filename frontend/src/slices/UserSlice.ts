@@ -12,7 +12,6 @@ import {
   type UserWorksheets,
   type FriendRecord,
   type FriendRequests,
-  updateWorksheetMetadata,
 } from '../queries/api';
 import type { NetId, Season } from '../queries/graphql-types';
 import type { Store } from '../store';
@@ -32,9 +31,6 @@ interface UserActions {
   addFriend: (friendNetId: NetId) => Promise<void>;
   removeFriend: (friendNetId: NetId, isRequest: boolean) => Promise<void>;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
-  addWorksheet: (season: Season, name: string) => Promise<void>;
-  deleteWorksheet: (season: Season, worksheetNumber: number) => Promise<void>;
-  renameWorksheet: (season: Season, worksheetNumber: number, newWsName: string) => Promise<void>;
 }
 
 export interface UserSlice extends UserState, UserActions {}
@@ -92,34 +88,4 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
       toast.info(`Sent friend request: ${friendNetId}`);
     }
   },
-  async addWorksheet(season: Season, name: string) {
-    const { user } = get();
-    if (!user) {
-      toast.error('You are not logged in!');
-    } else if (await updateWorksheetMetadata({season, action: "add", name})) {
-      toast.info('Successfully added a new worksheet!');
-    }
-  },
-  async deleteWorksheet(season: Season, worksheetNumber: number) {
-    const { user } = get();
-    if (!user) {
-      toast.error('You are not logged in!');
-    } else if (worksheetNumber === 0) {
-      // Shouldn't happen, but doesn't hurt to be careful
-      toast.error('You cannot delete your Main Worksheet!');
-    } else if (await updateWorksheetMetadata({season, action: "delete", worksheetNumber})) {
-      toast.info('Successfully deleted the worksheet!');
-    }
-  },
-  async renameWorksheet(season: Season, worksheetNumber: number, newWsName: string) {
-    const { user } = get();
-    if (!user) {
-      toast.error('You are not logged in!');
-    } else if (worksheetNumber === 0) {
-      // Shouldn't happen, but doesn't hurt to be careful
-      toast.error('You cannot rename your Main Worksheet!');
-    } else if (await updateWorksheetMetadata({season, action: "rename", worksheetNumber, name: newWsName})) {
-      toast.info('Successfully renamed the worksheet!');
-    }
-  }
 });
