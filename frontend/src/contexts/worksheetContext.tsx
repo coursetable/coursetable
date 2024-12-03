@@ -176,24 +176,21 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  const worksheetOptions = useMemo<Record<number, Option<number>>>(
-    () => {
-      if (!worksheets || !worksheets.get(viewedSeason)) return {};
+  const worksheetOptions = useMemo<Record<number, Option<number>>>(() => {
+    if (!worksheets || !worksheets.get(viewedSeason)) return {};
 
-      const entries = Array.from(worksheets.get(viewedSeason)!).map(
-        ([wsNumber, wsInfo]) => [
-          wsNumber,
-          {
-            label: wsInfo.name,
-            value: wsNumber,
-          },
-        ]
-      );
+    const entries = Array.from(worksheets.get(viewedSeason)!).map(
+      ([wsNumber, wsInfo]) => [
+        wsNumber,
+        {
+          label: wsInfo.name,
+          value: wsNumber,
+        },
+      ],
+    );
 
-      return Object.fromEntries(entries);
-    },
-    [worksheets, viewedSeason]
-  );
+    return Object.fromEntries(entries);
+  }, [worksheets, viewedSeason]);
 
   const changeWorksheetView = useCallback(
     (view: WorksheetView) => {

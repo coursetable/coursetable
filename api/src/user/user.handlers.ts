@@ -325,9 +325,10 @@ export const updateWorksheetMetadata = async (
       ),
     });
 
-    if(worksheet) {
-      await db.delete(worksheetCourses).where(eq(worksheetCourses.worksheetId, worksheet.id));
-    }
+    if (worksheet)
+      await db
+        .delete(worksheetCourses)
+        .where(eq(worksheetCourses.worksheetId, worksheet.id));
 
     winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     const deletedWorksheets = await db

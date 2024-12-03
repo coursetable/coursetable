@@ -13,6 +13,7 @@ import { Input } from '../Typography';
 import { Season } from '../../queries/graphql-types';
 import { MdDelete } from 'react-icons/md';
 import { updateWorksheetMetadata } from '../../queries/api';
+import { FaPencilAlt } from 'react-icons/fa';
 
 type WorksheetOption = Option<number | 'add'>;
 
@@ -23,11 +24,7 @@ type CustomInputProps = {
 };
 
 function CustomInput(props: CustomInputProps) {
-  const {
-    isModifying,
-    enterAction,
-    onCancel,
-  } = props;
+  const { isModifying, enterAction, onCancel } = props;
 
   const [inputField, setInputField] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +78,7 @@ function CustomInput(props: CustomInputProps) {
 type CustomOptionProps = OptionProps<WorksheetOption, false> & {
   addWorksheet: (name: string) => Promise<boolean>;
   deleteWorksheet: (worksheetNumber: number) => Promise<boolean>;
+  renameWorksheet: (worksheetNumber: number, name: string) => Promise<boolean>;
   worksheetsRefresh: () => Promise<void>;
   viewedWorksheetNumber: number;
   changeViewedWorksheetNumber: (number: number) => void;
@@ -92,15 +90,30 @@ function CustomOption(props: CustomOptionProps) {
     data,
     addWorksheet,
     deleteWorksheet,
+    renameWorksheet,
     worksheetsRefresh,
     viewedWorksheetNumber,
     changeViewedWorksheetNumber,
     innerProps,
   } = props;
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
+  const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
 
   if (data.value !== 'add') {
-    return (
+    return isRenamingWorksheet ? (
+      <CustomInput
+        isModifying={isRenamingWorksheet}
+        enterAction={async (newWsName: string) => {
+          setIsRenamingWorksheet(false);
+          await renameWorksheet(
+            data.value as number,
+            newWsName.trim() || 'New Worksheet',
+          );
+          await worksheetsRefresh();
+        }}
+        onCancel={() => setIsAddingWorksheet(false)}
+      />
+    ) : (
       <components.Option
         {...props}
         innerProps={{
@@ -113,19 +126,28 @@ function CustomOption(props: CustomOptionProps) {
       >
         <div className={styles.optionContent}>
           <span>{data.label}</span>
-          {data.value !== 0 &&
-            <MdDelete
-              className={styles.deleteWorksheetIcon}
-              onClick={async (e) => {
-                e.stopPropagation();
-                await deleteWorksheet(data.value as number);
-                if (viewedWorksheetNumber == data.value as number) {
-                  changeViewedWorksheetNumber(0);
-                }
-                await worksheetsRefresh();
-              }}
-            />
-          }
+          {data.value !== 0 && (
+            <>
+              <FaPencilAlt
+                className={styles.renameWorksheetIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsRenamingWorksheet(true);
+                }}
+              />
+              <MdDelete
+                className={styles.deleteWorksheetIcon}
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  await deleteWorksheet(data.value as number);
+                  if (viewedWorksheetNumber == (data.value as number)) {
+                    changeViewedWorksheetNumber(0);
+                  }
+                  await worksheetsRefresh();
+                }}
+              />
+            </>
+          )}
         </div>
       </components.Option>
     );
@@ -174,16 +196,10 @@ function WorksheetNumDropdownDesktop() {
     viewedSeason,
   } = useWorksheet();
 
-  const modifiedWorksheetOptions: WorksheetOption[] = useMemo(
-    () => {
-      console.log(worksheetOptions);
-      return [
-        ...Object.values(worksheetOptions),
-        { value: 'add', label: '+' },
-      ]
-    },
-    [worksheetOptions],
-  );
+  const modifiedWorksheetOptions: WorksheetOption[] = useMemo(() => {
+    console.log(worksheetOptions);
+    return [...Object.values(worksheetOptions), { value: 'add', label: '+' }];
+  }, [worksheetOptions]);
 
   return (
     <Popout
@@ -205,8 +221,28 @@ function WorksheetNumDropdownDesktop() {
           Option: (props) => (
             <CustomOption
               {...props}
-              addWorksheet={async (name: string) => await updateWorksheetMetadata({ action: "add", season: viewedSeason, name })}
-              deleteWorksheet={async (worksheetNumber: number) => updateWorksheetMetadata({ action: "delete", season: viewedSeason, worksheetNumber })}
+              addWorksheet={async (name: string) =>
+                await updateWorksheetMetadata({
+                  action: 'add',
+                  season: viewedSeason,
+                  name,
+                })
+              }
+              deleteWorksheet={async (worksheetNumber: number) =>
+                updateWorksheetMetadata({
+                  action: 'delete',
+                  season: viewedSeason,
+                  worksheetNumber,
+                })
+              }
+              renameWorksheet={async (worksheetNumber: number, name: string) =>
+                await updateWorksheetMetadata({
+                  action: 'rename',
+                  season: viewedSeason,
+                  worksheetNumber,
+                  name,
+                })
+              }
               worksheetsRefresh={worksheetsRefresh}
               viewedWorksheetNumber={viewedWorksheetNumber}
               changeViewedWorksheetNumber={changeViewedWorksheetNumber}
