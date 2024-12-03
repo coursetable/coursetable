@@ -4,7 +4,11 @@
 }
 
 .option {
-  opacity: 1;
+  display: flex;
+  justify-content: space-between; /* Ensures the text and icons are separated */
+  align-items: center;
+  padding-right: 50px; /* Adds padding to prevent text from overlapping with icons */
+  position: relative;
 }
 
 .optionAdd {

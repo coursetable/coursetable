@@ -32,8 +32,12 @@ function CustomInput(props: CustomInputProps) {
   const [cursorPos, setCursorPos] = useState(0);
 
   useEffect(() => {
-    if (isModifying && inputRef.current)
+    if (isModifying && inputRef.current) {
       inputRef.current.focus();
+      requestAnimationFrame(() => {
+        inputRef.current?.setSelectionRange(0, inputField.length);
+      });
+    }
   }, [isModifying]);
 
   useEffect(() => {
@@ -60,7 +64,6 @@ function CustomInput(props: CustomInputProps) {
               enterAction(inputField);
               setInputField('');
             } else if (e.key === 'Escape') {
-              setInputField('');
               onCancel();
             }
           }}
@@ -120,7 +123,7 @@ function CustomOption(props: CustomOptionProps) {
           );
           await worksheetsRefresh();
         }}
-        onCancel={() => setIsAddingWorksheet(false)}
+        onCancel={() => setIsRenamingWorksheet(false)}
       />
     ) : (
       <components.Option
