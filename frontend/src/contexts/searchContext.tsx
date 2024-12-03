@@ -239,7 +239,7 @@ const emptyFilters: Filters = {
   ...defaultFilters,
   selectSeasons: [],
   hideCancelled: false,
-  hideDiscussionSections: true,
+  hideDiscussionSections: false,
 };
 
 export type FilterHandle<K extends keyof Filters> = ReturnType<

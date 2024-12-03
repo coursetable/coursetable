@@ -16,8 +16,6 @@ import App from './App';
 import { isDev } from './config';
 import { TutorialProvider } from './contexts/tutorialContext';
 
-const release = isDev ? 'edge' : import.meta.env.VITE_SENTRY_RELEASE;
-
 Sentry.init({
   enabled: !isDev,
   dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
@@ -48,8 +46,6 @@ Sentry.init({
   ],
   environment: import.meta.env.MODE,
 
-  // See https://docs.sentry.io/platforms/javascript/configuration/releases/.
-  release,
   autoSessionTracking: true,
 
   tracesSampleRate: 0.08,

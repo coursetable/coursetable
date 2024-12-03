@@ -10,6 +10,30 @@ CourseTable uses the following Docker containers for core functionality, so they
 
 In `coursetable/api`, we only manage the `express` container. We do provide development versions of the `db`, `pgadmin`, `graphql-engine`, and `redis` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra`](https://github.com/coursetable/infra/).
 
+## A quick explainer on docker-compose
+
+`docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
+
+We have three environments: development, staging, and production. Each environment has its own docker compose file:
+
+- Dev: `docker-compose.yml` + `dev-compose.yml`
+- Staging: `docker-compose.yml` + `prod-base-compose.yml` + `staging-compose.yml`
+- Prod: `docker-compose.yml` + `prod-base-compose.yml` + `prod-compose.yml`
+
+Running `start.sh` with the right arguments will use the right compose files. For example, `./start.sh -d` will use the dev compose files, while `./start.sh -p` will use the prod compose files.
+
+Some useful commands:
+
+- `docker-compose up` starts all the services
+- `docker-compose up -d` starts everything in the background
+- `docker-compose ps` tells you what services are running
+- `docker-compose stop` stops everything
+- `docker-compose down` stops and removes everything
+- `docker-compose restart` restarts everything
+- `docker-compose logs -f` gets and "follows" (via `-f`) the logs from all the services. It's totally safe to control-C on this command - it won't stop anything
+- `docker-compose logs -f <service>` gets the logs for a specific service. For example, `docker-compose logs -f api` gets the logs for the backend API.
+- `docker-compose build` builds all the services. This probably won't be necessary for our development environment, since we're building everything on the fly
+
 ## Working with the database
 
 You can directly interface with our database via pgadmin. In development, you can visit `http://localhost:8081`. All credentials can be found on Doppler, by checking out the "dev" environment. You will first need to log into the dashboard, the credentials for which are the `PGADMIN_EMAIL` and `PGADMIN_PASSWORD` environment variables. Then, when you are inside, you can expand the "Servers" dropdown in the left sidebar—which should ask you for the password to connect to the DB, which is the `DB_ROOT_PASSWORD` environment variable. In prod, the steps are the same, and the dashboard is at https://pgadmin.coursetable.com/ (only admins have access to the credentials).

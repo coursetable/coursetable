@@ -1,4 +1,4 @@
-import FileSaver from 'file-saver';
+import saveFile from 'file-saver';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import ICSIcon from '../../images/ics.svg';
 import { getCalendarEvents } from '../../utilities/calendar';
@@ -34,7 +34,7 @@ ${events.join('\n')}
 END:VCALENDAR`;
     // Download to user's computer
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, `${viewedSeason}_worksheet.ics`, { autoBom: false });
+    saveFile(blob, `${viewedSeason}_worksheet.ics`);
   };
 
   return (

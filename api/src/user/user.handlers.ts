@@ -3,15 +3,12 @@ import chroma from 'chroma-js';
 import { and, count, eq } from 'drizzle-orm';
 import z from 'zod';
 
-import {
-  getNextAvailableWsNumber,
-  worksheetCoursesToWorksheets,
-} from './user.utils.js';
+import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
 
 import {
   studentBluebookSettings,
   worksheetCourses,
-  worksheetMetadata,
+  worksheets,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
@@ -65,48 +62,36 @@ async function updateWorksheetCourse(
   }: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
   netId: string,
 ): Promise<string | undefined> {
-  const [existing] = await db
-    .selectDistinctOn([
-      worksheetCourses.netId,
-      worksheetCourses.crn,
-      worksheetCourses.season,
-      worksheetCourses.worksheetNumber,
-    ])
-    .from(worksheetCourses)
-    .where(
-      and(
-        eq(worksheetCourses.netId, netId),
-        eq(worksheetCourses.crn, crn),
-        eq(worksheetCourses.season, season),
-        eq(worksheetCourses.worksheetNumber, worksheetNumber),
-      ),
-    );
-
-  if (worksheetNumber > 0) {
-    const [nameExists] = await db
-      .selectDistinctOn([
-        worksheetMetadata.netId,
-        worksheetMetadata.season,
-        worksheetMetadata.worksheetNumber,
-      ])
-      .from(worksheetMetadata)
-      .where(
-        and(
-          eq(worksheetMetadata.netId, netId),
-          eq(worksheetMetadata.season, season),
-          eq(worksheetMetadata.worksheetNumber, worksheetNumber),
-        ),
-      );
-    // To be removed once add/remove/rename worksheets is pushed.
-    if (!nameExists) {
-      await db.insert(worksheetMetadata).values({
+  let existingMeta = await db.query.worksheets.findFirst({
+    where: and(
+      eq(worksheets.netId, netId),
+      eq(worksheets.season, season),
+      eq(worksheets.worksheetNumber, worksheetNumber),
+    ),
+    columns: { id: true },
+  });
+  // To be removed once add/remove/rename worksheets is pushed.
+  if (!existingMeta) {
+    [existingMeta] = await db
+      .insert(worksheets)
+      .values({
         netId,
         season,
         worksheetNumber,
-        name: `Worksheet ${worksheetNumber}`,
-      });
-    }
+        name:
+          worksheetNumber === 0
+            ? 'Main Worksheet'
+            : `Worksheet ${worksheetNumber}`,
+      })
+      .returning({ id: worksheets.id });
   }
+  if (!existingMeta) throw new Error('Failed to create worksheet');
+  const existing = await db.query.worksheetCourses.findFirst({
+    where: and(
+      eq(worksheetCourses.worksheetId, existingMeta.id),
+      eq(worksheetCourses.crn, crn),
+    ),
+  });
 
   if (action === 'add') {
     winston.info(
@@ -114,10 +99,8 @@ async function updateWorksheetCourse(
     );
     if (existing) return 'ALREADY_BOOKMARKED';
     await db.insert(worksheetCourses).values({
-      netId,
+      worksheetId: existingMeta.id,
       crn,
-      season,
-      worksheetNumber,
       color,
       hidden,
     });
@@ -130,39 +113,19 @@ async function updateWorksheetCourse(
       .delete(worksheetCourses)
       .where(
         and(
-          eq(worksheetCourses.netId, netId),
+          eq(worksheetCourses.worksheetId, existingMeta.id),
           eq(worksheetCourses.crn, crn),
-          eq(worksheetCourses.season, season),
-          eq(worksheetCourses.worksheetNumber, worksheetNumber),
         ),
       );
 
-    // Cannot delete main worksheet
-    if (worksheetNumber > 0) {
-      const courseCountRes = await db
-        .select({ courseCount: count() })
-        .from(worksheetCourses)
-        .where(
-          and(
-            eq(worksheetCourses.netId, netId),
-            eq(worksheetCourses.season, season),
-            eq(worksheetCourses.worksheetNumber, worksheetNumber),
-          ),
-        );
+    const courseCountRes = await db
+      .select({ courseCount: count() })
+      .from(worksheetCourses)
+      .where(eq(worksheetCourses.worksheetId, existingMeta.id));
 
-      const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-      if (numCoursesInCurWorksheet === 0) {
-        await db
-          .delete(worksheetMetadata)
-          .where(
-            and(
-              eq(worksheetMetadata.netId, netId),
-              eq(worksheetMetadata.season, season),
-              eq(worksheetMetadata.worksheetNumber, worksheetNumber),
-            ),
-          );
-      }
-    }
+    const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
+    if (numCoursesInCurWorksheet === 0)
+      await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
   } else {
     // Update data of a bookmarked course
     winston.info(
@@ -177,10 +140,8 @@ async function updateWorksheetCourse(
       .set({ color, hidden })
       .where(
         and(
-          eq(worksheetCourses.netId, netId),
+          eq(worksheetCourses.worksheetId, existingMeta.id),
           eq(worksheetCourses.crn, crn),
-          eq(worksheetCourses.season, season),
-          eq(worksheetCourses.worksheetNumber, worksheetNumber),
         ),
       );
   }
@@ -228,26 +189,26 @@ export const getUserInfo = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  const [studentProfile] = await db
-    .select({
-      netId: studentBluebookSettings.netId,
-      firstName: studentBluebookSettings.firstName,
-      lastName: studentBluebookSettings.lastName,
-      email: studentBluebookSettings.email,
-      hasEvals: studentBluebookSettings.evaluationsEnabled,
-      year: studentBluebookSettings.year,
-      school: studentBluebookSettings.school,
-      major: studentBluebookSettings.major,
-    })
-    .from(studentBluebookSettings)
-    .where(eq(studentBluebookSettings.netId, netId));
+  const studentProfile = await db.query.studentBluebookSettings.findFirst({
+    where: eq(studentBluebookSettings.netId, netId),
+    columns: {
+      netId: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      evaluationsEnabled: true,
+      year: true,
+      school: true,
+      major: true,
+    },
+  });
 
   res.json({
     netId,
     firstName: studentProfile?.firstName ?? null,
     lastName: studentProfile?.lastName ?? null,
     email: studentProfile?.email ?? null,
-    hasEvals: studentProfile?.hasEvals ?? false,
+    hasEvals: studentProfile?.evaluationsEnabled ?? false,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
     major: studentProfile?.major ?? null,
@@ -262,32 +223,26 @@ export const getUserWorksheet = async (
 
   winston.info(`Getting worksheets for user ${netId}`);
 
-  const worksheets = await db
-    .select({
-      netId: worksheetCourses.netId,
-      season: worksheetCourses.season,
-      worksheetNumber: worksheetCourses.worksheetNumber,
-      crn: worksheetCourses.crn,
-      color: worksheetCourses.color,
-      hidden: worksheetCourses.hidden,
-    })
-    .from(worksheetCourses)
-    .where(eq(worksheetCourses.netId, netId));
+  const userWorksheets = await db.query.worksheets.findMany({
+    where: eq(worksheets.netId, netId),
+    columns: {
+      netId: true,
+      season: true,
+      worksheetNumber: true,
+      name: true,
+    },
+    with: {
+      courses: {
+        columns: {
+          crn: true,
+          color: true,
+          hidden: true,
+        },
+      },
+    },
+  });
 
-  const allWorksheetMetadata = await db
-    .select({
-      netId: worksheetMetadata.netId,
-      season: worksheetMetadata.season,
-      worksheetNumber: worksheetMetadata.worksheetNumber,
-      name: worksheetMetadata.name,
-    })
-    .from(worksheetMetadata)
-    .where(eq(worksheetMetadata.netId, netId));
-
-  const allWorksheets = worksheetCoursesToWorksheets(
-    worksheets,
-    allWorksheetMetadata,
-  );
+  const allWorksheets = worksheetListToMap(userWorksheets);
   res.json({
     data: allWorksheets[netId] ?? {},
   });
@@ -339,15 +294,10 @@ export const updateWorksheetMetadata = async (
 
     const { name } = bodyParseRes.data;
 
-    const worksheetNumbersRes = await db
-      .select({ worksheetNumber: worksheetMetadata.worksheetNumber })
-      .from(worksheetMetadata)
-      .where(
-        and(
-          eq(worksheetMetadata.netId, netId),
-          eq(worksheetMetadata.season, season),
-        ),
-      );
+    const worksheetNumbersRes = await db.query.worksheets.findMany({
+      where: and(eq(worksheets.netId, netId), eq(worksheets.season, season)),
+      columns: { worksheetNumber: true },
+    });
 
     const worksheetNumbers = worksheetNumbersRes.map(
       (row) => row.worksheetNumber,
@@ -355,7 +305,7 @@ export const updateWorksheetMetadata = async (
 
     const nextAvailableWsNumber = getNextAvailableWsNumber(worksheetNumbers);
 
-    await db.insert(worksheetMetadata).values({
+    await db.insert(worksheets).values({
       netId,
       season,
       worksheetNumber: nextAvailableWsNumber,
@@ -369,15 +319,15 @@ export const updateWorksheetMetadata = async (
 
     winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     const deletedWorksheets = await db
-      .delete(worksheetMetadata)
+      .delete(worksheets)
       .where(
         and(
-          eq(worksheetMetadata.netId, netId),
-          eq(worksheetMetadata.season, season),
-          eq(worksheetMetadata.worksheetNumber, worksheetNumber),
+          eq(worksheets.netId, netId),
+          eq(worksheets.season, season),
+          eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       )
-      .returning();
+      .returning({});
 
     if (deletedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
@@ -390,16 +340,16 @@ export const updateWorksheetMetadata = async (
       `Renaming worksheet ${worksheetNumber} for user ${netId} to "${name}"`,
     );
     const renamedWorksheets = await db
-      .update(worksheetMetadata)
+      .update(worksheets)
       .set({ name })
       .where(
         and(
-          eq(worksheetMetadata.netId, netId),
-          eq(worksheetMetadata.season, season),
-          eq(worksheetMetadata.worksheetNumber, worksheetNumber),
+          eq(worksheets.netId, netId),
+          eq(worksheets.season, season),
+          eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       )
-      .returning();
+      .returning({});
 
     if (renamedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
