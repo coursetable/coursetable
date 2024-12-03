@@ -143,7 +143,7 @@ function WorksheetToggleButton({
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
   const buttonLabel = worksheets
-    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet \"${worksheetOptions[selectedWorksheet]!.label}\"`
+    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${worksheetOptions[selectedWorksheet]!.label}"`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in

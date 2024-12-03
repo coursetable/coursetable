@@ -1,32 +1,147 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import styles from './WorksheetNumberDropdown.module.css';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { components } from 'react-select';
+import { components, OptionProps } from 'react-select';
 import { useStore } from '../../store';
 import { useShallow } from 'zustand/react/shallow';
 import clsx from 'clsx';
 import { Input } from '../Typography';
+import { Season } from '../../queries/graphql-types';
 
 type WorksheetOption = Option<number | 'add'>;
 
-function WorksheetNumDropdownDesktop() {
-  const { worksheetsRefresh, addWorksheet, deleteWorksheet, renameWorksheet } = useStore(
-    useShallow((state) => ({
-      worksheetsRefresh: state.worksheetsRefresh,
-      addWorksheet: state.addWorksheet,
-      deleteWorksheet: state.deleteWorksheet,
-      renameWorksheet: state.renameWorksheet,
-    })),
-  );
+type CustomInputProps = {
+  isModifying: boolean;
+  enterAction: (newWsName: string) => void;
+  onCancel: () => void;
+};
 
-  const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
+function CustomInput(props: CustomInputProps) {
+  const {
+    isModifying,
+    enterAction,
+    onCancel,
+  } = props;
+
   const [inputField, setInputField] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [cursorPos, setCursorPos] = useState(0);
+
+  useEffect(() => {
+    if (!inputRef.current) return;
+    inputRef.current.setSelectionRange(cursorPos, cursorPos);
+  }, [inputField]);
+
+  return (
+    <div className={styles.optionInputContainer}>
+      {isModifying && (
+        <Input
+          className={styles.optionInput}
+          type="text"
+          value={inputField}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const selectionStart = e.target.selectionStart;
+            if (selectionStart) setCursorPos(selectionStart);
+            setInputField(e.target.value);
+          }}
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            e.stopPropagation();
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              enterAction(inputField);
+              setInputField('');
+            } else if (e.key === 'Escape') {
+              setInputField('');
+              onCancel();
+            }
+          }}
+          onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => {
+            e.stopPropagation();
+          }}
+          onBlur={() => {
+            setInputField('');
+            onCancel();
+          }}
+          placeholder="Hit Enter to save"
+          ref={inputRef}
+          maxLength={64}
+          autoFocus
+        />
+      )}
+    </div>
+  );
+}
+
+type CustomOptionProps = OptionProps<WorksheetOption, false> & {
+  addWorksheet: (season: Season, name: string) => Promise<void>;
+  worksheetsRefresh: () => Promise<void>;
+  changeViewedWorksheetNumber: (number: number) => void;
+  viewedSeason: Season;
+};
+
+function CustomOption(props: CustomOptionProps) {
+  const {
+    data,
+    addWorksheet,
+    worksheetsRefresh,
+    changeViewedWorksheetNumber,
+    viewedSeason,
+    innerProps,
+  } = props;
+  const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
+
+  if (data.value !== 'add') {
+    return (
+      <components.Option
+        {...props}
+        innerProps={{
+          ...innerProps,
+          onClick: () => changeViewedWorksheetNumber(data.value as number),
+        }}
+      />
+    );
+  } else {
+    if (isAddingWorksheet) {
+      return (
+        <CustomInput
+          isModifying={isAddingWorksheet}
+          enterAction={async (newWsName: string) => {
+            setIsAddingWorksheet(false);
+            await addWorksheet(viewedSeason, newWsName.trim() || 'New Worksheet');
+            await worksheetsRefresh();
+          }}
+          onCancel={() => setIsAddingWorksheet(false)}
+        />
+      );
+    } else {
+      return (
+        <components.Option
+          {...props}
+          innerProps={{
+            ...innerProps,
+            onClick: (e) => {
+              e.stopPropagation();
+              setIsAddingWorksheet(true);
+            },
+          }}
+          className={clsx(styles.option, styles.optionAdd)}
+        />
+      );
+    }
+  }
+}
+
+function WorksheetNumDropdownDesktop() {
+  const { worksheetsRefresh, addWorksheet } = useStore(
+    useShallow((state) => ({
+      worksheetsRefresh: state.worksheetsRefresh,
+      addWorksheet: state.addWorksheet,
+    })),
+  );
 
   const {
     changeViewedWorksheetNumber,
@@ -35,65 +150,13 @@ function WorksheetNumDropdownDesktop() {
     viewedSeason,
   } = useWorksheet();
 
-  const modifiedWorksheetOptions: WorksheetOption[] = useMemo(() => [
-    ...worksheetOptions,
-    { value: 'add', label: '+' },
-  ], [worksheetOptions]);
-
-  useEffect(() => {
-    if (!inputRef.current) return;
-    inputRef.current.setSelectionRange(cursorPos, cursorPos);
-  }, [inputField]);
-
-  const CustomOption = (props: any) => {
-    const { data, innerProps } = props;
-
-    if (data.value === 'add' && isAddingWorksheet) {
-      return (
-        <div
-          {...innerProps}
-          className={clsx(props.className, styles.optionInputContainer)}
-        >
-          <Input
-            className={styles.optionInput}
-            type="text"
-            value={inputField}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const selectionStart = e.target.selectionStart;
-              if (selectionStart) setCursorPos(selectionStart);
-              setInputField(e.target.value);
-            }}
-            onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
-              e.stopPropagation();
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                await addWorksheet(viewedSeason, inputField.trim() || 'New Worksheet');
-                await worksheetsRefresh();
-                setIsAddingWorksheet(false);
-                setInputField('');
-              } else if (e.key === 'Escape') {
-                setIsAddingWorksheet(false);
-                setInputField('');
-              }
-            }}
-            onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => {
-              e.stopPropagation();
-            }}
-            onBlur={() => {
-              setIsAddingWorksheet(false);
-              setInputField('');
-            }}
-            placeholder="Hit Enter to save"
-            ref={inputRef}
-            maxLength={64}
-            autoFocus
-          />
-        </div>
-      );
-    } else {
-      return <components.Option {...props} />;
-    }
-  };
+  const modifiedWorksheetOptions: WorksheetOption[] = useMemo(
+    () => [
+      ...worksheetOptions,
+      { value: 'add', label: '+' },
+    ],
+    [worksheetOptions],
+  );
 
   return (
     <Popout
@@ -105,21 +168,22 @@ function WorksheetNumDropdownDesktop() {
       <PopoutSelect<WorksheetOption, false>
         value={worksheetOptions[viewedWorksheetNumber]}
         options={modifiedWorksheetOptions}
-        onChange={(selectedOption) => {
-          if (selectedOption!.value === 'add') {
-            setIsAddingWorksheet(true);
-          } else {
-            changeViewedWorksheetNumber(selectedOption!.value);
-          }
-        }}
         showControl={false}
         minWidth={200}
         classNames={{
           option: ({ data }) =>
-            clsx(styles.option, data.value === 'add' && styles.optionAdd)
+            clsx(styles.option, data.value === 'add' && styles.optionAdd),
         }}
         components={{
-          Option: CustomOption,
+          Option: (props) => (
+            <CustomOption
+              {...props}
+              addWorksheet={addWorksheet}
+              worksheetsRefresh={worksheetsRefresh}
+              changeViewedWorksheetNumber={changeViewedWorksheetNumber}
+              viewedSeason={viewedSeason}
+            />
+          ),
         }}
       />
     </Popout>
