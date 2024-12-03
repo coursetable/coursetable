@@ -172,61 +172,14 @@ export default function ProfessorModalHeaderInfo({
             ) : (
               ''
             )}
-            {professor?.name} {}
-            <TextComponent type="tertiary">
-              ({toSeasonString(listing.course.season_code)})
-            </TextComponent>
-            {/* <SectionsDropdown
-              listing={listing}
-              sections={sections}
-              onNavigation={onNavigation}
-            /> */}
+            {professor?.name}
           </div>
         </Modal.Title>
 
         <div className={styles.badges}>
           <p className={styles.courseCodes}>
-            <TextComponent type="tertiary">
-              {listing.course.listings.map((l, i) => (
-                <React.Fragment key={l.crn}>
-                  {i > 0 && ' • '}
-                  {l.crn === listing.crn ? (
-                    // Make current listing appear more important in case
-                    // of cross-listings; otherwise other links are
-                    // underlined and are more prominent than this one
-                    listing.course.listings.length > 1 ? (
-                      <b>{l.course_code}</b>
-                    ) : (
-                      l.course_code
-                    )
-                  ) : (
-                    <Link
-                      className={styles.crossListingLink}
-                      to={createCourseModalLink(
-                        { crn: l.crn, course: listing.course },
-                        searchParams,
-                      )}
-                      // We replace instead of pushing to history. I don't
-                      // think navigating between cross-listings should be
-                      // treated as an actual navigation
-                      onClick={() => {
-                        onNavigation(
-                          'replace',
-                          { ...listing, ...l },
-                          'overview',
-                        );
-                      }}
-                    >
-                      {l.course_code}
-                    </Link>
-                  )}
-                </React.Fragment>
-              ))}
-            </TextComponent>
+            <TextComponent type="tertiary">Professor</TextComponent>
           </p>
-          {[...listing.course.skills, ...listing.course.areas].map((skill) => (
-            <SkillBadge skill={skill} key={skill} />
-          ))}
         </div>
       </div>
     </div>
