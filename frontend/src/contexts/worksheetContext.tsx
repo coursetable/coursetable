@@ -58,7 +58,7 @@ type Store = {
 
   // These are used to select the worksheet
   seasonCodes: Season[];
-  worksheetOptions: Record<number, Option<number>>;
+  worksheetOptions: { [key: number]: Option<number> };
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
@@ -176,7 +176,7 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  const worksheetOptions = useMemo<Record<number, Option<number>>>(() => {
+  const worksheetOptions = useMemo<{ [key: number]: Option<number> }>(() => {
     if (!worksheets || !worksheets.get(viewedSeason)) return {};
 
     const entries = Array.from(worksheets.get(viewedSeason)!).map(

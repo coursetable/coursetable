@@ -13,7 +13,7 @@ import {
   type FriendRecord,
   type FriendRequests,
 } from '../queries/api';
-import type { NetId, Season } from '../queries/graphql-types';
+import type { NetId } from '../queries/graphql-types';
 import type { Store } from '../store';
 
 interface UserState {
