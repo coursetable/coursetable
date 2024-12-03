@@ -32,7 +32,7 @@ interface UserActions {
   addFriend: (friendNetId: NetId) => Promise<void>;
   removeFriend: (friendNetId: NetId, isRequest: boolean) => Promise<void>;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
-  addWorksheet: (season: Season) => Promise<void>;
+  addWorksheet: (season: Season, name: string) => Promise<void>;
   deleteWorksheet: (season: Season, worksheetNumber: number) => Promise<void>;
   renameWorksheet: (season: Season, worksheetNumber: number, newWsName: string) => Promise<void>;
 }
@@ -92,11 +92,11 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
       toast.info(`Sent friend request: ${friendNetId}`);
     }
   },
-  async addWorksheet(season: Season) {
+  async addWorksheet(season: Season, name: string) {
     const { user } = get();
     if (!user) {
       toast.error('You are not logged in!');
-    } else if (await updateWorksheetMetadata({season, action: "add"})) {
+    } else if (await updateWorksheetMetadata({season, action: "add", name})) {
       toast.info('Successfully added a new worksheet!');
     }
   },

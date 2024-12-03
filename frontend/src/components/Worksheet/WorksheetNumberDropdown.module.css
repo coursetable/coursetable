@@ -2,3 +2,33 @@
   border-top-right-radius: 8px !important;
   border-top-left-radius: 8px !important;
 }
+
+.option {
+  opacity: 1;
+}
+
+.optionAdd {
+  opacity: 0.5;
+  text-align: center;
+  vertical-align: middle;
+  border: solid grey 2px;
+  border-radius: 6px;
+}
+
+/* Add these styles to your WorksheetNumberDropdown.module.css file */
+
+.optionInputContainer {
+  padding: 8px;
+}
+
+.optionInput {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.optionAdding {
+  background-color: transparent !important;
+  cursor: default;
+}
