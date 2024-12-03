@@ -189,7 +189,7 @@ export function WorksheetProvider({
       ],
     );
 
-    return Object.fromEntries(entries);
+    return Object.fromEntries(entries) as { [key: number]: Option<number> };
   }, [worksheets, viewedSeason]);
 
   const changeWorksheetView = useCallback(

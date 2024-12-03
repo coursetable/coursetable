@@ -28,11 +28,6 @@
   box-sizing: border-box;
 }
 
-.optionAdding {
-  background-color: transparent !important;
-  cursor: default;
-}
-
 .renameWorksheetIcon {
   position: absolute;
   right: 30px;

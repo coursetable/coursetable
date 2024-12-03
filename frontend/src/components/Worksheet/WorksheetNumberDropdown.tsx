@@ -1,39 +1,45 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import clsx from 'clsx';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
+import { FaPencilAlt } from 'react-icons/fa';
+import { MdDelete } from 'react-icons/md';
+import { components, type OptionProps } from 'react-select';
+import { useShallow } from 'zustand/react/shallow';
 import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import { updateWorksheetMetadata } from '../../queries/api';
+import type { Season } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
-import styles from './WorksheetNumberDropdown.module.css';
-import { components, OptionProps } from 'react-select';
-import { useStore } from '../../store';
-import { useShallow } from 'zustand/react/shallow';
-import clsx from 'clsx';
 import { Input } from '../Typography';
-import { Season } from '../../queries/graphql-types';
-import { MdDelete } from 'react-icons/md';
-import { updateWorksheetMetadata } from '../../queries/api';
-import { FaPencilAlt } from 'react-icons/fa';
+import styles from './WorksheetNumberDropdown.module.css';
 
 type WorksheetOption = Option<number | 'add'>;
 
 type CustomInputProps = {
-  isModifying: boolean;
-  enterAction: (newWsName: string) => void;
-  onCancel: () => void;
+  readonly isModifying: boolean;
+  readonly startingInput?: string;
+  readonly enterAction: (newWsName: string) => void;
+  readonly onCancel: () => void;
 };
 
 function CustomInput(props: CustomInputProps) {
-  const { isModifying, enterAction, onCancel } = props;
+  const { isModifying, startingInput, enterAction, onCancel } = props;
 
-  const [inputField, setInputField] = useState('');
+  const [inputField, setInputField] = useState(startingInput ?? '');
   const inputRef = useRef<HTMLInputElement>(null);
   const [cursorPos, setCursorPos] = useState(0);
 
   useEffect(() => {
+    if (isModifying && inputRef.current)
+      inputRef.current.focus();
+  }, [isModifying]);
+
+  useEffect(() => {
     if (!inputRef.current) return;
     inputRef.current.setSelectionRange(cursorPos, cursorPos);
-  }, [inputField]);
+  }, [cursorPos]);
 
   return (
     <div className={styles.optionInputContainer}>
@@ -43,7 +49,7 @@ function CustomInput(props: CustomInputProps) {
           type="text"
           value={inputField}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const selectionStart = e.target.selectionStart;
+            const { selectionStart } = e.target;
             if (selectionStart) setCursorPos(selectionStart);
             setInputField(e.target.value);
           }}
@@ -68,7 +74,6 @@ function CustomInput(props: CustomInputProps) {
           placeholder="Hit Enter to save"
           ref={inputRef}
           maxLength={64}
-          autoFocus
         />
       )}
     </div>
@@ -76,13 +81,16 @@ function CustomInput(props: CustomInputProps) {
 }
 
 type CustomOptionProps = OptionProps<WorksheetOption, false> & {
-  addWorksheet: (name: string) => Promise<boolean>;
-  deleteWorksheet: (worksheetNumber: number) => Promise<boolean>;
-  renameWorksheet: (worksheetNumber: number, name: string) => Promise<boolean>;
-  worksheetsRefresh: () => Promise<void>;
-  viewedWorksheetNumber: number;
-  changeViewedWorksheetNumber: (number: number) => void;
-  viewedSeason: Season;
+  readonly addWorksheet: (name: string) => Promise<boolean>;
+  readonly deleteWorksheet: (worksheetNumber: number) => Promise<boolean>;
+  readonly renameWorksheet: (
+    worksheetNumber: number,
+    name: string,
+  ) => Promise<boolean>;
+  readonly worksheetsRefresh: () => Promise<void>;
+  readonly viewedWorksheetNumber: number;
+  readonly changeViewedWorksheetNumber: (number: number) => void;
+  readonly viewedSeason: Season;
 };
 
 function CustomOption(props: CustomOptionProps) {
@@ -103,6 +111,7 @@ function CustomOption(props: CustomOptionProps) {
     return isRenamingWorksheet ? (
       <CustomInput
         isModifying={isRenamingWorksheet}
+        startingInput={data.label}
         enterAction={async (newWsName: string) => {
           setIsRenamingWorksheet(false);
           await renameWorksheet(
@@ -118,13 +127,13 @@ function CustomOption(props: CustomOptionProps) {
         {...props}
         innerProps={{
           ...innerProps,
-          onClick: (e) => {
+          onClick(e) {
             e.stopPropagation();
             changeViewedWorksheetNumber(data.value as number);
           },
         }}
       >
-        <div className={styles.optionContent}>
+        <div>
           <span>{data.label}</span>
           {data.value !== 0 && (
             <>
@@ -140,9 +149,9 @@ function CustomOption(props: CustomOptionProps) {
                 onClick={async (e) => {
                   e.stopPropagation();
                   await deleteWorksheet(data.value as number);
-                  if (viewedWorksheetNumber == (data.value as number)) {
+                  if (viewedWorksheetNumber === (data.value as number))
                     changeViewedWorksheetNumber(0);
-                  }
+
                   await worksheetsRefresh();
                 }}
               />
@@ -151,35 +160,33 @@ function CustomOption(props: CustomOptionProps) {
         </div>
       </components.Option>
     );
-  } else {
-    if (isAddingWorksheet) {
-      return (
-        <CustomInput
-          isModifying={isAddingWorksheet}
-          enterAction={async (newWsName: string) => {
-            setIsAddingWorksheet(false);
-            await addWorksheet(newWsName.trim() || 'New Worksheet');
-            await worksheetsRefresh();
-          }}
-          onCancel={() => setIsAddingWorksheet(false)}
-        />
-      );
-    } else {
-      return (
-        <components.Option
-          {...props}
-          innerProps={{
-            ...innerProps,
-            onClick: (e) => {
-              e.stopPropagation();
-              setIsAddingWorksheet(true);
-            },
-          }}
-          className={clsx(styles.option, styles.optionAdd)}
-        />
-      );
-    }
   }
+  if (isAddingWorksheet) {
+    return (
+      <CustomInput
+        isModifying={isAddingWorksheet}
+        enterAction={async (newWsName: string) => {
+          setIsAddingWorksheet(false);
+          await addWorksheet(newWsName.trim() || 'New Worksheet');
+          await worksheetsRefresh();
+        }}
+        onCancel={() => setIsAddingWorksheet(false)}
+      />
+    );
+  }
+  return (
+    <components.Option
+      {...props}
+      innerProps={{
+        ...innerProps,
+        onClick(e) {
+          e.stopPropagation();
+          setIsAddingWorksheet(true);
+        },
+      }}
+      className={clsx(styles.option, styles.optionAdd)}
+    />
+  );
 }
 
 function WorksheetNumDropdownDesktop() {
@@ -229,7 +236,7 @@ function WorksheetNumDropdownDesktop() {
                 })
               }
               deleteWorksheet={async (worksheetNumber: number) =>
-                updateWorksheetMetadata({
+                await updateWorksheetMetadata({
                   action: 'delete',
                   season: viewedSeason,
                   worksheetNumber,
