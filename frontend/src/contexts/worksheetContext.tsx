@@ -8,6 +8,7 @@ import React, {
 import { decompressFromEncodedURIComponent } from 'lz-string';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
+import { useShallow } from 'zustand/react/shallow';
 import { seasons as allSeasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
 import { CUR_SEASON } from '../config';
@@ -75,8 +76,8 @@ function seasonsWithDataFirst(
 ) {
   if (!worksheets) return seasons;
   return [...seasons].sort((a, b) => {
-    const aHasData = a in worksheets;
-    const bHasData = b in worksheets;
+    const aHasData = worksheets.has(a);
+    const bHasData = worksheets.has(b);
     if (aHasData && !bHasData) return -1;
     if (!aHasData && bHasData) return 1;
     return Number(b) - Number(a);
@@ -111,11 +112,14 @@ function parseCoursesFromURL():
   }
   return {
     data: courses.data,
-    worksheets: {
-      [courses.data.season]: {
-        0: courses.data.courses,
-      },
-    },
+    worksheets: new Map([
+      [
+        courses.data.season,
+        new Map([
+          [0, { name: courses.data.name, courses: courses.data.courses }],
+        ]),
+      ],
+    ]),
   };
 }
 
@@ -124,11 +128,15 @@ export function WorksheetProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
-  const user = useStore((state) => state.user);
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
   const [exoticWorksheet, setExoticWorksheet] = useState(() =>
     parseCoursesFromURL(),
   );
-  console.log(exoticWorksheet);
 
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'viewedPerson',
@@ -140,16 +148,16 @@ export function WorksheetProvider({
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
 
   const curWorksheet: UserWorksheets = useMemo(() => {
-    const whenNotDefined: UserWorksheets = {};
-    if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
+    const whenNotDefined: UserWorksheets = new Map();
+    if (viewedPerson === 'me') return worksheets ?? whenNotDefined;
 
-    return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
-  }, [user.worksheets, user.friends, viewedPerson]);
+    return friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
+  }, [worksheets, friends, viewedPerson]);
 
   // Maybe seasons without data should be disabled/hidden
   const seasonCodes = useMemo(
-    () => seasonsWithDataFirst(allSeasons, user.worksheets),
-    [user.worksheets],
+    () => seasonsWithDataFirst(allSeasons, worksheets),
+    [worksheets],
   );
   const [viewedSeason, setViewedSeason] = useSessionStorageState(
     'viewedSeason',

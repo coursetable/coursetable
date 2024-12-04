@@ -42,7 +42,6 @@ fi
 
 if [[ $ENV == 'dev' ]]
 then
-    export HOT_RELOAD='true'
     export SENTRY_ENVIRONMENT=development
     doppler setup -p coursetable -c dev
     if [[ $OVERWRITE == true ]]
@@ -51,7 +50,7 @@ then
     fi
     if [[ $FERRY_SEED == true ]]
     then
-        doppler run --command 'curl "$FERRY_DUMP_URL" -o ./postgres/init/a.sql'
+        doppler run --command 'curl "$FERRY_DUMP_URL" -o ./postgres/init/02-ferry-dump.sql'
         export OVERWRITE_CATALOG='true'
         rm -rf postgres/data/
     fi

@@ -219,11 +219,11 @@ export async function updateWorksheetMetadata(
     | {
         action: 'rename';
         worksheetNumber: number;
-        worksheetName: string;
+        name: string;
       }
   ),
 ): Promise<boolean> {
-  return fetchAPI('/user/updateWorksheetMetadata', {
+  return await fetchAPI('/user/updateWorksheetMetadata', {
     body,
     breadcrumb: {
       category: 'worksheet',
@@ -428,37 +428,67 @@ export async function verifyChallenge(body: {
     : { status: 'rejected', data: res };
 }
 
-const userWorksheetsSchema = z.record(
-  z.record(
-    z.array(
+const userInfoSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  hasEvals: z.boolean(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+});
+
+export type UserInfo = z.infer<typeof userInfoSchema>;
+
+export async function getUserInfo() {
+  const res = await fetchAPI('/user/info', {
+    schema: userInfoSchema,
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching user info',
+    },
+  });
+  return res;
+}
+
+const userWorksheetsSchema = z
+  .record(
+    // Key: season
+    z.record(
+      // Key: worksheet number
       z.object({
-        crn: crnSchema,
-        color: z.string(),
-        hidden: z.boolean().nullable(),
+        name: z.string(),
+        courses: z.array(
+          z.object({
+            crn: crnSchema,
+            color: z.string(),
+            hidden: z.boolean().nullable(),
+          }),
+        ),
       }),
     ),
-  ),
-);
+  )
+  .transform((data) => {
+    type Worksheet = NonNullable<(typeof data)[Season]>[string];
+    // Transform the object record to a map
+    const res = new Map<Season, Map<number, Worksheet>>();
+    for (const season of Object.keys(data)) {
+      const seasonMap = new Map<number, Worksheet>();
+      for (const num of Object.keys(data[season]!))
+        seasonMap.set(Number(num), data[season]![num]!);
+      res.set(season as Season, seasonMap);
+    }
+    return res;
+  });
 
 // Change index type to be more specific. We don't use the key type of z.record
 // on purpose; see https://github.com/colinhacks/zod/pull/2287
-export type UserWorksheets = {
-  [season: Season]: {
-    [worksheetNumber: number]: NonNullable<
-      z.infer<typeof userWorksheetsSchema>[Season]
-    >[string];
-  };
-};
+export type UserWorksheets = z.infer<typeof userWorksheetsSchema>;
 
 export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
-      netId: netIdSchema,
-      // This cannot be null in the real application, because the site creates a
-      // user if one doesn't exist. This is purely for completeness.
-      evaluationsEnabled: z.union([z.boolean(), z.null()]),
-      year: z.union([z.number(), z.null()]),
-      school: z.union([z.string(), z.null()]),
       data: userWorksheetsSchema,
     }),
     breadcrumb: {
@@ -474,17 +504,16 @@ export async function fetchUserWorksheets() {
   // server. This is a one-time operation to migrate from our old client-side
   // logic to be server-side, to make it consistent between devices and friends.
   const actions = [];
-  for (const seasonKey in res.data) {
-    const season = seasonKey as Season;
-    for (const num in res.data[season]) {
-      for (const course of res.data[season][num]!) {
+  for (const [season, seasonWorksheets] of res.data) {
+    for (const [num, worksheet] of seasonWorksheets) {
+      for (const course of worksheet.courses) {
         if (course.hidden === null) {
           course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
           actions.push({
             action: 'update',
             season,
             crn: course.crn,
-            worksheetNumber: Number(num),
+            worksheetNumber: num,
             hidden: course.hidden,
           });
         }
@@ -507,34 +536,6 @@ export async function fetchUserWorksheets() {
     // first device that logged in, and assume that one is the primary device.
     hiddenCoursesStorage.remove();
   }
-  return res;
-}
-
-const worksheetSchema = z.object({
-  worksheetName: z.string(),
-});
-
-const worksheetsSchema = z.record(
-  z.string(), // Season
-  z.record(
-    z.string(), // WorksheetNumber keys
-    worksheetSchema,
-  ),
-);
-
-export async function fetchUserWorksheetMetadata() {
-  const res = await fetchAPI('/user/worksheetMetadata', {
-    breadcrumb: {
-      category: 'worksheet',
-      message: 'Fetching user worksheet names',
-    },
-    schema: z.object({
-      netId: netIdSchema,
-      worksheets: worksheetsSchema,
-      // { [season]: { [worksheetNumber]: { worksheetName } } }
-    }),
-  });
-  if (!res) return undefined;
   return res;
 }
 

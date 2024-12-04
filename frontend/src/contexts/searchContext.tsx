@@ -9,6 +9,7 @@ import React, {
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
+import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
@@ -149,6 +150,17 @@ export type NumericFilters =
   | 'enrollBounds'
   | 'numBounds';
 
+// All attributes that one class can have multiple of; these filters will show
+// a "union or intersection" button. Declaring it as a separate data structure
+// instead of colocating it with each categorical filter definition, because
+// this seems to make the categorical filter definitions more consistent.
+export type IntersectableFilters =
+  | 'selectSubjects'
+  | 'selectSkillsAreas'
+  | 'selectDays'
+  | 'selectSchools'
+  | 'selectCourseInfoAttributes';
+
 export type Filters = {
   [P in BooleanFilters]: boolean;
 } & {
@@ -159,6 +171,7 @@ export type Filters = {
   searchText: string;
   selectSortBy: Option<SortKeys>;
   sortOrder: SortOrderType;
+  intersectingFilters: IntersectableFilters[];
 };
 
 export type FilterList = { [K in keyof Filters]: FilterHandle<K> };
@@ -187,6 +200,7 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   hideDiscussionSections: 'Hide discussion sections',
   selectSortBy: 'Sort By', // Unused
   sortOrder: 'Sort Order', // Unused
+  intersectingFilters: 'Union or Intersection', // Unused
 };
 
 export const defaultFilters: Filters = {
@@ -213,6 +227,7 @@ export const defaultFilters: Filters = {
   hideDiscussionSections: true,
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
+  intersectingFilters: [],
 };
 
 // Empty vs. default:
@@ -225,7 +240,7 @@ const emptyFilters: Filters = {
   ...defaultFilters,
   selectSeasons: [],
   hideCancelled: false,
-  hideDiscussionSections: true,
+  hideDiscussionSections: false,
 };
 
 export type FilterHandle<K extends keyof Filters> = ReturnType<
@@ -294,6 +309,7 @@ const targetTypes = {
     'info-attributes',
     'subjects',
     'professor-names',
+    'building-codes',
     'listings.subjects',
     'listings.course-codes',
     'listings.schools',
@@ -308,6 +324,16 @@ const targetTypes = {
   ] as const),
   text: new Set(['title', 'description', 'location'] as const),
 };
+
+function applyIntersectableFilter<T extends string | number>(
+  filterValue: T[],
+  value: T[],
+  isIntersecting: boolean,
+) {
+  if (isIntersecting)
+    return filterValue.every((option) => value.includes(option));
+  return filterValue.some((option) => value.includes(option));
+}
 
 export function SearchProvider({
   children,
@@ -341,17 +367,24 @@ export function SearchProvider({
   const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
 
+  const intersectingFilters = useFilterState('intersectingFilters');
+
   const [startTime, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const user = useStore((state) => state.user);
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
 
   const numFriends = useMemo(() => {
-    if (!user.friends) return {};
-    return getNumFriends(user.friends);
-  }, [user.friends]);
+    if (!friends) return {};
+    return getNumFriends(friends);
+  }, [friends]);
 
   const processedSearchText = useMemo(
     () =>
@@ -389,7 +422,7 @@ export function SearchProvider({
   const { viewedWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
-    user.worksheets,
+    worksheets,
     processedSeasons,
     viewedWorksheetNumber,
   );
@@ -429,7 +462,7 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
+              !isInWorksheet(listing, viewedWorksheetNumber, worksheets) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
@@ -453,6 +486,10 @@ export function SearchProvider({
             return listing.course.course_professors.map(
               (p) => p.professor.name,
             );
+          case 'building-codes':
+            return listing.course.course_meetings
+              .map((m) => m.location?.building.code)
+              .filter((x) => x !== undefined);
           case 'course-code':
             return listing.course_code;
           case 'type':
@@ -482,12 +519,7 @@ export function SearchProvider({
             return listing.course[key];
         }
       }),
-    [
-      searchDescription.value,
-      worksheetInfo,
-      viewedWorksheetNumber,
-      user.worksheets,
-    ],
+    [searchDescription.value, worksheetInfo, viewedWorksheetNumber, worksheets],
   );
 
   const quistPredicate = useMemo(() => {
@@ -584,7 +616,7 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(listing, viewedWorksheetNumber, user.worksheets) &&
+          !isInWorksheet(listing, viewedWorksheetNumber, worksheets) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;
@@ -597,13 +629,25 @@ export function SearchProvider({
 
         if (hideGraduateCourses.value && isGraduate(listing)) return false;
 
-        if (
-          selectSubjects.value.length !== 0 &&
-          !selectSubjects.value.some(
-            (option) => option.value === listing.subject,
+        if (selectSubjects.value.length !== 0) {
+          // Never show a course that doesn't contain any of the selected
+          // subjects, even when it has a cross listing that does
+          // TODO: we don't need this once we group cross-listings
+          if (
+            !selectSubjects.value.some(
+              (option) => listing.subject === option.value,
+            )
           )
-        )
-          return false;
+            return false;
+          if (
+            !applyIntersectableFilter(
+              selectSubjects.value.map((option) => option.value),
+              listing.course.listings.map((l) => l.course_code.split(' ')[0]!),
+              intersectingFilters.value.includes('selectSubjects'),
+            )
+          )
+            return false;
+        }
 
         if (selectDays.value.length !== 0) {
           const days = listing.course.course_meetings.flatMap((session) =>
@@ -611,11 +655,12 @@ export function SearchProvider({
               (day) => session.days_of_week & (1 << day),
             ),
           );
-          const selectDayValues = selectDays.value.map((day) => day.value);
-          // Require the two sets to be equal
           if (
-            days.some((day) => !selectDayValues.includes(day)) ||
-            selectDayValues.some((day) => !days.includes(day))
+            !applyIntersectableFilter(
+              selectDays.value.map((option) => option.value),
+              days,
+              intersectingFilters.value.includes('selectDays'),
+            )
           )
             return false;
         }
@@ -626,8 +671,10 @@ export function SearchProvider({
             ...listing.course.skills,
           ];
           if (
-            !processedSkillsAreas.some((area) =>
-              listingSkillsAreas.includes(area),
+            !applyIntersectableFilter(
+              processedSkillsAreas,
+              listingSkillsAreas,
+              intersectingFilters.value.includes('selectSkillsAreas'),
             )
           )
             return false;
@@ -644,20 +691,33 @@ export function SearchProvider({
 
         if (
           selectCourseInfoAttributes.value.length !== 0 &&
-          !selectCourseInfoAttributes.value.some((option) =>
-            listing.course.course_flags.some(
-              (f) => f.flag.flag_text === option.value,
-            ),
+          !applyIntersectableFilter(
+            selectCourseInfoAttributes.value.map((option) => option.value),
+            listing.course.course_flags.map((f) => f.flag.flag_text),
+            intersectingFilters.value.includes('selectCourseInfoAttributes'),
           )
         )
           return false;
 
-        if (
-          selectSchools.value.length !== 0 &&
-          listing.school !== null &&
-          !selectSchools.value.some((option) => option.value === listing.school)
-        )
-          return false;
+        if (selectSchools.value.length !== 0) {
+          // Same as selectSubjects
+          if (
+            !selectSchools.value.some(
+              (option) => listing.school === option.value,
+            )
+          )
+            return false;
+          if (
+            !applyIntersectableFilter(
+              selectSchools.value.map((option) => option.value),
+              listing.course.listings
+                .map((l) => l.school)
+                .filter((x) => x !== null),
+              intersectingFilters.value.includes('selectSchools'),
+            )
+          )
+            return false;
+        }
 
         if (quistPredicate) return quistPredicate(listing);
         // Handle search text. Each token must match something.
@@ -718,7 +778,7 @@ export function SearchProvider({
       hideCancelled.value,
       hideConflicting.value,
       viewedWorksheetNumber,
-      user.worksheets,
+      worksheets,
       worksheetInfo,
       hideDiscussionSections.value,
       hideFirstYearSeminars.value,
@@ -731,6 +791,7 @@ export function SearchProvider({
       selectSchools.value,
       quistPredicate,
       searchDescription.value,
+      intersectingFilters.value,
     ],
   );
 
@@ -779,6 +840,7 @@ export function SearchProvider({
       hideDiscussionSections,
       selectSortBy,
       sortOrder,
+      intersectingFilters,
     }),
     [
       searchText,
@@ -804,6 +866,7 @@ export function SearchProvider({
       hideDiscussionSections,
       selectSortBy,
       sortOrder,
+      intersectingFilters,
     ],
   );
 

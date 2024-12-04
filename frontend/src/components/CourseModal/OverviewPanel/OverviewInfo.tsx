@@ -194,7 +194,7 @@ function Prereqs({
     variables: {
       courseCodes:
         segments?.filter((s) => s.type === 'course').map((s) => s.course) ?? [],
-      hasEvals: Boolean(user.hasEvals),
+      hasEvals: Boolean(user?.hasEvals),
     },
     skip: !segments,
   });

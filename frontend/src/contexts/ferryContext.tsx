@@ -124,10 +124,7 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const {
-    authStatus,
-    user: { hasEvals },
-  } = useStore(
+  const { authStatus, user } = useStore(
     useShallow((state) => ({
       authStatus: state.authStatus,
       user: state.user,
@@ -140,7 +137,7 @@ export function FerryProvider({
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;
         const includeEvals = Boolean(
-          authStatus === 'authenticated' && hasEvals,
+          authStatus === 'authenticated' && user?.hasEvals,
         );
         // As long as there is one request in progress, don't fire another
         if (
@@ -163,7 +160,7 @@ export function FerryProvider({
         setErrors((e) => [...e, err as {}]);
       });
     },
-    [authStatus, hasEvals],
+    [authStatus, user?.hasEvals],
   );
 
   // If there's any error, we want to immediately stop "loading" and start
@@ -208,8 +205,8 @@ export function useWorksheetInfo(
 ) {
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
-    if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
-    if (season in worksheets) return [season];
+    if (Array.isArray(season)) return season.filter((x) => worksheets.has(x));
+    if (worksheets.has(season)) return [season];
     return [];
   }, [season, worksheets]);
 
@@ -222,10 +219,10 @@ export function useWorksheetInfo(
 
     for (const seasonCode of requestedSeasons) {
       // Guaranteed to exist because of how requestedSeasons is constructed.
-      const seasonWorksheets = worksheets[seasonCode]!;
-      const worksheet = seasonWorksheets[worksheetNumber];
+      const seasonWorksheets = worksheets.get(seasonCode)!;
+      const worksheet = seasonWorksheets.get(worksheetNumber);
       if (!worksheet) continue;
-      for (const { crn, color, hidden } of worksheet) {
+      for (const { crn, color, hidden } of worksheet.courses) {
         const listing = courses[seasonCode]!.data.get(crn);
         if (listing) {
           dataReturn.push({

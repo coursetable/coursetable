@@ -52,16 +52,13 @@ function NavbarRight({
 
 export default function CourseTableNavbar() {
   const authStatus = useStore((state) => state.authStatus);
-  const hasEvals = useStore((state) => state.user.hasEvals);
+  const user = useStore((state) => state.user);
   const location = useLocation();
   const [navExpanded, setNavExpanded] = useState(false);
   const isMobile = useStore((state) => state.isMobile);
 
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
-  const showWorksheetSearch =
-    !isMobile &&
-    authStatus === 'authenticated' &&
-    location.pathname === '/worksheet';
+  const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
 
   return (
     <SurfaceComponent className={styles.container}>
@@ -108,7 +105,7 @@ export default function CourseTableNavbar() {
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
               </NavbarLink>
-              {hasEvals === false && (
+              {user?.hasEvals === false && (
                 <NavbarLink to="/challenge">
                   <span style={{ position: 'relative' }}>
                     <span className={styles.challengeIndicator} />

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type { GridChildComponentProps } from 'react-window';
+import { useShallow } from 'zustand/react/shallow';
 
 import type { ResultItemData } from './Results';
 import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
@@ -79,13 +80,14 @@ function ResultsGridItem({
 }: GridChildComponentProps<ResultItemData>) {
   const listing = listings[rowIndex * columnCount + columnIndex];
   const target = useCourseModalLink(listing);
-  const user = useStore((state) => state.user);
+  const { user, worksheets } = useStore(
+    useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
+  );
   const { viewedWorksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
-    () =>
-      listing && isInWorksheet(listing, viewedWorksheetNumber, user.worksheets),
-    [listing, viewedWorksheetNumber, user.worksheets],
+    () => listing && isInWorksheet(listing, viewedWorksheetNumber, worksheets),
+    [listing, viewedWorksheetNumber, worksheets],
   );
 
   if (!listing) return null;
@@ -118,7 +120,7 @@ function ResultsGridItem({
           <strong className={styles.oneLine}>{listing.course.title}</strong>
         </div>
         <div className="d-flex justify-content-between">
-          <div>
+          <div className={styles.courseInfo}>
             <TextComponent
               type="secondary"
               className={clsx(styles.oneLine, styles.professors)}
@@ -155,7 +157,7 @@ function ResultsGridItem({
                 <Rating
                   key={name}
                   listing={listing}
-                  hasEvals={user.hasEvals}
+                  hasEvals={user?.hasEvals}
                   name={name}
                 />
               ))}

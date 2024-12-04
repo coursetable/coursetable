@@ -56,7 +56,7 @@ function Results({
   if (loading || !data) {
     resultsListing = (
       <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>
-        <Spinner />
+        <Spinner message="Loading course catalog..." />
       </Row>
     );
   } else if (data.length === 0) {

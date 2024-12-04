@@ -137,6 +137,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: Number(process.env.PORT) || 3000,
+    // Only used in dev
+    port: Number(new URL(process.env.FRONTEND_ENDPOINT!).port || 3000),
   },
 });

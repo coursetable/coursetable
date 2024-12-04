@@ -26,7 +26,7 @@ import styles from './WorksheetCalendarList.module.css';
 function WorksheetCalendarList() {
   const { courses, viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
     useWorksheet();
-  const userRefresh = useStore((state) => state.userRefresh);
+  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const areHidden = useMemo(
     () => courses.length > 0 && courses.every((course) => course.hidden),
@@ -58,7 +58,7 @@ function WorksheetCalendarList() {
                       crn: courses.map((course) => course.listing.crn),
                       hidden: !areHidden,
                     });
-                    await userRefresh();
+                    await worksheetsRefresh();
                   }}
                   variant="none"
                   className={clsx(styles.button, 'px-3 w-100')}
