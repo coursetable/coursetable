@@ -79,7 +79,7 @@ function OverviewPanel({
   return (
     <>
       {professorView ? (
-        <div className="p-4">
+        <div style={{ padding: 4 }}>
           <OverviewRatings
             onNavigation={onNavigation}
             listing={listing}

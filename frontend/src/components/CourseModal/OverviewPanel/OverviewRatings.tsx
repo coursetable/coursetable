@@ -57,32 +57,46 @@ const optionsIndx = {
 function RatingNumbers({
   course,
   hasEvals,
+  professorView,
 }: {
   readonly course: RelatedCourseInfoFragment;
   readonly hasEvals: boolean | undefined;
+  professorView: boolean;
 }) {
   // For random seeds
   const ratingIdentifier = `${course.course_id}${course.season_code}rating`;
   const workloadIdentifier = `${course.course_id}${course.season_code}workload`;
   const professorIdentifier = `${course.course_id}${course.season_code}professor`;
 
-  const ratingBubbles = [
+  // Define the rating bubbles
+  let ratingBubbles = [
     {
-      colorMap: ratingColormap,
-      rating: course.evaluation_statistic?.avg_rating,
-      identifier: ratingIdentifier,
-    },
-    {
+      label: 'Prof',
       colorMap: ratingColormap,
       rating: course.average_professor_rating,
       identifier: professorIdentifier,
     },
     {
+      label: 'Class',
+      colorMap: ratingColormap,
+      rating: course.evaluation_statistic?.avg_rating,
+      identifier: ratingIdentifier,
+    },
+    {
+      label: 'Work',
       colorMap: workloadColormap,
       rating: course.evaluation_statistic?.avg_workload,
       identifier: workloadIdentifier,
     },
   ];
+
+  // If professorView is true, filter to include only the "Prof" rating
+  if (professorView) {
+    ratingBubbles = ratingBubbles.filter((bubble) => bubble.label === 'Prof');
+  } else {
+    ratingBubbles = ratingBubbles.filter((bubble) => bubble.label !== 'Prof');
+  }
+
   if (hasEvals) {
     return ratingBubbles.map(({ colorMap, rating }, i) => (
       <Col
@@ -100,6 +114,7 @@ function RatingNumbers({
       </Col>
     ));
   }
+
   return ratingBubbles.map(({ identifier }, i) => (
     <OverlayTrigger
       key={i}
@@ -544,102 +559,139 @@ function OverviewRatings({
   return (
     <>
       {overlapSections[filter].length !== 0 ? (
-        <>
-          {professorView ? (
-            <>
-              {/*fsr tailwind styles were not working here! Please fix if you can*/}
-              <div
+        <div style={{ display: professorView ? 'flex' : 'inline' }}>
+          {/*fsr tailwind styles were not working here! Please fix if you can*/}
+          <div style={{ maxWidth: '90%' }}>
+            {professorView && (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <TextComponent type="primary" style={{ fontWeight: 650 }}>
+                    <span
+                      className="px-2 py-1 rounded font-semibold text-white"
+                      style={{
+                        backgroundColor: '#468FF2',
+                        fontSize: '0.75rem',
+                        marginRight: '8px',
+                      }}
+                    >
+                      Beta
+                    </span>
+                    Average professor rating
+                  </TextComponent>
+                  <TextComponent type="secondary">
+                    The following is an overview of how {professorView?.name}'s
+                    rating by students has changed over time.
+                  </TextComponent>
+                </div>
+                <CustomChart data={chartData} />
+                <TextComponent type="tertiary" style={{ fontSize: 12 }}>
+                  This feature is new and in active testing. We will be adding
+                  more content to the professor modal soon!
+                </TextComponent>
+              </>
+            )}
+          </div>
+          <div
+            className=""
+            style={{ width: professorView ? '50%' : 'inherit' }}
+          >
+            <Row className="m-auto pb-1" style={{ justifyContent: 'right' }}>
+              <Col
+                xs={5}
+                className="d-flex justify-content-center px-0 me-3"
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  marginBottom: '16px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '4px',
                 }}
               >
-                <TextComponent type="primary" style={{ fontWeight: 650 }}>
-                  <span
-                    className="px-2 py-1 rounded font-semibold text-white"
-                    style={{
-                      backgroundColor: '#468FF2',
-                      fontSize: '0.75rem',
-                      marginRight: '8px',
-                    }}
+                {filter !== 'professor' && (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="right"
+                    rootClose
+                    overlay={(props) => (
+                      <Popover id="filter-popover" {...props}>
+                        <Popover.Body>
+                          Past course offerings are discovered using
+                          CourseTable's own algorithm. If you see something
+                          unexpected or missing, please{' '}
+                          <Link to="https://feedback.coursetable.com">
+                            let us know
+                          </Link>
+                          .
+                        </Popover.Body>
+                      </Popover>
+                    )}
                   >
-                    Beta
-                  </span>
-                  Average professor rating
-                </TextComponent>
-                <TextComponent type="secondary">
-                  The following is an overview of how {professorView.name}'s
-                  rating by students has changed over time.
-                </TextComponent>
-              </div>
-              <CustomChart data={chartData} />
-              <TextComponent type="tertiary" style={{ fontSize: 12 }}>
-                This feature is new and in active testing. We will be adding
-                more content to the professor modal soon!
-              </TextComponent>
-            </>
-          ) : (
-            <div className="position-relative">
-              {filter !== 'professor' && (
-                <OverlayTrigger
-                  trigger="click"
-                  placement="right"
-                  rootClose
-                  overlay={(props) => (
-                    <Popover id="filter-popover" {...props}>
-                      <Popover.Body>
-                        Past course offerings are discovered using CourseTable's
-                        own algorithm. If you see something unexpected or
-                        missing, please{' '}
-                        <Link to="https://feedback.coursetable.com">
-                          let us know
-                        </Link>
-                        .
-                      </Popover.Body>
-                    </Popover>
-                  )}
-                >
-                  <button
-                    type="button"
-                    style={{ color: 'var(--color-primary)' }}
-                    className="position-absolute top-0 start-0"
+                    <button
+                      type="button"
+                      style={{
+                        color: 'var(--color-primary)',
+                        marginBottom: 2,
+                      }}
+                    >
+                      <MdInfoOutline size={20} />
+                    </button>
+                  </OverlayTrigger>
+                )}
+                <span className={styles.evaluationHeader}>Season</span>
+              </Col>
+              {professorView ? (
+                <>
+                  <Col
+                    xs={2}
+                    className="d-flex ms-0 justify-content-center px-0"
                   >
-                    <MdInfoOutline size={20} />
-                  </button>
-                </OverlayTrigger>
+                    <span className={styles.evaluationHeader}>Prof</span>
+                  </Col>
+                </>
+              ) : (
+                <>
+                  {' '}
+                  <Col
+                    xs={2}
+                    className="d-flex ms-0 justify-content-center px-0"
+                  >
+                    <span className={styles.evaluationHeader}>Class</span>
+                  </Col>
+                  <Col
+                    xs={2}
+                    className="d-flex ms-0 justify-content-center px-0"
+                  >
+                    <span className={styles.evaluationHeader}>Work</span>
+                  </Col>
+                </>
               )}
-              <Row className="m-auto pb-1 justify-content-center">
-                <Col xs={5} className="d-flex justify-content-center px-0 me-3">
-                  <span className={styles.evaluationHeader}>Season</span>
-                </Col>
-                <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-                  <span className={styles.evaluationHeader}>Class</span>
-                </Col>
-                <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-                  <span className={styles.evaluationHeader}>Prof</span>
-                </Col>
-                <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
-                  <span className={styles.evaluationHeader}>Work</span>
-                </Col>
+            </Row>
+            {overlapSections[filter].map((course) => (
+              <Row
+                key={course.course_id}
+                className="m-auto py-1"
+                style={{ justifyContent: 'right' }}
+              >
+                <CourseLink
+                  listing={listing}
+                  course={course}
+                  filter={filter}
+                  onNavigation={onNavigation}
+                />
+                <RatingNumbers
+                  course={course}
+                  hasEvals={user?.hasEvals}
+                  professorView={professorView != null}
+                />
               </Row>
-              {overlapSections[filter].map((course) => (
-                <Row
-                  key={course.course_id}
-                  className="m-auto py-1 justify-content-center"
-                >
-                  <CourseLink
-                    listing={listing}
-                    course={course}
-                    filter={filter}
-                    onNavigation={onNavigation}
-                  />
-                  <RatingNumbers course={course} hasEvals={user?.hasEvals} />
-                </Row>
-              ))}
-            </div>
-          )}
-        </>
+            ))}
+          </div>
+        </div>
       ) : (
         <div className="m-auto text-center">
           <strong>No Results</strong>
