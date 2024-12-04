@@ -317,6 +317,21 @@ export const updateWorksheetMetadata = async (
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
 
+    winston.info(`Deleting worksheet courses from worksheet ${worksheetNumber} for user ${netId}`);
+    const worksheet = await db.query.worksheets.findFirst({
+      where: and(
+        eq(worksheets.netId, netId),
+        eq(worksheets.season, season),
+        eq(worksheets.worksheetNumber, worksheetNumber),
+      ),
+    });
+
+    if (worksheet) {
+      await db
+        .delete(worksheetCourses)
+        .where(eq(worksheetCourses.worksheetId, worksheet.id));
+    }
+
     winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     const deletedWorksheets = await db
       .delete(worksheets)
@@ -327,7 +342,7 @@ export const updateWorksheetMetadata = async (
           eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       )
-      .returning({});
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
 
     if (deletedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
@@ -349,7 +364,7 @@ export const updateWorksheetMetadata = async (
           eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       )
-      .returning({});
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
 
     if (renamedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
