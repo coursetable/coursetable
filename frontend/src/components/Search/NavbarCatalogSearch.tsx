@@ -266,6 +266,15 @@ export function NavbarCatalogSearch() {
         <div className={styles.row}>
           {!isTablet && (
             <>
+              {/* Random Course Button */}
+              <Button
+                className={styles.randomButton}
+                variant="secondary"
+                onClick={fetchRandomCourse}
+                disabled={!searchData || searchData.length === 0}
+              >
+                Random Course
+              </Button>
               <IntersectableSelect
                 options={subjectsOptions}
                 handle="selectSubjects"
@@ -325,16 +334,6 @@ export function NavbarCatalogSearch() {
             disabled={Object.values(filters).every((x) => x.isDefault)}
           >
             Reset
-          </Button>
-
-          {/* Random Course Button */}
-          <Button
-            className={styles.randomButton}
-            variant="primary"
-            onClick={fetchRandomCourse}
-            disabled={!searchData || searchData.length === 0}
-          >
-            Random Course
           </Button>
         </div>
       </Form>
