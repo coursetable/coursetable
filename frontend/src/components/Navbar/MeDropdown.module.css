@@ -23,30 +23,53 @@
 }
 
 .navbarMe {
-  /* padding-left: 1rem; */
-  height: 40px;
-  display: flex;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
-.meIcon {
+.meIcon,
+.anonIcon {
   width: 30px;
   height: 30px;
   border-radius: 15px;
   display: flex;
-  background-color: var(--color-bg-button);
-  color: var(--color-text-secondary);
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
 }
 
-[data-theme='dark'] .meIcon {
-  background-color: #525252;
+.meIcon {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  align-items: center;
+  justify-content: center;
+}
+
+.meIcon span {
+  font-weight: bold;
+  transform: scaleX(0.8);
 }
 
 .meIcon:hover {
+  color: var(--color-text-light);
+}
+
+.anonIcon {
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+}
+
+.anonIcon:hover {
   color: var(--color-primary);
+}
+
+[data-theme='dark'] .anonIcon {
+  background-color: #525252;
+}
+
+[data-theme='dark'] .meIcon {
+  color: var(--color-text-dark);
 }
 
 .linkIcon {
