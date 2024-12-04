@@ -9,6 +9,11 @@ import {
   Tooltip,
   Popover,
 } from 'react-bootstrap';
+import { MdInfoOutline } from 'react-icons/md';
+
+// @popperjs/core is provided by react-bootstrap
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { detectOverflow } from '@popperjs/core';
 import MultiToggle from 'react-multi-toggle';
 
 import type {
@@ -107,6 +112,48 @@ function RatingNumbers({
   ));
 }
 
+function CourseBubbleBase(
+  {
+    listing,
+    course,
+    filter,
+    className,
+    ...props
+  }: React.ComponentProps<typeof Col> & {
+    readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+    readonly course: RelatedCourseInfoFragment;
+    readonly filter: Filter;
+  },
+  ref: React.Ref<HTMLDivElement>,
+) {
+  const extraText =
+    filter === 'professor'
+      ? `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`
+      : filter === 'both'
+        ? `Section ${course.section}`
+        : course.course_professors.length === 0
+          ? 'TBA'
+          : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
+  return (
+    <Col
+      ref={ref}
+      xs={5}
+      className={clsx(
+        className,
+        styles.ratingBubble,
+        'position-relative p-0 me-3 text-center',
+      )}
+      {...props}
+    >
+      <strong>{toSeasonString(course.season_code)}</strong>
+      <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+    </Col>
+  );
+}
+
+// @ts-expect-error: TODO
+const CourseBubble = React.forwardRef(CourseBubbleBase);
+
 function CourseLink({
   listing,
   course,
@@ -130,35 +177,25 @@ function CourseLink({
     section: course.section,
     course,
   }));
-  const extraText =
-    filter === 'professor'
-      ? `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`
-      : filter === 'both'
-        ? `Section ${course.section}`
-        : course.course_professors.length === 0
-          ? 'TBA'
-          : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
   if (course.listings.some((l) => l.crn === listing.crn)) {
     // If the course has evals, then we should still switch the view to evals
     // to make the UX more consistent
     if (course.evaluation_statistic) {
       return (
-        <Col
+        <CourseBubble
           as={Button}
-          xs={5}
-          className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+          listing={listing}
+          course={course}
+          filter={filter}
           onClick={() => {
             onNavigation('change-view', undefined, 'evals');
           }}
-        >
-          <strong>{toSeasonString(course.season_code)}</strong>
-          <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-        </Col>
+        />
       );
     }
     return (
       <OverlayTrigger
-        trigger="hover"
+        trigger={['hover', 'focus']}
         placement="right"
         overlay={(props) => (
           <Popover id="self-popover" {...props}>
@@ -166,13 +203,12 @@ function CourseLink({
           </Popover>
         )}
       >
-        <Col
-          xs={5}
-          className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-        >
-          <strong>{toSeasonString(course.season_code)}</strong>
-          <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-        </Col>
+        <CourseBubble
+          listing={listing}
+          course={course}
+          filter={filter}
+          tabIndex={0}
+        />
       </OverlayTrigger>
     );
   }
@@ -185,18 +221,16 @@ function CourseLink({
     (targetListings.length === 1 ? targetListings[0] : undefined);
   if (targetListingDefinite) {
     return (
-      <Col
+      <CourseBubble
         as={Link}
-        xs={5}
-        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
         to={createCourseModalLink(targetListingDefinite, searchParams)}
+        listing={listing}
+        course={course}
+        filter={filter}
         onClick={() => {
           onNavigation('push', targetListingDefinite, 'evals');
         }}
-      >
-        <strong>{toSeasonString(course.season_code)}</strong>
-        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-      </Col>
+      />
     );
   }
   return (
@@ -204,14 +238,35 @@ function CourseLink({
       rootClose
       trigger="click"
       placement="right"
+      popperConfig={{
+        modifiers: [
+          {
+            name: 'resizeIfOverflow',
+            enabled: true,
+            phase: 'write',
+            requiresIfExists: ['offset'],
+            fn({ state }) {
+              const { right } = detectOverflow(state);
+              if (right < 0) return; // No overflow
+              const currentWidth = parseInt(
+                getComputedStyle(state.elements.popper).width,
+                10,
+              );
+              const newWidth = currentWidth - right;
+              state.styles.popper!.width = `${newWidth}px`;
+            },
+          },
+        ],
+      }}
       overlay={(props) => (
         <Popover id="cross-listing-popover" {...props}>
           <Popover.Body>
-            This class has multiple cross-listings:
+            This class has multiple cross-listings. Please choose from one of
+            the codes to see more details.
             {targetListings.map((l, i) => (
               <Link
                 key={i}
-                className="d-block"
+                className={styles.courseLink}
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
                   onNavigation('push', l, 'evals');
@@ -224,14 +279,12 @@ function CourseLink({
         </Popover>
       )}
     >
-      <Col
+      <CourseBubble
         as={Button}
-        xs={5}
-        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-      >
-        <strong>{toSeasonString(course.season_code)}</strong>
-        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-      </Col>
+        listing={listing}
+        course={course}
+        filter={filter}
+      />
     </OverlayTrigger>
   );
 }
@@ -330,7 +383,35 @@ function OverviewRatings({
         />
       </div>
       {overlapSections[filter].length !== 0 ? (
-        <>
+        <div className="position-relative">
+          {filter !== 'professor' && (
+            <OverlayTrigger
+              trigger="click"
+              placement="right"
+              rootClose
+              overlay={(props) => (
+                <Popover id="filter-popover" {...props}>
+                  <Popover.Body>
+                    Past course offerings are discovered using CourseTable's own
+                    algorithm. If you see something unexpected or missing,
+                    please{' '}
+                    <Link to="https://feedback.coursetable.com">
+                      let us know
+                    </Link>
+                    .
+                  </Popover.Body>
+                </Popover>
+              )}
+            >
+              <button
+                type="button"
+                style={{ color: 'var(--color-primary)' }}
+                className="position-absolute top-0 start-0"
+              >
+                <MdInfoOutline size={20} />
+              </button>
+            </OverlayTrigger>
+          )}
           <Row className="m-auto pb-1 justify-content-center">
             <Col xs={5} className="d-flex justify-content-center px-0 me-3">
               <span className={styles.evaluationHeader}>Season</span>
@@ -359,7 +440,7 @@ function OverviewRatings({
               <RatingNumbers course={course} hasEvals={user?.hasEvals} />
             </Row>
           ))}
-        </>
+        </div>
       ) : (
         <div className="m-auto text-center">
           <strong>No Results</strong>

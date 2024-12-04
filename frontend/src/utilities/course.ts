@@ -25,13 +25,11 @@ export function isInWorksheet(
   worksheetNumber: number,
   worksheets: UserWorksheets | undefined,
 ): boolean {
-  if (!worksheets) return false;
   return (
-    listing.course.season_code in worksheets &&
-    worksheetNumber in worksheets[listing.course.season_code]! &&
-    worksheets[listing.course.season_code]![worksheetNumber]!.courses.some(
-      (course) => course.crn === listing.crn,
-    )
+    worksheets
+      ?.get(listing.course.season_code)
+      ?.get(worksheetNumber)
+      ?.courses.some((course) => course.crn === listing.crn) ?? false
   );
 }
 
@@ -147,14 +145,15 @@ export type NumFriendsReturn = {
 export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   const numFriends: NumFriendsReturn = {};
   for (const [netId, friend] of Object.entries(friends)) {
-    Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
-      Object.values(worksheets).forEach((w) =>
-        w.courses.forEach((course) => {
-          (numFriends[`${seasonCode as Season}${course.crn}`] ??=
-            new Set()).add(friend.name ?? netId);
-        }),
-      );
-    });
+    for (const [seasonCode, worksheets] of friend.worksheets) {
+      for (const w of worksheets.values()) {
+        for (const course of w.courses) {
+          (numFriends[`${seasonCode}${course.crn}`] ??= new Set()).add(
+            friend.name ?? netId,
+          );
+        }
+      }
+    }
   }
   return numFriends;
 }
