@@ -561,7 +561,12 @@ function OverviewRatings({
       {overlapSections[filter].length !== 0 ? (
         <div style={{ display: professorView ? 'flex' : 'inline' }}>
           {/*fsr tailwind styles were not working here! Please fix if you can*/}
-          <div style={{ maxWidth: '90%' }}>
+          <div
+            style={{
+              flex: '1 1 70%', // 70% of the width
+              maxWidth: '70%',
+            }}
+          >
             {professorView && (
               <>
                 <div
@@ -599,7 +604,9 @@ function OverviewRatings({
           </div>
           <div
             className=""
-            style={{ width: professorView ? '50%' : 'inherit' }}
+            style={{
+              flex: '1 1 auto',
+            }}
           >
             <Row className="m-auto pb-1" style={{ justifyContent: 'right' }}>
               <Col
