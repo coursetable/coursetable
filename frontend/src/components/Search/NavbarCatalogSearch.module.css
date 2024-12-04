@@ -97,11 +97,6 @@
   font-size: 12px;
 }
 
-.randomButton {
-  padding: 0.25rem 0.375rem;
-  font-size: 12px;
-}
-
 @media (max-width: calc(1320px - 0.5px)) {
   .searchWrapper {
     width: 35vw;

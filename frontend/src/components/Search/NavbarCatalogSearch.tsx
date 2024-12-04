@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Button } from 'react-bootstrap';
 import { IoClose } from 'react-icons/io5';
@@ -24,7 +24,6 @@ import {
 } from '../../contexts/searchContext';
 import { useStore } from '../../store';
 import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
-import { createCourseModalLink } from '../../utilities/display';
 import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
 
@@ -170,7 +169,6 @@ export function NavbarCatalogSearch() {
   const isTablet = useStore((state) => state.isTablet);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
-  const navigate = useNavigate();
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -198,18 +196,6 @@ export function NavbarCatalogSearch() {
       ];
     return pool[Math.floor(Math.random() * pool.length)]!;
   }, [duration]);
-
-  const fetchRandomCourse = () => {
-    if (searchData && searchData.length > 0) {
-      const randomCourse =
-        searchData[Math.floor(Math.random() * searchData.length)];
-      const courseModalLink = createCourseModalLink(
-        randomCourse,
-        new URLSearchParams(),
-      );
-      navigate(courseModalLink);
-    }
-  };
 
   return (
     <>
@@ -266,15 +252,6 @@ export function NavbarCatalogSearch() {
         <div className={styles.row}>
           {!isTablet && (
             <>
-              {/* Random Course Button */}
-              <Button
-                className={styles.randomButton}
-                variant="secondary"
-                onClick={fetchRandomCourse}
-                disabled={!searchData || searchData.length === 0}
-              >
-                Random Course
-              </Button>
               <IntersectableSelect
                 options={subjectsOptions}
                 handle="selectSubjects"
