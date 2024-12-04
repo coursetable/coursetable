@@ -317,7 +317,9 @@ export const updateWorksheetMetadata = async (
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
 
-    winston.info(`Deleting worksheet courses from worksheet ${worksheetNumber} for user ${netId}`);
+    winston.info(
+      `Deleting worksheet courses from worksheet ${worksheetNumber} for user ${netId}`,
+    );
     const worksheet = await db.query.worksheets.findFirst({
       where: and(
         eq(worksheets.netId, netId),
