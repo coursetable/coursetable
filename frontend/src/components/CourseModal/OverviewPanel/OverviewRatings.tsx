@@ -349,7 +349,7 @@ ChartJS.register(
 function CustomChart({
   data,
 }: {
-  data: Array<{ year: string; rating: number }>;
+  data: Array<{ year: string; rating: number; courseCount: number }>;
 }) {
   const formattedData = data
     .map((d) => ({
@@ -382,6 +382,11 @@ function CustomChart({
   const chartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 20,
+      },
+    },
     color: 'red',
     scales: {
       x: {
@@ -389,10 +394,10 @@ function CustomChart({
           display: true,
           text: 'Year',
         },
-        reverse: false, // Flip the X-axis so the most recent year is on the right
+        reverse: false,
         ticks: {
           autoSkip: true,
-          maxTicksLimit: 10, // Limit the number of ticks shown on the X-axis
+          maxTicksLimit: 10,
         },
       },
       y: {
@@ -401,25 +406,26 @@ function CustomChart({
           text: 'Average Rating',
         },
         beginAtZero: true,
-        max: 5, // Assuming the rating is on a scale from 0 to 5
+        max: 5,
         ticks: {
-          stepSize: 0.5, // Adjust the step size for better spacing
+          stepSize: 0.5,
         },
       },
     },
     plugins: {
       legend: {
         display: false,
-        position: 'top', // Use one of the allowed string literals
+        position: 'top',
       },
       tooltip: {
         callbacks: {
           label: (context) => {
             const rating = context.raw as number;
-            return `Rating: ${rating.toPrecision(2)}`; // Format to two significant figures
+            const index = context.dataIndex;
+            const courseCount = data[index]?.courseCount || 0;
+            return `Courses taught: ${courseCount} | Avg rating: ${rating.toPrecision(2)}`;
           },
           title: (tooltipItems) => {
-            // Format the date in the tooltip
             return `Year: ${tooltipItems[0]?.label}`;
           },
         },
@@ -464,6 +470,30 @@ function OverviewRatings({
     };
   }, [sameCourse, sameProf, listing]);
 
+  const chartData = useMemo(() => {
+    // Group courses by year
+    const coursesByYear = sameProf.reduce(
+      (acc, offering) => {
+        const year = offering.course.season_code; // Extract the year/season
+        if (!acc[year]) acc[year] = [];
+        acc[year].push(offering.course.evaluation_statistic?.avg_rating || 0);
+        return acc;
+      },
+      {} as Record<string, number[]>,
+    );
+
+    // Calculate average rating and course count for each year
+    return Object.entries(coursesByYear)
+      .map(([year, ratings]) => ({
+        year,
+        rating:
+          ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length ||
+          0, // Average rating
+        courseCount: ratings.length, // Number of courses factored into the average
+      }))
+      .filter((dataPoint) => dataPoint.rating > 0); // Exclude years with no valid ratings
+  }, [sameProf]);
+
   const defaultOptions = [
     {
       displayName: `Course (${overlapSections.course.length})`,
@@ -503,12 +533,13 @@ function OverviewRatings({
   };
 
   // Prepare data for the chart
-  const chartData = overlapSections.professor
-    .map((course) => ({
-      year: course.season_code, // Adjust this to extract the year if necessary
-      rating: course.evaluation_statistic?.avg_rating || 0,
-    }))
-    .filter((d) => d.rating !== 0);
+  // const chartData = overlapSections.professor
+  //   .map((course) => ({
+  //     year: course.season_code, // Adjust this to extract the year if necessary
+  //     rating: course.evaluation_statistic?.avg_rating || 0,
+  //     courseName: listing.course_code,
+  //   }))
+  //   .filter((d) => d.rating !== 0);
 
   return (
     <>
