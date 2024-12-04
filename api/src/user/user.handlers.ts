@@ -1,6 +1,6 @@
 import type express from 'express';
 import chroma from 'chroma-js';
-import { and, count, eq } from 'drizzle-orm';
+import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
 import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
@@ -320,19 +320,22 @@ export const updateWorksheetMetadata = async (
     winston.info(
       `Deleting worksheet courses from worksheet ${worksheetNumber} for user ${netId}`,
     );
-    const worksheet = await db.query.worksheets.findFirst({
-      where: and(
-        eq(worksheets.netId, netId),
-        eq(worksheets.season, season),
-        eq(worksheets.worksheetNumber, worksheetNumber),
-      ),
-    });
 
-    if (worksheet) {
-      await db
-        .delete(worksheetCourses)
-        .where(eq(worksheetCourses.worksheetId, worksheet.id));
-    }
+    await db.delete(worksheetCourses).where(
+      inArray(
+        worksheetCourses.worksheetId,
+        db
+          .select({ id: worksheets.id })
+          .from(worksheets)
+          .where(
+            and(
+              eq(worksheets.netId, netId),
+              eq(worksheets.season, season),
+              eq(worksheets.worksheetNumber, worksheetNumber),
+            ),
+          ),
+      ),
+    );
 
     winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     const deletedWorksheets = await db
