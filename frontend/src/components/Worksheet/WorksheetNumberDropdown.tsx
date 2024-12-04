@@ -93,7 +93,7 @@ type CustomOptionProps = OptionProps<WorksheetOption, false> & {
   readonly worksheetsRefresh: () => Promise<void>;
   readonly viewedWorksheetNumber: number;
   readonly changeViewedWorksheetNumber: (number: number) => void;
-  readonly viewedSeason: Season;
+  readonly viewedPerson: string;
 };
 
 function CustomOption(props: CustomOptionProps) {
@@ -105,6 +105,7 @@ function CustomOption(props: CustomOptionProps) {
     worksheetsRefresh,
     viewedWorksheetNumber,
     changeViewedWorksheetNumber,
+    viewedPerson,
     innerProps,
   } = props;
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
@@ -138,7 +139,7 @@ function CustomOption(props: CustomOptionProps) {
       >
         <div>
           <span>{data.label}</span>
-          {data.value !== 0 && (
+          {data.value !== 0 && viewedPerson === 'me' && (
             <>
               <FaPencilAlt
                 className={styles.renameWorksheetIcon}
@@ -204,10 +205,11 @@ function WorksheetNumDropdownDesktop() {
     viewedWorksheetNumber,
     worksheetOptions,
     viewedSeason,
+    viewedPerson,
   } = useWorksheet();
 
   const modifiedWorksheetOptions: WorksheetOption[] = useMemo(() => {
-    console.log(worksheetOptions);
+    if (viewedPerson !== 'me') return Object.values(worksheetOptions);
     return [...Object.values(worksheetOptions), { value: 'add', label: '+' }];
   }, [worksheetOptions]);
 
@@ -256,7 +258,7 @@ function WorksheetNumDropdownDesktop() {
               worksheetsRefresh={worksheetsRefresh}
               viewedWorksheetNumber={viewedWorksheetNumber}
               changeViewedWorksheetNumber={changeViewedWorksheetNumber}
-              viewedSeason={viewedSeason}
+              viewedPerson={viewedPerson}
             />
           ),
         }}
