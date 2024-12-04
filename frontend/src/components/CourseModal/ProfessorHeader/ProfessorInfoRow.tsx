@@ -132,7 +132,7 @@ export default function ProfessorModalHeaderInfo({
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const user = useStore((state) => state.user);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const courseCode = listing.course_code;
   const season = listing.course.season_code;
   const { data, loading, error } = useCourseSectionsQuery({
@@ -156,6 +156,10 @@ export default function ProfessorModalHeaderInfo({
         to="#"
         onClick={(e) => {
           e.preventDefault();
+          setSearchParams((prev) => {
+            prev.delete('prof');
+            return prev;
+          });
           disableProfessorView();
         }}
         className={styles.backArrow}

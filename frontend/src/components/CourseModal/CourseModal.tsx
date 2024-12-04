@@ -50,6 +50,7 @@ function useCourseInfoFromURL(
   const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
   const courseModal = searchParams.get('course-modal');
+  const profModal = searchParams.get('prof-modal');
   const variables = parseQuery(courseModal);
   const { courses } = useFerry();
   // If the season is in the static catalog, we can just use that instead of
@@ -121,6 +122,7 @@ function CourseModal() {
     setView('overview');
     setSearchParams((prev) => {
       prev.delete('course-modal');
+      prev.delete('prof');
       return prev;
     });
   };

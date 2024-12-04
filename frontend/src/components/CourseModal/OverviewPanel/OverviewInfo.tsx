@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Row,
   Col,
@@ -406,30 +406,60 @@ function Professors({
     >
   >;
 }) {
-  return (
-    <DataField
-      name="Professor"
-      value={
-        course.course_professors.length
-          ? course.course_professors.map(({ professor }, index) => (
-              <React.Fragment key={professor.name}>
-                {index ? ' • ' : ''}
-                <OverlayTrigger
-                  trigger="click"
-                  rootClose
-                  placement="right"
-                  overlay={profInfoPopover(professor)}
-                >
-                  <LinkLikeText onClick={() => setProfessorView(professor)}>
-                    {professor.name}
-                  </LinkLikeText>
-                </OverlayTrigger>
-              </React.Fragment>
-            ))
-          : 'TBA'
-      }
-    />
-  );
+  const navigate = useNavigate();
+
+  {
+    return (
+      <DataField
+        name="Professor"
+        value={
+          course.course_professors.length
+            ? course.course_professors.map(({ professor }, index) => (
+                <React.Fragment key={professor.name}>
+                  {index ? ' • ' : ''}
+                  <OverlayTrigger
+                    trigger="click"
+                    rootClose
+                    placement="right"
+                    overlay={profInfoPopover(professor)}
+                  >
+                    <LinkLikeText
+                      onClick={() => {
+                        // navigate({
+                        //   pathname: window.location.pathname,
+                        //   search: new URLSearchParams({
+                        //     ...Object.fromEntries(
+                        //       new URLSearchParams(window.location.search),
+                        //     ),
+                        //     prof: professor.professor_id.toString(),
+                        //   }).toString(),
+                        // });
+                        // Manipulate the query string
+                        const searchParams = new URLSearchParams(
+                          window.location.search,
+                        );
+                        searchParams.set(
+                          'prof',
+                          professor.professor_id.toString(),
+                        );
+
+                        // Navigate with updated search params
+                        navigate(
+                          `${window.location.pathname}?${searchParams.toString()}`,
+                        );
+                        setProfessorView(professor);
+                      }}
+                    >
+                      {professor.name}
+                    </LinkLikeText>
+                  </OverlayTrigger>
+                </React.Fragment>
+              ))
+            : 'TBA'
+        }
+      />
+    );
+  }
 }
 
 function TimeLocation({ course }: { readonly course: CourseInfo }) {
