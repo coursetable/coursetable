@@ -563,9 +563,9 @@ function OverviewRatings({
             const newIndx = ((optionsIndx[filter] +
               (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
               3) as 0 | 1 | 2;
-            if (defaultOptions[newIndx]) {
+            if (defaultOptions[newIndx]) 
               setFilter(defaultOptions[newIndx].value as Filter);
-            }
+            
           }}
           // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
           tabIndex={0}

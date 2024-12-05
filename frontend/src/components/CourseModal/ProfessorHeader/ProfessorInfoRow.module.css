@@ -49,7 +49,7 @@
   margin: 0 0.5rem 0 0;
 }
 
-.crossListingLink,
+.crossListingLink
 .crossListingLink:hover {
   color: inherit;
   text-decoration: underline;

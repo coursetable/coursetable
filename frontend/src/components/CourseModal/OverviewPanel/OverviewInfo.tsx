@@ -425,7 +425,7 @@ function Professors({
                   >
                     <LinkLikeText
                       onClick={() => {
-                        //TODO: Implement link-based prof modal later
+                        // TODO: Implement link-based prof modal later
 
                         // // Navigate({
                         // //   pathname: window.location.pathname,
