@@ -79,7 +79,7 @@ function OverviewPanel({
   return (
     <>
       {professorView ? (
-        <div style={{ padding: 4 }}>
+        <div style={{ width: '100%', padding: 4 }}>
           <OverviewRatings
             onNavigation={onNavigation}
             listing={listing}
@@ -100,22 +100,21 @@ function OverviewPanel({
           </Col>
           {!professorView && (
             <Col md={5} className="px-0 my-0">
-                {isSameCourseWrong && (
-                  <div className="alert alert-warning">
-                      <MdWarning className="mr-2" />
-                      <strong>Warning:</strong> We have detected a possible
-                      error in the data returned. Try opening CourseTable in a
-                      new tab.
-                    </div>
-                )}
-                <OverviewRatings
-                  onNavigation={onNavigation}
-                  listing={listing}
-                  sameCourse={sameCourse}
-                  sameProf={sameProf}
-                  professorView={professorView}
-                />
-              </Col>
+              {isSameCourseWrong && (
+                <div className="alert alert-warning">
+                  <MdWarning className="mr-2" />
+                  <strong>Warning:</strong> We have detected a possible error in
+                  the data returned. Try opening CourseTable in a new tab.
+                </div>
+              )}
+              <OverviewRatings
+                onNavigation={onNavigation}
+                listing={listing}
+                sameCourse={sameCourse}
+                sameProf={sameProf}
+                professorView={professorView}
+              />
+            </Col>
           )}
         </Row>
       )}
