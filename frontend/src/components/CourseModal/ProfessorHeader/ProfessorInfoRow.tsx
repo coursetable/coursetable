@@ -21,7 +21,7 @@ import { createCourseModalLink } from '../../../utilities/display';
 import { Popout } from '../../Search/Popout';
 import { PopoutSelect } from '../../Search/PopoutSelect';
 import SkillBadge from '../../SkillBadge';
-import { TextComponent } from '../../Typography';
+import { LinkLikeText, TextComponent } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import type { CourseInfo } from '../OverviewPanel/OverviewInfo';
 import styles from './ProfessorInfoRow.module.css';
@@ -127,7 +127,9 @@ export default function ProfessorModalHeaderInfo({
   onNavigation,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  readonly professor: CourseInfo['course_professors'][number]['professor'] | null;
+  readonly professor:
+    | CourseInfo['course_professors'][number]['professor']
+    | null;
   readonly disableProfessorView: () => void;
   readonly onNavigation: ModalNavigationFunction;
 }) {
@@ -182,7 +184,10 @@ export default function ProfessorModalHeaderInfo({
 
         <div className={styles.badges}>
           <p className={styles.courseCodes}>
-            <TextComponent type="tertiary">Professor</TextComponent>
+            <TextComponent type="tertiary">
+              Professor |{' '}
+              <a href={`mailto:${professor?.email}`}>{professor?.email}</a>
+            </TextComponent>
           </p>
         </div>
       </div>
