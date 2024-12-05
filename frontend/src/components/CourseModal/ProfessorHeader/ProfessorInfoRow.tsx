@@ -23,8 +23,8 @@ import { PopoutSelect } from '../../Search/PopoutSelect';
 import SkillBadge from '../../SkillBadge';
 import { TextComponent } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
+import type { CourseInfo } from '../OverviewPanel/OverviewInfo';
 import styles from './ProfessorInfoRow.module.css';
-import { CourseInfo } from '../OverviewPanel/OverviewInfo';
 
 function SectionLink({
   section,
@@ -127,8 +127,8 @@ export default function ProfessorModalHeaderInfo({
   onNavigation,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  professor: CourseInfo['course_professors'][number]['professor'] | null;
-  disableProfessorView: () => void;
+  readonly professor: CourseInfo['course_professors'][number]['professor'] | null;
+  readonly disableProfessorView: () => void;
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const user = useStore((state) => state.user);

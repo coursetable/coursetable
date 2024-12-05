@@ -1,7 +1,7 @@
 import { Row, Col } from 'react-bootstrap';
 import { MdWarning } from 'react-icons/md';
 
-import OverviewInfo, { CourseInfo } from './OverviewInfo';
+import OverviewInfo, { type CourseInfo } from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
@@ -21,7 +21,7 @@ function OverviewPanel({
   readonly professorView:
     | CourseInfo['course_professors'][number]['professor']
     | null;
-  setProfessorView: React.Dispatch<
+  readonly setProfessorView: React.Dispatch<
     React.SetStateAction<
       CourseInfo['course_professors'][number]['professor'] | null
     >
@@ -99,17 +99,14 @@ function OverviewPanel({
             />
           </Col>
           {!professorView && (
-            <>
-              <Col md={5} className="px-0 my-0">
+            <Col md={5} className="px-0 my-0">
                 {isSameCourseWrong && (
-                  <>
-                    <div className="alert alert-warning">
+                  <div className="alert alert-warning">
                       <MdWarning className="mr-2" />
                       <strong>Warning:</strong> We have detected a possible
                       error in the data returned. Try opening CourseTable in a
                       new tab.
                     </div>
-                  </>
                 )}
                 <OverviewRatings
                   onNavigation={onNavigation}
@@ -119,7 +116,6 @@ function OverviewPanel({
                   professorView={professorView}
                 />
               </Col>
-            </>
           )}
         </Row>
       )}

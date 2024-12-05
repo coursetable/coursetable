@@ -400,7 +400,7 @@ function Professors({
   setProfessorView,
 }: {
   readonly course: CourseInfo;
-  setProfessorView: React.Dispatch<
+  readonly setProfessorView: React.Dispatch<
     React.SetStateAction<
       CourseInfo['course_professors'][number]['professor'] | null
     >
@@ -425,7 +425,7 @@ function Professors({
                   >
                     <LinkLikeText
                       onClick={() => {
-                        // navigate({
+                        // Navigate({
                         //   pathname: window.location.pathname,
                         //   search: new URLSearchParams({
                         //     ...Object.fromEntries(
@@ -508,7 +508,7 @@ function OverviewInfo({
   readonly onNavigation: ModalNavigationFunction;
   readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
   readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
-  setProfessorView: React.Dispatch<
+  readonly setProfessorView: React.Dispatch<
     React.SetStateAction<
       CourseInfo['course_professors'][number]['professor'] | null
     >

@@ -14,6 +14,19 @@ import { MdInfoOutline } from 'react-icons/md';
 // @popperjs/core is provided by react-bootstrap
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { detectOverflow } from '@popperjs/core';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend,
+  type ChartOptions,
+} from 'chart.js';
+import dayjs from 'dayjs';
+import { Line } from 'react-chartjs-2';
 import MultiToggle from 'react-multi-toggle';
 
 import type {
@@ -27,22 +40,9 @@ import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
 import { createCourseModalLink } from '../../../utilities/display';
 import { RatingBubble, TextComponent } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
-import { Line } from 'react-chartjs-2';
 import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip as ChartTooltip,
-  Legend,
-  ChartOptions,
-} from 'chart.js';
-import dayjs from 'dayjs';
-import { CourseInfo } from './OverviewInfo';
+import type { CourseInfo } from './OverviewInfo';
 import Notice from '../../Notice';
 
 type Filter = 'both' | 'course' | 'professor';
@@ -91,11 +91,10 @@ function RatingNumbers({
   ];
 
   // If professorView is true, filter to include only the "Prof" rating
-  if (professorView) {
+  if (professorView)
     ratingBubbles = ratingBubbles.filter((bubble) => bubble.label === 'Prof');
-  } else {
+  else
     ratingBubbles = ratingBubbles.filter((bubble) => bubble.label !== 'Prof');
-  }
 
   if (hasEvals) {
     return ratingBubbles.map(({ colorMap, rating }, i) => (
@@ -364,7 +363,7 @@ ChartJS.register(
 function CustomChart({
   data,
 }: {
-  data: Array<{ year: string; rating: number; courseCount: number }>;
+  readonly data: { year: string; rating: number; courseCount: number }[];
 }) {
   const formattedData = data
     .map((d) => ({
@@ -434,13 +433,13 @@ function CustomChart({
       },
       tooltip: {
         callbacks: {
-          label: (context) => {
+          label(context) {
             const rating = context.raw as number;
             const index = context.dataIndex;
             const courseCount = data[index]?.courseCount || 0;
             return `Courses taught: ${courseCount} | Avg rating: ${rating.toPrecision(2)}`;
           },
-          title: (tooltipItems) => {
+          title(tooltipItems) {
             return `Year: ${tooltipItems[0]?.label}`;
           },
         },
@@ -487,14 +486,14 @@ function OverviewRatings({
 
   const chartData = useMemo(() => {
     // Group courses by year
-    const coursesByYear = sameProf.reduce(
+    const coursesByYear = sameProf.reduce<{ [key: string]: number[] }>(
       (acc, offering) => {
         const year = offering.course.season_code; // Extract the year/season
-        if (!acc[year]) acc[year] = [];
+        acc[year] ||= [];
         acc[year].push(offering.course.evaluation_statistic?.avg_rating || 0);
         return acc;
       },
-      {} as Record<string, number[]>,
+      {},
     );
 
     // Calculate average rating and course count for each year
@@ -532,7 +531,7 @@ function OverviewRatings({
   const user = useStore((state) => state.user);
 
   const [options, setOptions] =
-    useState<Array<{ displayName: string; value: string }>>(defaultOptions);
+    useState<{ displayName: string; value: string }[]>(defaultOptions);
 
   const [filter, setFilter] = useState<Filter>('both');
   const [chartMode, setChartMode] = useState(false);
@@ -558,9 +557,31 @@ function OverviewRatings({
 
   return (
     <>
+      {!professorView && (
+        <div
+          className={styles.filterContainer}
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+            // Left/right arrow key
+            const newIndx = ((optionsIndx[filter] +
+              (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
+              3) as 0 | 1 | 2;
+            if (defaultOptions[newIndx]) {
+              setFilter(defaultOptions[newIndx].value as Filter);
+            }
+          }}
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+        >
+          <MultiToggle
+            options={options}
+            selectedOption={filter}
+            onSelectOption={(val) => setFilter(val as Filter)}
+            className={clsx(styles.evaluationsFilter, 'mb-2')}
+          />
+        </div>
+      )}
       {overlapSections[filter].length !== 0 ? (
         <div style={{ display: professorView ? 'flex' : 'inline' }}>
-          {/*fsr tailwind styles were not working here! Please fix if you can*/}
           <div
             style={{
               flex: '1 1 70%', // 70% of the width
@@ -590,7 +611,7 @@ function OverviewRatings({
                     Average professor rating
                   </TextComponent>
                   <TextComponent type="secondary">
-                    The following is an overview of how {professorView?.name}'s
+                    The following is an overview of how {professorView.name}'s
                     rating by students has changed over time.
                   </TextComponent>
                 </div>
@@ -652,14 +673,9 @@ function OverviewRatings({
                 <span className={styles.evaluationHeader}>Season</span>
               </Col>
               {professorView ? (
-                <>
-                  <Col
-                    xs={2}
-                    className="d-flex ms-0 justify-content-center px-0"
-                  >
-                    <span className={styles.evaluationHeader}>Prof</span>
-                  </Col>
-                </>
+                <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+                  <span className={styles.evaluationHeader}>Prof</span>
+                </Col>
               ) : (
                 <>
                   {' '}

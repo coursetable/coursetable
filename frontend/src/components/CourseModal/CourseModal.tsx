@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
+import type { CourseInfo } from './OverviewPanel/OverviewInfo';
+import ProfessorModalHeaderControls from './ProfessorHeader/ProfessorControlsRow';
+import ProfessorModalHeaderInfo from './ProfessorHeader/ProfessorInfoRow';
 import { useFerry } from '../../contexts/ferryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useCourseModalFromUrlQuery } from '../../queries/graphql-queries';
@@ -17,9 +20,6 @@ import {
 } from '../../utilities/course';
 import { suspended, createCourseModalLink } from '../../utilities/display';
 import styles from './CourseModal.module.css';
-import ProfessorModalHeaderInfo from './ProfessorHeader/ProfessorInfoRow';
-import { CourseInfo } from './OverviewPanel/OverviewInfo';
-import ProfessorModalHeaderControls from './ProfessorHeader/ProfessorControlsRow';
 
 // We can only split subviews of CourseModal because CourseModal contains core
 // logic that determines whether itself is visible.
@@ -50,7 +50,6 @@ function useCourseInfoFromURL(
   const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
   const courseModal = searchParams.get('course-modal');
-  const profModal = searchParams.get('prof-modal');
   const variables = parseQuery(courseModal);
   const { courses } = useFerry();
   // If the season is in the static catalog, we can just use that instead of
@@ -64,6 +63,26 @@ function useCourseInfoFromURL(
   if (hasStaticCatalog)
     return courses[variables.seasonCode]!.data.get(variables.crn);
   return data?.listings[0];
+}
+
+function useProfessorInfoFromURL(
+  isInitial: boolean,
+  listing: CourseModalPrefetchListingDataFragment | undefined,
+): CourseInfo['course_professors'][number]['professor'] | null {
+  const [searchParams] = useSearchParams();
+
+  if (!isInitial || !listing) return null;
+
+  const profIdParam = searchParams.get('prof');
+  if (!profIdParam) return null;
+
+  const matchingProfessor =
+    listing.course.course_professors.find(
+      (professorObj) =>
+        professorObj.professor.professor_id === parseInt(profIdParam, 10),
+    )?.professor || null;
+
+  return matchingProfessor | null;
 }
 
 function CourseModal() {
@@ -132,6 +151,24 @@ function CourseModal() {
     description: { description },
     datePublished: toSeasonDate(listing.course.season_code),
   });
+
+  // UseEffect(() => {
+  //   const profIdParam = searchParams.get('prof');
+  //   if (profIdParam) {
+  //     //matching prof:
+  //     const matchingProfessor =
+  //       listing.course.course_professors.find(
+  //         (professorObj) =>
+  //           professorObj.professor.professor_id === parseInt(profIdParam),
+  //       )?.professor || null;
+
+  //     // setProfessorView(matchingProfessor && null);
+  //     console.log('hello');
+  //   } else {
+  //     setProfessorView(null);
+  //   }
+  // }, [searchParams]);
+
   return (
     <div className="d-flex justify-content-center">
       <Helmet>
