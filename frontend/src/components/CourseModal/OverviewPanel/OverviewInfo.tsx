@@ -425,28 +425,30 @@ function Professors({
                   >
                     <LinkLikeText
                       onClick={() => {
-                        // Navigate({
-                        //   pathname: window.location.pathname,
-                        //   search: new URLSearchParams({
-                        //     ...Object.fromEntries(
-                        //       new URLSearchParams(window.location.search),
-                        //     ),
-                        //     prof: professor.professor_id.toString(),
-                        //   }).toString(),
-                        // });
-                        // Manipulate the query string
-                        const searchParams = new URLSearchParams(
-                          window.location.search,
-                        );
-                        searchParams.set(
-                          'prof',
-                          professor.professor_id.toString(),
-                        );
+                        //TODO: Implement link-based prof modal later
 
-                        // Navigate with updated search params
-                        navigate(
-                          `${window.location.pathname}?${searchParams.toString()}`,
-                        );
+                        // // Navigate({
+                        // //   pathname: window.location.pathname,
+                        // //   search: new URLSearchParams({
+                        // //     ...Object.fromEntries(
+                        // //       new URLSearchParams(window.location.search),
+                        // //     ),
+                        // //     prof: professor.professor_id.toString(),
+                        // //   }).toString(),
+                        // // });
+                        // // Manipulate the query string
+                        // const searchParams = new URLSearchParams(
+                        //   window.location.search,
+                        // );
+                        // searchParams.set(
+                        //   'prof',
+                        //   professor.professor_id.toString(),
+                        // );
+
+                        // // Navigate with updated search params
+                        // navigate(
+                        //   `${window.location.pathname}?${searchParams.toString()}`,
+                        // );
                         setProfessorView(professor);
                       }}
                     >
