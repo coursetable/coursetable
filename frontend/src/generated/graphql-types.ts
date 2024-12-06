@@ -4210,6 +4210,12 @@ export type ProfModalOverviewDataQuery = {
       __typename?: 'course_professors';
       course: {
         __typename?: 'courses';
+        course_id: number;
+        evaluation_statistic?: {
+          __typename?: 'evaluation_statistics';
+          avg_workload: number | null;
+          avg_rating: number | null;
+        } | null;
       } & CourseModalPrefetchCourseDataFragment;
     }>;
   }>;

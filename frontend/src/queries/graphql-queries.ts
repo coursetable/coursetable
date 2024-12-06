@@ -312,6 +312,11 @@ export const ProfModalOverviewDataDocument = gql`
       course_professors {
         course {
           ...CourseModalPrefetchCourseData
+          course_id
+          evaluation_statistic @include(if: $hasEvals) {
+            avg_workload
+            avg_rating
+          }
         }
       }
     }

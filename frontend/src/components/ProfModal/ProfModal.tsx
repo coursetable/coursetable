@@ -6,9 +6,12 @@ import { useModalHistory } from '../../contexts/modalHistoryContext';
 import type { ProfModalOverviewDataQuery } from '../../generated/graphql-types';
 import { useProfModalOverviewDataQuery } from '../../queries/graphql-queries';
 import { useStore } from '../../store';
+import { suspended } from '../../utilities/display';
 import styles from './ProfModal.module.css';
 
 export type ProfInfo = ProfModalOverviewDataQuery['professors'][0];
+
+const OverviewPanel = suspended(() => import('./OverviewPanel/OverviewPanel'));
 
 function ProfModal({ professorId }: { readonly professorId: number }) {
   const user = useStore((state) => state.user);
@@ -50,12 +53,7 @@ function ProfModal({ professorId }: { readonly professorId: number }) {
           <ModalHeaderInfo professor={professor} />
         </Modal.Header>
         <Modal.Body>
-          {/* <OverviewPanel
-            onNavigation={onNavigation}
-            prefetched={listing}
-            professorView={professorView}
-            setProfessorView={setProfessorView}
-          /> */}
+          <OverviewPanel professor={professor} />
         </Modal.Body>
       </Modal>
     </div>
