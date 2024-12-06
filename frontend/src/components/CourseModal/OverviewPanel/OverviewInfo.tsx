@@ -1,14 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import {
-  Row,
-  Col,
-  OverlayTrigger,
-  Tooltip,
-  Collapse,
-  Popover,
-} from 'react-bootstrap';
-import type { OverlayChildren } from 'react-bootstrap/esm/Overlay';
+import { Row, Col, OverlayTrigger, Tooltip, Collapse } from 'react-bootstrap';
 import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
@@ -23,7 +15,7 @@ import type {
 } from '../../../generated/graphql-types';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
-import { schools, ratingColormap } from '../../../utilities/constants';
+import { schools } from '../../../utilities/constants';
 import {
   toWeekdaysDisplayString,
   getEnrolled,
@@ -34,72 +26,13 @@ import {
   createCourseModalLink,
   createProfModalLink,
 } from '../../../utilities/display';
-import { TextComponent, InfoPopover, LinkLikeText } from '../../Typography';
+import { LinkLikeText } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 type CourseInfo = CourseModalOverviewDataQuery['self'][0]['course'];
-
-const profInfoPopover =
-  (
-    profInfo: CourseInfo['course_professors'][number]['professor'],
-  ): OverlayChildren =>
-  (props) => (
-    <InfoPopover {...props} id="title-popover" className="d-none d-md-block">
-      <Popover.Header>
-        <div className="mx-auto">
-          <strong>{profInfo.name}</strong>
-        </div>
-        <div className="mx-auto">
-          <small>
-            {profInfo.email ? (
-              <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
-            ) : (
-              <TextComponent type="secondary">N/A</TextComponent>
-            )}
-          </small>
-        </div>
-      </Popover.Header>
-      <Popover.Body className={styles.profInfoBody}>
-        <div className="d-flex mx-auto my-1">
-          <Col md={6}>
-            <div className="d-flex mx-auto mb-1">
-              <strong
-                className="mx-auto"
-                style={{
-                  color: profInfo.average_rating
-                    ? ratingColormap(profInfo.average_rating)
-                        .darken()
-                        .saturate()
-                        .css()
-                    : '#b5b5b5',
-                }}
-              >
-                {profInfo.average_rating
-                  ? profInfo.average_rating.toFixed(1)
-                  : 'N/A'}
-              </strong>
-            </div>
-            <div className="d-flex mx-auto">
-              <small className="mx-auto text-center fw-bold">Avg. Rating</small>
-            </div>
-          </Col>
-          <Col md={6}>
-            <div className="d-flex mx-auto mb-1">
-              <strong className="mx-auto">{profInfo.courses_taught}</strong>
-            </div>
-            <div className="d-flex mx-auto">
-              <small className="mx-auto text-center fw-bold">
-                Classes Taught
-              </small>
-            </div>
-          </Col>
-        </div>
-      </Popover.Body>
-    </InfoPopover>
-  );
 
 function Description({ course }: { readonly course: CourseInfo }) {
   const [clamped, setClamped] = useState(false);
@@ -411,24 +344,17 @@ function Professors({ course }: { readonly course: CourseInfo }) {
       value={course.course_professors.map(({ professor }, index) => (
         <React.Fragment key={professor.name}>
           {index ? ' • ' : ''}
-          <OverlayTrigger
-            trigger="click"
-            rootClose
-            placement="right"
-            overlay={profInfoPopover(professor)}
+          <Link
+            to={createProfModalLink(professor.professor_id, searchParams)}
+            onClick={() => {
+              navigate('push', {
+                type: 'professor',
+                data: professor.professor_id,
+              });
+            }}
           >
-            <Link
-              to={createProfModalLink(professor.professor_id, searchParams)}
-              onClick={() => {
-                navigate('push', {
-                  type: 'professor',
-                  data: professor.professor_id,
-                });
-              }}
-            >
-              {professor.name}
-            </Link>
-          </OverlayTrigger>
+            {professor.name}
+          </Link>
         </React.Fragment>
       ))}
     />
