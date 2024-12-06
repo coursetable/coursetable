@@ -4269,3 +4269,15 @@ export type CourseSectionsQuery = {
     } & CourseModalPrefetchListingDataFragment
   >;
 };
+
+export type BuildingQueryVariables = Exact<{ [key: string]: never }>;
+
+export type BuildingQuery = {
+  __typename?: 'query_root';
+  buildings: Array<{
+    __typename?: 'buildings';
+    building_name: string | null;
+    code: string;
+    url: string | null;
+  }>;
+};

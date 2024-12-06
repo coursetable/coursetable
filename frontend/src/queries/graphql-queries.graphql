@@ -199,3 +199,11 @@ query CourseSections(
     }
   }
 }
+
+query building {
+  buildings {
+    building_name
+    code
+    url
+  }
+}

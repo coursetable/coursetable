@@ -84,11 +84,3 @@ query courseAttributes {
     flag_text
   }
 }
-
-query locationAttributes {
-  buildings {
-    code
-    building_name
-    url
-  }
-}
