@@ -376,9 +376,11 @@ function OverviewRatings({
         />
       </div>
       {filter === 'professor' ? (
-        <>
-          We've moved! Click on one of the professor names to view their course
-          offerings.
+        <div className="alert alert-info m-3">
+          <p>
+            We've moved! To view course offerings by each professor, click on
+            their name on the left, or select from the list below.
+          </p>
           <ul>
             {listing.course.course_professors.map((prof) => (
               <li key={prof.professor.professor_id}>
@@ -399,7 +401,7 @@ function OverviewRatings({
               </li>
             ))}
           </ul>
-        </>
+        </div>
       ) : overlapSections[filter].length !== 0 ? (
         <div className="position-relative">
           <OverlayTrigger

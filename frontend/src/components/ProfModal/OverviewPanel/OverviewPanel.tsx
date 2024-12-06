@@ -24,9 +24,9 @@ import {
   Legend,
   type ChartOptions,
 } from 'chart.js';
-import dayjs from 'dayjs';
 import { Line } from 'react-chartjs-2';
 
+import type { Season } from '../../../queries/graphql-types';
 import { generateRandomColor } from '../../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../../utilities/constants';
 import { toSeasonString } from '../../../utilities/course';
@@ -296,6 +296,18 @@ import styles from './OverviewPanel.module.css';
 //   );
 // }
 
+function seasonToUniformScale(season: Season): number {
+  const year = Number(season.slice(0, 4));
+  const term = Number(season[5]) - 1;
+  return year * 3 + term;
+}
+
+function uniformScaleToSeason(scale: number): Season {
+  const year = Math.floor(scale / 3);
+  const term = (scale % 3) + 1;
+  return `${year}0${term}` as Season;
+}
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -309,26 +321,18 @@ ChartJS.register(
 function CustomChart({
   data,
 }: {
-  readonly data: { year: string; rating: number; courseCount: number }[];
+  readonly data: { season: Season; rating: number; courseCount: number }[];
 }) {
-  const formattedData = data
-    .map((d) => ({
-      ...d,
-      formattedYear: dayjs(d.year).format('YYYY'),
-    }))
-    .sort((a, b) => a.year.localeCompare(b.year));
-
-  // Extract the formatted years and ratings
-  const years = formattedData.map((d) => d.formattedYear);
-  const ratings = formattedData.map((d) => d.rating);
+  const x = data.map((d) => seasonToUniformScale(d.season));
+  const y = data.map((d) => d.rating);
 
   // Set up the data and configuration for the chart
   const chartData = {
-    labels: years,
+    labels: x,
     datasets: [
       {
         label: 'Average Rating',
-        data: ratings,
+        data: y,
         borderColor: '#468FF2',
         backgroundColor: 'rgba(0, 0, 255, 0.1)',
         tension: 0.3, // Smooth curve
@@ -355,9 +359,12 @@ function CustomChart({
           text: 'Year',
         },
         reverse: false,
+        type: 'linear',
         ticks: {
           autoSkip: true,
           maxTicksLimit: 10,
+          callback: (value) =>
+            toSeasonString(uniformScaleToSeason(value as number)),
         },
       },
       y: {
@@ -365,7 +372,7 @@ function CustomChart({
           display: true,
           text: 'Average Rating',
         },
-        beginAtZero: true,
+        min: 1,
         max: 5,
         ticks: {
           stepSize: 0.5,
@@ -383,10 +390,12 @@ function CustomChart({
             const rating = context.raw as number;
             const index = context.dataIndex;
             const courseCount = data[index]?.courseCount || 0;
-            return `Courses taught: ${courseCount} | Avg rating: ${rating.toPrecision(2)}`;
+            return `Rated courses: ${courseCount} | Avg rating: ${rating.toPrecision(2)}`;
           },
           title(tooltipItems) {
-            return `Year: ${tooltipItems[0]?.label}`;
+            return toSeasonString(
+              uniformScaleToSeason(tooltipItems[0]!.parsed.x),
+            );
           },
         },
       },
@@ -406,22 +415,24 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
     const coursesByYear = professor.course_professors.reduce<{
       [key: string]: number[];
     }>((acc, offering) => {
-      const year = offering.course.season_code; // Extract the year/season
-      acc[year] ??= [];
-      acc[year].push(offering.course.evaluation_statistic?.avg_rating ?? 0);
+      const season = offering.course.season_code;
+      acc[season] ??= [];
+      if (offering.course.evaluation_statistic?.avg_rating)
+        acc[season].push(offering.course.evaluation_statistic.avg_rating);
       return acc;
     }, {});
 
     // Calculate average rating and course count for each year
     return Object.entries(coursesByYear)
-      .map(([year, ratings]) => ({
-        year,
-        rating:
-          ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length ||
-          0, // Average rating
+      .map(([season, ratings]) => ({
+        season: season as Season,
+        rating: ratings.length
+          ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
+          : 0, // Average rating
         courseCount: ratings.length, // Number of courses factored into the average
       }))
-      .filter((dataPoint) => dataPoint.rating > 0); // Exclude years with no valid ratings
+      .filter((dataPoint) => dataPoint.rating > 0) // Exclude years with no valid ratings
+      .sort((a, b) => a.season.localeCompare(b.season, 'en-US'));
   }, [professor]);
 
   return (
@@ -429,6 +440,20 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
       {professor.course_professors.length > 0 ? (
         <div style={{ display: 'flex' }}>
           <Col className="px-0 mt-0 mb-3">
+            <TextComponent type="tertiary" style={{ fontSize: 12 }}>
+              <span
+                className="px-2 py-1 rounded font-semibold text-white"
+                style={{
+                  backgroundColor: '#468FF2',
+                  fontSize: '0.75rem',
+                  marginRight: '8px',
+                }}
+              >
+                Beta
+              </span>
+              The professor modal is new and in active testing. We will be
+              adding more content to it soon!
+            </TextComponent>
             <div
               style={{
                 display: 'flex',
@@ -437,28 +462,10 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
               }}
             >
               <TextComponent type="primary" style={{ fontWeight: 650 }}>
-                <span
-                  className="px-2 py-1 rounded font-semibold text-white"
-                  style={{
-                    backgroundColor: '#468FF2',
-                    fontSize: '0.75rem',
-                    marginRight: '8px',
-                  }}
-                >
-                  Beta
-                </span>
-                Average professor rating
-              </TextComponent>
-              <TextComponent type="secondary" style={{ marginTop: 5 }}>
-                The following is an overview of how {professor.name}'s rating by
-                students has changed over time.
+                Average professor rating over time
               </TextComponent>
             </div>
             <CustomChart data={chartData} />
-            <TextComponent type="tertiary" style={{ fontSize: 12 }}>
-              This feature is new and in active testing. We will be adding more
-              content to the professor modal soon!
-            </TextComponent>
           </Col>
           {/* </div> */}
           <Col md={5} className="px-0 my-0">
