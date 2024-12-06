@@ -1,19 +1,23 @@
-import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
+import ModalHeaderInfo from './Header/InfoRow';
+
 import { useModalHistory } from '../../contexts/modalHistoryContext';
+import type { ProfModalOverviewDataQuery } from '../../generated/graphql-types';
 import { useProfModalOverviewDataQuery } from '../../queries/graphql-queries';
 import { useStore } from '../../store';
 import styles from './ProfModal.module.css';
 
+export type ProfInfo = ProfModalOverviewDataQuery['professors'][0];
+
 function ProfModal({ professorId }: { readonly professorId: number }) {
   const user = useStore((state) => state.user);
-  const { navigate, closeModal } = useModalHistory();
-  const { data, loading, error } = useProfModalOverviewDataQuery({
+  const { closeModal } = useModalHistory();
+  const { data } = useProfModalOverviewDataQuery({
     variables: { professorId, hasEvals: Boolean(user?.hasEvals) },
   });
-  // TODO different messages
-  if (!data || loading || error) {
+  // TODO different messages for loading/error
+  if (!data || data.professors.length === 0) {
     return (
       <div className="d-flex justify-content-center">
         <Modal
@@ -43,13 +47,7 @@ function ProfModal({ professorId }: { readonly professorId: number }) {
         centered
       >
         <Modal.Header className={styles.modalHeader} closeButton>
-          {professor.name}
-          {/* <ProfessorModalHeaderInfo
-            listing={listing}
-            professor={professorView}
-            disableProfessorView={() => setProfessorView(null)}
-            onNavigation={onNavigation}
-          /> */}
+          <ModalHeaderInfo professor={professor} />
         </Modal.Header>
         <Modal.Body>
           {/* <OverviewPanel
