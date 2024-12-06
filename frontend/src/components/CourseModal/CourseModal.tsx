@@ -37,7 +37,6 @@ function CourseModal({
 }) {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   const { navigate, closeModal } = useModalHistory();
-
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,

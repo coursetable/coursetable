@@ -4074,9 +4074,6 @@ export type CourseModalOverviewDataQuery = {
           __typename?: 'professors';
           professor_id: number;
           name: string;
-          email: string | null;
-          courses_taught: number;
-          average_rating?: number | null;
         };
       }>;
       course_meetings: Array<{
@@ -4193,6 +4190,28 @@ export type SearchEvaluationNarrativesQuery = {
         enrolled: number | null;
       } | null;
     };
+  }>;
+};
+
+export type ProfModalOverviewDataQueryVariables = Exact<{
+  professorId: Scalars['Int']['input'];
+  hasEvals: Scalars['Boolean']['input'];
+}>;
+
+export type ProfModalOverviewDataQuery = {
+  __typename?: 'query_root';
+  professors: Array<{
+    __typename?: 'professors';
+    name: string;
+    email: string | null;
+    courses_taught: number;
+    average_rating?: number | null;
+    course_professors: Array<{
+      __typename?: 'course_professors';
+      course: {
+        __typename?: 'courses';
+      } & CourseModalPrefetchCourseDataFragment;
+    }>;
   }>;
 };
 

@@ -61,9 +61,6 @@ export const CourseModalOverviewDataDocument = gql`
           professor {
             professor_id
             name
-            email
-            courses_taught
-            average_rating @include(if: $hasEvals)
           }
         }
         course_meetings {
@@ -304,6 +301,98 @@ export type SearchEvaluationNarrativesSuspenseQueryHookResult = ReturnType<
 export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
   Types.SearchEvaluationNarrativesQuery,
   Types.SearchEvaluationNarrativesQueryVariables
+>;
+export const ProfModalOverviewDataDocument = gql`
+  query ProfModalOverviewData($professorId: Int!, $hasEvals: Boolean!) {
+    professors(where: { professor_id: { _eq: $professorId } }) {
+      name
+      email
+      courses_taught
+      average_rating @include(if: $hasEvals)
+      course_professors {
+        course {
+          ...CourseModalPrefetchCourseData
+        }
+      }
+    }
+  }
+  ${CourseModalPrefetchCourseDataFragmentDoc}
+`;
+
+/**
+ * __useProfModalOverviewDataQuery__
+ *
+ * To run a query within a React component, call `useProfModalOverviewDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfModalOverviewDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfModalOverviewDataQuery({
+ *   variables: {
+ *      professorId: // value for 'professorId'
+ *      hasEvals: // value for 'hasEvals'
+ *   },
+ * });
+ */
+export function useProfModalOverviewDataQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  > &
+    (
+      | { variables: Types.ProfModalOverviewDataQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >(ProfModalOverviewDataDocument, options);
+}
+export function useProfModalOverviewDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >(ProfModalOverviewDataDocument, options);
+}
+export function useProfModalOverviewDataSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.ProfModalOverviewDataQuery,
+        Types.ProfModalOverviewDataQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >(ProfModalOverviewDataDocument, options);
+}
+export type ProfModalOverviewDataQueryHookResult = ReturnType<
+  typeof useProfModalOverviewDataQuery
+>;
+export type ProfModalOverviewDataLazyQueryHookResult = ReturnType<
+  typeof useProfModalOverviewDataLazyQuery
+>;
+export type ProfModalOverviewDataSuspenseQueryHookResult = ReturnType<
+  typeof useProfModalOverviewDataSuspenseQuery
+>;
+export type ProfModalOverviewDataQueryResult = Apollo.QueryResult<
+  Types.ProfModalOverviewDataQuery,
+  Types.ProfModalOverviewDataQueryVariables
 >;
 export const CourseModalFromUrlDocument = gql`
   query CourseModalFromURL(

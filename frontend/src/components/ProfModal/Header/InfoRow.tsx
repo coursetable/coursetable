@@ -9,10 +9,7 @@ import type { CourseInfo } from '../OverviewPanel/OverviewInfo';
 import styles from './ProfessorInfoRow.module.css';
 
 export default function ProfessorModalHeaderInfo({
-  listing,
   professor,
-  disableProfessorView,
-  onNavigation,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
   readonly professor:

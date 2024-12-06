@@ -30,14 +30,17 @@ import {
   toSeasonString,
   to12HourTime,
 } from '../../../utilities/course';
-import { createCourseModalLink } from '../../../utilities/display';
+import {
+  createCourseModalLink,
+  createProfModalLink,
+} from '../../../utilities/display';
 import { TextComponent, InfoPopover, LinkLikeText } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export type CourseInfo = CourseModalOverviewDataQuery['self'][0]['course'];
+type CourseInfo = CourseModalOverviewDataQuery['self'][0]['course'];
 
 const profInfoPopover =
   (
@@ -398,6 +401,7 @@ function Syllabus({
 
 function Professors({ course }: { readonly course: CourseInfo }) {
   const { navigate } = useModalHistory();
+  const [searchParams] = useSearchParams();
   if (!course.course_professors.length)
     return <DataField name="Professor" value="TBA" />;
 
@@ -413,8 +417,8 @@ function Professors({ course }: { readonly course: CourseInfo }) {
             placement="right"
             overlay={profInfoPopover(professor)}
           >
-            <LinkLikeText
-              // TODO: add link
+            <Link
+              to={createProfModalLink(professor.professor_id, searchParams)}
               onClick={() => {
                 navigate('push', {
                   type: 'professor',
@@ -423,7 +427,7 @@ function Professors({ course }: { readonly course: CourseInfo }) {
               }}
             >
               {professor.name}
-            </LinkLikeText>
+            </Link>
           </OverlayTrigger>
         </React.Fragment>
       ))}

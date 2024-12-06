@@ -16,12 +16,16 @@ import { MdInfoOutline } from 'react-icons/md';
 import { detectOverflow } from '@popperjs/core';
 import MultiToggle from 'react-multi-toggle';
 
+import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
 import { useStore } from '../../../store';
 import { generateRandomColor } from '../../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
-import { createCourseModalLink } from '../../../utilities/display';
+import {
+  createCourseModalLink,
+  createProfModalLink,
+} from '../../../utilities/display';
 import { RatingBubble } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 
@@ -318,6 +322,8 @@ function OverviewRatings({
   readonly sameCourse: RelatedCourseInfo[];
 }) {
   const user = useStore((state) => state.user);
+  const [searchParams] = useSearchParams();
+  const { navigate } = useModalHistory();
   const overlapSections = useMemo(() => {
     const sameCourseNormalized = sameCourse
       .filter((o) => !isDiscussionSection(o))
@@ -373,6 +379,26 @@ function OverviewRatings({
         <>
           We've moved! Click on one of the professor names to view their course
           offerings.
+          <ul>
+            {listing.course.course_professors.map((prof) => (
+              <li key={prof.professor.professor_id}>
+                <Link
+                  to={createProfModalLink(
+                    prof.professor.professor_id,
+                    searchParams,
+                  )}
+                  onClick={() => {
+                    navigate('push', {
+                      type: 'professor',
+                      data: prof.professor.professor_id,
+                    });
+                  }}
+                >
+                  {prof.professor.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </>
       ) : overlapSections[filter].length !== 0 ? (
         <div className="position-relative">

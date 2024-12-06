@@ -7,6 +7,7 @@ import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
+import ProfModal from './components/ProfModal/ProfModal';
 import Spinner from './components/Spinner';
 import {
   useModalHistory,
@@ -49,11 +50,14 @@ const Tutorial = suspended(() => import('./components/Tutorial'));
 function Modal() {
   const { currentModal } = useModalHistory();
   if (!currentModal) return null;
-  if (currentModal.type === 'course') {
-    const listing = currentModal.data;
-    return <CourseModal listing={listing} />;
+  switch (currentModal.type) {
+    case 'course':
+      return <CourseModal listing={currentModal.data} />;
+    case 'professor':
+      return <ProfModal professorId={currentModal.data} />;
+    default:
+      return null;
   }
-  return null;
 }
 
 function AuthenticatedRoutes() {

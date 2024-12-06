@@ -18,9 +18,6 @@ query CourseModalOverviewData(
         professor {
           professor_id
           name
-          email
-          courses_taught
-          average_rating @include(if: $hasEvals)
         }
       }
       course_meetings {
@@ -141,6 +138,20 @@ query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
       }
       evaluation_statistic {
         enrolled
+      }
+    }
+  }
+}
+
+query ProfModalOverviewData($professorId: Int!, $hasEvals: Boolean!) {
+  professors(where: { professor_id: { _eq: $professorId } }) {
+    name
+    email
+    courses_taught
+    average_rating @include(if: $hasEvals)
+    course_professors {
+      course {
+        ...CourseModalPrefetchCourseData
       }
     }
   }
