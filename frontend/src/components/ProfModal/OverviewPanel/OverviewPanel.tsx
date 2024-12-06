@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -9,7 +9,9 @@ import {
   Tooltip,
   Popover,
   Badge,
+  Form,
 } from 'react-bootstrap';
+import { MdInfoOutline } from 'react-icons/md';
 
 // @popperjs/core is provided by react-bootstrap
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -296,7 +298,9 @@ function CustomChart({
           autoSkip: true,
           maxTicksLimit: 10,
           callback: (value) =>
-            toSeasonString(uniformScaleToSeason(value as number)),
+            Number.isInteger(value)
+              ? toSeasonString(uniformScaleToSeason(value as number))
+              : '',
         },
       },
       y: {
@@ -341,8 +345,102 @@ function CustomChart({
   );
 }
 
-function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
+function OverviewRatings({
+  coursesTaught,
+}: {
+  readonly coursesTaught: RelatedCourseInfo[];
+}) {
   const user = useStore((state) => state.user);
+  const [groupRecurringCourses, setGroupRecurringCourses] = useState(true);
+  if (!coursesTaught.length)
+    return <Col md={4} className="px-0 my-0 align-right" />;
+  const uniqueCourses = new Map<number, RelatedCourseInfo[]>();
+  for (const course of coursesTaught) {
+    if (!uniqueCourses.has(course.same_course_id))
+      uniqueCourses.set(course.same_course_id, []);
+    uniqueCourses.get(course.same_course_id)!.push(course);
+  }
+  return (
+    <Col md={4} className="px-0 my-0 align-right">
+      <Form.Check type="switch">
+        <Form.Check.Input
+          checked={groupRecurringCourses}
+          onChange={() => {
+            setGroupRecurringCourses(!groupRecurringCourses);
+          }}
+        />
+        <Form.Check.Label
+          onClick={() => {
+            setGroupRecurringCourses(!groupRecurringCourses);
+          }}
+        >
+          Group recurring courses
+        </Form.Check.Label>
+      </Form.Check>
+
+      {groupRecurringCourses && (
+        <div className="position-relative">
+          <OverlayTrigger
+            trigger="click"
+            placement="right"
+            rootClose
+            overlay={(props) => (
+              <Popover id="filter-popover" {...props}>
+                <Popover.Body>
+                  Past course offerings are discovered using CourseTable's own
+                  algorithm. If you see something unexpected or missing, please{' '}
+                  <Link to="https://feedback.coursetable.com">let us know</Link>
+                  .
+                </Popover.Body>
+              </Popover>
+            )}
+          >
+            <button
+              type="button"
+              style={{ color: 'var(--color-primary)' }}
+              className="position-absolute top-0 start-0"
+            >
+              <MdInfoOutline size={20} />
+            </button>
+          </OverlayTrigger>
+        </div>
+      )}
+      <Row className="m-auto pb-1">
+        <Col xs={6} className="d-flex justify-content-center px-0">
+          <span className={clsx(styles.evaluationHeader, 'me-2')}>Season</span>
+        </Col>
+        <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
+          <span className={styles.evaluationHeader}>Class</span>
+        </Col>
+        <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
+          <span className={styles.evaluationHeader}>Work</span>
+        </Col>
+      </Row>
+      {groupRecurringCourses
+        ? [...uniqueCourses].map(([id, courses]) => (
+            <div key={id} className={styles.sameCourseGroup}>
+              <div className="mx-3">
+                <b>{courses[0]!.title}</b>
+              </div>
+              {courses.map((course) => (
+                <Row key={course.course_id} className="py-1 mx-2">
+                  <CourseLink course={course} />
+                  <RatingNumbers course={course} hasEvals={user?.hasEvals} />
+                </Row>
+              ))}
+            </div>
+          ))
+        : coursesTaught.map((course) => (
+            <Row key={course.course_id} className="m-auto py-1">
+              <CourseLink course={course} />
+              <RatingNumbers course={course} hasEvals={user?.hasEvals} />
+            </Row>
+          ))}
+    </Col>
+  );
+}
+
+function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
   const coursesTaught = professor.course_professors
     .map((c) => c.course)
     .sort((a, b) => b.season_code.localeCompare(a.season_code, 'en-US'));
@@ -429,29 +527,7 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           </TextComponent>
         </div>
       </Col>
-      <Col md={4} className="px-0 my-0 align-right">
-        {coursesTaught.length > 0 && (
-          <Row className="m-auto pb-1">
-            <Col xs={6} className="d-flex justify-content-center px-0">
-              <span className={clsx(styles.evaluationHeader, 'me-2')}>
-                Season
-              </span>
-            </Col>
-            <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
-              <span className={styles.evaluationHeader}>Class</span>
-            </Col>
-            <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
-              <span className={styles.evaluationHeader}>Work</span>
-            </Col>
-          </Row>
-        )}
-        {coursesTaught.map((course) => (
-          <Row key={course.course_id} className="m-auto py-1">
-            <CourseLink course={course} />
-            <RatingNumbers course={course} hasEvals={user?.hasEvals} />
-          </Row>
-        ))}
-      </Col>
+      <OverviewRatings coursesTaught={coursesTaught} />
     </Row>
   );
 }

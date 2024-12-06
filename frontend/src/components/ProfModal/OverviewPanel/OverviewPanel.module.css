@@ -10,6 +10,13 @@
   height: 400px;
 }
 
+.sameCourseGroup {
+  background-color: var(--color-primary-subdued-2);
+  border-radius: 8px;
+  padding: 8px 0;
+  margin: 8px 0;
+}
+
 .ratingBubble {
   color: unset;
   border-radius: 8px;

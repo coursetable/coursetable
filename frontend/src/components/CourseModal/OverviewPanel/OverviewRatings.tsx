@@ -130,13 +130,11 @@ function CourseBubbleBase(
   ref: React.Ref<HTMLDivElement>,
 ) {
   const extraText =
-    filter === 'professor'
-      ? `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`
-      : filter === 'both'
-        ? `Section ${course.section}`
-        : course.course_professors.length === 0
-          ? 'TBA'
-          : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
+    filter === 'both'
+      ? `Section ${course.section}`
+      : course.course_professors.length === 0
+        ? 'TBA'
+        : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
   return (
     <Col
       ref={ref}
