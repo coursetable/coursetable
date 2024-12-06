@@ -12,7 +12,10 @@ import type { CourseModalPrefetchListingDataFragment } from '../generated/graphq
 import { useCourseModalFromUrlQuery } from '../queries/graphql-queries';
 import type { Season, Crn } from '../queries/graphql-types';
 import { useStore } from '../store';
-import { createCourseModalLink } from '../utilities/display';
+import {
+  createCourseModalLink,
+  createProfModalLink,
+} from '../utilities/display';
 
 type HistoryEntry =
   | {
@@ -41,9 +44,14 @@ function createHistoryEntryLink(
   searchParams: URLSearchParams,
 ) {
   if (!entry) return undefined;
-  if (entry.type === 'course')
-    return createCourseModalLink(entry.data, searchParams);
-  return undefined;
+  switch (entry.type) {
+    case 'course':
+      return createCourseModalLink(entry.data, searchParams);
+    case 'professor':
+      return createProfModalLink(entry.data, searchParams);
+    default:
+      return undefined;
+  }
 }
 
 function parseQuery(courseModalQuery: string | null) {

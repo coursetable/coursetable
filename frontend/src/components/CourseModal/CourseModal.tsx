@@ -82,7 +82,7 @@ function CourseModal({
         </script>
       </Helmet>
       <Modal
-        show={Boolean(listing)}
+        show
         scrollable
         onHide={closeModal}
         dialogClassName={styles.dialog}
