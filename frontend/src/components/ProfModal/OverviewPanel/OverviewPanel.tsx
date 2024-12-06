@@ -28,7 +28,11 @@ import { Line } from 'react-chartjs-2';
 
 import type { Season } from '../../../queries/graphql-types';
 import { generateRandomColor } from '../../../utilities/common';
-import { ratingColormap, workloadColormap } from '../../../utilities/constants';
+import {
+  ratingColormap,
+  workloadColormap,
+  subjects,
+} from '../../../utilities/constants';
 import { toSeasonString } from '../../../utilities/course';
 import { createCourseModalLink } from '../../../utilities/display';
 import { RatingBubble, TextComponent } from '../../Typography';
@@ -412,20 +416,20 @@ function CustomChart({
 function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
   const chartData = useMemo(() => {
     // Group courses by year
-    const coursesByYear = professor.course_professors.reduce<{
-      [key: string]: number[];
-    }>((acc, offering) => {
-      const season = offering.course.season_code;
-      acc[season] ??= [];
-      if (offering.course.evaluation_statistic?.avg_rating)
-        acc[season].push(offering.course.evaluation_statistic.avg_rating);
-      return acc;
-    }, {});
+    const coursesByYear = new Map<Season, number[]>();
+    for (const course of professor.course_professors) {
+      const season = course.course.season_code;
+      const rating = course.course.evaluation_statistic?.avg_rating;
+      if (rating) {
+        if (!coursesByYear.has(season)) coursesByYear.set(season, []);
+        coursesByYear.get(season)!.push(rating);
+      }
+    }
 
     // Calculate average rating and course count for each year
-    return Object.entries(coursesByYear)
+    return [...coursesByYear]
       .map(([season, ratings]) => ({
-        season: season as Season,
+        season,
         rating: ratings.length
           ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
           : 0, // Average rating
@@ -435,37 +439,63 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
       .sort((a, b) => a.season.localeCompare(b.season, 'en-US'));
   }, [professor]);
 
+  const subjectCount = new Map<string, number>();
+  for (const { course } of professor.course_professors) {
+    for (const listing of course.listings) {
+      const subject = listing.course_code.split(' ')[0]!;
+      subjectCount.set(subject, (subjectCount.get(subject) ?? 0) + 1);
+    }
+  }
+
   return (
     <div style={{ width: '100%', padding: 4 }}>
       {professor.course_professors.length > 0 ? (
         <div style={{ display: 'flex' }}>
           <Col className="px-0 mt-0 mb-3">
-            <TextComponent type="tertiary" style={{ fontSize: 12 }}>
-              <span
-                className="px-2 py-1 rounded font-semibold text-white"
-                style={{
-                  backgroundColor: '#468FF2',
-                  fontSize: '0.75rem',
-                  marginRight: '8px',
-                }}
-              >
-                Beta
-              </span>
-              The professor modal is new and in active testing. We will be
-              adding more content to it soon!
-            </TextComponent>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                marginBottom: '16px',
-              }}
-            >
+            <div className="mb-2">
+              <TextComponent type="tertiary" style={{ fontSize: 12 }}>
+                <span
+                  className="px-2 py-1 rounded font-semibold text-white"
+                  style={{
+                    backgroundColor: '#468FF2',
+                    fontSize: '0.75rem',
+                    marginRight: '8px',
+                  }}
+                >
+                  Beta
+                </span>
+                The professor modal is new and in active testing. We will be
+                adding more content to it soon!
+              </TextComponent>
+            </div>
+            <div>
+              <TextComponent type="primary" style={{ fontWeight: 650 }}>
+                Most associated subjects
+              </TextComponent>
+              <ul>
+                {[...subjectCount]
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([subject]) => (
+                    <li key={subject}>
+                      <OverlayTrigger
+                        overlay={(props) => (
+                          <Tooltip id="color-tooltip" {...props}>
+                            {subjects[subject] ?? '[Unknown]'}
+                          </Tooltip>
+                        )}
+                      >
+                        <span>{subject}</span>
+                      </OverlayTrigger>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            <div>
               <TextComponent type="primary" style={{ fontWeight: 650 }}>
                 Average professor rating over time
               </TextComponent>
+              <CustomChart data={chartData} />
             </div>
-            <CustomChart data={chartData} />
           </Col>
           {/* </div> */}
           <Col md={5} className="px-0 my-0">

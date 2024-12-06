@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
+import { Modal, Badge } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useModalHistory } from '../../../contexts/modalHistoryContext';
+import { ratingColormap } from '../../../utilities/constants';
 import { TextComponent } from '../../Typography';
 import type { ProfInfo } from '../ProfModal';
 import styles from './InfoRow.module.css';
@@ -35,6 +36,20 @@ export default function ModalHeaderInfo({
             <TextComponent type="tertiary">
               {professor.email && (
                 <a href={`mailto:${professor.email}`}>{professor.email}</a>
+              )}{' '}
+              | {professor.courses_taught} courses taught{' '}
+              {professor.average_rating && (
+                <Badge
+                  bg="none"
+                  className="mx-1 mb-1"
+                  style={{
+                    backgroundColor: ratingColormap(
+                      professor.average_rating,
+                    ).css(),
+                  }}
+                >
+                  {professor.average_rating.toFixed(1)}
+                </Badge>
               )}
             </TextComponent>
           </p>
