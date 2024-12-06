@@ -54,8 +54,8 @@ function Rating({
                   ? colorMap(rating)
                   : undefined
                 : generateRandomColor(
-                    `${listing.crn}${listing.course.season_code}${name}`,
-                  )
+                  `${listing.crn}${listing.course.season_code}${name}`,
+                )
               )
                 ?.darken()
                 .saturate()
@@ -83,11 +83,11 @@ function ResultsGridItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { viewedWorksheetNumber } = useWorksheet();
+  const { myViewedWorksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
-    () => listing && isInWorksheet(listing, viewedWorksheetNumber, worksheets),
-    [listing, viewedWorksheetNumber, worksheets],
+    () => listing && isInWorksheet(listing, myViewedWorksheetNumber, worksheets),
+    [listing, myViewedWorksheetNumber, worksheets],
   );
 
   if (!listing) return null;
@@ -127,8 +127,8 @@ function ResultsGridItem({
             >
               {listing.course.course_professors.length > 0
                 ? listing.course.course_professors
-                    .map((p) => p.professor.name)
-                    .join(' • ')
+                  .map((p) => p.professor.name)
+                  .join(' • ')
                 : 'Professor: TBA'}
             </TextComponent>
             <TextComponent

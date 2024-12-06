@@ -393,12 +393,12 @@ export function SearchProvider({
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { viewedWorksheetNumber } = useWorksheet();
+  const { myViewedWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     worksheets,
     processedSeasons,
-    viewedWorksheetNumber,
+    myViewedWorksheetNumber,
   );
 
   const queryEvaluator = useMemo(
@@ -436,7 +436,7 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(listing, viewedWorksheetNumber, worksheets) &&
+              !isInWorksheet(listing, myViewedWorksheetNumber, worksheets) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
@@ -493,7 +493,7 @@ export function SearchProvider({
             return listing.course[key];
         }
       }),
-    [searchDescription.value, worksheetInfo, viewedWorksheetNumber, worksheets],
+    [searchDescription.value, worksheetInfo, myViewedWorksheetNumber, worksheets],
   );
 
   const quistPredicate = useMemo(() => {
@@ -590,7 +590,7 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(listing, viewedWorksheetNumber, worksheets) &&
+          !isInWorksheet(listing, myViewedWorksheetNumber, worksheets) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;
@@ -751,7 +751,7 @@ export function SearchProvider({
       numBounds,
       hideCancelled.value,
       hideConflicting.value,
-      viewedWorksheetNumber,
+      myViewedWorksheetNumber,
       worksheets,
       worksheetInfo,
       hideDiscussionSections.value,

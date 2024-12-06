@@ -106,7 +106,7 @@ function Preview({
         components={{ event: CalendarEventBody }}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
-        onNavigate={() => {}}
+        onNavigate={() => { }}
       />
     </SurfaceComponent>
   );
@@ -120,7 +120,7 @@ function ColorPickerButton({
   readonly className?: string;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber } = useWorksheet();
+  const { viewedSeason, myViewedWorksheetNumber } = useWorksheet();
   const [open, setOpen] = useState(false);
   const [newColor, setNewColor] = useState(event.color);
   const onClose = () => {
@@ -174,7 +174,7 @@ function ColorPickerButton({
                 action: 'update',
                 season: viewedSeason,
                 crn: event.listing.crn,
-                worksheetNumber: viewedWorksheetNumber,
+                worksheetNumber: myViewedWorksheetNumber,
                 color: newColor,
               });
               await worksheetsRefresh();

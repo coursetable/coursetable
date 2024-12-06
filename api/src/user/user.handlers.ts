@@ -70,7 +70,7 @@ async function updateWorksheetCourse(
     ),
     columns: { id: true },
   });
-  // To be removed once add/remove/rename worksheets is pushed.
+
   if (!existingMeta) {
     [existingMeta] = await db
       .insert(worksheets)
@@ -82,6 +82,7 @@ async function updateWorksheetCourse(
           worksheetNumber === 0
             ? 'Main Worksheet'
             : `Worksheet ${worksheetNumber}`,
+          // All other than main worksheet to be removed once add/remove/rename worksheets is pushed.
       })
       .returning({ id: worksheets.id });
   }
@@ -124,8 +125,10 @@ async function updateWorksheetCourse(
       .where(eq(worksheetCourses.worksheetId, existingMeta.id));
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-    if (numCoursesInCurWorksheet === 0)
+    if (numCoursesInCurWorksheet === 0) {
+      // Deletions of all ws other than main to be removed once add/remove/rename worksheets is pushed.
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
+    }
   } else {
     // Update data of a bookmarked course
     winston.info(
@@ -134,9 +137,6 @@ async function updateWorksheetCourse(
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      // Currently the frontend is not capable of actually syncing the hidden
-      // state so we keep it as null. This allows it to be properly synced in
-      // the future
       .set({ color, hidden })
       .where(
         and(
