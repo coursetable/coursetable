@@ -196,8 +196,8 @@ export function WorksheetProvider({
   useEffect(() => {
     let entries: [number, Option<number>][] = [];
 
-    if (worksheets && worksheets.get(viewedSeason)) {
-      entries = Array.from(worksheets.get(viewedSeason)!.entries()).map(
+    if (curWorksheet && curWorksheet.get(viewedSeason)) {
+      entries = Array.from(curWorksheet.get(viewedSeason)!.entries()).map(
         ([wsNumber, wsInfo]) => [
           wsNumber,
           {
@@ -223,7 +223,7 @@ export function WorksheetProvider({
 
     if (!newOptions[viewedWorksheetNumber]) changeViewedWorksheetNumber(0);
   }, [
-    worksheets,
+    curWorksheet,
     viewedSeason,
     viewedWorksheetNumber,
     changeViewedWorksheetNumber,
