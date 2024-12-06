@@ -8,6 +8,7 @@ import {
   OverlayTrigger,
   Tooltip,
   Popover,
+  Badge,
 } from 'react-bootstrap';
 
 // @popperjs/core is provided by react-bootstrap
@@ -472,11 +473,11 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
               <TextComponent type="primary" style={{ fontWeight: 650 }}>
                 Most associated subjects
               </TextComponent>
-              <ul>
+              <ul className="list-unstyled d-flex">
                 {[...subjectCount]
                   .sort((a, b) => b[1] - a[1])
                   .map(([subject]) => (
-                    <li key={subject}>
+                    <li key={subject} style={{ padding: 2, margin: 2 }}>
                       <OverlayTrigger
                         overlay={(props) => (
                           <Tooltip id="color-tooltip" {...props}>
@@ -484,7 +485,17 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
                           </Tooltip>
                         )}
                       >
-                        <span>{subject}</span>
+                        <span>
+                          <Badge
+                            bg="none"
+                            style={{
+                              backgroundColor: 'var(--color-primary)',
+                              cursor: 'default',
+                            }}
+                          >
+                            {subject}
+                          </Badge>
+                        </span>
                       </OverlayTrigger>
                     </li>
                   ))}
@@ -492,7 +503,7 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
             </div>
             <div>
               <TextComponent type="primary" style={{ fontWeight: 650 }}>
-                Average professor rating over time
+                Average course rating over time
               </TextComponent>
               {chartData.length > 0 ? (
                 <CustomChart data={chartData} />
