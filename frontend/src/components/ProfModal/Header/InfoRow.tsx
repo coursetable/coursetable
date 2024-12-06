@@ -46,6 +46,7 @@ export default function ModalHeaderInfo({
                     backgroundColor: ratingColormap(
                       professor.average_rating,
                     ).css(),
+                    color: 'var(--color-text-dark)',
                   }}
                 >
                   {professor.average_rating.toFixed(1)}

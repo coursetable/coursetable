@@ -117,6 +117,7 @@ function CourseBubbleBase(
   {
     course,
     className,
+    as: As = 'div',
     ...props
   }: React.ComponentProps<typeof Col> & {
     readonly course: RelatedCourseInfo;
@@ -125,18 +126,18 @@ function CourseBubbleBase(
 ) {
   const extraText = `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`;
   return (
-    <Col
-      ref={ref}
-      xs={5}
-      className={clsx(
-        className,
-        styles.ratingBubble,
-        'position-relative p-0 me-3 text-center',
-      )}
-      {...props}
-    >
-      <strong>{toSeasonString(course.season_code)}</strong>
-      <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+    <Col ref={ref} xs={6} className="p-0 position-relative pe-2">
+      <As
+        className={clsx(
+          className,
+          styles.ratingBubble,
+          'd-block text-center p-0 w-100',
+        )}
+        {...props}
+      >
+        <strong>{toSeasonString(course.season_code)}</strong>
+        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+      </As>
     </Col>
   );
 }
@@ -334,7 +335,7 @@ function CustomChart({
   };
 
   return (
-    <div style={{ width: '100%', height: '400px' }}>
+    <div className={styles.ratingGraph}>
       <Line data={chartData} options={chartOptions} />
     </div>
   );
@@ -379,14 +380,14 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
     <Row className="m-auto">
       <Col md={8} className="px-0 mt-0 mb-3">
         <div>
-          <TextComponent type="primary" style={{ fontWeight: 650 }}>
+          <TextComponent type="primary" className="fw-bold">
             Most associated subjects
           </TextComponent>
           <ul className="list-unstyled d-flex">
             {[...subjectCount]
               .sort((a, b) => b[1] - a[1])
               .map(([subject]) => (
-                <li key={subject} style={{ padding: 2, margin: 2 }}>
+                <li key={subject}>
                   <OverlayTrigger
                     overlay={(props) => (
                       <Tooltip id="color-tooltip" {...props}>
@@ -394,24 +395,16 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
                       </Tooltip>
                     )}
                   >
-                    <span>
-                      <Badge
-                        bg="none"
-                        style={{
-                          backgroundColor: 'var(--color-primary)',
-                          cursor: 'default',
-                        }}
-                      >
-                        {subject}
-                      </Badge>
-                    </span>
+                    <Badge bg="none" className={styles.subjectBadge}>
+                      {subject}
+                    </Badge>
                   </OverlayTrigger>
                 </li>
               ))}
           </ul>
         </div>
         <div>
-          <TextComponent type="primary" style={{ fontWeight: 650 }}>
+          <TextComponent type="primary" className="fw-bold">
             Course ratings over time
           </TextComponent>
           {chartData.length > 0 ? (
@@ -421,14 +414,10 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           )}
         </div>
         <div className="mt-2">
-          <TextComponent type="tertiary" style={{ fontSize: 12 }}>
+          <TextComponent type="tertiary" small>
             <span
-              className="px-2 py-1 rounded font-semibold text-white"
-              style={{
-                backgroundColor: '#468FF2',
-                fontSize: '0.75rem',
-                marginRight: '8px',
-              }}
+              className="px-2 py-1 rounded font-semibold text-white me-2"
+              style={{ backgroundColor: 'var(--color-primary)' }}
             >
               Beta
             </span>
@@ -440,20 +429,13 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           </TextComponent>
         </div>
       </Col>
-      <Col md={4} className="px-0 my-0">
+      <Col md={4} className="px-0 my-0 align-right">
         {coursesTaught.length > 0 && (
-          <Row className="m-auto pb-1" style={{ justifyContent: 'right' }}>
-            <Col
-              xs={5}
-              className="d-flex justify-content-center px-0 me-3"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '4px',
-              }}
-            >
-              <span className={styles.evaluationHeader}>Season</span>
+          <Row className="m-auto pb-1">
+            <Col xs={6} className="d-flex justify-content-center px-0">
+              <span className={clsx(styles.evaluationHeader, 'me-2')}>
+                Season
+              </span>
             </Col>
             <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Class</span>
@@ -464,11 +446,7 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           </Row>
         )}
         {coursesTaught.map((course) => (
-          <Row
-            key={course.course_id}
-            className="m-auto py-1"
-            style={{ justifyContent: 'right' }}
-          >
+          <Row key={course.course_id} className="m-auto py-1">
             <CourseLink course={course} />
             <RatingNumbers course={course} hasEvals={user?.hasEvals} />
           </Row>
