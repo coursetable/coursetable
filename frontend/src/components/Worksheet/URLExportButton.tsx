@@ -7,7 +7,8 @@ import {
 } from '../../contexts/worksheetContext';
 
 export default function URLExportButton() {
-  const { viewedSeason, viewedWorksheetNumber, worksheetOptions, courses } = useWorksheet();
+  const { viewedSeason, viewedWorksheetNumber, worksheetOptions, courses } =
+    useWorksheet();
 
   async function handleExport() {
     const payload: ExoticWorksheet = {

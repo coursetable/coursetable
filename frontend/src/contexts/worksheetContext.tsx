@@ -13,7 +13,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { seasons as allSeasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
 import { CUR_SEASON } from '../config';
-import { type UserWorksheets, type CatalogListing, updateWorksheetMetadata } from '../queries/api';
+import type { UserWorksheets, CatalogListing } from '../queries/api';
 import {
   type Season,
   type Crn,
@@ -130,11 +130,10 @@ export function WorksheetProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
-  const { worksheets, friends, worksheetsRefresh } = useStore(
+  const { worksheets, friends } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
-      worksheetsRefresh: state.worksheetsRefresh,
     })),
   );
   const [exoticWorksheet, setExoticWorksheet] = useState(() =>
@@ -172,7 +171,9 @@ export function WorksheetProvider({
   const [myViewedWorksheetNumber, setMyViewedWorksheetNumber] =
     useSessionStorageState('myViewedWorksheetNumber', 0);
 
-  const [worksheetOptions, setWorksheetOptions] = useState<{ [key: number]: Option<number> }>({});
+  const [worksheetOptions, setWorksheetOptions] = useState<{
+    [key: number]: Option<number>;
+  }>({});
 
   const {
     loading: worksheetLoading,
@@ -184,12 +185,13 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  const changeViewedWorksheetNumber = useCallback((wsNumber: number) => {
-    setViewedWorksheetNumber(wsNumber);
-    if (viewedPerson === 'me') {
-      setMyViewedWorksheetNumber(wsNumber);
-    }
-  }, [setViewedWorksheetNumber]);
+  const changeViewedWorksheetNumber = useCallback(
+    (wsNumber: number) => {
+      setViewedWorksheetNumber(wsNumber);
+      if (viewedPerson === 'me') setMyViewedWorksheetNumber(wsNumber);
+    },
+    [viewedPerson, setViewedWorksheetNumber, setMyViewedWorksheetNumber],
+  );
 
   useEffect(() => {
     let entries: [number, Option<number>][] = [];
@@ -206,21 +208,26 @@ export function WorksheetProvider({
       );
     }
 
-    const newOptions = Object.fromEntries(entries) as { [key: number]: Option<number> };
+    const newOptions = Object.fromEntries(entries) as {
+      [key: number]: Option<number>;
+    };
+
     // We must populate a "ghost" main WS if none exists in the DB.
-    if (!newOptions[0]) {
-      newOptions[0] = {
-        label: "Main Worksheet",
-        value: 0,
-      };
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    newOptions[0] ||= {
+      label: 'Main Worksheet',
+      value: 0,
+    };
 
     setWorksheetOptions(newOptions);
 
-    if (!newOptions[viewedWorksheetNumber]) {
-      changeViewedWorksheetNumber(0);
-    }
-  }, [worksheets, viewedSeason, viewedWorksheetNumber, changeViewedWorksheetNumber]);
+    if (!newOptions[viewedWorksheetNumber]) changeViewedWorksheetNumber(0);
+  }, [
+    worksheets,
+    viewedSeason,
+    viewedWorksheetNumber,
+    changeViewedWorksheetNumber,
+  ]);
 
   const changeWorksheetView = useCallback(
     (view: WorksheetView) => {
@@ -234,12 +241,10 @@ export function WorksheetProvider({
   const changeViewedPerson = useCallback(
     (newPerson: 'me' | NetId) => {
       changeViewedWorksheetNumber(0);
-      // chicken-and-egg problem: 
-      // can't switch to newPerson first because they may not have worksheet 0
-      // can't use the general callback function first because person hasn't changed
-      if (newPerson === 'me') {
-        setMyViewedWorksheetNumber(0);
-      }
+      // Chicken-and-egg problem:
+      // Can't switch to newPerson first because they may not have worksheet 0
+      // Can't use general callback function first because person hasn't changed
+      if (newPerson === 'me') setMyViewedWorksheetNumber(0);
       setViewedPerson(newPerson);
     },
     [setViewedPerson, changeViewedWorksheetNumber, setMyViewedWorksheetNumber],

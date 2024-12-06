@@ -24,8 +24,12 @@ import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, viewedSeason, myViewedWorksheetNumber, isReadonlyWorksheet } =
-    useWorksheet();
+  const {
+    courses,
+    viewedSeason,
+    myViewedWorksheetNumber,
+    isReadonlyWorksheet,
+  } = useWorksheet();
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const areHidden = useMemo(

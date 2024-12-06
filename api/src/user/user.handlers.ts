@@ -82,7 +82,8 @@ async function updateWorksheetCourse(
           worksheetNumber === 0
             ? 'Main Worksheet'
             : `Worksheet ${worksheetNumber}`,
-          // All other than main worksheet to be removed once add/remove/rename worksheets is pushed.
+        // All other than main worksheet to be removed
+        // once add/remove/rename worksheets is pushed.
       })
       .returning({ id: worksheets.id });
   }
@@ -126,7 +127,8 @@ async function updateWorksheetCourse(
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
     if (numCoursesInCurWorksheet === 0) {
-      // Deletions of all ws other than main to be removed once add/remove/rename worksheets is pushed.
+      // Deletions of all ws other than main to be removed
+      // once add/remove/rename worksheets is pushed.
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
     }
   } else {

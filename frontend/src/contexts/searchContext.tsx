@@ -493,7 +493,12 @@ export function SearchProvider({
             return listing.course[key];
         }
       }),
-    [searchDescription.value, worksheetInfo, myViewedWorksheetNumber, worksheets],
+    [
+      searchDescription.value,
+      worksheetInfo,
+      myViewedWorksheetNumber,
+      worksheets,
+    ],
   );
 
   const quistPredicate = useMemo(() => {

@@ -8,7 +8,6 @@ import { useShallow } from 'zustand/react/shallow';
 import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { updateWorksheetMetadata } from '../../queries/api';
-import type { Season } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
@@ -38,7 +37,7 @@ function CustomInput(props: CustomInputProps) {
         inputRef.current?.setSelectionRange(0, inputField.length);
       });
     }
-  }, [isModifying]);
+  }, [isModifying, inputField.length]);
 
   useEffect(() => {
     if (!inputRef.current) return;
@@ -212,7 +211,7 @@ function WorksheetNumDropdownDesktop() {
   const modifiedWorksheetOptions: WorksheetOption[] = useMemo(() => {
     if (viewedPerson !== 'me') return Object.values(worksheetOptions);
     return [...Object.values(worksheetOptions), { value: 'add', label: '+' }];
-  }, [worksheetOptions]);
+  }, [viewedPerson, worksheetOptions]);
 
   return (
     <Popout
