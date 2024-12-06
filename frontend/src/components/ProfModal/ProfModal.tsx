@@ -30,6 +30,7 @@ function ProfModal({ professorId }: { readonly professorId: number }) {
           animation={false}
           centered
         >
+          <Modal.Header className={styles.modalHeader} closeButton />
           <Modal.Body className="text-center">
             <p>Loading professor details...</p>
           </Modal.Body>
