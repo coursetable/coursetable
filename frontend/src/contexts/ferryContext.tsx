@@ -55,7 +55,13 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
         fetchCatalogMetadata(),
       ]);
       if (!data || !metadata) return null;
-      return { metadata, data };
+      // TODO: directly use the course-indexed data in frontend
+      const catalogOldFormat = new Map<Crn, CatalogListing>();
+      for (const course of data.values()) {
+        for (const listing of course.listings)
+          catalogOldFormat.set(listing.crn, { ...listing, course });
+      }
+      return { metadata, data: catalogOldFormat };
     })();
     const evalsPromise = (() => {
       if (evalsLoadAttempted.has(season) || !includeEvals)
@@ -73,10 +79,15 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
     const seasonCatalog = catalog ?? courseData[season];
     if (!seasonCatalog) return;
     if (evals) {
-      for (const [crn, ratings] of evals) {
-        const listing = seasonCatalog.data.get(crn);
-        if (listing) {
-          Object.assign(listing.course, ratings.course);
+      const courseById = new Map<number, CatalogListing['course']>();
+      for (const listing of seasonCatalog.data.values())
+        courseById.set(listing.course.course_id, listing.course);
+      for (const [courseId, ratings] of evals) {
+        // All listings share the same reference to this object, so this will
+        // affect the original catalog
+        const course = courseById.get(courseId);
+        if (course) {
+          Object.assign(course, ratings);
         } else {
           // Unactionable error, courses may have failed to load
         }
@@ -113,10 +124,7 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const {
-    authStatus,
-    user: { hasEvals },
-  } = useStore(
+  const { authStatus, user } = useStore(
     useShallow((state) => ({
       authStatus: state.authStatus,
       user: state.user,
@@ -129,7 +137,7 @@ export function FerryProvider({
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;
         const includeEvals = Boolean(
-          authStatus === 'authenticated' && hasEvals,
+          authStatus === 'authenticated' && user?.hasEvals,
         );
         // As long as there is one request in progress, don't fire another
         if (
@@ -152,7 +160,7 @@ export function FerryProvider({
         setErrors((e) => [...e, err as {}]);
       });
     },
-    [authStatus, hasEvals],
+    [authStatus, user?.hasEvals],
   );
 
   // If there's any error, we want to immediately stop "loading" and start
@@ -197,8 +205,8 @@ export function useWorksheetInfo(
 ) {
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
-    if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
-    if (season in worksheets) return [season];
+    if (Array.isArray(season)) return season.filter((x) => worksheets.has(x));
+    if (worksheets.has(season)) return [season];
     return [];
   }, [season, worksheets]);
 
@@ -211,10 +219,10 @@ export function useWorksheetInfo(
 
     for (const seasonCode of requestedSeasons) {
       // Guaranteed to exist because of how requestedSeasons is constructed.
-      const seasonWorksheets = worksheets[seasonCode]!;
-      const worksheet = seasonWorksheets[worksheetNumber];
+      const seasonWorksheets = worksheets.get(seasonCode)!;
+      const worksheet = seasonWorksheets.get(worksheetNumber);
       if (!worksheet) continue;
-      for (const { crn, color, hidden } of worksheet) {
+      for (const { crn, color, hidden } of worksheet.courses) {
         const listing = courses[seasonCode]!.data.get(crn);
         if (listing) {
           dataReturn.push({

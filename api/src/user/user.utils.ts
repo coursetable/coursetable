@@ -1,35 +1,37 @@
-export function worksheetCoursesToWorksheets(
-  worksheetCourses: {
-    netId: string;
-    crn: number;
-    season: number;
-    worksheetNumber: number;
-    color: string;
-    hidden: boolean | null;
-  }[],
-) {
-  const res: {
-    [netId: string]: {
-      [season: string]: {
-        [worksheetNumber: number]: {
-          crn: number;
-          color: string;
-          hidden: boolean | null;
-        }[];
-      };
-    };
-  } = {};
-  for (const course of worksheetCourses) {
-    res[course.netId] ??= {};
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    res[course.netId]![course.season] ??= {};
+type WorksheetData = {
+  netId: string;
+  season: number;
+  worksheetNumber: number;
+  courses: object[];
+  // Other worksheet properties
+};
 
-    res[course.netId]![course.season]![course.worksheetNumber] ??= [];
-    res[course.netId]![course.season]![course.worksheetNumber]!.push({
-      crn: course.crn,
-      color: course.color,
-      hidden: course.hidden,
-    });
-  }
+type WorksheetMap<T extends WorksheetData> = {
+  [netId: string]: {
+    [season: string]: {
+      [worksheetNumber: number]: Omit<
+        T,
+        'netId' | 'season' | 'worksheetNumber'
+      >;
+    };
+  };
+};
+
+export function worksheetListToMap<T extends WorksheetData>(
+  worksheetCourses: T[],
+): WorksheetMap<T> {
+  const res: WorksheetMap<T> = {};
+  worksheetCourses.forEach(({ netId, season, worksheetNumber, ...data }) => {
+    res[netId] ??= {};
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    res[netId][season] ??= {};
+    res[netId][season][worksheetNumber] ??= data;
+  });
   return res;
+}
+
+export function getNextAvailableWsNumber(worksheetNumbers: number[]): number {
+  if (worksheetNumbers.length === 0) return 1;
+  const last = Math.max(...worksheetNumbers);
+  return last + 1;
 }

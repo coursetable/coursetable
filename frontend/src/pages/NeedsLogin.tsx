@@ -25,7 +25,7 @@ function NeedsLogin({
           >
             log in
           </a>
-        ) : !user.hasEvals ? (
+        ) : !user?.hasEvals ? (
           <Link to="/challenge">complete the challenge</Link>
         ) : (
           <button type="button" onClick={() => window.location.reload()}>

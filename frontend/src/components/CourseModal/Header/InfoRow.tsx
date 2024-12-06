@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
+import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { Option } from '../../../contexts/searchContext';
 import type {
   CourseSectionsQuery,
@@ -54,7 +55,7 @@ function SectionLink({
       className={styles.sectionLink}
     >
       <span title={hasDifferentTitles ? section.course.title : undefined}>
-        <b>{section.section.padStart(2, '0')}</b>{' '}
+        <b>{section.course.section.padStart(2, '0')}</b>{' '}
         {hasDifferentTitles && (
           <>
             {truncatedText(section.course.title, 40, '')}
@@ -85,9 +86,9 @@ function SectionsDropdown({
   const sectionsOptions: Map<string, Option> = new Map<string, Option>(
     // @ts-expect-error: TODO it actually works to have a ReactNode as label
     sections.map((section) => [
-      section.section,
+      section.course.section,
       {
-        value: section.section.padStart(2, '0'),
+        value: section.course.section.padStart(2, '0'),
         label: (
           <SectionLink
             section={section}
@@ -100,15 +101,15 @@ function SectionsDropdown({
   );
   return (
     <Popout
-      buttonText={listing.section.padStart(2, '0')}
-      selectedOptions={sectionsOptions.get(listing.section)}
+      buttonText={listing.course.section.padStart(2, '0')}
+      selectedOptions={sectionsOptions.get(listing.course.section)}
       clearIcon={false}
       className={styles.sectionsDropdownButton}
       wrapperClassName={styles.sectionsDropdown}
     >
       <PopoutSelect<Option, false>
         className={styles.sectionsDropdownSelect}
-        value={sectionsOptions.get(listing.section)}
+        value={sectionsOptions.get(listing.course.section)}
         options={[...sectionsOptions.values()]}
         isSearchable={false}
         showControl={false}
@@ -119,29 +120,30 @@ function SectionsDropdown({
 
 export default function ModalHeaderInfo({
   listing,
-  backTarget,
   onNavigation,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  readonly backTarget: string | undefined;
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
   const courseCode = listing.course_code;
-  const season = listing.season_code;
+  const season = listing.course.season_code;
   const { data, loading, error } = useCourseSectionsQuery({
     variables: {
       courseCode,
       seasonCode: season,
-      hasEvals: Boolean(user.hasEvals),
+      hasEvals: Boolean(user?.hasEvals),
     },
   });
+  const { backTarget } = useModalHistory();
   const sections =
     loading || error || !data?.listings
       ? []
       : [...data.listings].sort((a, b) =>
-          a.section.localeCompare(b.section, 'en-US', { numeric: true }),
+          a.course.section.localeCompare(b.course.section, 'en-US', {
+            numeric: true,
+          }),
         );
   return (
     <div className={styles.modalTop}>
@@ -168,7 +170,7 @@ export default function ModalHeaderInfo({
             )}
             {listing.course.title}{' '}
             <TextComponent type="tertiary">
-              ({toSeasonString(listing.season_code)})
+              ({toSeasonString(listing.course.season_code)})
             </TextComponent>
             <SectionsDropdown
               listing={listing}
@@ -197,7 +199,7 @@ export default function ModalHeaderInfo({
                     <Link
                       className={styles.crossListingLink}
                       to={createCourseModalLink(
-                        { crn: l.crn, season_code: listing.season_code },
+                        { crn: l.crn, course: listing.course },
                         searchParams,
                       )}
                       // We replace instead of pushing to history. I don't

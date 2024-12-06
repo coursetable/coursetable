@@ -124,10 +124,22 @@ async function fetchAPI(
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
-      // Let the handler handle it first
-      if (handleErrorCode?.(errorCode))
-        return noResExpected ? false : undefined;
-      throw new Error(errorCode);
+      // Handle common errors uniformly
+      switch (errorCode) {
+        case 'USER_NOT_FOUND':
+          toast.info('Login expired. Please log in again.');
+          return noResExpected ? false : undefined;
+        case 'INVALID_REQUEST':
+          toast.error(
+            'The server did not understand this request. Please refresh the page and try again.',
+          );
+          return noResExpected ? false : undefined;
+        default:
+          // Let the handler handle it first
+          if (handleErrorCode?.(errorCode))
+            return noResExpected ? false : undefined;
+          throw new Error(errorCode);
+      }
     }
     // If no res body is expected, return early
     if (noResExpected) return true;
@@ -142,12 +154,9 @@ async function fetchAPI(
       message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
     });
     Sentry.captureException(err);
-    let message = String(err);
-    if (message.includes('INVALID_REQUEST')) {
-      message +=
-        ' Please try refreshing the page and/or reopening in a new tab.';
-    }
-    toast.error(`Failed while ${breadcrumb.message.toLowerCase()}: ${message}`);
+    toast.error(
+      `Failed while ${breadcrumb.message.toLowerCase()}: ${String(err)}`,
+    );
     return noResExpected ? false : undefined;
   }
 }
@@ -196,11 +205,47 @@ export function updateWorksheetCourses(
   });
 }
 
+export async function updateWorksheetMetadata(
+  body: {
+    season: Season;
+  } & (
+    | {
+        action: 'add';
+      }
+    | {
+        action: 'delete';
+        worksheetNumber: number;
+      }
+    | {
+        action: 'rename';
+        worksheetNumber: number;
+        name: string;
+      }
+  ),
+): Promise<boolean> {
+  return await fetchAPI('/user/updateWorksheetMetadata', {
+    body,
+    breadcrumb: {
+      category: 'worksheet',
+      message: `Updating worksheet names`,
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'WORKSHEET_NOT_FOUND':
+          toast.error('Worksheet not found.');
+          return true;
+        default:
+          return false;
+      }
+    },
+  });
+}
+
 const hiddenCoursesStorage = createLocalStorageSlot<{
   [seasonCode: Season]: { [crn: Crn]: boolean };
 }>('hiddenCourses');
 
-export function toggleCourseHidden({
+export function setCourseHidden({
   season,
   worksheetNumber,
   crn,
@@ -258,7 +303,7 @@ export function fetchCatalogMetadata() {
   });
 }
 
-type ListingPublic = CatalogBySeasonQuery['listings'][number];
+type CoursePublic = CatalogBySeasonQuery['courses'][number];
 
 export async function fetchCatalog(season: Season) {
   const breadcrumb = {
@@ -269,15 +314,17 @@ export async function fetchCatalog(season: Season) {
     breadcrumb,
   });
   if (!res) return undefined;
-  const data = res as ListingPublic[];
-  const info = new Map<Crn, ListingPublic>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as CatalogBySeasonQuery['courses'];
+  const info = new Map<number, CoursePublic>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 
-type ListingEvals = EvalsBySeasonQuery['listings'][number];
+type CourseEvals = EvalsBySeasonQuery['courses'][number];
 
-export type CatalogListing = ListingPublic & Partial<ListingEvals>;
+export type CatalogListing = CoursePublic['listings'][number] & {
+  course: CoursePublic & Partial<CourseEvals>;
+};
 
 export async function fetchEvals(season: Season) {
   const res = await fetchAPI(`/catalog/evals/${season}`, {
@@ -287,9 +334,9 @@ export async function fetchEvals(season: Season) {
     },
   });
   if (!res) return undefined;
-  const data = res as ListingEvals[];
-  const info = new Map<Crn, ListingEvals>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as EvalsBySeasonQuery['courses'];
+  const info = new Map<number, CourseEvals>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 
@@ -381,37 +428,67 @@ export async function verifyChallenge(body: {
     : { status: 'rejected', data: res };
 }
 
-const userWorksheetsSchema = z.record(
-  z.record(
-    z.array(
+const userInfoSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  hasEvals: z.boolean(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+});
+
+export type UserInfo = z.infer<typeof userInfoSchema>;
+
+export async function getUserInfo() {
+  const res = await fetchAPI('/user/info', {
+    schema: userInfoSchema,
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching user info',
+    },
+  });
+  return res;
+}
+
+const userWorksheetsSchema = z
+  .record(
+    // Key: season
+    z.record(
+      // Key: worksheet number
       z.object({
-        crn: crnSchema,
-        color: z.string(),
-        hidden: z.boolean().nullable(),
+        name: z.string(),
+        courses: z.array(
+          z.object({
+            crn: crnSchema,
+            color: z.string(),
+            hidden: z.boolean().nullable(),
+          }),
+        ),
       }),
     ),
-  ),
-);
+  )
+  .transform((data) => {
+    type Worksheet = NonNullable<(typeof data)[Season]>[string];
+    // Transform the object record to a map
+    const res = new Map<Season, Map<number, Worksheet>>();
+    for (const season of Object.keys(data)) {
+      const seasonMap = new Map<number, Worksheet>();
+      for (const num of Object.keys(data[season]!))
+        seasonMap.set(Number(num), data[season]![num]!);
+      res.set(season as Season, seasonMap);
+    }
+    return res;
+  });
 
 // Change index type to be more specific. We don't use the key type of z.record
 // on purpose; see https://github.com/colinhacks/zod/pull/2287
-export type UserWorksheets = {
-  [season: Season]: {
-    [worksheetNumber: number]: NonNullable<
-      z.infer<typeof userWorksheetsSchema>[Season]
-    >[string];
-  };
-};
+export type UserWorksheets = z.infer<typeof userWorksheetsSchema>;
 
 export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
-      netId: netIdSchema,
-      // This cannot be null in the real application, because the site creates a
-      // user if one doesn't exist. This is purely for completeness.
-      evaluationsEnabled: z.union([z.boolean(), z.null()]),
-      year: z.union([z.number(), z.null()]),
-      school: z.union([z.string(), z.null()]),
       data: userWorksheetsSchema,
     }),
     breadcrumb: {
@@ -427,17 +504,16 @@ export async function fetchUserWorksheets() {
   // server. This is a one-time operation to migrate from our old client-side
   // logic to be server-side, to make it consistent between devices and friends.
   const actions = [];
-  for (const seasonKey in res.data) {
-    const season = seasonKey as Season;
-    for (const num in res.data[season]) {
-      for (const course of res.data[season][num]!) {
+  for (const [season, seasonWorksheets] of res.data) {
+    for (const [num, worksheet] of seasonWorksheets) {
+      for (const course of worksheet.courses) {
         if (course.hidden === null) {
           course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
           actions.push({
             action: 'update',
             season,
             crn: course.crn,
-            worksheetNumber: Number(num),
+            worksheetNumber: num,
             hidden: course.hidden,
           });
         }

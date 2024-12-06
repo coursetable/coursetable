@@ -2,7 +2,11 @@ import type { StateCreator } from 'zustand';
 import { checkAuth } from '../queries/api';
 import type { Store } from '../store';
 
-type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
+type AuthStatus =
+  | 'loading'
+  | 'initializing'
+  | 'authenticated'
+  | 'unauthenticated';
 
 interface AuthSliceState {
   authStatus: AuthStatus;
@@ -23,14 +27,16 @@ export const createAuthSlice: StateCreator<Store, [], [], AuthSlice> = (
     set({ authStatus: 'loading' });
     const isAuthenticated = await checkAuth();
     set({
-      authStatus: isAuthenticated ? 'authenticated' : 'unauthenticated',
+      authStatus: isAuthenticated ? 'initializing' : 'unauthenticated',
     });
     if (isAuthenticated) {
       await Promise.all([
         get().userRefresh(),
+        get().worksheetsRefresh(),
         get().friendRefresh(),
         get().friendReqRefresh(),
       ]);
+      set({ authStatus: 'authenticated' });
     }
   },
 });

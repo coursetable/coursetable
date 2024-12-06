@@ -7,7 +7,12 @@ import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
+import ProfModal from './components/ProfModal/ProfModal';
 import Spinner from './components/Spinner';
+import {
+  useModalHistory,
+  ModalHistoryProvider,
+} from './contexts/modalHistoryContext';
 import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
@@ -42,6 +47,19 @@ const Spring24Release = suspended(
 );
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
+function Modal() {
+  const { currentModal } = useModalHistory();
+  if (!currentModal) return null;
+  switch (currentModal.type) {
+    case 'course':
+      return <CourseModal listing={currentModal.data} />;
+    case 'professor':
+      return <ProfModal professorId={currentModal.data} />;
+    default:
+      return null;
+  }
+}
+
 function AuthenticatedRoutes() {
   const { authStatus, user } = useStore(
     useShallow((state) => ({
@@ -52,17 +70,14 @@ function AuthenticatedRoutes() {
 
   const location = useLocation();
 
-  if (authStatus === 'loading') return <Spinner />;
+  if (authStatus === 'loading') return <Spinner message="Authenticating..." />;
+  if (authStatus === 'initializing')
+    return <Spinner message="Fetching user info..." />;
 
   switch (location.pathname) {
     case '/catalog':
-      return <Outlet />;
-
     case '/worksheet':
-      if (authStatus === 'authenticated') return <Outlet />;
-      return (
-        <NeedsLogin redirect={location.pathname} message="your worksheet" />
-      );
+      return <Outlet />;
 
     case '/login':
       if (authStatus === 'authenticated')
@@ -70,7 +85,7 @@ function AuthenticatedRoutes() {
       return <Outlet />;
 
     case '/graphiql':
-      if (user.hasEvals) return <Outlet />;
+      if (user?.hasEvals) return <Outlet />;
       return (
         <NeedsLogin
           redirect={location.pathname}
@@ -112,7 +127,7 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={12}
+        id={13}
       >
         We want to hear from you. How can we make CourseTable better?{' '}
         <a
@@ -134,9 +149,12 @@ function App() {
           <Route path="/" element={<Navigate to="/catalog" replace />} />
 
           {/* Authenticated routes */}
+          {/* Catalog and worksheet can be viewed by anyone; we put them under
+          authenticated routes because we want loading auth to show a loading
+          screen */}
+          <Route path="/catalog" element={<Search />} />
           <Route path="/worksheet" element={<Worksheet />} />
           <Route path="/graphiql" element={<Graphiql />} />
-          <Route path="/catalog" element={<Search />} />
           <Route path="/login" element={<Landing />} />
         </Route>
 
@@ -163,7 +181,10 @@ function App() {
       <Footer />
       {/* Globally overlaid components */}
       {isTutorialOpen && <Tutorial />}
-      <CourseModal />
+      {/* ModalProvider reads the location so it must be within the app */}
+      <ModalHistoryProvider>
+        <Modal />
+      </ModalHistoryProvider>
     </div>
   );
 }

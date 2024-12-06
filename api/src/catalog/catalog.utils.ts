@@ -18,14 +18,14 @@ const exists = (p: string) =>
     () => false,
   );
 
-function transformListingToSitemapListing(
-  listing: CatalogBySeasonQuery['listings'][number],
-): SitemapListing {
-  const year = parseInt(listing.season_code.substring(0, 4), 10);
+function transformCourseToSitemapListings(
+  course: CatalogBySeasonQuery['courses'][number],
+): SitemapListing[] {
+  const year = parseInt(course.season_code.substring(0, 4), 10);
   const [today] = new Date().toISOString().split('T');
   if (!today) throw new Error('Unable to determine the current date.');
 
-  const season = listing.season_code.substring(4);
+  const season = course.season_code.substring(4);
 
   const semesterStartDate = {
     '01': `${year}-01-15`,
@@ -33,14 +33,14 @@ function transformListingToSitemapListing(
     '03': `${year}-08-25`,
   }[season];
   if (!semesterStartDate)
-    throw new Error(`Unknown season code: ${listing.season_code}`);
+    throw new Error(`Unknown season code: ${course.season_code}`);
 
   const lastmod = semesterStartDate <= today ? semesterStartDate : today;
 
-  return {
-    crn: String(listing.crn),
+  return course.listings.map((l) => ({
+    crn: String(l.crn),
     lastmod,
-  };
+  }));
 }
 
 async function generateSeasonSitemap(
@@ -133,17 +133,17 @@ async function fetchData(
     const data = await (type === 'evals'
       ? sdk.evalsBySeason({ season: seasonCode })
       : sdk.catalogBySeason({ season: seasonCode }));
-    await fs.writeFile(filePath, JSON.stringify(data.listings));
+    await fs.writeFile(filePath, JSON.stringify(data.courses));
     winston.info(
-      `Fetched ${type} data for ${seasonCode}; n=${data.listings.length}`,
+      `Fetched ${type} data for ${seasonCode}; n=${data.courses.length}`,
     );
 
     // Generate the season sitemap
     if (type === 'public') {
-      const courses = (data.listings as CatalogBySeasonQuery['listings']).map(
-        transformListingToSitemapListing,
-      );
-      await generateSeasonSitemap(seasonCode, courses);
+      const listings = (
+        data.courses as CatalogBySeasonQuery['courses']
+      ).flatMap(transformCourseToSitemapListings);
+      await generateSeasonSitemap(seasonCode, listings);
     }
   } catch (err) {
     winston.error(`Error fetching ${type} data for ${seasonCode}`);
@@ -152,7 +152,7 @@ async function fetchData(
   }
 }
 
-export async function fetchCatalog(overwrite: boolean) {
+export async function fetchCatalog(overwrite: boolean, latestN?: number) {
   try {
     const seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
       (x) => x.season_code,
@@ -182,15 +182,20 @@ export async function fetchCatalog(overwrite: boolean) {
       }).sort()),
     );
     // For each season, fetch all courses inside it and save
-    // (if overwrite = true or if file does not exist)
+    // (if overwrite, file does not exist, or season is one of the latest N)
 
-    const processSeasons = seasons.flatMap((season) =>
+    const processSeasons = seasons.flatMap((season, idx) =>
       (['evals', 'public'] as const).map((type) =>
-        fetchData(season, type, overwrite),
+        fetchData(
+          season,
+          type,
+          overwrite || idx >= seasons.length - (latestN ?? 0),
+        ),
       ),
     );
     await Promise.all(processSeasons);
     await generateMetadata();
+    await generateSitemapIndex();
   } catch (err) {
     winston.error(err);
     throw err;

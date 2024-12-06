@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdPersonRemove } from 'react-icons/md';
-import { components as selectComponents } from 'react-select';
+import { components as selectComponents, type OptionProps } from 'react-select';
 import type { Option } from '../../contexts/searchContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../queries/graphql-types';
@@ -18,13 +18,13 @@ function FriendsDropdownMobile({
   readonly options: Option<NetId | 'me'>[];
   readonly viewedPerson: Option<NetId> | null;
 }) {
-  const { handlePersonChange } = useWorksheet();
+  const { changeViewedPerson } = useWorksheet();
   return (
     <DropdownButton
       variant="primary"
       title={viewedPerson?.label ?? "Friends' worksheets"}
       onSelect={(p) => {
-        if (p) handlePersonChange(p as NetId | 'me');
+        if (p) changeViewedPerson(p as NetId | 'me');
       }}
     >
       {[{ value: 'me', label: 'Me' }, ...options].map(({ value, label }) => (
@@ -47,6 +47,42 @@ function FriendsDropdownMobile({
   );
 }
 
+function OptionWithActionButtons({
+  children,
+  ...props
+}: OptionProps<Option<NetId | 'me'>>) {
+  const [isLoading, setIsLoading] = useState(false);
+  // Passed from the PopoutSelect
+  const { removeFriend } = props.selectProps as unknown as {
+    removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
+  };
+  if (props.data.value === 'me') {
+    return (
+      <selectComponents.Option {...props}>{children}</selectComponents.Option>
+    );
+  }
+  return (
+    <selectComponents.Option {...props}>
+      {children}
+      {isLoading ? (
+        <Spinner className={styles.spinner} message={undefined} />
+      ) : (
+        <MdPersonRemove
+          className={styles.removeFriendIcon}
+          onClick={async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsLoading(true);
+            await removeFriend(props.data.value as NetId, false);
+            setIsLoading(false);
+          }}
+          title="Remove friend"
+        />
+      )}
+    </selectComponents.Option>
+  );
+}
+
 function FriendsDropdownDesktop({
   options,
   viewedPerson,
@@ -56,14 +92,14 @@ function FriendsDropdownDesktop({
   readonly viewedPerson: Option<NetId> | null;
   readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 }) {
-  const { handlePersonChange } = useWorksheet();
+  const { changeViewedPerson } = useWorksheet();
   return (
     <Popout
       buttonText="Friends' courses"
       displayOptionLabel
       selectedOptions={viewedPerson}
       onReset={() => {
-        handlePersonChange('me');
+        changeViewedPerson('me');
       }}
     >
       <PopoutSelect<Option<NetId | 'me'>, false>
@@ -72,41 +108,12 @@ function FriendsDropdownDesktop({
         value={viewedPerson}
         options={options}
         onChange={(selectedOption) => {
-          handlePersonChange(selectedOption?.value ?? 'me');
+          changeViewedPerson(selectedOption?.value ?? 'me');
         }}
         noOptionsMessage={() => 'No friends found'}
-        components={{
-          Option({ children, ...props }) {
-            const [isLoading, setIsLoading] = useState(false);
-            if (props.data.value === 'me') {
-              return (
-                <selectComponents.Option {...props}>
-                  {children}
-                </selectComponents.Option>
-              );
-            }
-            return (
-              <selectComponents.Option {...props}>
-                {children}
-                {isLoading ? (
-                  <Spinner className={styles.spinner} />
-                ) : (
-                  <MdPersonRemove
-                    className={styles.removeFriendIcon}
-                    onClick={async (e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsLoading(true);
-                      await removeFriend(props.data.value as NetId, false);
-                      setIsLoading(false);
-                    }}
-                    title="Remove friend"
-                  />
-                )}
-              </selectComponents.Option>
-            );
-          },
-        }}
+        components={{ Option: OptionWithActionButtons }}
+        // @ts-expect-error: Passed to OptionWithActionButtons
+        removeFriend={removeFriend}
       />
     </Popout>
   );
@@ -127,19 +134,22 @@ function FriendsDropdown({
         isRequest: boolean,
       ) => Promise<void>;
     }) {
-  const user = useStore((state) => state.user);
-  const { person } = useWorksheet();
+  const friends = useStore((state) => state.friends);
+  const { viewedPerson } = useWorksheet();
 
-  const viewedPerson = useMemo(() => {
+  const viewedPersonOption = useMemo(() => {
     // I don't think the second condition is possible
-    if (person === 'me' || !user.friends?.[person]) return null;
-    return { value: person, label: user.friends[person].name ?? person };
-  }, [person, user.friends]);
+    if (viewedPerson === 'me' || !friends?.[viewedPerson]) return null;
+    return {
+      value: viewedPerson,
+      label: friends[viewedPerson].name ?? viewedPerson,
+    };
+  }, [viewedPerson, friends]);
 
   // List of friend options. Initialize with me option
   const options = useMemo(() => {
-    if (!user.friends) return [];
-    const options = Object.entries(user.friends)
+    if (!friends) return [];
+    const options = Object.entries(friends)
       .map(
         ([friendNetId, { name }]): Option<NetId> => ({
           value: friendNetId as NetId,
@@ -150,16 +160,19 @@ function FriendsDropdown({
         a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
       );
     return options;
-  }, [user.friends]);
+  }, [friends]);
   if (mobile) {
     return (
-      <FriendsDropdownMobile options={options} viewedPerson={viewedPerson} />
+      <FriendsDropdownMobile
+        options={options}
+        viewedPerson={viewedPersonOption}
+      />
     );
   }
   return (
     <FriendsDropdownDesktop
       options={options}
-      viewedPerson={viewedPerson}
+      viewedPerson={viewedPersonOption}
       removeFriend={removeFriend}
     />
   );

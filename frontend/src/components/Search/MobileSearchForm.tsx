@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import RCSlider from 'rc-slider';
@@ -15,6 +15,7 @@ import {
   type FilterHandle,
   filterLabels,
   defaultFilters,
+  type IntersectableFilters,
   skillsAreasOptions,
   subjectsOptions,
   schoolsOptions,
@@ -24,31 +25,60 @@ import {
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
 
-function Select<K extends keyof CategoricalFilters>({
-  options,
-  handle: handleName,
-  placeholder,
-}: {
-  readonly options: React.ComponentProps<
-    typeof CustomSelect<FilterHandle<K>['value'][number], true>
-  >['options'];
+type SelectProps<K extends keyof CategoricalFilters> = {
   readonly handle: K;
-  readonly placeholder: string;
-}) {
+} & Pick<
+  React.ComponentProps<
+    typeof CustomSelect<FilterHandle<K>['value'][number], true>
+  >,
+  | 'options'
+  | 'placeholder'
+  | 'isIntersection'
+  | 'setIsIntersection'
+  | 'unionIntersectionButtonLabel'
+>;
+
+function Select<K extends keyof CategoricalFilters>({
+  handle: handleName,
+  ...props
+}: SelectProps<K>) {
   const { filters } = useSearch();
   const handle = filters[handleName] as FilterHandle<K>;
   return (
+    // @ts-expect-error: TODO
     <CustomSelect<FilterHandle<K>['value'][number], true>
       className={styles.selectorContainer}
       aria-label={filterLabels[handleName]}
       isMulti
       value={handle.value}
-      options={options}
-      placeholder={placeholder}
       // Prevent overlap with tooltips
       menuPortalTarget={document.body}
       onChange={(selectedOption) => {
         handle.set(selectedOption as Filters[K]);
+      }}
+      {...props}
+    />
+  );
+}
+
+function IntersectableSelect<K extends IntersectableFilters>(
+  props: SelectProps<K>,
+) {
+  const {
+    filters: { intersectingFilters },
+  } = useSearch();
+  return (
+    <Select
+      {...props}
+      isIntersection={intersectingFilters.value.includes(props.handle)}
+      setIsIntersection={(v) => {
+        if (v) {
+          intersectingFilters.set([...intersectingFilters.value, props.handle]);
+        } else {
+          intersectingFilters.set(
+            intersectingFilters.value.filter((x) => x !== props.handle),
+          );
+        }
       }}
     />
   );
@@ -61,6 +91,12 @@ function Slider<K extends NumericFilters>({
 }) {
   const { filters } = useSearch();
   const handle = filters[handleName];
+  // This is exactly the same as the filter handle, except it updates
+  // responsively without triggering searching
+  const [rangeValue, setRangeValue] = useState(handle.value);
+  useEffect(() => {
+    setRangeValue(handle.value);
+  }, [handle.value]);
 
   return (
     <div>
@@ -74,6 +110,10 @@ function Slider<K extends NumericFilters>({
         max={defaultFilters.overallBounds[1]}
         step={0.1}
         defaultValue={defaultFilters.overallBounds}
+        value={rangeValue}
+        onChange={(value) => {
+          setRangeValue(value as [number, number]);
+        }}
         onChangeComplete={(value) => {
           handle.set(value as [number, number]);
         }}
@@ -101,7 +141,6 @@ function Slider<K extends NumericFilters>({
 export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
   const { searchText, selectSortBy } = filters;
-  const resetKey = useRef(0);
   const scrollToResults = useCallback((event?: React.FormEvent) => {
     if (event) event.preventDefault();
     scroller.scrollTo('catalog', {
@@ -128,7 +167,6 @@ export default function MobileSearchForm() {
             type="button"
             className={clsx(styles.resetFiltersBtn, 'me-auto')}
             onClick={() => {
-              resetKey.current++;
               Object.values(filters).forEach((filter) =>
                 filter.resetToDefault(),
               );
@@ -178,23 +216,32 @@ export default function MobileSearchForm() {
           handle="selectSeasons"
           placeholder="Last 5 Years"
         />
-        <Select
-          options={skillsAreasOptions}
-          handle="selectSkillsAreas"
-          placeholder="All Areas/Skills"
-        />
-        <Select
+        <IntersectableSelect
           options={subjectsOptions}
           handle="selectSubjects"
           placeholder="All Subjects"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
+          }
         />
-        <Select
+        <IntersectableSelect
+          options={skillsAreasOptions}
+          handle="selectSkillsAreas"
+          placeholder="All Areas/Skills"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
+          }
+        />
+        <IntersectableSelect
           options={schoolsOptions}
           handle="selectSchools"
           placeholder="All Schools"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
+          }
         />
         <hr />
-        <div className={styles.sliders} key={resetKey.current}>
+        <div className={styles.sliders}>
           <Slider handle="overallBounds" />
           <Slider handle="workloadBounds" />
           <Slider handle="professorBounds" />

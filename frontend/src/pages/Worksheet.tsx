@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import { useShallow } from 'zustand/react/shallow';
 
+import NeedsLogin from './NeedsLogin';
 import ErrorPage from '../components/ErrorPage';
 import Spinner from '../components/Spinner';
 import { SurfaceComponent } from '../components/Typography';
@@ -18,8 +20,14 @@ import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
 function Worksheet() {
-  const isMobile = useStore((state) => state.isMobile);
-  const { worksheetLoading, worksheetError, worksheetView } = useWorksheet();
+  const { isMobile, authStatus } = useStore(
+    useShallow((state) => ({
+      isMobile: state.isMobile,
+      authStatus: state.authStatus,
+    })),
+  );
+  const { worksheetLoading, worksheetError, worksheetView, isExoticWorksheet } =
+    useWorksheet();
   const [expanded, setExpanded] = useState(false);
 
   // Wait for search query to finish
@@ -27,13 +35,16 @@ function Worksheet() {
     Sentry.captureException(worksheetError);
     return <ErrorPage message="There seems to be an issue with our server" />;
   }
-  if (worksheetLoading) return <Spinner />;
+  if (worksheetLoading) return <Spinner message="Loading worksheet data..." />;
+  // For unauthed users, they can only view exotic worksheets
+  if (authStatus === 'unauthenticated' && !isExoticWorksheet)
+    return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   // eslint-disable-next-line no-useless-assignment
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
   return (
     <div className={styles.container}>
-      {isMobile && (
+      {isMobile && !isExoticWorksheet && (
         <div className={styles.dropdowns}>
           <WorksheetNumDropdown mobile />
           <div className="d-flex">

@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import {
   pgTable,
   boolean,
@@ -66,10 +66,11 @@ export const worksheetCourses = pgTable(
   'worksheetCourses',
   {
     id: serial('id').primaryKey().notNull(),
-    netId: varchar('netId', { length: 8 }).notNull(),
+    worksheetId: integer('worksheetId')
+      .notNull()
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      .references(() => worksheets.id),
     crn: integer('crn').notNull(),
-    season: integer('season').notNull(),
-    worksheetNumber: integer('worksheetNumber').notNull(),
     color: varchar('color', { length: 32 }).notNull(),
     // Hidden can be null, which means the hidden status is unknown.
     // In the past hidden status was stored in client side, so unless
@@ -77,31 +78,39 @@ export const worksheetCourses = pgTable(
     hidden: boolean('hidden'),
   },
   (table) => ({
-    worksheetNetidIdx: index('worksheet_netid_idx').on(table.netId),
-    worksheetUniqueIdx: uniqueIndex('worksheet_unique_idx').on(
-      table.netId,
+    worksheetIdIdx: index('worksheet_id_idx').on(table.worksheetId),
+    worksheetCoursesUniqueIdx: uniqueIndex('worksheet_courses_unique_idx').on(
+      table.worksheetId,
       table.crn,
-      table.season,
-      table.worksheetNumber,
-      table.hidden,
     ),
   }),
 );
 
-export const worksheetNames = pgTable(
-  'worksheetNames',
+export const worksheets = pgTable(
+  'worksheets',
   {
     id: serial('id').primaryKey().notNull(),
     netId: varchar('netId', { length: 8 }).notNull(),
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').notNull(),
-    worksheetName: varchar('worksheetName', { length: 64 }).notNull(),
+    name: varchar('name', { length: 64 }).notNull(),
   },
   (table) => ({
-    worksheetNameUniqueIdx: uniqueIndex('worksheet_unique_name_idx').on(
+    worksheetsUniqueIdx: uniqueIndex('worksheets_unique_idx').on(
       table.netId,
       table.season,
       table.worksheetNumber,
     ),
   }),
 );
+
+export const worksheetToCourses = relations(worksheets, ({ many }) => ({
+  courses: many(worksheetCourses),
+}));
+
+export const coursesToWorksheet = relations(worksheetCourses, ({ one }) => ({
+  worksheet: one(worksheets, {
+    fields: [worksheetCourses.worksheetId],
+    references: [worksheets.id],
+  }),
+}));

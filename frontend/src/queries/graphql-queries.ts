@@ -5,6 +5,8 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export const CourseModalPrefetchCourseDataFragmentDoc = gql`
   fragment CourseModalPrefetchCourseData on courses {
+    season_code
+    section
     title
     skills
     areas
@@ -30,43 +32,21 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
     }
   }
 `;
-export const RelatedCourseInfoFragmentDoc = gql`
-  fragment RelatedCourseInfo on courses {
-    season_code
-    section
-    ...CourseModalPrefetchCourseData
-    average_professor_rating @include(if: $hasEvals)
-    evaluation_statistic @include(if: $hasEvals) {
-      avg_workload
-      avg_rating
-    }
-    course_professors {
-      professor {
-        name
-      }
-    }
-    course_id
-  }
-  ${CourseModalPrefetchCourseDataFragmentDoc}
-`;
 export const CourseModalPrefetchListingDataFragmentDoc = gql`
   fragment CourseModalPrefetchListingData on listings {
-    season_code
     crn
     course_code
-    section
     course {
       ...CourseModalPrefetchCourseData
     }
   }
   ${CourseModalPrefetchCourseDataFragmentDoc}
 `;
-export const SameCourseOrProfOfferingsDocument = gql`
-  query SameCourseOrProfOfferings(
+export const CourseModalOverviewDataDocument = gql`
+  query CourseModalOverviewData(
     $seasonCode: String!
     $crn: Int!
     $sameCourseId: Int!
-    $professorIds: [Int!]
     $hasEvals: Boolean!
   ) {
     self: listings(
@@ -81,9 +61,6 @@ export const SameCourseOrProfOfferingsDocument = gql`
           professor {
             professor_id
             name
-            email
-            courses_taught
-            average_rating @include(if: $hasEvals)
           }
         }
         course_meetings {
@@ -122,49 +99,51 @@ export const SameCourseOrProfOfferingsDocument = gql`
       course_code
     }
     sameCourse: courses(where: { same_course_id: { _eq: $sameCourseId } }) {
-      ...RelatedCourseInfo
+      ...CourseModalPrefetchCourseData
+      average_professor_rating @include(if: $hasEvals)
+      evaluation_statistic @include(if: $hasEvals) {
+        avg_workload
+        avg_rating
+      }
+      course_professors {
+        professor {
+          name
+        }
+      }
+      course_id
       syllabus_url
     }
-    sameProf: course_professors(
-      where: { professor_id: { _in: $professorIds } }
-    ) {
-      professor_id
-      course {
-        ...RelatedCourseInfo
-      }
-    }
   }
-  ${RelatedCourseInfoFragmentDoc}
+  ${CourseModalPrefetchCourseDataFragmentDoc}
 `;
 
 /**
- * __useSameCourseOrProfOfferingsQuery__
+ * __useCourseModalOverviewDataQuery__
  *
- * To run a query within a React component, call `useSameCourseOrProfOfferingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSameCourseOrProfOfferingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCourseModalOverviewDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseModalOverviewDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
+ * const { data, loading, error } = useCourseModalOverviewDataQuery({
  *   variables: {
  *      seasonCode: // value for 'seasonCode'
  *      crn: // value for 'crn'
  *      sameCourseId: // value for 'sameCourseId'
- *      professorIds: // value for 'professorIds'
  *      hasEvals: // value for 'hasEvals'
  *   },
  * });
  */
-export function useSameCourseOrProfOfferingsQuery(
+export function useCourseModalOverviewDataQuery(
   baseOptions: Apollo.QueryHookOptions<
-    Types.SameCourseOrProfOfferingsQuery,
-    Types.SameCourseOrProfOfferingsQueryVariables
+    Types.CourseModalOverviewDataQuery,
+    Types.CourseModalOverviewDataQueryVariables
   > &
     (
       | {
-          variables: Types.SameCourseOrProfOfferingsQueryVariables;
+          variables: Types.CourseModalOverviewDataQueryVariables;
           skip?: boolean;
         }
       | { skip: boolean }
@@ -172,28 +151,28 @@ export function useSameCourseOrProfOfferingsQuery(
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    Types.SameCourseOrProfOfferingsQuery,
-    Types.SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
+    Types.CourseModalOverviewDataQuery,
+    Types.CourseModalOverviewDataQueryVariables
+  >(CourseModalOverviewDataDocument, options);
 }
-export function useSameCourseOrProfOfferingsLazyQuery(
+export function useCourseModalOverviewDataLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    Types.SameCourseOrProfOfferingsQuery,
-    Types.SameCourseOrProfOfferingsQueryVariables
+    Types.CourseModalOverviewDataQuery,
+    Types.CourseModalOverviewDataQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    Types.SameCourseOrProfOfferingsQuery,
-    Types.SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
+    Types.CourseModalOverviewDataQuery,
+    Types.CourseModalOverviewDataQueryVariables
+  >(CourseModalOverviewDataDocument, options);
 }
-export function useSameCourseOrProfOfferingsSuspenseQuery(
+export function useCourseModalOverviewDataSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
     | Apollo.SuspenseQueryHookOptions<
-        Types.SameCourseOrProfOfferingsQuery,
-        Types.SameCourseOrProfOfferingsQueryVariables
+        Types.CourseModalOverviewDataQuery,
+        Types.CourseModalOverviewDataQueryVariables
       >,
 ) {
   const options =
@@ -201,22 +180,22 @@ export function useSameCourseOrProfOfferingsSuspenseQuery(
       ? baseOptions
       : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
-    Types.SameCourseOrProfOfferingsQuery,
-    Types.SameCourseOrProfOfferingsQueryVariables
-  >(SameCourseOrProfOfferingsDocument, options);
+    Types.CourseModalOverviewDataQuery,
+    Types.CourseModalOverviewDataQueryVariables
+  >(CourseModalOverviewDataDocument, options);
 }
-export type SameCourseOrProfOfferingsQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsQuery
+export type CourseModalOverviewDataQueryHookResult = ReturnType<
+  typeof useCourseModalOverviewDataQuery
 >;
-export type SameCourseOrProfOfferingsLazyQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsLazyQuery
+export type CourseModalOverviewDataLazyQueryHookResult = ReturnType<
+  typeof useCourseModalOverviewDataLazyQuery
 >;
-export type SameCourseOrProfOfferingsSuspenseQueryHookResult = ReturnType<
-  typeof useSameCourseOrProfOfferingsSuspenseQuery
+export type CourseModalOverviewDataSuspenseQueryHookResult = ReturnType<
+  typeof useCourseModalOverviewDataSuspenseQuery
 >;
-export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<
-  Types.SameCourseOrProfOfferingsQuery,
-  Types.SameCourseOrProfOfferingsQueryVariables
+export type CourseModalOverviewDataQueryResult = Apollo.QueryResult<
+  Types.CourseModalOverviewDataQuery,
+  Types.CourseModalOverviewDataQueryVariables
 >;
 export const SearchEvaluationNarrativesDocument = gql`
   query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
@@ -322,6 +301,192 @@ export type SearchEvaluationNarrativesSuspenseQueryHookResult = ReturnType<
 export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<
   Types.SearchEvaluationNarrativesQuery,
   Types.SearchEvaluationNarrativesQueryVariables
+>;
+export const ProfModalOverviewDataDocument = gql`
+  query ProfModalOverviewData($professorId: Int!, $hasEvals: Boolean!) {
+    professors(where: { professor_id: { _eq: $professorId } }) {
+      name
+      email
+      courses_taught
+      average_rating @include(if: $hasEvals)
+      course_professors {
+        course {
+          ...CourseModalPrefetchCourseData
+          course_id
+          evaluation_statistic @include(if: $hasEvals) {
+            avg_workload
+            avg_rating
+          }
+        }
+      }
+    }
+  }
+  ${CourseModalPrefetchCourseDataFragmentDoc}
+`;
+
+/**
+ * __useProfModalOverviewDataQuery__
+ *
+ * To run a query within a React component, call `useProfModalOverviewDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfModalOverviewDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfModalOverviewDataQuery({
+ *   variables: {
+ *      professorId: // value for 'professorId'
+ *      hasEvals: // value for 'hasEvals'
+ *   },
+ * });
+ */
+export function useProfModalOverviewDataQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  > &
+    (
+      | { variables: Types.ProfModalOverviewDataQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >(ProfModalOverviewDataDocument, options);
+}
+export function useProfModalOverviewDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >(ProfModalOverviewDataDocument, options);
+}
+export function useProfModalOverviewDataSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.ProfModalOverviewDataQuery,
+        Types.ProfModalOverviewDataQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.ProfModalOverviewDataQuery,
+    Types.ProfModalOverviewDataQueryVariables
+  >(ProfModalOverviewDataDocument, options);
+}
+export type ProfModalOverviewDataQueryHookResult = ReturnType<
+  typeof useProfModalOverviewDataQuery
+>;
+export type ProfModalOverviewDataLazyQueryHookResult = ReturnType<
+  typeof useProfModalOverviewDataLazyQuery
+>;
+export type ProfModalOverviewDataSuspenseQueryHookResult = ReturnType<
+  typeof useProfModalOverviewDataSuspenseQuery
+>;
+export type ProfModalOverviewDataQueryResult = Apollo.QueryResult<
+  Types.ProfModalOverviewDataQuery,
+  Types.ProfModalOverviewDataQueryVariables
+>;
+export const CourseModalFromUrlDocument = gql`
+  query CourseModalFromURL(
+    $seasonCode: String!
+    $crn: Int!
+    $hasEvals: Boolean!
+  ) {
+    listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+      ...CourseModalPrefetchListingData
+    }
+  }
+  ${CourseModalPrefetchListingDataFragmentDoc}
+`;
+
+/**
+ * __useCourseModalFromUrlQuery__
+ *
+ * To run a query within a React component, call `useCourseModalFromUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseModalFromUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCourseModalFromUrlQuery({
+ *   variables: {
+ *      seasonCode: // value for 'seasonCode'
+ *      crn: // value for 'crn'
+ *      hasEvals: // value for 'hasEvals'
+ *   },
+ * });
+ */
+export function useCourseModalFromUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  > &
+    (
+      | { variables: Types.CourseModalFromUrlQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >(CourseModalFromUrlDocument, options);
+}
+export function useCourseModalFromUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >(CourseModalFromUrlDocument, options);
+}
+export function useCourseModalFromUrlSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.CourseModalFromUrlQuery,
+        Types.CourseModalFromUrlQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.CourseModalFromUrlQuery,
+    Types.CourseModalFromUrlQueryVariables
+  >(CourseModalFromUrlDocument, options);
+}
+export type CourseModalFromUrlQueryHookResult = ReturnType<
+  typeof useCourseModalFromUrlQuery
+>;
+export type CourseModalFromUrlLazyQueryHookResult = ReturnType<
+  typeof useCourseModalFromUrlLazyQuery
+>;
+export type CourseModalFromUrlSuspenseQueryHookResult = ReturnType<
+  typeof useCourseModalFromUrlSuspenseQuery
+>;
+export type CourseModalFromUrlQueryResult = Apollo.QueryResult<
+  Types.CourseModalFromUrlQuery,
+  Types.CourseModalFromUrlQueryVariables
 >;
 export const PrereqLinkInfoDocument = gql`
   query PrereqLinkInfo($courseCodes: [String!], $hasEvals: Boolean!) {

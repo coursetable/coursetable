@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
-import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
@@ -14,10 +15,21 @@ import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
 export function NavbarWorksheetSearch() {
-  const { worksheetView, handleWorksheetView, person, handlePersonChange } =
-    useWorksheet();
+  const {
+    worksheetView,
+    changeWorksheetView,
+    viewedPerson,
+    changeViewedPerson,
+    isExoticWorksheet,
+    exitExoticWorksheet,
+  } = useWorksheet();
 
-  const removeFriend = useStore((state) => state.removeFriend);
+  const { authStatus, removeFriend } = useStore(
+    useShallow((state) => ({
+      removeFriend: state.removeFriend,
+      authStatus: state.authStatus,
+    })),
+  );
 
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>
@@ -32,8 +44,8 @@ export function NavbarWorksheetSearch() {
             <LinkLikeText
               className="mx-2"
               onClick={async () => {
-                if (!isRequest && person === friendNetId)
-                  handlePersonChange('me');
+                if (!isRequest && viewedPerson === friendNetId)
+                  changeViewedPerson('me');
                 await removeFriend(friendNetId, isRequest);
                 resolve();
                 toast.dismiss(`remove-${friendNetId}`);
@@ -54,8 +66,10 @@ export function NavbarWorksheetSearch() {
           { autoClose: false, toastId: `remove-${friendNetId}` },
         );
       }),
-    [handlePersonChange, person, removeFriend],
+    [changeViewedPerson, viewedPerson, removeFriend],
   );
+
+  if (authStatus !== 'authenticated' && !isExoticWorksheet) return null;
 
   return (
     <div className="d-flex align-items-center">
@@ -64,7 +78,7 @@ export function NavbarWorksheetSearch() {
         name="worksheet-view-toggle"
         type="radio"
         value={worksheetView}
-        onChange={(val: 'calendar' | 'list') => handleWorksheetView(val)}
+        onChange={(val: 'calendar' | 'list') => changeWorksheetView(val)}
         className={clsx(styles.toggleButtonGroup, 'ms-2 me-3')}
         data-tutorial="worksheet-2"
       >
@@ -83,16 +97,26 @@ export function NavbarWorksheetSearch() {
           List
         </ToggleButton>
       </ToggleButtonGroup>
-      <SeasonDropdown mobile={false} />
-      <WorksheetNumDropdown mobile={false} />
-      <FriendsDropdown
-        mobile={false}
-        removeFriend={removeFriendWithConfirmation}
-      />
-      <AddFriendDropdown
-        mobile={false}
-        removeFriend={removeFriendWithConfirmation}
-      />
+      {!isExoticWorksheet ? (
+        <>
+          <SeasonDropdown mobile={false} />
+          <WorksheetNumDropdown mobile={false} />
+          <FriendsDropdown
+            mobile={false}
+            removeFriend={removeFriendWithConfirmation}
+          />
+          <AddFriendDropdown
+            mobile={false}
+            removeFriend={removeFriendWithConfirmation}
+          />
+        </>
+      ) : (
+        <div>
+          <Button variant="primary" onClick={exitExoticWorksheet}>
+            Exit
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
