@@ -4039,17 +4039,14 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
-export type SameCourseOrProfOfferingsQueryVariables = Exact<{
+export type CourseModalOverviewDataQueryVariables = Exact<{
   seasonCode: Scalars['String']['input'];
   crn: Scalars['Int']['input'];
   sameCourseId: Scalars['Int']['input'];
-  professorIds: InputMaybe<
-    Array<Scalars['Int']['input']> | Scalars['Int']['input']
-  >;
   hasEvals: Scalars['Boolean']['input'];
 }>;
 
-export type SameCourseOrProfOfferingsQuery = {
+export type CourseModalOverviewDataQuery = {
   __typename?: 'query_root';
   self: Array<{
     __typename?: 'listings';
@@ -4111,30 +4108,21 @@ export type SameCourseOrProfOfferingsQuery = {
   sameCourse: Array<
     {
       __typename?: 'courses';
+      average_professor_rating?: number | null;
+      course_id: number;
       syllabus_url: string | null;
-    } & RelatedCourseInfoFragment
+      evaluation_statistic?: {
+        __typename?: 'evaluation_statistics';
+        avg_workload: number | null;
+        avg_rating: number | null;
+      } | null;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: { __typename?: 'professors'; name: string };
+      }>;
+    } & CourseModalPrefetchCourseDataFragment
   >;
-  sameProf: Array<{
-    __typename?: 'course_professors';
-    professor_id: number;
-    course: { __typename?: 'courses' } & RelatedCourseInfoFragment;
-  }>;
 };
-
-export type RelatedCourseInfoFragment = {
-  __typename?: 'courses';
-  average_professor_rating?: number | null;
-  course_id: number;
-  evaluation_statistic?: {
-    __typename?: 'evaluation_statistics';
-    avg_workload: number | null;
-    avg_rating: number | null;
-  } | null;
-  course_professors: Array<{
-    __typename?: 'course_professors';
-    professor: { __typename?: 'professors'; name: string };
-  }>;
-} & CourseModalPrefetchCourseDataFragment;
 
 export type CourseModalPrefetchListingDataFragment = {
   __typename?: 'listings';

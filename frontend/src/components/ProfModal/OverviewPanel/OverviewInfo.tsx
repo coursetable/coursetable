@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Row,
   Col,
@@ -15,10 +15,9 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import { useSearch } from '../../../contexts/searchContext';
 import type {
-  CourseModalOverviewDataQuery,
+  SameCourseOrProfOfferingsQuery,
   PrereqLinkInfoQuery,
 } from '../../../generated/graphql-types';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
@@ -37,7 +36,7 @@ import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export type CourseInfo = CourseModalOverviewDataQuery['self'][0]['course'];
+export type CourseInfo = SameCourseOrProfOfferingsQuery['self'][0]['course'];
 
 const profInfoPopover =
   (
@@ -331,13 +330,13 @@ function Syllabus({
   sameCourse,
 }: {
   readonly course: CourseInfo;
-  readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
 }) {
   const pastSyllabi = useMemo(() => {
     // Remove duplicates by syllabus URL
     const courseBySyllabus = new Map<
       string,
-      CourseModalOverviewDataQuery['sameCourse'][number]
+      SameCourseOrProfOfferingsQuery['sameCourse'][number]
     >();
     for (const other of sameCourse) {
       if (other.syllabus_url && !courseBySyllabus.has(other.syllabus_url))
@@ -396,39 +395,73 @@ function Syllabus({
   );
 }
 
-function Professors({ course }: { readonly course: CourseInfo }) {
-  const { navigate } = useModalHistory();
-  if (!course.course_professors.length)
-    return <DataField name="Professor" value="TBA" />;
+function Professors({
+  course,
+  setProfessorView,
+}: {
+  readonly course: CourseInfo;
+  readonly setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
+}) {
+  const navigate = useNavigate();
 
-  return (
-    <DataField
-      name="Professor"
-      value={course.course_professors.map(({ professor }, index) => (
-        <React.Fragment key={professor.name}>
-          {index ? ' • ' : ''}
-          <OverlayTrigger
-            trigger="click"
-            rootClose
-            placement="right"
-            overlay={profInfoPopover(professor)}
-          >
-            <LinkLikeText
-              // TODO: add link
-              onClick={() => {
-                navigate('push', {
-                  type: 'professor',
-                  data: professor.professor_id,
-                });
-              }}
-            >
-              {professor.name}
-            </LinkLikeText>
-          </OverlayTrigger>
-        </React.Fragment>
-      ))}
-    />
-  );
+  {
+    return (
+      <DataField
+        name="Professor"
+        value={
+          course.course_professors.length
+            ? course.course_professors.map(({ professor }, index) => (
+                <React.Fragment key={professor.name}>
+                  {index ? ' • ' : ''}
+                  <OverlayTrigger
+                    trigger="click"
+                    rootClose
+                    placement="right"
+                    overlay={profInfoPopover(professor)}
+                  >
+                    <LinkLikeText
+                      onClick={() => {
+                        // TODO: Implement link-based prof modal later
+
+                        // // Navigate({
+                        // //   pathname: window.location.pathname,
+                        // //   search: new URLSearchParams({
+                        // //     ...Object.fromEntries(
+                        // //       new URLSearchParams(window.location.search),
+                        // //     ),
+                        // //     prof: professor.professor_id.toString(),
+                        // //   }).toString(),
+                        // // });
+                        // // Manipulate the query string
+                        // const searchParams = new URLSearchParams(
+                        //   window.location.search,
+                        // );
+                        // searchParams.set(
+                        //   'prof',
+                        //   professor.professor_id.toString(),
+                        // );
+
+                        // // Navigate with updated search params
+                        // navigate(
+                        //   `${window.location.pathname}?${searchParams.toString()}`,
+                        // );
+                        setProfessorView(professor);
+                      }}
+                    >
+                      {professor.name}
+                    </LinkLikeText>
+                  </OverlayTrigger>
+                </React.Fragment>
+              ))
+            : 'TBA'
+        }
+      />
+    );
+  }
 }
 
 function TimeLocation({ course }: { readonly course: CourseInfo }) {
@@ -472,10 +505,16 @@ function OverviewInfo({
   onNavigation,
   listing,
   sameCourse,
+  setProfessorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly listing: CourseModalOverviewDataQuery['self'][0];
-  readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
+  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
+  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
+  readonly setProfessorView: React.Dispatch<
+    React.SetStateAction<
+      CourseInfo['course_professors'][number]['professor'] | null
+    >
+  >;
 }) {
   const { numFriends } = useSearch();
   const alsoTaking = [
@@ -492,7 +531,7 @@ function OverviewInfo({
         onNavigation={onNavigation}
       />
       <Syllabus course={course} sameCourse={sameCourse} />
-      <Professors course={course} />
+      <Professors course={course} setProfessorView={setProfessorView} />
       <TimeLocation course={course} />
       <DataField name="Section" value={course.section} />
       <DataField

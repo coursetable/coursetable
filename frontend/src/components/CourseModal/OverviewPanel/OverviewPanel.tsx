@@ -1,11 +1,11 @@
 import { Row, Col } from 'react-bootstrap';
 import { MdWarning } from 'react-icons/md';
 
-import OverviewInfo, { type CourseInfo } from './OverviewInfo';
+import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
-import { useSameCourseOrProfOfferingsQuery } from '../../../queries/graphql-queries';
+import { useCourseModalOverviewDataQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import Spinner from '../../Spinner';
 import type { ModalNavigationFunction } from '../CourseModal';
@@ -13,31 +13,18 @@ import type { ModalNavigationFunction } from '../CourseModal';
 function OverviewPanel({
   onNavigation,
   prefetched,
-  professorView,
-  setProfessorView,
 }: {
   readonly onNavigation: ModalNavigationFunction;
   readonly prefetched: CourseModalPrefetchListingDataFragment;
-  readonly professorView:
-    | CourseInfo['course_professors'][number]['professor']
-    | null;
-  readonly setProfessorView: React.Dispatch<
-    React.SetStateAction<
-      CourseInfo['course_professors'][number]['professor'] | null
-    >
-  >;
 }) {
   const user = useStore((state) => state.user);
 
-  const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
+  const { data, loading, error } = useCourseModalOverviewDataQuery({
     variables: {
       seasonCode: prefetched.course.season_code,
       crn: prefetched.crn,
       hasEvals: Boolean(user?.hasEvals),
       sameCourseId: prefetched.course.same_course_id,
-      professorIds: prefetched.course.course_professors.map(
-        (p) => p.professor.professor_id,
-      ),
     },
   });
 
@@ -54,7 +41,7 @@ function OverviewPanel({
     );
   }
 
-  const { sameCourse = [], sameProf = [], self: [listing] = [] } = data ?? {};
+  const { sameCourse = [], self: [listing] = [] } = data ?? {};
 
   if (!listing) {
     return (
@@ -77,48 +64,29 @@ function OverviewPanel({
   );
 
   return (
-    <>
-      {professorView ? (
-        <div style={{ width: '100%', padding: 4 }}>
-          <OverviewRatings
-            onNavigation={onNavigation}
-            listing={listing}
-            sameCourse={sameCourse}
-            sameProf={sameProf}
-            professorView={professorView}
-          />
-        </div>
-      ) : (
-        <Row className="m-auto">
-          <Col md={7} className="px-0 mt-0 mb-3">
-            <OverviewInfo
-              onNavigation={onNavigation}
-              listing={listing}
-              sameCourse={sameCourse}
-              setProfessorView={setProfessorView}
-            />
-          </Col>
-          {!professorView && (
-            <Col md={5} className="px-0 my-0">
-              {isSameCourseWrong && (
-                <div className="alert alert-warning">
-                  <MdWarning className="mr-2" />
-                  <strong>Warning:</strong> We have detected a possible error in
-                  the data returned. Try opening CourseTable in a new tab.
-                </div>
-              )}
-              <OverviewRatings
-                onNavigation={onNavigation}
-                listing={listing}
-                sameCourse={sameCourse}
-                sameProf={sameProf}
-                professorView={professorView}
-              />
-            </Col>
-          )}
-        </Row>
-      )}
-    </>
+    <Row className="m-auto">
+      <Col md={7} className="px-0 mt-0 mb-3">
+        <OverviewInfo
+          onNavigation={onNavigation}
+          listing={listing}
+          sameCourse={sameCourse}
+        />
+      </Col>
+      <Col md={5} className="px-0 my-0">
+        {isSameCourseWrong && (
+          <div className="alert alert-warning">
+            <MdWarning className="mr-2" />
+            <strong>Warning:</strong> We have detected a possible error in the
+            data returned. Try opening CourseTable in a new tab.
+          </div>
+        )}
+        <OverviewRatings
+          onNavigation={onNavigation}
+          listing={listing}
+          sameCourse={sameCourse}
+        />
+      </Col>
+    </Row>
   );
 }
 

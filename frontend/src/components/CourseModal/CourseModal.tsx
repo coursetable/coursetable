@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
-import type { CourseInfo } from './OverviewPanel/OverviewInfo';
-import ProfessorModalHeaderControls from './ProfessorHeader/ProfessorControlsRow';
-import ProfessorModalHeaderInfo from './ProfessorHeader/ProfessorInfoRow';
 import { useModalHistory } from '../../contexts/modalHistoryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import {
@@ -40,9 +37,6 @@ function CourseModal({
 }) {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   const { navigate, closeModal } = useModalHistory();
-  const [professorView, setProfessorView] = useState<
-    CourseInfo['course_professors'][number]['professor'] | null
-  >(null);
 
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
   const description = truncatedText(
@@ -89,7 +83,7 @@ function CourseModal({
         </script>
       </Helmet>
       <Modal
-        show={Boolean(listing)}
+        show
         scrollable
         onHide={closeModal}
         dialogClassName={styles.dialog}
@@ -97,41 +91,16 @@ function CourseModal({
         centered
       >
         <Modal.Header className={styles.modalHeader} closeButton>
-          {professorView ? (
-            <>
-              <ProfessorModalHeaderInfo
-                listing={listing}
-                professor={professorView}
-                disableProfessorView={() => setProfessorView(null)}
-                onNavigation={onNavigation}
-              />
-              <br />
-              {/* <ProfessorModalHeaderControls
-                listing={listing}
-                view={view}
-                setView={setView}
-                hide={hide}
-              /> */}
-            </>
-          ) : (
-            <>
-              <ModalHeaderInfo listing={listing} onNavigation={onNavigation} />
-              <ModalHeaderControls
-                listing={listing}
-                view={view}
-                setView={setView}
-              />
-            </>
-          )}
+          <ModalHeaderInfo listing={listing} onNavigation={onNavigation} />
+          <ModalHeaderControls
+            listing={listing}
+            view={view}
+            setView={setView}
+          />
         </Modal.Header>
         <Modal.Body>
           {view === 'overview' ? (
-            <OverviewPanel
-              onNavigation={onNavigation}
-              prefetched={listing}
-              professorView={professorView}
-              setProfessorView={setProfessorView}
-            />
+            <OverviewPanel onNavigation={onNavigation} prefetched={listing} />
           ) : (
             <EvaluationsPanel
               seasonCode={listing.course.season_code}
