@@ -494,7 +494,11 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
               <TextComponent type="primary" style={{ fontWeight: 650 }}>
                 Average professor rating over time
               </TextComponent>
-              <CustomChart data={chartData} />
+              {chartData.length > 0 ? (
+                <CustomChart data={chartData} />
+              ) : (
+                <div>No data</div>
+              )}
             </div>
           </Col>
           {/* </div> */}
