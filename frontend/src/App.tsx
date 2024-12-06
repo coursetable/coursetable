@@ -8,6 +8,10 @@ import Footer from './components/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import Spinner from './components/Spinner';
+import {
+  useModalHistory,
+  ModalHistoryProvider,
+} from './contexts/modalHistoryContext';
 import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
@@ -41,6 +45,16 @@ const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
 const Tutorial = suspended(() => import('./components/Tutorial'));
+
+function Modal() {
+  const { currentModal } = useModalHistory();
+  if (!currentModal) return null;
+  if (currentModal.type === 'course') {
+    const listing = currentModal.data;
+    return <CourseModal listing={listing} />;
+  }
+  return null;
+}
 
 function AuthenticatedRoutes() {
   const { authStatus, user } = useStore(
@@ -163,7 +177,10 @@ function App() {
       <Footer />
       {/* Globally overlaid components */}
       {isTutorialOpen && <Tutorial />}
-      <CourseModal />
+      {/* ModalProvider reads the location so it must be within the app */}
+      <ModalHistoryProvider>
+        <Modal />
+      </ModalHistoryProvider>
     </div>
   );
 }
