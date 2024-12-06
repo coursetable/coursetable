@@ -16,6 +16,7 @@ ignores:
   - eslint-*
   - prettier
   - stylelint-config-standard
+  - lint-staged
 
   # This is actually unused, but we keep it just in case you want to use it
   - core-js
