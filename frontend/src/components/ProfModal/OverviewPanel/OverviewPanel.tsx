@@ -73,7 +73,7 @@ function RatingNumbers({
     return ratingBubbles.map(({ colorMap, rating }, i) => (
       <Col
         key={i}
-        xs={2}
+        xs={3}
         className="px-1 ms-0 d-flex justify-content-center text-center"
       >
         <RatingBubble
@@ -101,7 +101,7 @@ function RatingNumbers({
     >
       <Col
         key={i}
-        xs={2}
+        xs={3}
         className="px-1 ms-0 d-flex justify-content-center text-center"
       >
         <RatingBubble
@@ -376,8 +376,8 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
   }
 
   return (
-    <div className="w-100 p-4">
-      <Col className="px-0 mt-0 mb-3">
+    <Row className="m-auto">
+      <Col md={8} className="px-0 mt-0 mb-3">
         <div>
           <TextComponent type="primary" style={{ fontWeight: 650 }}>
             Most associated subjects
@@ -433,11 +433,14 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
               Beta
             </span>
             The professor modal is new and in active testing. We will be adding
-            more content to it soon!
+            more content to it soon.{' '}
+            <Link to="https://feedback.coursetable.com" target="_blank">
+              Give us feedback
+            </Link>
           </TextComponent>
         </div>
       </Col>
-      <Col md={5} className="px-0 my-0">
+      <Col md={4} className="px-0 my-0">
         {coursesTaught.length > 0 && (
           <Row className="m-auto pb-1" style={{ justifyContent: 'right' }}>
             <Col
@@ -452,10 +455,10 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
             >
               <span className={styles.evaluationHeader}>Season</span>
             </Col>
-            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+            <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Class</span>
             </Col>
-            <Col xs={2} className="d-flex ms-0 justify-content-center px-0">
+            <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
               <span className={styles.evaluationHeader}>Work</span>
             </Col>
           </Row>
@@ -471,7 +474,7 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           </Row>
         ))}
       </Col>
-    </div>
+    </Row>
   );
 }
 
