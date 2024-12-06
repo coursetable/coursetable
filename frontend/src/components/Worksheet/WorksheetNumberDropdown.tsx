@@ -34,10 +34,10 @@ function CustomInput(props: CustomInputProps) {
     if (isModifying && inputRef.current) {
       inputRef.current.focus();
       requestAnimationFrame(() => {
-        inputRef.current?.setSelectionRange(0, inputField.length);
+        inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
       });
     }
-  }, [isModifying, inputField.length]);
+  }, [isModifying]);
 
   useEffect(() => {
     if (!inputRef.current) return;
