@@ -2,3 +2,46 @@
   border-top-right-radius: 8px !important;
   border-top-left-radius: 8px !important;
 }
+
+.option {
+  display: flex;
+  justify-content: space-between; /* Ensures the text and icons are separated */
+  align-items: center;
+  padding-right: 50px; /* Adds padding to prevent text from overlapping with icons */
+  position: relative;
+}
+
+.optionAdd {
+  opacity: 0.5;
+  text-align: center;
+  vertical-align: middle;
+  border: solid grey 2px;
+  border-radius: 6px;
+}
+
+/* Add these styles to your WorksheetNumberDropdown.module.css file */
+
+.optionInputContainer {
+  padding: 8px;
+}
+
+.optionInput {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.renameWorksheetIcon {
+  position: absolute;
+  right: 30px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.deleteWorksheetIcon {
+  position: absolute;
+  right: 10px;
+  margin-top: 4px;
+  cursor: pointer;
+}
