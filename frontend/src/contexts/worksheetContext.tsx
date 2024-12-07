@@ -231,7 +231,7 @@ export function WorksheetProvider({
 
     setMyWorksheetOptions(newOptions);
 
-    if (!newOptions[viewedWorksheetNumber]) setMyViewedWorksheetNumber(0);
+    if (!newOptions[myViewedWorksheetNumber]) setMyViewedWorksheetNumber(0);
   }, [
     myCurWorksheet,
     viewedSeason,
