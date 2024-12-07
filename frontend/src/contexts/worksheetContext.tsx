@@ -61,6 +61,7 @@ type Store = {
   // These are used to select the worksheet
   seasonCodes: Season[];
   worksheetOptions: { [key: number]: Option<number> };
+  myWorksheetOptions: { [key: number]: Option<number> };
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
@@ -156,6 +157,11 @@ export function WorksheetProvider({
     return friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
   }, [worksheets, friends, viewedPerson]);
 
+  const myCurWorksheet: UserWorksheets = useMemo(() => {
+    const whenNotDefined: UserWorksheets = new Map();
+    return worksheets ?? whenNotDefined;
+  }, [worksheets]);
+
   // Maybe seasons without data should be disabled/hidden
   const seasonCodes = useMemo(
     () => seasonsWithDataFirst(allSeasons, worksheets),
@@ -172,6 +178,10 @@ export function WorksheetProvider({
     useSessionStorageState('myViewedWorksheetNumber', 0);
 
   const [worksheetOptions, setWorksheetOptions] = useState<{
+    [key: number]: Option<number>;
+  }>({});
+
+  const [myWorksheetOptions, setMyWorksheetOptions] = useState<{
     [key: number]: Option<number>;
   }>({});
 
@@ -196,7 +206,44 @@ export function WorksheetProvider({
   useEffect(() => {
     let entries: [number, Option<number>][] = [];
 
-    if (curWorksheet && curWorksheet.get(viewedSeason)) {
+    if (myCurWorksheet.get(viewedSeason)) {
+      entries = Array.from(myCurWorksheet.get(viewedSeason)!.entries()).map(
+        ([wsNumber, wsInfo]) => [
+          wsNumber,
+          {
+            label: wsInfo.name,
+            value: wsNumber,
+          },
+        ],
+      );
+    }
+
+    const newOptions = Object.fromEntries(entries) as {
+      [key: number]: Option<number>;
+    };
+
+    // We must populate a "ghost" main WS if none exists in the DB.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    newOptions[0] ||= {
+      label: 'Main Worksheet',
+      value: 0,
+    };
+
+    setMyWorksheetOptions(newOptions);
+
+    if (!newOptions[viewedWorksheetNumber]) setMyViewedWorksheetNumber(0);
+  }, [
+    myCurWorksheet,
+    viewedSeason,
+    myViewedWorksheetNumber,
+    setMyWorksheetOptions,
+    setMyViewedWorksheetNumber,
+  ]);
+
+  useEffect(() => {
+    let entries: [number, Option<number>][] = [];
+
+    if (curWorksheet.get(viewedSeason)) {
       entries = Array.from(curWorksheet.get(viewedSeason)!.entries()).map(
         ([wsNumber, wsInfo]) => [
           wsNumber,
@@ -226,6 +273,7 @@ export function WorksheetProvider({
     curWorksheet,
     viewedSeason,
     viewedWorksheetNumber,
+    setWorksheetOptions,
     changeViewedWorksheetNumber,
   ]);
 
@@ -277,6 +325,7 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       worksheetOptions,
+      myWorksheetOptions,
       isExoticWorksheet,
       isReadonlyWorksheet,
       exitExoticWorksheet,
@@ -299,6 +348,7 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       worksheetOptions,
+      myWorksheetOptions,
       isExoticWorksheet,
       isReadonlyWorksheet,
       setViewedSeason,
