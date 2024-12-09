@@ -15,6 +15,7 @@ import Globals from './Globals';
 import App from './App';
 import { isDev } from './config';
 import { TutorialProvider } from './contexts/tutorialContext';
+import PWAPrompt from 'react-ios-pwa-prompt';
 
 Sentry.init({
   enabled: !isDev,
@@ -60,6 +61,7 @@ root.render(
       {/* Tutorial provider has to be inside the router. Plus it doesn't need
       SSR */}
       <TutorialProvider>
+        <PWAPrompt />
         <App />
       </TutorialProvider>
     </BrowserRouter>
