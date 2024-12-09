@@ -22,6 +22,7 @@ import Worksheet from './pages/Worksheet';
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
+import PWAPrompt from 'react-ios-pwa-prompt';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -110,6 +111,7 @@ function App() {
         location.pathname === '/catalog' ? styles.catalogLayout : styles.layout
       }
     >
+      <PWAPrompt />
       {/* Default metadata; can be overridden by individual pages/components
       keep this in sync with index.html, so nothing actually changes after
       hydration, and things get restored to the default state when those

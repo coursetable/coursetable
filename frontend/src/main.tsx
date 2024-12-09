@@ -61,7 +61,6 @@ root.render(
       {/* Tutorial provider has to be inside the router. Plus it doesn't need
       SSR */}
       <TutorialProvider>
-        <PWAPrompt />
         <App />
       </TutorialProvider>
     </BrowserRouter>
