@@ -11,6 +11,7 @@ import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { VitePWA } from 'vite-plugin-pwa';
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -63,7 +64,7 @@ function remarkPluginAddHeadingId(): Transformer {
 
       if (!parsedId) return;
       // When there's an id, it is always in the last child node
-      // Sometimes heading is in multiple "parts" (** syntax creates a child
+      // Sometimes heading is in multiple 'parts' (** syntax creates a child
       // node):
       // ## part1 *part2* part3 (#id)
       const lastNode = headingNode.children[
@@ -114,6 +115,27 @@ export default defineConfig({
     basicSsl(),
     visualizer({
       filename: 'build/bundle-map.html',
+    }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true,
+      },
+      injectRegister: 'auto',
+      manifest: {
+        name: 'CourseTable',
+        short_name: 'CourseTable',
+        start_url: '/',
+        icons: [
+          {
+            src: 'icon200x200.png',
+            // sizes: '200x200',
+            // type: 'image/png',
+          },
+        ],
+        display: 'standalone',
+        theme_color: '#ffffff',
+      },
     }),
   ],
   build: {
