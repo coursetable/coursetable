@@ -78,7 +78,7 @@ async function updateWorksheetCourse(
         netId,
         season,
         worksheetNumber,
-        name: "Main Worksheet",
+        name: 'Main Worksheet',
       })
       .returning({ id: worksheets.id });
   }
