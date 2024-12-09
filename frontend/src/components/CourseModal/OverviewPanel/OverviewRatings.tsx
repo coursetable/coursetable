@@ -9,21 +9,23 @@ import {
   Tooltip,
   Popover,
 } from 'react-bootstrap';
+import { MdInfoOutline } from 'react-icons/md';
 
 // @popperjs/core is provided by react-bootstrap
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { detectOverflow } from '@popperjs/core';
 import MultiToggle from 'react-multi-toggle';
 
-import type {
-  RelatedCourseInfoFragment,
-  SameCourseOrProfOfferingsQuery,
-} from '../../../generated/graphql-types';
+import { useModalHistory } from '../../../contexts/modalHistoryContext';
+import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
 import { useStore } from '../../../store';
 import { generateRandomColor } from '../../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../../utilities/constants';
 import { toSeasonString, isDiscussionSection } from '../../../utilities/course';
-import { createCourseModalLink } from '../../../utilities/display';
+import {
+  createCourseModalLink,
+  createProfModalLink,
+} from '../../../utilities/display';
 import { RatingBubble } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 
@@ -31,6 +33,8 @@ import styles from './OverviewRatings.module.css';
 import './react-multi-toggle-override.css';
 
 type Filter = 'both' | 'course' | 'professor';
+
+type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
 
 // Hold index of each filter option
 const optionsIndx = {
@@ -43,7 +47,7 @@ function RatingNumbers({
   course,
   hasEvals,
 }: {
-  readonly course: RelatedCourseInfoFragment;
+  readonly course: RelatedCourseInfo;
   readonly hasEvals: boolean | undefined;
 }) {
   // For random seeds
@@ -111,14 +115,54 @@ function RatingNumbers({
   ));
 }
 
+function CourseBubbleBase(
+  {
+    listing,
+    course,
+    filter,
+    className,
+    ...props
+  }: React.ComponentProps<typeof Col> & {
+    readonly listing: CourseModalOverviewDataQuery['self'][0];
+    readonly course: RelatedCourseInfo;
+    readonly filter: Filter;
+  },
+  ref: React.Ref<HTMLDivElement>,
+) {
+  const extraText =
+    filter === 'both'
+      ? `Section ${course.section}`
+      : course.course_professors.length === 0
+        ? 'TBA'
+        : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
+  return (
+    <Col
+      ref={ref}
+      xs={5}
+      className={clsx(
+        className,
+        styles.ratingBubble,
+        'position-relative p-0 me-3 text-center',
+      )}
+      {...props}
+    >
+      <strong>{toSeasonString(course.season_code)}</strong>
+      <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
+    </Col>
+  );
+}
+
+// @ts-expect-error: TODO
+const CourseBubble = React.forwardRef(CourseBubbleBase);
+
 function CourseLink({
   listing,
   course,
   filter,
   onNavigation,
 }: {
-  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
-  readonly course: RelatedCourseInfoFragment;
+  readonly listing: CourseModalOverviewDataQuery['self'][0];
+  readonly course: RelatedCourseInfo;
   readonly filter: Filter;
   readonly onNavigation: ModalNavigationFunction;
 }) {
@@ -134,30 +178,20 @@ function CourseLink({
     section: course.section,
     course,
   }));
-  const extraText =
-    filter === 'professor'
-      ? `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`
-      : filter === 'both'
-        ? `Section ${course.section}`
-        : course.course_professors.length === 0
-          ? 'TBA'
-          : `${course.course_professors[0]!.professor.name}${course.course_professors.length > 1 ? ` +${course.course_professors.length - 1}` : ''}`;
   if (course.listings.some((l) => l.crn === listing.crn)) {
     // If the course has evals, then we should still switch the view to evals
     // to make the UX more consistent
     if (course.evaluation_statistic) {
       return (
-        <Col
+        <CourseBubble
           as={Button}
-          xs={5}
-          className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+          listing={listing}
+          course={course}
+          filter={filter}
           onClick={() => {
             onNavigation('change-view', undefined, 'evals');
           }}
-        >
-          <strong>{toSeasonString(course.season_code)}</strong>
-          <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-        </Col>
+        />
       );
     }
     return (
@@ -170,14 +204,12 @@ function CourseLink({
           </Popover>
         )}
       >
-        <Col
-          xs={5}
-          className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+        <CourseBubble
+          listing={listing}
+          course={course}
+          filter={filter}
           tabIndex={0}
-        >
-          <strong>{toSeasonString(course.season_code)}</strong>
-          <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-        </Col>
+        />
       </OverlayTrigger>
     );
   }
@@ -190,18 +222,16 @@ function CourseLink({
     (targetListings.length === 1 ? targetListings[0] : undefined);
   if (targetListingDefinite) {
     return (
-      <Col
+      <CourseBubble
         as={Link}
-        xs={5}
-        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
         to={createCourseModalLink(targetListingDefinite, searchParams)}
+        listing={listing}
+        course={course}
+        filter={filter}
         onClick={() => {
           onNavigation('push', targetListingDefinite, 'evals');
         }}
-      >
-        <strong>{toSeasonString(course.season_code)}</strong>
-        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-      </Col>
+      />
     );
   }
   return (
@@ -250,34 +280,19 @@ function CourseLink({
         </Popover>
       )}
     >
-      <Col
+      <CourseBubble
         as={Button}
-        xs={5}
-        className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-      >
-        <strong>{toSeasonString(course.season_code)}</strong>
-        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-      </Col>
+        listing={listing}
+        course={course}
+        filter={filter}
+      />
     </OverlayTrigger>
   );
 }
 
-function normalizeRelatedListings<T extends RelatedCourseInfoFragment>(
-  courses: T[],
-): T[] {
-  // Discussion sections have no ratings, nothing to show
-  return courses
-    .filter((o) => !isDiscussionSection(o))
-    .sort(
-      (a, b) =>
-        b.season_code.localeCompare(a.season_code, 'en-US') ||
-        parseInt(a.section, 10) - parseInt(b.section, 10),
-    );
-}
-
 function haveSameProfessors(
-  course1: Pick<RelatedCourseInfoFragment, 'course_professors'>,
-  course2: Pick<RelatedCourseInfoFragment, 'course_professors'>,
+  course1: Pick<RelatedCourseInfo, 'course_professors'>,
+  course2: Pick<RelatedCourseInfo, 'course_professors'>,
 ) {
   const aProfIds = course1.course_professors
     // @ts-expect-error: the GraphQL-codegen types are wrong because it doesn't
@@ -299,28 +314,31 @@ function OverviewRatings({
   onNavigation,
   listing,
   sameCourse,
-  sameProf,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly listing: SameCourseOrProfOfferingsQuery['self'][0];
-  readonly sameCourse: SameCourseOrProfOfferingsQuery['sameCourse'];
-  readonly sameProf: SameCourseOrProfOfferingsQuery['sameProf'];
+  readonly listing: CourseModalOverviewDataQuery['self'][0];
+  readonly sameCourse: RelatedCourseInfo[];
 }) {
   const user = useStore((state) => state.user);
+  const [searchParams] = useSearchParams();
+  const { navigate } = useModalHistory();
   const overlapSections = useMemo(() => {
-    const sameCourseNormalized = normalizeRelatedListings(sameCourse);
-    const sameProfNormalized = normalizeRelatedListings(
-      sameProf.map((o) => o.course),
-    );
+    const sameCourseNormalized = sameCourse
+      .filter((o) => !isDiscussionSection(o))
+      .sort(
+        (a, b) =>
+          b.season_code.localeCompare(a.season_code, 'en-US') ||
+          parseInt(a.section, 10) - parseInt(b.section, 10),
+      );
     const both = sameCourseNormalized.filter((o) =>
       haveSameProfessors(o, listing.course),
     );
     return {
       course: sameCourseNormalized,
-      professor: sameProfNormalized,
       both,
     };
-  }, [sameCourse, sameProf, listing]);
+  }, [sameCourse, listing]);
+
   const options = [
     {
       displayName: `Course (${overlapSections.course.length})`,
@@ -328,7 +346,7 @@ function OverviewRatings({
     },
     { displayName: `Both (${overlapSections.both.length})`, value: 'both' },
     {
-      displayName: `Prof (${overlapSections.professor.length})`,
+      displayName: 'Prof',
       value: 'professor',
     },
   ] as const;
@@ -355,8 +373,58 @@ function OverviewRatings({
           className={clsx(styles.evaluationsFilter, 'mb-2')}
         />
       </div>
-      {overlapSections[filter].length !== 0 ? (
-        <>
+      {filter === 'professor' ? (
+        <div className="alert alert-info m-3">
+          <p>
+            We've moved! To view course offerings by each professor, click on
+            their name on the left, or select from the list below.
+          </p>
+          <ul>
+            {listing.course.course_professors.map((prof) => (
+              <li key={prof.professor.professor_id}>
+                <Link
+                  to={createProfModalLink(
+                    prof.professor.professor_id,
+                    searchParams,
+                  )}
+                  onClick={() => {
+                    navigate('push', {
+                      type: 'professor',
+                      data: prof.professor.professor_id,
+                    });
+                  }}
+                >
+                  {prof.professor.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : overlapSections[filter].length !== 0 ? (
+        <div className="position-relative">
+          <OverlayTrigger
+            trigger="click"
+            placement="right"
+            rootClose
+            overlay={(props) => (
+              <Popover id="filter-popover" {...props}>
+                <Popover.Body>
+                  Past course offerings are discovered using CourseTable's own
+                  algorithm. If you see something unexpected or missing, please{' '}
+                  <Link to="https://feedback.coursetable.com">let us know</Link>
+                  .
+                </Popover.Body>
+              </Popover>
+            )}
+          >
+            <button
+              type="button"
+              style={{ color: 'var(--color-primary)' }}
+              className="position-absolute top-0 start-0"
+            >
+              <MdInfoOutline size={20} />
+            </button>
+          </OverlayTrigger>
           <Row className="m-auto pb-1 justify-content-center">
             <Col xs={5} className="d-flex justify-content-center px-0 me-3">
               <span className={styles.evaluationHeader}>Season</span>
@@ -385,7 +453,7 @@ function OverviewRatings({
               <RatingNumbers course={course} hasEvals={user?.hasEvals} />
             </Row>
           ))}
-        </>
+        </div>
       ) : (
         <div className="m-auto text-center">
           <strong>No Results</strong>

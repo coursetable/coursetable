@@ -76,8 +76,8 @@ function seasonsWithDataFirst(
 ) {
   if (!worksheets) return seasons;
   return [...seasons].sort((a, b) => {
-    const aHasData = a in worksheets;
-    const bHasData = b in worksheets;
+    const aHasData = worksheets.has(a);
+    const bHasData = worksheets.has(b);
     if (aHasData && !bHasData) return -1;
     if (!aHasData && bHasData) return 1;
     return Number(b) - Number(a);
@@ -112,14 +112,14 @@ function parseCoursesFromURL():
   }
   return {
     data: courses.data,
-    worksheets: {
-      [courses.data.season]: {
-        0: {
-          name: courses.data.name,
-          courses: courses.data.courses,
-        },
-      },
-    },
+    worksheets: new Map([
+      [
+        courses.data.season,
+        new Map([
+          [0, { name: courses.data.name, courses: courses.data.courses }],
+        ]),
+      ],
+    ]),
   };
 }
 
@@ -148,7 +148,7 @@ export function WorksheetProvider({
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
 
   const curWorksheet: UserWorksheets = useMemo(() => {
-    const whenNotDefined: UserWorksheets = {};
+    const whenNotDefined: UserWorksheets = new Map();
     if (viewedPerson === 'me') return worksheets ?? whenNotDefined;
 
     return friends?.[viewedPerson]?.worksheets ?? whenNotDefined;

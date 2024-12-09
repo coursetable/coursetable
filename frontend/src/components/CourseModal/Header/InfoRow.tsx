@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
+import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { Option } from '../../../contexts/searchContext';
 import type {
   CourseSectionsQuery,
@@ -119,11 +120,9 @@ function SectionsDropdown({
 
 export default function ModalHeaderInfo({
   listing,
-  backTarget,
   onNavigation,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  readonly backTarget: string | undefined;
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const user = useStore((state) => state.user);
@@ -137,6 +136,7 @@ export default function ModalHeaderInfo({
       hasEvals: Boolean(user?.hasEvals),
     },
   });
+  const { backTarget } = useModalHistory();
   const sections =
     loading || error || !data?.listings
       ? []

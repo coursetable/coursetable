@@ -304,17 +304,17 @@ function CustomSelect<
     [componentsProp, isMulti, isIntersection],
   );
 
-  let styles = mergeStyles(
+  let selectStyles = mergeStyles(
     indicatorStyles(isMulti),
     popout ? popoutStyles(minWidth, showControl) : defaultStyles(),
   );
-  if (colors) styles = mergeStyles(styles, colorStyles(colors));
+  if (colors) selectStyles = mergeStyles(selectStyles, colorStyles(colors));
 
   return (
     <Select<T, IsMulti>
       {...props}
       isMulti={isMulti}
-      styles={styles as StylesConfig<T, IsMulti>}
+      styles={selectStyles as StylesConfig<T, IsMulti>}
       components={animatedComponents}
       theme={themeStyles}
       // https://github.com/coursetable/coursetable/issues/1674

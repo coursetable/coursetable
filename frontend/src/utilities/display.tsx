@@ -144,6 +144,17 @@ export function createCourseModalLink(
   const newSearch = new URLSearchParams(searchParams);
   if (!listing) return `?${searchParams.toString()}`;
   newSearch.set('course-modal', `${listing.course.season_code}-${listing.crn}`);
+  newSearch.delete('prof-modal');
+  return `?${newSearch.toString()}`;
+}
+
+export function createProfModalLink(
+  professorId: number,
+  searchParams: URLSearchParams,
+) {
+  const newSearch = new URLSearchParams(searchParams);
+  newSearch.set('prof-modal', String(professorId));
+  newSearch.delete('course-modal');
   return `?${newSearch.toString()}`;
 }
 

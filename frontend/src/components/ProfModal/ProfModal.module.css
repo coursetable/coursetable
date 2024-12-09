@@ -1,0 +1,43 @@
+.dialog {
+  max-width: 800px !important;
+}
+
+.dialog :global(.modal-content) {
+  background-color: var(--color-surface);
+  border: none !important;
+  border-radius: 8px !important;
+  height: 90% !important;
+  overflow: visible;
+}
+
+.dialog :global(.modal-header) {
+  display: flex !important;
+  padding: 1rem 1rem 0 !important;
+}
+
+.dialog :global(.modal-header) :global(.close) {
+  color: var(--color-text);
+}
+
+.dialog :global(.modal-dialog) {
+  transition: transform 0.1s ease-out !important;
+}
+
+.modalHeader {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader :global(.btn-close) {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .dialog :global(.modal-dialog) {
+    margin: 1.75rem 0.5rem;
+  }
+}

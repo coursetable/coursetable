@@ -1,6 +1,6 @@
 import type express from 'express';
 import chroma from 'chroma-js';
-import { and, count, eq } from 'drizzle-orm';
+import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
 import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
@@ -317,6 +317,26 @@ export const updateWorksheetMetadata = async (
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
 
+    winston.info(
+      `Deleting worksheet courses from worksheet ${worksheetNumber} for user ${netId}`,
+    );
+
+    await db.delete(worksheetCourses).where(
+      inArray(
+        worksheetCourses.worksheetId,
+        db
+          .select({ id: worksheets.id })
+          .from(worksheets)
+          .where(
+            and(
+              eq(worksheets.netId, netId),
+              eq(worksheets.season, season),
+              eq(worksheets.worksheetNumber, worksheetNumber),
+            ),
+          ),
+      ),
+    );
+
     winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     const deletedWorksheets = await db
       .delete(worksheets)
@@ -327,7 +347,7 @@ export const updateWorksheetMetadata = async (
           eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       )
-      .returning({});
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
 
     if (deletedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
@@ -349,7 +369,7 @@ export const updateWorksheetMetadata = async (
           eq(worksheets.worksheetNumber, worksheetNumber),
         ),
       )
-      .returning({});
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
 
     if (renamedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });

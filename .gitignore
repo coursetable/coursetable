@@ -14,6 +14,4 @@ api/postgres/init/*ferry-dump.sql
 
 frontend/build
 
-sysadmin/install-scripts
-
 !**/.keep

@@ -452,32 +452,39 @@ export async function getUserInfo() {
   return res;
 }
 
-const userWorksheetsSchema = z.record(
-  // Key: season
-  z.record(
-    // Key: worksheet number
-    z.object({
-      name: z.string(),
-      courses: z.array(
-        z.object({
-          crn: crnSchema,
-          color: z.string(),
-          hidden: z.boolean().nullable(),
-        }),
-      ),
-    }),
-  ),
-);
+const userWorksheetsSchema = z
+  .record(
+    // Key: season
+    z.record(
+      // Key: worksheet number
+      z.object({
+        name: z.string(),
+        courses: z.array(
+          z.object({
+            crn: crnSchema,
+            color: z.string(),
+            hidden: z.boolean().nullable(),
+          }),
+        ),
+      }),
+    ),
+  )
+  .transform((data) => {
+    type Worksheet = NonNullable<(typeof data)[Season]>[string];
+    // Transform the object record to a map
+    const res = new Map<Season, Map<number, Worksheet>>();
+    for (const season of Object.keys(data)) {
+      const seasonMap = new Map<number, Worksheet>();
+      for (const num of Object.keys(data[season]!))
+        seasonMap.set(Number(num), data[season]![num]!);
+      res.set(season as Season, seasonMap);
+    }
+    return res;
+  });
 
 // Change index type to be more specific. We don't use the key type of z.record
 // on purpose; see https://github.com/colinhacks/zod/pull/2287
-export type UserWorksheets = {
-  [season: Season]: {
-    [worksheetNumber: number]: NonNullable<
-      z.infer<typeof userWorksheetsSchema>[Season]
-    >[string];
-  };
-};
+export type UserWorksheets = z.infer<typeof userWorksheetsSchema>;
 
 export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
@@ -497,17 +504,16 @@ export async function fetchUserWorksheets() {
   // server. This is a one-time operation to migrate from our old client-side
   // logic to be server-side, to make it consistent between devices and friends.
   const actions = [];
-  for (const seasonKey in res.data) {
-    const season = seasonKey as Season;
-    for (const num in res.data[season]) {
-      for (const course of res.data[season][num]!.courses) {
+  for (const [season, seasonWorksheets] of res.data) {
+    for (const [num, worksheet] of seasonWorksheets) {
+      for (const course of worksheet.courses) {
         if (course.hidden === null) {
           course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
           actions.push({
             action: 'update',
             season,
             crn: course.crn,
-            worksheetNumber: Number(num),
+            worksheetNumber: num,
             hidden: course.hidden,
           });
         }

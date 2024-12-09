@@ -1,8 +1,7 @@
-query SameCourseOrProfOfferings(
+query CourseModalOverviewData(
   $seasonCode: String!
   $crn: Int!
   $sameCourseId: Int!
-  $professorIds: [Int!]
   $hasEvals: Boolean!
 ) {
   self: listings(
@@ -19,9 +18,6 @@ query SameCourseOrProfOfferings(
         professor {
           professor_id
           name
-          email
-          courses_taught
-          average_rating @include(if: $hasEvals)
         }
       }
       course_meetings {
@@ -63,30 +59,20 @@ query SameCourseOrProfOfferings(
     course_code
   }
   sameCourse: courses(where: { same_course_id: { _eq: $sameCourseId } }) {
-    ...RelatedCourseInfo
+    ...CourseModalPrefetchCourseData
+    average_professor_rating @include(if: $hasEvals)
+    evaluation_statistic @include(if: $hasEvals) {
+      avg_workload
+      avg_rating
+    }
+    course_professors {
+      professor {
+        name
+      }
+    }
+    course_id
     syllabus_url
   }
-  sameProf: course_professors(where: { professor_id: { _in: $professorIds } }) {
-    professor_id
-    course {
-      ...RelatedCourseInfo
-    }
-  }
-}
-
-fragment RelatedCourseInfo on courses {
-  ...CourseModalPrefetchCourseData
-  average_professor_rating @include(if: $hasEvals)
-  evaluation_statistic @include(if: $hasEvals) {
-    avg_workload
-    avg_rating
-  }
-  course_professors {
-    professor {
-      name
-    }
-  }
-  course_id
 }
 
 # This data contains all the "critical data" that must be prefetched before
@@ -152,6 +138,25 @@ query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
       }
       evaluation_statistic {
         enrolled
+      }
+    }
+  }
+}
+
+query ProfModalOverviewData($professorId: Int!, $hasEvals: Boolean!) {
+  professors(where: { professor_id: { _eq: $professorId } }) {
+    name
+    email
+    courses_taught
+    average_rating @include(if: $hasEvals)
+    course_professors {
+      course {
+        ...CourseModalPrefetchCourseData
+        course_id
+        evaluation_statistic @include(if: $hasEvals) {
+          avg_workload
+          avg_rating
+        }
       }
     }
   }

@@ -103,8 +103,6 @@ export default tseslint.config(
       'react/jsx-uses-react': 'off',
       'react/no-array-index-key': 'off',
       'react-compiler/react-compiler': 'error',
-      // TODO: we should eventually get rid of `in` operator
-      'no-restricted-syntax': 'off',
     },
   },
   {
