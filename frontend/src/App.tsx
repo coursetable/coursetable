@@ -111,7 +111,7 @@ function App() {
         location.pathname === '/catalog' ? styles.catalogLayout : styles.layout
       }
     >
-      <PWAPrompt />
+      <PWAPrompt appIconPath="/icon200x200.png"/>
       {/* Default metadata; can be overridden by individual pages/components
       keep this in sync with index.html, so nothing actually changes after
       hydration, and things get restored to the default state when those
