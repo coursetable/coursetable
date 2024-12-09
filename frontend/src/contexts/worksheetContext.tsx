@@ -288,14 +288,13 @@ export function WorksheetProvider({
 
   const changeViewedPerson = useCallback(
     (newPerson: 'me' | NetId) => {
-      changeViewedWorksheetNumber(0);
-      // Chicken-and-egg problem:
-      // Can't switch to newPerson first because they may not have worksheet 0
-      // Can't use general callback function first because person hasn't changed
-      if (newPerson === 'me') setMyViewedWorksheetNumber(0);
+      // Can't use the general handler here because person hasn't yet changed
+      newPerson === 'me'
+        ? setViewedWorksheetNumber(myViewedWorksheetNumber)
+        : setViewedWorksheetNumber(0);
       setViewedPerson(newPerson);
     },
-    [setViewedPerson, changeViewedWorksheetNumber, setMyViewedWorksheetNumber],
+    [myViewedWorksheetNumber, setViewedPerson, setViewedWorksheetNumber],
   );
 
   const exitExoticWorksheet = useCallback(() => {

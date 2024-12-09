@@ -71,23 +71,18 @@ async function updateWorksheetCourse(
     columns: { id: true },
   });
 
-  if (!existingMeta) {
+  if (!existingMeta && worksheetNumber === 0) {
     [existingMeta] = await db
       .insert(worksheets)
       .values({
         netId,
         season,
         worksheetNumber,
-        name:
-          worksheetNumber === 0
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheetNumber}`,
-        // All other than main worksheet to be removed
-        // once add/remove/rename worksheets is pushed.
+        name: "Main Worksheet",
       })
       .returning({ id: worksheets.id });
   }
-  if (!existingMeta) throw new Error('Failed to create worksheet');
+  if (!existingMeta) throw new Error('Metadata not found for worksheet');
   const existing = await db.query.worksheetCourses.findFirst({
     where: and(
       eq(worksheetCourses.worksheetId, existingMeta.id),
@@ -126,11 +121,8 @@ async function updateWorksheetCourse(
       .where(eq(worksheetCourses.worksheetId, existingMeta.id));
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-    if (numCoursesInCurWorksheet === 0) {
-      // Deletions of all ws other than main to be removed
-      // once add/remove/rename worksheets is pushed.
+    if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0)
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
-    }
   } else {
     // Update data of a bookmarked course
     winston.info(
