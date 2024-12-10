@@ -70,22 +70,19 @@ async function updateWorksheetCourse(
     ),
     columns: { id: true },
   });
-  // To be removed once add/remove/rename worksheets is pushed.
-  if (!existingMeta) {
+
+  if (!existingMeta && worksheetNumber === 0) {
     [existingMeta] = await db
       .insert(worksheets)
       .values({
         netId,
         season,
         worksheetNumber,
-        name:
-          worksheetNumber === 0
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheetNumber}`,
+        name: 'Main Worksheet',
       })
       .returning({ id: worksheets.id });
   }
-  if (!existingMeta) throw new Error('Failed to create worksheet');
+  if (!existingMeta) throw new Error('Metadata not found for worksheet');
   const existing = await db.query.worksheetCourses.findFirst({
     where: and(
       eq(worksheetCourses.worksheetId, existingMeta.id),
@@ -124,7 +121,7 @@ async function updateWorksheetCourse(
       .where(eq(worksheetCourses.worksheetId, existingMeta.id));
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-    if (numCoursesInCurWorksheet === 0)
+    if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0)
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
   } else {
     // Update data of a bookmarked course
@@ -134,9 +131,6 @@ async function updateWorksheetCourse(
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      // Currently the frontend is not capable of actually syncing the hidden
-      // state so we keep it as null. This allows it to be properly synced in
-      // the future
       .set({ color, hidden })
       .where(
         and(
