@@ -22,7 +22,9 @@ import Worksheet from './pages/Worksheet';
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
+
 import PWAPrompt from 'react-ios-pwa-prompt';
+import PullToRefresh from 'pulltorefreshjs';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -104,6 +106,16 @@ function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
   useInitStore();
+
+  const standalone = window.matchMedia("(display-mode: standalone)").matches
+
+  if (standalone) {
+      PullToRefresh.init({
+          onRefresh() {
+              window.location.reload()
+          },
+      })
+  }
 
   return (
     <div
