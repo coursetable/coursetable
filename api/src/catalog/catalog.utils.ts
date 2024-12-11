@@ -154,6 +154,7 @@ async function fetchData(
 
 export async function fetchCatalog(overwrite: boolean, latestN?: number) {
   try {
+    await generateMetadata();
     const seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
       (x) => x.season_code,
     );
@@ -185,7 +186,6 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
       ),
     );
     await Promise.all(processSeasons);
-    await generateMetadata();
     await generateSitemapIndex();
   } catch (err) {
     winston.error(err);
