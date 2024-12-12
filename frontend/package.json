@@ -68,6 +68,7 @@
     "@types/lz-string": "^1.5.0",
     "@types/mark.js": "^8.11.12",
     "@types/node": "^22.7.5",
+    "@types/pulltorefreshjs": "^0.1.7",
     "@types/react": "^18.3.11",
     "@types/react-big-calendar": "^1.8.12",
     "@types/react-dom": "^18.3.0",

@@ -1,7 +1,9 @@
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
 
+import PWAPrompt from 'react-ios-pwa-prompt';
 import { useShallow } from 'zustand/react/shallow';
 import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
@@ -22,9 +24,6 @@ import Worksheet from './pages/Worksheet';
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
-
-import PWAPrompt from 'react-ios-pwa-prompt';
-import PullToRefresh from 'pulltorefreshjs';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -107,14 +106,14 @@ function App() {
   const { isTutorialOpen } = useTutorial();
   useInitStore();
 
-  const standalone = window.matchMedia("(display-mode: standalone)").matches
+  const standalone = window.matchMedia('(display-mode: standalone)').matches;
 
   if (standalone) {
-      PullToRefresh.init({
-          onRefresh() {
-              window.location.reload()
-          },
-      })
+    PullToRefresh.init({
+      onRefresh() {
+        window.location.reload();
+      },
+    });
   }
 
   return (
@@ -123,7 +122,7 @@ function App() {
         location.pathname === '/catalog' ? styles.catalogLayout : styles.layout
       }
     >
-      <PWAPrompt appIconPath="/icon200x200.png"/>
+      <PWAPrompt appIconPath="/icon200x200.png" />
       {/* Default metadata; can be overridden by individual pages/components
       keep this in sync with index.html, so nothing actually changes after
       hydration, and things get restored to the default state when those
