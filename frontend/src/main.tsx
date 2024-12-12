@@ -17,7 +17,6 @@ import Globals from './Globals';
 import App from './App';
 import { isDev } from './config';
 import { TutorialProvider } from './contexts/tutorialContext';
-import PWAPrompt from 'react-ios-pwa-prompt';
 
 enableMapSet();
 
