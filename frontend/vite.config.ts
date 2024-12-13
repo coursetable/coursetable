@@ -129,8 +129,6 @@ export default defineConfig({
         icons: [
           {
             src: 'icon200x200.png',
-            // Sizes: '200x200',
-            // type: 'image/png',
           },
         ],
         display: 'standalone',
