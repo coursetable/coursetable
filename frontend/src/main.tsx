@@ -12,7 +12,6 @@ import * as Sentry from '@sentry/react';
 // Globals has to be imported first, because it contains all the base CSS!
 // eslint-disable-next-line import/order
 import Globals from './Globals';
-
 import App from './App';
 import { isDev } from './config';
 import { TutorialProvider } from './contexts/tutorialContext';
