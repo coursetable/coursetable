@@ -13,6 +13,7 @@ import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
+import ff from '../images/headshots/filippo-fonseca.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -31,6 +32,7 @@ import ma from '../images/headshots/murad-avliyakulov.jpg';
 import nk from '../images/headshots/nalin-khanna.jpg';
 import ns from '../images/headshots/neil-song.jpg';
 import px from '../images/headshots/peter-xu.jpg';
+import rb from '../images/headshots/reyansh-bahl.jpg';
 import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
@@ -114,6 +116,25 @@ function About() {
       links: {
         linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
         github: 'https://github.com/Etherite1',
+      },
+    },
+    {
+      name: 'Filippo Fonseca',
+      image: ff,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/filippo-fonseca',
+        linkedin: 'https://www.linkedin.com/in/filippo-fonseca/',
+        website: 'https://filippofonseca.com/',
+      },
+    },
+    {
+      name: 'Reyansh Bahl',
+      image: rb,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/reybahl',
+        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
       },
     },
   ];

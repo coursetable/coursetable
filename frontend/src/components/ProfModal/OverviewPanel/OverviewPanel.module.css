@@ -1,0 +1,89 @@
+.subjectBadge {
+  padding: 6px;
+  margin: 4px;
+  cursor: default;
+  background-color: var(--color-primary);
+}
+
+.ratingGraph {
+  width: 100%;
+  height: 400px;
+}
+
+.sameCourseGroup {
+  background-color: var(--color-primary-subdued-2);
+  border-radius: 8px;
+  padding: 8px 0;
+  margin: 8px 0;
+}
+
+.ratingBubble {
+  color: unset;
+  border-radius: 8px;
+  max-height: 3rem;
+  transition: max-height 0.2s ease-out;
+  flex: none;
+  background-color: var(--color-primary-subdued);
+}
+
+.ratingBubble:hover {
+  color: unset;
+  background-color: var(--color-primary-light);
+  max-height: 50px;
+  transition: max-height 0.2s ease-in;
+}
+
+.ratingBubble:focus-visible {
+  outline: revert;
+  box-shadow: none;
+  border: none;
+}
+
+.ratingBubble:focus-visible,
+.ratingBubble:active {
+  color: unset !important;
+  background-color: var(--color-primary-light) !important;
+}
+
+.courseLink {
+  text-decoration: underline;
+  display: block;
+}
+
+.ratingCell {
+  width: 100%;
+  text-align: center;
+  border-radius: 6px;
+  justify-content: center;
+}
+
+.evaluationHeader {
+  font-weight: 500;
+  color: grey;
+}
+
+.evaluationHeader :global(.toggleOption) {
+  color: var(--color-text);
+}
+
+.details {
+  display: block;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+@media (hover: none) {
+  .ratingBubble {
+    max-height: 3rem;
+    height: 3rem;
+  }
+
+  .ratingBubble:hover {
+    max-height: 3rem;
+    height: 3rem;
+    transition: max-height 0s;
+  }
+}
