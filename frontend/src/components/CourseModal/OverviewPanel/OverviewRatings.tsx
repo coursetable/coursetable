@@ -1,7 +1,7 @@
 import React, { useState, type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { Form } from 'react-bootstrap';
+import { Form, Badge } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
 import {
@@ -9,6 +9,7 @@ import {
   type Store,
 } from '../../../contexts/modalHistoryContext';
 import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
+import { ratingColormap } from '../../../utilities/constants';
 import { isDiscussionSection } from '../../../utilities/course';
 import { createProfModalLink } from '../../../utilities/display';
 import RelatedCoursesList from '../../RelatedCoursesList';
@@ -40,10 +41,8 @@ function createProfSummary(
     <>
       {profsByName.map((prof, i) => {
         // TODO: TS doesn't understand how to map over an intersection of arrays
-        const professor = prof.professor as {
-          professor_id: number;
-          name: string;
-        };
+        const professor =
+          prof.professor as RelatedCourseInfo['course_professors'][number]['professor'];
         return (
           <React.Fragment key={professor.professor_id}>
             <Link
@@ -58,6 +57,23 @@ function createProfSummary(
             >
               {prof.professor.name}
             </Link>
+            {professor.average_rating && (
+              <>
+                {' '}
+                <Badge
+                  bg="none"
+                  className="mx-1 mb-1"
+                  style={{
+                    backgroundColor: ratingColormap(
+                      professor.average_rating,
+                    ).css(),
+                    color: 'var(--color-text-dark)',
+                  }}
+                >
+                  {professor.average_rating.toFixed(1)}
+                </Badge>
+              </>
+            )}
             {i < courseProfessors.length - 1 ? ' • ' : ''}
           </React.Fragment>
         );
@@ -79,7 +95,7 @@ function OverviewRatings({
   const [searchParams] = useSearchParams();
   const { navigate } = useModalHistory();
   const sameCourseNormalized = sameCourse
-    .filter((o) => !isDiscussionSection(o))
+    .filter((o) => !isDiscussionSection(o) && o.extra_info === 'ACTIVE')
     .sort(
       (a, b) =>
         b.season_code.localeCompare(a.season_code, 'en-US') ||
@@ -181,7 +197,11 @@ function OverviewRatings({
             listing={listing}
             courses={groupSameProf ? coursesByProf : sameCourseNormalized}
             usesSameCourse
-            columns={['rating', 'professor', 'workload']}
+            columns={
+              groupSameProf
+                ? ['rating', 'workload']
+                : ['rating', 'professor', 'workload']
+            }
             columnWidth={2}
             onNavigation={onNavigation}
             extraText={(c) =>
