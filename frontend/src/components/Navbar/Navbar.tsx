@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { Nav, Navbar, Button } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
 import { API_ENDPOINT } from '../../config';
-import { useSearch } from '../../contexts/searchContext';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
-import { scrollToTop, createCourseModalLink } from '../../utilities/display';
+import { scrollToTop } from '../../utilities/display';
 import LastUpdated from '../Search/LastUpdated';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
+import RandomButton from '../Search/RandomButton';
 import { SurfaceComponent } from '../Typography';
 import { NavbarWorksheetSearch } from '../Worksheet/NavbarWorksheetSearch';
 
@@ -57,25 +57,9 @@ export default function CourseTableNavbar() {
   const location = useLocation();
   const [navExpanded, setNavExpanded] = useState(false);
   const isMobile = useStore((state) => state.isMobile);
-  const { searchData } = useSearch();
-  const navigate = useNavigate();
-
-  const fetchRandomCourse = () => {
-    if (searchData && searchData.length > 0) {
-      const randomCourse =
-        searchData[Math.floor(Math.random() * searchData.length)];
-      const courseModalLink = createCourseModalLink(
-        randomCourse,
-        new URLSearchParams(),
-      );
-      navigate(courseModalLink);
-    }
-  };
 
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
   const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
-  // Show random even on mobile for now
-  const showRandom = location.pathname === '/catalog';
 
   return (
     <SurfaceComponent className={styles.container}>
@@ -96,16 +80,7 @@ export default function CourseTableNavbar() {
               <Logo icon={false} />
             </NavLink>
           </Nav>
-          {showRandom && (
-            <Button
-              className={clsx(styles.randomButton)} // Do we need clsx here
-              variant="outline-primary"
-              onClick={fetchRandomCourse}
-              disabled={!searchData || searchData.length === 0}
-            >
-              Random Course
-            </Button>
-          )}
+          {showCatalogSearch && <RandomButton />}
         </div>
         {showCatalogSearch && <NavbarCatalogSearch />}
         {showWorksheetSearch && <NavbarWorksheetSearch />}

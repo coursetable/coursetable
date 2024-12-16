@@ -123,14 +123,8 @@ hr {
   border: none;
 }
 
-.btn:not(.btn-none, .btn-dark, .btn-danger, .btn-link, .btn-outline-primary) {
+.btn:not(.btn-none, .btn-dark, .btn-danger, .btn-link) {
   --bs-btn-bg: var(--color-primary);
-}
-
-.btn-outline-primary {
-  --bs-btn-border-color: var(--color-primary);
-  --bs-btn-color: var(--color-primary);
-  --bs-btn-hover-bg: var(--color-primary-hover) !important;
 }
 
 /* TODO: can we modularized the below? */

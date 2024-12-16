@@ -1,0 +1,14 @@
+.randomButton {
+  font-size: small;
+  color: var(--color-primary-light);
+  margin-bottom: 0.5rem;
+}
+
+.randomButton:hover {
+  color: var(--color-primary);
+}
+
+.randomButton:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
