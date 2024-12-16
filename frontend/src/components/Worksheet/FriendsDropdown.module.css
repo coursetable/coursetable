@@ -7,7 +7,7 @@
 .spinner {
   position: absolute;
   right: 10px;
-  top: calc(50% - 9px);
   width: 18px;
   height: 18px;
+  margin-top: 3px;
 }

@@ -5,7 +5,7 @@ import OverviewInfo from './OverviewInfo';
 import OverviewRatings from './OverviewRatings';
 
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
-import { useSameCourseOrProfOfferingsQuery } from '../../../queries/graphql-queries';
+import { useCourseModalOverviewDataQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import Spinner from '../../Spinner';
 import type { ModalNavigationFunction } from '../CourseModal';
@@ -19,20 +19,17 @@ function OverviewPanel({
 }) {
   const user = useStore((state) => state.user);
 
-  const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
+  const { data, loading, error } = useCourseModalOverviewDataQuery({
     variables: {
       seasonCode: prefetched.course.season_code,
       crn: prefetched.crn,
       hasEvals: Boolean(user?.hasEvals),
       sameCourseId: prefetched.course.same_course_id,
-      professorIds: prefetched.course.course_professors.map(
-        (p) => p.professor.professor_id,
-      ),
     },
   });
 
   // Wait until data is fetched
-  if (loading) return <Spinner />;
+  if (loading) return <Spinner message="Loading course details..." />;
 
   if (error) {
     return (
@@ -44,7 +41,7 @@ function OverviewPanel({
     );
   }
 
-  const { sameCourse = [], sameProf = [], self: [listing] = [] } = data ?? {};
+  const { sameCourse = [], self: [listing] = [] } = data ?? {};
 
   if (!listing) {
     return (
@@ -87,7 +84,6 @@ function OverviewPanel({
           onNavigation={onNavigation}
           listing={listing}
           sameCourse={sameCourse}
-          sameProf={sameProf}
         />
       </Col>
     </Row>

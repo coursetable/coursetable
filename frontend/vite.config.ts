@@ -137,6 +137,11 @@ export default defineConfig({
     },
   },
   server: {
-    port: Number(process.env.PORT) || 3000,
+    // Only used in dev
+    // Note: in the build-size action we build without doppler, so this must be
+    // runnable without env, but it's unused anyway
+    port: process.env.FRONTEND_ENDPOINT
+      ? Number(new URL(process.env.FRONTEND_ENDPOINT).port || 3000)
+      : 3000,
   },
 });

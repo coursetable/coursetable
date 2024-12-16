@@ -18,6 +18,7 @@
     "lint:check": "eslint .",
     "lint:css": "stylelint --fix \"**/*.css\"",
     "lint:css:check": "stylelint \"**/*.css\"",
+    "prepare": "husky || true",
     "resize-image": "bun tools/resize-image.mts",
     "resize-image:check": "bun tools/resize-image.mts --test"
   },
@@ -41,7 +42,10 @@
     "eslint": "^9.14.0",
     "eslint-config-jc": "^6.0.1",
     "eslint-plugin-css-modules": "^2.12.0",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
+    "husky": "^9.1.7",
     "image-size": "^1.1.1",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "sharp": "^0.33.5",
     "stylelint": "^16.10.0",

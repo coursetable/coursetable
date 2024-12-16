@@ -16,9 +16,8 @@ import App from './App';
 import { isDev } from './config';
 import { TutorialProvider } from './contexts/tutorialContext';
 
-const release = isDev ? 'edge' : import.meta.env.VITE_SENTRY_RELEASE;
-
 Sentry.init({
+  enabled: !isDev,
   dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [
     // See https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
@@ -47,14 +46,9 @@ Sentry.init({
   ],
   environment: import.meta.env.MODE,
 
-  // See https://docs.sentry.io/platforms/javascript/configuration/releases/.
-  release,
   autoSessionTracking: true,
 
-  // Note: this is fully enabled in development. We can revisit this if it
-  // becomes annoying. We can also adjust the production sample rate depending
-  // on our quotas.
-  tracesSampleRate: isDev ? 1.0 : 0.08,
+  tracesSampleRate: 0.08,
 });
 
 const domNode = document.getElementById('root')!;

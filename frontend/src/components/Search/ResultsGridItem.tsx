@@ -120,7 +120,7 @@ function ResultsGridItem({
           <strong className={styles.oneLine}>{listing.course.title}</strong>
         </div>
         <div className="d-flex justify-content-between">
-          <div>
+          <div className={styles.courseInfo}>
             <TextComponent
               type="secondary"
               className={clsx(styles.oneLine, styles.professors)}

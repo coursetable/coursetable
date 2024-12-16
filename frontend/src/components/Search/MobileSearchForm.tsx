@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import RCSlider from 'rc-slider';
@@ -91,6 +91,12 @@ function Slider<K extends NumericFilters>({
 }) {
   const { filters } = useSearch();
   const handle = filters[handleName];
+  // This is exactly the same as the filter handle, except it updates
+  // responsively without triggering searching
+  const [rangeValue, setRangeValue] = useState(handle.value);
+  useEffect(() => {
+    setRangeValue(handle.value);
+  }, [handle.value]);
 
   return (
     <div>
@@ -104,6 +110,10 @@ function Slider<K extends NumericFilters>({
         max={defaultFilters.overallBounds[1]}
         step={0.1}
         defaultValue={defaultFilters.overallBounds}
+        value={rangeValue}
+        onChange={(value) => {
+          setRangeValue(value as [number, number]);
+        }}
         onChangeComplete={(value) => {
           handle.set(value as [number, number]);
         }}
@@ -131,7 +141,6 @@ function Slider<K extends NumericFilters>({
 export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
   const { searchText, selectSortBy } = filters;
-  const resetKey = useRef(0);
   const scrollToResults = useCallback((event?: React.FormEvent) => {
     if (event) event.preventDefault();
     scroller.scrollTo('catalog', {
@@ -158,7 +167,6 @@ export default function MobileSearchForm() {
             type="button"
             className={clsx(styles.resetFiltersBtn, 'me-auto')}
             onClick={() => {
-              resetKey.current++;
               Object.values(filters).forEach((filter) =>
                 filter.resetToDefault(),
               );
@@ -233,7 +241,7 @@ export default function MobileSearchForm() {
           }
         />
         <hr />
-        <div className={styles.sliders} key={resetKey.current}>
+        <div className={styles.sliders}>
           <Slider handle="overallBounds" />
           <Slider handle="workloadBounds" />
           <Slider handle="professorBounds" />
