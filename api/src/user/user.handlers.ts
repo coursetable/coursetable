@@ -71,7 +71,8 @@ async function updateWorksheetCourse(
     columns: { id: true },
   });
 
-  if (!existingMeta && worksheetNumber === 0) {
+  // Only implicitly create a main worksheet if it doesn't exist
+  if (!existingMeta && worksheetNumber === 0 && action === 'add') {
     [existingMeta] = await db
       .insert(worksheets)
       .values({
@@ -82,7 +83,7 @@ async function updateWorksheetCourse(
       })
       .returning({ id: worksheets.id });
   }
-  if (!existingMeta) throw new Error('Metadata not found for worksheet');
+  if (!existingMeta) return 'WORKSHEET_NOT_FOUND';
   const existing = await db.query.worksheetCourses.findFirst({
     where: and(
       eq(worksheetCourses.worksheetId, existingMeta.id),
@@ -121,6 +122,7 @@ async function updateWorksheetCourse(
       .where(eq(worksheetCourses.worksheetId, existingMeta.id));
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
+    // Only implicitly delete the main worksheet if it's empty
     if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0)
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
   } else {
