@@ -3,11 +3,7 @@ import chroma from 'chroma-js';
 import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
-import {
-  getNextAvailableWsNumber,
-  worksheetListToMap,
-  wishlistCoursesToWishlist,
-} from './user.utils.js';
+import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
 
 import {
   studentBluebookSettings,
@@ -385,13 +381,13 @@ export const updateWorksheetMetadata = async (
   res.sendStatus(200);
 };
 
-const ToggleWishReqBodySchema = z.object({
+const UpdateWishlistCourseReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove')]),
-  // We must pass all course codes to check for any match with the wishlist.
-  allCourseCodes: z.array(z.string()),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  crn: z.number(),
 });
 
-export const toggleWish = async (
+export const updateWishlistCourses = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
@@ -399,54 +395,51 @@ export const toggleWish = async (
 
   const { netId } = req.user!;
 
-  const bodyParseRes = ToggleWishReqBodySchema.safeParse(req.body);
+  const bodyParseRes = UpdateWishlistCourseReqBodySchema.safeParse(req.body);
   if (!bodyParseRes.success) {
     res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
 
-  const { action, allCourseCodes } = bodyParseRes.data;
-
-  if (allCourseCodes.length === 0) {
-    res.status(400).json({ error: 'INVALID_REQUEST' });
-    return;
-  }
+  const { action, season, crn } = bodyParseRes.data;
 
   const [existing] = await db
-    .selectDistinctOn([wishlistCourses.netId, wishlistCourses.courseCode])
+    .selectDistinctOn([
+      wishlistCourses.netId,
+      wishlistCourses.season,
+      wishlistCourses.crn,
+    ])
     .from(wishlistCourses)
     .where(
       and(
         eq(wishlistCourses.netId, netId),
-        inArray(wishlistCourses.courseCode, allCourseCodes),
+        eq(wishlistCourses.season, season),
+        eq(wishlistCourses.crn, crn),
       ),
     );
 
   if (action === 'add') {
-    const defaultCourseCode = allCourseCodes.find((code) => code !== '')!;
-    winston.info(`Wishlisting course ${defaultCourseCode} for user ${netId}`);
     if (existing) {
-      res.status(400).json({ error: 'ALREADY_WISHLISTED' });
+      res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
       return;
     }
     await db.insert(wishlistCourses).values({
       netId,
-      courseCode: defaultCourseCode,
+      season,
+      crn,
     });
   } else {
     if (!existing) {
-      res.status(400).json({ error: 'NOT_WISHLISTED' });
+      res.status(400).json({ error: 'NOT_BOOKMARKED' });
       return;
     }
-    winston.info(
-      `Removing wish for course ${existing.courseCode} for user ${netId}`,
-    );
     await db
       .delete(wishlistCourses)
       .where(
         and(
           eq(wishlistCourses.netId, netId),
-          eq(wishlistCourses.courseCode, existing.courseCode),
+          eq(wishlistCourses.season, season),
+          eq(wishlistCourses.crn, crn),
         ),
       );
   }
@@ -458,28 +451,14 @@ export const getUserWishlist = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Fetching user's wishlist`);
-
   const { netId } = req.user!;
 
-  winston.info(`Getting profile for user ${netId}`);
-  const [studentProfile] = await db
-    .selectDistinctOn([studentBluebookSettings.netId])
-    .from(studentBluebookSettings)
-    .where(eq(studentBluebookSettings.netId, netId));
-
-  winston.info(`Getting wishlist for user ${netId}`);
-
-  const wishlist = await db
-    .select()
+  const data = await db
+    .select({ season: wishlistCourses.season, crn: wishlistCourses.crn })
     .from(wishlistCourses)
     .where(eq(wishlistCourses.netId, netId));
 
   res.json({
-    netId,
-    evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
-    year: studentProfile?.year ?? null,
-    school: studentProfile?.school ?? null,
-    data: wishlistCoursesToWishlist(wishlist)[netId] ?? [],
+    data: data.map(({ season, crn }) => ({ season: String(season), crn })),
   });
 };
