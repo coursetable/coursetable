@@ -1,11 +1,11 @@
 .randomButton {
   font-size: 70%;
-  color: var(--color-primary-light);
+  color: var(--color-primary);
   margin-bottom: 0.75rem;
 }
 
 .randomButton:hover {
-  color: var(--color-primary);
+  color: var(--color-primary-hover);
 }
 
 .randomButton:disabled {
