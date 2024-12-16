@@ -144,10 +144,10 @@ function SeasonRatingChart({
       tooltip: {
         callbacks: {
           label(context) {
-            const rating = context.raw as number;
+            const point = context.raw as { x: number; y: number };
             const index = context.dataIndex;
             const courseCount = data[index]?.courseCount || 0;
-            return `Rated courses: ${courseCount} | Avg rating: ${rating.toPrecision(2)}`;
+            return `Rated courses: ${courseCount} | Avg rating: ${point.y.toFixed(1)}`;
           },
           title(tooltipItems) {
             return toSeasonString(
@@ -241,8 +241,8 @@ function CourseRatingChart({
       tooltip: {
         callbacks: {
           label(context) {
-            const rating = context.raw as number;
-            return `Avg rating: ${rating.toPrecision(2)}`;
+            const point = context.raw as { x: number; y: number };
+            return `Avg rating: ${point.y.toFixed(1)}`;
           },
           title(tooltipItems) {
             return toSeasonString(
