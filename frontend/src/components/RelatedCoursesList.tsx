@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -310,7 +310,9 @@ export default function RelatedCoursesList<T extends RelatedCourseInfo>({
   extraText,
 }: {
   readonly listing?: CourseModalOverviewDataQuery['self'][0];
-  readonly courses: T[] | Map<string | number, { title: string; courses: T[] }>;
+  readonly courses:
+    | T[]
+    | Map<string | number, { title: ReactNode; courses: T[] }>;
   readonly usesSameCourse: boolean;
   readonly columns: Column[];
   readonly columnWidth: number;

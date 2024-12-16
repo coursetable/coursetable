@@ -163,7 +163,7 @@ export default function ModalHeaderInfo({
   const sections =
     loading || error || !data?.listings
       ? []
-      : [...data.listings].sort((a, b) =>
+      : data.listings.toSorted((a, b) =>
           a.course.section.localeCompare(b.course.section, 'en-US', {
             numeric: true,
           }),
