@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import clsx from 'clsx';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Row,
   Col,
-  Button,
   OverlayTrigger,
   Tooltip,
-  Popover,
   Badge,
   Form,
 } from 'react-bootstrap';
-import { MdInfoOutline } from 'react-icons/md';
 
-// @popperjs/core is provided by react-bootstrap
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { detectOverflow } from '@popperjs/core';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,206 +22,15 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { Season } from '../../../queries/graphql-types';
-import { useStore } from '../../../store';
-import { generateRandomColor } from '../../../utilities/common';
-import {
-  ratingColormap,
-  workloadColormap,
-  subjects,
-} from '../../../utilities/constants';
+import { subjects } from '../../../utilities/constants';
 import { toSeasonString } from '../../../utilities/course';
-import { createCourseModalLink } from '../../../utilities/display';
-import { RatingBubble, TextComponent } from '../../Typography';
+import RelatedCoursesList from '../../RelatedCoursesList';
+import { TextComponent } from '../../Typography';
 import type { ProfInfo } from '../ProfModal';
 import styles from './OverviewPanel.module.css';
 
 type RelatedCourseInfo = ProfInfo['course_professors'][number]['course'];
-
-function RatingNumbers({
-  course,
-  hasEvals,
-}: {
-  readonly course: RelatedCourseInfo;
-  readonly hasEvals: boolean | undefined;
-}) {
-  // For random seeds
-  const ratingIdentifier = `${course.course_id}${course.season_code}rating`;
-  const workloadIdentifier = `${course.course_id}${course.season_code}workload`;
-
-  // Define the rating bubbles
-  const ratingBubbles = [
-    {
-      colorMap: ratingColormap,
-      rating: course.evaluation_statistic?.avg_rating,
-      identifier: ratingIdentifier,
-    },
-    {
-      colorMap: workloadColormap,
-      rating: course.evaluation_statistic?.avg_workload,
-      identifier: workloadIdentifier,
-    },
-  ];
-
-  if (hasEvals) {
-    return ratingBubbles.map(({ colorMap, rating }, i) => (
-      <Col
-        key={i}
-        xs={3}
-        className="px-1 ms-0 d-flex justify-content-center text-center"
-      >
-        <RatingBubble
-          rating={rating}
-          colorMap={colorMap}
-          className={styles.ratingCell}
-        >
-          {rating ? rating.toFixed(1) : 'N/A'}
-        </RatingBubble>
-      </Col>
-    ));
-  }
-
-  return ratingBubbles.map(({ identifier }, i) => (
-    <OverlayTrigger
-      key={i}
-      placement="top"
-      overlay={(props) => (
-        <Tooltip id="color-tooltip" {...props}>
-          These colors are randomly generated.{' '}
-          {hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see
-          real ratings.
-        </Tooltip>
-      )}
-    >
-      <Col
-        key={i}
-        xs={3}
-        className="px-1 ms-0 d-flex justify-content-center text-center"
-      >
-        <RatingBubble
-          color={generateRandomColor(identifier)}
-          className={styles.ratingCell}
-        />
-      </Col>
-    </OverlayTrigger>
-  ));
-}
-
-function CourseBubbleBase(
-  {
-    course,
-    className,
-    as: As = 'div',
-    ...props
-  }: React.ComponentProps<typeof Col> & {
-    readonly course: RelatedCourseInfo;
-  },
-  ref: React.Ref<HTMLDivElement>,
-) {
-  const extraText = `${course.listings[0]!.course_code}${course.listings.length > 1 ? ` +${course.listings.length - 1}` : ''}`;
-  return (
-    <Col ref={ref} xs={6} className="p-0 position-relative pe-2">
-      <As
-        className={clsx(
-          className,
-          styles.ratingBubble,
-          'd-block text-center p-0 w-100',
-        )}
-        {...props}
-      >
-        <strong>{toSeasonString(course.season_code)}</strong>
-        <span className={clsx(styles.details, 'mx-auto')}>{extraText}</span>
-      </As>
-    </Col>
-  );
-}
-
-// @ts-expect-error: TODO
-const CourseBubble = React.forwardRef(CourseBubbleBase);
-
-function CourseLink({ course }: { readonly course: RelatedCourseInfo }) {
-  const [searchParams] = useSearchParams();
-  const { navigate } = useModalHistory();
-  // Note, we purposefully use the listing data fetched from GraphQL instead
-  // of the static seasons data. This means on navigation we don't have to
-  // possibly fetch a new season and cause a loading screen.
-  // We have to "massage" this data to fit the flat shape like the one
-  // sent by the api. This will be changed.
-  const targetListings = course.listings.map((l) => ({
-    ...l,
-    season_code: course.season_code,
-    section: course.section,
-    course,
-  }));
-  // Avoid showing the popup if there's something we can link to with high
-  // priority
-  // TODO: once we have the concept of "primary" cross-listing, we should
-  // just link to that by default
-  const targetListingDefinite =
-    targetListings.length === 1 ? targetListings[0] : undefined;
-  if (targetListingDefinite) {
-    return (
-      <CourseBubble
-        as={Link}
-        to={createCourseModalLink(targetListingDefinite, searchParams)}
-        course={course}
-        onClick={() => {
-          navigate('push', { type: 'course', data: targetListingDefinite });
-        }}
-      />
-    );
-  }
-  return (
-    <OverlayTrigger
-      rootClose
-      trigger="click"
-      placement="right"
-      popperConfig={{
-        modifiers: [
-          {
-            name: 'resizeIfOverflow',
-            enabled: true,
-            phase: 'write',
-            requiresIfExists: ['offset'],
-            fn({ state }) {
-              const { right } = detectOverflow(state);
-              if (right < 0) return; // No overflow
-              const currentWidth = parseInt(
-                getComputedStyle(state.elements.popper).width,
-                10,
-              );
-              const newWidth = currentWidth - right;
-              state.styles.popper!.width = `${newWidth}px`;
-            },
-          },
-        ],
-      }}
-      overlay={(props) => (
-        <Popover id="cross-listing-popover" {...props}>
-          <Popover.Body>
-            This class has multiple cross-listings. Please choose from one of
-            the codes to see more details.
-            {targetListings.map((l, i) => (
-              <Link
-                key={i}
-                className={styles.courseLink}
-                to={createCourseModalLink(l, searchParams)}
-                onClick={() => {
-                  navigate('push', { type: 'course', data: l });
-                }}
-              >
-                {l.course_code}
-              </Link>
-            ))}
-          </Popover.Body>
-        </Popover>
-      )}
-    >
-      <CourseBubble as={Button} course={course} />
-    </OverlayTrigger>
-  );
-}
 
 function seasonToUniformScale(season: Season): number {
   const year = Number(season.slice(0, 4));
@@ -350,15 +152,24 @@ function OverviewRatings({
 }: {
   readonly coursesTaught: RelatedCourseInfo[];
 }) {
-  const user = useStore((state) => state.user);
   const [groupRecurringCourses, setGroupRecurringCourses] = useState(true);
   if (!coursesTaught.length)
     return <Col md={4} className="px-0 my-0 align-right" />;
-  const uniqueCourses = new Map<number, RelatedCourseInfo[]>();
+  const uniqueCourses = new Map<
+    number,
+    { title: string; courses: RelatedCourseInfo[] }
+  >();
   for (const course of coursesTaught) {
-    if (!uniqueCourses.has(course.same_course_id))
-      uniqueCourses.set(course.same_course_id, []);
-    uniqueCourses.get(course.same_course_id)!.push(course);
+    if (!uniqueCourses.has(course.same_course_id)) {
+      // Use the title of the first course in the group, because it is the
+      // latest
+      uniqueCourses.set(course.same_course_id, {
+        title: course.title,
+        courses: [course],
+      });
+    } else {
+      uniqueCourses.get(course.same_course_id)!.courses.push(course);
+    }
   }
   return (
     <Col md={4} className="px-0 my-0 align-right">
@@ -377,65 +188,15 @@ function OverviewRatings({
           Group recurring courses
         </Form.Check.Label>
       </Form.Check>
-
-      {groupRecurringCourses && (
-        <div className="position-relative">
-          <OverlayTrigger
-            trigger="click"
-            placement="right"
-            rootClose
-            overlay={(props) => (
-              <Popover id="filter-popover" {...props}>
-                <Popover.Body>
-                  Past course offerings are discovered using CourseTable's own
-                  algorithm. If you see something unexpected or missing, please{' '}
-                  <Link to="https://feedback.coursetable.com">let us know</Link>
-                  .
-                </Popover.Body>
-              </Popover>
-            )}
-          >
-            <button
-              type="button"
-              style={{ color: 'var(--color-primary)' }}
-              className="position-absolute top-0 start-0"
-            >
-              <MdInfoOutline size={20} />
-            </button>
-          </OverlayTrigger>
-        </div>
-      )}
-      <Row className="m-auto pb-1">
-        <Col xs={6} className="d-flex justify-content-center px-0">
-          <span className={clsx(styles.evaluationHeader, 'me-2')}>Season</span>
-        </Col>
-        <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
-          <span className={styles.evaluationHeader}>Class</span>
-        </Col>
-        <Col xs={3} className="d-flex ms-0 justify-content-center px-0">
-          <span className={styles.evaluationHeader}>Work</span>
-        </Col>
-      </Row>
-      {groupRecurringCourses
-        ? [...uniqueCourses].map(([id, courses]) => (
-            <div key={id} className={styles.sameCourseGroup}>
-              <div className="mx-3">
-                <b>{courses[0]!.title}</b>
-              </div>
-              {courses.map((course) => (
-                <Row key={course.course_id} className="py-1 mx-2">
-                  <CourseLink course={course} />
-                  <RatingNumbers course={course} hasEvals={user?.hasEvals} />
-                </Row>
-              ))}
-            </div>
-          ))
-        : coursesTaught.map((course) => (
-            <Row key={course.course_id} className="m-auto py-1">
-              <CourseLink course={course} />
-              <RatingNumbers course={course} hasEvals={user?.hasEvals} />
-            </Row>
-          ))}
+      <RelatedCoursesList
+        courses={groupRecurringCourses ? uniqueCourses : coursesTaught}
+        usesSameCourse={groupRecurringCourses}
+        columns={['rating', 'workload']}
+        columnWidth={3}
+        extraText={(c) =>
+          `${c.listings[0]!.course_code}${c.listings.length > 1 ? ` +${c.listings.length - 1}` : ''}`
+        }
+      />
     </Col>
   );
 }
