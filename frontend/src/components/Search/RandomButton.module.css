@@ -1,5 +1,6 @@
 .randomButton {
   font-size: 70%;
+  font-weight: 600;
   color: var(--color-primary);
   margin-bottom: 0.75rem;
 }
