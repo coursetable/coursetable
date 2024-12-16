@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
+import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
 import { useModalHistory } from '../../../contexts/modalHistoryContext';
@@ -11,7 +11,7 @@ import type {
 } from '../../../generated/graphql-types';
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
-import { extraInfo } from '../../../utilities/constants';
+import { extraInfo, subjects } from '../../../utilities/constants';
 import {
   toWeekdaysDisplayString,
   to12HourTime,
@@ -118,6 +118,29 @@ function SectionsDropdown({
   );
 }
 
+function CourseCode({ code }: { readonly code: string }) {
+  // It seems that course code will always contain exactly one space
+  const [subject, number] = code.split(' ');
+  return (
+    <>
+      <OverlayTrigger
+        placement="top"
+        overlay={(props) => {
+          const subjectName = subjects[subject!];
+          return (
+            <Tooltip id="button-tooltip" {...props}>
+              <small>{subjectName ?? '[unknown]'}</small>
+            </Tooltip>
+          );
+        }}
+      >
+        <span>{subject!}</span>
+      </OverlayTrigger>{' '}
+      {number}
+    </>
+  );
+}
+
 export default function ModalHeaderInfo({
   listing,
   onNavigation,
@@ -191,9 +214,11 @@ export default function ModalHeaderInfo({
                     // of cross-listings; otherwise other links are
                     // underlined and are more prominent than this one
                     listing.course.listings.length > 1 ? (
-                      <b>{l.course_code}</b>
+                      <b aria-current="page">
+                        <CourseCode code={l.course_code} />
+                      </b>
                     ) : (
-                      l.course_code
+                      <CourseCode code={l.course_code} />
                     )
                   ) : (
                     <Link
@@ -213,7 +238,7 @@ export default function ModalHeaderInfo({
                         );
                       }}
                     >
-                      {l.course_code}
+                      <CourseCode code={l.course_code} />
                     </Link>
                   )}
                 </React.Fragment>
