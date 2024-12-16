@@ -151,6 +151,11 @@ export default function BooleanAttributeSelect(props: {
       }}
       hideSelectedOptions={false}
       closeMenuOnSelect={false}
+      // Theoretically this is clearable, but our hacky implementation of option
+      // toggling does not allow us to differentiate between "clicking one
+      // option" and "clearing all of them". To prevent weird UX we just disable
+      // this feature.
+      isClearable={false}
     />
   );
 }
