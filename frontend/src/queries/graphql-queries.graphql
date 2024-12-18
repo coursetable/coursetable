@@ -18,6 +18,7 @@ query CourseModalOverviewData(
         professor {
           professor_id
           name
+          average_rating @include(if: $hasEvals)
         }
       }
       course_meetings {
@@ -68,6 +69,7 @@ query CourseModalOverviewData(
     course_professors {
       professor {
         name
+        average_rating @include(if: $hasEvals)
       }
     }
     course_id

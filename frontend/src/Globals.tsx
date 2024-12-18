@@ -11,6 +11,8 @@ import { MDXProvider } from '@mdx-js/react';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'core-js/proposals/array-grouping-v2';
+import 'core-js/proposals/change-array-by-copy-stage-4';
 
 import ErrorPage from './components/ErrorPage';
 import { components } from './components/markdown';

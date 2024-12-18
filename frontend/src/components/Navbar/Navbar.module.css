@@ -83,8 +83,19 @@
   background-color: var(--color-primary);
 }
 
+.navLogoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: 100%;
+}
+
 @media (max-width: calc(1320px - 0.5px)) {
   .navLink {
     font-size: 0.9rem;
+  }
+
+  .navLogoWrapper {
+    gap: 0.75rem;
   }
 }

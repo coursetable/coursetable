@@ -38,12 +38,7 @@ export default function LastUpdated() {
     return { lastUpdated, relative };
   }, [courses]);
   return (
-    <TextComponent
-      type="tertiary"
-      small
-      className="mb-2 text-end me-2"
-      as="div"
-    >
+    <TextComponent type="tertiary" small className="mb-2 text-end" as="div">
       <MdUpdate className="me-1" />
       Updated{' '}
       <time title={lastUpdated.toString()} dateTime={lastUpdated.toISOString()}>
