@@ -1,7 +1,9 @@
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
 
+import PWAPrompt from 'react-ios-pwa-prompt';
 import { useShallow } from 'zustand/react/shallow';
 import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
@@ -104,12 +106,23 @@ function App() {
   const { isTutorialOpen } = useTutorial();
   useInitStore();
 
+  const standalone = window.matchMedia('(display-mode: standalone)').matches;
+
+  if (standalone) {
+    PullToRefresh.init({
+      onRefresh() {
+        window.location.reload();
+      },
+    });
+  }
+
   return (
     <div
       className={
         location.pathname === '/catalog' ? styles.catalogLayout : styles.layout
       }
     >
+      <PWAPrompt appIconPath="/icon200x200.png" />
       {/* Default metadata; can be overridden by individual pages/components
       keep this in sync with index.html, so nothing actually changes after
       hydration, and things get restored to the default state when those
