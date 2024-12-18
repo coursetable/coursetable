@@ -4039,17 +4039,14 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
-export type SameCourseOrProfOfferingsQueryVariables = Exact<{
+export type CourseModalOverviewDataQueryVariables = Exact<{
   seasonCode: Scalars['String']['input'];
   crn: Scalars['Int']['input'];
   sameCourseId: Scalars['Int']['input'];
-  professorIds: InputMaybe<
-    Array<Scalars['Int']['input']> | Scalars['Int']['input']
-  >;
   hasEvals: Scalars['Boolean']['input'];
 }>;
 
-export type SameCourseOrProfOfferingsQuery = {
+export type CourseModalOverviewDataQuery = {
   __typename?: 'query_root';
   self: Array<{
     __typename?: 'listings';
@@ -4077,8 +4074,6 @@ export type SameCourseOrProfOfferingsQuery = {
           __typename?: 'professors';
           professor_id: number;
           name: string;
-          email: string | null;
-          courses_taught: number;
           average_rating?: number | null;
         };
       }>;
@@ -4111,30 +4106,25 @@ export type SameCourseOrProfOfferingsQuery = {
   sameCourse: Array<
     {
       __typename?: 'courses';
+      average_professor_rating?: number | null;
+      course_id: number;
       syllabus_url: string | null;
-    } & RelatedCourseInfoFragment
+      evaluation_statistic?: {
+        __typename?: 'evaluation_statistics';
+        avg_workload: number | null;
+        avg_rating: number | null;
+      } | null;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: {
+          __typename?: 'professors';
+          name: string;
+          average_rating?: number | null;
+        };
+      }>;
+    } & CourseModalPrefetchCourseDataFragment
   >;
-  sameProf: Array<{
-    __typename?: 'course_professors';
-    professor_id: number;
-    course: { __typename?: 'courses' } & RelatedCourseInfoFragment;
-  }>;
 };
-
-export type RelatedCourseInfoFragment = {
-  __typename?: 'courses';
-  average_professor_rating?: number | null;
-  course_id: number;
-  evaluation_statistic?: {
-    __typename?: 'evaluation_statistics';
-    avg_workload: number | null;
-    avg_rating: number | null;
-  } | null;
-  course_professors: Array<{
-    __typename?: 'course_professors';
-    professor: { __typename?: 'professors'; name: string };
-  }>;
-} & CourseModalPrefetchCourseDataFragment;
 
 export type CourseModalPrefetchListingDataFragment = {
   __typename?: 'listings';
@@ -4205,6 +4195,34 @@ export type SearchEvaluationNarrativesQuery = {
         enrolled: number | null;
       } | null;
     };
+  }>;
+};
+
+export type ProfModalOverviewDataQueryVariables = Exact<{
+  professorId: Scalars['Int']['input'];
+  hasEvals: Scalars['Boolean']['input'];
+}>;
+
+export type ProfModalOverviewDataQuery = {
+  __typename?: 'query_root';
+  professors: Array<{
+    __typename?: 'professors';
+    name: string;
+    email: string | null;
+    courses_taught: number;
+    average_rating?: number | null;
+    course_professors: Array<{
+      __typename?: 'course_professors';
+      course: {
+        __typename?: 'courses';
+        course_id: number;
+        evaluation_statistic?: {
+          __typename?: 'evaluation_statistics';
+          avg_workload: number | null;
+          avg_rating: number | null;
+        } | null;
+      } & CourseModalPrefetchCourseDataFragment;
+    }>;
   }>;
 };
 

@@ -1,0 +1,11 @@
+.subjectBadge {
+  padding: 6px;
+  margin: 4px;
+  cursor: default;
+  background-color: var(--color-primary);
+}
+
+.ratingGraph {
+  width: 100%;
+  height: 400px;
+}

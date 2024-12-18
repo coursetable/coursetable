@@ -11,6 +11,7 @@ import { useStore } from '../../store';
 import { scrollToTop } from '../../utilities/display';
 import LastUpdated from '../Search/LastUpdated';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
+import RandomButton from '../Search/RandomButton';
 import { SurfaceComponent } from '../Typography';
 import { NavbarWorksheetSearch } from '../Worksheet/NavbarWorksheetSearch';
 
@@ -72,12 +73,15 @@ export default function CourseTableNavbar() {
           showCatalogSearch && styles.catalogSearchNavbar,
         )}
       >
-        {/* Logo in top left */}
-        <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
-          <NavLink to="/">
-            <Logo icon={false} />
-          </NavLink>
-        </Nav>
+        {/* Logo in top left and random underneath */}
+        <div className={styles.navLogoWrapper}>
+          <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
+            <NavLink to="/">
+              <Logo icon={false} />
+            </NavLink>
+          </Nav>
+          {showCatalogSearch && <RandomButton />}
+        </div>
         {showCatalogSearch && <NavbarCatalogSearch />}
         {showWorksheetSearch && <NavbarWorksheetSearch />}
 
