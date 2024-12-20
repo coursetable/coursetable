@@ -83,11 +83,12 @@ function ResultsGridItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { viewedWorksheetNumber } = useWorksheet();
+  const { myViewedWorksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
-    () => listing && isInWorksheet(listing, viewedWorksheetNumber, worksheets),
-    [listing, viewedWorksheetNumber, worksheets],
+    () =>
+      listing && isInWorksheet(listing, myViewedWorksheetNumber, worksheets),
+    [listing, myViewedWorksheetNumber, worksheets],
   );
 
   if (!listing) return null;

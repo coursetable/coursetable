@@ -246,6 +246,7 @@ export async function updateWorksheetMetadata(
   } & (
     | {
         action: 'add';
+        name: string;
       }
     | {
         action: 'delete';
