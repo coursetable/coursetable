@@ -4,11 +4,11 @@ import { IoFlaskOutline } from 'react-icons/io5';
 import {
   useSearch,
   filterLabels,
-  type BooleanFilters,
+  type BooleanOptions,
 } from '../../contexts/searchContext';
 import styles from './Toggle.module.css';
 
-export default function Toggle<K extends BooleanFilters>({
+export default function Toggle<K extends BooleanOptions>({
   handle: handleName,
 }: {
   readonly handle: K;
