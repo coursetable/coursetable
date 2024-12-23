@@ -136,10 +136,10 @@ function CustomOption(props: CustomOptionProps) {
           },
         }}
       >
-        <div>
-          <span>{data.label}</span>
+        <div className={styles.optionContent}>
+          <span className={styles.optionName}>{data.label}</span>
           {data.value !== 0 && viewedPerson === 'me' && (
-            <>
+            <div className={styles.iconContainer}>
               <FaPencilAlt
                 className={styles.renameWorksheetIcon}
                 onClick={(e) => {
@@ -158,7 +158,7 @@ function CustomOption(props: CustomOptionProps) {
                   await worksheetsRefresh();
                 }}
               />
-            </>
+            </div>
           )}
         </div>
       </components.Option>
