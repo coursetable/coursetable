@@ -436,7 +436,13 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(listing, listing.course.season_code === viewedSeason ? myViewedWorksheetNumber : 0, worksheets) &&
+              !isInWorksheet(
+                listing,
+                listing.course.season_code === viewedSeason
+                  ? myViewedWorksheetNumber
+                  : 0,
+                worksheets,
+              ) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
@@ -498,6 +504,7 @@ export function SearchProvider({
       worksheetInfo,
       myViewedWorksheetNumber,
       worksheets,
+      viewedSeason,
     ],
   );
 
@@ -595,7 +602,13 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(listing, listing.course.season_code === viewedSeason ? myViewedWorksheetNumber : 0, worksheets) &&
+          !isInWorksheet(
+            listing,
+            listing.course.season_code === viewedSeason
+              ? myViewedWorksheetNumber
+              : 0,
+            worksheets,
+          ) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;
@@ -771,6 +784,7 @@ export function SearchProvider({
       quistPredicate,
       searchDescription.value,
       intersectingFilters.value,
+      viewedSeason,
     ],
   );
 

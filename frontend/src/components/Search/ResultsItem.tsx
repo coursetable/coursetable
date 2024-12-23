@@ -88,7 +88,14 @@ function ResultsItem({
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () => isInWorksheet(listing, listing.course.season_code === viewedSeason ? myViewedWorksheetNumber : 0, worksheets),
+    () =>
+      isInWorksheet(
+        listing,
+        listing.course.season_code === viewedSeason
+          ? myViewedWorksheetNumber
+          : 0,
+        worksheets,
+      ),
     [listing, myViewedWorksheetNumber, worksheets, viewedSeason],
   );
 
@@ -152,8 +159,8 @@ function ResultsItem({
               {listing.course.course_professors.length === 0
                 ? 'TBA'
                 : listing.course.course_professors
-                  .map((p) => p.professor.name)
-                  .join(' • ')}
+                    .map((p) => p.professor.name)
+                    .join(' • ')}
             </span>
           </span>
           <span className={clsx('d-flex', colStyles.enrollCol)}>

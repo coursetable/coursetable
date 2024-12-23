@@ -54,8 +54,8 @@ function Rating({
                   ? colorMap(rating)
                   : undefined
                 : generateRandomColor(
-                  `${listing.crn}${listing.course.season_code}${name}`,
-                )
+                    `${listing.crn}${listing.course.season_code}${name}`,
+                  )
               )
                 ?.darken()
                 .saturate()
@@ -87,7 +87,14 @@ function ResultsGridItem({
 
   const inWorksheet = useMemo(
     () =>
-      listing && isInWorksheet(listing, viewedSeason === listing.course.season_code ? myViewedWorksheetNumber : 0, worksheets),
+      listing &&
+      isInWorksheet(
+        listing,
+        viewedSeason === listing.course.season_code
+          ? myViewedWorksheetNumber
+          : 0,
+        worksheets,
+      ),
     [listing, myViewedWorksheetNumber, worksheets, viewedSeason],
   );
 
@@ -128,8 +135,8 @@ function ResultsGridItem({
             >
               {listing.course.course_professors.length > 0
                 ? listing.course.course_professors
-                  .map((p) => p.professor.name)
-                  .join(' • ')
+                    .map((p) => p.professor.name)
+                    .join(' • ')
                 : 'Professor: TBA'}
             </TextComponent>
             <TextComponent
