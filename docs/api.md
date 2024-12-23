@@ -439,6 +439,43 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 - Body:
   - `error`: `"INVALID_REQUEST" | "WORKSHEET_NOT_FOUND"`
 
+### `GET` `/api/user/wishlist`
+
+#### Request
+
+- Needs credentials
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `data`: `array`
+    - `season`: `string`
+    - `crn`: `number`
+
+### `POST` `/api/user/updateWishlistCourses`
+
+#### Request
+
+- Needs credentials
+- Body:
+  - `action`: `"add" | "remove"`
+  - `season`: `string`
+  - `crn`: `number`
+
+#### Response
+
+**Status: 200**
+
+- No body
+
+**Status: 400**
+
+- When the request body is invalid
+- Body:
+  - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
+
 ## Health check
 
 ### `GET` `/api/ping`

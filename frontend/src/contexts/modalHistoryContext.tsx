@@ -29,7 +29,7 @@ type HistoryEntry =
 
 // This context enables different kinds of modals to share the same history
 // stack, maintaining a uniform UX.
-type Store = {
+export type Store = {
   currentModal: HistoryEntry | undefined;
   backTarget: string | undefined;
   navigate: ((mode: 'push' | 'replace', entry: HistoryEntry) => void) &

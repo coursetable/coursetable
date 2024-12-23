@@ -104,9 +104,3 @@
 .linkText:hover {
   color: var(--color-primary-hover);
 }
-
-@media (max-width: calc(1320px - 0.5px)) {
-  .smallText {
-    font-size: 64%;
-  }
-}

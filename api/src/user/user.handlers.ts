@@ -9,6 +9,7 @@ import {
   studentBluebookSettings,
   worksheetCourses,
   worksheets,
+  wishlistCourses,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
@@ -374,4 +375,86 @@ export const updateWorksheetMetadata = async (
   }
 
   res.sendStatus(200);
+};
+
+const UpdateWishlistCourseReqBodySchema = z.object({
+  action: z.union([z.literal('add'), z.literal('remove')]),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  crn: z.number(),
+});
+
+export const updateWishlistCourses = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  winston.info('Toggling wishlist bookmark');
+
+  const { netId } = req.user!;
+
+  const bodyParseRes = UpdateWishlistCourseReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+
+  const { action, season, crn } = bodyParseRes.data;
+
+  const [existing] = await db
+    .selectDistinctOn([
+      wishlistCourses.netId,
+      wishlistCourses.season,
+      wishlistCourses.crn,
+    ])
+    .from(wishlistCourses)
+    .where(
+      and(
+        eq(wishlistCourses.netId, netId),
+        eq(wishlistCourses.season, season),
+        eq(wishlistCourses.crn, crn),
+      ),
+    );
+
+  if (action === 'add') {
+    if (existing) {
+      res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
+      return;
+    }
+    await db.insert(wishlistCourses).values({
+      netId,
+      season,
+      crn,
+    });
+  } else {
+    if (!existing) {
+      res.status(400).json({ error: 'NOT_BOOKMARKED' });
+      return;
+    }
+    await db
+      .delete(wishlistCourses)
+      .where(
+        and(
+          eq(wishlistCourses.netId, netId),
+          eq(wishlistCourses.season, season),
+          eq(wishlistCourses.crn, crn),
+        ),
+      );
+  }
+
+  res.sendStatus(200);
+};
+
+export const getUserWishlist = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const data = await db
+    .select({ season: wishlistCourses.season, crn: wishlistCourses.crn })
+    .from(wishlistCourses)
+    .where(eq(wishlistCourses.netId, netId));
+
+  res.json({
+    data: data.map(({ season, crn }) => ({ season: String(season), crn })),
+  });
 };

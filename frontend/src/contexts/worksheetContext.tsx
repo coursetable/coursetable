@@ -78,7 +78,7 @@ function seasonsWithDataFirst(
   worksheets: UserWorksheets | undefined,
 ) {
   if (!worksheets) return seasons;
-  return [...seasons].sort((a, b) => {
+  return seasons.toSorted((a, b) => {
     const aHasData = worksheets.has(a);
     const bHasData = worksheets.has(b);
     if (aHasData && !bHasData) return -1;
