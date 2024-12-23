@@ -81,15 +81,15 @@ function ResultsItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { myViewedWorksheetNumber } = useWorksheet();
+  const { myViewedWorksheetNumber, viewedSeason } = useWorksheet();
 
   const { numFriends } = useSearch();
   const friends = numFriends[`${listing.course.season_code}${listing.crn}`];
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () => isInWorksheet(listing, myViewedWorksheetNumber, worksheets),
-    [listing, myViewedWorksheetNumber, worksheets],
+    () => isInWorksheet(listing, listing.course.season_code === viewedSeason ? myViewedWorksheetNumber : 0, worksheets),
+    [listing, myViewedWorksheetNumber, worksheets, viewedSeason],
   );
 
   return (
@@ -152,8 +152,8 @@ function ResultsItem({
               {listing.course.course_professors.length === 0
                 ? 'TBA'
                 : listing.course.course_professors
-                    .map((p) => p.professor.name)
-                    .join(' • ')}
+                  .map((p) => p.professor.name)
+                  .join(' • ')}
             </span>
           </span>
           <span className={clsx('d-flex', colStyles.enrollCol)}>

@@ -195,6 +195,15 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
+  const changeViewedSeason = useCallback(
+    (newSeason: Season) => {
+      setViewedSeason(newSeason);
+      setViewedWorksheetNumber(0);
+      setMyViewedWorksheetNumber(0);
+    },
+    [viewedPerson, setViewedWorksheetNumber, setMyViewedWorksheetNumber],
+  );
+
   const changeViewedWorksheetNumber = useCallback(
     (wsNumber: number) => {
       setViewedWorksheetNumber(wsNumber);
@@ -328,8 +337,7 @@ export function WorksheetProvider({
       isExoticWorksheet,
       isReadonlyWorksheet,
       exitExoticWorksheet,
-
-      changeViewedSeason: setViewedSeason,
+      changeViewedSeason,
       changeViewedPerson,
       setHoverCourse,
       changeWorksheetView,
@@ -350,7 +358,7 @@ export function WorksheetProvider({
       myWorksheetOptions,
       isExoticWorksheet,
       isReadonlyWorksheet,
-      setViewedSeason,
+      changeViewedSeason,
       changeViewedPerson,
       changeWorksheetView,
       changeViewedWorksheetNumber,

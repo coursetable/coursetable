@@ -393,7 +393,7 @@ export function SearchProvider({
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { myViewedWorksheetNumber } = useWorksheet();
+  const { myViewedWorksheetNumber, viewedSeason } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     worksheets,
@@ -436,7 +436,7 @@ export function SearchProvider({
           case 'conflicting':
             return (
               listing.course.course_meetings.length > 0 &&
-              !isInWorksheet(listing, myViewedWorksheetNumber, worksheets) &&
+              !isInWorksheet(listing, listing.course.season_code === viewedSeason ? myViewedWorksheetNumber : 0, worksheets) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
@@ -595,7 +595,7 @@ export function SearchProvider({
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
-          !isInWorksheet(listing, myViewedWorksheetNumber, worksheets) &&
+          !isInWorksheet(listing, listing.course.season_code === viewedSeason ? myViewedWorksheetNumber : 0, worksheets) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;

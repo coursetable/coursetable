@@ -92,7 +92,7 @@ function WorksheetToggleButton({
     })),
   );
 
-  const { myViewedWorksheetNumber, myWorksheetOptions } = useWorksheet();
+  const { myViewedWorksheetNumber, myWorksheetOptions, viewedSeason } = useWorksheet();
 
   // In the modal, the select can override the "currently viewed" worksheet
   // Please read https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
@@ -107,10 +107,12 @@ function WorksheetToggleButton({
     setPrevWorksheetCtx(myViewedWorksheetNumber);
   }
 
+  const modifyingWorksheet = useMemo(() => listing.course.season_code === viewedSeason ? selectedWorksheet : 0, [listing, viewedSeason, selectedWorksheet]);
+
   const inWorksheet = useMemo(
     () =>
-      inWorksheetProp ?? isInWorksheet(listing, selectedWorksheet, worksheets),
-    [inWorksheetProp, listing, selectedWorksheet, worksheets],
+      inWorksheetProp ?? isInWorksheet(listing, modifyingWorksheet, worksheets),
+    [inWorksheetProp, listing, modifyingWorksheet, worksheets],
   );
 
   const isLgDesktop = useStore((state) => state.isLgDesktop);
@@ -124,7 +126,7 @@ function WorksheetToggleButton({
         action: inWorksheet ? 'remove' : 'add',
         season: listing.course.season_code,
         crn: listing.crn,
-        worksheetNumber: selectedWorksheet,
+        worksheetNumber: modifyingWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
         hidden: false,
@@ -135,7 +137,7 @@ function WorksheetToggleButton({
       inWorksheet,
       listing.crn,
       listing.course.season_code,
-      selectedWorksheet,
+      modifyingWorksheet,
       worksheetsRefresh,
     ],
   );
@@ -143,7 +145,7 @@ function WorksheetToggleButton({
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
   const buttonLabel = worksheets
-    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${myWorksheetOptions[selectedWorksheet]!.label}"`
+    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${myWorksheetOptions[modifyingWorksheet]!.label}"`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in
