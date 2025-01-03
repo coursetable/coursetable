@@ -47,8 +47,10 @@ jobs:
           filters: |
             api:
               - 'api/**'
+              - '.github/workflows/cd.yml'
             frontend:
               - 'frontend/**'
+              - '.github/workflows/cd.yml'
             db:
               - 'api/drizzle/schema.ts'
 
@@ -59,9 +61,6 @@ jobs:
       name: Production
       url: https://coursetable.com
     runs-on: ubuntu-latest
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -70,14 +69,24 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Install Vercel CLI
-        run: bun install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy to Vercel and Alias Deployment
-        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a coursetable.com
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+      - name: Expose GitHub environment as shell variables
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          to_envs() { jq -r "to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
+          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
+      - name: Build Frontend
+        run: cd frontend && bun run build
+      - name: Install Wrangler CLI
+        run: bun install --global wrangler
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_KEY_VALUE }}
+        run: |
+          wrangler pages deploy frontend/build --project-name=coursetable --branch=master
 
   api-build-and-deploy:
     needs: changes
