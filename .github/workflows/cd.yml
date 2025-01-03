@@ -71,20 +71,20 @@ jobs:
           bun-version: latest
       - name: Install Dependencies
         run: bun install --frozen-lockfile
-      - name: Expose GitHub environment as shell variables
-        env:
-          SECRETS_CONTEXT: ${{ toJson(secrets) }}
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          to_envs() { jq -r "to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
-          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod
+          inject-env-vars: true
       - name: Build Frontend
         run: cd frontend && bun run build
       - name: Install Wrangler CLI
         run: bun install --global wrangler
       - name: Deploy to Cloudflare Pages
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_KEY_VALUE }}
+          CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
         run: |
           wrangler pages deploy frontend/build --project-name=coursetable --branch=master
 
