@@ -12,7 +12,7 @@ jobs:
     name: Frontend Build and Deploy
     environment:
       name: Preview
-      url: https://${{ steps.deploy.outputs.DEPLOY_URL }}-preview.coursetable.pages.dev
+      url: ${{steps.deploy.outputs.DEPLOY_URL }}
     runs-on: ubuntu-latest
 
     steps:
