@@ -67,16 +67,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Set env vars from vars context JSON
-        run: |
-          # Pipe the JSON string into jq
-          echo "$VARS_CONTEXT" | 
-          # Convert JSON object into an array of key-value pairs
-          jq -r 'to_entries | 
-          # Map over each key-value pair
-          .[] | 
-          # Format each pair as "KEY=VALUE" and append it all to the environment file
-          "\(.key)=\(.value)"' >> $GITHUB_ENV
+      - name: Print environment variables
+        run: printenv
       - name: Build Frontend
         run: cd frontend && bun run build
       - name: Deploy to Cloudflare Pages
