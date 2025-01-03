@@ -75,14 +75,13 @@ jobs:
           echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
       - name: Build Frontend
         run: cd frontend && bun run build
+      - name: Install Wrangler CLI
+        run: bun install --global wrangler
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_KEY_VALUE }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: 'frontend'
-          command: |
-            pages deploy build --project-name=coursetable --branch=staging
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_KEY_VALUE }}
+        run: |
+          wrangler pages deploy frontend/build --project-name=coursetable --branch=staging
 
   api-build-and-deploy:
     needs: changes
