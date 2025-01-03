@@ -1,1 +1,1 @@
-CREATE DATABASE coursetable;
+CREATE DATABASE coursetable_data;
