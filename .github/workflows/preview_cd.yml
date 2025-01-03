@@ -26,20 +26,19 @@ jobs:
           result-encoding: string
           script: |
             return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-17).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod_staging
+          inject-env-vars: true
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       - name: Install Dependencies
         run: bun install --frozen-lockfile
-      - name: Expose GitHub environment as shell variables
-        env:
-          SECRETS_CONTEXT: ${{ toJson(secrets) }}
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          to_envs() { jq -r "to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
-          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
-          unset DB_NAME
       - name: Build Frontend
         run: cd frontend && bun run build
       - name: Install Wrangler CLI
