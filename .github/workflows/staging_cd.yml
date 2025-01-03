@@ -56,9 +56,6 @@ jobs:
       url: https://staging.coursetable.com
     runs-on: ubuntu-latest
 
-    env:
-      VARS_CONTEXT: ${{ toJson(secrets) }}
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,8 +64,15 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Print environment variables
-        run: printenv
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+      - name: Expose GitHub environment as shell variables
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          to_envs() { jq -r "to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
+          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
       - name: Build Frontend
         run: cd frontend && bun run build
       - name: Deploy to Cloudflare Pages
