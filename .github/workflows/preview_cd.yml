@@ -46,7 +46,7 @@ jobs:
       - name: Deploy to Cloudflare Pages
         id: deploy
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_KEY_VALUE }}
+          CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
         run: |
           wrangler pages deploy frontend/build --project-name=coursetable --branch=${{ steps.encode_url_branch.outputs.result }}-preview | tee deploy.log
           DEPLOY_URL=$(grep -oP 'https://[^\s]+' deploy.log | head -n 1)
