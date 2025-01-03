@@ -40,8 +40,10 @@ jobs:
           filters: |
             api:
               - 'api/**'
+              - '.github/workflows/staging_cd.yml'
             frontend:
               - 'frontend/**'
+              - '.github/workflows/staging_cd.yml'
             db:
                 - 'api/drizzle/schema.ts'
 
