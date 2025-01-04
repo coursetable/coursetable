@@ -19,7 +19,7 @@ export default function WorksheetHideButton({
   readonly color?: string;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
+  const { viewedSeason, myViewedWorksheetNumber, isReadonlyWorksheet } =
     useWorksheet();
   if (isReadonlyWorksheet) return null;
   const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
@@ -39,7 +39,7 @@ export default function WorksheetHideButton({
           e.stopPropagation();
           await setCourseHidden({
             season: viewedSeason,
-            worksheetNumber: viewedWorksheetNumber,
+            worksheetNumber: myViewedWorksheetNumber,
             crn,
             hidden: !hidden,
           });

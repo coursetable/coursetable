@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -37,6 +38,7 @@ type Store = {
   viewedPerson: 'me' | NetId;
   viewedSeason: Season;
   viewedWorksheetNumber: number;
+  myViewedWorksheetNumber: number;
   changeViewedPerson: (newPerson: 'me' | NetId) => void;
   changeViewedSeason: (seasonCode: Season) => void;
   changeViewedWorksheetNumber: (worksheetNumber: number) => void;
@@ -58,7 +60,8 @@ type Store = {
 
   // These are used to select the worksheet
   seasonCodes: Season[];
-  worksheetOptions: Option<number>[];
+  worksheetOptions: { [key: number]: Option<number> };
+  myWorksheetOptions: { [key: number]: Option<number> };
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
@@ -154,6 +157,11 @@ export function WorksheetProvider({
     return friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
   }, [worksheets, friends, viewedPerson]);
 
+  const myCurWorksheet: UserWorksheets = useMemo(() => {
+    const whenNotDefined: UserWorksheets = new Map();
+    return worksheets ?? whenNotDefined;
+  }, [worksheets]);
+
   // Maybe seasons without data should be disabled/hidden
   const seasonCodes = useMemo(
     () => seasonsWithDataFirst(allSeasons, worksheets),
@@ -166,6 +174,17 @@ export function WorksheetProvider({
   const [viewedWorksheetNumber, setViewedWorksheetNumber] =
     useSessionStorageState('viewedWorksheetNumber', 0);
 
+  const [myViewedWorksheetNumber, setMyViewedWorksheetNumber] =
+    useSessionStorageState('myViewedWorksheetNumber', 0);
+
+  const [worksheetOptions, setWorksheetOptions] = useState<{
+    [key: number]: Option<number>;
+  }>({});
+
+  const [myWorksheetOptions, setMyWorksheetOptions] = useState<{
+    [key: number]: Option<number>;
+  }>({});
+
   const {
     loading: worksheetLoading,
     error: worksheetError,
@@ -176,15 +195,96 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  // This will be dependent on backend data if we allow renaming
-  const worksheetOptions = useMemo<Option<number>[]>(
-    () =>
-      [0, 1, 2, 3].map((x) => ({
-        label: x === 0 ? 'Main Worksheet' : `Worksheet ${x}`,
-        value: x,
-      })),
-    [],
+  const changeViewedSeason = useCallback(
+    (newSeason: Season) => {
+      setViewedSeason(newSeason);
+      setViewedWorksheetNumber(0);
+      setMyViewedWorksheetNumber(0);
+    },
+    [viewedPerson, setViewedWorksheetNumber, setMyViewedWorksheetNumber, setViewedSeason],
   );
+
+  const changeViewedWorksheetNumber = useCallback(
+    (wsNumber: number) => {
+      setViewedWorksheetNumber(wsNumber);
+      if (viewedPerson === 'me') setMyViewedWorksheetNumber(wsNumber);
+    },
+    [viewedPerson, setViewedWorksheetNumber, setMyViewedWorksheetNumber],
+  );
+
+  useEffect(() => {
+    let entries: [number, Option<number>][] = [];
+
+    if (myCurWorksheet.get(viewedSeason)) {
+      entries = Array.from(myCurWorksheet.get(viewedSeason)!.entries()).map(
+        ([wsNumber, wsInfo]) => [
+          wsNumber,
+          {
+            label: wsInfo.name,
+            value: wsNumber,
+          },
+        ],
+      );
+    }
+
+    const newOptions = Object.fromEntries(entries) as {
+      [key: number]: Option<number>;
+    };
+
+    // We must populate a "ghost" main WS if none exists in the DB.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    newOptions[0] ||= {
+      label: 'Main Worksheet',
+      value: 0,
+    };
+
+    setMyWorksheetOptions(newOptions);
+
+    if (!newOptions[myViewedWorksheetNumber]) setMyViewedWorksheetNumber(0);
+  }, [
+    myCurWorksheet,
+    viewedSeason,
+    myViewedWorksheetNumber,
+    setMyWorksheetOptions,
+    setMyViewedWorksheetNumber,
+  ]);
+
+  useEffect(() => {
+    let entries: [number, Option<number>][] = [];
+
+    if (curWorksheet.get(viewedSeason)) {
+      entries = Array.from(curWorksheet.get(viewedSeason)!.entries()).map(
+        ([wsNumber, wsInfo]) => [
+          wsNumber,
+          {
+            label: wsInfo.name,
+            value: wsNumber,
+          },
+        ],
+      );
+    }
+
+    const newOptions = Object.fromEntries(entries) as {
+      [key: number]: Option<number>;
+    };
+
+    // We must populate a "ghost" main WS if none exists in the DB.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    newOptions[0] ||= {
+      label: 'Main Worksheet',
+      value: 0,
+    };
+
+    setWorksheetOptions(newOptions);
+
+    if (!newOptions[viewedWorksheetNumber]) changeViewedWorksheetNumber(0);
+  }, [
+    curWorksheet,
+    viewedSeason,
+    viewedWorksheetNumber,
+    setWorksheetOptions,
+    changeViewedWorksheetNumber,
+  ]);
 
   const changeWorksheetView = useCallback(
     (view: WorksheetView) => {
@@ -197,10 +297,13 @@ export function WorksheetProvider({
 
   const changeViewedPerson = useCallback(
     (newPerson: 'me' | NetId) => {
-      setViewedWorksheetNumber(0);
+      // Can't use the general handler here because person hasn't yet changed
+      newPerson === 'me'
+        ? setViewedWorksheetNumber(myViewedWorksheetNumber)
+        : setViewedWorksheetNumber(0);
       setViewedPerson(newPerson);
     },
-    [setViewedPerson, setViewedWorksheetNumber],
+    [myViewedWorksheetNumber, setViewedPerson, setViewedWorksheetNumber],
   );
 
   const exitExoticWorksheet = useCallback(() => {
@@ -222,6 +325,7 @@ export function WorksheetProvider({
       seasonCodes,
       viewedSeason,
       viewedWorksheetNumber,
+      myViewedWorksheetNumber,
       viewedPerson,
       courses,
       hoverCourse,
@@ -229,20 +333,21 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       worksheetOptions,
+      myWorksheetOptions,
       isExoticWorksheet,
       isReadonlyWorksheet,
       exitExoticWorksheet,
-
-      changeViewedSeason: setViewedSeason,
+      changeViewedSeason,
       changeViewedPerson,
       setHoverCourse,
       changeWorksheetView,
-      changeViewedWorksheetNumber: setViewedWorksheetNumber,
+      changeViewedWorksheetNumber,
     }),
     [
       seasonCodes,
       viewedSeason,
       viewedWorksheetNumber,
+      myViewedWorksheetNumber,
       viewedPerson,
       courses,
       hoverCourse,
@@ -250,12 +355,13 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       worksheetOptions,
+      myWorksheetOptions,
       isExoticWorksheet,
       isReadonlyWorksheet,
-      setViewedSeason,
+      changeViewedSeason,
       changeViewedPerson,
       changeWorksheetView,
-      setViewedWorksheetNumber,
+      changeViewedWorksheetNumber,
       exitExoticWorksheet,
     ],
   );

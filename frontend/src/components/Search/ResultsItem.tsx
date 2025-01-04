@@ -81,15 +81,22 @@ function ResultsItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { viewedWorksheetNumber } = useWorksheet();
+  const { myViewedWorksheetNumber, viewedSeason } = useWorksheet();
 
   const { numFriends } = useSearch();
   const friends = numFriends[`${listing.course.season_code}${listing.crn}`];
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () => isInWorksheet(listing, viewedWorksheetNumber, worksheets),
-    [listing, viewedWorksheetNumber, worksheets],
+    () =>
+      isInWorksheet(
+        listing,
+        listing.course.season_code === viewedSeason
+          ? myViewedWorksheetNumber
+          : 0,
+        worksheets,
+      ),
+    [listing, myViewedWorksheetNumber, worksheets, viewedSeason],
   );
 
   return (
