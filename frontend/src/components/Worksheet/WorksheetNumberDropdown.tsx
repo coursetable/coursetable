@@ -21,7 +21,7 @@ function WorksheetNumDropdownDesktop() {
     >
       <PopoutSelect<Option<number>, false>
         value={worksheetOptions[viewedWorksheetNumber]}
-        options={worksheetOptions}
+        options={Object.values(worksheetOptions)}
         onChange={(selectedOption) => {
           changeViewedWorksheetNumber(selectedOption!.value);
         }}
@@ -48,7 +48,7 @@ function WorksheetNumDropdownMobile() {
         if (v) changeViewedWorksheetNumber(Number(v));
       }}
     >
-      {worksheetOptions.map(({ value, label }) => (
+      {Object.values(worksheetOptions).map(({ value, label }) => (
         <Dropdown.Item
           key={value}
           eventKey={value}
