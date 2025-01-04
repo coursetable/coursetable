@@ -393,12 +393,12 @@ export function SearchProvider({
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { myViewedWorksheetNumber, viewedSeason } = useWorksheet();
+  const { getRelevantWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     worksheets,
     processedSeasons,
-    myViewedWorksheetNumber,
+    getRelevantWorksheetNumber,
   );
 
   const queryEvaluator = useMemo(
@@ -438,9 +438,7 @@ export function SearchProvider({
               listing.course.course_meetings.length > 0 &&
               !isInWorksheet(
                 listing,
-                listing.course.season_code === viewedSeason
-                  ? myViewedWorksheetNumber
-                  : 0,
+                getRelevantWorksheetNumber(listing.course.season_code),
                 worksheets,
               ) &&
               checkConflict(worksheetInfo, listing).length > 0
@@ -502,9 +500,8 @@ export function SearchProvider({
     [
       searchDescription.value,
       worksheetInfo,
-      myViewedWorksheetNumber,
+      getRelevantWorksheetNumber,
       worksheets,
-      viewedSeason,
     ],
   );
 
@@ -604,9 +601,7 @@ export function SearchProvider({
           listing.course.course_meetings.length > 0 &&
           !isInWorksheet(
             listing,
-            listing.course.season_code === viewedSeason
-              ? myViewedWorksheetNumber
-              : 0,
+            getRelevantWorksheetNumber(listing.course.season_code),
             worksheets,
           ) &&
           checkConflict(worksheetInfo, listing).length > 0
@@ -769,7 +764,7 @@ export function SearchProvider({
       numBounds,
       hideCancelled.value,
       hideConflicting.value,
-      myViewedWorksheetNumber,
+      getRelevantWorksheetNumber,
       worksheets,
       worksheetInfo,
       hideDiscussionSections.value,
@@ -784,7 +779,6 @@ export function SearchProvider({
       quistPredicate,
       searchDescription.value,
       intersectingFilters.value,
-      viewedSeason,
     ],
   );
 

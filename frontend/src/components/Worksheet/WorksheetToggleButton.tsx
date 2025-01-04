@@ -92,31 +92,29 @@ function WorksheetToggleButton({
     })),
   );
 
-  const { myViewedWorksheetNumber, myWorksheetOptions, viewedSeason } =
-    useWorksheet();
+  // TODO: we need to get the worksheet options for ('me', listing's season)
+  const { getRelevantWorksheetNumber, worksheetOptions } = useWorksheet();
+  const defaultWorksheetNumber = getRelevantWorksheetNumber(
+    listing.course.season_code,
+  );
 
   // In the modal, the select can override the "currently viewed" worksheet
   // Please read https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   const [selectedWorksheet, setSelectedWorksheet] = useState(
-    myViewedWorksheetNumber,
+    defaultWorksheetNumber,
   );
   const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
-    myViewedWorksheetNumber,
+    defaultWorksheetNumber,
   );
-  if (prevWorksheetCtx !== myViewedWorksheetNumber) {
-    setSelectedWorksheet(myViewedWorksheetNumber);
-    setPrevWorksheetCtx(myViewedWorksheetNumber);
+  if (prevWorksheetCtx !== defaultWorksheetNumber) {
+    setSelectedWorksheet(defaultWorksheetNumber);
+    setPrevWorksheetCtx(defaultWorksheetNumber);
   }
-
-  const modifyingWorksheet = useMemo(
-    () => (listing.course.season_code === viewedSeason ? selectedWorksheet : 0),
-    [listing, viewedSeason, selectedWorksheet],
-  );
 
   const inWorksheet = useMemo(
     () =>
-      inWorksheetProp ?? isInWorksheet(listing, modifyingWorksheet, worksheets),
-    [inWorksheetProp, listing, modifyingWorksheet, worksheets],
+      inWorksheetProp ?? isInWorksheet(listing, selectedWorksheet, worksheets),
+    [inWorksheetProp, listing, selectedWorksheet, worksheets],
   );
 
   const isLgDesktop = useStore((state) => state.isLgDesktop);
@@ -130,7 +128,7 @@ function WorksheetToggleButton({
         action: inWorksheet ? 'remove' : 'add',
         season: listing.course.season_code,
         crn: listing.crn,
-        worksheetNumber: modifyingWorksheet,
+        worksheetNumber: selectedWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
         hidden: false,
@@ -141,7 +139,7 @@ function WorksheetToggleButton({
       inWorksheet,
       listing.crn,
       listing.course.season_code,
-      modifyingWorksheet,
+      selectedWorksheet,
       worksheetsRefresh,
     ],
   );
@@ -149,7 +147,7 @@ function WorksheetToggleButton({
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
   const buttonLabel = worksheets
-    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${myWorksheetOptions[modifyingWorksheet]!.label}"`
+    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${worksheetOptions[selectedWorksheet]!.label}"`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in
@@ -208,14 +206,14 @@ function WorksheetToggleButton({
       {modal && (
         <Popout
           buttonText="Worksheet"
-          selectedOptions={myWorksheetOptions[selectedWorksheet]}
+          selectedOptions={worksheetOptions[selectedWorksheet]}
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
         >
           <PopoutSelect<Option<number>, false>
-            value={myWorksheetOptions[selectedWorksheet]}
-            options={Object.values(myWorksheetOptions)}
+            value={worksheetOptions[selectedWorksheet]}
+            options={Object.values(worksheetOptions)}
             onChange={(option) => setSelectedWorksheet(option!.value)}
             showControl={false}
             minWidth={200}

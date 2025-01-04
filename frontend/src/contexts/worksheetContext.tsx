@@ -43,6 +43,14 @@ type Store = {
   changeViewedSeason: (seasonCode: Season) => void;
   changeViewedWorksheetNumber: (worksheetNumber: number) => void;
 
+  // When powering features like conflicting schedules and deciding which
+  // worksheet the toggle button should affect, we need to pick a number when
+  // given the course's season. We cannot use viewedWorksheetNumber, because
+  // if we are viewing worksheet 2 of season X, there's no reason that worksheet
+  // 2 of season Y should be the same thing or even exist. Therefore, this
+  // function returns 0 unless (viewedPerson, viewedSeason) = ('me', seasonCode)
+  getRelevantWorksheetNumber: (seasonCode: Season) => number;
+
   // An exotic worksheet is one that is imported via the URL or file upload.
   // Exotic worksheets do not have a corresponding worksheet in the worksheets
   // data structure and do not use any of the other worksheet-related data.
@@ -60,8 +68,8 @@ type Store = {
 
   // These are used to select the worksheet
   seasonCodes: Season[];
-  worksheetOptions: { [key: number]: Option<number> };
-  myWorksheetOptions: { [key: number]: Option<number> };
+  worksheetOptions: { [worksheetNumber: number]: Option<number> };
+  myWorksheetOptions: { [worksheetNumber: number]: Option<number> };
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
@@ -306,6 +314,14 @@ export function WorksheetProvider({
     [myViewedWorksheetNumber, setViewedPerson, setViewedWorksheetNumber],
   );
 
+  const getRelevantWorksheetNumber = useCallback(
+    (seasonCode: Season) => {
+      if (viewedPerson !== 'me' || seasonCode !== viewedSeason) return 0;
+      return viewedWorksheetNumber;
+    },
+    [viewedPerson, viewedSeason, viewedWorksheetNumber],
+  );
+
   const exitExoticWorksheet = useCallback(() => {
     setExoticWorksheet(undefined);
     const searchParams = new URLSearchParams(window.location.search);
@@ -327,6 +343,7 @@ export function WorksheetProvider({
       viewedWorksheetNumber,
       myViewedWorksheetNumber,
       viewedPerson,
+      getRelevantWorksheetNumber,
       courses,
       hoverCourse,
       worksheetView,
@@ -349,6 +366,7 @@ export function WorksheetProvider({
       viewedWorksheetNumber,
       myViewedWorksheetNumber,
       viewedPerson,
+      getRelevantWorksheetNumber,
       courses,
       hoverCourse,
       worksheetView,

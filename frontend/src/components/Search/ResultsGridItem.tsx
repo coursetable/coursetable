@@ -83,19 +83,17 @@ function ResultsGridItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { myViewedWorksheetNumber, viewedSeason } = useWorksheet();
+  const { getRelevantWorksheetNumber } = useWorksheet();
 
   const inWorksheet = useMemo(
     () =>
       listing &&
       isInWorksheet(
         listing,
-        viewedSeason === listing.course.season_code
-          ? myViewedWorksheetNumber
-          : 0,
+        getRelevantWorksheetNumber(listing.course.season_code),
         worksheets,
       ),
-    [listing, myViewedWorksheetNumber, worksheets, viewedSeason],
+    [listing, getRelevantWorksheetNumber, worksheets],
   );
 
   if (!listing) return null;
