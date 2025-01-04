@@ -201,7 +201,7 @@ export function WorksheetProvider({
       setViewedWorksheetNumber(0);
       setMyViewedWorksheetNumber(0);
     },
-    [viewedPerson, setViewedWorksheetNumber, setMyViewedWorksheetNumber, setViewedSeason],
+    [setViewedWorksheetNumber, setMyViewedWorksheetNumber, setViewedSeason],
   );
 
   const changeViewedWorksheetNumber = useCallback(
