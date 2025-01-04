@@ -92,19 +92,22 @@ function WorksheetToggleButton({
     })),
   );
 
-  const { viewedWorksheetNumber, worksheetOptions } = useWorksheet();
+  const { getRelevantWorksheetNumber, worksheetOptions } = useWorksheet();
+  const defaultWorksheetNumber = getRelevantWorksheetNumber(
+    listing.course.season_code,
+  );
 
   // In the modal, the select can override the "currently viewed" worksheet
   // Please read https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   const [selectedWorksheet, setSelectedWorksheet] = useState(
-    viewedWorksheetNumber,
+    defaultWorksheetNumber,
   );
   const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
-    viewedWorksheetNumber,
+    defaultWorksheetNumber,
   );
-  if (prevWorksheetCtx !== viewedWorksheetNumber) {
-    setSelectedWorksheet(viewedWorksheetNumber);
-    setPrevWorksheetCtx(viewedWorksheetNumber);
+  if (prevWorksheetCtx !== defaultWorksheetNumber) {
+    setSelectedWorksheet(defaultWorksheetNumber);
+    setPrevWorksheetCtx(defaultWorksheetNumber);
   }
 
   const inWorksheet = useMemo(
@@ -202,16 +205,14 @@ function WorksheetToggleButton({
       {modal && (
         <Popout
           buttonText="Worksheet"
-          selectedOptions={worksheetOptions.find(
-            (x) => x.value === selectedWorksheet,
-          )}
+          selectedOptions={worksheetOptions[selectedWorksheet]}
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
         >
           <PopoutSelect<Option<number>, false>
-            value={worksheetOptions.find((x) => x.value === selectedWorksheet)}
-            options={worksheetOptions}
+            value={worksheetOptions[selectedWorksheet]}
+            options={Object.values(worksheetOptions)}
             onChange={(option) => setSelectedWorksheet(option!.value)}
             showControl={false}
             minWidth={200}

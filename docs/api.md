@@ -373,7 +373,7 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 - When the request body is invalid
 - Body:
   - Option 1 (single update):
-    - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
+    - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED" | "WORKSHEET_NOT_FOUND"`
   - Option 2 (bulk update):
     - `error`: an object where each key is an index in the request array, and the value is one of the above errors
 

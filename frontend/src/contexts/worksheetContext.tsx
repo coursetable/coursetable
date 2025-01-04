@@ -41,6 +41,14 @@ type Store = {
   changeViewedSeason: (seasonCode: Season) => void;
   changeViewedWorksheetNumber: (worksheetNumber: number) => void;
 
+  // When powering features like conflicting schedules and deciding which
+  // worksheet the toggle button should affect, we need to pick a number when
+  // given the course's season. We cannot use viewedWorksheetNumber, because
+  // if we are viewing worksheet 2 of season X, there's no reason that worksheet
+  // 2 of season Y should be the same thing or even exist. Therefore, this
+  // function returns 0 unless (viewedPerson, viewedSeason) = ('me', seasonCode)
+  getRelevantWorksheetNumber: (seasonCode: Season) => number;
+
   // An exotic worksheet is one that is imported via the URL or file upload.
   // Exotic worksheets do not have a corresponding worksheet in the worksheets
   // data structure and do not use any of the other worksheet-related data.
@@ -58,7 +66,7 @@ type Store = {
 
   // These are used to select the worksheet
   seasonCodes: Season[];
-  worksheetOptions: Option<number>[];
+  worksheetOptions: { [worksheetNumber: number]: Option<number> };
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
@@ -177,12 +185,21 @@ export function WorksheetProvider({
   );
 
   // This will be dependent on backend data if we allow renaming
-  const worksheetOptions = useMemo<Option<number>[]>(
-    () =>
-      [0, 1, 2, 3].map((x) => ({
-        label: x === 0 ? 'Main Worksheet' : `Worksheet ${x}`,
-        value: x,
-      })),
+  const worksheetOptions = useMemo<{
+    [worksheetNumber: number]: Option<number>;
+  }>(
+    () => ({
+      0: { label: 'Main Worksheet', value: 0 },
+      ...Object.fromEntries(
+        [1, 2, 3].map((x) => [
+          x,
+          {
+            label: `Worksheet ${x}`,
+            value: x,
+          },
+        ]),
+      ),
+    }),
     [],
   );
 
@@ -201,6 +218,14 @@ export function WorksheetProvider({
       setViewedPerson(newPerson);
     },
     [setViewedPerson, setViewedWorksheetNumber],
+  );
+
+  const getRelevantWorksheetNumber = useCallback(
+    (seasonCode: Season) => {
+      if (viewedPerson !== 'me' || seasonCode !== viewedSeason) return 0;
+      return viewedWorksheetNumber;
+    },
+    [viewedPerson, viewedSeason, viewedWorksheetNumber],
   );
 
   const exitExoticWorksheet = useCallback(() => {
@@ -223,6 +248,7 @@ export function WorksheetProvider({
       viewedSeason,
       viewedWorksheetNumber,
       viewedPerson,
+      getRelevantWorksheetNumber,
       courses,
       hoverCourse,
       worksheetView,
@@ -244,6 +270,7 @@ export function WorksheetProvider({
       viewedSeason,
       viewedWorksheetNumber,
       viewedPerson,
+      getRelevantWorksheetNumber,
       courses,
       hoverCourse,
       worksheetView,
