@@ -90,7 +90,7 @@ type CustomOptionProps = OptionProps<WorksheetOption, false> & {
     name: string,
   ) => Promise<boolean>;
   readonly worksheetsRefresh: () => Promise<void>;
-  readonly myViewedWorksheetNumber: number;
+  readonly viewedWorksheetNumber: number;
   readonly changeViewedWorksheetNumber: (number: number) => void;
   readonly viewedPerson: string;
 };
@@ -102,7 +102,7 @@ function CustomOption(props: CustomOptionProps) {
     deleteWorksheet,
     renameWorksheet,
     worksheetsRefresh,
-    myViewedWorksheetNumber,
+    viewedWorksheetNumber,
     changeViewedWorksheetNumber,
     viewedPerson,
     innerProps,
@@ -152,7 +152,7 @@ function CustomOption(props: CustomOptionProps) {
                 onClick={async (e) => {
                   e.stopPropagation();
                   await deleteWorksheet(data.value as number);
-                  if (myViewedWorksheetNumber === (data.value as number))
+                  if (viewedWorksheetNumber === (data.value as number))
                     changeViewedWorksheetNumber(0);
 
                   await worksheetsRefresh();
@@ -202,7 +202,6 @@ function WorksheetNumDropdownDesktop() {
   const {
     changeViewedWorksheetNumber,
     viewedWorksheetNumber,
-    myViewedWorksheetNumber,
     worksheetOptions,
     viewedSeason,
     viewedPerson,
@@ -256,7 +255,7 @@ function WorksheetNumDropdownDesktop() {
                 })
               }
               worksheetsRefresh={worksheetsRefresh}
-              myViewedWorksheetNumber={myViewedWorksheetNumber}
+              viewedWorksheetNumber={viewedWorksheetNumber}
               changeViewedWorksheetNumber={changeViewedWorksheetNumber}
               viewedPerson={viewedPerson}
             />

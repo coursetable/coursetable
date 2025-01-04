@@ -120,7 +120,7 @@ function ColorPickerButton({
   readonly className?: string;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, myViewedWorksheetNumber } = useWorksheet();
+  const { viewedSeason, viewedWorksheetNumber } = useWorksheet();
   const [open, setOpen] = useState(false);
   const [newColor, setNewColor] = useState(event.color);
   const onClose = () => {
@@ -174,7 +174,7 @@ function ColorPickerButton({
                 action: 'update',
                 season: viewedSeason,
                 crn: event.listing.crn,
-                worksheetNumber: myViewedWorksheetNumber,
+                worksheetNumber: viewedWorksheetNumber,
                 color: newColor,
               });
               await worksheetsRefresh();

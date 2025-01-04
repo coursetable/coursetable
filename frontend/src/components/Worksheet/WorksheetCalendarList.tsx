@@ -24,12 +24,8 @@ import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const {
-    courses,
-    viewedSeason,
-    myViewedWorksheetNumber,
-    isReadonlyWorksheet,
-  } = useWorksheet();
+  const { courses, viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
+    useWorksheet();
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const areHidden = useMemo(
@@ -58,7 +54,7 @@ function WorksheetCalendarList() {
                   onClick={async () => {
                     await setCourseHidden({
                       season: viewedSeason,
-                      worksheetNumber: myViewedWorksheetNumber,
+                      worksheetNumber: viewedWorksheetNumber,
                       crn: courses.map((course) => course.listing.crn),
                       hidden: !areHidden,
                     });

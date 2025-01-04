@@ -38,7 +38,6 @@ type Store = {
   viewedPerson: 'me' | NetId;
   viewedSeason: Season;
   viewedWorksheetNumber: number;
-  myViewedWorksheetNumber: number;
   changeViewedPerson: (newPerson: 'me' | NetId) => void;
   changeViewedSeason: (seasonCode: Season) => void;
   changeViewedWorksheetNumber: (worksheetNumber: number) => void;
@@ -182,9 +181,6 @@ export function WorksheetProvider({
   const [viewedWorksheetNumber, setViewedWorksheetNumber] =
     useSessionStorageState('viewedWorksheetNumber', 0);
 
-  const [myViewedWorksheetNumber, setMyViewedWorksheetNumber] =
-    useSessionStorageState('myViewedWorksheetNumber', 0);
-
   const [worksheetOptions, setWorksheetOptions] = useState<{
     [key: number]: Option<number>;
   }>({});
@@ -207,17 +203,8 @@ export function WorksheetProvider({
     (newSeason: Season) => {
       setViewedSeason(newSeason);
       setViewedWorksheetNumber(0);
-      setMyViewedWorksheetNumber(0);
     },
-    [setViewedWorksheetNumber, setMyViewedWorksheetNumber, setViewedSeason],
-  );
-
-  const changeViewedWorksheetNumber = useCallback(
-    (wsNumber: number) => {
-      setViewedWorksheetNumber(wsNumber);
-      if (viewedPerson === 'me') setMyViewedWorksheetNumber(wsNumber);
-    },
-    [viewedPerson, setViewedWorksheetNumber, setMyViewedWorksheetNumber],
+    [setViewedWorksheetNumber, setViewedSeason],
   );
 
   useEffect(() => {
@@ -248,13 +235,13 @@ export function WorksheetProvider({
 
     setMyWorksheetOptions(newOptions);
 
-    if (!newOptions[myViewedWorksheetNumber]) setMyViewedWorksheetNumber(0);
+    if (!(viewedWorksheetNumber in newOptions)) setViewedWorksheetNumber(0);
   }, [
     myCurWorksheet,
     viewedSeason,
-    myViewedWorksheetNumber,
+    viewedWorksheetNumber,
+    setViewedWorksheetNumber,
     setMyWorksheetOptions,
-    setMyViewedWorksheetNumber,
   ]);
 
   useEffect(() => {
@@ -285,13 +272,13 @@ export function WorksheetProvider({
 
     setWorksheetOptions(newOptions);
 
-    if (!newOptions[viewedWorksheetNumber]) changeViewedWorksheetNumber(0);
+    if (!newOptions[viewedWorksheetNumber]) setViewedWorksheetNumber(0);
   }, [
     curWorksheet,
     viewedSeason,
     viewedWorksheetNumber,
     setWorksheetOptions,
-    changeViewedWorksheetNumber,
+    setViewedWorksheetNumber,
   ]);
 
   const changeWorksheetView = useCallback(
@@ -305,13 +292,10 @@ export function WorksheetProvider({
 
   const changeViewedPerson = useCallback(
     (newPerson: 'me' | NetId) => {
-      // Can't use the general handler here because person hasn't yet changed
-      newPerson === 'me'
-        ? setViewedWorksheetNumber(myViewedWorksheetNumber)
-        : setViewedWorksheetNumber(0);
+      setViewedWorksheetNumber(0);
       setViewedPerson(newPerson);
     },
-    [myViewedWorksheetNumber, setViewedPerson, setViewedWorksheetNumber],
+    [setViewedPerson, setViewedWorksheetNumber],
   );
 
   const getRelevantWorksheetNumber = useCallback(
@@ -341,7 +325,6 @@ export function WorksheetProvider({
       seasonCodes,
       viewedSeason,
       viewedWorksheetNumber,
-      myViewedWorksheetNumber,
       viewedPerson,
       getRelevantWorksheetNumber,
       courses,
@@ -358,13 +341,12 @@ export function WorksheetProvider({
       changeViewedPerson,
       setHoverCourse,
       changeWorksheetView,
-      changeViewedWorksheetNumber,
+      changeViewedWorksheetNumber: setViewedWorksheetNumber,
     }),
     [
       seasonCodes,
       viewedSeason,
       viewedWorksheetNumber,
-      myViewedWorksheetNumber,
       viewedPerson,
       getRelevantWorksheetNumber,
       courses,
@@ -379,7 +361,7 @@ export function WorksheetProvider({
       changeViewedSeason,
       changeViewedPerson,
       changeWorksheetView,
-      changeViewedWorksheetNumber,
+      setViewedWorksheetNumber,
       exitExoticWorksheet,
     ],
   );
