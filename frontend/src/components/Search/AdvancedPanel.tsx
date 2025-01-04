@@ -2,6 +2,7 @@ import React, { useState, useId, useEffect } from 'react';
 import clsx from 'clsx';
 import RCSlider from 'rc-slider';
 
+import BooleanAttributeSelect from './BooleanAttributeSelect';
 import CustomSelect from './CustomSelect';
 import { Popout } from './Popout';
 import ResultsColumnSort from './ResultsColumnSort';
@@ -10,7 +11,7 @@ import {
   useSearch,
   type FilterHandle,
   type Filters,
-  type BooleanFilters,
+  type BooleanOptions,
   type CategoricalFilters,
   type NumericFilters,
   filterLabels,
@@ -195,9 +196,11 @@ function AdvancedPanel() {
   const { selectSortBy, sortOrder } = filters;
 
   const relevantFilters: (
-    | BooleanFilters
+    | BooleanOptions
     | keyof CategoricalFilters
     | NumericFilters
+    | 'includeAttributes'
+    | 'excludeAttributes'
   )[] = [
     'selectDays',
     'timeBounds',
@@ -206,13 +209,12 @@ function AdvancedPanel() {
     'selectSchools',
     'selectCredits',
     'selectCourseInfoAttributes',
+    'includeAttributes',
+    'excludeAttributes',
     'searchDescription',
     'enableQuist',
     'hideCancelled',
     'hideConflicting',
-    'hideFirstYearSeminars',
-    'hideGraduateCourses',
-    'hideDiscussionSections',
   ];
   if (isTablet) {
     relevantFilters.push(
@@ -333,6 +335,15 @@ function AdvancedPanel() {
           }
         />
         <div className={styles.row}>
+          <div className={styles.label} id={`${formLabelId}-attrs`}>
+            Types:
+          </div>
+          <BooleanAttributeSelect
+            className={styles.select}
+            aria-labelledby={`${formLabelId}-info`}
+          />
+        </div>
+        <div className={styles.row}>
           {/* Sort by Guts */}
           <div className={styles.label}>
             {sortByOptions.average_gut_rating.label}:
@@ -344,9 +355,6 @@ function AdvancedPanel() {
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
           <Toggle handle="hideConflicting" />
-          <Toggle handle="hideFirstYearSeminars" />
-          <Toggle handle="hideGraduateCourses" />
-          <Toggle handle="hideDiscussionSections" />
         </div>
       </div>
     </Popout>

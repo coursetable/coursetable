@@ -107,6 +107,14 @@ export const courseInfoAttributesOptions = courseInfoAttributes.map(
   }),
 );
 
+export const booleanAttributes = {
+  fysem: 'First-year seminar',
+  colsem: 'College seminar',
+  discussion: 'Discussion section',
+  graduate: 'Graduate-level course',
+  // TODO: sysem and others
+};
+
 type SortOrderType = 'desc' | 'asc';
 
 type Store = {
@@ -124,14 +132,13 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
-export type BooleanFilters =
+export type BooleanOptions =
   | 'searchDescription'
   | 'enableQuist'
   | 'hideCancelled'
-  | 'hideConflicting'
-  | 'hideFirstYearSeminars'
-  | 'hideGraduateCourses'
-  | 'hideDiscussionSections';
+  | 'hideConflicting';
+
+export type BooleanAttributes = keyof typeof booleanAttributes;
 
 export interface CategoricalFilters {
   selectSubjects: string;
@@ -163,7 +170,7 @@ export type IntersectableFilters =
   | 'selectCourseInfoAttributes';
 
 export type Filters = {
-  [P in BooleanFilters]: boolean;
+  [P in BooleanOptions]: boolean;
 } & {
   [P in keyof CategoricalFilters]: Option<CategoricalFilters[P]>[];
 } & {
@@ -173,6 +180,8 @@ export type Filters = {
   selectSortBy: Option<SortKeys>;
   sortOrder: SortOrderType;
   intersectingFilters: IntersectableFilters[];
+  includeAttributes: BooleanAttributes[];
+  excludeAttributes: BooleanAttributes[];
 };
 
 export const filterLabels: { [K in keyof Filters]: string } = {
@@ -192,11 +201,13 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectCourseInfoAttributes: 'Info',
   searchDescription: 'Include descriptions in search',
   enableQuist: 'Enable Quist',
+  // "Cancelled" and "conflicting" are also boolean attributes, but there's
+  // little reason one would want to "only include conflicting courses", so
+  // we don't add them to includedAttributes/excludedAttributes.
   hideCancelled: 'Hide cancelled courses',
   hideConflicting: 'Hide courses with conflicting times',
-  hideFirstYearSeminars: 'Hide first-year seminars',
-  hideGraduateCourses: 'Hide graduate courses',
-  hideDiscussionSections: 'Hide discussion sections',
+  includeAttributes: 'Include', // Unused
+  excludeAttributes: 'Exclude', // Unused
   selectSortBy: 'Sort By', // Unused
   sortOrder: 'Sort Order', // Unused
   intersectingFilters: 'Union or Intersection', // Unused
@@ -221,9 +232,8 @@ export const defaultFilters: Filters = {
   enableQuist: false,
   hideCancelled: true,
   hideConflicting: false,
-  hideFirstYearSeminars: false,
-  hideGraduateCourses: false,
-  hideDiscussionSections: true,
+  includeAttributes: [],
+  excludeAttributes: ['discussion'],
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
   intersectingFilters: [],
@@ -239,7 +249,7 @@ const emptyFilters: Filters = {
   ...defaultFilters,
   selectSeasons: [],
   hideCancelled: false,
-  hideDiscussionSections: false,
+  excludeAttributes: [],
 };
 
 export type FilterHandle<K extends keyof Filters> = ReturnType<
@@ -310,6 +320,31 @@ function applyIntersectableFilter<T extends string | number>(
   return filterValue.some((option) => value.includes(option));
 }
 
+function applyBooleanAttributes(
+  course: CatalogListing,
+  includeAttributes: BooleanAttributes[],
+  excludeAttributes: BooleanAttributes[],
+) {
+  const courseAttributes: BooleanAttributes[] = [];
+  if (isGraduate(course)) courseAttributes.push('graduate');
+  if (isDiscussionSection(course.course)) courseAttributes.push('discussion');
+  if (course.course.fysem) courseAttributes.push('fysem');
+  if (course.course.colsem) courseAttributes.push('colsem');
+  // If non-zero attributes should be included, we join them with OR
+  if (
+    includeAttributes.length > 0 &&
+    !includeAttributes.some((attr) => courseAttributes.includes(attr))
+  )
+    return false;
+  // If non-zero attributes should be excluded, we join them with AND
+  if (
+    excludeAttributes.length > 0 &&
+    excludeAttributes.some((attr) => courseAttributes.includes(attr))
+  )
+    return false;
+  return true;
+}
+
 export function SearchProvider({
   children,
 }: {
@@ -335,9 +370,8 @@ export function SearchProvider({
   const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
   const hideConflicting = useFilterState('hideConflicting');
-  const hideFirstYearSeminars = useFilterState('hideFirstYearSeminars');
-  const hideGraduateCourses = useFilterState('hideGraduateCourses');
-  const hideDiscussionSections = useFilterState('hideDiscussionSections');
+  const includeAttributes = useFilterState('includeAttributes');
+  const excludeAttributes = useFilterState('excludeAttributes');
 
   const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
@@ -608,14 +642,6 @@ export function SearchProvider({
         )
           return false;
 
-        if (hideDiscussionSections.value && isDiscussionSection(listing.course))
-          return false;
-
-        if (hideFirstYearSeminars.value && listing.course.fysem !== false)
-          return false;
-
-        if (hideGraduateCourses.value && isGraduate(listing)) return false;
-
         if (selectSubjects.value.length !== 0) {
           // Never show a course that doesn't contain any of the selected
           // subjects, even when it has a cross listing that does
@@ -706,6 +732,15 @@ export function SearchProvider({
             return false;
         }
 
+        if (
+          !applyBooleanAttributes(
+            listing,
+            includeAttributes.value,
+            excludeAttributes.value,
+          )
+        )
+          return false;
+
         if (quistPredicate) return quistPredicate(listing);
         // Handle search text. Each token must match something.
         for (const token of processedSearchTextParam) {
@@ -767,9 +802,8 @@ export function SearchProvider({
       getRelevantWorksheetNumber,
       worksheets,
       worksheetInfo,
-      hideDiscussionSections.value,
-      hideFirstYearSeminars.value,
-      hideGraduateCourses.value,
+      includeAttributes.value,
+      excludeAttributes.value,
       selectSubjects.value,
       selectDays.value,
       processedSkillsAreas,
@@ -822,9 +856,8 @@ export function SearchProvider({
       enableQuist,
       hideCancelled,
       hideConflicting,
-      hideFirstYearSeminars,
-      hideGraduateCourses,
-      hideDiscussionSections,
+      includeAttributes,
+      excludeAttributes,
       selectSortBy,
       sortOrder,
       intersectingFilters,
@@ -848,9 +881,8 @@ export function SearchProvider({
       enableQuist,
       hideCancelled,
       hideConflicting,
-      hideFirstYearSeminars,
-      hideGraduateCourses,
-      hideDiscussionSections,
+      includeAttributes,
+      excludeAttributes,
       selectSortBy,
       sortOrder,
       intersectingFilters,
