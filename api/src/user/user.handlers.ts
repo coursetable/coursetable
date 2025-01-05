@@ -253,13 +253,13 @@ const AddWorksheetSchema = z.object({
 const DeleteWorksheetSchema = z.object({
   action: z.literal('delete'),
   season: z.string().transform((val) => parseInt(val, 10)),
-  worksheetNumber: z.number(),
+  worksheetNumber: z.number().int().min(1),
 });
 
 const RenameWorksheetSchema = z.object({
   action: z.literal('rename'),
   season: z.string().transform((val) => parseInt(val, 10)),
-  worksheetNumber: z.number(),
+  worksheetNumber: z.number().int().min(1),
   name: z.string().max(64),
 });
 
