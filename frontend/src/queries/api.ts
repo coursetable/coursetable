@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import z from 'zod';
 
 import {
+  seasonSchema,
   crnSchema,
   netIdSchema,
   type Season,
@@ -205,12 +206,47 @@ export function updateWorksheetCourses(
   });
 }
 
+export async function updateWishlistCourses(
+  body: {
+    season: Season;
+    crn: Crn;
+  } & (
+    | {
+        action: 'add';
+      }
+    | {
+        action: 'remove';
+      }
+  ),
+): Promise<boolean> {
+  return await fetchAPI('/user/updateWishlistCourses', {
+    body,
+    breadcrumb: {
+      category: 'wishlist',
+      message: 'Updating wishlist',
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'ALREADY_BOOKMARKED':
+          toast.error('You have already added this class to your wishlist');
+          return true;
+        case 'NOT_BOOKMARKED':
+          toast.error('You have already removed this class from your wishlist');
+          return true;
+        default:
+          return false;
+      }
+    },
+  });
+}
+
 export async function updateWorksheetMetadata(
   body: {
     season: Season;
   } & (
     | {
         action: 'add';
+        name: string;
       }
     | {
         action: 'delete';
@@ -537,6 +573,23 @@ export async function fetchUserWorksheets() {
     hiddenCoursesStorage.remove();
   }
   return res;
+}
+
+const userWishlistSchema = z.array(
+  z.object({
+    season: seasonSchema,
+    crn: crnSchema,
+  }),
+);
+
+export async function fetchUserWishlist() {
+  return await fetchAPI('/user/wishlist', {
+    schema: userWishlistSchema,
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching user wishlist',
+    },
+  });
 }
 
 const friendsSchema = z.record(

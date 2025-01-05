@@ -154,22 +154,15 @@ function colorStyles(colors: {
           fontWeight: 'bold',
           color: '#ccc',
         };
-      } else if (isSelected) {
-        return {
-          ...base,
-          fontWeight: 'bold',
-          backgroundColor: colors[data.value]!,
-          color: chroma.contrast(color, 'white') > 2 ? 'white' : 'black',
-          ':active': {
-            ...base[':active'],
-            backgroundColor: colors[data.value]!,
-          },
-        };
       }
       return {
         ...base,
         fontWeight: 'bold',
-        backgroundColor: isFocused ? color.alpha(0.1).css() : undefined,
+        backgroundColor: isSelected
+          ? color.alpha(0.16).css()
+          : isFocused
+            ? color.alpha(0.1).css()
+            : undefined,
         color: colors[data.value]!,
 
         ':active': {

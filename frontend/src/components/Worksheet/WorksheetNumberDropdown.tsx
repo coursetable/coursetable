@@ -1,27 +1,30 @@
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import {
+  useWorksheet,
+  useWorksheetNumberOptions,
+} from '../../contexts/worksheetContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import styles from './WorksheetNumberDropdown.module.css';
 
-function WorksheetNumDropdownDesktop() {
-  const {
-    changeViewedWorksheetNumber,
-    viewedWorksheetNumber,
-    worksheetOptions,
-  } = useWorksheet();
+function WorksheetNumDropdownDesktop({
+  options,
+}: {
+  readonly options: { [worksheetNumber: number]: Option<number> };
+}) {
+  const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useWorksheet();
 
   return (
     <Popout
       buttonText="Worksheet"
       displayOptionLabel
-      selectedOptions={worksheetOptions[viewedWorksheetNumber]}
+      selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
     >
       <PopoutSelect<Option<number>, false>
-        value={worksheetOptions[viewedWorksheetNumber]}
-        options={worksheetOptions}
+        value={options[viewedWorksheetNumber]}
+        options={Object.values(options)}
         onChange={(selectedOption) => {
           changeViewedWorksheetNumber(selectedOption!.value);
         }}
@@ -32,23 +35,23 @@ function WorksheetNumDropdownDesktop() {
   );
 }
 
-function WorksheetNumDropdownMobile() {
-  const {
-    changeViewedWorksheetNumber,
-    viewedWorksheetNumber,
-    worksheetOptions,
-  } = useWorksheet();
+function WorksheetNumDropdownMobile({
+  options,
+}: {
+  readonly options: { [worksheetNumber: number]: Option<number> };
+}) {
+  const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useWorksheet();
 
   return (
     <DropdownButton
       className={styles.dropdownButton}
       variant="primary"
-      title={worksheetOptions[viewedWorksheetNumber]!.label}
+      title={options[viewedWorksheetNumber]!.label}
       onSelect={(v) => {
         if (v) changeViewedWorksheetNumber(Number(v));
       }}
     >
-      {worksheetOptions.map(({ value, label }) => (
+      {Object.values(options).map(({ value, label }) => (
         <Dropdown.Item
           key={value}
           eventKey={value}
@@ -67,10 +70,12 @@ function WorksheetNumDropdownMobile() {
 }
 
 function WorksheetNumDropdown({ mobile }: { readonly mobile: boolean }) {
+  const { viewedSeason, viewedPerson } = useWorksheet();
+  const options = useWorksheetNumberOptions(viewedPerson, viewedSeason);
   return mobile ? (
-    <WorksheetNumDropdownMobile />
+    <WorksheetNumDropdownMobile options={options} />
   ) : (
-    <WorksheetNumDropdownDesktop />
+    <WorksheetNumDropdownDesktop options={options} />
   );
 }
 

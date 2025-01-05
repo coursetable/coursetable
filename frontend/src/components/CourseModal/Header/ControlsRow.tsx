@@ -11,6 +11,7 @@ import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../../config';
+import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
@@ -46,11 +47,10 @@ function ShareButton({
 
 function MoreButton({
   listing,
-  hide,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  readonly hide: () => void;
 }) {
+  const { closeModal } = useModalHistory();
   return (
     <DropdownButton
       as="div"
@@ -62,7 +62,7 @@ function MoreButton({
       <Dropdown.Item
         as={Link}
         to="/faq#how_do_i_report_a_data_error"
-        onClick={hide}
+        onClick={closeModal}
       >
         Report an error
       </Dropdown.Item>
@@ -144,12 +144,10 @@ export default function ModalHeaderControls({
   listing,
   view,
   setView,
-  hide,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
   readonly view: 'overview' | 'evals';
   readonly setView: (value: 'overview' | 'evals') => void;
-  readonly hide: () => void;
 }) {
   return (
     <div className={styles.modalControls}>
@@ -169,7 +167,7 @@ export default function ModalHeaderControls({
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
         <ShareButton listing={listing} />
-        <MoreButton listing={listing} hide={hide} />
+        <MoreButton listing={listing} />
       </div>
     </div>
   );
