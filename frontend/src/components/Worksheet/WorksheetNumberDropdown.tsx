@@ -15,12 +15,10 @@ import { Input } from '../Typography';
 import styles from './WorksheetNumberDropdown.module.css';
 
 function WSNameInput({
-  isModifying,
   startingInput,
   enterAction,
   onCancel,
 }: {
-  readonly isModifying: boolean;
   readonly startingInput: string;
   readonly enterAction: (newWsName: string) => void;
   readonly onCancel: () => void;
@@ -30,13 +28,12 @@ function WSNameInput({
   const [cursorPos, setCursorPos] = useState(0);
 
   useEffect(() => {
-    if (isModifying && inputRef.current) {
-      inputRef.current.focus();
-      requestAnimationFrame(() => {
-        inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
-      });
-    }
-  }, [isModifying]);
+    if (!inputRef.current) return;
+    inputRef.current.focus();
+    requestAnimationFrame(() => {
+      inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
+    });
+  }, []);
 
   useEffect(() => {
     if (!inputRef.current) return;
@@ -45,38 +42,36 @@ function WSNameInput({
 
   return (
     <div className={styles.optionInputContainer}>
-      {isModifying && (
-        <Input
-          className={styles.optionInput}
-          type="text"
-          value={inputField}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const { selectionStart } = e.target;
-            if (selectionStart) setCursorPos(selectionStart);
-            setInputField(e.target.value);
-          }}
-          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-            e.stopPropagation();
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              enterAction(inputField);
-              setInputField('');
-            } else if (e.key === 'Escape') {
-              onCancel();
-            }
-          }}
-          onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => {
-            e.stopPropagation();
-          }}
-          onBlur={() => {
+      <Input
+        className={styles.optionInput}
+        type="text"
+        value={inputField}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const { selectionStart } = e.target;
+          if (selectionStart) setCursorPos(selectionStart);
+          setInputField(e.target.value);
+        }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          e.stopPropagation();
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            enterAction(inputField);
             setInputField('');
+          } else if (e.key === 'Escape') {
             onCancel();
-          }}
-          placeholder="Hit Enter to save"
-          ref={inputRef}
-          maxLength={64}
-        />
-      )}
+          }
+        }}
+        onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => {
+          e.stopPropagation();
+        }}
+        onBlur={() => {
+          setInputField('');
+          onCancel();
+        }}
+        placeholder="Hit Enter to save"
+        ref={inputRef}
+        maxLength={64}
+      />
     </div>
   );
 }
@@ -94,7 +89,6 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
   if (isRenamingWorksheet) {
     return (
       <WSNameInput
-        isModifying={isRenamingWorksheet}
         startingInput={props.data.label}
         enterAction={async (newWsName: string) => {
           setIsRenamingWorksheet(false);
@@ -163,7 +157,6 @@ function MenuListWithAdd({
   const { viewedSeason } = useWorksheet();
   const addBtn = isAddingWorksheet ? (
     <WSNameInput
-      isModifying={isAddingWorksheet}
       startingInput="New Worksheet"
       enterAction={async (newWsName: string) => {
         setIsAddingWorksheet(false);
