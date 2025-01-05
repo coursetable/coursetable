@@ -71,9 +71,8 @@ async function updateWorksheetCourse(
     ),
     columns: { id: true },
   });
-
-  // Only implicitly create a main worksheet if it doesn't exist
-  if (!existingMeta && worksheetNumber === 0 && action === 'add') {
+  // Only the main worksheet can be implicitly created
+  if (!existingMeta && action === 'add' && worksheetNumber === 0) {
     [existingMeta] = await db
       .insert(worksheets)
       .values({

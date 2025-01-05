@@ -251,6 +251,7 @@ export function WorksheetProvider({
       isExoticWorksheet,
       isReadonlyWorksheet,
       exitExoticWorksheet,
+
       changeViewedSeason,
       changeViewedPerson,
       setHoverCourse,
