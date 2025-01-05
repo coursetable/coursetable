@@ -5,10 +5,10 @@ All CI/CD pipelines are implemented as GitHub workflow actions in `.github/workf
 Available Environments:
 
 - Preview
-  - PR-specific Vercel frontend deployments that use the `Staging` backend environment.
+  - PR-specific frontend deployments that use the `Staging` backend environment.
   - URL: `[branch-name].preview.coursetable.com`
 - Staging
-  - `master` tracking Vercel frontend and Docker backend deployments.
+  - `master` tracking frontend and Docker backend deployments.
     <!-- TODO: User DB is overwritten by production user data daily. -->
   - URL:
     - Frontend: [staging.coursetable.com](https://staging.coursetable.com)
@@ -28,21 +28,21 @@ Runs formatting, linting, and dependency checks. Required as a check for merging
 
 ## [Preview CD](../.github/workflows/preview_cd.yml)
 
-Deploys **frontend only** to Vercel and assigns unique preview link to each commit and each PR. Required as a check for merging PRs.
+Deploys **frontend only** to Cloudflare pages and assigns unique preview link to each commit and each PR. Required as a check for merging PRs.
 
 - Trigger: PR commit
 - Environment: Preview
 
 ## [Staging CD](../.github/workflows/staging_cd.yml)
 
-Deploys both frontend to Vercel and backend to the staging API Docker Network. Builds latest Docker images and refreshes containers in-place. Allows for sanity-checking and robust testing of new commits before deploying to production.
+Deploys both frontend to Cloudflare pages and backend to the staging API Docker Network. Builds latest Docker images and refreshes containers in-place. Allows for sanity-checking and robust testing of new commits before deploying to production.
 
 - Trigger: `master` commit
 - Environment: Staging
 
 ## [Production CD](../.github/workflows/cd.yml)
 
-Deploys both frontend to Vercel and backend to production API Docker Network. Builds latest Docker images and refreshes containers in-place.
+Deploys both frontend to Cloudflare pages and backend to production API Docker Network. Builds latest Docker images and refreshes containers in-place.
 
 - Trigger: `master` commit with team lead approval
 - Environment: Production
