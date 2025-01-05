@@ -192,36 +192,30 @@ function CustomOption(props: CustomOptionProps) {
   );
 }
 
-function WorksheetNumDropdownDesktop() {
-  const { worksheetsRefresh } = useStore(
-    useShallow((state) => ({
-      worksheetsRefresh: state.worksheetsRefresh,
-    })),
-  );
+function WorksheetNumDropdownDesktop({
+  options,
+}: {
+  readonly options: { [worksheetNumber: number]: Option<number> };
+}) {
+  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const {
     changeViewedWorksheetNumber,
     viewedWorksheetNumber,
-    worksheetOptions,
     viewedSeason,
     viewedPerson,
   } = useWorksheet();
-
-  const modifiedWorksheetOptions: WorksheetOption[] = useMemo(() => {
-    if (viewedPerson !== 'me') return Object.values(worksheetOptions);
-    return [...Object.values(worksheetOptions), { value: 'add', label: '+' }];
-  }, [viewedPerson, worksheetOptions]);
 
   return (
     <Popout
       buttonText="Worksheet"
       displayOptionLabel
-      selectedOptions={worksheetOptions[viewedWorksheetNumber]}
+      selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
     >
       <PopoutSelect<WorksheetOption, false>
-        value={worksheetOptions[viewedWorksheetNumber]}
-        options={modifiedWorksheetOptions}
+        value={options[viewedWorksheetNumber]}
+        options={Object.values(options)}
         showControl={false}
         minWidth={200}
         classNames={{
@@ -266,23 +260,23 @@ function WorksheetNumDropdownDesktop() {
   );
 }
 
-function WorksheetNumDropdownMobile() {
-  const {
-    changeViewedWorksheetNumber,
-    viewedWorksheetNumber,
-    worksheetOptions,
-  } = useWorksheet();
+function WorksheetNumDropdownMobile({
+  options,
+}: {
+  readonly options: { [worksheetNumber: number]: Option<number> };
+}) {
+  const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useWorksheet();
 
   return (
     <DropdownButton
       className={styles.dropdownButton}
       variant="primary"
-      title={worksheetOptions[viewedWorksheetNumber]!.label}
+      title={options[viewedWorksheetNumber]!.label}
       onSelect={(v) => {
         if (v) changeViewedWorksheetNumber(Number(v));
       }}
     >
-      {Object.values(worksheetOptions).map(({ value, label }) => (
+      {Object.values(options).map(({ value, label }) => (
         <Dropdown.Item
           key={value}
           eventKey={value}
@@ -301,10 +295,36 @@ function WorksheetNumDropdownMobile() {
 }
 
 function WorksheetNumDropdown({ mobile }: { readonly mobile: boolean }) {
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
+
+  const { viewedSeason, viewedPerson } = useWorksheet();
+
+  const worksheetOptions = useMemo(() => {
+    const seasonWorksheet = (
+      viewedPerson === 'me' ? worksheets : friends?.[viewedPerson]?.worksheets
+    )?.get(viewedSeason);
+    const options = seasonWorksheet
+      ? Object.fromEntries(
+          [...seasonWorksheet.entries()].map(([key, value]) => [
+            key,
+            { value: key, label: value.name },
+          ]),
+        )
+      : {};
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    options[0] ??= { value: 0, label: 'Main Worksheet' };
+    return options;
+  }, [worksheets, friends, viewedPerson, viewedSeason]);
+
   return mobile ? (
-    <WorksheetNumDropdownMobile />
+    <WorksheetNumDropdownMobile options={worksheetOptions} />
   ) : (
-    <WorksheetNumDropdownDesktop />
+    <WorksheetNumDropdownDesktop options={worksheetOptions} />
   );
 }
 
