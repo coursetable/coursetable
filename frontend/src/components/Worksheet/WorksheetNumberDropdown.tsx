@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { FaPencilAlt } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
-import { components, type OptionProps } from 'react-select';
+import { MdEdit, MdDelete } from 'react-icons/md';
+import { components, type OptionProps, type MenuListProps } from 'react-select';
 import type { Option } from '../../contexts/searchContext';
 import {
   useWorksheet,
@@ -16,18 +14,18 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 import { Input } from '../Typography';
 import styles from './WorksheetNumberDropdown.module.css';
 
-function CustomInput({
+function WSNameInput({
   isModifying,
   startingInput,
   enterAction,
   onCancel,
 }: {
   readonly isModifying: boolean;
-  readonly startingInput?: string;
+  readonly startingInput: string;
   readonly enterAction: (newWsName: string) => void;
   readonly onCancel: () => void;
 }) {
-  const [inputField, setInputField] = useState(startingInput ?? '');
+  const [inputField, setInputField] = useState(startingInput);
   const inputRef = useRef<HTMLInputElement>(null);
   const [cursorPos, setCursorPos] = useState(0);
 
@@ -83,72 +81,29 @@ function CustomInput({
   );
 }
 
-type CustomOptionProps = {
-  readonly addWorksheet: (name: string) => Promise<boolean>;
-  readonly deleteWorksheet: (worksheetNumber: number) => Promise<boolean>;
-  readonly renameWorksheet: (
-    worksheetNumber: number,
-    name: string,
-  ) => Promise<boolean>;
-  readonly worksheetsRefresh: () => Promise<void>;
-  readonly viewedWorksheetNumber: number;
-  readonly changeViewedWorksheetNumber: (number: number) => void;
-  readonly viewedPerson: string;
-};
-
-function CustomOption(props: OptionProps<Option<number | 'add'>>) {
-  // Received from WorksheetNumDropdownDesktop
+function OptionWithActionButtons(props: OptionProps<Option<number>>) {
+  const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
+  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const {
-    addWorksheet,
-    deleteWorksheet,
-    renameWorksheet,
-    worksheetsRefresh,
+    viewedSeason,
     viewedWorksheetNumber,
     changeViewedWorksheetNumber,
     viewedPerson,
-  } = props.selectProps as unknown as CustomOptionProps;
-  const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
-  const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
+  } = useWorksheet();
 
-  if (props.data.value === 'add') {
-    if (isAddingWorksheet) {
-      return (
-        <CustomInput
-          isModifying={isAddingWorksheet}
-          enterAction={async (newWsName: string) => {
-            setIsAddingWorksheet(false);
-            await addWorksheet(newWsName.trim() || 'New Worksheet');
-            await worksheetsRefresh();
-          }}
-          onCancel={() => setIsAddingWorksheet(false)}
-        />
-      );
-    }
-    return (
-      <components.Option
-        {...props}
-        innerProps={{
-          ...props.innerProps,
-          onClick(e) {
-            e.stopPropagation();
-            setIsAddingWorksheet(true);
-          },
-        }}
-        className={clsx(styles.option, styles.optionAdd)}
-      />
-    );
-  }
   if (isRenamingWorksheet) {
     return (
-      <CustomInput
+      <WSNameInput
         isModifying={isRenamingWorksheet}
         startingInput={props.data.label}
         enterAction={async (newWsName: string) => {
           setIsRenamingWorksheet(false);
-          await renameWorksheet(
-            props.data.value as number,
-            newWsName.trim() || 'New Worksheet',
-          );
+          await updateWorksheetMetadata({
+            action: 'rename',
+            season: viewedSeason,
+            worksheetNumber: props.data.value,
+            name: newWsName.trim() || 'New Worksheet',
+          });
           await worksheetsRefresh();
         }}
         onCancel={() => setIsRenamingWorksheet(false)}
@@ -162,7 +117,7 @@ function CustomOption(props: OptionProps<Option<number | 'add'>>) {
         ...props.innerProps,
         onClick(e) {
           e.stopPropagation();
-          changeViewedWorksheetNumber(props.data.value as number);
+          changeViewedWorksheetNumber(props.data.value);
         },
       }}
     >
@@ -170,7 +125,7 @@ function CustomOption(props: OptionProps<Option<number | 'add'>>) {
         <span className={styles.optionName}>{props.data.label}</span>
         {props.data.value !== 0 && viewedPerson === 'me' && (
           <div className={styles.iconContainer}>
-            <FaPencilAlt
+            <MdEdit
               className={styles.renameWorksheetIcon}
               onClick={(e) => {
                 e.stopPropagation();
@@ -181,8 +136,12 @@ function CustomOption(props: OptionProps<Option<number | 'add'>>) {
               className={styles.deleteWorksheetIcon}
               onClick={async (e) => {
                 e.stopPropagation();
-                await deleteWorksheet(props.data.value as number);
-                if (viewedWorksheetNumber === (props.data.value as number))
+                await updateWorksheetMetadata({
+                  action: 'delete',
+                  season: viewedSeason,
+                  worksheetNumber: props.data.value,
+                });
+                if (viewedWorksheetNumber === props.data.value)
                   changeViewedWorksheetNumber(0);
 
                 await worksheetsRefresh();
@@ -195,19 +154,54 @@ function CustomOption(props: OptionProps<Option<number | 'add'>>) {
   );
 }
 
+function MenuListWithAdd({
+  children,
+  ...props
+}: MenuListProps<Option<number>>) {
+  const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
+  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
+  const { viewedSeason } = useWorksheet();
+  const addBtn = isAddingWorksheet ? (
+    <WSNameInput
+      isModifying={isAddingWorksheet}
+      startingInput="New Worksheet"
+      enterAction={async (newWsName: string) => {
+        setIsAddingWorksheet(false);
+        await updateWorksheetMetadata({
+          action: 'add',
+          season: viewedSeason,
+          name: newWsName.trim() || 'New Worksheet',
+        });
+        await worksheetsRefresh();
+      }}
+      onCancel={() => setIsAddingWorksheet(false)}
+    />
+  ) : (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsAddingWorksheet(true);
+      }}
+      className={styles.addBtn}
+    >
+      +
+    </button>
+  );
+  return (
+    <components.MenuList {...props}>
+      {children}
+      {addBtn}
+    </components.MenuList>
+  );
+}
+
 function WorksheetNumDropdownDesktop({
   options,
 }: {
   readonly options: { [worksheetNumber: number]: Option<number> };
 }) {
-  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-
-  const {
-    changeViewedWorksheetNumber,
-    viewedWorksheetNumber,
-    viewedSeason,
-    viewedPerson,
-  } = useWorksheet();
+  const { viewedWorksheetNumber } = useWorksheet();
 
   return (
     <Popout
@@ -216,42 +210,15 @@ function WorksheetNumDropdownDesktop({
       selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
     >
-      <PopoutSelect<Option<number | 'add'>, false>
+      <PopoutSelect<Option<number>, false>
         value={options[viewedWorksheetNumber]}
         options={Object.values(options)}
         showControl={false}
         minWidth={200}
-        classNames={{
-          option: ({ data }) =>
-            clsx(styles.option, data.value === 'add' && styles.optionAdd),
+        components={{
+          Option: OptionWithActionButtons,
+          MenuList: MenuListWithAdd,
         }}
-        components={{ Option: CustomOption }}
-        // Passed to CustomOption
-        {...({
-          addWorksheet: async (name: string) =>
-            await updateWorksheetMetadata({
-              action: 'add',
-              season: viewedSeason,
-              name,
-            }),
-          deleteWorksheet: async (worksheetNumber: number) =>
-            await updateWorksheetMetadata({
-              action: 'delete',
-              season: viewedSeason,
-              worksheetNumber,
-            }),
-          renameWorksheet: async (worksheetNumber: number, name: string) =>
-            await updateWorksheetMetadata({
-              action: 'rename',
-              season: viewedSeason,
-              worksheetNumber,
-              name,
-            }),
-          worksheetsRefresh,
-          viewedWorksheetNumber,
-          changeViewedWorksheetNumber,
-          viewedPerson,
-        } satisfies CustomOptionProps)}
       />
     </Popout>
   );
