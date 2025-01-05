@@ -25,7 +25,6 @@ function WSNameInput({
 }) {
   const [inputField, setInputField] = useState(startingInput);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [cursorPos, setCursorPos] = useState(0);
 
   useEffect(() => {
     if (!inputRef.current) return;
@@ -35,22 +34,15 @@ function WSNameInput({
     });
   }, []);
 
-  useEffect(() => {
-    if (!inputRef.current) return;
-    inputRef.current.setSelectionRange(cursorPos, cursorPos);
-  }, [cursorPos]);
-
   return (
     <div className={styles.optionInputContainer}>
       <Input
         className={styles.optionInput}
         type="text"
         value={inputField}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          const { selectionStart } = e.target;
-          if (selectionStart) setCursorPos(selectionStart);
-          setInputField(e.target.value);
-        }}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setInputField(e.target.value)
+        }
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           e.stopPropagation();
           if (e.key === 'Enter') {
