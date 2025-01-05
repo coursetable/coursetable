@@ -4,7 +4,6 @@ import { Container } from 'react-bootstrap';
 
 import Logo from './Navbar/Logo';
 import { TextComponent } from './Typography';
-import VercelBanner from '../images/powered-by-vercel.svg';
 import { scrollToTop } from '../utilities/display';
 import styles from './Footer.module.css';
 
@@ -54,13 +53,6 @@ function Footer() {
               &copy; {new Date().getFullYear()}
             </small>
 
-            <a href="https://vercel.com/?utm_source=coursetable&utm_campaign=oss">
-              <img
-                style={{ height: '2.5rem' }}
-                src={VercelBanner}
-                alt="Powered by Vercel"
-              />
-            </a>
             <div className="mt-3">
               <a href="https://www.buymeacoffee.com/coursetable">
                 <img
