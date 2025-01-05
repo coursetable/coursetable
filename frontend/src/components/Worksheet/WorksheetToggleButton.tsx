@@ -8,7 +8,10 @@ import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import {
+  useWorksheet,
+  useWorksheetNumberOptions,
+} from '../../contexts/worksheetContext';
 import { updateWorksheetCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
@@ -110,21 +113,10 @@ function WorksheetToggleButton({
     setPrevWorksheetCtx(defaultWorksheetNumber);
   }
 
-  const worksheetOptions = useMemo(() => {
-    if (!worksheets) return {};
-    const seasonWorksheet = worksheets.get(listing.course.season_code);
-    const options = seasonWorksheet
-      ? Object.fromEntries(
-          [...seasonWorksheet.entries()].map(([key, value]) => [
-            key,
-            { value: key, label: value.name },
-          ]),
-        )
-      : {};
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    options[0] ??= { value: 0, label: 'Main Worksheet' };
-    return options;
-  }, [worksheets, listing.course.season_code]);
+  const worksheetOptions = useWorksheetNumberOptions(
+    'me',
+    listing.course.season_code,
+  );
 
   const inWorksheet = useMemo(
     () =>

@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 import { seasons as allSeasons, useWorksheetInfo } from './ferryContext';
+import type { Option } from './searchContext';
 import { CUR_SEASON } from '../config';
 import type { UserWorksheets, CatalogListing } from '../queries/api';
 import {
@@ -286,3 +287,29 @@ export function WorksheetProvider({
 }
 
 export const useWorksheet = () => useContext(WorksheetContext)!;
+
+export function useWorksheetNumberOptions(
+  person: 'me' | NetId,
+  season: Season,
+): { [worksheetNumber: number]: Option<number> } {
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
+  const seasonWorksheet = (
+    person === 'me' ? worksheets : friends?.[person]?.worksheets
+  )?.get(season);
+  const options = seasonWorksheet
+    ? Object.fromEntries(
+        [...seasonWorksheet.entries()].map(([key, value]) => [
+          key,
+          { value: key, label: value.name },
+        ]),
+      )
+    : {};
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  options[0] ??= { value: 0, label: 'Main Worksheet' };
+  return options;
+}

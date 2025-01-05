@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaPencilAlt } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { components, type OptionProps } from 'react-select';
-import { useShallow } from 'zustand/react/shallow';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import {
+  useWorksheet,
+  useWorksheetNumberOptions,
+} from '../../contexts/worksheetContext';
 import { updateWorksheetMetadata } from '../../queries/api';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
@@ -295,36 +297,13 @@ function WorksheetNumDropdownMobile({
 }
 
 function WorksheetNumDropdown({ mobile }: { readonly mobile: boolean }) {
-  const { worksheets, friends } = useStore(
-    useShallow((state) => ({
-      worksheets: state.worksheets,
-      friends: state.friends,
-    })),
-  );
-
   const { viewedSeason, viewedPerson } = useWorksheet();
-
-  const worksheetOptions = useMemo(() => {
-    const seasonWorksheet = (
-      viewedPerson === 'me' ? worksheets : friends?.[viewedPerson]?.worksheets
-    )?.get(viewedSeason);
-    const options = seasonWorksheet
-      ? Object.fromEntries(
-          [...seasonWorksheet.entries()].map(([key, value]) => [
-            key,
-            { value: key, label: value.name },
-          ]),
-        )
-      : {};
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    options[0] ??= { value: 0, label: 'Main Worksheet' };
-    return options;
-  }, [worksheets, friends, viewedPerson, viewedSeason]);
+  const options = useWorksheetNumberOptions(viewedPerson, viewedSeason);
 
   return mobile ? (
-    <WorksheetNumDropdownMobile options={worksheetOptions} />
+    <WorksheetNumDropdownMobile options={options} />
   ) : (
-    <WorksheetNumDropdownDesktop options={worksheetOptions} />
+    <WorksheetNumDropdownDesktop options={options} />
   );
 }
 
