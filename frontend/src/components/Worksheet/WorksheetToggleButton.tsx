@@ -8,7 +8,10 @@ import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import {
+  useWorksheet,
+  useWorksheetNumberOptions,
+} from '../../contexts/worksheetContext';
 import { updateWorksheetCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
@@ -92,7 +95,7 @@ function WorksheetToggleButton({
     })),
   );
 
-  const { getRelevantWorksheetNumber, worksheetOptions } = useWorksheet();
+  const { getRelevantWorksheetNumber } = useWorksheet();
   const defaultWorksheetNumber = getRelevantWorksheetNumber(
     listing.course.season_code,
   );
@@ -109,6 +112,11 @@ function WorksheetToggleButton({
     setSelectedWorksheet(defaultWorksheetNumber);
     setPrevWorksheetCtx(defaultWorksheetNumber);
   }
+
+  const worksheetOptions = useWorksheetNumberOptions(
+    'me',
+    listing.course.season_code,
+  );
 
   const inWorksheet = useMemo(
     () =>
@@ -146,7 +154,7 @@ function WorksheetToggleButton({
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
   const buttonLabel = worksheets
-    ? `${inWorksheet ? 'Remove from' : 'Add to'} my ${worksheetOptions[selectedWorksheet]!.label}`
+    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${worksheetOptions[selectedWorksheet]!.label}"`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in

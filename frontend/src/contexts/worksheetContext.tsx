@@ -66,10 +66,10 @@ type Store = {
 
   // These are used to select the worksheet
   seasonCodes: Season[];
-  worksheetOptions: { [worksheetNumber: number]: Option<number> };
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
+  viewedWorksheetName: string;
   worksheetLoading: boolean;
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   worksheetError: {} | null;
@@ -184,23 +184,12 @@ export function WorksheetProvider({
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  // This will be dependent on backend data if we allow renaming
-  const worksheetOptions = useMemo<{
-    [worksheetNumber: number]: Option<number>;
-  }>(
-    () => ({
-      0: { label: 'Main Worksheet', value: 0 },
-      ...Object.fromEntries(
-        [1, 2, 3].map((x) => [
-          x,
-          {
-            label: `Worksheet ${x}`,
-            value: x,
-          },
-        ]),
-      ),
-    }),
-    [],
+  const changeViewedSeason = useCallback(
+    (newSeason: Season) => {
+      setViewedSeason(newSeason);
+      setViewedWorksheetNumber(0);
+    },
+    [setViewedWorksheetNumber, setViewedSeason],
   );
 
   const changeWorksheetView = useCallback(
@@ -241,6 +230,10 @@ export function WorksheetProvider({
 
   const isExoticWorksheet = Boolean(exoticWorksheet);
   const isReadonlyWorksheet = isExoticWorksheet || viewedPerson !== 'me';
+  const viewedWorksheetName =
+    exoticWorksheet?.data.name ??
+    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
+    (viewedWorksheetNumber === 0 ? 'Main Worksheet' : 'Unnamed Worksheet');
 
   const store = useMemo(
     () => ({
@@ -254,12 +247,12 @@ export function WorksheetProvider({
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetOptions,
+      viewedWorksheetName,
       isExoticWorksheet,
       isReadonlyWorksheet,
       exitExoticWorksheet,
 
-      changeViewedSeason: setViewedSeason,
+      changeViewedSeason,
       changeViewedPerson,
       setHoverCourse,
       changeWorksheetView,
@@ -276,10 +269,10 @@ export function WorksheetProvider({
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetOptions,
+      viewedWorksheetName,
       isExoticWorksheet,
       isReadonlyWorksheet,
-      setViewedSeason,
+      changeViewedSeason,
       changeViewedPerson,
       changeWorksheetView,
       setViewedWorksheetNumber,
@@ -295,3 +288,18 @@ export function WorksheetProvider({
 }
 
 export const useWorksheet = () => useContext(WorksheetContext)!;
+
+export function useWorksheetNumberOptions(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  person: 'me' | NetId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  season: Season,
+): { [worksheetNumber: number]: Option<number> } {
+  // This will be dependent on backend data if we allow renaming
+  return {
+    0: { value: 0, label: 'Main Worksheet' },
+    ...Object.fromEntries(
+      [1, 2, 3].map((n) => [n, { value: n, label: `Worksheet ${n}` }]),
+    ),
+  };
+}
