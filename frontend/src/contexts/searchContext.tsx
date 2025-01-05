@@ -109,10 +109,10 @@ export const courseInfoAttributesOptions = courseInfoAttributes.map(
 
 export const booleanAttributes = {
   fysem: 'First-year seminar',
+  sysem: 'Sophomore seminar',
   colsem: 'College seminar',
   discussion: 'Discussion section',
   graduate: 'Graduate-level course',
-  // TODO: sysem and others
 };
 
 type SortOrderType = 'desc' | 'asc';
@@ -330,6 +330,7 @@ function applyBooleanAttributes(
   if (isDiscussionSection(course.course)) courseAttributes.push('discussion');
   if (course.course.fysem) courseAttributes.push('fysem');
   if (course.course.colsem) courseAttributes.push('colsem');
+  if (course.course.sysem) courseAttributes.push('sysem');
   // If non-zero attributes should be included, we join them with OR
   if (
     includeAttributes.length > 0 &&
