@@ -374,7 +374,7 @@ export function sortCourses(
   },
   numFriends: NumFriendsReturn,
 ): CatalogListing[] {
-  return [...courses].sort(
+  return courses.toSorted(
     (a, b) =>
       compareByKey(a, b, ordering.key, ordering.type, numFriends) ||
       // Define a stable sort order for courses that compare equal

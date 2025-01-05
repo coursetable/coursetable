@@ -61,6 +61,7 @@ export const CourseModalOverviewDataDocument = gql`
           professor {
             professor_id
             name
+            average_rating @include(if: $hasEvals)
           }
         }
         course_meetings {
@@ -108,6 +109,7 @@ export const CourseModalOverviewDataDocument = gql`
       course_professors {
         professor {
           name
+          average_rating @include(if: $hasEvals)
         }
       }
       course_id

@@ -4074,6 +4074,7 @@ export type CourseModalOverviewDataQuery = {
           __typename?: 'professors';
           professor_id: number;
           name: string;
+          average_rating?: number | null;
         };
       }>;
       course_meetings: Array<{
@@ -4115,7 +4116,11 @@ export type CourseModalOverviewDataQuery = {
       } | null;
       course_professors: Array<{
         __typename?: 'course_professors';
-        professor: { __typename?: 'professors'; name: string };
+        professor: {
+          __typename?: 'professors';
+          name: string;
+          average_rating?: number | null;
+        };
       }>;
     } & CourseModalPrefetchCourseDataFragment
   >;
