@@ -56,10 +56,15 @@ ChartJS.register(
   Legend,
 );
 
-type ChartPoint = { x: number; y: number; courseCount: number };
+type ChartPoint = {
+  x: number;
+  y: number;
+  courseCount: number;
+  courseCode: string;
+};
 
 function getChartOptions(
-  curveByCourse: boolean,
+  showLegend: boolean,
   tooltipCallbacks: NonNullable<
     NonNullable<ChartOptions<'line'>['plugins']>['tooltip']
   >['callbacks'],
@@ -104,7 +109,7 @@ function getChartOptions(
     },
     plugins: {
       legend: {
-        display: curveByCourse,
+        display: showLegend,
         position: 'bottom',
       },
       tooltip: {
@@ -126,14 +131,21 @@ function coursesToChartPoints(courses: RelatedCourseInfo[]): ChartPoint[] {
           ) / seasonCourses.length
         : 0, // Average rating
       courseCount: seasonCourses.length, // Number of courses factored into the average
+      courseCode: seasonCourses.length
+        ? // Only use the first course: this is only rendered by curve-by-course
+          seasonCourses[0]!.listings.map((l) => l.course_code).join('/')
+        : '',
     }))
     .filter((dataPoint) => dataPoint.rating > 0) // Exclude years with no valid ratings
     .sort((a, b) => a.season.localeCompare(b.season, 'en-US'))
-    .map((d) => ({
-      x: seasonToUniformScale(d.season),
-      y: d.rating,
-      courseCount: d.courseCount,
-    }));
+    .map(
+      (d): ChartPoint => ({
+        x: seasonToUniformScale(d.season),
+        y: d.rating,
+        courseCount: d.courseCount,
+        courseCode: d.courseCode,
+      }),
+    );
   return data;
 }
 
@@ -229,7 +241,8 @@ function CourseRatingChart({
         data={chartData}
         options={getChartOptions(true, {
           title(items) {
-            return `${toSeasonString(uniformScaleToSeason(items[0]!.parsed.x))} | ${items[0]!.dataset.label!}`;
+            const point = items[0]!.raw as ChartPoint;
+            return `${toSeasonString(uniformScaleToSeason(point.x))} | ${point.courseCode}`;
           },
           label(item) {
             const point = item.raw as ChartPoint;
