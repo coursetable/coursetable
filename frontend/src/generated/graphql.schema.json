@@ -1586,6 +1586,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "locations",
             "description": "An array relationship",
             "args": [
@@ -1682,6 +1694,18 @@
                   }
                 }
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1788,11 +1812,35 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "locations",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "locations_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -1848,11 +1896,35 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "locations_aggregate",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "locations_aggregate_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -1893,6 +1965,18 @@
           },
           {
             "name": "code",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -1971,6 +2055,30 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,
@@ -5741,6 +5849,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listings",
             "description": "An array relationship",
             "args": [
@@ -6005,6 +6125,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "isDeprecated": false,
@@ -6824,6 +6956,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listings",
             "description": null,
             "type": {
@@ -6961,6 +7105,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "Boolean_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -7244,6 +7400,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": "Registrar's notes (e.g. preference selection links,\n        optional writing credits, etc.)",
             "type": {
@@ -7330,6 +7498,18 @@
           {
             "name": "syllabus_url",
             "description": "Link to the syllabus",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7616,6 +7796,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": "Registrar's notes (e.g. preference selection links,\n        optional writing credits, etc.)",
             "type": {
@@ -7702,6 +7894,18 @@
           {
             "name": "syllabus_url",
             "description": "Link to the syllabus",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8108,6 +8312,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listings_aggregate",
             "description": null,
             "type": {
@@ -8241,6 +8457,18 @@
           },
           {
             "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -8428,6 +8656,12 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": "column name",
             "isDeprecated": false,
@@ -8483,6 +8717,12 @@
           },
           {
             "name": "sysem",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -9492,6 +9732,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": "Registrar's notes (e.g. preference selection links,\n        optional writing credits, etc.)",
             "type": {
@@ -9605,6 +9857,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,
@@ -14907,6 +15171,30 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -15008,6 +15296,30 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -15056,6 +15368,30 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -15079,6 +15415,18 @@
           },
           {
             "name": "flag_text",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -15151,6 +15499,30 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,
@@ -15639,6 +16011,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listing_id",
             "description": "Listing ID",
             "args": [],
@@ -15742,6 +16126,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -16052,6 +16448,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listing_id",
             "description": null,
             "type": {
@@ -16134,6 +16542,18 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -16174,6 +16594,18 @@
           {
             "name": "crn",
             "description": "The CRN associated with this listing",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -16246,6 +16678,18 @@
           {
             "name": "subject",
             "description": "Subject the course is listed under (e.g. \"AMST\")",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -16304,6 +16748,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listing_id",
             "description": "Listing ID",
             "type": {
@@ -16366,6 +16822,18 @@
           {
             "name": "subject",
             "description": "Subject the course is listed under (e.g. \"AMST\")",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -16425,6 +16893,18 @@
           },
           {
             "name": "crn",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -16518,6 +16998,18 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -16547,6 +17039,12 @@
           },
           {
             "name": "crn",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -16583,6 +17081,12 @@
           },
           {
             "name": "subject",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -16818,6 +17322,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listing_id",
             "description": "Listing ID",
             "type": {
@@ -16883,6 +17399,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,
@@ -17226,6 +17754,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "location_id",
             "description": null,
             "args": [],
@@ -17248,6 +17788,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "isDeprecated": false,
@@ -17523,6 +18075,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "location_id",
             "description": null,
             "type": {
@@ -17540,6 +18104,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -17571,6 +18147,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "location_id",
             "description": null,
             "type": {
@@ -17585,6 +18173,18 @@
           {
             "name": "room",
             "description": "Room number",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -17619,6 +18219,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "location_id",
             "description": null,
             "type": {
@@ -17633,6 +18245,18 @@
           {
             "name": "room",
             "description": "Room number",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -17691,6 +18315,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "location_id",
             "description": null,
             "type": {
@@ -17704,6 +18340,18 @@
           },
           {
             "name": "room",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -17735,6 +18383,12 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "location_id",
             "description": "column name",
             "isDeprecated": false,
@@ -17742,6 +18396,12 @@
           },
           {
             "name": "room",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -17881,6 +18541,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "location_id",
             "description": null,
             "type": {
@@ -17898,6 +18570,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,
@@ -18477,6 +19161,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "Name of the professor",
             "args": [],
@@ -18504,6 +19200,18 @@
                 "name": "Int",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -18634,6 +19342,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": null,
             "type": {
@@ -18651,6 +19371,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "Int_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -18730,6 +19462,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": null,
             "type": {
@@ -18743,6 +19487,18 @@
           },
           {
             "name": "professor_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -18792,6 +19548,12 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "column name",
             "isDeprecated": false,
@@ -18799,6 +19561,12 @@
           },
           {
             "name": "professor_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -18902,6 +19670,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "Name of the professor",
             "type": {
@@ -18919,6 +19699,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,
@@ -21003,6 +21795,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listings",
             "description": "An array relationship",
             "args": [
@@ -21136,6 +21940,18 @@
             "deprecationReason": null
           },
           {
+            "name": "time_added",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "year",
             "description": "[computed] Year of the semester",
             "args": [],
@@ -21229,6 +22045,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listings",
             "description": null,
             "type": {
@@ -21258,6 +22086,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamp_comparison_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -21301,6 +22141,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "listings_aggregate",
             "description": null,
             "type": {
@@ -21326,6 +22178,18 @@
           },
           {
             "name": "term",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -21363,6 +22227,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "last_updated",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "season_code",
             "description": "column name",
             "isDeprecated": false,
@@ -21370,6 +22240,12 @@
           },
           {
             "name": "term",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -21431,6 +22307,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "season_code",
             "description": "Season code (e.g. '202001')",
             "type": {
@@ -21448,6 +22336,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "time_added",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,

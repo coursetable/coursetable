@@ -56,6 +56,7 @@ export const CourseModalOverviewDataDocument = gql`
         description
         requirements
         syllabus_url
+        course_home_url
         section
         course_professors {
           professor {
@@ -114,6 +115,7 @@ export const CourseModalOverviewDataDocument = gql`
       }
       course_id
       syllabus_url
+      course_home_url
     }
   }
   ${CourseModalPrefetchCourseDataFragmentDoc}
