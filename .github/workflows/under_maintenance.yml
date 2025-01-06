@@ -35,4 +35,5 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
         run: |
+          mv infra/under_maintenance/site/maintenance.html infra/under_maintenance/site/index.html
           wrangler pages deploy infra/under_maintenance/site --project-name=coursetable --branch=staging
