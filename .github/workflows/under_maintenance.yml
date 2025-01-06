@@ -6,8 +6,8 @@ on:
 jobs:
   under-maintenance-deploy:
     environment:
-      name: Production
-      url: https://coursetable.com
+      name: Staging
+      url: https://staging.coursetable.com
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           doppler-project: coursetable
-          doppler-config: prod
+          doppler-config: prod_staging
           inject-env-vars: true
       - name: Install Wrangler CLI
         run: bun install --global wrangler
@@ -35,5 +35,4 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
         run: |
-          mv infra/under_maintenance/site/maintenance.html infra/under_maintenance/site/index.html
-          wrangler pages deploy infra/under_maintenance/site --project-name=coursetable --branch=master
+          wrangler pages deploy infra/under_maintenance/site --project-name=coursetable --branch=staging
