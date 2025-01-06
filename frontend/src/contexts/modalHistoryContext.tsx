@@ -71,7 +71,8 @@ function useCourseInfoFromURL(
   const { courses } = useFerry();
   // If the season is in the static catalog, we can just use that instead of
   // fetching GraphQL
-  const hasStaticCatalog = variables && variables.seasonCode in courses;
+  const hasStaticCatalog =
+    variables && Object.hasOwn(courses, variables.seasonCode);
   const { data } = useCourseModalFromUrlQuery({
     // If variables is undefined, the query will not be sent
     variables: { ...variables!, hasEvals: Boolean(user?.hasEvals) },
