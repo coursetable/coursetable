@@ -106,8 +106,10 @@ export type Buildings = {
   building_name: Maybe<Scalars['String']['output']>;
   /** Building short code/abbreviation, as in YCS */
   code: Scalars['String']['output'];
+  last_updated: Maybe<Scalars['timestamp']['output']>;
   /** An array relationship */
   locations: Array<Locations>;
+  time_added: Maybe<Scalars['timestamp']['output']>;
   /** Yale campus map URL */
   url: Maybe<Scalars['String']['output']>;
 };
@@ -128,7 +130,9 @@ export type BuildingsBoolExp = {
   _or: InputMaybe<Array<BuildingsBoolExp>>;
   building_name: InputMaybe<StringComparisonExp>;
   code: InputMaybe<StringComparisonExp>;
+  last_updated: InputMaybe<TimestampComparisonExp>;
   locations: InputMaybe<LocationsBoolExp>;
+  time_added: InputMaybe<TimestampComparisonExp>;
   url: InputMaybe<StringComparisonExp>;
 };
 
@@ -136,7 +140,9 @@ export type BuildingsBoolExp = {
 export type BuildingsOrderBy = {
   building_name: InputMaybe<OrderBy>;
   code: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   locations_aggregate: InputMaybe<LocationsAggregateOrderBy>;
+  time_added: InputMaybe<OrderBy>;
   url: InputMaybe<OrderBy>;
 };
 
@@ -146,6 +152,10 @@ export enum BuildingsSelectColumn {
   BuildingName = 'building_name',
   /** column name */
   Code = 'code',
+  /** column name */
+  LastUpdated = 'last_updated',
+  /** column name */
+  TimeAdded = 'time_added',
   /** column name */
   Url = 'url',
 }
@@ -164,6 +174,8 @@ export type BuildingsStreamCursorValueInput = {
   building_name: InputMaybe<Scalars['String']['input']>;
   /** Building short code/abbreviation, as in YCS */
   code: InputMaybe<Scalars['String']['input']>;
+  last_updated: InputMaybe<Scalars['timestamp']['input']>;
+  time_added: InputMaybe<Scalars['timestamp']['input']>;
   /** Yale campus map URL */
   url: InputMaybe<Scalars['String']['input']>;
 };
@@ -702,6 +714,7 @@ export type Courses = {
    *         course (excluding future ones)
    */
   last_offered_course_id: Maybe<Scalars['Int']['output']>;
+  last_updated: Maybe<Scalars['timestamp']['output']>;
   /** An array relationship */
   listings: Array<Listings>;
   /**
@@ -745,6 +758,7 @@ export type Courses = {
   syllabus_url: Maybe<Scalars['String']['output']>;
   /** True if the course is a sophomore seminar. False otherwise. */
   sysem: Maybe<Scalars['Boolean']['output']>;
+  time_added: Maybe<Scalars['timestamp']['output']>;
   /** Complete course title */
   title: Scalars['String']['output'];
 };
@@ -932,6 +946,7 @@ export type CoursesBoolExp = {
   last_enrollment_same_professors: InputMaybe<BooleanComparisonExp>;
   last_enrollment_season_code: InputMaybe<StringComparisonExp>;
   last_offered_course_id: InputMaybe<IntComparisonExp>;
+  last_updated: InputMaybe<TimestampComparisonExp>;
   listings: InputMaybe<ListingsBoolExp>;
   regnotes: InputMaybe<StringComparisonExp>;
   requirements: InputMaybe<StringComparisonExp>;
@@ -944,6 +959,7 @@ export type CoursesBoolExp = {
   skills: InputMaybe<JsonbComparisonExp>;
   syllabus_url: InputMaybe<StringComparisonExp>;
   sysem: InputMaybe<BooleanComparisonExp>;
+  time_added: InputMaybe<TimestampComparisonExp>;
   title: InputMaybe<StringComparisonExp>;
 };
 
@@ -1011,6 +1027,7 @@ export type CoursesMaxOrderBy = {
    *         course (excluding future ones)
    */
   last_offered_course_id: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   /**
    * Registrar's notes (e.g. preference selection links,
    *         optional writing credits, etc.)
@@ -1043,6 +1060,7 @@ export type CoursesMaxOrderBy = {
   section: InputMaybe<OrderBy>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
   /** Complete course title */
   title: InputMaybe<OrderBy>;
 };
@@ -1111,6 +1129,7 @@ export type CoursesMinOrderBy = {
    *         course (excluding future ones)
    */
   last_offered_course_id: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   /**
    * Registrar's notes (e.g. preference selection links,
    *         optional writing credits, etc.)
@@ -1143,6 +1162,7 @@ export type CoursesMinOrderBy = {
   section: InputMaybe<OrderBy>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
   /** Complete course title */
   title: InputMaybe<OrderBy>;
 };
@@ -1180,6 +1200,7 @@ export type CoursesOrderBy = {
   last_enrollment_same_professors: InputMaybe<OrderBy>;
   last_enrollment_season_code: InputMaybe<OrderBy>;
   last_offered_course_id: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   listings_aggregate: InputMaybe<ListingsAggregateOrderBy>;
   regnotes: InputMaybe<OrderBy>;
   requirements: InputMaybe<OrderBy>;
@@ -1192,6 +1213,7 @@ export type CoursesOrderBy = {
   skills: InputMaybe<OrderBy>;
   syllabus_url: InputMaybe<OrderBy>;
   sysem: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
   title: InputMaybe<OrderBy>;
 };
 
@@ -1248,6 +1270,8 @@ export enum CoursesSelectColumn {
   /** column name */
   LastOfferedCourseId = 'last_offered_course_id',
   /** column name */
+  LastUpdated = 'last_updated',
+  /** column name */
   Regnotes = 'regnotes',
   /** column name */
   Requirements = 'requirements',
@@ -1267,6 +1291,8 @@ export enum CoursesSelectColumn {
   SyllabusUrl = 'syllabus_url',
   /** column name */
   Sysem = 'sysem',
+  /** column name */
+  TimeAdded = 'time_added',
   /** column name */
   Title = 'title',
 }
@@ -1558,6 +1584,7 @@ export type CoursesStreamCursorValueInput = {
    *         course (excluding future ones)
    */
   last_offered_course_id: InputMaybe<Scalars['Int']['input']>;
+  last_updated: InputMaybe<Scalars['timestamp']['input']>;
   /**
    * Registrar's notes (e.g. preference selection links,
    *         optional writing credits, etc.)
@@ -1597,6 +1624,7 @@ export type CoursesStreamCursorValueInput = {
   syllabus_url: InputMaybe<Scalars['String']['input']>;
   /** True if the course is a sophomore seminar. False otherwise. */
   sysem: InputMaybe<Scalars['Boolean']['input']>;
+  time_added: InputMaybe<Scalars['timestamp']['input']>;
   /** Complete course title */
   title: InputMaybe<Scalars['String']['input']>;
 };
@@ -2583,6 +2611,8 @@ export type Flags = {
   flag_id: Scalars['Int']['output'];
   /** Flag text */
   flag_text: Scalars['String']['output'];
+  last_updated: Maybe<Scalars['timestamp']['output']>;
+  time_added: Maybe<Scalars['timestamp']['output']>;
 };
 
 /** columns and relationships of "flags" */
@@ -2602,6 +2632,8 @@ export type FlagsBoolExp = {
   course_flags: InputMaybe<CourseFlagsBoolExp>;
   flag_id: InputMaybe<IntComparisonExp>;
   flag_text: InputMaybe<StringComparisonExp>;
+  last_updated: InputMaybe<TimestampComparisonExp>;
+  time_added: InputMaybe<TimestampComparisonExp>;
 };
 
 /** Ordering options when selecting data from "flags". */
@@ -2609,6 +2641,8 @@ export type FlagsOrderBy = {
   course_flags_aggregate: InputMaybe<CourseFlagsAggregateOrderBy>;
   flag_id: InputMaybe<OrderBy>;
   flag_text: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "flags" */
@@ -2617,6 +2651,10 @@ export enum FlagsSelectColumn {
   FlagId = 'flag_id',
   /** column name */
   FlagText = 'flag_text',
+  /** column name */
+  LastUpdated = 'last_updated',
+  /** column name */
+  TimeAdded = 'time_added',
 }
 
 /** Streaming cursor of the table "flags" */
@@ -2633,6 +2671,8 @@ export type FlagsStreamCursorValueInput = {
   flag_id: InputMaybe<Scalars['Int']['input']>;
   /** Flag text */
   flag_text: InputMaybe<Scalars['String']['input']>;
+  last_updated: InputMaybe<Scalars['timestamp']['input']>;
+  time_added: InputMaybe<Scalars['timestamp']['input']>;
 };
 
 /** Boolean expression to compare columns of type "float8". All fields are combined with logical 'AND'. */
@@ -2687,6 +2727,7 @@ export type Listings = {
   course_id: Scalars['Int']['output'];
   /** The CRN associated with this listing */
   crn: Scalars['Crn']['output'];
+  last_updated: Maybe<Scalars['timestamp']['output']>;
   /** Listing ID */
   listing_id: Scalars['Int']['output'];
   /** Course number in the given subject (e.g. "120" or "S120") */
@@ -2704,6 +2745,7 @@ export type Listings = {
   section: Scalars['String']['output'];
   /** Subject the course is listed under (e.g. "AMST") */
   subject: Scalars['String']['output'];
+  time_added: Maybe<Scalars['timestamp']['output']>;
 };
 
 /** order by aggregate values of table "listings" */
@@ -2740,6 +2782,7 @@ export type ListingsBoolExp = {
   course_code: InputMaybe<StringComparisonExp>;
   course_id: InputMaybe<IntComparisonExp>;
   crn: InputMaybe<IntComparisonExp>;
+  last_updated: InputMaybe<TimestampComparisonExp>;
   listing_id: InputMaybe<IntComparisonExp>;
   number: InputMaybe<StringComparisonExp>;
   school: InputMaybe<StringComparisonExp>;
@@ -2747,6 +2790,7 @@ export type ListingsBoolExp = {
   season_code: InputMaybe<StringComparisonExp>;
   section: InputMaybe<StringComparisonExp>;
   subject: InputMaybe<StringComparisonExp>;
+  time_added: InputMaybe<TimestampComparisonExp>;
 };
 
 /** order by max() on columns of table "listings" */
@@ -2757,6 +2801,7 @@ export type ListingsMaxOrderBy = {
   course_id: InputMaybe<OrderBy>;
   /** The CRN associated with this listing */
   crn: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   /** Listing ID */
   listing_id: InputMaybe<OrderBy>;
   /** Course number in the given subject (e.g. "120" or "S120") */
@@ -2772,6 +2817,7 @@ export type ListingsMaxOrderBy = {
   section: InputMaybe<OrderBy>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** order by min() on columns of table "listings" */
@@ -2782,6 +2828,7 @@ export type ListingsMinOrderBy = {
   course_id: InputMaybe<OrderBy>;
   /** The CRN associated with this listing */
   crn: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   /** Listing ID */
   listing_id: InputMaybe<OrderBy>;
   /** Course number in the given subject (e.g. "120" or "S120") */
@@ -2797,6 +2844,7 @@ export type ListingsMinOrderBy = {
   section: InputMaybe<OrderBy>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** Ordering options when selecting data from "listings". */
@@ -2805,6 +2853,7 @@ export type ListingsOrderBy = {
   course_code: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   crn: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   listing_id: InputMaybe<OrderBy>;
   number: InputMaybe<OrderBy>;
   school: InputMaybe<OrderBy>;
@@ -2812,6 +2861,7 @@ export type ListingsOrderBy = {
   season_code: InputMaybe<OrderBy>;
   section: InputMaybe<OrderBy>;
   subject: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "listings" */
@@ -2822,6 +2872,8 @@ export enum ListingsSelectColumn {
   CourseId = 'course_id',
   /** column name */
   Crn = 'crn',
+  /** column name */
+  LastUpdated = 'last_updated',
   /** column name */
   ListingId = 'listing_id',
   /** column name */
@@ -2834,6 +2886,8 @@ export enum ListingsSelectColumn {
   Section = 'section',
   /** column name */
   Subject = 'subject',
+  /** column name */
+  TimeAdded = 'time_added',
 }
 
 /** order by stddev() on columns of table "listings" */
@@ -2882,6 +2936,7 @@ export type ListingsStreamCursorValueInput = {
   course_id: InputMaybe<Scalars['Int']['input']>;
   /** The CRN associated with this listing */
   crn: InputMaybe<Scalars['Int']['input']>;
+  last_updated: InputMaybe<Scalars['timestamp']['input']>;
   /** Listing ID */
   listing_id: InputMaybe<Scalars['Int']['input']>;
   /** Course number in the given subject (e.g. "120" or "S120") */
@@ -2897,6 +2952,7 @@ export type ListingsStreamCursorValueInput = {
   section: InputMaybe<Scalars['String']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Scalars['String']['input']>;
+  time_added: InputMaybe<Scalars['timestamp']['input']>;
 };
 
 /** order by sum() on columns of table "listings" */
@@ -2948,9 +3004,11 @@ export type Locations = {
   building_code: Scalars['String']['output'];
   /** An array relationship */
   course_meetings: Array<CourseMeetings>;
+  last_updated: Maybe<Scalars['timestamp']['output']>;
   location_id: Scalars['Int']['output'];
   /** Room number */
   room: Maybe<Scalars['String']['output']>;
+  time_added: Maybe<Scalars['timestamp']['output']>;
 };
 
 /** columns and relationships of "locations" */
@@ -2990,26 +3048,32 @@ export type LocationsBoolExp = {
   building: InputMaybe<BuildingsBoolExp>;
   building_code: InputMaybe<StringComparisonExp>;
   course_meetings: InputMaybe<CourseMeetingsBoolExp>;
+  last_updated: InputMaybe<TimestampComparisonExp>;
   location_id: InputMaybe<IntComparisonExp>;
   room: InputMaybe<StringComparisonExp>;
+  time_added: InputMaybe<TimestampComparisonExp>;
 };
 
 /** order by max() on columns of table "locations" */
 export type LocationsMaxOrderBy = {
   /** Building code */
   building_code: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   location_id: InputMaybe<OrderBy>;
   /** Room number */
   room: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** order by min() on columns of table "locations" */
 export type LocationsMinOrderBy = {
   /** Building code */
   building_code: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   location_id: InputMaybe<OrderBy>;
   /** Room number */
   room: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** Ordering options when selecting data from "locations". */
@@ -3017,8 +3081,10 @@ export type LocationsOrderBy = {
   building: InputMaybe<BuildingsOrderBy>;
   building_code: InputMaybe<OrderBy>;
   course_meetings_aggregate: InputMaybe<CourseMeetingsAggregateOrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   location_id: InputMaybe<OrderBy>;
   room: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "locations" */
@@ -3026,9 +3092,13 @@ export enum LocationsSelectColumn {
   /** column name */
   BuildingCode = 'building_code',
   /** column name */
+  LastUpdated = 'last_updated',
+  /** column name */
   LocationId = 'location_id',
   /** column name */
   Room = 'room',
+  /** column name */
+  TimeAdded = 'time_added',
 }
 
 /** order by stddev() on columns of table "locations" */
@@ -3058,9 +3128,11 @@ export type LocationsStreamCursorInput = {
 export type LocationsStreamCursorValueInput = {
   /** Building code */
   building_code: InputMaybe<Scalars['String']['input']>;
+  last_updated: InputMaybe<Scalars['timestamp']['input']>;
   location_id: InputMaybe<Scalars['Int']['input']>;
   /** Room number */
   room: InputMaybe<Scalars['String']['input']>;
+  time_added: InputMaybe<Scalars['timestamp']['input']>;
 };
 
 /** order by sum() on columns of table "locations" */
@@ -3159,10 +3231,12 @@ export type Professors = {
   courses_taught: Scalars['Int']['output'];
   /** Email address of the professor */
   email: Maybe<Scalars['String']['output']>;
+  last_updated: Maybe<Scalars['timestamp']['output']>;
   /** Name of the professor */
   name: Scalars['String']['output'];
   /** Professor ID */
   professor_id: Scalars['Int']['output'];
+  time_added: Maybe<Scalars['timestamp']['output']>;
 };
 
 /** columns and relationships of "professors" */
@@ -3184,8 +3258,10 @@ export type ProfessorsBoolExp = {
   course_professors: InputMaybe<CourseProfessorsBoolExp>;
   courses_taught: InputMaybe<IntComparisonExp>;
   email: InputMaybe<StringComparisonExp>;
+  last_updated: InputMaybe<TimestampComparisonExp>;
   name: InputMaybe<StringComparisonExp>;
   professor_id: InputMaybe<IntComparisonExp>;
+  time_added: InputMaybe<TimestampComparisonExp>;
 };
 
 /** Ordering options when selecting data from "professors". */
@@ -3195,8 +3271,10 @@ export type ProfessorsOrderBy = {
   course_professors_aggregate: InputMaybe<CourseProfessorsAggregateOrderBy>;
   courses_taught: InputMaybe<OrderBy>;
   email: InputMaybe<OrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   name: InputMaybe<OrderBy>;
   professor_id: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "professors" */
@@ -3210,9 +3288,13 @@ export enum ProfessorsSelectColumn {
   /** column name */
   Email = 'email',
   /** column name */
+  LastUpdated = 'last_updated',
+  /** column name */
   Name = 'name',
   /** column name */
   ProfessorId = 'professor_id',
+  /** column name */
+  TimeAdded = 'time_added',
 }
 
 /** Streaming cursor of the table "professors" */
@@ -3236,10 +3318,12 @@ export type ProfessorsStreamCursorValueInput = {
   courses_taught: InputMaybe<Scalars['Int']['input']>;
   /** Email address of the professor */
   email: InputMaybe<Scalars['String']['input']>;
+  last_updated: InputMaybe<Scalars['timestamp']['input']>;
   /** Name of the professor */
   name: InputMaybe<Scalars['String']['input']>;
   /** Professor ID */
   professor_id: InputMaybe<Scalars['Int']['input']>;
+  time_added: InputMaybe<Scalars['timestamp']['input']>;
 };
 
 export type QueryRoot = {
@@ -3487,12 +3571,14 @@ export type Seasons = {
   __typename?: 'seasons';
   /** An array relationship */
   courses: Array<Courses>;
+  last_updated: Maybe<Scalars['timestamp']['output']>;
   /** An array relationship */
   listings: Array<Listings>;
   /** Season code (e.g. '202001') */
   season_code: Scalars['String']['output'];
   /** [computed] Season of the semester - one of spring, summer, or fall */
   term: Scalars['String']['output'];
+  time_added: Maybe<Scalars['timestamp']['output']>;
   /** [computed] Year of the semester */
   year: Scalars['Int']['output'];
 };
@@ -3521,27 +3607,35 @@ export type SeasonsBoolExp = {
   _not: InputMaybe<SeasonsBoolExp>;
   _or: InputMaybe<Array<SeasonsBoolExp>>;
   courses: InputMaybe<CoursesBoolExp>;
+  last_updated: InputMaybe<TimestampComparisonExp>;
   listings: InputMaybe<ListingsBoolExp>;
   season_code: InputMaybe<StringComparisonExp>;
   term: InputMaybe<StringComparisonExp>;
+  time_added: InputMaybe<TimestampComparisonExp>;
   year: InputMaybe<IntComparisonExp>;
 };
 
 /** Ordering options when selecting data from "seasons". */
 export type SeasonsOrderBy = {
   courses_aggregate: InputMaybe<CoursesAggregateOrderBy>;
+  last_updated: InputMaybe<OrderBy>;
   listings_aggregate: InputMaybe<ListingsAggregateOrderBy>;
   season_code: InputMaybe<OrderBy>;
   term: InputMaybe<OrderBy>;
+  time_added: InputMaybe<OrderBy>;
   year: InputMaybe<OrderBy>;
 };
 
 /** select columns of table "seasons" */
 export enum SeasonsSelectColumn {
   /** column name */
+  LastUpdated = 'last_updated',
+  /** column name */
   SeasonCode = 'season_code',
   /** column name */
   Term = 'term',
+  /** column name */
+  TimeAdded = 'time_added',
   /** column name */
   Year = 'year',
 }
@@ -3556,10 +3650,12 @@ export type SeasonsStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type SeasonsStreamCursorValueInput = {
+  last_updated: InputMaybe<Scalars['timestamp']['input']>;
   /** Season code (e.g. '202001') */
   season_code: InputMaybe<Scalars['String']['input']>;
   /** [computed] Season of the semester - one of spring, summer, or fall */
   term: InputMaybe<Scalars['String']['input']>;
+  time_added: InputMaybe<Scalars['timestamp']['input']>;
   /** [computed] Year of the semester */
   year: InputMaybe<Scalars['Int']['input']>;
 };
@@ -3978,7 +4074,6 @@ export type CatalogBySeasonQuery = {
   courses: Array<{
     __typename?: 'courses';
     areas: StringArr;
-    classnotes: string | null;
     colsem: boolean | null;
     course_id: number;
     credits: number | null;
@@ -3987,15 +4082,12 @@ export type CatalogBySeasonQuery = {
     final_exam: string | null;
     fysem: boolean | null;
     last_offered_course_id: number | null;
-    regnotes: string | null;
     requirements: string | null;
-    rp_attr: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
     season_code: Season;
     section: string;
     skills: StringArr;
-    syllabus_url: string | null;
     sysem: boolean | null;
     title: string;
     course_flags: Array<{
@@ -4059,6 +4151,7 @@ export type CourseModalOverviewDataQuery = {
       description: string | null;
       requirements: string | null;
       syllabus_url: string | null;
+      course_home_url: string | null;
       section: string;
       last_enrollment?: number | null;
       last_enrollment_same_professors?: boolean | null;
@@ -4109,6 +4202,7 @@ export type CourseModalOverviewDataQuery = {
       average_professor_rating?: number | null;
       course_id: number;
       syllabus_url: string | null;
+      course_home_url: string | null;
       evaluation_statistic?: {
         __typename?: 'evaluation_statistics';
         avg_workload: number | null;
