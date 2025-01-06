@@ -94,5 +94,5 @@ export const COURSETABLE_ORIGINS = [
   'https://coursetable.com',
   'https://www.coursetable.com',
   /^https:\/\/.+\.coursetable\.com$/u,
-  /^https:\/\/.+-preview\.coursetable\.pages\.dev$/u,
+  /^https:\/\/.+\.coursetable\.pages\.dev$/u,
 ];
