@@ -27,7 +27,6 @@ query evalsBySeason($season: String!) {
 query catalogBySeason($season: String!) {
   courses(where: { season_code: { _eq: $season } }) {
     areas
-    classnotes
     colsem
     course_flags {
       flag {
@@ -54,15 +53,12 @@ query catalogBySeason($season: String!) {
       school
       subject
     }
-    regnotes
     requirements
-    rp_attr
     same_course_and_profs_id
     same_course_id
     season_code
     section
     skills
-    syllabus_url
     sysem
     course_meetings {
       days_of_week

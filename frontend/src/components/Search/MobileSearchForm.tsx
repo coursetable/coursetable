@@ -251,9 +251,6 @@ export default function MobileSearchForm() {
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
           <Toggle handle="hideConflicting" />
-          <Toggle handle="hideFirstYearSeminars" />
-          <Toggle handle="hideGraduateCourses" />
-          <Toggle handle="hideDiscussionSections" />
         </div>
         <div className={styles.uselessBtn}>
           {/* The form requires a button with type submit in order to

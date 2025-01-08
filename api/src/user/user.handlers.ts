@@ -72,7 +72,7 @@ async function updateWorksheetCourse(
     columns: { id: true },
   });
   // To be removed once add/remove/rename worksheets is pushed.
-  if (!existingMeta) {
+  if (!existingMeta && action === 'add') {
     [existingMeta] = await db
       .insert(worksheets)
       .values({
@@ -86,7 +86,7 @@ async function updateWorksheetCourse(
       })
       .returning({ id: worksheets.id });
   }
-  if (!existingMeta) throw new Error('Failed to create worksheet');
+  if (!existingMeta) return 'WORKSHEET_NOT_FOUND';
   const existing = await db.query.worksheetCourses.findFirst({
     where: and(
       eq(worksheetCourses.worksheetId, existingMeta.id),
@@ -135,9 +135,6 @@ async function updateWorksheetCourse(
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      // Currently the frontend is not capable of actually syncing the hidden
-      // state so we keep it as null. This allows it to be properly synced in
-      // the future
       .set({ color, hidden })
       .where(
         and(
