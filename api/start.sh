@@ -14,18 +14,17 @@ FERRY_SEED=false
 OFFLINE=false 
 
 for ARGS in "$@"; do
-shift
-    case "$ARGS" in
-        "--dev") set -- "$@" "-d" ;;
-        "--staging") set -- "$@" "-s" ;;
-        "--prod") set -- "$@" "-p" ;;
-        "--overwrite") set -- "$@" "-o" ;;
-        "--ferry_seed") set -- "$@" "-f" ;;
-        "--offline") set -- "$@" "-x" ;;
-        *) set -- "$@" "$ARGS"
-    esac
+  shift
+  case "$ARGS" in
+      "--dev") set -- "$@" "-d" ;;
+      "--staging") set -- "$@" "-s" ;;
+      "--prod") set -- "$@" "-p" ;;
+      "--overwrite") set -- "$@" "-o" ;;
+      "--ferry_seed") set -- "$@" "-f" ;;
+      "--offline") set -- "$@" "-x" ;;
+      *) set -- "$@" "$ARGS"
+  esac
 done
-
 
 while getopts 'dspofx' flag; do
   case "${flag}" in
@@ -58,13 +57,16 @@ then
         export OVERWRITE_CATALOG='true'
         rm -rf postgres/data/
     fi
-    # if offline, can't pull so use docker cache
+
+    # Set PULL_ALWAYS based on OFFLINE flag
     if [[ $OFFLINE == true ]]; then
       echo "Offline mode: skipping Docker pull from registry"
-      doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d --build"
+      PULL_ALWAYS=""
     else
-      doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d --build --pull always"
+      PULL_ALWAYS="--pull always"
     fi
+
+    doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api up --remove-orphans -d --build $PULL_ALWAYS"
 
     if [[ $FERRY_SEED == true ]]
     then
@@ -95,6 +97,14 @@ then
         export FORCE_RECREATE=""
     fi
 
+
+    # Set PULL_ALWAYS based on OFFLINE flag
+    if [[ $OFFLINE == true ]]; then
+      echo "Offline mode: skipping Docker pull from registry"
+      PULL_ALWAYS=""
+    else
+      PULL_ALWAYS="--pull always"
+    fi
     doppler setup -p coursetable -c $CFG_ENV
 
     VERSION=`sentry-cli releases propose-version`
@@ -110,15 +120,10 @@ then
       echo "Offline mode: skipping Sentry release creation"
     fi
 
-  # If offline, skip the --pull always
-    if [[ $OFFLINE == true ]]; then
-      echo "Offline mode: skipping Docker pull from registry"
-      doppler run --command \
-        "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build $FORCE_RECREATE"
-    else
-      doppler run --command \
-        "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build --pull always $FORCE_RECREATE"
-    fi
+    
+
+    doppler run --command \
+      "docker compose -f compose/docker-compose.yml -f compose/prod-base-compose.yml $ADDITIONAL_DOCKER_COMPOSE_FILE -p $DOCKER_PROJECT_NAME up -d --build $PULL_ALWAYS $FORCE_RECREATE"
 
     if [[ $OFFLINE == false ]]; then
       sentry-cli releases finalize "$VERSION"
