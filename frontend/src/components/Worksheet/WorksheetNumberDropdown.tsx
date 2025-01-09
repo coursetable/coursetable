@@ -146,7 +146,7 @@ function MenuListWithAdd({
 }: MenuListProps<Option<number>>) {
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason } = useWorksheet();
+  const { viewedSeason, viewedPerson } = useWorksheet();
   const addBtn = isAddingWorksheet ? (
     <WSNameInput
       startingInput="New Worksheet"
@@ -176,7 +176,7 @@ function MenuListWithAdd({
   return (
     <components.MenuList {...props}>
       {children}
-      {addBtn}
+      {viewedPerson === 'me' && addBtn}
     </components.MenuList>
   );
 }
