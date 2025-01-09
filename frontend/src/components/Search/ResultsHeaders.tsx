@@ -121,7 +121,7 @@ function ResultsHeaders({
               className={colStyles.profCol}
               tooltip={
                 <span>
-                  Average Professor Rating and Names
+                  Average Professor Course Rating and Names
                   <br />
                   (if there are multiple professors, we take the average between
                   them)
