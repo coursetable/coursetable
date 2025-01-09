@@ -349,6 +349,7 @@ export const updateWorksheetMetadata = async (
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
+    res.sendStatus(200);
   } else {
     const { worksheetNumber, name } = bodyParseRes.data;
 
@@ -371,9 +372,8 @@ export const updateWorksheetMetadata = async (
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
+    res.sendStatus(200);
   }
-
-  res.sendStatus(200);
 };
 
 const UpdateWishlistCourseReqBodySchema = z.object({
