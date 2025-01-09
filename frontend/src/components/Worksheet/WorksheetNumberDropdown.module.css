@@ -2,3 +2,55 @@
   border-top-right-radius: 8px !important;
   border-top-left-radius: 8px !important;
 }
+
+.addBtn {
+  width: calc(100% - 4px);
+  align-items: center;
+  font-size: larger;
+  padding: 4px;
+  margin: 2px;
+  opacity: 0.5;
+  text-align: center;
+  border: solid grey 2px;
+  border-radius: 6px;
+}
+
+.optionContent {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.optionName {
+  flex: 1; /* fill remaining space */
+  margin-right: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between icons */
+}
+
+.renameWorksheetIcon {
+  cursor: pointer;
+}
+
+.deleteWorksheetIcon {
+  cursor: pointer;
+}
+
+.optionInputContainer {
+  padding: 8px;
+}
+
+.optionInput {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
