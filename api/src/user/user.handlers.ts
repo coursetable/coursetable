@@ -71,18 +71,15 @@ async function updateWorksheetCourse(
     ),
     columns: { id: true },
   });
-  // To be removed once add/remove/rename worksheets is pushed.
-  if (!existingMeta && action === 'add') {
+  // Only the main worksheet can be implicitly created
+  if (!existingMeta && action === 'add' && worksheetNumber === 0) {
     [existingMeta] = await db
       .insert(worksheets)
       .values({
         netId,
         season,
         worksheetNumber,
-        name:
-          worksheetNumber === 0
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheetNumber}`,
+        name: 'Main Worksheet',
       })
       .returning({ id: worksheets.id });
   }
@@ -125,7 +122,8 @@ async function updateWorksheetCourse(
       .where(eq(worksheetCourses.worksheetId, existingMeta.id));
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-    if (numCoursesInCurWorksheet === 0)
+    // Only implicitly delete the main worksheet if it's empty
+    if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0)
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
   } else {
     // Update data of a bookmarked course
@@ -255,13 +253,13 @@ const AddWorksheetSchema = z.object({
 const DeleteWorksheetSchema = z.object({
   action: z.literal('delete'),
   season: z.string().transform((val) => parseInt(val, 10)),
-  worksheetNumber: z.number(),
+  worksheetNumber: z.number().int().min(1),
 });
 
 const RenameWorksheetSchema = z.object({
   action: z.literal('rename'),
   season: z.string().transform((val) => parseInt(val, 10)),
-  worksheetNumber: z.number(),
+  worksheetNumber: z.number().int().min(1),
   name: z.string().max(64),
 });
 
@@ -351,6 +349,7 @@ export const updateWorksheetMetadata = async (
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
+    res.sendStatus(200);
   } else {
     const { worksheetNumber, name } = bodyParseRes.data;
 
@@ -373,9 +372,8 @@ export const updateWorksheetMetadata = async (
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
+    res.sendStatus(200);
   }
-
-  res.sendStatus(200);
 };
 
 const UpdateWishlistCourseReqBodySchema = z.object({
