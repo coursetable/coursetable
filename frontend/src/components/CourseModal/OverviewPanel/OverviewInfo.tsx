@@ -276,26 +276,30 @@ function Syllabus({
       CourseModalOverviewDataQuery['sameCourse'][number]
     >();
     for (const other of sameCourse) {
-      if (other.syllabus_url && !courseBySyllabus.has(other.syllabus_url))
-        courseBySyllabus.set(other.syllabus_url, other);
+      // Some courses have mistakenly put the syllabus URL in the course home
+      // URL. Since 2015, no course has a home URL that's not going to Canvas.
+      const otherSyllabus = other.syllabus_url ?? other.course_home_url;
+      if (otherSyllabus && !courseBySyllabus.has(otherSyllabus))
+        courseBySyllabus.set(otherSyllabus, other);
     }
-    return [...courseBySyllabus.values()].sort(
-      (a, b) =>
+    return [...courseBySyllabus.entries()].sort(
+      ([, a], [, b]) =>
         b.season_code.localeCompare(a.season_code, 'en-US') ||
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
   }, [sameCourse]);
+  const syllabusLink = course.syllabus_url ?? course.course_home_url;
 
   return (
     <div className="mt-2">
       <DataField
         name="Syllabus"
         value={
-          course.syllabus_url ? (
+          syllabusLink ? (
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href={course.syllabus_url}
+              href={syllabusLink}
               className="d-flex"
             >
               View Syllabus
@@ -310,12 +314,12 @@ function Syllabus({
         name={`Past syllabi (${pastSyllabi.length})`}
         value={
           pastSyllabi.length
-            ? pastSyllabi.map((c) => (
+            ? pastSyllabi.map(([link, c]) => (
                 <a
                   key={`${c.season_code}-${c.section}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={c.syllabus_url!}
+                  href={link}
                   className="d-flex"
                 >
                   {toSeasonString(c.season_code)} (section {c.section}
