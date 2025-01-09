@@ -290,16 +290,27 @@ export function WorksheetProvider({
 export const useWorksheet = () => useContext(WorksheetContext)!;
 
 export function useWorksheetNumberOptions(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   person: 'me' | NetId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   season: Season,
 ): { [worksheetNumber: number]: Option<number> } {
-  // This will be dependent on backend data if we allow renaming
-  return {
-    0: { value: 0, label: 'Main Worksheet' },
-    ...Object.fromEntries(
-      [1, 2, 3].map((n) => [n, { value: n, label: `Worksheet ${n}` }]),
-    ),
-  };
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
+  const seasonWorksheet = (
+    person === 'me' ? worksheets : friends?.[person]?.worksheets
+  )?.get(season);
+  const options = seasonWorksheet
+    ? Object.fromEntries(
+        [...seasonWorksheet.entries()].map(([key, value]) => [
+          key,
+          { value: key, label: value.name },
+        ]),
+      )
+    : {};
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  options[0] ??= { value: 0, label: 'Main Worksheet' };
+  return options;
 }
