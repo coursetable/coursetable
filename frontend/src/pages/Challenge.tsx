@@ -218,9 +218,7 @@ function Challenge() {
   return (
     <div className={clsx(styles.container, 'py-5')}>
       <SurfaceComponent className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow">
-        {/* Page Header */}
         <h1 className="fw-bold mb-2">Enable evaluations</h1>
-        {/* Page Description */}
         <TextComponent type="secondary">
           <p className="mb-2">
             You are seeing this page because we cannot automatically confirm
@@ -264,7 +262,6 @@ function Challenge() {
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             {resBody.courseInfo.map((course, index) => (
               <Form.Group controlId={`question#${index + 1}`} key={index}>
-                {/* Course Title */}
                 <div className="mx-auto">
                   <strong>
                     <a
@@ -290,7 +287,6 @@ function Challenge() {
                   </span>
                   ?
                 </div>
-                {/* Number Input Box */}
                 <Form.Control
                   type="number"
                   className="mb-3"

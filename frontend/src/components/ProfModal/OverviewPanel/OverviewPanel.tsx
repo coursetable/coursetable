@@ -98,7 +98,7 @@ function getChartOptions(
       y: {
         title: {
           display: true,
-          text: 'Average Rating',
+          text: 'Average rating',
         },
         min: 1,
         max: 5,
@@ -181,7 +181,7 @@ function SeasonRatingChart({
   const chartData: ChartData<'line', { x: number; y: number }[]> = {
     datasets: [
       {
-        label: 'Average Rating',
+        label: 'Average rating',
         data: points,
         borderColor: '#468FF2',
         backgroundColor: 'rgba(0, 0, 255, 0.1)',

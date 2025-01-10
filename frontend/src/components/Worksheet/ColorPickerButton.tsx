@@ -181,7 +181,7 @@ function ColorPickerButton({
               setOpen(false);
             }}
           >
-            Save Changes
+            Save changes
           </Button>
         </Modal.Footer>
       </Modal>

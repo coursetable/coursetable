@@ -52,7 +52,7 @@ function Description({ course }: { readonly course: CourseInfo }) {
             onClick={() => {
               setLines(100);
             }}
-            title="Read More"
+            title="Read more"
           >
             <IoIosArrowDown size={20} />
           </LinkLikeText>
@@ -302,7 +302,7 @@ function Syllabus({
               href={syllabusLink}
               className="d-flex"
             >
-              View Syllabus
+              View syllabus
               <HiExternalLink size={18} className="ms-1 my-auto" />
             </a>
           ) : (
@@ -462,11 +462,11 @@ function OverviewInfo({
         name="School"
         value={listing.school ? schools[listing.school] : undefined}
       />
-      <DataField name="Class Notes" value={course.classnotes} />
-      <DataField name="Registrar Notes" value={course.regnotes} />
-      <DataField name="Reading Period" value={course.rp_attr} />
+      <DataField name="Class notes" value={course.classnotes} />
+      <DataField name="Registrar notes" value={course.regnotes} />
+      <DataField name="Reading period" value={course.rp_attr} />
       <DataField
-        name="Final Exam"
+        name="Final exam"
         value={course.final_exam === 'HTBA' ? null : course.final_exam}
       />
       <DataField
