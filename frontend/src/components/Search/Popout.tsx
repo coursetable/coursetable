@@ -117,7 +117,6 @@ export function Popout({
     return undefined;
   };
 
-   
   const ArrowIcon = isComponentVisible ? IoMdArrowDropdown : IoMdArrowDropup;
   const [dropdownXOffset, setDropdownXOffset] = useState(0);
 

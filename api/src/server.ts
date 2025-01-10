@@ -64,7 +64,6 @@ app.use((req, _, next) => {
 // Setup session management.
 
 // Initialize Redis client.
-// eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
 redisClient.connect().catch(winston.error);
 
 // Initialize Redis session store.
