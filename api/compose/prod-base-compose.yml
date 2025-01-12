@@ -2,7 +2,7 @@ services:
   api:
     environment:
       NODE_ENV: production
-      OVERWRITE_CATALOG: 'false'
+      OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-false}
       HOT_RELOAD: 'false'
     labels:
       traefik.enable: true
