@@ -86,7 +86,7 @@ app.use(
       // Cookie lifetime of one year.
       maxAge: 365 * 24 * 60 * 60 * 1000,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
     },
   }),
 );
