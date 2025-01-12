@@ -93,6 +93,7 @@ then
     if [[ $OVERWRITE == true ]]
     then
         export FORCE_RECREATE="--force-recreate"
+        export OVERWRITE_CATALOG='true'
     else
         export FORCE_RECREATE=""
     fi
