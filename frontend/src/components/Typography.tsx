@@ -110,7 +110,7 @@ export const RatingBubble = forwardRef<
   );
 });
 
-// Primary Color link
+// Primary color link
 export const LinkLikeText = forwardRef<
   HTMLButtonElement,
   React.ComponentProps<'button'>

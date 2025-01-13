@@ -101,6 +101,7 @@ fragment CourseModalPrefetchCourseData on courses {
   # For rendering head metadata
   description
   same_course_id
+  primary_crn
   listings {
     crn
     course_code

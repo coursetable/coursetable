@@ -31,7 +31,6 @@ export const cannyIdentify = async (
 
   // Make another request to Yalies.io to get most up-to-date info
   // (also done upon login, but our cookies last a while)
-  winston.info("Getting user's enrollment status from Yalies.io");
   try {
     const data = (await fetch('https://yalies.io/api/people', {
       method: 'POST',
@@ -56,7 +55,6 @@ export const cannyIdentify = async (
 
     const user = data[0]!;
 
-    winston.info(`Updating profile for ${netId}`);
     await db
       .update(studentBluebookSettings)
       .set({

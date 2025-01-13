@@ -13,6 +13,7 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
     extra_info
     description
     same_course_id
+    primary_crn
     listings {
       crn
       course_code

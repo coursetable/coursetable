@@ -33,7 +33,6 @@ function WorksheetCalendarList() {
     [courses],
   );
 
-  // eslint-disable-next-line no-useless-assignment
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
   return (

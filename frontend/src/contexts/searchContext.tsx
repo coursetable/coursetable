@@ -61,16 +61,16 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
 }));
 
 const sortCriteria = {
-  course_code: 'Sort by Course Code',
-  title: 'Sort by Course Title',
-  friend: 'Sort by Friends',
-  overall: 'Sort by Course Rating',
-  average_professor_rating: 'Sort by Professor Rating',
+  course_code: 'Sort by course code',
+  title: 'Sort by course title',
+  friend: 'Sort by # of friends',
+  overall: 'Sort by course rating',
+  average_professor_rating: 'Sort by professor rating',
   workload: 'Sort by Workload',
   average_gut_rating: 'Sort by Guts (Overall - Workload)',
-  enrollment: 'Sort by Last Enrollment',
-  time: 'Sort by Days & Times',
-  location: 'Sort by Locations',
+  enrollment: 'Sort by last enrollment',
+  time: 'Sort by days & times',
+  location: 'Sort by locations',
 };
 
 export const sortByOptions = Object.fromEntries(
@@ -724,9 +724,7 @@ export function SearchProvider({
           if (
             !applyIntersectableFilter(
               selectSchools.value.map((option) => option.value),
-              listing.course.listings
-                .map((l) => l.school)
-                .filter((x) => x !== null),
+              listing.course.listings.map((l) => l.school),
               intersectingFilters.value.includes('selectSchools'),
             )
           )
