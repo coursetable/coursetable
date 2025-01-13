@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -8,8 +8,10 @@ import {
   ButtonGroup,
   OverlayTrigger,
   Tooltip,
+  Modal,
 } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown } from 'react-icons/tb';
 
 import GoogleCalendarButton from './GoogleCalendarButton';
@@ -33,7 +35,10 @@ function WorksheetCalendarList() {
     [courses],
   );
 
+
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
+
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
   return (
     <div>
@@ -70,6 +75,27 @@ function WorksheetCalendarList() {
                 </Button>
               </OverlayTrigger>
             )}
+            <OverlayTrigger
+              placement="top"
+              overlay={(props) => (
+                <Tooltip id="button-tooltip" {...props}>
+                  <span>Worksheet Settings</span>
+                </Tooltip>
+              )}
+            >
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setSettingsModalOpen(true);
+                }}
+                variant="none"
+                className={clsx(styles.button, 'px-3 w-100')}
+                aria-label="Worksheet Settings"
+              >
+                <CiSettings className={clsx(styles.icon)} size={32} />
+              </Button>
+            </OverlayTrigger>
             <OverlayTrigger
               placement="top"
               overlay={(props) => (
@@ -120,6 +146,29 @@ function WorksheetCalendarList() {
           <NoCourses />
         )}
       </SurfaceComponent>
+      <Modal
+        show={settingsModalOpen}
+        onHide={() => setSettingsModalOpen(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Worksheet Settings</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Settings content goes here.</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setSettingsModalOpen(false)}
+          >
+            Close
+          </Button>
+          <Button variant="primary" onClick={() => setSettingsModalOpen(false)}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
