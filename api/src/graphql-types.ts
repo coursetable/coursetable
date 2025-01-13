@@ -2330,7 +2330,7 @@ export type Listings = {
   /** Course number in the given subject (e.g. "120" or "S120") */
   number: Scalars['String']['output'];
   /** School (e.g. YC, GS, MG) that the course is listed under */
-  school?: Maybe<Scalars['String']['output']>;
+  school: Scalars['String']['output'];
   /** An object relationship */
   season: Seasons;
   /** When the course/listing is being taught, mapping to `seasons` */

@@ -458,10 +458,7 @@ function OverviewInfo({
         }
       />
       <DataField name="Credits" value={course.credits} />
-      <DataField
-        name="School"
-        value={listing.school ? schools[listing.school] : undefined}
-      />
+      <DataField name="School" value={schools[listing.school]} />
       <DataField name="Class notes" value={course.classnotes} />
       <DataField name="Registrar notes" value={course.regnotes} />
       <DataField name="Reading period" value={course.rp_attr} />

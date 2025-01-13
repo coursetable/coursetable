@@ -80,7 +80,7 @@ export type CatalogBySeasonQuery = {
       course_code: string;
       crn: number;
       number: string;
-      school: string | null;
+      school: string;
       subject: string;
     }>;
     course_meetings: Array<{

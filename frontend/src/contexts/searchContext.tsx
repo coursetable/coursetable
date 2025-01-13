@@ -724,9 +724,7 @@ export function SearchProvider({
           if (
             !applyIntersectableFilter(
               selectSchools.value.map((option) => option.value),
-              listing.course.listings
-                .map((l) => l.school)
-                .filter((x) => x !== null),
+              listing.course.listings.map((l) => l.school),
               intersectingFilters.value.includes('selectSchools'),
             )
           )
