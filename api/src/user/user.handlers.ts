@@ -263,10 +263,18 @@ const RenameWorksheetSchema = z.object({
   name: z.string().max(64),
 });
 
+const SetPrivateWorksheetSchema = z.object({
+  action: z.literal('setPrivate'),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  worksheetNumber: z.number().int().min(0),
+  private: z.boolean(),
+});
+
 const UpdateWorksheetMetadataSchema = z.union([
   AddWorksheetSchema,
   DeleteWorksheetSchema,
   RenameWorksheetSchema,
+  SetPrivateWorksheetSchema,
 ]);
 
 export const updateWorksheetMetadata = async (
@@ -349,7 +357,7 @@ export const updateWorksheetMetadata = async (
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
-  } else {
+  } else if (action === 'rename') {
     const { worksheetNumber, name } = bodyParseRes.data;
 
     winston.info(
@@ -368,6 +376,29 @@ export const updateWorksheetMetadata = async (
       .returning({ worksheetNumber: worksheets.worksheetNumber });
 
     if (renamedWorksheets.length === 0) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+  } else {
+    const { worksheetNumber, private: isPrivate } = bodyParseRes.data;
+
+    winston.info(
+      `Updating privacy for worksheet ${worksheetNumber} to ${String(isPrivate)} for user ${netId}`,
+    );
+
+    const updatedWorksheets = await db
+      .update(worksheets)
+      .set({ private: isPrivate })
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.season, season),
+          eq(worksheets.worksheetNumber, worksheetNumber),
+        ),
+      )
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
+
+    if (updatedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
