@@ -372,9 +372,14 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           usesSameCourse={groupRecurringCourses}
           columns={['rating', 'workload']}
           columnWidth={3}
-          extraText={(c) =>
-            `${c.listings[0]!.course_code}${c.listings.length > 1 ? ` +${c.listings.length - 1}` : ''}`
-          }
+          extraText={(c) => {
+            if (c.listings.length === 1) return c.listings[0]!.course_code;
+            const primary = c.primary_crn
+              ? // Guaranteed to exist
+                c.listings.find((l) => l.crn === c.primary_crn)!
+              : c.listings[0]!;
+            return `${primary.course_code} +${c.listings.length - 1}`;
+          }}
         />
       </Col>
     </Row>

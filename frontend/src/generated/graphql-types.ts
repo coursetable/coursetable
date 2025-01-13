@@ -693,7 +693,7 @@ export type Courses = {
   last_updated: Maybe<Scalars['timestamp']['output']>;
   /** An array relationship */
   listings: Array<Listings>;
-  primary_crn: Maybe<Scalars['Int']['output']>;
+  primary_crn: Maybe<Scalars['Crn']['output']>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: Maybe<Scalars['String']['output']>;
   /** Recommended requirements/prerequisites for the course */
@@ -3690,7 +3690,7 @@ export type CatalogBySeasonQuery = {
     final_exam: string | null;
     fysem: boolean | null;
     last_offered_course_id: number | null;
-    primary_crn: number | null;
+    primary_crn: Crn | null;
     requirements: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
@@ -3846,6 +3846,7 @@ export type CourseModalPrefetchCourseDataFragment = {
   extra_info: ExtraInfo;
   description: string | null;
   same_course_id: number;
+  primary_crn: Crn | null;
   listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
   course_professors: Array<{
     __typename?: 'course_professors';
