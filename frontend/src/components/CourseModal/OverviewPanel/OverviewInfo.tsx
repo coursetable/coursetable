@@ -369,35 +369,40 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
   return (
     <DataField
       name="Meetings"
-      value={course.course_meetings.map((session, i) => (
-        <div key={i}>
-          {toWeekdaysDisplayString(session.days_of_week)}{' '}
-          {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
-          {session.location && (
-            <>
-              {' '}
-              at{' '}
-              {session.location.building.url ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={session.location.building.url}
-                >
-                  {session.location.building.code}
-                  {/* TODO use a tooltip instead */}
-                  {session.location.building.building_name
-                    ? ` (${session.location.building.building_name})`
-                    : ''}
-                  {session.location.room ? ` ${session.location.room}` : ''}
-                  <HiExternalLink size={18} className="ms-1 my-auto" />
-                </a>
-              ) : (
-                `${session.location.building.code}${session.location.room ? ` ${session.location.room}` : ''}`
-              )}
-            </>
-          )}
-        </div>
-      ))}
+      value={course.course_meetings.map((session, i) => {
+        const locationTexts = [];
+        if (session.location) {
+          locationTexts.push(session.location.building.code);
+          // TODO use a tooltip instead
+          if (session.location.building.building_name)
+            locationTexts.push(`(${session.location.building.building_name})`);
+          if (session.location.room) locationTexts.push(session.location.room);
+        }
+        return (
+          <div key={i}>
+            {toWeekdaysDisplayString(session.days_of_week)}{' '}
+            {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
+            {session.location && (
+              <>
+                {' '}
+                at{' '}
+                {session.location.building.url ? (
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={session.location.building.url}
+                  >
+                    {locationTexts.join(' ')}
+                    <HiExternalLink size={18} className="ms-1 my-auto" />
+                  </a>
+                ) : (
+                  locationTexts.join(' ')
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
     />
   );
 }
