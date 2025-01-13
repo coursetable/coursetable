@@ -12,7 +12,6 @@ import {
   wishlistCourses,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
-import winston from '../logging/winston.js';
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
   z.object({
@@ -92,9 +91,6 @@ async function updateWorksheetCourse(
   });
 
   if (action === 'add') {
-    winston.info(
-      `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-    );
     if (existing) return 'ALREADY_BOOKMARKED';
     await db.insert(worksheetCourses).values({
       worksheetId: existingMeta.id,
@@ -103,9 +99,6 @@ async function updateWorksheetCourse(
       hidden,
     });
   } else if (action === 'remove') {
-    winston.info(
-      `Removing bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-    );
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .delete(worksheetCourses)
@@ -126,10 +119,6 @@ async function updateWorksheetCourse(
     if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0)
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
   } else {
-    // Update data of a bookmarked course
-    winston.info(
-      `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-    );
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
@@ -148,8 +137,6 @@ export const updateWorksheetCourses = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Toggling course bookmark');
-
   const { netId } = req.user!;
 
   const bodyParseRes = UpdateWorksheetCoursesReqBodySchema.safeParse(req.body);
@@ -217,8 +204,6 @@ export const getUserWorksheet = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  winston.info(`Getting worksheets for user ${netId}`);
-
   const userWorksheets = await db.query.worksheets.findMany({
     where: eq(worksheets.netId, netId),
     columns: {
@@ -273,8 +258,6 @@ export const updateWorksheetMetadata = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Updating worksheets metadata');
-
   const { netId } = req.user!;
 
   const bodyParseRes = UpdateWorksheetMetadataSchema.safeParse(req.body);
@@ -286,8 +269,6 @@ export const updateWorksheetMetadata = async (
   const { action, season } = bodyParseRes.data;
 
   if (action === 'add') {
-    winston.info(`Adding worksheet for user ${netId}`);
-
     const { name } = bodyParseRes.data;
 
     const worksheetNumbersRes = await db.query.worksheets.findMany({
@@ -313,10 +294,6 @@ export const updateWorksheetMetadata = async (
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
 
-    winston.info(
-      `Deleting worksheet courses from worksheet ${worksheetNumber} for user ${netId}`,
-    );
-
     await db.delete(worksheetCourses).where(
       inArray(
         worksheetCourses.worksheetId,
@@ -333,7 +310,6 @@ export const updateWorksheetMetadata = async (
       ),
     );
 
-    winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     const deletedWorksheets = await db
       .delete(worksheets)
       .where(
@@ -353,9 +329,6 @@ export const updateWorksheetMetadata = async (
   } else {
     const { worksheetNumber, name } = bodyParseRes.data;
 
-    winston.info(
-      `Renaming worksheet ${worksheetNumber} for user ${netId} to "${name}"`,
-    );
     const renamedWorksheets = await db
       .update(worksheets)
       .set({ name })
@@ -386,8 +359,6 @@ export const updateWishlistCourses = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Toggling wishlist bookmark');
-
   const { netId } = req.user!;
 
   const bodyParseRes = UpdateWishlistCourseReqBodySchema.safeParse(req.body);
