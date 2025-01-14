@@ -4,6 +4,7 @@ import EvaluationResponses from './EvaluationResponses';
 
 import { useSearchEvaluationNarrativesQuery } from '../../../queries/graphql-queries';
 import type { Crn, Season } from '../../../queries/graphql-types';
+import { getListingId } from '../../../utilities/course';
 import Spinner from '../../Spinner';
 
 function EvaluationsPanel({
@@ -15,7 +16,7 @@ function EvaluationsPanel({
 }) {
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
-      listingId: (Number.parseInt(seasonCode, 10) - 200000) * 100000 + crn,
+      listingId: getListingId(seasonCode, crn),
     },
   });
   if (loading || error) return <Spinner message="Loading evaluations..." />;

@@ -12,6 +12,7 @@ import type { CourseModalPrefetchListingDataFragment } from '../generated/graphq
 import { useCourseModalFromUrlQuery } from '../queries/graphql-queries';
 import type { Season, Crn } from '../queries/graphql-types';
 import { useStore } from '../store';
+import { getListingId } from '../utilities/course';
 import {
   createCourseModalLink,
   createProfModalLink,
@@ -63,7 +64,7 @@ function parseQuery(courseModalQuery: string | null) {
   return {
     seasonCode,
     crn: crnNum,
-    listingId: (Number.parseInt(seasonCode, 10) - 200000) * 100000 + crnNum,
+    listingId: getListingId(seasonCode, crnNum),
   };
 }
 

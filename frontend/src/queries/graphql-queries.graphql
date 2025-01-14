@@ -1,12 +1,9 @@
 query CourseModalOverviewData(
-  $seasonCode: String!
-  $crn: Int!
+  $listingId: Int!
   $sameCourseId: Int!
   $hasEvals: Boolean!
 ) {
-  self: listings(
-    where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
-  ) {
+  self: listings_by_pk(listing_id: $listingId) {
     # Note: here we only need to fetch the data displayed in the modal body
     # not the modal header.
     course {

@@ -3725,15 +3725,14 @@ export type CourseAttributesQuery = {
 };
 
 export type CourseModalOverviewDataQueryVariables = Exact<{
-  seasonCode: Scalars['String']['input'];
-  crn: Scalars['Int']['input'];
+  listingId: Scalars['Int']['input'];
   sameCourseId: Scalars['Int']['input'];
   hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type CourseModalOverviewDataQuery = {
   __typename?: 'query_root';
-  self: Array<{
+  self: {
     __typename?: 'listings';
     school: string;
     season_code: Season;
@@ -3788,7 +3787,7 @@ export type CourseModalOverviewDataQuery = {
         enrolled: number;
       } | null;
     };
-  }>;
+  } | null;
   sameCourse: Array<
     {
       __typename?: 'courses';

@@ -45,14 +45,11 @@ export const CourseModalPrefetchListingDataFragmentDoc = gql`
 `;
 export const CourseModalOverviewDataDocument = gql`
   query CourseModalOverviewData(
-    $seasonCode: String!
-    $crn: Int!
+    $listingId: Int!
     $sameCourseId: Int!
     $hasEvals: Boolean!
   ) {
-    self: listings(
-      where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
-    ) {
+    self: listings_by_pk(listing_id: $listingId) {
       course {
         description
         requirements
@@ -134,8 +131,7 @@ export const CourseModalOverviewDataDocument = gql`
  * @example
  * const { data, loading, error } = useCourseModalOverviewDataQuery({
  *   variables: {
- *      seasonCode: // value for 'seasonCode'
- *      crn: // value for 'crn'
+ *      listingId: // value for 'listingId'
  *      sameCourseId: // value for 'sameCourseId'
  *      hasEvals: // value for 'hasEvals'
  *   },
