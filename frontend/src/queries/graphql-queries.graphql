@@ -123,8 +123,8 @@ fragment CourseModalPrefetchCourseData on courses {
   }
 }
 
-query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
-  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+query SearchEvaluationNarratives($listingId: Int!) {
+  listings_by_pk(listing_id: $listingId) {
     course {
       evaluation_narratives {
         comment
@@ -167,12 +167,8 @@ query ProfModalOverviewData($professorId: Int!, $hasEvals: Boolean!) {
   }
 }
 
-query CourseModalFromURL(
-  $seasonCode: String!
-  $crn: Int!
-  $hasEvals: Boolean!
-) {
-  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+query CourseModalFromURL($listingId: Int!, $hasEvals: Boolean!) {
+  listings_by_pk(listing_id: $listingId) {
     ...CourseModalPrefetchListingData
   }
 }
