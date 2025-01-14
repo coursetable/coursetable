@@ -311,8 +311,8 @@ export type CourseFlagsVarianceOrderBy = {
 export type CourseMeetings = {
   __typename?: 'course_meetings';
   /** An object relationship */
-  course: Maybe<Courses>;
-  course_id: Maybe<Scalars['Int']['output']>;
+  course: Courses;
+  course_id: Scalars['Int']['output'];
   /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
   days_of_week: Scalars['Int']['output'];
   /** End time of this meeting session */
@@ -654,7 +654,7 @@ export type Courses = {
   /** Additional class notes */
   classnotes: Maybe<Scalars['String']['output']>;
   /** True if the course is a college seminar. False otherwise. */
-  colsem: Maybe<Scalars['Boolean']['output']>;
+  colsem: Scalars['Boolean']['output'];
   /** An array relationship */
   course_flags: Array<CourseFlags>;
   /** Link to the course homepage */
@@ -679,7 +679,7 @@ export type Courses = {
   /** Final exam information */
   final_exam: Maybe<Scalars['String']['output']>;
   /** True if the course is a first-year seminar. False otherwise. */
-  fysem: Maybe<Scalars['Boolean']['output']>;
+  fysem: Scalars['Boolean']['output'];
   /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']['output']>;
   /** [computed] Course from which last enrollment offering was pulled */
@@ -715,7 +715,7 @@ export type Courses = {
   /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']['output']>;
   /** True if the course is a sophomore seminar. False otherwise. */
-  sysem: Maybe<Scalars['Boolean']['output']>;
+  sysem: Scalars['Boolean']['output'];
   time_added: Maybe<Scalars['timestamp']['output']>;
   /** Complete course title */
   title: Scalars['String']['output'];
@@ -2116,14 +2116,10 @@ export type EvaluationStatistics = {
   course: Courses;
   /** The course associated with these statistics */
   course_id: Scalars['Int']['output'];
-  /** Number of students who declined to respond */
-  declined: Maybe<Scalars['Int']['output']>;
   /** Number of students enrolled in course */
-  enrolled: Maybe<Scalars['Int']['output']>;
+  enrolled: Scalars['Int']['output'];
   /** Arbitrary additional information attached to an evaluation */
   extras: Maybe<Scalars['jsonb']['output']>;
-  /** Number of students who did not respond */
-  no_response: Maybe<Scalars['Int']['output']>;
   /** Number of responses */
   responses: Maybe<Scalars['Int']['output']>;
 };
@@ -2142,10 +2138,8 @@ export type EvaluationStatisticsBoolExp = {
   avg_workload: InputMaybe<Float8ComparisonExp>;
   course: InputMaybe<CoursesBoolExp>;
   course_id: InputMaybe<IntComparisonExp>;
-  declined: InputMaybe<IntComparisonExp>;
   enrolled: InputMaybe<IntComparisonExp>;
   extras: InputMaybe<JsonbComparisonExp>;
-  no_response: InputMaybe<IntComparisonExp>;
   responses: InputMaybe<IntComparisonExp>;
 };
 
@@ -2155,10 +2149,8 @@ export type EvaluationStatisticsOrderBy = {
   avg_workload: InputMaybe<OrderBy>;
   course: InputMaybe<CoursesOrderBy>;
   course_id: InputMaybe<OrderBy>;
-  declined: InputMaybe<OrderBy>;
   enrolled: InputMaybe<OrderBy>;
   extras: InputMaybe<OrderBy>;
-  no_response: InputMaybe<OrderBy>;
   responses: InputMaybe<OrderBy>;
 };
 
@@ -2171,13 +2163,9 @@ export enum EvaluationStatisticsSelectColumn {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  Declined = 'declined',
-  /** column name */
   Enrolled = 'enrolled',
   /** column name */
   Extras = 'extras',
-  /** column name */
-  NoResponse = 'no_response',
   /** column name */
   Responses = 'responses',
 }
@@ -2198,14 +2186,10 @@ export type EvaluationStatisticsStreamCursorValueInput = {
   avg_workload: InputMaybe<Scalars['float8']['input']>;
   /** The course associated with these statistics */
   course_id: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students who declined to respond */
-  declined: InputMaybe<Scalars['Int']['input']>;
   /** Number of students enrolled in course */
   enrolled: InputMaybe<Scalars['Int']['input']>;
   /** Arbitrary additional information attached to an evaluation */
   extras: InputMaybe<Scalars['jsonb']['input']>;
-  /** Number of students who did not respond */
-  no_response: InputMaybe<Scalars['Int']['input']>;
   /** Number of responses */
   responses: InputMaybe<Scalars['Int']['input']>;
 };
@@ -3667,7 +3651,7 @@ export type EvalsBySeasonQuery = {
     last_enrollment_same_professors: boolean | null;
     evaluation_statistic: {
       __typename?: 'evaluation_statistics';
-      enrolled: number | null;
+      enrolled: number;
       responses: number | null;
     } | null;
   }>;
@@ -3682,13 +3666,13 @@ export type CatalogBySeasonQuery = {
   courses: Array<{
     __typename?: 'courses';
     areas: StringArr;
-    colsem: boolean | null;
+    colsem: boolean;
     course_id: number;
     credits: number | null;
     description: string | null;
     extra_info: ExtraInfo;
     final_exam: string | null;
-    fysem: boolean | null;
+    fysem: boolean;
     last_offered_course_id: number | null;
     primary_crn: Crn | null;
     requirements: string | null;
@@ -3697,7 +3681,7 @@ export type CatalogBySeasonQuery = {
     season_code: Season;
     section: string;
     skills: StringArr;
-    sysem: boolean | null;
+    sysem: boolean;
     title: string;
     course_flags: Array<{
       __typename?: 'course_flags';
@@ -3801,7 +3785,7 @@ export type CourseModalOverviewDataQuery = {
       }>;
       evaluation_statistic?: {
         __typename?: 'evaluation_statistics';
-        enrolled: number | null;
+        enrolled: number;
       } | null;
     };
   }>;
@@ -3896,7 +3880,7 @@ export type SearchEvaluationNarrativesQuery = {
       }>;
       evaluation_statistic: {
         __typename?: 'evaluation_statistics';
-        enrolled: number | null;
+        enrolled: number;
       } | null;
     };
   }>;

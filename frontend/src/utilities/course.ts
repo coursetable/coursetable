@@ -386,7 +386,7 @@ export function sortCourses(
 
 type CourseWithEnrolled = {
   evaluation_statistic?: {
-    enrolled: number | null;
+    enrolled: number;
   } | null;
   last_enrollment?: number | null;
   last_enrollment_same_professors?: boolean | null;
