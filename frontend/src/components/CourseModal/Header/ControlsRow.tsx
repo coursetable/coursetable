@@ -73,6 +73,13 @@ function MoreButton({
       >
         Open in Yale Course Search
       </Dropdown.Item>
+      <Dropdown.Item
+        href={`https://ivy.yale.edu/course-stats/course/courseDetail?termCode=${listing.course.season_code}&courseNumber=${listing.course_code.split(' ')[1]!}&subjectCode=${encodeURIComponent(listing.course_code.split(' ')[0]!)}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        Open Course Demand Statistics
+      </Dropdown.Item>
       {!CUR_YEAR.includes(listing.course.season_code) && (
         <Dropdown.Item
           href={`https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?termCode=${listing.course.season_code}&crn=${listing.crn}`}

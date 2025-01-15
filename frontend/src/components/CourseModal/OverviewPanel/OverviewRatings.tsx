@@ -215,7 +215,7 @@ function OverviewRatings({
         </>
       ) : (
         <div className="m-auto text-center">
-          <strong>No Results</strong>
+          <strong>No results</strong>
         </div>
       )}
     </>

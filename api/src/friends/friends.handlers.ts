@@ -8,7 +8,6 @@ import {
   worksheets,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
-import winston from '../logging/winston.js';
 import { worksheetListToMap } from '../user/user.utils.js';
 
 const FriendsOpRequestSchema = z.object({
@@ -19,8 +18,6 @@ export const addFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Adding new friend');
-
   const { netId } = req.user!;
   const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
   if (!bodyParseRes.success) {
@@ -66,8 +63,6 @@ export const removeFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Removing friend');
-
   const { netId } = req.user!;
   const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
   if (!bodyParseRes.success) {
@@ -122,8 +117,6 @@ export const requestAddFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Sending friend request`);
-
   const { netId } = req.user!;
   const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
   if (!bodyParseRes.success) {
@@ -192,8 +185,6 @@ export const getRequestsForFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Sending friend request`);
-
   const { netId } = req.user!;
 
   const friendNames = await db.transaction(async (tx) => {
@@ -223,11 +214,7 @@ export const getFriendsWorksheets = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Fetching friends' worksheets`);
-
   const { netId } = req.user!;
-
-  winston.info('Getting NetIDs of friends');
 
   const [friendInfos, friendWorksheetMap, friendNetIds] = await db.transaction(
     async (tx) => {
@@ -243,7 +230,6 @@ export const getFriendsWorksheets = async (
       if (friendNetIds.length === 0)
         return [[], {} as ReturnType<typeof worksheetListToMap>, []];
 
-      winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx.query.worksheets.findMany({
         where: and(
           inArray(worksheets.netId, friendNetIds),
@@ -267,8 +253,6 @@ export const getFriendsWorksheets = async (
       });
 
       const friendWorksheetMap = worksheetListToMap(friendWorksheets);
-
-      winston.info('Getting info of friends');
 
       const friendInfos = await tx
         .select({
@@ -309,7 +293,6 @@ export const getNames = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Fetching friends' names`);
   const names = await db.query.studentBluebookSettings.findMany({
     columns: {
       netId: true,

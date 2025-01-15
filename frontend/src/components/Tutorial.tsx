@@ -122,7 +122,7 @@ const stepsContent: Step[] = [
     header: "🎉 That's it! 🎉",
     text: (
       <>
-        That's it! Click <strong>Finish Tutorial</strong> to start using
+        That's it! Click <strong>Finish tutorial</strong> to start using
         CourseTable!
       </>
     ),
@@ -231,7 +231,7 @@ function Tutorial() {
         )
       }
       lastStepNextButton={
-        <Button className={styles.nextButton}>Finish Tutorial</Button>
+        <Button className={styles.nextButton}>Finish tutorial</Button>
       }
       getCurrentStep={setCurrentStep}
       disableKeyboardNavigation={['esc']}

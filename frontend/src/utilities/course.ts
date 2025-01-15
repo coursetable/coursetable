@@ -393,7 +393,7 @@ type CourseWithEnrolled = {
 };
 
 export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
-  return listing.school !== 'YC';
+  return listing.school !== 'YC' && listing.school !== 'SU';
 }
 
 export function isDiscussionSection(

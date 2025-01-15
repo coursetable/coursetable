@@ -1,11 +1,13 @@
 {
   "__schema": {
     "queryType": {
-      "name": "query_root"
+      "name": "query_root",
+      "kind": "OBJECT"
     },
     "mutationType": null,
     "subscriptionType": {
-      "name": "subscription_root"
+      "name": "subscription_root",
+      "kind": "OBJECT"
     },
     "types": [
       {
@@ -5061,7 +5063,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -5076,16 +5078,20 @@
             "description": "[computed] Number of courses used to compute `average_rating`",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -5097,19 +5103,23 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -5124,16 +5134,20 @@
             "description": "[computed] Number of courses used to compute `average_workload`",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -5145,12 +5159,16 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -5814,7 +5832,7 @@
           },
           {
             "name": "last_enrollment_same_professors",
-            "description": "[computed] Whether last enrollment offering\n        is with same professor as current.",
+            "description": "[computed] Whether last enrollment offering is with same professor as current.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -5838,7 +5856,7 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -5962,8 +5980,20 @@
             "deprecationReason": null
           },
           {
+            "name": "primary_crn",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Crn",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
-            "description": "Registrar's notes (e.g. preference selection links,\n        optional writing credits, etc.)",
+            "description": "Registrar's notes (e.g. preference selection links, optional writing credits, etc.)",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -5999,7 +6029,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -6015,7 +6045,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -6063,7 +6093,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -6079,7 +6109,7 @@
           },
           {
             "name": "skills",
-            "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
+            "description": "Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels)",
             "args": [
               {
                 "name": "path",
@@ -6341,7 +6371,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6365,7 +6395,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6377,7 +6407,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6389,7 +6419,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6413,7 +6443,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6425,7 +6455,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6485,7 +6515,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6497,7 +6539,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6509,7 +6551,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -6980,6 +7022,18 @@
             "deprecationReason": null
           },
           {
+            "name": "primary_crn",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Int_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": null,
             "type": {
@@ -7173,7 +7227,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7197,7 +7251,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7209,7 +7263,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7221,7 +7275,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7245,7 +7299,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7257,7 +7311,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7389,7 +7443,31 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7413,7 +7491,7 @@
           },
           {
             "name": "regnotes",
-            "description": "Registrar's notes (e.g. preference selection links,\n        optional writing credits, etc.)",
+            "description": "Registrar's notes (e.g. preference selection links, optional writing credits, etc.)",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7449,7 +7527,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7461,7 +7539,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7485,7 +7563,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7569,7 +7647,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7593,7 +7671,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7605,7 +7683,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7617,7 +7695,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7641,7 +7719,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7653,7 +7731,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7785,7 +7863,31 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7809,7 +7911,7 @@
           },
           {
             "name": "regnotes",
-            "description": "Registrar's notes (e.g. preference selection links,\n        optional writing credits, etc.)",
+            "description": "Registrar's notes (e.g. preference selection links, optional writing credits, etc.)",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7845,7 +7947,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7857,7 +7959,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7881,7 +7983,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8336,6 +8438,18 @@
             "deprecationReason": null
           },
           {
+            "name": "primary_crn",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": null,
             "type": {
@@ -8662,6 +8776,12 @@
             "deprecationReason": null
           },
           {
+            "name": "primary_crn",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": "column name",
             "isDeprecated": false,
@@ -8769,7 +8889,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8793,7 +8913,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8805,7 +8925,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8817,7 +8937,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8841,7 +8961,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8853,7 +8973,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8913,7 +9033,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8925,7 +9057,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8937,7 +9069,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -8985,7 +9117,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9009,7 +9141,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9021,7 +9153,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9033,7 +9165,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9057,7 +9189,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9069,7 +9201,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9129,7 +9261,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9141,7 +9285,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9153,7 +9297,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9201,7 +9345,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9225,7 +9369,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9237,7 +9381,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9249,7 +9393,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9273,7 +9417,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9285,7 +9429,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9345,7 +9489,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9357,7 +9513,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9369,7 +9525,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9469,7 +9625,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "SCALAR",
               "name": "float8",
@@ -9493,7 +9649,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "SCALAR",
               "name": "float8",
@@ -9505,7 +9661,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -9517,7 +9673,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "SCALAR",
               "name": "float8",
@@ -9541,7 +9697,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "SCALAR",
               "name": "float8",
@@ -9553,7 +9709,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -9697,7 +9853,7 @@
           },
           {
             "name": "last_enrollment_same_professors",
-            "description": "[computed] Whether last enrollment offering\n        is with same professor as current.",
+            "description": "[computed] Whether last enrollment offering is with same professor as current.",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -9721,7 +9877,31 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -9745,7 +9925,7 @@
           },
           {
             "name": "regnotes",
-            "description": "Registrar's notes (e.g. preference selection links,\n        optional writing credits, etc.)",
+            "description": "Registrar's notes (e.g. preference selection links, optional writing credits, etc.)",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -9781,7 +9961,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -9793,7 +9973,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -9817,7 +9997,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -9829,7 +10009,7 @@
           },
           {
             "name": "skills",
-            "description": "Skills that the course fulfills (e.g. writing,\n        quantitative reasoning, language levels)",
+            "description": "Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels)",
             "type": {
               "kind": "SCALAR",
               "name": "jsonb",
@@ -9925,7 +10105,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9949,7 +10129,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9961,7 +10141,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9973,7 +10153,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9997,7 +10177,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10009,7 +10189,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10069,7 +10249,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10081,7 +10273,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10093,7 +10285,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10141,7 +10333,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10165,7 +10357,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10177,7 +10369,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10189,7 +10381,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10213,7 +10405,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10225,7 +10417,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10285,7 +10477,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10297,7 +10501,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10309,7 +10513,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10357,7 +10561,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10381,7 +10585,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10393,7 +10597,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10405,7 +10609,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10429,7 +10633,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10441,7 +10645,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10501,7 +10705,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10513,7 +10729,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10525,7 +10741,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10573,7 +10789,7 @@
           },
           {
             "name": "average_rating",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10597,7 +10813,7 @@
           },
           {
             "name": "average_rating_same_professors",
-            "description": "[computed] Historical average course rating for this course code,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10609,7 +10825,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_rating_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10621,7 +10837,7 @@
           },
           {
             "name": "average_workload",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10645,7 +10861,7 @@
           },
           {
             "name": "average_workload_same_professors",
-            "description": "[computed] Historical average workload rating,\n        aggregated across all cross-listings with same set of professors",
+            "description": "[computed] Historical average workload rating, aggregated across all cross-listings with same set of professors",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10657,7 +10873,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute `average_workload_same_professors`",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10717,7 +10933,19 @@
           },
           {
             "name": "last_offered_course_id",
-            "description": "[computed] Most recent previous offering of\n        course (excluding future ones)",
+            "description": "[computed] Most recent previous offering of course (excluding future ones)",
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10729,7 +10957,7 @@
           },
           {
             "name": "same_course_and_profs_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        Same as 'same_course_id' with the constraint that all courses in a group were\n        taught by the same professors.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10741,7 +10969,7 @@
           },
           {
             "name": "same_course_id",
-            "description": "[computed] Unique ID for grouping courses by historical offering.\n        All courses with a given ID are identical offerings across different semesters.\n        ",
+            "description": "[computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -16059,9 +16287,13 @@
             "description": "School (e.g. YC, GS, MG) that the course is listed under",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null

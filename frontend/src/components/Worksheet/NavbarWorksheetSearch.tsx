@@ -73,7 +73,6 @@ export function NavbarWorksheetSearch() {
 
   return (
     <div className="d-flex align-items-center">
-      {/* Worksheet View Toggle */}
       <ToggleButtonGroup
         name="worksheet-view-toggle"
         type="radio"

@@ -5,7 +5,7 @@ import styles from './Join.module.css';
 function Join() {
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <h1 className={clsx(styles.joinHeader, 'mt-5 mb-3')}>Join Us!</h1>
+      <h1 className={clsx(styles.joinHeader, 'mt-5 mb-3')}>Join us!</h1>
       <p className={clsx(styles.joinDescription, 'mb-5')}>
         <TextComponent type="secondary">
           Our applications are live!{' '}
