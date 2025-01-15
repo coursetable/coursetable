@@ -233,7 +233,7 @@ export const getFriendsWorksheets = async (
       const friendWorksheets = await tx.query.worksheets.findMany({
         where: and(
           inArray(worksheets.netId, friendNetIds),
-          eq(worksheets.private, false),
+          eq(worksheets.isPrivate, false),
         ),
         columns: {
           netId: true,

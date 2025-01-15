@@ -43,7 +43,6 @@ function WorksheetCalendarList() {
     [courses],
   );
 
-
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -176,7 +175,7 @@ function WorksheetCalendarList() {
                   season: viewedSeason,
                   action: 'setPrivate',
                   worksheetNumber: viewedWorksheetNumber,
-                  private: !isViewedWorksheetPrivate,
+                  isPrivate: !isViewedWorksheetPrivate,
                 });
                 await worksheetsRefresh();
               }}

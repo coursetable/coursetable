@@ -243,7 +243,7 @@ export function WorksheetProvider({
     curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
     (viewedWorksheetNumber === 0 ? 'Main Worksheet' : 'Unnamed Worksheet');
   const isViewedWorksheetPrivate =
-    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.private ??
+    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.isPrivate ??
     false;
 
   const store = useMemo(

@@ -211,7 +211,7 @@ export const getUserWorksheet = async (
       season: true,
       worksheetNumber: true,
       name: true,
-      private: true,
+      isPrivate: true,
     },
     with: {
       courses: {
@@ -254,7 +254,7 @@ const SetPrivateWorksheetSchema = z.object({
   action: z.literal('setPrivate'),
   season: z.string().transform((val) => parseInt(val, 10)),
   worksheetNumber: z.number().int().min(0),
-  private: z.boolean(),
+  isPrivate: z.boolean(),
 });
 
 const UpdateWorksheetMetadataSchema = z.union([
@@ -357,11 +357,11 @@ export const updateWorksheetMetadata = async (
     }
     res.sendStatus(200);
   } else {
-    const { worksheetNumber, private: isPrivate } = bodyParseRes.data;
+    const { worksheetNumber, isPrivate } = bodyParseRes.data;
 
     const updatedWorksheets = await db
       .update(worksheets)
-      .set({ private: isPrivate })
+      .set({ isPrivate })
       .where(
         and(
           eq(worksheets.netId, netId),
@@ -371,8 +371,11 @@ export const updateWorksheetMetadata = async (
       )
       .returning({ worksheetNumber: worksheets.worksheetNumber });
 
-    if (updatedWorksheets.length === 0)
+    if (updatedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+    res.sendStatus(200);
   }
 };
 
