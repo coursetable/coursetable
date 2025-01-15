@@ -245,7 +245,10 @@ export const getFriendsWorksheets = async (
 
       winston.info('Getting worksheets of friends');
       const friendWorksheets = await tx.query.worksheets.findMany({
-        where: inArray(worksheets.netId, friendNetIds),
+        where: and(
+          inArray(worksheets.netId, friendNetIds),
+          eq(worksheets.private, false),
+        ),
         columns: {
           netId: true,
           season: true,

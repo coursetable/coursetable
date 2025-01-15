@@ -226,6 +226,7 @@ export const getUserWorksheet = async (
       season: true,
       worksheetNumber: true,
       name: true,
+      private: true,
     },
     with: {
       courses: {
@@ -239,6 +240,7 @@ export const getUserWorksheet = async (
   });
 
   const allWorksheets = worksheetListToMap(userWorksheets);
+  winston.info(allWorksheets);
   res.json({
     data: allWorksheets[netId] ?? {},
   });
