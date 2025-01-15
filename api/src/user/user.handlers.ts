@@ -225,7 +225,7 @@ export const getUserWorksheet = async (
   });
 
   const allWorksheets = worksheetListToMap(userWorksheets);
-  winston.info(allWorksheets);
+
   res.json({
     data: allWorksheets[netId] ?? {},
   });
@@ -371,11 +371,8 @@ export const updateWorksheetMetadata = async (
       )
       .returning({ worksheetNumber: worksheets.worksheetNumber });
 
-    if (updatedWorksheets.length === 0) {
     if (updatedWorksheets.length === 0)
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
-      return;
-    }
   }
 };
 
