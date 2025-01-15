@@ -371,10 +371,8 @@ export const updateWorksheetMetadata = async (
       )
       .returning({ worksheetNumber: worksheets.worksheetNumber });
 
-    if (updatedWorksheets.length === 0) 
+    if (updatedWorksheets.length === 0)
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
-      
-    
   }
 };
 
