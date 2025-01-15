@@ -130,7 +130,7 @@ function parseCoursesFromURL():
             {
               name: courses.data.name,
               courses: courses.data.courses,
-              private: false,
+              isPrivate: false,
             },
           ],
         ]),
