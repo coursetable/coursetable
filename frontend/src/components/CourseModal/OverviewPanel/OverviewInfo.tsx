@@ -32,7 +32,7 @@ import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-type CourseInfo = CourseModalOverviewDataQuery['self'][0]['course'];
+type CourseInfo = NonNullable<CourseModalOverviewDataQuery['self']>['course'];
 
 function Description({ course }: { readonly course: CourseInfo }) {
   const [clamped, setClamped] = useState(false);
@@ -413,7 +413,7 @@ function OverviewInfo({
   sameCourse,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly listing: CourseModalOverviewDataQuery['self'][0];
+  readonly listing: NonNullable<CourseModalOverviewDataQuery['self']>;
   readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
 }) {
   const { numFriends } = useSearch();

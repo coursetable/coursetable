@@ -126,9 +126,18 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={13}
+        id={14}
       >
-        {/* None */}
+        Check out the newest product from y/cs:{' '}
+        <a
+          href="https://yaleclubs.info/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+        >
+          YaleClubs.info
+        </a>
+        ! Finding clubs has never been easier.
       </Notice>
       <Navbar />
       <SentryRoutes>

@@ -89,7 +89,7 @@ function OverviewRatings({
   sameCourse,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly listing: CourseModalOverviewDataQuery['self'][0];
+  readonly listing: NonNullable<CourseModalOverviewDataQuery['self']>;
   readonly sameCourse: RelatedCourseInfo[];
 }) {
   const [searchParams] = useSearchParams();
