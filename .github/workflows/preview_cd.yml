@@ -68,7 +68,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-25).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
+            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-17).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
