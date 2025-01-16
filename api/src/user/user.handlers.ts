@@ -211,7 +211,7 @@ export const getUserWorksheet = async (
       season: true,
       worksheetNumber: true,
       name: true,
-      isPrivate: true,
+      private: true,
     },
     with: {
       courses: {
@@ -254,7 +254,7 @@ const SetPrivateWorksheetSchema = z.object({
   action: z.literal('setPrivate'),
   season: z.string().transform((val) => parseInt(val, 10)),
   worksheetNumber: z.number().int().min(0),
-  isPrivate: z.boolean(),
+  private: z.boolean(),
 });
 
 const UpdateWorksheetMetadataSchema = z.union([
@@ -357,11 +357,11 @@ export const updateWorksheetMetadata = async (
     }
     res.sendStatus(200);
   } else {
-    const { worksheetNumber, isPrivate } = bodyParseRes.data;
+    const { worksheetNumber, private: isPrivate } = bodyParseRes.data;
 
     const updatedWorksheets = await db
       .update(worksheets)
-      .set({ isPrivate })
+      .set({ private: isPrivate })
       .where(
         and(
           eq(worksheets.netId, netId),

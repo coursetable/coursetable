@@ -175,7 +175,7 @@ function WorksheetCalendarList() {
                   season: viewedSeason,
                   action: 'setPrivate',
                   worksheetNumber: viewedWorksheetNumber,
-                  isPrivate: !isViewedWorksheetPrivate,
+                  private: !isViewedWorksheetPrivate,
                 });
                 await worksheetsRefresh();
               }}

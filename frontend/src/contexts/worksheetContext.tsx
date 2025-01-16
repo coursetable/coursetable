@@ -130,7 +130,7 @@ function parseCoursesFromURL():
             {
               name: courses.data.name,
               courses: courses.data.courses,
-              isPrivate: false,
+              private: false,
             },
           ],
         ]),
@@ -243,7 +243,7 @@ export function WorksheetProvider({
     curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
     (viewedWorksheetNumber === 0 ? 'Main Worksheet' : 'Unnamed Worksheet');
   const isViewedWorksheetPrivate =
-    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.isPrivate ??
+    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.private ??
     false;
 
   const store = useMemo(

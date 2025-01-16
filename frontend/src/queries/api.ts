@@ -260,7 +260,7 @@ export async function updateWorksheetMetadata(
     | {
         action: 'setPrivate';
         worksheetNumber: number;
-        isPrivate: boolean;
+        private: boolean;
       }
   ),
 ): Promise<boolean> {
@@ -500,7 +500,7 @@ const userWorksheetsSchema = z
       // Key: worksheet number
       z.object({
         name: z.string(),
-        isPrivate: z.boolean().optional(),
+        private: z.boolean().optional(),
         courses: z.array(
           z.object({
             crn: crnSchema,
