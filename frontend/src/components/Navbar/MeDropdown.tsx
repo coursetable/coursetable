@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
 import { BsFillPersonFill } from 'react-icons/bs';
-import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { FaSignOutAlt, FaSignInAlt, FaTachometerAlt } from 'react-icons/fa';
 import {
   FcInfo,
   FcQuestions,
@@ -124,6 +124,11 @@ function DropdownContent({
           <DropdownItem icon={FcNews} to="/releases">
             Release notes
           </DropdownItem>
+          {process.env.NODE_ENV === 'development' && (
+            <DropdownItem icon={FaTachometerAlt} to="/dev-dashboard">
+              Dev Dashboard
+            </DropdownItem>
+          )}
           {/* Try tutorial only on desktop */}
           {!isMobile && !isTablet && authStatus === 'authenticated' && (
             <DropdownItem

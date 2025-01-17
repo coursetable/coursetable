@@ -33,12 +33,6 @@ function WorksheetCalendarList() {
     [courses],
   );
 
-  if (process.env.NODE_ENV === 'development') 
-    console.log('Running in development mode');
-   else 
-    console.log('Running in production mode');
-  
-
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
   return (

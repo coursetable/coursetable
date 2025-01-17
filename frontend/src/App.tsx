@@ -45,6 +45,7 @@ const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
 const Tutorial = suspended(() => import('./components/Tutorial'));
+const DevDashboard = suspended(() => import('./pages/DevDashboard'));
 
 function Modal() {
   const { currentModal } = useModalHistory();
@@ -170,6 +171,9 @@ function App() {
         <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases/spring24" element={<Spring24Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
+        {process.env.NODE_ENV === 'development' && (
+          <Route path="/dev-dashboard" element={<DevDashboard />} />
+        )}
         {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />
       </SentryRoutes>
