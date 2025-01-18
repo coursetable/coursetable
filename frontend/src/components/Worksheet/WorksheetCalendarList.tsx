@@ -165,22 +165,42 @@ function WorksheetCalendarList() {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Check
-              type="switch"
-              id="private-worksheet-switch"
-              label="Private Worksheet"
-              checked={isViewedWorksheetPrivate}
-              onChange={async () => {
-                await updateWorksheetMetadata({
-                  season: viewedSeason,
-                  action: 'setPrivate',
-                  worksheetNumber: viewedWorksheetNumber,
-                  private: !isViewedWorksheetPrivate,
-                });
-                await worksheetsRefresh();
-              }}
-              disabled={viewedWorksheetNumber === 0}
-            />
+            {viewedWorksheetNumber === 0 ? (
+              <OverlayTrigger
+                placement="right"
+                overlay={
+                  <Tooltip id="tooltip-disabled">
+                    Your main worksheet must always be public.
+                  </Tooltip>
+                }
+              >
+                <span style={{ display: 'inline-block' }}>
+                  <Form.Check
+                    type="switch"
+                    id="private-worksheet-switch"
+                    label="Private Worksheet"
+                    checked={false}
+                    disabled
+                  />
+                </span>
+              </OverlayTrigger>
+            ) : (
+              <Form.Check
+                type="switch"
+                id="private-worksheet-switch"
+                label="Private Worksheet"
+                checked={isViewedWorksheetPrivate}
+                onChange={async () => {
+                  await updateWorksheetMetadata({
+                    season: viewedSeason,
+                    action: 'setPrivate',
+                    worksheetNumber: viewedWorksheetNumber,
+                    private: !isViewedWorksheetPrivate,
+                  });
+                  await worksheetsRefresh();
+                }}
+              />
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
