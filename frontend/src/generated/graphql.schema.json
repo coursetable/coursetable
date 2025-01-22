@@ -7498,6 +7498,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "regnotes",
             "description": "Registrar's notes (e.g. preference selection links, optional writing credits, etc.)",
             "type": {
@@ -7895,6 +7907,18 @@
           },
           {
             "name": "primary_crn",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -9901,6 +9925,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_updated",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,
