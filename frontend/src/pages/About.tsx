@@ -62,9 +62,27 @@ function About() {
 
   const current: Person[] = [
     {
+      name: 'Neil Song',
+      image: ns,
+      role: 'CourseTable Co-Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
+      },
+    },
+    {
+      name: 'Humphrey Xu',
+      image: hx,
+      role: 'CourseTable Co-Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
+        github: 'https://github.com/Etherite1',
+      },
+    },
+    {
       name: 'Alex Schapiro',
       image: as,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         github: 'https://github.com/bearsyankees',
         linkedin: 'https://www.linkedin.com/in/aschap/',
@@ -74,20 +92,11 @@ function About() {
     {
       name: 'Sida Chen',
       image: sc,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
         github: 'https://github.com/Josh-Cena/',
         website: 'https://joshcena.com/',
-      },
-    },
-    {
-      name: 'Neil Song',
-      image: ns,
-      role: 'Backend Team Lead',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/neil-song/',
-        github: 'https://github.com/neilsong',
       },
     },
     {
@@ -107,15 +116,6 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/tungk/',
         github: 'https://github.com/kentng01/',
         website: 'https://kenneru.netlify.app/',
-      },
-    },
-    {
-      name: 'Humphrey Xu',
-      image: hx,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
-        github: 'https://github.com/Etherite1',
       },
     },
     {
