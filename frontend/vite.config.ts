@@ -135,8 +135,8 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'icon200x200.png',
-            sizes: '200x200',
+            src: 'icon250x250.png',
+            sizes: '250x250',
             purpose: 'any',
           },
         ],
