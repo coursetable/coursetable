@@ -26,11 +26,11 @@ export interface ProfileSlice extends ProfileState, ProfileActions {}
 
 export const defaultPreferences: ProfileState = {
   coursePref: {
-    groupSameProf: false,
+    groupSameProf: true,
   },
   professorPref: {
     curveByCourse: false,
-    groupRecurringCourses: false,
+    groupRecurringCourses: true,
   },
 };
 
