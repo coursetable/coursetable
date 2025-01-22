@@ -7,7 +7,11 @@ import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
-import { createProfileSlice, type ProfileSlice } from './slices/ProfileSlice';
+import {
+  createProfileSlice,
+  defaultPreferences,
+  type ProfileSlice,
+} from './slices/ProfileSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import { pick } from './utilities/common';
@@ -19,12 +23,12 @@ export interface Store
     DimensionsSlice,
     ProfileSlice {}
 
-const PersistKeys: (keyof Store)[] = [
+const PersistKeys = [
   'authStatus',
   'theme',
   'coursePref',
   'professorPref',
-];
+].concat(Object.keys(defaultPreferences) as (keyof Store)[]) as (keyof Store)[];
 
 export const useStore = create<Store>()(
   persist(

@@ -15,21 +15,30 @@ export interface ProfileState {
   professorPref: ProfessorPref;
 }
 
-type ProfileActions = object; // Replace with backend API calls when ready
+export interface ProfileActions {
+  togglePreference: (pref: keyof ProfileState) => void;
+}
 
 export interface ProfileSlice extends ProfileState, ProfileActions {}
 
-export const createProfileSlice: StateCreator<
-  Store,
-  [],
-  [],
-  ProfileSlice
-> = () => ({
+export const defaultPreferences: ProfileState = {
   coursePref: {
     groupSameProf: false,
   },
   professorPref: {
     curveByCourse: false,
     groupRecurringCourses: false,
+  },
+};
+
+export const createProfileSlice: StateCreator<Store, [], [], ProfileSlice> = (
+  set,
+) => ({
+  ...defaultPreferences,
+  togglePreference(pref) {
+    set((state) => {
+      const newValue = !state[pref];
+      return { [pref]: newValue };
+    });
   },
 });
