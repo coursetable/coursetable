@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
 import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
+import { createProfileSlice, type ProfileSlice } from './slices/ProfileSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import { pick } from './utilities/common';
@@ -14,18 +16,25 @@ export interface Store
   extends AuthSlice,
     UserSlice,
     ThemeSlice,
-    DimensionsSlice {}
+    DimensionsSlice,
+    ProfileSlice {}
 
-const PersistKeys: (keyof Store)[] = ['authStatus', 'theme'];
+const PersistKeys: (keyof Store)[] = [
+  'authStatus',
+  'theme',
+  'coursePref',
+  'professorPref',
+];
 
 export const useStore = create<Store>()(
   persist(
-    (...a) => ({
+    immer((...a) => ({
       ...createAuthSlice(...a),
       ...createUserSlice(...a),
       ...createThemeSlice(...a),
       ...createDimensionsSlice(...a),
-    }),
+      ...createProfileSlice(...a),
+    })),
     {
       name: 'store',
       partialize: (state) => pick(state, PersistKeys),
