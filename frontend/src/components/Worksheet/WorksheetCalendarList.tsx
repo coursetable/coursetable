@@ -199,25 +199,29 @@ function WorksheetCalendarList() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={async () => {
-              if (privateState !== isViewedWorksheetPrivate) {
-                setUpdatingWSItemState(true);
-                await updateWorksheetMetadata({
-                  season: viewedSeason,
-                  action: 'setPrivate',
-                  worksheetNumber: viewedWorksheetNumber,
-                  private: privateState,
-                });
-                await worksheetsRefresh();
-                setUpdatingWSItemState(false);
-              }
-              setSettingsModalOpen(false);
-            }}
-          >
-            {updatingWSItemState ? <Spinner message="Saving..." /> : 'Close'}
-          </Button>
+          {updatingWSItemState ? (
+            <Spinner message="Saving..." />
+          ) : (
+            <Button
+              variant="secondary"
+              onClick={async () => {
+                if (privateState !== isViewedWorksheetPrivate) {
+                  setUpdatingWSItemState(true);
+                  await updateWorksheetMetadata({
+                    season: viewedSeason,
+                    action: 'setPrivate',
+                    worksheetNumber: viewedWorksheetNumber,
+                    private: privateState,
+                  });
+                  await worksheetsRefresh();
+                  setUpdatingWSItemState(false);
+                }
+                setSettingsModalOpen(false);
+              }}
+            >
+              Close
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </div>
