@@ -161,7 +161,7 @@ function CourseLink({
   onNavigation,
   extraText,
 }: {
-  readonly listing?: CourseModalOverviewDataQuery['self'][0];
+  readonly listing?: CourseModalOverviewDataQuery['self'];
   readonly course: RelatedCourseInfo;
   readonly columnWidth: number;
   readonly onNavigation?: ModalNavigationFunction;
@@ -309,7 +309,7 @@ export default function RelatedCoursesList<T extends RelatedCourseInfo>({
   onNavigation,
   extraText,
 }: {
-  readonly listing?: CourseModalOverviewDataQuery['self'][0];
+  readonly listing?: CourseModalOverviewDataQuery['self'];
   readonly courses:
     | T[]
     | Map<string | number, { title: ReactNode; courses: T[] }>;

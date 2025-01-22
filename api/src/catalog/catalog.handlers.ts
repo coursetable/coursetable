@@ -10,7 +10,6 @@ export const verifyHeaders = (
   res: express.Response,
   next: express.NextFunction,
 ): void => {
-  winston.info('Verifying headers');
   const authd = req.header('x-ferry-secret');
 
   // Should only be reachable if request made by Ferry

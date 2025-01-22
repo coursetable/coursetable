@@ -131,7 +131,7 @@ export default function CourseTableNavbar() {
                   >
                     Feedback
                   </a>
-                  <NavbarLink to="/releases">Release Notes</NavbarLink>
+                  <NavbarLink to="/releases">Release notes</NavbarLink>
                   <button
                     type="button"
                     className={styles.navLink}

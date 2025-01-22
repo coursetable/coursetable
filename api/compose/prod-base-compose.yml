@@ -13,6 +13,10 @@ services:
       - api_services
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   traefik:

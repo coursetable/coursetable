@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Card, Row } from 'react-bootstrap';
 import { TextComponent } from '../components/Typography';
 
-// Current Member Headshots
+// Member headshots
 import ag from '../images/headshots/abhijit-gupta.jpg';
 import ae from '../images/headshots/aidan-evans.jpg';
 import as from '../images/headshots/alex-schapiro.jpg';
@@ -37,7 +37,7 @@ import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
 
-// Link Logos
+// Link logos
 import githubDark from '../images/link-logos/github-light.png';
 import github from '../images/link-logos/github.png';
 import linkedin from '../images/link-logos/linkedin.png';
@@ -356,7 +356,7 @@ function About() {
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</h1>
+      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About us</h1>
       <TextComponent type="secondary">
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find
@@ -382,23 +382,23 @@ function About() {
         </p>
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           Also check out our <Link to="/faq">FAQ</Link> and{' '}
-          <Link to="/releases">Release Notes</Link>.
+          <Link to="/releases">Release notes</Link>.
         </p>
       </TextComponent>
 
       <div className="d-flex justify-content-center">
         <Link className="btn" to="/joinus">
-          Join Us
+          Join us
         </Link>
       </div>
 
-      <h1 className="mt-3">Current Team</h1>
+      <h1 className="mt-3">Current team</h1>
 
       <div className="my-3">
         <Row className="mx-auto">{current.map(createCards)}</Row>
       </div>
 
-      <h1 className="mt-5 mb-5">CourseTable Alumni</h1>
+      <h1 className="mt-5 mb-5">CourseTable alumni</h1>
 
       {alumniSection('Cofounder')}
 

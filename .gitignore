@@ -1,6 +1,5 @@
 node_modules
 .DS_Store
-.vercel
 /deployment-url.txt
 /error.txt
 

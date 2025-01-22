@@ -1,10 +1,10 @@
-import * as Sentry from '@sentry/react';
 import { Row, Col } from 'react-bootstrap';
 import EvaluationRatings from './EvaluationRatings';
 import EvaluationResponses from './EvaluationResponses';
 
 import { useSearchEvaluationNarrativesQuery } from '../../../queries/graphql-queries';
 import type { Crn, Season } from '../../../queries/graphql-types';
+import { getListingId } from '../../../utilities/course';
 import Spinner from '../../Spinner';
 
 function EvaluationsPanel({
@@ -16,17 +16,11 @@ function EvaluationsPanel({
 }) {
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
-      seasonCode,
-      crn,
+      listingId: getListingId(seasonCode, crn),
     },
   });
   if (loading || error) return <Spinner message="Loading evaluations..." />;
-  if ((data?.listings.length ?? 0) > 1) {
-    Sentry.captureException(
-      new Error(`More than one listings returned for ${seasonCode}-${crn}`),
-    );
-  }
-  const info = data?.listings[0]!.course;
+  const info = data?.listings_by_pk?.course;
 
   return (
     <Row className="m-auto">

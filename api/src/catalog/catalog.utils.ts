@@ -178,11 +178,7 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
 
     const processSeasons = seasons.flatMap((season, idx) =>
       (['evals', 'public'] as const).map((type) =>
-        fetchData(
-          season,
-          type,
-          overwrite || idx >= seasons.length - (latestN ?? 0),
-        ),
+        fetchData(season, type, overwrite || idx < (latestN ?? 0)),
       ),
     );
     await Promise.all(processSeasons);

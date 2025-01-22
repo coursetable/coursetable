@@ -15,6 +15,28 @@ function ErrorPage({ message }: { readonly message: string }) {
         </a>{' '}
         to try again.
       </div>
+      {message === 'Internal Error' && (
+        <p className="text-center m-auto">
+          Your browser may be outdated. We only support mainstream browsers that
+          are less than 2 years old.{' '}
+          <a
+            href="https://www.whatismybrowser.com/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Check your browser version
+          </a>{' '}
+          and{' '}
+          <a
+            href="https://browsersl.ist/#q=last+2+years+and+not+dead"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            check if your browser is in our support range
+          </a>
+          .
+        </p>
+      )}
       <img
         alt="Error"
         className="py-5"

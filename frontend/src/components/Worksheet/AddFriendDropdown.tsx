@@ -210,12 +210,12 @@ function AddFriendDropdownDesktop() {
   );
 
   return (
-    <Popout buttonText="Add Friend" notifications={friendRequests?.length}>
+    <Popout buttonText="Add friend" notifications={friendRequests?.length}>
       <PopoutSelect
         placeholder="Enter friend's name"
         options={[
-          { label: 'Search Results', options: searchResults },
-          { label: 'Incoming Requests', options: friendRequestOptions },
+          { label: 'Search results', options: searchResults },
+          { label: 'Incoming requests', options: friendRequestOptions },
         ]}
         isLoading={isLoading}
         loadingMessage={() => 'Loading names...'}

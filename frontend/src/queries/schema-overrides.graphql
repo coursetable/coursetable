@@ -16,6 +16,7 @@ type listings {
 
 type courses {
   season_code: Season!
+  primary_crn: Crn
   extra_info: ExtraInfo!
   all_course_codes: StringArr!
   areas: StringArr!

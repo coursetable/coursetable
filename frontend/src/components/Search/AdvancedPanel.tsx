@@ -2,6 +2,7 @@ import React, { useState, useId, useEffect } from 'react';
 import clsx from 'clsx';
 import RCSlider from 'rc-slider';
 
+import BooleanAttributeSelect from './BooleanAttributeSelect';
 import CustomSelect from './CustomSelect';
 import { Popout } from './Popout';
 import ResultsColumnSort from './ResultsColumnSort';
@@ -10,7 +11,7 @@ import {
   useSearch,
   type FilterHandle,
   type Filters,
-  type BooleanFilters,
+  type BooleanOptions,
   type CategoricalFilters,
   type NumericFilters,
   filterLabels,
@@ -195,9 +196,11 @@ function AdvancedPanel() {
   const { selectSortBy, sortOrder } = filters;
 
   const relevantFilters: (
-    | BooleanFilters
+    | BooleanOptions
     | keyof CategoricalFilters
     | NumericFilters
+    | 'includeAttributes'
+    | 'excludeAttributes'
   )[] = [
     'selectDays',
     'timeBounds',
@@ -206,13 +209,12 @@ function AdvancedPanel() {
     'selectSchools',
     'selectCredits',
     'selectCourseInfoAttributes',
+    'includeAttributes',
+    'excludeAttributes',
     'searchDescription',
     'enableQuist',
     'hideCancelled',
     'hideConflicting',
-    'hideFirstYearSeminars',
-    'hideGraduateCourses',
-    'hideDiscussionSections',
   ];
   if (isTablet) {
     relevantFilters.push(
@@ -248,7 +250,7 @@ function AdvancedPanel() {
               id={`${formLabelId}-subject`}
               options={subjectsOptions}
               handle="selectSubjects"
-              placeholder="All Subjects"
+              placeholder="All subjects"
               unionIntersectionButtonLabel={(isIntersection) =>
                 `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
               }
@@ -257,7 +259,7 @@ function AdvancedPanel() {
               id={`${formLabelId}-area-skills`}
               options={skillsAreasOptions}
               handle="selectSkillsAreas"
-              placeholder="All Areas/Skills"
+              placeholder="All areas/skills"
               colors={skillsAreasColors}
               unionIntersectionButtonLabel={(isIntersection) =>
                 `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
@@ -278,7 +280,7 @@ function AdvancedPanel() {
             value,
           }))}
           handle="selectDays"
-          placeholder="All Days"
+          placeholder="All days"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes that meet on ${isIntersection ? 'all' : 'any'} of the selected days`
           }
@@ -309,7 +311,7 @@ function AdvancedPanel() {
           id={`${formLabelId}-school`}
           options={schoolsOptions}
           handle="selectSchools"
-          placeholder="All Schools"
+          placeholder="All schools"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
           }
@@ -321,17 +323,26 @@ function AdvancedPanel() {
             value: credit,
           }))}
           handle="selectCredits"
-          placeholder="All Credits"
+          placeholder="All credits"
         />
         <IntersectableSelect
           id={`${formLabelId}-info`}
           options={courseInfoAttributesOptions}
           handle="selectCourseInfoAttributes"
-          placeholder="Course Information Attributes"
+          placeholder="Course information attributes"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes that contain ${isIntersection ? 'all' : 'any'} of the selected attributes`
           }
         />
+        <div className={styles.row}>
+          <div className={styles.label} id={`${formLabelId}-attrs`}>
+            Types:
+          </div>
+          <BooleanAttributeSelect
+            className={styles.select}
+            aria-labelledby={`${formLabelId}-info`}
+          />
+        </div>
         <div className={styles.row}>
           {/* Sort by Guts */}
           <div className={styles.label}>
@@ -344,9 +355,6 @@ function AdvancedPanel() {
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
           <Toggle handle="hideConflicting" />
-          <Toggle handle="hideFirstYearSeminars" />
-          <Toggle handle="hideGraduateCourses" />
-          <Toggle handle="hideDiscussionSections" />
         </div>
       </div>
     </Popout>

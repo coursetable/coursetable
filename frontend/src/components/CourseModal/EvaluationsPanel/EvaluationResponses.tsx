@@ -57,7 +57,7 @@ function EvaluationResponses({
   info,
 }: {
   readonly info:
-    | SearchEvaluationNarrativesQuery['listings'][number]['course']
+    | NonNullable<SearchEvaluationNarrativesQuery['listings_by_pk']>['course']
     | undefined;
 }) {
   // Sort by original order or length?

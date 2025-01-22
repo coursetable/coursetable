@@ -191,6 +191,16 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
   Make sure to seed the Postgres database (`npm run db:push`) after starting the containers.
 
+## Running offline
+
+You may be a super dedicated developer and want to contribute to CourseTable from remote mountains or under the sea. Don't worry -- we have you covered. Developing on CourseTable offline is easy once you have followed all the above steps. From the `api` folder, just run:
+
+```
+docker pull oven/bun:slim
+docker pull node:slim
+./start.sh --dev --offline
+```
+
 ## Contributing
 
 1. Create a branch for your feature. This can usually be done with `git checkout -b <username>/<feature_name>`

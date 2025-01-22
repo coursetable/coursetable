@@ -505,7 +505,7 @@ function FAQ() {
   return (
     <div className={clsx('mx-auto', styles.container)}>
       <h1 className={clsx(styles.faqHeader, 'mt-5 mb-1')}>
-        Frequently Asked Questions
+        Frequently asked questions
       </h1>
       <p className={clsx(styles.faqDescription, 'mb-3')}>
         <TextComponent type="secondary">Have another question?</TextComponent>{' '}

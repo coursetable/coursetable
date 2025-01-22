@@ -40,7 +40,6 @@ function Worksheet() {
   if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
-  // eslint-disable-next-line no-useless-assignment
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
   return (
     <div className={styles.container}>

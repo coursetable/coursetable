@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 
 FROM base AS install
 RUN mkdir -p /temp/dev/api /temp/dev/frontend
-COPY package.json bun.lockb /temp/dev/
+COPY package.json bun.lock /temp/dev/
 COPY api/package.json /temp/dev/api/
 COPY frontend/package.json /temp/dev/frontend/package.json
 RUN cd /temp/dev && bun install --frozen-lockfile

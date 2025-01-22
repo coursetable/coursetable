@@ -90,7 +90,7 @@ function GoogleCalendarButton(): React.JSX.Element {
         level: 'info',
       });
       Sentry.captureException(err);
-      toast.error('Error exporting Google Calendar Events');
+      toast.error('Error exporting Google Calendar events');
     } finally {
       setExporting(false);
     }

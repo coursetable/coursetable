@@ -117,7 +117,6 @@ export function Popout({
     return undefined;
   };
 
-  // eslint-disable-next-line no-useless-assignment
   const ArrowIcon = isComponentVisible ? IoMdArrowDropdown : IoMdArrowDropup;
   const [dropdownXOffset, setDropdownXOffset] = useState(0);
 
@@ -145,7 +144,7 @@ export function Popout({
       }
       className={clsx(styles.wrapper, wrapperClassName)}
     >
-      {/* Popout Button */}
+      {/* Popout button */}
       <button
         type="button"
         onClick={() => setIsComponentVisible(!isComponentVisible)}

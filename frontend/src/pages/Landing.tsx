@@ -80,7 +80,7 @@ function Landing() {
               Login with CAS
             </a>
             <Link to="/about" className={clsx(styles.btn, styles.about)}>
-              About Us
+              About us
             </Link>
             <Link to="/catalog" className={clsx(styles.btn, styles.guest)}>
               Guest
@@ -101,7 +101,6 @@ function Landing() {
           </div>
         ))}
       </div>
-      {/* Attribution Message */}
       <div className={styles.buyMeACoffeeAttribution}>
         <p>
           Testimonials sourced from{' '}

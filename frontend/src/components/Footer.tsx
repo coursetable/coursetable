@@ -4,7 +4,6 @@ import { Container } from 'react-bootstrap';
 
 import Logo from './Navbar/Logo';
 import { TextComponent } from './Typography';
-import VercelBanner from '../images/powered-by-vercel.svg';
 import { scrollToTop } from '../utilities/display';
 import styles from './Footer.module.css';
 
@@ -22,7 +21,7 @@ const links = [
       { name: 'FAQ', to: '/faq' },
       { name: 'Feedback', to: 'https://feedback.coursetable.com/' },
       { name: 'Status', to: 'https://stats.uptimerobot.com/NpVA5UNlX3' },
-      { name: 'Privacy Policy', to: '/privacypolicy' },
+      { name: 'Privacy policy', to: '/privacypolicy' },
     ],
   },
   {
@@ -33,8 +32,8 @@ const links = [
     section: 'About',
     items: [
       { name: 'Team', to: '/about' },
-      { name: 'Release Notes', to: '/releases' },
-      { name: 'Join Us', to: '/joinus' },
+      { name: 'Release notes', to: '/releases' },
+      { name: 'Join us', to: '/joinus' },
       { name: 'GitHub', to: 'https://github.com/coursetable' },
       { name: 'LinkedIn', to: 'https://www.linkedin.com/company/coursetable/' },
     ],
@@ -54,13 +53,6 @@ function Footer() {
               &copy; {new Date().getFullYear()}
             </small>
 
-            <a href="https://vercel.com/?utm_source=coursetable&utm_campaign=oss">
-              <img
-                style={{ height: '2.5rem' }}
-                src={VercelBanner}
-                alt="Powered by Vercel"
-              />
-            </a>
             <div className="mt-3">
               <a href="https://www.buymeacoffee.com/coursetable">
                 <img

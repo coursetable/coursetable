@@ -1,18 +1,16 @@
 query CourseModalOverviewData(
-  $seasonCode: String!
-  $crn: Int!
+  $listingId: Int!
   $sameCourseId: Int!
   $hasEvals: Boolean!
 ) {
-  self: listings(
-    where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
-  ) {
+  self: listings_by_pk(listing_id: $listingId) {
     # Note: here we only need to fetch the data displayed in the modal body
     # not the modal header.
     course {
       description
       requirements
       syllabus_url
+      course_home_url
       section
       course_professors {
         professor {
@@ -74,6 +72,7 @@ query CourseModalOverviewData(
     }
     course_id
     syllabus_url
+    course_home_url
   }
 }
 
@@ -99,6 +98,7 @@ fragment CourseModalPrefetchCourseData on courses {
   # For rendering head metadata
   description
   same_course_id
+  primary_crn
   listings {
     crn
     course_code
@@ -120,8 +120,8 @@ fragment CourseModalPrefetchCourseData on courses {
   }
 }
 
-query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
-  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+query SearchEvaluationNarratives($listingId: Int!) {
+  listings_by_pk(listing_id: $listingId) {
     course {
       evaluation_narratives {
         comment
@@ -164,12 +164,8 @@ query ProfModalOverviewData($professorId: Int!, $hasEvals: Boolean!) {
   }
 }
 
-query CourseModalFromURL(
-  $seasonCode: String!
-  $crn: Int!
-  $hasEvals: Boolean!
-) {
-  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+query CourseModalFromURL($listingId: Int!, $hasEvals: Boolean!) {
+  listings_by_pk(listing_id: $listingId) {
     ...CourseModalPrefetchListingData
   }
 }

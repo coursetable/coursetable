@@ -386,14 +386,14 @@ export function sortCourses(
 
 type CourseWithEnrolled = {
   evaluation_statistic?: {
-    enrolled: number | null;
+    enrolled: number;
   } | null;
   last_enrollment?: number | null;
   last_enrollment_same_professors?: boolean | null;
 };
 
 export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
-  return listing.school !== 'YC';
+  return listing.school !== 'YC' && listing.school !== 'SU';
 }
 
 export function isDiscussionSection(
@@ -453,3 +453,7 @@ export const toExponential = (number: number): number => 1.01 ** number;
  */
 export const toLinear = (number: number): number =>
   Math.log(number) / Math.log(1.01);
+
+export function getListingId(season: Season, crn: Crn) {
+  return (Number(season) - 200000) * 100000 + crn;
+}

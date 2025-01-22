@@ -71,7 +71,6 @@ export const passportConfig = (
           .onConflictDoNothing()
           .returning();
 
-        winston.info("Getting user's enrollment status from Yalies.io");
         const user = {
           netId: profile.user,
           // If we already have evaluations enabled in DB, never disable it
@@ -116,8 +115,6 @@ export const passportConfig = (
           user.lastName = yaliesUserData.last_name ?? user.lastName;
           user.email = yaliesUserData.email ?? user.email;
 
-          winston.info(`Updating evaluations for ${profile.user}`);
-
           await db
             .update(studentBluebookSettings)
             .set({
@@ -144,7 +141,6 @@ export const passportConfig = (
   );
 
   passport.serializeUser((user, done) => {
-    winston.info(`Serializing user ${user.netId}`);
     done(null, user.netId);
   });
 
@@ -156,7 +152,6 @@ export const passportConfig = (
       return;
     }
     const netId = String(sessionKey);
-    winston.info(`Deserializing user ${netId}`);
     const student = await db.query.studentBluebookSettings.findFirst({
       where: eq(studentBluebookSettings.netId, netId),
       columns: {
@@ -182,7 +177,6 @@ export const passportConfig = (
 };
 
 const postAuth = (req: express.Request, res: express.Response): void => {
-  winston.info('Executing post-authentication redirect');
   const redirect = req.query.redirect as string | undefined;
   if (!redirect) {
     winston.error('No redirect provided');
@@ -211,7 +205,6 @@ export const casLogin = (
   res: express.Response,
   next: express.NextFunction,
 ): void => {
-  winston.info('Logging in with CAS');
   (
     passport.authenticate(
       'cas',
@@ -226,7 +219,6 @@ export const casLogin = (
           return;
         }
 
-        winston.info(`"Logging in ${user.netId}`);
         req.logIn(user, (loginError) => {
           if (loginError) {
             next(loginError);
@@ -246,7 +238,6 @@ export const authBasic = (
   res: express.Response,
   next: express.NextFunction,
 ): void => {
-  winston.info('Intercepting basic authentication');
   if (!req.user) {
     res.status(401).json({ error: 'USER_NOT_FOUND' });
     return;
@@ -262,7 +253,6 @@ export const authWithEvals = (
   res: express.Response,
   next: express.NextFunction,
 ): void => {
-  winston.info('Intercepting with-evals authentication');
   if (!req.user) {
     res.status(401).json({ error: 'USER_NOT_FOUND' });
     return;

@@ -1,7 +1,6 @@
 import type express from 'express';
 
 import { casLogin } from './auth.handlers.js';
-import winston from '../logging/winston.js';
 
 export default (app: express.Express): void => {
   app.get('/api/auth/check', (req, res) => {
@@ -14,8 +13,6 @@ export default (app: express.Express): void => {
 
   app.post('/api/auth/logout', (req, res, next) => {
     if (!req.user) return res.status(400).json({ error: 'USER_NOT_FOUND' });
-    winston.info(`Logging out ${req.user.netId}`);
-
     req.logOut((err) => {
       if (err) next(err);
     });

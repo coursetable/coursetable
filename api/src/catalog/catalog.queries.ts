@@ -31,7 +31,7 @@ export type EvalsBySeasonQuery = {
     last_enrollment_same_professors: boolean | null;
     evaluation_statistic: {
       __typename?: 'evaluation_statistics';
-      enrolled: number | null;
+      enrolled: number;
       responses: number | null;
     } | null;
   }>;
@@ -46,25 +46,22 @@ export type CatalogBySeasonQuery = {
   courses: Array<{
     __typename?: 'courses';
     areas: any;
-    classnotes: string | null;
-    colsem: boolean | null;
+    colsem: boolean;
     course_id: number;
     credits: number | null;
     description: string | null;
     extra_info: string | null;
     final_exam: string | null;
-    fysem: boolean | null;
+    fysem: boolean;
     last_offered_course_id: number | null;
-    regnotes: string | null;
+    primary_crn: number | null;
     requirements: string | null;
-    rp_attr: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
     season_code: string;
     section: string;
     skills: any;
-    syllabus_url: string | null;
-    sysem: boolean | null;
+    sysem: boolean;
     title: string;
     course_flags: Array<{
       __typename?: 'course_flags';
@@ -83,7 +80,7 @@ export type CatalogBySeasonQuery = {
       course_code: string;
       crn: number;
       number: string;
-      school: string | null;
+      school: string;
       subject: string;
     }>;
     course_meetings: Array<{
@@ -139,7 +136,6 @@ export const CatalogBySeasonDocument = gql`
   query catalogBySeason($season: String!) {
     courses(where: { season_code: { _eq: $season } }) {
       areas
-      classnotes
       colsem
       course_flags {
         flag {
@@ -166,15 +162,13 @@ export const CatalogBySeasonDocument = gql`
         school
         subject
       }
-      regnotes
+      primary_crn
       requirements
-      rp_attr
       same_course_and_profs_id
       same_course_id
       season_code
       section
       skills
-      syllabus_url
       sysem
       course_meetings {
         days_of_week

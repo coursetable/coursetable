@@ -205,7 +205,7 @@ export function NavbarCatalogSearch() {
         allowChanges // Required for global
         style={{ outline: 'none' }}
       />
-      {/* Search Form */}
+      {/* Search form */}
       <Form
         className="px-0 h-100"
         onSubmit={(event) => {
@@ -215,7 +215,7 @@ export function NavbarCatalogSearch() {
       >
         <div className={styles.row}>
           <div className={styles.searchWrapper}>
-            {/* Search Bar */}
+            {/* Search bar */}
             <Input
               className={clsx(
                 styles.searchBar,
@@ -255,7 +255,7 @@ export function NavbarCatalogSearch() {
               <IntersectableSelect
                 options={subjectsOptions}
                 handle="selectSubjects"
-                placeholder="All Subjects"
+                placeholder="All subjects"
                 dataTutorial={2}
                 hideSelectedOptions
                 unionIntersectionButtonLabel={(isIntersection) =>
@@ -265,7 +265,7 @@ export function NavbarCatalogSearch() {
               <IntersectableSelect
                 options={skillsAreasOptions}
                 handle="selectSkillsAreas"
-                placeholder="All Areas/Skills"
+                placeholder="All areas/skills"
                 colors={skillsAreasColors}
                 className="me-0"
                 hideSelectedOptions
@@ -297,7 +297,7 @@ export function NavbarCatalogSearch() {
           )}
           <AdvancedPanel />
 
-          {/* Reset Filters & Sorting Button */}
+          {/* Reset filters & sorting button */}
           <Button
             className={styles.resetButton}
             variant="danger"

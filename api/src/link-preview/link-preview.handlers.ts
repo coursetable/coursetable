@@ -51,14 +51,16 @@ function renderTemplate({
 }
 
 async function getCourseMetadata(query: unknown) {
+  if (!/^\d{6}-\d{5}$/u.test(String(query))) return defaultMetadata;
   const [seasonCode, crn] = String(query).split('-');
   if (!seasonCode || !crn) return defaultMetadata;
   const data = await getSdk(graphqlClient).courseMetadata({
-    seasonCode,
-    crn: Number(crn),
+    listingId:
+      (Number.parseInt(seasonCode, 10) - 200000) * 100000 +
+      Number.parseInt(crn, 10),
   });
-  if (!data.listings.length) return defaultMetadata;
-  const listing = data.listings[0]!;
+  if (!data.listings_by_pk) return defaultMetadata;
+  const listing = data.listings_by_pk;
   return {
     title: `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`,
     description: truncatedText(

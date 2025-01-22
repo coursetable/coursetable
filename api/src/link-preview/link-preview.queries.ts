@@ -6,13 +6,12 @@ import _gql from 'graphql-tag';
 const gql = _gql as unknown as typeof import('graphql-tag').default;
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
 export type CourseMetadataQueryVariables = Types.Exact<{
-  seasonCode: Types.Scalars['String']['input'];
-  crn: Types.Scalars['Int']['input'];
+  listingId: Types.Scalars['Int']['input'];
 }>;
 
 export type CourseMetadataQuery = {
   __typename?: 'query_root';
-  listings: Array<{
+  listings_by_pk: {
     __typename?: 'listings';
     course_code: string;
     section: string;
@@ -21,12 +20,12 @@ export type CourseMetadataQuery = {
       title: string;
       description: string | null;
     };
-  }>;
+  } | null;
 };
 
 export const CourseMetadataDocument = gql`
-  query courseMetadata($seasonCode: String!, $crn: Int!) {
-    listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+  query courseMetadata($listingId: Int!) {
+    listings_by_pk(listing_id: $listingId) {
       course_code
       section
       course {
