@@ -1,4 +1,5 @@
 import type { StateCreator } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 import type { Store } from '../store';
 
 interface ProfessorPref {
@@ -15,8 +16,13 @@ export interface ProfileState {
   professorPref: ProfessorPref;
 }
 
+export interface AllPrefs extends ProfessorPref, CoursePref {}
+
 export interface ProfileActions {
-  togglePreference: (pref: keyof ProfileState) => void;
+  togglePreference: (
+    prefGroup: keyof ProfileState,
+    pref: keyof AllPrefs,
+  ) => void;
 }
 
 export interface ProfileSlice extends ProfileState, ProfileActions {}
@@ -31,14 +37,18 @@ export const defaultPreferences: ProfileState = {
   },
 };
 
-export const createProfileSlice: StateCreator<Store, [], [], ProfileSlice> = (
-  set,
-) => ({
+export const createProfileSlice: StateCreator<
+  Store,
+  [],
+  [['zustand/immer', never]],
+  ProfileSlice
+> = immer((set) => ({
   ...defaultPreferences,
-  togglePreference(pref) {
+  togglePreference(prefGroup, pref) {
     set((state) => {
-      const newValue = !state[pref];
-      return { [pref]: newValue };
+      (state[prefGroup] as AllPrefs)[pref] = !(state[prefGroup] as AllPrefs)[
+        pref
+      ];
     });
   },
-});
+}));
