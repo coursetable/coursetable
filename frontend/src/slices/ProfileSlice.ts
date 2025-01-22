@@ -19,10 +19,7 @@ export interface ProfileState {
 export interface AllPrefs extends ProfessorPref, CoursePref {}
 
 export interface ProfileActions {
-  togglePreference: (
-    prefGroup: keyof ProfileState,
-    pref: keyof AllPrefs,
-  ) => void;
+  togglePref: (prefGroup: keyof ProfileState, pref: keyof AllPrefs) => void;
 }
 
 export interface ProfileSlice extends ProfileState, ProfileActions {}
@@ -44,7 +41,7 @@ export const createProfileSlice: StateCreator<
   ProfileSlice
 > = immer((set) => ({
   ...defaultPreferences,
-  togglePreference(prefGroup, pref) {
+  togglePref(prefGroup, pref) {
     set((state) => {
       (state[prefGroup] as AllPrefs)[pref] = !(state[prefGroup] as AllPrefs)[
         pref

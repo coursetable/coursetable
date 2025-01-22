@@ -4,11 +4,13 @@ import clsx from 'clsx';
 import { Form, Badge } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 
+import { useShallow } from 'zustand/react/shallow';
 import {
   useModalHistory,
   type Store,
 } from '../../../contexts/modalHistoryContext';
 import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
+import { useStore } from '../../../store';
 import { ratingColormap } from '../../../utilities/constants';
 import { isDiscussionSection } from '../../../utilities/course';
 import { createProfModalLink } from '../../../utilities/display';
@@ -107,7 +109,12 @@ function OverviewRatings({
     { displayName: 'Prof', value: 'professor' },
   ] as const;
   const [filter, setFilter] = useState<Filter>('course');
-  const [groupSameProf, setGroupSameProf] = useState(true);
+  const { groupSameProf, togglePref } = useStore(
+    useShallow((state) => ({
+      groupSameProf: state.coursePref.groupSameProf,
+      togglePref: state.togglePref,
+    })),
+  );
   const coursesByProf = new Map<
     string,
     { title: ReactNode; courses: RelatedCourseInfo[] }
@@ -182,12 +189,12 @@ function OverviewRatings({
             <Form.Check.Input
               checked={groupSameProf}
               onChange={() => {
-                setGroupSameProf(!groupSameProf);
+                togglePref('coursePref', 'groupSameProf');
               }}
             />
             <Form.Check.Label
               onClick={() => {
-                setGroupSameProf(!groupSameProf);
+                togglePref('coursePref', 'groupSameProf');
               }}
             >
               Group by professors
