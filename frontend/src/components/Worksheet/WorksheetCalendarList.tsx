@@ -23,6 +23,7 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import { setCourseHidden, updateWorksheetMetadata } from '../../queries/api';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
+import Spinner from '../Spinner';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
@@ -46,6 +47,8 @@ function WorksheetCalendarList() {
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
+  const [updatingWSItemState, setUpdatingWSItemState] = useState(false);
 
   return (
     <div>
@@ -189,16 +192,8 @@ function WorksheetCalendarList() {
                 type="switch"
                 id="private-worksheet-switch"
                 label="Private Worksheet"
-                checked={isViewedWorksheetPrivate}
-                onChange={async () => {
-                  await updateWorksheetMetadata({
-                    season: viewedSeason,
-                    action: 'setPrivate',
-                    worksheetNumber: viewedWorksheetNumber,
-                    private: !isViewedWorksheetPrivate,
-                  });
-                  await worksheetsRefresh();
-                }}
+                checked={privateState}
+                onChange={() => setPrivateState(!privateState)}
               />
             )}
           </Form>
@@ -206,9 +201,22 @@ function WorksheetCalendarList() {
         <Modal.Footer>
           <Button
             variant="secondary"
-            onClick={() => setSettingsModalOpen(false)}
+            onClick={async () => {
+              if (privateState !== isViewedWorksheetPrivate) {
+                setUpdatingWSItemState(true);
+                await updateWorksheetMetadata({
+                  season: viewedSeason,
+                  action: 'setPrivate',
+                  worksheetNumber: viewedWorksheetNumber,
+                  private: privateState,
+                });
+                await worksheetsRefresh();
+                setUpdatingWSItemState(false);
+              }
+              setSettingsModalOpen(false);
+            }}
           >
-            Close
+            {updatingWSItemState ? <Spinner message="Saving..." /> : 'Close'}
           </Button>
         </Modal.Footer>
       </Modal>
