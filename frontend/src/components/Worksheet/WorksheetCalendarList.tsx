@@ -14,6 +14,7 @@ import {
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown } from 'react-icons/tb';
+import { flushSync } from 'react-dom';
 
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
@@ -200,13 +201,17 @@ function WorksheetCalendarList() {
         </Modal.Body>
         <Modal.Footer>
           {updatingWSItemState ? (
-            <Spinner message="Saving..." />
+            <div className="ms-auto">
+              <Spinner message="" />
+            </div>
           ) : (
             <Button
               variant="secondary"
               onClick={async () => {
                 if (privateState !== isViewedWorksheetPrivate) {
-                  setUpdatingWSItemState(true);
+                  flushSync(() => {
+                    setUpdatingWSItemState(true);
+                  });
                   await updateWorksheetMetadata({
                     season: viewedSeason,
                     action: 'setPrivate',
