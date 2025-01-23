@@ -257,6 +257,11 @@ export async function updateWorksheetMetadata(
         worksheetNumber: number;
         name: string;
       }
+    | {
+        action: 'setPrivate';
+        worksheetNumber: number;
+        private: boolean;
+      }
   ),
 ): Promise<boolean> {
   return await fetchAPI('/user/updateWorksheetMetadata', {
@@ -495,6 +500,7 @@ const userWorksheetsSchema = z
       // Key: worksheet number
       z.object({
         name: z.string(),
+        private: z.boolean().optional(),
         courses: z.array(
           z.object({
             crn: crnSchema,

@@ -94,6 +94,7 @@ export const worksheets = pgTable(
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').notNull(),
     name: varchar('name', { length: 64 }).notNull(),
+    private: boolean('private').notNull().default(false),
   },
   (table) => ({
     worksheetsUniqueIdx: uniqueIndex('worksheets_unique_idx').on(

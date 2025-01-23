@@ -231,7 +231,10 @@ export const getFriendsWorksheets = async (
         return [[], {} as ReturnType<typeof worksheetListToMap>, []];
 
       const friendWorksheets = await tx.query.worksheets.findMany({
-        where: inArray(worksheets.netId, friendNetIds),
+        where: and(
+          inArray(worksheets.netId, friendNetIds),
+          eq(worksheets.private, false),
+        ),
         columns: {
           netId: true,
           season: true,

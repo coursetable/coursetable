@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -8,8 +8,11 @@ import {
   ButtonGroup,
   OverlayTrigger,
   Tooltip,
+  Modal,
+  Form,
 } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown } from 'react-icons/tb';
 
 import GoogleCalendarButton from './GoogleCalendarButton';
@@ -17,15 +20,22 @@ import ICSExportButton from './ICSExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { setCourseHidden } from '../../queries/api';
+import { setCourseHidden, updateWorksheetMetadata } from '../../queries/api';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 function WorksheetCalendarList() {
-  const { courses, viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
-    useWorksheet();
+  const {
+    courses,
+    viewedSeason,
+    viewedWorksheetNumber,
+    isReadonlyWorksheet,
+    isExoticWorksheet,
+    isViewedWorksheetPrivate,
+    viewedPerson,
+  } = useWorksheet();
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const areHidden = useMemo(
@@ -34,6 +44,8 @@ function WorksheetCalendarList() {
   );
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
+
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
   return (
     <div>
@@ -67,6 +79,29 @@ function WorksheetCalendarList() {
                     className={clsx(styles.icon, 'my-auto pe-2')}
                     size={32}
                   />
+                </Button>
+              </OverlayTrigger>
+            )}
+            {!isExoticWorksheet && viewedPerson === 'me' && (
+              <OverlayTrigger
+                placement="top"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>Worksheet Settings</span>
+                  </Tooltip>
+                )}
+              >
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setSettingsModalOpen(true);
+                  }}
+                  variant="none"
+                  className={clsx(styles.button, 'px-3 w-100')}
+                  aria-label="Worksheet Settings"
+                >
+                  <CiSettings className={clsx(styles.icon)} size={32} />
                 </Button>
               </OverlayTrigger>
             )}
@@ -120,6 +155,63 @@ function WorksheetCalendarList() {
           <NoCourses />
         )}
       </SurfaceComponent>
+      <Modal
+        show={settingsModalOpen}
+        onHide={() => setSettingsModalOpen(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Worksheet Settings</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            {viewedWorksheetNumber === 0 ? (
+              <OverlayTrigger
+                placement="right"
+                overlay={
+                  <Tooltip id="tooltip-disabled">
+                    Your main worksheet must always be public.
+                  </Tooltip>
+                }
+              >
+                <span style={{ display: 'inline-block' }}>
+                  <Form.Check
+                    type="switch"
+                    id="private-worksheet-switch"
+                    label="Private Worksheet"
+                    checked={false}
+                    disabled
+                  />
+                </span>
+              </OverlayTrigger>
+            ) : (
+              <Form.Check
+                type="switch"
+                id="private-worksheet-switch"
+                label="Private Worksheet"
+                checked={isViewedWorksheetPrivate}
+                onChange={async () => {
+                  await updateWorksheetMetadata({
+                    season: viewedSeason,
+                    action: 'setPrivate',
+                    worksheetNumber: viewedWorksheetNumber,
+                    private: !isViewedWorksheetPrivate,
+                  });
+                  await worksheetsRefresh();
+                }}
+              />
+            )}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setSettingsModalOpen(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

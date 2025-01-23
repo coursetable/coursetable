@@ -211,6 +211,7 @@ export const getUserWorksheet = async (
       season: true,
       worksheetNumber: true,
       name: true,
+      private: true,
     },
     with: {
       courses: {
@@ -224,6 +225,7 @@ export const getUserWorksheet = async (
   });
 
   const allWorksheets = worksheetListToMap(userWorksheets);
+
   res.json({
     data: allWorksheets[netId] ?? {},
   });
@@ -248,10 +250,18 @@ const RenameWorksheetSchema = z.object({
   name: z.string().max(64),
 });
 
+const SetPrivateWorksheetSchema = z.object({
+  action: z.literal('setPrivate'),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  worksheetNumber: z.number().int().min(0),
+  private: z.boolean(),
+});
+
 const UpdateWorksheetMetadataSchema = z.union([
   AddWorksheetSchema,
   DeleteWorksheetSchema,
   RenameWorksheetSchema,
+  SetPrivateWorksheetSchema,
 ]);
 
 export const updateWorksheetMetadata = async (
@@ -326,7 +336,7 @@ export const updateWorksheetMetadata = async (
       return;
     }
     res.sendStatus(200);
-  } else {
+  } else if (action === 'rename') {
     const { worksheetNumber, name } = bodyParseRes.data;
 
     const renamedWorksheets = await db
@@ -342,6 +352,26 @@ export const updateWorksheetMetadata = async (
       .returning({ worksheetNumber: worksheets.worksheetNumber });
 
     if (renamedWorksheets.length === 0) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+    res.sendStatus(200);
+  } else {
+    const { worksheetNumber, private: isPrivate } = bodyParseRes.data;
+
+    const updatedWorksheets = await db
+      .update(worksheets)
+      .set({ private: isPrivate })
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.season, season),
+          eq(worksheets.worksheetNumber, worksheetNumber),
+        ),
+      )
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
+
+    if (updatedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
