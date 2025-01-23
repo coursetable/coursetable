@@ -48,7 +48,7 @@ function WorksheetCalendarList() {
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
-  const [updatingWSItemState, setUpdatingWSItemState] = useState(false);
+  const [updatingWSState, setUpdatingWSState] = useState(false);
 
   return (
     <div>
@@ -199,7 +199,7 @@ function WorksheetCalendarList() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          {updatingWSItemState ? (
+          {updatingWSState ? (
             <div className="ms-auto">
               <Spinner message="" />
             </div>
@@ -208,7 +208,7 @@ function WorksheetCalendarList() {
               variant="secondary"
               onClick={async () => {
                 if (privateState !== isViewedWorksheetPrivate) {
-                  setUpdatingWSItemState(true);
+                  setUpdatingWSState(true);
                   await updateWorksheetMetadata({
                     season: viewedSeason,
                     action: 'setPrivate',
@@ -216,7 +216,7 @@ function WorksheetCalendarList() {
                     private: privateState,
                   });
                   await worksheetsRefresh();
-                  setUpdatingWSItemState(false);
+                  setUpdatingWSState(false);
                 }
                 setSettingsModalOpen(false);
               }}
