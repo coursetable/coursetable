@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -49,10 +49,6 @@ function WorksheetCalendarList() {
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
   const [updatingWSItemState, setUpdatingWSItemState] = useState(false);
-
-  useEffect(() => {
-    console.log(updatingWSItemState);
-  }, [updatingWSItemState]);
 
   return (
     <div>
