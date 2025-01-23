@@ -139,6 +139,31 @@ export default defineConfig({
             sizes: '250x250',
             purpose: 'any',
           },
+          {
+            src: 'maskable_icon_x48.png',
+            sizes: '250x250',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x72.png',
+            sizes: '250x250',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x96.png',
+            sizes: '250x250',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x128.png',
+            sizes: '250x250',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x192.png',
+            sizes: '250x250',
+            purpose: 'maskable',
+          },
         ],
         display: 'standalone',
         theme_color: '#ffffff',
