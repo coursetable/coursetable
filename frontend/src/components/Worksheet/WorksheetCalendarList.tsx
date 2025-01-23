@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -14,7 +14,6 @@ import {
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown } from 'react-icons/tb';
-import { flushSync } from 'react-dom';
 
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
@@ -50,6 +49,10 @@ function WorksheetCalendarList() {
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
   const [updatingWSItemState, setUpdatingWSItemState] = useState(false);
+
+  useEffect(() => {
+    console.log(updatingWSItemState);
+  }, [updatingWSItemState]);
 
   return (
     <div>
@@ -209,9 +212,7 @@ function WorksheetCalendarList() {
               variant="secondary"
               onClick={async () => {
                 if (privateState !== isViewedWorksheetPrivate) {
-                  flushSync(() => {
-                    setUpdatingWSItemState(true);
-                  });
+                  setUpdatingWSItemState(true);
                   await updateWorksheetMetadata({
                     season: viewedSeason,
                     action: 'setPrivate',
