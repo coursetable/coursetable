@@ -201,7 +201,7 @@ function WorksheetCalendarList() {
         <Modal.Footer>
           <Button
             variant="secondary"
-            onClick={async () => {
+            onClick={() => {
               if (privateState !== isViewedWorksheetPrivate) {
                 setUpdatingWSState(true);
                 (async () => {
