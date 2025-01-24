@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -50,6 +50,9 @@ function WorksheetCalendarList() {
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
   const [updatingWSState, setUpdatingWSState] = useState(false);
 
+  useEffect(() => {
+    setPrivateState(isViewedWorksheetPrivate);
+  }, [isViewedWorksheetPrivate]);
   return (
     <div>
       <SurfaceComponent elevated className={styles.container}>
