@@ -11,7 +11,6 @@ import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
 import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
@@ -384,10 +383,11 @@ export function SearchProvider({
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const { worksheets, friends } = useStore(
+  const { worksheets, friends, getRelevantWorksheetNumber } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
+      getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
     })),
   );
 
@@ -427,8 +427,6 @@ export function SearchProvider({
 
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
-
-  const { getRelevantWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     worksheets,
@@ -483,9 +481,9 @@ export function SearchProvider({
           case 'discussion':
             return isDiscussionSection(listing.course);
           case 'fysem':
-            return listing.course.fysem !== false;
+            return listing.course.fysem;
           case 'colsem':
-            return listing.course.colsem !== false;
+            return listing.course.colsem;
           case 'location':
             return toLocationsSummary(listing.course);
           case 'season':

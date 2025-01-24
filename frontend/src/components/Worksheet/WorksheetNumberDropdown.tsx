@@ -2,12 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
+import { useShallow } from 'zustand/react/shallow';
 import type { Option } from '../../contexts/searchContext';
-import {
-  useWorksheet,
-  useWorksheetNumberOptions,
-} from '../../contexts/worksheetContext';
 import { updateWorksheetMetadata } from '../../queries/api';
+import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
@@ -76,7 +74,14 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
     viewedWorksheetNumber,
     changeViewedWorksheetNumber,
     viewedPerson,
-  } = useWorksheet();
+  } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
+      viewedPerson: state.viewedPerson,
+    })),
+  );
 
   if (isRenamingWorksheet) {
     return (
@@ -146,7 +151,12 @@ function MenuListWithAdd({
 }: MenuListProps<Option<number>>) {
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedPerson } = useWorksheet();
+  const { viewedSeason, viewedPerson } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedPerson: state.viewedPerson,
+    })),
+  );
   const addBtn = isAddingWorksheet ? (
     <WSNameInput
       startingInput="New Worksheet"
@@ -186,7 +196,9 @@ function WorksheetNumDropdownDesktop({
 }: {
   readonly options: { [worksheetNumber: number]: Option<number> };
 }) {
-  const { viewedWorksheetNumber } = useWorksheet();
+  const viewedWorksheetNumber = useStore(
+    (state) => state.viewedWorksheetNumber,
+  );
 
   return (
     <Popout
@@ -214,7 +226,12 @@ function WorksheetNumDropdownMobile({
 }: {
   readonly options: { [worksheetNumber: number]: Option<number> };
 }) {
-  const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useWorksheet();
+  const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useStore(
+    useShallow((state) => ({
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
+    })),
+  );
 
   return (
     <DropdownButton
@@ -244,7 +261,12 @@ function WorksheetNumDropdownMobile({
 }
 
 function WorksheetNumDropdown({ mobile }: { readonly mobile: boolean }) {
-  const { viewedSeason, viewedPerson } = useWorksheet();
+  const { viewedSeason, viewedPerson } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedPerson: state.viewedPerson,
+    })),
+  );
   const options = useWorksheetNumberOptions(viewedPerson, viewedSeason);
   return mobile ? (
     <WorksheetNumDropdownMobile options={options} />

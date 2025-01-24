@@ -4,7 +4,6 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
@@ -31,12 +30,12 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { listing } = event;
-  const { isReadonlyWorksheet } = useWorksheet();
+  const isReadonlyWorksheet = useStore((state) => state.isReadonlyWorksheet);
 
   return (
     <>
       <CalendarEventBody event={event} />
-      {!isReadonlyWorksheet && (
+      {!isReadonlyWorksheet() && (
         <div className={styles.eventButtons}>
           <WorksheetHideButton
             crn={listing.crn}
@@ -56,7 +55,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
 }
 
 export function useEventStyle() {
-  const { hoverCourse } = useWorksheet();
+  const hoverCourse = useStore((state) => state.hoverCourse);
   const isMobile = useStore((state) => state.isMobile);
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
