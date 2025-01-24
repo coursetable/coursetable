@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   ListGroup,
@@ -10,6 +10,7 @@ import {
   Tooltip,
   Modal,
   Form,
+  Spinner,
 } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
@@ -46,7 +47,12 @@ function WorksheetCalendarList() {
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
+  const [updatingWSState, setUpdatingWSState] = useState(false);
 
+  useEffect(() => {
+    setPrivateState(isViewedWorksheetPrivate);
+  }, [isViewedWorksheetPrivate]);
   return (
     <div>
       <SurfaceComponent elevated className={styles.container}>
@@ -189,16 +195,8 @@ function WorksheetCalendarList() {
                 type="switch"
                 id="private-worksheet-switch"
                 label="Private Worksheet"
-                checked={isViewedWorksheetPrivate}
-                onChange={async () => {
-                  await updateWorksheetMetadata({
-                    season: viewedSeason,
-                    action: 'setPrivate',
-                    worksheetNumber: viewedWorksheetNumber,
-                    private: !isViewedWorksheetPrivate,
-                  });
-                  await worksheetsRefresh();
-                }}
+                checked={privateState}
+                onChange={() => setPrivateState(!privateState)}
               />
             )}
           </Form>
@@ -206,9 +204,39 @@ function WorksheetCalendarList() {
         <Modal.Footer>
           <Button
             variant="secondary"
-            onClick={() => setSettingsModalOpen(false)}
+            onClick={() => {
+              if (privateState !== isViewedWorksheetPrivate) {
+                setUpdatingWSState(true);
+                (async () => {
+                  await updateWorksheetMetadata({
+                    season: viewedSeason,
+                    action: 'setPrivate',
+                    worksheetNumber: viewedWorksheetNumber,
+                    private: privateState,
+                  });
+                  await worksheetsRefresh();
+                })()
+                  .then(() => {
+                    setUpdatingWSState(false);
+                    setSettingsModalOpen(false);
+                  })
+                  .catch(() => {
+                    setUpdatingWSState(false);
+                  });
+              }
+            }}
+            disabled={
+              privateState === isViewedWorksheetPrivate || updatingWSState
+            }
+            style={{ minWidth: '4rem' }}
           >
-            Close
+            {updatingWSState ? (
+              <div className="ms-auto">
+                <Spinner size="sm" />
+              </div>
+            ) : (
+              'Save'
+            )}
           </Button>
         </Modal.Footer>
       </Modal>
