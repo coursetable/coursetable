@@ -221,6 +221,9 @@ function WorksheetCalendarList() {
                   });
               }
             }}
+            disabled={
+              privateState === isViewedWorksheetPrivate || updatingWSState
+            }
             style={{ minWidth: '4rem' }}
           >
             {updatingWSState ? (
@@ -228,7 +231,7 @@ function WorksheetCalendarList() {
                 <Spinner size="sm" />
               </div>
             ) : (
-              'Close'
+              'Save'
             )}
           </Button>
         </Modal.Footer>
