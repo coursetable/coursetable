@@ -10,6 +10,7 @@ import {
   Tooltip,
   Modal,
   Form,
+  Spinner,
 } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
@@ -23,7 +24,6 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import { setCourseHidden, updateWorksheetMetadata } from '../../queries/api';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
-import Spinner from '../Spinner';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
@@ -199,37 +199,38 @@ function WorksheetCalendarList() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          {updatingWSState ? (
-            <div className="ms-auto">
-              <Spinner message="" />
-            </div>
-          ) : (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                if (privateState !== isViewedWorksheetPrivate) {
-                  setUpdatingWSState(true);
-                  updateWorksheetMetadata({
-                    season: viewedSeason,
-                    action: 'setPrivate',
-                    worksheetNumber: viewedWorksheetNumber,
-                    private: privateState,
+          <Button
+            variant="secondary"
+            onClick={() => {
+              if (privateState !== isViewedWorksheetPrivate) {
+                setUpdatingWSState(true);
+                updateWorksheetMetadata({
+                  season: viewedSeason,
+                  action: 'setPrivate',
+                  worksheetNumber: viewedWorksheetNumber,
+                  private: privateState,
+                })
+                  .then(worksheetsRefresh)
+                  .then(() => {
+                    setUpdatingWSState(false);
+                    setSettingsModalOpen(false);
                   })
-                    .then(worksheetsRefresh)
-                    .then(() => {
-                      setUpdatingWSState(false);
-                      setSettingsModalOpen(false);
-                    })
-                    .catch(() => {
-                      setUpdatingWSState(false);
-                      setSettingsModalOpen(false);
-                    });
-                }
-              }}
-            >
-              Close
-            </Button>
-          )}
+                  .catch(() => {
+                    setUpdatingWSState(false);
+                    setSettingsModalOpen(false);
+                  });
+              }
+            }}
+            style={{ minWidth: '4rem' }}
+          >
+            {updatingWSState ? (
+              <div className="ms-auto">
+                <Spinner size="sm" />
+              </div>
+            ) : (
+              'Close'
+            )}
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
