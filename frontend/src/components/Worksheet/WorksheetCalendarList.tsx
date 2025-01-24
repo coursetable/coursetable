@@ -206,19 +206,25 @@ function WorksheetCalendarList() {
           ) : (
             <Button
               variant="secondary"
-              onClick={async () => {
+              onClick={() => {
                 if (privateState !== isViewedWorksheetPrivate) {
                   setUpdatingWSState(true);
-                  await updateWorksheetMetadata({
+                  updateWorksheetMetadata({
                     season: viewedSeason,
                     action: 'setPrivate',
                     worksheetNumber: viewedWorksheetNumber,
                     private: privateState,
-                  });
-                  await worksheetsRefresh();
-                  setUpdatingWSState(false);
+                  })
+                    .then(worksheetsRefresh)
+                    .then(() => {
+                      setUpdatingWSState(false);
+                      setSettingsModalOpen(false);
+                    })
+                    .catch(() => {
+                      setUpdatingWSState(false);
+                      setSettingsModalOpen(false);
+                    });
                 }
-                setSettingsModalOpen(false);
               }}
             >
               Close
