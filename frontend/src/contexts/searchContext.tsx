@@ -13,6 +13,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
+import buildingData from '../generated/building.json';
+import type { Buildings } from '../generated/graphql-types';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
@@ -93,6 +95,15 @@ export const schoolsOptions = Object.entries(schools).map(
   }),
 );
 
+const buildings = buildingData as Buildings[];
+
+export const buildingOptions = buildings.map(
+  (building): Option => ({
+    value: building.code,
+    label: building.building_name ?? building.code,
+  }),
+);
+
 export const seasonsOptions = seasons.map(
   (x): Option<Season> => ({
     value: x,
@@ -147,8 +158,8 @@ export interface CategoricalFilters {
   selectDays: number;
   selectSchools: string;
   selectCredits: number;
+  selectBuilding: string;
   selectCourseInfoAttributes: string;
-  selectLocations: string;
 }
 
 export type NumericFilters =
@@ -200,7 +211,7 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectSchools: 'School',
   selectCredits: 'Credit',
   selectCourseInfoAttributes: 'Info',
-  selectLocations: 'Location',
+  selectBuilding: 'Building',
   searchDescription: 'Include descriptions in search',
   enableQuist: 'Enable Quist',
   // "Cancelled" and "conflicting" are also boolean attributes, but there's
@@ -229,8 +240,8 @@ export const defaultFilters: Filters = {
   numBounds: [0, 1000],
   selectSchools: [],
   selectCredits: [],
+  selectBuilding: [],
   selectCourseInfoAttributes: [],
-  selectLocations: [],
   searchDescription: false,
   enableQuist: false,
   hideCancelled: true,
@@ -367,6 +378,7 @@ export function SearchProvider({
   const numBounds = useFilterState('numBounds');
   const selectSchools = useFilterState('selectSchools');
   const selectCredits = useFilterState('selectCredits');
+  const selectBuilding = useFilterState('selectBuilding');
   const selectCourseInfoAttributes = useFilterState(
     'selectCourseInfoAttributes',
   );
@@ -707,6 +719,16 @@ export function SearchProvider({
           return false;
 
         if (
+          selectBuilding.value.length !== 0 &&
+          !selectBuilding.value.some((option) =>
+            listing.course.course_meetings.some(
+              (m) => m.location?.building.code === option.value,
+            ),
+          )
+        )
+          return false;
+
+        if (
           selectCourseInfoAttributes.value.length !== 0 &&
           !applyIntersectableFilter(
             selectCourseInfoAttributes.value.map((option) => option.value),
@@ -812,6 +834,7 @@ export function SearchProvider({
       selectDays.value,
       processedSkillsAreas,
       selectCredits.value,
+      selectBuilding.value,
       selectCourseInfoAttributes.value,
       selectSchools.value,
       quistPredicate,
@@ -865,6 +888,7 @@ export function SearchProvider({
       selectSortBy,
       sortOrder,
       intersectingFilters,
+      selectBuilding,
     }),
     [
       searchText,
@@ -890,6 +914,7 @@ export function SearchProvider({
       selectSortBy,
       sortOrder,
       intersectingFilters,
+      selectBuilding,
     ],
   );
 

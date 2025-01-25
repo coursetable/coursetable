@@ -23,6 +23,7 @@ import {
   schoolsOptions,
   seasonsOptions,
   courseInfoAttributesOptions,
+  buildingOptions,
 } from '../../contexts/searchContext';
 
 import { useStore } from '../../store';
@@ -208,6 +209,7 @@ function AdvancedPanel() {
     'numBounds',
     'selectSchools',
     'selectCredits',
+    'selectBuilding',
     'selectCourseInfoAttributes',
     'includeAttributes',
     'excludeAttributes',
@@ -324,6 +326,15 @@ function AdvancedPanel() {
           }))}
           handle="selectCredits"
           placeholder="All Credits"
+        />
+        <Select
+          id={`${formLabelId}-building`}
+          options={buildingOptions.map((x) => ({
+            label: x.label,
+            value: x.value,
+          }))}
+          handle="selectBuilding"
+          placeholder="All Buildings"
         />
         <IntersectableSelect
           id={`${formLabelId}-info`}
