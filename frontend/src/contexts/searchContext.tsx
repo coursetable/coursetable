@@ -13,6 +13,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
+import buildingData from '../generated/building.json';
+import type { Buildings } from '../generated/graphql-types';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
@@ -93,6 +95,15 @@ export const schoolsOptions = Object.entries(schools).map(
   }),
 );
 
+const buildings = buildingData as Buildings[];
+
+export const buildingOptions = buildings.map(
+  (building): Option => ({
+    value: building.code,
+    label: building.building_name ?? building.code,
+  }),
+);
+
 export const seasonsOptions = seasons.map(
   (x): Option<Season> => ({
     value: x,
@@ -148,6 +159,7 @@ export interface CategoricalFilters {
   selectSchools: string;
   selectCredits: number;
   selectCourseInfoAttributes: string;
+  selectBuilding: string;
 }
 
 export type NumericFilters =
@@ -200,6 +212,7 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectCredits: 'Credit',
   selectCourseInfoAttributes: 'Info',
   searchDescription: 'Include descriptions in search',
+  selectBuilding: 'Building',
   enableQuist: 'Enable Quist',
   // "Cancelled" and "conflicting" are also boolean attributes, but there's
   // little reason one would want to "only include conflicting courses", so
@@ -228,6 +241,7 @@ export const defaultFilters: Filters = {
   selectSchools: [],
   selectCredits: [],
   selectCourseInfoAttributes: [],
+  selectBuilding: [],
   searchDescription: false,
   enableQuist: false,
   hideCancelled: true,
@@ -364,6 +378,7 @@ export function SearchProvider({
   const numBounds = useFilterState('numBounds');
   const selectSchools = useFilterState('selectSchools');
   const selectCredits = useFilterState('selectCredits');
+  const selectBuilding = useFilterState('selectBuilding');
   const selectCourseInfoAttributes = useFilterState(
     'selectCourseInfoAttributes',
   );
@@ -483,9 +498,9 @@ export function SearchProvider({
           case 'discussion':
             return isDiscussionSection(listing.course);
           case 'fysem':
-            return listing.course.fysem !== false;
+            return listing.course.fysem;
           case 'colsem':
-            return listing.course.colsem !== false;
+            return listing.course.colsem;
           case 'location':
             return toLocationsSummary(listing.course);
           case 'season':
@@ -704,6 +719,16 @@ export function SearchProvider({
           return false;
 
         if (
+          selectBuilding.value.length !== 0 &&
+          !selectBuilding.value.some((option) =>
+            listing.course.course_meetings.some(
+              (m) => m.location?.building.code === option.value,
+            ),
+          )
+        )
+          return false;
+
+        if (
           selectCourseInfoAttributes.value.length !== 0 &&
           !applyIntersectableFilter(
             selectCourseInfoAttributes.value.map((option) => option.value),
@@ -812,6 +837,7 @@ export function SearchProvider({
       quistPredicate,
       searchDescription.value,
       intersectingFilters.value,
+      selectBuilding.value,
     ],
   );
 
@@ -860,6 +886,7 @@ export function SearchProvider({
       selectSortBy,
       sortOrder,
       intersectingFilters,
+      selectBuilding,
     }),
     [
       searchText,
@@ -885,6 +912,7 @@ export function SearchProvider({
       selectSortBy,
       sortOrder,
       intersectingFilters,
+      selectBuilding,
     ],
   );
 

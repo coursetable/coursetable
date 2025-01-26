@@ -1,0 +1,9 @@
+# Query for fetching building data
+
+query building {
+  buildings {
+    building_name
+    code
+    url
+  }
+}

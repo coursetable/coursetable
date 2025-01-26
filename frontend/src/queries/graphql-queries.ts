@@ -678,3 +678,80 @@ export type CourseSectionsQueryResult = Apollo.QueryResult<
   Types.CourseSectionsQuery,
   Types.CourseSectionsQueryVariables
 >;
+export const BuildingDocument = gql`
+  query building {
+    buildings {
+      building_name
+      code
+      url
+    }
+  }
+`;
+
+/**
+ * __useBuildingQuery__
+ *
+ * To run a query within a React component, call `useBuildingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBuildingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBuildingQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useBuildingQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    Types.BuildingQuery,
+    Types.BuildingQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<Types.BuildingQuery, Types.BuildingQueryVariables>(
+    BuildingDocument,
+    options,
+  );
+}
+export function useBuildingLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.BuildingQuery,
+    Types.BuildingQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<Types.BuildingQuery, Types.BuildingQueryVariables>(
+    BuildingDocument,
+    options,
+  );
+}
+export function useBuildingSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.BuildingQuery,
+        Types.BuildingQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.BuildingQuery,
+    Types.BuildingQueryVariables
+  >(BuildingDocument, options);
+}
+export type BuildingQueryHookResult = ReturnType<typeof useBuildingQuery>;
+export type BuildingLazyQueryHookResult = ReturnType<
+  typeof useBuildingLazyQuery
+>;
+export type BuildingSuspenseQueryHookResult = ReturnType<
+  typeof useBuildingSuspenseQuery
+>;
+export type BuildingQueryResult = Apollo.QueryResult<
+  Types.BuildingQuery,
+  Types.BuildingQueryVariables
+>;

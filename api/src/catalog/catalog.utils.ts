@@ -4,6 +4,7 @@ import path from 'node:path';
 import { Readable } from 'node:stream';
 import { SitemapStream, streamToPromise, SitemapIndexStream } from 'sitemap';
 import { getSdk, type CatalogBySeasonQuery } from './catalog.queries.js';
+import { fetchBuildingData } from '../building/building.utils.js';
 import { STATIC_FILE_DIR, SITEMAP_DIR, graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
@@ -182,6 +183,7 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
       ),
     );
     await Promise.all(processSeasons);
+    await fetchBuildingData();
     await generateSitemapIndex();
   } catch (err) {
     winston.error(err);

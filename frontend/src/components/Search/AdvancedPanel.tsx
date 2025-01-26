@@ -23,6 +23,7 @@ import {
   schoolsOptions,
   seasonsOptions,
   courseInfoAttributesOptions,
+  buildingOptions,
 } from '../../contexts/searchContext';
 
 import { useStore } from '../../store';
@@ -215,6 +216,7 @@ function AdvancedPanel() {
     'enableQuist',
     'hideCancelled',
     'hideConflicting',
+    'selectBuilding',
   ];
   if (isTablet) {
     relevantFilters.push(
@@ -324,6 +326,15 @@ function AdvancedPanel() {
           }))}
           handle="selectCredits"
           placeholder="All credits"
+        />
+        <Select
+          id={`${formLabelId}-building`}
+          options={buildingOptions.map((x) => ({
+            label: x.label,
+            value: x.value,
+          }))}
+          handle="selectBuilding"
+          placeholder="All buildings"
         />
         <IntersectableSelect
           id={`${formLabelId}-info`}
