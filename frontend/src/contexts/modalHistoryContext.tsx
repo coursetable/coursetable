@@ -12,6 +12,7 @@ import type { CourseModalPrefetchListingDataFragment } from '../generated/graphq
 import { useCourseModalFromUrlQuery } from '../queries/graphql-queries';
 import type { Season, Crn } from '../queries/graphql-types';
 import { useStore } from '../store';
+import { getListingId } from '../utilities/course';
 import {
   createCourseModalLink,
   createProfModalLink,
@@ -55,10 +56,16 @@ function createHistoryEntryLink(
 }
 
 function parseQuery(courseModalQuery: string | null) {
-  if (!courseModalQuery) return undefined;
+  if (!courseModalQuery || !/^\d{6}-\d{5}$/u.test(courseModalQuery))
+    return undefined;
   const [seasonCode, crn] = courseModalQuery.split('-') as [Season, string];
   if (!seasonCode || !crn) return undefined;
-  return { seasonCode, crn: Number(crn) as Crn };
+  const crnNum = Number.parseInt(crn, 10) as Crn;
+  return {
+    seasonCode,
+    crn: crnNum,
+    listingId: getListingId(seasonCode, crnNum),
+  };
 }
 
 function useCourseInfoFromURL(
@@ -74,13 +81,16 @@ function useCourseInfoFromURL(
   const hasStaticCatalog =
     variables && Object.hasOwn(courses, variables.seasonCode);
   const { data } = useCourseModalFromUrlQuery({
-    // If variables is undefined, the query will not be sent
-    variables: { ...variables!, hasEvals: Boolean(user?.hasEvals) },
+    variables: {
+      // If variables is undefined, the query will not be sent
+      listingId: variables?.listingId ?? 0,
+      hasEvals: Boolean(user?.hasEvals),
+    },
     skip: !variables || !isInitial || hasStaticCatalog,
   });
   if (hasStaticCatalog)
     return courses[variables.seasonCode]!.data.get(variables.crn);
-  return data?.listings[0];
+  return data?.listings_by_pk ?? undefined;
 }
 
 function useProfInfoFromURL(): number | undefined {

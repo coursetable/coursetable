@@ -70,6 +70,7 @@ type Store = {
   // Controls which courses are displayed
   courses: WorksheetCourse[];
   viewedWorksheetName: string;
+  isViewedWorksheetPrivate: boolean;
   worksheetLoading: boolean;
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   worksheetError: {} | null;
@@ -124,7 +125,14 @@ function parseCoursesFromURL():
       [
         courses.data.season,
         new Map([
-          [0, { name: courses.data.name, courses: courses.data.courses }],
+          [
+            0,
+            {
+              name: courses.data.name,
+              courses: courses.data.courses,
+              private: false,
+            },
+          ],
         ]),
       ],
     ]),
@@ -234,6 +242,9 @@ export function WorksheetProvider({
     exoticWorksheet?.data.name ??
     curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
     (viewedWorksheetNumber === 0 ? 'Main Worksheet' : 'Unnamed Worksheet');
+  const isViewedWorksheetPrivate =
+    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.private ??
+    false;
 
   const store = useMemo(
     () => ({
@@ -248,6 +259,7 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       viewedWorksheetName,
+      isViewedWorksheetPrivate,
       isExoticWorksheet,
       isReadonlyWorksheet,
       exitExoticWorksheet,
@@ -270,6 +282,7 @@ export function WorksheetProvider({
       worksheetLoading,
       worksheetError,
       viewedWorksheetName,
+      isViewedWorksheetPrivate,
       isExoticWorksheet,
       isReadonlyWorksheet,
       changeViewedSeason,

@@ -3725,15 +3725,14 @@ export type CourseAttributesQuery = {
 };
 
 export type CourseModalOverviewDataQueryVariables = Exact<{
-  seasonCode: Scalars['String']['input'];
-  crn: Scalars['Int']['input'];
+  listingId: Scalars['Int']['input'];
   sameCourseId: Scalars['Int']['input'];
   hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type CourseModalOverviewDataQuery = {
   __typename?: 'query_root';
-  self: Array<{
+  self: {
     __typename?: 'listings';
     school: string;
     season_code: Season;
@@ -3788,7 +3787,7 @@ export type CourseModalOverviewDataQuery = {
         enrolled: number;
       } | null;
     };
-  }>;
+  } | null;
   sameCourse: Array<
     {
       __typename?: 'courses';
@@ -3849,13 +3848,12 @@ export type CourseModalPrefetchCourseDataFragment = {
 };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
-  seasonCode: Scalars['String']['input'];
-  crn: Scalars['Int']['input'];
+  listingId: Scalars['Int']['input'];
 }>;
 
 export type SearchEvaluationNarrativesQuery = {
   __typename?: 'query_root';
-  listings: Array<{
+  listings_by_pk: {
     __typename?: 'listings';
     course: {
       __typename?: 'courses';
@@ -3883,7 +3881,7 @@ export type SearchEvaluationNarrativesQuery = {
         enrolled: number;
       } | null;
     };
-  }>;
+  } | null;
 };
 
 export type ProfModalOverviewDataQueryVariables = Exact<{
@@ -3915,16 +3913,15 @@ export type ProfModalOverviewDataQuery = {
 };
 
 export type CourseModalFromUrlQueryVariables = Exact<{
-  seasonCode: Scalars['String']['input'];
-  crn: Scalars['Int']['input'];
+  listingId: Scalars['Int']['input'];
   hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type CourseModalFromUrlQuery = {
   __typename?: 'query_root';
-  listings: Array<
-    { __typename?: 'listings' } & CourseModalPrefetchListingDataFragment
-  >;
+  listings_by_pk:
+    | ({ __typename?: 'listings' } & CourseModalPrefetchListingDataFragment)
+    | null;
 };
 
 export type PrereqLinkInfoQueryVariables = Exact<{
