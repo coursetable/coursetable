@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -6,8 +6,10 @@ import {
   FcComboChart,
   FcBookmark,
   FcSearch,
+  FcIdea,
 } from 'react-icons/fc';
 
+import PWAPrompt from 'react-ios-pwa-prompt';
 import { API_ENDPOINT } from '../config';
 import LandingImage from '../images/landing_page.svg';
 import styles from './Landing.module.css';
@@ -43,6 +45,8 @@ const testimonials = [
 ];
 
 function Landing() {
+  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
+
   return (
     <div className={styles.splashpage}>
       <div className={styles.topSection}>
@@ -72,6 +76,17 @@ function Landing() {
               See what classes your friends are interested in
             </li>
           </ul>
+          <p>
+            <FcIdea className="me-2 my-auto" /> Tip: see how to add CourseTable
+            to your home screen as an app by{' '}
+            <button type="button" onClick={() => setShouldShowPWAPrompt(true)}>
+              tapping here
+            </button>
+          </p>
+          <PWAPrompt
+            isShown={shouldShowPWAPrompt}
+            appIconPath="/icon200x200.png"
+          />
           <div className="d-flex mx-auto mt-3 justify-content-md-start justify-content-center">
             <a
               href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
