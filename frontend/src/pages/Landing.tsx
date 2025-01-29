@@ -88,21 +88,21 @@ function Landing() {
             </li>
             {isIOSNotInstalled && (
               <li className={styles.featureText}>
-                <FcIdea className="me-2 my-auto" /> Tip: see how to add
-                CourseTable to your home screen as an app by{' '}
+                <FcIdea className="me-2 my-auto" />
                 <button
                   type="button"
                   onClick={() => setShouldShowPWAPrompt(true)}
                 >
-                  tapping here
+                  Tip: tap here to see how to add CourseTable to your home
+                  screen as an app by
                 </button>
-                <PWAPrompt
-                  isShown={shouldShowPWAPrompt}
-                  appIconPath="/icon200x200.png"
-                  onClose={() => setShouldShowPWAPrompt(false)}
-                />
               </li>
             )}
+            <PWAPrompt
+              isShown={shouldShowPWAPrompt}
+              appIconPath="/icon200x200.png"
+              onClose={() => setShouldShowPWAPrompt(false)}
+            />
           </ul>
           <div className="d-flex mx-auto mt-3 justify-content-md-start justify-content-center">
             <a
