@@ -106,6 +106,18 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
+export type BuildingQueryVariables = Types.Exact<{ [key: string]: never }>;
+
+export type BuildingQuery = {
+  __typename?: 'query_root';
+  buildings: Array<{
+    __typename?: 'buildings';
+    building_name: string | null;
+    code: string;
+    url: string | null;
+  }>;
+};
+
 export const ListSeasonsDocument = gql`
   query listSeasons {
     seasons {
@@ -192,6 +204,15 @@ export const CourseAttributesDocument = gql`
     }
   }
 `;
+export const BuildingDocument = gql`
+  query building {
+    buildings {
+      building_name
+      code
+      url
+    }
+  }
+`;
 
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
@@ -270,6 +291,21 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'courseAttributes',
+        'query',
+        variables,
+      );
+    },
+    building(
+      variables?: BuildingQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<BuildingQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<BuildingQuery>(BuildingDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'building',
         'query',
         variables,
       );
