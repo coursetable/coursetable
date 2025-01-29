@@ -44,6 +44,7 @@ const LinkPreview = suspended(
 const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
+const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function Modal() {
@@ -169,6 +170,7 @@ function App() {
         <Route path="/releases/quist" element={<QuistRelease />} />
         <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases/spring24" element={<Spring24Release />} />
+        <Route path="/releases/fall24" element={<Fall24Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />
