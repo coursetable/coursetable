@@ -86,10 +86,8 @@ function Landing() {
               <FcConferenceCall className="me-2 my-auto" size={20} />
               See what classes your friends are interested in
             </li>
-          </ul>
-          {isIOSNotInstalled && (
-            <div>
-              <p>
+            {isIOSNotInstalled && (
+              <li className={styles.featureText}>
                 <FcIdea className="me-2 my-auto" /> Tip: see how to add
                 CourseTable to your home screen as an app by{' '}
                 <button
@@ -98,14 +96,14 @@ function Landing() {
                 >
                   tapping here
                 </button>
-              </p>
-              <PWAPrompt
-                isShown={shouldShowPWAPrompt}
-                appIconPath="/icon200x200.png"
-                onClose={() => setShouldShowPWAPrompt(false)}
-              />
-            </div>
-          )}
+                <PWAPrompt
+                  isShown={shouldShowPWAPrompt}
+                  appIconPath="/icon200x200.png"
+                  onClose={() => setShouldShowPWAPrompt(false)}
+                />
+              </li>
+            )}
+          </ul>
           <div className="d-flex mx-auto mt-3 justify-content-md-start justify-content-center">
             <a
               href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
