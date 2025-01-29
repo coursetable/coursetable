@@ -16,11 +16,11 @@ import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown } from 'react-icons/tb';
 
+import { useShallow } from 'zustand/react/shallow';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { setCourseHidden, updateWorksheetMetadata } from '../../queries/api';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
@@ -36,7 +36,17 @@ function WorksheetCalendarList() {
     isExoticWorksheet,
     isViewedWorksheetPrivate,
     viewedPerson,
-  } = useWorksheet();
+  } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      isReadonlyWorksheet: state.isReadonlyWorksheet,
+      isExoticWorksheet: state.isExoticWorksheet,
+      isViewedWorksheetPrivate: state.isViewedWorksheetPrivate,
+      viewedPerson: state.viewedPerson,
+    })),
+  );
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const areHidden = useMemo(
@@ -58,7 +68,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
-            {!isReadonlyWorksheet && (
+            {!isReadonlyWorksheet() && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -88,7 +98,7 @@ function WorksheetCalendarList() {
                 </Button>
               </OverlayTrigger>
             )}
-            {!isExoticWorksheet && viewedPerson === 'me' && (
+            {!isExoticWorksheet() && viewedPerson === 'me' && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -205,7 +215,7 @@ function WorksheetCalendarList() {
           <Button
             variant="secondary"
             onClick={() => {
-              if (privateState !== isViewedWorksheetPrivate) {
+              if (privateState !== isViewedWorksheetPrivate()) {
                 setUpdatingWSState(true);
                 (async () => {
                   await updateWorksheetMetadata({
@@ -226,7 +236,7 @@ function WorksheetCalendarList() {
               }
             }}
             disabled={
-              privateState === isViewedWorksheetPrivate || updatingWSState
+              privateState === isViewedWorksheetPrivate() || updatingWSState
             }
             style={{ minWidth: '4rem' }}
           >

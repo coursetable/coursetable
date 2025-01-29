@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useShallow } from 'zustand/react/shallow';
 import { setCourseHidden } from '../../queries/api';
 import type { Crn } from '../../queries/graphql-types';
 import { useStore } from '../../store';
@@ -19,9 +19,14 @@ export default function WorksheetHideButton({
   readonly color?: string;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } =
-    useWorksheet();
-  if (isReadonlyWorksheet) return null;
+  const { viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      isReadonlyWorksheet: state.isReadonlyWorksheet,
+    })),
+  );
+  if (isReadonlyWorksheet()) return null;
   const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
   return (
     <OverlayTrigger
