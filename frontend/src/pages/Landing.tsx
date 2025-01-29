@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -46,6 +46,17 @@ const testimonials = [
 
 function Landing() {
   const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
+  const [isIOSNotInstalled, setIsIOSNotInstalled] = useState(false);
+
+  const isIOS = () => /iphone|ipad|ipod/iu.test(navigator.userAgent);
+
+  const isPWAInstalled = () =>
+    // Window.navigator.standalone ||
+    window.matchMedia('(display-mode: standalone)').matches;
+
+  useEffect(() => {
+    if (isIOS() && !isPWAInstalled()) setIsIOSNotInstalled(true);
+  }, []);
 
   return (
     <div className={styles.splashpage}>
@@ -76,17 +87,25 @@ function Landing() {
               See what classes your friends are interested in
             </li>
           </ul>
-          <p>
-            <FcIdea className="me-2 my-auto" /> Tip: see how to add CourseTable
-            to your home screen as an app by{' '}
-            <button type="button" onClick={() => setShouldShowPWAPrompt(true)}>
-              tapping here
-            </button>
-          </p>
-          <PWAPrompt
-            isShown={shouldShowPWAPrompt}
-            appIconPath="/icon200x200.png"
-          />
+          {isIOSNotInstalled && (
+            <div>
+              <p>
+                <FcIdea className="me-2 my-auto" /> Tip: see how to add
+                CourseTable to your home screen as an app by{' '}
+                <button
+                  type="button"
+                  onClick={() => setShouldShowPWAPrompt(true)}
+                >
+                  tapping here
+                </button>
+              </p>
+              <PWAPrompt
+                isShown={shouldShowPWAPrompt}
+                appIconPath="/icon200x200.png"
+                onClose={() => setShouldShowPWAPrompt(false)}
+              />
+            </div>
+          )}
           <div className="d-flex mx-auto mt-3 justify-content-md-start justify-content-center">
             <a
               href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
