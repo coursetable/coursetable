@@ -140,9 +140,9 @@ export default defineConfig({
         },
         // Prevent collision with chunk name and mess with build size calc
         entryFileNames: 'assets/entry-[name]-[hash:10].js',
-        sourcemap: process.env.NODE_ENV === 'production' && true,
       },
     },
+    sourcemap: process.env.NODE_ENV === 'production',
   },
   server: {
     // Only used in dev
