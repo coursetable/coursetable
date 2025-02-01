@@ -1,0 +1,143 @@
+# CourseTable 24 Fall/Winter Release Notes
+
+Hi everyone,
+
+We hope you had a great New Year and are looking forward to starting classes tomorrow. The fall was another very successful semester for CourseTable; we welcomed many new team members, who’ve helped us build even more new features and implement changes. We outline some of our major updates below. And, as always, [let us know](https://feedback.coursetable.com/) what you want to see next\!
+
+In other news, there will be a leadership transition happening at CourseTable. For the past two years it has been our absolute privilege to run the CourseTable team. Looking back, we have achieved the following:
+
+- Assembled a professional and experienced team who in turn implemented features used by all users on a daily basis
+- Completely renovated CourseTable’s infrastructure, making it more modern, fast, and robust
+- Created a set of documentation for maintenance, contribution, and usage
+- Started communication with the registrar’s office to synchronize our needs and plans
+
+However, we understand that second semester juniors are washed and thus we need to pass on the keys to the next generation, so that CourseTable will continue to be as successful as it is today. We would like to announce that Neil Song ([@neilsong](https://github.com/neilsong)) and Humphrey Xu ([@Etherite1](https://github.com/Etherite1)) will be taking over this project, and we are certain it is in good hands. Neil has already been instrumental in our infrastructure renovation, while Humphrey implemented some of the most widely used features on CourseTable. We look forward to the future of this amazing website\!
+
+All the best,  
+Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)) & Sida Chen ([@Josh-Cena](https://github.com/josh-cena))  
+On behalf of the CourseTable team
+
+P.S. If you enjoy this blog post and/or are a regular user of CourseTable, consider supporting our work through [Buy me a coffee](https://buymeacoffee.com/coursetable)\! We are Yale students who work on this for you all for free :)
+
+Commit Statistics this Semester:
+
+<img
+  src="/images/release_notes/fall_24/ctcommitsf24.png"
+  alt="Graph of CourseTable commits from September 7, 2024 to January 11, 2025."
+  width="600"
+/>
+
+We also reached a milestone of having over one million requests served in a day\!
+
+<img
+  src="/images/release_notes/fall_24/ctrequest1daymil.png"
+  alt="Cloudflare screenshot showing 1.05M requests in one day."
+  width="600"
+/>
+
+## Links to prerequisites
+
+The prerequisites for every course are displayed verbatim in the course modal as red text. We’ve received many requests over the years to provide some structured understanding of this information—for example, what courses does this course list as prerequisites? What courses have this course as prerequisites? We are still working on these, because not every course mentioned is an actual prereq; but as a first step, we’ve made every course code in this paragraph a clickable link, with hover information that shows its title. We hope this facilitates cross-course navigation without having to go to the search bar.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)).
+
+## Sections dropdown
+
+We’ve added a dropdown at the top of the course modal, right next to the course’s title and season. This dropdown lets you easily switch between different sections of the same class, and quickly compare information such as time, professor, and title. Adding an accompanying discussion section to your worksheet used to be tricky, but now should be as easy as on Yale Course Search.
+
+This feature is contributed by Wesley Andrade ([@wesleyandrade05](https://github.com/wesleyandrade05)).
+
+## Professor modal
+
+As part of our effort to more fairly and holistically represent each professor, we are creating a whole new space to demonstrate each professor’s unique experiences. Now, clicking on the professor’s name summons a whole modal window instead of a simple popup. In our first iteration, this modal displays information about: what subjects have the professor’s courses been associated with; all courses they’ve offered; a line graph showing how their average rating changes through time. We especially hope that the graph will help new instructors who didn’t get a good headstart in their first few seasons, as students will be able to see an upward trend.
+
+This feature is contributed by Filippo Fonseca ([@filippo-fonseca](https://github.com/filippo-fonseca)).
+
+## Worksheet hidden status syncing
+
+Courses marked as hidden on your worksheet now remain hidden when friends view your worksheet from their accounts. Previously, the hidden state of courses was only visible to you and was not synced across devices or to others viewing your worksheet. With this update, your friends can see a more accurate, consistent, and less cluttered representation of your worksheet.
+
+This feature is contributed by Humphrey Xu ([@Etherite1](https://github.com/Etherite1)) and Aniketh Malyala ([@AniM824](https://github.com/AniM824)).
+
+## Worksheet export as URL
+
+Building on the existing Google and Apple Calendar export functionality, we’ve added the ability to export a worksheet as a URL. This link can be shared with anyone, whether or not they have full CourseTable access, and allows them to view your semester’s schedule. The worksheet is exported as-is: hidden classes and colors will be preserved.
+
+This feature is contributed by Ro Malik ([@CilantroMalik](https://github.com/CilantroMalik)).
+
+## Worksheet rename, add, and delete
+
+Previously, each term came with four worksheets: one main worksheet, and three others. We’ve built an interface that allows you to add, delete and rename custom worksheets. This moves us away from less descriptive names such as “Worksheet X” and creates more room for customization.
+
+This feature is contributed by Humphrey Xu ([@Etherite1](https://github.com/Etherite1)) and Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Combining search options with AND
+
+For some search filters (subjects, areas/skills, days, school, information attributes), we are adding the ability to only select courses that match _all_ options, not just _any_ option. For example, you can now select courses that have both the Writing and Humanities designations, or are offered in both Yale College and the GSAS. This brings our graphical filter interface to more feature parity with Quist.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Course type selector
+
+We had the ability to “hide discussion sections”, “hide first year seminars”, and “hide graduate courses”, but we didn’t have a way to _only_ show them, and the long list of toggles have cluttered the search interface a bit. Now, we condense all of these course type filters into one selector, with two new types defined: college seminars and sophomore seminars, both long-awaited features. This selector also allows you to combine multiple types into one: for example, a college seminar OR a first year seminar, not a first year seminar AND not a discussion section AND not a graduate course. We try to strike the balance between ease of use and expressiveness—if your desired search logic is too complex, consider using Quist.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Show random course
+
+Super small but fun feature that hopefully will lead to you discovering more of the amazing course Yale has to offer – just click the _I’m feeling lucky_ button underneath the CourseTable logo to be taken to a random course that matches the current search parameters\!
+
+This feature is contributed by Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)).
+
+## More Quist features
+
+Quist remains the most convenient way to search with advanced logic that cannot be expressed with the graphical filters. From user feedback, we see that the user experience with Quist is still not great, especially with the learning curve and syntax checking, which will be one of our focuses this year.
+
+Meanwhile, we’ve added a few more filter types:
+
+- building-codes (set) which allows you to structurally search for buildings, in addition to the unstructured location text field
+- colsem (boolean) which allows you to filter for college seminars, to achieve feature parity with the new type selector
+- listings.subjects (set), listings.course-codes (set), and listings.schools (set), which allow you to query cross-listing information, to achieve feature parity with the new search option AND combination feature
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## CSV data endpoint
+
+Many courses at Yale, especially introductory statistics courses, _love_ using our data for projects. If you are one of those interested, we have [some guidelines](https://coursetable.com/faq#can_i_use_coursetables_data_for_a_project) about how to use our data. Traditionally, we have pointed people to our GraphQL endpoint, which allows you to selectively query for information you need. However, this is often unergonomic, especially for people new to data science and GraphQL. Therefore, to align with the needs of intro stats students, we now publish our data as readily downloadable CSV. Read our [documentation](https://coursetable.com/faq#i_want_to_use_coursetable_data_but_i_dont_know_how_to_use_graphql) to find out more.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Display name initials in navbar
+
+In preparation for more individual customization features, we are replacing the generic “person” icon in the navbar with your own initials. This makes it easier to tell whether and as whom you are logged in. Your name is shown when others search for you to add friends, so we will be adding the ability to change your name soon.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Ferry Updates \+ Last Added / Last Modified Courses
+
+Ferry is the crawler responsible for crawling Yale websites daily to maintain and update our course information database. Traditionally, Ferry executed a full overwrite of the database during each crawl, rebuilding all the course data from scratch, which included not only all current courses but all historical course data as well. Although this ensured consistency, it was computationally expensive and time-intensive.
+
+In this Ferry update, we developed an algorithm that performs incremental updates by intelligently identifying changes between newly scraped data and previously stored data. Instead of replacing the entire database, Ferry now only updates the changed records, significantly improving efficiency and reducing processing time. Incremental updates have also allowed us to add “added” and “last modified” timestamps for each course to our database to track when each course was added or last modified.
+
+Currently, these two new fields are only exposed via our GraphQL API. You will soon be able to sort classes by the “added” and “last modified” attributes, making it easier to discover new courses or track updates (e.g., syllabus uploads or changes in course scheduling). Additionally, Ferry now generates a detailed log of the database changes, paving the way for more user-facing features, such as personalized course update notifications, allowing you to “subscribe” to updates for specific courses you’re interested in.
+
+This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)), Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)), and Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Bug fixes & polishings
+
+- We now have a written policy on browser support: we only support mainstream browsers that are less than 2 years old. We fixed a bug of incompatibility with Safari \<16.4 (1.5 years old at the time of fixing). Another refactor we made may make CourseTable not usable with Safari \<15.4 (3 years old); we are aware of the issue but will not fix it because of our support policy. Please upgrade your browser or use another browser if it impacts you.
+- For those who are unaware: [the university is migrating course numbers to 4 digits](https://catalog.yale.edu/departmental_academic_support/four-digit-numbers/), with the English department piloting in Spring 2025\. This change has some consequences for us: for example, we need to change how we discover historical offerings of a course, and how we classify graduate-level courses. We believe we are now fully prepared for this transition.
+- Following the new professor modal feature, we redesigned the related courses list on the course modal. Now, the “both” and “course” columns are merged into one view and represented by two ordering modes, while the “prof” column’s functionality is now replaced by the professor modal.
+- The “last updated” text on the course catalog now shows the real time for the last time when the catalog was regenerated (this time used to be hard-coded as 3:30AM EDT…)
+- We’ve received some feedback that the worksheet calendar looks cramped when too many courses are included. While this calls for a more thorough redesign, as a first step, we have shrunk the location text in the calendar events to just the building code and room number. The location text is now more concise and structured across the board—in the table and the modal too.
+
+## Infrastructure changes
+
+- CourseTable can now be developed offline without connecting to any external services, thanks to Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)).
+- Vercel stopped free sponsorship of open-source projects. While we are grateful for their support over the past few years, we have migrated our frontend hosting to Cloudflare Pages, which also more tightly integrates with our DNS services. Our [Optimizing Bot Traffic Handling for Link Previews: a Long Journey](https://coursetable.com/releases/link-preview) blog post has an overview of our tech stack.
+- CourseTable experienced some downtime during the registration period. We’ve refactored our deployment workflow so that redeployment doesn’t need to halt user interaction. We’ve also doubled our server resources in preparation for large volumes of requests.
+- We continue to work on infrastructure refactor. One of our eventual goals is to make everyone able to develop—you can clone our code on GitHub and code right away, without any access to our services.
+- We are migrating our context management from React contexts to Zustand stores, which should offer better user experience and present less footguns to developers.
+- Our database now has better user-based access management and more transparent, comprehensive backups.
+
+As always, Neil Song ([@neilsong](https://github.com/neilsong)) has demonstrated his expertise in most of these infrastructure upgrades and refactors. We are sure that CourseTable will be even better for both our users and developers in the leadership of him and Humphrey\!

@@ -3,7 +3,6 @@ import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdPersonRemove } from 'react-icons/md';
 import { components as selectComponents, type OptionProps } from 'react-select';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
@@ -18,7 +17,7 @@ function FriendsDropdownMobile({
   readonly options: Option<NetId | 'me'>[];
   readonly viewedPerson: Option<NetId> | null;
 }) {
-  const { changeViewedPerson } = useWorksheet();
+  const changeViewedPerson = useStore((state) => state.changeViewedPerson);
   return (
     <DropdownButton
       variant="primary"
@@ -92,7 +91,7 @@ function FriendsDropdownDesktop({
   readonly viewedPerson: Option<NetId> | null;
   readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 }) {
-  const { changeViewedPerson } = useWorksheet();
+  const changeViewedPerson = useStore((state) => state.changeViewedPerson);
   return (
     <Popout
       buttonText="Friends' courses"
@@ -135,7 +134,7 @@ function FriendsDropdown({
       ) => Promise<void>;
     }) {
   const friends = useStore((state) => state.friends);
-  const { viewedPerson } = useWorksheet();
+  const viewedPerson = useStore((state) => state.viewedPerson);
 
   const viewedPersonOption = useMemo(() => {
     // I don't think the second condition is possible

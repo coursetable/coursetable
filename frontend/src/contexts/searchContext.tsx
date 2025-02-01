@@ -11,7 +11,6 @@ import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
 import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
 import buildingData from '../generated/building.json';
 import type { Buildings } from '../generated/graphql-types';
@@ -401,10 +400,11 @@ export function SearchProvider({
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const { worksheets, friends } = useStore(
+  const { worksheets, friends, getRelevantWorksheetNumber } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
+      getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
     })),
   );
 
@@ -444,8 +444,6 @@ export function SearchProvider({
 
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
-
-  const { getRelevantWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     worksheets,

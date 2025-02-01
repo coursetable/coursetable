@@ -17,7 +17,6 @@ import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import WindowScroller from './WindowScroller';
 
-import { useWorksheet } from '../../contexts/worksheetContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
@@ -55,7 +54,7 @@ function Results({
     true,
   );
 
-  const { viewedSeason } = useWorksheet();
+  const viewedSeason = useStore((state) => state.viewedSeason);
 
   // eslint-disable-next-line no-useless-assignment
   let resultsListing: React.JSX.Element | undefined = undefined;

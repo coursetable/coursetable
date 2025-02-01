@@ -4,8 +4,8 @@ import { MdEdit } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
+import { useShallow } from 'zustand/react/shallow';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { updateWorksheetCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { type RBCEvent, localizer } from '../../utilities/calendar';
@@ -120,7 +120,12 @@ function ColorPickerButton({
   readonly className?: string;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber } = useWorksheet();
+  const { viewedSeason, viewedWorksheetNumber } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+    })),
+  );
   const [open, setOpen] = useState(false);
   const [newColor, setNewColor] = useState(event.color);
   const onClose = () => {
