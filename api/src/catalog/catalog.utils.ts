@@ -162,11 +162,7 @@ async function fetchBuildingData() {
         code: x.code,
         url: x.url,
       }))
-      .sort((a, b) => {
-        const nameA = a.building_name?.toLowerCase() ?? '';
-        const nameB = b.building_name?.toLowerCase() ?? '';
-        return nameA.localeCompare(nameB);
-      });
+      .sort((a, b) => a.code.localeCompare(b.code, 'en-US'));
 
     await fs.writeFile(
       `${STATIC_FILE_DIR}/building.json`,
