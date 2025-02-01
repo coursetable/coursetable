@@ -12,7 +12,7 @@ import { buildEvaluator } from 'quist';
 import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import { CUR_SEASON } from '../config';
-import buildingData from '../generated/building.json';
+import buildingsData from '../generated/buildings.json';
 import type { Buildings } from '../generated/graphql-types';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
@@ -94,7 +94,7 @@ export const schoolsOptions = Object.entries(schools).map(
   }),
 );
 
-const buildings = buildingData as Buildings[];
+const buildings = buildingsData as Buildings[];
 
 export const buildingOptions = buildings.map(
   (building): Option => ({

@@ -82,7 +82,7 @@ query courseAttributes {
   }
 }
 
-query building {
+query buildingsCatalog {
   buildings {
     building_name
     code

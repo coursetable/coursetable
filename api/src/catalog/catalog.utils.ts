@@ -152,29 +152,6 @@ async function fetchData(
   }
 }
 
-async function fetchBuildingData() {
-  try {
-    const building = await getSdk(graphqlClient).building();
-
-    const transformedBuildings = building.buildings
-      .map((x) => ({
-        building_name: x.building_name,
-        code: x.code,
-        url: x.url,
-      }))
-      .sort((a, b) => a.code.localeCompare(b.code, 'en-US'));
-
-    await fs.writeFile(
-      `${STATIC_FILE_DIR}/building.json`,
-      JSON.stringify(transformedBuildings),
-      'utf-8',
-    );
-  } catch (err) {
-    winston.error(err);
-    throw err;
-  }
-}
-
 export async function fetchCatalog(overwrite: boolean, latestN?: number) {
   try {
     await generateMetadata();
@@ -184,7 +161,8 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
 
     winston.info(`Fetched ${seasons.length} seasons`);
 
-    // The seasons.json and infoAttributes.json files are copied to frontend
+    // The seasons.json, buildings.json, and infoAttributes.json files are
+    // copied to frontend
     await fs.writeFile(
       `${STATIC_FILE_DIR}/seasons.json`,
       JSON.stringify(seasons.sort((a, b) => Number(b) - Number(a))),
@@ -196,6 +174,22 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
       JSON.stringify(infoAttributes.flags.map((x) => x.flag_text).sort()),
     );
 
+    const buildings = await getSdk(graphqlClient).buildingsCatalog();
+
+    const transformedBuildings = buildings.buildings
+      .map((x) => ({
+        building_name: x.building_name,
+        code: x.code,
+        url: x.url,
+      }))
+      .sort((a, b) => a.code.localeCompare(b.code, 'en-US'));
+
+    await fs.writeFile(
+      `${STATIC_FILE_DIR}/buildings.json`,
+      JSON.stringify(transformedBuildings),
+      'utf-8',
+    );
+
     // For each season, fetch all courses inside it and save
     // (if overwrite, file does not exist, or season is one of the latest N)
 
@@ -205,7 +199,6 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
       ),
     );
     await Promise.all(processSeasons);
-    await fetchBuildingData();
     await generateSitemapIndex();
   } catch (err) {
     winston.error(err);

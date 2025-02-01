@@ -3724,9 +3724,9 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
-export type BuildingQueryVariables = Exact<{ [key: string]: never }>;
+export type BuildingsCatalogQueryVariables = Exact<{ [key: string]: never }>;
 
-export type BuildingQuery = {
+export type BuildingsCatalogQuery = {
   __typename?: 'query_root';
   buildings: Array<{
     __typename?: 'buildings';
