@@ -100,7 +100,9 @@ const buildings = buildingData as Buildings[];
 export const buildingOptions = buildings.map(
   (building): Option => ({
     value: building.code,
-    label: building.building_name ?? building.code,
+    label: building.building_name
+      ? `${building.building_name} (${building.code})`
+      : building.code,
   }),
 );
 
