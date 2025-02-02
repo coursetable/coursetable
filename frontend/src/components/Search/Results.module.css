@@ -12,6 +12,7 @@
   --width-col-prof-rating: 36px;
   --width-col-enroll: 40px;
   --width-col-friends: 60px;
+  --width-col-added: 60px;
   --width-padding: 43px;
   --width-extra: calc(
     var(--width-total) - var(--width-col-season) - var(--width-col-code) -

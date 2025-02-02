@@ -318,6 +318,8 @@ function getAttributeValue(
   switch (key) {
     case 'friend':
       return numFriends[`${l.course.season_code}${l.crn}`]?.size ?? 0;
+    case 'added':
+      return 1;
     case 'overall':
       return getOverallRatings(l.course, 'stat');
     case 'workload':

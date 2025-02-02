@@ -200,6 +200,11 @@ function ResultsItem({
               </OverlayTrigger>
             )}
           </span>
+          <span className={colStyles.addedCol}>
+            <span className={styles.ellipsisText}>
+              {new Date().toLocaleDateString()}
+            </span>
+          </span>
         </div>
       </Link>
       {/* Don't this inside the link because interactive elements can't be

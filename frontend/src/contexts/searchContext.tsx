@@ -63,6 +63,7 @@ const sortCriteria = {
   course_code: 'Sort by course code',
   title: 'Sort by course title',
   friend: 'Sort by # of friends',
+  added: 'Sort by date added',
   overall: 'Sort by course rating',
   average_professor_rating: 'Sort by professor rating',
   workload: 'Sort by Workload',
