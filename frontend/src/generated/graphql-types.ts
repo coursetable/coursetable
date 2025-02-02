@@ -3683,6 +3683,8 @@ export type CatalogBySeasonQuery = {
     skills: StringArr;
     sysem: boolean;
     title: string;
+    time_added: any | null;
+    last_updated: any | null;
     course_flags: Array<{
       __typename?: 'course_flags';
       flag: { __typename?: 'flags'; flag_text: string };

@@ -323,7 +323,7 @@ const targetTypes = {
     'fysem',
     'colsem',
   ] as const),
-  text: new Set(['title', 'description', 'location'] as const),
+  text: new Set(['title', 'description', 'location', 'added'] as const),
 };
 
 function applyIntersectableFilter<T extends string | number>(
@@ -456,6 +456,8 @@ export function SearchProvider({
     () =>
       buildEvaluator(targetTypes, (listing: CatalogListing, key) => {
         switch (key) {
+          case 'added':
+            return new Date().toISOString();
           case 'rating':
             return getOverallRatings(listing.course, 'stat');
           case 'workload':

@@ -202,7 +202,7 @@ function ResultsItem({
           </span>
           <span className={colStyles.addedCol}>
             <span className={styles.ellipsisText}>
-              {new Date().toLocaleDateString()}
+              {listing.course.time_added}
             </span>
           </span>
         </div>
