@@ -237,7 +237,7 @@ function WorksheetNumDropdownMobile({
     <DropdownButton
       className={styles.dropdownButton}
       variant="primary"
-      title={options[viewedWorksheetNumber]!.label}
+      title={options[viewedWorksheetNumber]?.label ?? 'Worksheet'}
       onSelect={(v) => {
         if (v) changeViewedWorksheetNumber(Number(v));
       }}
