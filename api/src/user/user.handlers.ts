@@ -3,6 +3,7 @@ import chroma from 'chroma-js';
 import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
+import { getSdk } from './user.queries.js';
 import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
 
 import {
@@ -11,7 +12,11 @@ import {
   worksheets,
   wishlistCourses,
 } from '../../drizzle/schema.js';
-import { db } from '../config.js';
+
+import { db, graphqlClient } from '../config.js';
+
+// To use courseTimes query
+import winston from '../logging/winston.js';
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
   z.object({
@@ -164,6 +169,129 @@ export const updateWorksheetCourses = async (
     }
   }
   res.sendStatus(200);
+};
+
+export const enumerateWorksheet = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+  const season = parseInt(req.params.season!, 10); // In case non number parse need better error
+  const worksheetNumber = parseInt(req.params.worksheetNumber!, 10);
+
+  const currentWorksheet = await db.query.worksheets.findFirst({
+    where: and(
+      eq(worksheets.netId, netId),
+      eq(worksheets.season, season),
+      eq(worksheets.worksheetNumber, worksheetNumber),
+    ),
+    columns: { id: true },
+  });
+  if (!currentWorksheet) {
+    res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+    return;
+  }
+  // Get all the courses that have been added to this worksheet
+  const courses = await db.query.worksheetCourses.findMany({
+    where: eq(worksheetCourses.worksheetId, currentWorksheet.id),
+  });
+  const courseIds = courses.map((course) => course.crn);
+  // Use GQL client to get all the course times
+  const data = await Promise.all(
+    courseIds.map((crn) =>
+      getSdk(graphqlClient).courseTimes({
+        listingId: (season - 200000) * 100000 + crn,
+      }),
+    ),
+  );
+
+  // Some helpers -- should these be in dif files? drawing heavily on course.ts
+  type Meeting = {
+    days_of_week: number;
+    start_time: string;
+    end_time: string;
+  };
+
+  type CourseWithMeetings = {
+    crn: number;
+    course: {
+      course_meetings: Meeting[];
+    };
+  };
+
+  function parseTime(time: string): number {
+    const [hours = 0, minutes = 0] = time.split(':').map(Number); // Need to handle courses w out time -- default to 0 for minutes and hours?
+    return hours * 60 + minutes;
+  }
+
+  function coursesConflict(
+    courseA: CourseWithMeetings,
+    courseB: CourseWithMeetings,
+  ): boolean {
+    for (const meetingA of courseA.course.course_meetings) {
+      for (const meetingB of courseB.course.course_meetings) {
+        // Check if the meetings share any day.
+        if ((meetingA.days_of_week & meetingB.days_of_week) !== 0) {
+          const startA = parseTime(meetingA.start_time);
+          const endA = parseTime(meetingA.end_time);
+          const startB = parseTime(meetingB.start_time);
+          const endB = parseTime(meetingB.end_time);
+          // They conflict if the time ranges overlap.
+          if (startA < endB && startB < endA) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // Generate all combinations (of size k) from an array. (maybe want to do credits in the future? now default 4 courses)
+  function getCombinations<T>(arr: T[], k: number): T[][] {
+    const result: T[][] = [];
+    function backtrack(start: number, combo: T[]) {
+      if (combo.length === k) {
+        result.push([...combo]);
+        return;
+      }
+      for (let i = start; i < arr.length; i++) {
+        combo.push(arr[i]!);
+        backtrack(i + 1, combo);
+        combo.pop();
+      }
+    }
+    backtrack(0, []);
+    return result;
+  }
+  winston.info(data);
+  // Convert GQL data to courses with meetings
+  const coursesWithMeetings: CourseWithMeetings[] = courses
+    .map((course, index) => {
+      const courseData = data[index]?.listings_by_pk?.course; // Need to fix type error
+      winston.info(courseData);
+      // If no course data is returned, skip the course.
+      if (!courseData) return null;
+      return {
+        crn: course.crn,
+        course: courseData,
+      };
+    })
+    .filter((x): x is CourseWithMeetings => x !== null);
+
+  if (coursesWithMeetings.length < 4) {
+    res.status(400).json({ error: 'NOT_ENOUGH_COURSES' });
+    return;
+  }
+
+  const allCombos = getCombinations(coursesWithMeetings, 4);
+
+  const validCombos = allCombos.filter((combo) => {
+    for (let i = 0; i < combo.length; i++) {
+      for (let j = i + 1; j < combo.length; j++)
+        if (coursesConflict(combo[i], combo[j])) return false;
+    }
+    return true;
+  });
+
+  res.json({ num_of_combos: validCombos.length, data: validCombos });
 };
 
 export const getUserInfo = async (

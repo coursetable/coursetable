@@ -8,6 +8,7 @@ import {
   updateWorksheetMetadata,
   updateWishlistCourses,
   getUserWishlist,
+  enumerateWorksheet,
 } from './user.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
@@ -15,6 +16,10 @@ export default (app: express.Express): void => {
   app.use('/api/user/*', authBasic);
   app.get('/api/user/info', asyncHandler(getUserInfo));
   app.get('/api/user/worksheets', asyncHandler(getUserWorksheet));
+  app.get(
+    '/api/user/enumerateWorksheet/:season/:worksheetNumber',
+    asyncHandler(enumerateWorksheet),
+  );
   app.post(
     '/api/user/updateWorksheetCourses',
     asyncHandler(updateWorksheetCourses),
