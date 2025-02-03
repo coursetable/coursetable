@@ -15,7 +15,6 @@ import {
 
 import { db, graphqlClient } from '../config.js';
 
-// To use courseTimes query
 import winston from '../logging/winston.js';
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
