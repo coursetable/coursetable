@@ -98,6 +98,10 @@ function ResultsItem({
     [listing, getRelevantWorksheetNumber, worksheets],
   );
 
+  const timeAdded = listing.course.time_added
+    ? new Date(listing.course.time_added as string).toLocaleDateString()
+    : '';
+
   return (
     <li className={styles.container} style={style}>
       <Link
@@ -201,9 +205,7 @@ function ResultsItem({
             )}
           </span>
           <span className={colStyles.addedCol}>
-            <span className={styles.ellipsisText}>
-              {listing.course.time_added}
-            </span>
+            <span className={styles.ellipsisText}>{timeAdded}</span>
           </span>
         </div>
       </Link>
