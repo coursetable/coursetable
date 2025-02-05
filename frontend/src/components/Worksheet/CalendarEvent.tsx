@@ -19,11 +19,15 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
       <br />
       <ResponsiveEllipsis
         className={styles.courseNameText}
-        text={event.description}
+        text={event.description} // Here
         maxLine="2"
         basedOn="words"
       />
       <small className={styles.locationText}>{event.location}</small>
+      <br />
+      <small className={styles.locationText}>
+        {event.start.toLocaleTimeString()} - {event.end.toLocaleTimeString()}
+      </small>
     </div>
   );
 }
