@@ -34,6 +34,7 @@ function Worksheet() {
     isExoticWorksheet,
     courses,
     enumerationMode,
+    setEnumState,
   } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -44,6 +45,7 @@ function Worksheet() {
       isExoticWorksheet: state.isExoticWorksheet,
       courses: state.courses,
       enumerationMode: state.enumerationMode,
+      setEnumState: state.setEnumState,
     })),
   );
   const [expanded, setExpanded] = useState(false);
@@ -74,14 +76,8 @@ function Worksheet() {
   // 4) Sync enumeration info to the store (so the navbar can read it)
   useEffect(() => {
     console.log('Setting enumeration data in global store');
-    useStore.setState((state) => ({
-      ...state,
-      handleNext,
-      handlePrevious,
-      currentIndex,
-      totalCombos,
-    }));
-  }, [handleNext, handlePrevious, currentIndex, totalCombos]);
+    setEnumState(handleNext, handlePrevious, currentIndex, totalCombos);
+  }, [handleNext, handlePrevious, currentIndex, totalCombos, setEnumState]);
 
   // 5) Decide what to actually render
   let content: JSX.Element;

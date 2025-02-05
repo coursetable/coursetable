@@ -1,7 +1,7 @@
 import type { StateCreator } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import type { CourseWithTime } from '../hooks/useEnumeration';
-import { Store } from '../store';
+import type { Store } from '../store';
+import type { CourseWithTime } from '../utilities/useEnumeration';
 
 export interface EnumerationState {
   enumerationMode: boolean;
@@ -18,6 +18,12 @@ export interface EnumerationState {
   // Navigation functions (to be set from the Worksheet page)
   handleNext: () => void;
   handlePrevious: () => void;
+  setEnumState: (
+    handleNext: () => void,
+    handlePrevious: () => void,
+    currentIndex: number,
+    totalCombos: number,
+  ) => void;
 }
 
 export const createEnumerationSlice: StateCreator<
@@ -57,4 +63,16 @@ export const createEnumerationSlice: StateCreator<
   // Initialize navigation functions as no-ops.
   handleNext() {},
   handlePrevious() {},
+  setEnumState: (
+    handleNext: () => void,
+    handlePrevious: () => void,
+    currentIndex: number,
+    totalCombos: number,
+  ) =>
+    set((state: EnumerationState) => {
+      state.handleNext = handleNext;
+      state.handlePrevious = handlePrevious;
+      state.currentIndex = currentIndex;
+      state.totalCombos = totalCombos;
+    }),
 }));
