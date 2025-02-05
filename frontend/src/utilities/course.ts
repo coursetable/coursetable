@@ -319,7 +319,7 @@ function getAttributeValue(
     case 'friend':
       return numFriends[`${l.course.season_code}${l.crn}`]?.size ?? 0;
     case 'added':
-      return 1;
+      return l.course.time_added ? (l.course.time_added as string) : null;
     case 'overall':
       return getOverallRatings(l.course, 'stat');
     case 'workload':

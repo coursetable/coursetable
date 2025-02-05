@@ -457,7 +457,8 @@ export function SearchProvider({
       buildEvaluator(targetTypes, (listing: CatalogListing, key) => {
         switch (key) {
           case 'added':
-            return new Date().toISOString();
+            return listing.course.time_added as string;
+          // TODO - sort by date instead of string
           case 'rating':
             return getOverallRatings(listing.course, 'stat');
           case 'workload':

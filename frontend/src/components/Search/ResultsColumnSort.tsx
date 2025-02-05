@@ -49,6 +49,9 @@ function ResultsColumnSort({
       ? FcAlphabeticalSortingAz
       : FcAlphabeticalSortingZa;
 
+  // TODO - can add FcGenericSortingAsc and FcGenericSortingDesc for
+  // sorting by time added
+
   return (
     <button
       type="button"
