@@ -7,6 +7,9 @@ export interface EnumerationState {
   currentIndex: number;
   totalCombos: number;
   currentCombo: CourseWithTime[] | null;
+}
+
+export interface EnumerationActions {
   // Actions to update the state:
   toggleEnumerationMode: () => void;
   setCurrentIndex: (index: number) => void;
@@ -25,11 +28,15 @@ export interface EnumerationState {
   ) => void;
 }
 
+export interface EnumerationSlice
+  extends EnumerationState,
+    EnumerationActions {}
+
 export const createEnumerationSlice: StateCreator<
   Store,
   [],
   [],
-  EnumerationState
+  EnumerationSlice
 > = (set, get) => ({
   enumerationMode: false,
   currentIndex: 0,

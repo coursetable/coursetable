@@ -19,16 +19,14 @@ import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import {
   createEnumerationSlice,
-  type EnumerationState,
-} from './slices/worksheetEnumSlice';
+  type EnumerationSlice,
+} from './slices/WorksheetEnumSlice';
 import {
   createWorksheetSlice,
   useWorksheetEffects,
   useWorksheetSubscriptions,
   type WorksheetSlice,
 } from './slices/WorksheetSlice';
-
-// Import the new enumeration slice (assumed to be in src/slices/worksheetEnumSlice.ts)
 
 import { pick } from './utilities/common';
 
@@ -40,7 +38,7 @@ export interface Store
     DimensionsSlice,
     ProfileSlice,
     WorksheetSlice,
-    EnumerationState {}
+    EnumerationSlice {}
 
 // Define keys to persist from the store.
 const basePersistKeys: (keyof Store)[] = [
@@ -52,7 +50,7 @@ const basePersistKeys: (keyof Store)[] = [
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
-  'enumerationMode'
+  'enumerationMode',
 ];
 
 // Optionally add keys from defaultPreferences
