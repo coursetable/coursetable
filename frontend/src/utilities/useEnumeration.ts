@@ -11,7 +11,8 @@ export type CourseWithTime = {
   crn: number;
   color: string;
   hidden: boolean;
-  listing: {
+  listing?: {
+    // Can it ever be undefined?
     course: {
       course_meetings: Meeting[];
       // ...other properties if want to filter further
@@ -90,7 +91,6 @@ export function useEnumeration(k: number) {
     const validCourses = safeCourses.filter(
       (course) =>
         course.listing &&
-        course.listing.course &&
         Array.isArray(course.listing.course.course_meetings) &&
         course.listing.course.course_meetings.length > 0,
     );

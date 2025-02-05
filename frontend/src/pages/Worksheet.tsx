@@ -1,9 +1,7 @@
-// Src/pages/Worksheet.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
-
 import NeedsLogin from './NeedsLogin';
 import ErrorPage from '../components/ErrorPage';
 import Spinner from '../components/Spinner';
@@ -17,14 +15,10 @@ import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdow
 import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
 import { useStore } from '../store';
-import {
-  useEnumeration,
-  type CourseWithTime,
-} from '../utilities/useEnumeration';
+import { useEnumeration } from '../utilities/useEnumeration';
 import styles from './Worksheet.module.css';
 
 function Worksheet() {
-  // 1) Always call store hooks & local hooks up top
   const {
     isMobile,
     authStatus,
@@ -48,9 +42,7 @@ function Worksheet() {
   );
   const [expanded, setExpanded] = useState(false);
 
-  console.log('enumerationMode:', enumerationMode);
-
-  // 3) Always call the enumeration hook, passing fallback courses
+  // Do this first, right?
   const {
     currentCombo,
     currentIndex,
@@ -59,67 +51,58 @@ function Worksheet() {
     handlePrevious,
   } = useEnumeration(4);
 
-  console.log(
-    'Enumeration results: currentIndex=',
-    currentIndex,
-    ' totalCombos=',
-    totalCombos,
-  );
-  console.log('currentCombo size:', currentCombo?.length);
-
-  // 4) Sync enumeration info to the store (so the navbar can read it)
+  // Sync enum info to the slice
   useEffect(() => {
-    console.log('Setting enumeration data in global store');
     setEnumState(handleNext, handlePrevious, currentIndex, totalCombos);
   }, [handleNext, handlePrevious, currentIndex, totalCombos, setEnumState]);
 
-  // 5) Decide what to actually render
-  let content: React.ReactNode;
-
+  // Wait for search query to finish
   if (worksheetError) {
     Sentry.captureException(worksheetError);
-    content = (
-      <ErrorPage message="There seems to be an issue with our server" />
-    );
-  } else if (worksheetLoading) {
-    content = <Spinner message="Loading worksheet data..." />;
-  } else if (authStatus === 'unauthenticated' && !isExoticWorksheet()) {
-    content = <NeedsLogin redirect="/worksheet" message="your worksheet" />;
-  } else if (worksheetView === 'list' && !isMobile) {
-    content = <WorksheetList />;
-  } else {
-    const Icon = expanded ? FaCompressAlt : FaExpandAlt;
-    const coursesForCalendar =
-      enumerationMode && currentCombo ? currentCombo : undefined;
-    console.log('coursesForCalendar length:', coursesForCalendar?.length);
-
-    content = (
-      <>
-        <SurfaceComponent className={styles.calendar}>
-          <WorksheetCalendar coursesOverride={coursesForCalendar} />
-          {!isMobile && (
-            <button
-              type="button"
-              className={styles.expandBtn}
-              onClick={() => setExpanded((prev) => !prev)}
-              aria-label={`${expanded ? 'Collapse' : 'Expand'} calendar`}
-            >
-              <Icon className={styles.expandIcon} size={12} />
-            </button>
-          )}
-        </SurfaceComponent>
-        {(isMobile || !expanded) && (
-          <div className={styles.calendarSidebar}>
-            <WorksheetStats />
-            <WorksheetCalendarList />
-          </div>
-        )}
-      </>
-    );
+    return <ErrorPage message="There seems to be an issue with our server" />;
   }
-
-  // 6) Return a stable wrapper
-  return <div className={styles.container}>{content}</div>;
+  if (worksheetLoading) return <Spinner message="Loading worksheet data..." />;
+  // For unauthed users, they can only view exotic worksheets
+  if (authStatus === 'unauthenticated' && !isExoticWorksheet())
+    return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
+  if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
+  const Icon = expanded ? FaCompressAlt : FaExpandAlt;
+  const coursesForCalendar =
+    enumerationMode && currentCombo ? currentCombo : undefined;
+  return (
+    <div className={styles.container}>
+      {isMobile && !isExoticWorksheet() && (
+        <div className={styles.dropdowns}>
+          <WorksheetNumDropdown mobile />
+          <div className="d-flex">
+            <SeasonDropdown mobile />
+            <FriendsDropdown mobile />
+          </div>
+        </div>
+      )}
+      <SurfaceComponent className={styles.calendar}>
+        <WorksheetCalendar coursesOverride={coursesForCalendar} />
+        {!isMobile && (
+          <button
+            type="button"
+            className={styles.expandBtn}
+            onClick={() => {
+              setExpanded((x) => !x);
+            }}
+            aria-label={`${expanded ? 'Collapse' : 'Expand'} calendar`}
+          >
+            <Icon className={styles.expandIcon} size={12} />
+          </button>
+        )}
+      </SurfaceComponent>
+      {(isMobile || !expanded) && (
+        <div className={styles.calendarSidebar}>
+          <WorksheetStats />
+          <WorksheetCalendarList />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default Worksheet;

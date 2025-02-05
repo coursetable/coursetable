@@ -172,8 +172,7 @@ export function NavbarWorksheetSearch({
                 <FaArrowRight />
               </Button>
               <div className={styles.indexDisplay}>
-                {enumerationControls.currentIndex + 1} of{' '}
-                {enumerationControls.totalCombos}
+                {enumerationControls.currentIndex + 1}
               </div>
             </div>
           )}

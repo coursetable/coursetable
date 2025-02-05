@@ -6,17 +6,14 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
+import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 
-import styles from './WorksheetCalendar.module.css';
-
- // Adjust as needed
-
-// Define a prop type for override courses
+// Prop type for override courses
 interface WorksheetCalendarProps {
-  readonly coursesOverride?: any[]; // Use your CourseWithTime type if available
+  readonly coursesOverride?: WorksheetCourse[]; // CourseWithTime type here maybe?
 }
 
 function WorksheetCalendar({ coursesOverride }: WorksheetCalendarProps) {
