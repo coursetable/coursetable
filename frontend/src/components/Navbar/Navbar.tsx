@@ -87,6 +87,11 @@ export default function CourseTableNavbar() {
           showCatalogSearch && styles.catalogSearchNavbar,
         )}
       >
+        <PWAPrompt
+          isShown={shouldShowPWAPrompt}
+          appIconPath="/icon200x200.png"
+          onClose={() => setShouldShowPWAPrompt(false)}
+        />
         {/* Logo in top left and random underneath */}
         <div className={styles.navLogoWrapper}>
           <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
@@ -134,11 +139,6 @@ export default function CourseTableNavbar() {
                 //   screen as an app
                 // </button>
               )}
-              <PWAPrompt
-                isShown={shouldShowPWAPrompt}
-                appIconPath="/icon200x200.png"
-                onClose={() => setShouldShowPWAPrompt(false)}
-              />
               <NavbarLink to="/catalog">Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
