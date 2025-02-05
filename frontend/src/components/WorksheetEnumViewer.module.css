@@ -4,15 +4,18 @@
   margin-top: 1rem;
   background-color: #f9f9f9;
 }
+
 .combination {
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
 }
+
 .course {
   padding: 0.5rem;
   border-bottom: 1px solid #ccc;
 }
+
 .nextButton {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
@@ -22,6 +25,7 @@
   cursor: pointer;
   border-radius: 4px;
 }
+
 .error {
   color: red;
   margin-bottom: 1rem;
