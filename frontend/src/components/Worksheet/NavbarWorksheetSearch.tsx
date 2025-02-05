@@ -95,6 +95,13 @@ export function NavbarWorksheetSearch() {
         >
           List
         </ToggleButton>
+        <ToggleButton
+          id="view-toggle-map"
+          className={styles.toggleButton}
+          value="map"
+        >
+          Map
+        </ToggleButton>
       </ToggleButtonGroup>
       {!isExoticWorksheet ? (
         <>

@@ -1,5 +1,5 @@
 .toggleButtonGroup {
-  width: 180px;
+  width: 240px;
 }
 
 @media (max-width: calc(1200px - 0.5px)) {
