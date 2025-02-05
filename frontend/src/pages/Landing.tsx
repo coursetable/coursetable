@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -6,10 +5,8 @@ import {
   FcComboChart,
   FcBookmark,
   FcSearch,
-  FcIdea,
 } from 'react-icons/fc';
 
-import PWAPrompt from 'react-ios-pwa-prompt';
 import { API_ENDPOINT } from '../config';
 import LandingImage from '../images/landing_page.svg';
 import styles from './Landing.module.css';
@@ -45,19 +42,6 @@ const testimonials = [
 ];
 
 function Landing() {
-  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
-  const [isIOSNotInstalled, setIsIOSNotInstalled] = useState(false);
-
-  const isIOS = () => /iphone|ipad|ipod/iu.test(navigator.userAgent);
-
-  const isPWAInstalled = () =>
-    // Window.navigator.standalone ||
-    window.matchMedia('(display-mode: standalone)').matches;
-
-  useEffect(() => {
-    if (isIOS() && !isPWAInstalled()) setIsIOSNotInstalled(true);
-  }, []);
-
   return (
     <div className={styles.splashpage}>
       <div className={styles.topSection}>
@@ -86,23 +70,6 @@ function Landing() {
               <FcConferenceCall className="me-2 my-auto" size={20} />
               See what classes your friends are interested in
             </li>
-            {isIOSNotInstalled && (
-              <li className={styles.featureText}>
-                <FcIdea className="me-2 my-auto" />
-                <button
-                  type="button"
-                  onClick={() => setShouldShowPWAPrompt(true)}
-                >
-                  Tip: tap here to see how to add CourseTable to your home
-                  screen as an app by
-                </button>
-              </li>
-            )}
-            <PWAPrompt
-              isShown={shouldShowPWAPrompt}
-              appIconPath="/icon200x200.png"
-              onClose={() => setShouldShowPWAPrompt(false)}
-            />
           </ul>
           <div className="d-flex mx-auto mt-3 justify-content-md-start justify-content-center">
             <a
