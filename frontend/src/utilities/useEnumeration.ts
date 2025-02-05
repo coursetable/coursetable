@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useStore } from '../store';
 
 export type Meeting = {
   days_of_week: number;
@@ -31,9 +32,7 @@ function coursesConflict(
         const endA = Number(meetingA.end_time.replace(':', ''));
         const startB = Number(meetingB.start_time.replace(':', ''));
         const endB = Number(meetingB.end_time.replace(':', ''));
-        if (startA < endB && startB < endA) 
-          return true;
-        
+        if (startA < endB && startB < endA) return true;
       }
     }
   }
@@ -53,20 +52,30 @@ function* validScheduleGenerator(
   for (let i = start; i < courses.length; i++) {
     let conflict = false;
     for (const selected of current) {
-      if (coursesConflict(selected, courses[i])) {
+      if (coursesConflict(selected, courses[i]!)) {
         conflict = true;
         break;
       }
     }
     if (conflict) continue;
-    current.push(courses[i]);
+    current.push(courses[i]!);
     console.log(current);
     yield* validScheduleGenerator(courses, k, i + 1, current);
     current.pop();
   }
 }
 
-export function useEnumeration(courses: CourseWithTime[], k: number) {
+export function useEnumeration(k: number) {
+  const courses = useStore((state) => state.courses);
+
+  // 2) Provide a fallback if `courses` is missing
+  const safeCourses = useMemo(
+    () => (Array.isArray(courses) ? courses : []) as CourseWithTime[],
+    [courses],
+  );
+  console.log('=== Worksheet.tsx ===');
+  console.log('safeCourses.length:', safeCourses.length);
+
   const [enumeratedCombos, setEnumeratedCombos] = useState<CourseWithTime[][]>(
     [],
   );
@@ -78,7 +87,7 @@ export function useEnumeration(courses: CourseWithTime[], k: number) {
   > | null>(null);
 
   useEffect(() => {
-    const validCourses = courses.filter(
+    const validCourses = safeCourses.filter(
       (course) =>
         course.listing &&
         course.listing.course &&
@@ -99,7 +108,7 @@ export function useEnumeration(courses: CourseWithTime[], k: number) {
       setEnumeratedCombos([]);
       setCurrentIndex(0);
     }
-  }, [courses, k]);
+  }, [safeCourses, k]);
 
   const handleNext = () => {
     if (generatorRef.current) {
@@ -116,9 +125,7 @@ export function useEnumeration(courses: CourseWithTime[], k: number) {
   };
 
   const handlePrevious = () => {
-    if (currentIndex > 0) 
-      setCurrentIndex((prev) => prev - 1);
-    
+    if (currentIndex > 0) setCurrentIndex((prev) => prev - 1);
   };
 
   return {

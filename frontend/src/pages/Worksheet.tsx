@@ -32,7 +32,6 @@ function Worksheet() {
     worksheetError,
     worksheetView,
     isExoticWorksheet,
-    courses,
     enumerationMode,
     setEnumState,
   } = useStore(
@@ -43,17 +42,12 @@ function Worksheet() {
       worksheetError: state.worksheetError,
       worksheetView: state.worksheetView,
       isExoticWorksheet: state.isExoticWorksheet,
-      courses: state.courses,
       enumerationMode: state.enumerationMode,
       setEnumState: state.setEnumState,
     })),
   );
   const [expanded, setExpanded] = useState(false);
 
-  // 2) Provide a fallback if `courses` is missing
-  const safeCourses = Array.isArray(courses) ? courses : [];
-  console.log('=== Worksheet.tsx ===');
-  console.log('safeCourses.length:', safeCourses.length);
   console.log('enumerationMode:', enumerationMode);
 
   // 3) Always call the enumeration hook, passing fallback courses
@@ -63,7 +57,7 @@ function Worksheet() {
     totalCombos,
     handleNext,
     handlePrevious,
-  } = useEnumeration(safeCourses as CourseWithTime[], 4);
+  } = useEnumeration(4);
 
   console.log(
     'Enumeration results: currentIndex=',
@@ -80,7 +74,7 @@ function Worksheet() {
   }, [handleNext, handlePrevious, currentIndex, totalCombos, setEnumState]);
 
   // 5) Decide what to actually render
-  let content: JSX.Element;
+  let content: React.ReactNode;
 
   if (worksheetError) {
     Sentry.captureException(worksheetError);

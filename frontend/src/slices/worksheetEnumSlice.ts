@@ -1,5 +1,4 @@
 import type { StateCreator } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
 import type { Store } from '../store';
 import type { CourseWithTime } from '../utilities/useEnumeration';
 
@@ -29,37 +28,31 @@ export interface EnumerationState {
 export const createEnumerationSlice: StateCreator<
   Store,
   [],
-  [['zustand/immer', never]],
+  [],
   EnumerationState
-> = immer((set) => ({
+> = (set, get) => ({
   enumerationMode: false,
   currentIndex: 0,
   totalCombos: 0,
   currentCombo: null,
   toggleEnumerationMode: () =>
-    set((state: EnumerationState) => {
-      state.enumerationMode = !state.enumerationMode;
+    set({
+      enumerationMode: !get().enumerationMode,
     }),
   setCurrentIndex: (index: number) =>
-    set((state: EnumerationState) => {
-      state.currentIndex = index;
+    set({
+      currentIndex: index,
     }),
   setTotalCombos: (total: number) =>
-    set((state: EnumerationState) => {
-      state.totalCombos = total;
+    set({
+      totalCombos: total,
     }),
   setCurrentCombo: (combo: CourseWithTime[] | null) =>
-    set((state: EnumerationState) => {
-      state.currentCombo = combo;
+    set({
+      currentCombo: combo,
     }),
-  setHandleNext: (fn: () => void) =>
-    set((state: EnumerationState) => {
-      state.handleNext = fn;
-    }),
-  setHandlePrevious: (fn: () => void) =>
-    set((state: EnumerationState) => {
-      state.handlePrevious = fn;
-    }),
+  setHandleNext: (fn: () => void) => set({ handleNext: fn }),
+  setHandlePrevious: (fn: () => void) => set({ handleNext: fn }),
   // Initialize navigation functions as no-ops.
   handleNext() {},
   handlePrevious() {},
@@ -69,10 +62,10 @@ export const createEnumerationSlice: StateCreator<
     currentIndex: number,
     totalCombos: number,
   ) =>
-    set((state: EnumerationState) => {
-      state.handleNext = handleNext;
-      state.handlePrevious = handlePrevious;
-      state.currentIndex = currentIndex;
-      state.totalCombos = totalCombos;
+    set({
+      handleNext,
+      handlePrevious,
+      currentIndex,
+      totalCombos,
     }),
-}));
+});

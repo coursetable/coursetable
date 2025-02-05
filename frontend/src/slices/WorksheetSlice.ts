@@ -289,10 +289,7 @@ export const useWorksheetEffects = () => {
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  const deepCopyCourses = JSON.parse(
-    JSON.stringify(courses),
-  ) as WorksheetCourse[];
-  setWorksheetInfo(deepCopyCourses, worksheetLoading, worksheetError);
+  setWorksheetInfo(courses, worksheetLoading, worksheetError);
 };
 
 // Auxiliary Functions
