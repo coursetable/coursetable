@@ -66,6 +66,7 @@ const sortCriteria = {
   title: 'Sort by course title',
   friend: 'Sort by # of friends',
   added: 'Sort by date added',
+  last_modified: 'Sort by date the course was last modified',
   overall: 'Sort by course rating',
   average_professor_rating: 'Sort by professor rating',
   workload: 'Sort by Workload',
@@ -323,7 +324,13 @@ const targetTypes = {
     'fysem',
     'colsem',
   ] as const),
-  text: new Set(['title', 'description', 'location', 'added'] as const),
+  text: new Set([
+    'title',
+    'description',
+    'location',
+    'added',
+    'last_modified',
+  ] as const),
 };
 
 function applyIntersectableFilter<T extends string | number>(
@@ -459,6 +466,8 @@ export function SearchProvider({
           case 'added':
             return listing.course.time_added as string;
           // TODO - sort by date instead of string
+          case 'last_modified':
+            return listing.course.last_updated as string;
           case 'rating':
             return getOverallRatings(listing.course, 'stat');
           case 'workload':
