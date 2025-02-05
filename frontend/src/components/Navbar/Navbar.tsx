@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Nav, Navbar } from 'react-bootstrap';
+import PWAPrompt from 'react-ios-pwa-prompt';
 import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
@@ -61,6 +62,19 @@ export default function CourseTableNavbar() {
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
   const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
 
+  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
+  const [isIOSNotInstalled, setIsIOSNotInstalled] = useState(false);
+
+  const isIOS = () => /iphone|ipad|ipod/iu.test(navigator.userAgent);
+
+  const isPWAInstalled = () =>
+    // Window.navigator.standalone ||
+    window.matchMedia('(display-mode: standalone)').matches;
+
+  useEffect(() => {
+    if (isIOS() && !isPWAInstalled()) setIsIOSNotInstalled(true);
+  }, []);
+
   return (
     <SurfaceComponent className={styles.container}>
       <Navbar
@@ -105,6 +119,26 @@ export default function CourseTableNavbar() {
               className={styles.navbarLinks}
             >
               <DarkModeButton className={styles.navbarDarkModeBtn} />
+              {isIOSNotInstalled && (
+                <NavbarLink to="#!">
+                  <button
+                    type="button"
+                    onClick={() => setShouldShowPWAPrompt(true)}
+                  >
+                    Install
+                  </button>
+                </NavbarLink>
+                // <button type="button" className={styles.featureText} onClick={() => setShouldShowPWAPrompt(true)}>
+                //   <FcIdea className="me-2 my-auto" size={20} />
+                //   Tip: tap here to see how to add CourseTable to your home
+                //   screen as an app
+                // </button>
+              )}
+              <PWAPrompt
+                isShown={shouldShowPWAPrompt}
+                appIconPath="/icon200x200.png"
+                onClose={() => setShouldShowPWAPrompt(false)}
+              />
               <NavbarLink to="/catalog">Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
