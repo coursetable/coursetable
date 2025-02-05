@@ -1,10 +1,16 @@
 import saveFile from 'file-saver';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useShallow } from 'zustand/react/shallow';
 import ICSIcon from '../../images/ics.svg';
+import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 
 export default function ICSExportButton() {
-  const { viewedSeason, courses } = useWorksheet();
+  const { viewedSeason, courses } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      courses: state.courses,
+    })),
+  );
 
   const exportICS = () => {
     const events = getCalendarEvents('ics', courses, viewedSeason);

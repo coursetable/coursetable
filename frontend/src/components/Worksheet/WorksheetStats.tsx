@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -86,7 +86,13 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, isExoticWorksheet, exitExoticWorksheet } = useWorksheet();
+  const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      isExoticWorksheet: state.isExoticWorksheet,
+      exitExoticWorksheet: state.exitExoticWorksheet,
+    })),
+  );
   const user = useStore((state) => state.user);
   const countedCourseCodes = new Set();
   let courseCnt = 0;
@@ -252,7 +258,7 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {isExoticWorksheet && (
+              {isExoticWorksheet() && (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
                   <Button variant="primary" onClick={exitExoticWorksheet}>

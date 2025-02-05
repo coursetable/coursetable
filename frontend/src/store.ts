@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
 import {
@@ -14,6 +14,12 @@ import {
 } from './slices/ProfileSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
+import {
+  createWorksheetSlice,
+  useWorksheetEffects,
+  useWorksheetSubscriptions,
+  type WorksheetSlice,
+} from './slices/WorksheetSlice';
 import { pick } from './utilities/common';
 
 export interface Store
@@ -21,24 +27,35 @@ export interface Store
     UserSlice,
     ThemeSlice,
     DimensionsSlice,
-    ProfileSlice {}
+    ProfileSlice,
+    WorksheetSlice {}
 
-const PersistKeys = [
+const basePersistKeys: (keyof Store)[] = [
   'authStatus',
   'theme',
   'coursePref',
   'professorPref',
-].concat(Object.keys(defaultPreferences) as (keyof Store)[]) as (keyof Store)[];
+  'viewedPerson',
+  'viewedSeason',
+  'viewedWorksheetNumber',
+  'worksheetView',
+];
+const PersistKeys = basePersistKeys.concat(
+  Object.keys(defaultPreferences) as (keyof Store)[],
+);
 
 export const useStore = create<Store>()(
   persist(
-    immer((...a) => ({
-      ...createAuthSlice(...a),
-      ...createUserSlice(...a),
-      ...createThemeSlice(...a),
-      ...createDimensionsSlice(...a),
-      ...createProfileSlice(...a),
-    })),
+    subscribeWithSelector(
+      immer((...a) => ({
+        ...createAuthSlice(...a),
+        ...createUserSlice(...a),
+        ...createThemeSlice(...a),
+        ...createDimensionsSlice(...a),
+        ...createProfileSlice(...a),
+        ...createWorksheetSlice(...a),
+      })),
+    ),
     {
       name: 'store',
       partialize: (state) => pick(state, PersistKeys),
@@ -105,7 +122,12 @@ const useTheme = () => {
 };
 
 export const useInitStore = () => {
+  // Subscriptions first
+  useWorksheetSubscriptions();
+
+  // Then effects
   useAuth();
   useDimensions();
   useTheme();
+  useWorksheetEffects();
 };

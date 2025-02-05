@@ -8,9 +8,9 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern

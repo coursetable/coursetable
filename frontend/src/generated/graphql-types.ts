@@ -3724,6 +3724,18 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
+export type BuildingsCatalogQueryVariables = Exact<{ [key: string]: never }>;
+
+export type BuildingsCatalogQuery = {
+  __typename?: 'query_root';
+  buildings: Array<{
+    __typename?: 'buildings';
+    building_name: string | null;
+    code: string;
+    url: string | null;
+  }>;
+};
+
 export type CourseModalOverviewDataQueryVariables = Exact<{
   listingId: Scalars['Int']['input'];
   sameCourseId: Scalars['Int']['input'];

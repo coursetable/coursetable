@@ -2,15 +2,21 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useShallow } from 'zustand/react/shallow';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useStore } from '../../store';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, viewedSeason } = useWorksheet();
+  const { courses, viewedSeason } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      viewedSeason: state.viewedSeason,
+    })),
+  );
 
   const eventStyleGetter = useEventStyle();
 

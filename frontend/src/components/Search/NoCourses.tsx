@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 
-import { useWorksheet } from '../../contexts/worksheetContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
+import { useStore } from '../../store';
 import { toSeasonString } from '../../utilities/course';
 
 function NoCourses() {
-  const { viewedSeason } = useWorksheet();
+  const viewedSeason = useStore((state) => state.viewedSeason);
 
   return (
     <div style={{ width: '100%' }} className="d-flex mb-5">

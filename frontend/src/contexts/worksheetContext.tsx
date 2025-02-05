@@ -25,7 +25,7 @@ import { useSessionStorageState } from '../utilities/browserStorage';
 
 type WorksheetView = 'calendar' | 'list';
 
-export type WorksheetCourse = {
+type WorksheetCourse = {
   crn: Crn;
   color: string;
   listing: CatalogListing;

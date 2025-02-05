@@ -1,11 +1,17 @@
 import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useSearch } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useStore } from '../../store';
 import { sortCourses } from '../../utilities/course';
 import Results from '../Search/Results';
 
 function WorksheetList() {
-  const { courses, worksheetLoading } = useWorksheet();
+  const { courses, worksheetLoading } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      worksheetLoading: state.worksheetLoading,
+    })),
+  );
 
   const {
     filters: { selectSortBy, sortOrder },

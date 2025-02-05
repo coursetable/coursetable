@@ -1,4 +1,5 @@
 import dns from 'node:dns';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import mdx from '@mdx-js/rollup';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import reactPlugin from '@vitejs/plugin-react';
@@ -116,6 +117,12 @@ export default defineConfig({
     visualizer({
       filename: 'build/bundle-map.html',
     }),
+    process.env.NODE_ENV === 'production' &&
+      sentryVitePlugin({
+        org: 'coursetable',
+        project: 'frontend',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      }),
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
@@ -182,6 +189,7 @@ export default defineConfig({
         entryFileNames: 'assets/entry-[name]-[hash:10].js',
       },
     },
+    sourcemap: process.env.NODE_ENV === 'production',
   },
   server: {
     // Only used in dev
