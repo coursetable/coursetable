@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import type { CatalogListing } from '../queries/api';
+import type { Crn } from '../queries/graphql-types';
 import { useStore } from '../store';
 
 export type Meeting = {
@@ -8,10 +10,10 @@ export type Meeting = {
 };
 
 export type CourseWithTime = {
-  crn: number;
+  crn: Crn;
   color: string;
   hidden: boolean;
-  listing?: {
+  listing: CatalogListing & {
     // Can it ever be undefined?
     course: {
       course_meetings: Meeting[];
@@ -90,7 +92,6 @@ export function useEnumeration(k: number) {
   useEffect(() => {
     const validCourses = safeCourses.filter(
       (course) =>
-        course.listing &&
         Array.isArray(course.listing.course.course_meetings) &&
         course.listing.course.course_meetings.length > 0,
     );
