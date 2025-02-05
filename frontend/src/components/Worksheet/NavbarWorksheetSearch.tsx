@@ -1,19 +1,34 @@
-import { useCallback } from 'react';
+// Src/components/Worksheet/NavbarWorksheetSearch.tsx
+import React, { useCallback } from 'react';
 import clsx from 'clsx';
 import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
-
-import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
-export function NavbarWorksheetSearch() {
+export interface EnumerationControlsProps {
+  enumerationMode: boolean;
+  toggleEnumerationMode: () => void;
+  handleNext: () => void;
+  handlePrevious: () => void;
+  currentIndex: number;
+  totalCombos: number;
+}
+
+interface NavbarWorksheetSearchProps {
+  readonly enumerationControls?: EnumerationControlsProps;
+}
+
+export function NavbarWorksheetSearch({
+  enumerationControls,
+}: NavbarWorksheetSearchProps) {
   const {
     worksheetView,
     changeWorksheetView,
@@ -40,7 +55,7 @@ export function NavbarWorksheetSearch() {
   );
 
   const removeFriendWithConfirmation = useCallback(
-    (friendNetId: NetId, isRequest: boolean) =>
+    (friendNetId: string, isRequest: boolean) =>
       new Promise<void>((resolve) => {
         toast.warn(
           <>
@@ -124,6 +139,48 @@ export function NavbarWorksheetSearch() {
           </Button>
         </div>
       )}
+      {/* Enumeration Mode Controls */}
+      {enumerationControls && (
+        <div className={clsx(styles.enumerationControls, 'ms-3')}>
+          <Button
+            variant="outline-secondary"
+            onClick={enumerationControls.toggleEnumerationMode}
+            className={styles.enumToggleButton}
+            aria-label="Toggle Enumeration Mode"
+          >
+            {enumerationControls.enumerationMode
+              ? 'Disable Enum'
+              : 'Enable Enum'}
+          </Button>
+          {enumerationControls.enumerationMode && (
+            <div className={styles.arrowControls}>
+              <Button
+                variant="outline-secondary"
+                onClick={enumerationControls.handlePrevious}
+                className={styles.prevButton}
+                aria-label="Previous Combination"
+                disabled={enumerationControls.currentIndex === 0}
+              >
+                <FaArrowLeft />
+              </Button>
+              <Button
+                variant="outline-secondary"
+                onClick={enumerationControls.handleNext}
+                className={styles.nextButton}
+                aria-label="Next Combination"
+              >
+                <FaArrowRight />
+              </Button>
+              <div className={styles.indexDisplay}>
+                {enumerationControls.currentIndex + 1} of{' '}
+                {enumerationControls.totalCombos}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
+
+export default NavbarWorksheetSearch;
