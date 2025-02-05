@@ -10,10 +10,11 @@ import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
+import type { CourseWithTime } from '../../utilities/useEnumeration';
 
 // Prop type for override courses
 interface WorksheetCalendarProps {
-  readonly coursesOverride?: WorksheetCourse[]; // CourseWithTime type here maybe?
+  readonly coursesOverride?: WorksheetCourse[] | CourseWithTime; // CourseWithTime type here maybe?
 }
 
 function WorksheetCalendar({ coursesOverride }: WorksheetCalendarProps) {

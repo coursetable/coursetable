@@ -9,6 +9,7 @@ import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
+import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
@@ -55,7 +56,7 @@ export function NavbarWorksheetSearch({
   );
 
   const removeFriendWithConfirmation = useCallback(
-    (friendNetId: string, isRequest: boolean) =>
+    (friendNetId: NetId, isRequest: boolean) =>
       new Promise<void>((resolve) => {
         toast.warn(
           <>
