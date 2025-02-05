@@ -14,7 +14,7 @@ import type { CourseWithTime } from '../../utilities/useEnumeration';
 
 // Prop type for override courses
 interface WorksheetCalendarProps {
-  readonly coursesOverride?: WorksheetCourse[] | CourseWithTime; // CourseWithTime type here maybe?
+  readonly coursesOverride?: WorksheetCourse[] | CourseWithTime[]; // CourseWithTime type here maybe?
 }
 
 function WorksheetCalendar({ coursesOverride }: WorksheetCalendarProps) {
