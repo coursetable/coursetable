@@ -67,6 +67,8 @@ export default function CourseTableNavbar() {
   const handlePrevious = useStore((state) => state.handlePrevious);
   const currentIndex = useStore((state) => state.currentIndex);
   const totalCombos = useStore((state) => state.totalCombos);
+  const comboSize = useStore((state) => state.comboSize);
+  const setComboSize = useStore((state) => state.setComboSize);
 
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
   const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
@@ -79,6 +81,8 @@ export default function CourseTableNavbar() {
         handlePrevious,
         currentIndex,
         totalCombos,
+        comboSize,
+        setComboSize,
       }
     : undefined;
 
