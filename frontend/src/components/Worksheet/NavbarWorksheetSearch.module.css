@@ -72,6 +72,7 @@
 
 .enumToggleButton:hover {
   background-color: var(--color-surface-hover);
+  color: var(--color-text);
   border-color: var(--color-primary-hover);
 }
 
@@ -102,6 +103,7 @@
 .prevButton:hover,
 .nextButton:hover {
   background-color: var(--color-surface-hover);
+  color: var(--color-text);
   border-color: var(--color-primary-hover);
 }
 
