@@ -139,8 +139,8 @@ export default function CourseTableNavbar() {
                     onClick={
                       authStatus !== 'authenticated'
                         ? () => {
-                          window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
-                        }
+                            window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
+                          }
                         : logout
                     }
                   >

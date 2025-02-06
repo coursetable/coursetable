@@ -25,7 +25,7 @@
   display: block;
   color: unset;
   border-radius: 8px;
-  padding-left: 0.5rem; 
+  padding-left: 0.5rem;
   transition:
     border-color var(--trans-dur),
     background-color var(--trans-dur),
