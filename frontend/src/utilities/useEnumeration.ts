@@ -48,7 +48,6 @@ function* validScheduleGenerator(
     }
     if (conflict) continue;
     current.push(courses[i]!);
-    console.log(current);
     yield* validScheduleGenerator(courses, k, i + 1, current);
     current.pop();
   }
@@ -62,8 +61,6 @@ export function useEnumeration(k: number) {
     () => (Array.isArray(courses) ? courses : []),
     [courses],
   );
-  console.log('=== Worksheet.tsx ===');
-  console.log('safeCourses.length:', safeCourses.length);
 
   const [enumeratedCombos, setEnumeratedCombos] = useState<WorksheetCourse[][]>(
     [],
