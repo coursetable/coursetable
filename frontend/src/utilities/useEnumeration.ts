@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import type { CatalogListing } from '../queries/api';
-import type { Crn } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
 
 export type Meeting = {
@@ -9,22 +8,9 @@ export type Meeting = {
   end_time: string;
 };
 
-export type CourseWithTime = {
-  crn: Crn;
-  color: string;
-  hidden: boolean;
-  listing: CatalogListing & {
-    // Can it ever be undefined?
-    course: {
-      course_meetings: Meeting[];
-      // ...other properties if want to filter further
-    };
-  };
-};
-
 function coursesConflict(
-  courseA: CourseWithTime,
-  courseB: CourseWithTime,
+  courseA: WorksheetCourse,
+  courseB: WorksheetCourse,
 ): boolean {
   const meetingsA = courseA.listing.course.course_meetings;
   const meetingsB = courseB.listing.course.course_meetings;
@@ -43,11 +29,11 @@ function coursesConflict(
 }
 
 function* validScheduleGenerator(
-  courses: CourseWithTime[],
+  courses: WorksheetCourse[],
   k: number,
   start = 0,
-  current: CourseWithTime[] = [],
-): Generator<CourseWithTime[], void, unknown> {
+  current: WorksheetCourse[] = [],
+): Generator<WorksheetCourse[], void, unknown> {
   if (current.length === k) {
     yield [...current];
     return;
@@ -73,18 +59,18 @@ export function useEnumeration(k: number) {
 
   // 2) Provide a fallback if `courses` is missing
   const safeCourses = useMemo(
-    () => (Array.isArray(courses) ? courses : []) as CourseWithTime[],
+    () => (Array.isArray(courses) ? courses : []),
     [courses],
   );
   console.log('=== Worksheet.tsx ===');
   console.log('safeCourses.length:', safeCourses.length);
 
-  const [enumeratedCombos, setEnumeratedCombos] = useState<CourseWithTime[][]>(
+  const [enumeratedCombos, setEnumeratedCombos] = useState<WorksheetCourse[][]>(
     [],
   );
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const generatorRef = useRef<Generator<
-    CourseWithTime[],
+    WorksheetCourse[],
     void,
     unknown
   > | null>(null);
