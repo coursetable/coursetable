@@ -71,7 +71,9 @@ export function EnumerationControls({
             >
               <FaArrowRight />
             </Button>
-            <div className={styles.indexDisplay}>{currentIndex + 1}</div>
+            <div className={styles.indexDisplay}>
+              Combination {currentIndex + 1}
+            </div>
           </div>
         </div>
       )}
