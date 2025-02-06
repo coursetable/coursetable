@@ -156,22 +156,25 @@ export function NavbarWorksheetSearch({
               : 'Enable Enum'}
           </Button>
           {enumerationControls.enumerationMode && (
-            <>
-              {/* Input to choose combo size */}
+            <div className={clsx('d-flex align-items-center', 'ms-2')}>
+              {/* Label for the input */}
+              <label
+                htmlFor="comboSizeInput"
+                style={{
+                  marginRight: '0.5rem',
+                  fontSize: '14px',
+                  color: 'var(--color-text)',
+                }}
+              >
+                Combo Size:
+              </label>
               <input
+                id="comboSizeInput"
                 type="number"
                 min="1"
                 value={comboSize}
                 onChange={(e) => setComboSize(Number(e.target.value))}
-                className={clsx(styles.comboSizeInput, 'ms-2')}
-                style={{
-                  width: '60px',
-                  padding: '0.25rem',
-                  fontSize: '14px',
-                  border: '1px solid var(--color-icon)',
-                  backgroundColor: 'var(--color-surface)',
-                  color: 'var(--color-text)',
-                }}
+                className={clsx(styles.comboSizeInput)}
               />
               <div className={styles.arrowControls}>
                 <Button
@@ -195,7 +198,7 @@ export function NavbarWorksheetSearch({
                   {enumerationControls.currentIndex + 1}
                 </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       )}
