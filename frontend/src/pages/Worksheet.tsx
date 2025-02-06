@@ -69,7 +69,7 @@ function Worksheet() {
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
-  const coursesForCalendar =
+  const enumeratedCourses =
     enumerationMode && currentCombo ? currentCombo : undefined;
   return (
     <div className={styles.container}>
@@ -83,7 +83,7 @@ function Worksheet() {
         </div>
       )}
       <SurfaceComponent className={styles.calendar}>
-        <WorksheetCalendar coursesOverride={coursesForCalendar} />
+        <WorksheetCalendar coursesOverride={enumeratedCourses} />
         {!isMobile && (
           <button
             type="button"
@@ -99,7 +99,7 @@ function Worksheet() {
       </SurfaceComponent>
       {(isMobile || !expanded) && (
         <div className={styles.calendarSidebar}>
-          <WorksheetStats />
+          <WorksheetStats coursesOverride={enumeratedCourses} />
           <WorksheetCalendarList />
         </div>
       )}

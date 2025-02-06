@@ -4,6 +4,7 @@ import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
+import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -84,7 +85,14 @@ function NoStatsTip({
   );
 }
 
-export default function WorksheetStats() {
+// Prop type for override courses
+interface WorksheetCalendarProps {
+  readonly coursesOverride?: WorksheetCourse[];
+}
+
+export default function WorksheetStats({
+  coursesOverride,
+}: WorksheetCalendarProps) {
   const [shown, setShown] = useState(true);
   const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
     useShallow((state) => ({
@@ -93,6 +101,9 @@ export default function WorksheetStats() {
       exitExoticWorksheet: state.exitExoticWorksheet,
     })),
   );
+
+  const usedCourses = coursesOverride || courses;
+
   const user = useStore((state) => state.user);
   const countedCourseCodes = new Set();
   let courseCnt = 0;
@@ -103,7 +114,7 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  for (const { listing, hidden } of courses) {
+  for (const { listing, hidden } of usedCourses) {
     const alreadyCounted = listing.course.listings.some((l) =>
       countedCourseCodes.has(l.course_code),
     );
