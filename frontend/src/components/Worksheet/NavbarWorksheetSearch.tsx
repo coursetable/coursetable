@@ -1,5 +1,4 @@
-// Src/components/Worksheet/NavbarWorksheetSearch.tsx
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import clsx from 'clsx';
 import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
@@ -93,6 +92,9 @@ export function NavbarWorksheetSearch({
     [changeViewedPerson, viewedPerson, removeFriend],
   );
 
+  const comboSize = useStore((state) => state.comboSize);
+  const setComboSize = useStore((state) => state.setComboSize);
+
   if (authStatus !== 'authenticated' && !isExoticWorksheet()) return null;
 
   return (
@@ -154,28 +156,46 @@ export function NavbarWorksheetSearch({
               : 'Enable Enum'}
           </Button>
           {enumerationControls.enumerationMode && (
-            <div className={styles.arrowControls}>
-              <Button
-                variant="outline-secondary"
-                onClick={enumerationControls.handlePrevious}
-                className={styles.prevButton}
-                aria-label="Previous Combination"
-                disabled={enumerationControls.currentIndex === 0}
-              >
-                <FaArrowLeft />
-              </Button>
-              <Button
-                variant="outline-secondary"
-                onClick={enumerationControls.handleNext}
-                className={styles.nextButton}
-                aria-label="Next Combination"
-              >
-                <FaArrowRight />
-              </Button>
-              <div className={styles.indexDisplay}>
-                {enumerationControls.currentIndex + 1}
+            <>
+              {/* Input to choose combo size */}
+              <input
+                type="number"
+                min="1"
+                value={comboSize}
+                onChange={(e) => setComboSize(Number(e.target.value))}
+                className={clsx(styles.comboSizeInput, 'ms-2')}
+                style={{
+                  width: '60px',
+                  padding: '0.25rem',
+                  fontSize: '14px',
+                  border: '1px solid var(--color-icon)',
+                  backgroundColor: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                }}
+              />
+              <div className={styles.arrowControls}>
+                <Button
+                  variant="outline-secondary"
+                  onClick={enumerationControls.handlePrevious}
+                  className={styles.prevButton}
+                  aria-label="Previous Combination"
+                  disabled={enumerationControls.currentIndex === 0}
+                >
+                  <FaArrowLeft />
+                </Button>
+                <Button
+                  variant="outline-secondary"
+                  onClick={enumerationControls.handleNext}
+                  className={styles.nextButton}
+                  aria-label="Next Combination"
+                >
+                  <FaArrowRight />
+                </Button>
+                <div className={styles.indexDisplay}>
+                  {enumerationControls.currentIndex + 1}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       )}

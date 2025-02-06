@@ -7,6 +7,7 @@ export interface EnumerationState {
   currentIndex: number;
   totalCombos: number;
   currentCombo: CourseWithTime[] | null;
+  comboSize: number; // Number of courses in a combo
 }
 
 export interface EnumerationActions {
@@ -26,6 +27,7 @@ export interface EnumerationActions {
     currentIndex: number,
     totalCombos: number,
   ) => void;
+  setComboSize: (size: number) => void; // Sets combo size
 }
 
 export interface EnumerationSlice
@@ -42,24 +44,14 @@ export const createEnumerationSlice: StateCreator<
   currentIndex: 0,
   totalCombos: 0,
   currentCombo: null,
-  toggleEnumerationMode: () =>
-    set({
-      enumerationMode: !get().enumerationMode,
-    }),
-  setCurrentIndex: (index: number) =>
-    set({
-      currentIndex: index,
-    }),
-  setTotalCombos: (total: number) =>
-    set({
-      totalCombos: total,
-    }),
+  comboSize: 4, // Default combo size is 4
+  toggleEnumerationMode: () => set({ enumerationMode: !get().enumerationMode }),
+  setCurrentIndex: (index: number) => set({ currentIndex: index }),
+  setTotalCombos: (total: number) => set({ totalCombos: total }),
   setCurrentCombo: (combo: CourseWithTime[] | null) =>
-    set({
-      currentCombo: combo,
-    }),
+    set({ currentCombo: combo }),
   setHandleNext: (fn: () => void) => set({ handleNext: fn }),
-  setHandlePrevious: (fn: () => void) => set({ handleNext: fn }),
+  setHandlePrevious: (fn: () => void) => set({ handlePrevious: fn }),
   // Initialize navigation functions as no-ops.
   handleNext() {},
   handlePrevious() {},
@@ -68,11 +60,6 @@ export const createEnumerationSlice: StateCreator<
     handlePrevious: () => void,
     currentIndex: number,
     totalCombos: number,
-  ) =>
-    set({
-      handleNext,
-      handlePrevious,
-      currentIndex,
-      totalCombos,
-    }),
+  ) => set({ handleNext, handlePrevious, currentIndex, totalCombos }),
+  setComboSize: (size: number) => set({ comboSize: size }),
 });

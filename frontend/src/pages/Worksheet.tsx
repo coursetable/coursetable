@@ -28,6 +28,7 @@ function Worksheet() {
     isExoticWorksheet,
     enumerationMode,
     setEnumState,
+    comboSize,
   } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -38,6 +39,7 @@ function Worksheet() {
       isExoticWorksheet: state.isExoticWorksheet,
       enumerationMode: state.enumerationMode,
       setEnumState: state.setEnumState,
+      comboSize: state.comboSize,
     })),
   );
   const [expanded, setExpanded] = useState(false);
@@ -49,7 +51,7 @@ function Worksheet() {
     totalCombos,
     handleNext,
     handlePrevious,
-  } = useEnumeration(4);
+  } = useEnumeration(comboSize);
 
   // Sync enum info to the slice
   useEffect(() => {

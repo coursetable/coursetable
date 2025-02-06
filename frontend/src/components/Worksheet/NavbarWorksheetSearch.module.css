@@ -118,3 +118,20 @@
   color: var(--color-text-secondary);
   margin-left: 0.5rem;
 }
+
+.comboSizeInput {
+  width: 60px;
+  padding: 0.25rem;
+  font-size: 14px;
+  border: 1px solid var(--color-icon);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  transition: border-color var(--trans-dur);
+}
+
+.comboSizeInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
