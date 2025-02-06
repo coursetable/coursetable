@@ -1,6 +1,5 @@
 node_modules
 .DS_Store
-.vercel
 /deployment-url.txt
 /error.txt
 
@@ -10,9 +9,8 @@ api/static/**/*.xml
 
 api/postgres/data/*
 api/redis/data/*
+api/postgres/init/*ferry-dump.sql
 
 frontend/build
-
-sysadmin/install-scripts
 
 !**/.keep

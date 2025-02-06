@@ -4,7 +4,12 @@
 // @ts-check
 
 import jcRules from 'eslint-config-jc';
+
+// @ts-expect-error: no typings yet
 import cssModulesPlugin from 'eslint-plugin-css-modules';
+
+// @ts-expect-error: no typings yet
+import reactCompiler from 'eslint-plugin-react-compiler';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
@@ -28,10 +33,13 @@ export default tseslint.config(
     plugins: {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       'css-modules': cssModulesPlugin,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      'react-compiler': reactCompiler,
     },
     languageOptions: {
       parserOptions: {
-        project: true,
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {
@@ -94,8 +102,7 @@ export default tseslint.config(
       'react/jsx-no-bind': 'off',
       'react/jsx-uses-react': 'off',
       'react/no-array-index-key': 'off',
-      // TODO: we should eventually get rid of `in` operator
-      'no-restricted-syntax': 'off',
+      'react-compiler/react-compiler': 'error',
     },
   },
   {
@@ -114,7 +121,7 @@ export default tseslint.config(
           ],
           patterns: [
             {
-              group: ['luxon', 'moment'],
+              group: ['luxon', 'moment', 'dayjs'],
               message:
                 "Do you really need a Date library? Consider hand-rolling your own utilities. Look around for examples. We don't need anything complex because we will only possibly deal with three time zones: Yale, UTC, and user device. Maybe be on the lookout for https://tc39.es/proposal-temporal/docs/",
             },

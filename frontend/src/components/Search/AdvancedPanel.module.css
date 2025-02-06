@@ -2,6 +2,7 @@
   width: 440px;
   max-height: 80vh;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .row {
@@ -58,7 +59,7 @@
   border-bottom-right-radius: 4px;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.5px)) {
   .label {
     font-size: 12px;
   }

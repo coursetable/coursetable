@@ -5,68 +5,157 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { decompressFromEncodedURIComponent } from 'lz-string';
+import { toast } from 'react-toastify';
+import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
-import { seasons, useWorksheetInfo } from './ferryContext';
+import { seasons as allSeasons, useWorksheetInfo } from './ferryContext';
 import type { Option } from './searchContext';
 import { CUR_SEASON } from '../config';
+import type { UserWorksheets, CatalogListing } from '../queries/api';
 import {
-  toggleCourseHidden,
-  type UserWorksheets,
-  type CatalogListing,
-} from '../queries/api';
-import type { Season, Crn, NetId } from '../queries/graphql-types';
+  type Season,
+  type Crn,
+  type NetId,
+  crnSchema,
+  seasonSchema,
+} from '../queries/graphql-types';
 import { useStore } from '../store';
 import { useSessionStorageState } from '../utilities/browserStorage';
 
 type WorksheetView = 'calendar' | 'list';
 
-export type WorksheetCourse = {
+type WorksheetCourse = {
   crn: Crn;
   color: string;
   listing: CatalogListing;
-  hidden: boolean;
+  hidden: boolean | null;
 };
 
 type Store = {
   // These define which courses the store contains
-  person: 'me' | NetId;
-  curSeason: Season;
-  worksheetNumber: number;
+  viewedPerson: 'me' | NetId;
+  viewedSeason: Season;
+  viewedWorksheetNumber: number;
+  changeViewedPerson: (newPerson: 'me' | NetId) => void;
+  changeViewedSeason: (seasonCode: Season) => void;
+  changeViewedWorksheetNumber: (worksheetNumber: number) => void;
+
+  // When powering features like conflicting schedules and deciding which
+  // worksheet the toggle button should affect, we need to pick a number when
+  // given the course's season. We cannot use viewedWorksheetNumber, because
+  // if we are viewing worksheet 2 of season X, there's no reason that worksheet
+  // 2 of season Y should be the same thing or even exist. Therefore, this
+  // function returns 0 unless (viewedPerson, viewedSeason) = ('me', seasonCode)
+  getRelevantWorksheetNumber: (seasonCode: Season) => number;
+
+  // An exotic worksheet is one that is imported via the URL or file upload.
+  // Exotic worksheets do not have a corresponding worksheet in the worksheets
+  // data structure and do not use any of the other worksheet-related data.
+  isExoticWorksheet: boolean;
+  // A readonly worksheet is anything that doesn't belong to the user—either
+  // exotic or a friend's worksheet.
+  isReadonlyWorksheet: boolean;
+  exitExoticWorksheet: () => void;
+
+  // Affect visual display
+  worksheetView: WorksheetView;
+  hoverCourse: Crn | null;
+  changeWorksheetView: (view: WorksheetView) => void;
+  setHoverCourse: React.Dispatch<React.SetStateAction<Crn | null>>;
 
   // These are used to select the worksheet
   seasonCodes: Season[];
-  worksheetOptions: Option<number>[];
 
   // Controls which courses are displayed
   courses: WorksheetCourse[];
-  hoverCourse: Crn | null;
-  worksheetView: WorksheetView;
+  viewedWorksheetName: string;
+  isViewedWorksheetPrivate: boolean;
   worksheetLoading: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   worksheetError: {} | null;
-  changeSeason: (seasonCode: Season | null) => void;
-  changeWorksheet: (worksheetNumber: number) => void;
-  handlePersonChange: (newPerson: 'me' | NetId) => void;
-  setHoverCourse: React.Dispatch<React.SetStateAction<Crn | null>>;
-  handleWorksheetView: (view: WorksheetView) => void;
-  toggleCourse: (crn: Crn | 'all', hidden: boolean) => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
+
+function seasonsWithDataFirst(
+  seasons: Season[],
+  worksheets: UserWorksheets | undefined,
+) {
+  if (!worksheets) return seasons;
+  return seasons.toSorted((a, b) => {
+    const aHasData = worksheets.has(a);
+    const bHasData = worksheets.has(b);
+    if (aHasData && !bHasData) return -1;
+    if (!aHasData && bHasData) return 1;
+    return Number(b) - Number(a);
+  });
+}
+
+const exoticWorksheetSchema = z.object({
+  season: seasonSchema,
+  name: z.string(),
+  courses: z.array(
+    z.object({
+      crn: crnSchema,
+      color: z.string(),
+      hidden: z.boolean(),
+    }),
+  ),
+});
+
+export type ExoticWorksheet = z.infer<typeof exoticWorksheetSchema>;
+
+function parseCoursesFromURL():
+  | { data: ExoticWorksheet; worksheets: UserWorksheets }
+  | undefined {
+  const searchParams = new URLSearchParams(window.location.search);
+  if (!searchParams.has('ws')) return undefined;
+  const serial = decompressFromEncodedURIComponent(searchParams.get('ws')!);
+  const parsed: unknown = JSON.parse(serial);
+  const courses = exoticWorksheetSchema.safeParse(parsed);
+  if (!courses.success) {
+    toast.error('Invalid worksheet data from URL');
+    return undefined;
+  }
+  return {
+    data: courses.data,
+    worksheets: new Map([
+      [
+        courses.data.season,
+        new Map([
+          [
+            0,
+            {
+              name: courses.data.name,
+              courses: courses.data.courses,
+              private: false,
+            },
+          ],
+        ]),
+      ],
+    ]),
+  };
+}
 
 export function WorksheetProvider({
   children,
 }: {
   readonly children: React.ReactNode;
 }) {
-  const { user, userRefresh } = useStore(
+  const { worksheets, friends } = useStore(
     useShallow((state) => ({
-      user: state.user,
-      userRefresh: state.userRefresh,
+      worksheets: state.worksheets,
+      friends: state.friends,
     })),
   );
+  const [exoticWorksheet, setExoticWorksheet] = useState(() =>
+    parseCoursesFromURL(),
+  );
+
   const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
-    'person',
+    'viewedPerson',
     'me',
   );
 
@@ -74,54 +163,44 @@ export function WorksheetProvider({
   const [worksheetView, setWorksheetView] =
     useSessionStorageState<WorksheetView>('worksheetView', 'calendar');
 
-  const curWorksheet = useMemo(() => {
-    const whenNotDefined: UserWorksheets = {};
-    if (viewedPerson === 'me') return user.worksheets ?? whenNotDefined;
+  const curWorksheet: UserWorksheets = useMemo(() => {
+    const whenNotDefined: UserWorksheets = new Map();
+    if (viewedPerson === 'me') return worksheets ?? whenNotDefined;
 
-    return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
-  }, [user.worksheets, user.friends, viewedPerson]);
+    return friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
+  }, [worksheets, friends, viewedPerson]);
 
-  // TODO: restrict to only the seasons with data
-  const seasonCodes = seasons;
-  const [curSeason, setCurSeason] = useSessionStorageState(
-    'curSeason',
+  // Maybe seasons without data should be disabled/hidden
+  const seasonCodes = useMemo(
+    () => seasonsWithDataFirst(allSeasons, worksheets),
+    [worksheets],
+  );
+  const [viewedSeason, setViewedSeason] = useSessionStorageState(
+    'viewedSeason',
     CUR_SEASON,
   );
-  const [worksheetNumber, setWorksheetNumber] = useSessionStorageState(
-    'worksheetNumber',
-    0,
-  );
+  const [viewedWorksheetNumber, setViewedWorksheetNumber] =
+    useSessionStorageState('viewedWorksheetNumber', 0);
 
   const {
     loading: worksheetLoading,
     error: worksheetError,
     data: courses,
-  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
-
-  // This will be dependent on backend data if we allow renaming
-  const worksheetOptions = useMemo<Option<number>[]>(
-    () =>
-      [0, 1, 2, 3].map((x) => ({
-        label: x === 0 ? 'Main Worksheet' : `Worksheet ${x}`,
-        value: x,
-      })),
-    [],
+  } = useWorksheetInfo(
+    exoticWorksheet?.worksheets ?? curWorksheet,
+    exoticWorksheet?.data.season ?? viewedSeason,
+    exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
 
-  const toggleCourse = useCallback(
-    async (crn: Crn | 'all', hidden: boolean) => {
-      toggleCourseHidden({
-        season: curSeason,
-        crn,
-        hidden,
-        courses: courses.map((course) => course.listing),
-      });
-      await userRefresh();
+  const changeViewedSeason = useCallback(
+    (newSeason: Season) => {
+      setViewedSeason(newSeason);
+      setViewedWorksheetNumber(0);
     },
-    [courses, curSeason, userRefresh],
+    [setViewedWorksheetNumber, setViewedSeason],
   );
 
-  const handleWorksheetView = useCallback(
+  const changeWorksheetView = useCallback(
     (view: WorksheetView) => {
       setWorksheetView(view);
       // Scroll back to top when changing views
@@ -130,65 +209,87 @@ export function WorksheetProvider({
     [setWorksheetView],
   );
 
-  const handlePersonChange = useCallback(
+  const changeViewedPerson = useCallback(
     (newPerson: 'me' | NetId) => {
+      setViewedWorksheetNumber(0);
       setViewedPerson(newPerson);
     },
-    [setViewedPerson],
+    [setViewedPerson, setViewedWorksheetNumber],
   );
 
-  const changeSeason = useCallback(
-    (seasonCode: Season | null) => {
-      if (seasonCode === null) return;
-      setCurSeason(seasonCode);
+  const getRelevantWorksheetNumber = useCallback(
+    (seasonCode: Season) => {
+      if (viewedPerson !== 'me' || seasonCode !== viewedSeason) return 0;
+      return viewedWorksheetNumber;
     },
-    [setCurSeason],
+    [viewedPerson, viewedSeason, viewedWorksheetNumber],
   );
 
-  const changeWorksheet = useCallback(
-    (newNumber: number) => {
-      setWorksheetNumber(newNumber);
-    },
-    [setWorksheetNumber],
-  );
+  const exitExoticWorksheet = useCallback(() => {
+    setExoticWorksheet(undefined);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete('ws');
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}${searchParams}`,
+    );
+  }, []);
+
+  const isExoticWorksheet = Boolean(exoticWorksheet);
+  const isReadonlyWorksheet = isExoticWorksheet || viewedPerson !== 'me';
+  const viewedWorksheetName =
+    exoticWorksheet?.data.name ??
+    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
+    (viewedWorksheetNumber === 0 ? 'Main Worksheet' : 'Unnamed Worksheet');
+  const isViewedWorksheetPrivate =
+    curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.private ??
+    false;
 
   const store = useMemo(
     () => ({
       seasonCodes,
-      curSeason,
-      worksheetNumber,
-      person: viewedPerson,
+      viewedSeason,
+      viewedWorksheetNumber,
+      viewedPerson,
+      getRelevantWorksheetNumber,
       courses,
       hoverCourse,
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetOptions,
+      viewedWorksheetName,
+      isViewedWorksheetPrivate,
+      isExoticWorksheet,
+      isReadonlyWorksheet,
+      exitExoticWorksheet,
 
-      changeSeason,
-      handlePersonChange,
+      changeViewedSeason,
+      changeViewedPerson,
       setHoverCourse,
-      handleWorksheetView,
-      toggleCourse,
-      changeWorksheet,
+      changeWorksheetView,
+      changeViewedWorksheetNumber: setViewedWorksheetNumber,
     }),
     [
       seasonCodes,
-      curSeason,
-      worksheetNumber,
+      viewedSeason,
+      viewedWorksheetNumber,
       viewedPerson,
+      getRelevantWorksheetNumber,
       courses,
       hoverCourse,
       worksheetView,
       worksheetLoading,
       worksheetError,
-      worksheetOptions,
-      changeSeason,
-      handlePersonChange,
-      setHoverCourse,
-      handleWorksheetView,
-      toggleCourse,
-      changeWorksheet,
+      viewedWorksheetName,
+      isViewedWorksheetPrivate,
+      isExoticWorksheet,
+      isReadonlyWorksheet,
+      changeViewedSeason,
+      changeViewedPerson,
+      changeWorksheetView,
+      setViewedWorksheetNumber,
+      exitExoticWorksheet,
     ],
   );
 
@@ -200,3 +301,29 @@ export function WorksheetProvider({
 }
 
 export const useWorksheet = () => useContext(WorksheetContext)!;
+
+export function useWorksheetNumberOptions(
+  person: 'me' | NetId,
+  season: Season,
+): { [worksheetNumber: number]: Option<number> } {
+  const { worksheets, friends } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+    })),
+  );
+  const seasonWorksheet = (
+    person === 'me' ? worksheets : friends?.[person]?.worksheets
+  )?.get(season);
+  const options = seasonWorksheet
+    ? Object.fromEntries(
+        [...seasonWorksheet.entries()].map(([key, value]) => [
+          key,
+          { value: key, label: value.name },
+        ]),
+      )
+    : {};
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  options[0] ??= { value: 0, label: 'Main Worksheet' };
+  return options;
+}

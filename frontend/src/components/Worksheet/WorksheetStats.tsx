@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
-import { useTheme } from '../../contexts/themeContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useShallow } from 'zustand/react/shallow';
+import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
   getOverallRatings,
@@ -12,6 +12,7 @@ import {
   isDiscussionSection,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
+
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -23,7 +24,7 @@ function StatPill({
   readonly stat: number;
   readonly children: React.ReactNode;
 }) {
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
   return (
     <dd
       className={styles.statPill}
@@ -85,13 +86,20 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses } = useWorksheet();
+  const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      isExoticWorksheet: state.isExoticWorksheet,
+      exitExoticWorksheet: state.exitExoticWorksheet,
+    })),
+  );
+  const user = useStore((state) => state.user);
   const countedCourseCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
   let workload = 0;
   let rating = 0;
-  const skillsAreas: string[] = [];
+  const skillsAreas: { courseCode: string; label: string }[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
@@ -105,7 +113,8 @@ export default function WorksheetStats() {
     // - Another section has been counted (we just randomly pick one)
     // - Is discussion section (no ratings or credits)
     // - Is hidden
-    if (alreadyCounted || hidden || isDiscussionSection(listing)) continue;
+    if (alreadyCounted || hidden || isDiscussionSection(listing.course))
+      continue;
 
     // Mark codes as counted, no double counting
     listing.course.listings.forEach((l) => {
@@ -119,7 +128,12 @@ export default function WorksheetStats() {
     credits += listing.course.credits ?? 0;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
-    skillsAreas.push(...listing.course.skills, ...listing.course.areas);
+    skillsAreas.push(
+      ...[...listing.course.skills, ...listing.course.areas].map((x) => ({
+        courseCode: listing.course_code,
+        label: x,
+      })),
+    );
   }
   const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
   const coursesWithRating = courseCnt - coursesWithoutRating.length;
@@ -152,38 +166,106 @@ export default function WorksheetStats() {
                   {credits}
                 </StatPill>
               </div>
-              <div>
-                <dt>
-                  Total workload
-                  <NoStatsTip
-                    coursesWithoutRating={coursesWithoutWorkload}
-                    coursesWithRating={coursesWithWorkload}
-                  />
-                </dt>
-                <StatPill colorMap={workloadColormap} stat={workload}>
-                  {workload.toFixed(2)}
-                </StatPill>
-              </div>
-              <div>
-                <dt>
-                  Average rating
-                  <NoStatsTip
-                    coursesWithoutRating={coursesWithoutRating}
-                    coursesWithRating={coursesWithRating}
-                  />
-                </dt>
-                <StatPill colorMap={ratingColormap} stat={avgRating}>
-                  {avgRating.toFixed(2)}
-                </StatPill>
-              </div>
+              {user?.hasEvals ? (
+                <div>
+                  <dt>
+                    Total workload
+                    <NoStatsTip
+                      coursesWithoutRating={coursesWithoutWorkload}
+                      coursesWithRating={coursesWithWorkload}
+                    />
+                  </dt>
+                  <StatPill colorMap={workloadColormap} stat={workload}>
+                    {workload.toFixed(2)}
+                  </StatPill>
+                </div>
+              ) : (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip id="login-tooltip">
+                      <small>
+                        {user ? 'Complete the challenge' : 'Sign in'} to see
+                        ratings
+                      </small>
+                    </Tooltip>
+                  }
+                >
+                  <div>
+                    <dt>Total workload</dt>
+                    <dd
+                      className={styles.statPill}
+                      style={{
+                        backgroundColor: 'var(--color-primary)',
+                      }}
+                    />
+                  </div>
+                </OverlayTrigger>
+              )}
+              {user?.hasEvals ? (
+                <div>
+                  <dt>
+                    Average rating
+                    <NoStatsTip
+                      coursesWithoutRating={coursesWithoutRating}
+                      coursesWithRating={coursesWithRating}
+                    />
+                  </dt>
+                  <StatPill colorMap={ratingColormap} stat={avgRating}>
+                    {avgRating.toFixed(2)}
+                  </StatPill>
+                </div>
+              ) : (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip id="login-tooltip">
+                      <small>
+                        {user ? 'Complete the challenge' : 'Sign in'} to see
+                        ratings
+                      </small>
+                    </Tooltip>
+                  }
+                >
+                  <div>
+                    <dt>Average rating</dt>
+                    <dd
+                      className={styles.statPill}
+                      style={{
+                        backgroundColor: 'var(--color-primary)',
+                      }}
+                    />
+                  </div>
+                </OverlayTrigger>
+              )}
               <div className={styles.wide}>
                 <dt>Skills & Areas</dt>
                 <dd>
-                  {skillsAreas.sort().map((skill, i) => (
-                    <SkillBadge skill={skill} key={i} />
-                  ))}
+                  {skillsAreas
+                    .sort((a, b) => a.label.localeCompare(b.label, 'en-US'))
+                    .map((x, i) => (
+                      <OverlayTrigger
+                        key={i}
+                        overlay={<Tooltip>{x.courseCode}</Tooltip>}
+                      >
+                        <span>
+                          <SkillBadge skill={x.label} />
+                        </span>
+                      </OverlayTrigger>
+                    ))}
                 </dd>
               </div>
+            </dl>
+            <div className={styles.spacer} />
+            <dl>
+              {isExoticWorksheet() && (
+                <div className={styles.wide}>
+                  <dt>Viewing exported worksheet</dt>
+                  <Button variant="primary" onClick={exitExoticWorksheet}>
+                    Exit
+                  </Button>
+                </div>
+              )}
             </dl>
           </div>
         </div>

@@ -3,14 +3,18 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type { GridChildComponentProps } from 'react-window';
+import { useShallow } from 'zustand/react/shallow';
 
 import type { ResultItemData } from './Results';
 import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
-import { isInWorksheet } from '../../utilities/course';
+import {
+  isInWorksheet,
+  toTimesSummary,
+  toLocationsSummary,
+} from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { TextComponent } from '../Typography';
@@ -49,7 +53,7 @@ function Rating({
                   ? colorMap(rating)
                   : undefined
                 : generateRandomColor(
-                    `${listing.crn}${listing.season_code}${name}`,
+                    `${listing.crn}${listing.course.season_code}${name}`,
                   )
               )
                 ?.darken()
@@ -75,22 +79,28 @@ function ResultsGridItem({
 }: GridChildComponentProps<ResultItemData>) {
   const listing = listings[rowIndex * columnCount + columnIndex];
   const target = useCourseModalLink(listing);
-  const user = useStore((state) => state.user);
-  const { worksheetNumber } = useWorksheet();
+  const { user, worksheets } = useStore(
+    useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
+  );
+  const getRelevantWorksheetNumber = useStore(
+    (state) => state.getRelevantWorksheetNumber,
+  );
 
   const inWorksheet = useMemo(
     () =>
       listing &&
       isInWorksheet(
-        listing.season_code,
-        listing.crn,
-        worksheetNumber,
-        user.worksheets,
+        listing,
+        getRelevantWorksheetNumber(listing.course.season_code),
+        worksheets,
       ),
-    [listing, worksheetNumber, user.worksheets],
+    [listing, getRelevantWorksheetNumber, worksheets],
   );
 
   if (!listing) return null;
+
+  const timesSummary = toTimesSummary(listing.course);
+  const locationsSummary = toLocationsSummary(listing.course);
 
   return (
     <li className={styles.container} style={style}>
@@ -107,14 +117,17 @@ function ResultsGridItem({
             <CourseCode listing={listing} subdueSection={false} />
           </div>
           {multiSeasons && (
-            <SeasonTag season={listing.season_code} className={styles.season} />
+            <SeasonTag
+              season={listing.course.season_code}
+              className={styles.season}
+            />
           )}
         </div>
         <div>
           <strong className={styles.oneLine}>{listing.course.title}</strong>
         </div>
         <div className="d-flex justify-content-between">
-          <div>
+          <div className={styles.courseInfo}>
             <TextComponent
               type="secondary"
               className={clsx(styles.oneLine, styles.professors)}
@@ -129,17 +142,13 @@ function ResultsGridItem({
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {listing.course.times_summary === 'TBA'
-                ? 'Times: TBA'
-                : listing.course.times_summary}
+              {timesSummary === 'TBA' ? 'Times: TBA' : timesSummary}
             </TextComponent>
             <TextComponent
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {listing.course.locations_summary === 'TBA'
-                ? 'Location: TBA'
-                : listing.course.locations_summary}
+              {locationsSummary === 'TBA' ? 'Location: TBA' : locationsSummary}
             </TextComponent>
             <div className={styles.skillsAreas}>
               {[...listing.course.skills, ...listing.course.areas].map(
@@ -155,7 +164,7 @@ function ResultsGridItem({
                 <Rating
                   key={name}
                   listing={listing}
-                  hasEvals={user.hasEvals}
+                  hasEvals={user?.hasEvals}
                   name={name}
                 />
               ))}

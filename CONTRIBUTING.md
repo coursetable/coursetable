@@ -86,27 +86,6 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    - Run `curl -fsSL https://bun.sh/install | bash`
 
-### Aside: a quick explainer on docker-compose
-
-`docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
-
-Our setup is declared in the [docker-compose.yml](../api/docker-compose.yml) file.
-
-- The dev environment is defined in combination with the [dev-compose.yml](../api/dev-compose.yml) file.
-- The production environment is defined in combination with the [prod-compose.yml](../api/prod-compose.yml) file.
-
-Some useful commands:
-
-- `docker-compose up` starts all the services
-- `docker-compose up -d` starts everything in the background
-- `docker-compose ps` tells you what services are running
-- `docker-compose stop` stops everything
-- `docker-compose down` stops and removes everything
-- `docker-compose restart` restarts everything
-- `docker-compose logs -f` gets and "follows" (via `-f`) the logs from all the services. It's totally safe to control-C on this command - it won't stop anything
-- `docker-compose logs -f <service>` gets the logs for a specific service. For example, `docker-compose logs -f api` gets the logs for the backend API.
-- `docker-compose build` builds all the services. This probably won't be necessary for our development environment, since we're building everything on the fly
-
 ## Running CourseTable
 
 Note: if you run into issues, check the troubleshooting section at the bottom.
@@ -147,14 +126,10 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ./start.sh -d
    ```
 
-   Optionally, to overwrite your cached catalogs:
+   Note that there are two other relevant flags:
 
-   ```sh
-   cd api
-   ./start.sh -d -o
-   # Ctrl + C to exit after catalogs refresh
-   ./start.sh -d # start normally
-   ```
+   - On first setup, run with `--ferry_seed` (or `-f`) to seed your local Postgres database: `./start.sh -d -f`. You can run this command again to refresh the course data.
+   - To overwrite your cached catalogs, run with `--overwrite` (or `-o`): `./start.sh -d -o`. This flag is implied by the `-f` flag.
 
 1. Wait ~2-3 minutes. If you’re curious, here's what's going on:
 
@@ -162,7 +137,17 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    - Setting up the database schema
    - Generating some JSON data files
 
-   You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
+   You should see something like `express         | {"level":"info","message":"Sitemap index generated at static/sitemaps/sitemap_index.xml","timestamp":"2024-11-23 17:14:10:1410"}`. You can test that the API is working by going to https://localhost:3001/api/ping which should show you a page that says "pong".
+
+1. In a separate terminal window, connect to the `express` container's execution context and seed the Postgres DB:
+
+   ```sh
+   docker exec -it express sh
+   # Inside the express container's terminal
+   cd api && npm run db:push
+   ```
+
+   Make sure to complete any confirmation dialogs that appear. Remember that any changes to `api/drizzle/schema.ts` will require running this step again.
 
 1. In a separate terminal window, start the frontend:
 
@@ -201,6 +186,20 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
   ```
 
   Try using `sudo doppler update`.
+
+- `relation "studentBluebookSettings" does not exist`
+
+  Make sure to seed the Postgres database (`npm run db:push`) after starting the containers.
+
+## Running offline
+
+You may be a super dedicated developer and want to contribute to CourseTable from remote mountains or under the sea. Don't worry -- we have you covered. Developing on CourseTable offline is easy once you have followed all the above steps. From the `api` folder, just run:
+
+```
+docker pull oven/bun:slim
+docker pull node:slim
+./start.sh --dev --offline
+```
 
 ## Contributing
 

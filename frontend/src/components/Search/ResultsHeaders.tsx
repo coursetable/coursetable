@@ -17,7 +17,7 @@ function HeaderCol({
 }: {
   readonly className: string | undefined;
   readonly children: React.ReactNode;
-  readonly tooltip?: string | JSX.Element;
+  readonly tooltip?: string | React.JSX.Element;
   readonly sortOption?: SortKeys;
 }) {
   return (
@@ -79,7 +79,7 @@ function ResultsHeaders({
             )}
             <HeaderCol
               className={colStyles.codeCol}
-              tooltip="Course Code and Section"
+              tooltip="Course code and section"
               sortOption="course_code"
             >
               Code
@@ -91,7 +91,7 @@ function ResultsHeaders({
               className={colStyles.overallCol}
               tooltip={
                 <span>
-                  Average Course Rating
+                  Average course rating
                   <br />
                   (same professor and all cross-listed courses. If this
                   professor hasn't taught the course before, a ~ denotes an
@@ -106,7 +106,7 @@ function ResultsHeaders({
               className={colStyles.workloadCol}
               tooltip={
                 <span>
-                  Average Workload Rating
+                  Average workload rating
                   <br />
                   (same professor and all cross-listed courses. If this
                   professor hasn't taught the course before, a ~ denotes an
@@ -121,7 +121,7 @@ function ResultsHeaders({
               className={colStyles.profCol}
               tooltip={
                 <span>
-                  Average Professor Rating and Names
+                  Average professor course rating and names
                   <br />
                   (if there are multiple professors, we take the average between
                   them)
@@ -134,22 +134,13 @@ function ResultsHeaders({
             <HeaderCol
               className={colStyles.enrollCol}
               tooltip={
-                multiSeasons ? (
-                  <span>
-                    Class Enrollment
-                    <br />
-                    (If the course has not occurred/completed, based on the most
-                    recent past instance of this course. a ~ means a different
-                    professor was teaching)
-                  </span>
-                ) : (
-                  <span>
-                    Previous Class Enrollment
-                    <br />
-                    (based on the most recent past instance of this course. a ~
-                    means a different professor was teaching)
-                  </span>
-                )
+                <span>
+                  Class enrollment
+                  <br />
+                  (If the course has not occurred/completed, based on the most
+                  recent past instance of this course. a ~ means a different
+                  professor was teaching)
+                </span>
               }
               sortOption="enrollment"
             >
@@ -171,10 +162,7 @@ function ResultsHeaders({
             >
               Meets
             </HeaderCol>
-            <HeaderCol
-              className={colStyles.locCol}
-              sortOption="locations_summary"
-            >
+            <HeaderCol className={colStyles.locCol} sortOption="location">
               Location
             </HeaderCol>
             <HeaderCol

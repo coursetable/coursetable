@@ -7,9 +7,9 @@ import { MdErrorOutline } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
-import { toggleBookmark, toggleCourseHidden } from '../../queries/api';
+import type { Option } from '../../contexts/searchContext';
+import { updateWorksheetCourses } from '../../queries/api';
+import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
@@ -17,6 +17,8 @@ import {
   checkConflict,
   type ListingWithTimes,
 } from '../../utilities/course';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 import styles from './WorksheetToggleButton.module.css';
 
 function CourseConflictIcon({
@@ -30,11 +32,11 @@ function CourseConflictIcon({
   readonly modal: boolean;
   readonly worksheetNumber: number;
 }) {
-  const user = useStore((state) => state.user);
+  const worksheets = useStore((state) => state.worksheets);
 
   const { data } = useWorksheetInfo(
-    user.worksheets,
-    listing.season_code,
+    worksheets,
+    listing.course.season_code,
     worksheetNumber,
   );
 
@@ -42,7 +44,7 @@ function CourseConflictIcon({
     // If the course is in the worksheet, we never report a conflict
     if (inWorksheet) return undefined;
     if (modal) {
-      if (!CUR_YEAR.includes(listing.season_code))
+      if (!CUR_YEAR.includes(listing.course.season_code))
         return 'This will add to a worksheet of a semester that has already ended.';
       return undefined;
     }
@@ -83,87 +85,81 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  const { user, userRefresh } = useStore(
-    useShallow((state) => ({
-      user: state.user,
-      userRefresh: state.userRefresh,
-    })),
-  );
+  const { worksheets, worksheetsRefresh, getRelevantWorksheetNumber } =
+    useStore(
+      useShallow((state) => ({
+        worksheets: state.worksheets,
+        worksheetsRefresh: state.worksheetsRefresh,
+        getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
+      })),
+    );
 
-  const { worksheetNumber, worksheetOptions } = useWorksheet();
+  const defaultWorksheetNumber = getRelevantWorksheetNumber(
+    listing.course.season_code,
+  );
 
   // In the modal, the select can override the "currently viewed" worksheet
   // Please read https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-  const [selectedWorksheet, setSelectedWorksheet] = useState(worksheetNumber);
-  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(worksheetNumber);
-  if (prevWorksheetCtx !== worksheetNumber) {
-    setSelectedWorksheet(worksheetNumber);
-    setPrevWorksheetCtx(worksheetNumber);
+  const [selectedWorksheet, setSelectedWorksheet] = useState(
+    defaultWorksheetNumber,
+  );
+  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
+    defaultWorksheetNumber,
+  );
+  if (prevWorksheetCtx !== defaultWorksheetNumber) {
+    setSelectedWorksheet(defaultWorksheetNumber);
+    setPrevWorksheetCtx(defaultWorksheetNumber);
   }
+
+  const worksheetOptions = useWorksheetNumberOptions(
+    'me',
+    listing.course.season_code,
+  );
 
   const inWorksheet = useMemo(
     () =>
-      inWorksheetProp ??
-      isInWorksheet(
-        listing.season_code,
-        listing.crn,
-        selectedWorksheet,
-        user.worksheets,
-      ),
-    [
-      inWorksheetProp,
-      listing.season_code,
-      listing.crn,
-      selectedWorksheet,
-      user.worksheets,
-    ],
+      inWorksheetProp ?? isInWorksheet(listing, selectedWorksheet, worksheets),
+    [inWorksheetProp, listing, selectedWorksheet, worksheets],
   );
 
-  const { isLgDesktop } = useWindowDimensions();
+  const isLgDesktop = useStore((state) => state.isLgDesktop);
 
   const toggleWorkSheet = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
-      // Determine if we are adding or removing the course
-      const addRemove = inWorksheet ? 'remove' : 'add';
-
-      // Remove it from hidden courses before removing from worksheet
-      if (inWorksheet) {
-        toggleCourseHidden({
-          season: listing.season_code,
-          crn: listing.crn,
-          hidden: false,
-        });
-      }
-      const success = await toggleBookmark({
-        action: addRemove,
-        season: listing.season_code,
+      const success = await updateWorksheetCourses({
+        action: inWorksheet ? 'remove' : 'add',
+        season: listing.course.season_code,
         crn: listing.crn,
         worksheetNumber: selectedWorksheet,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
+        hidden: false,
       });
-      if (success) await userRefresh();
+      if (success) await worksheetsRefresh();
     },
     [
       inWorksheet,
       listing.crn,
-      listing.season_code,
+      listing.course.season_code,
       selectedWorksheet,
-      userRefresh,
+      worksheetsRefresh,
     ],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
-  const buttonLabel = user.worksheets
-    ? `${inWorksheet ? 'Remove from' : 'Add to'} my ${worksheetOptions[selectedWorksheet]!.label}`
+  const buttonLabel = worksheets
+    ? // The worksheet name can only be unknown if we triggered the
+      // if (prevWorksheetCtx !== defaultWorksheetNumber) code path above
+      // We will update it once and then it will be correct
+      `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${worksheetOptions[selectedWorksheet]?.label ?? 'Unknown'}"`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in
-  if (!user.worksheets) {
+  if (!worksheets) {
     return (
       <div className={styles.container}>
         <OverlayTrigger
@@ -215,30 +211,22 @@ function WorksheetToggleButton({
           </Button>
         </OverlayTrigger>
       </div>
-      {/* TODO: use the custom select component */}
       {modal && (
-        <select
-          value={selectedWorksheet}
-          onChange={(event) => {
-            setSelectedWorksheet(Number(event.target.value));
-          }}
-          onClick={(e) => {
-            // Check if the clicked target is the select element
-            if ((e.target as HTMLSelectElement).tagName === 'SELECT')
-              e.stopPropagation();
-          }}
-          // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-          onMouseEnter={(e) => {
-            e.preventDefault();
-          }}
+        <Popout
+          buttonText="Worksheet"
+          selectedOptions={worksheetOptions[selectedWorksheet]}
+          clearIcon={false}
+          displayOptionLabel
           className={styles.worksheetDropdown}
         >
-          {worksheetOptions.map(({ value, label }) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          <PopoutSelect<Option<number>, false>
+            value={worksheetOptions[selectedWorksheet]}
+            options={Object.values(worksheetOptions)}
+            onChange={(option) => setSelectedWorksheet(option!.value)}
+            showControl={false}
+            minWidth={200}
+          />
+        </Popout>
       )}
     </div>
   );

@@ -43,13 +43,13 @@
   border-left: 2px solid var(--color-text-tertiary);
 }
 
-@media (width < 768px) {
+@media (max-width: calc(768px - 0.5px)) {
   .container {
     width: 80vw;
   }
 }
 
-@media (width < 576px) {
+@media (max-width: calc(576px - 0.5px)) {
   .container {
     width: 90vw;
   }

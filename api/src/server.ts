@@ -7,7 +7,9 @@ import cors from 'cors';
 import session from 'express-session';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
-import { createClient } from 'redis';
+
+// Import this at the top before any user modules
+import './sentry-instrument.js';
 
 import { passportConfig } from './auth/auth.handlers.js';
 import casAuth from './auth/auth.routes.js';
@@ -16,14 +18,14 @@ import catalog from './catalog/catalog.routes.js';
 import { fetchCatalog } from './catalog/catalog.utils.js';
 import challenge from './challenge/challenge.routes.js';
 import {
-  SECURE_PORT,
-  INSECURE_PORT,
-  SESSION_SECRET,
-  CORS_OPTIONS,
-  REDIS_HOST,
   isDev,
-  SENTRY_DSN,
-  SENTRY_ENVIRONMENT,
+  API_PORT,
+  SESSION_SECRET,
+  redisClient,
+  OVERWRITE_CATALOG,
+  HASURA_GRAPHQL_ADMIN_SECRET,
+  COURSETABLE_ORIGINS,
+  NUM_SEASONS,
 } from './config.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
@@ -33,37 +35,22 @@ import user from './user/user.routes.js';
 
 const app = express();
 
-// Initialize Sentry
-Sentry.init({
-  dsn: SENTRY_DSN,
-  integrations: [
-    // Enable HTTP calls tracing
-    new Sentry.Integrations.Http({ tracing: true }),
-    // Enable Express.js middleware tracing
-    new Sentry.Integrations.Express({ app }),
-  ],
-  // Performance Monitoring
-  tracesSampleRate: 0.15, //  Capture 15% of the transactions
-  enabled: !isDev,
-  environment: SENTRY_ENVIRONMENT,
-});
-
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
-
-// The request handler must be the first middleware on the app
-app.use(Sentry.Handlers.requestHandler());
-
-// TracingHandler creates a trace for every incoming request
-app.use(Sentry.Handlers.tracingHandler());
 
 // Enable url-encoding
 app.use(express.urlencoded({ extended: true }));
 
 // Enable Cross-Origin Resource Sharing
 // (i.e. let the frontend call the API when it's on a different domain)
-app.use(cors(CORS_OPTIONS));
+app.use(
+  cors({
+    origin: COURSETABLE_ORIGINS,
+    credentials: true,
+    optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+  }),
+);
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
@@ -77,12 +64,6 @@ app.use((req, _, next) => {
 // Setup session management.
 
 // Initialize Redis client.
-const redisClient = createClient({
-  socket: {
-    host: REDIS_HOST,
-  },
-});
-// eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
 redisClient.connect().catch(winston.error);
 
 // Initialize Redis session store.
@@ -104,8 +85,8 @@ app.use(
     cookie: {
       // Cookie lifetime of one year.
       maxAge: 365 * 24 * 60 * 60 * 1000,
-
       secure: true,
+      sameSite: 'none',
     },
   }),
 );
@@ -130,7 +111,10 @@ app.use(
   '/ferry',
   (req, res, next) => {
     const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
-    req.headers['X-Hasura-Role'] = hasuraRole;
+    // Important: all headers must be lowercase; otherwise it will not override
+    // existing headers on the request.
+    req.headers['x-hasura-role'] = hasuraRole;
+    req.headers['x-hasura-admin-secret'] = HASURA_GRAPHQL_ADMIN_SECRET;
     next();
   },
   createProxyMiddleware({
@@ -162,7 +146,7 @@ app.get('/api/ping', (req, res) => {
 
 // The error handler must be registered before
 // any other error middleware and after all controllers
-app.use(Sentry.Handlers.errorHandler());
+Sentry.setupExpressErrorHandler(app);
 
 app.use(
   (
@@ -178,25 +162,31 @@ app.use(
   },
 );
 
-// Once routes have been created, start listening.
-app.listen(INSECURE_PORT, () => {
-  winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
-});
-
-// Serve dev with SSL.
-https
-  .createServer(
-    {
-      key: fs.readFileSync('./src/keys/server.key'),
-      cert: fs.readFileSync('./src/keys/server.cert'),
-    },
-    app,
-  )
-  .listen(SECURE_PORT, () => {
-    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
+if (isDev) {
+  // Serve dev with custom SSL.
+  https
+    .createServer(
+      {
+        key: fs.readFileSync('./src/keys/server.key'),
+        cert: fs.readFileSync('./src/keys/server.cert'),
+      },
+      app,
+    )
+    .listen(API_PORT, () => {
+      winston.info(`Secure dev proxy listening on port ${API_PORT}`);
+    });
+} else {
+  // In prod: just listen on the port. We use traefik to reverse proxy and
+  // provide SSL.
+  app.listen(API_PORT, () => {
+    winston.info(`Insecure API listening on port ${API_PORT}`);
   });
+}
 
-// Generate the static catalog on start.
+// Generate the static catalog on start. We do this *after* starting listening
 winston.info('Updating static catalog');
-const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
-void fetchCatalog(overwriteCatalog);
+
+void fetchCatalog(OVERWRITE_CATALOG, NUM_SEASONS).catch((err: unknown) => {
+  winston.error('Error updating static catalog');
+  winston.error(err);
+});

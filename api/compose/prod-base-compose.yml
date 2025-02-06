@@ -1,9 +1,8 @@
 services:
   api:
-    ports:
-      - '${INSECURE_PORT:-8040}:${INSECURE_PORT:-8040}'
     environment:
       NODE_ENV: production
+      OVERWRITE_CATALOG: 'false'
       HOT_RELOAD: 'false'
     labels:
       traefik.enable: true
@@ -12,6 +11,12 @@ services:
       - api
       - db
       - api_services
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   traefik:

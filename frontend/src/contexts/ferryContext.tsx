@@ -16,13 +16,16 @@ import type { WorksheetCourse } from './worksheetContext';
 import { UPCOMING_SEASONS } from '../config';
 import seasonsData from '../generated/seasons.json';
 import {
+  fetchCatalogMetadata,
   fetchCatalog,
   fetchEvals,
   type UserWorksheets,
   type UserWishlist,
+  type CatalogMetadata,
   type CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
 
 export const seasons = seasonsData as Season[];
@@ -31,7 +34,15 @@ export const seasons = seasonsData as Season[];
 const courseDataLock = new AsyncLock();
 const catalogLoadAttempted = new Set<Season>();
 const evalsLoadAttempted = new Set<Season>();
-let courseData: { [seasonCode: Season]: Map<Crn, CatalogListing> } = {};
+
+type CourseData = {
+  [seasonCode: Season]: {
+    metadata: CatalogMetadata;
+    data: Map<Crn, CatalogListing>;
+  };
+};
+
+let courseData: CourseData = {};
 const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     // Both data have been loaded; nothing to do
@@ -40,10 +51,21 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
       (!includeEvals || evalsLoadAttempted.has(season))
     )
       return;
-    const catalogPromise = (() => {
-      if (catalogLoadAttempted.has(season)) return Promise.resolve(null);
+    const catalogPromise = (async () => {
+      if (catalogLoadAttempted.has(season)) return null;
       catalogLoadAttempted.add(season);
-      return fetchCatalog(season);
+      const [data, metadata] = await Promise.all([
+        fetchCatalog(season),
+        fetchCatalogMetadata(),
+      ]);
+      if (!data || !metadata) return null;
+      // TODO: directly use the course-indexed data in frontend
+      const catalogOldFormat = new Map<Crn, CatalogListing>();
+      for (const course of data.values()) {
+        for (const listing of course.listings)
+          catalogOldFormat.set(listing.crn, { ...listing, course });
+      }
+      return { metadata, data: catalogOldFormat };
     })();
     const evalsPromise = (() => {
       if (evalsLoadAttempted.has(season) || !includeEvals)
@@ -61,10 +83,15 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
     const seasonCatalog = catalog ?? courseData[season];
     if (!seasonCatalog) return;
     if (evals) {
-      for (const [crn, ratings] of evals) {
-        const listing = seasonCatalog.get(crn);
-        if (listing) {
-          Object.assign(listing.course, ratings.course);
+      const courseById = new Map<number, CatalogListing['course']>();
+      for (const listing of seasonCatalog.data.values())
+        courseById.set(listing.course.course_id, listing.course);
+      for (const [courseId, ratings] of evals) {
+        // All listings share the same reference to this object, so this will
+        // affect the original catalog
+        const course = courseById.get(courseId);
+        if (course) {
+          Object.assign(course, ratings);
         } else {
           // Unactionable error, courses may have failed to load
         }
@@ -81,8 +108,9 @@ type Store = {
   requests: number;
   loading: boolean;
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   error: {} | null;
-  courses: typeof courseData;
+  courses: CourseData;
   requestSeasons: (requestedSeasons: Season[]) => Promise<void>;
 };
 
@@ -100,10 +128,7 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const {
-    authStatus,
-    user: { hasEvals },
-  } = useStore(
+  const { authStatus, user } = useStore(
     useShallow((state) => ({
       authStatus: state.authStatus,
       user: state.user,
@@ -116,7 +141,7 @@ export function FerryProvider({
         // No data; this can happen if the course-modal query is invalid
         if (!seasons.includes(season)) return;
         const includeEvals = Boolean(
-          authStatus === 'authenticated' && hasEvals,
+          authStatus === 'authenticated' && user?.hasEvals,
         );
         // As long as there is one request in progress, don't fire another
         if (
@@ -139,7 +164,7 @@ export function FerryProvider({
         setErrors((e) => [...e, err as {}]);
       });
     },
-    [authStatus, hasEvals],
+    [authStatus, user?.hasEvals],
   );
 
   // If there's any error, we want to immediately stop "loading" and start
@@ -179,13 +204,25 @@ export const useCourseData = (requestedSeasons: Season[]) => {
 
 export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
+  season: Season[],
+  getWorksheetNumber: (seasonCode: Season) => number,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+): { loading: boolean; error: {} | null; data: WorksheetCourse[] };
+export function useWorksheetInfo(
+  worksheets: UserWorksheets | undefined,
+  season: Season,
+  worksheetNumber: number,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+): { loading: boolean; error: {} | null; data: WorksheetCourse[] };
+export function useWorksheetInfo(
+  worksheets: UserWorksheets | undefined,
   season: Season | Season[],
-  worksheetNumber = 0,
+  worksheetNumber: number | ((seasonCode: Season) => number),
 ) {
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
-    if (Array.isArray(season)) return season.filter((x) => worksheets[x]);
-    if (season in worksheets) return [season];
+    if (Array.isArray(season)) return season.filter((x) => worksheets.has(x));
+    if (worksheets.has(season)) return [season];
     return [];
   }, [season, worksheets]);
 
@@ -198,11 +235,15 @@ export function useWorksheetInfo(
 
     for (const seasonCode of requestedSeasons) {
       // Guaranteed to exist because of how requestedSeasons is constructed.
-      const seasonWorksheets = worksheets[seasonCode]!;
-      const worksheet = seasonWorksheets[worksheetNumber];
+      const seasonWorksheets = worksheets.get(seasonCode)!;
+      const worksheet = seasonWorksheets.get(
+        typeof worksheetNumber === 'number'
+          ? worksheetNumber
+          : worksheetNumber(seasonCode),
+      );
       if (!worksheet) continue;
-      for (const { crn, color, hidden } of worksheet) {
-        const listing = courses[seasonCode]!.get(crn);
+      for (const { crn, color, hidden } of worksheet.courses) {
+        const listing = courses[seasonCode]!.data.get(crn);
         if (listing) {
           dataReturn.push({
             crn,

@@ -2,21 +2,27 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useShallow } from 'zustand/react/shallow';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useStore } from '../../store';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, curSeason } = useWorksheet();
+  const { courses, viewedSeason } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      viewedSeason: state.viewedSeason,
+    })),
+  );
 
   const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents('rbc', courses, curSeason);
+    const parsedCourses = getCalendarEvents('rbc', courses, viewedSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -39,7 +45,7 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, curSeason]);
+  }, [courses, viewedSeason]);
 
   return (
     <Calendar
@@ -57,7 +63,7 @@ function WorksheetCalendar() {
         setSearchParams((prev) => {
           prev.set(
             'course-modal',
-            `${event.listing.season_code}-${event.listing.crn}`,
+            `${event.listing.course.season_code}-${event.listing.crn}`,
           );
           return prev;
         });

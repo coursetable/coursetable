@@ -4,7 +4,14 @@ const config: CodegenConfig = {
   overwrite: true,
   schema: [
     'src/queries/schema-overrides.graphql',
-    'http://localhost:8085/v1/graphql',
+    {
+      'http://localhost:8085/v1/graphql': {
+        headers: {
+          'x-hasura-role': 'student',
+          'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+        },
+      },
+    },
   ],
   config: {
     // Prefer existing field because we put our override first
@@ -25,7 +32,6 @@ const config: CodegenConfig = {
           'ExtraInfo',
           'StringArr',
           'NumberArr',
-          'TimesByDay',
           'ProfessorInfo',
         ].map((type) => [type, `../queries/graphql-types#${type}`]),
       ),

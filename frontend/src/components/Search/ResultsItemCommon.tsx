@@ -77,7 +77,7 @@ export function CourseInfoPopover({
   children,
 }: {
   readonly listing: CatalogListing;
-  readonly children: JSX.Element;
+  readonly children: React.JSX.Element;
 }) {
   return (
     <OverlayTrigger
@@ -116,7 +116,9 @@ export function CourseCode({
   readonly listing: CatalogListing;
   readonly subdueSection: boolean;
 }) {
-  const section = listing.section ? ` ${listing.section.padStart(2, '0')}` : '';
+  const section = listing.course.section
+    ? ` ${listing.course.section.padStart(2, '0')}`
+    : '';
   return (
     <>
       <OverlayTrigger

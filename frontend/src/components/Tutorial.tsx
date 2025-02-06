@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
-import { useTheme } from '../contexts/themeContext';
 import { useTutorial } from '../contexts/tutorialContext';
+import { useStore } from '../store';
 import styles from './Tutorial.module.css';
 import './reactour-override.css';
 
@@ -122,7 +122,7 @@ const stepsContent: Step[] = [
     header: "🎉 That's it! 🎉",
     text: (
       <>
-        That's it! Click <strong>Finish Tutorial</strong> to start using
+        That's it! Click <strong>Finish tutorial</strong> to start using
         CourseTable!
       </>
     ),
@@ -134,7 +134,7 @@ function Tutorial() {
   const { isTutorialOpen, toggleTutorial, currentStep, setCurrentStep } =
     useTutorial();
 
-  const { theme } = useTheme();
+  const theme = useStore((state) => state.theme);
   const location = useLocation();
 
   const steps = stepsContent.map(
@@ -231,7 +231,7 @@ function Tutorial() {
         )
       }
       lastStepNextButton={
-        <Button className={styles.nextButton}>Finish Tutorial</Button>
+        <Button className={styles.nextButton}>Finish tutorial</Button>
       }
       getCurrentStep={setCurrentStep}
       disableKeyboardNavigation={['esc']}

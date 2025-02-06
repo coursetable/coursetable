@@ -9,11 +9,13 @@ import React, {
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
+import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
+import buildingsData from '../generated/buildings.json';
+import type { Buildings } from '../generated/graphql-types';
 import type { CatalogListing } from '../queries/api';
-import type { Season, Weekdays } from '../queries/graphql-types';
+import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { isEqual } from '../utilities/common';
@@ -22,11 +24,11 @@ import {
   subjects,
   schools,
   courseInfoAttributes,
+  weekdays,
 } from '../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
-  getDayTimes,
   getEnrolled,
   getNumFriends,
   getOverallRatings,
@@ -35,8 +37,10 @@ import {
   isGraduate,
   isDiscussionSection,
   sortCourses,
+  toLocationsSummary,
   toRangeTime,
   toSeasonString,
+  toWeekdayStrings,
   type NumFriendsReturn,
 } from '../utilities/course';
 
@@ -58,16 +62,16 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
 }));
 
 const sortCriteria = {
-  course_code: 'Sort by Course Code',
-  title: 'Sort by Course Title',
-  friend: 'Sort by Friends',
-  overall: 'Sort by Course Rating',
-  average_professor_rating: 'Sort by Professor Rating',
+  course_code: 'Sort by course code',
+  title: 'Sort by course title',
+  friend: 'Sort by # of friends',
+  overall: 'Sort by course rating',
+  average_professor_rating: 'Sort by professor rating',
   workload: 'Sort by Workload',
   average_gut_rating: 'Sort by Guts (Overall - Workload)',
-  enrollment: 'Sort by Last Enrollment',
-  time: 'Sort by Days & Times',
-  locations_summary: 'Sort by Locations',
+  enrollment: 'Sort by last enrollment',
+  time: 'Sort by days & times',
+  location: 'Sort by locations',
 };
 
 export const sortByOptions = Object.fromEntries(
@@ -90,6 +94,17 @@ export const schoolsOptions = Object.entries(schools).map(
   }),
 );
 
+const buildings = buildingsData as Buildings[];
+
+export const buildingOptions = buildings.map(
+  (building): Option => ({
+    value: building.code,
+    label: building.building_name
+      ? `${building.code} (${building.building_name})`
+      : building.code,
+  }),
+);
+
 export const seasonsOptions = seasons.map(
   (x): Option<Season> => ({
     value: x,
@@ -103,6 +118,14 @@ export const courseInfoAttributesOptions = courseInfoAttributes.map(
     value: attr,
   }),
 );
+
+export const booleanAttributes = {
+  fysem: 'First-year seminar',
+  sysem: 'Sophomore seminar',
+  colsem: 'College seminar',
+  discussion: 'Discussion section',
+  graduate: 'Graduate-level course',
+};
 
 type SortOrderType = 'desc' | 'asc';
 
@@ -121,23 +144,23 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
-export type BooleanFilters =
+export type BooleanOptions =
   | 'searchDescription'
   | 'enableQuist'
   | 'hideCancelled'
-  | 'hideConflicting'
-  | 'hideFirstYearSeminars'
-  | 'hideGraduateCourses'
-  | 'hideDiscussionSections';
+  | 'hideConflicting';
+
+export type BooleanAttributes = keyof typeof booleanAttributes;
 
 export interface CategoricalFilters {
   selectSubjects: string;
   selectSkillsAreas: string;
   selectSeasons: Season;
-  selectDays: Weekdays;
+  selectDays: number;
   selectSchools: string;
   selectCredits: number;
   selectCourseInfoAttributes: string;
+  selectBuilding: string;
 }
 
 export type NumericFilters =
@@ -148,8 +171,19 @@ export type NumericFilters =
   | 'enrollBounds'
   | 'numBounds';
 
+// All attributes that one class can have multiple of; these filters will show
+// a "union or intersection" button. Declaring it as a separate data structure
+// instead of colocating it with each categorical filter definition, because
+// this seems to make the categorical filter definitions more consistent.
+export type IntersectableFilters =
+  | 'selectSubjects'
+  | 'selectSkillsAreas'
+  | 'selectDays'
+  | 'selectSchools'
+  | 'selectCourseInfoAttributes';
+
 export type Filters = {
-  [P in BooleanFilters]: boolean;
+  [P in BooleanOptions]: boolean;
 } & {
   [P in keyof CategoricalFilters]: Option<CategoricalFilters[P]>[];
 } & {
@@ -158,6 +192,9 @@ export type Filters = {
   searchText: string;
   selectSortBy: Option<SortKeys>;
   sortOrder: SortOrderType;
+  intersectingFilters: IntersectableFilters[];
+  includeAttributes: BooleanAttributes[];
+  excludeAttributes: BooleanAttributes[];
 };
 
 export const filterLabels: { [K in keyof Filters]: string } = {
@@ -176,14 +213,18 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectCredits: 'Credit',
   selectCourseInfoAttributes: 'Info',
   searchDescription: 'Include descriptions in search',
+  selectBuilding: 'Building',
   enableQuist: 'Enable Quist',
+  // "Cancelled" and "conflicting" are also boolean attributes, but there's
+  // little reason one would want to "only include conflicting courses", so
+  // we don't add them to includedAttributes/excludedAttributes.
   hideCancelled: 'Hide cancelled courses',
   hideConflicting: 'Hide courses with conflicting times',
-  hideFirstYearSeminars: 'Hide first-year seminars',
-  hideGraduateCourses: 'Hide graduate courses',
-  hideDiscussionSections: 'Hide discussion sections',
+  includeAttributes: 'Include', // Unused
+  excludeAttributes: 'Exclude', // Unused
   selectSortBy: 'Sort By', // Unused
   sortOrder: 'Sort Order', // Unused
+  intersectingFilters: 'Union or Intersection', // Unused
 };
 
 export const defaultFilters: Filters = {
@@ -201,15 +242,16 @@ export const defaultFilters: Filters = {
   selectSchools: [],
   selectCredits: [],
   selectCourseInfoAttributes: [],
+  selectBuilding: [],
   searchDescription: false,
   enableQuist: false,
   hideCancelled: true,
   hideConflicting: false,
-  hideFirstYearSeminars: false,
-  hideGraduateCourses: false,
-  hideDiscussionSections: true,
+  includeAttributes: [],
+  excludeAttributes: ['discussion'],
   selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
+  intersectingFilters: [],
 };
 
 // Empty vs. default:
@@ -222,7 +264,7 @@ const emptyFilters: Filters = {
   ...defaultFilters,
   selectSeasons: [],
   hideCancelled: false,
-  hideDiscussionSections: false,
+  excludeAttributes: [],
 };
 
 export type FilterHandle<K extends keyof Filters> = ReturnType<
@@ -267,6 +309,10 @@ const targetTypes = {
     'info-attributes',
     'subjects',
     'professor-names',
+    'building-codes',
+    'listings.subjects',
+    'listings.course-codes',
+    'listings.schools',
   ] as const),
   boolean: new Set([
     'cancelled',
@@ -278,6 +324,42 @@ const targetTypes = {
   ] as const),
   text: new Set(['title', 'description', 'location'] as const),
 };
+
+function applyIntersectableFilter<T extends string | number>(
+  filterValue: T[],
+  value: T[],
+  isIntersecting: boolean,
+) {
+  if (isIntersecting)
+    return filterValue.every((option) => value.includes(option));
+  return filterValue.some((option) => value.includes(option));
+}
+
+function applyBooleanAttributes(
+  course: CatalogListing,
+  includeAttributes: BooleanAttributes[],
+  excludeAttributes: BooleanAttributes[],
+) {
+  const courseAttributes: BooleanAttributes[] = [];
+  if (isGraduate(course)) courseAttributes.push('graduate');
+  if (isDiscussionSection(course.course)) courseAttributes.push('discussion');
+  if (course.course.fysem) courseAttributes.push('fysem');
+  if (course.course.colsem) courseAttributes.push('colsem');
+  if (course.course.sysem) courseAttributes.push('sysem');
+  // If non-zero attributes should be included, we join them with OR
+  if (
+    includeAttributes.length > 0 &&
+    !includeAttributes.some((attr) => courseAttributes.includes(attr))
+  )
+    return false;
+  // If non-zero attributes should be excluded, we join them with AND
+  if (
+    excludeAttributes.length > 0 &&
+    excludeAttributes.some((attr) => courseAttributes.includes(attr))
+  )
+    return false;
+  return true;
+}
 
 export function SearchProvider({
   children,
@@ -297,6 +379,7 @@ export function SearchProvider({
   const numBounds = useFilterState('numBounds');
   const selectSchools = useFilterState('selectSchools');
   const selectCredits = useFilterState('selectCredits');
+  const selectBuilding = useFilterState('selectBuilding');
   const selectCourseInfoAttributes = useFilterState(
     'selectCourseInfoAttributes',
   );
@@ -304,24 +387,31 @@ export function SearchProvider({
   const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
   const hideConflicting = useFilterState('hideConflicting');
-  const hideFirstYearSeminars = useFilterState('hideFirstYearSeminars');
-  const hideGraduateCourses = useFilterState('hideGraduateCourses');
-  const hideDiscussionSections = useFilterState('hideDiscussionSections');
+  const includeAttributes = useFilterState('includeAttributes');
+  const excludeAttributes = useFilterState('excludeAttributes');
 
   const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
+
+  const intersectingFilters = useFilterState('intersectingFilters');
 
   const [startTime, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const user = useStore((state) => state.user);
+  const { worksheets, friends, getRelevantWorksheetNumber } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      friends: state.friends,
+      getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
+    })),
+  );
 
   const numFriends = useMemo(() => {
-    if (!user.friends) return {};
-    return getNumFriends(user.friends);
-  }, [user.friends]);
+    if (!friends) return {};
+    return getNumFriends(friends);
+  }, [friends]);
 
   const processedSearchText = useMemo(
     () =>
@@ -355,12 +445,10 @@ export function SearchProvider({
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
 
-  const { worksheetNumber } = useWorksheet();
-
   const { data: worksheetInfo } = useWorksheetInfo(
-    user.worksheets,
+    worksheets,
     processedSeasons,
-    worksheetNumber,
+    getRelevantWorksheetNumber,
   );
 
   const queryEvaluator = useMemo(
@@ -376,10 +464,12 @@ export function SearchProvider({
           case 'enrollment':
             return getEnrolled(listing.course, 'stat');
           case 'days':
-            return Object.keys(listing.course.times_by_day).map((d) =>
-              ['Thursday', 'Saturday', 'Sunday'].includes(d)
-                ? d.slice(0, 2)
-                : d[0],
+            return toWeekdayStrings(
+              listing.course.course_meetings.reduce(
+                // Each days_of_week is a bitmask. Join them to get all days.
+                (acc, m) => acc | m.days_of_week,
+                0,
+              ),
             );
           case 'info-attributes':
             return listing.course.course_flags.map((f) => f.flag.flag_text);
@@ -395,28 +485,26 @@ export function SearchProvider({
             return listing.course.extra_info !== 'ACTIVE';
           case 'conflicting':
             return (
-              listing.course.times_summary !== 'TBA' &&
+              listing.course.course_meetings.length > 0 &&
               !isInWorksheet(
-                listing.season_code,
-                listing.crn,
-                worksheetNumber,
-                user.worksheets,
+                listing,
+                getRelevantWorksheetNumber(listing.course.season_code),
+                worksheets,
               ) &&
               checkConflict(worksheetInfo, listing).length > 0
             );
           case 'grad':
             return isGraduate(listing);
           case 'discussion':
-            return isDiscussionSection(listing);
+            return isDiscussionSection(listing.course);
           case 'fysem':
-            return listing.course.fysem !== false;
+            return listing.course.fysem;
           case 'colsem':
-            // TODO: query for colsem
-            return false;
+            return listing.course.colsem;
           case 'location':
-            return listing.course.locations_summary;
+            return toLocationsSummary(listing.course);
           case 'season':
-            return listing.season_code;
+            return listing.course.season_code;
           case 'professor-names':
             // "No processors" is displayed in catalog as "TBA"
             // so it seems easiest to make Quist reflect this reality, although
@@ -426,12 +514,22 @@ export function SearchProvider({
             return listing.course.course_professors.map(
               (p) => p.professor.name,
             );
+          case 'building-codes':
+            return listing.course.course_meetings
+              .map((m) => m.location?.building.code)
+              .filter((x) => x !== undefined);
           case 'course-code':
             return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case 'number':
             return Number(listing.number.replace(/\D/gu, ''));
+          case 'listings.subjects':
+            return listing.course.listings.map((l) => l.subject);
+          case 'listings.course-codes':
+            return listing.course.listings.map((l) => l.course_code);
+          case 'listings.schools':
+            return listing.course.listings.map((l) => l.school);
           case 'subject':
           case 'school':
             return listing[key];
@@ -441,11 +539,20 @@ export function SearchProvider({
               return `${base} ${listing.course.description}`;
             return base;
           }
+          case 'title':
+          case 'areas':
+          case 'description':
+          case 'credits':
           default:
             return listing.course[key];
         }
       }),
-    [searchDescription.value, worksheetInfo, worksheetNumber, user.worksheets],
+    [
+      searchDescription.value,
+      worksheetInfo,
+      getRelevantWorksheetNumber,
+      worksheets,
+    ],
   );
 
   const quistPredicate = useMemo(() => {
@@ -466,7 +573,7 @@ export function SearchProvider({
   const searchDataPredictate = useCallback(
     (processedSearchTextParam: typeof processedSearchText) => {
       const listings = processedSeasons.flatMap((seasonCode) => {
-        const data = courseData[seasonCode];
+        const data = courseData[seasonCode]?.data;
         if (!data) return [];
         return [...data.values()];
       });
@@ -507,12 +614,11 @@ export function SearchProvider({
         }
 
         if (timeBounds.isNonEmpty) {
-          const times = getDayTimes(listing.course);
           if (
-            !times.some(
-              (time) =>
-                toRangeTime(time.start) >= timeBounds.value[0] &&
-                toRangeTime(time.end) <= timeBounds.value[1],
+            !listing.course.course_meetings.some(
+              (session) =>
+                toRangeTime(session.start_time) >= timeBounds.value[0] &&
+                toRangeTime(session.end_time) <= timeBounds.value[1],
             )
           )
             return false;
@@ -542,42 +648,48 @@ export function SearchProvider({
 
         if (
           hideConflicting.value &&
-          listing.course.times_summary !== 'TBA' &&
+          listing.course.course_meetings.length > 0 &&
           !isInWorksheet(
-            listing.season_code,
-            listing.crn,
-            worksheetNumber,
-            user.worksheets,
+            listing,
+            getRelevantWorksheetNumber(listing.course.season_code),
+            worksheets,
           ) &&
           checkConflict(worksheetInfo, listing).length > 0
         )
           return false;
 
-        if (hideDiscussionSections.value && isDiscussionSection(listing))
-          return false;
-
-        if (hideFirstYearSeminars.value && listing.course.fysem !== false)
-          return false;
-
-        if (hideGraduateCourses.value && isGraduate(listing)) return false;
-
-        if (
-          selectSubjects.value.length !== 0 &&
-          !selectSubjects.value.some(
-            (option) => option.value === listing.subject,
+        if (selectSubjects.value.length !== 0) {
+          // Never show a course that doesn't contain any of the selected
+          // subjects, even when it has a cross listing that does
+          // TODO: we don't need this once we group cross-listings
+          if (
+            !selectSubjects.value.some(
+              (option) => listing.subject === option.value,
+            )
           )
-        )
-          return false;
+            return false;
+          if (
+            !applyIntersectableFilter(
+              selectSubjects.value.map((option) => option.value),
+              listing.course.listings.map((l) => l.course_code.split(' ')[0]!),
+              intersectingFilters.value.includes('selectSubjects'),
+            )
+          )
+            return false;
+        }
 
         if (selectDays.value.length !== 0) {
-          const days = getDayTimes(listing.course).map(
-            (daytime) => daytime.day,
+          const days = listing.course.course_meetings.flatMap((session) =>
+            Object.values(weekdays).filter(
+              (day) => session.days_of_week & (1 << day),
+            ),
           );
-          const selectDayValues = selectDays.value.map((day) => day.value);
-          // Require the two sets to be equal
           if (
-            days.some((day) => !selectDayValues.includes(day)) ||
-            selectDayValues.some((day) => !days.includes(day))
+            !applyIntersectableFilter(
+              selectDays.value.map((option) => option.value),
+              days,
+              intersectingFilters.value.includes('selectDays'),
+            )
           )
             return false;
         }
@@ -588,8 +700,10 @@ export function SearchProvider({
             ...listing.course.skills,
           ];
           if (
-            !processedSkillsAreas.some((area) =>
-              listingSkillsAreas.includes(area),
+            !applyIntersectableFilter(
+              processedSkillsAreas,
+              listingSkillsAreas,
+              intersectingFilters.value.includes('selectSkillsAreas'),
             )
           )
             return false;
@@ -605,19 +719,49 @@ export function SearchProvider({
           return false;
 
         if (
-          selectCourseInfoAttributes.value.length !== 0 &&
-          !selectCourseInfoAttributes.value.some((option) =>
-            listing.course.course_flags.some(
-              (f) => f.flag.flag_text === option.value,
+          selectBuilding.value.length !== 0 &&
+          !selectBuilding.value.some((option) =>
+            listing.course.course_meetings.some(
+              (m) => m.location?.building.code === option.value,
             ),
           )
         )
           return false;
 
         if (
-          selectSchools.value.length !== 0 &&
-          listing.school !== null &&
-          !selectSchools.value.some((option) => option.value === listing.school)
+          selectCourseInfoAttributes.value.length !== 0 &&
+          !applyIntersectableFilter(
+            selectCourseInfoAttributes.value.map((option) => option.value),
+            listing.course.course_flags.map((f) => f.flag.flag_text),
+            intersectingFilters.value.includes('selectCourseInfoAttributes'),
+          )
+        )
+          return false;
+
+        if (selectSchools.value.length !== 0) {
+          // Same as selectSubjects
+          if (
+            !selectSchools.value.some(
+              (option) => listing.school === option.value,
+            )
+          )
+            return false;
+          if (
+            !applyIntersectableFilter(
+              selectSchools.value.map((option) => option.value),
+              listing.course.listings.map((l) => l.school),
+              intersectingFilters.value.includes('selectSchools'),
+            )
+          )
+            return false;
+        }
+
+        if (
+          !applyBooleanAttributes(
+            listing,
+            includeAttributes.value,
+            excludeAttributes.value,
+          )
         )
           return false;
 
@@ -641,22 +785,13 @@ export function SearchProvider({
             listing.course.course_professors.some((p) =>
               p.professor.name.toLowerCase().includes(token),
             ) ||
-            // Use `times_by_day` instead of `locations_summary` to account for
-            // multiple locations.
-            Object.values(listing.course.times_by_day)
-              .flat()
-              .flatMap((x) => x[2].toLowerCase().split(' '))
-              .some(
-                (loc) =>
-                  // Never allow a number to match a room number, as numbers are
-                  // more likely to be course numbers.
-                  // TODO: this custom parsing is not ideal. `times_by_day`
-                  // should give a more structured location format.
-                  !/^\d+$/u.test(loc) &&
-                  loc !== '-' &&
-                  loc !== 'tba' &&
-                  loc.startsWith(token),
-              )
+            listing.course.course_meetings.some(({ location }) =>
+              // TODO catalog no longer stores building full name; we should
+              // fetch this as a separate query
+              // Do not match on room numbers because room numbers are more
+              // likely to be course numbers
+              location?.building.code.toLowerCase().startsWith(token),
+            )
           )
             continue;
 
@@ -688,12 +823,11 @@ export function SearchProvider({
       numBounds,
       hideCancelled.value,
       hideConflicting.value,
-      worksheetNumber,
-      user.worksheets,
+      getRelevantWorksheetNumber,
+      worksheets,
       worksheetInfo,
-      hideDiscussionSections.value,
-      hideFirstYearSeminars.value,
-      hideGraduateCourses.value,
+      includeAttributes.value,
+      excludeAttributes.value,
       selectSubjects.value,
       selectDays.value,
       processedSkillsAreas,
@@ -702,6 +836,8 @@ export function SearchProvider({
       selectSchools.value,
       quistPredicate,
       searchDescription.value,
+      intersectingFilters.value,
+      selectBuilding.value,
     ],
   );
 
@@ -745,11 +881,12 @@ export function SearchProvider({
       enableQuist,
       hideCancelled,
       hideConflicting,
-      hideFirstYearSeminars,
-      hideGraduateCourses,
-      hideDiscussionSections,
+      includeAttributes,
+      excludeAttributes,
       selectSortBy,
       sortOrder,
+      intersectingFilters,
+      selectBuilding,
     }),
     [
       searchText,
@@ -770,11 +907,12 @@ export function SearchProvider({
       enableQuist,
       hideCancelled,
       hideConflicting,
-      hideFirstYearSeminars,
-      hideGraduateCourses,
-      hideDiscussionSections,
+      includeAttributes,
+      excludeAttributes,
       selectSortBy,
       sortOrder,
+      intersectingFilters,
+      selectBuilding,
     ],
   );
 

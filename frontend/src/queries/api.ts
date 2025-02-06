@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import z from 'zod';
 
 import {
+  seasonSchema,
   crnSchema,
   netIdSchema,
   type Season,
@@ -59,6 +60,7 @@ function parseWithWarning<T extends z.ZodSchema<unknown>>(
  */
 async function fetchAPI(
   endpointSuffix: string,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   options: BaseFetchOptions & ({ body: {} } | { method: 'POST' }),
 ): Promise<boolean>;
 /**
@@ -69,6 +71,7 @@ async function fetchAPI(
 async function fetchAPI(
   endpointSuffix: string,
   options: BaseFetchOptions,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 ): Promise<{} | undefined>;
 /**
  * Performs either a GET or POST request to the API, depending on whether a body
@@ -77,6 +80,7 @@ async function fetchAPI(
  */
 async function fetchAPI<T extends z.ZodSchema>(
   endpointSuffix: string,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   options: BaseFetchOptions & { body?: {}; schema: T },
 ): Promise<z.infer<T> | undefined>;
 async function fetchAPI(
@@ -88,6 +92,7 @@ async function fetchAPI(
     breadcrumb,
     handleErrorCode,
   }: BaseFetchOptions & {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     body?: {};
     method?: 'POST' | 'GET';
     schema?: z.ZodType<unknown>;
@@ -120,10 +125,22 @@ async function fetchAPI(
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
-      // Let the handler handle it first
-      if (handleErrorCode?.(errorCode))
-        return noResExpected ? false : undefined;
-      throw new Error(errorCode);
+      // Handle common errors uniformly
+      switch (errorCode) {
+        case 'USER_NOT_FOUND':
+          toast.info('Login expired. Please log in again.');
+          return noResExpected ? false : undefined;
+        case 'INVALID_REQUEST':
+          toast.error(
+            'The server did not understand this request. Please refresh the page and try again.',
+          );
+          return noResExpected ? false : undefined;
+        default:
+          // Let the handler handle it first
+          if (handleErrorCode?.(errorCode))
+            return noResExpected ? false : undefined;
+          throw new Error(errorCode);
+      }
     }
     // If no res body is expected, return early
     if (noResExpected) return true;
@@ -138,24 +155,32 @@ async function fetchAPI(
       message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
     });
     Sentry.captureException(err);
-    let message = String(err);
-    if (message.includes('INVALID_REQUEST')) {
-      message +=
-        ' Please try refreshing the page and/or reopening in a new tab.';
-    }
-    toast.error(`Failed while ${breadcrumb.message.toLowerCase()}: ${message}`);
+    toast.error(
+      `Failed while ${breadcrumb.message.toLowerCase()}: ${String(err)}`,
+    );
     return noResExpected ? false : undefined;
   }
 }
 
-export function toggleBookmark(body: {
-  action: 'add' | 'remove' | 'update';
-  season: Season;
-  crn: Crn;
-  worksheetNumber: number;
-  color: string;
-}): Promise<boolean> {
-  return fetchAPI('/user/toggleBookmark', {
+export function updateWorksheetCourses(
+  body: {
+    season: Season;
+    crn: Crn;
+    worksheetNumber: number;
+  } & (
+    | {
+        action: 'add';
+        color: string;
+        hidden: boolean;
+      }
+    | {
+        action: 'remove' | 'update';
+        color?: string;
+        hidden?: boolean;
+      }
+  ),
+): Promise<boolean> {
+  return fetchAPI('/user/updateWorksheetCourses', {
     body,
     handleErrorCode(err) {
       switch (err) {
@@ -181,30 +206,78 @@ export function toggleBookmark(body: {
   });
 }
 
-export async function toggleWish(body: {
-  action: 'add' | 'remove';
-  allCourseCodes: string[];
-}): Promise<boolean> {
-  return await fetchAPI('/user/toggleWish', {
+export async function updateWishlistCourses(
+  body: {
+    season: Season;
+    crn: Crn;
+  } & (
+    | {
+        action: 'add';
+      }
+    | {
+        action: 'remove';
+      }
+  ),
+): Promise<boolean> {
+  return await fetchAPI('/user/updateWishlistCourses', {
     body,
+    breadcrumb: {
+      category: 'wishlist',
+      message: 'Updating wishlist',
+    },
     handleErrorCode(err) {
       switch (err) {
-        // These errors can be triggered if the user clicks the button twice
-        // in a row
-        // TODO: we should debounce the request instead
-        case 'ALREADY_WISHLISTED':
+        case 'ALREADY_BOOKMARKED':
           toast.error('You have already added this class to your wishlist');
           return true;
-        case 'NOT_WISHLISTED':
+        case 'NOT_BOOKMARKED':
           toast.error('You have already removed this class from your wishlist');
           return true;
         default:
           return false;
       }
     },
+  });
+}
+
+export async function updateWorksheetMetadata(
+  body: {
+    season: Season;
+  } & (
+    | {
+        action: 'add';
+        name: string;
+      }
+    | {
+        action: 'delete';
+        worksheetNumber: number;
+      }
+    | {
+        action: 'rename';
+        worksheetNumber: number;
+        name: string;
+      }
+    | {
+        action: 'setPrivate';
+        worksheetNumber: number;
+        private: boolean;
+      }
+  ),
+): Promise<boolean> {
+  return await fetchAPI('/user/updateWorksheetMetadata', {
+    body,
     breadcrumb: {
-      category: 'wishlist',
-      message: 'Updating wishlist',
+      category: 'worksheet',
+      message: `Updating worksheet names`,
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'WORKSHEET_NOT_FOUND':
+          toast.error('Worksheet not found.');
+          return true;
+        default:
+          return false;
+      }
     },
   });
 }
@@ -213,37 +286,65 @@ const hiddenCoursesStorage = createLocalStorageSlot<{
   [seasonCode: Season]: { [crn: Crn]: boolean };
 }>('hiddenCourses');
 
-export function toggleCourseHidden({
+export function setCourseHidden({
   season,
+  worksheetNumber,
   crn,
   hidden,
-  courses,
 }: {
   season: Season;
-  crn: Crn | 'all';
+  worksheetNumber: number;
+  crn: Crn | Crn[];
   hidden: boolean;
-  courses?: { crn: Crn }[];
-}) {
-  const hiddenCourses = hiddenCoursesStorage.get() ?? {};
-  if (crn === 'all') {
-    if (hidden) {
-      hiddenCourses[season] ??= {};
-      courses?.forEach((listing) => {
-        hiddenCourses[season]![listing.crn] = true;
-      });
-    } else {
-      delete hiddenCourses[season];
-    }
-  } else {
-    // eslint-disable-next-line no-multi-assign
-    const curSeason = (hiddenCourses[season] ??= {});
-    if (hidden) curSeason[crn] = true;
-    else delete curSeason[crn];
+}): Promise<boolean> {
+  if (Array.isArray(crn)) {
+    const actions = crn.map((c) => ({
+      action: 'update',
+      season,
+      worksheetNumber,
+      crn: c,
+      hidden,
+    }));
+    return fetchAPI('/user/updateWorksheetCourses', {
+      body: actions,
+      breadcrumb: {
+        category: 'worksheet',
+        message: 'Batch updating worksheet hidden status',
+      },
+    });
   }
-  hiddenCoursesStorage.set(hiddenCourses);
+  return fetchAPI('/user/updateWorksheetCourses', {
+    body: {
+      action: 'update',
+      season,
+      crn,
+      worksheetNumber,
+      hidden,
+    },
+    breadcrumb: {
+      category: 'worksheet',
+      message: 'Updating worksheet hidden status',
+    },
+  });
 }
 
-type ListingPublic = CatalogBySeasonQuery['listings'][number];
+const catalogMetadataSchema = z.object({
+  last_update: z.string().transform((x) => new Date(x)),
+});
+
+export type CatalogMetadata = z.infer<typeof catalogMetadataSchema>;
+
+export function fetchCatalogMetadata() {
+  return fetchAPI('/catalog/metadata', {
+    breadcrumb: {
+      category: 'catalog',
+      message: 'Fetching catalog metadata',
+    },
+    schema: catalogMetadataSchema,
+  });
+}
+
+type CoursePublic = CatalogBySeasonQuery['courses'][number];
 
 export async function fetchCatalog(season: Season) {
   const breadcrumb = {
@@ -254,15 +355,17 @@ export async function fetchCatalog(season: Season) {
     breadcrumb,
   });
   if (!res) return undefined;
-  const data = res as ListingPublic[];
-  const info = new Map<Crn, ListingPublic>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as CatalogBySeasonQuery['courses'];
+  const info = new Map<number, CoursePublic>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 
-type ListingEvals = EvalsBySeasonQuery['listings'][number];
+type CourseEvals = EvalsBySeasonQuery['courses'][number];
 
-export type CatalogListing = ListingPublic & Partial<ListingEvals>;
+export type CatalogListing = CoursePublic['listings'][number] & {
+  course: CoursePublic & Partial<CourseEvals>;
+};
 
 export async function fetchEvals(season: Season) {
   const res = await fetchAPI(`/catalog/evals/${season}`, {
@@ -272,9 +375,9 @@ export async function fetchEvals(season: Season) {
     },
   });
   if (!res) return undefined;
-  const data = res as ListingEvals[];
-  const info = new Map<Crn, ListingEvals>();
-  for (const listing of data) info.set(listing.crn, listing);
+  const data = res as EvalsBySeasonQuery['courses'];
+  const info = new Map<number, CourseEvals>();
+  for (const course of data) info.set(course.course_id, course);
   return info;
 }
 
@@ -366,38 +469,68 @@ export async function verifyChallenge(body: {
     : { status: 'rejected', data: res };
 }
 
-const userWorksheetsSchema = z.record(
-  z.record(
-    z.array(
+const userInfoSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  hasEvals: z.boolean(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+});
+
+export type UserInfo = z.infer<typeof userInfoSchema>;
+
+export async function getUserInfo() {
+  const res = await fetchAPI('/user/info', {
+    schema: userInfoSchema,
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching user info',
+    },
+  });
+  return res;
+}
+
+const userWorksheetsSchema = z
+  .record(
+    // Key: season
+    z.record(
+      // Key: worksheet number
       z.object({
-        crn: crnSchema,
-        color: z.string(),
-        // This currently is not sent by the backend.
-        hidden: z.boolean().optional().default(false),
+        name: z.string(),
+        private: z.boolean().optional(),
+        courses: z.array(
+          z.object({
+            crn: crnSchema,
+            color: z.string(),
+            hidden: z.boolean().nullable(),
+          }),
+        ),
       }),
     ),
-  ),
-);
+  )
+  .transform((data) => {
+    type Worksheet = NonNullable<(typeof data)[Season]>[string];
+    // Transform the object record to a map
+    const res = new Map<Season, Map<number, Worksheet>>();
+    for (const season of Object.keys(data)) {
+      const seasonMap = new Map<number, Worksheet>();
+      for (const num of Object.keys(data[season]!))
+        seasonMap.set(Number(num), data[season]![num]!);
+      res.set(season as Season, seasonMap);
+    }
+    return res;
+  });
 
 // Change index type to be more specific. We don't use the key type of z.record
 // on purpose; see https://github.com/colinhacks/zod/pull/2287
-export type UserWorksheets = {
-  [season: Season]: {
-    [worksheetNumber: number]: NonNullable<
-      z.infer<typeof userWorksheetsSchema>[Season]
-    >[string];
-  };
-};
+export type UserWorksheets = z.infer<typeof userWorksheetsSchema>;
 
 export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
-      netId: netIdSchema,
-      // This cannot be null in the real application, because the site creates a
-      // user if one doesn't exist. This is purely for completeness.
-      evaluationsEnabled: z.union([z.boolean(), z.null()]),
-      year: z.union([z.number(), z.null()]),
-      school: z.union([z.string(), z.null()]),
       data: userWorksheetsSchema,
     }),
     breadcrumb: {
@@ -408,42 +541,61 @@ export async function fetchUserWorksheets() {
   if (!res) return undefined;
   const hiddenCourses = hiddenCoursesStorage.get();
   if (!hiddenCourses) return res;
-  for (const seasonKey in res.data) {
-    // Narrow type
-    const season = seasonKey as Season;
-    if (!hiddenCourses[season]) continue;
-    for (const num in res.data[season]) {
-      for (const course of res.data[season]![num]!)
-        course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
+  // If the server doesn't know about the hidden status for any course, but
+  // there exists locally stored data, then we use this and sync it with the
+  // server. This is a one-time operation to migrate from our old client-side
+  // logic to be server-side, to make it consistent between devices and friends.
+  const actions = [];
+  for (const [season, seasonWorksheets] of res.data) {
+    for (const [num, worksheet] of seasonWorksheets) {
+      for (const course of worksheet.courses) {
+        if (course.hidden === null) {
+          course.hidden = hiddenCourses[season]?.[course.crn] ?? false;
+          actions.push({
+            action: 'update',
+            season,
+            crn: course.crn,
+            worksheetNumber: num,
+            hidden: course.hidden,
+          });
+        }
+      }
     }
+  }
+  if (actions.length) {
+    const updateRes = await fetchAPI('/user/updateWorksheetCourses', {
+      body: actions,
+      breadcrumb: {
+        category: 'worksheet',
+        message: 'Syncing hidden courses',
+      },
+    });
+    // No longer need this data
+    if (updateRes) hiddenCoursesStorage.remove();
+  } else {
+    // There's no data to update, which means it's already synced from another
+    // device. We use the "first-wins" strategy and only sync data from the
+    // first device that logged in, and assume that one is the primary device.
+    hiddenCoursesStorage.remove();
   }
   return res;
 }
 
 const userWishlistSchema = z.array(
   z.object({
-    courseCode: z.string(),
+    season: seasonSchema,
+    crn: crnSchema,
   }),
 );
 
-export type UserWishlist = { courseCode: string }[];
-
 export async function fetchUserWishlist() {
-  const res = await fetchAPI('/user/wishlist', {
-    schema: z.object({
-      netId: netIdSchema,
-      evaluationsEnabled: z.union([z.boolean(), z.null()]),
-      year: z.union([z.number(), z.null()]),
-      school: z.union([z.string(), z.null()]),
-      data: userWishlistSchema,
-    }),
+  return await fetchAPI('/user/wishlist', {
+    schema: userWishlistSchema,
     breadcrumb: {
       category: 'user',
       message: 'Fetching user wishlist',
     },
   });
-  if (!res) return undefined;
-  return res;
 }
 
 const friendsSchema = z.record(

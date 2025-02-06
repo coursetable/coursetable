@@ -51,14 +51,16 @@ function renderTemplate({
 }
 
 async function getCourseMetadata(query: unknown) {
+  if (!/^\d{6}-\d{5}$/u.test(String(query))) return defaultMetadata;
   const [seasonCode, crn] = String(query).split('-');
   if (!seasonCode || !crn) return defaultMetadata;
   const data = await getSdk(graphqlClient).courseMetadata({
-    seasonCode,
-    crn: Number(crn),
+    listingId:
+      (Number.parseInt(seasonCode, 10) - 200000) * 100000 +
+      Number.parseInt(crn, 10),
   });
-  if (!data.listings.length) return defaultMetadata;
-  const listing = data.listings[0]!;
+  if (!data.listings_by_pk) return defaultMetadata;
+  const listing = data.listings_by_pk;
   return {
     title: `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`,
     description: truncatedText(
@@ -70,7 +72,7 @@ async function getCourseMetadata(query: unknown) {
   };
 }
 
-async function getPageMetadata(url: unknown) {
+function getPageMetadata(url: string) {
   // TODO: we should probably just dynamically render these HTML pages
   switch (url) {
     case '/releases/link-preview':
@@ -106,10 +108,10 @@ export async function generateLinkPreview(
 ): Promise<void> {
   // Log url accessed
   winston.info(
-    `Generating link preview for ${String(req.query['course-modal'] ?? req.query.url ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
+    `Generating link preview for ${String(req.query['course-modal']?.toString() ?? req.query.url?.toString() ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
   );
   let metadata = defaultMetadata;
-  if (req.query.url) metadata = await getPageMetadata(req.query.url);
+  if (req.query.url) metadata = getPageMetadata(req.query.url as string);
   else if (req.query['course-modal'])
     metadata = await getCourseMetadata(req.query['course-modal']);
   winston.info(`Generated link preview for ${metadata.title}`);

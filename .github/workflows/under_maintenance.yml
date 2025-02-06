@@ -1,0 +1,39 @@
+name: Under Maintenance
+
+on:
+  workflow_dispatch:
+
+jobs:
+  under-maintenance-deploy:
+    environment:
+      name: Production
+      url: https://coursetable.com
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/checkout@v4
+        with:
+          repository: coursetable/infra
+          path: infra
+          fetch-depth: 1
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod
+          inject-env-vars: true
+      - name: Install Wrangler CLI
+        run: bun install --global wrangler
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
+        run: |
+          mv infra/under_maintenance/site/maintenance.html infra/under_maintenance/site/index.html
+          wrangler pages deploy infra/under_maintenance/site --project-name=coursetable --branch=master

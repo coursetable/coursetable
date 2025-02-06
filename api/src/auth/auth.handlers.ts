@@ -1,10 +1,15 @@
 import type express from 'express';
+import { Strategy as CasStrategy } from '@coursetable/passport-cas';
 import { eq } from 'drizzle-orm';
 import passport from 'passport';
-import { Strategy as CasStrategy } from 'passport-cas';
 
 import { studentBluebookSettings } from '../../drizzle/schema.js';
-import { YALIES_API_KEY, db } from '../config.js';
+import {
+  YALIES_API_KEY,
+  db,
+  FRONTEND_ENDPOINT,
+  COURSETABLE_ORIGINS,
+} from '../config.js';
 import winston from '../logging/winston.js';
 
 // TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
@@ -44,21 +49,6 @@ const ALLOWED_ORG_CODES: unknown[] = [
   'GRA', // Graduate school
 ];
 
-const extractHostname = (url: string): string => {
-  let hostname = '';
-  // Find & remove protocol (http, ftp, etc.) and get hostname
-
-  if (url.includes('//')) hostname = url.split('/')[2]!;
-  else hostname = url.split('/')[0]!;
-
-  // Find & remove port number
-  hostname = hostname.split(':')[0]!;
-  // Find & remove "?"
-  hostname = hostname.split('?')[0]!;
-
-  return hostname;
-};
-
 export const passportConfig = (
   passportInstance: passport.PassportStatic,
 ): void => {
@@ -81,7 +71,6 @@ export const passportConfig = (
           .onConflictDoNothing()
           .returning();
 
-        winston.info("Getting user's enrollment status from Yalies.io");
         const user = {
           netId: profile.user,
           // If we already have evaluations enabled in DB, never disable it
@@ -126,8 +115,6 @@ export const passportConfig = (
           user.lastName = yaliesUserData.last_name ?? user.lastName;
           user.email = yaliesUserData.email ?? user.email;
 
-          winston.info(`Updating evaluations for ${profile.user}`);
-
           await db
             .update(studentBluebookSettings)
             .set({
@@ -154,11 +141,10 @@ export const passportConfig = (
   );
 
   passport.serializeUser((user, done) => {
-    winston.info(`Serializing user ${user.netId}`);
     done(null, user.netId);
   });
 
-  passport.deserializeUser(async (sessionKey: unknown, done) => {
+  passport.deserializeUser(async (sessionKey: string | null, done) => {
     if (!sessionKey) {
       // Return `null`/`false` to denote no user; don't use `undefined`
       // https://github.com/jaredhanson/passport/pull/975
@@ -166,11 +152,15 @@ export const passportConfig = (
       return;
     }
     const netId = String(sessionKey);
-    winston.info(`Deserializing user ${netId}`);
-    const [student] = await db
-      .selectDistinctOn([studentBluebookSettings.netId])
-      .from(studentBluebookSettings)
-      .where(eq(studentBluebookSettings.netId, netId));
+    const student = await db.query.studentBluebookSettings.findFirst({
+      where: eq(studentBluebookSettings.netId, netId),
+      columns: {
+        email: true,
+        firstName: true,
+        lastName: true,
+        evaluationsEnabled: true,
+      },
+    });
     if (!student) {
       done(null, null);
       return;
@@ -186,33 +176,28 @@ export const passportConfig = (
   });
 };
 
-const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
-
 const postAuth = (req: express.Request, res: express.Response): void => {
-  winston.info('Executing post-authentication redirect');
   const redirect = req.query.redirect as string | undefined;
-
-  const hostName = extractHostname(redirect ?? 'coursetable.com/catalog');
-
-  if (redirect && !redirect.startsWith('//')) {
-    winston.info(`Redirecting to ${redirect}`);
-    // Prefix the redirect with a slash to avoid an open redirect vulnerability.
-    if (
-      ALLOWED_ORIGINS.includes(hostName) ||
-      hostName.endsWith('.coursetable.com') ||
-      (hostName.endsWith('-coursetable.vercel.app') &&
-        hostName.startsWith('coursetable-'))
-    ) {
-      res.redirect(redirect);
-      return;
-    }
-
-    winston.error('Redirect not in allowed origins');
-    res.redirect('https://coursetable.com');
+  if (!redirect) {
+    winston.error('No redirect provided');
+    res.redirect(FRONTEND_ENDPOINT);
     return;
   }
-  winston.error(`No redirect provided`);
-  res.redirect('https://coursetable.com');
+  try {
+    const parsed = new URL(redirect, FRONTEND_ENDPOINT);
+    if (
+      COURSETABLE_ORIGINS.some(
+        (x) =>
+          (typeof x === 'string' && parsed.origin === x) ||
+          (x instanceof RegExp && x.test(parsed.origin)),
+      )
+    ) {
+      res.redirect(parsed.toString());
+      return;
+    }
+  } catch {}
+  winston.error('Redirect not in allowed origins');
+  res.redirect(FRONTEND_ENDPOINT);
 };
 
 export const casLogin = (
@@ -220,7 +205,6 @@ export const casLogin = (
   res: express.Response,
   next: express.NextFunction,
 ): void => {
-  winston.info('Logging in with CAS');
   (
     passport.authenticate(
       'cas',
@@ -235,7 +219,6 @@ export const casLogin = (
           return;
         }
 
-        winston.info(`"Logging in ${user.netId}`);
         req.logIn(user, (loginError) => {
           if (loginError) {
             next(loginError);
@@ -255,7 +238,6 @@ export const authBasic = (
   res: express.Response,
   next: express.NextFunction,
 ): void => {
-  winston.info('Intercepting basic authentication');
   if (!req.user) {
     res.status(401).json({ error: 'USER_NOT_FOUND' });
     return;
@@ -271,7 +253,6 @@ export const authWithEvals = (
   res: express.Response,
   next: express.NextFunction,
 ): void => {
-  winston.info('Intercepting with-evals authentication');
   if (!req.user) {
     res.status(401).json({ error: 'USER_NOT_FOUND' });
     return;

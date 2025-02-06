@@ -4,44 +4,38 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
-import { CourseInfoPopover } from '../Search/ResultsItemCommon';
 import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export const CalendarEventBody = React.forwardRef(
-  ({ event }: { readonly event: RBCEvent }, ref: React.Ref<HTMLDivElement>) => {
-    const textColor =
-      chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
-    return (
-      <div className={styles.event} ref={ref} style={{ color: textColor }}>
-        <strong>{event.title}</strong>
-        <br />
-        <ResponsiveEllipsis
-          className={styles.courseNameText}
-          text={event.description}
-          maxLine="2"
-          basedOn="words"
-        />
-        <small className={styles.locationText}>{event.location}</small>
-      </div>
-    );
-  },
-);
+export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
+  const textColor =
+    chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
+  return (
+    <div className={styles.event} style={{ color: textColor }}>
+      <strong>{event.title}</strong>
+      <br />
+      <ResponsiveEllipsis
+        className={styles.courseNameText}
+        text={event.description}
+        maxLine="2"
+        basedOn="words"
+      />
+      <small className={styles.locationText}>{event.location}</small>
+    </div>
+  );
+}
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { listing } = event;
-  const { person } = useWorksheet();
+  const isReadonlyWorksheet = useStore((state) => state.isReadonlyWorksheet);
 
   return (
     <>
-      <CourseInfoPopover listing={listing}>
-        <CalendarEventBody event={event} />
-      </CourseInfoPopover>
-      {person === 'me' && (
+      <CalendarEventBody event={event} />
+      {!isReadonlyWorksheet() && (
         <div className={styles.eventButtons}>
           <WorksheetHideButton
             crn={listing.crn}
@@ -61,8 +55,8 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
 }
 
 export function useEventStyle() {
-  const { hoverCourse } = useWorksheet();
-  const { isMobile } = useWindowDimensions();
+  const hoverCourse = useStore((state) => state.hoverCourse);
+  const isMobile = useStore((state) => state.isMobile);
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event: RBCEvent) => {

@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import { ListGroup } from 'react-bootstrap';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
+import { useStore } from '../../store';
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
@@ -16,7 +16,7 @@ export default function WorksheetCalendarListItem({
   readonly hidden: boolean;
 }) {
   const target = useCourseModalLink(listing);
-  const { setHoverCourse } = useWorksheet();
+  const setHoverCourse = useStore((state) => state.setHoverCourse);
 
   return (
     <ListGroup.Item

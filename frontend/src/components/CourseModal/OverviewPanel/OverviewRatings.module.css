@@ -1,0 +1,22 @@
+.evaluationsFilter {
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-border);
+}
+
+.filterContainer {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+}
+
+.filterContainer:focus {
+  outline: none;
+}
+
+.filterContainer:focus-visible .evaluationsFilter {
+  outline: 2px solid var(--color-primary);
+}
+
+.evaluationsFilter :global(.toggleOption) {
+  color: var(--color-text);
+}

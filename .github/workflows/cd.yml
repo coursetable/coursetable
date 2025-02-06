@@ -18,12 +18,19 @@ on:
         type: boolean
 
 jobs:
+  cancel-previous-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+          only_status: 'waiting'
   changes:
     runs-on: ubuntu-latest
-    # Required permissions
+    needs: cancel-previous-runs
     permissions:
       pull-requests: read
-    # Set job outputs to values from filter step
     outputs:
       api: ${{ steps.filter.outputs.api }}
       frontend: ${{ steps.filter.outputs.frontend }}
@@ -40,60 +47,64 @@ jobs:
           filters: |
             api:
               - 'api/**'
+              - '.github/workflows/cd.yml'
             frontend:
               - 'frontend/**'
+              - '.github/workflows/cd.yml'
             db:
               - 'api/drizzle/schema.ts'
 
   frontend-build-and-deploy:
     needs: changes
     if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend}}
-
     environment:
       name: Production
       url: https://coursetable.com
     runs-on: ubuntu-latest
-
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
       - name: Install Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Install Vercel CLI
-        run: bun install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy to Vercel and Alias Deployment
-        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a coursetable.com
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod
+          inject-env-vars: true
+      - name: Build Frontend
+        run: cd frontend && bun run build
+      - name: Install Wrangler CLI
+        run: bun install --global wrangler
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
+        run: |
+          wrangler pages deploy frontend/build --project-name=coursetable --branch=master
 
   api-build-and-deploy:
     needs: changes
     if: ${{ ( needs.changes.outputs.api == 'true' || inputs.api ) && needs.changes.outputs.db == 'false'}}
-
     environment:
       name: Production
       url: https://coursetable.com
     runs-on: self-hosted
-
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-
+      - name: Sync Local Repository with Remote
+        run: cd /home/app/coursetable && git pull
       - name: Build and Deploy Docker containers
         working-directory: ./api
         if: github.event_name == 'push'
         run: ./start.sh -p
-
       - name: Build and Deploy Docker containers (Manual)
         working-directory: ./api
         if: github.event_name == 'workflow_dispatch'

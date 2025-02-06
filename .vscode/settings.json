@@ -34,7 +34,5 @@
     "toastify",
     "unstyled"
   ],
-  "eslint.workingDirectories": ["api", "frontend"],
-  // TODO: https://github.com/microsoft/vscode-eslint/issues/1644
-  "eslint.experimental.useFlatConfig": true
+  "eslint.workingDirectories": ["api", "frontend"]
 }

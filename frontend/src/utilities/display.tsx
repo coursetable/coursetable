@@ -8,7 +8,7 @@ import React, {
 import { useSearchParams } from 'react-router-dom';
 import { createSessionStorageSlot } from './browserStorage';
 import Spinner from '../components/Spinner';
-import type { Listings } from '../generated/graphql-types';
+import type { Crn, Season } from '../queries/graphql-types';
 
 const hasAutoReloaded = createSessionStorageSlot<boolean>('autoReloaded');
 
@@ -18,12 +18,18 @@ export function suspended<T extends React.ComponentType<any>>(
 ) {
   const Comp = React.lazy(async () => {
     try {
-      return await factory();
+      const result = await factory();
+      // If this request succeeded, then the next failure is a new one that
+      // should try autoreloading
+      hasAutoReloaded.remove();
+      return result;
     } catch {
-      // Prevent infinite reloading
+      // Prevent infinite reloading: if we haven't auto reloaded, then auto
+      // reload once. The next time show an error message.
       if (!hasAutoReloaded.get()) {
         hasAutoReloaded.set(true);
         window.location.reload();
+        return { default: (() => null) as unknown as T };
       }
       hasAutoReloaded.remove();
       return {
@@ -47,7 +53,7 @@ export function suspended<T extends React.ComponentType<any>>(
     }
   });
   return (props: ComponentProps<T>) => (
-    <React.Suspense fallback={<Spinner />}>
+    <React.Suspense fallback={<Spinner message="Loading..." />}>
       <Comp {...props} />
     </React.Suspense>
   );
@@ -132,17 +138,28 @@ export const scrollToTop: MouseEventHandler = (event) => {
 // Please use this instead of creating a new search param. This will preserve
 // existing params.
 export function createCourseModalLink(
-  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
+  listing: { crn: Crn; course: { season_code: Season } } | undefined,
   searchParams: URLSearchParams,
 ) {
   const newSearch = new URLSearchParams(searchParams);
   if (!listing) return `?${searchParams.toString()}`;
-  newSearch.set('course-modal', `${listing.season_code}-${listing.crn}`);
+  newSearch.set('course-modal', `${listing.course.season_code}-${listing.crn}`);
+  newSearch.delete('prof-modal');
+  return `?${newSearch.toString()}`;
+}
+
+export function createProfModalLink(
+  professorId: number,
+  searchParams: URLSearchParams,
+) {
+  const newSearch = new URLSearchParams(searchParams);
+  newSearch.set('prof-modal', String(professorId));
+  newSearch.delete('course-modal');
   return `?${newSearch.toString()}`;
 }
 
 export function useCourseModalLink(
-  listing: Pick<Listings, 'season_code' | 'crn'> | undefined,
+  listing: { crn: Crn; course: { season_code: Season } } | undefined,
 ) {
   const [searchParams] = useSearchParams();
   return createCourseModalLink(listing, searchParams);

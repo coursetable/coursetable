@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import type { ListChildComponentProps } from 'react-window';
+import { useShallow } from 'zustand/react/shallow';
 
 import type { ResultItemData } from './Results';
 import {
@@ -12,11 +13,15 @@ import {
   ratingTypes,
 } from './ResultsItemCommon';
 import { useSearch } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
-import { getEnrolled, isInWorksheet } from '../../utilities/course';
+import {
+  getEnrolled,
+  isInWorksheet,
+  toTimesSummary,
+  toLocationsSummary,
+} from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import { RatingBubble } from '../Typography';
@@ -58,7 +63,7 @@ function Rating({
     >
       <RatingBubble
         color={generateRandomColor(
-          `${listing.crn}${listing.season_code}${name}`,
+          `${listing.crn}${listing.course.season_code}${name}`,
         )}
         className={styles.ratingCell}
       />
@@ -72,22 +77,25 @@ function ResultsItem({
   style,
 }: ListChildComponentProps<ResultItemData>) {
   const listing = listings[index]!;
-  const user = useStore((state) => state.user);
-  const { worksheetNumber } = useWorksheet();
+  const { user, worksheets } = useStore(
+    useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
+  );
+  const getRelevantWorksheetNumber = useStore(
+    (state) => state.getRelevantWorksheetNumber,
+  );
 
   const { numFriends } = useSearch();
-  const friends = numFriends[`${listing.season_code}${listing.crn}`];
+  const friends = numFriends[`${listing.course.season_code}${listing.crn}`];
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
     () =>
       isInWorksheet(
-        listing.season_code,
-        listing.crn,
-        worksheetNumber,
-        user.worksheets,
+        listing,
+        getRelevantWorksheetNumber(listing.course.season_code),
+        worksheets,
       ),
-    [listing.crn, listing.season_code, worksheetNumber, user.worksheets],
+    [listing, getRelevantWorksheetNumber, worksheets],
   );
 
   return (
@@ -109,7 +117,7 @@ function ResultsItem({
           {multiSeasons && (
             <span className={colStyles.seasonCol}>
               <SeasonTag
-                season={listing.season_code}
+                season={listing.course.season_code}
                 className={styles.season}
               />
             </span>
@@ -127,12 +135,12 @@ function ResultsItem({
             </span>
           </CourseInfoPopover>
           <span className={colStyles.overallCol}>
-            <Rating listing={listing} hasEvals={user.hasEvals} name="Class" />
+            <Rating listing={listing} hasEvals={user?.hasEvals} name="Class" />
           </span>
           <span className={colStyles.workloadCol}>
             <Rating
               listing={listing}
-              hasEvals={user.hasEvals}
+              hasEvals={user?.hasEvals}
               name="Workload"
             />
           </span>
@@ -142,7 +150,7 @@ function ResultsItem({
             <span className={clsx('me-2 h-100', styles.profRating)}>
               <Rating
                 listing={listing}
-                hasEvals={user.hasEvals}
+                hasEvals={user?.hasEvals}
                 name="Professor"
               />
             </span>
@@ -170,12 +178,12 @@ function ResultsItem({
           </span>
           <span className={colStyles.meetCol}>
             <span className={styles.ellipsisText}>
-              {listing.course.times_summary}
+              {toTimesSummary(listing.course)}
             </span>
           </span>
           <span className={colStyles.locCol}>
             <span className={styles.ellipsisText}>
-              {listing.course.locations_summary}
+              {toLocationsSummary(listing.course)}
             </span>
           </span>
           <span className={colStyles.friendsCol}>

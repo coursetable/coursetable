@@ -1,6 +1,10 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { verifyHeaders, refreshCatalog } from './catalog.handlers.js';
+import {
+  verifyHeaders,
+  generateCSVCatalog,
+  refreshCatalog,
+} from './catalog.handlers.js';
 import { authWithEvals } from '../auth/auth.handlers.js';
 import { STATIC_FILE_DIR } from '../config.js';
 
@@ -19,14 +23,18 @@ export default (app: express.Express): void => {
   app.get('/api/catalog/refresh', verifyHeaders, asyncHandler(refreshCatalog));
 
   // Evals data require NetID authentication
-  app.use(
-    '/api/catalog/evals',
-    authWithEvals,
-    staticJSON('/catalogs-v2/evals'),
-  );
+  app.use('/api/catalog/evals', authWithEvals, staticJSON('/catalogs/evals'));
 
   // Serve public catalog files without authentication
-  app.use('/api/catalog/public', staticJSON('/catalogs-v2/public'));
+  app.use('/api/catalog/public', staticJSON('/catalogs/public'));
+
+  app.use('/api/catalog/metadata', staticJSON('/metadata.json'));
+
+  app.get(
+    '/api/catalog/csv/:seasonCode(\\d{6}).csv',
+    authWithEvals,
+    asyncHandler(generateCSVCatalog),
+  );
 
   app.use(
     '/api/sitemaps',
@@ -37,13 +45,4 @@ export default (app: express.Express): void => {
       etag: true,
     }),
   );
-
-  // Legacy data formats
-  // TODO: remove
-  app.use(
-    '/api/static/catalogs/evals',
-    authWithEvals,
-    staticJSON('/catalogs/evals'),
-  );
-  app.use('/api/static/catalogs/public', staticJSON('/catalogs/public'));
 };

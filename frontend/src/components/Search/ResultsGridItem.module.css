@@ -77,6 +77,10 @@
   margin-top: 0.25rem;
 }
 
+.courseInfo {
+  max-width: calc(100% - 50px);
+}
+
 .worksheetBtn {
   position: absolute;
   top: 4px;

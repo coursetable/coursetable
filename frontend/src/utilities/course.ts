@@ -1,20 +1,14 @@
 // Performing various actions on the listing dictionary
+import { weekdays } from './constants';
 import type { SortKeys } from '../contexts/searchContext';
-import type { WishlistCourse } from '../contexts/wishlistContext';
-import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
   UserWorksheets,
   CatalogListing,
 } from '../queries/api';
-import {
-  type Crn,
-  type Season,
-  type Weekdays,
-  type TimesByDay,
-  weekdays,
-} from '../queries/graphql-types';
+import type { Crn, Season } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -27,18 +21,15 @@ export function truncatedText(
 }
 
 export function isInWorksheet(
-  seasonCode: Season,
-  crn: Crn,
+  listing: { crn: Crn; course: { season_code: Season } },
   worksheetNumber: number,
-  worksheet: UserWorksheets | undefined,
+  worksheets: UserWorksheets | undefined,
 ): boolean {
-  if (!worksheet) return false;
   return (
-    seasonCode in worksheet &&
-    worksheetNumber in worksheet[seasonCode]! &&
-    worksheet[seasonCode]![worksheetNumber]!.some(
-      (course) => course.crn === crn,
-    )
+    worksheets
+      ?.get(listing.course.season_code)
+      ?.get(worksheetNumber)
+      ?.courses.some((course) => course.crn === listing.crn) ?? false
   );
 }
 
@@ -58,11 +49,66 @@ export function toSeasonString(seasonCode: Season): string {
   return `${season} ${year}`;
 }
 
+// A "best guess" for when the season's courses are first published.
+// TODO this should be pulled from Ferry once Ferry records this info
+export function toSeasonDate(seasonCode: Season): string {
+  const season = Number(seasonCode[5]);
+  const date = ['11-01', '01-02', '04-01'][season - 1]!;
+  let year = Number(seasonCode.substring(0, 4));
+  if (season === 1) year--;
+  return `${year}-${date}`;
+}
+
+// Turns a bitmask of days of the week into an array of strings.
+// For example, 42 = 0b101010 = Monday, Wednesday, Friday
+// See constants.ts for the mapping of days of the week to numbers
+export function toWeekdayStrings(daysOfWeek: number): string[] {
+  return Object.entries(weekdays)
+    .filter(([, day]) => daysOfWeek & (1 << day))
+    .map(([d]) =>
+      ['Thursday', 'Saturday', 'Sunday'].includes(d) ? d.slice(0, 2) : d[0]!,
+    );
+}
+// The only difference with toWeekdayStrings is that it returns 'M–F' for
+// Monday through Friday
+export function toWeekdaysDisplayString(daysOfWeek: number): string {
+  const base = toWeekdayStrings(daysOfWeek).join('');
+  if (base === 'MTWThF') return 'M–F';
+  return base;
+}
+
+export function toTimesSummary(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): string {
+  if (!course.course_meetings.length) return 'TBA';
+  const meeting = course.course_meetings[0]!;
+  const days = toWeekdaysDisplayString(meeting.days_of_week);
+  const summary = `${days} ${to12HourTime(meeting.start_time)}–${to12HourTime(
+    meeting.end_time,
+  )}`;
+  return `${summary}${course.course_meetings.length > 1 ? ` + ${course.course_meetings.length - 1}` : ''}`;
+}
+
+export function toLocationsSummary(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): string {
+  if (course.course_meetings.every((m) => !m.location)) return 'TBA';
+  const meeting = course.course_meetings[0]!;
+  const summary = meeting.location
+    ? `${meeting.location.building.code}${meeting.location.room ? ` ${meeting.location.room}` : ''}`
+    : 'TBA';
+  return `${summary}${course.course_meetings.length > 1 ? ` + ${course.course_meetings.length - 1}` : ''}`;
+}
+
 export type ListingWithTimes = {
-  season_code: Season;
   crn: Crn;
   course: {
-    times_by_day: TimesByDay;
+    season_code: Season;
+    course_meetings: {
+      days_of_week: number;
+      start_time: string;
+      end_time: string;
+    }[];
   };
 };
 
@@ -77,28 +123,25 @@ export function checkConflict(
   listing: ListingWithTimes,
 ): CatalogListing[] {
   const conflicts: CatalogListing[] = [];
-  const daysToCheck = Object.keys(listing.course.times_by_day) as Weekdays[];
-  if (!daysToCheck.length) return conflicts;
+  if (!listing.course.course_meetings.length) return conflicts;
   loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
-    if (worksheetCourse.season_code !== listing.season_code) continue;
-    for (const day of daysToCheck) {
-      const info = worksheetCourse.course.times_by_day[day];
-      if (info === undefined) continue;
-      const courseInfo = listing.course.times_by_day[day]!;
-      for (const [startTime, endTime] of info) {
-        const listingStart = toRangeTime(startTime);
-        const listingEnd = toRangeTime(endTime);
-        for (const [courseStartTime, courseEndTime] of courseInfo) {
-          const curStart = toRangeTime(courseStartTime);
-          const curEnd = toRangeTime(courseEndTime);
-          // Conflict exists
-          if (
-            !(listingStart > curEnd || curStart > listingEnd) &&
-            !conflicts.includes(worksheetCourse)
-          ) {
-            conflicts.push(worksheetCourse);
-            continue loopWorksheet;
-          }
+    if (worksheetCourse.course.season_code !== listing.course.season_code)
+      continue;
+    for (const meeting1 of worksheetCourse.course.course_meetings) {
+      for (const meeting2 of listing.course.course_meetings) {
+        // Two meetings have no days in common
+        if (!(meeting1.days_of_week & meeting2.days_of_week)) continue;
+        const start1 = toRangeTime(meeting1.start_time);
+        const start2 = toRangeTime(meeting2.start_time);
+        const end1 = toRangeTime(meeting1.end_time);
+        const end2 = toRangeTime(meeting2.end_time);
+        // Conflict exists
+        if (
+          !(start1 > end2 || start2 > end1) &&
+          !conflicts.includes(worksheetCourse)
+        ) {
+          conflicts.push(worksheetCourse);
+          continue loopWorksheet;
         }
       }
     }
@@ -118,21 +161,21 @@ export type NumFriendsReturn = {
 export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   const numFriends: NumFriendsReturn = {};
   for (const [netId, friend] of Object.entries(friends)) {
-    Object.entries(friend.worksheets).forEach(([seasonCode, worksheets]) => {
-      Object.values(worksheets).forEach((w) =>
-        w.forEach((course) => {
-          (numFriends[`${seasonCode as Season}${course.crn}`] ??=
-            new Set()).add(friend.name ?? netId);
-        }),
-      );
-    });
+    for (const [seasonCode, worksheets] of friend.worksheets) {
+      for (const w of worksheets.values()) {
+        for (const course of w.courses) {
+          (numFriends[`${seasonCode}${course.crn}`] ??= new Set()).add(
+            friend.name ?? netId,
+          );
+        }
+      }
+    }
   }
   return numFriends;
 }
 
-export type CourseWithOverall = Pick<
-  Courses,
-  'average_rating' | 'average_rating_same_professors'
+export type CourseWithOverall = Partial<
+  Pick<Courses, 'average_rating' | 'average_rating_same_professors'>
 >;
 
 export function getOverallRatings(
@@ -161,9 +204,8 @@ export function getOverallRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-export type CourseWithWorkload = Pick<
-  Courses,
-  'average_workload' | 'average_workload_same_professors'
+export type CourseWithWorkload = Partial<
+  Pick<Courses, 'average_workload' | 'average_workload_same_professors'>
 >;
 
 export function getWorkloadRatings(
@@ -193,7 +235,9 @@ export function getWorkloadRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-export type CourseWithProfRatings = Pick<Courses, 'average_professor_rating'>;
+export type CourseWithProfRatings = Partial<
+  Pick<Courses, 'average_professor_rating'>
+>;
 
 export function getProfessorRatings(
   course: CourseWithProfRatings,
@@ -264,28 +308,20 @@ export function getEnrolled(
   }
 }
 
-export function getDayTimes(
-  course: Pick<Courses, 'times_by_day'>,
-): { day: Weekdays; start: string; end: string }[] {
-  return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
-    day: day as Weekdays,
-    start: dayTimes[0]![0],
-    end: dayTimes[0]![1],
-  }));
-}
-
-function toDayTimeScore(course: Pick<Courses, 'times_by_day'>): number | null {
-  const times = getDayTimes(course);
-
-  if (times.length) {
-    const startTime = Number(times[0]!.start.split(':').join(''));
-    const firstDay = Object.keys(course.times_by_day)[0] as Weekdays;
-    const dayScore = weekdays.indexOf(firstDay) * 10000;
-    return dayScore + startTime;
-  }
-
-  // If no times then return null
-  return null;
+function toDayTimeScore(
+  course: Pick<CatalogListing['course'], 'course_meetings'>,
+): number | null {
+  if (!course.course_meetings.length) return null;
+  const startTime = Number(
+    course.course_meetings[0]!.start_time.split(':').join(''),
+  );
+  const allDays = course.course_meetings.reduce(
+    (acc, m) => acc | m.days_of_week,
+    0,
+  );
+  const firstDay = Object.values(weekdays).find((day) => allDays & (1 << day))!;
+  const dayScore = firstDay * 10000;
+  return dayScore + startTime;
 }
 
 type ComparableKey = SortKeys | 'season_code' | 'section';
@@ -297,7 +333,7 @@ function getAttributeValue(
 ) {
   switch (key) {
     case 'friend':
-      return numFriends[`${l.season_code}${l.crn}`]?.size ?? 0;
+      return numFriends[`${l.course.season_code}${l.crn}`]?.size ?? 0;
     case 'overall':
       return getOverallRatings(l.course, 'stat');
     case 'workload':
@@ -306,10 +342,15 @@ function getAttributeValue(
       return getEnrolled(l.course, 'stat');
     case 'time':
       return toDayTimeScore(l.course);
+    case 'location':
+      return toLocationsSummary(l.course);
     case 'course_code':
+      return l[key];
+    case 'title':
+    case 'average_professor_rating':
+    case 'average_gut_rating':
     case 'season_code':
     case 'section':
-      return l[key];
     default:
       // || is intentional: 0 also means nonexistence
       return l.course[key] || null;
@@ -349,7 +390,7 @@ export function sortCourses(
   },
   numFriends: NumFriendsReturn,
 ): CatalogListing[] {
-  return [...courses].sort(
+  return courses.toSorted(
     (a, b) =>
       compareByKey(a, b, ordering.key, ordering.type, numFriends) ||
       // Define a stable sort order for courses that compare equal
@@ -361,14 +402,14 @@ export function sortCourses(
 
 type CourseWithEnrolled = {
   evaluation_statistic?: {
-    enrolled: number | null;
+    enrolled: number;
   } | null;
   last_enrollment?: number | null;
   last_enrollment_same_professors?: boolean | null;
 };
 
-export function isGraduate(listing: Pick<Listings, 'number'>): boolean {
-  return Number(listing.number.replace(/\D/gu, '')) >= 500;
+export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
+  return listing.school !== 'YC' && listing.school !== 'SU';
 }
 
 export function isDiscussionSection(
@@ -428,3 +469,7 @@ export const toExponential = (number: number): number => 1.01 ** number;
  */
 export const toLinear = (number: number): number =>
   Math.log(number) / Math.log(1.01);
+
+export function getListingId(season: Season, crn: Crn) {
+  return (Number(season) - 200000) * 100000 + crn;
+}

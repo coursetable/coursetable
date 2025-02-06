@@ -1,20 +1,16 @@
 import { DateLocalizer, type DateLocalizerSpec } from 'react-big-calendar';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
+import { weekdays } from './constants';
 import { toSeasonString } from './course';
 import {
   academicCalendars,
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { CatalogListing } from '../queries/api';
-import {
-  weekdays,
-  type Season,
-  type Weekdays,
-  type TimesByDay,
-} from '../queries/graphql-types';
+import type { Season } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -58,28 +54,6 @@ function firstDaySince(reference: Date | SimpleDate, days: number[]) {
   const offset = Math.min(...offsets);
   referenceDate.setUTCDate(referenceDate.getUTCDate() + offset);
   return referenceDate;
-}
-
-function getTimes(timesByDay: TimesByDay) {
-  const times: {
-    days: number[];
-    startTime: string;
-    endTime: string;
-    location: string;
-  }[] = [];
-
-  for (const [day, info] of Object.entries(timesByDay)) {
-    // Sunday should be 0
-    const idx = (weekdays.indexOf(day as Weekdays) + 1) % 7;
-    for (const [startTime, endTime, location] of info) {
-      const time = times.find(
-        (t) => t.startTime === startTime && t.endTime === endTime,
-      );
-      if (time) time.days.push(idx);
-      else times.push({ days: [idx], startTime, endTime, location });
-    }
-  }
-  return times;
 }
 
 const dayToCode: { [key: number]: string } = {
@@ -236,25 +210,27 @@ export type RBCEvent = {
 export function getCalendarEvents(
   type: 'gcal',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ): GCalEvent[];
 export function getCalendarEvents(
   type: 'ics',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ): ICSEvent[];
 export function getCalendarEvents(
   type: 'rbc',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ): RBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
   courses: WorksheetCourse[],
-  curSeason: Season,
+  viewedSeason: Season,
 ) {
-  const seasonString = toSeasonString(curSeason);
-  const semester = academicCalendars[curSeason] as SeasonCalendar | undefined;
+  const seasonString = toSeasonString(viewedSeason);
+  const semester = academicCalendars[viewedSeason] as
+    | SeasonCalendar
+    | undefined;
   if (!semester && type !== 'rbc') {
     toast.error(
       `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
@@ -269,13 +245,20 @@ export function getCalendarEvents(
   const toEvent =
     type === 'gcal' ? toGCalEvent : type === 'ics' ? toICSEvent : toRBCEvent;
   const events = visibleCourses.flatMap(({ listing: l, color }) => {
-    const times = getTimes(l.course.times_by_day);
     const endRepeat = semester
       ? isoString(semester.end, '23:59').replace(/[:-]/gu, '')
       : // Irrelevant for rbc
         '';
-    return times.flatMap<GCalEvent | ICSEvent | RBCEvent>(
-      ({ days, startTime, endTime, location }) => {
+    return l.course.course_meetings.flatMap<GCalEvent | ICSEvent | RBCEvent>(
+      ({
+        days_of_week: daysOfWeek,
+        start_time: startTime,
+        end_time: endTime,
+        location,
+      }) => {
+        const days = Object.values(weekdays).filter(
+          (day) => daysOfWeek & (1 << day),
+        );
         const firstMeetingDay = semester
           ? firstDaySince(semester.start, days)
           : // Irrelevant for rbc, because it always uses the current date
@@ -304,7 +287,9 @@ export function getCalendarEvents(
             ...(rDate ? [`RDATE;TZID=America/New_York:${rDate}`] : []),
           ],
           description: `${l.course.title}\nInstructor: ${l.course.course_professors.map((p) => p.professor.name).join(', ')}`,
-          location,
+          location: location
+            ? `${location.building.code}${location.room ? ` ${location.room}` : ''}`
+            : '',
           color,
           listing: l,
           days,
@@ -323,21 +308,17 @@ function formatTime(a: Date) {
   }${hours < 12 ? 'a' : 'p'}m`;
 }
 
-// @ts-expect-error: you actually don't need to implement everything to make
-// things work! The type declares everything as required but react-big-calendar
-// actually provides defaults
 export const localizer = new DateLocalizer({
   firstOfWeek() {
     return 0;
   },
-  startOfWeek: 0,
   format() {
     // Everything is already in formats
     return '';
   },
   formats: {
     dayFormat: (a) =>
-      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][a.getDay()],
+      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][a.getDay()]!,
     timeGutterFormat: (a) => formatTime(a),
     selectRangeFormat: ({ start, end }) =>
       `${formatTime(start)} – ${formatTime(end)}`,
@@ -346,4 +327,7 @@ export const localizer = new DateLocalizer({
     eventTimeRangeStartFormat: ({ start }) => `${formatTime(start)} – `,
     eventTimeRangeEndFormat: ({ end }) => ` – ${formatTime(end)}`,
   },
-} as DateLocalizerSpec);
+} satisfies Pick<
+  DateLocalizerSpec,
+  'firstOfWeek' | 'format' | 'formats'
+> as unknown as DateLocalizerSpec);

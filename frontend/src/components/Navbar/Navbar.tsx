@@ -1,18 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Nav, Navbar } from 'react-bootstrap';
-import { MdUpdate } from 'react-icons/md';
 import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
 import { API_ENDPOINT } from '../../config';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop } from '../../utilities/display';
+import LastUpdated from '../Search/LastUpdated';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
-import { SurfaceComponent, TextComponent } from '../Typography';
+import RandomButton from '../Search/RandomButton';
+import { SurfaceComponent } from '../Typography';
 import { NavbarWorksheetSearch } from '../Worksheet/NavbarWorksheetSearch';
 
 import styles from './Navbar.module.css';
@@ -51,53 +51,15 @@ function NavbarRight({
   return children;
 }
 
-function LastUpdatedAt() {
-  const lastUpdated = useMemo(() => {
-    const now = new Date();
-    // We always update at around 8:25am UTC, regardless of DST
-    // TODO: maybe the DB should tell us when it was last updated
-    const lastUpdate = new Date(
-      Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate(),
-        8,
-        25,
-      ),
-    );
-    const nowTime = now.getTime() / 1000;
-    let lastUpdateTime = lastUpdate.getTime() / 1000;
-    if (lastUpdateTime > nowTime) lastUpdateTime -= 24 * 60 * 60;
-    const diffInSecs = nowTime - lastUpdateTime;
-    if (diffInSecs < 60) {
-      return `${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`;
-    } else if (diffInSecs < 3600) {
-      const diffInMins = Math.floor(diffInSecs / 60);
-      return `${diffInMins} min${diffInMins > 1 ? 's' : ''}`;
-    }
-    const diffInHrs = Math.floor(diffInSecs / 3600);
-    return `${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`;
-  }, []);
-  return (
-    <TextComponent type="tertiary" small className="mb-2 text-right">
-      <MdUpdate className="me-1" />
-      Updated {lastUpdated} ago
-    </TextComponent>
-  );
-}
-
 export default function CourseTableNavbar() {
   const authStatus = useStore((state) => state.authStatus);
-  const hasEvals = useStore((state) => state.user.hasEvals);
+  const user = useStore((state) => state.user);
   const location = useLocation();
   const [navExpanded, setNavExpanded] = useState(false);
-  const { isMobile } = useWindowDimensions();
+  const isMobile = useStore((state) => state.isMobile);
 
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
-  const showWorksheetSearch =
-    !isMobile &&
-    authStatus === 'authenticated' &&
-    location.pathname === '/worksheet';
+  const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
 
   return (
     <SurfaceComponent className={styles.container}>
@@ -111,12 +73,15 @@ export default function CourseTableNavbar() {
           showCatalogSearch && styles.catalogSearchNavbar,
         )}
       >
-        {/* Logo in top left */}
-        <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
-          <NavLink to="/">
-            <Logo icon={false} />
-          </NavLink>
-        </Nav>
+        {/* Logo in top left and random underneath */}
+        <div className={styles.navLogoWrapper}>
+          <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
+            <NavLink to="/">
+              <Logo icon={false} />
+            </NavLink>
+          </Nav>
+          {showCatalogSearch && <RandomButton />}
+        </div>
         {showCatalogSearch && <NavbarCatalogSearch />}
         {showWorksheetSearch && <NavbarWorksheetSearch />}
 
@@ -145,7 +110,7 @@ export default function CourseTableNavbar() {
                 <span data-tutorial="worksheet-1">Worksheet</span>
               </NavbarLink>
               <NavbarLink to="/wishlist">Wishlist</NavbarLink>
-              {hasEvals === false && (
+              {user?.hasEvals === false && (
                 <NavbarLink to="/challenge">
                   <span style={{ position: 'relative' }}>
                     <span className={styles.challengeIndicator} />
@@ -167,15 +132,15 @@ export default function CourseTableNavbar() {
                   >
                     Feedback
                   </a>
-                  <NavbarLink to="/releases">Release Notes</NavbarLink>
+                  <NavbarLink to="/releases">Release notes</NavbarLink>
                   <button
                     type="button"
                     className={styles.navLink}
                     onClick={
                       authStatus !== 'authenticated'
                         ? () => {
-                            window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
-                          }
+                          window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
+                        }
                         : logout
                     }
                   >
@@ -187,7 +152,7 @@ export default function CourseTableNavbar() {
               )}
             </Nav>
           </Navbar.Collapse>
-          {showCatalogSearch && <LastUpdatedAt />}
+          {showCatalogSearch && <LastUpdated />}
         </NavbarRight>
       </Navbar>
     </SurfaceComponent>

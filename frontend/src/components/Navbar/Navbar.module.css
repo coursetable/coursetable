@@ -13,7 +13,6 @@
   font-size: 1.6rem;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-  height: 100%;
 }
 
 .navToggle {
@@ -28,7 +27,7 @@
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgb(219 219 219)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-@media (width >= 768px) {
+@media (min-width: 768px) {
   .navbar {
     height: var(--height-navbar);
   }
@@ -49,7 +48,7 @@
   position: relative;
 }
 
-@media (width < 768px) {
+@media (max-width: calc(768px - 0.5px)) {
   .navbarLinks {
     align-items: start;
     padding-top: 0.5rem;
@@ -84,8 +83,19 @@
   background-color: var(--color-primary);
 }
 
-@media (width < 1320px) {
+.navLogoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: 100%;
+}
+
+@media (max-width: calc(1320px - 0.5px)) {
   .navLink {
     font-size: 0.9rem;
+  }
+
+  .navLogoWrapper {
+    gap: 0.75rem;
   }
 }

@@ -1,13 +1,19 @@
-import FileSaver from 'file-saver';
-import { useWorksheet } from '../../contexts/worksheetContext';
+import saveFile from 'file-saver';
+import { useShallow } from 'zustand/react/shallow';
 import ICSIcon from '../../images/ics.svg';
+import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 
 export default function ICSExportButton() {
-  const { curSeason, courses } = useWorksheet();
+  const { viewedSeason, courses } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      courses: state.courses,
+    })),
+  );
 
   const exportICS = () => {
-    const events = getCalendarEvents('ics', courses, curSeason);
+    const events = getCalendarEvents('ics', courses, viewedSeason);
     // Error already reported
     if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR
@@ -34,7 +40,7 @@ ${events.join('\n')}
 END:VCALENDAR`;
     // Download to user's computer
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, `${curSeason}_worksheet.ics`);
+    saveFile(blob, `${viewedSeason}_worksheet.ics`);
   };
 
   return (

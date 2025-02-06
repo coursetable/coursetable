@@ -4,12 +4,12 @@ import 'rc-slider/assets/index.css';
 import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';
 import { useSearch } from '../contexts/searchContext';
-import { useWindowDimensions } from '../contexts/windowDimensionsContext';
+import { useStore } from '../store';
 import styles from './Search.module.css';
 import './rc-slider-override.css';
 
 function Search() {
-  const { isMobile } = useWindowDimensions();
+  const isMobile = useStore((state) => state.isMobile);
   const { coursesLoading, searchData, multiSeasons } = useSearch();
 
   // TODO: add state if courseLoadError is present

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Button } from 'react-bootstrap';
@@ -17,31 +17,46 @@ import {
   type CategoricalFilters,
   type NumericFilters,
   defaultFilters,
+  type IntersectableFilters,
   skillsAreasOptions,
   subjectsOptions,
   seasonsOptions,
 } from '../../contexts/searchContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { useStore } from '../../store';
 import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
 import { TextComponent, Input } from '../Typography';
 import styles from './NavbarCatalogSearch.module.css';
 
-function Select<K extends keyof CategoricalFilters>({
-  options,
-  handle: handleName,
-  placeholder,
-  colors,
-  hideSelectedOptions,
-  ...props
-}: Omit<React.ComponentProps<typeof Popout>, 'children' | 'buttonText'> & {
-  readonly options: React.ComponentProps<
-    typeof PopoutSelect<FilterHandle<K>['value'][number], true>
-  >['options'];
+type SelectProps<K extends keyof CategoricalFilters> = {
   readonly handle: K;
-  readonly placeholder: string;
-  readonly colors?: { [optionValue: string]: string };
-  readonly hideSelectedOptions?: boolean;
-}) {
+  readonly minSelectWidth?: number;
+} & Pick<
+  React.ComponentProps<typeof Popout>,
+  'dataTutorial' | 'className' | 'displayOptionLabel' | 'maxDisplayOptions'
+> &
+  Pick<
+    React.ComponentProps<
+      typeof PopoutSelect<FilterHandle<K>['value'][number], true>
+    >,
+    | 'options'
+    | 'placeholder'
+    | 'colors'
+    | 'hideSelectedOptions'
+    | 'isIntersection'
+    | 'setIsIntersection'
+    | 'unionIntersectionButtonLabel'
+  >;
+
+function Select<K extends keyof CategoricalFilters>({
+  dataTutorial,
+  className,
+  displayOptionLabel,
+  maxDisplayOptions,
+  handle: handleName,
+  colors,
+  minSelectWidth,
+  ...props
+}: SelectProps<K>) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName] as FilterHandle<K>;
   return (
@@ -53,25 +68,51 @@ function Select<K extends keyof CategoricalFilters>({
       selectedOptions={handle.value}
       buttonText={filterLabels[handleName]}
       colors={colors}
-      {...props}
+      dataTutorial={dataTutorial}
+      className={className}
+      displayOptionLabel={displayOptionLabel}
+      maxDisplayOptions={maxDisplayOptions}
     >
+      {/* @ts-expect-error: TODO */}
       <PopoutSelect<FilterHandle<K>['value'][number], true>
         isMulti
         colors={colors}
         value={handle.value}
-        options={options}
-        placeholder={placeholder}
         onChange={(selectedOption) => {
           handle.set(selectedOption as Filters[K]);
           setStartTime(Date.now());
         }}
-        hideSelectedOptions={hideSelectedOptions}
+        minWidth={minSelectWidth}
+        {...props}
       />
     </Popout>
   );
 }
 
-export type Resettable = { resetToDefault: () => void };
+function IntersectableSelect<K extends IntersectableFilters>(
+  props: SelectProps<K>,
+) {
+  const {
+    setStartTime,
+    filters: { intersectingFilters },
+  } = useSearch();
+  return (
+    <Select
+      {...props}
+      isIntersection={intersectingFilters.value.includes(props.handle)}
+      setIsIntersection={(v) => {
+        if (v) {
+          intersectingFilters.set([...intersectingFilters.value, props.handle]);
+        } else {
+          intersectingFilters.set(
+            intersectingFilters.value.filter((x) => x !== props.handle),
+          );
+        }
+        setStartTime(Date.now());
+      }}
+    />
+  );
+}
 
 function Slider<K extends NumericFilters>({
   handle: handleName,
@@ -83,6 +124,9 @@ function Slider<K extends NumericFilters>({
   // This is exactly the same as the filter handle, except it updates
   // responsively without triggering searching
   const [rangeValue, setRangeValue] = useState(handle.value);
+  useEffect(() => {
+    setRangeValue(handle.value);
+  }, [handle.value]);
 
   return (
     <div className={styles.sliderContainer}>
@@ -122,10 +166,9 @@ function Slider<K extends NumericFilters>({
 }
 
 export function NavbarCatalogSearch() {
-  const { isTablet } = useWindowDimensions();
+  const isTablet = useStore((state) => state.isTablet);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
-  const resetKey = useRef(0);
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -133,8 +176,6 @@ export function NavbarCatalogSearch() {
     useSearch();
 
   const { searchText } = filters;
-
-  const advanced = useRef<Resettable>(null);
 
   const keyMap = {
     FOCUS_SEARCH: ['ctrl+s', 'command+s'],
@@ -164,7 +205,7 @@ export function NavbarCatalogSearch() {
         allowChanges // Required for global
         style={{ outline: 'none' }}
       />
-      {/* Search Form */}
+      {/* Search form */}
       <Form
         className="px-0 h-100"
         onSubmit={(event) => {
@@ -174,7 +215,7 @@ export function NavbarCatalogSearch() {
       >
         <div className={styles.row}>
           <div className={styles.searchWrapper}>
-            {/* Search Bar */}
+            {/* Search bar */}
             <Input
               className={clsx(
                 styles.searchBar,
@@ -211,26 +252,32 @@ export function NavbarCatalogSearch() {
         <div className={styles.row}>
           {!isTablet && (
             <>
-              <Select
+              <IntersectableSelect
                 options={subjectsOptions}
                 handle="selectSubjects"
-                placeholder="All Subjects"
+                placeholder="All subjects"
                 dataTutorial={2}
                 hideSelectedOptions
+                unionIntersectionButtonLabel={(isIntersection) =>
+                  `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
+                }
               />
-              <Select
+              <IntersectableSelect
                 options={skillsAreasOptions}
                 handle="selectSkillsAreas"
-                placeholder="All Areas/Skills"
+                placeholder="All areas/skills"
                 colors={skillsAreasColors}
                 className="me-0"
                 hideSelectedOptions
+                minSelectWidth={300}
+                unionIntersectionButtonLabel={(isIntersection) =>
+                  `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
+                }
               />
             </>
           )}
 
           <div
-            key={resetKey.current}
             className="w-auto flex-grow-0 d-flex align-items-center"
             data-tutorial="catalog-3"
           >
@@ -245,17 +292,16 @@ export function NavbarCatalogSearch() {
               placeholder="Last 5 Years"
               displayOptionLabel
               maxDisplayOptions={1}
+              minSelectWidth={200}
             />
           )}
-          <AdvancedPanel ref={advanced} />
+          <AdvancedPanel />
 
-          {/* Reset Filters & Sorting Button */}
+          {/* Reset filters & sorting button */}
           <Button
             className={styles.resetButton}
             variant="danger"
             onClick={() => {
-              resetKey.current++;
-              advanced.current?.resetToDefault();
               Object.values(filters).forEach((filter) =>
                 filter.resetToDefault(),
               );

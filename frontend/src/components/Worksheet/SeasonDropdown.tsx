@@ -1,25 +1,32 @@
 import { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
+import { useShallow } from 'zustand/react/shallow';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Season } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { toSeasonString } from '../../utilities/course';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
 function SeasonDropdownDesktop() {
-  const { seasonCodes, curSeason, changeSeason } = useWorksheet();
+  const { seasonCodes, viewedSeason, changeViewedSeason } = useStore(
+    useShallow((state) => ({
+      seasonCodes: state.seasonCodes,
+      viewedSeason: state.viewedSeason,
+      changeViewedSeason: state.changeViewedSeason,
+    })),
+  );
 
   const selectedSeason = useMemo(() => {
-    if (curSeason) {
+    if (viewedSeason) {
       return {
-        value: curSeason,
-        label: toSeasonString(curSeason),
+        value: viewedSeason,
+        label: toSeasonString(viewedSeason),
       };
     }
     return null;
-  }, [curSeason]);
+  }, [viewedSeason]);
 
   return (
     <Popout
@@ -36,21 +43,29 @@ function SeasonDropdownDesktop() {
           label: toSeasonString(seasonCode),
         }))}
         onChange={(selectedOption) => {
-          changeSeason(selectedOption!.value);
+          changeViewedSeason(selectedOption!.value);
         }}
+        showControl={false}
+        minWidth={200}
       />
     </Popout>
   );
 }
 
 function SeasonDropdownMobile() {
-  const { seasonCodes, curSeason, changeSeason } = useWorksheet();
+  const { seasonCodes, viewedSeason, changeViewedSeason } = useStore(
+    useShallow((state) => ({
+      seasonCodes: state.seasonCodes,
+      viewedSeason: state.viewedSeason,
+      changeViewedSeason: state.changeViewedSeason,
+    })),
+  );
 
   return (
     <DropdownButton
       variant="dark"
-      title={toSeasonString(curSeason)}
-      onSelect={(s) => changeSeason(s as Season | null)}
+      title={toSeasonString(viewedSeason)}
+      onSelect={(s) => changeViewedSeason(s as Season)}
     >
       {seasonCodes.map((season) => (
         <Dropdown.Item
@@ -59,7 +74,8 @@ function SeasonDropdownMobile() {
           className="d-flex"
           // Styling if this is the current season
           style={{
-            backgroundColor: season === curSeason ? 'var(--color-primary)' : '',
+            backgroundColor:
+              season === viewedSeason ? 'var(--color-primary)' : '',
           }}
         >
           <div className="mx-auto">{toSeasonString(season)}</div>

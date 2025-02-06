@@ -45,7 +45,7 @@
   margin-right: auto;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.5px)) {
   .resultItemContent {
     line-height: 28px;
   }
@@ -59,25 +59,10 @@
   text-overflow: ellipsis;
 }
 
-.dot {
-  display: inline;
-}
-
 .skillsAreas {
   display: inline-flex;
   white-space: nowrap;
   overflow: hidden;
-}
-
-.none {
-  background-color: rgb(102 102 102) !important;
-}
-
-.conflictError {
-  position: absolute;
-  top: 0;
-  left: -10px;
-  transform: translate(100%, -35%);
 }
 
 .cancelledClass {
@@ -107,8 +92,7 @@
   top: 0;
 }
 
-@media (width < 1320px) {
-  .tag,
+@media (max-width: calc(1320px - 0.5px)) {
   .ratingCell,
   .ellipsisText {
     font-size: 12px;

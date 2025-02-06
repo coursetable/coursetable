@@ -5,10 +5,10 @@ All CI/CD pipelines are implemented as GitHub workflow actions in `.github/workf
 Available Environments:
 
 - Preview
-  - PR-specific Vercel frontend deployments that use the `Staging` backend environment.
+  - PR-specific frontend deployments that use the `Staging` backend environment.
   - URL: `[branch-name].preview.coursetable.com`
 - Staging
-  - `master` tracking Vercel frontend and Docker backend deployments.
+  - `master` tracking frontend and Docker backend deployments.
     <!-- TODO: User DB is overwritten by production user data daily. -->
   - URL:
     - Frontend: [staging.coursetable.com](https://staging.coursetable.com)
@@ -28,21 +28,21 @@ Runs formatting, linting, and dependency checks. Required as a check for merging
 
 ## [Preview CD](../.github/workflows/preview_cd.yml)
 
-Deploys **frontend only** to Vercel and assigns unique preview link to each commit and each PR. Required as a check for merging PRs.
+Deploys **frontend only** to Cloudflare pages and assigns unique preview link to each commit and each PR. Required as a check for merging PRs.
 
 - Trigger: PR commit
 - Environment: Preview
 
 ## [Staging CD](../.github/workflows/staging_cd.yml)
 
-Deploys both frontend to Vercel and backend to the staging API Docker Network. Builds latest Docker images and refreshes containers in-place. Allows for sanity-checking and robust testing of new commits before deploying to production.
+Deploys both frontend to Cloudflare pages and backend to the staging API Docker Network. Builds latest Docker images and refreshes containers in-place. Allows for sanity-checking and robust testing of new commits before deploying to production.
 
 - Trigger: `master` commit
 - Environment: Staging
 
 ## [Production CD](../.github/workflows/cd.yml)
 
-Deploys both frontend to Vercel and backend to production API Docker Network. Builds latest Docker images and refreshes containers in-place.
+Deploys both frontend to Cloudflare pages and backend to production API Docker Network. Builds latest Docker images and refreshes containers in-place.
 
 - Trigger: `master` commit with team lead approval
 - Environment: Production
@@ -97,13 +97,26 @@ Setup the new server as a self-hosted runner for GitHub Actions by following the
 ### Deploying to the server
 
 > [!IMPORTANT]
-> On the current CourseTable server, `~` refers to `/home/app`. If you logged in using any other user, you'll need to change the paths below.
+> On the current CourseTable server, `~` refers to `/home/app`. **Always log in with `app` user**, because our automatic CD uses `app` to run `git pull`, so if another user changed the `.git` folder, the CD will fail.
 
-The following instructions are only for manual deployments. Only use this in the case that the [GitHub Actions CD workflow](https://github.com/coursetable/coursetable/actions/workflows/cd.yml) fails.
+The following instructions are only for manual deployments. Only use this in the case that the [GitHub Actions CD workflow](https://github.com/coursetable/coursetable/actions/workflows/cd.yml) fails, or if there are manual changes that need to be made (e.g. DB schema).
 
 ```sh
-# Run these on the prod server.
+# Run these on the prod server. Make sure you log in as `app`.
 cd ~/coursetable/api
 git pull # Get changes onto server
 ./start.sh -p # Deploy the new version in prod
 ```
+
+## Troubleshooting deployment
+
+If the API server is not responding, check the logs, and go into the container to debug if necessary:
+
+```sh
+docker logs -f express-prod
+docker exec -it express-prod bash
+```
+
+You can also restart it with `./start.sh -p`, or force-recreate the container with `./start.sh -p -o`.
+
+In the case of prolonged downtime, you can put up the "under maintenance" page by manually triggering the "under maintenance" GitHub Action workflow.

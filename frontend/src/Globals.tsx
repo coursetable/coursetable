@@ -11,6 +11,8 @@ import { MDXProvider } from '@mdx-js/react';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'core-js/proposals/array-grouping-v2';
+import 'core-js/proposals/change-array-by-copy-stage-4';
 
 import ErrorPage from './components/ErrorPage';
 import { components } from './components/markdown';
@@ -18,9 +20,6 @@ import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
-import { ThemeProvider } from './contexts/themeContext';
-import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
-import { WorksheetProvider } from './contexts/worksheetContext';
 import { WishlistProvider } from './contexts/wishlistContext';
 
 import './index.css';
@@ -67,22 +66,16 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
           {/* FerryProvider must be inside UserProvider because the former
             depends on login status */}
           <FerryProvider>
-            <WindowDimensionsProvider>
-              {/* SearchProvider must be inside WorksheetProvider because the
+            {/* SearchProvider must be inside WorksheetProvider because the
                   former depends on the currently viewed worksheet */}
-              <WorksheetProvider>
-                <WishlistProvider>
-                  <SearchProvider>
-                    <ThemeProvider>
-                      <MDXProvider components={components}>
-                        <div id="base">{children}</div>
-                      </MDXProvider>
-                    </ThemeProvider>
-                  </SearchProvider>
-                </WishlistProvider>
-              </WorksheetProvider>
-              <ToastContainer toastClassName="rounded" />
-            </WindowDimensionsProvider>
+            <WishlistProvider>
+              <SearchProvider>
+                <MDXProvider components={components}>
+                  <div id="base">{children}</div>
+                </MDXProvider>
+              </SearchProvider>
+            </WishlistProvider>
+            <ToastContainer toastClassName="rounded" />
           </FerryProvider>
         </ApolloProvider>
       </GapiProvider>

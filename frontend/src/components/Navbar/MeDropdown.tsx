@@ -13,9 +13,9 @@ import {
   FcNews,
 } from 'react-icons/fc';
 
+import { useShallow } from 'zustand/react/shallow';
 import { API_ENDPOINT } from '../../config';
 import { useTutorial } from '../../contexts/tutorialContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
@@ -86,7 +86,12 @@ function DropdownContent({
   readonly isExpanded: boolean;
   readonly setIsExpanded: (visible: boolean) => void;
 }) {
-  const { isMobile, isTablet } = useWindowDimensions();
+  const { isMobile, isTablet } = useStore(
+    useShallow((state) => ({
+      isMobile: state.isMobile,
+      isTablet: state.isTablet,
+    })),
+  );
   const authStatus = useStore((state) => state.authStatus);
   const refreshAuth = useStore((state) => state.refreshAuth);
   const { toggleTutorial } = useTutorial();
@@ -117,7 +122,7 @@ function DropdownContent({
             Feedback
           </DropdownItem>
           <DropdownItem icon={FcNews} to="/releases">
-            Release Notes
+            Release notes
           </DropdownItem>
           {/* Try tutorial only on desktop */}
           {!isMobile && !isTablet && authStatus === 'authenticated' && (
@@ -143,7 +148,7 @@ function DropdownContent({
                 window.location.href = '/';
               }}
             >
-              Sign Out
+              Sign out
             </DropdownItem>
           ) : (
             <DropdownItem
@@ -151,7 +156,7 @@ function DropdownContent({
               iconColor="#30e36b"
               href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
             >
-              Sign In
+              Sign in
             </DropdownItem>
           )}
         </div>
@@ -164,20 +169,29 @@ function MeDropdown() {
   // Ref to detect outside clicks for profile dropdown
   const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLButtonElement>(false);
+  const user = useStore((state) => state.user);
+  const hasName = Boolean(user?.firstName && user.lastName);
   return (
     <div className={clsx(styles.navbarMe, 'align-self-end')}>
       <button
         type="button"
         ref={elemRef}
-        className={clsx(styles.meIcon, 'm-auto')}
+        className={clsx(hasName ? styles.meIcon : styles.anonIcon, 'm-auto')}
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         aria-label="Profile"
       >
-        <BsFillPersonFill
-          className="m-auto"
-          size={20}
-          color={isComponentVisible ? '#007bff' : undefined}
-        />
+        {hasName ? (
+          <span title={`${user!.firstName!} ${user!.lastName!}`}>
+            {user!.firstName![0]!}
+            {user!.lastName![0]!}
+          </span>
+        ) : (
+          <BsFillPersonFill
+            className="m-auto"
+            size={20}
+            color={isComponentVisible ? '#007bff' : undefined}
+          />
+        )}
       </button>
       <DropdownContent
         isExpanded={isComponentVisible}

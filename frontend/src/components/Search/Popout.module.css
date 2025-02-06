@@ -34,9 +34,11 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
+  display: flex;
+  align-items: center;
 }
 
-@media (width < 1320px) {
+@media (max-width: calc(1320px - 0.5px)) {
   .button {
     font-size: 12px;
   }

@@ -18,24 +18,22 @@ export type EvalsBySeasonQueryVariables = Types.Exact<{
 
 export type EvalsBySeasonQuery = {
   __typename?: 'query_root';
-  listings: Array<{
-    __typename?: 'listings';
-    crn: number;
-    course: {
-      __typename?: 'courses';
-      average_gut_rating: number | null;
-      average_rating: number | null;
-      average_rating_same_professors: number | null;
-      average_professor_rating: number | null;
-      average_workload: number | null;
-      average_workload_same_professors: number | null;
-      last_enrollment: number | null;
-      last_enrollment_same_professors: boolean | null;
-      evaluation_statistic: {
-        __typename?: 'evaluation_statistics';
-        enrolled: number | null;
-      } | null;
-    };
+  courses: Array<{
+    __typename?: 'courses';
+    average_gut_rating: number | null;
+    average_rating: number | null;
+    average_rating_same_professors: number | null;
+    average_professor_rating: number | null;
+    average_workload: number | null;
+    average_workload_same_professors: number | null;
+    course_id: number;
+    last_enrollment: number | null;
+    last_enrollment_same_professors: boolean | null;
+    evaluation_statistic: {
+      __typename?: 'evaluation_statistics';
+      enrolled: number;
+      responses: number | null;
+    } | null;
   }>;
 };
 
@@ -45,57 +43,57 @@ export type CatalogBySeasonQueryVariables = Types.Exact<{
 
 export type CatalogBySeasonQuery = {
   __typename?: 'query_root';
-  listings: Array<{
-    __typename?: 'listings';
-    course_code: string;
-    crn: number;
-    listing_id: number;
-    number: string;
-    school: string | null;
+  courses: Array<{
+    __typename?: 'courses';
+    areas: any;
+    colsem: boolean;
+    course_id: number;
+    credits: number | null;
+    description: string | null;
+    extra_info: string | null;
+    final_exam: string | null;
+    fysem: boolean;
+    last_offered_course_id: number | null;
+    primary_crn: number | null;
+    requirements: string | null;
+    same_course_and_profs_id: number;
+    same_course_id: number;
     season_code: string;
     section: string;
-    subject: string;
-    course: {
-      __typename?: 'courses';
-      areas: any;
-      classnotes: string | null;
-      colsem: boolean | null;
-      credits: number | null;
-      description: string | null;
-      extra_info: string | null;
-      final_exam: string | null;
-      fysem: boolean | null;
-      last_offered_course_id: number | null;
-      locations_summary: string | null;
-      regnotes: string | null;
-      requirements: string | null;
-      rp_attr: string | null;
-      same_course_and_profs_id: number;
-      same_course_id: number;
-      skills: any;
-      syllabus_url: string | null;
-      sysem: boolean | null;
-      times_by_day: any;
-      times_summary: string | null;
-      title: string;
-      course_flags: Array<{
-        __typename?: 'course_flags';
-        flag: { __typename?: 'flags'; flag_text: string };
-      }>;
-      course_professors: Array<{
-        __typename?: 'course_professors';
-        professor: {
-          __typename?: 'professors';
-          professor_id: number;
-          name: string;
-        };
-      }>;
-      listings: Array<{
-        __typename?: 'listings';
-        crn: number;
-        course_code: string;
-      }>;
-    };
+    skills: any;
+    sysem: boolean;
+    title: string;
+    course_flags: Array<{
+      __typename?: 'course_flags';
+      flag: { __typename?: 'flags'; flag_text: string };
+    }>;
+    course_professors: Array<{
+      __typename?: 'course_professors';
+      professor: {
+        __typename?: 'professors';
+        professor_id: number;
+        name: string;
+      };
+    }>;
+    listings: Array<{
+      __typename?: 'listings';
+      course_code: string;
+      crn: number;
+      number: string;
+      school: string;
+      subject: string;
+    }>;
+    course_meetings: Array<{
+      __typename?: 'course_meetings';
+      days_of_week: number;
+      start_time: string;
+      end_time: string;
+      location: {
+        __typename?: 'locations';
+        room: string | null;
+        building: { __typename?: 'buildings'; code: string };
+      } | null;
+    }>;
   }>;
 };
 
@@ -108,6 +106,20 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
+export type BuildingsCatalogQueryVariables = Types.Exact<{
+  [key: string]: never;
+}>;
+
+export type BuildingsCatalogQuery = {
+  __typename?: 'query_root';
+  buildings: Array<{
+    __typename?: 'buildings';
+    building_name: string | null;
+    code: string;
+    url: string | null;
+  }>;
+};
+
 export const ListSeasonsDocument = gql`
   query listSeasons {
     seasons {
@@ -117,73 +129,73 @@ export const ListSeasonsDocument = gql`
 `;
 export const EvalsBySeasonDocument = gql`
   query evalsBySeason($season: String!) {
-    listings(where: { season_code: { _eq: $season } }) {
-      course {
-        average_gut_rating
-        average_rating
-        average_rating_same_professors
-        average_professor_rating
-        average_workload
-        average_workload_same_professors
-        evaluation_statistic {
-          enrolled
-        }
-        last_enrollment
-        last_enrollment_same_professors
+    courses(where: { season_code: { _eq: $season } }) {
+      average_gut_rating
+      average_rating
+      average_rating_same_professors
+      average_professor_rating
+      average_workload
+      average_workload_same_professors
+      course_id
+      evaluation_statistic {
+        enrolled
+        responses
       }
-      crn
+      last_enrollment
+      last_enrollment_same_professors
     }
   }
 `;
 export const CatalogBySeasonDocument = gql`
   query catalogBySeason($season: String!) {
-    listings(where: { season_code: { _eq: $season } }) {
-      course {
-        areas
-        classnotes
-        colsem
-        course_flags {
-          flag {
-            flag_text
-          }
+    courses(where: { season_code: { _eq: $season } }) {
+      areas
+      colsem
+      course_flags {
+        flag {
+          flag_text
         }
-        course_professors {
-          professor {
-            professor_id
-            name
-          }
-        }
-        credits
-        description
-        extra_info
-        final_exam
-        fysem
-        last_offered_course_id
-        listings {
-          crn
-          course_code
-        }
-        locations_summary
-        regnotes
-        requirements
-        rp_attr
-        same_course_and_profs_id
-        same_course_id
-        skills
-        syllabus_url
-        sysem
-        times_by_day
-        times_summary
-        title
       }
-      course_code
-      crn
-      listing_id
-      number
-      school
+      course_id
+      course_professors {
+        professor {
+          professor_id
+          name
+        }
+      }
+      credits
+      description
+      extra_info
+      final_exam
+      fysem
+      last_offered_course_id
+      listings {
+        course_code
+        crn
+        number
+        school
+        subject
+      }
+      primary_crn
+      requirements
+      same_course_and_profs_id
+      same_course_id
       season_code
       section
-      subject
+      skills
+      sysem
+      course_meetings {
+        days_of_week
+        start_time
+        end_time
+        location {
+          room
+          building {
+            code
+          }
+        }
+      }
+      title
     }
   }
 `;
@@ -191,6 +203,15 @@ export const CourseAttributesDocument = gql`
   query courseAttributes {
     flags {
       flag_text
+    }
+  }
+`;
+export const BuildingsCatalogDocument = gql`
+  query buildingsCatalog {
+    buildings {
+      building_name
+      code
+      url
     }
   }
 `;
@@ -272,6 +293,22 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'courseAttributes',
+        'query',
+        variables,
+      );
+    },
+    buildingsCatalog(
+      variables?: BuildingsCatalogQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<BuildingsCatalogQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<BuildingsCatalogQuery>(
+            BuildingsCatalogDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'buildingsCatalog',
         'query',
         variables,
       );

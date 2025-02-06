@@ -1,0 +1,46 @@
+.description {
+  white-space: pre-wrap;
+}
+
+.labelBubble {
+  font-weight: 550;
+  color: rgb(136 136 136);
+}
+
+.toggleBubble {
+  font-weight: 550;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.metadata,
+.metadata * {
+  font-weight: 600;
+}
+
+.requirements {
+  font-weight: 500;
+  color: rgb(252 105 105);
+  margin-top: 0.5rem;
+}
+
+.unavailableLink {
+  cursor: not-allowed;
+}
+
+.requirements a,
+.requirements .unavailableLink {
+  color: rgb(252 105 105);
+  text-decoration: underline;
+}
+
+.friendsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.flagInfo {
+  margin-bottom: 0;
+  padding-left: 1em;
+}

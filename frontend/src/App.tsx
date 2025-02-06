@@ -7,16 +7,20 @@ import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
+import ProfModal from './components/ProfModal/ProfModal';
 import Spinner from './components/Spinner';
+import {
+  useModalHistory,
+  ModalHistoryProvider,
+} from './contexts/modalHistoryContext';
 import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
-import { useAuth } from './hooks/useAuth';
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
 import Wishlist from './pages/Wishlist';
 
-import { useStore } from './store';
+import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
 
@@ -27,7 +31,6 @@ const About = suspended(() => import('./pages/About'));
 const FAQ = suspended(() => import('./pages/FAQ'));
 const Privacy = suspended(() => import('./pages/Privacy.mdx'));
 const NotFound = suspended(() => import('./pages/NotFound'));
-const Thankyou = suspended(() => import('./pages/Thankyou'));
 const Challenge = suspended(() => import('./pages/Challenge'));
 const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
@@ -42,10 +45,23 @@ const LinkPreview = suspended(
 const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
+const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
+function Modal() {
+  const { currentModal } = useModalHistory();
+  if (!currentModal) return null;
+  switch (currentModal.type) {
+    case 'course':
+      return <CourseModal listing={currentModal.data} />;
+    case 'professor':
+      return <ProfModal professorId={currentModal.data} />;
+    default:
+      return null;
+  }
+}
+
 function AuthenticatedRoutes() {
-  useAuth();
   const { authStatus, user } = useStore(
     useShallow((state) => ({
       user: state.user,
@@ -55,17 +71,14 @@ function AuthenticatedRoutes() {
 
   const location = useLocation();
 
-  if (authStatus === 'loading') return <Spinner />;
+  if (authStatus === 'loading') return <Spinner message="Authenticating..." />;
+  if (authStatus === 'initializing')
+    return <Spinner message="Fetching user info..." />;
 
   switch (location.pathname) {
     case '/catalog':
-      return <Outlet />;
-
     case '/worksheet':
-      if (authStatus === 'authenticated') return <Outlet />;
-      return (
-        <NeedsLogin redirect={location.pathname} message="your worksheet" />
-      );
+      return <Outlet />;
 
     case '/login':
       if (authStatus === 'authenticated')
@@ -73,7 +86,7 @@ function AuthenticatedRoutes() {
       return <Outlet />;
 
     case '/graphiql':
-      if (user.hasEvals) return <Outlet />;
+      if (user?.hasEvals) return <Outlet />;
       return (
         <NeedsLogin
           redirect={location.pathname}
@@ -90,6 +103,7 @@ function AuthenticatedRoutes() {
 function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
+  useInitStore();
 
   return (
     <div
@@ -114,18 +128,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={9}
+        id={14}
       >
-        <a
-          href="/joinus"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
-        >
-          Y/CS applications are live. Apply to join the CourseTable team!
-        </a>
+        {/* None */}
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -133,10 +138,13 @@ function App() {
           <Route path="/" element={<Navigate to="/catalog" replace />} />
 
           {/* Authenticated routes */}
+          {/* Catalog and worksheet can be viewed by anyone; we put them under
+          authenticated routes because we want loading auth to show a loading
+          screen */}
+          <Route path="/catalog" element={<Search />} />
           <Route path="/worksheet" element={<Worksheet />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/graphiql" element={<Graphiql />} />
-          <Route path="/catalog" element={<Search />} />
           <Route path="/login" element={<Landing />} />
         </Route>
 
@@ -145,7 +153,6 @@ function App() {
 
         {/* Static pages that don't need login */}
         <Route path="/about" element={<About />} />
-        <Route path="/thankyou" element={<Thankyou />} />
         <Route path="/joinus" element={<Join />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacypolicy" element={<Privacy />} />
@@ -156,14 +163,18 @@ function App() {
         <Route path="/releases/quist" element={<QuistRelease />} />
         <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases/spring24" element={<Spring24Release />} />
+        <Route path="/releases/fall24" element={<Fall24Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
-        {/* Catch-all Route to NotFound Page */}
+        {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />
       </SentryRoutes>
       <Footer />
       {/* Globally overlaid components */}
       {isTutorialOpen && <Tutorial />}
-      <CourseModal />
+      {/* ModalProvider reads the location so it must be within the app */}
+      <ModalHistoryProvider>
+        <Modal />
+      </ModalHistoryProvider>
     </div>
   );
 }

@@ -1,18 +1,25 @@
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Row } from 'react-bootstrap';
-import { FixedSizeList, FixedSizeGrid } from 'react-window';
+import {
+  FixedSizeList,
+  FixedSizeGrid,
+  type FixedSizeGridProps,
+  type FixedSizeListProps,
+} from 'react-window';
 
+import { useShallow } from 'zustand/react/shallow';
 import FloatingWorksheet from './FloatingWorksheet';
+import LastUpdated from './LastUpdated';
+import RandomButton from './RandomButton';
 import ResultsGridItem from './ResultsGridItem';
 import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import WindowScroller from './WindowScroller';
 
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import type { CatalogListing } from '../../queries/api';
+import { useStore } from '../../store';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import { toSeasonString } from '../../utilities/course';
 import Spinner from '../Spinner';
@@ -35,19 +42,26 @@ function Results({
   readonly multiSeasons?: boolean;
   readonly page?: 'catalog' | 'worksheet';
 }) {
-  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  const { isMobile, isTablet, isLgDesktop } = useStore(
+    useShallow((state) => ({
+      isMobile: state.isMobile,
+      isTablet: state.isTablet,
+      isLgDesktop: state.isLgDesktop,
+    })),
+  );
   const [isListView, setIsListView] = useSessionStorageState(
     'isListView',
     true,
   );
 
-  const { curSeason } = useWorksheet();
+  const viewedSeason = useStore((state) => state.viewedSeason);
 
-  let resultsListing: JSX.Element | undefined = undefined;
+  // eslint-disable-next-line no-useless-assignment
+  let resultsListing: React.JSX.Element | undefined = undefined;
   if (loading || !data) {
     resultsListing = (
       <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>
-        <Spinner />
+        <Spinner message="Loading course catalog..." />
       </Row>
     );
   } else if (data.length === 0) {
@@ -66,7 +80,7 @@ function Results({
           </>
         ) : (
           <>
-            <h3>No courses found for {toSeasonString(curSeason)}</h3>
+            <h3>No courses found for {toSeasonString(viewedSeason)}</h3>
             <div>
               Add some courses on the <Link to="/catalog">Catalog</Link>.
             </div>
@@ -98,8 +112,30 @@ function Results({
             height={Math.min(window.innerHeight, rowCount * rowHeight)}
             itemData={{ listings: data, columnCount, multiSeasons }}
             {...(isGrid
-              ? { columnCount, rowCount, rowHeight, columnWidth }
-              : { itemCount: rowCount, itemSize: rowHeight })}
+              ? ({
+                  columnCount,
+                  rowCount,
+                  rowHeight,
+                  columnWidth,
+                  // A stable key for each list item is important! We don't want
+                  // to render a different list item using the same key, because
+                  // that causes a rendering with stale state.
+                  itemKey({ data, columnIndex, rowIndex }) {
+                    const listing =
+                      data.listings[rowIndex * columnCount + columnIndex];
+                    if (!listing) return '';
+                    return `${listing.course.season_code}${listing.crn}`;
+                  },
+                } satisfies Partial<FixedSizeGridProps<ResultItemData>>)
+              : ({
+                  itemCount: rowCount,
+                  itemSize: rowHeight,
+                  itemKey(index, data) {
+                    const listing = data.listings[index];
+                    if (!listing) return '';
+                    return `${listing.course.season_code}${listing.crn}`;
+                  },
+                } satisfies Partial<FixedSizeListProps<ResultItemData>>))}
             // Inline styles because react-window also injects inline styles
             style={{
               width: '100%',
@@ -132,6 +168,12 @@ function Results({
           setIsListView={setIsListView}
           numResults={data?.length ?? 0}
         />
+      )}
+      {isMobile && (
+        <div className={styles.resultsMobileHeader}>
+          <RandomButton />
+          <LastUpdated />
+        </div>
       )}
       {resultsListing}
       <FloatingWorksheet />

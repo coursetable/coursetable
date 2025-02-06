@@ -1,4 +1,5 @@
 import dns from 'node:dns';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import mdx from '@mdx-js/rollup';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import reactPlugin from '@vitejs/plugin-react';
@@ -115,6 +116,12 @@ export default defineConfig({
     visualizer({
       filename: 'build/bundle-map.html',
     }),
+    process.env.NODE_ENV === 'production' &&
+      sentryVitePlugin({
+        org: 'coursetable',
+        project: 'frontend',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      }),
   ],
   build: {
     outDir: './build',
@@ -135,8 +142,14 @@ export default defineConfig({
         entryFileNames: 'assets/entry-[name]-[hash:10].js',
       },
     },
+    sourcemap: process.env.NODE_ENV === 'production',
   },
   server: {
-    port: Number(process.env.PORT) || 3000,
+    // Only used in dev
+    // Note: in the build-size action we build without doppler, so this must be
+    // runnable without env, but it's unused anyway
+    port: process.env.FRONTEND_ENDPOINT
+      ? Number(new URL(process.env.FRONTEND_ENDPOINT).port || 3000)
+      : 3000,
   },
 });
