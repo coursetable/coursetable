@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
+import EnumerationControls from './EnumerationControls';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
@@ -20,6 +20,8 @@ export interface EnumerationControlsProps {
   handlePrevious: () => void;
   currentIndex: number;
   totalCombos: number;
+  comboSize: number;
+  setComboSize: (size: number) => void;
 }
 
 interface NavbarWorksheetSearchProps {
@@ -92,9 +94,6 @@ export function NavbarWorksheetSearch({
     [changeViewedPerson, viewedPerson, removeFriend],
   );
 
-  const comboSize = useStore((state) => state.comboSize);
-  const setComboSize = useStore((state) => state.setComboSize);
-
   if (authStatus !== 'authenticated' && !isExoticWorksheet()) return null;
 
   return (
@@ -143,65 +142,7 @@ export function NavbarWorksheetSearch({
         </div>
       )}
       {/* Enumeration Mode Controls */}
-      {enumerationControls && (
-        <div className={clsx(styles.enumerationControls, 'ms-3')}>
-          <Button
-            variant="outline-secondary"
-            onClick={enumerationControls.toggleEnumerationMode}
-            className={styles.enumToggleButton}
-            aria-label="Toggle Enumeration Mode"
-          >
-            {enumerationControls.enumerationMode
-              ? 'Disable Enum'
-              : 'Enable Enum'}
-          </Button>
-          {enumerationControls.enumerationMode && (
-            <div className={clsx('d-flex align-items-center', 'ms-2')}>
-              {/* Label for the input */}
-              <label
-                htmlFor="comboSizeInput"
-                style={{
-                  marginRight: '0.5rem',
-                  fontSize: '14px',
-                  color: 'var(--color-text)',
-                }}
-              >
-                Combo Size:
-              </label>
-              <input
-                id="comboSizeInput"
-                type="number"
-                min="1"
-                value={comboSize}
-                onChange={(e) => setComboSize(Number(e.target.value))}
-                className={clsx(styles.comboSizeInput)}
-              />
-              <div className={styles.arrowControls}>
-                <Button
-                  variant="outline-secondary"
-                  onClick={enumerationControls.handlePrevious}
-                  className={styles.prevButton}
-                  aria-label="Previous Combination"
-                  disabled={enumerationControls.currentIndex === 0}
-                >
-                  <FaArrowLeft />
-                </Button>
-                <Button
-                  variant="outline-secondary"
-                  onClick={enumerationControls.handleNext}
-                  className={styles.nextButton}
-                  aria-label="Next Combination"
-                >
-                  <FaArrowRight />
-                </Button>
-                <div className={styles.indexDisplay}>
-                  {enumerationControls.currentIndex + 1}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      {enumerationControls && <EnumerationControls {...enumerationControls} />}
     </div>
   );
 }
