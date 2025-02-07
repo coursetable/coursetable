@@ -18,6 +18,7 @@ import { useTutorial } from './contexts/tutorialContext';
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
+import Wishlist from './pages/Wishlist';
 
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
@@ -142,6 +143,7 @@ function App() {
           screen */}
           <Route path="/catalog" element={<Search />} />
           <Route path="/worksheet" element={<Worksheet />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/graphiql" element={<Graphiql />} />
           <Route path="/login" element={<Landing />} />
         </Route>

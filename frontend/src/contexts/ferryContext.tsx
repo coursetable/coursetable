@@ -11,12 +11,16 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
+import type { WishlistCourse } from './wishlistContext';
+import type { WorksheetCourse } from './worksheetContext';
+import { UPCOMING_SEASONS } from '../config';
 import seasonsData from '../generated/seasons.json';
 import {
   fetchCatalogMetadata,
   fetchCatalog,
   fetchEvals,
   type UserWorksheets,
+  type UserWishlist,
   type CatalogMetadata,
   type CatalogListing,
 } from '../queries/api';
@@ -256,5 +260,65 @@ export function useWorksheetInfo(
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
   }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error]);
+  return { loading, error, data };
+}
+
+export function useWishlistInfo(wishlist: UserWishlist | undefined) {
+  const { loading, error, courses } = useCourseData(seasons.slice(0, 15));
+
+  const data = useMemo(() => {
+    const dataReturn: WishlistCourse[] = [];
+    if (!wishlist) return [];
+    if (loading || error) return [];
+
+    for (const { courseCode } of wishlist) {
+      const upcomingListings: CatalogListing[] = [];
+      const lastListing: CatalogListing[] = [];
+
+      for (const seasonCode of UPCOMING_SEASONS) {
+        const seasonData = courses[seasonCode];
+        if (!seasonData) continue;
+
+        seasonData.forEach((listing) => {
+          const allListings = listing.course.listings;
+          if (allListings.some((l) => l.course_code === courseCode))
+            upcomingListings.push(listing);
+        });
+      }
+
+      // We assume UPCOMING_SEASONS is always up to date (latest seasons)
+      let seasonIndex = UPCOMING_SEASONS.length;
+      while (seasonIndex < 45) {
+        const prevSeasonCode = seasons[seasonIndex]!;
+        const prevSeasonData = courses[prevSeasonCode];
+
+        seasonIndex++;
+        if (!prevSeasonData) continue;
+
+        let foundListing = false;
+        prevSeasonData.forEach((listing) => {
+          const allListings = listing.course.listings;
+          if (allListings.some((l) => l.course_code === courseCode)) {
+            lastListing.push(listing);
+            foundListing = true;
+          }
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (foundListing) break;
+      }
+
+      dataReturn.push({
+        courseCode,
+        upcomingListings,
+        lastListing,
+      });
+    }
+
+    console.log(dataReturn);
+
+    return dataReturn.sort((a, b) =>
+      a.courseCode.localeCompare(b.courseCode, 'en-US'),
+    );
+  }, [wishlist, loading, error, courses]);
   return { loading, error, data };
 }

@@ -33,6 +33,16 @@ export function isInWorksheet(
   );
 }
 
+export function isInWishlist(
+  allCourseCodes: string[],
+  wishlist: WishlistCourse[] | undefined,
+): boolean {
+  if (!wishlist || allCourseCodes.length === 0) return false;
+  return wishlist.some((wishlistCourse) =>
+    allCourseCodes.some((code) => code === wishlistCourse.courseCode),
+  );
+}
+
 export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
   const season = ['Spring', 'Summer', 'Fall'][Number(seasonCode[5]) - 1]!;
@@ -99,6 +109,12 @@ export type ListingWithTimes = {
       start_time: string;
       end_time: string;
     }[];
+  };
+};
+
+export type ListingWithOtherListings = {
+  course: {
+    listings: { course_code: string }[];
   };
 };
 

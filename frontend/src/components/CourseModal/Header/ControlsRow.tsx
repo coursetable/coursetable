@@ -55,7 +55,25 @@ function MoreButton({
     <DropdownButton
       as="div"
       drop="down"
-      title={<IoIosMore size={20} />}
+      title={
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 300, hide: 0 }}
+          overlay={(props) => (
+            <Tooltip id="button-tooltip" {...props}>
+              <small>More</small>
+            </Tooltip>
+          )}
+        >
+          <button
+            type="button"
+            className={styles.moreButton}
+            aria-label="Share"
+          >
+            <IoIosMore size={20} />
+          </button>
+        </OverlayTrigger>
+      }
       variant="none"
       className={styles.moreDropdown}
     >

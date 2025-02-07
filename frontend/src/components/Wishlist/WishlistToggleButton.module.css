@@ -1,0 +1,35 @@
+.container {
+  position: relative;
+}
+
+.toggleButton {
+  margin-top: 16px;
+  gap: 1rem;
+  background-color: transparent;
+  border-width: 0;
+  color: var(--color-primary) !important;
+}
+
+.toggleButton:active,
+.toggleButton:focus {
+  box-shadow: none !important;
+}
+
+.toggleButton:hover {
+  opacity: 0.5;
+}
+
+.disabledButton {
+  cursor: not-allowed !important;
+  background-color: transparent !important;
+  border-width: 0 !important;
+}
+
+.disabledButtonIcon {
+  color: var(--color-icon-focus);
+}
+
+.disabledButton:active,
+.disabledButton:focus {
+  box-shadow: none !important;
+}

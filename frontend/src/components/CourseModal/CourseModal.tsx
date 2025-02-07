@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
 import { useModalHistory } from '../../contexts/modalHistoryContext';
+import WishlistToggleButton from '../Wishlist/WishlistToggleButton';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import {
   toSeasonDate,
