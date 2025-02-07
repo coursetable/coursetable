@@ -43,6 +43,7 @@ import {
   toWeekdayStrings,
   type NumFriendsReturn,
 } from '../utilities/course';
+import { createFilterLink, getFilterFromParams } from '../utilities/params';
 
 export type Option<T extends string | number = string> = {
   label: string;
@@ -130,9 +131,7 @@ export const booleanAttributes = {
 type SortOrderType = 'desc' | 'asc';
 
 type Store = {
-  filters: {
-    [K in keyof Filters]: FilterHandle<K>;
-  };
+  filters: FilterList;
   coursesLoading: boolean;
   searchData: CatalogListing[] | null;
   multiSeasons: boolean;
@@ -196,6 +195,8 @@ export type Filters = {
   includeAttributes: BooleanAttributes[];
   excludeAttributes: BooleanAttributes[];
 };
+
+export type FilterList = { [K in keyof Filters]: FilterHandle<K> };
 
 export const filterLabels: { [K in keyof Filters]: string } = {
   searchText: 'Search',
@@ -272,17 +273,41 @@ export type FilterHandle<K extends keyof Filters> = ReturnType<
 >;
 
 function useFilterState<K extends keyof Filters>(key: K) {
-  const [value, setValue] = useSessionStorageState(key, defaultFilters[key]);
+  // TODO: can't use react-router because this is outside the router
+  const searchParams = useMemo(
+    () => new URLSearchParams(window.location.search),
+    [],
+  );
+  const [value, setValue] = useSessionStorageState(key, () =>
+    getFilterFromParams(
+      key,
+      decodeURIComponent(searchParams.get(key) ?? ''),
+      defaultFilters[key],
+    ),
+  );
+  const setValueWithSync = useCallback(
+    (v: Filters[K]) => {
+      setValue(v);
+      // TODO: can't use react-router because this is outside the router
+      window.history.pushState(
+        null,
+        '',
+        createFilterLink(key, v, defaultFilters[key]),
+      );
+    },
+    [setValue, key],
+  );
+
   return useMemo(
     () => ({
       value,
-      set: setValue,
+      set: setValueWithSync,
       isDefault: isEqual(value, defaultFilters[key]),
       isNonEmpty: !isEqual(value, emptyFilters[key]),
-      resetToDefault: () => setValue(defaultFilters[key]),
-      resetToEmpty: () => setValue(emptyFilters[key]),
+      resetToDefault: () => setValueWithSync(defaultFilters[key]),
+      resetToEmpty: () => setValueWithSync(emptyFilters[key]),
     }),
-    [value, setValue, key],
+    [value, key, setValueWithSync],
   );
 }
 
@@ -436,6 +461,7 @@ export function SearchProvider({
     }
     return selectSeasons.value.map((x) => x.value);
   }, [selectSeasons.value]);
+
   const {
     loading: coursesLoading,
     courses: courseData,
