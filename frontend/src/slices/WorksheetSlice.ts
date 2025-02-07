@@ -288,6 +288,7 @@ export const useWorksheetEffects = () => {
     exoticWorksheet?.data.season ?? viewedSeason,
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
+
   setWorksheetInfo(courses, worksheetLoading, worksheetError);
 };
 
