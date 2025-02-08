@@ -588,6 +588,8 @@ const userWishlistSchema = z.array(
   }),
 );
 
+export type UserWishlist = {season: Season, crn: Crn}[];
+
 export async function fetchUserWishlist() {
   return await fetchAPI('/user/wishlist', {
     schema: userWishlistSchema,

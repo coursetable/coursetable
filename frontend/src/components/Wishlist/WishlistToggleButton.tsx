@@ -6,7 +6,7 @@ import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 import { useWishlistInfo } from '../../contexts/ferryContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { toggleWish } from '../../queries/api';
+import { updateWishlistCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import {
   isInWishlist,
@@ -23,14 +23,14 @@ function WishlistToggleButton({
   readonly modal: boolean;
   readonly inWishlist?: boolean;
 }) {
-  const { user, userRefresh } = useStore(
+  const { wishlist, userRefresh } = useStore(
     useShallow((state) => ({
-      user: state.user,
+      wishlist: state.wishlist,
       userRefresh: state.userRefresh,
     })),
   );
 
-  const { data } = useWishlistInfo(user.wishlist);
+  const { data } = useWishlistInfo(wishlist);
 
   const allCourseCodes = listing.course.listings.map((l) => l.course_code);
 
@@ -49,7 +49,7 @@ function WishlistToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWishlist ? 'remove' : 'add';
 
-      const success = await toggleWish({
+      const success = await updateWishlistCourses({
         action: addRemove,
         allCourseCodes,
       });

@@ -12,7 +12,6 @@ import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
 import type { WishlistCourse } from './wishlistContext';
-import type { WorksheetCourse } from './worksheetContext';
 import { UPCOMING_SEASONS } from '../config';
 import seasonsData from '../generated/seasons.json';
 import {
@@ -271,18 +270,21 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
     if (!wishlist) return [];
     if (loading || error) return [];
 
-    for (const { courseCode } of wishlist) {
+    for (const { crn } of wishlist) {
       const upcomingListings: CatalogListing[] = [];
       const lastListing: CatalogListing[] = [];
+      let courseCode = "";
 
       for (const seasonCode of UPCOMING_SEASONS) {
         const seasonData = courses[seasonCode];
         if (!seasonData) continue;
 
-        seasonData.forEach((listing) => {
+        seasonData.data.forEach((listing) => {
           const allListings = listing.course.listings;
-          if (allListings.some((l) => l.course_code === courseCode))
+          if (allListings.some((l) => l.crn === crn)) {
             upcomingListings.push(listing);
+            courseCode = listing.course_code;
+          }
         });
       }
 
@@ -296,10 +298,11 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
         if (!prevSeasonData) continue;
 
         let foundListing = false;
-        prevSeasonData.forEach((listing) => {
+        prevSeasonData.data.forEach((listing) => {
           const allListings = listing.course.listings;
-          if (allListings.some((l) => l.course_code === courseCode)) {
+          if (allListings.some((l) => l.crn === crn)) {
             lastListing.push(listing);
+            courseCode = listing.course_code;
             foundListing = true;
           }
         });
@@ -308,13 +311,12 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
       }
 
       dataReturn.push({
+        crn,
         courseCode,
         upcomingListings,
         lastListing,
       });
     }
-
-    console.log(dataReturn);
 
     return dataReturn.sort((a, b) =>
       a.courseCode.localeCompare(b.courseCode, 'en-US'),

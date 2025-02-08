@@ -1,6 +1,7 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
 import type { SortKeys } from '../contexts/searchContext';
+import type { WishlistCourse } from '../contexts/wishlistContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,

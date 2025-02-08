@@ -17,8 +17,8 @@ import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
-import Worksheet from './pages/Worksheet';
 import Wishlist from './pages/Wishlist';
+import Worksheet from './pages/Worksheet';
 
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';

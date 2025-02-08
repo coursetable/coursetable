@@ -9,9 +9,11 @@ import {
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
   type UserInfo,
+  type UserWishlist,
   type UserWorksheets,
   type FriendRecord,
   type FriendRequests,
+  fetchUserWishlist,
 } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import type { Store } from '../store';
@@ -19,6 +21,7 @@ import type { Store } from '../store';
 interface UserState {
   user?: UserInfo;
   worksheets?: UserWorksheets;
+  wishlist?: UserWishlist;
   friendRequests?: FriendRequests;
   friends?: FriendRecord;
 }
@@ -26,6 +29,7 @@ interface UserState {
 interface UserActions {
   userRefresh: () => Promise<void>;
   worksheetsRefresh: () => Promise<void>;
+  wishlistRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
   addFriend: (friendNetId: NetId) => Promise<void>;
@@ -41,6 +45,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
 ) => ({
   user: undefined,
   worksheets: undefined,
+  wishlist: undefined,
   friendRequests: undefined,
   friends: undefined,
   async userRefresh() {
@@ -50,6 +55,10 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   async worksheetsRefresh() {
     const data = await fetchUserWorksheets();
     set({ worksheets: data?.data });
+  },
+  async wishlistRefresh() {
+    const data = await fetchUserWishlist();
+    set({ wishlist: data });
   },
   async friendRefresh() {
     const data = await fetchFriendWorksheets();

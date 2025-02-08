@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { CUR_YEAR } from '../../../config';
 import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
+import WishlistToggleButton from '../../Wishlist/WishlistToggleButton';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
@@ -191,6 +192,7 @@ export default function ModalHeaderControls({
       />
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
+        <WishlistToggleButton listing={listing} modal />
         <ShareButton listing={listing} />
         <MoreButton listing={listing} />
       </div>
