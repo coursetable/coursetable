@@ -29,7 +29,7 @@ function OverviewPanel({
   });
 
   // Wait until data is fetched
-  if (loading) return <Spinner message="Loading course details..." />;
+  if (loading) return <Spinner />;
 
   if (error) {
     return (
@@ -41,27 +41,19 @@ function OverviewPanel({
     );
   }
 
-  const { sameCourse = [], self: listing } = data ?? {};
-
-  if (!listing) {
+  if (!data || data.self.length === 0) {
     return (
       <Row className="m-auto">
         <Col>
           <p>Unexpected: no data returned.</p>
           <p>
-            There could be some issues with our servers, or more likely we are
-            updating the data on course offerings. Please allow for up to 10
-            minutes for course information to become available again.
+            There could be some issues with our servers. Please allow for up to
+            10 minutes for course information to become available again.
           </p>
         </Col>
       </Row>
     );
   }
-
-  // TODO: properly fix this data
-  const isSameCourseWrong = !sameCourse.some((c) =>
-    c.listings.some((l) => l.crn === listing.crn),
-  );
 
   return (
     <Row className="m-auto">

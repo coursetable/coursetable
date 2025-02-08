@@ -715,7 +715,7 @@ export type Courses = {
   /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']['output']>;
   /** True if the course is a sophomore seminar. False otherwise. */
-  sysem: Scalars['Boolean']['output'];
+  sysem: Maybe<Scalars['Boolean']['output']>;
   time_added: Maybe<Scalars['timestamp']['output']>;
   /** Complete course title */
   title: Scalars['String']['output'];
@@ -936,8 +936,10 @@ export type CoursesMaxOrderBy = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
   last_updated: InputMaybe<OrderBy>;
-  primary_crn: InputMaybe<OrderBy>;
-  /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: InputMaybe<OrderBy>;
   /** Recommended requirements/prerequisites for the course */
   requirements: InputMaybe<OrderBy>;
@@ -1002,8 +1004,10 @@ export type CoursesMinOrderBy = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
   last_updated: InputMaybe<OrderBy>;
-  primary_crn: InputMaybe<OrderBy>;
-  /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: InputMaybe<OrderBy>;
   /** Recommended requirements/prerequisites for the course */
   requirements: InputMaybe<OrderBy>;
@@ -1129,8 +1133,6 @@ export enum CoursesSelectColumn {
   LastOfferedCourseId = 'last_offered_course_id',
   /** column name */
   LastUpdated = 'last_updated',
-  /** column name */
-  PrimaryCrn = 'primary_crn',
   /** column name */
   Regnotes = 'regnotes',
   /** column name */
@@ -1331,8 +1333,10 @@ export type CoursesStreamCursorValueInput = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<Scalars['Int']['input']>;
   last_updated: InputMaybe<Scalars['timestamp']['input']>;
-  primary_crn: InputMaybe<Scalars['Int']['input']>;
-  /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: InputMaybe<Scalars['String']['input']>;
   /** Recommended requirements/prerequisites for the course */
   requirements: InputMaybe<Scalars['String']['input']>;
@@ -3666,7 +3670,7 @@ export type CatalogBySeasonQuery = {
   courses: Array<{
     __typename?: 'courses';
     areas: StringArr;
-    colsem: boolean;
+    colsem: boolean | null;
     course_id: number;
     credits: number | null;
     description: string | null;
@@ -3674,14 +3678,13 @@ export type CatalogBySeasonQuery = {
     final_exam: string | null;
     fysem: boolean;
     last_offered_course_id: number | null;
-    primary_crn: Crn | null;
     requirements: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
     season_code: Season;
     section: string;
     skills: StringArr;
-    sysem: boolean;
+    sysem: boolean | null;
     title: string;
     course_flags: Array<{
       __typename?: 'course_flags';
