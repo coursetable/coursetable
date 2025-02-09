@@ -35,13 +35,11 @@ export function isInWorksheet(
 }
 
 export function isInWishlist(
-  allCourseCodes: string[],
+  listingSameCourseId: number,
   wishlist: WishlistCourse[] | undefined,
 ): boolean {
-  if (!wishlist || allCourseCodes.length === 0) return false;
-  return wishlist.some((wishlistCourse) =>
-    allCourseCodes.some((code) => code === wishlistCourse.courseCode),
-  );
+  if (!wishlist) return false;  
+  return wishlist.some((wishlistItem) => wishlistItem.sameCourseId === listingSameCourseId);
 }
 
 export function toSeasonString(seasonCode: Season): string {

@@ -197,3 +197,15 @@ query CourseSections(
     }
   }
 }
+
+query CourseDataFromListingIds($listingIds: [Int!]!) {
+  listings(where: { listing_id: { _in: $listingIds } }) {
+    listing_id
+    crn
+    course_code
+    season_code
+    course {
+      same_course_id
+    }
+  }
+}

@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { useWishlistInfo } from './ferryContext';
 import type { CatalogListing } from '../queries/api';
-import type { Crn } from '../queries/graphql-types';
+import type { Crn, Season } from '../queries/graphql-types';
 import { useStore } from '../store';
 
 export type WishlistCourse = {
   crn: Crn;
   courseCode: string;
+  sameCourseId: number;
   upcomingListings: CatalogListing[];
   lastListing: CatalogListing[]; // Type array for section-based courses
 };

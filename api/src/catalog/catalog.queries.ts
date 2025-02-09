@@ -46,7 +46,7 @@ export type CatalogBySeasonQuery = {
   courses: Array<{
     __typename?: 'courses';
     areas: any;
-    colsem: boolean | null;
+    colsem: boolean;
     course_id: number;
     credits: number | null;
     description: string | null;
@@ -60,7 +60,7 @@ export type CatalogBySeasonQuery = {
     season_code: string;
     section: string;
     skills: any;
-    sysem: boolean | null;
+    sysem: boolean;
     title: string;
     course_flags: Array<{
       __typename?: 'course_flags';

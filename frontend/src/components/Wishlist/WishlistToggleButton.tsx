@@ -5,12 +5,11 @@ import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
 
 import { useShallow } from 'zustand/react/shallow';
 import { useWishlistInfo } from '../../contexts/ferryContext';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { updateWishlistCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import {
   isInWishlist,
-  type ListingWithOtherListings,
 } from '../../utilities/course';
 import styles from './WishlistToggleButton.module.css';
 
@@ -19,27 +18,27 @@ function WishlistToggleButton({
   modal,
   inWishlist: inWishlistProp,
 }: {
-  readonly listing: ListingWithOtherListings;
+  readonly listing: CourseModalPrefetchListingDataFragment;
   readonly modal: boolean;
   readonly inWishlist?: boolean;
 }) {
-  const { wishlist, userRefresh } = useStore(
+  const { wishlist, worksheets, userRefresh, isLgDesktop } = useStore(
     useShallow((state) => ({
       wishlist: state.wishlist,
+      worksheets: state.worksheets,
       userRefresh: state.userRefresh,
+      isLgDesktop: state.isLgDesktop,
     })),
   );
 
   const { data } = useWishlistInfo(wishlist);
 
-  const allCourseCodes = listing.course.listings.map((l) => l.course_code);
+  const allCourseCrns = listing.course.listings.map((l) => l.crn);
 
   const inWishlist = useMemo(
-    () => inWishlistProp ?? isInWishlist(allCourseCodes, data),
-    [allCourseCodes, data, inWishlistProp],
+    () => inWishlistProp ?? isInWishlist(listing.course.same_course_id, data),
+    [allCourseCrns, data, inWishlistProp]
   );
-
-  const { isLgDesktop } = useWindowDimensions();
 
   const toggleWishlist = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -48,21 +47,22 @@ function WishlistToggleButton({
 
       // Determine if we are adding or removing the course
       const addRemove = inWishlist ? 'remove' : 'add';
-
-      const success = await updateWishlistCourses({
+      await Promise.all(allCourseCrns.map((crn) => updateWishlistCourses({
         action: addRemove,
-        allCourseCodes,
-      });
-      if (success) await userRefresh();
+        season: listing.course.season_code,
+        crn,
+      })));
+
+      await userRefresh();
     },
-    [allCourseCodes, inWishlist, userRefresh],
+    [allCourseCrns, inWishlist, userRefresh],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWishlist ? FaBookmark : FaRegBookmark;
 
   // Disabled wishlist add/remove button if not logged in
-  if (!user.worksheets) {
+  if (!worksheets) {
     return (
       <OverlayTrigger
         placement="top"

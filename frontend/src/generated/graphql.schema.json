@@ -6193,18 +6193,6 @@
             "deprecationReason": null
           },
           {
-            "name": "time_added",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamp",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "title",
             "description": "Complete course title",
             "args": [],
@@ -7510,18 +7498,6 @@
             "deprecationReason": null
           },
           {
-            "name": "last_updated",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "regnotes",
             "description": "Registrar's notes (e.g. preference selection links, optional writing credits, etc.)",
             "type": {
@@ -7919,18 +7895,6 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "last_updated",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -8803,6 +8767,12 @@
           },
           {
             "name": "last_updated",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "primary_crn",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -9931,18 +9901,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "last_updated",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "timestamp",
               "ofType": null
             },
             "defaultValue": null,

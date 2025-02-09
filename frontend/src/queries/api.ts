@@ -588,7 +588,7 @@ const userWishlistSchema = z.array(
   }),
 );
 
-export type UserWishlist = {season: Season, crn: Crn}[];
+export type UserWishlist = {season: Season, crn: Crn, courseCode: string, listingId: number, sameCourseId: number}[];
 
 export async function fetchUserWishlist() {
   return await fetchAPI('/user/wishlist', {

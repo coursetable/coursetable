@@ -8,6 +8,8 @@
   background-color: transparent;
   border-width: 0;
   color: var(--color-primary) !important;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .toggleButton:active,

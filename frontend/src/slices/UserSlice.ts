@@ -17,6 +17,8 @@ import {
 } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import type { Store } from '../store';
+import { getListingId } from '../utilities/course';
+import { useCourseDataFromListingIdsQuery } from '../queries/graphql-queries';
 
 interface UserState {
   user?: UserInfo;
@@ -58,7 +60,19 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   },
   async wishlistRefresh() {
     const data = await fetchUserWishlist();
-    set({ wishlist: data });
+    if (data) {
+      const listingIds = data?.map((wishlistItem) => getListingId(wishlistItem.season, wishlistItem.crn));
+      const res = useCourseDataFromListingIdsQuery({variables: {listingIds}}).data;
+      set({ wishlist: res?.listings.map((listing) => {
+        return {
+          season: listing.season_code,
+          crn: listing.crn,
+          courseCode: listing.course_code,
+          listingId: listing.listing_id,
+          sameCourseId: listing.course.same_course_id,
+        }
+      })})
+    }
   },
   async friendRefresh() {
     const data = await fetchFriendWorksheets();
