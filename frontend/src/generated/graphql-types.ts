@@ -3766,6 +3766,8 @@ export type CourseModalOverviewDataQuery = {
       regnotes: string | null;
       rp_attr: string | null;
       final_exam: string | null;
+      time_added: any | null;
+      last_updated: any | null;
       same_course_id: number;
       course_professors: Array<{
         __typename?: 'course_professors';
