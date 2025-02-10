@@ -53,6 +53,7 @@ query catalogBySeason($season: String!) {
       school
       subject
     }
+    primary_crn
     requirements
     same_course_and_profs_id
     same_course_id

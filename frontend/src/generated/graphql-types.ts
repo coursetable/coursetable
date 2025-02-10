@@ -3674,6 +3674,7 @@ export type CatalogBySeasonQuery = {
     final_exam: string | null;
     fysem: boolean;
     last_offered_course_id: number | null;
+    primary_crn: Crn | null;
     requirements: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
