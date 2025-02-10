@@ -49,7 +49,9 @@ function WishlistGridItem({
                 )}
               >
                 <strong>
-                  {toSeasonString(course.upcomingListings[0]!.course.season_code)}
+                  {toSeasonString(
+                    course.upcomingListings[0]!.course.season_code,
+                  )}
                 </strong>
                 <span className={clsx(styles.details, 'mx-auto')}>
                   {extraText}

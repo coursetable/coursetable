@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -32,7 +33,6 @@ import RelatedCoursesList from '../../RelatedCoursesList';
 import { TextComponent } from '../../Typography';
 import type { ProfInfo } from '../ProfModal';
 import styles from './OverviewPanel.module.css';
-import { useState } from 'react';
 
 type RelatedCourseInfo = ProfInfo['course_professors'][number]['course'];
 
@@ -128,14 +128,14 @@ function coursesToChartPoints(courses: RelatedCourseInfo[]): ChartPoint[] {
       season,
       rating: seasonCourses.length
         ? seasonCourses.reduce(
-          (sum, c) => sum + c.evaluation_statistic!.avg_rating!,
-          0,
-        ) / seasonCourses.length
+            (sum, c) => sum + c.evaluation_statistic!.avg_rating!,
+            0,
+          ) / seasonCourses.length
         : 0, // Average rating
       courseCount: seasonCourses.length, // Number of courses factored into the average
       courseCode: seasonCourses.length
         ? // Only use the first course: this is only rendered by curve-by-course
-        seasonCourses[0]!.listings.map((l) => l.course_code).join('/')
+          seasonCourses[0]!.listings.map((l) => l.course_code).join('/')
         : '',
     }))
     .filter((dataPoint) => dataPoint.rating > 0) // Exclude years with no valid ratings
@@ -378,7 +378,7 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
             if (c.listings.length === 1) return c.listings[0]!.course_code;
             const primary = c.primary_crn
               ? // Guaranteed to exist
-              c.listings.find((l) => l.crn === c.primary_crn)!
+                c.listings.find((l) => l.crn === c.primary_crn)!
               : c.listings[0]!;
             return `${primary.course_code} +${c.listings.length - 1}`;
           }}

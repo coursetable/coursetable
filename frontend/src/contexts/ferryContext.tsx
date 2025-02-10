@@ -11,7 +11,8 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
-import type { WishlistCourse } from './wishlistContext';
+import type { WishlistItemWithListings } from './wishlistContext';
+import type { WishlistItemWithMetadata } from '../components/Wishlist/WishlistToggleButton';
 import { UPCOMING_SEASONS } from '../config';
 import seasonsData from '../generated/seasons.json';
 import {
@@ -19,7 +20,6 @@ import {
   fetchCatalog,
   fetchEvals,
   type UserWorksheets,
-  type UserWishlist,
   type CatalogMetadata,
   type CatalogListing,
 } from '../queries/api';
@@ -262,29 +262,26 @@ export function useWorksheetInfo(
   return { loading, error, data };
 }
 
-export function useWishlistInfo(wishlist: UserWishlist | undefined) {
+export function useWishlistInfo(
+  wishlist: WishlistItemWithMetadata[] | undefined,
+) {
   const { loading, error, courses } = useCourseData(seasons.slice(0, 15));
 
   const data = useMemo(() => {
-    const dataReturn: WishlistCourse[] = [];
+    const dataReturn: WishlistItemWithListings[] = [];
     if (!wishlist) return [];
     if (loading || error) return [];
 
-    for (const { crn } of wishlist) {
+    for (const { crn, courseCode, sameCourseId } of wishlist) {
       const upcomingListings: CatalogListing[] = [];
       const lastListing: CatalogListing[] = [];
-      let courseCode = "";
 
       for (const seasonCode of UPCOMING_SEASONS) {
         const seasonData = courses[seasonCode];
         if (!seasonData) continue;
-
         seasonData.data.forEach((listing) => {
-          const allListings = listing.course.listings;
-          if (allListings.some((l) => l.crn === crn)) {
+          if (listing.course.same_course_id === sameCourseId)
             upcomingListings.push(listing);
-            courseCode = listing.course_code;
-          }
         });
       }
 
@@ -299,10 +296,8 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
 
         let foundListing = false;
         prevSeasonData.data.forEach((listing) => {
-          const allListings = listing.course.listings;
-          if (allListings.some((l) => l.crn === crn)) {
+          if (listing.course.same_course_id === sameCourseId) {
             lastListing.push(listing);
-            courseCode = listing.course_code;
             foundListing = true;
           }
         });
@@ -313,6 +308,7 @@ export function useWishlistInfo(wishlist: UserWishlist | undefined) {
       dataReturn.push({
         crn,
         courseCode,
+        sameCourseId,
         upcomingListings,
         lastListing,
       });

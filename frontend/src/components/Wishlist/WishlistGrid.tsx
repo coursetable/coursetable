@@ -2,14 +2,14 @@ import clsx from 'clsx';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeGrid } from 'react-window';
 import WishlistGridItem from './WishlistGridItem';
-import type { WishlistCourse } from '../../contexts/wishlistContext';
+import type { WishlistItemWithListings } from '../../contexts/wishlistContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import FloatingWorksheet from '../Search/FloatingWorksheet';
 import WindowScroller from '../Search/WindowScroller';
 import styles from './WishlistGrid.module.css';
 
 export type WishlistGridItemData = {
-  readonly courses: WishlistCourse[];
+  readonly courses: WishlistItemWithListings[];
   readonly columnCount: number;
 };
 
@@ -17,7 +17,7 @@ function WishlistGrid({
   data,
   loading = false,
 }: {
-  readonly data: WishlistCourse[] | null;
+  readonly data: WishlistItemWithListings[] | null;
   readonly loading?: boolean;
 }) {
   let gridListing: JSX.Element | undefined = undefined;
