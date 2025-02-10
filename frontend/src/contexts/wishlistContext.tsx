@@ -27,22 +27,23 @@ const WishlistContext = createContext<Store | undefined>(undefined);
 WishlistContext.displayName = 'WishlistContext';
 
 function useWishlistWithMetadata(wishlist?: WishlistItem[]) {
-  const listingIds = wishlist?.map((wishlistItem) => getListingId(wishlistItem.season, wishlistItem.crn)) ?? [];
+  const listingIds =
+    wishlist?.map((wishlistItem) =>
+      getListingId(wishlistItem.season, wishlistItem.crn),
+    ) ?? [];
   const { data: queryRes } = useCourseDataFromListingIdsQuery({
     variables: { listingIds },
     skip: listingIds.length === 0,
   });
 
   if (queryRes?.listings) {
-    return (
-      queryRes.listings.map((queryListing) => ({
-        season: queryListing.season_code,
-        crn: queryListing.crn,
-        courseCode: queryListing.course_code,
-        listingId: queryListing.listing_id,
-        sameCourseId: queryListing.course.same_course_id,
-      }))
-    );
+    return queryRes.listings.map((queryListing) => ({
+      season: queryListing.season_code,
+      crn: queryListing.crn,
+      courseCode: queryListing.course_code,
+      listingId: queryListing.listing_id,
+      sameCourseId: queryListing.course.same_course_id,
+    }));
   }
   return undefined;
 }
