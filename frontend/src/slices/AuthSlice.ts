@@ -33,6 +33,7 @@ export const createAuthSlice: StateCreator<Store, [], [], AuthSlice> = (
       await Promise.all([
         get().userRefresh(),
         get().worksheetsRefresh(),
+        get().wishlistRefresh(),
         get().friendRefresh(),
         get().friendReqRefresh(),
       ]);

@@ -30,7 +30,7 @@ function WishlistGridItem({
     <li className={styles.container} style={style}>
       <div className={styles.wishlistItem}>
         <div className={styles.courseCodes}>
-          <small>{course.courseCode}</small>
+          <small>{course.courseCodes.join(' | ')}</small>
         </div>
         <div>
           <strong className={styles.oneLine}>{courseTitle}</strong>

@@ -9,7 +9,7 @@ import { getListingId } from '../utilities/course';
 
 export type WishlistItemWithListings = {
   crn: Crn;
-  courseCode: string;
+  courseCodes: string[];
   sameCourseId: number;
   upcomingListings: CatalogListing[];
   lastListing: CatalogListing[]; // Type array for section-based courses

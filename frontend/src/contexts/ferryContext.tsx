@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import type { WishlistItemWithListings } from './wishlistContext';
 import type { WishlistItemWithMetadata } from '../components/Wishlist/WishlistToggleButton';
-import { UPCOMING_SEASONS } from '../config';
+import { CUR_YEAR } from '../config';
 import seasonsData from '../generated/seasons.json';
 import {
   fetchCatalogMetadata,
@@ -272,11 +272,19 @@ export function useWishlistInfo(
     if (!wishlist) return [];
     if (loading || error) return [];
 
+    const uniqueSameCourseIdMap = new Map<number, WishlistItemWithListings>();
+
     for (const { crn, courseCode, sameCourseId } of wishlist) {
+      const existingItem = uniqueSameCourseIdMap.get(sameCourseId);
+      if (existingItem) {
+        existingItem.courseCodes.push(courseCode);
+        continue;
+      }
+
       const upcomingListings: CatalogListing[] = [];
       const lastListing: CatalogListing[] = [];
 
-      for (const seasonCode of UPCOMING_SEASONS) {
+      for (const seasonCode of CUR_YEAR) {
         const seasonData = courses[seasonCode];
         if (!seasonData) continue;
         seasonData.data.forEach((listing) => {
@@ -285,8 +293,7 @@ export function useWishlistInfo(
         });
       }
 
-      // We assume UPCOMING_SEASONS is always up to date (latest seasons)
-      let seasonIndex = UPCOMING_SEASONS.length;
+      let seasonIndex = CUR_YEAR.length;
       while (seasonIndex < 45) {
         const prevSeasonCode = seasons[seasonIndex]!;
         const prevSeasonData = courses[prevSeasonCode];
@@ -305,17 +312,24 @@ export function useWishlistInfo(
         if (foundListing) break;
       }
 
-      dataReturn.push({
+      const wishlistItem: WishlistItemWithListings = {
         crn,
-        courseCode,
+        courseCodes: [courseCode],
         sameCourseId,
         upcomingListings,
         lastListing,
-      });
+      };
+
+      uniqueSameCourseIdMap.set(sameCourseId, wishlistItem);
     }
 
+    dataReturn.push(...uniqueSameCourseIdMap.values());
+    dataReturn.forEach((item) => ({
+      ...item,
+      courseCodes: item.courseCodes.sort((a, b) => a.localeCompare(b, 'en-US')),
+    }));
     return dataReturn.sort((a, b) =>
-      a.courseCode.localeCompare(b.courseCode, 'en-US'),
+      a.courseCodes[0]!.localeCompare(b.courseCodes[0]!, 'en-US'),
     );
   }, [wishlist, loading, error, courses]);
   return { loading, error, data };
