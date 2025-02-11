@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
@@ -16,7 +17,6 @@ import { CUR_SEASON } from '../config';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
-import { useSessionStorageState } from '../utilities/browserStorage';
 import { isEqual } from '../utilities/common';
 import {
   skillsAreas,
@@ -248,41 +248,47 @@ export type FilterHandle<K extends keyof Filters> = ReturnType<
 >;
 
 function useFilterState<K extends keyof Filters>(key: K) {
-  // TODO: can't use react-router because this is outside the router
-  const searchParams = useMemo(
-    () => new URLSearchParams(window.location.search),
-    [],
-  );
-  const [value, setValue] = useSessionStorageState(key, () =>
-    getFilterFromParams(
-      key,
-      decodeURIComponent(searchParams.get(key) ?? ''),
-      defaultFilters[key],
-    ),
-  );
-  const setValueWithSync = useCallback(
-    (v: Filters[K]) => {
-      setValue(v);
-      // TODO: can't use react-router because this is outside the router
-      window.history.pushState(
-        null,
-        '',
-        createFilterLink(key, v, defaultFilters[key]),
-      );
-    },
-    [setValue, key],
-  );
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [value, setValue] = useState(() => {
+    try {
+      const urlValue = searchParams.get(key);
+      if (urlValue) {
+        return getFilterFromParams(
+          key,
+          decodeURIComponent(urlValue),
+          defaultFilters[key],
+        );
+      }
+      return defaultFilters[key];
+    } catch {
+      return defaultFilters[key];
+    }
+  });
+
+  useEffect(() => {
+    if (location.pathname === '/catalog') {
+      try {
+        const newUrl = createFilterLink(key, value, defaultFilters[key]);
+        if (newUrl !== location.search) {
+          sessionStorage.setItem('lastCatalogSearch', newUrl);
+          setSearchParams(new URLSearchParams(newUrl.slice(1)));
+        }
+      } catch {}
+    }
+  }, [key, value, location.pathname, location.search, setSearchParams]);
 
   return useMemo(
     () => ({
       value,
-      set: setValueWithSync,
+      set: setValue,
       isDefault: isEqual(value, defaultFilters[key]),
       isNonEmpty: !isEqual(value, emptyFilters[key]),
-      resetToDefault: () => setValueWithSync(defaultFilters[key]),
-      resetToEmpty: () => setValueWithSync(emptyFilters[key]),
+      resetToDefault: () => setValue(defaultFilters[key]),
+      resetToEmpty: () => setValue(emptyFilters[key]),
     }),
-    [value, key, setValueWithSync],
+    [value, key, setValue],
   );
 }
 
@@ -391,12 +397,12 @@ export function SearchProvider({
       searchText.value
         .split(/\s+/u)
         .filter(Boolean)
-        .map((token) => token.toLowerCase()),
+        .map((token: string) => token.toLowerCase()),
     [searchText.value],
   );
   const processedSkillsAreas = useMemo(
     () =>
-      selectSkillsAreas.value.flatMap((x) =>
+      selectSkillsAreas.value.flatMap((x: Option) =>
         // Old courses only have 'L' label
         x.value === 'L' ? ['L', 'L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
       ),
@@ -407,7 +413,7 @@ export function SearchProvider({
       // Nothing selected, so default to all seasons.
       return seasons.slice(0, 15);
     }
-    return selectSeasons.value.map((x) => x.value);
+    return selectSeasons.value.map((x: Option<Season>) => x.value);
   }, [selectSeasons.value]);
 
   const {
@@ -539,13 +545,13 @@ export function SearchProvider({
 
   const searchDataPredictate = useCallback(
     (processedSearchTextParam: typeof processedSearchText) => {
-      const listings = processedSeasons.flatMap((seasonCode) => {
+      const listings = processedSeasons.flatMap((seasonCode: Season) => {
         const data = courseData[seasonCode]?.data;
         if (!data) return [];
         return [...data.values()];
       });
 
-      const filtered = listings.filter((listing) => {
+      const filtered = listings.filter((listing: CatalogListing) => {
         // For empty bounds, don't apply filters at all to include no ratings
         if (overallBounds.isNonEmpty) {
           const overall = getOverallRatings(listing.course, 'stat');
@@ -635,13 +641,15 @@ export function SearchProvider({
           // TODO: we don't need this once we group cross-listings
           if (
             !selectSubjects.value.some(
-              (option) => listing.subject === option.value,
+              (option: Option) => listing.subject === option.value,
             )
           )
             return false;
           if (
             !applyIntersectableFilter(
-              selectSubjects.value.map((option) => option.value),
+              selectSubjects.value.map(
+                (option: Option) => option.value,
+              ),
               listing.course.listings.map((l) => l.course_code.split(' ')[0]!),
               intersectingFilters.value.includes('selectSubjects'),
             )
@@ -657,7 +665,7 @@ export function SearchProvider({
           );
           if (
             !applyIntersectableFilter(
-              selectDays.value.map((option) => option.value),
+              selectDays.value.map((option: Option<number>) => option.value),
               days,
               intersectingFilters.value.includes('selectDays'),
             )
@@ -684,7 +692,7 @@ export function SearchProvider({
           selectCredits.value.length !== 0 &&
           listing.course.credits !== null &&
           !selectCredits.value.some(
-            (option) => option.value === listing.course.credits,
+            (option: Option<number>) => option.value === listing.course.credits,
           )
         )
           return false;
@@ -692,7 +700,9 @@ export function SearchProvider({
         if (
           selectCourseInfoAttributes.value.length !== 0 &&
           !applyIntersectableFilter(
-            selectCourseInfoAttributes.value.map((option) => option.value),
+            selectCourseInfoAttributes.value.map(
+              (option: Option) => option.value,
+            ),
             listing.course.course_flags.map((f) => f.flag.flag_text),
             intersectingFilters.value.includes('selectCourseInfoAttributes'),
           )
@@ -703,13 +713,13 @@ export function SearchProvider({
           // Same as selectSubjects
           if (
             !selectSchools.value.some(
-              (option) => listing.school === option.value,
+              (option: Option) => listing.school === option.value,
             )
           )
             return false;
           if (
             !applyIntersectableFilter(
-              selectSchools.value.map((option) => option.value),
+              selectSchools.value.map((option: Option) => option.value),
               listing.course.listings
                 .map((l) => l.school)
                 .filter((x) => x !== null),

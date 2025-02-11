@@ -6,13 +6,14 @@ import Logo from './Navbar/Logo';
 import { TextComponent } from './Typography';
 import VercelBanner from '../images/powered-by-vercel.svg';
 import { scrollToTop } from '../utilities/display';
+import { createCatalogLink } from '../utilities/navigation';
 import styles from './Footer.module.css';
 
 const links = [
   {
     section: 'Explore',
     items: [
-      { name: 'Catalog', to: '/catalog' },
+      { name: 'Catalog', to: createCatalogLink() },
       { name: 'Worksheet', to: '/worksheet' },
     ],
   },

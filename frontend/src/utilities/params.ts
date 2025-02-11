@@ -1,14 +1,7 @@
-import {
-  courseInfoAttributes,
-  credits,
-  schools,
-  skillsAreas,
-  subjects,
-  weekdays,
-} from './constants';
+import { schools, skillsAreas, subjects, weekdays } from './constants';
 import { toSeasonString } from './course';
-import { seasons } from '../contexts/ferryContext';
-import type { Filters } from '../contexts/searchContext';
+import type { Filters, SortKeys } from '../contexts/searchContext';
+import type { Season } from '../queries/graphql-types';
 
 export function getFilterFromParams<K extends keyof Filters>(
   key: K,
@@ -17,56 +10,57 @@ export function getFilterFromParams<K extends keyof Filters>(
 ): Filters[K] {
   if (value === '') return fallback;
 
-  switch (key) {
-    case 'enrollBounds':
-    case 'numBounds':
-    case 'overallBounds':
-    case 'professorBounds':
-    case 'timeBounds':
-    case 'workloadBounds':
-      return handleBoundsFilter(value, fallback);
+  try {
+    const result = ((): Filters[K] => {
+      switch (key) {
+        case 'enrollBounds':
+        case 'numBounds':
+        case 'overallBounds':
+        case 'professorBounds':
+        case 'timeBounds':
+        case 'workloadBounds':
+          return handleBoundsFilter(value, fallback);
 
-    case 'enableQuist':
-    case 'hideCancelled':
-    case 'hideConflicting':
-    case 'hideDiscussionSections':
-    case 'hideFirstYearSeminars':
-    case 'hideGraduateCourses':
-    case 'searchDescription':
-      return handleBooleanFilter(value, fallback);
+        case 'enableQuist':
+        case 'hideCancelled':
+        case 'hideConflicting':
+        case 'hideDiscussionSections':
+        case 'hideFirstYearSeminars':
+        case 'hideGraduateCourses':
+        case 'searchDescription':
+          return handleBooleanFilter(value);
 
-    case 'searchText':
-      return value as Filters[K];
+        case 'searchText':
+          return value as Filters[K];
 
-    case 'selectSortBy':
-      break;
+        case 'selectSortBy':
+          return handleSortByFilter(value);
 
-    case 'selectCourseInfoAttributes':
-      return handleCourseAttributesFilter(value, fallback);
+        case 'sortOrder':
+          return handleSortOrderFilter(value);
 
-    case 'selectCredits':
-      return handleCreditsFilter(value, fallback);
+        case 'selectCourseInfoAttributes':
+        case 'selectCredits':
+        case 'selectDays':
+        case 'selectSchools':
+        case 'selectSeasons':
+        case 'selectSkillsAreas':
+        case 'selectSubjects':
+          return handleSelectFilter(key, value, fallback);
 
-    case 'selectDays':
-      return handleDaysFilter(value, fallback);
+        case 'intersectingFilters':
+          return handleIntersectingFiltersParam(value, fallback);
 
-    case 'selectSchools':
-      return handleSchoolsFilter(value, fallback);
-
-    case 'selectSeasons':
-      return handleSeasonsFilter(value, fallback);
-
-    case 'selectSkillsAreas':
-      return handleSkillsAreasFilter(value, fallback);
-
-    case 'selectSubjects':
-      return handleSubjectsFilter(value, fallback);
-
-    case 'sortOrder':
-      break;
+        default:
+          console.warn(`Unhandled filter type: ${key}`);
+          return fallback;
+      }
+    })();
+    return result;
+  } catch (e) {
+    console.warn(`Error parsing filter ${key}:`, e);
+    return fallback;
   }
-
-  return fallback;
 }
 
 function handleBoundsFilter<K extends keyof Filters>(
@@ -76,208 +70,147 @@ function handleBoundsFilter<K extends keyof Filters>(
   const parts = value.split(',');
   if (parts.length !== 2) return fallback;
 
-  const [min, max] = parts.map(parseFloat);
-  if (min === undefined || max === undefined) return fallback;
+  const min = Number(parts[0]);
+  const max = Number(parts[1]);
+  if (Number.isNaN(min) || Number.isNaN(max)) return fallback;
 
   return [min, max] as Filters[K];
 }
 
 function handleBooleanFilter<K extends keyof Filters>(
   value: string,
+): Filters[K] {
+  return (value === 'true') as Filters[K];
+}
+
+function handleSortByFilter<K extends keyof Filters>(
+  value: string,
+): Filters[K] {
+  return { value: value as SortKeys, label: value } as Filters[K];
+}
+
+function handleSortOrderFilter<K extends keyof Filters>(
+  value: string,
+): Filters[K] {
+  return (value === 'asc' ? 'asc' : 'desc') as Filters[K];
+}
+
+function handleSelectFilter<K extends keyof Filters>(
+  key: K,
+  value: string,
   fallback: Filters[K],
 ): Filters[K] {
-  if (value === 'true') return true as Filters[K];
-  if (value === 'false') return false as Filters[K];
+  const values = value.split(',');
+  if (!values.length) return fallback;
 
-  return fallback;
+  const options = values
+    .map((val) => {
+      switch (key) {
+        case 'selectSeasons':
+          return {
+            value: val as Season,
+            label: toSeasonString(val as Season),
+          };
+        case 'selectDays': {
+          const found = Object.entries(weekdays).find(
+            ([, i]) => i.toString() === val,
+          );
+          return found ? { value: Number(val), label: found[0] } : null;
+        }
+        case 'selectCredits':
+          return {
+            value: Number(val),
+            label: val,
+          };
+        case 'selectCourseInfoAttributes':
+          return {
+            value: val,
+            label: val,
+          };
+        case 'selectSkillsAreas': {
+          const allSkillsAreas = {
+            ...skillsAreas.areas,
+            ...skillsAreas.skills,
+          };
+          const name = allSkillsAreas[val];
+          return name ? { value: val, label: `${val} - ${name}` } : null;
+        }
+        case 'selectSubjects': {
+          const name = subjects[val];
+          return name ? { value: val, label: `${val} - ${name}` } : null;
+        }
+        case 'selectSchools': {
+          const name = schools[val];
+          return name ? { value: val, label: name } : null;
+        }
+        case 'searchDescription':
+        case 'enableQuist':
+        case 'hideCancelled':
+        case 'hideConflicting':
+        case 'hideFirstYearSeminars':
+        case 'hideGraduateCourses':
+        case 'hideDiscussionSections':
+        case 'overallBounds':
+        case 'workloadBounds':
+        case 'professorBounds':
+        case 'timeBounds':
+        case 'enrollBounds':
+        case 'numBounds':
+        case 'searchText':
+        case 'selectSortBy':
+        case 'sortOrder':
+        case 'intersectingFilters':
+        default:
+          return null;
+      }
+    })
+    .filter((opt): opt is NonNullable<typeof opt> => opt !== null);
+
+  return options as Filters[K];
 }
 
-function handleGenericFilter<
-  K extends keyof Filters,
-  T,
-  V extends string | number,
->(
+function handleIntersectingFiltersParam<K extends keyof Filters>(
   value: string,
   fallback: Filters[K],
-  parseComponents: (comp: string[]) => T[],
-  mapSelections: (parsedComponents: T[]) => { value: V; label: string }[],
 ): Filters[K] {
-  const components = value.split(',');
-  const parsed = parseComponents(components);
-
-  if (parsed.length === 0) return fallback;
-
-  const selections = mapSelections(parsed);
-
-  return selections as unknown as Filters[K];
-}
-
-function handleCourseAttributesFilter<K extends keyof Filters>(
-  value: string,
-  fallback: Filters[K],
-) {
-  return handleGenericFilter(
-    value,
-    fallback,
-    (comp) =>
-      courseInfoAttributes.filter((attribute) => comp.includes(attribute)),
-    (parsed) =>
-      parsed.map((attribute) => ({
-        value: attribute,
-        label: attribute,
-      })),
-  );
-}
-
-function handleCreditsFilter<K extends keyof Filters>(
-  value: string,
-  fallback: Filters[K],
-) {
-  return handleGenericFilter(
-    value,
-    fallback,
-    (comp) => credits.filter((credit) => comp.includes(credit.toString())),
-    (parsed) =>
-      parsed.map((credit) => ({
-        value: credit,
-        label: credit.toString(),
-      })),
-  );
-}
-
-function handleDaysFilter<K extends keyof Filters>(
-  value: string,
-  fallback: Filters[K],
-) {
-  return handleGenericFilter(
-    value,
-    fallback,
-    (comp) =>
-      Object.entries(weekdays).filter(([, index]) =>
-        comp.includes(index.toString()),
-      ),
-    (parsed) =>
-      parsed.map(([day, index]) => ({
-        value: index,
-        label: day,
-      })),
-  );
-}
-
-function handleSchoolsFilter<K extends keyof Filters>(
-  value: string,
-  fallback: Filters[K],
-) {
-  return handleGenericFilter(
-    value,
-    fallback,
-    (comp) => Object.entries(schools).filter(([code]) => comp.includes(code)),
-    (parsed) =>
-      parsed.map(([code, name]) => ({
-        value: code,
-        label: name,
-      })),
-  );
-}
-
-function handleSeasonsFilter<K extends keyof Filters>(
-  value: string,
-  fallback: Filters[K],
-) {
-  return handleGenericFilter(
-    value,
-    fallback,
-    (comp) => seasons.filter((season) => comp.includes(season)),
-    (parsed) =>
-      parsed.map((season) => ({
-        value: season,
-        label: toSeasonString(season),
-      })),
-  );
-}
-
-function handleSkillsAreasFilter<K extends keyof Filters>(
-  value: string,
-  fallback: Filters[K],
-) {
-  return handleGenericFilter(
-    value,
-    fallback,
-    (components) => {
-      const allSkillsAreas = {
-        ...skillsAreas.areas,
-        ...skillsAreas.skills,
-      };
-      return Object.entries(allSkillsAreas).filter(([code]) =>
-        components.includes(code),
-      );
-    },
-    (parsed) =>
-      parsed.map(([code, name]) => ({
-        value: code,
-        label: `${code} - ${name}`,
-      })),
-  );
-}
-
-function handleSubjectsFilter<K extends keyof Filters>(
-  value: string,
-  fallback: Filters[K],
-) {
-  return handleGenericFilter(
-    value,
-    fallback,
-    (comp) =>
-      Object.entries(subjects).filter(([subject]) => comp.includes(subject)),
-    (parsed) =>
-      parsed.map(([val, lbl]) => ({
-        value: val,
-        label: lbl,
-      })),
-  );
-}
-
-const areEqualFilters = (a: unknown, b: unknown): boolean => {
+  const filters = value.split(',');
   if (
-    (typeof a === 'object' && typeof b === 'object') ||
-    (Array.isArray(a) && Array.isArray(b))
+    !filters.every((f) =>
+      [
+        'selectSubjects',
+        'selectSkillsAreas',
+        'selectDays',
+        'selectSchools',
+        'selectCourseInfoAttributes',
+      ].includes(f),
+    )
   )
-    return JSON.stringify(a) === JSON.stringify(b);
+    return fallback;
 
-  return a === b;
-};
+  return filters as Filters[K];
+}
 
 export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
   defaultValue: Filters[K],
 ): string {
-  // TODO: use react-router
   const newSearch = new URLSearchParams(window.location.search);
 
-  if (
-    areEqualFilters(value, defaultValue) ||
-    key === 'selectSortBy' ||
-    key === 'sortOrder'
-  ) {
+  if (JSON.stringify(value) === JSON.stringify(defaultValue)) {
     newSearch.delete(key);
     return `?${newSearch.toString()}`;
   }
 
   if (Array.isArray(value)) {
-    const values = value.map((v) => {
-      if (typeof v === 'object' && 'value' in v) return v.value;
-      return v;
-    });
-
-    newSearch.set(key, encodeURIComponent(values.join(',')));
-  } else {
-    newSearch.set(
-      key,
-      encodeURIComponent(
-        typeof value === 'object' ? JSON.stringify(value) : value.toString(),
-      ),
+    const values = value.map((v) =>
+      typeof v === 'object' && Object.hasOwn(v, 'value') ? v.value : v,
     );
+    newSearch.set(key, values.join(','));
+  } else if (typeof value === 'object' && Object.hasOwn(value, 'value')) {
+    newSearch.set(key, value.value.toString());
+  } else {
+    newSearch.set(key, value.toString());
   }
 
   return `?${newSearch.toString()}`;

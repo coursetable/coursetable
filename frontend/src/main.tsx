@@ -55,13 +55,11 @@ const domNode = document.getElementById('root')!;
 const root = createRoot(domNode);
 
 root.render(
-  <Globals>
-    <BrowserRouter>
-      {/* Tutorial provider has to be inside the router. Plus it doesn't need
-      SSR */}
+  <BrowserRouter>
+    <Globals>
       <TutorialProvider>
         <App />
       </TutorialProvider>
-    </BrowserRouter>
-  </Globals>,
+    </Globals>
+  </BrowserRouter>,
 );

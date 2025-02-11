@@ -18,6 +18,7 @@ import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import { toSeasonString } from '../../utilities/course';
+import { createCatalogLink } from '../../utilities/navigation';
 import Spinner from '../Spinner';
 import styles from './Results.module.css';
 
@@ -78,7 +79,8 @@ function Results({
           <>
             <h3>No courses found for {toSeasonString(viewedSeason)}</h3>
             <div>
-              Add some courses on the <Link to="/catalog">Catalog</Link>.
+              Add some courses on the{' '}
+              <Link to={createCatalogLink()}>Catalog</Link>.
             </div>
           </>
         )}

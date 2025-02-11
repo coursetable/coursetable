@@ -21,6 +21,7 @@ import Worksheet from './pages/Worksheet';
 
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
+import { createCatalogLink } from './utilities/navigation';
 import styles from './App.module.css';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
@@ -81,7 +82,7 @@ function AuthenticatedRoutes() {
 
     case '/login':
       if (authStatus === 'authenticated')
-        return <Navigate to="/catalog" replace />;
+        return <Navigate to={createCatalogLink()} replace />;
       return <Outlet />;
 
     case '/graphiql':
@@ -146,7 +147,10 @@ function App() {
       <Navbar />
       <SentryRoutes>
         <Route element={<AuthenticatedRoutes />}>
-          <Route path="/" element={<Navigate to="/catalog" replace />} />
+          <Route
+            path="/"
+            element={<Navigate to={createCatalogLink()} replace />}
+          />
 
           {/* Authenticated routes */}
           {/* Catalog and worksheet can be viewed by anyone; we put them under
@@ -168,7 +172,7 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacypolicy" element={<Privacy />} />
 
-        <Route path="/Table" element={<Navigate to="/catalog" />} />
+        <Route path="/Table" element={<Navigate to={createCatalogLink()} />} />
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
