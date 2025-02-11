@@ -54,6 +54,7 @@ export type CatalogBySeasonQuery = {
     final_exam: string | null;
     fysem: boolean;
     last_offered_course_id: number | null;
+    primary_crn: number | null;
     requirements: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
@@ -175,6 +176,7 @@ export const CatalogBySeasonDocument = gql`
         school
         subject
       }
+      primary_crn
       requirements
       same_course_and_profs_id
       same_course_id
