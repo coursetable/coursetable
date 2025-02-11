@@ -647,9 +647,7 @@ export function SearchProvider({
             return false;
           if (
             !applyIntersectableFilter(
-              selectSubjects.value.map(
-                (option: Option) => option.value,
-              ),
+              selectSubjects.value.map((option: Option) => option.value),
               listing.course.listings.map((l) => l.course_code.split(' ')[0]!),
               intersectingFilters.value.includes('selectSubjects'),
             )
