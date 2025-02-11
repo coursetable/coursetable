@@ -3971,3 +3971,19 @@ export type CourseSectionsQuery = {
     } & CourseModalPrefetchListingDataFragment
   >;
 };
+
+export type CourseDataFromListingIdsQueryVariables = Exact<{
+  listingIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+}>;
+
+export type CourseDataFromListingIdsQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    listing_id: number;
+    crn: Crn;
+    course_code: string;
+    season_code: Season;
+    course: { __typename?: 'courses'; same_course_id: number };
+  }>;
+};
