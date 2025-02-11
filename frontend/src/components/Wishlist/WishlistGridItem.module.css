@@ -58,6 +58,10 @@
   font-weight: 500;
   font-size: 14px;
   color: rgb(38 131 185);
+  white-space: nowrap;  
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .professors {
@@ -72,6 +76,8 @@
 .oneLine {
   display: block;
   width: 100%;
+  /* margin-top: 0.75rem;
+  margin-bottom: 0.75rem; */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

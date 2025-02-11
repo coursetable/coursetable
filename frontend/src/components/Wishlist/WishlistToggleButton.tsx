@@ -45,6 +45,11 @@ function WishlistToggleButton({
 
   const allCourseCrns = listing.course.listings.map((l) => l.crn);
 
+  // Should theoretically only be one course as it should be unique by same_course_id
+  const sameCoursesInWishlist = useMemo(() => {
+    return wishlistWithMetadata?.filter((item) => item.sameCourseId === listing.course.same_course_id) ?? [];
+  }, []);
+
   const toggleWishlist = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -52,15 +57,23 @@ function WishlistToggleButton({
 
       // Determine if we are adding or removing the course
       const addRemove = inWishlist ? 'remove' : 'add';
-      await Promise.all(
-        allCourseCrns.map((crn) =>
-          updateWishlistCourses({
-            action: addRemove,
-            season: listing.course.season_code,
-            crn,
-          }),
-        ),
-      );
+      if (addRemove === 'add') {
+        await updateWishlistCourses({
+          action: addRemove,
+          season: listing.course.season_code,
+          crn: listing.crn,
+        })
+      } else {
+        await Promise.all(
+          sameCoursesInWishlist.map((course) =>
+            updateWishlistCourses({
+              action: addRemove,
+              season: course.season,
+              crn: course.crn,
+            }),
+          ),
+        );
+      }
 
       await wishlistRefresh();
     },
