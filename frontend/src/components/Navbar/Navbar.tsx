@@ -62,17 +62,15 @@ export default function CourseTableNavbar() {
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
   const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
 
-  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
+  const [showPWAPrompt, setShowPWAPrompt] = useState(false);
   const [isIOSNotInstalled, setIsIOSNotInstalled] = useState(false);
 
-  const isIOS = () => /iphone|ipad|ipod/iu.test(navigator.userAgent);
-
-  const isPWAInstalled = () =>
-    // Window.navigator.standalone ||
-    window.matchMedia('(display-mode: standalone)').matches;
-
   useEffect(() => {
-    if (isIOS() && !isPWAInstalled()) setIsIOSNotInstalled(true);
+    const isIOS = /iphone|ipad|ipod/iu.test(navigator.userAgent);
+    const isPWAInstalled = window.matchMedia(
+      '(display-mode: standalone)',
+    ).matches;
+    if (isIOS && !isPWAInstalled) setIsIOSNotInstalled(true);
   }, []);
 
   return (
@@ -88,9 +86,9 @@ export default function CourseTableNavbar() {
         )}
       >
         <PWAPrompt
-          isShown={shouldShowPWAPrompt}
+          isShown={showPWAPrompt}
           appIconPath="/icon200x200.png"
-          onClose={() => setShouldShowPWAPrompt(false)}
+          onClose={() => setShowPWAPrompt(false)}
         />
         {/* Logo in top left and random underneath */}
         <div className={styles.navLogoWrapper}>
@@ -124,21 +122,6 @@ export default function CourseTableNavbar() {
               className={styles.navbarLinks}
             >
               <DarkModeButton className={styles.navbarDarkModeBtn} />
-              {isIOSNotInstalled && (
-                <NavbarLink to="#!">
-                  <button
-                    type="button"
-                    onClick={() => setShouldShowPWAPrompt(true)}
-                  >
-                    Install
-                  </button>
-                </NavbarLink>
-                // <button type="button" className={styles.featureText} onClick={() => setShouldShowPWAPrompt(true)}>
-                //   <FcIdea className="me-2 my-auto" size={20} />
-                //   Tip: tap here to see how to add CourseTable to your home
-                //   screen as an app
-                // </button>
-              )}
               <NavbarLink to="/catalog">Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
@@ -166,6 +149,15 @@ export default function CourseTableNavbar() {
                     Feedback
                   </a>
                   <NavbarLink to="/releases">Release notes</NavbarLink>
+                  {isIOSNotInstalled && (
+                    <button
+                      type="button"
+                      className={styles.navLink}
+                      onClick={() => setShowPWAPrompt(true)}
+                    >
+                      Install as app
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={styles.navLink}
