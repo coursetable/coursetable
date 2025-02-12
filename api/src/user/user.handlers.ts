@@ -12,7 +12,6 @@ import {
   wishlistCourses,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
-import winston from '../logging/winston.js';
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
   z.object({
@@ -71,22 +70,19 @@ async function updateWorksheetCourse(
     ),
     columns: { id: true },
   });
-  // To be removed once add/remove/rename worksheets is pushed.
-  if (!existingMeta) {
+  // Only the main worksheet can be implicitly created
+  if (!existingMeta && action === 'add' && worksheetNumber === 0) {
     [existingMeta] = await db
       .insert(worksheets)
       .values({
         netId,
         season,
         worksheetNumber,
-        name:
-          worksheetNumber === 0
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheetNumber}`,
+        name: 'Main Worksheet',
       })
       .returning({ id: worksheets.id });
   }
-  if (!existingMeta) throw new Error('Failed to create worksheet');
+  if (!existingMeta) return 'WORKSHEET_NOT_FOUND';
   const existing = await db.query.worksheetCourses.findFirst({
     where: and(
       eq(worksheetCourses.worksheetId, existingMeta.id),
@@ -95,9 +91,6 @@ async function updateWorksheetCourse(
   });
 
   if (action === 'add') {
-    winston.info(
-      `Bookmarking course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-    );
     if (existing) return 'ALREADY_BOOKMARKED';
     await db.insert(worksheetCourses).values({
       worksheetId: existingMeta.id,
@@ -106,9 +99,6 @@ async function updateWorksheetCourse(
       hidden,
     });
   } else if (action === 'remove') {
-    winston.info(
-      `Removing bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-    );
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .delete(worksheetCourses)
@@ -125,19 +115,13 @@ async function updateWorksheetCourse(
       .where(eq(worksheetCourses.worksheetId, existingMeta.id));
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
-    if (numCoursesInCurWorksheet === 0)
+    // Only implicitly delete the main worksheet if it's empty
+    if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0)
       await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
   } else {
-    // Update data of a bookmarked course
-    winston.info(
-      `Updating bookmark for course ${crn} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
-    );
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      // Currently the frontend is not capable of actually syncing the hidden
-      // state so we keep it as null. This allows it to be properly synced in
-      // the future
       .set({ color, hidden })
       .where(
         and(
@@ -153,8 +137,6 @@ export const updateWorksheetCourses = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Toggling course bookmark');
-
   const { netId } = req.user!;
 
   const bodyParseRes = UpdateWorksheetCoursesReqBodySchema.safeParse(req.body);
@@ -222,8 +204,6 @@ export const getUserWorksheet = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  winston.info(`Getting worksheets for user ${netId}`);
-
   const userWorksheets = await db.query.worksheets.findMany({
     where: eq(worksheets.netId, netId),
     columns: {
@@ -231,6 +211,7 @@ export const getUserWorksheet = async (
       season: true,
       worksheetNumber: true,
       name: true,
+      private: true,
     },
     with: {
       courses: {
@@ -244,6 +225,7 @@ export const getUserWorksheet = async (
   });
 
   const allWorksheets = worksheetListToMap(userWorksheets);
+
   res.json({
     data: allWorksheets[netId] ?? {},
   });
@@ -258,28 +240,34 @@ const AddWorksheetSchema = z.object({
 const DeleteWorksheetSchema = z.object({
   action: z.literal('delete'),
   season: z.string().transform((val) => parseInt(val, 10)),
-  worksheetNumber: z.number(),
+  worksheetNumber: z.number().int().min(1),
 });
 
 const RenameWorksheetSchema = z.object({
   action: z.literal('rename'),
   season: z.string().transform((val) => parseInt(val, 10)),
-  worksheetNumber: z.number(),
+  worksheetNumber: z.number().int().min(1),
   name: z.string().max(64),
+});
+
+const SetPrivateWorksheetSchema = z.object({
+  action: z.literal('setPrivate'),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  worksheetNumber: z.number().int().min(0),
+  private: z.boolean(),
 });
 
 const UpdateWorksheetMetadataSchema = z.union([
   AddWorksheetSchema,
   DeleteWorksheetSchema,
   RenameWorksheetSchema,
+  SetPrivateWorksheetSchema,
 ]);
 
 export const updateWorksheetMetadata = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Updating worksheets metadata');
-
   const { netId } = req.user!;
 
   const bodyParseRes = UpdateWorksheetMetadataSchema.safeParse(req.body);
@@ -291,8 +279,6 @@ export const updateWorksheetMetadata = async (
   const { action, season } = bodyParseRes.data;
 
   if (action === 'add') {
-    winston.info(`Adding worksheet for user ${netId}`);
-
     const { name } = bodyParseRes.data;
 
     const worksheetNumbersRes = await db.query.worksheets.findMany({
@@ -318,10 +304,6 @@ export const updateWorksheetMetadata = async (
   } else if (action === 'delete') {
     const { worksheetNumber } = bodyParseRes.data;
 
-    winston.info(
-      `Deleting worksheet courses from worksheet ${worksheetNumber} for user ${netId}`,
-    );
-
     await db.delete(worksheetCourses).where(
       inArray(
         worksheetCourses.worksheetId,
@@ -338,7 +320,6 @@ export const updateWorksheetMetadata = async (
       ),
     );
 
-    winston.info(`Deleting worksheet ${worksheetNumber} for user ${netId}`);
     const deletedWorksheets = await db
       .delete(worksheets)
       .where(
@@ -354,12 +335,10 @@ export const updateWorksheetMetadata = async (
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
-  } else {
+    res.sendStatus(200);
+  } else if (action === 'rename') {
     const { worksheetNumber, name } = bodyParseRes.data;
 
-    winston.info(
-      `Renaming worksheet ${worksheetNumber} for user ${netId} to "${name}"`,
-    );
     const renamedWorksheets = await db
       .update(worksheets)
       .set({ name })
@@ -376,9 +355,28 @@ export const updateWorksheetMetadata = async (
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
-  }
+    res.sendStatus(200);
+  } else {
+    const { worksheetNumber, private: isPrivate } = bodyParseRes.data;
 
-  res.sendStatus(200);
+    const updatedWorksheets = await db
+      .update(worksheets)
+      .set({ private: isPrivate })
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.season, season),
+          eq(worksheets.worksheetNumber, worksheetNumber),
+        ),
+      )
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
+
+    if (updatedWorksheets.length === 0) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+    res.sendStatus(200);
+  }
 };
 
 const UpdateWishlistCourseReqBodySchema = z.object({
@@ -391,8 +389,6 @@ export const updateWishlistCourses = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info('Toggling wishlist bookmark');
-
   const { netId } = req.user!;
 
   const bodyParseRes = UpdateWishlistCourseReqBodySchema.safeParse(req.body);

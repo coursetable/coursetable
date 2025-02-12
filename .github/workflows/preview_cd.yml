@@ -12,61 +12,46 @@ jobs:
     name: Frontend Build and Deploy
     environment:
       name: Preview
-      url: https://${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
+      url: ${{steps.deploy.outputs.DEPLOY_URL }}
     runs-on: ubuntu-latest
-
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      - name: Shorten SHA
-        shell: bash
-        run: |
-          echo "sha_short=`echo ${{ github.event.pull_request.head.sha }} | cut -c1-8`" >> $GITHUB_ENV
       - name: Encode URL Branch
         id: encode_url_branch
         uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |
-            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-25).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
+            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-17).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod_staging
+          inject-env-vars: true
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Install Vercel CLI
-        run: bun install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --token ${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy to Vercel with Branch
-        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -b ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -d
-      - name: Deploy to Vercel with SHA
-        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -b ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -d
-
-  comment:
-    name: Preview Comment
-    runs-on: ubuntu-latest
-
-    needs: [frontend-build-and-deploy]
-
-    permissions:
-      pull-requests: write
-
-    steps:
-      - name: Encode URL Branch
-        id: encode_url_branch
-        uses: actions/github-script@v7
-        with:
-          result-encoding: string
-          script: |
-            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-25).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+      - name: Build Frontend
+        run: cd frontend && bun run build
+      - name: Install Wrangler CLI
+        run: bun install --global wrangler
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
+        run: |
+          wrangler pages deploy frontend/build --project-name=coursetable --branch=${{ steps.encode_url_branch.outputs.result }}-preview | tee deploy.log
+          DEPLOY_URL=$(grep -oP 'https://[^\s]+' deploy.log | head -n 1)
+          echo "DEPLOY_URL=${DEPLOY_URL}" >> $GITHUB_OUTPUT
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
-            Thanks for your pull request! The preview of your changes is available at https://${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com.
+            Thanks for your pull request! The preview of your changes is available at https://${{ steps.encode_url_branch.outputs.result }}-preview.coursetable.pages.dev

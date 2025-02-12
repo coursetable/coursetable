@@ -123,7 +123,7 @@ function DropdownContent({
             Feedback
           </DropdownItem>
           <DropdownItem icon={FcNews} to="/releases">
-            Release Notes
+            Release notes
           </DropdownItem>
           {/* Try tutorial only on desktop */}
           {!isMobile && !isTablet && authStatus === 'authenticated' && (
@@ -149,7 +149,7 @@ function DropdownContent({
                 window.location.href = '/';
               }}
             >
-              Sign Out
+              Sign out
             </DropdownItem>
           ) : (
             <DropdownItem
@@ -157,7 +157,7 @@ function DropdownContent({
               iconColor="#30e36b"
               href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
             >
-              Sign In
+              Sign in
             </DropdownItem>
           )}
         </div>

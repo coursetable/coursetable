@@ -31,7 +31,6 @@ const About = suspended(() => import('./pages/About'));
 const FAQ = suspended(() => import('./pages/FAQ'));
 const Privacy = suspended(() => import('./pages/Privacy.mdx'));
 const NotFound = suspended(() => import('./pages/NotFound'));
-const Thankyou = suspended(() => import('./pages/Thankyou'));
 const Challenge = suspended(() => import('./pages/Challenge'));
 const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
@@ -46,6 +45,7 @@ const LinkPreview = suspended(
 const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
+const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function Modal() {
@@ -128,21 +128,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={13}
+        id={14}
       >
-        We want to hear from you. How can we make CourseTable better?{' '}
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
-        >
-          Fill out this quick survey!
-        </a>
+        {/* None */}
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -167,7 +155,6 @@ function App() {
 
         {/* Static pages that don't need login */}
         <Route path="/about" element={<About />} />
-        <Route path="/thankyou" element={<Thankyou />} />
         <Route path="/joinus" element={<Join />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacypolicy" element={<Privacy />} />
@@ -178,8 +165,9 @@ function App() {
         <Route path="/releases/quist" element={<QuistRelease />} />
         <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases/spring24" element={<Spring24Release />} />
+        <Route path="/releases/fall24" element={<Fall24Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
-        {/* Catch-all Route to NotFound Page */}
+        {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />
       </SentryRoutes>
       <Footer />

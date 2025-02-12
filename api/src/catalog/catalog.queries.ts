@@ -31,7 +31,7 @@ export type EvalsBySeasonQuery = {
     last_enrollment_same_professors: boolean | null;
     evaluation_statistic: {
       __typename?: 'evaluation_statistics';
-      enrolled: number | null;
+      enrolled: number;
       responses: number | null;
     } | null;
   }>;
@@ -46,25 +46,22 @@ export type CatalogBySeasonQuery = {
   courses: Array<{
     __typename?: 'courses';
     areas: any;
-    classnotes: string | null;
-    colsem: boolean | null;
+    colsem: boolean;
     course_id: number;
     credits: number | null;
     description: string | null;
     extra_info: string | null;
     final_exam: string | null;
-    fysem: boolean | null;
+    fysem: boolean;
     last_offered_course_id: number | null;
-    regnotes: string | null;
+    primary_crn: number | null;
     requirements: string | null;
-    rp_attr: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
     season_code: string;
     section: string;
     skills: any;
-    syllabus_url: string | null;
-    sysem: boolean | null;
+    sysem: boolean;
     title: string;
     course_flags: Array<{
       __typename?: 'course_flags';
@@ -83,7 +80,7 @@ export type CatalogBySeasonQuery = {
       course_code: string;
       crn: number;
       number: string;
-      school: string | null;
+      school: string;
       subject: string;
     }>;
     course_meetings: Array<{
@@ -107,6 +104,20 @@ export type CourseAttributesQueryVariables = Types.Exact<{
 export type CourseAttributesQuery = {
   __typename?: 'query_root';
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
+};
+
+export type BuildingsCatalogQueryVariables = Types.Exact<{
+  [key: string]: never;
+}>;
+
+export type BuildingsCatalogQuery = {
+  __typename?: 'query_root';
+  buildings: Array<{
+    __typename?: 'buildings';
+    building_name: string | null;
+    code: string;
+    url: string | null;
+  }>;
 };
 
 export const ListSeasonsDocument = gql`
@@ -139,7 +150,6 @@ export const CatalogBySeasonDocument = gql`
   query catalogBySeason($season: String!) {
     courses(where: { season_code: { _eq: $season } }) {
       areas
-      classnotes
       colsem
       course_flags {
         flag {
@@ -166,15 +176,13 @@ export const CatalogBySeasonDocument = gql`
         school
         subject
       }
-      regnotes
+      primary_crn
       requirements
-      rp_attr
       same_course_and_profs_id
       same_course_id
       season_code
       section
       skills
-      syllabus_url
       sysem
       course_meetings {
         days_of_week
@@ -195,6 +203,15 @@ export const CourseAttributesDocument = gql`
   query courseAttributes {
     flags {
       flag_text
+    }
+  }
+`;
+export const BuildingsCatalogDocument = gql`
+  query buildingsCatalog {
+    buildings {
+      building_name
+      code
+      url
     }
   }
 `;
@@ -276,6 +293,22 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'courseAttributes',
+        'query',
+        variables,
+      );
+    },
+    buildingsCatalog(
+      variables?: BuildingsCatalogQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<BuildingsCatalogQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<BuildingsCatalogQuery>(
+            BuildingsCatalogDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'buildingsCatalog',
         'query',
         variables,
       );

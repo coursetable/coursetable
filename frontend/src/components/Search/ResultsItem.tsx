@@ -13,7 +13,6 @@ import {
   ratingTypes,
 } from './ResultsItemCommon';
 import { useSearch } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
@@ -81,15 +80,22 @@ function ResultsItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { viewedWorksheetNumber } = useWorksheet();
+  const getRelevantWorksheetNumber = useStore(
+    (state) => state.getRelevantWorksheetNumber,
+  );
 
   const { numFriends } = useSearch();
   const friends = numFriends[`${listing.course.season_code}${listing.crn}`];
   const target = useCourseModalLink(listing);
 
   const inWorksheet = useMemo(
-    () => isInWorksheet(listing, viewedWorksheetNumber, worksheets),
-    [listing, viewedWorksheetNumber, worksheets],
+    () =>
+      isInWorksheet(
+        listing,
+        getRelevantWorksheetNumber(listing.course.season_code),
+        worksheets,
+      ),
+    [listing, getRelevantWorksheetNumber, worksheets],
   );
 
   return (

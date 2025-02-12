@@ -246,6 +246,7 @@ export async function updateWorksheetMetadata(
   } & (
     | {
         action: 'add';
+        name: string;
       }
     | {
         action: 'delete';
@@ -255,6 +256,11 @@ export async function updateWorksheetMetadata(
         action: 'rename';
         worksheetNumber: number;
         name: string;
+      }
+    | {
+        action: 'setPrivate';
+        worksheetNumber: number;
+        private: boolean;
       }
   ),
 ): Promise<boolean> {
@@ -494,6 +500,7 @@ const userWorksheetsSchema = z
       // Key: worksheet number
       z.object({
         name: z.string(),
+        private: z.boolean().optional(),
         courses: z.array(
           z.object({
             crn: crnSchema,

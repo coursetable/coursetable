@@ -7,7 +7,6 @@ import { useShallow } from 'zustand/react/shallow';
 
 import type { ResultItemData } from './Results';
 import { SeasonTag, CourseCode, ratingTypes } from './ResultsItemCommon';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
@@ -83,11 +82,19 @@ function ResultsGridItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { viewedWorksheetNumber } = useWorksheet();
+  const getRelevantWorksheetNumber = useStore(
+    (state) => state.getRelevantWorksheetNumber,
+  );
 
   const inWorksheet = useMemo(
-    () => listing && isInWorksheet(listing, viewedWorksheetNumber, worksheets),
-    [listing, viewedWorksheetNumber, worksheets],
+    () =>
+      listing &&
+      isInWorksheet(
+        listing,
+        getRelevantWorksheetNumber(listing.course.season_code),
+        worksheets,
+      ),
+    [listing, getRelevantWorksheetNumber, worksheets],
   );
 
   if (!listing) return null;

@@ -8,8 +8,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { updateWorksheetCourses } from '../../queries/api';
+import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
@@ -85,27 +85,36 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  const { worksheets, worksheetsRefresh } = useStore(
-    useShallow((state) => ({
-      worksheets: state.worksheets,
-      worksheetsRefresh: state.worksheetsRefresh,
-    })),
-  );
+  const { worksheets, worksheetsRefresh, getRelevantWorksheetNumber } =
+    useStore(
+      useShallow((state) => ({
+        worksheets: state.worksheets,
+        worksheetsRefresh: state.worksheetsRefresh,
+        getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
+      })),
+    );
 
-  const { viewedWorksheetNumber, worksheetOptions } = useWorksheet();
+  const defaultWorksheetNumber = getRelevantWorksheetNumber(
+    listing.course.season_code,
+  );
 
   // In the modal, the select can override the "currently viewed" worksheet
   // Please read https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   const [selectedWorksheet, setSelectedWorksheet] = useState(
-    viewedWorksheetNumber,
+    defaultWorksheetNumber,
   );
   const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
-    viewedWorksheetNumber,
+    defaultWorksheetNumber,
   );
-  if (prevWorksheetCtx !== viewedWorksheetNumber) {
-    setSelectedWorksheet(viewedWorksheetNumber);
-    setPrevWorksheetCtx(viewedWorksheetNumber);
+  if (prevWorksheetCtx !== defaultWorksheetNumber) {
+    setSelectedWorksheet(defaultWorksheetNumber);
+    setPrevWorksheetCtx(defaultWorksheetNumber);
   }
+
+  const worksheetOptions = useWorksheetNumberOptions(
+    'me',
+    listing.course.season_code,
+  );
 
   const inWorksheet = useMemo(
     () =>
@@ -143,7 +152,10 @@ function WorksheetToggleButton({
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
   const buttonLabel = worksheets
-    ? `${inWorksheet ? 'Remove from' : 'Add to'} my ${worksheetOptions[selectedWorksheet]!.label}`
+    ? // The worksheet name can only be unknown if we triggered the
+      // if (prevWorksheetCtx !== defaultWorksheetNumber) code path above
+      // We will update it once and then it will be correct
+      `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${worksheetOptions[selectedWorksheet]?.label ?? 'Unknown'}"`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in
@@ -202,16 +214,14 @@ function WorksheetToggleButton({
       {modal && (
         <Popout
           buttonText="Worksheet"
-          selectedOptions={worksheetOptions.find(
-            (x) => x.value === selectedWorksheet,
-          )}
+          selectedOptions={worksheetOptions[selectedWorksheet]}
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
         >
           <PopoutSelect<Option<number>, false>
-            value={worksheetOptions.find((x) => x.value === selectedWorksheet)}
-            options={worksheetOptions}
+            value={worksheetOptions[selectedWorksheet]}
+            options={Object.values(worksheetOptions)}
             onChange={(option) => setSelectedWorksheet(option!.value)}
             showControl={false}
             minWidth={200}

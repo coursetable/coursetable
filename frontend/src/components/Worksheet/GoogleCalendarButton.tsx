@@ -1,18 +1,24 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
+import { useShallow } from 'zustand/react/shallow';
 import Spinner from '../../components/Spinner';
 import { academicCalendars } from '../../config';
 import { useGapi } from '../../contexts/gapiContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import GCalIcon from '../../images/gcal.svg';
+import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
 
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi, authInstance, user, setUser } = useGapi();
-  const { viewedSeason, courses } = useWorksheet();
+  const { viewedSeason, courses } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      courses: state.courses,
+    })),
+  );
   const exportButtonRef = useRef<HTMLButtonElement>(null);
   const exportEvents = useCallback(async () => {
     if (!gapi) {
@@ -90,7 +96,7 @@ function GoogleCalendarButton(): React.JSX.Element {
         level: 'info',
       });
       Sentry.captureException(err);
-      toast.error('Error exporting Google Calendar Events');
+      toast.error('Error exporting Google Calendar events');
     } finally {
       setExporting(false);
     }

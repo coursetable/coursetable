@@ -13,6 +13,7 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
     extra_info
     description
     same_course_id
+    primary_crn
     listings {
       crn
       course_code
@@ -44,18 +45,16 @@ export const CourseModalPrefetchListingDataFragmentDoc = gql`
 `;
 export const CourseModalOverviewDataDocument = gql`
   query CourseModalOverviewData(
-    $seasonCode: String!
-    $crn: Int!
+    $listingId: Int!
     $sameCourseId: Int!
     $hasEvals: Boolean!
   ) {
-    self: listings(
-      where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }
-    ) {
+    self: listings_by_pk(listing_id: $listingId) {
       course {
         description
         requirements
         syllabus_url
+        course_home_url
         section
         course_professors {
           professor {
@@ -114,6 +113,7 @@ export const CourseModalOverviewDataDocument = gql`
       }
       course_id
       syllabus_url
+      course_home_url
     }
   }
   ${CourseModalPrefetchCourseDataFragmentDoc}
@@ -131,8 +131,7 @@ export const CourseModalOverviewDataDocument = gql`
  * @example
  * const { data, loading, error } = useCourseModalOverviewDataQuery({
  *   variables: {
- *      seasonCode: // value for 'seasonCode'
- *      crn: // value for 'crn'
+ *      listingId: // value for 'listingId'
  *      sameCourseId: // value for 'sameCourseId'
  *      hasEvals: // value for 'hasEvals'
  *   },
@@ -200,8 +199,8 @@ export type CourseModalOverviewDataQueryResult = Apollo.QueryResult<
   Types.CourseModalOverviewDataQueryVariables
 >;
 export const SearchEvaluationNarrativesDocument = gql`
-  query SearchEvaluationNarratives($seasonCode: String!, $crn: Int!) {
-    listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+  query SearchEvaluationNarratives($listingId: Int!) {
+    listings_by_pk(listing_id: $listingId) {
       course {
         evaluation_narratives {
           comment
@@ -238,8 +237,7 @@ export const SearchEvaluationNarrativesDocument = gql`
  * @example
  * const { data, loading, error } = useSearchEvaluationNarrativesQuery({
  *   variables: {
- *      seasonCode: // value for 'seasonCode'
- *      crn: // value for 'crn'
+ *      listingId: // value for 'listingId'
  *   },
  * });
  */
@@ -402,12 +400,8 @@ export type ProfModalOverviewDataQueryResult = Apollo.QueryResult<
   Types.ProfModalOverviewDataQueryVariables
 >;
 export const CourseModalFromUrlDocument = gql`
-  query CourseModalFromURL(
-    $seasonCode: String!
-    $crn: Int!
-    $hasEvals: Boolean!
-  ) {
-    listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+  query CourseModalFromURL($listingId: Int!, $hasEvals: Boolean!) {
+    listings_by_pk(listing_id: $listingId) {
       ...CourseModalPrefetchListingData
     }
   }
@@ -426,8 +420,7 @@ export const CourseModalFromUrlDocument = gql`
  * @example
  * const { data, loading, error } = useCourseModalFromUrlQuery({
  *   variables: {
- *      seasonCode: // value for 'seasonCode'
- *      crn: // value for 'crn'
+ *      listingId: // value for 'listingId'
  *      hasEvals: // value for 'hasEvals'
  *   },
  * });

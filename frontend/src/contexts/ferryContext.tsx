@@ -11,7 +11,6 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
-import type { WorksheetCourse } from './worksheetContext';
 import seasonsData from '../generated/seasons.json';
 import {
   fetchCatalogMetadata,
@@ -22,6 +21,7 @@ import {
   type CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
 
 export const seasons = seasonsData as Season[];
@@ -200,8 +200,20 @@ export const useCourseData = (requestedSeasons: Season[]) => {
 
 export function useWorksheetInfo(
   worksheets: UserWorksheets | undefined,
+  season: Season[],
+  getWorksheetNumber: (seasonCode: Season) => number,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+): { loading: boolean; error: {} | null; data: WorksheetCourse[] };
+export function useWorksheetInfo(
+  worksheets: UserWorksheets | undefined,
+  season: Season,
+  worksheetNumber: number,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+): { loading: boolean; error: {} | null; data: WorksheetCourse[] };
+export function useWorksheetInfo(
+  worksheets: UserWorksheets | undefined,
   season: Season | Season[],
-  worksheetNumber = 0,
+  worksheetNumber: number | ((seasonCode: Season) => number),
 ) {
   const requestedSeasons = useMemo(() => {
     if (!worksheets) return [];
@@ -220,7 +232,11 @@ export function useWorksheetInfo(
     for (const seasonCode of requestedSeasons) {
       // Guaranteed to exist because of how requestedSeasons is constructed.
       const seasonWorksheets = worksheets.get(seasonCode)!;
-      const worksheet = seasonWorksheets.get(worksheetNumber);
+      const worksheet = seasonWorksheets.get(
+        typeof worksheetNumber === 'number'
+          ? worksheetNumber
+          : worksheetNumber(seasonCode),
+      );
       if (!worksheet) continue;
       for (const { crn, color, hidden } of worksheet.courses) {
         const listing = courses[seasonCode]!.data.get(crn);

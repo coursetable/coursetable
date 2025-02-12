@@ -1,21 +1,23 @@
 import { FaRegClipboard } from 'react-icons/fa';
 import { compressToEncodedURIComponent } from 'lz-string';
 import { toast } from 'react-toastify';
-import {
-  useWorksheet,
-  type ExoticWorksheet,
-} from '../../contexts/worksheetContext';
+import { useShallow } from 'zustand/react/shallow';
+import type { ExoticWorksheet } from '../../slices/WorksheetSlice';
+import { useStore } from '../../store';
 
 export default function URLExportButton() {
-  const { viewedSeason, viewedWorksheetNumber, courses } = useWorksheet();
+  const { viewedSeason, viewedWorksheetName, courses } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetName: state.viewedWorksheetName,
+      courses: state.courses,
+    })),
+  );
 
   async function handleExport() {
     const payload: ExoticWorksheet = {
       season: viewedSeason,
-      name:
-        viewedWorksheetNumber === 0
-          ? 'Main Worksheet'
-          : `Worksheet ${viewedWorksheetNumber}`,
+      name: viewedWorksheetName(),
       courses: courses.map((c) => ({
         crn: c.listing.crn,
         hidden: c.hidden ?? false,

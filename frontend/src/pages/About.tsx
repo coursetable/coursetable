@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Card, Row } from 'react-bootstrap';
 import { TextComponent } from '../components/Typography';
 
-// Current Member Headshots
+// Member headshots
 import ag from '../images/headshots/abhijit-gupta.jpg';
 import ae from '../images/headshots/aidan-evans.jpg';
 import as from '../images/headshots/alex-schapiro.jpg';
@@ -37,7 +37,7 @@ import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
 
-// Link Logos
+// Link logos
 import githubDark from '../images/link-logos/github-light.png';
 import github from '../images/link-logos/github.png';
 import linkedin from '../images/link-logos/linkedin.png';
@@ -62,9 +62,27 @@ function About() {
 
   const current: Person[] = [
     {
+      name: 'Neil Song',
+      image: ns,
+      role: 'CourseTable Co-Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
+      },
+    },
+    {
+      name: 'Humphrey Xu',
+      image: hx,
+      role: 'CourseTable Co-Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
+        github: 'https://github.com/Etherite1',
+      },
+    },
+    {
       name: 'Alex Schapiro',
       image: as,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         github: 'https://github.com/bearsyankees',
         linkedin: 'https://www.linkedin.com/in/aschap/',
@@ -74,20 +92,11 @@ function About() {
     {
       name: 'Sida Chen',
       image: sc,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
         github: 'https://github.com/Josh-Cena/',
         website: 'https://joshcena.com/',
-      },
-    },
-    {
-      name: 'Neil Song',
-      image: ns,
-      role: 'Backend Team Lead',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/neil-song/',
-        github: 'https://github.com/neilsong',
       },
     },
     {
@@ -107,15 +116,6 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/tungk/',
         github: 'https://github.com/kentng01/',
         website: 'https://kenneru.netlify.app/',
-      },
-    },
-    {
-      name: 'Humphrey Xu',
-      image: hx,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
-        github: 'https://github.com/Etherite1',
       },
     },
     {
@@ -324,7 +324,12 @@ function About() {
   const createCards = (person: Person, idx: number) => (
     <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
       <Card className={styles.card}>
-        <Card.Img variant="top" src={person.image} alt={person.name} />
+        <Card.Img
+          variant="top"
+          src={person.image}
+          alt={person.name}
+          style={{ height: '100%' }}
+        />
         <Card.Body className="p-3">
           <Card.Title className="mb-1">{person.name}</Card.Title>
           <Card.Text>
@@ -356,7 +361,7 @@ function About() {
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About Us</h1>
+      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>About us</h1>
       <TextComponent type="secondary">
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find
@@ -382,23 +387,23 @@ function About() {
         </p>
         <p className={clsx(styles.aboutDescription, 'mb-3 mx-auto')}>
           Also check out our <Link to="/faq">FAQ</Link> and{' '}
-          <Link to="/releases">Release Notes</Link>.
+          <Link to="/releases">Release notes</Link>.
         </p>
       </TextComponent>
 
       <div className="d-flex justify-content-center">
         <Link className="btn" to="/joinus">
-          Join Us
+          Join us
         </Link>
       </div>
 
-      <h1 className="mt-3">Current Team</h1>
+      <h1 className="mt-3">Current team</h1>
 
       <div className="my-3">
         <Row className="mx-auto">{current.map(createCards)}</Row>
       </div>
 
-      <h1 className="mt-5 mb-5">CourseTable Alumni</h1>
+      <h1 className="mt-5 mb-5">CourseTable alumni</h1>
 
       {alumniSection('Cofounder')}
 

@@ -12,7 +12,7 @@ function EvaluationRatings({
   info,
 }: {
   readonly info:
-    | SearchEvaluationNarrativesQuery['listings'][number]['course']
+    | NonNullable<SearchEvaluationNarrativesQuery['listings_by_pk']>['course']
     | undefined;
 }) {
   if (!info) return null;

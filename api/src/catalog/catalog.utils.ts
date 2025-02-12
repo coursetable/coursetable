@@ -161,7 +161,8 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
 
     winston.info(`Fetched ${seasons.length} seasons`);
 
-    // The seasons.json and infoAttributes.json files are copied to frontend
+    // The seasons.json, buildings.json, and infoAttributes.json files are
+    // copied to frontend
     await fs.writeFile(
       `${STATIC_FILE_DIR}/seasons.json`,
       JSON.stringify(seasons.sort((a, b) => Number(b) - Number(a))),
@@ -173,16 +174,28 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
       JSON.stringify(infoAttributes.flags.map((x) => x.flag_text).sort()),
     );
 
+    const buildings = await getSdk(graphqlClient).buildingsCatalog();
+
+    const transformedBuildings = buildings.buildings
+      .map((x) => ({
+        building_name: x.building_name,
+        code: x.code,
+        url: x.url,
+      }))
+      .sort((a, b) => a.code.localeCompare(b.code, 'en-US'));
+
+    await fs.writeFile(
+      `${STATIC_FILE_DIR}/buildings.json`,
+      JSON.stringify(transformedBuildings),
+      'utf-8',
+    );
+
     // For each season, fetch all courses inside it and save
     // (if overwrite, file does not exist, or season is one of the latest N)
 
     const processSeasons = seasons.flatMap((season, idx) =>
       (['evals', 'public'] as const).map((type) =>
-        fetchData(
-          season,
-          type,
-          overwrite || idx >= seasons.length - (latestN ?? 0),
-        ),
+        fetchData(season, type, overwrite || idx < (latestN ?? 0)),
       ),
     );
     await Promise.all(processSeasons);

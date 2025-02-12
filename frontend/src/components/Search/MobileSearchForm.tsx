@@ -162,7 +162,7 @@ export default function MobileSearchForm() {
     <SurfaceComponent className={styles.searchContainer}>
       <Form className={styles.searchForm} onSubmit={scrollToResults}>
         <div className="d-flex justify-content-between pt-4">
-          {/* Reset Filters Button */}
+          {/* Reset filters button */}
           <button
             type="button"
             className={clsx(styles.resetFiltersBtn, 'me-auto')}
@@ -172,7 +172,7 @@ export default function MobileSearchForm() {
               );
             }}
           >
-            Reset Filters
+            Reset filters
           </button>
           {/* Number of results shown text */}
           <small className={clsx(styles.numResults, 'ms-auto')}>
@@ -183,7 +183,7 @@ export default function MobileSearchForm() {
             </TextComponent>
           </small>
         </div>
-        {/* Search Bar */}
+        {/* Search bar */}
         <InputGroup className={styles.searchInput}>
           <Input
             type="text"
@@ -219,7 +219,7 @@ export default function MobileSearchForm() {
         <IntersectableSelect
           options={subjectsOptions}
           handle="selectSubjects"
-          placeholder="All Subjects"
+          placeholder="All subjects"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
           }
@@ -227,7 +227,7 @@ export default function MobileSearchForm() {
         <IntersectableSelect
           options={skillsAreasOptions}
           handle="selectSkillsAreas"
-          placeholder="All Areas/Skills"
+          placeholder="All areas/skills"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
           }
@@ -235,7 +235,7 @@ export default function MobileSearchForm() {
         <IntersectableSelect
           options={schoolsOptions}
           handle="selectSchools"
-          placeholder="All Schools"
+          placeholder="All schools"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
           }
@@ -251,9 +251,6 @@ export default function MobileSearchForm() {
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
           <Toggle handle="hideConflicting" />
-          <Toggle handle="hideFirstYearSeminars" />
-          <Toggle handle="hideGraduateCourses" />
-          <Toggle handle="hideDiscussionSections" />
         </div>
         <div className={styles.uselessBtn}>
           {/* The form requires a button with type submit in order to

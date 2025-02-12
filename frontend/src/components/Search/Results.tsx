@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Row } from 'react-bootstrap';
-import { FixedSizeList, FixedSizeGrid } from 'react-window';
+import {
+  FixedSizeList,
+  FixedSizeGrid,
+  type FixedSizeGridProps,
+  type FixedSizeListProps,
+} from 'react-window';
 
 import { useShallow } from 'zustand/react/shallow';
 import FloatingWorksheet from './FloatingWorksheet';
@@ -12,7 +17,6 @@ import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import WindowScroller from './WindowScroller';
 
-import { useWorksheet } from '../../contexts/worksheetContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
@@ -51,7 +55,7 @@ function Results({
     true,
   );
 
-  const { viewedSeason } = useWorksheet();
+  const viewedSeason = useStore((state) => state.viewedSeason);
 
   // eslint-disable-next-line no-useless-assignment
   let resultsListing: React.JSX.Element | undefined = undefined;
@@ -110,8 +114,30 @@ function Results({
             height={Math.min(window.innerHeight, rowCount * rowHeight)}
             itemData={{ listings: data, columnCount, multiSeasons }}
             {...(isGrid
-              ? { columnCount, rowCount, rowHeight, columnWidth }
-              : { itemCount: rowCount, itemSize: rowHeight })}
+              ? ({
+                  columnCount,
+                  rowCount,
+                  rowHeight,
+                  columnWidth,
+                  // A stable key for each list item is important! We don't want
+                  // to render a different list item using the same key, because
+                  // that causes a rendering with stale state.
+                  itemKey({ data, columnIndex, rowIndex }) {
+                    const listing =
+                      data.listings[rowIndex * columnCount + columnIndex];
+                    if (!listing) return '';
+                    return `${listing.course.season_code}${listing.crn}`;
+                  },
+                } satisfies Partial<FixedSizeGridProps<ResultItemData>>)
+              : ({
+                  itemCount: rowCount,
+                  itemSize: rowHeight,
+                  itemKey(index, data) {
+                    const listing = data.listings[index];
+                    if (!listing) return '';
+                    return `${listing.course.season_code}${listing.crn}`;
+                  },
+                } satisfies Partial<FixedSizeListProps<ResultItemData>>))}
             // Inline styles because react-window also injects inline styles
             style={{
               width: '100%',

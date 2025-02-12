@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -24,7 +23,9 @@ import {
 import chroma from 'chroma-js';
 import { Line } from 'react-chartjs-2';
 
+import { useShallow } from 'zustand/react/shallow';
 import type { Season } from '../../../queries/graphql-types';
+import { useStore } from '../../../store';
 import { subjects } from '../../../utilities/constants';
 import { toSeasonString } from '../../../utilities/course';
 import RelatedCoursesList from '../../RelatedCoursesList';
@@ -56,50 +57,21 @@ ChartJS.register(
   Legend,
 );
 
-function SeasonRatingChart({
-  coursesTaught,
-}: {
-  readonly coursesTaught: RelatedCourseInfo[];
-}) {
-  const coursesWithRatings = coursesTaught.filter(
-    (course) => (course.evaluation_statistic?.avg_rating ?? 0) > 0,
-  );
-  const coursesBySeason = Map.groupBy(
-    coursesWithRatings,
-    (course) => course.season_code,
-  );
-  const data = [...coursesBySeason]
-    .map(([season, courses]) => ({
-      season,
-      rating: courses.length
-        ? courses.reduce(
-            (sum, c) => sum + c.evaluation_statistic!.avg_rating!,
-            0,
-          ) / courses.length
-        : 0, // Average rating
-      courseCount: courses.length, // Number of courses factored into the average
-    }))
-    .filter((dataPoint) => dataPoint.rating > 0) // Exclude years with no valid ratings
-    .sort((a, b) => a.season.localeCompare(b.season, 'en-US'));
+type ChartPoint = {
+  x: number;
+  y: number;
+  courseCount: number;
+  courseCode: string;
+};
 
-  const chartData: ChartData<'line', { x: number; y: number }[]> = {
-    datasets: [
-      {
-        label: 'Average Rating',
-        data: data.map((d) => ({
-          x: seasonToUniformScale(d.season),
-          y: d.rating,
-        })),
-        borderColor: '#468FF2',
-        backgroundColor: 'rgba(0, 0, 255, 0.1)',
-        tension: 0.3, // Smooth curve
-        pointRadius: 3,
-        pointHoverRadius: 5,
-      },
-    ],
-  };
-
-  const chartOptions: ChartOptions<'line'> = {
+function getChartOptions(
+  showLegend: boolean,
+  tooltipCallbacks: NonNullable<
+    NonNullable<ChartOptions<'line'>['plugins']>['tooltip']
+  >['callbacks'],
+): ChartOptions<'line'> {
+  return {
+    animation: false,
     responsive: true,
     maintainAspectRatio: false,
     layout: {
@@ -127,7 +99,7 @@ function SeasonRatingChart({
       y: {
         title: {
           display: true,
-          text: 'Average Rating',
+          text: 'Average rating',
         },
         min: 1,
         max: 5,
@@ -138,143 +110,49 @@ function SeasonRatingChart({
     },
     plugins: {
       legend: {
-        display: false,
-        position: 'top',
-      },
-      tooltip: {
-        callbacks: {
-          label(context) {
-            const point = context.raw as { x: number; y: number };
-            const index = context.dataIndex;
-            const courseCount = data[index]?.courseCount || 0;
-            return `Rated courses: ${courseCount} | Avg rating: ${point.y.toFixed(1)}`;
-          },
-          title(tooltipItems) {
-            return toSeasonString(
-              uniformScaleToSeason(tooltipItems[0]!.parsed.x),
-            );
-          },
-        },
-      },
-    },
-  };
-
-  return (
-    <div className={styles.ratingGraph}>
-      <Line data={chartData} options={chartOptions} />
-    </div>
-  );
-}
-
-// TODO: Find a way to better render this
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function CourseRatingChart({
-  data,
-}: {
-  readonly data: Map<
-    number,
-    { code: string; title: string; courses: RelatedCourseInfo[] }
-  >;
-}) {
-  const numCurves = data.size;
-  const startColor = chroma('#468FF2');
-  const chartData: ChartData<'line', { x: number; y: number }[]> = {
-    // One curve for each course
-    datasets: [...data.values()].map(({ code, courses }, i) => ({
-      label: code,
-      data: courses
-        .filter((c) => (c.evaluation_statistic?.avg_rating ?? 0) > 0)
-        .map((course) => ({
-          x: seasonToUniformScale(course.season_code),
-          y: course.evaluation_statistic!.avg_rating!,
-        })),
-      borderColor: startColor.set('hsl.h', `+${(i / numCurves) * 360}`).hex(),
-      backgroundColor: 'rgba(0, 0, 255, 0.1)',
-      tension: 0.3, // Smooth curve
-      pointRadius: 3,
-      pointHoverRadius: 5,
-    })),
-  };
-
-  const chartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        top: 20,
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Year',
-        },
-        reverse: false,
-        type: 'linear',
-        ticks: {
-          autoSkip: true,
-          maxTicksLimit: 10,
-          callback: (value) =>
-            Number.isInteger(value)
-              ? toSeasonString(uniformScaleToSeason(value as number))
-              : '',
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: 'Average Rating',
-        },
-        min: 1,
-        max: 5,
-        ticks: {
-          stepSize: 0.5,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: true,
+        display: showLegend,
         position: 'bottom',
       },
       tooltip: {
-        callbacks: {
-          label(context) {
-            const point = context.raw as { x: number; y: number };
-            return `Avg rating: ${point.y.toFixed(1)}`;
-          },
-          title(tooltipItems) {
-            return toSeasonString(
-              uniformScaleToSeason(tooltipItems[0]!.parsed.x),
-            );
-          },
-        },
+        callbacks: tooltipCallbacks,
       },
     },
   };
-
-  return (
-    <div className={styles.ratingGraph}>
-      <Line data={chartData} options={chartOptions} />
-    </div>
-  );
 }
 
-function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
-  const [groupRecurringCourses, setGroupRecurringCourses] = useState(true);
-  const coursesTaught = professor.course_professors
-    .map((c) => c.course)
-    .sort((a, b) => b.season_code.localeCompare(a.season_code, 'en-US'));
+function coursesToChartPoints(courses: RelatedCourseInfo[]): ChartPoint[] {
+  const coursesBySeason = Map.groupBy(courses, (course) => course.season_code);
+  const data = [...coursesBySeason]
+    .map(([season, seasonCourses]) => ({
+      season,
+      rating: seasonCourses.length
+        ? seasonCourses.reduce(
+            (sum, c) => sum + c.evaluation_statistic!.avg_rating!,
+            0,
+          ) / seasonCourses.length
+        : 0, // Average rating
+      courseCount: seasonCourses.length, // Number of courses factored into the average
+      courseCode: seasonCourses.length
+        ? // Only use the first course: this is only rendered by curve-by-course
+          seasonCourses[0]!.listings.map((l) => l.course_code).join('/')
+        : '',
+    }))
+    .filter((dataPoint) => dataPoint.rating > 0) // Exclude years with no valid ratings
+    .sort((a, b) => a.season.localeCompare(b.season, 'en-US'))
+    .map(
+      (d): ChartPoint => ({
+        x: seasonToUniformScale(d.season),
+        y: d.rating,
+        courseCount: d.courseCount,
+        courseCode: d.courseCode,
+      }),
+    );
+  return data;
+}
 
-  const subjectCount = new Map<string, number>();
-  for (const course of coursesTaught) {
-    for (const listing of course.listings) {
-      const subject = listing.course_code.split(' ')[0]!;
-      subjectCount.set(subject, (subjectCount.get(subject) ?? 0) + 1);
-    }
-  }
-
+function groupUniqueCourses(
+  coursesTaught: RelatedCourseInfo[],
+): Map<number, { code: string; title: string; courses: RelatedCourseInfo[] }> {
   const uniqueCourses = new Map<
     number,
     { code: string; title: string; courses: RelatedCourseInfo[] }
@@ -292,6 +170,148 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
       uniqueCourses.get(course.same_course_id)!.courses.push(course);
     }
   }
+  return uniqueCourses;
+}
+
+function SeasonRatingChart({
+  coursesWithRatings,
+}: {
+  readonly coursesWithRatings: RelatedCourseInfo[];
+}) {
+  const points = coursesToChartPoints(coursesWithRatings);
+  const chartData: ChartData<'line', { x: number; y: number }[]> = {
+    datasets: [
+      {
+        label: 'Average rating',
+        data: points,
+        borderColor: '#468FF2',
+        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+        tension: 0.3, // Smooth curve
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      },
+    ],
+  };
+
+  return (
+    <div className={styles.ratingGraph}>
+      <Line
+        data={chartData}
+        options={getChartOptions(false, {
+          title(items) {
+            return toSeasonString(uniformScaleToSeason(items[0]!.parsed.x));
+          },
+          label(item) {
+            const point = item.raw as ChartPoint;
+            return `Rated courses: ${point.courseCount} | Avg rating: ${point.y.toFixed(2)}`;
+          },
+        })}
+      />
+    </div>
+  );
+}
+
+function CourseRatingChart({
+  coursesWithRatings,
+}: {
+  readonly coursesWithRatings: RelatedCourseInfo[];
+}) {
+  const uniqueCourses = groupUniqueCourses(coursesWithRatings);
+  const numCurves = uniqueCourses.size;
+  const startColor = chroma('#468FF2');
+  const chartData: ChartData<'line', { x: number; y: number }[]> = {
+    // One curve for each course
+    datasets: [...uniqueCourses.values()].map(({ code, courses }, i) => ({
+      label: code,
+      // One prof, one season, one course may still correspond to multiple
+      // offerings, such as multiple sections
+      data: coursesToChartPoints(courses),
+      borderColor: startColor.set('hsl.h', `+${(i / numCurves) * 360}`).hex(),
+      backgroundColor: 'rgba(0, 0, 255, 0.1)',
+      tension: 0.3, // Smooth curve
+      pointRadius: 3,
+      pointHoverRadius: 5,
+    })),
+  };
+
+  return (
+    <div className={styles.ratingGraph}>
+      {/* CourseRatingChart does not report the number of courses in the
+      tooltip so it doesn't need the points */}
+      <Line
+        data={chartData}
+        options={getChartOptions(true, {
+          title(items) {
+            const point = items[0]!.raw as ChartPoint;
+            return `${toSeasonString(uniformScaleToSeason(point.x))} | ${point.courseCode}`;
+          },
+          label(item) {
+            const point = item.raw as ChartPoint;
+            return `Avg rating: ${point.y.toFixed(2)}`;
+          },
+        })}
+      />
+    </div>
+  );
+}
+
+function RatingChart({
+  coursesTaught,
+}: {
+  readonly coursesTaught: RelatedCourseInfo[];
+}) {
+  const { curveByCourse, togglePref } = useStore(
+    useShallow((state) => ({
+      curveByCourse: state.professorPref.curveByCourse,
+      togglePref: state.togglePref,
+    })),
+  );
+  const coursesWithRatings = coursesTaught.filter(
+    (c) => (c.evaluation_statistic?.avg_rating ?? 0) > 0,
+  );
+  if (coursesWithRatings.length === 0) return <div>No ratings available</div>;
+  const Chart = curveByCourse ? CourseRatingChart : SeasonRatingChart;
+  return (
+    <div>
+      <Form.Check type="switch">
+        <Form.Check.Input
+          checked={curveByCourse}
+          onChange={() => {
+            togglePref('professorPref', 'curveByCourse');
+          }}
+        />
+        <Form.Check.Label
+          onClick={() => {
+            togglePref('professorPref', 'curveByCourse');
+          }}
+        >
+          Separate curves for each course
+        </Form.Check.Label>
+      </Form.Check>
+      <Chart coursesWithRatings={coursesWithRatings} />
+    </div>
+  );
+}
+
+function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
+  const { groupRecurringCourses, togglePref } = useStore(
+    useShallow((state) => ({
+      groupRecurringCourses: state.professorPref.groupRecurringCourses,
+      togglePref: state.togglePref,
+    })),
+  );
+  const coursesTaught = professor.course_professors
+    .map((c) => c.course)
+    .sort((a, b) => b.season_code.localeCompare(a.season_code, 'en-US'));
+
+  const subjectCount = new Map<string, number>();
+  for (const course of coursesTaught) {
+    for (const listing of course.listings) {
+      const subject = listing.course_code.split(' ')[0]!;
+      subjectCount.set(subject, (subjectCount.get(subject) ?? 0) + 1);
+    }
+  }
+  const uniqueCourses = groupUniqueCourses(coursesTaught);
 
   return (
     <Row className="m-auto">
@@ -324,12 +344,7 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           <TextComponent type="primary" className="fw-bold">
             Course ratings over time
           </TextComponent>
-          {coursesTaught.length > 0 ? (
-            // TODO: use CourseRatingChart if groupRecurringCourses
-            <SeasonRatingChart coursesTaught={coursesTaught} />
-          ) : (
-            <div>No data</div>
-          )}
+          <RatingChart coursesTaught={coursesTaught} />
         </div>
         <div className="mt-2">
           <TextComponent type="tertiary" small>
@@ -352,12 +367,12 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           <Form.Check.Input
             checked={groupRecurringCourses}
             onChange={() => {
-              setGroupRecurringCourses(!groupRecurringCourses);
+              togglePref('professorPref', 'groupRecurringCourses');
             }}
           />
           <Form.Check.Label
             onClick={() => {
-              setGroupRecurringCourses(!groupRecurringCourses);
+              togglePref('professorPref', 'groupRecurringCourses');
             }}
           >
             Group recurring courses
@@ -368,9 +383,14 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           usesSameCourse={groupRecurringCourses}
           columns={['rating', 'workload']}
           columnWidth={3}
-          extraText={(c) =>
-            `${c.listings[0]!.course_code}${c.listings.length > 1 ? ` +${c.listings.length - 1}` : ''}`
-          }
+          extraText={(c) => {
+            if (c.listings.length === 1) return c.listings[0]!.course_code;
+            const primary = c.primary_crn
+              ? // Guaranteed to exist
+                c.listings.find((l) => l.crn === c.primary_crn)!
+              : c.listings[0]!;
+            return `${primary.course_code} +${c.listings.length - 1}`;
+          }}
         />
       </Col>
     </Row>

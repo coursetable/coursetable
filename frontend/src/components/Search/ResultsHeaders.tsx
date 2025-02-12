@@ -79,7 +79,7 @@ function ResultsHeaders({
             )}
             <HeaderCol
               className={colStyles.codeCol}
-              tooltip="Course Code and Section"
+              tooltip="Course code and section"
               sortOption="course_code"
             >
               Code
@@ -91,7 +91,7 @@ function ResultsHeaders({
               className={colStyles.overallCol}
               tooltip={
                 <span>
-                  Average Course Rating
+                  Average course rating
                   <br />
                   (same professor and all cross-listed courses. If this
                   professor hasn't taught the course before, a ~ denotes an
@@ -106,7 +106,7 @@ function ResultsHeaders({
               className={colStyles.workloadCol}
               tooltip={
                 <span>
-                  Average Workload Rating
+                  Average workload rating
                   <br />
                   (same professor and all cross-listed courses. If this
                   professor hasn't taught the course before, a ~ denotes an
@@ -121,7 +121,7 @@ function ResultsHeaders({
               className={colStyles.profCol}
               tooltip={
                 <span>
-                  Average Professor Rating and Names
+                  Average professor course rating and names
                   <br />
                   (if there are multiple professors, we take the average between
                   them)
@@ -135,7 +135,7 @@ function ResultsHeaders({
               className={colStyles.enrollCol}
               tooltip={
                 <span>
-                  Class Enrollment
+                  Class enrollment
                   <br />
                   (If the course has not occurred/completed, based on the most
                   recent past instance of this course. a ~ means a different

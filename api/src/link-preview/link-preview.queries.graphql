@@ -1,5 +1,5 @@
-query courseMetadata($seasonCode: String!, $crn: Int!) {
-  listings(where: { season_code: { _eq: $seasonCode }, crn: { _eq: $crn } }) {
+query courseMetadata($listingId: Int!) {
+  listings_by_pk(listing_id: $listingId) {
     course_code
     section
     course {
