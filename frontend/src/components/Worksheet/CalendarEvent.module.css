@@ -27,6 +27,17 @@
   border: 1px solid #ccc !important;
 }
 
+@media (max-width: 768px) {
+  .courseCodeText {
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .courseNameText {
+    display: none;
+  }
+}
+
 .courseNameText {
   font-size: 12px;
   white-space: pre-wrap;

@@ -13,9 +13,22 @@ const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
+
+  const isMobile = useStore((state) => state.isMobile);
+
+  // Splitting the title at spaces for mobile screens
+  const formattedTitle = isMobile
+    ? event.title.split(' ').map((word, index) => (
+        <React.Fragment key={index}>
+          {word}
+          {index < event.title.split(' ').length - 1 && <br />}
+        </React.Fragment>
+      ))
+    : event.title;
+
   return (
     <div className={styles.event} style={{ color: textColor }}>
-      <strong>{event.title}</strong>
+      <strong className={styles.courseCodeText}>{formattedTitle}</strong>
       <br />
       <ResponsiveEllipsis
         className={styles.courseNameText}
