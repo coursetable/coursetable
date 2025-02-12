@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PullToRefresh from 'pulltorefreshjs';
@@ -106,15 +107,16 @@ function App() {
   const { isTutorialOpen } = useTutorial();
   useInitStore();
 
-  const standalone = window.matchMedia('(display-mode: standalone)').matches;
-
-  if (standalone) {
-    PullToRefresh.init({
-      onRefresh() {
-        window.location.reload();
-      },
-    });
-  }
+  useEffect(() => {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches;
+    if (standalone) {
+      PullToRefresh.init({
+        onRefresh() {
+          window.location.reload();
+        },
+      });
+    }
+  }, []);
 
   return (
     <div
