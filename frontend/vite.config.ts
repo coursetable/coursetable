@@ -12,6 +12,7 @@ import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { VitePWA } from 'vite-plugin-pwa';
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -122,6 +123,52 @@ export default defineConfig({
         project: 'frontend',
         authToken: process.env.SENTRY_AUTH_TOKEN,
       }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true,
+      },
+      injectRegister: 'auto',
+      manifest: {
+        name: 'CourseTable',
+        short_name: 'CourseTable',
+        start_url: '/',
+        icons: [
+          {
+            src: 'icon250x250.png',
+            sizes: '250x250',
+            purpose: 'any',
+          },
+          {
+            src: 'maskable_icon_x48.png',
+            sizes: '48x48',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x72.png',
+            sizes: '72x72',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x96.png',
+            sizes: '96x96',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x128.png',
+            sizes: '128x128',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x192.png',
+            sizes: '192x192',
+            purpose: 'maskable',
+          },
+        ],
+        display: 'standalone',
+        theme_color: '#ffffff',
+      },
+    }),
   ],
   build: {
     outDir: './build',
