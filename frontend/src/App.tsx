@@ -102,7 +102,28 @@ function AuthenticatedRoutes() {
 
 function App() {
   const location = useLocation();
-  const isTutorialOpen = useStore((state) => state.isTutorialOpen);
+  const { isTutorialOpen, authStatus, isMobile, isTablet, checkTutorialState } =
+    useStore(
+      useShallow((state) => ({
+        isTutorialOpen: state.isTutorialOpen,
+        authStatus: state.authStatus,
+        isMobile: state.isMobile,
+        isTablet: state.isTablet,
+        checkTutorialState: state.checkTutorialState,
+      })),
+    );
+
+  useEffect(() => {
+    checkTutorialState(location.pathname);
+  }, [location.pathname, authStatus, isMobile, isTablet, checkTutorialState]);
+
+  console.log('App render state:', {
+    isTutorialOpen,
+    pathname: location.pathname,
+    authStatus,
+    isMobile,
+    isTablet,
+  });
   useInitStore();
 
   useEffect(() => {

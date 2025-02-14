@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
@@ -131,28 +130,19 @@ const stepsContent: Step[] = [
 ];
 
 function Tutorial() {
-  const {
-    isTutorialOpen,
-    currentStep,
-    toggleTutorial,
-    setCurrentStep,
-    checkTutorialState,
-  } = useStore(
-    useShallow((state) => ({
-      isTutorialOpen: state.isTutorialOpen,
-      currentStep: state.currentStep,
-      toggleTutorial: state.toggleTutorial,
-      setCurrentStep: state.setCurrentStep,
-      checkTutorialState: state.checkTutorialState,
-    })),
-  );
+  const { isTutorialOpen, currentStep, toggleTutorial, setCurrentStep } =
+    useStore(
+      useShallow((state) => ({
+        isTutorialOpen: state.isTutorialOpen,
+        currentStep: state.currentStep,
+        toggleTutorial: state.toggleTutorial,
+        setCurrentStep: state.setCurrentStep,
+        checkTutorialState: state.checkTutorialState,
+      })),
+    );
 
   const theme = useStore((state) => state.theme);
   const location = useLocation();
-
-  useEffect(() => {
-    checkTutorialState(location.pathname);
-  }, [location.pathname, checkTutorialState]);
 
   const steps = stepsContent.map(
     ({
