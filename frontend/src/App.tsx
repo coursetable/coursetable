@@ -13,13 +13,12 @@ import {
   useModalHistory,
   ModalHistoryProvider,
 } from './contexts/modalHistoryContext';
-import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
-
 import { useStore, useInitStore } from './store';
+
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
 
@@ -101,7 +100,7 @@ function AuthenticatedRoutes() {
 
 function App() {
   const location = useLocation();
-  const { isTutorialOpen } = useTutorial();
+  const isTutorialOpen = useStore((state) => state.isTutorialOpen);
   useInitStore();
 
   return (
