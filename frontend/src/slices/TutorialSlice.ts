@@ -39,7 +39,6 @@ export const createTutorialSlice: StateCreator<Store, [], [], TutorialSlice> = (
   },
 
   checkTutorialState(pathname: string) {
-    // Can use get() to get the state because this is in DimensionSlice
     const { isMobile, isTablet, authStatus } = get();
 
     if (
