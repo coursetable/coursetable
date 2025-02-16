@@ -16,7 +16,7 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
 
   const isMobile = useStore((state) => state.isMobile);
 
-  // Splitting the title at spaces for mobile screens
+  // This splits the title into separate lines for mobile!
   const formattedTitle = isMobile
     ? event.title.split(' ').map((word, index) => (
         <React.Fragment key={index}>

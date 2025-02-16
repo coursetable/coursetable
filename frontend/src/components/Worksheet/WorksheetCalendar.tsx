@@ -21,8 +21,8 @@ function WorksheetCalendar() {
   const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
-    // Initialize earliest and latest class times
     const parsedCourses = getCalendarEvents('rbc', courses, viewedSeason);
+
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -30,21 +30,50 @@ function WorksheetCalendar() {
         parsedCourses,
       };
     }
+
     const earliest = new Date(parsedCourses[0]!.start);
     const latest = new Date(parsedCourses[0]!.end);
     earliest.setMinutes(0);
     latest.setMinutes(59);
+
     for (const c of parsedCourses) {
       if (c.start.getHours() < earliest.getHours())
         earliest.setHours(c.start.getHours());
       if (c.end.getHours() > latest.getHours())
         latest.setHours(c.end.getHours());
     }
-    return {
-      earliest,
-      latest,
-      parsedCourses,
-    };
+
+    // Detect overlapping events
+    parsedCourses.forEach((event, index) => {
+      const start = event.start.getTime();
+      const end = event.end.getTime();
+
+      let count = 1;
+      for (let j = index + 1; j < parsedCourses.length; j++) {
+        const other = parsedCourses[j];
+
+        // Ensure 'other' is defined before accessing its properties
+        if (!other) continue;
+
+        const otherStart = other.start.getTime();
+        const otherEnd = other.end.getTime();
+
+        if (
+          (otherStart >= start && otherStart < end) || // Overlaps in the middle
+          (start >= otherStart && start < otherEnd) // Starts within another event
+        ) 
+          count++;
+        
+      }
+
+      if (count > 2) {
+        console.warn(
+          `⚠️ More than 2 events overlap at ${new Date(start).toLocaleTimeString()}`,
+        );
+      }
+    });
+
+    return { earliest, latest, parsedCourses };
   }, [courses, viewedSeason]);
 
   return (
