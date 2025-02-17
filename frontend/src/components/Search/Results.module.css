@@ -26,8 +26,7 @@
   --width-col-loc: max(30px, var(--width-extra) / 13);
   --width-col-title: calc(
     var(--width-extra) - var(--width-col-prof) - var(--width-col-skill-area) -
-      var(--width-col-meet) - var(--width-col-loc) - var(--width-col-added) -
-      10px;
+      var(--width-col-meet) - var(--width-col-loc) - 90px
   );
 }
 
