@@ -63,6 +63,8 @@ export type CatalogBySeasonQuery = {
     skills: any;
     sysem: boolean;
     title: string;
+    time_added: any | null;
+    last_updated: any | null;
     course_flags: Array<{
       __typename?: 'course_flags';
       flag: { __typename?: 'flags'; flag_text: string };
@@ -196,6 +198,8 @@ export const CatalogBySeasonDocument = gql`
         }
       }
       title
+      time_added
+      last_updated
     }
   }
 `;

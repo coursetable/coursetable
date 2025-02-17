@@ -73,6 +73,8 @@ query catalogBySeason($season: String!) {
       }
     }
     title
+    time_added
+    last_updated
   }
 }
 
