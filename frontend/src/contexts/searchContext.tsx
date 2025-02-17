@@ -66,7 +66,7 @@ const sortCriteria = {
   title: 'Sort by course title',
   friend: 'Sort by # of friends',
   added: 'Sort by date added',
-  last_modified: 'Sort by date the course was last modified',
+  last_modified: 'Sort by Last Modified',
   overall: 'Sort by course rating',
   average_professor_rating: 'Sort by professor rating',
   workload: 'Sort by Workload',
@@ -465,7 +465,6 @@ export function SearchProvider({
         switch (key) {
           case 'added':
             return listing.course.time_added as string;
-          // TODO - sort by date instead of string
           case 'last_modified':
             return listing.course.last_updated as string;
           case 'rating':

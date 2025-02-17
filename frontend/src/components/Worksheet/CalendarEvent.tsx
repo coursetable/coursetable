@@ -27,9 +27,12 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
       />
       <small className={styles.locationText}>{event.location}</small>
       <br />
-      <small className={styles.lastUpdatedText}>
-        {lastMod && `Last updated: ${new Date(lastMod).toLocaleDateString()}`}
-      </small>
+      {lastMod && (
+        <ResponsiveEllipsis
+          className={styles.lastUpdatedText}
+          text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
+        />
+      )}
     </div>
   );
 }

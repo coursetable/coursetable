@@ -174,7 +174,7 @@ function ResultsHeaders({
             </HeaderCol>
             <HeaderCol
               className={colStyles.addedCol}
-              tooltip="Time the course was added to the catalog"
+              tooltip="Date the course was added to our catalog"
               sortOption="added"
             >
               Added
