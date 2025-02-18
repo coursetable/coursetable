@@ -77,7 +77,7 @@ export function NavbarWorksheetSearch() {
     [changeViewedPerson, viewedPerson, removeFriend],
   );
 
-  if (authStatus !== 'authenticated' && !isExoticWorksheet()) return null;
+  if (authStatus !== 'authenticated' && !isExoticWorksheet) return null;
 
   return (
     <div className="d-flex align-items-center">
@@ -104,7 +104,7 @@ export function NavbarWorksheetSearch() {
           List
         </ToggleButton>
       </ToggleButtonGroup>
-      {!isExoticWorksheet() ? (
+      {!isExoticWorksheet ? (
         <>
           <SeasonDropdown mobile={false} />
           <WorksheetNumDropdown mobile={false} />

@@ -35,7 +35,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   return (
     <>
       <CalendarEventBody event={event} />
-      {!isReadonlyWorksheet() && (
+      {!isReadonlyWorksheet && (
         <div className={styles.eventButtons}>
           <WorksheetHideButton
             crn={listing.crn}
