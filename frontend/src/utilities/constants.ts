@@ -338,6 +338,7 @@ export const subjects: { [code: string]: string } = {
   SWED: 'Swedish',
   TAML: 'Tamil',
   TBTN: 'Tibetan',
+  TDPS: 'TDPS',
   THST: 'Theater Studies',
   TKSH: 'Turkish',
   TPRP: 'Teacher Preparation',
