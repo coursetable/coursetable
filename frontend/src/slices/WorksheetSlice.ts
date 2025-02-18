@@ -300,7 +300,8 @@ export const useWorksheetSubscriptions = () => {
 
   useStore.subscribe(
     (state) => state.exoticWorksheet,
-    (exoticWorksheet) => Boolean(exoticWorksheet),
+    (exoticWorksheet) =>
+      useStore.setState({ isExoticWorksheet: Boolean(exoticWorksheet) }),
   );
 
   useStore.subscribe(
