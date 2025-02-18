@@ -26,7 +26,7 @@ export default function WorksheetHideButton({
       isReadonlyWorksheet: state.isReadonlyWorksheet,
     })),
   );
-  if (isReadonlyWorksheet()) return null;
+  if (isReadonlyWorksheet) return null;
   const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
   return (
     <OverlayTrigger
