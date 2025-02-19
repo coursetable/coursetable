@@ -24,9 +24,6 @@ export function getFilterFromParams<K extends keyof Filters>(
         case 'enableQuist':
         case 'hideCancelled':
         case 'hideConflicting':
-        case 'hideDiscussionSections':
-        case 'hideFirstYearSeminars':
-        case 'hideGraduateCourses':
         case 'searchDescription':
           return handleBooleanFilter(value);
 
@@ -46,10 +43,15 @@ export function getFilterFromParams<K extends keyof Filters>(
         case 'selectSeasons':
         case 'selectSkillsAreas':
         case 'selectSubjects':
+        case 'selectBuilding':
           return handleSelectFilter(key, value, fallback);
 
         case 'intersectingFilters':
           return handleIntersectingFiltersParam(value, fallback);
+
+        case 'includeAttributes':
+        case 'excludeAttributes':
+          return value.split(',') as Filters[K];
 
         default:
           console.warn(`Unhandled filter type: ${key}`);
@@ -123,6 +125,7 @@ function handleSelectFilter<K extends keyof Filters>(
             label: val,
           };
         case 'selectCourseInfoAttributes':
+        case 'selectBuilding':
           return {
             value: val,
             label: val,
@@ -147,9 +150,6 @@ function handleSelectFilter<K extends keyof Filters>(
         case 'enableQuist':
         case 'hideCancelled':
         case 'hideConflicting':
-        case 'hideFirstYearSeminars':
-        case 'hideGraduateCourses':
-        case 'hideDiscussionSections':
         case 'overallBounds':
         case 'workloadBounds':
         case 'professorBounds':
@@ -160,6 +160,8 @@ function handleSelectFilter<K extends keyof Filters>(
         case 'selectSortBy':
         case 'sortOrder':
         case 'intersectingFilters':
+        case 'includeAttributes':
+        case 'excludeAttributes':
         default:
           return null;
       }
