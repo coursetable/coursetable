@@ -1,3 +1,4 @@
+// WorksheetCalendar.tsx
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
@@ -5,11 +6,17 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
+import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 
-function WorksheetCalendar() {
+// Prop type for override courses
+interface WorksheetCalendarProps {
+  readonly coursesOverride?: WorksheetCourse[];
+}
+
+function WorksheetCalendar({ coursesOverride }: WorksheetCalendarProps) {
   const [, setSearchParams] = useSearchParams();
   const { courses, viewedSeason } = useStore(
     useShallow((state) => ({
@@ -18,11 +25,13 @@ function WorksheetCalendar() {
     })),
   );
 
+  // Use override courses if provided; otherwise, use the full courses list.
+  const usedCourses = coursesOverride || courses;
+
   const eventStyleGetter = useEventStyle();
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
-    // Initialize earliest and latest class times
-    const parsedCourses = getCalendarEvents('rbc', courses, viewedSeason);
+    const parsedCourses = getCalendarEvents('rbc', usedCourses, viewedSeason);
     if (parsedCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
@@ -45,17 +54,14 @@ function WorksheetCalendar() {
       latest,
       parsedCourses,
     };
-  }, [courses, viewedSeason]);
+  }, [usedCourses, viewedSeason]);
 
   return (
     <Calendar
-      // Show Mon-Fri
       defaultView="work_week"
       views={['work_week']}
       events={parsedCourses}
-      // Earliest course time or 8am if no courses
       min={earliest}
-      // Latest course time or 6pm if no courses
       max={latest}
       localizer={localizer}
       toolbar={false}
