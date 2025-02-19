@@ -785,7 +785,7 @@ export function SearchProvider({
               selectSchools.value.map((option: Option) => option.value),
               listing.course.listings
                 .map((l) => l.school)
-                .filter((x) => x !== null),
+                .filter((x) => x.length > 0),
               intersectingFilters.value.includes('selectSchools'),
             )
           )
