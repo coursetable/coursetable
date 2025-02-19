@@ -43,12 +43,14 @@ function WishlistToggleButton({
     [inWishlistProp, listing, wishlistWithMetadata],
   );
 
-  const allCourseCrns = listing.course.listings.map((l) => l.crn);
-
-  // Should theoretically only be one course as it should be unique by same_course_id
-  const sameCoursesInWishlist = useMemo(() => {
-    return wishlistWithMetadata?.filter((item) => item.sameCourseId === listing.course.same_course_id) ?? [];
-  }, []);
+  // Should theoretically only be one course (unique by same_course_id)
+  const sameCoursesInWishlist = useMemo(
+    () =>
+      wishlistWithMetadata?.filter(
+        (item) => item.sameCourseId === listing.course.same_course_id,
+      ) ?? [],
+    [listing, wishlistWithMetadata],
+  );
 
   const toggleWishlist = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -62,7 +64,7 @@ function WishlistToggleButton({
           action: addRemove,
           season: listing.course.season_code,
           crn: listing.crn,
-        })
+        });
       } else {
         await Promise.all(
           sameCoursesInWishlist.map((course) =>
@@ -77,7 +79,7 @@ function WishlistToggleButton({
 
       await wishlistRefresh();
     },
-    [allCourseCrns, inWishlist, listing.course.season_code, wishlistRefresh],
+    [inWishlist, wishlistRefresh, listing, sameCoursesInWishlist],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;

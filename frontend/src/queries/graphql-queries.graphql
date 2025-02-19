@@ -209,3 +209,21 @@ query CourseDataFromListingIds($listingIds: [Int!]!) {
     }
   }
 }
+
+query CourseDataFromSameCourseIds($sameCourseIds: [Int!]!) {
+  listings(where: { course: { same_course_id: { _in: $sameCourseIds } } }) {
+    course_code
+    crn
+    listing_id
+    season_code
+    course {
+      same_course_id
+      title
+      course_professors {
+        professor {
+          name
+        }
+      }
+    }
+  }
+}

@@ -3987,3 +3987,27 @@ export type CourseDataFromListingIdsQuery = {
     course: { __typename?: 'courses'; same_course_id: number };
   }>;
 };
+
+export type CourseDataFromSameCourseIdsQueryVariables = Exact<{
+  sameCourseIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+}>;
+
+export type CourseDataFromSameCourseIdsQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    course_code: string;
+    crn: Crn;
+    listing_id: number;
+    season_code: Season;
+    course: {
+      __typename?: 'courses';
+      same_course_id: number;
+      title: string;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: { __typename?: 'professors'; name: string };
+      }>;
+    };
+  }>;
+};

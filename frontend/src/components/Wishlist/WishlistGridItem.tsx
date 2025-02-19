@@ -18,13 +18,10 @@ function WishlistGridItem({
   const course = courses[rowIndex * columnCount + columnIndex];
   if (!course) return null;
 
-  const extraText =
-    course.upcomingListings[0]?.course?.course_professors[0]?.professor?.name ??
-    'TBA';
+  const extraText = course.upcomingListings[0]?.profName ?? 'TBA';
 
   const courseTitle =
-    course.lastListing[0]?.course.title ||
-    course.upcomingListings[0]?.course.title;
+    course.prevListings[0]?.title || course.upcomingListings[0]?.title;
 
   return (
     <li className={styles.container} style={style}>
@@ -44,14 +41,15 @@ function WishlistGridItem({
                 xs={5}
                 className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
                 to={createCourseModalLink(
-                  course.upcomingListings[0],
+                  {
+                    crn: course.upcomingListings[0]!.crn,
+                    course: { season_code: course.upcomingListings[0]!.season },
+                  },
                   searchParams,
                 )}
               >
                 <strong>
-                  {toSeasonString(
-                    course.upcomingListings[0]!.course.season_code,
-                  )}
+                  {toSeasonString(course.upcomingListings[0]!.season)}
                 </strong>
                 <span className={clsx(styles.details, 'mx-auto')}>
                   {extraText}
@@ -61,17 +59,23 @@ function WishlistGridItem({
           )}
         </Row>
         <Row className="m-auto py-1 justify-content-center">
-          {course.lastListing.length > 0 && (
+          {course.prevListings.length > 0 && (
             <>
               <Col>Last Listing: </Col>
               <Col
                 as={Link}
                 xs={5}
                 className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-                to={createCourseModalLink(course.lastListing[0], searchParams)}
+                to={createCourseModalLink(
+                  {
+                    crn: course.prevListings[0]!.crn,
+                    course: { season_code: course.prevListings[0]!.season },
+                  },
+                  searchParams,
+                )}
               >
                 <strong>
-                  {toSeasonString(course.lastListing[0]!.course.season_code)}
+                  {toSeasonString(course.prevListings[0]!.season)}
                 </strong>
                 <span className={clsx(styles.details, 'mx-auto')}>
                   {extraText}

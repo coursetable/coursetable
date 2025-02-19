@@ -11,9 +11,6 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
-import type { WishlistItemWithListings } from './wishlistContext';
-import type { WishlistItemWithMetadata } from '../components/Wishlist/WishlistToggleButton';
-import { CUR_YEAR } from '../config';
 import seasonsData from '../generated/seasons.json';
 import {
   fetchCatalogMetadata,
@@ -259,78 +256,5 @@ export function useWorksheetInfo(
       a.listing.course_code.localeCompare(b.listing.course_code, 'en-US'),
     );
   }, [requestedSeasons, courses, worksheets, worksheetNumber, loading, error]);
-  return { loading, error, data };
-}
-
-export function useWishlistInfo(
-  wishlist: WishlistItemWithMetadata[] | undefined,
-) {
-  const { loading, error, courses } = useCourseData(seasons.slice(0, 15));
-
-  const data = useMemo(() => {
-    const dataReturn: WishlistItemWithListings[] = [];
-    if (!wishlist) return [];
-    if (loading || error) return [];
-
-    const uniqueSameCourseIdMap = new Map<number, WishlistItemWithListings>();
-
-    for (const { crn, courseCode, sameCourseId } of wishlist) {
-      const existingItem = uniqueSameCourseIdMap.get(sameCourseId);
-      if (existingItem) {
-        existingItem.courseCodes.push(courseCode);
-        continue;
-      }
-
-      const upcomingListings: CatalogListing[] = [];
-      const lastListing: CatalogListing[] = [];
-
-      for (const seasonCode of CUR_YEAR) {
-        const seasonData = courses[seasonCode];
-        if (!seasonData) continue;
-        seasonData.data.forEach((listing) => {
-          if (listing.course.same_course_id === sameCourseId)
-            upcomingListings.push(listing);
-        });
-      }
-
-      let seasonIndex = CUR_YEAR.length;
-      while (seasonIndex < 45) {
-        const prevSeasonCode = seasons[seasonIndex]!;
-        const prevSeasonData = courses[prevSeasonCode];
-
-        seasonIndex++;
-        if (!prevSeasonData) continue;
-
-        let foundListing = false;
-        prevSeasonData.data.forEach((listing) => {
-          if (listing.course.same_course_id === sameCourseId) {
-            lastListing.push(listing);
-            foundListing = true;
-          }
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (foundListing) break;
-      }
-
-      const wishlistItem: WishlistItemWithListings = {
-        crn,
-        courseCodes: [courseCode],
-        sameCourseId,
-        upcomingListings,
-        lastListing,
-      };
-
-      uniqueSameCourseIdMap.set(sameCourseId, wishlistItem);
-    }
-
-    dataReturn.push(...uniqueSameCourseIdMap.values());
-    dataReturn.forEach((item) => ({
-      ...item,
-      courseCodes: item.courseCodes.sort((a, b) => a.localeCompare(b, 'en-US')),
-    }));
-    return dataReturn.sort((a, b) =>
-      a.courseCodes[0]!.localeCompare(b.courseCodes[0]!, 'en-US'),
-    );
-  }, [wishlist, loading, error, courses]);
   return { loading, error, data };
 }
