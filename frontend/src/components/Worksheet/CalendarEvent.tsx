@@ -21,7 +21,7 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
       <br />
       <ResponsiveEllipsis
         className={styles.courseNameText}
-        text={event.description} // Here
+        text={event.description}
         maxLine="2"
         basedOn="words"
       />
