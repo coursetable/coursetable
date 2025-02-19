@@ -93,8 +93,7 @@ export function useWishlistInfo(
 
     const uniqueSameCourseIdMap = new Map<number, WishlistItemWithListings>();
     for (const { crn, sameCourseId } of wishlist) {
-      if (uniqueSameCourseIdMap.has(sameCourseId))
-        continue;
+      if (uniqueSameCourseIdMap.has(sameCourseId)) continue;
 
       let upcomingListings: WishlistListing[] = [];
       let prevListings: WishlistListing[] = [];

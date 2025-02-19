@@ -21,7 +21,7 @@ function WishlistGridItem({
   const extraText = course.upcomingListings[0]?.profName ?? 'TBA';
 
   const courseTitle =
-    course.prevListings[0]?.title || course.upcomingListings[0]?.title;
+    (course.prevListings[0]?.title || course.upcomingListings[0]?.title) ?? 'TBA';
 
   return (
     <li className={styles.container} style={style}>
@@ -33,56 +33,80 @@ function WishlistGridItem({
           <strong className={styles.oneLine}>{courseTitle}</strong>
         </div>
         <Row className="m-auto py-1 justify-content-center">
-          {course.upcomingListings.length > 0 && (
+          {
             <>
               <Col>Upcoming Listings: </Col>
-              <Col
-                as={Link}
-                xs={5}
-                className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-                to={createCourseModalLink(
-                  {
-                    crn: course.upcomingListings[0]!.crn,
-                    course: { season_code: course.upcomingListings[0]!.season },
-                  },
-                  searchParams,
-                )}
-              >
-                <strong>
-                  {toSeasonString(course.upcomingListings[0]!.season)}
-                </strong>
-                <span className={clsx(styles.details, 'mx-auto')}>
-                  {extraText}
-                </span>
-              </Col>
+              {course.upcomingListings.length > 0 ? (
+                <Col
+                  as={Link}
+                  xs={5}
+                  className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+                  to={createCourseModalLink(
+                    {
+                      crn: course.upcomingListings[0]!.crn,
+                      course: {
+                        season_code: course.upcomingListings[0]!.season,
+                      },
+                    },
+                    searchParams,
+                  )}
+                >
+                  <strong>
+                    {toSeasonString(course.upcomingListings[0]!.season)}
+                  </strong>
+                  <span className={clsx(styles.details, 'mx-auto')}>
+                    {extraText}
+                  </span>
+                </Col>
+              ) : (
+                <Col
+                  xs={5}
+                  className={clsx(
+                    styles.noListingsBubble,
+                    'p-0 me-3 text-center',
+                  )}
+                />
+              )}
             </>
-          )}
+          }
         </Row>
         <Row className="m-auto py-1 justify-content-center">
-          {course.prevListings.length > 0 && (
+          {
             <>
-              <Col>Last Listing: </Col>
-              <Col
-                as={Link}
-                xs={5}
-                className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
-                to={createCourseModalLink(
-                  {
-                    crn: course.prevListings[0]!.crn,
-                    course: { season_code: course.prevListings[0]!.season },
-                  },
-                  searchParams,
-                )}
-              >
-                <strong>
-                  {toSeasonString(course.prevListings[0]!.season)}
-                </strong>
-                <span className={clsx(styles.details, 'mx-auto')}>
-                  {extraText}
-                </span>
-              </Col>
+              <Col>Previous Listings: </Col>
+              {course.prevListings.length > 0 ? (
+                <Col
+                  as={Link}
+                  xs={5}
+                  className={clsx(styles.ratingBubble, 'p-0 me-3 text-center')}
+                  to={createCourseModalLink(
+                    {
+                      crn: course.prevListings[0]!.crn,
+                      course: {
+                        season_code: course.prevListings[0]!.season,
+                      },
+                    },
+                    searchParams,
+                  )}
+                >
+                  <strong>
+                    {toSeasonString(course.prevListings[0]!.season)}
+                  </strong>
+                  <span className={clsx(styles.details, 'mx-auto')}>
+                    {extraText}
+                  </span>
+                </Col>
+              ) : (
+                <Col
+                  xs={5}
+                  className={clsx(
+                    styles.noListingsBubble,
+                    'p-0 me-3 text-center',
+                  )}
+                />
+              )}
             </>
-          )}
+          }
         </Row>
       </div>
     </li>

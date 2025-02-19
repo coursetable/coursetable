@@ -14,6 +14,16 @@
   background-color: var(--color-primary-subdued);
 }
 
+.noListingsBubble {
+  color: #999;
+  border-radius: 8px;
+  max-height: 3rem;
+  height: 3rem;
+  transition: max-height 0.2s ease-out;
+  flex: none;
+  background-color: #e0e0e0;
+}
+
 .ratingBubble:hover {
   color: unset;
   background-color: var(--color-primary-light);
