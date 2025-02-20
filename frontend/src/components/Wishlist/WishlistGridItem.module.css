@@ -56,13 +56,6 @@
   background-color: var(--color-surface-elevated);
 }
 
-.season {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  margin-right: 27px;
-  margin-bottom: 0.75rem;
-}
-
 .courseCodes {
   margin-top: 0.75rem;
   font-weight: 500;
@@ -74,18 +67,10 @@
   text-overflow: ellipsis;
 }
 
-.professors {
-  font-weight: 550;
-}
-
-.smallText {
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .oneLine {
   display: block;
   width: 100%;
+
   /* margin-top: 0.75rem;
   margin-bottom: 0.75rem; */
   white-space: nowrap;
@@ -100,36 +85,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
-}
-
-.rating {
-  font-weight: bold;
-  margin-right: 0.25rem;
-}
-
-.skillsAreas {
-  display: inline-flex;
-  white-space: nowrap;
-  overflow: hidden;
-  min-height: 24px;
-  margin-top: 0.25rem;
-}
-
-.worksheetBtn {
-  position: absolute;
-  top: 4px;
-  right: 18px;
-}
-
-.iconContainer {
-  fill: var(--color-text);
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.icon {
-  width: 16px;
-  display: block;
 }
 
 @media (hover: none) {
@@ -148,4 +103,18 @@
     height: 3rem;
     transition: max-height 0s;
   }
+}
+
+.noLinkStyle {
+  color: black;
+  text-decoration: none;
+}
+
+.wishlistItemLink,
+.wishlistItemLink:visited,
+.wishlistItemLink:hover,
+.wishlistItemLink:active,
+.wishlistItemLink:focus {
+  color: black !important;
+  text-decoration: none !important;
 }

@@ -15,65 +15,66 @@ export type WishlistGridItemData = {
 
 function WishlistGrid({
   data,
-  loading = false,
+  loading,
 }: {
   readonly data: WishlistItemWithListings[] | null;
   readonly loading?: boolean;
 }) {
-  let gridListing: JSX.Element | undefined = undefined;
-  if (loading || !data) {
-    gridListing = (
-      <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>
-        <Spinner />
-      </Row>
-    );
-  } else if (data.length === 0) {
-    gridListing = (
-      <div className="text-center py-5">
-        <img
-          alt="No courses found."
-          className="py-5"
-          src={NoCoursesFound}
-          style={{ width: '25%' }}
-        />
+  const gridListing: JSX.Element = (() => {
+    if (loading || !data) {
+      return (
+        <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>
+          <Spinner />
+        </Row>
+      );
+    } else if (data.length === 0) {
+      return (
+        <div className="text-center py-5">
+          <img
+            alt="No courses found."
+            className="py-5"
+            src={NoCoursesFound}
+            style={{ width: '25%' }}
+          />
 
-        <h3>No courses found in wishlist</h3>
-        <div>Add some courses using the bookmark icon.</div>
-      </div>
-    );
-  } else {
-    const columnCount = 4;
-    const columnWidth = Math.floor(window.innerWidth / columnCount);
-    const rowCount = Math.ceil(data.length / columnCount);
-    const rowHeight = 178;
+          <h3>No courses found in wishlist</h3>
+          <div>Add some courses using the bookmark icon.</div>
+        </div>
+      );
+    } 
+      const columnCount = 4;
+      const columnWidth = Math.floor(window.innerWidth / columnCount);
+      const rowCount = Math.ceil(data.length / columnCount);
+      const rowHeight = 178;
 
-    gridListing = (
-      <WindowScroller isGrid>
-        {({ ref, outerRef }) => (
-          <FixedSizeGrid
-            innerElementType="ul"
-            outerRef={outerRef}
-            ref={ref}
-            width={window.innerWidth}
-            height={Math.min(window.innerHeight, rowCount * rowHeight)}
-            itemData={{ courses: data, columnCount }}
-            {...{ columnCount, columnWidth, rowCount, rowHeight }}
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'inline-block',
-              // https://github.com/coursetable/coursetable/issues/1628
-              // We need to cancel the list div being scrollable because we
-              // always scroll the entire window. Same as Results.tsx
-              overflow: 'hidden',
-            }}
-          >
-            {WishlistGridItem}
-          </FixedSizeGrid>
-        )}
-      </WindowScroller>
-    );
-  }
+      return (
+        <WindowScroller isGrid>
+          {({ ref, outerRef }) => (
+            <FixedSizeGrid
+              innerElementType="ul"
+              outerRef={outerRef}
+              ref={ref}
+              width={window.innerWidth}
+              height={Math.min(window.innerHeight, rowCount * rowHeight)}
+              itemData={{ courses: data, columnCount }}
+              {...{ columnCount, columnWidth, rowCount, rowHeight }}
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'inline-block',
+                // https://github.com/coursetable/coursetable/issues/1628
+                // We need to cancel the list div being scrollable because we
+                // always scroll the entire window. Same as Results.tsx
+                overflow: 'hidden',
+              }}
+            >
+              {WishlistGridItem}
+            </FixedSizeGrid>
+          )}
+        </WindowScroller>
+      );
+    
+  })();
 
   return (
     <div className={styles.gridContainer}>

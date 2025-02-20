@@ -7,7 +7,7 @@ import {
   useCourseDataFromListingIdsQuery,
   useCourseDataFromSameCourseIdsQuery,
 } from '../queries/graphql-queries';
-import type { Crn } from '../queries/graphql-types';
+import type { Crn, Season } from '../queries/graphql-types';
 import { useStore } from '../store';
 import { getListingId } from '../utilities/course';
 
@@ -20,6 +20,7 @@ export type WishlistItemWithListings = {
   crn: Crn;
   courseCodes: string[];
   sameCourseId: number;
+  season: Season;
   upcomingListings: WishlistListing[];
   prevListings: WishlistListing[];
 };
@@ -57,9 +58,7 @@ function useWishlistWithMetadata(wishlist?: WishlistItem[]) {
   return undefined;
 }
 
-export function useWishlistInfo(
-  wishlist: WishlistItemWithMetadata[] | undefined,
-) {
+export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
   const sameCourseIds =
     wishlist?.map((wishlistItem) => wishlistItem.sameCourseId) ?? [];
   const {
@@ -92,12 +91,12 @@ export function useWishlistInfo(
     });
 
     const uniqueSameCourseIdMap = new Map<number, WishlistItemWithListings>();
-    for (const { crn, sameCourseId } of wishlist) {
+    for (const { crn, sameCourseId, season } of wishlist) {
       if (uniqueSameCourseIdMap.has(sameCourseId)) continue;
 
-      let upcomingListings: WishlistListing[] = [];
-      let prevListings: WishlistListing[] = [];
-      let courseCodes: Set<string> = new Set();
+      const upcomingListings: WishlistListing[] = [];
+      const prevListings: WishlistListing[] = [];
+      const courseCodes = new Set<string>();
       if (queryResMap.has(sameCourseId)) {
         for (const queryItem of queryResMap.get(sameCourseId)!) {
           courseCodes.add(queryItem.courseCode);
@@ -110,6 +109,7 @@ export function useWishlistInfo(
         crn,
         courseCodes: Array.from(courseCodes),
         sameCourseId,
+        season,
         upcomingListings,
         prevListings,
       };
@@ -153,7 +153,7 @@ export function WishlistProvider({
     () => ({
       courses,
       wishlistWithMetadata,
-      wishlistLoading,
+      wishlistLoading: wishlistLoading || !wishlistWithMetadata,
       wishlistError,
     }),
     [courses, wishlistWithMetadata, wishlistLoading, wishlistError],

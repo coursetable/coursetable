@@ -21,19 +21,31 @@ function WishlistGridItem({
   const extraText = course.upcomingListings[0]?.profName ?? 'TBA';
 
   const courseTitle =
-    (course.prevListings[0]?.title || course.upcomingListings[0]?.title) ?? 'TBA';
+    (course.prevListings[0]?.title || course.upcomingListings[0]?.title) ??
+    'TBA';
 
   return (
     <li className={styles.container} style={style}>
-      <div className={styles.wishlistItem}>
-        <div className={styles.courseCodes}>
-          <small>{course.courseCodes.join(' | ')}</small>
-        </div>
-        <div>
-          <strong className={styles.oneLine}>{courseTitle}</strong>
-        </div>
-        <Row className="m-auto py-1 justify-content-center">
+      <Link
+        to={createCourseModalLink(
           {
+            crn: course.crn,
+            course: {
+              season_code: course.season,
+            },
+          },
+          searchParams,
+        )}
+        className={clsx(styles.wishlistItemLink, styles.noLinkStyle)}
+      >
+        <div className={styles.wishlistItem}>
+          <div className={styles.courseCodes}>
+            <small>{course.courseCodes.join(' | ')}</small>
+          </div>
+          <div>
+            <strong className={styles.oneLine}>{courseTitle}</strong>
+          </div>
+          <Row className="m-auto py-1 justify-content-center">
             <>
               <Col>Upcoming Listings: </Col>
               {course.upcomingListings.length > 0 ? (
@@ -65,13 +77,12 @@ function WishlistGridItem({
                     styles.noListingsBubble,
                     'p-0 me-3 text-center',
                   )}
+                  onClick={(e) => e.preventDefault()}
                 />
               )}
             </>
-          }
-        </Row>
-        <Row className="m-auto py-1 justify-content-center">
-          {
+          </Row>
+          <Row className="m-auto py-1 justify-content-center">
             <>
               <Col>Previous Listings: </Col>
               {course.prevListings.length > 0 ? (
@@ -106,9 +117,9 @@ function WishlistGridItem({
                 />
               )}
             </>
-          }
-        </Row>
-      </div>
+          </Row>
+        </div>
+      </Link>
     </li>
   );
 }

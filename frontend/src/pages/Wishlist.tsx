@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/react';
 
 import { Element } from 'react-scroll';
 import ErrorPage from '../components/ErrorPage';
-import Spinner from '../components/Spinner';
 import WishlistGrid from '../components/Wishlist/WishlistGrid';
 
 import { useWishlist } from '../contexts/wishlistContext';
@@ -15,7 +14,6 @@ function Wishlist() {
     Sentry.captureException(wishlistError);
     return <ErrorPage message="There seems to be an issue with our server" />;
   }
-  if (wishlistLoading) return <Spinner />;
   return (
     <div className={styles.wishlistBase}>
       <Element name="wishlist" className="d-flex justify-content-center">
