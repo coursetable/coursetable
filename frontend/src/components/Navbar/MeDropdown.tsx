@@ -15,7 +15,6 @@ import {
 
 import { useShallow } from 'zustand/react/shallow';
 import { API_ENDPOINT } from '../../config';
-import { useTutorial } from '../../contexts/tutorialContext';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
@@ -94,7 +93,7 @@ function DropdownContent({
   );
   const authStatus = useStore((state) => state.authStatus);
   const refreshAuth = useStore((state) => state.refreshAuth);
-  const { toggleTutorial } = useTutorial();
+  const toggleTutorial = useStore((state) => state.toggleTutorial);
 
   return (
     <SurfaceComponent

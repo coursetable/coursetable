@@ -16,7 +16,6 @@ import Globals from './Globals';
 
 import App from './App';
 import { isDev } from './config';
-import { TutorialProvider } from './contexts/tutorialContext';
 
 enableMapSet();
 
@@ -61,11 +60,8 @@ const root = createRoot(domNode);
 root.render(
   <Globals>
     <BrowserRouter>
-      {/* Tutorial provider has to be inside the router. Plus it doesn't need
-      SSR */}
-      <TutorialProvider>
-        <App />
-      </TutorialProvider>
+      {/* No more tutorial provider needed */}
+      <App />
     </BrowserRouter>
   </Globals>,
 );

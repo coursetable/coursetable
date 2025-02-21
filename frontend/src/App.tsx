@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Helmet } from 'react-helmet';
@@ -13,13 +14,12 @@ import {
   useModalHistory,
   ModalHistoryProvider,
 } from './contexts/modalHistoryContext';
-import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
-
 import { useStore, useInitStore } from './store';
+
 import { suspended } from './utilities/display';
 import styles from './App.module.css';
 
@@ -101,7 +101,29 @@ function AuthenticatedRoutes() {
 
 function App() {
   const location = useLocation();
-  const { isTutorialOpen } = useTutorial();
+  const { isTutorialOpen, authStatus, isMobile, isTablet, checkTutorialState } =
+    useStore(
+      useShallow((state) => ({
+        isTutorialOpen: state.isTutorialOpen,
+        authStatus: state.authStatus,
+        isMobile: state.isMobile,
+        isTablet: state.isTablet,
+        checkTutorialState: state.checkTutorialState,
+      })),
+    );
+
+  useMemo(
+    () => checkTutorialState(location.pathname),
+    [location.pathname, checkTutorialState],
+  );
+
+  console.log('App render state:', {
+    isTutorialOpen,
+    pathname: location.pathname,
+    authStatus,
+    isMobile,
+    isTablet,
+  });
   useInitStore();
 
   return (

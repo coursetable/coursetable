@@ -13,6 +13,10 @@ import {
   type ProfileSlice,
 } from './slices/ProfileSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
+import {
+  createTutorialSlice,
+  type TutorialSlice,
+} from './slices/TutorialSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import {
   createWorksheetSlice,
@@ -27,6 +31,7 @@ export interface Store
     UserSlice,
     ThemeSlice,
     DimensionsSlice,
+    TutorialSlice,
     ProfileSlice,
     WorksheetSlice {}
 
@@ -39,6 +44,7 @@ const basePersistKeys: (keyof Store)[] = [
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
+  'hasShownTutorial',
 ];
 const PersistKeys = basePersistKeys.concat(
   Object.keys(defaultPreferences) as (keyof Store)[],
@@ -52,6 +58,7 @@ export const useStore = create<Store>()(
         ...createUserSlice(...a),
         ...createThemeSlice(...a),
         ...createDimensionsSlice(...a),
+        ...createTutorialSlice(...a),
         ...createProfileSlice(...a),
         ...createWorksheetSlice(...a),
       })),
