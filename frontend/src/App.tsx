@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Helmet } from 'react-helmet';
@@ -112,9 +112,10 @@ function App() {
       })),
     );
 
-  useEffect(() => {
-    checkTutorialState(location.pathname);
-  }, [location.pathname, authStatus, isMobile, isTablet, checkTutorialState]);
+  useMemo(
+    () => checkTutorialState(location.pathname),
+    [location.pathname, checkTutorialState],
+  );
 
   console.log('App render state:', {
     isTutorialOpen,

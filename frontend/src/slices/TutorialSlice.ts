@@ -1,21 +1,21 @@
 import type { StateCreator } from 'zustand';
 import type { Store } from '../store';
-import { createLocalStorageSlot } from '../utilities/browserStorage';
 
-const shownTutorialStorage = createLocalStorageSlot<boolean>('shownTutorial');
-
-interface TutorialState {
+interface TutorialSliceState {
   isTutorialOpen: boolean;
   currentStep: number;
+  hasShownTutorial: boolean;
 }
 
-interface TutorialActions {
+interface TutorialSliceActions {
   toggleTutorial: (open: boolean) => void;
   setCurrentStep: (step: number) => void;
   checkTutorialState: (pathname: string) => void;
 }
 
-export interface TutorialSlice extends TutorialState, TutorialActions {}
+export interface TutorialSlice
+  extends TutorialSliceState,
+    TutorialSliceActions {}
 
 export const createTutorialSlice: StateCreator<Store, [], [], TutorialSlice> = (
   set,
@@ -24,33 +24,34 @@ export const createTutorialSlice: StateCreator<Store, [], [], TutorialSlice> = (
   // State
   isTutorialOpen: false,
   currentStep: 0,
+  hasShownTutorial: false,
 
   // Actions
   toggleTutorial(open: boolean) {
     set({
       isTutorialOpen: open,
       currentStep: 0,
+      hasShownTutorial: !open,
     });
-    shownTutorialStorage.set(!open);
   },
 
   setCurrentStep(step: number) {
     set({ currentStep: step });
   },
 
-  checkTutorialState(pathname: string) {
-    const { isMobile, isTablet, authStatus } = get();
+  checkTutorialState(pathname: string): boolean {
+    const { isMobile, isTablet, authStatus, hasShownTutorial } = get();
 
+    let shouldShowTutorial = false;
     if (
       !isMobile &&
       !isTablet &&
       authStatus === 'authenticated' &&
-      !shownTutorialStorage.get()
-    ) {
-      if (pathname === '/catalog') set({ isTutorialOpen: true });
-      else if (pathname !== '/worksheet') set({ isTutorialOpen: false });
-    } else {
-      set({ isTutorialOpen: false });
-    }
+      !hasShownTutorial
+    )
+      shouldShowTutorial = pathname === '/catalog';
+
+    set({ isTutorialOpen: shouldShowTutorial });
+    return shouldShowTutorial;
   },
 });

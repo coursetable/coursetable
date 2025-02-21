@@ -44,8 +44,7 @@ const basePersistKeys: (keyof Store)[] = [
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
-  'isTutorialOpen',
-  'currentStep',
+  'hasShownTutorial',
 ];
 const PersistKeys = basePersistKeys.concat(
   Object.keys(defaultPreferences) as (keyof Store)[],
