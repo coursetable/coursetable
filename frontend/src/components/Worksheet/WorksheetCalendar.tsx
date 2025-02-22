@@ -61,9 +61,8 @@ function WorksheetCalendar() {
         if (
           (otherStart >= start && otherStart < end) || // Overlaps in the middle
           (start >= otherStart && start < otherEnd) // Starts within another event
-        ) 
+        )
           count++;
-        
       }
 
       if (count > 2) {
@@ -97,7 +96,13 @@ function WorksheetCalendar() {
           return prev;
         });
       }}
-      components={{ event: CalendarEvent }}
+      components={{
+        event: (event) => (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <CalendarEvent {...event} />
+          </div>
+        ),
+      }}
       eventPropGetter={eventStyleGetter}
       tooltipAccessor={undefined}
     />

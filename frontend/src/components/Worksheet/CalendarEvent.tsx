@@ -4,6 +4,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
+import { WorksheetMoveDropdown } from './WorksheetMoveDropdown';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
@@ -61,6 +62,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
             event={event}
             className={styles.worksheetHideButton}
           />
+          <WorksheetMoveDropdown event={event} />
         </div>
       )}
     </>
