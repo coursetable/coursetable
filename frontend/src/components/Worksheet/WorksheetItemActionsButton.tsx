@@ -32,13 +32,6 @@ function WorksheetItemActionsButton({
   readonly event: RBCEvent;
   readonly className?: string;
 }) {
-  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber } = useStore(
-    useShallow((state) => ({
-      viewedSeason: state.viewedSeason,
-      viewedWorksheetNumber: state.viewedWorksheetNumber,
-    })),
-  );
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [openColorPicker, setOpenColorPicker] = useState(false);
   const [openWorksheetMove, setOpenWorksheetMove] = useState(false);
