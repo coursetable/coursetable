@@ -1,17 +1,22 @@
- 
+import React, { useState } from 'react';
+import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { MdMoveToInbox } from 'react-icons/md';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { updateWorksheetCourses } from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
-
-// Import styles from './CalendarEvent.module.css';
 import type { RBCEvent } from '../../utilities/calendar';
+import styles from './ColorPickerButton.module.css';
 
 interface WorksheetMoveDropdownProps {
   readonly event: RBCEvent;
+  readonly className?: string;
 }
 
-export function WorksheetMoveDropdown({ event }: WorksheetMoveDropdownProps) {
+export function WorksheetMoveDropdown({
+  event,
+  className,
+}: WorksheetMoveDropdownProps) {
   const { viewedSeason, viewedWorksheetNumber, worksheetsRefresh } = useStore(
     (state) => ({
       viewedSeason: state.viewedSeason,
@@ -20,7 +25,7 @@ export function WorksheetMoveDropdown({ event }: WorksheetMoveDropdownProps) {
     }),
   );
 
-  // Get worksheet options and filter out the current one.
+  const [open, setOpen] = useState(false);
   const options = useWorksheetNumberOptions('me', viewedSeason);
   const filteredOptions = Object.values(options).filter(
     (option) => option.value !== viewedWorksheetNumber,
@@ -30,7 +35,6 @@ export function WorksheetMoveDropdown({ event }: WorksheetMoveDropdownProps) {
     if (!worksheetKey) return;
     const newWorksheetNumber = Number(worksheetKey);
 
-    // Remove the course from its current worksheet.
     await updateWorksheetCourses({
       action: 'remove',
       season: viewedSeason,
@@ -38,7 +42,6 @@ export function WorksheetMoveDropdown({ event }: WorksheetMoveDropdownProps) {
       worksheetNumber: viewedWorksheetNumber,
     });
 
-    // Add the course to the new worksheet.
     const addResult = await updateWorksheetCourses({
       action: 'add',
       season: viewedSeason,
@@ -49,29 +52,61 @@ export function WorksheetMoveDropdown({ event }: WorksheetMoveDropdownProps) {
     });
 
     if (addResult) {
-      console.log(`Course moved to worksheet ${newWorksheetNumber}`);
-      // Update the UI real-time!
       worksheetsRefresh();
+      setOpen(false);
     }
   };
 
   return (
-    <DropdownButton
-      title="Move"
+    <div
       onClick={(e) => {
-        // Prevents opening the modal for the actual course
         e.stopPropagation();
+        e.preventDefault();
       }}
-      onSelect={handleSelect}
-      //   ClassName={styles.worksheetMoveDropdown}
-      variant="secondary"
-      size="sm"
     >
-      {filteredOptions.map(({ value, label }) => (
-        <Dropdown.Item key={value} eventKey={String(value)}>
-          {label}
-        </Dropdown.Item>
-      ))}
-    </DropdownButton>
+      <OverlayTrigger
+        placement="bottom"
+        overlay={(props) => (
+          <Tooltip id="move-tooltip" {...props}>
+            <small>Move to another worksheet</small>
+          </Tooltip>
+        )}
+      >
+        <button
+          type="button"
+          className={className}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setOpen(true);
+          }}
+          aria-label="Move course"
+        >
+          <MdMoveToInbox color="var(--color-text-dark)" />
+        </button>
+      </OverlayTrigger>
+
+      <Modal show={open} onHide={() => setOpen(false)} centered>
+        <Modal.Body className={styles.modalBody}>
+          <DropdownButton
+            title="Select Worksheet"
+            onSelect={handleSelect}
+            variant="secondary"
+            size="sm"
+          >
+            {filteredOptions.map(({ value, label }) => (
+              <Dropdown.Item key={value} eventKey={String(value)}>
+                {label}
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setOpen(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
   );
 }

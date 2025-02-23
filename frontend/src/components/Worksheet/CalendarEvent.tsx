@@ -62,7 +62,10 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
             event={event}
             className={styles.worksheetHideButton}
           />
-          <WorksheetMoveDropdown event={event} />
+          <WorksheetMoveDropdown
+            event={event}
+            className={styles.worksheetItemActionsButton}
+          />
         </div>
       )}
     </>
