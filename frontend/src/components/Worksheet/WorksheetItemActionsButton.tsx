@@ -224,13 +224,20 @@ function WorksheetMoveModal({
   readonly className?: string;
   readonly onClose: () => void;
 }) {
-  const { viewedSeason, viewedWorksheetNumber, worksheetsRefresh } = useStore(
-    (state) => ({
+  const {
+    viewedSeason,
+    viewedWorksheetNumber,
+    worksheetsRefresh,
+    changeViewedWorksheetNumber,
+  } = useStore(
+    useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       worksheetsRefresh: state.worksheetsRefresh,
-    }),
+      changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
+    })),
   );
+
   const options = useWorksheetNumberOptions('me', viewedSeason);
   const filteredOptions = Object.values(options).filter(
     (option) => option.value !== viewedWorksheetNumber,
@@ -258,6 +265,7 @@ function WorksheetMoveModal({
 
     if (addResult) {
       worksheetsRefresh();
+      changeViewedWorksheetNumber(newWorksheetNumber);
       onClose();
     }
   };
