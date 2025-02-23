@@ -8,6 +8,7 @@ import { WorksheetMoveDropdown } from './WorksheetMoveDropdown';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
+import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -58,6 +59,11 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
             className={styles.worksheetHideButton}
             color="var(--color-text-dark)"
           />
+          {/* <WorksheetItemActionsButton
+            event={event}
+            className={styles.worksheetHideButton}
+          />
+
           <ColorPickerButton
             event={event}
             className={styles.worksheetHideButton}
@@ -65,6 +71,11 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
           <WorksheetMoveDropdown
             event={event}
             className={styles.worksheetItemActionsButton}
+          /> */}
+
+          <WorksheetItemActionsButton
+            event={event}
+            className={styles.worksheetHideButton}
           />
         </div>
       )}
