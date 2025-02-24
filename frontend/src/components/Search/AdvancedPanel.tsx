@@ -361,6 +361,13 @@ function AdvancedPanel() {
           </div>
           <ResultsColumnSort selectOption={sortByOptions.average_gut_rating} />
         </div>
+        <div className={styles.row}>
+          {/* Sort by last mod */}
+          <div className={styles.label}>
+            {sortByOptions.last_modified.label}:
+          </div>
+          <ResultsColumnSort selectOption={sortByOptions.last_modified} />
+        </div>
         <div className={styles.booleanToggles}>
           <Toggle handle="searchDescription" />
           <Toggle handle="enableQuist" />

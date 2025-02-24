@@ -13,6 +13,8 @@ const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
+
+  const lastMod = event.listing.course.last_updated as string | undefined;
   return (
     <div className={styles.event} style={{ color: textColor }}>
       <strong>{event.title}</strong>
@@ -24,6 +26,13 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
         basedOn="words"
       />
       <small className={styles.locationText}>{event.location}</small>
+      <br />
+      {lastMod && (
+        <ResponsiveEllipsis
+          className={styles.lastUpdatedText}
+          text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
+        />
+      )}
     </div>
   );
 }

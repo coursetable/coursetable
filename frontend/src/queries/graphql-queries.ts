@@ -91,6 +91,8 @@ export const CourseModalOverviewDataDocument = gql`
         regnotes
         rp_attr
         final_exam
+        time_added
+        last_updated
         same_course_id
       }
       school

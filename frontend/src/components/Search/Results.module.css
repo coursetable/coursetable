@@ -12,6 +12,7 @@
   --width-col-prof-rating: 36px;
   --width-col-enroll: 40px;
   --width-col-friends: 60px;
+  --width-col-added: 80px;
   --width-padding: 43px;
   --width-extra: calc(
     var(--width-total) - var(--width-col-season) - var(--width-col-code) -
@@ -25,7 +26,7 @@
   --width-col-loc: max(30px, var(--width-extra) / 13);
   --width-col-title: calc(
     var(--width-extra) - var(--width-col-prof) - var(--width-col-skill-area) -
-      var(--width-col-meet) - var(--width-col-loc) - 10px
+      var(--width-col-meet) - var(--width-col-loc) - 90px
   );
 }
 

@@ -472,6 +472,29 @@ function OverviewInfo({
         value={course.final_exam === 'HTBA' ? null : course.final_exam}
       />
       <DataField
+        name="Date added"
+        value={
+          course.time_added
+            ? new Date(course.time_added as string).toLocaleDateString()
+            : null
+        }
+        tooltip={<span>When this course was added to our catalog.</span>}
+      />
+      <DataField
+        name="Last updated"
+        value={
+          course.last_updated
+            ? new Date(course.last_updated as string).toLocaleDateString()
+            : null
+        }
+        tooltip={
+          <span>
+            The last time the course details (e.g., syllabus, location) were
+            modified.
+          </span>
+        }
+      />
+      <DataField
         name="Friends"
         value={
           alsoTaking.length ? (

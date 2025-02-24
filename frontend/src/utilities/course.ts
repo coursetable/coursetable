@@ -318,6 +318,14 @@ function getAttributeValue(
   switch (key) {
     case 'friend':
       return numFriends[`${l.course.season_code}${l.crn}`]?.size ?? 0;
+    case 'added':
+      return l.course.time_added
+        ? new Date(l.course.time_added as string)
+        : null;
+    case 'last_modified':
+      return l.course.last_updated
+        ? new Date(l.course.last_updated as string)
+        : null;
     case 'overall':
       return getOverallRatings(l.course, 'stat');
     case 'workload':
@@ -355,6 +363,14 @@ function compareByKey(
   if (bVal === null) return -1;
   if (typeof aVal === 'number' && typeof bVal === 'number')
     return ordering === 'asc' ? aVal - bVal : bVal - aVal;
+  if (aVal instanceof Date || bVal instanceof Date) {
+    // Shouldn't happen
+    if (!(aVal instanceof Date)) return ordering === 'asc' ? -1 : 1;
+    else if (!(bVal instanceof Date)) return ordering === 'asc' ? 1 : -1;
+
+    const comparison = aVal.getTime() - bVal.getTime();
+    return ordering === 'asc' ? comparison : -comparison;
+  }
   // Shouldn't happen
   if (typeof aVal === 'number' || typeof bVal === 'number') return 0;
   const strCmp = aVal.localeCompare(bVal, 'en-US', {
@@ -362,6 +378,7 @@ function compareByKey(
     // ARCH 200
     numeric: true,
   });
+
   return ordering === 'asc' ? strCmp : -strCmp;
 }
 
