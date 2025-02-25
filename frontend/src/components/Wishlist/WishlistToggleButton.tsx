@@ -6,16 +6,10 @@ import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 import { useWishlist } from '../../contexts/wishlistContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
-import { updateWishlistCourses, type WishlistItem } from '../../queries/api';
+import { updateWishlistCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { isInWishlist } from '../../utilities/course';
 import styles from './WishlistToggleButton.module.css';
-
-export type WishlistItemWithMetadata = WishlistItem & {
-  courseCode: string;
-  listingId: number;
-  sameCourseId: number;
-};
 
 function WishlistToggleButton({
   listing,
@@ -34,22 +28,22 @@ function WishlistToggleButton({
     })),
   );
 
-  const { wishlistWithMetadata } = useWishlist();
+  const { wishlistCourses } = useWishlist();
 
   const inWishlist = useMemo(
     () =>
       inWishlistProp ??
-      isInWishlist(listing.course.same_course_id, wishlistWithMetadata),
-    [inWishlistProp, listing, wishlistWithMetadata],
+      isInWishlist(listing.course.same_course_id, wishlistCourses),
+    [inWishlistProp, listing, wishlistCourses],
   );
 
   // Should theoretically only be one course (unique by same_course_id)
   const sameCoursesInWishlist = useMemo(
     () =>
-      wishlistWithMetadata?.filter(
+      wishlistCourses.filter(
         (item) => item.sameCourseId === listing.course.same_course_id,
-      ) ?? [],
-    [listing, wishlistWithMetadata],
+      ),
+    [listing, wishlistCourses],
   );
 
   const toggleWishlist = useCallback(

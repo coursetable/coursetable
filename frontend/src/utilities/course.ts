@@ -1,7 +1,7 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
-import type { WishlistItemWithMetadata } from '../components/Wishlist/WishlistToggleButton';
 import type { SortKeys } from '../contexts/searchContext';
+import type { WishlistItemWithListings } from '../contexts/wishlistContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -36,7 +36,7 @@ export function isInWorksheet(
 
 export function isInWishlist(
   listingSameCourseId: number,
-  wishlist: WishlistItemWithMetadata[] | undefined,
+  wishlist: WishlistItemWithListings[] | undefined,
 ): boolean {
   if (!wishlist) return false;
   return wishlist.some(

@@ -8,7 +8,7 @@ import { useWishlist } from '../contexts/wishlistContext';
 import styles from './Wishlist.module.css';
 
 function Wishlist() {
-  const { wishlistLoading, wishlistError, courses } = useWishlist();
+  const { wishlistLoading, wishlistError, wishlistCourses } = useWishlist();
 
   if (wishlistError) {
     Sentry.captureException(wishlistError);
@@ -17,7 +17,7 @@ function Wishlist() {
   return (
     <div className={styles.wishlistBase}>
       <Element name="wishlist" className="d-flex justify-content-center">
-        <WishlistGrid data={courses} loading={wishlistLoading} />
+        <WishlistGrid data={wishlistCourses} loading={wishlistLoading} />
       </Element>
     </div>
   );

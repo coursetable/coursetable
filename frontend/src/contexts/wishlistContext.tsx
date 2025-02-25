@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import type { ApolloError } from '@apollo/client';
-import type { WishlistItemWithMetadata } from '../components/Wishlist/WishlistToggleButton';
 import { CUR_YEAR } from '../config';
 import type { WishlistItem } from '../queries/api';
 import {
@@ -11,7 +10,13 @@ import type { Crn, Season } from '../queries/graphql-types';
 import { useStore } from '../store';
 import { getListingId } from '../utilities/course';
 
-export type WishlistListing = WishlistItemWithMetadata & {
+type WishlistItemWithMetadata = WishlistItem & {
+  courseCode: string;
+  listingId: number;
+  sameCourseId: number;
+};
+
+type WishlistListing = WishlistItemWithMetadata & {
   title: string;
   profName?: string;
 };
@@ -27,8 +32,7 @@ export type WishlistItemWithListings = {
 
 type Store = {
   // Controls which courses are displayed
-  courses: WishlistItemWithListings[];
-  wishlistWithMetadata?: WishlistItemWithMetadata[];
+  wishlistCourses: WishlistItemWithListings[];
   wishlistLoading: boolean;
   wishlistError?: ApolloError;
 };
@@ -118,6 +122,7 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
     const dataReturn: WishlistItemWithListings[] = Array.from(
       uniqueSameCourseIdMap.values(),
     );
+    // Sorting course codes for each listing
     dataReturn.forEach((item) => ({
       ...item,
       courseCodes: item.courseCodes.sort((a, b) => a.localeCompare(b, 'en-US')),
@@ -128,6 +133,7 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
         .sort((a, b) => a.season.localeCompare(b.season, 'en-US'))
         .reverse(),
     }));
+    // Sort listings by smallest lexicographic course code
     return dataReturn.sort((a, b) =>
       a.courseCodes[0]!.localeCompare(b.courseCodes[0]!, 'en-US'),
     );
@@ -146,17 +152,16 @@ export function WishlistProvider({
   const {
     loading: wishlistLoading,
     error: wishlistError,
-    data: courses,
+    data: wishlistCourses,
   } = useWishlistInfo(wishlistWithMetadata);
 
   const store = useMemo(
     () => ({
-      courses,
-      wishlistWithMetadata,
-      wishlistLoading: wishlistLoading || !wishlistWithMetadata,
+      wishlistCourses,
+      wishlistLoading: wishlistLoading || !userWishlist,
       wishlistError,
     }),
-    [courses, wishlistWithMetadata, wishlistLoading, wishlistError],
+    [userWishlist, wishlistCourses, wishlistLoading, wishlistError],
   );
 
   return (

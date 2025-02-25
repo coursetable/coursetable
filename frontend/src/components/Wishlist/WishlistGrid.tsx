@@ -1,3 +1,4 @@
+import React from 'react';
 import clsx from 'clsx';
 import { Row, Spinner } from 'react-bootstrap';
 import { FixedSizeGrid } from 'react-window';
@@ -20,7 +21,7 @@ function WishlistGrid({
   readonly data: WishlistItemWithListings[] | null;
   readonly loading?: boolean;
 }) {
-  const gridListing: JSX.Element = (() => {
+  const gridListing: React.JSX.Element = (() => {
     if (loading || !data) {
       return (
         <Row className={clsx('m-auto', !data ? 'py-5' : 'pt-0 pb-4')}>
@@ -41,39 +42,38 @@ function WishlistGrid({
           <div>Add some courses using the bookmark icon.</div>
         </div>
       );
-    } 
-      const columnCount = 4;
-      const columnWidth = Math.floor(window.innerWidth / columnCount);
-      const rowCount = Math.ceil(data.length / columnCount);
-      const rowHeight = 178;
+    }
+    const columnCount = 4;
+    const columnWidth = Math.floor(window.innerWidth / columnCount);
+    const rowCount = Math.ceil(data.length / columnCount);
+    const rowHeight = 178;
 
-      return (
-        <WindowScroller isGrid>
-          {({ ref, outerRef }) => (
-            <FixedSizeGrid
-              innerElementType="ul"
-              outerRef={outerRef}
-              ref={ref}
-              width={window.innerWidth}
-              height={Math.min(window.innerHeight, rowCount * rowHeight)}
-              itemData={{ courses: data, columnCount }}
-              {...{ columnCount, columnWidth, rowCount, rowHeight }}
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'inline-block',
-                // https://github.com/coursetable/coursetable/issues/1628
-                // We need to cancel the list div being scrollable because we
-                // always scroll the entire window. Same as Results.tsx
-                overflow: 'hidden',
-              }}
-            >
-              {WishlistGridItem}
-            </FixedSizeGrid>
-          )}
-        </WindowScroller>
-      );
-    
+    return (
+      <WindowScroller isGrid>
+        {({ ref, outerRef }) => (
+          <FixedSizeGrid
+            innerElementType="ul"
+            outerRef={outerRef}
+            ref={ref}
+            width={window.innerWidth}
+            height={Math.min(window.innerHeight, rowCount * rowHeight)}
+            itemData={{ courses: data, columnCount }}
+            {...{ columnCount, columnWidth, rowCount, rowHeight }}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'inline-block',
+              // https://github.com/coursetable/coursetable/issues/1628
+              // We need to cancel the list div being scrollable because we
+              // always scroll the entire window. Same as Results.tsx
+              overflow: 'hidden',
+            }}
+          >
+            {WishlistGridItem}
+          </FixedSizeGrid>
+        )}
+      </WindowScroller>
+    );
   })();
 
   return (
