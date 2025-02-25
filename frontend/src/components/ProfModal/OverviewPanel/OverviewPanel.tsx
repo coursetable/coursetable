@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -182,7 +183,7 @@ function SeasonRatingChart({
   const chartData: ChartData<'line', { x: number; y: number }[]> = {
     datasets: [
       {
-        label: 'Average rating',
+        label: 'Average Rating',
         data: points,
         borderColor: '#468FF2',
         backgroundColor: 'rgba(0, 0, 255, 0.1)',
@@ -260,12 +261,7 @@ function RatingChart({
 }: {
   readonly coursesTaught: RelatedCourseInfo[];
 }) {
-  const { curveByCourse, togglePref } = useStore(
-    useShallow((state) => ({
-      curveByCourse: state.professorPref.curveByCourse,
-      togglePref: state.togglePref,
-    })),
-  );
+  const [curveByCourse, setCurveByCourse] = useState(false);
   const coursesWithRatings = coursesTaught.filter(
     (c) => (c.evaluation_statistic?.avg_rating ?? 0) > 0,
   );
@@ -277,12 +273,12 @@ function RatingChart({
         <Form.Check.Input
           checked={curveByCourse}
           onChange={() => {
-            togglePref('professorPref', 'curveByCourse');
+            setCurveByCourse(!curveByCourse);
           }}
         />
         <Form.Check.Label
           onClick={() => {
-            togglePref('professorPref', 'curveByCourse');
+            setCurveByCourse(!curveByCourse);
           }}
         >
           Separate curves for each course
@@ -294,12 +290,7 @@ function RatingChart({
 }
 
 function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
-  const { groupRecurringCourses, togglePref } = useStore(
-    useShallow((state) => ({
-      groupRecurringCourses: state.professorPref.groupRecurringCourses,
-      togglePref: state.togglePref,
-    })),
-  );
+  const [groupRecurringCourses, setGroupRecurringCourses] = useState(true);
   const coursesTaught = professor.course_professors
     .map((c) => c.course)
     .sort((a, b) => b.season_code.localeCompare(a.season_code, 'en-US'));
