@@ -29,11 +29,11 @@
   --trans-dur: 0.35s;
 
   /* Bootstrap variables */
-  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
-  --font-family-monospace: source-code-pro, Menlo, Monaco, Consolas,
-    'Courier New', monospace;
+  --font-family-sans-serif:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-family-monospace:
+    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
   --bs-link-color: var(--color-primary) !important;
   --bs-link-hover-color: var(--color-primary-hover) !important;
 }
