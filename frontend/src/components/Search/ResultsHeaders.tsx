@@ -172,6 +172,13 @@ function ResultsHeaders({
             >
               #F
             </HeaderCol>
+            <HeaderCol
+              className={colStyles.addedCol}
+              tooltip="Date the course was added to our catalog"
+              sortOption="added"
+            >
+              Added
+            </HeaderCol>
           </>
         ) : (
           <div className={clsx(styles.headerCol, styles.resultsStat)}>
