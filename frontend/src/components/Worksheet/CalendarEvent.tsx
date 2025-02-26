@@ -2,20 +2,33 @@ import React, { useCallback } from 'react';
 import chroma from 'chroma-js';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
+import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
+
+  const isMobile = useStore((state) => state.isMobile);
+
+  // This splits the title into separate lines for mobile!
+  const formattedTitle = isMobile
+    ? event.title.split(' ').map((word, index) => (
+        <React.Fragment key={index}>
+          {word}
+          {index < event.title.split(' ').length - 1 && <br />}
+        </React.Fragment>
+      ))
+    : event.title;
+
   return (
     <div className={styles.event} style={{ color: textColor }}>
-      <strong>{event.title}</strong>
+      <strong className={styles.courseCodeText}>{formattedTitle}</strong>
       <br />
       <ResponsiveEllipsis
         className={styles.courseNameText}
@@ -44,7 +57,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
             className={styles.worksheetHideButton}
             color="var(--color-text-dark)"
           />
-          <ColorPickerButton
+          <WorksheetItemActionsButton
             event={event}
             className={styles.worksheetHideButton}
           />

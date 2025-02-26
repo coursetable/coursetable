@@ -27,6 +27,25 @@
   border: 1px solid #ccc !important;
 }
 
+.worksheetItemActionsButton {
+  background-color: white !important;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ccc !important;
+}
+
+@media (max-width: 768px) {
+  .courseCodeText {
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .courseNameText {
+    display: none;
+  }
+}
+
 .courseNameText {
   font-size: 12px;
   white-space: pre-wrap;
