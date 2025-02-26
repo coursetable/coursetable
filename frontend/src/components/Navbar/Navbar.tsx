@@ -58,8 +58,33 @@ export default function CourseTableNavbar() {
   const [navExpanded, setNavExpanded] = useState(false);
   const isMobile = useStore((state) => state.isMobile);
 
+  // Call all hooks unconditionally at the top level i guess?
+  const enumerationMode = useStore((state) => state.enumerationMode);
+  const toggleEnumerationMode = useStore(
+    (state) => state.toggleEnumerationMode,
+  );
+  const handleNext = useStore((state) => state.handleNext);
+  const handlePrevious = useStore((state) => state.handlePrevious);
+  const currentIndex = useStore((state) => state.currentIndex);
+  const totalCombos = useStore((state) => state.totalCombos);
+  const comboSize = useStore((state) => state.comboSize);
+  const setComboSize = useStore((state) => state.setComboSize);
+
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
   const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
+
+  const enumerationControls = showWorksheetSearch
+    ? {
+        enumerationMode,
+        toggleEnumerationMode,
+        handleNext,
+        handlePrevious,
+        currentIndex,
+        totalCombos,
+        comboSize,
+        setComboSize,
+      }
+    : undefined;
 
   return (
     <SurfaceComponent className={styles.container}>
@@ -83,7 +108,9 @@ export default function CourseTableNavbar() {
           {showCatalogSearch && <RandomButton />}
         </div>
         {showCatalogSearch && <NavbarCatalogSearch />}
-        {showWorksheetSearch && <NavbarWorksheetSearch />}
+        {showWorksheetSearch && (
+          <NavbarWorksheetSearch enumerationControls={enumerationControls} />
+        )}
 
         {/* Mobile nav toggle */}
         <Navbar.Toggle

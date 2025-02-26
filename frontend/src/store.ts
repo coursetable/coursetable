@@ -1,7 +1,10 @@
+// Src/store/index.ts
 import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+
+// Import your existing slices
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
 import {
   createDimensionsSlice,
@@ -15,21 +18,29 @@ import {
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import {
+  createEnumerationSlice,
+  type EnumerationSlice,
+} from './slices/WorksheetEnumSlice';
+import {
   createWorksheetSlice,
   useWorksheetEffects,
   useWorksheetSubscriptions,
   type WorksheetSlice,
 } from './slices/WorksheetSlice';
+
 import { pick } from './utilities/common';
 
+// Extend the global store interface to include all slices.
 export interface Store
   extends AuthSlice,
     UserSlice,
     ThemeSlice,
     DimensionsSlice,
     ProfileSlice,
-    WorksheetSlice {}
+    WorksheetSlice,
+    EnumerationSlice {}
 
+// Define keys to persist from the store.
 const basePersistKeys: (keyof Store)[] = [
   'authStatus',
   'theme',
@@ -39,11 +50,15 @@ const basePersistKeys: (keyof Store)[] = [
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
+  'enumerationMode',
 ];
+
+// Optionally add keys from defaultPreferences
 const PersistKeys = basePersistKeys.concat(
   Object.keys(defaultPreferences) as (keyof Store)[],
 );
 
+// Create the store using persist, subscribeWithSelector, and immer.
 export const useStore = create<Store>()(
   persist(
     subscribeWithSelector(
@@ -54,6 +69,7 @@ export const useStore = create<Store>()(
         ...createDimensionsSlice(...a),
         ...createProfileSlice(...a),
         ...createWorksheetSlice(...a),
+        ...createEnumerationSlice(...a),
       })),
     ),
     {
@@ -63,19 +79,18 @@ export const useStore = create<Store>()(
   ),
 );
 
-// Store init effects
+// --- Store Initialization Hooks ---
+
+// Hydration hook: Determines when the persisted store has finished hydrating.
 const useHydration = () => {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const unsubHydrate = useStore.persist.onHydrate(() => setHydrated(false));
-
     const unsubFinishHydration = useStore.persist.onFinishHydration(() =>
       setHydrated(true),
     );
-
     setHydrated(useStore.persist.hasHydrated());
-
     return () => {
       unsubHydrate();
       unsubFinishHydration();
@@ -109,23 +124,21 @@ const useDimensions = () => {
 
 const useTheme = () => {
   const theme = useStore((state) => state.theme);
-
   const loaded = useHydration();
 
   useEffect(() => {
     if (!loaded) return;
     document.documentElement.dataset.theme = theme;
-    // We don't actually use this ourselves, but it helps Bootstrap apply sane
-    // defaults for colors
+    // This helps Bootstrap apply default colors
     document.documentElement.dataset.bsTheme = theme;
   }, [theme, loaded]);
 };
 
 export const useInitStore = () => {
-  // Subscriptions first
+  // Worksheet subscriptions must run first.
   useWorksheetSubscriptions();
 
-  // Then effects
+  // Then run other effects.
   useAuth();
   useDimensions();
   useTheme();

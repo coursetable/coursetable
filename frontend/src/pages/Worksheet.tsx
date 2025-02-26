@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
-
 import NeedsLogin from './NeedsLogin';
 import ErrorPage from '../components/ErrorPage';
 import Spinner from '../components/Spinner';
@@ -16,6 +15,7 @@ import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdow
 import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
 import { useStore } from '../store';
+import { useEnumeration } from '../utilities/useEnumeration';
 import styles from './Worksheet.module.css';
 
 function Worksheet() {
@@ -26,6 +26,9 @@ function Worksheet() {
     worksheetError,
     worksheetView,
     isExoticWorksheet,
+    enumerationMode,
+    setEnumState,
+    comboSize,
   } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -34,9 +37,26 @@ function Worksheet() {
       worksheetError: state.worksheetError,
       worksheetView: state.worksheetView,
       isExoticWorksheet: state.isExoticWorksheet,
+      enumerationMode: state.enumerationMode,
+      setEnumState: state.setEnumState,
+      comboSize: state.comboSize,
     })),
   );
   const [expanded, setExpanded] = useState(false);
+
+  // Do this first, right?
+  const {
+    currentCombo,
+    currentIndex,
+    totalCombos,
+    handleNext,
+    handlePrevious,
+  } = useEnumeration(comboSize);
+
+  // Sync enum info to the slice
+  useEffect(() => {
+    setEnumState(handleNext, handlePrevious, currentIndex, totalCombos);
+  }, [handleNext, handlePrevious, currentIndex, totalCombos, setEnumState]);
 
   // Wait for search query to finish
   if (worksheetError) {
@@ -49,6 +69,8 @@ function Worksheet() {
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
+  const enumeratedCourses =
+    enumerationMode && currentCombo ? currentCombo : undefined;
   return (
     <div className={styles.container}>
       {isMobile && !isExoticWorksheet && (
@@ -61,7 +83,7 @@ function Worksheet() {
         </div>
       )}
       <SurfaceComponent className={styles.calendar}>
-        <WorksheetCalendar />
+        <WorksheetCalendar coursesOverride={enumeratedCourses} />
         {!isMobile && (
           <button
             type="button"
@@ -77,7 +99,7 @@ function Worksheet() {
       </SurfaceComponent>
       {(isMobile || !expanded) && (
         <div className={styles.calendarSidebar}>
-          <WorksheetStats />
+          <WorksheetStats coursesOverride={enumeratedCourses} />
           <WorksheetCalendarList />
         </div>
       )}

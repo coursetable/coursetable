@@ -4,16 +4,33 @@ import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
+import EnumerationControls from './EnumerationControls';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
-
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
-export function NavbarWorksheetSearch() {
+export interface EnumerationControlsProps {
+  enumerationMode: boolean;
+  toggleEnumerationMode: () => void;
+  handleNext: () => void;
+  handlePrevious: () => void;
+  currentIndex: number;
+  totalCombos: number;
+  comboSize: number;
+  setComboSize: (size: number) => void;
+}
+
+interface NavbarWorksheetSearchProps {
+  readonly enumerationControls?: EnumerationControlsProps;
+}
+
+export function NavbarWorksheetSearch({
+  enumerationControls,
+}: NavbarWorksheetSearchProps) {
   const {
     worksheetView,
     changeWorksheetView,
@@ -124,6 +141,10 @@ export function NavbarWorksheetSearch() {
           </Button>
         </div>
       )}
+      {/* Enumeration Mode Controls */}
+      {enumerationControls && <EnumerationControls {...enumerationControls} />}
     </div>
   );
 }
+
+export default NavbarWorksheetSearch;
