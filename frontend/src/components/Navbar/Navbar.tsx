@@ -10,6 +10,7 @@ import { API_ENDPOINT } from '../../config';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop } from '../../utilities/display';
+import { createCatalogLink } from '../../utilities/navigation';
 import LastUpdated from '../Search/LastUpdated';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
 import RandomButton from '../Search/RandomButton';
@@ -122,7 +123,7 @@ export default function CourseTableNavbar() {
               className={styles.navbarLinks}
             >
               <DarkModeButton className={styles.navbarDarkModeBtn} />
-              <NavbarLink to="/catalog">Catalog</NavbarLink>
+              <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
               </NavbarLink>

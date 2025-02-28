@@ -302,6 +302,7 @@ export const useWorksheetSubscriptions = () => {
     (state) => state.exoticWorksheet,
     (exoticWorksheet) =>
       useStore.setState({ isExoticWorksheet: Boolean(exoticWorksheet) }),
+    { equalityFn: shallow },
   );
 
   useStore.subscribe(
@@ -309,6 +310,7 @@ export const useWorksheetSubscriptions = () => {
     (worksheets) => {
       setSeasonCodes(seasonsWithDataFirst(allSeasons, worksheets));
     },
+    { equalityFn: shallow },
   );
 };
 
