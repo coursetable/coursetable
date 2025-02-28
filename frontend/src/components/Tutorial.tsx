@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
@@ -130,19 +131,39 @@ const stepsContent: Step[] = [
 ];
 
 function Tutorial() {
-  const { isTutorialOpen, currentStep, toggleTutorial, setCurrentStep } =
-    useStore(
-      useShallow((state) => ({
-        isTutorialOpen: state.isTutorialOpen,
-        currentStep: state.currentStep,
-        toggleTutorial: state.toggleTutorial,
-        setCurrentStep: state.setCurrentStep,
-        checkTutorialState: state.checkTutorialState,
-      })),
-    );
+  const location = useLocation();
+  const {
+    currentStep,
+    authStatus,
+    isMobile,
+    isTablet,
+    hasShownTutorial,
+    toggleTutorial,
+    setCurrentStep,
+  } = useStore(
+    useShallow((state) => ({
+      currentStep: state.currentStep,
+      authStatus: state.authStatus,
+      isMobile: state.isMobile,
+      isTablet: state.isTablet,
+      hasShownTutorial: state.hasShownTutorial,
+      toggleTutorial: state.toggleTutorial,
+      setCurrentStep: state.setCurrentStep,
+    })),
+  );
+
+  const shouldShowTutorial = useMemo(() => {
+    if (
+      !isMobile &&
+      !isTablet &&
+      authStatus === 'authenticated' &&
+      !hasShownTutorial
+    )
+      return location.pathname === '/catalog';
+    return false;
+  }, [location.pathname, authStatus, isMobile, isTablet, hasShownTutorial]);
 
   const theme = useStore((state) => state.theme);
-  const location = useLocation();
 
   const steps = stepsContent.map(
     ({
@@ -202,7 +223,7 @@ function Tutorial() {
   return (
     <Tour
       steps={steps}
-      isOpen={isTutorialOpen}
+      isOpen={shouldShowTutorial}
       onRequestClose={() => {
         toggleTutorial(false);
       }}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PullToRefresh from 'pulltorefreshjs';
@@ -11,6 +11,7 @@ import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import ProfModal from './components/ProfModal/ProfModal';
 import Spinner from './components/Spinner';
+import Tutorial from './components/Tutorial';
 import {
   useModalHistory,
   ModalHistoryProvider,
@@ -47,7 +48,6 @@ const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
 const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
-const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function Modal() {
   const { currentModal } = useModalHistory();
@@ -103,29 +103,7 @@ function AuthenticatedRoutes() {
 
 function App() {
   const location = useLocation();
-  const { isTutorialOpen, authStatus, isMobile, isTablet, checkTutorialState } =
-    useStore(
-      useShallow((state) => ({
-        isTutorialOpen: state.isTutorialOpen,
-        authStatus: state.authStatus,
-        isMobile: state.isMobile,
-        isTablet: state.isTablet,
-        checkTutorialState: state.checkTutorialState,
-      })),
-    );
 
-  useMemo(
-    () => checkTutorialState(location.pathname),
-    [location.pathname, checkTutorialState],
-  );
-
-  console.log('App render state:', {
-    isTutorialOpen,
-    pathname: location.pathname,
-    authStatus,
-    isMobile,
-    isTablet,
-  });
   useInitStore();
 
   useEffect(() => {
@@ -206,7 +184,7 @@ function App() {
       </SentryRoutes>
       <Footer />
       {/* Globally overlaid components */}
-      {isTutorialOpen && <Tutorial />}
+      <Tutorial />
       {/* ModalProvider reads the location so it must be within the app */}
       <ModalHistoryProvider>
         <Modal />
