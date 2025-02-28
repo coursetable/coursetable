@@ -57,6 +57,6 @@ const root = createRoot(domNode);
 
 root.render(
   <Globals>
-      <App />
+    <App />
   </Globals>,
 );
