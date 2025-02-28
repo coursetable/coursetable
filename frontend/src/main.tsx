@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
-  BrowserRouter,
   useLocation,
   useNavigationType,
   createRoutesFromChildren,
@@ -59,12 +58,8 @@ const root = createRoot(domNode);
 
 root.render(
   <Globals>
-    <BrowserRouter>
-      {/* Tutorial provider has to be inside the router. Plus it doesn't need
-      SSR */}
-      <TutorialProvider>
-        <App />
-      </TutorialProvider>
-    </BrowserRouter>
+    <TutorialProvider>
+      <App />
+    </TutorialProvider>
   </Globals>,
 );

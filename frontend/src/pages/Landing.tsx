@@ -9,6 +9,7 @@ import {
 
 import { API_ENDPOINT } from '../config';
 import LandingImage from '../images/landing_page.svg';
+import { createCatalogLink } from '../utilities/navigation';
 import styles from './Landing.module.css';
 
 const testimonials = [
@@ -81,7 +82,10 @@ function Landing() {
             <Link to="/about" className={clsx(styles.btn, styles.about)}>
               About us
             </Link>
-            <Link to="/catalog" className={clsx(styles.btn, styles.guest)}>
+            <Link
+              to={createCatalogLink()}
+              className={clsx(styles.btn, styles.guest)}
+            >
               Guest
             </Link>
           </div>
