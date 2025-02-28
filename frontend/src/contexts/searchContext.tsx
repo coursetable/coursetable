@@ -66,10 +66,12 @@ const sortCriteria = {
   course_code: 'Sort by course code',
   title: 'Sort by course title',
   friend: 'Sort by # of friends',
+  added: 'Sort by date added',
+  last_modified: 'Sort by last modified',
   overall: 'Sort by course rating',
   average_professor_rating: 'Sort by professor rating',
-  workload: 'Sort by Workload',
-  average_gut_rating: 'Sort by Guts (Overall - Workload)',
+  workload: 'Sort by workload',
+  average_gut_rating: 'Sort by guts (overall - workload)',
   enrollment: 'Sort by last enrollment',
   time: 'Sort by days & times',
   location: 'Sort by locations',
@@ -353,7 +355,13 @@ const targetTypes = {
     'fysem',
     'colsem',
   ] as const),
-  text: new Set(['title', 'description', 'location'] as const),
+  text: new Set([
+    'title',
+    'description',
+    'location',
+    'added',
+    'last_modified',
+  ] as const),
 };
 
 function applyIntersectableFilter<T extends string | number>(
@@ -487,6 +495,10 @@ export function SearchProvider({
     () =>
       buildEvaluator(targetTypes, (listing: CatalogListing, key) => {
         switch (key) {
+          case 'added':
+            return listing.course.time_added as string;
+          case 'last_modified':
+            return listing.course.last_updated as string;
           case 'rating':
             return getOverallRatings(listing.course, 'stat');
           case 'workload':

@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
 
 import { useShallow } from 'zustand/react/shallow';
@@ -104,6 +106,17 @@ function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
   useInitStore();
+
+  useEffect(() => {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches;
+    if (standalone) {
+      PullToRefresh.init({
+        onRefresh() {
+          window.location.reload();
+        },
+      });
+    }
+  }, []);
 
   return (
     <div
