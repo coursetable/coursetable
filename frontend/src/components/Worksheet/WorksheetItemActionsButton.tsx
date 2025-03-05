@@ -153,20 +153,26 @@ export function ColorPickerModal({
         openColorPickerEvent: state.openColorPickerEvent,
       })),
     );
-  const [newColor, setNewColor] = useState(openColorPickerEvent?.color ?? '');
+  const [newColor, setNewColor] = useState<string | undefined>(undefined);
 
   if (!openColorPickerEvent) return null;
 
   const handleClose = () => {
-    setNewColor(openColorPickerEvent.color);
+    setNewColor(undefined);
     onClose();
   };
 
   return (
     <Modal show onHide={handleClose} centered>
       <Modal.Body className={styles.modalBody}>
-        <Picker color={newColor} setColor={setNewColor} />
-        <Preview event={openColorPickerEvent} color={newColor} />
+        <Picker
+          color={newColor ?? openColorPickerEvent.color}
+          setColor={setNewColor}
+        />
+        <Preview
+          event={openColorPickerEvent}
+          color={newColor ?? openColorPickerEvent.color}
+        />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
@@ -344,12 +350,15 @@ function Preview({
 }) {
   const eventStyleGetter = useEventStyle();
   const tempEvent = { ...event, color };
+
   const start = new Date(tempEvent.start);
   if (start.getMinutes() === 0) start.setHours(start.getHours() - 1);
   start.setMinutes(0);
+
   const end = new Date(tempEvent.end);
   end.setHours(end.getHours() + 1);
   end.setMinutes(0);
+
   return (
     <SurfaceComponent className={styles.eventPreview}>
       <Calendar
