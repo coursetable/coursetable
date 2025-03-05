@@ -9,32 +9,32 @@ import {
   DropdownButton,
   Dropdown,
 } from 'react-bootstrap';
-import { useShallow } from 'zustand/react/shallow';
-import { useStore } from '../../store';
-import type { RBCEvent } from '../../utilities/calendar';
 import { FaEllipsisH } from 'react-icons/fa';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
-import { updateWorksheetCourses } from '../../queries/api';
-import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
+import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
-import chroma from 'chroma-js';
+import { useShallow } from 'zustand/react/shallow';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
-import { localizer } from '../../utilities/calendar';
+import { updateWorksheetCourses } from '../../queries/api';
+import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
+import { useStore } from '../../store';
+import { type RBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
 
 function WorksheetItemActionsButton({
-  event,
   className,
+  setOpenColorPicker,
+  setOpenWorksheetMove,
 }: {
   readonly event: RBCEvent;
   readonly className?: string;
+  readonly setOpenColorPicker: (open: boolean) => void;
+  readonly setOpenWorksheetMove: (open: boolean) => void;
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [openColorPicker, setOpenColorPicker] = useState(false);
-  const [openWorksheetMove, setOpenWorksheetMove] = useState(false);
   const targetRef = useRef<HTMLButtonElement>(null);
 
   const togglePopover = (e: React.MouseEvent) => {
@@ -73,9 +73,8 @@ function WorksheetItemActionsButton({
           <FaEllipsisH color="var(--color-text-dark)" />
         </button>
       </OverlayTrigger>
-
       <Overlay
-        target={targetRef.current}
+        target={targetRef}
         show={popoverOpen}
         placement="bottom"
         containerPadding={20}
@@ -141,29 +140,12 @@ function WorksheetItemActionsButton({
           </Popover>
         )}
       </Overlay>
-
-      {openColorPicker && (
-        <ColorPickerModal
-          event={event}
-          className={className}
-          onClose={() => setOpenColorPicker(false)}
-        />
-      )}
-
-      {openWorksheetMove && (
-        <WorksheetMoveModal
-          event={event}
-          className={className}
-          onClose={() => setOpenWorksheetMove(false)}
-        />
-      )}
     </div>
   );
 }
 
-function ColorPickerModal({
+export function ColorPickerModal({
   event,
-  className,
   onClose,
 }: {
   readonly event: RBCEvent;
@@ -215,9 +197,8 @@ function ColorPickerModal({
   );
 }
 
-function WorksheetMoveModal({
+export function WorksheetMoveModal({
   event,
-  className,
   onClose,
 }: {
   readonly event: RBCEvent;
