@@ -99,7 +99,8 @@ function WorksheetItemActionsButton({
                   <button
                     type="button"
                     className={className}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setOpenColorPickerEvent(event);
                       setPopoverOpen(false);
                     }}
@@ -152,13 +153,12 @@ export function ColorPickerModal({
         openColorPickerEvent: state.openColorPickerEvent,
       })),
     );
-  const event = openColorPickerEvent;
-  const [newColor, setNewColor] = useState(event?.color ?? '');
+  const [newColor, setNewColor] = useState(openColorPickerEvent?.color ?? '');
 
-  if (!event) return null;
+  if (!openColorPickerEvent) return null;
 
   const handleClose = () => {
-    setNewColor(event.color);
+    setNewColor(openColorPickerEvent.color);
     onClose();
   };
 
@@ -166,7 +166,7 @@ export function ColorPickerModal({
     <Modal show onHide={handleClose} centered>
       <Modal.Body className={styles.modalBody}>
         <Picker color={newColor} setColor={setNewColor} />
-        <Preview event={event} color={newColor} />
+        <Preview event={openColorPickerEvent} color={newColor} />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
@@ -178,7 +178,7 @@ export function ColorPickerModal({
             await updateWorksheetCourses({
               action: 'update',
               season: viewedSeason,
-              crn: event.listing.crn,
+              crn: openColorPickerEvent.listing.crn,
               worksheetNumber: viewedWorksheetNumber,
               color: newColor,
             });
