@@ -25,21 +25,24 @@ import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
 
 function WorksheetItemActionsButton({
+  event,
   className,
-  setOpenColorPicker,
-  setOpenWorksheetMove,
 }: {
   readonly event: RBCEvent;
   readonly className?: string;
-  readonly setOpenColorPicker: (open: boolean) => void;
-  readonly setOpenWorksheetMove: (open: boolean) => void;
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const targetRef = useRef<HTMLButtonElement>(null);
 
+  const { setOpenColorPickerEvent, setOpenWorksheetMoveEvent } = useStore(
+    useShallow((state) => ({
+      setOpenColorPickerEvent: state.setOpenColorPickerEvent,
+      setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,
+    })),
+  );
+
   const togglePopover = (e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
     setPopoverOpen((prev) => !prev);
   };
 
@@ -48,13 +51,7 @@ function WorksheetItemActionsButton({
   };
 
   return (
-    <div
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-      style={{ position: 'relative', display: 'inline-block' }}
-    >
+    <div style={{ position: 'relative', display: 'inline-block' }}>
       <OverlayTrigger
         placement="bottom"
         overlay={
@@ -102,10 +99,8 @@ function WorksheetItemActionsButton({
                   <button
                     type="button"
                     className={className}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setOpenColorPicker(true);
+                    onClick={() => {
+                      setOpenColorPickerEvent(event);
                       setPopoverOpen(false);
                     }}
                     aria-label="Change color"
@@ -126,8 +121,7 @@ function WorksheetItemActionsButton({
                     className={className}
                     onClick={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
-                      setOpenWorksheetMove(true);
+                      setOpenWorksheetMoveEvent(event);
                       setPopoverOpen(false);
                     }}
                     aria-label="Move course"
@@ -145,21 +139,23 @@ function WorksheetItemActionsButton({
 }
 
 export function ColorPickerModal({
-  event,
   onClose,
 }: {
-  readonly event: RBCEvent;
-  readonly className?: string;
   readonly onClose: () => void;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber } = useStore(
-    useShallow((state) => ({
-      viewedSeason: state.viewedSeason,
-      viewedWorksheetNumber: state.viewedWorksheetNumber,
-    })),
-  );
-  const [newColor, setNewColor] = useState(event.color);
+  const { viewedSeason, viewedWorksheetNumber, openColorPickerEvent } =
+    useStore(
+      useShallow((state) => ({
+        viewedSeason: state.viewedSeason,
+        viewedWorksheetNumber: state.viewedWorksheetNumber,
+        openColorPickerEvent: state.openColorPickerEvent,
+      })),
+    );
+  const event = openColorPickerEvent;
+  const [newColor, setNewColor] = useState(event?.color ?? '');
+
+  if (!event) return null;
 
   const handleClose = () => {
     setNewColor(event.color);
@@ -198,11 +194,8 @@ export function ColorPickerModal({
 }
 
 export function WorksheetMoveModal({
-  event,
   onClose,
 }: {
-  readonly event: RBCEvent;
-  readonly className?: string;
   readonly onClose: () => void;
 }) {
   const {
@@ -210,12 +203,14 @@ export function WorksheetMoveModal({
     viewedWorksheetNumber,
     worksheetsRefresh,
     changeViewedWorksheetNumber,
+    openWorksheetMoveEvent,
   } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       worksheetsRefresh: state.worksheetsRefresh,
       changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
+      openWorksheetMoveEvent: state.openWorksheetMoveEvent,
     })),
   );
 
@@ -223,6 +218,8 @@ export function WorksheetMoveModal({
   const filteredOptions = Object.values(options).filter(
     (option) => option.value !== viewedWorksheetNumber,
   );
+  const event = openWorksheetMoveEvent;
+  if (!event) return null;
 
   const handleSelect = async (worksheetKey: string | null) => {
     if (!worksheetKey) return;
@@ -245,7 +242,7 @@ export function WorksheetMoveModal({
     });
 
     if (addResult) {
-      worksheetsRefresh();
+      void worksheetsRefresh();
       changeViewedWorksheetNumber(newWorksheetNumber);
       onClose();
     }
@@ -327,9 +324,7 @@ function Picker({
             key={presetColor}
             className={styles.presetColor}
             style={{ background: presetColor }}
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
+            onClick={() => {
               setColor(presetColor);
             }}
             aria-label={`Set color to ${presetColor}`}

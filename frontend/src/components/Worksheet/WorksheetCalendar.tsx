@@ -5,16 +5,27 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
+import {
+  ColorPickerModal,
+  WorksheetMoveModal,
+} from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
 import { localizer, getCalendarEvents } from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, viewedSeason } = useStore(
+  const {
+    courses,
+    viewedSeason,
+    setOpenColorPickerEvent,
+    setOpenWorksheetMoveEvent,
+  } = useStore(
     useShallow((state) => ({
       courses: state.courses,
       viewedSeason: state.viewedSeason,
+      setOpenColorPickerEvent: state.setOpenColorPickerEvent,
+      setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,
     })),
   );
 
@@ -47,36 +58,41 @@ function WorksheetCalendar() {
   }, [courses, viewedSeason]);
 
   return (
-    <Calendar
-      // Show Mon-Fri
-      defaultView="work_week"
-      views={['work_week']}
-      events={parsedCourses}
-      // Earliest course time or 8am if no courses
-      min={earliest}
-      // Latest course time or 6pm if no courses
-      max={latest}
-      localizer={localizer}
-      toolbar={false}
-      onSelectEvent={(event) => {
-        setSearchParams((prev) => {
-          prev.set(
-            'course-modal',
-            `${event.listing.course.season_code}-${event.listing.crn}`,
-          );
-          return prev;
-        });
-      }}
-      components={{
-        event: (event) => (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <CalendarEvent {...event} />
-          </div>
-        ),
-      }}
-      eventPropGetter={eventStyleGetter}
-      tooltipAccessor={undefined}
-    />
+    <>
+      <Calendar
+        // Show Mon-Fri
+        defaultView="work_week"
+        views={['work_week']}
+        events={parsedCourses}
+        // Earliest course time or 8am if no courses
+        min={earliest}
+        // Latest course time or 6pm if no courses
+        max={latest}
+        localizer={localizer}
+        toolbar={false}
+        onSelectEvent={(event) => {
+          setSearchParams((prev) => {
+            prev.set(
+              'course-modal',
+              `${event.listing.course.season_code}-${event.listing.crn}`,
+            );
+            return prev;
+          });
+        }}
+        components={{
+          event: (event) => (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <CalendarEvent {...event} />
+            </div>
+          ),
+        }}
+        eventPropGetter={eventStyleGetter}
+        tooltipAccessor={undefined}
+      />
+
+      <ColorPickerModal onClose={() => setOpenColorPickerEvent(null)} />
+      <WorksheetMoveModal onClose={() => setOpenWorksheetMoveEvent(null)} />
+    </>
   );
 }
 

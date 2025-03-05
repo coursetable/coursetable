@@ -1,12 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import chroma from 'chroma-js';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import WorksheetHideButton from './WorksheetHideButton';
-import WorksheetItemActionsButton, {
-  WorksheetMoveModal,
-  ColorPickerModal,
-} from './WorksheetItemActionsButton';
+import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
@@ -28,7 +25,7 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
         </React.Fragment>
       ))
     : event.title;
-  
+
   const lastMod = event.listing.course.last_updated as string | undefined;
 
   return (
@@ -57,9 +54,6 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { listing } = event;
   const isReadonlyWorksheet = useStore((state) => state.isReadonlyWorksheet);
 
-  const [openColorPicker, setOpenColorPicker] = useState(false);
-  const [openWorksheetMove, setOpenWorksheetMove] = useState(false);
-
   return (
     <>
       <CalendarEventBody event={event} />
@@ -75,24 +69,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
           <WorksheetItemActionsButton
             event={event}
             className={styles.worksheetHideButton}
-            setOpenColorPicker={setOpenColorPicker}
-            setOpenWorksheetMove={setOpenWorksheetMove}
           />
-          {openColorPicker && (
-            <ColorPickerModal
-              event={event}
-              className={styles.worksheetHideButton}
-              onClose={() => setOpenColorPicker(false)}
-            />
-          )}
-
-          {openWorksheetMove && (
-            <WorksheetMoveModal
-              event={event}
-              className={styles.worksheetHideButton}
-              onClose={() => setOpenWorksheetMove(false)}
-            />
-          )}
         </div>
       )}
     </>
