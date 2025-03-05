@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Nav, Navbar } from 'react-bootstrap';
+import PWAPrompt from 'react-ios-pwa-prompt';
 import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
@@ -9,6 +10,7 @@ import { API_ENDPOINT } from '../../config';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop } from '../../utilities/display';
+import { createCatalogLink } from '../../utilities/navigation';
 import LastUpdated from '../Search/LastUpdated';
 import { NavbarCatalogSearch } from '../Search/NavbarCatalogSearch';
 import RandomButton from '../Search/RandomButton';
@@ -61,6 +63,17 @@ export default function CourseTableNavbar() {
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
   const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
 
+  const [showPWAPrompt, setShowPWAPrompt] = useState(false);
+  const [isIOSNotInstalled, setIsIOSNotInstalled] = useState(false);
+
+  useEffect(() => {
+    const isIOS = /iphone|ipad|ipod/iu.test(navigator.userAgent);
+    const isPWAInstalled = window.matchMedia(
+      '(display-mode: standalone)',
+    ).matches;
+    if (isIOS && !isPWAInstalled) setIsIOSNotInstalled(true);
+  }, []);
+
   return (
     <SurfaceComponent className={styles.container}>
       <Navbar
@@ -73,6 +86,11 @@ export default function CourseTableNavbar() {
           showCatalogSearch && styles.catalogSearchNavbar,
         )}
       >
+        <PWAPrompt
+          isShown={showPWAPrompt}
+          appIconPath="/icon200x200.png"
+          onClose={() => setShowPWAPrompt(false)}
+        />
         {/* Logo in top left and random underneath */}
         <div className={styles.navLogoWrapper}>
           <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
@@ -105,7 +123,7 @@ export default function CourseTableNavbar() {
               className={styles.navbarLinks}
             >
               <DarkModeButton className={styles.navbarDarkModeBtn} />
-              <NavbarLink to="/catalog">Catalog</NavbarLink>
+              <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
               </NavbarLink>
@@ -132,6 +150,15 @@ export default function CourseTableNavbar() {
                     Feedback
                   </a>
                   <NavbarLink to="/releases">Release notes</NavbarLink>
+                  {isIOSNotInstalled && (
+                    <button
+                      type="button"
+                      className={styles.navLink}
+                      onClick={() => setShowPWAPrompt(true)}
+                    >
+                      Install as app
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={styles.navLink}

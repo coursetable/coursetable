@@ -68,7 +68,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
-            {!isReadonlyWorksheet() && (
+            {!isReadonlyWorksheet && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -98,7 +98,7 @@ function WorksheetCalendarList() {
                 </Button>
               </OverlayTrigger>
             )}
-            {!isExoticWorksheet() && viewedPerson === 'me' && (
+            {!isExoticWorksheet && viewedPerson === 'me' && (
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
@@ -215,7 +215,7 @@ function WorksheetCalendarList() {
           <Button
             variant="secondary"
             onClick={() => {
-              if (privateState !== isViewedWorksheetPrivate()) {
+              if (privateState !== isViewedWorksheetPrivate) {
                 setUpdatingWSState(true);
                 (async () => {
                   await updateWorksheetMetadata({
@@ -236,7 +236,7 @@ function WorksheetCalendarList() {
               }
             }}
             disabled={
-              privateState === isViewedWorksheetPrivate() || updatingWSState
+              privateState === isViewedWorksheetPrivate || updatingWSState
             }
             style={{ minWidth: '4rem' }}
           >

@@ -25,6 +25,8 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
         </React.Fragment>
       ))
     : event.title;
+  
+  const lastMod = event.listing.course.last_updated as string | undefined;
 
   return (
     <div className={styles.event} style={{ color: textColor }}>
@@ -37,6 +39,13 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
         basedOn="words"
       />
       <small className={styles.locationText}>{event.location}</small>
+      <br />
+      {lastMod && (
+        <ResponsiveEllipsis
+          className={styles.lastUpdatedText}
+          text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
+        />
+      )}
     </div>
   );
 }
@@ -48,7 +57,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   return (
     <>
       <CalendarEventBody event={event} />
-      {!isReadonlyWorksheet() && (
+      {!isReadonlyWorksheet && (
         <div className={styles.eventButtons}>
           <WorksheetHideButton
             crn={listing.crn}

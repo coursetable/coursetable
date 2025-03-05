@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Row } from 'react-bootstrap';
 import {
@@ -60,22 +61,24 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
     <CustomErrorBoundary>
       {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
-      <GapiProvider>
-        <ApolloProvider client={client}>
-          {/* FerryProvider must be inside UserProvider because the former
-            depends on login status */}
-          <FerryProvider>
-            {/* SearchProvider must be inside WorksheetProvider because the
-                  former depends on the currently viewed worksheet */}
-            <SearchProvider>
-              <MDXProvider components={components}>
-                <div id="base">{children}</div>
-              </MDXProvider>
-            </SearchProvider>
-            <ToastContainer toastClassName="rounded" />
-          </FerryProvider>
-        </ApolloProvider>
-      </GapiProvider>
+      <BrowserRouter>
+        <GapiProvider>
+          <ApolloProvider client={client}>
+            {/* FerryProvider must be inside UserProvider because the former
+              depends on login status */}
+            <FerryProvider>
+              {/* SearchProvider must be inside WorksheetProvider because the
+                    former depends on the currently viewed worksheet */}
+              <SearchProvider>
+                <MDXProvider components={components}>
+                  <div id="base">{children}</div>
+                </MDXProvider>
+              </SearchProvider>
+              <ToastContainer toastClassName="rounded" />
+            </FerryProvider>
+          </ApolloProvider>
+        </GapiProvider>
+      </BrowserRouter>
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>
   );
