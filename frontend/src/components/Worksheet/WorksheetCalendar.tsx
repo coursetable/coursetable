@@ -43,35 +43,6 @@ function WorksheetCalendar() {
         latest.setHours(c.end.getHours());
     }
 
-    // Detect overlapping events
-    parsedCourses.forEach((event, index) => {
-      const start = event.start.getTime();
-      const end = event.end.getTime();
-
-      let count = 1;
-      for (let j = index + 1; j < parsedCourses.length; j++) {
-        const other = parsedCourses[j];
-
-        // Ensure 'other' is defined before accessing its properties
-        if (!other) continue;
-
-        const otherStart = other.start.getTime();
-        const otherEnd = other.end.getTime();
-
-        if (
-          (otherStart >= start && otherStart < end) || // Overlaps in the middle
-          (start >= otherStart && start < otherEnd) // Starts within another event
-        )
-          count++;
-      }
-
-      if (count > 2) {
-        console.warn(
-          `⚠️ More than 2 events overlap at ${new Date(start).toLocaleTimeString()}`,
-        );
-      }
-    });
-
     return { earliest, latest, parsedCourses };
   }, [courses, viewedSeason]);
 
