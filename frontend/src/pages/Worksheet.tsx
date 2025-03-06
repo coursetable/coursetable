@@ -39,11 +39,10 @@ function Worksheet() {
   );
   const [expanded, setExpanded] = useState(false);
 
-  // Use useEffect to set exoticWorksheet only once on component mount
   useEffect(() => {
     const exoticWorksheet = parseCoursesFromURL();
     useStore.setState({ exoticWorksheet });
-  }, []); // Empty dependency array ensures this runs only once
+  }, []);
 
   // Wait for search query to finish
   if (worksheetError) {
