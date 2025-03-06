@@ -127,7 +127,7 @@ function seasonsWithDataFirst(
   });
 }
 
-function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
+export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
   const searchParams = new URLSearchParams(window.location.search);
   if (!searchParams.has('ws')) return undefined;
   const serial = decompressFromEncodedURIComponent(searchParams.get('ws')!);
@@ -162,11 +162,7 @@ export const createWorksheetSlice: StateCreator<
   [],
   [],
   WorksheetSlice
-> = (set, get) => {
-  // Parse the URL first and store the result
-  const parsedExoticWorksheet = parseCoursesFromURL();
-
-  return {
+> = (set, get) => ({
     curWorksheet: new Map(),
     setCurWorksheet(worksheet) {
       set({ curWorksheet: worksheet });
@@ -188,9 +184,9 @@ export const createWorksheetSlice: StateCreator<
         return 0;
       return get().viewedWorksheetNumber;
     },
-    exoticWorksheet: parsedExoticWorksheet,
-    isExoticWorksheet: Boolean(parsedExoticWorksheet),
-    isReadonlyWorksheet: Boolean(parsedExoticWorksheet),
+    exoticWorksheet: undefined,
+    isExoticWorksheet: false,
+    isReadonlyWorksheet: false,
     exitExoticWorksheet() {
       set({
         exoticWorksheet: undefined,
@@ -226,8 +222,7 @@ export const createWorksheetSlice: StateCreator<
     setWorksheetInfo(courses, worksheetLoading, worksheetError) {
       set({ courses, worksheetLoading, worksheetError });
     },
-  };
-};
+  });
 
 // Subscriptions and Effects
 // Although not ideal, a subscription is the simplest way
