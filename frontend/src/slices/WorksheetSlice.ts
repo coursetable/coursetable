@@ -163,66 +163,66 @@ export const createWorksheetSlice: StateCreator<
   [],
   WorksheetSlice
 > = (set, get) => ({
-    curWorksheet: new Map(),
-    setCurWorksheet(worksheet) {
-      set({ curWorksheet: worksheet });
-    },
-    viewedPerson: 'me',
-    viewedSeason: CUR_SEASON,
-    viewedWorksheetNumber: 0,
-    changeViewedPerson(newPerson) {
-      set({ viewedWorksheetNumber: 0, viewedPerson: newPerson });
-    },
-    changeViewedSeason(seasonCode) {
-      set({ viewedWorksheetNumber: 0, viewedSeason: seasonCode });
-    },
-    changeViewedWorksheetNumber(worksheetNumber) {
-      set({ viewedWorksheetNumber: worksheetNumber });
-    },
-    getRelevantWorksheetNumber(seasonCode) {
-      if (get().viewedPerson !== 'me' || seasonCode !== get().viewedSeason)
-        return 0;
-      return get().viewedWorksheetNumber;
-    },
-    exoticWorksheet: undefined,
-    isExoticWorksheet: false,
-    isReadonlyWorksheet: false,
-    exitExoticWorksheet() {
-      set({
-        exoticWorksheet: undefined,
-        isExoticWorksheet: false,
-        isReadonlyWorksheet: false,
-      });
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.delete('ws');
-      window.history.replaceState(
-        {},
-        '',
-        `${window.location.pathname}${searchParams}`,
-      );
-    },
-    worksheetView: 'calendar',
-    hoverCourse: null,
-    changeWorksheetView(view) {
-      set({ worksheetView: view });
-      window.scrollTo({ top: 0, left: 0 });
-    },
-    setHoverCourse(course) {
-      set({ hoverCourse: course });
-    },
-    seasonCodes: [],
-    setSeasonCodes(seasons) {
-      set({ seasonCodes: seasons });
-    },
-    courses: [],
-    viewedWorksheetName: 'Main Worksheet',
-    isViewedWorksheetPrivate: false,
-    worksheetLoading: false,
-    worksheetError: null,
-    setWorksheetInfo(courses, worksheetLoading, worksheetError) {
-      set({ courses, worksheetLoading, worksheetError });
-    },
-  });
+  curWorksheet: new Map(),
+  setCurWorksheet(worksheet) {
+    set({ curWorksheet: worksheet });
+  },
+  viewedPerson: 'me',
+  viewedSeason: CUR_SEASON,
+  viewedWorksheetNumber: 0,
+  changeViewedPerson(newPerson) {
+    set({ viewedWorksheetNumber: 0, viewedPerson: newPerson });
+  },
+  changeViewedSeason(seasonCode) {
+    set({ viewedWorksheetNumber: 0, viewedSeason: seasonCode });
+  },
+  changeViewedWorksheetNumber(worksheetNumber) {
+    set({ viewedWorksheetNumber: worksheetNumber });
+  },
+  getRelevantWorksheetNumber(seasonCode) {
+    if (get().viewedPerson !== 'me' || seasonCode !== get().viewedSeason)
+      return 0;
+    return get().viewedWorksheetNumber;
+  },
+  exoticWorksheet: undefined,
+  isExoticWorksheet: false,
+  isReadonlyWorksheet: false,
+  exitExoticWorksheet() {
+    set({
+      exoticWorksheet: undefined,
+      isExoticWorksheet: false,
+      isReadonlyWorksheet: false,
+    });
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete('ws');
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}${searchParams}`,
+    );
+  },
+  worksheetView: 'calendar',
+  hoverCourse: null,
+  changeWorksheetView(view) {
+    set({ worksheetView: view });
+    window.scrollTo({ top: 0, left: 0 });
+  },
+  setHoverCourse(course) {
+    set({ hoverCourse: course });
+  },
+  seasonCodes: [],
+  setSeasonCodes(seasons) {
+    set({ seasonCodes: seasons });
+  },
+  courses: [],
+  viewedWorksheetName: 'Main Worksheet',
+  isViewedWorksheetPrivate: false,
+  worksheetLoading: false,
+  worksheetError: null,
+  setWorksheetInfo(courses, worksheetLoading, worksheetError) {
+    set({ courses, worksheetLoading, worksheetError });
+  },
+});
 
 // Subscriptions and Effects
 // Although not ideal, a subscription is the simplest way
