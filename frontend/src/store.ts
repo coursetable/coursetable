@@ -4,6 +4,10 @@ import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
 import {
+  type CalendarSlice,
+  createCalendarSlice,
+} from './slices/CalendarSlice';
+import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
@@ -24,6 +28,7 @@ import { pick } from './utilities/common';
 
 export interface Store
   extends AuthSlice,
+    CalendarSlice,
     UserSlice,
     ThemeSlice,
     DimensionsSlice,
@@ -49,6 +54,7 @@ export const useStore = create<Store>()(
     subscribeWithSelector(
       immer((...a) => ({
         ...createAuthSlice(...a),
+        ...createCalendarSlice(...a),
         ...createUserSlice(...a),
         ...createThemeSlice(...a),
         ...createDimensionsSlice(...a),
