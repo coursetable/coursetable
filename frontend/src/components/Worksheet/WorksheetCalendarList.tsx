@@ -41,9 +41,10 @@ function WorksheetCalendarList() {
       courses: state.courses,
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
-      isReadonlyWorksheet: state.isReadonlyWorksheet,
-      isExoticWorksheet: state.isExoticWorksheet,
-      isViewedWorksheetPrivate: state.isViewedWorksheetPrivate,
+      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      isViewedWorksheetPrivate:
+        state.worksheetMemo.getIsViewedWorksheetPrivate(state),
       viewedPerson: state.viewedPerson,
     })),
   );
