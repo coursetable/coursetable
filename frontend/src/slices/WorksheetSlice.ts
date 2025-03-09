@@ -130,7 +130,7 @@ function seasonsWithDataFirst(
   });
 }
 
-function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
+export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
   const searchParams = new URLSearchParams(window.location.search);
   if (!searchParams.has('ws')) return undefined;
   const serial = decompressFromEncodedURIComponent(searchParams.get('ws')!);
@@ -165,99 +165,94 @@ export const createWorksheetSlice: StateCreator<
   [],
   [],
   WorksheetSlice
-> = (set, get) => {
-  // Parse the URL first and store the result
-  const parsedExoticWorksheet = parseCoursesFromURL();
-
-  return {
-    viewedPerson: 'me',
-    viewedSeason: CUR_SEASON,
-    viewedWorksheetNumber: 0,
-    changeViewedPerson(newPerson) {
-      set({ viewedWorksheetNumber: 0, viewedPerson: newPerson });
-    },
-    changeViewedSeason(seasonCode) {
-      set({ viewedWorksheetNumber: 0, viewedSeason: seasonCode });
-    },
-    changeViewedWorksheetNumber(worksheetNumber) {
-      set({ viewedWorksheetNumber: worksheetNumber });
-    },
-    getRelevantWorksheetNumber(seasonCode) {
-      if (get().viewedPerson !== 'me' || seasonCode !== get().viewedSeason)
-        return 0;
-      return get().viewedWorksheetNumber;
-    },
-    exoticWorksheet: parsedExoticWorksheet,
-    exitExoticWorksheet() {
-      set({
-        exoticWorksheet: undefined,
-      });
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.delete('ws');
-      window.history.replaceState(
-        {},
-        '',
-        `${window.location.pathname}${searchParams}`,
-      );
-    },
-    worksheetView: 'calendar',
-    hoverCourse: null,
-    changeWorksheetView(view) {
-      set({ worksheetView: view });
-      window.scrollTo({ top: 0, left: 0 });
-    },
-    setHoverCourse(course) {
-      set({ hoverCourse: course });
-    },
-    seasonCodes: [],
-    courses: [],
-    worksheetLoading: false,
-    worksheetError: null,
-    setWorksheetInfo(courses, worksheetLoading, worksheetError) {
-      set({ courses, worksheetLoading, worksheetError });
-    },
-    worksheetMemo: {
-      getCurWorksheet: memoize(
-        (state: Store): UserWorksheets =>
-          ((state.viewedPerson === 'me'
-            ? state.worksheets
-            : state.friends?.[state.viewedPerson]?.worksheets) ??
-            new Map()) as UserWorksheets,
-      ),
-      getSeasonCodes: memoize((state: Store) =>
-        seasonsWithDataFirst(allSeasons, state.worksheets),
-      ),
-      getIsExoticWorksheet: memoize((state: Store) =>
-        Boolean(state.exoticWorksheet),
-      ),
-      // A readonly worksheet is anything that doesn't belong to the user—either
-      // exotic or a friend's worksheet.
-      getIsReadonlyWorksheet: memoize(
-        (state: Store) =>
-          state.worksheetMemo.getIsExoticWorksheet(state) ||
-          state.viewedPerson !== 'me',
-      ),
-      getViewedWorksheetName: memoize(
-        (state: Store) =>
-          state.exoticWorksheet?.data.name ??
-          state.worksheetMemo
-            .getCurWorksheet(state)
-            .get(state.viewedSeason)
-            ?.get(state.viewedWorksheetNumber)?.name ??
-          (state.viewedWorksheetNumber === 0
-            ? 'Main Worksheet'
-            : 'Unnamed Worksheet'),
-      ),
-      getIsViewedWorksheetPrivate: memoize(
-        (state: Store) =>
-          state.worksheetMemo
-            .getCurWorksheet(state)
-            .get(state.viewedSeason)
-            ?.get(state.viewedWorksheetNumber)?.private ?? false,
-      ),
-    },
-  };
-};
+> = (set, get) => ({
+  viewedPerson: 'me',
+  viewedSeason: CUR_SEASON,
+  viewedWorksheetNumber: 0,
+  changeViewedPerson(newPerson) {
+    set({ viewedWorksheetNumber: 0, viewedPerson: newPerson });
+  },
+  changeViewedSeason(seasonCode) {
+    set({ viewedWorksheetNumber: 0, viewedSeason: seasonCode });
+  },
+  changeViewedWorksheetNumber(worksheetNumber) {
+    set({ viewedWorksheetNumber: worksheetNumber });
+  },
+  getRelevantWorksheetNumber(seasonCode) {
+    if (get().viewedPerson !== 'me' || seasonCode !== get().viewedSeason)
+      return 0;
+    return get().viewedWorksheetNumber;
+  },
+  exoticWorksheet: undefined,
+  exitExoticWorksheet() {
+    set({
+      exoticWorksheet: undefined,
+    });
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete('ws');
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}${searchParams}`,
+    );
+  },
+  worksheetView: 'calendar',
+  hoverCourse: null,
+  changeWorksheetView(view) {
+    set({ worksheetView: view });
+    window.scrollTo({ top: 0, left: 0 });
+  },
+  setHoverCourse(course) {
+    set({ hoverCourse: course });
+  },
+  seasonCodes: [],
+  courses: [],
+  worksheetLoading: false,
+  worksheetError: null,
+  setWorksheetInfo(courses, worksheetLoading, worksheetError) {
+    set({ courses, worksheetLoading, worksheetError });
+  },
+  worksheetMemo: {
+    getCurWorksheet: memoize(
+      (state: Store): UserWorksheets =>
+        ((state.viewedPerson === 'me'
+          ? state.worksheets
+          : state.friends?.[state.viewedPerson]?.worksheets) ??
+          new Map()) as UserWorksheets,
+    ),
+    getSeasonCodes: memoize((state: Store) =>
+      seasonsWithDataFirst(allSeasons, state.worksheets),
+    ),
+    getIsExoticWorksheet: memoize((state: Store) =>
+      Boolean(state.exoticWorksheet),
+    ),
+    // A readonly worksheet is anything that doesn't belong to the user—either
+    // exotic or a friend's worksheet.
+    getIsReadonlyWorksheet: memoize(
+      (state: Store) =>
+        state.worksheetMemo.getIsExoticWorksheet(state) ||
+        state.viewedPerson !== 'me',
+    ),
+    getViewedWorksheetName: memoize(
+      (state: Store) =>
+        state.exoticWorksheet?.data.name ??
+        state.worksheetMemo
+          .getCurWorksheet(state)
+          .get(state.viewedSeason)
+          ?.get(state.viewedWorksheetNumber)?.name ??
+        (state.viewedWorksheetNumber === 0
+          ? 'Main Worksheet'
+          : 'Unnamed Worksheet'),
+    ),
+    getIsViewedWorksheetPrivate: memoize(
+      (state: Store) =>
+        state.worksheetMemo
+          .getCurWorksheet(state)
+          .get(state.viewedSeason)
+          ?.get(state.viewedWorksheetNumber)?.private ?? false,
+    ),
+  },
+});
 
 // Effects should be used for values with React dependencies
 export const useWorksheetEffects = () => {
