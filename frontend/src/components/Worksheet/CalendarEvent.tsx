@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import chroma from 'chroma-js';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import ColorPickerButton from './ColorPickerButton';
 import WorksheetHideButton from './WorksheetHideButton';
+import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
@@ -14,15 +14,28 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
 
+  const isMobile = useStore((state) => state.isMobile);
+
+  // This splits the title into separate lines for mobile!
+  const formattedTitle = isMobile
+    ? event.title.split(' ').map((word, index) => (
+        <React.Fragment key={index}>
+          {word}
+          {index < event.title.split(' ').length - 1 && <br />}
+        </React.Fragment>
+      ))
+    : event.title;
+
   const lastMod = event.listing.course.last_updated as string | undefined;
+
   return (
     <div className={styles.event} style={{ color: textColor }}>
-      <strong>{event.title}</strong>
+      <strong className={styles.courseCodeText}>{formattedTitle}</strong>
       <br />
       <ResponsiveEllipsis
         className={styles.courseNameText}
         text={event.description}
-        maxLine="2"
+        maxLine="1"
         basedOn="words"
       />
       <small className={styles.locationText}>{event.location}</small>
@@ -39,7 +52,9 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { listing } = event;
-  const isReadonlyWorksheet = useStore((state) => state.isReadonlyWorksheet);
+  const isReadonlyWorksheet = useStore((state) =>
+    state.worksheetMemo.getIsReadonlyWorksheet(state),
+  );
 
   return (
     <>
@@ -53,7 +68,7 @@ function CalendarEvent({ event }: { readonly event: RBCEvent }) {
             className={styles.worksheetHideButton}
             color="var(--color-text-dark)"
           />
-          <ColorPickerButton
+          <WorksheetItemActionsButton
             event={event}
             className={styles.worksheetHideButton}
           />
