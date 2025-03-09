@@ -21,7 +21,6 @@ import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import {
   createWorksheetSlice,
   useWorksheetEffects,
-  useWorksheetSubscriptions,
   type WorksheetSlice,
 } from './slices/WorksheetSlice';
 import { pick } from './utilities/common';
@@ -128,10 +127,6 @@ const useTheme = () => {
 };
 
 export const useInitStore = () => {
-  // Subscriptions first
-  useWorksheetSubscriptions();
-
-  // Then effects
   useAuth();
   useDimensions();
   useTheme();

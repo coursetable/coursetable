@@ -52,7 +52,9 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
 
 function CalendarEvent({ event }: { readonly event: RBCEvent }) {
   const { listing } = event;
-  const isReadonlyWorksheet = useStore((state) => state.isReadonlyWorksheet);
+  const isReadonlyWorksheet = useStore((state) =>
+    state.worksheetMemo.getIsReadonlyWorksheet(state),
+  );
 
   return (
     <>

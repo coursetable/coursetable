@@ -33,7 +33,7 @@ function Worksheet() {
       worksheetLoading: state.worksheetLoading,
       worksheetError: state.worksheetError,
       worksheetView: state.worksheetView,
-      isExoticWorksheet: state.isExoticWorksheet,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
     })),
   );
   const [expanded, setExpanded] = useState(false);
