@@ -50,6 +50,10 @@
   width: var(--width-col-friends);
 }
 
+.addedCol {
+  width: var(--width-col-added);
+}
+
 .skillAreaCol {
   width: var(--width-col-skill-area);
 }

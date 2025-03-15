@@ -258,7 +258,7 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {isExoticWorksheet() && (
+              {isExoticWorksheet && (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
                   <Button variant="primary" onClick={exitExoticWorksheet}>

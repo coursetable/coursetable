@@ -3683,6 +3683,8 @@ export type CatalogBySeasonQuery = {
     skills: StringArr;
     sysem: boolean;
     title: string;
+    time_added: any | null;
+    last_updated: any | null;
     course_flags: Array<{
       __typename?: 'course_flags';
       flag: { __typename?: 'flags'; flag_text: string };
@@ -3764,6 +3766,8 @@ export type CourseModalOverviewDataQuery = {
       regnotes: string | null;
       rp_attr: string | null;
       final_exam: string | null;
+      time_added: any | null;
+      last_updated: any | null;
       same_course_id: number;
       course_professors: Array<{
         __typename?: 'course_professors';

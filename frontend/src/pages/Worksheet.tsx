@@ -45,13 +45,13 @@ function Worksheet() {
   }
   if (worksheetLoading) return <Spinner message="Loading worksheet data..." />;
   // For unauthed users, they can only view exotic worksheets
-  if (authStatus === 'unauthenticated' && !isExoticWorksheet())
+  if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
   return (
     <div className={styles.container}>
-      {isMobile && !isExoticWorksheet() && (
+      {isMobile && !isExoticWorksheet && (
         <div className={styles.dropdowns}>
           <WorksheetNumDropdown mobile />
           <div className="d-flex">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import { useStore } from '../../store';
 import { toSeasonString } from '../../utilities/course';
+import { createCatalogLink } from '../../utilities/navigation';
 
 function NoCourses() {
   const viewedSeason = useStore((state) => state.viewedSeason);
@@ -18,7 +19,7 @@ function NoCourses() {
         />
         <h3>No courses found for {toSeasonString(viewedSeason)}</h3>
         <div>
-          Add some courses on the <Link to="/catalog">Catalog</Link>.
+          Add some courses on the <Link to={createCatalogLink()}>Catalog</Link>.
         </div>
       </div>
     </div>
