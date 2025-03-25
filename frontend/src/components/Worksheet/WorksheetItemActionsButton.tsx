@@ -52,24 +52,15 @@ function WorksheetItemActionsButton({
 
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
-      <OverlayTrigger
-        placement="bottom"
-        overlay={
-          <Tooltip id="button-tooltip">
-            <small>Item actions</small>
-          </Tooltip>
-        }
+      <button
+        type="button"
+        className={className}
+        ref={targetRef}
+        onClick={togglePopover}
+        aria-label="Item actions"
       >
-        <button
-          type="button"
-          className={className}
-          ref={targetRef}
-          onClick={togglePopover}
-          aria-label="Item actions"
-        >
-          <FaEllipsisH color="var(--color-text-dark)" />
-        </button>
-      </OverlayTrigger>
+        <FaEllipsisH color="var(--color-text-dark)" />
+      </button>
       <Overlay
         target={targetRef}
         show={popoverOpen}
