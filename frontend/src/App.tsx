@@ -116,6 +116,40 @@ function App() {
         },
       });
     }
+
+    // Dynamically load Google API script
+    const script = document.createElement('script');
+    script.src = 'https://apis.google.com/js/api.js';
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      console.log('Google API script loaded.');
+      window.gapi.load('client:auth2', () => {
+        window.gapi.client
+          .init({
+            clientId: import.meta.env.VITE_DEV_GCAL_CLIENT_ID,
+            discoveryDocs: [
+              'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+            ],
+            scope: 'https://www.googleapis.com/auth/calendar.events',
+          })
+          .then(() => {
+            console.log('Google API initialized.');
+          })
+          .catch((error: unknown) => {
+            if (error instanceof Error)
+              console.error('Google API initialization failed:', error.message);
+            else console.error('Google API initialization failed:', error);
+          });
+      });
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   return (
