@@ -97,12 +97,24 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod_staging
+          inject-env-vars: true
+
       - name: Build and Deploy Docker containers
         working-directory: ./api
         if: github.event_name == 'push'
         run: ./start.sh -s
+        env:
+          SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
 
       - name: Build and Deploy Docker containers (Manual)
         working-directory: ./api
         if: github.event_name == 'workflow_dispatch'
         run: ./start.sh -s -o
+        env:
+          SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
