@@ -22,7 +22,15 @@ function ShareButton({
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
   const copyToClipboard = () => {
-    const textToCopy = `${listing.course_code} -- CourseTable: ${window.location.href}`;
+    const params = new URLSearchParams(window.location.search);
+    const url =
+      window.location.origin +
+      window.location.pathname +
+      params.has('course-modal')
+        ? `?${params.toString()}`
+        : '';
+    const textToCopy = `${listing.course_code} -- CourseTable: ${url}`;
+
     navigator.clipboard.writeText(textToCopy).then(
       () => {
         toast.success('Course and URL copied to clipboard!');
