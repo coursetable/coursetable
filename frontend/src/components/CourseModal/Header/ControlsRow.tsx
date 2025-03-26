@@ -23,12 +23,9 @@ function ShareButton({
 }) {
   const copyToClipboard = () => {
     const params = new URLSearchParams(window.location.search);
-    const url =
-      window.location.origin +
-      window.location.pathname +
-      params.has('course-modal')
-        ? `?${params.toString()}`
-        : '';
+    const url = `${window.location.origin}${window.location.pathname}${
+      params.has('course-modal') ? `?${params.toString()}` : ''
+    }`;
     const textToCopy = `${listing.course_code} -- CourseTable: ${url}`;
 
     navigator.clipboard.writeText(textToCopy).then(
