@@ -89,7 +89,7 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
     if (isConfirmingDelete && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       const popup = document.createElement('div');
-      popup.className = styles.confirmationPopup;
+      popup.className = styles.confirmationPopup!;
       popup.textContent = 'Are you sure?';
       popup.style.position = 'fixed';
       popup.style.top = `${rect.top + rect.height / 2}px`;
