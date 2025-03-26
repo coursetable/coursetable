@@ -69,6 +69,8 @@ function WSNameInput({
 function OptionWithActionButtons(props: OptionProps<Option<number>>) {
   const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [animateButtonsIn, setAnimateButtonsIn] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const {
@@ -104,6 +106,16 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
     return undefined;
   }, [isConfirmingDelete]);
 
+  useEffect(() => {
+    if (isConfirmingDelete) {
+      requestAnimationFrame(() => {
+        setAnimateButtonsIn(true);
+      });
+    } else {
+      setAnimateButtonsIn(false);
+    }
+  }, [isConfirmingDelete]);
+
   if (isRenamingWorksheet) {
     return (
       <WSNameInput
@@ -127,7 +139,13 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
     return (
       <components.Option {...props} className={styles.noPaddingOption}>
         <div className={styles.confirmContainer} ref={containerRef}>
-          <div className={styles.confirmButtons}>
+          <div
+            className={`${styles.confirmButtons ?? ''} ${
+              animateButtonsIn && styles.confirmButtonsVisible
+                ? styles.confirmButtonsVisible
+                : ''
+            }`}
+          >
             <button
               type="button"
               className={styles.keepButton}
