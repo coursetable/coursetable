@@ -27,7 +27,7 @@ export function NavbarWorksheetSearch() {
       changeWorksheetView: state.changeWorksheetView,
       viewedPerson: state.viewedPerson,
       changeViewedPerson: state.changeViewedPerson,
-      isExoticWorksheet: state.isExoticWorksheet,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
       exitExoticWorksheet: state.exitExoticWorksheet,
     })),
   );

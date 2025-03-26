@@ -66,10 +66,12 @@ const sortCriteria = {
   course_code: 'Sort by course code',
   title: 'Sort by course title',
   friend: 'Sort by # of friends',
+  added: 'Sort by date added',
+  last_modified: 'Sort by last modified',
   overall: 'Sort by course rating',
   average_professor_rating: 'Sort by professor rating',
-  workload: 'Sort by Workload',
-  average_gut_rating: 'Sort by Guts (Overall - Workload)',
+  workload: 'Sort by workload',
+  average_gut_rating: 'Sort by guts (overall - workload)',
   enrollment: 'Sort by last enrollment',
   time: 'Sort by days & times',
   location: 'Sort by locations',
@@ -239,7 +241,7 @@ export const defaultFilters: Filters = {
   selectDays: [],
   timeBounds: [toRangeTime('7:00'), toRangeTime('22:00')],
   enrollBounds: [1, 528],
-  numBounds: [0, 1000],
+  numBounds: [0, 10000],
   selectSchools: [],
   selectCredits: [],
   selectCourseInfoAttributes: [],
@@ -353,7 +355,13 @@ const targetTypes = {
     'fysem',
     'colsem',
   ] as const),
-  text: new Set(['title', 'description', 'location'] as const),
+  text: new Set([
+    'title',
+    'description',
+    'location',
+    'added',
+    'last_modified',
+  ] as const),
 };
 
 function applyIntersectableFilter<T extends string | number>(
@@ -487,6 +495,10 @@ export function SearchProvider({
     () =>
       buildEvaluator(targetTypes, (listing: CatalogListing, key) => {
         switch (key) {
+          case 'added':
+            return listing.course.time_added as string;
+          case 'last_modified':
+            return listing.course.last_updated as string;
           case 'rating':
             return getOverallRatings(listing.course, 'stat');
           case 'workload':
@@ -554,8 +566,12 @@ export function SearchProvider({
             return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
-          case 'number':
-            return Number(listing.number.replace(/\D/gu, ''));
+          case 'number': {
+            let number = Number(listing.number.replace(/\D/gu, ''));
+            if (number.toString().length === 3) number *= 10;
+
+            return number;
+          }
           case 'listings.subjects':
             return listing.course.listings.map((l) => l.subject);
           case 'listings.course-codes':
@@ -667,10 +683,12 @@ export function SearchProvider({
         }
 
         if (numBounds.isNonEmpty) {
-          const number = Number(listing.number.replace(/\D/gu, ''));
+          let number = Number(listing.number.replace(/\D/gu, ''));
+          if (number.toString().length === 3) number *= 10;
+
           if (
             number < numBounds.value[0] ||
-            (numBounds.value[1] < 1000 && number > numBounds.value[1])
+            (numBounds.value[1] < 10000 && number > numBounds.value[1])
           )
             return false;
         }
@@ -785,7 +803,7 @@ export function SearchProvider({
               selectSchools.value.map((option: Option) => option.value),
               listing.course.listings
                 .map((l) => l.school)
-                .filter((x) => x !== null),
+                .filter((x) => x.length > 0),
               intersectingFilters.value.includes('selectSchools'),
             )
           )

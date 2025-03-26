@@ -19,14 +19,20 @@ export default function WorksheetHideButton({
   readonly color?: string;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber, isReadonlyWorksheet } = useStore(
+  const {
+    viewedSeason,
+    viewedWorksheetNumber,
+    viewedPerson,
+    isReadonlyWorksheet,
+  } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
-      isReadonlyWorksheet: state.isReadonlyWorksheet,
+      viewedPerson: state.viewedPerson,
+      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
     })),
   );
-  if (isReadonlyWorksheet) return null;
+  if (isReadonlyWorksheet || viewedPerson !== 'me') return null;
   const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
   return (
     <OverlayTrigger

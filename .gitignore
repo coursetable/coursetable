@@ -12,5 +12,6 @@ api/redis/data/*
 api/postgres/init/*ferry-dump.sql
 
 frontend/build
+frontend/dev-dist
 
 !**/.keep
