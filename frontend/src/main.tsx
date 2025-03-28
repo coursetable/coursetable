@@ -14,7 +14,6 @@ import { enableMapSet, setAutoFreeze } from 'immer';
 import Globals from './Globals';
 import App from './App';
 import { isDev } from './config';
-import { TutorialProvider } from './contexts/tutorialContext';
 
 enableMapSet();
 setAutoFreeze(false);
@@ -59,8 +58,6 @@ const root = createRoot(domNode);
 
 root.render(
   <Globals>
-    <TutorialProvider>
-      <App />
-    </TutorialProvider>
+    <App />
   </Globals>,
 );
