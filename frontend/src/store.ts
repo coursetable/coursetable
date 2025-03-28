@@ -12,6 +12,10 @@ import {
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
 import {
+  createModalHistorySlice,
+  type ModalHistorySlice,
+} from './slices/ModalHistorySlice';
+import {
   createProfileSlice,
   defaultPreferences,
   type ProfileSlice,
@@ -36,6 +40,7 @@ export interface Store
     ThemeSlice,
     DimensionsSlice,
     TutorialSlice,
+    ModalHistorySlice,
     ProfileSlice,
     WorksheetSlice {}
 
@@ -64,6 +69,7 @@ export const useStore = create<Store>()(
         ...createThemeSlice(...a),
         ...createDimensionsSlice(...a),
         ...createTutorialSlice(...a),
+        ...createModalHistorySlice(...a),
         ...createProfileSlice(...a),
         ...createWorksheetSlice(...a),
       })),
