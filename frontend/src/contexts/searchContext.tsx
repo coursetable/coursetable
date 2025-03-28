@@ -567,8 +567,10 @@ export function SearchProvider({
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
           case 'number': {
-            let number = Number(listing.number.replace(/\D/gu, ''));
-            if (number.toString().length === 3) number *= 10;
+            const numString = listing.number.replace(/\D/gu, '');
+
+            let number = Number(numString);
+            if (numString.length === 3) number *= 10;
 
             return number;
           }
@@ -683,8 +685,10 @@ export function SearchProvider({
         }
 
         if (numBounds.isNonEmpty) {
-          let number = Number(listing.number.replace(/\D/gu, ''));
-          if (number.toString().length === 3) number *= 10;
+          const numString = listing.number.replace(/\D/gu, '');
+
+          let number = Number(numString);
+          if (numString.length === 3) number *= 10;
 
           if (
             number < numBounds.value[0] ||
