@@ -3994,6 +3994,7 @@ export type CourseDataFromListingIdsQuery = {
 
 export type CourseDataFromSameCourseIdsQueryVariables = Exact<{
   sameCourseIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+  hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type CourseDataFromSameCourseIdsQuery = {
@@ -4012,6 +4013,11 @@ export type CourseDataFromSameCourseIdsQuery = {
         __typename?: 'course_professors';
         professor: { __typename?: 'professors'; name: string };
       }>;
+      evaluation_statistic?: {
+        __typename?: 'evaluation_statistics';
+        avg_workload: number | null;
+        avg_rating: number | null;
+      } | null;
     };
   }>;
 };

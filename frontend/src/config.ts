@@ -14,6 +14,14 @@ export const CUR_SEASON = '202501' as Season;
 // Courses in the current year have no evaluations yet
 export const CUR_YEAR = ['202501', '202502'] as Season[];
 
+export const WISHLIST_YEARS = [
+  '2022',
+  '2023',
+  '2024',
+  '2025',
+  '2026',
+] as string[];
+
 // We use this format to avoid dealing with time zones.
 // TODO: this should be a Temporal.PlainDate
 export type SimpleDate = [year: number, month: number, day: number];

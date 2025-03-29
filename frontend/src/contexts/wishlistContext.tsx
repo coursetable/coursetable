@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import type { ApolloError } from '@apollo/client';
-import { CUR_YEAR } from '../config';
 import type { WishlistItem } from '../queries/api';
 import {
   useCourseDataFromListingIdsQuery,
@@ -14,6 +13,8 @@ type WishlistItemWithMetadata = WishlistItem & {
   courseCode: string;
   listingId: number;
   sameCourseId: number;
+  avgWorkload?: number | null;
+  avgRating?: number | null;
 };
 
 type WishlistListing = WishlistItemWithMetadata & {
@@ -26,8 +27,7 @@ export type WishlistItemWithListings = {
   courseCodes: string[];
   sameCourseId: number;
   season: Season;
-  upcomingListings: WishlistListing[];
-  prevListings: WishlistListing[];
+  listings: WishlistListing[];
 };
 
 type Store = {
@@ -63,6 +63,7 @@ function useWishlistWithMetadata(wishlist?: WishlistItem[]) {
 }
 
 export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
+  const user = useStore((state) => state.user);
   const sameCourseIds =
     wishlist?.map((wishlistItem) => wishlistItem.sameCourseId) ?? [];
   const {
@@ -70,7 +71,7 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
     loading,
     error,
   } = useCourseDataFromSameCourseIdsQuery({
-    variables: { sameCourseIds },
+    variables: { sameCourseIds, hasEvals: user?.hasEvals ?? false },
     skip: sameCourseIds.length === 0,
   });
 
@@ -88,6 +89,8 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
         sameCourseId: queryListing.course.same_course_id,
         title: queryListing.course.title,
         profName: queryListing.course.course_professors[0]?.professor.name,
+        avgWorkload: queryListing.course.evaluation_statistic?.avg_workload,
+        avgRating: queryListing.course.evaluation_statistic?.avg_rating,
       };
       if (queryResMap.has(sameCourseId))
         queryResMap.get(sameCourseId)!.push(queryWishlistItem);
@@ -98,15 +101,12 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
     for (const { crn, sameCourseId, season } of wishlist) {
       if (uniqueSameCourseIdMap.has(sameCourseId)) continue;
 
-      const upcomingListings: WishlistListing[] = [];
-      const prevListings: WishlistListing[] = [];
+      const listings: WishlistListing[] = [];
       const courseCodes = new Set<string>();
       if (queryResMap.has(sameCourseId)) {
         for (const queryItem of queryResMap.get(sameCourseId)!) {
           courseCodes.add(queryItem.courseCode);
-          if (CUR_YEAR.includes(queryItem.season))
-            upcomingListings.push(queryItem);
-          else prevListings.push(queryItem);
+          listings.push(queryItem);
         }
       }
       const wishlistItem: WishlistItemWithListings = {
@@ -114,8 +114,7 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
         courseCodes: Array.from(courseCodes),
         sameCourseId,
         season,
-        upcomingListings,
-        prevListings,
+        listings,
       };
       uniqueSameCourseIdMap.set(sameCourseId, wishlistItem);
     }
@@ -126,12 +125,9 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
     dataReturn.forEach((item) => ({
       ...item,
       courseCodes: item.courseCodes.sort((a, b) => a.localeCompare(b, 'en-US')),
-      upcomingListings: item.upcomingListings.sort((a, b) =>
+      listings: item.listings.sort((a, b) =>
         a.season.localeCompare(b.season, 'en-US'),
       ),
-      prevListings: item.prevListings
-        .sort((a, b) => a.season.localeCompare(b.season, 'en-US'))
-        .reverse(),
     }));
     // Sort listings by smallest lexicographic course code
     return dataReturn.sort((a, b) =>

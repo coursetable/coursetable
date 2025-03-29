@@ -212,7 +212,10 @@ query CourseDataFromListingIds($listingIds: [Int!]!) {
   }
 }
 
-query CourseDataFromSameCourseIds($sameCourseIds: [Int!]!) {
+query CourseDataFromSameCourseIds(
+  $sameCourseIds: [Int!]!
+  $hasEvals: Boolean!
+) {
   listings(where: { course: { same_course_id: { _in: $sameCourseIds } } }) {
     course_code
     crn
@@ -225,6 +228,10 @@ query CourseDataFromSameCourseIds($sameCourseIds: [Int!]!) {
         professor {
           name
         }
+      }
+      evaluation_statistic @include(if: $hasEvals) {
+        avg_workload
+        avg_rating
       }
     }
   }

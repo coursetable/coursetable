@@ -762,7 +762,10 @@ export type CourseDataFromListingIdsQueryResult = Apollo.QueryResult<
   Types.CourseDataFromListingIdsQueryVariables
 >;
 export const CourseDataFromSameCourseIdsDocument = gql`
-  query CourseDataFromSameCourseIds($sameCourseIds: [Int!]!) {
+  query CourseDataFromSameCourseIds(
+    $sameCourseIds: [Int!]!
+    $hasEvals: Boolean!
+  ) {
     listings(where: { course: { same_course_id: { _in: $sameCourseIds } } }) {
       course_code
       crn
@@ -775,6 +778,10 @@ export const CourseDataFromSameCourseIdsDocument = gql`
           professor {
             name
           }
+        }
+        evaluation_statistic @include(if: $hasEvals) {
+          avg_workload
+          avg_rating
         }
       }
     }
@@ -794,6 +801,7 @@ export const CourseDataFromSameCourseIdsDocument = gql`
  * const { data, loading, error } = useCourseDataFromSameCourseIdsQuery({
  *   variables: {
  *      sameCourseIds: // value for 'sameCourseIds'
+ *      hasEvals: // value for 'hasEvals'
  *   },
  * });
  */

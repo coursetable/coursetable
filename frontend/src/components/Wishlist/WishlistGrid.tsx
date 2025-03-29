@@ -7,7 +7,6 @@ import type { WishlistItemWithListings } from '../../contexts/wishlistContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import FloatingWorksheet from '../Search/FloatingWorksheet';
 import WindowScroller from '../Search/WindowScroller';
-import styles from './WishlistGrid.module.css';
 
 export type WishlistGridItemData = {
   readonly courses: WishlistItemWithListings[];
@@ -43,10 +42,11 @@ function WishlistGrid({
         </div>
       );
     }
-    const columnCount = 4;
-    const columnWidth = Math.floor(window.innerWidth / columnCount);
+
+    const rowHeight = 220;
+    const columnWidth = 500;
+    const columnCount = Math.floor(window.innerWidth / columnWidth);
     const rowCount = Math.ceil(data.length / columnCount);
-    const rowHeight = 178;
 
     return (
       <WindowScroller isGrid>
@@ -77,7 +77,7 @@ function WishlistGrid({
   })();
 
   return (
-    <div className={styles.gridContainer}>
+    <div>
       {gridListing}
       <FloatingWorksheet />
     </div>
