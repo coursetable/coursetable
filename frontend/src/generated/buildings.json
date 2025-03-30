@@ -329,7 +329,11 @@
     "code": "ML",
     "url": "https://map.yale.edu/?id=1910#!m/560056"
   },
-  { "building_name": "Pauli Murray College", "code": "MY", "url": "" },
+  {
+    "building_name": "Pauli Murray College",
+    "code": "MY",
+    "url": "https://map.yale.edu/?id=1910#!m/560100"
+  },
   { "building_name": "Old Art Gallery", "code": "OAG", "url": "" },
   { "building_name": null, "code": "OBT", "url": "" },
   {

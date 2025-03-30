@@ -141,9 +141,27 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={14}
+        id={15}
       >
-        {/* None */}
+        Yale College has{' '}
+        <a
+          href="https://catalog.yale.edu/departmental_academic_support/four-digit-numbers/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+        >
+          transitioned to four-digit course numbers.
+        </a>{' '}
+        A lot of work went into making CourseTable's own transition seamless,
+        please consider{' '}
+        <a
+          href="https://buymeacoffee.com/coursetable"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+        >
+          buying us a coffee!
+        </a>
       </Notice>
       <Navbar />
       <SentryRoutes>

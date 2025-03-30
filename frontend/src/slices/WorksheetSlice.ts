@@ -1,9 +1,9 @@
 import { decompressFromEncodedURIComponent } from 'lz-string';
+import { memoize } from 'proxy-memoize';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { shallow } from 'zustand/shallow';
 import { CUR_SEASON } from '../config';
 import {
   seasons as allSeasons,
@@ -46,13 +46,10 @@ export type ExoticWorksheet = z.infer<typeof exoticWorksheetSchema>;
 
 // Slice Types
 interface WorksheetState {
-  curWorksheet: UserWorksheets;
-
   // These define which courses the store contains
   viewedPerson: 'me' | NetId;
   viewedSeason: Season;
   viewedWorksheetNumber: number;
-  viewedWorksheetName: string;
 
   // An exotic worksheet is one that is imported via the URL or file upload.
   // Exotic worksheets do not have a corresponding worksheet in the worksheets
@@ -60,11 +57,6 @@ interface WorksheetState {
   exoticWorksheet:
     | { data: ExoticWorksheet; worksheets: UserWorksheets }
     | undefined;
-  isExoticWorksheet: boolean;
-  isViewedWorksheetPrivate: boolean;
-  // A readonly worksheet is anything that doesn't belong to the user—either
-  // exotic or a friend's worksheet.
-  isReadonlyWorksheet: boolean;
 
   // Affect visual display
   worksheetView: WorksheetView;
@@ -80,8 +72,6 @@ interface WorksheetState {
 }
 
 interface WorksheetActions {
-  setCurWorksheet: (worksheet: UserWorksheets) => void;
-
   changeViewedPerson: (newPerson: WorksheetState['viewedPerson']) => void;
   changeViewedSeason: (seasonCode: WorksheetState['viewedSeason']) => void;
   changeViewedWorksheetNumber: (
@@ -101,8 +91,6 @@ interface WorksheetActions {
   changeWorksheetView: (view: WorksheetState['worksheetView']) => void;
   setHoverCourse: (course: WorksheetState['hoverCourse']) => void;
 
-  setSeasonCodes: (seasons: Season[]) => void;
-
   setWorksheetInfo: (
     courses: WorksheetState['courses'],
     worksheetLoading: WorksheetState['worksheetLoading'],
@@ -110,7 +98,22 @@ interface WorksheetActions {
   ) => void;
 }
 
-export interface WorksheetSlice extends WorksheetState, WorksheetActions {}
+// Memoized Values
+interface WorksheetSliceMemo {
+  worksheetMemo: {
+    getCurWorksheet: (state: Store) => UserWorksheets;
+    getSeasonCodes: (state: Store) => Season[];
+    getIsExoticWorksheet: (state: Store) => boolean;
+    getIsReadonlyWorksheet: (state: Store) => boolean;
+    getViewedWorksheetName: (state: Store) => string;
+    getIsViewedWorksheetPrivate: (state: Store) => boolean;
+  };
+}
+
+export interface WorksheetSlice
+  extends WorksheetState,
+    WorksheetActions,
+    WorksheetSliceMemo {}
 
 // Utility Functions
 function seasonsWithDataFirst(
@@ -127,7 +130,7 @@ function seasonsWithDataFirst(
   });
 }
 
-function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
+export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
   const searchParams = new URLSearchParams(window.location.search);
   if (!searchParams.has('ws')) return undefined;
   const serial = decompressFromEncodedURIComponent(searchParams.get('ws')!);
@@ -163,10 +166,6 @@ export const createWorksheetSlice: StateCreator<
   [],
   WorksheetSlice
 > = (set, get) => ({
-  curWorksheet: new Map(),
-  setCurWorksheet(worksheet) {
-    set({ curWorksheet: worksheet });
-  },
   viewedPerson: 'me',
   viewedSeason: CUR_SEASON,
   viewedWorksheetNumber: 0,
@@ -184,11 +183,11 @@ export const createWorksheetSlice: StateCreator<
       return 0;
     return get().viewedWorksheetNumber;
   },
-  exoticWorksheet: parseCoursesFromURL(),
-  isExoticWorksheet: false,
-  isReadonlyWorksheet: false,
+  exoticWorksheet: undefined,
   exitExoticWorksheet() {
-    set({ exoticWorksheet: undefined });
+    set({
+      exoticWorksheet: undefined,
+    });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete('ws');
     window.history.replaceState(
@@ -207,113 +206,55 @@ export const createWorksheetSlice: StateCreator<
     set({ hoverCourse: course });
   },
   seasonCodes: [],
-  setSeasonCodes(seasons) {
-    set({ seasonCodes: seasons });
-  },
   courses: [],
-  viewedWorksheetName: 'Main Worksheet',
-  isViewedWorksheetPrivate: false,
   worksheetLoading: false,
   worksheetError: null,
   setWorksheetInfo(courses, worksheetLoading, worksheetError) {
     set({ courses, worksheetLoading, worksheetError });
   },
+  worksheetMemo: {
+    getCurWorksheet: memoize(
+      (state: Store): UserWorksheets =>
+        ((state.viewedPerson === 'me'
+          ? state.worksheets
+          : state.friends?.[state.viewedPerson]?.worksheets) ??
+          new Map()) as UserWorksheets,
+    ),
+    getSeasonCodes: memoize((state: Store) =>
+      seasonsWithDataFirst(allSeasons, state.worksheets),
+    ),
+    getIsExoticWorksheet: memoize((state: Store) =>
+      Boolean(state.exoticWorksheet),
+    ),
+    // A readonly worksheet is anything that doesn't belong to the user—either
+    // exotic or a friend's worksheet.
+    getIsReadonlyWorksheet: memoize(
+      (state: Store) =>
+        state.worksheetMemo.getIsExoticWorksheet(state) ||
+        state.viewedPerson !== 'me',
+    ),
+    getViewedWorksheetName: memoize(
+      (state: Store) =>
+        state.exoticWorksheet?.data.name ??
+        state.worksheetMemo
+          .getCurWorksheet(state)
+          .get(state.viewedSeason)
+          ?.get(state.viewedWorksheetNumber)?.name ??
+        (state.viewedWorksheetNumber === 0
+          ? 'Main Worksheet'
+          : 'Unnamed Worksheet'),
+    ),
+    getIsViewedWorksheetPrivate: memoize(
+      (state: Store) =>
+        state.worksheetMemo
+          .getCurWorksheet(state)
+          .get(state.viewedSeason)
+          ?.get(state.viewedWorksheetNumber)?.private ?? false,
+    ),
+  },
 });
 
-// Subscriptions and Effects
-// Although not ideal, a subscription is the simplest way
-// to handle computed values in a memoized fashion in Zustand.
 // Effects should be used for values with React dependencies
-export const useWorksheetSubscriptions = () => {
-  const { setCurWorksheet, setSeasonCodes } = useStore.getState(); // Non-reactive function references
-
-  useStore.subscribe(
-    (state) => ({
-      worksheets: state.worksheets,
-      friends: state.friends,
-      viewedPerson: state.viewedPerson,
-    }),
-    ({ worksheets, friends, viewedPerson }) => {
-      const whenNotDefined: UserWorksheets = new Map();
-      if (viewedPerson === 'me') setCurWorksheet(worksheets ?? whenNotDefined);
-      else
-        setCurWorksheet(friends?.[viewedPerson]?.worksheets ?? whenNotDefined);
-    },
-    { equalityFn: shallow },
-  );
-
-  useStore.subscribe(
-    (state) => ({
-      curWorksheet: state.curWorksheet,
-      viewedSeason: state.viewedSeason,
-      viewedWorksheetNumber: state.viewedWorksheetNumber,
-    }),
-    ({ curWorksheet, viewedSeason, viewedWorksheetNumber }) => {
-      useStore.setState({
-        isViewedWorksheetPrivate:
-          curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.private ??
-          false,
-      });
-    },
-    { equalityFn: shallow },
-  );
-
-  useStore.subscribe(
-    (state) => ({
-      exoticWorksheet: state.exoticWorksheet,
-      curWorksheet: state.curWorksheet,
-      viewedSeason: state.viewedSeason,
-      viewedWorksheetNumber: state.viewedWorksheetNumber,
-    }),
-    ({
-      exoticWorksheet,
-      curWorksheet,
-      viewedSeason,
-      viewedWorksheetNumber,
-    }) => {
-      useStore.setState({
-        viewedWorksheetName:
-          exoticWorksheet?.data.name ??
-          curWorksheet.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
-          (viewedWorksheetNumber === 0
-            ? 'Main Worksheet'
-            : 'Unnamed Worksheet'),
-      });
-    },
-    {
-      equalityFn: shallow,
-    },
-  );
-
-  useStore.subscribe(
-    (state) => ({
-      isExoticWorksheet: state.isExoticWorksheet,
-      viewedPerson: state.viewedPerson,
-    }),
-    ({ isExoticWorksheet, viewedPerson }) => {
-      useStore.setState({
-        isReadonlyWorksheet: isExoticWorksheet || viewedPerson !== 'me',
-      });
-    },
-    { equalityFn: shallow },
-  );
-
-  useStore.subscribe(
-    (state) => state.exoticWorksheet,
-    (exoticWorksheet) =>
-      useStore.setState({ isExoticWorksheet: Boolean(exoticWorksheet) }),
-    { equalityFn: shallow },
-  );
-
-  useStore.subscribe(
-    (state) => state.worksheets,
-    (worksheets) => {
-      setSeasonCodes(seasonsWithDataFirst(allSeasons, worksheets));
-    },
-    { equalityFn: shallow },
-  );
-};
-
 export const useWorksheetEffects = () => {
   const {
     exoticWorksheet,
@@ -324,12 +265,13 @@ export const useWorksheetEffects = () => {
   } = useStore(
     useShallow((state) => ({
       exoticWorksheet: state.exoticWorksheet,
-      curWorksheet: state.curWorksheet,
+      curWorksheet: state.worksheetMemo.getCurWorksheet(state),
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       setWorksheetInfo: state.setWorksheetInfo,
     })),
   );
+
   const {
     loading: worksheetLoading,
     error: worksheetError,
