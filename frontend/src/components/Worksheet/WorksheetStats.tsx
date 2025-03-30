@@ -100,7 +100,7 @@ export default function WorksheetStats() {
   const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
     useShallow((state) => ({
       courses: state.courses,
-      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      isExoticWorksheet: Boolean(state.exoticWorksheet),
       exitExoticWorksheet: state.exitExoticWorksheet,
     })),
   );
@@ -269,7 +269,7 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {!isExoticWorksheet && (
+              {isExoticWorksheet && (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
                   <div className={styles.buttonGroup}>
@@ -284,18 +284,17 @@ export default function WorksheetStats() {
                         <Dropdown.Item>Existing worksheet</Dropdown.Item>
                         <Dropdown.Item
                           onClick={async () => {
-                            const {
-                              viewedSeason,
-                              viewedWorksheetNumber,
-                              curWorksheet,
-                            } = useStore.getState();
-                            const season = viewedSeason;
-                            const worksheetNumber = viewedWorksheetNumber;
-                            const worksheet = curWorksheet
-                              .get(season)
+                            const store = useStore.getState();
+                            const season = store.viewedSeason;
+                            const worksheetNumber = store.viewedWorksheetNumber;
+                            const worksheets =
+                              store.viewedPerson === 'me'
+                                ? store.worksheets
+                                : store.friends?.[store.viewedPerson]
+                                    ?.worksheets;
+                            const worksheet = worksheets
+                              ?.get(season)
                               ?.get(worksheetNumber);
-
-                            console.log(worksheet);
 
                             if (!worksheet) {
                               toast.error('Could not find current worksheet');
@@ -303,7 +302,7 @@ export default function WorksheetStats() {
                             }
 
                             const numWorksheets =
-                              curWorksheet.get(season)?.size ?? 0;
+                              worksheets?.get(season)?.size ?? 0;
 
                             // Create new worksheet
                             const success = await updateWorksheetMetadata({
@@ -311,8 +310,6 @@ export default function WorksheetStats() {
                               action: 'add',
                               name: `${worksheet.name} (Copy)`,
                             });
-
-                            console.log(success);
 
                             if (!success) {
                               toast.error('Failed to create new worksheet');
