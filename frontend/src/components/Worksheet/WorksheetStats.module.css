@@ -87,3 +87,29 @@
 .spacer {
   margin: 1em;
 }
+
+.buttonGroup {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  position: relative;
+}
+
+.buttonGroup :global(.dropdown-toggle) {
+  border-radius: 0.375rem;
+}
+
+.buttonGroup :global(.dropdown-menu) {
+  width: 100%;
+  min-width: 500px;
+  padding: 0.5rem 0;
+  left: 0;
+  right: 0;
+}
+
+.buttonGroup :global(.dropdown-item) {
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  white-space: normal;
+  word-wrap: break-word;
+}

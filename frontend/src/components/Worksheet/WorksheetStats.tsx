@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {
+  Button,
+  Collapse,
+  OverlayTrigger,
+  Tooltip,
+  Dropdown,
+} from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
@@ -258,12 +264,23 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {isExoticWorksheet && (
+              {!isExoticWorksheet && (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
-                  <Button variant="primary" onClick={exitExoticWorksheet}>
-                    Exit
-                  </Button>
+                  <div className={styles.buttonGroup}>
+                    <Button variant="primary" onClick={exitExoticWorksheet}>
+                      Exit
+                    </Button>
+                    <Dropdown>
+                      <Dropdown.Toggle variant="primary" id="import-dropdown">
+                        Import Into
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu align="end">
+                        <Dropdown.Item>Existing worksheet</Dropdown.Item>
+                        <Dropdown.Item>New worksheet</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
                 </div>
               )}
             </dl>
