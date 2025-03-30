@@ -9,7 +9,12 @@ import {
 } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
+import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
+import {
+  updateWorksheetMetadata,
+  updateWorksheetCourses,
+} from '../../queries/api';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -277,7 +282,59 @@ export default function WorksheetStats() {
                       </Dropdown.Toggle>
                       <Dropdown.Menu align="end">
                         <Dropdown.Item>Existing worksheet</Dropdown.Item>
-                        <Dropdown.Item>New worksheet</Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={async () => {
+                            const {
+                              viewedSeason,
+                              viewedWorksheetNumber,
+                              curWorksheet,
+                            } = useStore.getState();
+                            const season = viewedSeason;
+                            const worksheetNumber = viewedWorksheetNumber;
+                            const worksheet = curWorksheet
+                              .get(season)
+                              ?.get(worksheetNumber);
+
+                            console.log(worksheet);
+
+                            if (!worksheet) {
+                              toast.error('Could not find current worksheet');
+                              return;
+                            }
+
+                            const numWorksheets =
+                              curWorksheet.get(season)?.size ?? 0;
+
+                            // Create new worksheet
+                            const success = await updateWorksheetMetadata({
+                              season,
+                              action: 'add',
+                              name: `${worksheet.name} (Copy)`,
+                            });
+
+                            console.log(success);
+
+                            if (!success) {
+                              toast.error('Failed to create new worksheet');
+                              return;
+                            }
+
+                            for (const course of worksheet.courses) {
+                              await updateWorksheetCourses({
+                                season,
+                                crn: course.crn,
+                                worksheetNumber: numWorksheets,
+                                action: 'add',
+                                color: course.color,
+                                hidden: course.hidden ?? false,
+                              });
+                            }
+
+                            toast.success('Worksheet duplicated successfully');
+                          }}
+                        >
+                          New worksheet
+                        </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
