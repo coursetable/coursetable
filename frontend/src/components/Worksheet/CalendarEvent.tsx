@@ -28,8 +28,10 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
 
   const lastMod = event.listing.course.last_updated as string | undefined;
   const foolCourseCode = useMemo(
-    () => [...event.listing.number].sort(() => Math.random() - 0.5).join(''),
-    [event.listing],
+    () =>
+      [...event.listing.number].filter((_, i) => i % 2).join('') +
+      [...event.listing.number].filter((_, i) => i % 2 === 0).join(''),
+    [event.listing.number],
   );
 
   return (

@@ -122,7 +122,9 @@ export function CourseCode({
     : '';
 
   const foolCourseCode = useMemo(
-    () => [...listing.number].sort(() => Math.random() - 0.5).join(''),
+    () =>
+      [...listing.number].filter((_, i) => i % 2).join('') +
+      [...listing.number].filter((_, i) => i % 2 === 0).join(''),
     [listing],
   );
   return (

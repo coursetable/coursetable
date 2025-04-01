@@ -26,10 +26,11 @@ export default function WorksheetCalendarListItem({
     })),
   );
   const foolCourseCode = useMemo(
-    () => [...listing.number].sort(() => Math.random() - 0.5).join(''),
+    () =>
+      [...listing.number].filter((_, i) => i % 2).join('') +
+      [...listing.number].filter((_, i) => i % 2 === 0).join(''),
     [listing.number],
   );
-  console.log(foolCourseCode, listing.number);
   return (
     <ListGroup.Item
       className={clsx(styles.listItem, 'py-1 px-2')}
