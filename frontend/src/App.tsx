@@ -144,14 +144,6 @@ function App() {
         id={16}
       >
         # Placeholder
-        <a
-          href="https://buymeacoffee.com/coursetable"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
-        >
-          buying us a coffee!
-        </a>
       </Notice>
       <Navbar />
       <SentryRoutes>
