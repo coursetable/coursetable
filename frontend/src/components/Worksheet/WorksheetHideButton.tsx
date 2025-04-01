@@ -29,7 +29,7 @@ export default function WorksheetHideButton({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       viewedPerson: state.viewedPerson,
-      isReadonlyWorksheet: state.isReadonlyWorksheet,
+      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
     })),
   );
   if (isReadonlyWorksheet || viewedPerson !== 'me') return null;

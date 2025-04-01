@@ -9,7 +9,7 @@ export default function URLExportButton() {
   const { viewedSeason, viewedWorksheetName, courses } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
-      viewedWorksheetName: state.viewedWorksheetName,
+      viewedWorksheetName: state.worksheetMemo.getViewedWorksheetName(state),
       courses: state.courses,
     })),
   );
