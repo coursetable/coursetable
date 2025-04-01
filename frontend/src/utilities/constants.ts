@@ -209,6 +209,7 @@ export const subjects: { [code: string]: string } = {
   GSAS: 'Graduate School',
   HAUS: 'Hausa',
   HEBR: 'Modern Hebrew',
+  HELN: 'Hellenic Studies',
   HGRN: 'Hungarian',
   HIST: 'History',
   HLTH: 'Health Studies',
