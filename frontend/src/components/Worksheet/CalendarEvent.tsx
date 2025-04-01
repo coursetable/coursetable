@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import chroma from 'chroma-js';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
@@ -15,9 +15,14 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
 
   const lastMod = event.listing.course.last_updated as string | undefined;
+  const foolCourseCode = useMemo(
+    () => [...event.listing.number].sort(() => Math.random() - 0.5).join(''),
+    [event.listing],
+  );
+
   return (
     <div className={styles.event} style={{ color: textColor }}>
-      <strong>{event.title}</strong>
+      <strong>{`${event.listing.subject} ${foolCourseCode}`}</strong>
       <br />
       <ResponsiveEllipsis
         className={styles.courseNameText}

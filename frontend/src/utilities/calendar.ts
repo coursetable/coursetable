@@ -276,7 +276,6 @@ export function getCalendarEvents(
               .join(',')
           : // Irrelevant for rbc
             '';
-
         return toEvent({
           summary: l.course_code,
           start: isoString(firstMeetingDay, startTime),
