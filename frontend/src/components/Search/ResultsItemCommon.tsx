@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
@@ -119,6 +120,13 @@ export function CourseCode({
   const section = listing.course.section
     ? ` ${listing.course.section.padStart(2, '0')}`
     : '';
+
+  const foolCourseCode = useMemo(
+    () =>
+      [...listing.number].filter((_, i) => i % 2).join('') +
+      [...listing.number].filter((_, i) => i % 2 === 0).join(''),
+    [listing],
+  );
   return (
     <>
       <OverlayTrigger
@@ -139,7 +147,7 @@ export function CourseCode({
       >
         <span>{listing.subject}</span>
       </OverlayTrigger>{' '}
-      {listing.number}
+      {foolCourseCode}
       {subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (

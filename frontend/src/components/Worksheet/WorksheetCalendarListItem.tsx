@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { ListGroup } from 'react-bootstrap';
@@ -24,7 +25,12 @@ export default function WorksheetCalendarListItem({
       viewedPerson: state.viewedPerson,
     })),
   );
-
+  const foolCourseCode = useMemo(
+    () =>
+      [...listing.number].filter((_, i) => i % 2).join('') +
+      [...listing.number].filter((_, i) => i % 2 === 0).join(''),
+    [listing.number],
+  );
   return (
     <ListGroup.Item
       className={clsx(styles.listItem, 'py-1 px-2')}
@@ -39,7 +45,7 @@ export default function WorksheetCalendarListItem({
           'ps-1 pe-2',
         )}
       >
-        <strong>{listing.course_code}</strong>
+        <strong>{`${listing.subject} ${foolCourseCode}`}</strong>
         <br />
         <span className={styles.courseTitle}>{listing.course.title}</span>
       </Link>
