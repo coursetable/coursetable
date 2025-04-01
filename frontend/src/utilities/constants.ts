@@ -168,6 +168,7 @@ export const subjects: { [code: string]: string } = {
   'E&RS': 'European & Russian Studies',
   EALL: 'East Asian Lang and Lit',
   EAST: 'East Asian Studies',
+  ECE: 'Electrical & Computer Eng',
   ECON: 'Economics',
   EDST: 'Education Studies',
   EEB: 'Ecology & Evolutionary Biology',
