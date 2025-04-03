@@ -12,10 +12,6 @@ import Notice from './components/Notice';
 import ProfModal from './components/ProfModal/ProfModal';
 import Spinner from './components/Spinner';
 import Tutorial from './components/Tutorial';
-import {
-  useModalHistory,
-  ModalHistoryProvider,
-} from './contexts/modalHistoryContext';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
@@ -50,7 +46,7 @@ const Spring24Release = suspended(
 const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
 
 function Modal() {
-  const { currentModal } = useModalHistory();
+  const currentModal = useStore((state) => state.currentModal);
   if (!currentModal) return null;
   switch (currentModal.type) {
     case 'course':
@@ -185,10 +181,7 @@ function App() {
       <Footer />
       {/* Globally overlaid components */}
       <Tutorial />
-      {/* ModalProvider reads the location so it must be within the app */}
-      <ModalHistoryProvider>
-        <Modal />
-      </ModalHistoryProvider>
+      <Modal />
     </div>
   );
 }

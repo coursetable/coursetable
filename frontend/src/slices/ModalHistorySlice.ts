@@ -23,9 +23,15 @@ interface ModalHistorySliceState {
 }
 
 interface ModalHistorySliceActions {
-  navigate: ((mode: 'push' | 'replace', entry: HistoryEntry) => void) &
-    ((mode: 'pop', entry?: undefined) => void);
-  closeModal: () => void;
+  navigate: ((
+    mode: 'push' | 'replace' | 'pop',
+    entry?: HistoryEntry,
+    searchParams?: URLSearchParams,
+  ) => void) &
+    ((mode: 'pop') => void);
+  closeModal: (
+    setSearchParams: (params: URLSearchParams) => URLSearchParams,
+  ) => void;
 }
 
 export interface ModalHistorySlice
@@ -45,6 +51,7 @@ function createHistoryEntryLink(
       return undefined;
   }
 }
+
 export const createModalHistorySlice: StateCreator<
   Store,
   [],
@@ -57,7 +64,11 @@ export const createModalHistorySlice: StateCreator<
   history: [],
 
   // Actions
-  navigate: ((mode: 'push' | 'replace' | 'pop', entry?: HistoryEntry) => {
+  navigate(
+    mode: 'push' | 'replace' | 'pop',
+    entry?: HistoryEntry,
+    searchParams?: URLSearchParams,
+  ) {
     const { history } = get();
     if (mode === 'pop') set({ history: history.slice(0, -1) });
     else if (mode === 'replace')
@@ -71,16 +82,21 @@ export const createModalHistorySlice: StateCreator<
     set({
       currentModal: newCurrentModal,
       backTarget: newBackTarget
-        ? createHistoryEntryLink(newBackTarget, new URLSearchParams())
+        ? createHistoryEntryLink(
+            newBackTarget,
+            searchParams ?? new URLSearchParams(),
+          )
         : undefined,
     });
-  }) as ModalHistorySlice['navigate'],
+  },
 
-  closeModal() {
+  closeModal(setSearchParams: (params: URLSearchParams) => URLSearchParams) {
     set({
       history: [],
       currentModal: undefined,
       backTarget: undefined,
     });
+    const newParams = new URLSearchParams();
+    setSearchParams(newParams);
   },
 });
