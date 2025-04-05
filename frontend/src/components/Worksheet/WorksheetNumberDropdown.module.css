@@ -59,13 +59,13 @@
   box-sizing: border-box;
 }
 
-/* Confirmation box (popup floated near the cursor) */
 .confirmationPopup {
   position: fixed;
-  background: white;
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
   padding: 4px 8px;
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 5px var(--color-shadow);
   font-size: 13px;
   min-height: 20px !important;
   white-space: nowrap;
