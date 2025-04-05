@@ -12,7 +12,7 @@ export const GRAPHQL_API_ENDPOINT = isDev
 export const CUR_SEASON = '202503' as Season;
 
 // Courses in the current year have no evaluations yet
-export const CUR_YEAR = ['202501', '202502', '202503'] as Season[];
+export const CUR_YEAR = ['202501', '202502', '202503', '202601'] as Season[];
 
 // We use this format to avoid dealing with time zones.
 // TODO: this should be a Temporal.PlainDate
@@ -187,6 +187,23 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       },
     ],
     transfers: [{ date: [2025, 8, 29], day: 1 }],
+  },
+  ['202601' as Season]: {
+    start: [2026, 1, 12],
+    end: [2026, 4, 24],
+    breaks: [
+      {
+        name: 'Martin Luther King Jr. Day',
+        start: [2026, 1, 19],
+        end: [2026, 1, 19],
+      },
+      {
+        name: 'Spring recess',
+        start: [2026, 3, 6],
+        end: [2026, 3, 23],
+      },
+    ],
+    transfers: [{ date: [2026, 1, 23], day: 1 }],
   },
   // Add more entries above, but don't remove any
 };
