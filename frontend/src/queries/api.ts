@@ -744,3 +744,73 @@ export async function checkAuth() {
   if (res.auth) Sentry.setUser({ username: res.netId });
   return res.auth;
 }
+
+// =====USER PROFILE ENDPOINTS====
+
+const userProfileSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  hasEvals: z.boolean(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  isHideMajor: z.boolean(),
+  isHideSchool: z.boolean(),
+  isHideYear: z.boolean(),
+});
+
+export type UserProfile = z.infer<typeof userProfileSchema>;
+
+const userPublicProfileSchema = z.object({
+  netId: netIdSchema,
+  displayName: z.string().nullable(),
+  email: z.string().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  year: z.number().nullable(),
+});
+
+export type UserPublicProfile = z.infer<typeof userPublicProfileSchema>;
+
+// Get the user's full profile
+export async function getOwnProfile() {
+  return fetchAPI(`/user/own-profile}`, {
+    schema: userProfileSchema,
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching own profile',
+    },
+  });
+}
+
+// Get any user's public profile
+export async function getPublicProfile(netId: NetId) {
+  return fetchAPI(`/user/public-profile/${netId}`, {
+    schema: userPublicProfileSchema,
+    breadcrumb: {
+      category: 'user',
+      message: 'Fetching public profile',
+    },
+  });
+}
+
+// Update profile settings
+export async function updateProfile(profileData: Partial<UserProfile>) {
+  // Only update inputted fields
+  return fetchAPI(`/user/update-profile`, {
+    body: profileData,
+    breadcrumb: {
+      category: 'user',
+      message: 'Updating profile',
+    },
+  });
+}
+
+// Toggle evals access - only for own profile
+export async function hasEvalsAccess(hasEvals: boolean) {
+  return updateProfile({
+    hasEvals,
+  } as Partial<UserProfile>);
+}
