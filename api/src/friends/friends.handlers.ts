@@ -297,14 +297,31 @@ export const getNames = async (
     columns: {
       netId: true,
       college: true,
-    },
-    extras: {
-      first: sql<string | null>`${studentBluebookSettings.firstName}`.as(
-        'first',
-      ),
-      last: sql<string | null>`${studentBluebookSettings.lastName}`.as('last'),
+      firstName: true,
+      lastName: true,
+      preferredFirstName: true,
+      preferredLastName: true,
     },
   });
 
-  res.status(200).json({ names });
+  // Format the names with preferred names if available
+  const formattedNames = names.map((user) => {
+    let displayName = null;
+
+    // Use preferred names if available, otherwise use regular names
+    if (user.preferredFirstName && user.preferredLastName)
+      displayName = `${user.preferredFirstName} ${user.preferredLastName}`;
+    else if (user.firstName && user.lastName)
+      displayName = `${user.firstName} ${user.lastName}`;
+
+    return {
+      netId: user.netId,
+      first: user.firstName,
+      last: user.lastName,
+      college: user.college,
+      displayName, // Add the formatted display name for clickable links
+    };
+  });
+
+  res.status(200).json({ names: formattedNames });
 };

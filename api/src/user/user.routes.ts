@@ -9,6 +9,8 @@ import {
   updateWishlistCourses,
   getUserWishlist,
   getUserPublicProfile,
+  getOwnProfile,
+  updateProfile,
 } from './user.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
@@ -33,4 +35,6 @@ export default (app: express.Express): void => {
     '/api/user/public-profile/:netId',
     asyncHandler(getUserPublicProfile),
   );
+  app.get('/api/user/own-profile', asyncHandler(getOwnProfile));
+  app.post('/api/user/update-profile', asyncHandler(updateProfile));
 };
