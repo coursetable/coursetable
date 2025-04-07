@@ -776,7 +776,7 @@ export type UserPublicProfile = z.infer<typeof userPublicProfileSchema>;
 
 // Get the user's full profile
 export async function getOwnProfile() {
-  return fetchAPI(`/user/own-profile}`, {
+  return await fetchAPI(`/user/own-profile}`, {
     schema: userProfileSchema,
     breadcrumb: {
       category: 'user',
@@ -787,7 +787,7 @@ export async function getOwnProfile() {
 
 // Get any user's public profile
 export async function getPublicProfile(netId: NetId) {
-  return fetchAPI(`/user/public-profile/${netId}`, {
+  return await fetchAPI(`/user/public-profile/${netId}`, {
     schema: userPublicProfileSchema,
     breadcrumb: {
       category: 'user',
@@ -799,7 +799,7 @@ export async function getPublicProfile(netId: NetId) {
 // Update profile settings
 export async function updateProfile(profileData: Partial<UserProfile>) {
   // Only update inputted fields
-  return fetchAPI(`/user/update-profile`, {
+  return await fetchAPI(`/user/update-profile`, {
     body: profileData,
     breadcrumb: {
       category: 'user',
@@ -810,7 +810,7 @@ export async function updateProfile(profileData: Partial<UserProfile>) {
 
 // Toggle evals access - only for own profile
 export async function hasEvalsAccess(hasEvals: boolean) {
-  return updateProfile({
+  return await updateProfile({
     hasEvals,
   } as Partial<UserProfile>);
 }
