@@ -9,7 +9,7 @@ export default function URLExportButton() {
   const { viewedSeason, viewedWorksheetName, courses } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
-      viewedWorksheetName: state.viewedWorksheetName,
+      viewedWorksheetName: state.worksheetMemo.getViewedWorksheetName(state),
       courses: state.courses,
     })),
   );
@@ -17,7 +17,7 @@ export default function URLExportButton() {
   async function handleExport() {
     const payload: ExoticWorksheet = {
       season: viewedSeason,
-      name: viewedWorksheetName(),
+      name: viewedWorksheetName,
       courses: courses.map((c) => ({
         crn: c.listing.crn,
         hidden: c.hidden ?? false,

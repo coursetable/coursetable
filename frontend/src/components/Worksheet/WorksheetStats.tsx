@@ -89,7 +89,7 @@ export default function WorksheetStats() {
   const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
     useShallow((state) => ({
       courses: state.courses,
-      isExoticWorksheet: state.isExoticWorksheet,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
       exitExoticWorksheet: state.exitExoticWorksheet,
     })),
   );
@@ -258,7 +258,7 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {isExoticWorksheet() && (
+              {isExoticWorksheet && (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
                   <Button variant="primary" onClick={exitExoticWorksheet}>

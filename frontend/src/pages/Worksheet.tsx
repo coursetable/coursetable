@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
@@ -15,6 +15,7 @@ import WorksheetList from '../components/Worksheet/WorksheetList';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
+import { parseCoursesFromURL } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
@@ -33,10 +34,15 @@ function Worksheet() {
       worksheetLoading: state.worksheetLoading,
       worksheetError: state.worksheetError,
       worksheetView: state.worksheetView,
-      isExoticWorksheet: state.isExoticWorksheet,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
     })),
   );
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    const exoticWorksheet = parseCoursesFromURL();
+    useStore.setState({ exoticWorksheet });
+  }, []);
 
   // Wait for search query to finish
   if (worksheetError) {
@@ -45,13 +51,14 @@ function Worksheet() {
   }
   if (worksheetLoading) return <Spinner message="Loading worksheet data..." />;
   // For unauthed users, they can only view exotic worksheets
-  if (authStatus === 'unauthenticated' && !isExoticWorksheet())
+  if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
+
   return (
     <div className={styles.container}>
-      {isMobile && !isExoticWorksheet() && (
+      {isMobile && !isExoticWorksheet && (
         <div className={styles.dropdowns}>
           <WorksheetNumDropdown mobile />
           <div className="d-flex">

@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
 
 import { useShallow } from 'zustand/react/shallow';
@@ -21,6 +23,7 @@ import Worksheet from './pages/Worksheet';
 
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
+import { createCatalogLink } from './utilities/navigation';
 import styles from './App.module.css';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
@@ -81,7 +84,7 @@ function AuthenticatedRoutes() {
 
     case '/login':
       if (authStatus === 'authenticated')
-        return <Navigate to="/catalog" replace />;
+        return <Navigate to={createCatalogLink()} replace />;
       return <Outlet />;
 
     case '/graphiql':
@@ -103,6 +106,17 @@ function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
   useInitStore();
+
+  useEffect(() => {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches;
+    if (standalone) {
+      PullToRefresh.init({
+        onRefresh() {
+          window.location.reload();
+        },
+      });
+    }
+  }, []);
 
   return (
     <div
@@ -127,14 +141,26 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={14}
+        id={16}
       >
-        {/* None */}
+        Got tea on Yale Hospitality? Take a 2 minute{' '}
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc6asiy6REcJUADw-F9BQq-GnFHbyLOdbIULH5OVgTSRZQpPw/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+        >
+          Spill the Tea Survey
+        </a>{' '}
+        and be entered to win a one of 10 ($20) local coffee shop gift cards.
       </Notice>
       <Navbar />
       <SentryRoutes>
         <Route element={<AuthenticatedRoutes />}>
-          <Route path="/" element={<Navigate to="/catalog" replace />} />
+          <Route
+            path="/"
+            element={<Navigate to={createCatalogLink()} replace />}
+          />
 
           {/* Authenticated routes */}
           {/* Catalog and worksheet can be viewed by anyone; we put them under
@@ -155,7 +181,7 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacypolicy" element={<Privacy />} />
 
-        <Route path="/Table" element={<Navigate to="/catalog" />} />
+        <Route path="/Table" element={<Navigate to={createCatalogLink()} />} />
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />

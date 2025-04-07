@@ -19,6 +19,7 @@ import { useTutorial } from '../../contexts/tutorialContext';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
+import { createCatalogLink } from '../../utilities/navigation';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
 
@@ -128,7 +129,7 @@ function DropdownContent({
           {!isMobile && !isTablet && authStatus === 'authenticated' && (
             <DropdownItem
               icon={FcPuzzle}
-              to="/catalog"
+              to={createCatalogLink()}
               onClick={(e) => {
                 e.stopPropagation();
                 scrollToTop(e);

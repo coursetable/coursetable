@@ -12,7 +12,7 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 function SeasonDropdownDesktop() {
   const { seasonCodes, viewedSeason, changeViewedSeason } = useStore(
     useShallow((state) => ({
-      seasonCodes: state.seasonCodes,
+      seasonCodes: state.worksheetMemo.getSeasonCodes(state),
       viewedSeason: state.viewedSeason,
       changeViewedSeason: state.changeViewedSeason,
     })),
@@ -55,7 +55,7 @@ function SeasonDropdownDesktop() {
 function SeasonDropdownMobile() {
   const { seasonCodes, viewedSeason, changeViewedSeason } = useStore(
     useShallow((state) => ({
-      seasonCodes: state.seasonCodes,
+      seasonCodes: state.worksheetMemo.getSeasonCodes(state),
       viewedSeason: state.viewedSeason,
       changeViewedSeason: state.changeViewedSeason,
     })),
