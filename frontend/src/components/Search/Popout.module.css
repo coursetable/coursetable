@@ -1,5 +1,6 @@
 .wrapper {
   position: relative;
+  z-index: 9999;
 }
 
 .arrowIcon {
@@ -62,7 +63,7 @@
     0 4px 11px hsl(218deg 50% 10% / 10%);
   margin-top: 8px;
   position: absolute;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .notificationIcon {

@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import {
-  Button,
-  Collapse,
-  OverlayTrigger,
-  Tooltip,
-  Dropdown,
-} from 'react-bootstrap';
+import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
-import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
-import {
-  updateWorksheetMetadata,
-  updateWorksheetCourses,
-} from '../../queries/api';
+import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -23,7 +13,6 @@ import {
   isDiscussionSection,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
-
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -276,64 +265,9 @@ export default function WorksheetStats() {
                     <Button variant="primary" onClick={exitExoticWorksheet}>
                       Exit
                     </Button>
-                    <Dropdown>
-                      <Dropdown.Toggle variant="primary" id="import-dropdown">
-                        Import Into
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu align="end">
-                        <Dropdown.Item>Existing worksheet</Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={async () => {
-                            const store = useStore.getState();
-                            const season = store.viewedSeason;
-                            const worksheetNumber = store.viewedWorksheetNumber;
-                            const worksheets =
-                              store.viewedPerson === 'me'
-                                ? store.worksheets
-                                : store.friends?.[store.viewedPerson]
-                                    ?.worksheets;
-                            const worksheet = worksheets
-                              ?.get(season)
-                              ?.get(worksheetNumber);
-
-                            if (!worksheet) {
-                              toast.error('Could not find current worksheet');
-                              return;
-                            }
-
-                            const numWorksheets =
-                              worksheets?.get(season)?.size ?? 0;
-
-                            // Create new worksheet
-                            const success = await updateWorksheetMetadata({
-                              season,
-                              action: 'add',
-                              name: `${worksheet.name} (Copy)`,
-                            });
-
-                            if (!success) {
-                              toast.error('Failed to create new worksheet');
-                              return;
-                            }
-
-                            for (const course of worksheet.courses) {
-                              await updateWorksheetCourses({
-                                season,
-                                crn: course.crn,
-                                worksheetNumber: numWorksheets,
-                                action: 'add',
-                                color: course.color,
-                                hidden: course.hidden ?? false,
-                              });
-                            }
-
-                            toast.success('Worksheet duplicated successfully');
-                          }}
-                        >
-                          New worksheet
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                    <div style={{ position: 'relative', zIndex: 9999 }}>
+                      <WorksheetNumDropdown mobile={false} />
+                    </div>
                   </div>
                 </div>
               )}

@@ -2,7 +2,8 @@
   background: #a0a0a022;
   border-radius: 8px;
   transition: border-radius 0.3s step-end;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
 .toggleButton {
