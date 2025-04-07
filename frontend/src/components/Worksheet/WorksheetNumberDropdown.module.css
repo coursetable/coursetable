@@ -18,7 +18,7 @@
 .optionContent {
   display: flex;
   flex: 1;
-  align-items: center; /* ✅ Re-add this for vertical centering */
+  align-items: center; /* vertical centering */
   justify-content: space-between;
   width: 100%;
   height: 100%;
