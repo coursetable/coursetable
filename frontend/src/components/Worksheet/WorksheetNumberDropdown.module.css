@@ -54,3 +54,22 @@
   font-size: 14px;
   box-sizing: border-box;
 }
+
+.popupBody {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* Ensure dropdown menu is visible */
+.popupBody :global(.select__menu) {
+  position: absolute;
+  z-index: 10000;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Ensure dropdown portal is visible */
+.popupBody :global(.select__menu-portal) {
+  z-index: 10001;
+}

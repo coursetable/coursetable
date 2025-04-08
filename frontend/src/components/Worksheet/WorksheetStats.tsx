@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
@@ -86,6 +86,9 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
+  const [showExportPopup, setShowExportPopup] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+
   const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
     useShallow((state) => ({
       courses: state.courses,
@@ -102,6 +105,23 @@ export default function WorksheetStats() {
   const skillsAreas: { courseCode: string; label: string }[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
+
+  // Close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) 
+        setShowExportPopup(false);
+      
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   for (const { listing, hidden } of courses) {
     const alreadyCounted = listing.course.listings.some((l) =>
@@ -265,14 +285,43 @@ export default function WorksheetStats() {
                     <Button variant="primary" onClick={exitExoticWorksheet}>
                       Exit
                     </Button>
-                    <div style={{ position: 'relative', zIndex: 9999 }}>
-                      <WorksheetNumDropdown mobile={false} />
-                    </div>
+                    <Button
+                      variant="primary"
+                      onClick={() => setShowExportPopup(true)}
+                    >
+                      Import
+                    </Button>
                   </div>
                 </div>
               )}
             </dl>
           </div>
+
+          {showExportPopup && (
+            <div className={styles.popup}>
+              <div className={styles.popupContent} ref={popupRef}>
+                <div className={styles.popupHeader}>
+                  <h5>Import Worksheet</h5>
+                  <Button
+                    variant="link"
+                    className={styles.closeButton}
+                    onClick={() => setShowExportPopup(false)}
+                  >
+                    ×
+                  </Button>
+                </div>
+                <WorksheetNumDropdown mobile={false} />
+                <div className={styles.popupFooter}>
+                  <Button
+                    variant="primary"
+                    onClick={() => setShowExportPopup(false)}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </Collapse>
     </div>
