@@ -3,8 +3,10 @@ import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
+import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
+import { updateWorksheetCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -109,12 +111,8 @@ export default function WorksheetStats() {
   // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(event.target as Node)
-      ) 
+      if (popupRef.current && !popupRef.current.contains(event.target as Node))
         setShowExportPopup(false);
-      
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -314,9 +312,36 @@ export default function WorksheetStats() {
                 <div className={styles.popupFooter}>
                   <Button
                     variant="primary"
-                    onClick={() => setShowExportPopup(false)}
+                    onClick={async () => {
+                      const store = useStore.getState();
+                      const season = store.viewedSeason;
+                      const targetWorksheetNumber = store.viewedWorksheetNumber;
+                      const currentWorksheet = store.courses;
+
+                      console.log(currentWorksheet);
+                      console.log(targetWorksheetNumber);
+
+                      if (currentWorksheet.length === 0) {
+                        toast.error('Current worksheet has no courses to copy');
+                        return;
+                      }
+
+                      for (const course of currentWorksheet) {
+                        await updateWorksheetCourses({
+                          season,
+                          crn: course.listing.crn,
+                          worksheetNumber: targetWorksheetNumber,
+                          action: 'add',
+                          color: course.color,
+                          hidden: course.hidden ?? false,
+                        });
+                      }
+
+                      toast.success('Courses copied successfully');
+                      setShowExportPopup(false);
+                    }}
                   >
-                    Submit
+                    Copy to Selected Worksheet
                   </Button>
                 </div>
               </div>
