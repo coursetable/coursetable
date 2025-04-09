@@ -299,7 +299,7 @@ export default function WorksheetStats() {
             <div className={styles.popup}>
               <div className={styles.popupContent} ref={popupRef}>
                 <div className={styles.popupHeader}>
-                  <h5>Import Worksheet</h5>
+                  <h5>Import Into Worksheet</h5>
                   <Button
                     variant="link"
                     className={styles.closeButton}
