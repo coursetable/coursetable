@@ -201,23 +201,25 @@ function WorksheetNumDropdownDesktop({
   );
 
   return (
-    <Popout
-      buttonText="Worksheet"
-      displayOptionLabel
-      selectedOptions={options[viewedWorksheetNumber]}
-      clearIcon={false}
-    >
-      <PopoutSelect<Option<number>, false>
-        value={options[viewedWorksheetNumber]}
-        options={Object.values(options)}
-        showControl={false}
-        minWidth={200}
-        components={{
-          Option: OptionWithActionButtons,
-          MenuList: MenuListWithAdd,
-        }}
-      />
-    </Popout>
+    <div style={{ position: 'relative' }}>
+      <Popout
+        buttonText="Worksheet"
+        displayOptionLabel
+        selectedOptions={options[viewedWorksheetNumber]}
+        clearIcon={false}
+      >
+        <PopoutSelect<Option<number>, false>
+          value={options[viewedWorksheetNumber]}
+          options={Object.values(options)}
+          showControl={false}
+          minWidth={200}
+          components={{
+            Option: OptionWithActionButtons,
+            MenuList: MenuListWithAdd,
+          }}
+        />
+      </Popout>
+    </div>
   );
 }
 

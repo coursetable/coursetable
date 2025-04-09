@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
+import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
+import WorksheetNumDropdown from './WorksheetNumberDropdown';
+import { updateWorksheetCourses } from '../../queries/api';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -12,7 +15,6 @@ import {
   isDiscussionSection,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
-
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -86,10 +88,13 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
+  const [showExportPopup, setShowExportPopup] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+
   const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
     useShallow((state) => ({
       courses: state.courses,
-      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      isExoticWorksheet: Boolean(state.exoticWorksheet),
       exitExoticWorksheet: state.exitExoticWorksheet,
     })),
   );
@@ -102,6 +107,19 @@ export default function WorksheetStats() {
   const skillsAreas: { courseCode: string; label: string }[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
+
+  // Close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node))
+        setShowExportPopup(false);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   for (const { listing, hidden } of courses) {
     const alreadyCounted = listing.course.listings.some((l) =>
@@ -261,13 +279,74 @@ export default function WorksheetStats() {
               {isExoticWorksheet && (
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
-                  <Button variant="primary" onClick={exitExoticWorksheet}>
-                    Exit
-                  </Button>
+                  <div className={styles.buttonGroup}>
+                    <Button variant="primary" onClick={exitExoticWorksheet}>
+                      Exit
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => setShowExportPopup(true)}
+                    >
+                      Import
+                    </Button>
+                  </div>
                 </div>
               )}
             </dl>
           </div>
+
+          {showExportPopup && (
+            <div className={styles.popup}>
+              <div className={styles.popupContent} ref={popupRef}>
+                <div className={styles.popupHeader}>
+                  <h5>Import Into Worksheet</h5>
+                  <Button
+                    variant="link"
+                    className={styles.closeButton}
+                    onClick={() => setShowExportPopup(false)}
+                  >
+                    ×
+                  </Button>
+                </div>
+                <WorksheetNumDropdown mobile={false} />
+                <div className={styles.popupFooter}>
+                  <Button
+                    variant="primary"
+                    onClick={async () => {
+                      const store = useStore.getState();
+                      const season = store.viewedSeason;
+                      const targetWorksheetNumber = store.viewedWorksheetNumber;
+                      const currentWorksheet = store.courses;
+
+                      console.log(currentWorksheet);
+                      console.log(targetWorksheetNumber);
+
+                      if (currentWorksheet.length === 0) {
+                        toast.error('Current worksheet has no courses to copy');
+                        return;
+                      }
+
+                      for (const course of currentWorksheet) {
+                        await updateWorksheetCourses({
+                          season,
+                          crn: course.listing.crn,
+                          worksheetNumber: targetWorksheetNumber,
+                          action: 'add',
+                          color: course.color,
+                          hidden: course.hidden ?? false,
+                        });
+                      }
+
+                      toast.success('Courses copied successfully');
+                      setShowExportPopup(false);
+                    }}
+                  >
+                    Copy to Selected Worksheet
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </Collapse>
     </div>
