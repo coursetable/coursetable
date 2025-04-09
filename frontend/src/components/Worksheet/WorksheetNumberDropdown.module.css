@@ -55,11 +55,6 @@
   box-sizing: border-box;
 }
 
-.popupBody {
-  margin-bottom: 20px;
-  position: relative;
-}
-
 /* Ensure dropdown menu is visible */
 .popupBody :global(.select__menu) {
   position: absolute;
