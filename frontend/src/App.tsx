@@ -141,27 +141,18 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={15}
+        id={16}
       >
-        Yale College has{' '}
+{/*         Got tea on Yale Hospitality? Take a 2 minute{' '}
         <a
-          href="https://catalog.yale.edu/departmental_academic_support/four-digit-numbers/"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc6asiy6REcJUADw-F9BQq-GnFHbyLOdbIULH5OVgTSRZQpPw/viewform"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: 'white', textDecoration: 'underline' }}
         >
-          transitioned to four-digit course numbers.
+          Spill the Tea Survey
         </a>{' '}
-        A lot of work went into making CourseTable's own transition seamless,
-        please consider{' '}
-        <a
-          href="https://buymeacoffee.com/coursetable"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
-        >
-          buying us a coffee!
-        </a>
+        and be entered to win a one of 10 ($20) local coffee shop gift cards. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
