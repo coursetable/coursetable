@@ -143,7 +143,7 @@ function App() {
         // Don't remove this wrapper.
         id={16}
       >
-{/*         Got tea on Yale Hospitality? Take a 2 minute{' '}
+        {/*         Got tea on Yale Hospitality? Take a 2 minute{' '}
         <a
           href="https://docs.google.com/forms/d/e/1FAIpQLSc6asiy6REcJUADw-F9BQq-GnFHbyLOdbIULH5OVgTSRZQpPw/viewform"
           target="_blank"
