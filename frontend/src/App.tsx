@@ -38,6 +38,7 @@ const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const Join = suspended(() => import('./pages/Join'));
 const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
+const OwnProfile = suspended(() => import('./pages/OwnProfile'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const QuistRelease = suspended(() => import('./pages/releases/quist.mdx'));
@@ -170,6 +171,7 @@ function App() {
           <Route path="/worksheet" element={<Worksheet />} />
           <Route path="/graphiql" element={<Graphiql />} />
           <Route path="/login" element={<Landing />} />
+          <Route path="/profile" element={<OwnProfile />} />
         </Route>
 
         {/* Challenge handles its own auth */}

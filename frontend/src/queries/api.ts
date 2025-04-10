@@ -751,8 +751,9 @@ const userProfileSchema = z.object({
   netId: netIdSchema,
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
+  preferredFirstName: z.string().nullable(),
+  preferredLastName: z.string().nullable(),
   email: z.string().nullable(),
-  hasEvals: z.boolean(),
   year: z.number().nullable(),
   school: z.string().nullable(),
   major: z.string().nullable(),
@@ -776,7 +777,7 @@ export type UserPublicProfile = z.infer<typeof userPublicProfileSchema>;
 
 // Get the user's full profile
 export async function getOwnProfile() {
-  return await fetchAPI(`/user/own-profile}`, {
+  return await fetchAPI('/user/own-profile', {
     schema: userProfileSchema,
     breadcrumb: {
       category: 'user',
