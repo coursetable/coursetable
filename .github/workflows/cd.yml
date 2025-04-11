@@ -101,11 +101,25 @@ jobs:
           ref: ${{ github.ref }}
       - name: Sync Local Repository with Remote
         run: cd /home/app/coursetable && git pull
+
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        id: doppler
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod
+          inject-env-vars: true
+
       - name: Build and Deploy Docker containers
         working-directory: ./api
         if: github.event_name == 'push'
         run: ./start.sh -p
+        env:
+          SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
+
       - name: Build and Deploy Docker containers (Manual)
         working-directory: ./api
         if: github.event_name == 'workflow_dispatch'
         run: ./start.sh -p -o
+        env:
+          SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}

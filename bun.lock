@@ -36,7 +36,7 @@
       "name": "api",
       "version": "0.0.0",
       "dependencies": {
-        "@coursetable/passport-cas": "^0.1.2",
+        "@coursetable/passport-cas": "^0.1.4",
         "@sentry/node": "^8.48.0",
         "chroma-js": "^3.1.2",
         "connect-redis": "^7.1.1",
@@ -386,7 +386,7 @@
 
     "@colors/colors": ["@colors/colors@1.6.0", "", {}, "sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA=="],
 
-    "@coursetable/passport-cas": ["@coursetable/passport-cas@0.1.3", "", { "dependencies": { "passport-strategy": "^1.0.0", "uuid": "^11.0.5", "xml2js": "^0.6.2" } }, "sha512-SolqKuFmeJ6sLykXGkSOX9qGt+mbGqncJWyQas7+jFdAXAZ56CMjgKAsAwVuwwfopC7qPyPW9KzekD67XwtLng=="],
+    "@coursetable/passport-cas": ["@coursetable/passport-cas@0.1.4", "", { "dependencies": { "passport-strategy": "^1.0.0", "uuid": "^11.0.5", "xml2js": "^0.6.2" } }, "sha512-Als5lnZgb1U3frcb1fdEhb46p0ahlTriXaWNpIGHh5FDMlMAWP9astZd4E715Cshyvgzdh+BxM5JuvXpeToplQ=="],
 
     "@csstools/css-parser-algorithms": ["@csstools/css-parser-algorithms@3.0.4", "", { "peerDependencies": { "@csstools/css-tokenizer": "^3.0.3" } }, "sha512-Up7rBoV77rv29d3uKHUIVubz1BTcgyUK72IvCQAbfbMv584xHcGKCKbWh7i8hPrRJ7qU4Y8IO3IY9m+iTB7P3A=="],
 
