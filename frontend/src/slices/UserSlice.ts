@@ -114,16 +114,12 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
     await updateProfile(profileData);
     await get().ownProfileRefresh();
     const netId = get().user?.netId;
-    if (netId) 
-      await get().publicProfileRefresh(netId);
-    
+    if (netId) await get().publicProfileRefresh(netId);
   },
   async toggleEvalsAccess() {
     await toggleEvalsAccess();
     await get().ownProfileRefresh();
     const netId = get().user?.netId;
-    if (netId) 
-      await get().publicProfileRefresh(netId);
-    
+    if (netId) await get().publicProfileRefresh(netId);
   },
 });
