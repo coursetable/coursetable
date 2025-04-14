@@ -757,6 +757,7 @@ const userProfileSchema = z.object({
   year: z.number().nullable(),
   school: z.string().nullable(),
   major: z.string().nullable(),
+  hasEvals: z.boolean(),
   isHideMajor: z.boolean(),
   isHideSchool: z.boolean(),
   isHideYear: z.boolean(),
@@ -810,8 +811,12 @@ export async function updateProfile(profileData: Partial<UserProfile>) {
 }
 
 // Toggle evals access - only for own profile
-export async function hasEvalsAccess(hasEvals: boolean) {
+export async function toggleEvalsAccess(): Promise<boolean> {
+  const ownProfile = await getOwnProfile();
+  if (!ownProfile) return false;
+  // Get user's current evals access
+  const {hasEvals} = ownProfile;
   return await updateProfile({
-    hasEvals,
+    hasEvals: !hasEvals,
   } as Partial<UserProfile>);
 }

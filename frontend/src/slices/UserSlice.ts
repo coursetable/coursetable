@@ -8,10 +8,16 @@ import {
   addFriend as baseAddFriend,
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
+  getOwnProfile,
+  getPublicProfile,
+  updateProfile,
+  toggleEvalsAccess,
   type UserInfo,
   type UserWorksheets,
   type FriendRecord,
   type FriendRequests,
+  type UserProfile,
+  type UserPublicProfile,
 } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import type { Store } from '../store';
@@ -21,6 +27,8 @@ interface UserState {
   worksheets?: UserWorksheets;
   friendRequests?: FriendRequests;
   friends?: FriendRecord;
+  ownProfile?: UserProfile;
+  publicProfile?: UserPublicProfile;
 }
 
 interface UserActions {
@@ -31,6 +39,10 @@ interface UserActions {
   addFriend: (friendNetId: NetId) => Promise<void>;
   removeFriend: (friendNetId: NetId, isRequest: boolean) => Promise<void>;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
+  ownProfileRefresh: () => Promise<void>;
+  publicProfileRefresh: (netId: NetId) => Promise<void>;
+  updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
+  toggleEvalsAccess: () => Promise<void>;
 }
 
 export interface UserSlice extends UserState, UserActions {}
@@ -43,6 +55,8 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   worksheets: undefined,
   friendRequests: undefined,
   friends: undefined,
+  ownProfile: undefined,
+  publicProfile: undefined,
   async userRefresh() {
     const data = await getUserInfo();
     set({ user: data });
@@ -87,5 +101,29 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
     } else if (await baseRequestAddFriend(friendNetId)) {
       toast.info(`Sent friend request: ${friendNetId}`);
     }
+  },
+  async ownProfileRefresh() {
+    const data = await getOwnProfile();
+    set({ ownProfile: data });
+  },
+  async publicProfileRefresh(netId: NetId) {
+    const data = await getPublicProfile(netId);
+    set({ publicProfile: data });
+  },
+  async updateProfile(profileData) {
+    await updateProfile(profileData);
+    await get().ownProfileRefresh();
+    const netId = get().user?.netId;
+    if (netId) 
+      await get().publicProfileRefresh(netId);
+    
+  },
+  async toggleEvalsAccess() {
+    await toggleEvalsAccess();
+    await get().ownProfileRefresh();
+    const netId = get().user?.netId;
+    if (netId) 
+      await get().publicProfileRefresh(netId);
+    
   },
 });
