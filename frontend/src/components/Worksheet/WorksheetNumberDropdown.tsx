@@ -68,6 +68,10 @@ function WSNameInput({
 
 function OptionWithActionButtons(props: OptionProps<Option<number>>) {
   const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [animateButtonsIn, setAnimateButtonsIn] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const {
     viewedSeason,
@@ -82,6 +86,35 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
       viewedPerson: state.viewedPerson,
     })),
   );
+
+  useEffect(() => {
+    if (isConfirmingDelete && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const popup = document.createElement('div');
+      popup.className = styles.confirmationPopup!;
+      popup.textContent = 'Are you sure?';
+      popup.style.position = 'fixed';
+      popup.style.top = `${rect.top + rect.height / 2}px`;
+      popup.style.left = `${rect.right}px`;
+      popup.style.transform = 'translateY(-50%)';
+      document.body.appendChild(popup);
+
+      return () => {
+        document.body.removeChild(popup);
+      };
+    }
+    return undefined;
+  }, [isConfirmingDelete]);
+
+  useEffect(() => {
+    if (isConfirmingDelete) {
+      requestAnimationFrame(() => {
+        setAnimateButtonsIn(true);
+      });
+    } else {
+      setAnimateButtonsIn(false);
+    }
+  }, [isConfirmingDelete]);
 
   if (isRenamingWorksheet) {
     return (
@@ -101,6 +134,52 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
       />
     );
   }
+
+  if (isConfirmingDelete) {
+    return (
+      <components.Option {...props} className={styles.noPaddingOption}>
+        <div className={styles.confirmContainer} ref={containerRef}>
+          <div
+            className={`${styles.confirmButtons ?? ''} ${
+              animateButtonsIn && styles.confirmButtonsVisible
+                ? styles.confirmButtonsVisible
+                : ''
+            }`}
+          >
+            <button
+              type="button"
+              className={styles.keepButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsConfirmingDelete(false);
+              }}
+            >
+              Keep
+            </button>
+            <button
+              type="button"
+              className={styles.deleteButton}
+              onClick={async (e) => {
+                e.stopPropagation();
+                setIsConfirmingDelete(false);
+                await updateWorksheetMetadata({
+                  action: 'delete',
+                  season: viewedSeason,
+                  worksheetNumber: props.data.value,
+                });
+                if (viewedWorksheetNumber === props.data.value)
+                  changeViewedWorksheetNumber(0);
+                await worksheetsRefresh();
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </components.Option>
+    );
+  }
+
   return (
     <components.Option
       {...props}
@@ -123,21 +202,15 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
                 setIsRenamingWorksheet(true);
               }}
             />
-            <MdDelete
-              className={styles.deleteWorksheetIcon}
-              onClick={async (e) => {
-                e.stopPropagation();
-                await updateWorksheetMetadata({
-                  action: 'delete',
-                  season: viewedSeason,
-                  worksheetNumber: props.data.value,
-                });
-                if (viewedWorksheetNumber === props.data.value)
-                  changeViewedWorksheetNumber(0);
-
-                await worksheetsRefresh();
-              }}
-            />
+            <div>
+              <MdDelete
+                className={styles.deleteWorksheetIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsConfirmingDelete(true);
+                }}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -243,16 +316,7 @@ function WorksheetNumDropdownMobile({
       }}
     >
       {Object.values(options).map(({ value, label }) => (
-        <Dropdown.Item
-          key={value}
-          eventKey={value}
-          className="d-flex"
-          // Styling if this is the current number
-          style={{
-            backgroundColor:
-              value === viewedWorksheetNumber ? 'var(--color-primary)' : '',
-          }}
-        >
+        <Dropdown.Item key={value} eventKey={value} className="d-flex">
           <div className="mx-auto">{label}</div>
         </Dropdown.Item>
       ))}
