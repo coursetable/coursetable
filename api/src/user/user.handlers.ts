@@ -530,6 +530,7 @@ export const getOwnProfile = async (
       isHideMajor: true,
       isHideSchool: true,
       isHideYear: true,
+      evaluationsEnabled: true,
     },
   });
 
@@ -551,6 +552,7 @@ export const getOwnProfile = async (
     isHideMajor: studentProfile.isHideMajor,
     isHideSchool: studentProfile.isHideSchool,
     isHideYear: studentProfile.isHideYear,
+    evaluationsEnabled: studentProfile.evaluationsEnabled,
   });
 };
 
