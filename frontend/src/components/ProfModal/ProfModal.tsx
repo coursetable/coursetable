@@ -1,8 +1,6 @@
 import { Modal } from 'react-bootstrap';
 
 import ModalHeaderInfo from './Header/InfoRow';
-
-import { useModalHistory } from '../../contexts/modalHistoryContext';
 import type { ProfModalOverviewDataQuery } from '../../generated/graphql-types';
 import { useProfModalOverviewDataQuery } from '../../queries/graphql-queries';
 import { useStore } from '../../store';
@@ -16,7 +14,9 @@ const OverviewPanel = suspended(() => import('./OverviewPanel/OverviewPanel'));
 
 function ProfModal({ professorId }: { readonly professorId: number }) {
   const user = useStore((state) => state.user);
-  const { closeModal } = useModalHistory();
+  const { closeModal } = useStore((state) => ({
+    closeModal: state.closeModal,
+  }));
   const { data, loading, error } = useProfModalOverviewDataQuery({
     variables: { professorId, hasEvals: Boolean(user?.hasEvals) },
   });
@@ -27,7 +27,7 @@ function ProfModal({ professorId }: { readonly professorId: number }) {
       <Modal
         show
         scrollable
-        onHide={closeModal}
+        onHide={() => closeModal(() => new URLSearchParams())}
         dialogClassName={styles.dialog}
         animation={false}
         centered
