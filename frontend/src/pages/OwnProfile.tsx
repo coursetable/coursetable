@@ -104,57 +104,58 @@ export default function OwnProfile() {
           </div>
           <div className={styles.field}>
             <label htmlFor="name-display">Name</label>
-            <div id="name-display" className={styles.fieldContent}>
-              {isEditing ? (
-                <div className={styles.nameInputs}>
-                  <label className={styles.visuallyHidden} htmlFor="first-name">
-                    First name
-                  </label>
-                  <Input
-                    id="first-name"
-                    type="text"
-                    value={
-                      pendingChanges.preferredFirstName !== undefined
-                        ? pendingChanges.preferredFirstName || ''
-                        : ownProfile.preferredFirstName || ownProfile.firstName
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setPendingChanges((prev) => ({
-                        ...prev,
-                        preferredFirstName: e.target.value || null,
-                      }))
-                    }
-                    placeholder="First name (displayed)"
-                    className={styles.nameInput}
-                  />
-                  <label className={styles.visuallyHidden} htmlFor="last-name">
-                    Last name
-                  </label>
-                  <Input
-                    id="last-name"
-                    type="text"
-                    value={
-                      pendingChanges.preferredLastName !== undefined
-                        ? pendingChanges.preferredLastName || ''
-                        : ownProfile.preferredLastName || ownProfile.lastName
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setPendingChanges((prev) => ({
-                        ...prev,
-                        preferredLastName: e.target.value || null,
-                      }))
-                    }
-                    placeholder="Last name (displayed)"
-                    className={styles.nameInput}
-                  />
-                </div>
-              ) : (
-                <span>
-                  {ownProfile.preferredFirstName || ownProfile.firstName}{' '}
-                  {ownProfile.preferredLastName || ownProfile.lastName}
-                </span>
-              )}
-            </div>
+            {isEditing ? (
+              <div className={styles.nameInputs}>
+                <label className={styles.visuallyHidden} htmlFor="first-name">
+                  First name
+                </label>
+                <Input
+                  id="first-name"
+                  type="text"
+                  value={
+                    pendingChanges.preferredFirstName !== undefined
+                      ? pendingChanges.preferredFirstName || ''
+                      : ownProfile.preferredFirstName ||
+                        ownProfile.firstName ||
+                        ''
+                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPendingChanges((prev) => ({
+                      ...prev,
+                      preferredFirstName: e.target.value || null,
+                    }))
+                  }
+                  placeholder="First name (displayed)"
+                  className={styles.nameInput}
+                />
+                <label className={styles.visuallyHidden} htmlFor="last-name">
+                  Last name
+                </label>
+                <Input
+                  id="last-name"
+                  type="text"
+                  value={
+                    pendingChanges.preferredLastName !== undefined
+                      ? pendingChanges.preferredLastName || ''
+                      : ownProfile.preferredLastName ||
+                        ownProfile.lastName ||
+                        ''
+                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPendingChanges((prev) => ({
+                      ...prev,
+                      preferredLastName: e.target.value || null,
+                    }))
+                  }
+                  placeholder="Last name (displayed)"
+                  className={styles.nameInput}
+                />
+              </div>
+            ) : (
+              <span id="name-display">
+                {`${ownProfile.preferredFirstName || ownProfile.firstName || ''} ${ownProfile.preferredLastName || ownProfile.lastName || ''}`}
+              </span>
+            )}
           </div>
           <div className={styles.field}>
             <label htmlFor="email-display">Email</label>
@@ -167,69 +168,55 @@ export default function OwnProfile() {
           <div className={styles.field}>
             <label htmlFor="school-display">School</label>
             <span id="school-display">{ownProfile.school}</span>
-            {isEditing && (
-              <div className={styles.hideOption}>
+            <div className={styles.hideOption}>
+              <label className={styles.switch} aria-label="Toggle hide school">
                 <input
-                  id="hide-school"
                   type="checkbox"
+                  role="switch"
                   checked={
-                    pendingChanges.isHideSchool !== undefined
-                      ? pendingChanges.isHideSchool
-                      : ownProfile.isHideSchool
+                    pendingChanges.isHideSchool ?? ownProfile.isHideSchool
                   }
                   onChange={() => handleToggleHide('isHideSchool')}
+                  disabled={!isEditing}
                 />
-                <label htmlFor="hide-school">Hidden</label>
-              </div>
-            )}
+                <span className={styles.slider} />
+              </label>
+              Hide school
+            </div>
           </div>
           <div className={styles.field}>
             <label htmlFor="major-display">Major</label>
             <span id="major-display">{ownProfile.major}</span>
-            {isEditing && (
-              <div className={styles.hideOption}>
+            <div className={styles.hideOption}>
+              <label className={styles.switch} aria-label="Toggle hide major">
                 <input
-                  id="hide-major"
                   type="checkbox"
-                  checked={
-                    pendingChanges.isHideMajor !== undefined
-                      ? pendingChanges.isHideMajor
-                      : ownProfile.isHideMajor
-                  }
+                  role="switch"
+                  checked={pendingChanges.isHideMajor ?? ownProfile.isHideMajor}
                   onChange={() => handleToggleHide('isHideMajor')}
+                  disabled={!isEditing}
                 />
-                <label htmlFor="hide-major">Hidden</label>
-              </div>
-            )}
+                <span className={styles.slider} />
+              </label>
+              Hide major
+            </div>
           </div>
           <div className={styles.field}>
             <label htmlFor="year-display">Year</label>
             <span id="year-display">{ownProfile.year}</span>
-            {isEditing && (
-              <div className={styles.hideOption}>
+            <div className={styles.hideOption}>
+              <label className={styles.switch} aria-label="Toggle hide year">
                 <input
-                  id="year-hide-field"
                   type="checkbox"
-                  checked={
-                    pendingChanges.isHideYear !== undefined
-                      ? pendingChanges.isHideYear
-                      : ownProfile.isHideYear
-                  }
+                  role="switch"
+                  checked={pendingChanges.isHideYear ?? ownProfile.isHideYear}
                   onChange={() => handleToggleHide('isHideYear')}
+                  disabled={!isEditing}
                 />
-                <label htmlFor="hide-year">Hidden</label>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <h2>Preferences</h2>
-          <div className={styles.field}>
-            <label htmlFor="evals-display">Course Evaluations</label>
-            <span id="evals-display">
-              {ownProfile.evaluationsEnabled ? 'Enabled' : 'Disabled'}
-            </span>
+                <span className={styles.slider} />
+              </label>
+              Hide year
+            </div>
           </div>
         </div>
       </SurfaceComponent>
