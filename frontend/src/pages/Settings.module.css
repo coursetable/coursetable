@@ -1,0 +1,38 @@
+.container {
+  width: 900px;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 25px;
+  text-align: center;
+  transition: color var(--trans-dur);
+}
+
+.aboutDescription {
+  font-weight: 500;
+  font-size: 15px;
+  text-align: center;
+  max-width: 750px;
+}
+
+.card {
+  background-color: var(--color-surface);
+  height: 100%;
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: calc(576px - 0.5px)) {
+  .container {
+    width: 90vw;
+  }
+}

@@ -19,6 +19,7 @@ import { useTutorial } from './contexts/tutorialContext';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
+import Settings from './pages/Settings';
 import Worksheet from './pages/Worksheet';
 
 import { useStore, useInitStore } from './store';
@@ -80,6 +81,7 @@ function AuthenticatedRoutes() {
   switch (location.pathname) {
     case '/catalog':
     case '/worksheet':
+    case '/settings':
       return <Outlet />;
 
     case '/login':
@@ -170,6 +172,7 @@ function App() {
           <Route path="/worksheet" element={<Worksheet />} />
           <Route path="/graphiql" element={<Graphiql />} />
           <Route path="/login" element={<Landing />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
 
         {/* Challenge handles its own auth */}
