@@ -317,12 +317,24 @@ export default function WorksheetStats() {
                       const targetWorksheetNumber = store.viewedWorksheetNumber;
                       const currentWorksheet = store.courses;
 
+                      const targetWorksheet = store.worksheets
+                        ?.get(season)
+                        ?.get(targetWorksheetNumber);
+
                       if (currentWorksheet.length === 0) {
                         toast.error('Current worksheet has no courses to copy');
                         return;
                       }
 
                       for (const course of currentWorksheet) {
+                        if (
+                          targetWorksheet &&
+                          targetWorksheet.courses.some(
+                            (c) => c.crn === course.crn,
+                          )
+                        )
+                          continue;
+
                         await updateWorksheetCourses({
                           season,
                           crn: course.listing.crn,
