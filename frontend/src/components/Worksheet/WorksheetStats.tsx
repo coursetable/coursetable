@@ -301,7 +301,6 @@ export default function WorksheetStats() {
                 <div className={styles.popupHeader}>
                   <h5>Import Into Worksheet</h5>
                   <Button
-                    variant="link"
                     className={styles.closeButton}
                     onClick={() => setShowExportPopup(false)}
                   >
