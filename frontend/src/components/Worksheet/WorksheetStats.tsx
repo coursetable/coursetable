@@ -355,9 +355,13 @@ export default function WorksheetStats() {
                         });
                       }
 
-                      await updateWorksheetCourses(updates);
+                      if (updates.length > 0) {
+                        await updateWorksheetCourses(updates);
+                        toast.success('Courses copied successfully');
+                      } else {
+                        toast.error('No courses to copy');
+                      }
 
-                      toast.success('Courses copied successfully');
                       setShowExportPopup(false);
                     }}
                   >
