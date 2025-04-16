@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import { updateWorksheetCourses } from '../../queries/api';
+import type { Crn, Season } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -326,6 +327,15 @@ export default function WorksheetStats() {
                         return;
                       }
 
+                      const updates: {
+                        season: Season;
+                        crn: Crn;
+                        worksheetNumber: number;
+                        action: 'add';
+                        color: string;
+                        hidden: boolean;
+                      }[] = [];
+
                       for (const course of currentWorksheet) {
                         if (
                           targetWorksheet &&
@@ -335,7 +345,7 @@ export default function WorksheetStats() {
                         )
                           continue;
 
-                        await updateWorksheetCourses({
+                        updates.push({
                           season,
                           crn: course.listing.crn,
                           worksheetNumber: targetWorksheetNumber,
@@ -344,6 +354,8 @@ export default function WorksheetStats() {
                           hidden: course.hidden ?? false,
                         });
                       }
+
+                      await updateWorksheetCourses(updates);
 
                       toast.success('Courses copied successfully');
                       setShowExportPopup(false);
