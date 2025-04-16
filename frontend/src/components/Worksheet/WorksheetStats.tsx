@@ -307,8 +307,8 @@ export default function WorksheetStats() {
                     ×
                   </Button>
                 </div>
-                <WorksheetNumDropdown mobile={false} />
-                <div className={styles.popupFooter}>
+                <div className={styles.importContainer}>
+                  <WorksheetNumDropdown mobile={false} />
                   <Button
                     variant="primary"
                     onClick={async () => {
@@ -316,9 +316,6 @@ export default function WorksheetStats() {
                       const season = store.viewedSeason;
                       const targetWorksheetNumber = store.viewedWorksheetNumber;
                       const currentWorksheet = store.courses;
-
-                      console.log(currentWorksheet);
-                      console.log(targetWorksheetNumber);
 
                       if (currentWorksheet.length === 0) {
                         toast.error('Current worksheet has no courses to copy');
@@ -340,7 +337,7 @@ export default function WorksheetStats() {
                       setShowExportPopup(false);
                     }}
                   >
-                    Copy to Selected Worksheet
+                    Import
                   </Button>
                 </div>
               </div>
