@@ -8,6 +8,7 @@ export function PopoutSelect<
 >({
   isMulti = false as IsMulti,
   isClearable = isMulti, // Multi-selects are clearable by default
+  menuPortalTarget,
   ...props
 }: React.ComponentProps<typeof CustomSelect<T, IsMulti>>) {
   return (
@@ -24,6 +25,7 @@ export function PopoutSelect<
       menuIsOpen
       tabSelectsValue={false}
       closeMenuOnSelect={!isMulti}
+      menuPortalTarget={menuPortalTarget}
     />
   );
 }

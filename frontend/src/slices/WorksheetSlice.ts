@@ -195,6 +195,7 @@ export const createWorksheetSlice: StateCreator<
       '',
       `${window.location.pathname}${searchParams}`,
     );
+    void get().worksheetsRefresh();
   },
   worksheetView: 'calendar',
   hoverCourse: null,
