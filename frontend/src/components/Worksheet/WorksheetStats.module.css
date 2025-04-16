@@ -94,6 +94,7 @@
   gap: 0.5rem;
   align-items: center;
   position: relative;
+  padding: 10px;
 }
 
 .buttonGroup :global(.dropdown-toggle) {

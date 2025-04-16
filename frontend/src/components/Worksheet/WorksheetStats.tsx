@@ -280,14 +280,14 @@ export default function WorksheetStats() {
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
                   <div className={styles.buttonGroup}>
-                    <Button variant="primary" onClick={exitExoticWorksheet}>
-                      Exit
-                    </Button>
                     <Button
                       variant="primary"
                       onClick={() => setShowExportPopup(true)}
                     >
                       Import
+                    </Button>
+                    <Button variant="primary" onClick={exitExoticWorksheet}>
+                      Exit
                     </Button>
                   </div>
                 </div>
