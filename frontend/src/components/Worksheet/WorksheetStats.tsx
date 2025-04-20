@@ -281,12 +281,31 @@ export default function WorksheetStats() {
                 <div className={styles.wide}>
                   <dt>Viewing exported worksheet</dt>
                   <div className={styles.buttonGroup}>
-                    <Button
-                      variant="primary"
-                      onClick={() => setShowExportPopup(true)}
-                    >
-                      Import
-                    </Button>
+                    {user ? (
+                      <Button
+                        variant="primary"
+                        onClick={() => setShowExportPopup(true)}
+                      >
+                        Import
+                      </Button>
+                    ) : (
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="login-tooltip">
+                            <small>
+                              Sign in to import courses into your worksheets
+                            </small>
+                          </Tooltip>
+                        }
+                      >
+                        <span>
+                          <Button variant="primary" disabled>
+                            Import
+                          </Button>
+                        </span>
+                      </OverlayTrigger>
+                    )}
                     <Button variant="primary" onClick={exitExoticWorksheet}>
                       Exit
                     </Button>
