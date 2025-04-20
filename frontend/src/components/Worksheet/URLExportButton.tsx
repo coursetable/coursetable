@@ -38,7 +38,7 @@ export default function URLExportButton() {
       <span style={{ height: '2rem', width: '2rem', display: 'inline-block' }}>
         <FaRegClipboard style={{ height: '1.5rem', width: '1.5rem' }} />
       </span>
-      &nbsp;&nbsp;Copy worksheet as URL
+      &nbsp;&nbsp;Export worksheet as URL
     </button>
   );
 }
