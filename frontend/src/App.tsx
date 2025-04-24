@@ -143,7 +143,7 @@ function App() {
         // Don't remove this wrapper.
         id={17}
       >
-        If you enjoy CourseTable, please consider{' '}
+        {/* If you enjoy CourseTable, please consider{' '}
         <a
           href="https://www.buymeacoffee.com/coursetable"
           target="_blank"
@@ -151,7 +151,7 @@ function App() {
           style={{ color: 'white', textDecoration: 'underline' }}
         >
           buying our team of volunteers a coffee!
-        </a>
+        </a> */}
       </Notice>
       <Navbar />
       <SentryRoutes>
