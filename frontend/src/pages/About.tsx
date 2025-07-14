@@ -27,6 +27,7 @@ import lt from '../images/headshots/leck-tang.jpg';
 import lz from '../images/headshots/lily-zhou.jpg';
 import lh from '../images/headshots/lucas-huang.jpg';
 import my from '../images/headshots/max-yuan.jpg';
+import mc from '../images/headshots/michael-canudas.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import ma from '../images/headshots/murad-avliyakulov.jpg';
 import nk from '../images/headshots/nalin-khanna.jpg';
@@ -135,6 +136,16 @@ function About() {
       links: {
         github: 'https://github.com/reybahl',
         linkedin: 'https://www.linkedin.com/in/reyanshbahl',
+      },
+    },
+    {
+      name: 'Michael Canudas',
+      image: mc,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/michaelcanudas',
+        linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
+        website: 'https://canudas.org/',
       },
     },
   ];
