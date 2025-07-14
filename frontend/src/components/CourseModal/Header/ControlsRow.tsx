@@ -102,7 +102,7 @@ function MoreButton({
 
 type Tab = {
   readonly label: string;
-  readonly value: 'overview' | 'evals';
+  readonly value: 'overview' | 'demand' | 'evals';
   readonly disabled?: boolean;
 };
 
@@ -160,14 +160,15 @@ export default function ModalHeaderControls({
   setView,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  readonly view: 'overview' | 'evals';
-  readonly setView: (value: 'overview' | 'evals') => void;
+  readonly view: 'overview' | 'demand' | 'evals';
+  readonly setView: (value: 'overview' | 'demand' | 'evals') => void;
 }) {
   return (
     <div className={styles.modalControls}>
       <ViewTabs
         tabs={[
           { label: 'Overview', value: 'overview' },
+          { label: 'Demand', value: 'demand' },
           {
             label: 'Evaluations',
             value: 'evals',

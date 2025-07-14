@@ -7,13 +7,15 @@
 }
 
 .tabs {
-  width: 220px;
+  width: auto;
   display: flex;
   align-items: end;
+  gap: 0.5em;
 }
 
 .tabButton {
-  width: 50%;
+  flex: 1;
+  min-width: 90px;
   padding: 0.5em 0;
   border: none;
   border-radius: 8px 8px 0 0;

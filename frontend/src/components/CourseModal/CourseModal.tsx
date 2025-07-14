@@ -18,6 +18,7 @@ import styles from './CourseModal.module.css';
 // logic that determines whether itself is visible.
 // Maybe we should split more code into the subviews?
 const OverviewPanel = suspended(() => import('./OverviewPanel/OverviewPanel'));
+const DemandPanel = suspended(() => import('./DemandPanel/DemandPanel'));
 const EvaluationsPanel = suspended(
   () => import('./EvaluationsPanel/EvaluationsPanel'),
 );
@@ -35,7 +36,7 @@ function CourseModal({
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
-  const [view, setView] = useState<'overview' | 'evals'>('overview');
+  const [view, setView] = useState<'overview' | 'demand' | 'evals'>('overview');
   const { navigate, closeModal } = useModalHistory();
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
   const description = truncatedText(
@@ -59,9 +60,7 @@ function CourseModal({
     } else {
       const nextView =
         // Only actually navigate to evals if the course has evals
-        target === 'evals' && l!.course.evaluation_statistic
-          ? 'evals'
-          : 'overview';
+        target === 'evals' && l!.course.evaluation_statistic ? 'evals' : target;
       setView(nextView);
       if (
         l!.crn === listing.crn &&
@@ -100,6 +99,8 @@ function CourseModal({
         <Modal.Body>
           {view === 'overview' ? (
             <OverviewPanel onNavigation={onNavigation} prefetched={listing} />
+          ) : view === 'demand' ? (
+            <DemandPanel />
           ) : (
             <EvaluationsPanel
               seasonCode={listing.course.season_code}
