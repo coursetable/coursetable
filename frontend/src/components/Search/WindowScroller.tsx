@@ -38,7 +38,7 @@ export default function WindowScroller({
   }, [isGrid]);
 
   // TODO
-  // eslint-disable-next-line react-compiler/react-compiler
+
   return children({
     ref,
     outerRef,
