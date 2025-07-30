@@ -47,6 +47,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    > **For Windows**: This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-20.04`. Also, make sure that the bar in the bottom right says `LF` and not `CRLF`.
 
    Then, install the following extensions:
+
    - [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) (only needed for Windows)
    - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
    - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
@@ -65,6 +66,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    > **For Windows**: Make sure to use the `Debian/Ubuntu` installation instructions.
 
 1. Install Docker
+
    - Mac or Windows: Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
      > **For Windows**: Make sure `Enable WSL 2 Windows Features` is checked during installation. After installation, open up Docker Desktop and go to Settings. Click on `Resources` and go to `WSL Integration`. You should see `Enable integration with additional distros:` and switch on your Ubuntu distribution. Then, click `Apply & Restart`.
@@ -73,6 +75,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
      and [Docker Compose](https://docs.docker.com/compose/install/)
 
 1. Install Node/npm
+
    - Mac or Linux: Install Node: see [here](https://nodejs.org/en/download/) for downloadable installer.
 
    - Windows: Install [nvm, node.js, and npm](https://docs.microsoft.com/en-us/windows/nodejs/setup-on-wsl2#install-nvm-nodejs-and-npm). Follow Steps 1 - 9 at the link to the left.
@@ -80,6 +83,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    > **For Windows**: If you get an error that looks like this `bash: /mnt/c/Program Files/nodejs/npm: /bin/sh^M: bad interpreter: No such file or directory`, then try following the instructions [here](https://hackmd.io/@badging/wsl2#Troubleshooting-PATH).
 
 1. Install Bun
+
    - Run `curl -fsSL https://bun.sh/install | bash`
 
 ## Running CourseTable
@@ -123,10 +127,12 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ```
 
    Note that there are two other relevant flags:
+
    - On first setup, run with `--ferry_seed` (or `-f`) to seed your local Postgres database: `./start.sh -d -f`. You can run this command again to refresh the course data.
    - To overwrite your cached catalogs, run with `--overwrite` (or `-o`): `./start.sh -d -o`. This flag is implied by the `-f` flag.
 
 1. Wait ~2-3 minutes. If you’re curious, here's what's going on:
+
    - Installing Node.js module dependencies
    - Setting up the database schema
    - Generating some JSON data files

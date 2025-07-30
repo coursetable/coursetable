@@ -28,6 +28,7 @@ Once these requirements are met, a challenge is produced as follows:
 2. For each question, we randomly choose one of the five response options for the user to go fetch the number of respondents. For ease of access, we auto-generate the OCE URL from the template `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=<CRN>&termCode=<SEASON>`.
 
 3. An object containing the question-response bucket combinations, the user's NetID, and a salt value is JSON-stringified and encrypted into a token using a secret unknown to the user. This affords us the following points of security:
+
    - Because the token is tied to the user, others cannot copy this user's challenge task.
    - Because the token is tied to the questions and response categories, the user cannot pick and choose which questions they want to answer.
    - Together these two properties prevent a single challenge from being used by multiple users, ensuring that each user must answer whichever challenge we give them.

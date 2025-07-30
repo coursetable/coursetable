@@ -63,6 +63,7 @@ On the API side, SDKs are collocated with the API endpoints that use them.
    ```
 
 2. Start the API service with `./start.sh -d`. This does two things:
+
    - It starts the GraphQL server.
    - It runs `graphql-codegen` to generate strongly-typed query SDKs located at `src/my-api/my-api.queries.ts`.
 

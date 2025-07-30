@@ -278,6 +278,7 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 **Status: 200**
 
 - Body:
+
   - `friends`:
 
     ```ts
@@ -387,6 +388,7 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 **Status: 200**
 
 - Body:
+
   - `data`:
 
     ```ts
