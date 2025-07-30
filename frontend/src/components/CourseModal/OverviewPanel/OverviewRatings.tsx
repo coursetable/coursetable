@@ -123,7 +123,7 @@ function OverviewRatings({
     <>
       {sameCourseNormalized.length !== 0 ? (
         <>
-          <Form.Check type="switch">
+          <Form.Check type="switch" className="mb-3">
             <Form.Check.Input
               checked={groupSameProf}
               onChange={() => {
@@ -138,7 +138,6 @@ function OverviewRatings({
               Group by professors
             </Form.Check.Label>
           </Form.Check>
-          <div className="mb-3" />
           <RelatedCoursesList
             listing={listing}
             courses={groupSameProf ? coursesByProf : sameCourseNormalized}
