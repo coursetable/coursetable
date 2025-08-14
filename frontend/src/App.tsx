@@ -141,17 +141,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={17}
+        id={18}
       >
-        {/* If you enjoy CourseTable, please consider{' '}
-        <a
-          href="https://www.buymeacoffee.com/coursetable"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
-        >
-          buying our team of volunteers a coffee!
-        </a> */}
+        Locations are temporarily unavailable - we are actively working on
+        resolving this issue.
       </Notice>
       <Navbar />
       <SentryRoutes>
