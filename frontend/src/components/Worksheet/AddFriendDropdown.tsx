@@ -165,16 +165,17 @@ function AddFriendDropdownDesktop() {
   const [allNames, setAllNames] = useState<UserNames>([]);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [includeAllYears, setIncludeAllYears] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
     async function fetchNames() {
-      const data = await fetchAllNames();
+      const data = await fetchAllNames(includeAllYears);
       if (data) setAllNames(data.names);
       setIsLoading(false);
     }
     void fetchNames();
-  }, []);
+  }, [includeAllYears]);
 
   const searchResults = useMemo(() => {
     if (searchText.length < 3) return [];
@@ -211,6 +212,28 @@ function AddFriendDropdownDesktop() {
 
   return (
     <Popout buttonText="Add friend" notifications={friendRequests?.length}>
+      <div
+        style={{
+          padding: '8px 12px',
+          borderBottom: '1px solid var(--color-border)',
+        }}
+      >
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '14px',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={includeAllYears}
+            onChange={(e) => setIncludeAllYears(e.target.checked)}
+          />
+          Search all years (slower)
+        </label>
+      </div>
       <PopoutSelect
         placeholder="Enter friend's name"
         options={[
@@ -222,7 +245,9 @@ function AddFriendDropdownDesktop() {
         noOptionsMessage={() =>
           searchText.length < 3
             ? 'Type at least 3 characters to search'
-            : 'No results found'
+            : includeAllYears
+              ? 'No results found'
+              : 'No results found in recent years. Try enabling "Search all years".'
         }
         onInputChange={setSearchText}
         components={{
