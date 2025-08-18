@@ -2,3 +2,4 @@ api/static/*
 frontend/build
 frontend/index.html
 frontend/dev-dist
+api/postgres/data
