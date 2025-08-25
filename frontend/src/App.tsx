@@ -143,8 +143,8 @@ function App() {
         // Don't remove this wrapper.
         id={18}
       >
-        Locations are temporarily unavailable - we are actively working on
-        resolving this issue.
+        {/* Locations are temporarily unavailable - we are actively working on
+        resolving this issue. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
