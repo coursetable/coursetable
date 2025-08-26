@@ -5997,7 +5997,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -6547,7 +6547,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7487,7 +7487,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -7895,7 +7895,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9041,7 +9041,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9269,7 +9269,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9497,7 +9497,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -9897,7 +9897,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -10245,7 +10245,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10473,7 +10473,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10701,7 +10701,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -10929,7 +10929,7 @@
           },
           {
             "name": "primary_crn",
-            "description": null,
+            "description": "CRN of the primary listing",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -13108,7 +13108,7 @@
           },
           {
             "name": "is_narrative",
-            "description": "True if the question has narrative responses.\n        False if the question has categorica/numerical responses",
+            "description": "True if the question has narrative responses. False if the question has categorical/numerical responses",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -13185,7 +13185,7 @@
           },
           {
             "name": "tag",
-            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags are used to compute average ratings, while others are purely for identification purposes. No other commonality, other than that they contain similar keywords, is guaranteed—for example, they may have different options, or even differ in being narrative or not.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -13536,7 +13536,7 @@
         "inputFields": [
           {
             "name": "is_narrative",
-            "description": "True if the question has narrative responses.\n        False if the question has categorica/numerical responses",
+            "description": "True if the question has narrative responses. False if the question has categorical/numerical responses",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -13584,7 +13584,7 @@
           },
           {
             "name": "tag",
-            "description": "[computed] Question type. The 'Overall' and 'Workload' tags\n        are used to compute average ratings, while others are purely for\n        identification purposes. No other commonality, other than that they\n        contain similar keywords, is guaranteed—for example, they may have\n        different options, or even differ in being narrative or not.",
+            "description": "[computed] Question type. The 'Overall' and 'Workload' tags are used to compute average ratings, while others are purely for identification purposes. No other commonality, other than that they contain similar keywords, is guaranteed—for example, they may have different options, or even differ in being narrative or not.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -16212,7 +16212,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -16777,7 +16777,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -16921,7 +16921,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "type": {
               "kind": "ENUM",
               "name": "order_by",
@@ -17495,7 +17495,7 @@
           },
           {
             "name": "section",
-            "description": "Course section. Note that the section number is the same for\n        all cross-listings.",
+            "description": "Course section. Note that the section number is the same for all cross-listings.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -19121,7 +19121,7 @@
         "fields": [
           {
             "name": "average_rating",
-            "description": "[computed] Average rating of the professor assessed via\n        the \"Overall assessment\" question in courses taught",
+            "description": "[computed] Average rating of the professor assessed via the \"Overall assessment\" question in courses taught",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -19136,9 +19136,13 @@
             "description": "[computed] Number of courses used to compute `average_rating`",
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -19735,7 +19739,7 @@
         "inputFields": [
           {
             "name": "average_rating",
-            "description": "[computed] Average rating of the professor assessed via\n        the \"Overall assessment\" question in courses taught",
+            "description": "[computed] Average rating of the professor assessed via the \"Overall assessment\" question in courses taught",
             "type": {
               "kind": "SCALAR",
               "name": "float8",
