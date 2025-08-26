@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Modal, Badge } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
+
+import { useStore } from '../../../store';
 import { ratingColormap } from '../../../utilities/constants';
 import { TextComponent } from '../../Typography';
 import type { ProfInfo } from '../ProfModal';
@@ -12,14 +13,18 @@ export default function ModalHeaderInfo({
 }: {
   readonly professor: ProfInfo;
 }) {
-  const { navigate, backTarget } = useModalHistory();
+  const [searchParams] = useSearchParams();
+  const { backTarget, navigate } = useStore((state) => ({
+    backTarget: state.backTarget,
+    navigate: state.navigate,
+  }));
   return (
     <div className={styles.modalTop}>
       {backTarget && (
         <Link
           to={backTarget}
           onClick={() => {
-            navigate('pop');
+            navigate('pop', undefined, searchParams);
           }}
           className={styles.backArrow}
         >
