@@ -5,7 +5,6 @@ import { fetchCatalog } from './catalog.utils.js';
 import {
   FERRY_RELOAD_SECRET,
   NUM_SEASONS,
-  OVERWRITE_CATALOG,
   STATIC_FILE_DIR,
 } from '../config.js';
 import winston from '../logging/winston.js';
@@ -95,6 +94,7 @@ export async function refreshCatalog(
 ): Promise<void> {
   winston.info('Refreshing catalog');
   // Overwrite the last NUM_SEASONS seasons when the refresh endpoint is hit
-  await fetchCatalog(OVERWRITE_CATALOG, NUM_SEASONS);
+  const all = req.query.all === 'true';
+  await fetchCatalog(true, all ? undefined : NUM_SEASONS);
   res.sendStatus(200);
 }
