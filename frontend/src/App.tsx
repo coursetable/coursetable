@@ -11,17 +11,13 @@ import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import ProfModal from './components/ProfModal/ProfModal';
 import Spinner from './components/Spinner';
-import {
-  useModalHistory,
-  ModalHistoryProvider,
-} from './contexts/modalHistoryContext';
-import { useTutorial } from './contexts/tutorialContext';
+import Tutorial from './components/Tutorial';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
-
 import { useStore, useInitStore } from './store';
+
 import { suspended } from './utilities/display';
 import { createCatalogLink } from './utilities/navigation';
 import styles from './App.module.css';
@@ -48,10 +44,9 @@ const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
 const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
-const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function Modal() {
-  const { currentModal } = useModalHistory();
+  const currentModal = useStore((state) => state.currentModal);
   if (!currentModal) return null;
   switch (currentModal.type) {
     case 'course':
@@ -104,7 +99,7 @@ function AuthenticatedRoutes() {
 
 function App() {
   const location = useLocation();
-  const { isTutorialOpen } = useTutorial();
+
   useInitStore();
 
   useEffect(() => {
@@ -186,11 +181,8 @@ function App() {
       </SentryRoutes>
       <Footer />
       {/* Globally overlaid components */}
-      {isTutorialOpen && <Tutorial />}
-      {/* ModalProvider reads the location so it must be within the app */}
-      <ModalHistoryProvider>
-        <Modal />
-      </ModalHistoryProvider>
+      <Tutorial />
+      <Modal />
     </div>
   );
 }

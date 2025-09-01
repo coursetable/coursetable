@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
-import { useModalHistory } from '../../contexts/modalHistoryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
+import { useStore } from '../../store';
 import {
   toSeasonDate,
   toSeasonString,
@@ -36,7 +37,11 @@ function CourseModal({
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
-  const { navigate, closeModal } = useModalHistory();
+  const [searchParams] = useSearchParams();
+  const { navigate, closeModal } = useStore((state) => ({
+    navigate: state.navigate,
+    closeModal: state.closeModal,
+  }));
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
@@ -68,7 +73,7 @@ function CourseModal({
         l!.course.season_code === listing.course.season_code
       )
         return;
-      navigate(mode, { type: 'course', data: l! });
+      navigate(mode, { type: 'course', data: l! }, searchParams);
     }
   };
 
@@ -84,7 +89,7 @@ function CourseModal({
       <Modal
         show
         scrollable
-        onHide={closeModal}
+        onHide={() => closeModal(() => new URLSearchParams())}
         dialogClassName={styles.dialog}
         animation={false}
         centered
