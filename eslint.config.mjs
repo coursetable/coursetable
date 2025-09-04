@@ -34,7 +34,6 @@ export default tseslint.config(
     plugins: {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       'css-modules': cssModulesPlugin,
-       
       'react-compiler': reactCompiler,
     },
     languageOptions: {
