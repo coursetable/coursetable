@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
-  BrowserRouter,
   useLocation,
   useNavigationType,
   createRoutesFromChildren,
   matchRoutes,
 } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import { enableMapSet, setAutoFreeze } from 'immer';
 
 // Globals has to be imported first, because it contains all the base CSS!
 // eslint-disable-next-line import/order
@@ -15,6 +15,9 @@ import Globals from './Globals';
 import App from './App';
 import { isDev } from './config';
 import { TutorialProvider } from './contexts/tutorialContext';
+
+enableMapSet();
+setAutoFreeze(false);
 
 Sentry.init({
   enabled: !isDev,
@@ -56,12 +59,8 @@ const root = createRoot(domNode);
 
 root.render(
   <Globals>
-    <BrowserRouter>
-      {/* Tutorial provider has to be inside the router. Plus it doesn't need
-      SSR */}
-      <TutorialProvider>
-        <App />
-      </TutorialProvider>
-    </BrowserRouter>
+    <TutorialProvider>
+      <App />
+    </TutorialProvider>
   </Globals>,
 );

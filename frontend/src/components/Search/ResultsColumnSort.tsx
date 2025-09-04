@@ -17,6 +17,8 @@ const isNumeric: { [key in SortKeys]: boolean } = {
   course_code: false,
   title: false,
   friend: true,
+  added: true,
+  last_modified: true,
   overall: true,
   average_professor_rating: true,
   workload: true,
@@ -40,7 +42,6 @@ function ResultsColumnSort({
   const [localSortOrder, setLocalSortOrder] = useState(
     isActive ? sortOrder.value : 'asc',
   );
-  // eslint-disable-next-line no-useless-assignment
   const Icon = isNumeric[selectOption.value]
     ? localSortOrder === 'asc'
       ? FcNumericalSorting12

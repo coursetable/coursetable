@@ -1,4 +1,5 @@
 import dns from 'node:dns';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import mdx from '@mdx-js/rollup';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import reactPlugin from '@vitejs/plugin-react';
@@ -11,6 +12,7 @@ import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { VitePWA } from 'vite-plugin-pwa';
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -115,6 +117,58 @@ export default defineConfig({
     visualizer({
       filename: 'build/bundle-map.html',
     }),
+    process.env.NODE_ENV === 'production' &&
+      sentryVitePlugin({
+        org: 'coursetable',
+        project: 'frontend',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true,
+      },
+      injectRegister: 'auto',
+      manifest: {
+        name: 'CourseTable',
+        short_name: 'CourseTable',
+        start_url: '/',
+        icons: [
+          {
+            src: 'icon250x250.png',
+            sizes: '250x250',
+            purpose: 'any',
+          },
+          {
+            src: 'maskable_icon_x48.png',
+            sizes: '48x48',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x72.png',
+            sizes: '72x72',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x96.png',
+            sizes: '96x96',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x128.png',
+            sizes: '128x128',
+            purpose: 'maskable',
+          },
+          {
+            src: 'maskable_icon_x192.png',
+            sizes: '192x192',
+            purpose: 'maskable',
+          },
+        ],
+        display: 'standalone',
+        theme_color: '#ffffff',
+      },
+    }),
   ],
   build: {
     outDir: './build',
@@ -135,6 +189,7 @@ export default defineConfig({
         entryFileNames: 'assets/entry-[name]-[hash:10].js',
       },
     },
+    sourcemap: process.env.NODE_ENV === 'production',
   },
   server: {
     // Only used in dev

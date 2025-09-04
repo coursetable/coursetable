@@ -11,7 +11,6 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
-import type { WorksheetCourse } from './worksheetContext';
 import seasonsData from '../generated/seasons.json';
 import {
   fetchCatalogMetadata,
@@ -22,6 +21,7 @@ import {
   type CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
 
 export const seasons = seasonsData as Season[];

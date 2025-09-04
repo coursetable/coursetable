@@ -1,7 +1,6 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
 import type { SortKeys } from '../contexts/searchContext';
-import type { WorksheetCourse } from '../contexts/worksheetContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -9,6 +8,7 @@ import type {
   CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -318,6 +318,14 @@ function getAttributeValue(
   switch (key) {
     case 'friend':
       return numFriends[`${l.course.season_code}${l.crn}`]?.size ?? 0;
+    case 'added':
+      return l.course.time_added
+        ? new Date(l.course.time_added as string)
+        : null;
+    case 'last_modified':
+      return l.course.last_updated
+        ? new Date(l.course.last_updated as string)
+        : null;
     case 'overall':
       return getOverallRatings(l.course, 'stat');
     case 'workload':
@@ -355,6 +363,14 @@ function compareByKey(
   if (bVal === null) return -1;
   if (typeof aVal === 'number' && typeof bVal === 'number')
     return ordering === 'asc' ? aVal - bVal : bVal - aVal;
+  if (aVal instanceof Date || bVal instanceof Date) {
+    // Shouldn't happen
+    if (!(aVal instanceof Date)) return ordering === 'asc' ? -1 : 1;
+    else if (!(bVal instanceof Date)) return ordering === 'asc' ? 1 : -1;
+
+    const comparison = aVal.getTime() - bVal.getTime();
+    return ordering === 'asc' ? comparison : -comparison;
+  }
   // Shouldn't happen
   if (typeof aVal === 'number' || typeof bVal === 'number') return 0;
   const strCmp = aVal.localeCompare(bVal, 'en-US', {
@@ -362,6 +378,7 @@ function compareByKey(
     // ARCH 200
     numeric: true,
   });
+
   return ordering === 'asc' ? strCmp : -strCmp;
 }
 
@@ -386,14 +403,14 @@ export function sortCourses(
 
 type CourseWithEnrolled = {
   evaluation_statistic?: {
-    enrolled: number | null;
+    enrolled: number;
   } | null;
   last_enrollment?: number | null;
   last_enrollment_same_professors?: boolean | null;
 };
 
 export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
-  return listing.school !== 'YC';
+  return listing.school !== 'YC' && listing.school !== 'SU';
 }
 
 export function isDiscussionSection(
@@ -453,3 +470,7 @@ export const toExponential = (number: number): number => 1.01 ** number;
  */
 export const toLinear = (number: number): number =>
   Math.log(number) / Math.log(1.01);
+
+export function getListingId(season: Season, crn: Crn) {
+  return (Number(season) - 200000) * 100000 + crn;
+}

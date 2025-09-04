@@ -17,12 +17,12 @@ import ResultsHeaders from './ResultsHeaders';
 import ResultsItem from './ResultsItem';
 import WindowScroller from './WindowScroller';
 
-import { useWorksheet } from '../../contexts/worksheetContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { useSessionStorageState } from '../../utilities/browserStorage';
 import { toSeasonString } from '../../utilities/course';
+import { createCatalogLink } from '../../utilities/navigation';
 import Spinner from '../Spinner';
 import styles from './Results.module.css';
 
@@ -55,7 +55,7 @@ function Results({
     true,
   );
 
-  const { viewedSeason } = useWorksheet();
+  const viewedSeason = useStore((state) => state.viewedSeason);
 
   // eslint-disable-next-line no-useless-assignment
   let resultsListing: React.JSX.Element | undefined = undefined;
@@ -83,7 +83,8 @@ function Results({
           <>
             <h3>No courses found for {toSeasonString(viewedSeason)}</h3>
             <div>
-              Add some courses on the <Link to="/catalog">Catalog</Link>.
+              Add some courses on the{' '}
+              <Link to={createCatalogLink()}>Catalog</Link>.
             </div>
           </>
         )}

@@ -32,7 +32,7 @@ import styles from './OverviewInfo.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-type CourseInfo = CourseModalOverviewDataQuery['self'][0]['course'];
+type CourseInfo = NonNullable<CourseModalOverviewDataQuery['self']>['course'];
 
 function Description({ course }: { readonly course: CourseInfo }) {
   const [clamped, setClamped] = useState(false);
@@ -52,7 +52,7 @@ function Description({ course }: { readonly course: CourseInfo }) {
             onClick={() => {
               setLines(100);
             }}
-            title="Read More"
+            title="Read more"
           >
             <IoIosArrowDown size={20} />
           </LinkLikeText>
@@ -302,7 +302,7 @@ function Syllabus({
               href={syllabusLink}
               className="d-flex"
             >
-              View Syllabus
+              View syllabus
               <HiExternalLink size={18} className="ms-1 my-auto" />
             </a>
           ) : (
@@ -369,35 +369,40 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
   return (
     <DataField
       name="Meetings"
-      value={course.course_meetings.map((session, i) => (
-        <div key={i}>
-          {toWeekdaysDisplayString(session.days_of_week)}{' '}
-          {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
-          {session.location && (
-            <>
-              {' '}
-              at{' '}
-              {session.location.building.url ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={session.location.building.url}
-                >
-                  {session.location.building.code}
-                  {/* TODO use a tooltip instead */}
-                  {session.location.building.building_name
-                    ? ` (${session.location.building.building_name})`
-                    : ''}
-                  {session.location.room ? ` ${session.location.room}` : ''}
-                  <HiExternalLink size={18} className="ms-1 my-auto" />
-                </a>
-              ) : (
-                `${session.location.building.code}${session.location.room ? ` ${session.location.room}` : ''}`
-              )}
-            </>
-          )}
-        </div>
-      ))}
+      value={course.course_meetings.map((session, i) => {
+        const locationTexts = [];
+        if (session.location) {
+          locationTexts.push(session.location.building.code);
+          // TODO use a tooltip instead
+          if (session.location.building.building_name)
+            locationTexts.push(`(${session.location.building.building_name})`);
+          if (session.location.room) locationTexts.push(session.location.room);
+        }
+        return (
+          <div key={i}>
+            {toWeekdaysDisplayString(session.days_of_week)}{' '}
+            {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
+            {session.location && (
+              <>
+                {' '}
+                at{' '}
+                {session.location.building.url ? (
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={session.location.building.url}
+                  >
+                    {locationTexts.join(' ')}
+                    <HiExternalLink size={18} className="ms-1 my-auto" />
+                  </a>
+                ) : (
+                  locationTexts.join(' ')
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
     />
   );
 }
@@ -408,7 +413,7 @@ function OverviewInfo({
   sameCourse,
 }: {
   readonly onNavigation: ModalNavigationFunction;
-  readonly listing: CourseModalOverviewDataQuery['self'][0];
+  readonly listing: NonNullable<CourseModalOverviewDataQuery['self']>;
   readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
 }) {
   const { numFriends } = useSearch();
@@ -458,16 +463,36 @@ function OverviewInfo({
         }
       />
       <DataField name="Credits" value={course.credits} />
+      <DataField name="School" value={schools[listing.school]} />
+      <DataField name="Class notes" value={course.classnotes} />
+      <DataField name="Registrar notes" value={course.regnotes} />
+      <DataField name="Reading period" value={course.rp_attr} />
       <DataField
-        name="School"
-        value={listing.school ? schools[listing.school] : undefined}
-      />
-      <DataField name="Class Notes" value={course.classnotes} />
-      <DataField name="Registrar Notes" value={course.regnotes} />
-      <DataField name="Reading Period" value={course.rp_attr} />
-      <DataField
-        name="Final Exam"
+        name="Final exam"
         value={course.final_exam === 'HTBA' ? null : course.final_exam}
+      />
+      <DataField
+        name="Date added"
+        value={
+          course.time_added
+            ? new Date(course.time_added as string).toLocaleDateString()
+            : null
+        }
+        tooltip={<span>When this course was added to our catalog.</span>}
+      />
+      <DataField
+        name="Last updated"
+        value={
+          course.last_updated
+            ? new Date(course.last_updated as string).toLocaleDateString()
+            : null
+        }
+        tooltip={
+          <span>
+            The last time the course details (e.g., syllabus, location) were
+            modified.
+          </span>
+        }
       />
       <DataField
         name="Friends"

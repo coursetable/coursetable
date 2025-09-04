@@ -8,7 +8,6 @@ import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
@@ -22,7 +21,16 @@ export function NavbarWorksheetSearch() {
     changeViewedPerson,
     isExoticWorksheet,
     exitExoticWorksheet,
-  } = useWorksheet();
+  } = useStore(
+    useShallow((state) => ({
+      worksheetView: state.worksheetView,
+      changeWorksheetView: state.changeWorksheetView,
+      viewedPerson: state.viewedPerson,
+      changeViewedPerson: state.changeViewedPerson,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      exitExoticWorksheet: state.exitExoticWorksheet,
+    })),
+  );
 
   const { authStatus, removeFriend } = useStore(
     useShallow((state) => ({
@@ -73,7 +81,6 @@ export function NavbarWorksheetSearch() {
 
   return (
     <div className="d-flex align-items-center">
-      {/* Worksheet View Toggle */}
       <ToggleButtonGroup
         name="worksheet-view-toggle"
         type="radio"

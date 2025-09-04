@@ -1,15 +1,22 @@
 import { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
+import { useShallow } from 'zustand/react/shallow';
 import type { Option } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { Season } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import { toSeasonString } from '../../utilities/course';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
 function SeasonDropdownDesktop() {
-  const { seasonCodes, viewedSeason, changeViewedSeason } = useWorksheet();
+  const { seasonCodes, viewedSeason, changeViewedSeason } = useStore(
+    useShallow((state) => ({
+      seasonCodes: state.worksheetMemo.getSeasonCodes(state),
+      viewedSeason: state.viewedSeason,
+      changeViewedSeason: state.changeViewedSeason,
+    })),
+  );
 
   const selectedSeason = useMemo(() => {
     if (viewedSeason) {
@@ -46,7 +53,13 @@ function SeasonDropdownDesktop() {
 }
 
 function SeasonDropdownMobile() {
-  const { seasonCodes, viewedSeason, changeViewedSeason } = useWorksheet();
+  const { seasonCodes, viewedSeason, changeViewedSeason } = useStore(
+    useShallow((state) => ({
+      seasonCodes: state.worksheetMemo.getSeasonCodes(state),
+      viewedSeason: state.viewedSeason,
+      changeViewedSeason: state.changeViewedSeason,
+    })),
+  );
 
   return (
     <DropdownButton

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -24,7 +23,9 @@ import {
 import chroma from 'chroma-js';
 import { Line } from 'react-chartjs-2';
 
+import { useShallow } from 'zustand/react/shallow';
 import type { Season } from '../../../queries/graphql-types';
+import { useStore } from '../../../store';
 import { subjects } from '../../../utilities/constants';
 import { toSeasonString } from '../../../utilities/course';
 import RelatedCoursesList from '../../RelatedCoursesList';
@@ -98,7 +99,7 @@ function getChartOptions(
       y: {
         title: {
           display: true,
-          text: 'Average Rating',
+          text: 'Average rating',
         },
         min: 1,
         max: 5,
@@ -181,7 +182,7 @@ function SeasonRatingChart({
   const chartData: ChartData<'line', { x: number; y: number }[]> = {
     datasets: [
       {
-        label: 'Average Rating',
+        label: 'Average rating',
         data: points,
         borderColor: '#468FF2',
         backgroundColor: 'rgba(0, 0, 255, 0.1)',
@@ -259,7 +260,12 @@ function RatingChart({
 }: {
   readonly coursesTaught: RelatedCourseInfo[];
 }) {
-  const [curveByCourse, setCurveByCourse] = useState(false);
+  const { curveByCourse, togglePref } = useStore(
+    useShallow((state) => ({
+      curveByCourse: state.professorPref.curveByCourse,
+      togglePref: state.togglePref,
+    })),
+  );
   const coursesWithRatings = coursesTaught.filter(
     (c) => (c.evaluation_statistic?.avg_rating ?? 0) > 0,
   );
@@ -271,12 +277,12 @@ function RatingChart({
         <Form.Check.Input
           checked={curveByCourse}
           onChange={() => {
-            setCurveByCourse(!curveByCourse);
+            togglePref('professorPref', 'curveByCourse');
           }}
         />
         <Form.Check.Label
           onClick={() => {
-            setCurveByCourse(!curveByCourse);
+            togglePref('professorPref', 'curveByCourse');
           }}
         >
           Separate curves for each course
@@ -288,7 +294,12 @@ function RatingChart({
 }
 
 function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
-  const [groupRecurringCourses, setGroupRecurringCourses] = useState(true);
+  const { groupRecurringCourses, togglePref } = useStore(
+    useShallow((state) => ({
+      groupRecurringCourses: state.professorPref.groupRecurringCourses,
+      togglePref: state.togglePref,
+    })),
+  );
   const coursesTaught = professor.course_professors
     .map((c) => c.course)
     .sort((a, b) => b.season_code.localeCompare(a.season_code, 'en-US'));
@@ -356,12 +367,12 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           <Form.Check.Input
             checked={groupRecurringCourses}
             onChange={() => {
-              setGroupRecurringCourses(!groupRecurringCourses);
+              togglePref('professorPref', 'groupRecurringCourses');
             }}
           />
           <Form.Check.Label
             onClick={() => {
-              setGroupRecurringCourses(!groupRecurringCourses);
+              togglePref('professorPref', 'groupRecurringCourses');
             }}
           >
             Group recurring courses
@@ -372,9 +383,14 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           usesSameCourse={groupRecurringCourses}
           columns={['rating', 'workload']}
           columnWidth={3}
-          extraText={(c) =>
-            `${c.listings[0]!.course_code}${c.listings.length > 1 ? ` +${c.listings.length - 1}` : ''}`
-          }
+          extraText={(c) => {
+            if (c.listings.length === 1) return c.listings[0]!.course_code;
+            const primary = c.primary_crn
+              ? // Guaranteed to exist
+                c.listings.find((l) => l.crn === c.primary_crn)!
+              : c.listings[0]!;
+            return `${primary.course_code} +${c.listings.length - 1}`;
+          }}
         />
       </Col>
     </Row>

@@ -17,7 +17,6 @@ import {
   graphqlClient,
   db,
 } from '../config.js';
-import winston from '../logging/winston.js';
 
 const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 
@@ -107,8 +106,6 @@ export const requestChallenge = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Requesting challenge`);
-
   const { netId } = req.user!;
 
   const { challengeTries, evaluationsEnabled } =
@@ -187,8 +184,6 @@ export const verifyChallenge = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  winston.info(`Verifying challenge`);
-
   const { netId } = req.user!;
 
   const { challengeTries, evaluationsEnabled } =

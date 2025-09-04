@@ -23,6 +23,7 @@ import {
   schoolsOptions,
   seasonsOptions,
   courseInfoAttributesOptions,
+  buildingOptions,
 } from '../../contexts/searchContext';
 
 import { useStore } from '../../store';
@@ -119,14 +120,16 @@ function Slider<K extends NumericFilters>({
   marks,
   scaleToUniform = identity,
   scaleToReal = identity,
-  toLabel = String,
+  topLabel = String,
+  bottomLabel = String,
 }: {
   readonly handle: K;
   readonly step: number;
   readonly marks?: number[];
   readonly scaleToUniform?: (value: number) => number;
   readonly scaleToReal?: (value: number) => number;
-  readonly toLabel?: (value: number) => string;
+  readonly topLabel?: (value: number) => string;
+  readonly bottomLabel?: (value: number) => string;
 }) {
   const { setStartTime, filters } = useSearch();
   const handle = filters[handleName];
@@ -149,10 +152,10 @@ function Slider<K extends NumericFilters>({
       <div className={styles.rangeGroup}>
         <div className="d-flex align-items-center justify-content-between mb-1 w-100">
           <div className={styles.rangeValueLabel}>
-            {toLabel(scaleToReal(rangeValue[0]))}
+            {topLabel(scaleToReal(rangeValue[0]))}
           </div>
           <div className={styles.rangeValueLabel}>
-            {toLabel(scaleToReal(rangeValue[1]))}
+            {topLabel(scaleToReal(rangeValue[1]))}
           </div>
         </div>
         <RCSlider
@@ -168,7 +171,7 @@ function Slider<K extends NumericFilters>({
           marks={
             marks
               ? Object.fromEntries(
-                  marks.map((x) => [scaleToUniform(x), toLabel(x)]),
+                  marks.map((x) => [scaleToUniform(x), bottomLabel(x)]),
                 )
               : undefined
           }
@@ -215,6 +218,7 @@ function AdvancedPanel() {
     'enableQuist',
     'hideCancelled',
     'hideConflicting',
+    'selectBuilding',
   ];
   if (isTablet) {
     relevantFilters.push(
@@ -250,7 +254,7 @@ function AdvancedPanel() {
               id={`${formLabelId}-subject`}
               options={subjectsOptions}
               handle="selectSubjects"
-              placeholder="All Subjects"
+              placeholder="All subjects"
               unionIntersectionButtonLabel={(isIntersection) =>
                 `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected subjects`
               }
@@ -259,7 +263,7 @@ function AdvancedPanel() {
               id={`${formLabelId}-area-skills`}
               options={skillsAreasOptions}
               handle="selectSkillsAreas"
-              placeholder="All Areas/Skills"
+              placeholder="All areas/skills"
               colors={skillsAreasColors}
               unionIntersectionButtonLabel={(isIntersection) =>
                 `Classes offered with ${isIntersection ? 'all' : 'any'} of the selected areas/skills`
@@ -280,7 +284,7 @@ function AdvancedPanel() {
             value,
           }))}
           handle="selectDays"
-          placeholder="All Days"
+          placeholder="All days"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes that meet on ${isIntersection ? 'all' : 'any'} of the selected days`
           }
@@ -289,7 +293,8 @@ function AdvancedPanel() {
           handle="timeBounds"
           step={1}
           marks={[84, 120, 156, 192, 228, 264]}
-          toLabel={(x) => to12HourTime(toRealTime(x))}
+          topLabel={(x) => to12HourTime(toRealTime(x))}
+          bottomLabel={(x) => to12HourTime(toRealTime(x))}
         />
         <Slider
           handle="enrollBounds"
@@ -301,17 +306,20 @@ function AdvancedPanel() {
         {isTablet && <Slider handle="professorBounds" step={0.1} />}
         <Slider
           handle="numBounds"
-          step={10}
-          marks={[0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]}
-          toLabel={(x) =>
-            x === 1000 ? '1000+' : x.toString().padStart(3, '0')
+          step={100}
+          marks={[
+            0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,
+          ]}
+          topLabel={(x) => (x === 0 ? '0' : x === 10000 ? '10000+' : String(x))}
+          bottomLabel={(x) =>
+            x === 0 ? '0' : x === 10000 ? '10k+' : `${x / 1000}k`
           }
         />
         <IntersectableSelect
           id={`${formLabelId}-school`}
           options={schoolsOptions}
           handle="selectSchools"
-          placeholder="All Schools"
+          placeholder="All schools"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
           }
@@ -323,13 +331,22 @@ function AdvancedPanel() {
             value: credit,
           }))}
           handle="selectCredits"
-          placeholder="All Credits"
+          placeholder="All credits"
+        />
+        <Select
+          id={`${formLabelId}-building`}
+          options={buildingOptions.map((x) => ({
+            label: x.label,
+            value: x.value,
+          }))}
+          handle="selectBuilding"
+          placeholder="All buildings"
         />
         <IntersectableSelect
           id={`${formLabelId}-info`}
           options={courseInfoAttributesOptions}
           handle="selectCourseInfoAttributes"
-          placeholder="Course Information Attributes"
+          placeholder="Course information attributes"
           unionIntersectionButtonLabel={(isIntersection) =>
             `Classes that contain ${isIntersection ? 'all' : 'any'} of the selected attributes`
           }
@@ -349,6 +366,13 @@ function AdvancedPanel() {
             {sortByOptions.average_gut_rating.label}:
           </div>
           <ResultsColumnSort selectOption={sortByOptions.average_gut_rating} />
+        </div>
+        <div className={styles.row}>
+          {/* Sort by last mod */}
+          <div className={styles.label}>
+            {sortByOptions.last_modified.label}:
+          </div>
+          <ResultsColumnSort selectOption={sortByOptions.last_modified} />
         </div>
         <div className={styles.booleanToggles}>
           <Toggle handle="searchDescription" />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Row } from 'react-bootstrap';
 import {
@@ -19,7 +20,6 @@ import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
-import { WorksheetProvider } from './contexts/worksheetContext';
 
 import './index.css';
 
@@ -60,24 +60,24 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
     <CustomErrorBoundary>
       {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
-      <GapiProvider>
-        <ApolloProvider client={client}>
-          {/* FerryProvider must be inside UserProvider because the former
-            depends on login status */}
-          <FerryProvider>
-            {/* SearchProvider must be inside WorksheetProvider because the
-                  former depends on the currently viewed worksheet */}
-            <WorksheetProvider>
+      <BrowserRouter>
+        <GapiProvider>
+          <ApolloProvider client={client}>
+            {/* FerryProvider must be inside UserProvider because the former
+              depends on login status */}
+            <FerryProvider>
+              {/* SearchProvider must be inside WorksheetProvider because the
+                    former depends on the currently viewed worksheet */}
               <SearchProvider>
                 <MDXProvider components={components}>
                   <div id="base">{children}</div>
                 </MDXProvider>
               </SearchProvider>
-            </WorksheetProvider>
-            <ToastContainer toastClassName="rounded" />
-          </FerryProvider>
-        </ApolloProvider>
-      </GapiProvider>
+              <ToastContainer toastClassName="rounded" />
+            </FerryProvider>
+          </ApolloProvider>
+        </GapiProvider>
+      </BrowserRouter>
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>
   );

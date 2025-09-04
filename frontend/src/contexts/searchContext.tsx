@@ -6,17 +6,18 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
 import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { useWorksheet } from './worksheetContext';
 import { CUR_SEASON } from '../config';
+import buildingsData from '../generated/buildings.json';
+import type { Buildings } from '../generated/graphql-types';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
-import { useSessionStorageState } from '../utilities/browserStorage';
 import { isEqual } from '../utilities/common';
 import {
   skillsAreas,
@@ -42,6 +43,7 @@ import {
   toWeekdayStrings,
   type NumFriendsReturn,
 } from '../utilities/course';
+import { createFilterLink, getFilterFromParams } from '../utilities/params';
 
 export type Option<T extends string | number = string> = {
   label: string;
@@ -61,16 +63,18 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
 }));
 
 const sortCriteria = {
-  course_code: 'Sort by Course Code',
-  title: 'Sort by Course Title',
-  friend: 'Sort by Friends',
-  overall: 'Sort by Course Rating',
-  average_professor_rating: 'Sort by Professor Rating',
-  workload: 'Sort by Workload',
-  average_gut_rating: 'Sort by Guts (Overall - Workload)',
-  enrollment: 'Sort by Last Enrollment',
-  time: 'Sort by Days & Times',
-  location: 'Sort by Locations',
+  course_code: 'Sort by course code',
+  title: 'Sort by course title',
+  friend: 'Sort by # of friends',
+  added: 'Sort by date added',
+  last_modified: 'Sort by last modified',
+  overall: 'Sort by course rating',
+  average_professor_rating: 'Sort by professor rating',
+  workload: 'Sort by workload',
+  average_gut_rating: 'Sort by guts (overall - workload)',
+  enrollment: 'Sort by last enrollment',
+  time: 'Sort by days & times',
+  location: 'Sort by locations',
 };
 
 export const sortByOptions = Object.fromEntries(
@@ -90,6 +94,17 @@ export const schoolsOptions = Object.entries(schools).map(
   ([code, name]): Option => ({
     label: name,
     value: code,
+  }),
+);
+
+const buildings = buildingsData as Buildings[];
+
+export const buildingOptions = buildings.map(
+  (building): Option => ({
+    value: building.code,
+    label: building.building_name
+      ? `${building.code} (${building.building_name})`
+      : building.code,
   }),
 );
 
@@ -118,9 +133,7 @@ export const booleanAttributes = {
 type SortOrderType = 'desc' | 'asc';
 
 type Store = {
-  filters: {
-    [K in keyof Filters]: FilterHandle<K>;
-  };
+  filters: FilterList;
   coursesLoading: boolean;
   searchData: CatalogListing[] | null;
   multiSeasons: boolean;
@@ -148,6 +161,7 @@ export interface CategoricalFilters {
   selectSchools: string;
   selectCredits: number;
   selectCourseInfoAttributes: string;
+  selectBuilding: string;
 }
 
 export type NumericFilters =
@@ -184,6 +198,8 @@ export type Filters = {
   excludeAttributes: BooleanAttributes[];
 };
 
+export type FilterList = { [K in keyof Filters]: FilterHandle<K> };
+
 export const filterLabels: { [K in keyof Filters]: string } = {
   searchText: 'Search',
   selectSubjects: 'Subject',
@@ -200,6 +216,7 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectCredits: 'Credit',
   selectCourseInfoAttributes: 'Info',
   searchDescription: 'Include descriptions in search',
+  selectBuilding: 'Building',
   enableQuist: 'Enable Quist',
   // "Cancelled" and "conflicting" are also boolean attributes, but there's
   // little reason one would want to "only include conflicting courses", so
@@ -224,10 +241,11 @@ export const defaultFilters: Filters = {
   selectDays: [],
   timeBounds: [toRangeTime('7:00'), toRangeTime('22:00')],
   enrollBounds: [1, 528],
-  numBounds: [0, 1000],
+  numBounds: [0, 10000],
   selectSchools: [],
   selectCredits: [],
   selectCourseInfoAttributes: [],
+  selectBuilding: [],
   searchDescription: false,
   enableQuist: false,
   hideCancelled: true,
@@ -257,7 +275,37 @@ export type FilterHandle<K extends keyof Filters> = ReturnType<
 >;
 
 function useFilterState<K extends keyof Filters>(key: K) {
-  const [value, setValue] = useSessionStorageState(key, defaultFilters[key]);
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [value, setValue] = useState(() => {
+    try {
+      const urlValue = searchParams.get(key);
+      if (urlValue) {
+        return getFilterFromParams(
+          key,
+          decodeURIComponent(urlValue),
+          defaultFilters[key],
+        );
+      }
+      return defaultFilters[key];
+    } catch {
+      return defaultFilters[key];
+    }
+  });
+
+  useEffect(() => {
+    if (location.pathname === '/catalog') {
+      try {
+        const newUrl = createFilterLink(key, value, defaultFilters[key]);
+        if (newUrl !== location.search) {
+          sessionStorage.setItem('lastCatalogSearch', newUrl);
+          setSearchParams(new URLSearchParams(newUrl.slice(1)));
+        }
+      } catch {}
+    }
+  }, [key, value, location.pathname, location.search, setSearchParams]);
+
   return useMemo(
     () => ({
       value,
@@ -267,7 +315,7 @@ function useFilterState<K extends keyof Filters>(key: K) {
       resetToDefault: () => setValue(defaultFilters[key]),
       resetToEmpty: () => setValue(emptyFilters[key]),
     }),
-    [value, setValue, key],
+    [value, key, setValue],
   );
 }
 
@@ -307,7 +355,13 @@ const targetTypes = {
     'fysem',
     'colsem',
   ] as const),
-  text: new Set(['title', 'description', 'location'] as const),
+  text: new Set([
+    'title',
+    'description',
+    'location',
+    'added',
+    'last_modified',
+  ] as const),
 };
 
 function applyIntersectableFilter<T extends string | number>(
@@ -364,6 +418,7 @@ export function SearchProvider({
   const numBounds = useFilterState('numBounds');
   const selectSchools = useFilterState('selectSchools');
   const selectCredits = useFilterState('selectCredits');
+  const selectBuilding = useFilterState('selectBuilding');
   const selectCourseInfoAttributes = useFilterState(
     'selectCourseInfoAttributes',
   );
@@ -384,10 +439,11 @@ export function SearchProvider({
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const { worksheets, friends } = useStore(
+  const { worksheets, friends, getRelevantWorksheetNumber } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
+      getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
     })),
   );
 
@@ -401,12 +457,12 @@ export function SearchProvider({
       searchText.value
         .split(/\s+/u)
         .filter(Boolean)
-        .map((token) => token.toLowerCase()),
+        .map((token: string) => token.toLowerCase()),
     [searchText.value],
   );
   const processedSkillsAreas = useMemo(
     () =>
-      selectSkillsAreas.value.flatMap((x) =>
+      selectSkillsAreas.value.flatMap((x: Option) =>
         // Old courses only have 'L' label
         x.value === 'L' ? ['L', 'L1', 'L2', 'L3', 'L4', 'L5'] : x.value,
       ),
@@ -417,8 +473,9 @@ export function SearchProvider({
       // Nothing selected, so default to all seasons.
       return seasons.slice(0, 15);
     }
-    return selectSeasons.value.map((x) => x.value);
+    return selectSeasons.value.map((x: Option<Season>) => x.value);
   }, [selectSeasons.value]);
+
   const {
     loading: coursesLoading,
     courses: courseData,
@@ -427,8 +484,6 @@ export function SearchProvider({
 
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
-
-  const { getRelevantWorksheetNumber } = useWorksheet();
 
   const { data: worksheetInfo } = useWorksheetInfo(
     worksheets,
@@ -440,6 +495,10 @@ export function SearchProvider({
     () =>
       buildEvaluator(targetTypes, (listing: CatalogListing, key) => {
         switch (key) {
+          case 'added':
+            return listing.course.time_added as string;
+          case 'last_modified':
+            return listing.course.last_updated as string;
           case 'rating':
             return getOverallRatings(listing.course, 'stat');
           case 'workload':
@@ -483,9 +542,9 @@ export function SearchProvider({
           case 'discussion':
             return isDiscussionSection(listing.course);
           case 'fysem':
-            return listing.course.fysem !== false;
+            return listing.course.fysem;
           case 'colsem':
-            return listing.course.colsem !== false;
+            return listing.course.colsem;
           case 'location':
             return toLocationsSummary(listing.course);
           case 'season':
@@ -507,8 +566,14 @@ export function SearchProvider({
             return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
-          case 'number':
-            return Number(listing.number.replace(/\D/gu, ''));
+          case 'number': {
+            const numString = listing.number.replace(/\D/gu, '');
+
+            let number = Number(numString);
+            if (numString.length === 3) number *= 10;
+
+            return number;
+          }
           case 'listings.subjects':
             return listing.course.listings.map((l) => l.subject);
           case 'listings.course-codes':
@@ -557,13 +622,13 @@ export function SearchProvider({
 
   const searchDataPredictate = useCallback(
     (processedSearchTextParam: typeof processedSearchText) => {
-      const listings = processedSeasons.flatMap((seasonCode) => {
+      const listings = processedSeasons.flatMap((seasonCode: Season) => {
         const data = courseData[seasonCode]?.data;
         if (!data) return [];
         return [...data.values()];
       });
 
-      const filtered = listings.filter((listing) => {
+      const filtered = listings.filter((listing: CatalogListing) => {
         // For empty bounds, don't apply filters at all to include no ratings
         if (overallBounds.isNonEmpty) {
           const overall = getOverallRatings(listing.course, 'stat');
@@ -620,10 +685,14 @@ export function SearchProvider({
         }
 
         if (numBounds.isNonEmpty) {
-          const number = Number(listing.number.replace(/\D/gu, ''));
+          const numString = listing.number.replace(/\D/gu, '');
+
+          let number = Number(numString);
+          if (numString.length === 3) number *= 10;
+
           if (
             number < numBounds.value[0] ||
-            (numBounds.value[1] < 1000 && number > numBounds.value[1])
+            (numBounds.value[1] < 10000 && number > numBounds.value[1])
           )
             return false;
         }
@@ -649,13 +718,13 @@ export function SearchProvider({
           // TODO: we don't need this once we group cross-listings
           if (
             !selectSubjects.value.some(
-              (option) => listing.subject === option.value,
+              (option: Option) => listing.subject === option.value,
             )
           )
             return false;
           if (
             !applyIntersectableFilter(
-              selectSubjects.value.map((option) => option.value),
+              selectSubjects.value.map((option: Option) => option.value),
               listing.course.listings.map((l) => l.course_code.split(' ')[0]!),
               intersectingFilters.value.includes('selectSubjects'),
             )
@@ -671,7 +740,7 @@ export function SearchProvider({
           );
           if (
             !applyIntersectableFilter(
-              selectDays.value.map((option) => option.value),
+              selectDays.value.map((option: Option<number>) => option.value),
               days,
               intersectingFilters.value.includes('selectDays'),
             )
@@ -698,7 +767,17 @@ export function SearchProvider({
           selectCredits.value.length !== 0 &&
           listing.course.credits !== null &&
           !selectCredits.value.some(
-            (option) => option.value === listing.course.credits,
+            (option: Option<number>) => option.value === listing.course.credits,
+          )
+        )
+          return false;
+
+        if (
+          selectBuilding.value.length !== 0 &&
+          !selectBuilding.value.some((option) =>
+            listing.course.course_meetings.some(
+              (m) => m.location?.building.code === option.value,
+            ),
           )
         )
           return false;
@@ -706,7 +785,9 @@ export function SearchProvider({
         if (
           selectCourseInfoAttributes.value.length !== 0 &&
           !applyIntersectableFilter(
-            selectCourseInfoAttributes.value.map((option) => option.value),
+            selectCourseInfoAttributes.value.map(
+              (option: Option) => option.value,
+            ),
             listing.course.course_flags.map((f) => f.flag.flag_text),
             intersectingFilters.value.includes('selectCourseInfoAttributes'),
           )
@@ -717,16 +798,16 @@ export function SearchProvider({
           // Same as selectSubjects
           if (
             !selectSchools.value.some(
-              (option) => listing.school === option.value,
+              (option: Option) => listing.school === option.value,
             )
           )
             return false;
           if (
             !applyIntersectableFilter(
-              selectSchools.value.map((option) => option.value),
+              selectSchools.value.map((option: Option) => option.value),
               listing.course.listings
                 .map((l) => l.school)
-                .filter((x) => x !== null),
+                .filter((x) => x.length > 0),
               intersectingFilters.value.includes('selectSchools'),
             )
           )
@@ -814,6 +895,7 @@ export function SearchProvider({
       quistPredicate,
       searchDescription.value,
       intersectingFilters.value,
+      selectBuilding.value,
     ],
   );
 
@@ -862,6 +944,7 @@ export function SearchProvider({
       selectSortBy,
       sortOrder,
       intersectingFilters,
+      selectBuilding,
     }),
     [
       searchText,
@@ -887,6 +970,7 @@ export function SearchProvider({
       selectSortBy,
       sortOrder,
       intersectingFilters,
+      selectBuilding,
     ],
   );
 

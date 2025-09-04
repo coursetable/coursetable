@@ -23,6 +23,7 @@ export default tseslint.config(
       'frontend/src/generated/',
       'frontend/src/queries/graphql-queries.ts',
       'frontend/build',
+      'frontend/dev-dist',
       'patches/',
       'api/src/**/*.queries.ts',
       'api/src/graphql-types.ts',
@@ -33,7 +34,7 @@ export default tseslint.config(
     plugins: {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       'css-modules': cssModulesPlugin,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+       
       'react-compiler': reactCompiler,
     },
     languageOptions: {
@@ -82,20 +83,13 @@ export default tseslint.config(
               group: 'external',
               position: 'before',
             },
-            {
-              pattern: './**/*.css',
-              group: 'index',
-              position: 'after',
-            },
+            { pattern: './**/*.css', group: 'index', position: 'after' },
           ],
           pathGroupsExcludedImportTypes: [],
           // Treat pathGroups as distinct groups, so they won't be sorted with
           // other modules (we don't enforce blank lines for this reason)
           distinctGroup: true,
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
+          alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
       'react/jsx-child-element-spacing': 'off',

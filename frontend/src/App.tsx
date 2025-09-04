@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
 
 import { useShallow } from 'zustand/react/shallow';
@@ -21,6 +23,7 @@ import Worksheet from './pages/Worksheet';
 
 import { useStore, useInitStore } from './store';
 import { suspended } from './utilities/display';
+import { createCatalogLink } from './utilities/navigation';
 import styles from './App.module.css';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
@@ -30,7 +33,6 @@ const About = suspended(() => import('./pages/About'));
 const FAQ = suspended(() => import('./pages/FAQ'));
 const Privacy = suspended(() => import('./pages/Privacy.mdx'));
 const NotFound = suspended(() => import('./pages/NotFound'));
-const Thankyou = suspended(() => import('./pages/Thankyou'));
 const Challenge = suspended(() => import('./pages/Challenge'));
 const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
@@ -45,6 +47,7 @@ const LinkPreview = suspended(
 const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
+const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function Modal() {
@@ -81,7 +84,7 @@ function AuthenticatedRoutes() {
 
     case '/login':
       if (authStatus === 'authenticated')
-        return <Navigate to="/catalog" replace />;
+        return <Navigate to={createCatalogLink()} replace />;
       return <Outlet />;
 
     case '/graphiql':
@@ -103,6 +106,17 @@ function App() {
   const location = useLocation();
   const { isTutorialOpen } = useTutorial();
   useInitStore();
+
+  useEffect(() => {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches;
+    if (standalone) {
+      PullToRefresh.init({
+        onRefresh() {
+          window.location.reload();
+        },
+      });
+    }
+  }, []);
 
   return (
     <div
@@ -127,26 +141,26 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={13}
+        id={16}
       >
-        We want to hear from you. How can we make CourseTable better?{' '}
+        {/*         Got tea on Yale Hospitality? Take a 2 minute{' '}
         <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLScomwLvl3cwdp6sOT1ceQhv1tGpUSAOiL1If5Pfy3FUxMTRWQ/viewform"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc6asiy6REcJUADw-F9BQq-GnFHbyLOdbIULH5OVgTSRZQpPw/viewform"
           target="_blank"
-          rel="noreferrer"
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          }}
+          rel="noopener noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
         >
-          Fill out this quick survey!
-        </a>
+          Spill the Tea Survey
+        </a>{' '}
+        and be entered to win a one of 10 ($20) local coffee shop gift cards. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
         <Route element={<AuthenticatedRoutes />}>
-          <Route path="/" element={<Navigate to="/catalog" replace />} />
+          <Route
+            path="/"
+            element={<Navigate to={createCatalogLink()} replace />}
+          />
 
           {/* Authenticated routes */}
           {/* Catalog and worksheet can be viewed by anyone; we put them under
@@ -163,19 +177,19 @@ function App() {
 
         {/* Static pages that don't need login */}
         <Route path="/about" element={<About />} />
-        <Route path="/thankyou" element={<Thankyou />} />
         <Route path="/joinus" element={<Join />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacypolicy" element={<Privacy />} />
 
-        <Route path="/Table" element={<Navigate to="/catalog" />} />
+        <Route path="/Table" element={<Navigate to={createCatalogLink()} />} />
 
         <Route path="/releases/fall23" element={<Fall23Release />} />
         <Route path="/releases/quist" element={<QuistRelease />} />
         <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases/spring24" element={<Spring24Release />} />
+        <Route path="/releases/fall24" element={<Fall24Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
-        {/* Catch-all Route to NotFound Page */}
+        {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />
       </SentryRoutes>
       <Footer />

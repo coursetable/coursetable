@@ -311,8 +311,8 @@ export type CourseFlagsVarianceOrderBy = {
 export type CourseMeetings = {
   __typename?: 'course_meetings';
   /** An object relationship */
-  course: Maybe<Courses>;
-  course_id: Maybe<Scalars['Int']['output']>;
+  course: Courses;
+  course_id: Scalars['Int']['output'];
   /** Days of the week for this session. It is formed through bitwise joining all the constituents, where (1 = Sunday, 2 = Monday, 4 = Tuesday, ..., 64 = Saturday). For example, if a course meets on Monday, Wednesday, and Friday, the value would be 2 + 8 + 32 = 42. */
   days_of_week: Scalars['Int']['output'];
   /** End time of this meeting session */
@@ -635,44 +635,26 @@ export type Courses = {
   average_gut_rating: Maybe<Scalars['float8']['output']>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: Maybe<Scalars['float8']['output']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n: Maybe<Scalars['Int']['output']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  average_rating_n: Scalars['Int']['output'];
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: Maybe<Scalars['float8']['output']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
-  average_rating_same_professors_n: Maybe<Scalars['Int']['output']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
+  average_rating_same_professors_n: Scalars['Int']['output'];
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_workload` */
-  average_workload_n: Maybe<Scalars['Int']['output']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  average_workload_n: Scalars['Int']['output'];
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: Maybe<Scalars['float8']['output']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
-  average_workload_same_professors_n: Maybe<Scalars['Int']['output']>;
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
+  average_workload_same_professors_n: Scalars['Int']['output'];
   /** Additional class notes */
   classnotes: Maybe<Scalars['String']['output']>;
   /** True if the course is a college seminar. False otherwise. */
-  colsem: Maybe<Scalars['Boolean']['output']>;
+  colsem: Scalars['Boolean']['output'];
   /** An array relationship */
   course_flags: Array<CourseFlags>;
   /** Link to the course homepage */
@@ -697,67 +679,43 @@ export type Courses = {
   /** Final exam information */
   final_exam: Maybe<Scalars['String']['output']>;
   /** True if the course is a first-year seminar. False otherwise. */
-  fysem: Maybe<Scalars['Boolean']['output']>;
+  fysem: Scalars['Boolean']['output'];
   /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']['output']>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Int']['output']>;
-  /**
-   * [computed] Whether last enrollment offering
-   *         is with same professor as current.
-   */
+  /** [computed] Whether last enrollment offering is with same professor as current. */
   last_enrollment_same_professors: Maybe<Scalars['Boolean']['output']>;
   /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: Maybe<Scalars['String']['output']>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: Maybe<Scalars['Int']['output']>;
   last_updated: Maybe<Scalars['timestamp']['output']>;
   /** An array relationship */
   listings: Array<Listings>;
-  /**
-   * Registrar's notes (e.g. preference selection links,
-   *         optional writing credits, etc.)
-   */
+  primary_crn: Maybe<Scalars['Crn']['output']>;
+  /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: Maybe<Scalars['String']['output']>;
   /** Recommended requirements/prerequisites for the course */
   requirements: Maybe<Scalars['String']['output']>;
   /** Reading period notes */
   rp_attr: Maybe<Scalars['String']['output']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: Scalars['Int']['output'];
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: Scalars['Int']['output'];
   /** An object relationship */
   season: Seasons;
   /** The season the course is being taught in */
   season_code: Scalars['Season']['output'];
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: Scalars['String']['output'];
-  /**
-   * Skills that the course fulfills (e.g. writing,
-   *         quantitative reasoning, language levels)
-   */
+  /** Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels) */
   skills: Scalars['StringArr']['output'];
   /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']['output']>;
   /** True if the course is a sophomore seminar. False otherwise. */
-  sysem: Maybe<Scalars['Boolean']['output']>;
+  sysem: Scalars['Boolean']['output'];
   time_added: Maybe<Scalars['timestamp']['output']>;
   /** Complete course title */
   title: Scalars['String']['output'];
@@ -848,39 +806,21 @@ export type CoursesAvgOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -889,24 +829,12 @@ export type CoursesAvgOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -948,6 +876,7 @@ export type CoursesBoolExp = {
   last_offered_course_id: InputMaybe<IntComparisonExp>;
   last_updated: InputMaybe<TimestampComparisonExp>;
   listings: InputMaybe<ListingsBoolExp>;
+  primary_crn: InputMaybe<IntComparisonExp>;
   regnotes: InputMaybe<StringComparisonExp>;
   requirements: InputMaybe<StringComparisonExp>;
   rp_attr: InputMaybe<StringComparisonExp>;
@@ -969,39 +898,21 @@ export type CoursesMaxOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   /** Additional class notes */
   classnotes: InputMaybe<OrderBy>;
@@ -1022,41 +933,23 @@ export type CoursesMaxOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
   last_updated: InputMaybe<OrderBy>;
-  /**
-   * Registrar's notes (e.g. preference selection links,
-   *         optional writing credits, etc.)
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: InputMaybe<OrderBy>;
   /** Recommended requirements/prerequisites for the course */
   requirements: InputMaybe<OrderBy>;
   /** Reading period notes */
   rp_attr: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
   /** The season the course is being taught in */
   season_code: InputMaybe<OrderBy>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<OrderBy>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<OrderBy>;
@@ -1071,39 +964,21 @@ export type CoursesMinOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   /** Additional class notes */
   classnotes: InputMaybe<OrderBy>;
@@ -1124,41 +999,23 @@ export type CoursesMinOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
   last_updated: InputMaybe<OrderBy>;
-  /**
-   * Registrar's notes (e.g. preference selection links,
-   *         optional writing credits, etc.)
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: InputMaybe<OrderBy>;
   /** Recommended requirements/prerequisites for the course */
   requirements: InputMaybe<OrderBy>;
   /** Reading period notes */
   rp_attr: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
   /** The season the course is being taught in */
   season_code: InputMaybe<OrderBy>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<OrderBy>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<OrderBy>;
@@ -1202,6 +1059,7 @@ export type CoursesOrderBy = {
   last_offered_course_id: InputMaybe<OrderBy>;
   last_updated: InputMaybe<OrderBy>;
   listings_aggregate: InputMaybe<ListingsAggregateOrderBy>;
+  primary_crn: InputMaybe<OrderBy>;
   regnotes: InputMaybe<OrderBy>;
   requirements: InputMaybe<OrderBy>;
   rp_attr: InputMaybe<OrderBy>;
@@ -1272,6 +1130,8 @@ export enum CoursesSelectColumn {
   /** column name */
   LastUpdated = 'last_updated',
   /** column name */
+  PrimaryCrn = 'primary_crn',
+  /** column name */
   Regnotes = 'regnotes',
   /** column name */
   Requirements = 'requirements',
@@ -1303,39 +1163,21 @@ export type CoursesStddevOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -1344,24 +1186,12 @@ export type CoursesStddevOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -1371,39 +1201,21 @@ export type CoursesStddevPopOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -1412,24 +1224,12 @@ export type CoursesStddevPopOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -1439,39 +1239,21 @@ export type CoursesStddevSampOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -1480,24 +1262,12 @@ export type CoursesStddevSampOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -1517,39 +1287,21 @@ export type CoursesStreamCursorValueInput = {
   average_gut_rating: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<Scalars['float8']['input']>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<Scalars['Int']['input']>;
   /** Additional class notes */
   classnotes: InputMaybe<Scalars['String']['input']>;
@@ -1572,53 +1324,29 @@ export type CoursesStreamCursorValueInput = {
   last_enrollment: InputMaybe<Scalars['Int']['input']>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Whether last enrollment offering
-   *         is with same professor as current.
-   */
+  /** [computed] Whether last enrollment offering is with same professor as current. */
   last_enrollment_same_professors: InputMaybe<Scalars['Boolean']['input']>;
   /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<Scalars['Int']['input']>;
   last_updated: InputMaybe<Scalars['timestamp']['input']>;
-  /**
-   * Registrar's notes (e.g. preference selection links,
-   *         optional writing credits, etc.)
-   */
+  primary_crn: InputMaybe<Scalars['Int']['input']>;
+  /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: InputMaybe<Scalars['String']['input']>;
   /** Recommended requirements/prerequisites for the course */
   requirements: InputMaybe<Scalars['String']['input']>;
   /** Reading period notes */
   rp_attr: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<Scalars['Int']['input']>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<Scalars['Int']['input']>;
   /** The season the course is being taught in */
   season_code: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Skills that the course fulfills (e.g. writing,
-   *         quantitative reasoning, language levels)
-   */
+  /** Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels) */
   skills: InputMaybe<Scalars['jsonb']['input']>;
   /** Link to the syllabus */
   syllabus_url: InputMaybe<Scalars['String']['input']>;
@@ -1635,39 +1363,21 @@ export type CoursesSumOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -1676,24 +1386,12 @@ export type CoursesSumOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -1703,39 +1401,21 @@ export type CoursesVarPopOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -1744,24 +1424,12 @@ export type CoursesVarPopOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -1771,39 +1439,21 @@ export type CoursesVarSampOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -1812,24 +1462,12 @@ export type CoursesVarSampOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -1839,39 +1477,21 @@ export type CoursesVarianceOrderBy = {
   average_gut_rating: InputMaybe<OrderBy>;
   /** [computed] Average of the average ratings of all professors for this course. */
   average_professor_rating: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings */
   average_rating: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average course rating for this course code,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average course rating for this course code, aggregated across all cross-listings with same set of professors */
   average_rating_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_rating_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_rating_same_professors` */
   average_rating_same_professors_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings */
   average_workload: InputMaybe<OrderBy>;
   /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: InputMaybe<OrderBy>;
-  /**
-   * [computed] Historical average workload rating,
-   *         aggregated across all cross-listings with same set of professors
-   */
+  /** [computed] Historical average workload rating, aggregated across all cross-listings with same set of professors */
   average_workload_same_professors: InputMaybe<OrderBy>;
-  /**
-   * [computed] Number of courses used to compute
-   *         `average_workload_same_professors`
-   */
+  /** [computed] Number of courses used to compute `average_workload_same_professors` */
   average_workload_same_professors_n: InputMaybe<OrderBy>;
   course_id: InputMaybe<OrderBy>;
   /** Number of course credits */
@@ -1880,24 +1500,12 @@ export type CoursesVarianceOrderBy = {
   last_enrollment: InputMaybe<OrderBy>;
   /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Most recent previous offering of
-   *         course (excluding future ones)
-   */
+  /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *         Same as 'same_course_id' with the constraint that all courses in a group were
-   *         taught by the same professors.
-   *
-   */
+  primary_crn: InputMaybe<OrderBy>;
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
-  /**
-   * [computed] Unique ID for grouping courses by historical offering.
-   *         All courses with a given ID are identical offerings across different semesters.
-   *
-   */
+  /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. */
   same_course_id: InputMaybe<OrderBy>;
 };
 
@@ -2508,14 +2116,10 @@ export type EvaluationStatistics = {
   course: Courses;
   /** The course associated with these statistics */
   course_id: Scalars['Int']['output'];
-  /** Number of students who declined to respond */
-  declined: Maybe<Scalars['Int']['output']>;
   /** Number of students enrolled in course */
-  enrolled: Maybe<Scalars['Int']['output']>;
+  enrolled: Scalars['Int']['output'];
   /** Arbitrary additional information attached to an evaluation */
   extras: Maybe<Scalars['jsonb']['output']>;
-  /** Number of students who did not respond */
-  no_response: Maybe<Scalars['Int']['output']>;
   /** Number of responses */
   responses: Maybe<Scalars['Int']['output']>;
 };
@@ -2534,10 +2138,8 @@ export type EvaluationStatisticsBoolExp = {
   avg_workload: InputMaybe<Float8ComparisonExp>;
   course: InputMaybe<CoursesBoolExp>;
   course_id: InputMaybe<IntComparisonExp>;
-  declined: InputMaybe<IntComparisonExp>;
   enrolled: InputMaybe<IntComparisonExp>;
   extras: InputMaybe<JsonbComparisonExp>;
-  no_response: InputMaybe<IntComparisonExp>;
   responses: InputMaybe<IntComparisonExp>;
 };
 
@@ -2547,10 +2149,8 @@ export type EvaluationStatisticsOrderBy = {
   avg_workload: InputMaybe<OrderBy>;
   course: InputMaybe<CoursesOrderBy>;
   course_id: InputMaybe<OrderBy>;
-  declined: InputMaybe<OrderBy>;
   enrolled: InputMaybe<OrderBy>;
   extras: InputMaybe<OrderBy>;
-  no_response: InputMaybe<OrderBy>;
   responses: InputMaybe<OrderBy>;
 };
 
@@ -2563,13 +2163,9 @@ export enum EvaluationStatisticsSelectColumn {
   /** column name */
   CourseId = 'course_id',
   /** column name */
-  Declined = 'declined',
-  /** column name */
   Enrolled = 'enrolled',
   /** column name */
   Extras = 'extras',
-  /** column name */
-  NoResponse = 'no_response',
   /** column name */
   Responses = 'responses',
 }
@@ -2590,14 +2186,10 @@ export type EvaluationStatisticsStreamCursorValueInput = {
   avg_workload: InputMaybe<Scalars['float8']['input']>;
   /** The course associated with these statistics */
   course_id: InputMaybe<Scalars['Int']['input']>;
-  /** Number of students who declined to respond */
-  declined: InputMaybe<Scalars['Int']['input']>;
   /** Number of students enrolled in course */
   enrolled: InputMaybe<Scalars['Int']['input']>;
   /** Arbitrary additional information attached to an evaluation */
   extras: InputMaybe<Scalars['jsonb']['input']>;
-  /** Number of students who did not respond */
-  no_response: InputMaybe<Scalars['Int']['input']>;
   /** Number of responses */
   responses: InputMaybe<Scalars['Int']['input']>;
 };
@@ -2733,7 +2325,7 @@ export type Listings = {
   /** Course number in the given subject (e.g. "120" or "S120") */
   number: Scalars['String']['output'];
   /** School (e.g. YC, GS, MG) that the course is listed under */
-  school: Maybe<Scalars['String']['output']>;
+  school: Scalars['String']['output'];
   /** An object relationship */
   season: Seasons;
   /** When the course/listing is being taught, mapping to `seasons` */
@@ -4059,7 +3651,7 @@ export type EvalsBySeasonQuery = {
     last_enrollment_same_professors: boolean | null;
     evaluation_statistic: {
       __typename?: 'evaluation_statistics';
-      enrolled: number | null;
+      enrolled: number;
       responses: number | null;
     } | null;
   }>;
@@ -4074,22 +3666,25 @@ export type CatalogBySeasonQuery = {
   courses: Array<{
     __typename?: 'courses';
     areas: StringArr;
-    colsem: boolean | null;
+    colsem: boolean;
     course_id: number;
     credits: number | null;
     description: string | null;
     extra_info: ExtraInfo;
     final_exam: string | null;
-    fysem: boolean | null;
+    fysem: boolean;
     last_offered_course_id: number | null;
+    primary_crn: Crn | null;
     requirements: string | null;
     same_course_and_profs_id: number;
     same_course_id: number;
     season_code: Season;
     section: string;
     skills: StringArr;
-    sysem: boolean | null;
+    sysem: boolean;
     title: string;
+    time_added: any | null;
+    last_updated: any | null;
     course_flags: Array<{
       __typename?: 'course_flags';
       flag: { __typename?: 'flags'; flag_text: string };
@@ -4107,7 +3702,7 @@ export type CatalogBySeasonQuery = {
       course_code: string;
       crn: Crn;
       number: string;
-      school: string | null;
+      school: string;
       subject: string;
     }>;
     course_meetings: Array<{
@@ -4131,18 +3726,29 @@ export type CourseAttributesQuery = {
   flags: Array<{ __typename?: 'flags'; flag_text: string }>;
 };
 
+export type BuildingsCatalogQueryVariables = Exact<{ [key: string]: never }>;
+
+export type BuildingsCatalogQuery = {
+  __typename?: 'query_root';
+  buildings: Array<{
+    __typename?: 'buildings';
+    building_name: string | null;
+    code: string;
+    url: string | null;
+  }>;
+};
+
 export type CourseModalOverviewDataQueryVariables = Exact<{
-  seasonCode: Scalars['String']['input'];
-  crn: Scalars['Int']['input'];
+  listingId: Scalars['Int']['input'];
   sameCourseId: Scalars['Int']['input'];
   hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type CourseModalOverviewDataQuery = {
   __typename?: 'query_root';
-  self: Array<{
+  self: {
     __typename?: 'listings';
-    school: string | null;
+    school: string;
     season_code: Season;
     crn: Crn;
     course_code: string;
@@ -4160,6 +3766,8 @@ export type CourseModalOverviewDataQuery = {
       regnotes: string | null;
       rp_attr: string | null;
       final_exam: string | null;
+      time_added: any | null;
+      last_updated: any | null;
       same_course_id: number;
       course_professors: Array<{
         __typename?: 'course_professors';
@@ -4192,10 +3800,10 @@ export type CourseModalOverviewDataQuery = {
       }>;
       evaluation_statistic?: {
         __typename?: 'evaluation_statistics';
-        enrolled: number | null;
+        enrolled: number;
       } | null;
     };
-  }>;
+  } | null;
   sameCourse: Array<
     {
       __typename?: 'courses';
@@ -4237,6 +3845,7 @@ export type CourseModalPrefetchCourseDataFragment = {
   extra_info: ExtraInfo;
   description: string | null;
   same_course_id: number;
+  primary_crn: Crn | null;
   listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
   course_professors: Array<{
     __typename?: 'course_professors';
@@ -4255,13 +3864,12 @@ export type CourseModalPrefetchCourseDataFragment = {
 };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
-  seasonCode: Scalars['String']['input'];
-  crn: Scalars['Int']['input'];
+  listingId: Scalars['Int']['input'];
 }>;
 
 export type SearchEvaluationNarrativesQuery = {
   __typename?: 'query_root';
-  listings: Array<{
+  listings_by_pk: {
     __typename?: 'listings';
     course: {
       __typename?: 'courses';
@@ -4286,10 +3894,10 @@ export type SearchEvaluationNarrativesQuery = {
       }>;
       evaluation_statistic: {
         __typename?: 'evaluation_statistics';
-        enrolled: number | null;
+        enrolled: number;
       } | null;
     };
-  }>;
+  } | null;
 };
 
 export type ProfModalOverviewDataQueryVariables = Exact<{
@@ -4321,16 +3929,15 @@ export type ProfModalOverviewDataQuery = {
 };
 
 export type CourseModalFromUrlQueryVariables = Exact<{
-  seasonCode: Scalars['String']['input'];
-  crn: Scalars['Int']['input'];
+  listingId: Scalars['Int']['input'];
   hasEvals: Scalars['Boolean']['input'];
 }>;
 
 export type CourseModalFromUrlQuery = {
   __typename?: 'query_root';
-  listings: Array<
-    { __typename?: 'listings' } & CourseModalPrefetchListingDataFragment
-  >;
+  listings_by_pk:
+    | ({ __typename?: 'listings' } & CourseModalPrefetchListingDataFragment)
+    | null;
 };
 
 export type PrereqLinkInfoQueryVariables = Exact<{

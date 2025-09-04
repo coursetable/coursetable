@@ -1,31 +1,66 @@
 import { useEffect, useState } from 'react';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
+import {
+  type CalendarSlice,
+  createCalendarSlice,
+} from './slices/CalendarSlice';
 import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
+import {
+  createProfileSlice,
+  defaultPreferences,
+  type ProfileSlice,
+} from './slices/ProfileSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
+import {
+  createWorksheetSlice,
+  useWorksheetEffects,
+  type WorksheetSlice,
+} from './slices/WorksheetSlice';
 import { pick } from './utilities/common';
 
 export interface Store
   extends AuthSlice,
+    CalendarSlice,
     UserSlice,
     ThemeSlice,
-    DimensionsSlice {}
+    DimensionsSlice,
+    ProfileSlice,
+    WorksheetSlice {}
 
-const PersistKeys: (keyof Store)[] = ['authStatus', 'theme'];
+const basePersistKeys: (keyof Store)[] = [
+  'authStatus',
+  'theme',
+  'coursePref',
+  'professorPref',
+  'viewedPerson',
+  'viewedSeason',
+  'viewedWorksheetNumber',
+  'worksheetView',
+];
+const PersistKeys = basePersistKeys.concat(
+  Object.keys(defaultPreferences) as (keyof Store)[],
+);
 
 export const useStore = create<Store>()(
   persist(
-    (...a) => ({
-      ...createAuthSlice(...a),
-      ...createUserSlice(...a),
-      ...createThemeSlice(...a),
-      ...createDimensionsSlice(...a),
-    }),
+    subscribeWithSelector(
+      immer((...a) => ({
+        ...createAuthSlice(...a),
+        ...createCalendarSlice(...a),
+        ...createUserSlice(...a),
+        ...createThemeSlice(...a),
+        ...createDimensionsSlice(...a),
+        ...createProfileSlice(...a),
+        ...createWorksheetSlice(...a),
+      })),
+    ),
     {
       name: 'store',
       partialize: (state) => pick(state, PersistKeys),
@@ -95,4 +130,5 @@ export const useInitStore = () => {
   useAuth();
   useDimensions();
   useTheme();
+  useWorksheetEffects();
 };

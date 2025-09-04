@@ -8,11 +8,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
-import {
-  useWorksheet,
-  useWorksheetNumberOptions,
-} from '../../contexts/worksheetContext';
 import { updateWorksheetCourses } from '../../queries/api';
+import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
@@ -88,14 +85,15 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  const { worksheets, worksheetsRefresh } = useStore(
-    useShallow((state) => ({
-      worksheets: state.worksheets,
-      worksheetsRefresh: state.worksheetsRefresh,
-    })),
-  );
+  const { worksheets, worksheetsRefresh, getRelevantWorksheetNumber } =
+    useStore(
+      useShallow((state) => ({
+        worksheets: state.worksheets,
+        worksheetsRefresh: state.worksheetsRefresh,
+        getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
+      })),
+    );
 
-  const { getRelevantWorksheetNumber } = useWorksheet();
   const defaultWorksheetNumber = getRelevantWorksheetNumber(
     listing.course.season_code,
   );
@@ -154,7 +152,10 @@ function WorksheetToggleButton({
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
   const Icon = inWorksheet ? FaMinus : FaPlus;
   const buttonLabel = worksheets
-    ? `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${worksheetOptions[selectedWorksheet]!.label}"`
+    ? // The worksheet name can only be unknown if we triggered the
+      // if (prevWorksheetCtx !== defaultWorksheetNumber) code path above
+      // We will update it once and then it will be correct
+      `${inWorksheet ? 'Remove from' : 'Add to'} worksheet "${worksheetOptions[selectedWorksheet]?.label ?? 'Unknown'}"`
     : 'Log in to add to your worksheet';
 
   // Disabled worksheet add/remove button if not logged in

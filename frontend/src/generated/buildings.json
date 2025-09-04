@@ -1,0 +1,573 @@
+[
+  { "building_name": null, "code": "A&A", "url": "" },
+  { "building_name": null, "code": "AACC", "url": "" },
+  { "building_name": "Advanced Biosciences Center", "code": "ABC", "url": "" },
+  {
+    "building_name": "Arthur K. Watson Hall",
+    "code": "AKW",
+    "url": "https://map.yale.edu/?id=1910#!m/560119"
+  },
+  { "building_name": null, "code": "ARNOLD", "url": "" },
+  { "building_name": null, "code": "ASH40", "url": "" },
+  { "building_name": null, "code": "AUD80", "url": "" },
+  { "building_name": null, "code": "BAC", "url": "" },
+  {
+    "building_name": "Baker Hall",
+    "code": "BAKER",
+    "url": "https://map.yale.edu/?id=1910#!m/563680"
+  },
+  {
+    "building_name": "Bass Center",
+    "code": "BASS",
+    "url": "https://map.yale.edu/?id=1910#!m/560102"
+  },
+  {
+    "building_name": "Bass Library",
+    "code": "BASSLB",
+    "url": "https://map.yale.edu/?id=1910#!m/564574"
+  },
+  { "building_name": null, "code": "BATTEL", "url": "" },
+  {
+    "building_name": "Boyer Ctr Molecular Medicine",
+    "code": "BCMM",
+    "url": "https://map.yale.edu/?id=1910#!m/560055"
+  },
+  {
+    "building_name": "Becton Center",
+    "code": "BCT",
+    "url": "https://map.yale.edu/?id=1910#!m/563685"
+  },
+  {
+    "building_name": "Benjamin Franklin College",
+    "code": "BF",
+    "url": "https://map.yale.edu/?id=1910#!m/563675"
+  },
+  { "building_name": null, "code": "BK", "url": "" },
+  {
+    "building_name": "Bingham Hall",
+    "code": "BM",
+    "url": "https://map.yale.edu/?id=1910#!m/559569"
+  },
+  {
+    "building_name": "Brady Memorial Laboratory",
+    "code": "BML",
+    "url": "https://map.yale.edu/?id=1910#!m/560069"
+  },
+  {
+    "building_name": "Bowers Hall",
+    "code": "BOWERS",
+    "url": "https://map.yale.edu/?id=1910#!m/559547"
+  },
+  { "building_name": "Branford College", "code": "BR", "url": "" },
+  { "building_name": null, "code": "BRADY", "url": "" },
+  {
+    "building_name": "Beinecke Rare Book Library",
+    "code": "BRBL",
+    "url": "https://map.yale.edu/?id=1910#!m/531533"
+  },
+  { "building_name": null, "code": "BRW35", "url": "" },
+  { "building_name": null, "code": "C", "url": "" },
+  { "building_name": null, "code": "CALHIL", "url": "" },
+  { "building_name": null, "code": "CC", "url": "" },
+  {
+    "building_name": "Center for Collab Arts & Media",
+    "code": "CCAM",
+    "url": "https://map.yale.edu/?id=1910#!m/560098"
+  },
+  { "building_name": null, "code": "CH100", "url": "" },
+  { "building_name": "100 College Street", "code": "CO100", "url": "" },
+  { "building_name": null, "code": "CO135", "url": "" },
+  {
+    "building_name": "451 College Street",
+    "code": "CO451",
+    "url": "https://map.yale.edu/?id=1910#!m/559544"
+  },
+  {
+    "building_name": "47 College Street (CLP)",
+    "code": "CO47",
+    "url": "https://map.yale.edu/?id=1910#!m/559997"
+  },
+  {
+    "building_name": "493 College Street",
+    "code": "CO493",
+    "url": "https://map.yale.edu/?id=1910#!m/560001"
+  },
+  {
+    "building_name": "305 Crown Street",
+    "code": "CR305",
+    "url": "https://map.yale.edu/?id=1910#!m/560025"
+  },
+  {
+    "building_name": "Chemistry Research Building",
+    "code": "CRB",
+    "url": "https://map.yale.edu/?id=1910#!m/560133"
+  },
+  { "building_name": "353 Crown St", "code": "CRW353", "url": "" },
+  {
+    "building_name": "Child Study Center",
+    "code": "CSC",
+    "url": "https://map.yale.edu/?id=1910#!m/563701"
+  },
+  {
+    "building_name": "Davies Auditorium, Becton Ctr",
+    "code": "DAVIES",
+    "url": "https://map.yale.edu/?id=1910#!m/563685"
+  },
+  {
+    "building_name": "Davenport College",
+    "code": "DC",
+    "url": "https://map.yale.edu/?id=1910#!m/560004"
+  },
+  {
+    "building_name": "Dunham Laboratory",
+    "code": "DL",
+    "url": "https://map.yale.edu/?id=1910#!m/560005"
+  },
+  { "building_name": null, "code": "DMCA", "url": "" },
+  {
+    "building_name": "Dow Hall",
+    "code": "DOW",
+    "url": "https://map.yale.edu/?id=1910#!m/560019"
+  },
+  {
+    "building_name": "Dwight Hall",
+    "code": "DW",
+    "url": "https://map.yale.edu/?id=1910#!m/563682"
+  },
+  { "building_name": null, "code": "EDG32", "url": "" },
+  {
+    "building_name": "36 Edgewood Ave. Sculpture Bld",
+    "code": "EDG36",
+    "url": "https://map.yale.edu/?id=1910#!m/560028"
+  },
+  { "building_name": null, "code": "EDW309", "url": "" },
+  { "building_name": null, "code": "EDW340", "url": "" },
+  {
+    "building_name": "380 Edwards Street",
+    "code": "EDW380",
+    "url": "https://map.yale.edu/?id=1910#!m/560003"
+  },
+  {
+    "building_name": "143 Elm Street",
+    "code": "ELM143",
+    "url": "https://map.yale.edu/?id=1910#!m/559994"
+  },
+  { "building_name": null, "code": "ELM149", "url": "" },
+  {
+    "building_name": "Broadway Rehearsal Lofts",
+    "code": "ELM294",
+    "url": "https://map.yale.edu/?id=1910#!m/559982"
+  },
+  {
+    "building_name": null,
+    "code": "ES",
+    "url": "https://map.yale.edu/?id=1910#!m/559931"
+  },
+  {
+    "building_name": "Environmental Sciences Center",
+    "code": "ESC",
+    "url": "https://map.yale.edu/?id=1910#!m/560020"
+  },
+  { "building_name": null, "code": "ESH", "url": "" },
+  {
+    "building_name": "Edward P Evans Hall",
+    "code": "EVANS",
+    "url": "https://map.yale.edu/?id=1910#!m/560094"
+  },
+  {
+    "building_name": "300 George Street",
+    "code": "GEO300",
+    "url": "https://map.yale.edu/?id=1910#!m/533602"
+  },
+  {
+    "building_name": "350 George Street",
+    "code": "GEO350",
+    "url": "https://map.yale.edu/?id=1910#!m/563701"
+  },
+  {
+    "building_name": null,
+    "code": "GH",
+    "url": "https://map.yale.edu/?id=1910#!m/560103"
+  },
+  { "building_name": null, "code": "GML", "url": "" },
+  {
+    "building_name": "109 Grove Street",
+    "code": "GR109",
+    "url": "https://map.yale.edu/?id=1910#!m/560109"
+  },
+  {
+    "building_name": "Green Hall (1156 Chapel)",
+    "code": "GREEN",
+    "url": "https://map.yale.edu/?id=1910#!m/560064"
+  },
+  {
+    "building_name": "Hendrie Hall",
+    "code": "HEN",
+    "url": "https://map.yale.edu/?id=1910#!m/563676"
+  },
+  { "building_name": null, "code": "HGS", "url": "" },
+  { "building_name": "26 High Street", "code": "HI26", "url": "" },
+  { "building_name": "26 High Street", "code": "HIGH26", "url": "" },
+  {
+    "building_name": "17 Hillhouse Avenue",
+    "code": "HLH17",
+    "url": "https://map.yale.edu/?id=1910#!m/559973"
+  },
+  {
+    "building_name": "24 Hillhouse Avenue",
+    "code": "HLH24",
+    "url": "https://map.yale.edu/?id=1910#!m/560128"
+  },
+  { "building_name": null, "code": "HLH27", "url": "" },
+  {
+    "building_name": "28 Hillhouse Avenue",
+    "code": "HLH28",
+    "url": "https://map.yale.edu/?id=1910#!m/559988"
+  },
+  {
+    "building_name": "31 Hillhouse Avenue",
+    "code": "HLH31",
+    "url": "https://map.yale.edu/?id=1910#!m/559990"
+  },
+  { "building_name": "46 Hillhouse Avenue", "code": "HLH46", "url": "" },
+  {
+    "building_name": "51 Hillhouse Avenue",
+    "code": "HLH51",
+    "url": "https://map.yale.edu/?id=1910#!m/559970"
+  },
+  {
+    "building_name": "55 Hillhouse",
+    "code": "HLH55",
+    "url": "https://map.yale.edu/?id=1910#!m/560099"
+  },
+  { "building_name": null, "code": "HLH56", "url": "" },
+  {
+    "building_name": "Hope",
+    "code": "HOPE",
+    "url": "https://map.yale.edu/?id=1910#!m/560131"
+  },
+  {
+    "building_name": "Humanities Quadrangle",
+    "code": "HQ",
+    "url": "https://map.yale.edu/?id=1910#!m/563690"
+  },
+  {
+    "building_name": "Institute of Sacred Music",
+    "code": "ISM",
+    "url": "https://map.yale.edu/?id=1910#!m/559978"
+  },
+  { "building_name": null, "code": "ISPS", "url": "" },
+  {
+    "building_name": "Jonathan Edwards College",
+    "code": "JE",
+    "url": "https://map.yale.edu/?id=1910#!m/560007"
+  },
+  { "building_name": null, "code": "JPL", "url": "" },
+  { "building_name": null, "code": "JWG", "url": "" },
+  {
+    "building_name": "Kirtland Hall",
+    "code": "K",
+    "url": "https://map.yale.edu/?id=1910#!m/559945"
+  },
+  { "building_name": null, "code": "KBT", "url": "" },
+  {
+    "building_name": "Kline Geology Laboratory",
+    "code": "KGL",
+    "url": "https://map.yale.edu/?id=1910#!m/559996"
+  },
+  {
+    "building_name": "Kroon Hall",
+    "code": "KRN",
+    "url": "https://map.yale.edu/?id=1910#!m/559995"
+  },
+  { "building_name": null, "code": "KROON", "url": "" },
+  { "building_name": "Kline Tower", "code": "KT", "url": "" },
+  {
+    "building_name": "Linsly-Chittenden Hall",
+    "code": "LC",
+    "url": "https://map.yale.edu/?id=1910#!m/560111"
+  },
+  {
+    "building_name": "Leigh Hall (435 College)",
+    "code": "LEIGH",
+    "url": "https://map.yale.edu/?id=1910#!m/559539"
+  },
+  {
+    "building_name": "Laboratory of EPH",
+    "code": "LEPH",
+    "url": "https://map.yale.edu/?id=1910#!m/560065"
+  },
+  {
+    "building_name": null,
+    "code": "LFOP",
+    "url": "https://map.yale.edu/?id=1910#!m/560072"
+  },
+  {
+    "building_name": "Leet Oliver Memorial Hall",
+    "code": "LOM",
+    "url": "https://map.yale.edu/?id=1910#!m/559558"
+  },
+  {
+    "building_name": "Loria Center",
+    "code": "LORIA",
+    "url": "https://map.yale.edu/?id=1910#!m/560066"
+  },
+  {
+    "building_name": "Luce Hall",
+    "code": "LUCE",
+    "url": "https://map.yale.edu/?id=1910#!m/559960"
+  },
+  {
+    "building_name": "Marsh Hall",
+    "code": "MARSH",
+    "url": "https://map.yale.edu/?id=1910#!m/559984"
+  },
+  { "building_name": null, "code": "MC", "url": "" },
+  { "building_name": null, "code": "MEC", "url": "" },
+  {
+    "building_name": "Mason Laboratory",
+    "code": "ML",
+    "url": "https://map.yale.edu/?id=1910#!m/560056"
+  },
+  {
+    "building_name": "Pauli Murray College",
+    "code": "MY",
+    "url": "https://map.yale.edu/?id=1910#!m/560100"
+  },
+  { "building_name": "Old Art Gallery", "code": "OAG", "url": "" },
+  { "building_name": null, "code": "OBT", "url": "" },
+  {
+    "building_name": "Osborn Memorial Laboratories",
+    "code": "OML",
+    "url": "https://map.yale.edu/?id=1910#!m/559958"
+  },
+  { "building_name": null, "code": "ONLINE", "url": "" },
+  { "building_name": null, "code": "PC", "url": "" },
+  {
+    "building_name": "Phelps Hall",
+    "code": "PH",
+    "url": "https://map.yale.edu/?id=1910#!m/559570"
+  },
+  {
+    "building_name": "205 Park Street",
+    "code": "PK205",
+    "url": "https://map.yale.edu/?id=1910#!m/559961"
+  },
+  {
+    "building_name": "217 Park Street",
+    "code": "PK217",
+    "url": "https://map.yale.edu/?id=1910#!m/560070"
+  },
+  { "building_name": "Peabody Museum", "code": "PM", "url": "" },
+  {
+    "building_name": "135 Prospect Street",
+    "code": "PR135",
+    "url": "https://map.yale.edu/?id=1910#!m/560122"
+  },
+  { "building_name": null, "code": "PR140", "url": "" },
+  { "building_name": "204 Prospect Street", "code": "PR204", "url": "" },
+  {
+    "building_name": "210 Prospect Street",
+    "code": "PR210",
+    "url": "https://map.yale.edu/?id=1910#!m/559971"
+  },
+  {
+    "building_name": "230 Prospect Street",
+    "code": "PR230",
+    "url": "https://map.yale.edu/?id=1910#!m/559964"
+  },
+  { "building_name": null, "code": "PR301", "url": "" },
+  {
+    "building_name": "406 Prospect St., Miller Hall",
+    "code": "PR406",
+    "url": "https://map.yale.edu/?id=1910#!m/559978"
+  },
+  {
+    "building_name": "77 Prospect Street",
+    "code": "PR77",
+    "url": "https://map.yale.edu/?id=1910#!m/559939"
+  },
+  { "building_name": null, "code": "PRP8", "url": "" },
+  {
+    "building_name": "Payne Whitney Gymnasium",
+    "code": "PWG",
+    "url": "https://map.yale.edu/?id=1910#!m/559944"
+  },
+  {
+    "building_name": "Rudolph Hall",
+    "code": "RDH",
+    "url": "https://map.yale.edu/?id=1910#!m/559534"
+  },
+  {
+    "building_name": "Rosenkranz Hall",
+    "code": "RKZ",
+    "url": "https://map.yale.edu/?id=1910#!m/559923"
+  },
+  {
+    "building_name": "Sage Hall",
+    "code": "S",
+    "url": "https://map.yale.edu/?id=1910#!m/559547"
+  },
+  {
+    "building_name": "10 Sachem Street",
+    "code": "SA10",
+    "url": "https://map.yale.edu/?id=1910#!m/559538"
+  },
+  { "building_name": null, "code": "SA80", "url": "" },
+  {
+    "building_name": "Sterling Chemistry Laboratory",
+    "code": "SCL",
+    "url": "https://map.yale.edu/?id=1910#!m/559572"
+  },
+  {
+    "building_name": "Sterling Divinity Quadrangle",
+    "code": "SDQ",
+    "url": "https://map.yale.edu/?id=1910#!m/560096"
+  },
+  {
+    "building_name": "Sterling Hall of Medicine",
+    "code": "SHM",
+    "url": "https://map.yale.edu/?id=1910#!m/559929"
+  },
+  {
+    "building_name": "Sterling Law Buildings",
+    "code": "SLB",
+    "url": "https://map.yale.edu/?id=1910#!m/531532"
+  },
+  { "building_name": null, "code": "SLIFKA", "url": "" },
+  { "building_name": null, "code": "SM", "url": "" },
+  {
+    "building_name": "Sprague Memorial Hall",
+    "code": "SMH",
+    "url": "https://map.yale.edu/?id=1910#!m/559936"
+  },
+  {
+    "building_name": "Sterling Memorial Library",
+    "code": "SML",
+    "url": "https://map.yale.edu/?id=1910#!m/563698"
+  },
+  {
+    "building_name": "Sloane Physics Laboratory",
+    "code": "SPL",
+    "url": "https://map.yale.edu/?id=1910#!m/559933"
+  },
+  {
+    "building_name": "Sheffield-Sterling-Strathcona",
+    "code": "SSS",
+    "url": "https://map.yale.edu/?id=1910#!m/563689"
+  },
+  {
+    "building_name": "Stoeckel Hall (renovated)",
+    "code": "STOECK",
+    "url": "https://map.yale.edu/?id=1910#!m/559930"
+  },
+  { "building_name": null, "code": "SW", "url": "" },
+  { "building_name": null, "code": "SY", "url": "" },
+  {
+    "building_name": "The Anlyan Center",
+    "code": "TAC",
+    "url": "https://map.yale.edu/?id=1910#!m/563380"
+  },
+  {
+    "building_name": "Trumbull College",
+    "code": "TC",
+    "url": "https://map.yale.edu/?id=1910#!m/563697"
+  },
+  { "building_name": null, "code": "TD", "url": "" },
+  { "building_name": null, "code": "TM320", "url": "" },
+  { "building_name": null, "code": "TM370", "url": "" },
+  { "building_name": null, "code": "TM40", "url": "" },
+  { "building_name": "405 Temple Street", "code": "TM405", "url": "" },
+  {
+    "building_name": "432 Temple Street",
+    "code": "TM432",
+    "url": "https://map.yale.edu/?id=1910#!m/559942"
+  },
+  { "building_name": null, "code": "TM434", "url": "" },
+  {
+    "building_name": "87 Trumbull Street",
+    "code": "TRUM87",
+    "url": "https://map.yale.edu/?id=1910#!m/559543"
+  },
+  { "building_name": "Tsai CITY", "code": "TSAI", "url": "" },
+  { "building_name": null, "code": "W-CSC", "url": "" },
+  { "building_name": null, "code": "W-ISTC", "url": "" },
+  { "building_name": "WC Office Complex North", "code": "W-OCN", "url": "" },
+  {
+    "building_name": "53 Wall Street",
+    "code": "WALL53",
+    "url": "https://map.yale.edu/?id=1910#!m/559554"
+  },
+  {
+    "building_name": "81 Wall Street",
+    "code": "WALL81",
+    "url": "https://map.yale.edu/?id=1910#!m/559926"
+  },
+  { "building_name": "82-90 Wall St", "code": "WALL82", "url": "" },
+  {
+    "building_name": "55 Whitney Avenue",
+    "code": "WH55",
+    "url": "https://map.yale.edu/?id=1910#!m/560121"
+  },
+  {
+    "building_name": "Whitney Humanities Center",
+    "code": "WHC",
+    "url": "https://map.yale.edu/?id=1910#!m/563690"
+  },
+  {
+    "building_name": "Wright Lab",
+    "code": "WL",
+    "url": "https://map.yale.edu/?id=1910#!m/559586"
+  },
+  { "building_name": null, "code": "WLC", "url": "" },
+  {
+    "building_name": "William L. Harkness Hall",
+    "code": "WLH",
+    "url": "https://map.yale.edu/?id=1910#!m/560127"
+  },
+  { "building_name": null, "code": "WNSL", "url": "" },
+  { "building_name": null, "code": "WOOL", "url": "" },
+  {
+    "building_name": "Watson Center 60 Sachem Street",
+    "code": "WTS",
+    "url": "https://map.yale.edu/?id=1910#!m/559919"
+  },
+  { "building_name": null, "code": "WWW", "url": "" },
+  { "building_name": null, "code": "YCMI", "url": "" },
+  {
+    "building_name": "149 York Street",
+    "code": "YK149",
+    "url": "https://map.yale.edu/?id=1910#!m/560098"
+  },
+  { "building_name": null, "code": "YK204", "url": "" },
+  {
+    "building_name": "212 York Street",
+    "code": "YK212",
+    "url": "https://map.yale.edu/?id=1910#!m/559604"
+  },
+  {
+    "building_name": "220 York Street",
+    "code": "YK220",
+    "url": "https://map.yale.edu/?id=1910#!m/563696"
+  },
+  {
+    "building_name": "222 York Street",
+    "code": "YK222",
+    "url": "https://map.yale.edu/?id=1910#!m/559927"
+  },
+  {
+    "building_name": null,
+    "code": "YRT",
+    "url": "https://map.yale.edu/?id=1910#!m/563678"
+  },
+  {
+    "building_name": "Yale Science Building",
+    "code": "YSB",
+    "url": "https://map.yale.edu/?id=1910#!m/563700"
+  },
+  {
+    "building_name": "Yale University Art Gallery",
+    "code": "YUAG",
+    "url": "https://map.yale.edu/?id=1910#!m/559918"
+  }
+]

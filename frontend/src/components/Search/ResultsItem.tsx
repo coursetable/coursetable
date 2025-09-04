@@ -13,7 +13,6 @@ import {
   ratingTypes,
 } from './ResultsItemCommon';
 import { useSearch } from '../../contexts/searchContext';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
@@ -81,7 +80,9 @@ function ResultsItem({
   const { user, worksheets } = useStore(
     useShallow((state) => ({ worksheets: state.worksheets, user: state.user })),
   );
-  const { getRelevantWorksheetNumber } = useWorksheet();
+  const getRelevantWorksheetNumber = useStore(
+    (state) => state.getRelevantWorksheetNumber,
+  );
 
   const { numFriends } = useSearch();
   const friends = numFriends[`${listing.course.season_code}${listing.crn}`];
@@ -96,6 +97,10 @@ function ResultsItem({
       ),
     [listing, getRelevantWorksheetNumber, worksheets],
   );
+
+  const timeAdded = listing.course.time_added
+    ? new Date(listing.course.time_added as string).toLocaleDateString()
+    : '';
 
   return (
     <li className={styles.container} style={style}>
@@ -198,6 +203,9 @@ function ResultsItem({
                 <span>{friends.size}</span>
               </OverlayTrigger>
             )}
+          </span>
+          <span className={colStyles.addedCol}>
+            <span className={styles.ellipsisText}>{timeAdded}</span>
           </span>
         </div>
       </Link>

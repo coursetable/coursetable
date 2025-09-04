@@ -22,7 +22,14 @@ function ShareButton({
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
   const copyToClipboard = () => {
-    const textToCopy = `${listing.course_code} -- CourseTable: ${window.location.href}`;
+    const params = new URLSearchParams(window.location.search);
+    const courseModal = params.get('course-modal');
+
+    const url = `${window.location.origin}${window.location.pathname}${
+      courseModal !== null ? `?course-modal=${courseModal}` : ''
+    }`;
+    const textToCopy = `${listing.course_code} -- CourseTable: ${url}`;
+
     navigator.clipboard.writeText(textToCopy).then(
       () => {
         toast.success('Course and URL copied to clipboard!');
@@ -72,6 +79,13 @@ function MoreButton({
         rel="noreferrer"
       >
         Open in Yale Course Search
+      </Dropdown.Item>
+      <Dropdown.Item
+        href={`https://ivy.yale.edu/course-stats/course/courseDetail?termCode=${listing.course.season_code}&courseNumber=${listing.course_code.split(' ')[1]!}&subjectCode=${encodeURIComponent(listing.course_code.split(' ')[0]!)}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        Open Course Demand Statistics
       </Dropdown.Item>
       {!CUR_YEAR.includes(listing.course.season_code) && (
         <Dropdown.Item
