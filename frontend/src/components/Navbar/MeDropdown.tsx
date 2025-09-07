@@ -125,6 +125,9 @@ function DropdownContent({
           <DropdownItem icon={FcNews} to="/releases">
             Release notes
           </DropdownItem>
+          <DropdownItem icon={BsFillPersonFill} to="/profile">
+            My Profile
+          </DropdownItem>
           {/* Try tutorial only on desktop */}
           {!isMobile && !isTablet && authStatus === 'authenticated' && (
             <DropdownItem
