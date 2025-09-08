@@ -1,6 +1,5 @@
 [
   { "building_name": null, "code": "A&A", "url": "" },
-  { "building_name": null, "code": "AACC", "url": "" },
   { "building_name": "Advanced Biosciences Center", "code": "ABC", "url": "" },
   {
     "building_name": "Arthur K. Watson Hall",
@@ -59,7 +58,7 @@
     "url": "https://map.yale.edu/?id=1910#!m/559547"
   },
   { "building_name": "Branford College", "code": "BR", "url": "" },
-  { "building_name": null, "code": "BRADY", "url": "" },
+  { "building_name": "Brady Memorial Laboratory", "code": "BRADY", "url": "" },
   {
     "building_name": "Beinecke Rare Book Library",
     "code": "BRBL",
@@ -76,7 +75,7 @@
   },
   { "building_name": null, "code": "CH100", "url": "" },
   { "building_name": "100 College Street", "code": "CO100", "url": "" },
-  { "building_name": null, "code": "CO135", "url": "" },
+  { "building_name": "101 College Street", "code": "CO101", "url": "" },
   {
     "building_name": "451 College Street",
     "code": "CO451",
@@ -134,14 +133,11 @@
     "code": "DW",
     "url": "https://map.yale.edu/?id=1910#!m/563682"
   },
-  { "building_name": null, "code": "EDG32", "url": "" },
   {
     "building_name": "36 Edgewood Ave. Sculpture Bld",
     "code": "EDG36",
     "url": "https://map.yale.edu/?id=1910#!m/560028"
   },
-  { "building_name": null, "code": "EDW309", "url": "" },
-  { "building_name": null, "code": "EDW340", "url": "" },
   {
     "building_name": "380 Edwards Street",
     "code": "EDW380",
@@ -229,6 +225,7 @@
     "code": "HLH31",
     "url": "https://map.yale.edu/?id=1910#!m/559990"
   },
+  { "building_name": "37 Hillhouse Avenue", "code": "HLH37", "url": "" },
   { "building_name": "46 Hillhouse Avenue", "code": "HLH46", "url": "" },
   {
     "building_name": "51 Hillhouse Avenue",
@@ -256,7 +253,6 @@
     "code": "ISM",
     "url": "https://map.yale.edu/?id=1910#!m/559978"
   },
-  { "building_name": null, "code": "ISPS", "url": "" },
   {
     "building_name": "Jonathan Edwards College",
     "code": "JE",
@@ -280,7 +276,6 @@
     "code": "KRN",
     "url": "https://map.yale.edu/?id=1910#!m/559995"
   },
-  { "building_name": null, "code": "KROON", "url": "" },
   { "building_name": "Kline Tower", "code": "KT", "url": "" },
   {
     "building_name": "Linsly-Chittenden Hall",
@@ -296,11 +291,6 @@
     "building_name": "Laboratory of EPH",
     "code": "LEPH",
     "url": "https://map.yale.edu/?id=1910#!m/560065"
-  },
-  {
-    "building_name": null,
-    "code": "LFOP",
-    "url": "https://map.yale.edu/?id=1910#!m/560072"
   },
   {
     "building_name": "Leet Oliver Memorial Hall",
@@ -329,13 +319,8 @@
     "code": "ML",
     "url": "https://map.yale.edu/?id=1910#!m/560056"
   },
-  {
-    "building_name": "Pauli Murray College",
-    "code": "MY",
-    "url": "https://map.yale.edu/?id=1910#!m/560100"
-  },
+  { "building_name": "Pauli Murray College", "code": "MY", "url": "" },
   { "building_name": "Old Art Gallery", "code": "OAG", "url": "" },
-  { "building_name": null, "code": "OBT", "url": "" },
   {
     "building_name": "Osborn Memorial Laboratories",
     "code": "OML",
@@ -376,7 +361,6 @@
     "code": "PR230",
     "url": "https://map.yale.edu/?id=1910#!m/559964"
   },
-  { "building_name": null, "code": "PR301", "url": "" },
   {
     "building_name": "406 Prospect St., Miller Hall",
     "code": "PR406",
@@ -434,7 +418,6 @@
     "code": "SLB",
     "url": "https://map.yale.edu/?id=1910#!m/531532"
   },
-  { "building_name": null, "code": "SLIFKA", "url": "" },
   { "building_name": null, "code": "SM", "url": "" },
   {
     "building_name": "Sprague Memorial Hall",
@@ -474,9 +457,7 @@
     "url": "https://map.yale.edu/?id=1910#!m/563697"
   },
   { "building_name": null, "code": "TD", "url": "" },
-  { "building_name": null, "code": "TM320", "url": "" },
   { "building_name": null, "code": "TM370", "url": "" },
-  { "building_name": null, "code": "TM40", "url": "" },
   { "building_name": "405 Temple Street", "code": "TM405", "url": "" },
   {
     "building_name": "432 Temple Street",
@@ -490,8 +471,6 @@
     "url": "https://map.yale.edu/?id=1910#!m/559543"
   },
   { "building_name": "Tsai CITY", "code": "TSAI", "url": "" },
-  { "building_name": null, "code": "W-CSC", "url": "" },
-  { "building_name": null, "code": "W-ISTC", "url": "" },
   { "building_name": "WC Office Complex North", "code": "W-OCN", "url": "" },
   {
     "building_name": "53 Wall Street",
@@ -526,7 +505,6 @@
     "url": "https://map.yale.edu/?id=1910#!m/560127"
   },
   { "building_name": null, "code": "WNSL", "url": "" },
-  { "building_name": null, "code": "WOOL", "url": "" },
   {
     "building_name": "Watson Center 60 Sachem Street",
     "code": "WTS",
@@ -554,11 +532,6 @@
     "building_name": "222 York Street",
     "code": "YK222",
     "url": "https://map.yale.edu/?id=1910#!m/559927"
-  },
-  {
-    "building_name": null,
-    "code": "YRT",
-    "url": "https://map.yale.edu/?id=1910#!m/563678"
   },
   {
     "building_name": "Yale Science Building",

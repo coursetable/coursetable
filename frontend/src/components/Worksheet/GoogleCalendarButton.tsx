@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
+import { hasGrantedAnyScopeGoogle, useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import Spinner from '../../components/Spinner';
@@ -12,19 +13,20 @@ import { toSeasonString } from '../../utilities/course';
 
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
-  const { gapi, authInstance, user, setUser } = useGapi();
+  const { gapi } = useGapi();
   const { viewedSeason, courses } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       courses: state.courses,
     })),
   );
-  const exportButtonRef = useRef<HTMLButtonElement>(null);
+
   const exportEvents = useCallback(async () => {
     if (!gapi) {
       Sentry.captureException(new Error('gapi not loaded'));
       return;
     }
+
     const seasonString = toSeasonString(viewedSeason);
     const semester = academicCalendars[viewedSeason];
     if (!semester) {
@@ -96,49 +98,73 @@ function GoogleCalendarButton(): React.JSX.Element {
         level: 'info',
       });
       Sentry.captureException(err);
+      console.log(err);
       toast.error('Error exporting Google Calendar events');
     } finally {
       setExporting(false);
     }
   }, [courses, gapi, viewedSeason]);
 
-  useEffect(() => {
-    if (!authInstance || user || !exportButtonRef.current) return;
-
-    authInstance.attachClickHandler(
-      exportButtonRef.current,
-      {},
-      (googleUser) => {
-        // TODO: is this needed?
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (!user) {
-          setUser(googleUser);
-          void exportEvents();
-        }
-      },
-      (err) => {
-        if ((err as { error?: unknown }).error === 'popup_closed_by_user') {
-          toast.error('Google Calendar sign in popup closed');
-          return;
-        }
-        Sentry.addBreadcrumb({
-          category: 'gcal',
-          message: 'Signing into GCal',
-          level: 'info',
-        });
-        Sentry.captureException(err);
-        toast.error('Error signing in to Google Calendar');
-      },
-    );
-  }, [authInstance, user, setUser, exportEvents]);
+  const loginAndExportEvents = useGoogleLogin({
+    onSuccess(tokenResponse) {
+      if (!gapi) {
+        Sentry.captureException(new Error('gapi not loaded'));
+        return;
+      }
+      const hasAccess = hasGrantedAnyScopeGoogle(
+        tokenResponse,
+        'https://www.googleapis.com/auth/calendar.events',
+      );
+      if (!hasAccess) {
+        toast.error('You must grant access to export events');
+        return;
+      }
+      gapi.client.setToken({
+        access_token: tokenResponse.access_token,
+      });
+      void exportEvents();
+    },
+    scope: 'https://www.googleapis.com/auth/calendar.events',
+    onError(errorResponse) {
+      Sentry.addBreadcrumb({
+        category: 'gcal',
+        message: 'Logging in to GCal',
+        level: 'info',
+      });
+      Sentry.captureException(errorResponse);
+      toast.error('Error logging in to Google Calendar');
+    },
+    onNonOAuthError(nonOAuthError) {
+      if (nonOAuthError.type === 'popup_closed') {
+        toast.error('Google Calendar sign in popup closed');
+        return;
+      } else if (nonOAuthError.type === 'popup_failed_to_open') {
+        toast.error('Google Calendar sign in popup blocked');
+        return;
+      }
+      Sentry.addBreadcrumb({
+        category: 'gcal',
+        message: 'Logging in to GCal',
+        level: 'info',
+      });
+      Sentry.captureException(nonOAuthError);
+      toast.error('Error logging in to Google Calendar');
+    },
+  });
 
   return (
     <button
       type="button"
-      ref={exportButtonRef}
-      onClick={user && !exporting ? exportEvents : undefined}
+      onClick={
+        !exporting
+          ? () => {
+              if (!gapi?.client.getToken()) loginAndExportEvents();
+              else void exportEvents();
+            }
+          : undefined
+      }
     >
-      {authInstance && !exporting ? (
+      {!exporting ? (
         <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
       ) : (
         <Spinner message={undefined} />

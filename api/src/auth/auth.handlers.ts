@@ -1,4 +1,5 @@
 import type express from 'express';
+import * as Sentry from '@sentry/node';
 import { Strategy as CasStrategy } from '@coursetable/passport-cas';
 import { eq } from 'drizzle-orm';
 import passport from 'passport';
@@ -83,7 +84,7 @@ export const passportConfig = (
           lastName: existingUser?.lastName ?? null,
         };
         try {
-          const data = (await fetch('https://yalies.io/api/people', {
+          const data = (await fetch('https://api.yalies.io/v2/people', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${YALIES_API_KEY}`,
@@ -134,6 +135,7 @@ export const passportConfig = (
             .where(eq(studentBluebookSettings.netId, profile.user));
         } catch (err) {
           winston.error(`Yalies connection error: ${String(err)}`);
+          Sentry.captureException(err);
         }
         done(null, user);
       },
