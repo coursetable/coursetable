@@ -88,15 +88,6 @@ function remarkPluginAddHeadingId(): Transformer {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    alias: {
-      // Fix for Sentry bundler plugin core glob module resolution issue
-      glob: 'glob/dist/mjs/index.js',
-    },
-  },
-  optimizeDeps: {
-    include: ['glob'],
-  },
   plugins: [
     {
       enforce: 'pre',
