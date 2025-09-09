@@ -8,7 +8,6 @@ import jcRules from 'eslint-config-jc';
 // @ts-expect-error: no typings yet
 import cssModulesPlugin from 'eslint-plugin-css-modules';
 
-// @ts-expect-error: no typings yet
 import reactCompiler from 'eslint-plugin-react-compiler';
 import tseslint from 'typescript-eslint';
 
