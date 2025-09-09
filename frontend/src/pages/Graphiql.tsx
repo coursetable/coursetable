@@ -4,11 +4,17 @@ import 'graphiql/graphiql.css';
 
 import { CUR_SEASON, GRAPHQL_API_ENDPOINT } from '../config';
 
+const graphiqlFetch = Object.assign(
+  (url: RequestInfo | URL, args?: RequestInit) =>
+    fetch(url, { ...args, credentials: 'include' }),
+  {
+    preconnect: fetch.preconnect,
+  },
+);
+
 const fetcher = createGraphiQLFetcher({
   url: `${GRAPHQL_API_ENDPOINT}/v1/graphql`,
-  fetch(url, args) {
-    return fetch(url, { ...args, credentials: 'include' });
-  },
+  fetch: graphiqlFetch,
 });
 
 function Graphiql() {
