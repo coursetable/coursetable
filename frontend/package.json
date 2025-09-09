@@ -85,6 +85,7 @@
     "@vitejs/plugin-basic-ssl": "^1.2.0",
     "@vitejs/plugin-react": "^4.3.4",
     "dotenv": "^16.4.7",
+    "glob": "^10.3.10",
     "mdast-util-to-string": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "rollup-plugin-visualizer": "^5.14.0",
