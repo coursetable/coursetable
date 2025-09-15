@@ -23,6 +23,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
       - name: Build frontend for build size report
         run: |
           cd frontend
