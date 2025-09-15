@@ -23,22 +23,17 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Debug - Check Node.js and npm versions
+      - name: Copy lockfiles to frontend for package manager detection
         run: |
-          echo "Node.js version: $(node -v)"
-          echo "npm version: $(npm -v)"
-          echo "which node: $(which node)"
-          echo "which npm: $(which npm)"
-      - name: Install
-        run: bun install --frozen-lockfile
-        working-directory: ./frontend
+          cp bun.lock frontend/
+          cp bun.lockb frontend/
       - name: Track build size changes
         uses: preactjs/compressed-size-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           install-script: 'bun install'
-          build-script: 'bun run build'
-          clean-script: 'bun run clean'
+          build-script: build
+          clean-script: clean
           pattern: 'build/assets/*.{js,css}'
           strip-hash: '-.{10}(?=\.(?:js|css))'
           minimum-change-threshold: 30
