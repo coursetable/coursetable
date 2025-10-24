@@ -1,10 +1,10 @@
 # Remember: the context for this build is the root of the monorepo,
 # not the api folder
 
-FROM oven/bun:slim AS base
+FROM oven/bun:1.2.20-slim AS base
 WORKDIR /usr/src/app
 
-FROM node:slim AS runtime
+FROM node:24-slim AS runtime
 WORKDIR /usr/src/app
 
 FROM base AS install
