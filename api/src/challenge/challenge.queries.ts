@@ -110,12 +110,15 @@ export function getSdk(
     requestEvals(
       variables: RequestEvalsQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<RequestEvalsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<RequestEvalsQuery>(RequestEvalsDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<RequestEvalsQuery>({
+            document: RequestEvalsDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'requestEvals',
         'query',
@@ -125,12 +128,15 @@ export function getSdk(
     verifyEvals(
       variables?: VerifyEvalsQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<VerifyEvalsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<VerifyEvalsQuery>(VerifyEvalsDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<VerifyEvalsQuery>({
+            document: VerifyEvalsDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'verifyEvals',
         'query',

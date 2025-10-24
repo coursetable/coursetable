@@ -242,12 +242,15 @@ export function getSdk(
     listSeasons(
       variables?: ListSeasonsQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<ListSeasonsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<ListSeasonsQuery>(ListSeasonsDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<ListSeasonsQuery>({
+            document: ListSeasonsDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'listSeasons',
         'query',
@@ -257,12 +260,15 @@ export function getSdk(
     evalsBySeason(
       variables: EvalsBySeasonQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<EvalsBySeasonQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<EvalsBySeasonQuery>(EvalsBySeasonDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<EvalsBySeasonQuery>({
+            document: EvalsBySeasonDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'evalsBySeason',
         'query',
@@ -272,14 +278,16 @@ export function getSdk(
     catalogBySeason(
       variables: CatalogBySeasonQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<CatalogBySeasonQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<CatalogBySeasonQuery>(
-            CatalogBySeasonDocument,
+          client.request<CatalogBySeasonQuery>({
+            document: CatalogBySeasonDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'catalogBySeason',
         'query',
         variables,
@@ -288,14 +296,16 @@ export function getSdk(
     courseAttributes(
       variables?: CourseAttributesQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<CourseAttributesQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<CourseAttributesQuery>(
-            CourseAttributesDocument,
+          client.request<CourseAttributesQuery>({
+            document: CourseAttributesDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'courseAttributes',
         'query',
         variables,
@@ -304,14 +314,16 @@ export function getSdk(
     buildingsCatalog(
       variables?: BuildingsCatalogQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<BuildingsCatalogQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<BuildingsCatalogQuery>(
-            BuildingsCatalogDocument,
+          client.request<BuildingsCatalogQuery>({
+            document: BuildingsCatalogDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'buildingsCatalog',
         'query',
         variables,
