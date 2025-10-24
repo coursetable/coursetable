@@ -1,0 +1,41 @@
+.timeContent {
+  position: relative;
+
+  --time-indicator-height: 0.125rem;
+  --time-indicator-dot-size: 0.5rem;
+  --current-time-visible: 0;
+}
+
+.timeContent::before {
+  content: '';
+  position: absolute;
+  top: var(--current-time-position, 0);
+  left: var(--current-day-left, 60px);
+  width: var(--current-day-width, calc(100% - 60px));
+  height: var(--time-indicator-height);
+  background-color: var(--color-primary);
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 0 0.25rem var(--color-shadow);
+  transform: translateY(calc(var(--time-indicator-height) / -2));
+  opacity: var(--current-time-visible, 0);
+}
+
+.timeContent::after {
+  content: '';
+  position: absolute;
+  top: var(--current-time-position, 0);
+  left: var(--current-day-left, 60px);
+  width: var(--time-indicator-dot-size);
+  height: var(--time-indicator-dot-size);
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  z-index: 11;
+  pointer-events: none;
+  box-shadow: 0 0 0.25rem var(--color-shadow);
+  transform: translate(
+    calc(var(--time-indicator-dot-size) / -2),
+    calc(var(--time-indicator-dot-size) / -2)
+  );
+  opacity: var(--current-time-visible, 0);
+}
