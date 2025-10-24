@@ -1,6 +1,5 @@
 .timeContent {
   position: relative;
-
   --time-indicator-height: 0.125rem;
   --time-indicator-dot-size: 0.5rem;
   --current-time-visible: 0;
