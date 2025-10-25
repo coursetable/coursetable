@@ -3,6 +3,9 @@
   "workspaces": {
     "": {
       "name": "coursetable-root",
+      "dependencies": {
+        "@popperjs/core": "^2.11.8",
+      },
       "devDependencies": {
         "@graphql-codegen/cli": "^5.0.3",
         "@graphql-codegen/import-types-preset": "^3.0.0",
