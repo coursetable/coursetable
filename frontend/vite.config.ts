@@ -43,8 +43,9 @@ function parseMarkdownHeadingId(heading: string): {
 
 // https://github.com/facebook/docusaurus/blob/main/packages/docusaurus-mdx-loader/src/remark/headings/index.ts
 function remarkPluginAddHeadingId(): Transformer {
-  return (root) => {
-    visit(root, 'heading', (headingNode: Heading) => {
+  return (root: unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    visit(root as any, 'heading', (headingNode: Heading) => {
       // eslint-disable-next-line no-multi-assign
       const data = (headingNode.data ??= {});
       const properties = (data.hProperties ??= {}) as {
@@ -53,7 +54,7 @@ function remarkPluginAddHeadingId(): Transformer {
       if (properties.id) return;
 
       const headingTextNodes = headingNode.children.filter(
-        ({ type }) => !['html', 'jsx'].includes(type),
+        ({ type }: { type: string }) => !['html', 'jsx'].includes(type),
       );
       const heading = toString(
         headingTextNodes.length > 0 ? headingTextNodes : headingNode,
