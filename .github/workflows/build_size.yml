@@ -31,8 +31,8 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           install-script: 'bun install'
-          build-script: build
-          clean-script: clean
+          build-script: 'bun run build'
+          clean-script: 'bun run clean'
           pattern: 'build/assets/*.{js,css}'
           strip-hash: '-.{10}(?=\.(?:js|css))'
           minimum-change-threshold: 30
