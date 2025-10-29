@@ -38,3 +38,4 @@ jobs:
           minimum-change-threshold: 30
           compression: none
           cwd: ./frontend
+          use-npm: false
