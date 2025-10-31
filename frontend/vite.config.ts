@@ -171,10 +171,6 @@ export default defineConfig({
       },
     }),
   ],
-  resolve: {
-    // Ensure Vite can resolve dependencies from workspace root node_modules
-    preserveSymlinks: false,
-  },
   build: {
     outDir: './build',
     rollupOptions: {

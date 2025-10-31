@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "bun run vite build",
+    "build": "vite build",
     "clean": "rm -rf build node_modules package-lock.json # Needed for build-size report to work",
     "serve": "vite preview",
     "start": "vite",
