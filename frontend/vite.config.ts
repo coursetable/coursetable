@@ -53,7 +53,7 @@ function remarkPluginAddHeadingId(): Transformer {
       if (properties.id) return;
 
       const headingTextNodes = headingNode.children.filter(
-        ({ type }: { type: string }) => !['html', 'jsx'].includes(type),
+        ({ type }) => !['html', 'jsx'].includes(type),
       );
       const heading = toString(
         headingTextNodes.length > 0 ? headingTextNodes : headingNode,
