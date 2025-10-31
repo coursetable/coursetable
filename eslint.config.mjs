@@ -3,14 +3,18 @@
 
 // @ts-check
 
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import jcRules from 'eslint-config-jc';
 
 // @ts-expect-error: no typings yet
 import cssModulesPlugin from 'eslint-plugin-css-modules';
 
-// @ts-expect-error: no typings yet
 import reactCompiler from 'eslint-plugin-react-compiler';
 import tseslint from 'typescript-eslint';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default tseslint.config(
   ...jcRules({
@@ -34,13 +38,13 @@ export default tseslint.config(
     plugins: {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       'css-modules': cssModulesPlugin,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       'react-compiler': reactCompiler,
     },
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {
