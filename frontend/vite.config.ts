@@ -4,7 +4,7 @@ import mdx from '@mdx-js/rollup';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import reactPlugin from '@vitejs/plugin-react';
 import dotenv from 'dotenv';
-import type { Heading, Text } from 'mdast';
+import type { Heading, Text, Root } from 'mdast';
 import { toString } from 'mdast-util-to-string';
 import remarkGfm from 'remark-gfm';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -44,8 +44,7 @@ function parseMarkdownHeadingId(heading: string): {
 // https://github.com/facebook/docusaurus/blob/main/packages/docusaurus-mdx-loader/src/remark/headings/index.ts
 function remarkPluginAddHeadingId(): Transformer {
   return (root: unknown) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    visit(root as any, 'heading', (headingNode: Heading) => {
+    visit(root as Root, 'heading', (headingNode: Heading) => {
       // eslint-disable-next-line no-multi-assign
       const data = (headingNode.data ??= {});
       const properties = (data.hProperties ??= {}) as {
