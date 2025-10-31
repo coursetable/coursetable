@@ -25,12 +25,11 @@ jobs:
           bun-version: latest
       - name: Install
         run: bun install --frozen-lockfile
-        working-directory: ./frontend
       - name: Track build size changes
         uses: preactjs/compressed-size-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          install-script: 'bun install'
+          install-script: 'bun install --frozen-lockfile'
           build-script: build
           clean-script: clean
           pattern: 'build/assets/*.{js,css}'
