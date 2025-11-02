@@ -23,19 +23,18 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Install Dependencies
+      - name: Install
         run: bun install --frozen-lockfile
-      - name: Build frontend for build size report
-        run: |
-          cd frontend
-          bun run clean
-          bun run build
-          echo "✅ Build completed successfully!"
-          echo "Total build size: $(du -sh build | cut -f1)"
-          echo ""
-          echo "Asset sizes:"
-          find build/assets -name "*.js" -o -name "*.css" | sort | while read file; do
-            size=$(ls -lh "$file" | awk '{print $5}')
-            name=$(basename "$file")
-            echo "  $name: $size"
-          done
+        working-directory: ./frontend
+      - name: Track build size changes
+        uses: preactjs/compressed-size-action@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          install-script: 'bun install'
+          build-script: build
+          clean-script: clean
+          pattern: 'build/assets/*.{js,css}'
+          strip-hash: '-.{10}(?=\.(?:js|css))'
+          minimum-change-threshold: 30
+          compression: none
+          cwd: ./frontend
