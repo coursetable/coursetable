@@ -61,6 +61,7 @@ export default tseslint.config(
             './tools/**/*',
             './frontend/vite.config.ts',
             './eslint.config.mjs',
+            '**/vite.config.ts',
           ],
         },
       ],
