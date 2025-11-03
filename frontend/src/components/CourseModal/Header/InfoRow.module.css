@@ -71,6 +71,7 @@
 .modalTitle {
   font-weight: 550;
   line-height: 1.2 !important;
+  padding-right: 2.5rem;
 }
 
 @media (max-width: calc(768px - 0.5px)) {
@@ -84,5 +85,6 @@
   .modalTitle {
     line-height: 1 !important;
     font-size: 18px !important;
+    padding-right: 2.5rem;
   }
 }
