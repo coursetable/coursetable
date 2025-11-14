@@ -92,13 +92,15 @@ export default function WorksheetStats() {
   const [showExportPopup, setShowExportPopup] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
-    useShallow((state) => ({
-      courses: state.courses,
-      isExoticWorksheet: Boolean(state.exoticWorksheet),
-      exitExoticWorksheet: state.exitExoticWorksheet,
-    })),
-  );
+  const { courses, isExoticWorksheet, exitExoticWorksheet, exoticWorksheet } =
+    useStore(
+      useShallow((state) => ({
+        courses: state.courses,
+        isExoticWorksheet: Boolean(state.exoticWorksheet),
+        exitExoticWorksheet: state.exitExoticWorksheet,
+        exoticWorksheet: state.exoticWorksheet,
+      })),
+    );
   const user = useStore((state) => state.user);
   const countedCourseCodes = new Set();
   let courseCnt = 0;
@@ -328,12 +330,18 @@ export default function WorksheetStats() {
                   </Button>
                 </div>
                 <div className={styles.importContainer}>
-                  <WorksheetNumDropdown mobile={false} />
+                  <WorksheetNumDropdown
+                    mobile={false}
+                    person="me"
+                    season={exoticWorksheet?.data.season}
+                  />
                   <Button
                     variant="primary"
                     onClick={async () => {
                       const store = useStore.getState();
-                      const season = store.viewedSeason;
+                      const season =
+                        store.exoticWorksheet?.data.season ??
+                        store.viewedSeason;
                       const targetWorksheetNumber = store.viewedWorksheetNumber;
                       const currentWorksheet = store.courses;
 

@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
 import type { Option } from '../../contexts/searchContext';
 import { updateWorksheetMetadata } from '../../queries/api';
+import type { NetId, Season } from '../../queries/graphql-types';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
@@ -66,211 +67,235 @@ function WSNameInput({
   );
 }
 
-function OptionWithActionButtons(props: OptionProps<Option<number>>) {
-  const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
-  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const [animateButtonsIn, setAnimateButtonsIn] = useState(false);
+function createOptionWithActionButtons(
+  overridePerson?: 'me' | NetId,
+  overrideSeason?: Season,
+) {
+  return (props: OptionProps<Option<number>>) => {
+    const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
+    const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+    const [animateButtonsIn, setAnimateButtonsIn] = useState(false);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const {
-    viewedSeason,
-    viewedWorksheetNumber,
-    changeViewedWorksheetNumber,
-    viewedPerson,
-  } = useStore(
-    useShallow((state) => ({
-      viewedSeason: state.viewedSeason,
-      viewedWorksheetNumber: state.viewedWorksheetNumber,
-      changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
-      viewedPerson: state.viewedPerson,
-    })),
-  );
+    const containerRef = useRef<HTMLDivElement>(null);
+    const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
+    const {
+      viewedSeason: storeViewedSeason,
+      viewedWorksheetNumber,
+      changeViewedWorksheetNumber,
+      viewedPerson: storeViewedPerson,
+    } = useStore(
+      useShallow((state) => ({
+        viewedSeason: state.viewedSeason,
+        viewedWorksheetNumber: state.viewedWorksheetNumber,
+        changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
+        viewedPerson: state.viewedPerson,
+      })),
+    );
+    const viewedPerson = overridePerson ?? storeViewedPerson;
+    const viewedSeason = overrideSeason ?? storeViewedSeason;
 
-  useEffect(() => {
-    if (isConfirmingDelete && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const popup = document.createElement('div');
-      popup.className = styles.confirmationPopup!;
-      popup.textContent = 'Are you sure?';
-      popup.style.position = 'fixed';
-      popup.style.top = `${rect.top + rect.height / 2}px`;
-      popup.style.left = `${rect.right}px`;
-      popup.style.transform = 'translateY(-50%)';
-      document.body.appendChild(popup);
+    useEffect(() => {
+      if (isConfirmingDelete && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const popup = document.createElement('div');
+        popup.className = styles.confirmationPopup!;
+        popup.textContent = 'Are you sure?';
+        popup.style.position = 'fixed';
+        popup.style.top = `${rect.top + rect.height / 2}px`;
+        popup.style.left = `${rect.right}px`;
+        popup.style.transform = 'translateY(-50%)';
+        document.body.appendChild(popup);
 
-      return () => {
-        document.body.removeChild(popup);
-      };
+        return () => {
+          document.body.removeChild(popup);
+        };
+      }
+      return undefined;
+    }, [isConfirmingDelete]);
+
+    useEffect(() => {
+      if (isConfirmingDelete) {
+        requestAnimationFrame(() => {
+          setAnimateButtonsIn(true);
+        });
+      } else {
+        setAnimateButtonsIn(false);
+      }
+    }, [isConfirmingDelete]);
+
+    if (isRenamingWorksheet) {
+      return (
+        <WSNameInput
+          startingInput={props.data.label}
+          enterAction={async (newWsName: string) => {
+            setIsRenamingWorksheet(false);
+            await updateWorksheetMetadata({
+              action: 'rename',
+              season: viewedSeason,
+              worksheetNumber: props.data.value,
+              name: newWsName.trim() || 'New Worksheet',
+            });
+            await worksheetsRefresh();
+          }}
+          onCancel={() => setIsRenamingWorksheet(false)}
+        />
+      );
     }
-    return undefined;
-  }, [isConfirmingDelete]);
 
-  useEffect(() => {
     if (isConfirmingDelete) {
-      requestAnimationFrame(() => {
-        setAnimateButtonsIn(true);
-      });
-    } else {
-      setAnimateButtonsIn(false);
+      return (
+        <components.Option {...props} className={styles.noPaddingOption}>
+          <div className={styles.confirmContainer} ref={containerRef}>
+            <div
+              className={`${styles.confirmButtons ?? ''} ${
+                animateButtonsIn && styles.confirmButtonsVisible
+                  ? styles.confirmButtonsVisible
+                  : ''
+              }`}
+            >
+              <button
+                type="button"
+                className={styles.keepButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsConfirmingDelete(false);
+                }}
+              >
+                Keep
+              </button>
+              <button
+                type="button"
+                className={styles.deleteButton}
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  setIsConfirmingDelete(false);
+                  await updateWorksheetMetadata({
+                    action: 'delete',
+                    season: viewedSeason,
+                    worksheetNumber: props.data.value,
+                  });
+                  if (viewedWorksheetNumber === props.data.value)
+                    changeViewedWorksheetNumber(0);
+                  await worksheetsRefresh();
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </components.Option>
+      );
     }
-  }, [isConfirmingDelete]);
 
-  if (isRenamingWorksheet) {
     return (
+      <components.Option
+        {...props}
+        innerProps={{
+          ...props.innerProps,
+          onClick(e) {
+            e.stopPropagation();
+            changeViewedWorksheetNumber(props.data.value);
+          },
+        }}
+      >
+        <div className={styles.optionContent}>
+          <span className={styles.optionName}>{props.data.label}</span>
+          {props.data.value !== 0 && viewedPerson === 'me' && (
+            <div className={styles.iconContainer}>
+              <MdEdit
+                className={styles.renameWorksheetIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsRenamingWorksheet(true);
+                }}
+              />
+              <div>
+                <MdDelete
+                  className={styles.deleteWorksheetIcon}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsConfirmingDelete(true);
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </components.Option>
+    );
+  };
+}
+
+function createMenuListWithAdd(
+  overridePerson?: 'me' | NetId,
+  overrideSeason?: Season,
+) {
+  return ({ children, ...props }: MenuListProps<Option<number>>) => {
+    const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
+    const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
+    const { viewedSeason: storeViewedSeason, viewedPerson: storeViewedPerson } =
+      useStore(
+        useShallow((state) => ({
+          viewedSeason: state.viewedSeason,
+          viewedPerson: state.viewedPerson,
+        })),
+      );
+    const viewedPerson = overridePerson ?? storeViewedPerson;
+    const viewedSeason = overrideSeason ?? storeViewedSeason;
+    const addBtn = isAddingWorksheet ? (
       <WSNameInput
-        startingInput={props.data.label}
+        startingInput="New Worksheet"
         enterAction={async (newWsName: string) => {
-          setIsRenamingWorksheet(false);
+          setIsAddingWorksheet(false);
           await updateWorksheetMetadata({
-            action: 'rename',
+            action: 'add',
             season: viewedSeason,
-            worksheetNumber: props.data.value,
             name: newWsName.trim() || 'New Worksheet',
           });
           await worksheetsRefresh();
         }}
-        onCancel={() => setIsRenamingWorksheet(false)}
+        onCancel={() => setIsAddingWorksheet(false)}
       />
-    );
-  }
-
-  if (isConfirmingDelete) {
-    return (
-      <components.Option {...props} className={styles.noPaddingOption}>
-        <div className={styles.confirmContainer} ref={containerRef}>
-          <div
-            className={`${styles.confirmButtons ?? ''} ${
-              animateButtonsIn && styles.confirmButtonsVisible
-                ? styles.confirmButtonsVisible
-                : ''
-            }`}
-          >
-            <button
-              type="button"
-              className={styles.keepButton}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsConfirmingDelete(false);
-              }}
-            >
-              Keep
-            </button>
-            <button
-              type="button"
-              className={styles.deleteButton}
-              onClick={async (e) => {
-                e.stopPropagation();
-                setIsConfirmingDelete(false);
-                await updateWorksheetMetadata({
-                  action: 'delete',
-                  season: viewedSeason,
-                  worksheetNumber: props.data.value,
-                });
-                if (viewedWorksheetNumber === props.data.value)
-                  changeViewedWorksheetNumber(0);
-                await worksheetsRefresh();
-              }}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </components.Option>
-    );
-  }
-
-  return (
-    <components.Option
-      {...props}
-      innerProps={{
-        ...props.innerProps,
-        onClick(e) {
+    ) : (
+      <button
+        type="button"
+        onClick={(e) => {
           e.stopPropagation();
-          changeViewedWorksheetNumber(props.data.value);
-        },
-      }}
-    >
-      <div className={styles.optionContent}>
-        <span className={styles.optionName}>{props.data.label}</span>
-        {props.data.value !== 0 && viewedPerson === 'me' && (
-          <div className={styles.iconContainer}>
-            <MdEdit
-              className={styles.renameWorksheetIcon}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsRenamingWorksheet(true);
-              }}
-            />
-            <div>
-              <MdDelete
-                className={styles.deleteWorksheetIcon}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsConfirmingDelete(true);
-                }}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </components.Option>
-  );
-}
-
-function MenuListWithAdd({
-  children,
-  ...props
-}: MenuListProps<Option<number>>) {
-  const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
-  const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedPerson } = useStore(
-    useShallow((state) => ({
-      viewedSeason: state.viewedSeason,
-      viewedPerson: state.viewedPerson,
-    })),
-  );
-  const addBtn = isAddingWorksheet ? (
-    <WSNameInput
-      startingInput="New Worksheet"
-      enterAction={async (newWsName: string) => {
-        setIsAddingWorksheet(false);
-        await updateWorksheetMetadata({
-          action: 'add',
-          season: viewedSeason,
-          name: newWsName.trim() || 'New Worksheet',
-        });
-        await worksheetsRefresh();
-      }}
-      onCancel={() => setIsAddingWorksheet(false)}
-    />
-  ) : (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsAddingWorksheet(true);
-      }}
-      className={styles.addBtn}
-    >
-      +
-    </button>
-  );
-  return (
-    <components.MenuList {...props}>
-      {children}
-      {viewedPerson === 'me' && addBtn}
-    </components.MenuList>
-  );
+          setIsAddingWorksheet(true);
+        }}
+        className={styles.addBtn}
+      >
+        +
+      </button>
+    );
+    return (
+      <components.MenuList {...props}>
+        {children}
+        {viewedPerson === 'me' && addBtn}
+      </components.MenuList>
+    );
+  };
 }
 
 function WorksheetNumDropdownDesktop({
   options,
+  overridePerson,
+  overrideSeason,
 }: {
   readonly options: { [worksheetNumber: number]: Option<number> };
+  readonly overridePerson?: 'me' | NetId;
+  readonly overrideSeason?: Season;
 }) {
   const viewedWorksheetNumber = useStore(
     (state) => state.viewedWorksheetNumber,
+  );
+
+  const selectComponents = useMemo(
+    () => ({
+      Option: createOptionWithActionButtons(overridePerson, overrideSeason),
+      MenuList: createMenuListWithAdd(overridePerson, overrideSeason),
+    }),
+    [overridePerson, overrideSeason],
   );
 
   return (
@@ -285,10 +310,7 @@ function WorksheetNumDropdownDesktop({
         options={Object.values(options)}
         showControl={false}
         minWidth={200}
-        components={{
-          Option: OptionWithActionButtons,
-          MenuList: MenuListWithAdd,
-        }}
+        components={selectComponents}
       />
     </Popout>
   );
@@ -324,18 +346,33 @@ function WorksheetNumDropdownMobile({
   );
 }
 
-function WorksheetNumDropdown({ mobile }: { readonly mobile: boolean }) {
-  const { viewedSeason, viewedPerson } = useStore(
-    useShallow((state) => ({
-      viewedSeason: state.viewedSeason,
-      viewedPerson: state.viewedPerson,
-    })),
-  );
+function WorksheetNumDropdown({
+  mobile,
+  person,
+  season,
+}: {
+  readonly mobile: boolean;
+  readonly person?: 'me' | NetId;
+  readonly season?: Season;
+}) {
+  const { viewedSeason: storeViewedSeason, viewedPerson: storeViewedPerson } =
+    useStore(
+      useShallow((state) => ({
+        viewedSeason: state.viewedSeason,
+        viewedPerson: state.viewedPerson,
+      })),
+    );
+  const viewedPerson = person ?? storeViewedPerson;
+  const viewedSeason = season ?? storeViewedSeason;
   const options = useWorksheetNumberOptions(viewedPerson, viewedSeason);
   return mobile ? (
     <WorksheetNumDropdownMobile options={options} />
   ) : (
-    <WorksheetNumDropdownDesktop options={options} />
+    <WorksheetNumDropdownDesktop
+      options={options}
+      overridePerson={person}
+      overrideSeason={season}
+    />
   );
 }
 
