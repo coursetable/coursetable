@@ -2,7 +2,11 @@ import fs from 'node:fs/promises';
 import type express from 'express';
 import { createObjectCsvStringifier } from 'csv-writer';
 import { fetchCatalog } from './catalog.utils.js';
-import { FERRY_RELOAD_SECRET, STATIC_FILE_DIR } from '../config.js';
+import {
+  FERRY_RELOAD_SECRET,
+  NUM_SEASONS,
+  STATIC_FILE_DIR,
+} from '../config.js';
 import winston from '../logging/winston.js';
 
 export const verifyHeaders = (
@@ -89,7 +93,8 @@ export async function refreshCatalog(
   res: express.Response,
 ): Promise<void> {
   winston.info('Refreshing catalog');
-  // Always overwrite when the refresh endpoint is hit
-  await fetchCatalog(true);
+  // Overwrite the last NUM_SEASONS seasons when the refresh endpoint is hit
+  const all = req.query.all === 'true';
+  await fetchCatalog(true, all ? undefined : NUM_SEASONS);
   res.sendStatus(200);
 }

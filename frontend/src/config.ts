@@ -9,10 +9,10 @@ export const GRAPHQL_API_ENDPOINT = isDev
   : `${import.meta.env.VITE_API_ENDPOINT}/ferry`;
 
 // Used for which season to show by default in catalog and worksheet
-export const CUR_SEASON = '202503' as Season;
+export const CUR_SEASON = '202601' as Season;
 
 // Courses in the current year have no evaluations yet
-export const CUR_YEAR = ['202501', '202502', '202503', '202601'] as Season[];
+export const CUR_YEAR = ['202502', '202503', '202601'] as Season[];
 
 // We use this format to avoid dealing with time zones.
 // TODO: this should be a Temporal.PlainDate
