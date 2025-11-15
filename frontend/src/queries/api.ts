@@ -162,40 +162,28 @@ async function fetchAPI(
   }
 }
 
+type WorksheetCourseUpdateBase = {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+} & (
+  | {
+      action: 'add';
+      color: string;
+      hidden: boolean;
+    }
+  | {
+      action: 'remove' | 'update';
+      color?: string;
+      hidden?: boolean;
+    }
+);
+
+type WorksheetCourseUpdate =
+  | WorksheetCourseUpdateBase
+  | WorksheetCourseUpdateBase[];
 export function updateWorksheetCourses(
-  body:
-    | ({
-        season: Season;
-        crn: Crn;
-        worksheetNumber: number;
-      } & (
-        | {
-            action: 'add';
-            color: string;
-            hidden: boolean;
-          }
-        | {
-            action: 'remove' | 'update';
-            color?: string;
-            hidden?: boolean;
-          }
-      ))
-    | ({
-        season: Season;
-        crn: Crn;
-        worksheetNumber: number;
-      } & (
-        | {
-            action: 'add';
-            color: string;
-            hidden: boolean;
-          }
-        | {
-            action: 'remove' | 'update';
-            color?: string;
-            hidden?: boolean;
-          }
-      ))[],
+  body: WorksheetCourseUpdate,
 ): Promise<boolean> {
   return fetchAPI('/user/updateWorksheetCourses', {
     body,

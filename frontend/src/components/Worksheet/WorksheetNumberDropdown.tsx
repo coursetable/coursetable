@@ -290,13 +290,20 @@ function WorksheetNumDropdownDesktop({
     (state) => state.viewedWorksheetNumber,
   );
 
-  const selectComponents = useMemo(
-    () => ({
-      Option: createOptionWithActionButtons(overridePerson, overrideSeason),
-      MenuList: createMenuListWithAdd(overridePerson, overrideSeason),
-    }),
-    [overridePerson, overrideSeason],
-  );
+  const selectComponents = useMemo(() => {
+    const OptionComponent = createOptionWithActionButtons(
+      overridePerson,
+      overrideSeason,
+    );
+    const MenuListComponent = createMenuListWithAdd(
+      overridePerson,
+      overrideSeason,
+    );
+    return {
+      Option: OptionComponent,
+      MenuList: MenuListComponent,
+    };
+  }, [overridePerson, overrideSeason]);
 
   return (
     <Popout

@@ -8,6 +8,7 @@ import { useShallow } from 'zustand/react/shallow';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import { updateWorksheetCourses } from '../../queries/api';
 import type { Crn, Season } from '../../queries/graphql-types';
+import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -87,20 +88,69 @@ function NoStatsTip({
   );
 }
 
+type CourseUpdate = {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+  action: 'add';
+  color: string;
+  hidden: boolean;
+};
+
+function buildCourseUpdates(
+  currentCourses: readonly WorksheetCourse[],
+  targetSeason: Season,
+  targetWorksheetNumber: number,
+  targetWorksheet: { courses: { crn: Crn }[] } | undefined,
+): CourseUpdate[] {
+  const updates: CourseUpdate[] = [];
+
+  for (const course of currentCourses) {
+    if (
+      targetWorksheet &&
+      targetWorksheet.courses.some((c) => c.crn === course.listing.crn)
+    )
+      continue;
+
+    updates.push({
+      season: targetSeason,
+      crn: course.listing.crn,
+      worksheetNumber: targetWorksheetNumber,
+      action: 'add',
+      color: course.color,
+      hidden: course.hidden ?? false,
+    });
+  }
+
+  return updates;
+}
+
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const [showExportPopup, setShowExportPopup] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const { courses, isExoticWorksheet, exitExoticWorksheet, exoticWorksheet } =
-    useStore(
-      useShallow((state) => ({
-        courses: state.courses,
-        isExoticWorksheet: Boolean(state.exoticWorksheet),
-        exitExoticWorksheet: state.exitExoticWorksheet,
-        exoticWorksheet: state.exoticWorksheet,
-      })),
-    );
+  const {
+    courses,
+    isExoticWorksheet,
+    exitExoticWorksheet,
+    exoticWorksheet,
+    viewedSeason,
+    viewedWorksheetNumber,
+    worksheets,
+    worksheetsRefresh,
+  } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      isExoticWorksheet: Boolean(state.exoticWorksheet),
+      exitExoticWorksheet: state.exitExoticWorksheet,
+      exoticWorksheet: state.exoticWorksheet,
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      worksheets: state.worksheets,
+      worksheetsRefresh: state.worksheetsRefresh,
+    })),
+  );
   const user = useStore((state) => state.user);
   const countedCourseCodes = new Set();
   let courseCnt = 0;
@@ -111,18 +161,27 @@ export default function WorksheetStats() {
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
 
-  // Close popup when clicking outside
+  // Close popup when clicking outside or pressing Escape
   useEffect(() => {
+    if (!showExportPopup) return () => {};
+
     const handleClickOutside = (event: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(event.target as Node))
         setShowExportPopup(false);
     };
 
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowExportPopup(false);
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
     };
-  }, []);
+  }, [showExportPopup]);
 
   for (const { listing, hidden } of courses) {
     const alreadyCounted = listing.course.listings.some((l) =>
@@ -338,58 +397,48 @@ export default function WorksheetStats() {
                   <Button
                     variant="primary"
                     onClick={async () => {
-                      const store = useStore.getState();
                       const season =
-                        store.exoticWorksheet?.data.season ??
-                        store.viewedSeason;
-                      const targetWorksheetNumber = store.viewedWorksheetNumber;
-                      const currentWorksheet = store.courses;
-
-                      const targetWorksheet = store.worksheets
+                        exoticWorksheet?.data.season ?? viewedSeason;
+                      const targetWorksheet = worksheets
                         ?.get(season)
-                        ?.get(targetWorksheetNumber);
+                        ?.get(viewedWorksheetNumber);
 
-                      if (currentWorksheet.length === 0) {
+                      if (courses.length === 0) {
                         toast.error('Current worksheet has no courses to copy');
                         return;
                       }
 
-                      const updates: {
-                        season: Season;
-                        crn: Crn;
-                        worksheetNumber: number;
-                        action: 'add';
-                        color: string;
-                        hidden: boolean;
-                      }[] = [];
+                      const updates = buildCourseUpdates(
+                        courses,
+                        season,
+                        viewedWorksheetNumber,
+                        targetWorksheet,
+                      );
 
-                      for (const course of currentWorksheet) {
-                        if (
-                          targetWorksheet &&
-                          targetWorksheet.courses.some(
-                            (c) => c.crn === course.crn,
-                          )
-                        )
-                          continue;
-
-                        updates.push({
-                          season,
-                          crn: course.listing.crn,
-                          worksheetNumber: targetWorksheetNumber,
-                          action: 'add',
-                          color: course.color,
-                          hidden: course.hidden ?? false,
-                        });
+                      if (updates.length === 0) {
+                        toast.error(
+                          'All courses are already in the target worksheet',
+                        );
+                        return;
                       }
 
-                      if (updates.length > 0) {
-                        await updateWorksheetCourses(updates);
-                        toast.success('Courses copied successfully');
-                      } else {
-                        toast.error('No courses to copy');
+                      try {
+                        const success = await updateWorksheetCourses(updates);
+                        if (success) {
+                          await worksheetsRefresh();
+                          toast.success(
+                            `Successfully imported ${updates.length} course${
+                              updates.length === 1 ? '' : 's'
+                            }`,
+                          );
+                          setShowExportPopup(false);
+                        }
+                      } catch (error) {
+                        toast.error(
+                          'Failed to import courses. Please try again.',
+                        );
+                        console.error('Failed to import courses:', error);
                       }
-
-                      setShowExportPopup(false);
                     }}
                   >
                     Import
