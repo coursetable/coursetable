@@ -86,13 +86,15 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
-    useShallow((state) => ({
-      courses: state.courses,
-      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
-      exitExoticWorksheet: state.exitExoticWorksheet,
-    })),
-  );
+  const { courses, isExoticWorksheet, exitExoticWorksheet, exoticWorksheet } =
+    useStore(
+      useShallow((state) => ({
+        courses: state.courses,
+        isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+        exitExoticWorksheet: state.exitExoticWorksheet,
+        exoticWorksheet: state.exoticWorksheet,
+      })),
+    );
   const user = useStore((state) => state.user);
   const countedCourseCodes = new Set();
   let courseCnt = 0;
@@ -258,13 +260,29 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {isExoticWorksheet && (
-                <div className={styles.wide}>
-                  <dt>Viewing exported worksheet</dt>
-                  <Button variant="primary" onClick={exitExoticWorksheet}>
-                    Exit
-                  </Button>
-                </div>
+              {isExoticWorksheet && exoticWorksheet?.data && (
+                <>
+                  <div className={styles.wide}>
+                    <dt>Worksheet</dt>
+                    <dd className={styles.worksheetName}>
+                      {exoticWorksheet.data.name}
+                    </dd>
+                  </div>
+                  {exoticWorksheet.data.creatorName && (
+                    <div className={styles.wide}>
+                      <dt>Created by</dt>
+                      <dd className={styles.creatorName}>
+                        {exoticWorksheet.data.creatorName}
+                      </dd>
+                    </div>
+                  )}
+                  <div className={styles.wide}>
+                    <dt>Viewing exported worksheet</dt>
+                    <Button variant="primary" onClick={exitExoticWorksheet}>
+                      Exit
+                    </Button>
+                  </div>
+                </>
               )}
             </dl>
           </div>

@@ -87,3 +87,13 @@
 .spacer {
   margin: 1em;
 }
+
+.worksheetName {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.creatorName {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
