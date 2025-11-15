@@ -76,44 +76,40 @@ async function getCourseMetadata(query: unknown) {
 function getWorksheetMetadata(url: string) {
   try {
     const urlObj = new URL(url, 'https://coursetable.com');
-    if (urlObj.pathname === '/worksheet') {
-      const wsParam = urlObj.searchParams.get('ws');
-      if (!wsParam) return null;
+    if (urlObj.pathname !== '/worksheet') return null;
 
-      try {
-        const decompressed =
-          LZString.decompressFromEncodedURIComponent(wsParam);
-        if (!decompressed) return null;
+    const wsParam = urlObj.searchParams.get('ws');
+    if (!wsParam) return null;
 
-        const parsed = JSON.parse(decompressed) as {
-          name?: string;
-          creatorName?: string;
-        };
+    try {
+      const decompressed = LZString.decompressFromEncodedURIComponent(wsParam);
+      if (!decompressed) return null;
 
-        const { name } = parsed;
-        if (!name) return null;
+      const parsed = JSON.parse(decompressed) as {
+        name?: string;
+        creatorName?: string;
+      };
 
-        const title = parsed.creatorName
-          ? `${name} by ${parsed.creatorName} | CourseTable Worksheet`
-          : `${name} | CourseTable Worksheet`;
-        const description = parsed.creatorName
-          ? `View ${parsed.creatorName}'s worksheet: ${name}`
-          : `View worksheet: ${name}`;
+      if (!parsed.name) return null;
 
-        return {
-          title,
-          description,
-          image: 'https://coursetable.com/favicon.png',
-        };
-      } catch {
-        // Invalid compressed data, fall through to default
-        return null;
-      }
+      const title = parsed.creatorName
+        ? `${parsed.name} by ${parsed.creatorName} | CourseTable Worksheet`
+        : `${parsed.name} | CourseTable Worksheet`;
+      const description = parsed.creatorName
+        ? `View ${parsed.creatorName}'s worksheet: ${parsed.name}`
+        : `View worksheet: ${parsed.name}`;
+
+      return {
+        title,
+        description,
+        image: 'https://coursetable.com/favicon.png',
+      };
+    } catch {
+      return null;
     }
   } catch {
-    // Invalid URL, fall through to default
+    return null;
   }
-  return null;
 }
 
 function getPageMetadata(url: string) {
