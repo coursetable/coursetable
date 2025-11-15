@@ -89,7 +89,7 @@ function getWorksheetMetadata(url: string) {
           creatorName?: string;
         };
 
-        const {name} = parsed;
+        const { name } = parsed;
         if (!name) return null;
 
         const title = parsed.creatorName
