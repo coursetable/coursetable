@@ -33,6 +33,7 @@ export interface WorksheetCourse {
 const exoticWorksheetSchema = z.object({
   season: seasonSchema,
   name: z.string(),
+  creatorName: z.string().optional(),
   courses: z.array(
     z.object({
       crn: crnSchema,

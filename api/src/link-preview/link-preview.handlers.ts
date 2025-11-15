@@ -1,4 +1,5 @@
 import type express from 'express';
+import { decompressFromEncodedURIComponent } from 'lz-string';
 import { getSdk } from './link-preview.queries.js';
 import { graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
@@ -72,7 +73,53 @@ async function getCourseMetadata(query: unknown) {
   };
 }
 
+function getWorksheetMetadata(url: string) {
+  try {
+    const urlObj = new URL(url, 'https://coursetable.com');
+    if (urlObj.pathname === '/worksheet') {
+      const wsParam = urlObj.searchParams.get('ws');
+      if (!wsParam) return null;
+
+      try {
+        const decompressed = decompressFromEncodedURIComponent(wsParam);
+        if (!decompressed) return null;
+
+        const parsed = JSON.parse(decompressed) as {
+          name?: string;
+          creatorName?: string;
+        };
+
+        const {name} = parsed;
+        if (!name) return null;
+
+        const title = parsed.creatorName
+          ? `${name} by ${parsed.creatorName} | CourseTable Worksheet`
+          : `${name} | CourseTable Worksheet`;
+        const description = parsed.creatorName
+          ? `View ${parsed.creatorName}'s worksheet: ${name}`
+          : `View worksheet: ${name}`;
+
+        return {
+          title,
+          description,
+          image: 'https://coursetable.com/favicon.png',
+        };
+      } catch {
+        // Invalid compressed data, fall through to default
+        return null;
+      }
+    }
+  } catch {
+    // Invalid URL, fall through to default
+  }
+  return null;
+}
+
 function getPageMetadata(url: string) {
+  // Check if it's a worksheet URL first
+  const worksheetMetadata = getWorksheetMetadata(url);
+  if (worksheetMetadata) return worksheetMetadata;
+
   // TODO: we should probably just dynamically render these HTML pages
   switch (url) {
     case '/releases/link-preview':

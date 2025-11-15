@@ -38,10 +38,11 @@ function Worksheet() {
     })),
   );
   const [expanded, setExpanded] = useState(false);
+  const exoticWorksheet = useStore((state) => state.exoticWorksheet);
 
   useEffect(() => {
-    const exoticWorksheet = parseCoursesFromURL();
-    useStore.setState({ exoticWorksheet });
+    const parsedWorksheet = parseCoursesFromURL();
+    useStore.setState({ exoticWorksheet: parsedWorksheet });
   }, []);
 
   // Wait for search query to finish
@@ -58,6 +59,16 @@ function Worksheet() {
 
   return (
     <div className={styles.container}>
+      {isExoticWorksheet && exoticWorksheet?.data && (
+        <div className={styles.worksheetInfo}>
+          <h2 className={styles.worksheetName}>{exoticWorksheet.data.name}</h2>
+          {exoticWorksheet.data.creatorName && (
+            <p className={styles.creatorName}>
+              Created by {exoticWorksheet.data.creatorName}
+            </p>
+          )}
+        </div>
+      )}
       {isMobile && !isExoticWorksheet && (
         <div className={styles.dropdowns}>
           <WorksheetNumDropdown mobile />
