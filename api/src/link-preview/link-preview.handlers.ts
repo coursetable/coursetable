@@ -1,5 +1,5 @@
 import type express from 'express';
-import { decompressFromEncodedURIComponent } from 'lz-string';
+import LZString from 'lz-string';
 import { getSdk } from './link-preview.queries.js';
 import { graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
@@ -81,7 +81,8 @@ function getWorksheetMetadata(url: string) {
       if (!wsParam) return null;
 
       try {
-        const decompressed = decompressFromEncodedURIComponent(wsParam);
+        const decompressed =
+          LZString.decompressFromEncodedURIComponent(wsParam);
         if (!decompressed) return null;
 
         const parsed = JSON.parse(decompressed) as {

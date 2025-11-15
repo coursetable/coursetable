@@ -88,12 +88,22 @@
   margin: 1em;
 }
 
+.worksheetInfo {
+  text-align: center;
+  padding: 0 0 0.5em;
+  margin-top: -0.5em;
+  margin-bottom: 0.5em;
+}
+
 .worksheetName {
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-text-primary);
+  margin-bottom: 0.25em;
 }
 
 .creatorName {
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
   color: var(--color-text-secondary);
 }

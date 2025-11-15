@@ -155,6 +155,18 @@ export default function WorksheetStats() {
       <Collapse in={shown}>
         <div>
           <div className={styles.stats}>
+            {isExoticWorksheet && exoticWorksheet?.data && (
+              <div className={styles.worksheetInfo}>
+                <div className={styles.worksheetName}>
+                  {exoticWorksheet.data.name}
+                </div>
+                {exoticWorksheet.data.creatorName && (
+                  <div className={styles.creatorName}>
+                    by {exoticWorksheet.data.creatorName}
+                  </div>
+                )}
+              </div>
+            )}
             <dl>
               <div>
                 <dt>Total courses</dt>
@@ -260,29 +272,13 @@ export default function WorksheetStats() {
             </dl>
             <div className={styles.spacer} />
             <dl>
-              {isExoticWorksheet && exoticWorksheet?.data && (
-                <>
-                  <div className={styles.wide}>
-                    <dt>Worksheet</dt>
-                    <dd className={styles.worksheetName}>
-                      {exoticWorksheet.data.name}
-                    </dd>
-                  </div>
-                  {exoticWorksheet.data.creatorName && (
-                    <div className={styles.wide}>
-                      <dt>Created by</dt>
-                      <dd className={styles.creatorName}>
-                        {exoticWorksheet.data.creatorName}
-                      </dd>
-                    </div>
-                  )}
-                  <div className={styles.wide}>
-                    <dt>Viewing exported worksheet</dt>
-                    <Button variant="primary" onClick={exitExoticWorksheet}>
-                      Exit
-                    </Button>
-                  </div>
-                </>
+              {isExoticWorksheet && (
+                <div className={styles.wide}>
+                  <dt>Viewing exported worksheet</dt>
+                  <Button variant="primary" onClick={exitExoticWorksheet}>
+                    Exit
+                  </Button>
+                </div>
               )}
             </dl>
           </div>
