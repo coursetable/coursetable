@@ -40,8 +40,8 @@ function Worksheet() {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    const exoticWorksheet = parseCoursesFromURL();
-    useStore.setState({ exoticWorksheet });
+    const parsedWorksheet = parseCoursesFromURL();
+    useStore.setState({ exoticWorksheet: parsedWorksheet });
   }, []);
 
   // Wait for search query to finish
