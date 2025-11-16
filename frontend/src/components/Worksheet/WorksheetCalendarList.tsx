@@ -69,6 +69,7 @@ function WorksheetCalendarList() {
       <SurfaceComponent elevated className={styles.container}>
         <div className="shadow-sm p-2">
           <ButtonGroup className="w-100">
+            {/* Hide/Show All */}
             {!isReadonlyWorksheet && (
               <OverlayTrigger
                 placement="top"
@@ -99,6 +100,8 @@ function WorksheetCalendarList() {
                 </Button>
               </OverlayTrigger>
             )}
+
+            {/* Public/Private */}
             {!isExoticWorksheet && viewedPerson === 'me' && (
               <OverlayTrigger
                 placement="top"
@@ -122,6 +125,8 @@ function WorksheetCalendarList() {
                 </Button>
               </OverlayTrigger>
             )}
+
+            {/* Export Calendar */}
             <OverlayTrigger
               placement="top"
               overlay={(props) => (
@@ -172,6 +177,8 @@ function WorksheetCalendarList() {
           <NoCourses />
         )}
       </SurfaceComponent>
+
+      {/* Worksheet Settings Popup */}
       <Modal
         show={settingsModalOpen}
         onHide={() => setSettingsModalOpen(false)}

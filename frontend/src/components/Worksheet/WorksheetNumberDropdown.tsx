@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
+import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
+import { FaStar } from 'react-icons/fa6';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
-import type { Option } from '../../contexts/searchContext';
 import { updateWorksheetMetadata } from '../../queries/api';
-import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
+import {
+  useWorksheetNumberOptions,
+  type WorksheetNumberOption,
+} from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
@@ -66,7 +70,7 @@ function WSNameInput({
   );
 }
 
-function OptionWithActionButtons(props: OptionProps<Option<number>>) {
+function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
   const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [animateButtonsIn, setAnimateButtonsIn] = useState(false);
@@ -192,7 +196,26 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
       }}
     >
       <div className={styles.optionContent}>
+        {/* Star/Lock/Unlock icon left of name */}
+        {props.data.value === 0 ? (
+          <FaStar />
+        ) : props.data.isPrivate ? (
+          <BsLockFill
+            style={{
+              width: '1rem',
+              height: '1rem',
+              verticalAlign: 'middle',
+              aspectRatio: '1 / 1',
+            }}
+          />
+        ) : (
+          <BsUnlockFill />
+        )}
+
+        {/* Name of worksheet */}
         <span className={styles.optionName}>{props.data.label}</span>
+
+        {/* Edit/Delete buttons */}
         {props.data.value !== 0 && viewedPerson === 'me' && (
           <div className={styles.iconContainer}>
             <MdEdit
@@ -221,7 +244,7 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
 function MenuListWithAdd({
   children,
   ...props
-}: MenuListProps<Option<number>>) {
+}: MenuListProps<WorksheetNumberOption>) {
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const { viewedSeason, viewedPerson } = useStore(
@@ -267,7 +290,7 @@ function MenuListWithAdd({
 function WorksheetNumDropdownDesktop({
   options,
 }: {
-  readonly options: { [worksheetNumber: number]: Option<number> };
+  readonly options: { [worksheetNumber: number]: WorksheetNumberOption };
 }) {
   const viewedWorksheetNumber = useStore(
     (state) => state.viewedWorksheetNumber,
@@ -280,7 +303,7 @@ function WorksheetNumDropdownDesktop({
       selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
     >
-      <PopoutSelect<Option<number>, false>
+      <PopoutSelect<WorksheetNumberOption, false>
         value={options[viewedWorksheetNumber]}
         options={Object.values(options)}
         showControl={false}
@@ -297,7 +320,7 @@ function WorksheetNumDropdownDesktop({
 function WorksheetNumDropdownMobile({
   options,
 }: {
-  readonly options: { [worksheetNumber: number]: Option<number> };
+  readonly options: { [worksheetNumber: number]: WorksheetNumberOption };
 }) {
   const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useStore(
     useShallow((state) => ({
