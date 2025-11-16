@@ -118,7 +118,10 @@ export function NavbarWorksheetSearch() {
           />
         </>
       ) : (
-        <div>
+        <div className={styles.exoticWorksheetContainer}>
+          <span className={styles.exoticWorksheetText}>
+            Viewing exported worksheet
+          </span>
           <Button variant="primary" onClick={exitExoticWorksheet}>
             Exit
           </Button>
