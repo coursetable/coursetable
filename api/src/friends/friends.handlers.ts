@@ -314,27 +314,15 @@ export const getFriendsWorksheets = async (
       }
     `;
 
-    console.log(
-      'Fetching same_course_id for season:',
-      seasonCode,
-      'CRNs:',
-      Array.from(crns),
-    );
     const data = await graphqlClient.request<{
       listings: { crn: number; course: { same_course_id: number } }[];
     }>(query, { crns: Array.from(crns), season: seasonCode });
 
-    console.log('GraphQL response:', data.listings.length, 'listings found');
     for (const listing of data.listings) {
       const key = `${seasonCode}${listing.crn}`;
       crnToSameCourseId.set(key, listing.course.same_course_id);
-      console.log(
-        `  CRN ${listing.crn} -> same_course_id ${listing.course.same_course_id}`,
-      );
     }
   }
-
-  console.log('Total CRN to same_course_id mappings:', crnToSameCourseId.size);
 
   // Get all unique same_course_id values
   const sameCourseIds = new Set<number>();
@@ -373,11 +361,6 @@ export const getFriendsWorksheets = async (
         sameCourseIdToCrns.get(course.same_course_id)!.push(listing.crn);
     }
   }
-
-  console.log(
-    'Same course ID to all CRNs:',
-    Array.from(sameCourseIdToCrns.entries()),
-  );
 
   // Enrich worksheet data with same_course_id
   const enrichedWorksheetMap: typeof friendWorksheetMap = {};

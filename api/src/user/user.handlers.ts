@@ -1,6 +1,7 @@
 import type express from 'express';
 import chroma from 'chroma-js';
 import { and, count, eq, inArray } from 'drizzle-orm';
+import { gql } from 'graphql-request';
 import z from 'zod';
 
 import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
@@ -11,7 +12,7 @@ import {
   worksheets,
   wishlistCourses,
 } from '../../drizzle/schema.js';
-import { db } from '../config.js';
+import { db, graphqlClient } from '../config.js';
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
   z.object({
@@ -226,8 +227,84 @@ export const getUserWorksheet = async (
 
   const allWorksheets = worksheetListToMap(userWorksheets);
 
+  // Collect all unique CRNs grouped by season
+  const seasonCrnMap = new Map<string, Set<number>>();
+  for (const worksheetsBySeason of Object.values(allWorksheets)) {
+    for (const [seasonCode, worksheetsByNum] of Object.entries(
+      worksheetsBySeason,
+    )) {
+      if (!seasonCrnMap.has(seasonCode))
+        seasonCrnMap.set(seasonCode, new Set());
+
+      for (const worksheet of Object.values(worksheetsByNum)) {
+        for (const course of worksheet.courses)
+          seasonCrnMap.get(seasonCode)!.add(course.crn);
+      }
+    }
+  }
+
+  // Fetch same_course_id for all CRNs using GraphQL
+  const crnToSameCourseId = new Map<string, number>();
+  for (const [seasonCode, crns] of seasonCrnMap.entries()) {
+    if (crns.size === 0) continue;
+
+    const query = gql`
+      query GetSameCourseIds($crns: [Int!]!, $season: String!) {
+        listings(
+          where: { crn: { _in: $crns }, season_code: { _eq: $season } }
+        ) {
+          crn
+          course {
+            same_course_id
+          }
+        }
+      }
+    `;
+
+    const data = await graphqlClient.request<{
+      listings: { crn: number; course: { same_course_id: number | null } }[];
+    }>(query, { crns: Array.from(crns), season: seasonCode });
+
+    for (const listing of data.listings) {
+      if (listing.course.same_course_id !== null) {
+        const key = `${seasonCode}${listing.crn}`;
+        crnToSameCourseId.set(key, listing.course.same_course_id);
+      }
+    }
+  }
+
+  // Enrich worksheet data with same_course_id
+  const enrichedWorksheets: (typeof allWorksheets)[typeof netId] = {};
+  const userWorksheetData = allWorksheets[netId] ?? {};
+
+  for (const [seasonStr, worksheetsByNum] of Object.entries(
+    userWorksheetData,
+  )) {
+    const seasonCode = String(seasonStr);
+    enrichedWorksheets[seasonCode] = {};
+
+    for (const [worksheetNum, worksheet] of Object.entries(worksheetsByNum)) {
+      const enrichedCourses = (
+        worksheet.courses as {
+          crn: number;
+          color: string;
+          hidden: boolean | null;
+        }[]
+      ).map((course) => ({
+        ...course,
+        same_course_id:
+          crnToSameCourseId.get(`${seasonCode}${course.crn}`) ?? null,
+      }));
+
+      enrichedWorksheets[seasonCode][Number(worksheetNum)] = {
+        ...worksheet,
+        courses: enrichedCourses,
+      };
+    }
+  }
+
   res.json({
-    data: allWorksheets[netId] ?? {},
+    data: enrichedWorksheets,
   });
 };
 

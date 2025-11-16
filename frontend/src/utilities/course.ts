@@ -149,20 +149,10 @@ export function getNumFriends(
   // First, group friends by same_course_id + season
   const friendsBySameCourse = new Map<string, Set<string>>();
 
-  console.log(
-    '[getNumFriends] Processing friends:',
-    Object.keys(friends).length,
-  );
-
   for (const [netId, friend] of Object.entries(friends)) {
     for (const [seasonCode, worksheets] of friend.worksheets) {
       for (const w of worksheets.values()) {
         for (const course of w.courses) {
-          console.log(
-            `[getNumFriends] Friend ${friend.name ?? netId} has CRN ${course.crn}, same_course_id:`,
-            course.same_course_id,
-          );
-
           // Group by same_course_id if available, otherwise fall back to CRN
           const key =
             course.same_course_id !== null
@@ -177,11 +167,6 @@ export function getNumFriends(
     }
   }
 
-  console.log(
-    '[getNumFriends] Friends by same course:',
-    Array.from(friendsBySameCourse.entries()),
-  );
-
   // Now map each CRN to its friends list (grouped by same_course_id)
   const numFriends: NumFriendsReturn = {};
 
@@ -190,7 +175,6 @@ export function getNumFriends(
   for (const [sameCourseKey, friendsSet] of friendsBySameCourse.entries()) {
     // SameCourseKey is like "202403-180120621" (season-same_course_id)
     // or "202403-crn-21093" (season-crn-CRN) for courses without same_course_id
-
     if (sameCourseKey.includes('-crn-')) {
       // Fall back to CRN-specific key for courses without same_course_id
       const crnKey = sameCourseKey.replace(/-crn-/u, '');
@@ -210,16 +194,6 @@ export function getNumFriends(
       }
     }
   }
-
-  console.log(
-    '[getNumFriends] Final numFriends entries:',
-    Object.keys(numFriends).length,
-  );
-  console.log(
-    '[getNumFriends] Sample entries:',
-    Object.entries(numFriends).slice(0, 5),
-  );
-
   return numFriends;
 }
 
