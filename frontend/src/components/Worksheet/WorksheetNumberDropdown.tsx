@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
 import { FaStar } from 'react-icons/fa6';
-import { MdEdit, MdDelete } from 'react-icons/md';
+import { MdEdit, MdDelete, MdLock } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
+import MdLockOpenRight from '../../images/MdLockOpenRight';
 import { updateWorksheetMetadata } from '../../queries/api';
 import {
   useWorksheetNumberOptions,
@@ -200,16 +200,9 @@ function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
         {props.data.value === 0 ? (
           <FaStar />
         ) : props.data.isPrivate ? (
-          <BsLockFill
-            style={{
-              width: '1rem',
-              height: '1rem',
-              verticalAlign: 'middle',
-              aspectRatio: '1 / 1',
-            }}
-          />
+          <MdLock />
         ) : (
-          <BsUnlockFill />
+          <MdLockOpenRight />
         )}
 
         {/* Name of worksheet */}
