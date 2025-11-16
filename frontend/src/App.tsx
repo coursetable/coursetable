@@ -141,10 +141,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={18}
+        id={19}
       >
-        {/* Locations are temporarily unavailable - we are actively working on
-        resolving this issue. */}
+        CourseTable is expected to experience outages due to high loads and usage during course selection this week. Please note down your courses before then.
       </Notice>
       <Navbar />
       <SentryRoutes>
