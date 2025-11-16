@@ -143,7 +143,9 @@ function App() {
         // Don't remove this wrapper.
         id={19}
       >
-        CourseTable is expected to experience outages due to high loads and usage during course selection this week. Please note down your courses before then.
+        CourseTable is expected to experience outages due to high loads and
+        usage during course selection this week. Please note down your courses
+        before then.
       </Notice>
       <Navbar />
       <SentryRoutes>
