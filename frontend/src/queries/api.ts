@@ -601,7 +601,37 @@ export async function fetchUserWishlist() {
 const friendsSchema = z.record(
   z.object({
     name: z.string().nullable(),
-    worksheets: userWorksheetsSchema,
+    worksheets: z
+      .record(
+        // Key: season
+        z.record(
+          // Key: worksheet number
+          z.object({
+            name: z.string(),
+            private: z.boolean().optional(),
+            courses: z.array(
+              z.object({
+                crn: crnSchema,
+                color: z.string(),
+                hidden: z.boolean().nullable(),
+                same_course_id: z.number().nullable(),
+              }),
+            ),
+          }),
+        ),
+      )
+      .transform((data) => {
+        type Worksheet = NonNullable<(typeof data)[Season]>[string];
+        // Transform the object record to a map
+        const res = new Map<Season, Map<number, Worksheet>>();
+        for (const season of Object.keys(data)) {
+          const seasonMap = new Map<number, Worksheet>();
+          for (const num of Object.keys(data[season]!))
+            seasonMap.set(Number(num), data[season]![num]!);
+          res.set(season as Season, seasonMap);
+        }
+        return res;
+      }),
   }),
 );
 
@@ -614,6 +644,7 @@ export function fetchFriendWorksheets() {
   return fetchAPI('/friends/worksheets', {
     schema: z.object({
       friends: friendsSchema,
+      sameCourseIdToCrns: z.record(z.array(z.number())).optional(),
     }),
     breadcrumb: {
       category: 'friends',
