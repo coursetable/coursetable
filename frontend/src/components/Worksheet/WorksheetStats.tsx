@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
@@ -86,15 +86,13 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, isExoticWorksheet, exitExoticWorksheet, exoticWorksheet } =
-    useStore(
-      useShallow((state) => ({
-        courses: state.courses,
-        isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
-        exitExoticWorksheet: state.exitExoticWorksheet,
-        exoticWorksheet: state.exoticWorksheet,
-      })),
-    );
+  const { courses, isExoticWorksheet, exoticWorksheet } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      exoticWorksheet: state.exoticWorksheet,
+    })),
+  );
   const user = useStore((state) => state.user);
   const countedCourseCodes = new Set();
   let courseCnt = 0;
@@ -269,17 +267,6 @@ export default function WorksheetStats() {
                     ))}
                 </dd>
               </div>
-            </dl>
-            <div className={styles.spacer} />
-            <dl>
-              {isExoticWorksheet && (
-                <div className={styles.wide}>
-                  <dt>Viewing exported worksheet</dt>
-                  <Button variant="primary" onClick={exitExoticWorksheet}>
-                    Exit
-                  </Button>
-                </div>
-              )}
             </dl>
           </div>
         </div>
