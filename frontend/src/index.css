@@ -161,6 +161,15 @@ hr {
   box-shadow: none !important;
 }
 
+/* Materials Symbols CSS */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
 .w-mx {
   max-width: 100%;
 }
