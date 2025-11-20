@@ -40,11 +40,12 @@
   }
 }
 
-.expandBtn {
-  padding: 3px;
+.lockBtn {
+  padding: 4px;
   border-radius: 6px;
   background-color: var(--color-bg-button);
   color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
   position: absolute;
   top: 0%;
   right: 0%;
@@ -53,15 +54,17 @@
   transition:
     transform 0.05s linear,
     background-color var(--trans-dur),
-    color var(--trans-dur);
+    color var(--trans-dur),
+    border-color var(--trans-dur);
 }
 
-.expandIcon {
+.lockIcon {
   display: block;
 }
 
-.expandBtn:hover {
+.lockBtn:hover {
   transform: translate(50%, -40%) scale(1.1);
+  background-color: var(--color-bg-button-hover);
 }
 
 .calendarSidebar {

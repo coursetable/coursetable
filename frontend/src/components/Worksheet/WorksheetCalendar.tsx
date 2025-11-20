@@ -20,12 +20,14 @@ function WorksheetCalendar() {
     viewedSeason,
     setOpenColorPickerEvent,
     setOpenWorksheetMoveEvent,
+    isCalendarViewLocked,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
       viewedSeason: state.viewedSeason,
       setOpenColorPickerEvent: state.setOpenColorPickerEvent,
       setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,
+      isCalendarViewLocked: state.isCalendarViewLocked,
     })),
   );
 
@@ -33,6 +35,14 @@ function WorksheetCalendar() {
 
   const { earliest, latest, parsedCourses } = useMemo(() => {
     const parsedCourses = getCalendarEvents('rbc', courses, viewedSeason);
+
+    if (isCalendarViewLocked) {
+      return {
+        earliest: new Date(0, 0, 0, 8),
+        latest: new Date(0, 0, 0, 18),
+        parsedCourses,
+      };
+    }
 
     if (parsedCourses.length === 0) {
       return {
@@ -55,7 +65,7 @@ function WorksheetCalendar() {
     }
 
     return { earliest, latest, parsedCourses };
-  }, [courses, viewedSeason]);
+  }, [courses, viewedSeason, isCalendarViewLocked]);
 
   return (
     <>

@@ -43,6 +43,7 @@ const basePersistKeys: (keyof Store)[] = [
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
+  'isCalendarViewLocked',
 ];
 const PersistKeys = basePersistKeys.concat(
   Object.keys(defaultPreferences) as (keyof Store)[],
