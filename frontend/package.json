@@ -29,6 +29,7 @@
     "gapi-script": "^1.2.0",
     "graphiql": "^3.8.3",
     "graphql": "^16.10.0",
+    "html2canvas": "^1.4.1",
     "immer": "^10.1.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
