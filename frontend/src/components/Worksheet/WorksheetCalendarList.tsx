@@ -19,6 +19,7 @@ import { TbCalendarDown } from 'react-icons/tb';
 import { useShallow } from 'zustand/react/shallow';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
+import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import { setCourseHidden, updateWorksheetMetadata } from '../../queries/api';
@@ -150,6 +151,9 @@ function WorksheetCalendarList() {
                   <ICSExportButton />
                 </Dropdown.Item>
                 <Dropdown.Item eventKey="3" as="div">
+                  <PNGExportButton />
+                </Dropdown.Item>
+                <Dropdown.Item eventKey="4" as="div">
                   <URLExportButton />
                 </Dropdown.Item>
               </DropdownButton>
