@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
-import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import { FaLock, FaUnlock } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 
 import NeedsLogin from './NeedsLogin';
@@ -27,6 +27,8 @@ function Worksheet() {
     worksheetError,
     worksheetView,
     isExoticWorksheet,
+    isCalendarViewLocked,
+    setCalendarViewLocked,
   } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -35,9 +37,10 @@ function Worksheet() {
       worksheetError: state.worksheetError,
       worksheetView: state.worksheetView,
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      isCalendarViewLocked: state.isCalendarViewLocked,
+      setCalendarViewLocked: state.setCalendarViewLocked,
     })),
   );
-  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const exoticWorksheet = parseCoursesFromURL();
@@ -54,7 +57,8 @@ function Worksheet() {
   if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
-  const Icon = expanded ? FaCompressAlt : FaExpandAlt;
+  const Icon = isCalendarViewLocked ? FaLock : FaUnlock;
+  const lockLabel = isCalendarViewLocked ? 'Unlock view' : 'Lock view';
 
   return (
     <div className={styles.container}>
@@ -72,22 +76,21 @@ function Worksheet() {
         {!isMobile && (
           <button
             type="button"
-            className={styles.expandBtn}
+            className={styles.lockBtn}
             onClick={() => {
-              setExpanded((x) => !x);
+              setCalendarViewLocked(!isCalendarViewLocked);
             }}
-            aria-label={`${expanded ? 'Collapse' : 'Expand'} calendar`}
+            aria-label={lockLabel}
+            title={lockLabel}
           >
-            <Icon className={styles.expandIcon} size={12} />
+            <Icon className={styles.lockIcon} size={8} />
           </button>
         )}
       </SurfaceComponent>
-      {(isMobile || !expanded) && (
-        <div className={styles.calendarSidebar}>
-          <WorksheetStats />
-          <WorksheetCalendarList />
-        </div>
-      )}
+      <div className={styles.calendarSidebar}>
+        <WorksheetStats />
+        <WorksheetCalendarList />
+      </div>
     </div>
   );
 }
