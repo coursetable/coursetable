@@ -79,7 +79,7 @@ const retryWatermark = async (
       }
     }
   }
-  throw lastError;
+  throw lastError ?? new Error('Failed to load watermark after retries');
 };
 
 export default function PNGExportButton() {
@@ -93,15 +93,13 @@ export default function PNGExportButton() {
   const exportPNG = async () => {
     setIsExporting(true);
     try {
-      const calendarElement = document.querySelector('.rbc-calendar');
+      const calendarElement =
+        document.querySelector<HTMLElement>('.rbc-calendar');
 
-      if (!calendarElement) {
-        toast.error('Calendar not found. Please try again.');
-        setIsExporting(false);
-        return;
-      }
+      if (!calendarElement)
+        throw new Error('Calendar not found. Please try again.');
 
-      const canvas = await html2canvas(calendarElement as HTMLElement, {
+      const canvas = await html2canvas(calendarElement, {
         backgroundColor: '#ffffff',
         scale: CANVAS_SCALE,
         logging: false,
@@ -115,26 +113,29 @@ export default function PNGExportButton() {
       finalCanvas.height = canvas.height;
       const finalCtx = finalCanvas.getContext('2d');
 
-      if (!finalCtx) {
-        toast.error('Failed to get canvas context.');
-        setIsExporting(false);
-        return;
-      }
+      if (!finalCtx) throw new Error('Failed to get canvas context.');
 
       finalCtx.drawImage(canvas, 0, 0);
       await retryWatermark(finalCtx, finalCanvas.height);
 
-      finalCanvas.toBlob((blob) => {
-        if (blob) {
-          saveFile(blob, `${viewedSeason}_worksheet.png`);
-          toast.success('Calendar exported as PNG!');
-        } else {
-          toast.error('Failed to export calendar as PNG.');
-        }
-        setIsExporting(false);
+      await new Promise<void>((resolve, reject) => {
+        finalCanvas.toBlob((blob) => {
+          if (blob) {
+            saveFile(blob, `${viewedSeason}_worksheet.png`);
+            toast.success('Calendar exported as PNG!');
+            resolve();
+          } else {
+            reject(new Error('Failed to export calendar as PNG.'));
+          }
+        });
       });
-    } catch {
-      toast.error('Error exporting calendar as PNG.');
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Error exporting calendar as PNG.';
+      toast.error(message);
+    } finally {
       setIsExporting(false);
     }
   };
