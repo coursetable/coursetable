@@ -4,15 +4,14 @@ import saveFile from 'file-saver';
 import html2canvas from 'html2canvas';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
-import logo from '../../images/brand/bluebook.svg';
 import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import { useStore } from '../../store';
 
 const CANVAS_SCALE = 2; // Higher resolution export (2x)
 const WATERMARK_PADDING = 20; // Padding from canvas edges (base pixels)
-const LOGO_HEIGHT = 40; // Logo icon height (base pixels)
 const WORDMARK_HEIGHT = 24; // Wordmark text height (base pixels)
-const LOGO_WORDMARK_SPACING = 8; // Space between logo and wordmark (base pixels)
+const MAX_RETRIES = 5; // Maximum retry attempts for watermark
+const RETRY_DELAY = 100; // Delay between retries in milliseconds
 
 const loadImage = (src: string): Promise<HTMLImageElement> =>
   fetch(src)
@@ -41,33 +40,46 @@ const drawWatermark = async (
   ctx: CanvasRenderingContext2D,
   canvasHeight: number,
 ): Promise<void> => {
-  const [logoImg, wordmarkImg] = await Promise.all([
-    loadImage(logo),
-    loadImage(wordmarkOutlines),
-  ]);
+  const wordmarkImg = await loadImage(wordmarkOutlines);
 
   const scaledPadding = WATERMARK_PADDING * CANVAS_SCALE;
-  const scaledLogoHeight = LOGO_HEIGHT * CANVAS_SCALE;
   const scaledWordmarkHeight = WORDMARK_HEIGHT * CANVAS_SCALE;
-  const scaledSpacing = LOGO_WORDMARK_SPACING * CANVAS_SCALE;
 
-  const logoY = canvasHeight - scaledLogoHeight - scaledPadding;
   const wordmarkY = canvasHeight - scaledWordmarkHeight - scaledPadding;
-
-  const logoAspectRatio = logoImg.width / logoImg.height;
-  const logoWidth = scaledLogoHeight * logoAspectRatio;
-  ctx.drawImage(logoImg, scaledPadding, logoY, logoWidth, scaledLogoHeight);
 
   const wordmarkAspectRatio = wordmarkImg.width / wordmarkImg.height;
   const wordmarkWidth = scaledWordmarkHeight * wordmarkAspectRatio;
-  const wordmarkX = scaledPadding + logoWidth + scaledSpacing;
   ctx.drawImage(
     wordmarkImg,
-    wordmarkX,
+    scaledPadding,
     wordmarkY,
     wordmarkWidth,
     scaledWordmarkHeight,
   );
+};
+
+// Retry watermark loading to handle temporary failures
+const retryWatermark = async (
+  ctx: CanvasRenderingContext2D,
+  canvasHeight: number,
+): Promise<void> => {
+  let lastError: Error | undefined = undefined;
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      await drawWatermark(ctx, canvasHeight);
+      return;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      if (attempt < MAX_RETRIES - 1) {
+        await new Promise<void>((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, RETRY_DELAY);
+        });
+      }
+    }
+  }
+  throw lastError;
 };
 
 export default function PNGExportButton() {
@@ -110,7 +122,7 @@ export default function PNGExportButton() {
       }
 
       finalCtx.drawImage(canvas, 0, 0);
-      await drawWatermark(finalCtx, finalCanvas.height);
+      await retryWatermark(finalCtx, finalCanvas.height);
 
       finalCanvas.toBlob((blob) => {
         if (blob) {
