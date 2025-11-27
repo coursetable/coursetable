@@ -295,6 +295,15 @@ function WorksheetNumDropdownDesktop({
       displayOptionLabel
       selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
+      Icon={
+        viewedWorksheetNumber === 0 ? (
+          <FaStar />
+        ) : options[viewedWorksheetNumber]?.isPrivate ? (
+          <MdLock />
+        ) : (
+          <MdLockOpenRight />
+        )
+      }
     >
       <PopoutSelect<WorksheetNumberOption, false>
         value={options[viewedWorksheetNumber]}
