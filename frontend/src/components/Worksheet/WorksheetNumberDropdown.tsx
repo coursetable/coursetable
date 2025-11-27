@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import {
+  DropdownButton,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import { FaStar } from 'react-icons/fa6';
 import { MdEdit, MdDelete, MdLock } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
@@ -197,13 +202,30 @@ function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
     >
       <div className={styles.optionContent}>
         {/* Star/Lock/Unlock icon left of Worksheet name */}
-        {props.data.value === 0 ? (
-          <FaStar />
-        ) : props.data.isPrivate ? (
-          <MdLock />
-        ) : (
-          <MdLockOpenRight />
-        )}
+        <OverlayTrigger
+          placement="left"
+          overlay={(overlayProps) => (
+            <Tooltip id="button-tooltip" {...overlayProps}>
+              <span>
+                {props.data.value === 0
+                  ? 'Main Worksheet'
+                  : props.data.isPrivate
+                    ? 'Private Worksheet'
+                    : 'Public Worksheet'}
+              </span>
+            </Tooltip>
+          )}
+        >
+          <div>
+            {props.data.value === 0 ? (
+              <FaStar />
+            ) : props.data.isPrivate ? (
+              <MdLock />
+            ) : (
+              <MdLockOpenRight />
+            )}
+          </div>
+        </OverlayTrigger>
 
         {/* Name of worksheet */}
         <span className={styles.optionName}>{props.data.label}</span>

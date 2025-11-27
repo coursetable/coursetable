@@ -84,13 +84,30 @@ function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
     <components.Option {...props}>
       <div className={styles.popoutOption}>
         {/* Star/Lock/Unlock Icon in front of worksheet name in options */}
-        {props.data.value === 0 ? (
-          <FaStar />
-        ) : props.data.isPrivate ? (
-          <MdLock />
-        ) : (
-          <MdLockOpenRight />
-        )}
+        <OverlayTrigger
+          placement="left"
+          overlay={(overlayProps) => (
+            <Tooltip id="button-tooltip" {...overlayProps}>
+              <span>
+                {props.data.value === 0
+                  ? 'Main Worksheet'
+                  : props.data.isPrivate
+                    ? 'Private Worksheet'
+                    : 'Public Worksheet'}
+              </span>
+            </Tooltip>
+          )}
+        >
+          <div>
+            {props.data.value === 0 ? (
+              <FaStar />
+            ) : props.data.isPrivate ? (
+              <MdLock />
+            ) : (
+              <MdLockOpenRight />
+            )}
+          </div>
+        </OverlayTrigger>
         <span>{props.data.label}</span>
       </div>
     </components.Option>
