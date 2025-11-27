@@ -83,7 +83,7 @@ function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
   return (
     <components.Option {...props}>
       <div className={styles.popoutOption}>
-        {/* Star/Lock/Unlock Icon in front of worksheet name in dropdown options */}
+        {/* Star/Lock/Unlock Icon in front of worksheet name in options */}
         {props.data.value === 0 ? (
           <FaStar />
         ) : props.data.isPrivate ? (
