@@ -196,7 +196,7 @@ function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
       }}
     >
       <div className={styles.optionContent}>
-        {/* Star/Lock/Unlock icon left of name */}
+        {/* Star/Lock/Unlock icon left of Worksheet name */}
         {props.data.value === 0 ? (
           <FaStar />
         ) : props.data.isPrivate ? (
@@ -296,6 +296,7 @@ function WorksheetNumDropdownDesktop({
       selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
       Icon={
+        // Star/Lock/Unlock icon in dropdown button
         viewedWorksheetNumber === 0 ? (
           <FaStar />
         ) : options[viewedWorksheetNumber]?.isPrivate ? (
