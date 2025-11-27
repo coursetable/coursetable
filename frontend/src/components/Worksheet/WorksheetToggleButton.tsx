@@ -1,12 +1,13 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import { FaPlus, FaMinus, FaStar } from 'react-icons/fa';
 import { MdErrorOutline, MdLock } from 'react-icons/md';
 import { components, type OptionProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
+import MdLockOpenRight from '../../images/MdLockOpenRight';
 import { updateWorksheetCourses } from '../../queries/api';
 import {
   useWorksheetNumberOptions,
@@ -82,7 +83,13 @@ function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
   return (
     <components.Option {...props}>
       <div className={styles.popoutOption}>
-        {props.data.isPrivate ? <MdLock /> : <p>placeholder</p>}
+        {props.data.value === 0 ? (
+          <FaStar />
+        ) : props.data.isPrivate ? (
+          <MdLock />
+        ) : (
+          <MdLockOpenRight />
+        )}
         <span>{props.data.label}</span>
       </div>
     </components.Option>
@@ -231,6 +238,15 @@ function WorksheetToggleButton({
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
+          Icon={
+            selectedWorksheet === 0 ? (
+              <FaStar />
+            ) : worksheetOptions[selectedWorksheet]?.isPrivate ? (
+              <MdLock />
+            ) : (
+              <MdLockOpenRight />
+            )
+          }
         >
           <PopoutSelect<WorksheetNumberOption, false>
             value={worksheetOptions[selectedWorksheet]}
