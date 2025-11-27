@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
-
 import type { Option } from '../../contexts/searchContext';
 import { useComponentVisibleDropdown } from '../../utilities/display';
 import styles from './Popout.module.css';
@@ -25,6 +24,7 @@ type Props = {
   readonly notifications?: number;
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
+  readonly Icon?: React.JSX.Element;
 };
 
 function getText(
@@ -90,6 +90,7 @@ export function Popout({
   notifications,
   colors,
   dataTutorial,
+  Icon,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
@@ -153,7 +154,9 @@ export function Popout({
         className={clsx(className, styles.button)}
         data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
       >
-        {text ?? buttonText}
+        {Icon ?? null}
+        <div>{text ?? buttonText}</div>
+
         {text && clearIcon ? (
           <IoClose
             className={clsx(styles.clearIcon, 'ms-1')}
@@ -169,6 +172,7 @@ export function Popout({
         ) : null}
         {notifications ? <NotificationIcon count={notifications} /> : null}
       </button>
+
       {/* Dropdown */}
       {isComponentVisible ? (
         <div
