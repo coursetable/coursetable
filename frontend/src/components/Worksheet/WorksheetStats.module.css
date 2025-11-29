@@ -96,6 +96,9 @@
   font-weight: 600;
   color: var(--color-text-primary);
   margin-bottom: 0.25em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .creatorName {

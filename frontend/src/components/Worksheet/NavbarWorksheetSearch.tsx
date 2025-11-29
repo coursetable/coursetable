@@ -80,7 +80,7 @@ export function NavbarWorksheetSearch() {
   if (authStatus !== 'authenticated' && !isExoticWorksheet) return null;
 
   return (
-    <div className="d-flex align-items-center">
+    <div className={clsx(styles.container, 'd-flex align-items-center')}>
       <ToggleButtonGroup
         name="worksheet-view-toggle"
         type="radio"
@@ -122,7 +122,11 @@ export function NavbarWorksheetSearch() {
           <span className={styles.exoticWorksheetText}>
             Viewing exported worksheet
           </span>
-          <Button variant="primary" onClick={exitExoticWorksheet}>
+          <Button
+            variant="primary"
+            className={styles.exoticExitButton}
+            onClick={exitExoticWorksheet}
+          >
             Exit
           </Button>
         </div>
