@@ -76,22 +76,23 @@ function WorksheetCalendarList() {
 
   const handleClearAll = async () => {
     if (courses.length === 0) return;
+    const courseCount = courses.length;
+    const actions = courses.map((course) => ({
+      action: 'remove' as const,
+      season: viewedSeason,
+      crn: course.listing.crn,
+      worksheetNumber: viewedWorksheetNumber,
+    }));
     setClearing(true);
     try {
-      // Remove all courses from the current worksheet
-      const removePromises = courses.map((course) =>
-        updateWorksheetCourses({
-          action: 'remove',
-          season: viewedSeason,
-          crn: course.listing.crn,
-          worksheetNumber: viewedWorksheetNumber,
-        }),
-      );
-      await Promise.all(removePromises);
+      // Remove all courses from the current worksheet in a single batch request
+      await updateWorksheetCourses(actions);
       await worksheetsRefresh();
       setClearModalOpen(false);
       toast.success(
-        `Removed all ${courses.length} class${courses.length === 1 ? '' : 'es'} from worksheet`,
+        `Removed all ${courseCount} class${
+          courseCount === 1 ? '' : 'es'
+        } from worksheet`,
       );
     } finally {
       setClearing(false);
