@@ -93,8 +93,6 @@ function WorksheetCalendarList() {
       toast.success(
         `Removed all ${courses.length} class${courses.length === 1 ? '' : 'es'} from worksheet`,
       );
-    } catch {
-      // Error handling is done in updateWorksheetCourses
     } finally {
       setClearing(false);
     }
