@@ -14,15 +14,21 @@ import {
 } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
+import { MdOutlineClear } from 'react-icons/md';
 import { TbCalendarDown } from 'react-icons/tb';
 
+import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import { setCourseHidden, updateWorksheetMetadata } from '../../queries/api';
+import {
+  setCourseHidden,
+  updateWorksheetMetadata,
+  updateWorksheetCourses,
+} from '../../queries/api';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
@@ -61,10 +67,38 @@ function WorksheetCalendarList() {
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
   const [updatingWSState, setUpdatingWSState] = useState(false);
+  const [clearModalOpen, setClearModalOpen] = useState(false);
+  const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
     setPrivateState(isViewedWorksheetPrivate);
   }, [isViewedWorksheetPrivate]);
+
+  const handleClearAll = async () => {
+    if (courses.length === 0) return;
+    setClearing(true);
+    try {
+      // Remove all courses from the current worksheet
+      const removePromises = courses.map((course) =>
+        updateWorksheetCourses({
+          action: 'remove',
+          season: viewedSeason,
+          crn: course.listing.crn,
+          worksheetNumber: viewedWorksheetNumber,
+        }),
+      );
+      await Promise.all(removePromises);
+      await worksheetsRefresh();
+      setClearModalOpen(false);
+      toast.success(
+        `Removed all ${courses.length} class${courses.length === 1 ? '' : 'es'} from worksheet`,
+      );
+    } catch {
+      // Error handling is done in updateWorksheetCourses
+    } finally {
+      setClearing(false);
+    }
+  };
   return (
     <div>
       <SurfaceComponent elevated className={styles.container}>
@@ -214,6 +248,28 @@ function WorksheetCalendarList() {
                 onChange={() => setPrivateState(!privateState)}
               />
             )}
+            {courses.length > 0 && (
+              <div className="mt-4 pt-3 border-top">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong>Clear All Classes</strong>
+                    <p className="text-muted small mb-0">
+                      Remove all {courses.length} class
+                      {courses.length === 1 ? '' : 'es'} from this worksheet
+                    </p>
+                  </div>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setClearModalOpen(true)}
+                    disabled={clearing}
+                  >
+                    <MdOutlineClear className="me-1" size={16} />
+                    Clear All
+                  </Button>
+                </div>
+              </div>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -251,6 +307,46 @@ function WorksheetCalendarList() {
               </div>
             ) : (
               'Save'
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={clearModalOpen}
+        onHide={() => !clearing && setClearModalOpen(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Clear All Classes</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Are you sure you want to remove all{' '}
+            <strong>{courses.length}</strong> class
+            {courses.length === 1 ? '' : 'es'} from this worksheet?
+          </p>
+          <p className="text-muted small mb-0">This action cannot be undone.</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setClearModalOpen(false)}
+            disabled={clearing}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleClearAll}
+            disabled={clearing}
+            style={{ minWidth: '4rem' }}
+          >
+            {clearing ? (
+              <div className="ms-auto">
+                <Spinner size="sm" />
+              </div>
+            ) : (
+              'Clear All'
             )}
           </Button>
         </Modal.Footer>
