@@ -14,7 +14,6 @@ import {
 } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
-import { MdOutlineClear } from 'react-icons/md';
 import { TbCalendarDown } from 'react-icons/tb';
 
 import { toast } from 'react-toastify';
@@ -90,9 +89,9 @@ function WorksheetCalendarList() {
       await worksheetsRefresh();
       setClearModalOpen(false);
       toast.success(
-        `Removed all ${courseCount} class${
-          courseCount === 1 ? '' : 'es'
-        } from worksheet`,
+        courseCount === 1
+          ? 'Removed class from worksheet'
+          : `Removed all ${courseCount} classes from worksheet`,
       );
     } finally {
       setClearing(false);
@@ -248,25 +247,20 @@ function WorksheetCalendarList() {
               />
             )}
             {courses.length > 0 && (
-              <div className="mt-4 pt-3 border-top">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>Clear All Classes</strong>
-                    <p className="text-muted small mb-0">
-                      Remove all {courses.length} class
-                      {courses.length === 1 ? '' : 'es'} from this worksheet
-                    </p>
-                  </div>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setClearModalOpen(true)}
-                    disabled={clearing}
-                  >
-                    <MdOutlineClear className="me-1" size={16} />
-                    Clear All
-                  </Button>
-                </div>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setClearModalOpen(true)}
+                  disabled={clearing}
+                  className={styles.clearAllButton}
+                >
+                  <strong>Clear All Classes</strong>
+                  <p className="text-muted small mb-0">
+                    {courses.length === 1
+                      ? 'Remove this class from this worksheet'
+                      : `Remove all ${courses.length} classes from this worksheet`}
+                  </p>
+                </button>
               </div>
             )}
           </Form>
@@ -320,9 +314,15 @@ function WorksheetCalendarList() {
         </Modal.Header>
         <Modal.Body>
           <p>
-            Are you sure you want to remove all{' '}
-            <strong>{courses.length}</strong> class
-            {courses.length === 1 ? '' : 'es'} from this worksheet?
+            Are you sure you want to{' '}
+            {courses.length === 1 ? (
+              <>remove this class</>
+            ) : (
+              <>
+                remove all <strong>{courses.length} classes</strong>
+              </>
+            )}{' '}
+            from this worksheet?
           </p>
           <p className="text-muted small mb-0">This action cannot be undone.</p>
         </Modal.Body>
