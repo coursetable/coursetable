@@ -495,22 +495,28 @@ export async function getUserInfo() {
   return res;
 }
 
-const userWorksheetsSchema = z
+// Shared schema for worksheet courses (used by both user and friends)
+const worksheetCourseSchema = z.object({
+  crn: crnSchema,
+  color: z.string(),
+  hidden: z.boolean().nullable(),
+  same_course_id: z.number().nullable(),
+});
+
+// Shared schema for worksheet structure
+const worksheetSchema = z.object({
+  name: z.string(),
+  private: z.boolean().optional(),
+  courses: z.array(worksheetCourseSchema),
+});
+
+// Shared schema for season/worksheet mapping with transform
+const worksheetsMapSchema = z
   .record(
     // Key: season
     z.record(
       // Key: worksheet number
-      z.object({
-        name: z.string(),
-        private: z.boolean().optional(),
-        courses: z.array(
-          z.object({
-            crn: crnSchema,
-            color: z.string(),
-            hidden: z.boolean().nullable(),
-          }),
-        ),
-      }),
+      worksheetSchema,
     ),
   )
   .transform((data) => {
@@ -525,6 +531,8 @@ const userWorksheetsSchema = z
     }
     return res;
   });
+
+const userWorksheetsSchema = worksheetsMapSchema;
 
 // Change index type to be more specific. We don't use the key type of z.record
 // on purpose; see https://github.com/colinhacks/zod/pull/2287
@@ -603,7 +611,7 @@ export async function fetchUserWishlist() {
 const friendsSchema = z.record(
   z.object({
     name: z.string().nullable(),
-    worksheets: userWorksheetsSchema,
+    worksheets: worksheetsMapSchema,
   }),
 );
 
@@ -616,6 +624,7 @@ export function fetchFriendWorksheets() {
   return fetchAPI('/friends/worksheets', {
     schema: z.object({
       friends: friendsSchema,
+      sameCourseIdToCrns: z.record(z.array(z.number())).optional(),
     }),
     breadcrumb: {
       category: 'friends',
