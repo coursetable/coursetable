@@ -9,6 +9,7 @@ import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
 import type { NetId } from '../../queries/graphql-types';
+import type { WorksheetView } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
@@ -85,7 +86,7 @@ export function NavbarWorksheetSearch() {
         name="worksheet-view-toggle"
         type="radio"
         value={worksheetView}
-        onChange={(val: 'calendar' | 'list') => changeWorksheetView(val)}
+        onChange={(val: WorksheetView) => changeWorksheetView(val)}
         className={clsx(styles.toggleButtonGroup, 'ms-2 me-3')}
         data-tutorial="worksheet-2"
       >
@@ -102,6 +103,13 @@ export function NavbarWorksheetSearch() {
           value="list"
         >
           List
+        </ToggleButton>
+        <ToggleButton
+          id="view-toggle-map"
+          className={styles.toggleButton}
+          value="map"
+        >
+          Map
         </ToggleButton>
       </ToggleButtonGroup>
       {!isExoticWorksheet ? (

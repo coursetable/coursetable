@@ -12,6 +12,7 @@ import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
 import WorksheetList from '../components/Worksheet/WorksheetList';
+import WorksheetMap from '../components/Worksheet/WorksheetMap';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
@@ -53,6 +54,7 @@ function Worksheet() {
   // For unauthed users, they can only view exotic worksheets
   if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
+  if (worksheetView === 'map') return <WorksheetMap />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
 

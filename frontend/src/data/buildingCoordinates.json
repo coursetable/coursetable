@@ -1,0 +1,202 @@
+{
+  "HQ": {
+    "lat": 41.3123091,
+    "lng": -72.9291272,
+    "name": "Humanities Quadrangle"
+  },
+  "WLH": {
+    "lat": 41.3106834,
+    "lng": -72.9269975,
+    "name": "William L. Harkness Hall"
+  },
+  "WTS": {
+    "lat": 41.3156163,
+    "lng": -72.9235595,
+    "name": "Watson Center 60 Sachem Street"
+  },
+  "LC": {
+    "lat": 41.3085964,
+    "lng": -72.9294779,
+    "name": "Linsly-Chittenden Hall"
+  },
+  "EVANS": {
+    "lat": 41.3151712,
+    "lng": -72.9204749,
+    "name": "Edward P Evans Hall"
+  },
+  "KT": {
+    "lat": 41.3172392,
+    "lng": -72.9225493,
+    "name": "Kline Tower"
+  },
+  "RKZ": {
+    "lat": 41.314701,
+    "lng": -72.9245511,
+    "name": "Rosenkranz Hall"
+  },
+  "LORIA": {
+    "lat": 41.3090217,
+    "lng": -72.9315637,
+    "name": "Loria Center"
+  },
+  "DOW": {
+    "lat": 41.3113611,
+    "lng": -72.9238655,
+    "name": "Dow Hall"
+  },
+  "YK220": {
+    "lat": 41.3097466,
+    "lng": -72.9319083,
+    "name": "220 York Street"
+  },
+  "SPL": {
+    "lat": 41.3172833,
+    "lng": -72.9230225,
+    "name": "Sloane Physics Laboratory"
+  },
+  "LEPH": {
+    "lat": 41.3032511,
+    "lng": -72.9317173,
+    "name": "Laboratory of EPH"
+  },
+  "RDH": {
+    "lat": 41.3087688,
+    "lng": -72.9318864,
+    "name": "Rudolph Hall"
+  },
+  "GREEN": {
+    "lat": 41.3083009,
+    "lng": -72.9330028,
+    "name": "Green Hall (1156 Chapel)"
+  },
+  "PH": {
+    "lat": 41.30844,
+    "lng": -72.9281459,
+    "name": "Phelps Hall"
+  },
+  "HLH17": {
+    "lat": 41.3127597,
+    "lng": -72.9234567,
+    "name": "17 Hillhouse Avenue"
+  },
+  "WALL81": {
+    "lat": 41.3106228,
+    "lng": -72.9254779,
+    "name": "81 Wall Street"
+  },
+  "KRN": {
+    "lat": 41.3167961,
+    "lng": -72.9233517,
+    "name": "Kroon Hall"
+  },
+  "WALL53": {
+    "lat": 41.3098611,
+    "lng": -72.9236092,
+    "name": "53 Wall Street"
+  },
+  "HEN": {
+    "lat": 41.309528,
+    "lng": -72.9260516,
+    "name": "Hendrie Hall"
+  },
+  "CO493": {
+    "lat": 41.3108698,
+    "lng": -72.9256862,
+    "name": "493 College Street"
+  },
+  "CO47": {
+    "lat": 41.305118,
+    "lng": -72.933206,
+    "name": "47 College Street"
+  },
+  "WALL82": {
+    "lat": 41.3091669,
+    "lng": -72.9224903,
+    "name": "82-90 Wall St"
+  },
+  "YK212": {
+    "lat": 41.3095342,
+    "lng": -72.9321649,
+    "name": "212 York Street"
+  },
+  "CO100": {
+    "lat": 41.3041908,
+    "lng": -72.9316887,
+    "name": "100 College Street"
+  },
+  "SA10": {
+    "lat": 41.3153114,
+    "lng": -72.9215698,
+    "name": "10 Sachem Street"
+  },
+  "ML": {
+    "lat": 41.3121581,
+    "lng": -72.9236386,
+    "name": "Mason Laboratory"
+  },
+  "BASSLB": {
+    "lat": 41.3105908,
+    "lng": -72.9275784,
+    "name": "Bass Library"
+  },
+  "LUCE": {
+    "lat": 41.3144413,
+    "lng": -72.9243537,
+    "name": "Luce Hall"
+  },
+  "KGL": {
+    "lat": 41.3165822,
+    "lng": -72.9211001,
+    "name": "Kline Geology Laboratory"
+  },
+  "HLH28": {
+    "lat": 41.3138607,
+    "lng": -72.9239834,
+    "name": "28 Hillhouse Avenue"
+  },
+  "BCT": {
+    "lat": 41.3126718,
+    "lng": -72.9251248,
+    "name": "Becton Center"
+  },
+  "AKW": {
+    "lat": 41.3130777,
+    "lng": -72.9248518,
+    "name": "Arthur K. Watson Hall"
+  },
+  "SHM": {
+    "lat": 41.3031862,
+    "lng": -72.9337457,
+    "name": "Sterling Hall of Medicine"
+  },
+  "S": {
+    "lat": 41.3171427,
+    "lng": -72.9237605,
+    "name": "Sage Hall"
+  },
+  "DL": {
+    "lat": 41.3123239,
+    "lng": -72.9245401,
+    "name": "Dunham Laboratory"
+  },
+  "YSB": {
+    "lat": 41.3174049,
+    "lng": -72.9217621,
+    "name": "Yale Science Building"
+  },
+  "SCL": {
+    "lat": 41.316336,
+    "lng": -72.922004,
+    "name": "Sterling Chemistry Laboratory"
+  },
+  "SDQ": {
+    "lat": 41.33154,
+    "lng": -72.92242,
+    "name": "Sterling Divinity Quadrangle"
+  },
+  "STOECK": {
+    "lat": 41.307538,
+    "lng": -72.929233,
+    "name": "Stoeckel Hall"
+  }
+}
