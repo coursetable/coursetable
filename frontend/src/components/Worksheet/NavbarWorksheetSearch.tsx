@@ -98,18 +98,18 @@ export function NavbarWorksheetSearch() {
           Calendar
         </ToggleButton>
         <ToggleButton
-          id="view-toggle-list"
-          className={styles.toggleButton}
-          value="list"
-        >
-          List
-        </ToggleButton>
-        <ToggleButton
           id="view-toggle-map"
           className={styles.toggleButton}
           value="map"
         >
           Map
+        </ToggleButton>
+        <ToggleButton
+          id="view-toggle-list"
+          className={styles.toggleButton}
+          value="list"
+        >
+          List
         </ToggleButton>
       </ToggleButtonGroup>
       {!isExoticWorksheet ? (

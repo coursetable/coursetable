@@ -23,11 +23,28 @@ import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import { setCourseHidden, updateWorksheetMetadata } from '../../queries/api';
 import { useStore } from '../../store';
+import { toLocationsSummary } from '../../utilities/course';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
-function WorksheetCalendarList() {
+type WorksheetCalendarListProps = {
+  readonly highlightBuilding?: string | null;
+  readonly showLocation?: boolean;
+  readonly showMissingLocationIcon?: boolean;
+  readonly controlsMode?: 'full' | 'hide-only' | 'none' | 'map';
+  readonly missingBuildingCodes?: Set<string>;
+  readonly hideTooltipContext?: 'calendar' | 'map';
+};
+
+function WorksheetCalendarList({
+  highlightBuilding = null,
+  showLocation = false,
+  showMissingLocationIcon = false,
+  controlsMode = 'full',
+  missingBuildingCodes,
+  hideTooltipContext = 'calendar',
+}: WorksheetCalendarListProps = {}) {
   const {
     courses,
     viewedSeason,
@@ -56,6 +73,13 @@ function WorksheetCalendarList() {
   );
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
+  const showControls = controlsMode !== 'none';
+  const showHideButton = controlsMode !== 'none';
+  const showSettings =
+    (controlsMode === 'full' || controlsMode === 'map') &&
+    !isExoticWorksheet &&
+    viewedPerson === 'me';
+  const showExport = controlsMode === 'full';
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
@@ -66,107 +90,131 @@ function WorksheetCalendarList() {
   }, [isViewedWorksheetPrivate]);
   return (
     <div>
-      <SurfaceComponent elevated className={styles.container}>
-        <div className="shadow-sm p-2">
-          <ButtonGroup className="w-100">
-            {!isReadonlyWorksheet && (
-              <OverlayTrigger
-                placement="top"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>{areHidden ? 'Show' : 'Hide'} all</span>
-                  </Tooltip>
-                )}
-              >
-                <Button
-                  onClick={async () => {
-                    await setCourseHidden({
-                      season: viewedSeason,
-                      worksheetNumber: viewedWorksheetNumber,
-                      crn: courses.map((course) => course.listing.crn),
-                      hidden: !areHidden,
-                    });
-                    await worksheetsRefresh();
-                  }}
-                  variant="none"
-                  className={clsx(styles.button, 'px-3 w-100')}
-                  aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
+      {showControls && (
+        <SurfaceComponent elevated className={styles.container}>
+          <div className="shadow-sm p-2">
+            <ButtonGroup className="w-100">
+              {showHideButton && !isReadonlyWorksheet && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="button-tooltip" {...props}>
+                      <span>{areHidden ? 'Show' : 'Hide'} all</span>
+                    </Tooltip>
+                  )}
                 >
-                  <HideShowIcon
-                    className={clsx(styles.icon, 'my-auto pe-2')}
-                    size={32}
-                  />
-                </Button>
-              </OverlayTrigger>
-            )}
-            {!isExoticWorksheet && viewedPerson === 'me' && (
-              <OverlayTrigger
-                placement="top"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Worksheet Settings</span>
-                  </Tooltip>
-                )}
-              >
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setSettingsModalOpen(true);
-                  }}
-                  variant="none"
-                  className={clsx(styles.button, 'px-3 w-100')}
-                  aria-label="Worksheet Settings"
-                >
-                  <CiSettings className={clsx(styles.icon)} size={32} />
-                </Button>
-              </OverlayTrigger>
-            )}
-            <OverlayTrigger
-              placement="top"
-              overlay={(props) => (
-                <Tooltip id="button-tooltip" {...props}>
-                  <span>Export worksheet calendar</span>
-                </Tooltip>
+                  <Button
+                    onClick={async () => {
+                      await setCourseHidden({
+                        season: viewedSeason,
+                        worksheetNumber: viewedWorksheetNumber,
+                        crn: courses.map((course) => course.listing.crn),
+                        hidden: !areHidden,
+                      });
+                      await worksheetsRefresh();
+                    }}
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
+                  >
+                    <HideShowIcon
+                      className={clsx(styles.icon, 'my-auto pe-2')}
+                      size={32}
+                    />
+                  </Button>
+                </OverlayTrigger>
               )}
-            >
-              <DropdownButton
-                as="div"
-                drop="down"
-                align="end"
-                title={
-                  <TbCalendarDown
-                    className={clsx(styles.icon, styles.calendarIcon)}
-                    size={22}
-                  />
-                }
-                variant="none"
-                className={clsx(styles.button, 'w-100 btn')}
-              >
-                <Dropdown.Item eventKey="1" as="div">
-                  <GoogleCalendarButton />
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="2" as="div">
-                  <ICSExportButton />
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="3" as="div">
-                  <URLExportButton />
-                </Dropdown.Item>
-              </DropdownButton>
-            </OverlayTrigger>
-          </ButtonGroup>
-        </div>
-      </SurfaceComponent>
+              {showSettings && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="button-tooltip" {...props}>
+                      <span>Worksheet Settings</span>
+                    </Tooltip>
+                  )}
+                >
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setSettingsModalOpen(true);
+                    }}
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label="Worksheet Settings"
+                  >
+                    <CiSettings className={clsx(styles.icon)} size={32} />
+                  </Button>
+                </OverlayTrigger>
+              )}
+              {showExport && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="button-tooltip" {...props}>
+                      <span>Export worksheet calendar</span>
+                    </Tooltip>
+                  )}
+                >
+                  <DropdownButton
+                    as="div"
+                    drop="down"
+                    align="end"
+                    title={
+                      <TbCalendarDown
+                        className={clsx(styles.icon, styles.calendarIcon)}
+                        size={22}
+                      />
+                    }
+                    variant="none"
+                    className={clsx(styles.button, 'w-100 btn')}
+                  >
+                    <Dropdown.Item eventKey="1" as="div">
+                      <GoogleCalendarButton />
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="2" as="div">
+                      <ICSExportButton />
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="3" as="div">
+                      <URLExportButton />
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </OverlayTrigger>
+              )}
+            </ButtonGroup>
+          </div>
+        </SurfaceComponent>
+      )}
       <SurfaceComponent className={styles.courseList}>
         {courses.length > 0 ? (
           <ListGroup variant="flush">
-            {courses.map((course) => (
-              <WorksheetCalendarListItem
-                key={viewedSeason + course.crn}
-                listing={course.listing}
-                hidden={course.hidden ?? false}
-              />
-            ))}
+            {courses.map((course) => {
+              const hasMissingCoordinate =
+                showMissingLocationIcon &&
+                course.listing.course.course_meetings.some((meeting) => {
+                  const code = meeting.location?.building.code;
+                  return Boolean(code && missingBuildingCodes?.has(code));
+                });
+              return (
+                <WorksheetCalendarListItem
+                  key={viewedSeason + course.crn}
+                  listing={course.listing}
+                  hidden={course.hidden ?? false}
+                  locationSummary={toLocationsSummary(course.listing.course)}
+                  showLocation={showLocation}
+                  showMissingLocationIcon={showMissingLocationIcon}
+                  isHighlighted={
+                    Boolean(highlightBuilding) &&
+                    course.listing.course.course_meetings.some(
+                      (meeting) =>
+                        meeting.location?.building.code === highlightBuilding,
+                    )
+                  }
+                  missingCoordinate={hasMissingCoordinate}
+                  hideTooltipContext={hideTooltipContext}
+                />
+              );
+            })}
           </ListGroup>
         ) : (
           <NoCourses />
