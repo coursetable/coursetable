@@ -1,202 +1,622 @@
 {
-  "HQ": {
-    "lat": 41.3123091,
-    "lng": -72.9291272,
-    "name": "Humanities Quadrangle"
-  },
-  "WLH": {
-    "lat": 41.3106834,
-    "lng": -72.9269975,
-    "name": "William L. Harkness Hall"
-  },
-  "WTS": {
-    "lat": 41.3156163,
-    "lng": -72.9235595,
-    "name": "Watson Center 60 Sachem Street"
-  },
-  "LC": {
-    "lat": 41.3085964,
-    "lng": -72.9294779,
-    "name": "Linsly-Chittenden Hall"
-  },
-  "EVANS": {
-    "lat": 41.3151712,
-    "lng": -72.9204749,
-    "name": "Edward P Evans Hall"
-  },
-  "KT": {
-    "lat": 41.3172392,
-    "lng": -72.9225493,
-    "name": "Kline Tower"
-  },
-  "RKZ": {
-    "lat": 41.314701,
-    "lng": -72.9245511,
-    "name": "Rosenkranz Hall"
-  },
-  "LORIA": {
-    "lat": 41.3090217,
-    "lng": -72.9315637,
-    "name": "Loria Center"
-  },
-  "DOW": {
-    "lat": 41.3113611,
-    "lng": -72.9238655,
-    "name": "Dow Hall"
-  },
-  "YK220": {
-    "lat": 41.3097466,
-    "lng": -72.9319083,
-    "name": "220 York Street"
-  },
-  "SPL": {
-    "lat": 41.3172833,
-    "lng": -72.9230225,
-    "name": "Sloane Physics Laboratory"
-  },
-  "LEPH": {
-    "lat": 41.3032511,
-    "lng": -72.9317173,
-    "name": "Laboratory of EPH"
-  },
-  "RDH": {
-    "lat": 41.3087688,
-    "lng": -72.9318864,
-    "name": "Rudolph Hall"
-  },
-  "GREEN": {
-    "lat": 41.3083009,
-    "lng": -72.9330028,
-    "name": "Green Hall (1156 Chapel)"
-  },
-  "PH": {
-    "lat": 41.30844,
-    "lng": -72.9281459,
-    "name": "Phelps Hall"
-  },
-  "HLH17": {
-    "lat": 41.3127597,
-    "lng": -72.9234567,
-    "name": "17 Hillhouse Avenue"
-  },
-  "WALL81": {
-    "lat": 41.3106228,
-    "lng": -72.9254779,
-    "name": "81 Wall Street"
-  },
-  "KRN": {
-    "lat": 41.3167961,
-    "lng": -72.9233517,
-    "name": "Kroon Hall"
-  },
-  "WALL53": {
-    "lat": 41.3098611,
-    "lng": -72.9236092,
-    "name": "53 Wall Street"
-  },
-  "HEN": {
-    "lat": 41.309528,
-    "lng": -72.9260516,
-    "name": "Hendrie Hall"
-  },
-  "CO493": {
-    "lat": 41.3108698,
-    "lng": -72.9256862,
-    "name": "493 College Street"
-  },
-  "CO47": {
-    "lat": 41.305118,
-    "lng": -72.933206,
-    "name": "47 College Street"
-  },
-  "WALL82": {
-    "lat": 41.3091669,
-    "lng": -72.9224903,
-    "name": "82-90 Wall St"
-  },
-  "YK212": {
-    "lat": 41.3095342,
-    "lng": -72.9321649,
-    "name": "212 York Street"
-  },
-  "CO100": {
-    "lat": 41.3041908,
-    "lng": -72.9316887,
-    "name": "100 College Street"
-  },
-  "SA10": {
-    "lat": 41.3153114,
-    "lng": -72.9215698,
-    "name": "10 Sachem Street"
-  },
-  "ML": {
-    "lat": 41.3121581,
-    "lng": -72.9236386,
-    "name": "Mason Laboratory"
-  },
-  "BASSLB": {
-    "lat": 41.3105908,
-    "lng": -72.9275784,
-    "name": "Bass Library"
-  },
-  "LUCE": {
-    "lat": 41.3144413,
-    "lng": -72.9243537,
-    "name": "Luce Hall"
-  },
-  "KGL": {
-    "lat": 41.3165822,
-    "lng": -72.9211001,
-    "name": "Kline Geology Laboratory"
-  },
-  "HLH28": {
-    "lat": 41.3138607,
-    "lng": -72.9239834,
-    "name": "28 Hillhouse Avenue"
-  },
-  "BCT": {
-    "lat": 41.3126718,
-    "lng": -72.9251248,
-    "name": "Becton Center"
+  "ABC": {
+    "lat": 41.257434031774665,
+    "lng": -72.98871189468626,
+    "name": "Advanced Biosciences Center"
   },
   "AKW": {
-    "lat": 41.3130777,
-    "lng": -72.9248518,
+    "lat": 41.31373102352353,
+    "lng": -72.92467848613352,
     "name": "Arthur K. Watson Hall"
   },
-  "SHM": {
-    "lat": 41.3031862,
-    "lng": -72.9337457,
-    "name": "Sterling Hall of Medicine"
+  "ARNOLD": {
+    "lat": 41.31111584703277,
+    "lng": -72.93145949332182,
+    "name": "Arnold Hall"
   },
-  "S": {
-    "lat": 41.3171427,
-    "lng": -72.9237605,
-    "name": "Sage Hall"
+  "BAKER": {
+    "lat": 41.314090903963915,
+    "lng": -72.92881249646113,
+    "name": "Baker Hall"
+  },
+  "BASS": {
+    "lat": 41.31814628535684,
+    "lng": -72.92187340756624,
+    "name": "Bass Center"
+  },
+  "BASSLB": {
+    "lat": 41.3107910782334,
+    "lng": -72.92728642184535,
+    "name": "Bass Library"
+  },
+  "BATTEL": {
+    "lat": 41.30942455663464,
+    "lng": -72.92753381817056,
+    "name": "Battel Chapel"
+  },
+  "BCMM": {
+    "lat": 41.30237844956022,
+    "lng": -72.93333086070494,
+    "name": "Boyer Ctr Molecular Medicine"
+  },
+  "BCT": {
+    "lat": 41.31263318651845,
+    "lng": -72.9251439342853,
+    "name": "Becton Center"
+  },
+  "BF": {
+    "lat": 41.31482238286449,
+    "lng": -72.92518055364347,
+    "name": "Benjamin Franklin College"
+  },
+  "BK": {
+    "lat": 41.31120671650738,
+    "lng": -72.92752417587039,
+    "name": "Berkeley College"
+  },
+  "BM": {
+    "lat": 41.307583153819934,
+    "lng": -72.92876372607587,
+    "name": "Bingham Hall"
+  },
+  "BML": {
+    "lat": 41.30232619477571,
+    "lng": -72.93389757650974,
+    "name": "Brady Memorial Laboratory"
+  },
+  "BOWERS": {
+    "lat": 41.3171661947107,
+    "lng": -72.92379864007869,
+    "name": "Bowers Hall"
+  },
+  "BR": {
+    "lat": 41.3095738490425,
+    "lng": -72.92928798045085,
+    "name": "Branford College"
+  },
+  "BRADY": {
+    "lat": 41.30232619477571,
+    "lng": -72.93389757650974,
+    "name": "Brady Memorial Laboratory"
+  },
+  "BRBL": {
+    "lat": 41.31145498755721,
+    "lng": -72.92740100091049,
+    "name": "Beinecke Rare Book Library"
+  },
+  "CCAM": {
+    "lat": 41.30767215979522,
+    "lng": -72.93203241436554,
+    "name": "Center for Collab Arts & Media"
+  },
+  "CO100": {
+    "lat": 41.304584724534415,
+    "lng": -72.93242191389047,
+    "name": "100 College Street"
+  },
+  "CO101": {
+    "lat": 41.30365999578472,
+    "lng": -72.93058847740726,
+    "name": "101 College Street"
+  },
+  "CO451": {
+    "lat": 41.310198236350985,
+    "lng": -72.92620858251006,
+    "name": "451 College Street"
+  },
+  "CO47": {
+    "lat": 41.3030988985994,
+    "lng": -72.93143469904182,
+    "name": "47 College Street (CLP)"
+  },
+  "CO493": {
+    "lat": 41.311163808969496,
+    "lng": -72.92553312241378,
+    "name": "493 College Street"
+  },
+  "CR305": {
+    "lat": 41.307212060561575,
+    "lng": -72.932004677336,
+    "name": "305 Crown Street"
+  },
+  "CRB": {
+    "lat": 41.31930729291513,
+    "lng": -72.92258463524975,
+    "name": "Chemistry Research Building"
+  },
+  "CRW353": {
+    "lat": 41.30798289854696,
+    "lng": -72.93354190369091,
+    "name": "353 Crown St"
+  },
+  "CSC": {
+    "lat": 41.30427199488004,
+    "lng": -72.93343261007378,
+    "name": "Child Study Center"
+  },
+  "DAVIES": {
+    "lat": 41.31263318651845,
+    "lng": -72.9251439342853,
+    "name": "Davies Auditorium, Becton Ctr"
+  },
+  "DC": {
+    "lat": 41.31023890753107,
+    "lng": -72.93067566546466,
+    "name": "Davenport College"
   },
   "DL": {
-    "lat": 41.3123239,
-    "lng": -72.9245401,
+    "lat": 41.312384341858646,
+    "lng": -72.92448099143967,
     "name": "Dunham Laboratory"
   },
-  "YSB": {
-    "lat": 41.3174049,
-    "lng": -72.9217621,
-    "name": "Yale Science Building"
+  "DOW": {
+    "lat": 41.31132973058767,
+    "lng": -72.9238591415263,
+    "name": "Dow Hall"
+  },
+  "DW": {
+    "lat": 41.30897623550323,
+    "lng": -72.92938599253918,
+    "name": "Dwight Hall"
+  },
+  "EDG36": {
+    "lat": 41.309934012106666,
+    "lng": -72.93451992543416,
+    "name": "36 Edgewood Ave. Sculpture Bld"
+  },
+  "EDW380": {
+    "lat": 41.319860267928476,
+    "lng": -72.9223750417634,
+    "name": "380 Edwards Street"
+  },
+  "ELM143": {
+    "lat": 41.3091278626787,
+    "lng": -72.92545073087133,
+    "name": "143 Elm Street"
+  },
+  "ELM294": {
+    "lat": 41.311540891632895,
+    "lng": -72.93040689895885,
+    "name": "Broadway Rehearsal Lofts"
+  },
+  "ES": {
+    "lat": 41.312696144585296,
+    "lng": -72.93108298796663,
+    "name": "Ezra Stiles College"
+  },
+  "ESC": {
+    "lat": 41.316163169352315,
+    "lng": -72.92179491307243,
+    "name": "Environmental Sciences Center"
+  },
+  "EVANS": {
+    "lat": 41.31501488137033,
+    "lng": -72.92036496366428,
+    "name": "Edward P Evans Hall"
+  },
+  "GEO300": {
+    "lat": 41.30486874134103,
+    "lng": -72.93116553444393,
+    "name": "300 George Street"
+  },
+  "GEO350": {
+    "lat": 41.30572664251657,
+    "lng": -72.93294169523924,
+    "name": "350 George Street"
+  },
+  "GH": {
+    "lat": 41.310072097175805,
+    "lng": -72.92743787695704,
+    "name": "Grace Hopper College"
+  },
+  "GR109": {
+    "lat": 41.31120342233769,
+    "lng": -72.92334813384463,
+    "name": "109 Grove Street"
+  },
+  "GREEN": {
+    "lat": 41.30834541842922,
+    "lng": -72.9329498635376,
+    "name": "Green Hall (1156 Chapel)"
+  },
+  "HEN": {
+    "lat": 41.30950184276861,
+    "lng": -72.92607962944736,
+    "name": "Hendrie Hall"
+  },
+  "HI26": {
+    "lat": 41.30699935590457,
+    "lng": -72.93127397629792,
+    "name": "26 High Street"
+  },
+  "HIGH26": {
+    "lat": 41.30699935590457,
+    "lng": -72.93127397629792,
+    "name": "26 High Street"
+  },
+  "HLH17": {
+    "lat": 41.31276197816036,
+    "lng": -72.92344607249976,
+    "name": "17 Hillhouse Avenue"
+  },
+  "HLH24": {
+    "lat": 41.31346810612274,
+    "lng": -72.92417909575559,
+    "name": "24 Hillhouse Avenue"
+  },
+  "HLH28": {
+    "lat": 41.31387375920964,
+    "lng": -72.92399274708755,
+    "name": "28 Hillhouse Avenue"
+  },
+  "HLH31": {
+    "lat": 41.313959950893874,
+    "lng": -72.9230937678915,
+    "name": "31 Hillhouse Avenue"
+  },
+  "HLH37": {
+    "lat": 41.31448540928543,
+    "lng": -72.92273845314004,
+    "name": "37 Hillhouse Avenue"
+  },
+  "HLH46": {
+    "lat": 41.31507427915468,
+    "lng": -72.9236191512048,
+    "name": "46 Hillhouse Avenue"
+  },
+  "HLH51": {
+    "lat": 41.31514721344552,
+    "lng": -72.92259155537425,
+    "name": "51 Hillhouse Avenue"
+  },
+  "HLH55": {
+    "lat": 41.31546267038246,
+    "lng": -72.92239483120967,
+    "name": "55 Hillhouse"
+  },
+  "HOPE": {
+    "lat": 41.30224490496678,
+    "lng": -72.93333966692174,
+    "name": "Hope"
+  },
+  "HQ": {
+    "lat": 41.31216239229574,
+    "lng": -72.92953255286905,
+    "name": "Humanities Quadrangle"
+  },
+  "ISM": {
+    "lat": 41.323176366099794,
+    "lng": -72.92377064932184,
+    "name": "Institute of Sacred Music"
+  },
+  "JE": {
+    "lat": 41.308936948645595,
+    "lng": -72.93041344505043,
+    "name": "Jonathan Edwards College"
+  },
+  "K": {
+    "lat": 41.31191239059202,
+    "lng": -72.9245436430476,
+    "name": "Kirtland Hall"
+  },
+  "KGL": {
+    "lat": 41.316610974869526,
+    "lng": -72.92108121170008,
+    "name": "Kline Geology Laboratory"
+  },
+  "KRN": {
+    "lat": 41.31683377913966,
+    "lng": -72.923352568978,
+    "name": "Kroon Hall"
+  },
+  "KT": {
+    "lat": 41.31733979880856,
+    "lng": -72.92262953853638,
+    "name": "Kline Tower"
+  },
+  "LC": {
+    "lat": 41.30856943954275,
+    "lng": -72.92954435084826,
+    "name": "Linsly-Chittenden Hall"
+  },
+  "LEIGH": {
+    "lat": 41.3098589395874,
+    "lng": -72.92635751173479,
+    "name": "Leigh Hall (435 College)"
+  },
+  "LEPH": {
+    "lat": 41.30372782367011,
+    "lng": -72.9321293171798,
+    "name": "Laboratory of EPH"
+  },
+  "LOM": {
+    "lat": 41.312752584691566,
+    "lng": -72.92428419822936,
+    "name": "Leet Oliver Memorial Hall"
+  },
+  "LORIA": {
+    "lat": 41.30905037266603,
+    "lng": -72.93159478844005,
+    "name": "Loria Center"
+  },
+  "LUCE": {
+    "lat": 41.31444118256865,
+    "lng": -72.92428148295467,
+    "name": "Luce Hall"
+  },
+  "MARSH": {
+    "lat": 41.32175571871907,
+    "lng": -72.92383040843467,
+    "name": "Marsh Hall"
+  },
+  "ML": {
+    "lat": 41.31214322588976,
+    "lng": -72.92363391077251,
+    "name": "Mason Laboratory"
+  },
+  "MY": {
+    "lat": 41.31547209560252,
+    "lng": -72.9248896887478,
+    "name": "Pauli Murray College"
+  },
+  "OML": {
+    "lat": 41.31667483178482,
+    "lng": -72.92389755178458,
+    "name": "Osborn Memorial Laboratories"
+  },
+  "PC": {
+    "lat": 41.309913520554886,
+    "lng": -72.93263016398447,
+    "name": "Pierson College"
+  },
+  "PH": {
+    "lat": 41.3084401073642,
+    "lng": -72.92812577371706,
+    "name": "Phelps Hall"
+  },
+  "PK205": {
+    "lat": 41.30923576038897,
+    "lng": -72.93300627975854,
+    "name": "205 Park Street"
+  },
+  "PK217": {
+    "lat": 41.30954060481991,
+    "lng": -72.93258054183886,
+    "name": "217 Park Street"
+  },
+  "PM": {
+    "lat": 41.316015726282124,
+    "lng": -72.9212179132204,
+    "name": "Peabody Museum"
+  },
+  "PR135": {
+    "lat": 41.315552242101425,
+    "lng": -72.92455581772359,
+    "name": "135 Prospect Street"
+  },
+  "PR204": {
+    "lat": 41.31743096928777,
+    "lng": -72.924293894461,
+    "name": "204 Prospect Street"
+  },
+  "PR210": {
+    "lat": 41.317591995182624,
+    "lng": -72.92429187353613,
+    "name": "210 Prospect Street"
+  },
+  "PR230": {
+    "lat": 41.31814085437978,
+    "lng": -72.92412011294331,
+    "name": "230 Prospect Street"
+  },
+  "PR406": {
+    "lat": 41.32317489692802,
+    "lng": -72.92376650673943,
+    "name": "406 Prospect St., Miller Hall"
+  },
+  "PR77": {
+    "lat": 41.31408870463068,
+    "lng": -72.92455449253929,
+    "name": "77 Prospect Street"
+  },
+  "PWG": {
+    "lat": 41.313640570356974,
+    "lng": -72.93071260357006,
+    "name": "Payne Whitney Gymnasium"
+  },
+  "RDH": {
+    "lat": 41.30879925898769,
+    "lng": -72.93188343572149,
+    "name": "Rudolph Hall"
+  },
+  "RKZ": {
+    "lat": 41.31444592077506,
+    "lng": -72.92447567969516,
+    "name": "Rosenkranz Hall"
+  },
+  "S": {
+    "lat": 41.3171661947107,
+    "lng": -72.92379864007869,
+    "name": "Sage Hall"
+  },
+  "SB": {
+    "lat": 41.3171661947107,
+    "lng": -72.92379864007869,
+    "name": "Sage-Bowers Hall"
+  },
+  "SA10": {
+    "lat": 41.31528576861311,
+    "lng": -72.92163027868486,
+    "name": "10 Sachem Street"
   },
   "SCL": {
-    "lat": 41.316336,
-    "lng": -72.922004,
+    "lat": 41.317978264710156,
+    "lng": -72.92303263556215,
     "name": "Sterling Chemistry Laboratory"
   },
   "SDQ": {
-    "lat": 41.33154,
-    "lng": -72.92242,
+    "lat": 41.32379887151965,
+    "lng": -72.92190087515058,
     "name": "Sterling Divinity Quadrangle"
   },
+  "SHM": {
+    "lat": 41.30324626399055,
+    "lng": -72.93385250191704,
+    "name": "Sterling Hall of Medicine"
+  },
+  "SLB": {
+    "lat": 41.31176014374529,
+    "lng": -72.92809061577384,
+    "name": "Sterling Law Buildings"
+  },
+  "SM": {
+    "lat": 41.31135712639134,
+    "lng": -72.92538785456527,
+    "name": "Silliman College"
+  },
+  "SMH": {
+    "lat": 41.31069798974802,
+    "lng": -72.92645797167219,
+    "name": "Sprague Memorial Hall"
+  },
+  "SML": {
+    "lat": 41.311608169097696,
+    "lng": -72.92862577321647,
+    "name": "Sterling Memorial Library"
+  },
+  "SPL": {
+    "lat": 41.317378317902175,
+    "lng": -72.92316571641554,
+    "name": "Sloane Physics Laboratory"
+  },
+  "SSS": {
+    "lat": 41.31190508394461,
+    "lng": -72.9252049975265,
+    "name": "Sheffield-Sterling-Strathcona"
+  },
   "STOECK": {
-    "lat": 41.307538,
-    "lng": -72.929233,
-    "name": "Stoeckel Hall"
+    "lat": 41.31055225027703,
+    "lng": -72.92591734092855,
+    "name": "Stoeckel Hall (renovated)"
+  },
+  "SY": {
+    "lat": 41.31010556074961,
+    "lng": -72.92958499877143,
+    "name": "Saybrook College"
+  },
+  "TAC": {
+    "lat": 41.3014785345817,
+    "lng": -72.93393526133768,
+    "name": "The Anlyan Center"
+  },
+  "TC": {
+    "lat": 41.31064383037041,
+    "lng": -72.92932566506825,
+    "name": "Trumbull College"
+  },
+  "TD": {
+    "lat": 41.31044794090983,
+    "lng": -72.92396982661847,
+    "name": "Timothy Dwight College"
+  },
+  "TM405": {
+    "lat": 41.31210301283801,
+    "lng": -72.92280203244057,
+    "name": "405 Temple Street"
+  },
+  "TM432": {
+    "lat": 41.31285711900506,
+    "lng": -72.92269011750255,
+    "name": "432 Temple Street"
+  },
+  "TRUM87": {
+    "lat": 41.31390901021341,
+    "lng": -72.92433596333984,
+    "name": "87 Trumbull Street"
+  },
+  "TSAI": {
+    "lat": 41.31248929464554,
+    "lng": -72.92488403257666,
+    "name": "Tsai CITY"
+  },
+  "WALL53": {
+    "lat": 41.30994367147578,
+    "lng": -72.92350348397115,
+    "name": "53 Wall Street"
+  },
+  "WALL81": {
+    "lat": 41.31061129488212,
+    "lng": -72.92543310205883,
+    "name": "81 Wall Street"
+  },
+  "WALL82": {
+    "lat": 41.3104574510191,
+    "lng": -72.92571685881107,
+    "name": "82-90 Wall St"
+  },
+  "WH55": {
+    "lat": 41.31201069168671,
+    "lng": -72.92196028162387,
+    "name": "55 Whitney Avenue"
+  },
+  "WHC": {
+    "lat": 41.31216503328449,
+    "lng": -72.92953517326309,
+    "name": "Whitney Humanities Center"
+  },
+  "WL": {
+    "lat": 41.31904941017569,
+    "lng": -72.92085963421609,
+    "name": "Wright Lab"
+  },
+  "WLH": {
+    "lat": 41.310721783401405,
+    "lng": -72.92703544011228,
+    "name": "William L. Harkness Hall"
+  },
+  "W-OCN": {
+    "lat": 41.256075419630996,
+    "lng": -72.99284407885787,
+    "name": "WC Office Complex North"
+  },
+  "WTS": {
+    "lat": 41.31581890171385,
+    "lng": -72.92377268569716,
+    "name": "Watson Center 60 Sachem Street"
+  },
+  "YK149": {
+    "lat": 41.30763804515064,
+    "lng": -72.9316836581559,
+    "name": "149 York Street"
+  },
+  "YK204": {
+    "lat": 41.309281123968894,
+    "lng": -72.93193267251384,
+    "name": "204 York Street"
+  },
+  "YK212": {
+    "lat": 41.3095186830057,
+    "lng": -72.93211895768107,
+    "name": "212 York Street"
+  },
+  "YK220": {
+    "lat": 41.30973882276757,
+    "lng": -72.93182818427775,
+    "name": "220 York Street"
+  },
+  "YK222": {
+    "lat": 41.30975340625204,
+    "lng": -72.93126371951891,
+    "name": "222 York Street"
+  },
+  "YSB": {
+    "lat": 41.31747572024573,
+    "lng": -72.92169079441668,
+    "name": "Yale Science Building"
+  },
+  "YUAG": {
+    "lat": 41.308383948548745,
+    "lng": -72.93098131464414,
+    "name": "Yale University Art Gallery"
   }
 }
