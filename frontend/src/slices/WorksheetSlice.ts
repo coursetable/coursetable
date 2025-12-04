@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { decompressFromEncodedURIComponent } from 'lz-string';
 import { memoize } from 'proxy-memoize';
 import { toast } from 'react-toastify';
@@ -21,7 +22,7 @@ import {
 import { type Store, useStore } from '../store';
 
 // Utility Types
-type WorksheetView = 'calendar' | 'list';
+export type WorksheetView = 'calendar' | 'list' | 'map';
 
 export interface WorksheetCourse {
   crn: Crn;
@@ -281,7 +282,9 @@ export const useWorksheetEffects = () => {
     exoticWorksheet?.data.season ?? viewedSeason,
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
-  setWorksheetInfo(courses, worksheetLoading, worksheetError);
+  useEffect(() => {
+    setWorksheetInfo(courses, worksheetLoading, worksheetError);
+  }, [courses, worksheetLoading, worksheetError, setWorksheetInfo]);
 };
 
 // Auxiliary Functions

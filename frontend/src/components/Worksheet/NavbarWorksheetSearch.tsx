@@ -9,6 +9,7 @@ import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
 import type { NetId } from '../../queries/graphql-types';
+import type { WorksheetView } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
@@ -38,6 +39,7 @@ export function NavbarWorksheetSearch() {
       authStatus: state.authStatus,
     })),
   );
+  const isMapSelected = worksheetView === 'map';
 
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>
@@ -85,7 +87,7 @@ export function NavbarWorksheetSearch() {
         name="worksheet-view-toggle"
         type="radio"
         value={worksheetView}
-        onChange={(val: 'calendar' | 'list') => changeWorksheetView(val)}
+        onChange={(val: WorksheetView) => changeWorksheetView(val)}
         className={clsx(styles.toggleButtonGroup, 'ms-2 me-3')}
         data-tutorial="worksheet-2"
       >
@@ -95,6 +97,23 @@ export function NavbarWorksheetSearch() {
           value="calendar"
         >
           Calendar
+        </ToggleButton>
+        <ToggleButton
+          id="view-toggle-map"
+          className={styles.toggleButton}
+          value="map"
+        >
+          <span className={styles.toggleButtonContent}>
+            <span>Map</span>
+            <span
+              className={clsx(
+                styles.betaChip,
+                isMapSelected && styles.betaChipActive,
+              )}
+            >
+              Beta
+            </span>
+          </span>
         </ToggleButton>
         <ToggleButton
           id="view-toggle-list"
