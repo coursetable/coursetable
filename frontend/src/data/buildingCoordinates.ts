@@ -6,6 +6,8 @@ export type BuildingCoordinate = {
   name?: string;
 };
 
-const buildingCoordinates = buildingCoordinatesJson as { [key: string]: BuildingCoordinate };
+const buildingCoordinates = buildingCoordinatesJson as {
+  [key: string]: BuildingCoordinate;
+};
 
 export default buildingCoordinates;

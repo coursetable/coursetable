@@ -1,10 +1,11 @@
 .toggleButtonGroup {
-  width: 270px;
+  /* Temporary width bump to fit the Map BETA chip; revert once Map leaves beta. */
+  width: 320px;
 }
 
 @media (max-width: calc(1200px - 0.5px)) {
   .toggleButtonGroup {
-    width: 210px;
+    width: 250px;
   }
 }
 
@@ -48,4 +49,39 @@
 .toggleButton:global(.active) {
   background-color: var(--color-primary) !important;
   border-color: var(--color-primary) !important;
+}
+
+.toggleButtonContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+}
+
+.betaChip {
+  padding: 0.02rem 0.42rem;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  border: 1px solid var(--color-primary);
+  font-size: 9px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur),
+    border-color var(--trans-dur);
+}
+
+.toggleButton:hover .betaChip {
+  background: #fff;
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.betaChipActive,
+.toggleButton:global(.active) .betaChip {
+  background: #fff;
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
 }

@@ -39,6 +39,7 @@ export function NavbarWorksheetSearch() {
       authStatus: state.authStatus,
     })),
   );
+  const isMapSelected = worksheetView === 'map';
 
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>
@@ -102,7 +103,17 @@ export function NavbarWorksheetSearch() {
           className={styles.toggleButton}
           value="map"
         >
-          Map
+          <span className={styles.toggleButtonContent}>
+            <span>Map</span>
+            <span
+              className={clsx(
+                styles.betaChip,
+                isMapSelected && styles.betaChipActive,
+              )}
+            >
+              Beta
+            </span>
+          </span>
         </ToggleButton>
         <ToggleButton
           id="view-toggle-list"
