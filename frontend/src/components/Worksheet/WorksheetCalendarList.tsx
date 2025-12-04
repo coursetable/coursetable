@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
-  ListGroup,
   Button,
+  ButtonGroup,
   Dropdown,
   DropdownButton,
-  ButtonGroup,
-  OverlayTrigger,
-  Tooltip,
-  Modal,
   Form,
+  ListGroup,
+  Modal,
+  OverlayTrigger,
   Spinner,
+  Tooltip,
 } from 'react-bootstrap';
-import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown } from 'react-icons/tb';
-
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
+
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import PNGExportButton from './PNGExportButton';
@@ -25,8 +25,8 @@ import URLExportButton from './URLExportButton';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import {
   setCourseHidden,
-  updateWorksheetMetadata,
   updateWorksheetCourses,
+  updateWorksheetMetadata,
 } from '../../queries/api';
 import { useStore } from '../../store';
 import { toLocationsSummary } from '../../utilities/course';
@@ -80,6 +80,7 @@ function WorksheetCalendarList({
   );
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
+
   const showControls = controlsMode !== 'none';
   const showHideButton = controlsMode !== 'none';
   const showSettings =
@@ -91,6 +92,7 @@ function WorksheetCalendarList({
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
   const [updatingWSState, setUpdatingWSState] = useState(false);
+
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
 
@@ -111,10 +113,10 @@ function WorksheetCalendarList({
 
     setClearing(true);
     try {
-      // Remove all courses from the current worksheet in a single batch request
       await updateWorksheetCourses(actions);
       await worksheetsRefresh();
       setClearModalOpen(false);
+
       toast.success(
         courseCount === 1
           ? 'Removed class from worksheet'
