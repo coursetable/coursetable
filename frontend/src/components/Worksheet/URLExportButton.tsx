@@ -16,11 +16,15 @@ export default function URLExportButton() {
   );
 
   async function handleExport() {
+    if (!user) {
+      toast.error('You are not logged in!');
+      return;
+    }
     // Format creator name: "FirstName LastName" or fallback to netId
     const creatorName =
-      user?.firstName && user.lastName
+      user.firstName && user.lastName
         ? `${user.firstName} ${user.lastName}`
-        : (user?.netId ?? 'Unknown');
+        : user.netId;
 
     const payload: ExoticWorksheet = {
       season: viewedSeason,
