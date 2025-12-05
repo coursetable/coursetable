@@ -162,23 +162,25 @@ async function fetchAPI(
   }
 }
 
+type UpdateWorksheetCourseAction = {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+} & (
+  | {
+      action: 'add';
+      color: string;
+      hidden: boolean;
+    }
+  | {
+      action: 'remove' | 'update';
+      color?: string;
+      hidden?: boolean;
+    }
+);
+
 export function updateWorksheetCourses(
-  body: {
-    season: Season;
-    crn: Crn;
-    worksheetNumber: number;
-  } & (
-    | {
-        action: 'add';
-        color: string;
-        hidden: boolean;
-      }
-    | {
-        action: 'remove' | 'update';
-        color?: string;
-        hidden?: boolean;
-      }
-  ),
+  body: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
 ): Promise<boolean> {
   return fetchAPI('/user/updateWorksheetCourses', {
     body,
