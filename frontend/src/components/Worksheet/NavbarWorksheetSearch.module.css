@@ -58,7 +58,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.125rem 0.625rem;
+  padding: 0.125rem 0 0.125rem 0.625rem;
   min-width: 0;
   margin-bottom: 0;
   border-radius: 999px;
@@ -79,12 +79,13 @@
 }
 
 .exoticExitButton {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding: 0.25rem 0.75rem;
   font-size: 14px;
   display: inline-flex;
   align-items: center;
-  border-radius: 999px;
+  border-radius: 0 999px 999px 0;
+  margin: -0.125rem 0;
+  align-self: stretch;
 }
 
 @media (max-width: calc(1320px - 0.5px)) {
