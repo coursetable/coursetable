@@ -40,17 +40,69 @@
   }
 }
 
-.lockBtn {
-  padding: 4px;
-  border-radius: 6px;
-  background-color: var(--color-bg-button);
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
+.calendarControls {
   position: absolute;
   top: 0%;
   right: 0%;
   z-index: 2;
   transform: translate(50%, -40%);
+}
+
+.controlsTrigger {
+  padding: 6px;
+  border-radius: 6px;
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    background-color var(--trans-dur),
+    color var(--trans-dur),
+    border-color var(--trans-dur);
+}
+
+.triggerIcon {
+  display: block;
+}
+
+.controlsTrigger:hover {
+  background-color: var(--color-bg-button-hover);
+}
+
+.calendarControls:hover .controlsTrigger {
+  transform: scale(1.05);
+}
+
+.controlsMenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.calendarControls:hover .controlsMenu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.controlBtn {
+  padding: 6px;
+  border-radius: 6px;
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
   transition:
     transform 0.05s linear,
     background-color var(--trans-dur),
@@ -58,12 +110,8 @@
     border-color var(--trans-dur);
 }
 
-.lockIcon {
-  display: block;
-}
-
-.lockBtn:hover {
-  transform: translate(50%, -40%) scale(1.1);
+.controlBtn:hover {
+  transform: scale(1.1);
   background-color: var(--color-bg-button-hover);
 }
 

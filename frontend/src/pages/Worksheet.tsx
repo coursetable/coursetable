@@ -1,12 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import { FaLock, FaUnlock } from 'react-icons/fa';
+import { FaLock, FaUnlock, FaCog, FaExpand, FaEye } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 
 import NeedsLogin from './NeedsLogin';
 import ErrorPage from '../components/ErrorPage';
 import Spinner from '../components/Spinner';
 import { SurfaceComponent } from '../components/Typography';
+import CalendarLockSettingsModal from '../components/Worksheet/CalendarLockSettingsModal';
 import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
 import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
@@ -29,6 +30,7 @@ function Worksheet() {
     isExoticWorksheet,
     isCalendarViewLocked,
     setCalendarViewLocked,
+    setCalendarLockSettingsOpen,
   } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -39,8 +41,10 @@ function Worksheet() {
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
       isCalendarViewLocked: state.isCalendarViewLocked,
       setCalendarViewLocked: state.setCalendarViewLocked,
+      setCalendarLockSettingsOpen: state.setCalendarLockSettingsOpen,
     })),
   );
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const exoticWorksheet = parseCoursesFromURL();
@@ -57,7 +61,7 @@ function Worksheet() {
   if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
-  const Icon = isCalendarViewLocked ? FaLock : FaUnlock;
+  const LockIcon = isCalendarViewLocked ? FaLock : FaUnlock;
   const lockLabel = isCalendarViewLocked ? 'Unlock view' : 'Lock view';
 
   return (
@@ -74,23 +78,53 @@ function Worksheet() {
       <SurfaceComponent className={styles.calendar}>
         <WorksheetCalendar />
         {!isMobile && (
-          <button
-            type="button"
-            className={styles.lockBtn}
-            onClick={() => {
-              setCalendarViewLocked(!isCalendarViewLocked);
-            }}
-            aria-label={lockLabel}
-            title={lockLabel}
-          >
-            <Icon className={styles.lockIcon} size={8} />
-          </button>
+          <div className={styles.calendarControls}>
+            <div className={styles.controlsTrigger}>
+              <FaEye className={styles.triggerIcon} size={10} />
+            </div>
+            <div className={styles.controlsMenu}>
+              <button
+                type="button"
+                className={styles.controlBtn}
+                onClick={() => setCalendarViewLocked(!isCalendarViewLocked)}
+                aria-label={lockLabel}
+                title={lockLabel}
+              >
+                <LockIcon size={10} />
+              </button>
+              <button
+                type="button"
+                className={styles.controlBtn}
+                onClick={() => {
+                  setCalendarLockSettingsOpen(true);
+                }}
+                aria-label="Calendar time range settings"
+                title="Calendar time range settings"
+              >
+                <FaCog size={10} />
+              </button>
+              <button
+                type="button"
+                className={styles.controlBtn}
+                onClick={() => {
+                  setExpanded((x) => !x);
+                }}
+                aria-label="Expand calendar"
+                title="Expand calendar"
+              >
+                <FaExpand size={10} />
+              </button>
+            </div>
+          </div>
         )}
       </SurfaceComponent>
-      <div className={styles.calendarSidebar}>
-        <WorksheetStats />
-        <WorksheetCalendarList />
-      </div>
+      {(isMobile || !expanded) && (
+        <div className={styles.calendarSidebar}>
+          <WorksheetStats />
+          <WorksheetCalendarList />
+        </div>
+      )}
+      <CalendarLockSettingsModal />
     </div>
   );
 }

@@ -21,6 +21,8 @@ function WorksheetCalendar() {
     setOpenColorPickerEvent,
     setOpenWorksheetMoveEvent,
     isCalendarViewLocked,
+    calendarLockStart,
+    calendarLockEnd,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
@@ -28,6 +30,8 @@ function WorksheetCalendar() {
       setOpenColorPickerEvent: state.setOpenColorPickerEvent,
       setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,
       isCalendarViewLocked: state.isCalendarViewLocked,
+      calendarLockStart: state.calendarLockStart,
+      calendarLockEnd: state.calendarLockEnd,
     })),
   );
 
@@ -38,8 +42,8 @@ function WorksheetCalendar() {
 
     if (isCalendarViewLocked) {
       return {
-        earliest: new Date(0, 0, 0, 8),
-        latest: new Date(0, 0, 0, 18),
+        earliest: new Date(0, 0, 0, calendarLockStart),
+        latest: new Date(0, 0, 0, calendarLockEnd),
         parsedCourses,
       };
     }
@@ -65,7 +69,13 @@ function WorksheetCalendar() {
     }
 
     return { earliest, latest, parsedCourses };
-  }, [courses, viewedSeason, isCalendarViewLocked]);
+  }, [
+    courses,
+    viewedSeason,
+    isCalendarViewLocked,
+    calendarLockStart,
+    calendarLockEnd,
+  ]);
 
   return (
     <>
