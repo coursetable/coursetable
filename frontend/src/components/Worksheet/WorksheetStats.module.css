@@ -106,3 +106,12 @@
   font-weight: 400;
   color: var(--color-text-secondary);
 }
+
+.mobileExit {
+  margin-top: 0.5em;
+}
+
+.mobileLabel {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}

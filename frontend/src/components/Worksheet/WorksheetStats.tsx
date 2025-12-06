@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
@@ -86,11 +86,19 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, isExoticWorksheet, exoticWorksheet } = useStore(
+  const {
+    courses,
+    isExoticWorksheet,
+    exoticWorksheet,
+    exitExoticWorksheet,
+    isMobile,
+  } = useStore(
     useShallow((state) => ({
       courses: state.courses,
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
       exoticWorksheet: state.exoticWorksheet,
+      exitExoticWorksheet: state.exitExoticWorksheet,
+      isMobile: state.isMobile,
     })),
   );
   const user = useStore((state) => state.user);
@@ -162,6 +170,22 @@ export default function WorksheetStats() {
                   <div className={styles.creatorName}>
                     by {exoticWorksheet.data.creatorName}
                   </div>
+                )}
+                {isMobile && (
+                  <>
+                    <div className={styles.mobileLabel}>
+                      Viewing exported worksheet
+                    </div>
+                    <div className={styles.mobileExit}>
+                      <Button
+                        size="sm"
+                        variant="outline-primary"
+                        onClick={exitExoticWorksheet}
+                      >
+                        Exit
+                      </Button>
+                    </div>
+                  </>
                 )}
               </div>
             )}
