@@ -171,22 +171,6 @@ export default function WorksheetStats() {
                     by {exoticWorksheet.data.creatorName}
                   </div>
                 )}
-                {isMobile && (
-                  <>
-                    <div className={styles.mobileLabel}>
-                      Viewing exported worksheet
-                    </div>
-                    <div className={styles.mobileExit}>
-                      <Button
-                        size="sm"
-                        variant="outline-primary"
-                        onClick={exitExoticWorksheet}
-                      >
-                        Exit
-                      </Button>
-                    </div>
-                  </>
-                )}
               </div>
             )}
             <dl>
@@ -292,6 +276,16 @@ export default function WorksheetStats() {
                 </dd>
               </div>
             </dl>
+            {isExoticWorksheet && isMobile && (
+              <dl className={styles.mobileExportRow}>
+                <div className={styles.wide}>
+                  <dt>Viewing exported worksheet</dt>
+                  <Button variant="primary" onClick={exitExoticWorksheet}>
+                    Exit
+                  </Button>
+                </div>
+              </dl>
+            )}
           </div>
         </div>
       </Collapse>

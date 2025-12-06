@@ -107,11 +107,6 @@
   color: var(--color-text-secondary);
 }
 
-.mobileExit {
+.mobileExportRow {
   margin-top: 0.5em;
-}
-
-.mobileLabel {
-  font-size: 13px;
-  color: var(--color-text-secondary);
 }
