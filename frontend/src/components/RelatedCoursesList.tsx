@@ -12,7 +12,7 @@ import {
 import { MdInfoOutline } from 'react-icons/md';
 
 // @popperjs/core is provided by react-bootstrap
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { detectOverflow } from '@popperjs/core';
 
 import type { ModalNavigationFunction } from './CourseModal/CourseModal';

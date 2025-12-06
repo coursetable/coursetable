@@ -86,11 +86,19 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
+  const {
+    courses,
+    isExoticWorksheet,
+    exoticWorksheet,
+    exitExoticWorksheet,
+    isMobile,
+  } = useStore(
     useShallow((state) => ({
       courses: state.courses,
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      exoticWorksheet: state.exoticWorksheet,
       exitExoticWorksheet: state.exitExoticWorksheet,
+      isMobile: state.isMobile,
     })),
   );
   const user = useStore((state) => state.user);
@@ -153,6 +161,18 @@ export default function WorksheetStats() {
       <Collapse in={shown}>
         <div>
           <div className={styles.stats}>
+            {isExoticWorksheet && exoticWorksheet?.data && (
+              <div className={styles.worksheetInfo}>
+                <div className={styles.worksheetName}>
+                  {exoticWorksheet.data.name}
+                </div>
+                {exoticWorksheet.data.creatorName && (
+                  <div className={styles.creatorName}>
+                    by {exoticWorksheet.data.creatorName}
+                  </div>
+                )}
+              </div>
+            )}
             <dl>
               <div>
                 <dt>Total courses</dt>
@@ -256,17 +276,19 @@ export default function WorksheetStats() {
                 </dd>
               </div>
             </dl>
-            <div className={styles.spacer} />
-            <dl>
-              {isExoticWorksheet && (
-                <div className={styles.wide}>
-                  <dt>Viewing exported worksheet</dt>
-                  <Button variant="primary" onClick={exitExoticWorksheet}>
-                    Exit
-                  </Button>
-                </div>
-              )}
-            </dl>
+            {isExoticWorksheet && isMobile && (
+              <>
+                <div className={styles.spacer} />
+                <dl>
+                  <div className={styles.wide}>
+                    <dt>Viewing exported worksheet</dt>
+                    <Button variant="primary" onClick={exitExoticWorksheet}>
+                      Exit
+                    </Button>
+                  </div>
+                </dl>
+              </>
+            )}
           </div>
         </div>
       </Collapse>
