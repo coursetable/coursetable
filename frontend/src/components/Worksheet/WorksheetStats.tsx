@@ -277,14 +277,17 @@ export default function WorksheetStats() {
               </div>
             </dl>
             {isExoticWorksheet && isMobile && (
-              <dl className={styles.mobileExportRow}>
-                <div className={styles.wide}>
-                  <dt>Viewing exported worksheet</dt>
-                  <Button variant="primary" onClick={exitExoticWorksheet}>
-                    Exit
-                  </Button>
-                </div>
-              </dl>
+              <>
+                <div className={styles.spacer} />
+                <dl>
+                  <div className={styles.wide}>
+                    <dt>Viewing exported worksheet</dt>
+                    <Button variant="primary" onClick={exitExoticWorksheet}>
+                      Exit
+                    </Button>
+                  </div>
+                </dl>
+              </>
             )}
           </div>
         </div>

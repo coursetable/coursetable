@@ -107,6 +107,6 @@
   color: var(--color-text-secondary);
 }
 
-.mobileExportRow {
-  margin-top: 1em;
+.spacer {
+  margin: 1em;
 }
