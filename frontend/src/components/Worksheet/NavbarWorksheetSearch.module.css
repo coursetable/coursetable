@@ -1,5 +1,5 @@
 .container {
-  min-height: 48px;
+  min-height: 0;
 }
 
 .toggleButtonGroup {
