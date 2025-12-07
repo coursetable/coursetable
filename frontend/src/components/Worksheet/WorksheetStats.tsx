@@ -354,7 +354,11 @@ export default function WorksheetStats() {
             <dl>
               {isExoticWorksheet && (
                 <div className={styles.wide}>
-                  <dt>Viewing exported worksheet</dt>
+                  <dt>
+                    {isMobile
+                      ? 'Viewing exported worksheet'
+                      : 'Import exported worksheet'}
+                  </dt>
                   <div className={styles.buttonGroup}>
                     {user ? (
                       <Button
@@ -381,24 +385,13 @@ export default function WorksheetStats() {
                         </span>
                       </OverlayTrigger>
                     )}
-                    {!isMobile && (
+                    {isMobile && (
                       <Button variant="secondary" onClick={exitExoticWorksheet}>
                         Exit
                       </Button>
                     )}
                   </div>
                 </div>
-              )}
-              {isExoticWorksheet && isMobile && (
-                <>
-                  <div className={styles.spacer} />
-                  <div className={styles.wide}>
-                    <dt>Viewing exported worksheet</dt>
-                    <Button variant="primary" onClick={exitExoticWorksheet}>
-                      Exit
-                    </Button>
-                  </div>
-                </>
               )}
             </dl>
 
