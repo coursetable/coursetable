@@ -135,6 +135,7 @@ export default function WorksheetStats() {
     isExoticWorksheet,
     exitExoticWorksheet,
     exoticWorksheet,
+    isMobile,
     viewedSeason,
     viewedWorksheetNumber,
     worksheets,
@@ -149,6 +150,7 @@ export default function WorksheetStats() {
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       worksheets: state.worksheets,
       worksheetsRefresh: state.worksheetsRefresh,
+      isMobile: state.isMobile,
     })),
   );
   const user = useStore((state) => state.user);
@@ -233,6 +235,18 @@ export default function WorksheetStats() {
       <Collapse in={shown}>
         <div>
           <div className={styles.stats}>
+            {isExoticWorksheet && exoticWorksheet?.data && (
+              <div className={styles.worksheetInfo}>
+                <div className={styles.worksheetName}>
+                  {exoticWorksheet.data.name}
+                </div>
+                {exoticWorksheet.data.creatorName && (
+                  <div className={styles.creatorName}>
+                    by {exoticWorksheet.data.creatorName}
+                  </div>
+                )}
+              </div>
+            )}
             <dl>
               <div>
                 <dt>Total courses</dt>
@@ -367,86 +381,101 @@ export default function WorksheetStats() {
                         </span>
                       </OverlayTrigger>
                     )}
+                    {!isMobile && (
+                      <Button variant="secondary" onClick={exitExoticWorksheet}>
+                        Exit
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+              {isExoticWorksheet && isMobile && (
+                <>
+                  <div className={styles.spacer} />
+                  <div className={styles.wide}>
+                    <dt>Viewing exported worksheet</dt>
                     <Button variant="primary" onClick={exitExoticWorksheet}>
                       Exit
                     </Button>
                   </div>
-                </div>
+                </>
               )}
             </dl>
-          </div>
 
-          {showExportPopup && (
-            <div className={styles.popup}>
-              <div className={styles.popupContent} ref={popupRef}>
-                <div className={styles.popupHeader}>
-                  <h5>Import Into Worksheet</h5>
-                  <Button
-                    className={styles.closeButton}
-                    onClick={() => setShowExportPopup(false)}
-                  >
-                    ×
-                  </Button>
-                </div>
-                <div className={styles.importContainer}>
-                  <WorksheetNumDropdown
-                    mobile={false}
-                    person="me"
-                    season={exoticWorksheet?.data.season}
-                  />
-                  <Button
-                    variant="primary"
-                    onClick={async () => {
-                      const season =
-                        exoticWorksheet?.data.season ?? viewedSeason;
-                      const targetWorksheet = worksheets
-                        ?.get(season)
-                        ?.get(viewedWorksheetNumber);
+            {showExportPopup && (
+              <div className={styles.popup}>
+                <div className={styles.popupContent} ref={popupRef}>
+                  <div className={styles.popupHeader}>
+                    <h5>Import Into Worksheet</h5>
+                    <Button
+                      className={styles.closeButton}
+                      onClick={() => setShowExportPopup(false)}
+                    >
+                      ×
+                    </Button>
+                  </div>
+                  <div className={styles.importContainer}>
+                    <WorksheetNumDropdown
+                      mobile={false}
+                      person="me"
+                      season={exoticWorksheet?.data.season}
+                    />
+                    <Button
+                      variant="primary"
+                      onClick={async () => {
+                        const season =
+                          exoticWorksheet?.data.season ?? viewedSeason;
+                        const targetWorksheet = worksheets
+                          ?.get(season)
+                          ?.get(viewedWorksheetNumber);
 
-                      if (courses.length === 0) {
-                        toast.error('Current worksheet has no courses to copy');
-                        return;
-                      }
-
-                      const updates = buildCourseUpdates(
-                        courses,
-                        season,
-                        viewedWorksheetNumber,
-                        targetWorksheet,
-                      );
-
-                      if (updates.length === 0) {
-                        toast.error(
-                          'All courses are already in the target worksheet',
-                        );
-                        return;
-                      }
-
-                      try {
-                        const success = await updateWorksheetCourses(updates);
-                        if (success) {
-                          await worksheetsRefresh();
-                          toast.success(
-                            `Successfully imported ${updates.length} course${
-                              updates.length === 1 ? '' : 's'
-                            }`,
+                        if (courses.length === 0) {
+                          toast.error(
+                            'Current worksheet has no courses to copy',
                           );
-                          setShowExportPopup(false);
+                          return;
                         }
-                      } catch (error) {
-                        toast.error(
-                          'Failed to import courses. Please try again.',
+
+                        const updates = buildCourseUpdates(
+                          courses,
+                          season,
+                          viewedWorksheetNumber,
+                          targetWorksheet,
                         );
-                        console.error('Failed to import courses:', error);
-                      }
-                    }}
-                  >
-                    Import
-                  </Button>
+
+                        if (updates.length === 0) {
+                          toast.error(
+                            'All courses are already in the target worksheet',
+                          );
+                          return;
+                        }
+
+                        try {
+                          const success = await updateWorksheetCourses(updates);
+                          if (success) {
+                            await worksheetsRefresh();
+                            toast.success(
+                              `Successfully imported ${updates.length} course${
+                                updates.length === 1 ? '' : 's'
+                              }`,
+                            );
+                            setShowExportPopup(false);
+                          }
+                        } catch (error) {
+                          toast.error(
+                            'Failed to import courses. Please try again.',
+                          );
+                          console.error('Failed to import courses:', error);
+                        }
+                      }}
+                    >
+                      Import
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </Collapse>
     </div>

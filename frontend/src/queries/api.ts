@@ -162,7 +162,7 @@ async function fetchAPI(
   }
 }
 
-type WorksheetCourseUpdateBase = {
+type UpdateWorksheetCourseAction = {
   season: Season;
   crn: Crn;
   worksheetNumber: number;
@@ -179,11 +179,8 @@ type WorksheetCourseUpdateBase = {
     }
 );
 
-type WorksheetCourseUpdate =
-  | WorksheetCourseUpdateBase
-  | WorksheetCourseUpdateBase[];
 export function updateWorksheetCourses(
-  body: WorksheetCourseUpdate,
+  body: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
 ): Promise<boolean> {
   return fetchAPI('/user/updateWorksheetCourses', {
     body,
