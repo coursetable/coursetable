@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
@@ -16,6 +16,7 @@ import {
   getWorkloadRatings,
   isDiscussionSection,
 } from '../../utilities/course';
+import { useComponentVisible } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
 import styles from './WorksheetStats.module.css';
 
@@ -127,9 +128,23 @@ function buildCourseUpdates(
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const [showExportPopup, setShowExportPopup] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  const popupRef = useRef<HTMLDivElement>(null);
+  const {
+    elemRef: popupRef,
+    isComponentVisible: showExportPopup,
+    setIsComponentVisible: setShowExportPopup,
+  } = useComponentVisible<HTMLDivElement>(false);
+
+  useEffect(() => {
+    if (!showExportPopup) return undefined;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowExportPopup(false);
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [showExportPopup, setShowExportPopup]);
 
   const {
     courses,
@@ -163,28 +178,6 @@ export default function WorksheetStats() {
   const skillsAreas: { courseCode: string; label: string }[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
-
-  // Close popup when clicking outside or pressing Escape
-  useEffect(() => {
-    if (!showExportPopup) return () => {};
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node))
-        setShowExportPopup(false);
-    };
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setShowExportPopup(false);
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [showExportPopup]);
 
   for (const { listing, hidden } of courses) {
     const alreadyCounted = listing.course.listings.some((l) =>
