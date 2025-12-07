@@ -128,6 +128,7 @@ function buildCourseUpdates(
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const [showExportPopup, setShowExportPopup] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -445,7 +446,10 @@ export default function WorksheetStats() {
                     />
                     <Button
                       variant="primary"
+                      disabled={isImporting}
                       onClick={async () => {
+                        if (isImporting) return;
+                        setIsImporting(true);
                         const season =
                           exoticWorksheet?.data.season ?? viewedSeason;
                         const targetWorksheet = worksheets
@@ -456,6 +460,7 @@ export default function WorksheetStats() {
                           toast.error(
                             'Current worksheet has no courses to copy',
                           );
+                          setIsImporting(false);
                           return;
                         }
 
@@ -470,6 +475,7 @@ export default function WorksheetStats() {
                           toast.error(
                             'All courses are already in the target worksheet',
                           );
+                          setIsImporting(false);
                           return;
                         }
 
@@ -489,10 +495,12 @@ export default function WorksheetStats() {
                             'Failed to import courses. Please try again.',
                           );
                           console.error('Failed to import courses:', error);
+                        } finally {
+                          setIsImporting(false);
                         }
                       }}
                     >
-                      Import
+                      {isImporting ? 'Importing...' : 'Import'}
                     </Button>
                   </div>
                 </div>
