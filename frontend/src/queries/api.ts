@@ -20,6 +20,9 @@ import type {
 } from '../generated/graphql-types';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 
+// Coalesce identical concurrent worksheet updates (e.g., double-clicks).
+const inflightWorksheetUpdates = new Map<string, Promise<boolean>>();
+
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
     message: string;
@@ -183,7 +186,6 @@ export async function updateWorksheetCourses(
   body: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
 ): Promise<boolean> {
   const MAX_BATCH_SIZE = 50; // Keep payloads small to avoid 413 Request Entity Too Large.
-  const inflight = new Map<string, Promise<boolean>>();
 
   const requestInternal = (
     payload: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
@@ -217,12 +219,12 @@ export async function updateWorksheetCourses(
     payload: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
   ) => {
     const key = JSON.stringify(payload);
-    const existing = inflight.get(key);
+    const existing = inflightWorksheetUpdates.get(key);
     if (existing) return existing;
     const pending = requestInternal(payload).finally(() =>
-      inflight.delete(key),
+      inflightWorksheetUpdates.delete(key),
     );
-    inflight.set(key, pending);
+    inflightWorksheetUpdates.set(key, pending);
     return pending;
   };
 
