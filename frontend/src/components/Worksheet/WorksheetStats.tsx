@@ -354,43 +354,73 @@ export default function WorksheetStats() {
             <dl>
               {isExoticWorksheet && (
                 <div className={styles.wide}>
-                  <dt>
-                    {isMobile
-                      ? 'Viewing exported worksheet'
-                      : 'Import exported worksheet'}
-                  </dt>
-                  <div className={styles.buttonGroup}>
-                    {user ? (
-                      <Button
-                        variant="primary"
-                        onClick={() => setShowExportPopup(true)}
-                      >
-                        Import
-                      </Button>
-                    ) : (
-                      <OverlayTrigger
-                        placement="top"
-                        overlay={
-                          <Tooltip id="login-tooltip">
-                            <small>
-                              Sign in to import courses into your worksheets
-                            </small>
-                          </Tooltip>
-                        }
-                      >
-                        <span>
-                          <Button variant="primary" disabled>
+                  {isMobile ? (
+                    <>
+                      <dt>Viewing exported worksheet</dt>
+                      <div className={styles.buttonGroup}>
+                        {user ? (
+                          <Button
+                            variant="primary"
+                            onClick={() => setShowExportPopup(true)}
+                          >
                             Import
                           </Button>
-                        </span>
-                      </OverlayTrigger>
-                    )}
-                    {isMobile && (
-                      <Button variant="secondary" onClick={exitExoticWorksheet}>
-                        Exit
-                      </Button>
-                    )}
-                  </div>
+                        ) : (
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="login-tooltip">
+                                <small>
+                                  Sign in to import courses into your worksheets
+                                </small>
+                              </Tooltip>
+                            }
+                          >
+                            <span>
+                              <Button variant="primary" disabled>
+                                Import
+                              </Button>
+                            </span>
+                          </OverlayTrigger>
+                        )}
+                        <Button
+                          variant="secondary"
+                          onClick={exitExoticWorksheet}
+                        >
+                          Exit
+                        </Button>
+                      </div>
+                    </>
+                  ) : user ? (
+                    <Button
+                      className={styles.fullWidthButton}
+                      variant="primary"
+                      onClick={() => setShowExportPopup(true)}
+                    >
+                      Import into your own worksheet
+                    </Button>
+                  ) : (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip id="login-tooltip">
+                          <small>
+                            Sign in to import courses into your worksheets
+                          </small>
+                        </Tooltip>
+                      }
+                    >
+                      <span className={styles.fullWidthButtonWrapper}>
+                        <Button
+                          className={styles.fullWidthButton}
+                          variant="primary"
+                          disabled
+                        >
+                          Import into your own worksheet
+                        </Button>
+                      </span>
+                    </OverlayTrigger>
+                  )}
                 </div>
               )}
             </dl>

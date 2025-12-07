@@ -198,3 +198,12 @@
 .importContainer > :last-child {
   margin-left: auto;
 }
+
+.fullWidthButton {
+  width: 100%;
+}
+
+.fullWidthButtonWrapper {
+  width: 100%;
+  display: block;
+}
