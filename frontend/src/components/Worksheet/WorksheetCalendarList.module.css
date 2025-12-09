@@ -75,3 +75,28 @@
   border-bottom-right-radius: 8px;
   box-shadow: 0 2px 6px 0 var(--color-shadow);
 }
+
+.clearAllButton {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.clearAllButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clearAllButton:hover:not(:disabled) {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}
+
+.clearAllButton:focus:not(:disabled) {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}

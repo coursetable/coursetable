@@ -141,11 +141,11 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={19}
+        id={20}
       >
-        CourseTable is expected to experience outages due to high loads and
+        {/* CourseTable is expected to experience outages due to high loads and
         usage during course selection this week. Please note down your courses
-        before then.
+        before then. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
