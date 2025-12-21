@@ -20,6 +20,9 @@ import type {
 } from '../generated/graphql-types';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 
+// Coalesce identical concurrent worksheet updates (e.g., double-clicks).
+const inflightWorksheetUpdates = new Map<string, Promise<boolean>>();
+
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
     message: string;
@@ -119,9 +122,9 @@ async function fetchAPI(
       let errorCode = '';
       // First: try to parse out a structured error code
       try {
-        errorCode = String(
-          ((await res.json()) as { error?: unknown } | null)?.error ?? '',
-        );
+        const parsedError = ((await res.json()) as { error?: unknown } | null)
+          ?.error;
+        errorCode = typeof parsedError === 'string' ? parsedError : '';
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
@@ -179,33 +182,69 @@ type UpdateWorksheetCourseAction = {
     }
 );
 
-export function updateWorksheetCourses(
+export async function updateWorksheetCourses(
   body: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
 ): Promise<boolean> {
-  return fetchAPI('/user/updateWorksheetCourses', {
-    body,
-    handleErrorCode(err) {
-      switch (err) {
-        // These errors can be triggered if the user clicks the button twice
-        // in a row
-        // TODO: we should debounce the request instead
-        case 'ALREADY_BOOKMARKED':
-          toast.error('You have already added this class to your worksheet');
-          return true;
-        case 'NOT_BOOKMARKED':
-          toast.error(
-            'You have already removed this class from your worksheet',
-          );
-          return true;
-        default:
-          return false;
-      }
-    },
-    breadcrumb: {
-      category: 'worksheet',
-      message: 'Updating worksheet',
-    },
-  });
+  const MAX_BATCH_SIZE = 50; // Keep payloads small to avoid 413 Request Entity Too Large.
+
+  const requestInternal = (
+    payload: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
+  ) =>
+    fetchAPI('/user/updateWorksheetCourses', {
+      body: payload,
+      handleErrorCode(err) {
+        switch (err) {
+          // These errors can be triggered if the user clicks the button twice
+          // in a row. we coalesce identical in-flight requests above to avoid
+          // the race but keep the handler for safety.
+          case 'ALREADY_BOOKMARKED':
+            toast.error('You have already added this class to your worksheet');
+            return true;
+          case 'NOT_BOOKMARKED':
+            toast.error(
+              'You have already removed this class from your worksheet',
+            );
+            return true;
+          default:
+            return false;
+        }
+      },
+      breadcrumb: {
+        category: 'worksheet',
+        message: 'Updating worksheet',
+      },
+    });
+
+  const request = (
+    payload: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
+  ) => {
+    const key = JSON.stringify(payload);
+    const existing = inflightWorksheetUpdates.get(key);
+    if (existing) return existing;
+    const pending = requestInternal(payload).finally(() =>
+      inflightWorksheetUpdates.delete(key),
+    );
+    inflightWorksheetUpdates.set(key, pending);
+    return pending;
+  };
+
+  if (!Array.isArray(body) || body.length <= MAX_BATCH_SIZE)
+    return request(body);
+
+  for (let i = 0; i < body.length; i += MAX_BATCH_SIZE) {
+    const batch = body.slice(i, i + MAX_BATCH_SIZE);
+    if (batch.length === 0) continue;
+    if (batch.length === 1) {
+      const [single] = batch;
+      const ok = await request(single!);
+      if (!ok) return false;
+    } else {
+      const ok = await request(batch);
+      if (!ok) return false;
+    }
+  }
+
+  return true;
 }
 
 export async function updateWishlistCourses(
