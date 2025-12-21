@@ -22,6 +22,7 @@ import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
+import WorksheetCalendarListContext from './WorksheetCalendarListContext';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import {
   setCourseHidden,
@@ -29,28 +30,27 @@ import {
   updateWorksheetMetadata,
 } from '../../queries/api';
 import { useStore } from '../../store';
-import { toLocationsSummary } from '../../utilities/course';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
 type WorksheetCalendarListProps = {
-  readonly highlightBuilding?: string | null;
-  readonly showLocation?: boolean;
-  readonly showMissingLocationIcon?: boolean;
-  readonly controlsMode?: 'full' | 'hide-only' | 'none' | 'map';
-  readonly missingBuildingCodes?: Set<string>;
-  readonly hideTooltipContext?: 'calendar' | 'map';
+  readonly highlightBuilding: string | null;
+  readonly showLocation: boolean;
+  readonly showMissingLocationIcon: boolean;
+  readonly controlsMode: 'full' | 'hide-only' | 'none' | 'map';
+  readonly missingBuildingCodes: Set<string>;
+  readonly hideTooltipContext: 'calendar' | 'map';
 };
 
 function WorksheetCalendarList({
-  highlightBuilding = null,
-  showLocation = false,
-  showMissingLocationIcon = false,
-  controlsMode = 'full',
+  highlightBuilding,
+  showLocation,
+  showMissingLocationIcon,
+  controlsMode,
   missingBuildingCodes,
-  hideTooltipContext = 'calendar',
-}: WorksheetCalendarListProps = {}) {
+  hideTooltipContext,
+}: WorksheetCalendarListProps) {
   const {
     courses,
     viewedSeason,
@@ -99,6 +99,23 @@ function WorksheetCalendarList({
   useEffect(() => {
     setPrivateState(isViewedWorksheetPrivate);
   }, [isViewedWorksheetPrivate]);
+
+  const contextValue = useMemo(
+    () => ({
+      showLocation,
+      showMissingLocationIcon,
+      highlightBuilding,
+      missingBuildingCodes,
+      hideTooltipContext,
+    }),
+    [
+      showLocation,
+      showMissingLocationIcon,
+      highlightBuilding,
+      missingBuildingCodes,
+      hideTooltipContext,
+    ],
+  );
 
   const handleClearAll = async () => {
     if (courses.length === 0) return;
@@ -231,40 +248,21 @@ function WorksheetCalendarList({
       )}
 
       <SurfaceComponent className={styles.courseList}>
-        {courses.length > 0 ? (
-          <ListGroup variant="flush">
-            {courses.map((course) => {
-              const hasMissingCoordinate =
-                showMissingLocationIcon &&
-                course.listing.course.course_meetings.some((meeting) => {
-                  const code = meeting.location?.building.code;
-                  return Boolean(code && missingBuildingCodes?.has(code));
-                });
-
-              return (
+        <WorksheetCalendarListContext.Provider value={contextValue}>
+          {courses.length > 0 ? (
+            <ListGroup variant="flush">
+              {courses.map((course) => (
                 <WorksheetCalendarListItem
                   key={viewedSeason + course.crn}
                   listing={course.listing}
                   hidden={course.hidden ?? false}
-                  locationSummary={toLocationsSummary(course.listing.course)}
-                  showLocation={showLocation}
-                  showMissingLocationIcon={showMissingLocationIcon}
-                  isHighlighted={
-                    Boolean(highlightBuilding) &&
-                    course.listing.course.course_meetings.some(
-                      (meeting) =>
-                        meeting.location?.building.code === highlightBuilding,
-                    )
-                  }
-                  missingCoordinate={hasMissingCoordinate}
-                  hideTooltipContext={hideTooltipContext}
                 />
-              );
-            })}
-          </ListGroup>
-        ) : (
-          <NoCourses />
-        )}
+              ))}
+            </ListGroup>
+          ) : (
+            <NoCourses />
+          )}
+        </WorksheetCalendarListContext.Provider>
       </SurfaceComponent>
 
       <Modal

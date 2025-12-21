@@ -3,36 +3,47 @@ import clsx from 'clsx';
 import { ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import { useShallow } from 'zustand/react/shallow';
+import { useWorksheetCalendarListContext } from './WorksheetCalendarListContext';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
+import { toLocationsSummary } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
 type WorksheetCalendarListItemProps = {
   readonly listing: CatalogListing;
   readonly hidden: boolean;
-  readonly showLocation?: boolean;
-  readonly locationSummary?: string;
-  readonly showMissingLocationIcon?: boolean;
-  readonly isHighlighted?: boolean;
-  readonly missingCoordinate?: boolean;
-  readonly hideTooltipContext?: 'calendar' | 'map';
 };
 
 export default function WorksheetCalendarListItem({
   listing,
   hidden,
-  showLocation = false,
-  locationSummary,
-  showMissingLocationIcon = false,
-  isHighlighted = false,
-  missingCoordinate = false,
-  hideTooltipContext = 'calendar',
 }: WorksheetCalendarListItemProps) {
+  const {
+    showLocation,
+    showMissingLocationIcon,
+    highlightBuilding,
+    missingBuildingCodes,
+    hideTooltipContext,
+  } = useWorksheetCalendarListContext();
   const target = useCourseModalLink(listing);
   const setHoverCourse = useStore((state) => state.setHoverCourse);
+  const locationSummary = toLocationsSummary(listing.course);
+  const locationDisplay =
+    locationSummary === 'TBA' ? 'Location: TBA' : locationSummary;
+  const missingCoordinate =
+    showMissingLocationIcon &&
+    listing.course.course_meetings.some((meeting) => {
+      const code = meeting.location?.building.code;
+      return Boolean(code && missingBuildingCodes.has(code));
+    });
+  const isHighlighted =
+    Boolean(highlightBuilding) &&
+    listing.course.course_meetings.some(
+      (meeting) => meeting.location?.building.code === highlightBuilding,
+    );
   const missingLocation =
     !locationSummary ||
     locationSummary.toUpperCase() === 'TBA' ||
@@ -68,7 +79,7 @@ export default function WorksheetCalendarListItem({
         <span className={styles.courseTitle}>{listing.course.title}</span>
         {showLocation && (
           <span className={styles.courseLocation}>
-            {locationSummary ?? 'Location: TBA'}
+            {locationDisplay}
             {showMissingLocationIcon && missingLocation && (
               <OverlayTrigger
                 placement="top"

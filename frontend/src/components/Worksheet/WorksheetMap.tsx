@@ -204,6 +204,11 @@ function WorksheetMap() {
       setHighlightedCode(null);
   }, [markers, highlightedCode]);
 
+  const missingBuildingCodes = useMemo(
+    () => new Set(missing.map((entry) => entry.code)),
+    [missing],
+  );
+
   const bounds = useMemo(() => {
     if (!markers.length) return null;
     return L.latLngBounds(markers.map((marker) => [marker.lat, marker.lng]));
@@ -296,7 +301,7 @@ function WorksheetMap() {
           highlightBuilding={highlightedCode}
           controlsMode="map"
           hideTooltipContext="map"
-          missingBuildingCodes={new Set(missing.map((entry) => entry.code))}
+          missingBuildingCodes={missingBuildingCodes}
         />
       </div>
     </div>

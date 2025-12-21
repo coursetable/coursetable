@@ -93,7 +93,7 @@
 
 .markerInner {
   position: absolute;
-  top: 11px;
+  top: 9px;
   left: 50%;
   transform: translateX(-50%);
   width: 8px;
@@ -124,8 +124,8 @@
 .markerIconHovered .markerInner {
   opacity: 1;
   background: white;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 .popupContent {

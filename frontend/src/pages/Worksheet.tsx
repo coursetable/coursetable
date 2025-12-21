@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
@@ -39,6 +39,7 @@ function Worksheet() {
     })),
   );
   const [expanded, setExpanded] = useState(false);
+  const emptyMissingBuildingCodes = useMemo(() => new Set<string>(), []);
 
   useEffect(() => {
     const exoticWorksheet = parseCoursesFromURL();
@@ -87,7 +88,14 @@ function Worksheet() {
       {(isMobile || !expanded) && (
         <div className={styles.calendarSidebar}>
           <WorksheetStats />
-          <WorksheetCalendarList />
+          <WorksheetCalendarList
+            highlightBuilding={null}
+            showLocation={false}
+            showMissingLocationIcon={false}
+            controlsMode="full"
+            missingBuildingCodes={emptyMissingBuildingCodes}
+            hideTooltipContext="calendar"
+          />
         </div>
       )}
     </div>
