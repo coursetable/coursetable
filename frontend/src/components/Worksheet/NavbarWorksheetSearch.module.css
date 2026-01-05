@@ -1,3 +1,7 @@
+.container {
+  min-height: 0;
+}
+
 .toggleButtonGroup {
   /* Temporary width bump to fit the Map BETA chip; revert once Map leaves beta. */
   width: 320px;
@@ -51,6 +55,7 @@
   border-color: var(--color-primary) !important;
 }
 
+/* --- Map BETA chip styles (from yavin/map-in-worksheet) --- */
 .toggleButtonContent {
   display: flex;
   align-items: center;
@@ -84,4 +89,45 @@
   background: #fff;
   border-color: var(--color-primary-light);
   color: var(--color-primary);
+}
+
+/* --- Exotic worksheet pill styles (from master) --- */
+.exoticWorksheetContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.125rem 0 0.125rem 0.625rem;
+  min-width: 0;
+  margin-bottom: 0;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-control);
+  background-color: var(--color-surface);
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur);
+}
+
+.exoticWorksheetText {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  transition: color var(--trans-dur);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exoticExitButton {
+  padding: 0.25rem 0.75rem;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0 999px 999px 0;
+  margin: -0.125rem 0;
+  align-self: stretch;
+}
+
+@media (max-width: calc(1320px - 0.5px)) {
+  .exoticWorksheetText {
+    font-size: 12px;
+  }
 }
