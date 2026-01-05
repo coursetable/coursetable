@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { decompressFromEncodedURIComponent } from 'lz-string';
 import { memoize } from 'proxy-memoize';
 import { toast } from 'react-toastify';
@@ -282,9 +281,7 @@ export const useWorksheetEffects = () => {
     exoticWorksheet?.data.season ?? viewedSeason,
     exoticWorksheet ? 0 : viewedWorksheetNumber,
   );
-  useEffect(() => {
-    setWorksheetInfo(courses, worksheetLoading, worksheetError);
-  }, [courses, worksheetLoading, worksheetError, setWorksheetInfo]);
+  setWorksheetInfo(courses, worksheetLoading, worksheetError);
 };
 
 // Auxiliary Functions

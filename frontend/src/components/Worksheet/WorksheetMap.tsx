@@ -103,8 +103,7 @@ function useLocationGroups(courses: WorksheetCourse[]) {
         const buildingCode = location.building.code;
         const buildingInfo = buildingCoordinates[buildingCode];
         if (!buildingInfo) {
-          const friendlyName =
-            buildingCoordinates[buildingCode]?.name ?? buildingCode;
+          const friendlyName = buildingCode;
           const existing = missing.get(buildingCode) ?? {
             code: buildingCode,
             name: friendlyName,
@@ -214,12 +213,12 @@ function WorksheetMap() {
     return L.latLngBounds(markers.map((marker) => [marker.lat, marker.lng]));
   }, [markers]);
 
-  const currentTheme = document.documentElement.dataset.theme;
-  const [tileUrl, setTileUrl] = useState(
-    currentTheme === 'dark'
+  const [tileUrl, setTileUrl] = useState(() => {
+    const currentTheme = document.documentElement.dataset.theme;
+    return currentTheme === 'dark'
       ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  );
+      : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  });
 
   useEffect(() => {
     const root = document.documentElement;
