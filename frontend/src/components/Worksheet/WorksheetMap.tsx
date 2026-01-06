@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import clsx from 'clsx';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -40,6 +47,10 @@ type MissingGroup = {
 
 const defaultCenter: [number, number] = [41.313389, -72.925];
 const HIGHLIGHT_DURATION_MS = 1800;
+const PAN_BOUNDS_PAD = 0.35;
+const MAX_BOUNDS_VISCOSITY = 0.9;
+const ALLOW_ZOOM_OUT_STEPS = 1;
+const INITIAL_RELAX_MS = 1000;
 
 const markerIconCache = new Map<string, L.DivIcon>();
 function getMarkerIcon(variant: string) {
@@ -71,18 +82,230 @@ function getMarkerIcon(variant: string) {
   return markerIconCache.get(variant)!;
 }
 
-function FitBounds({ bounds }: { readonly bounds: L.LatLngBounds | null }) {
+function ResetViewControl({
+  initialBoundsRef,
+  initialOptionsRef,
+}: {
+  readonly initialBoundsRef: MutableRefObject<L.LatLngBounds | null>;
+  readonly initialOptionsRef: MutableRefObject<L.FitBoundsOptions | null>;
+}) {
   const map = useMap();
+
   useEffect(() => {
-    if (!bounds) return;
-    const size = map.getSize();
-    const padding: [number, number] = [
-      Math.max(size.x * 0.08, 40),
-      Math.max(size.y * 0.08, 40),
-    ];
-    map.fitBounds(bounds, { padding, maxZoom: 17 });
-  }, [bounds, map]);
+    const control = new L.Control({ position: 'topleft' });
+    control.onAdd = () => {
+      const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+      const button = L.DomUtil.create('a', '', container);
+      button.setAttribute('href', '#');
+      button.setAttribute('role', 'button');
+      button.setAttribute('aria-label', 'Reset view');
+      button.innerHTML = '&#x2316;';
+      button.style.fontSize = '18px';
+      button.style.lineHeight = '26px';
+      button.style.width = '30px';
+      button.style.height = '30px';
+      button.style.textAlign = 'center';
+      button.style.textDecoration = 'none';
+      button.style.color = '#2c3e50';
+      button.style.background = '#fff';
+      button.style.cursor = 'pointer';
+
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.on(button, 'click', L.DomEvent.stop);
+      L.DomEvent.on(button, 'click', () => {
+        if (!initialBoundsRef.current || !initialOptionsRef.current) return;
+        map.fitBounds(initialBoundsRef.current, initialOptionsRef.current);
+      });
+      return container;
+    };
+    map.addControl(control);
+    return () => {
+      map.removeControl(control);
+    };
+  }, [map, initialBoundsRef, initialOptionsRef]);
+
   return null;
+}
+
+function ViewportGuards({
+  bounds,
+  markerLatLngs,
+}: {
+  readonly bounds: L.LatLngBounds | null;
+  readonly markerLatLngs: L.LatLng[];
+}) {
+  const map = useMap();
+  const correctingRef = useRef(false);
+  const skipCorrectionRef = useRef(false);
+  const initialBoundsRef = useRef<L.LatLngBounds | null>(null);
+  const initialOptionsRef = useRef<L.FitBoundsOptions | null>(null);
+  const priorMinZoomRef = useRef<number | null>(null);
+  const priorViscosityRef = useRef<number | undefined>(undefined);
+  const fitTimeoutRef = useRef<number | null>(null);
+  const relaxTimeoutRef = useRef<number | null>(null);
+  const relaxGuardsRef = useRef(false);
+  const pendingFitRef = useRef(true);
+
+  const getPadding = useCallback(() => {
+    const size = map.getSize();
+    return [Math.max(size.x * 0.08, 40), Math.max(size.y * 0.08, 40)] as [
+      number,
+      number,
+    ];
+  }, [map]);
+
+  const applyFitBounds = useCallback(
+    (animate: boolean) => {
+      if (!bounds) return;
+      const padding = getPadding();
+      initialBoundsRef.current = bounds;
+      initialOptionsRef.current = { padding, maxZoom: 17 };
+
+      map.fitBounds(bounds, { padding, maxZoom: 17, animate });
+      map.setMaxBounds(bounds.pad(PAN_BOUNDS_PAD));
+      if (priorViscosityRef.current === undefined)
+        priorViscosityRef.current = map.options.maxBoundsViscosity;
+
+      L.Util.setOptions(map, { maxBoundsViscosity: MAX_BOUNDS_VISCOSITY });
+
+      if (priorMinZoomRef.current === null)
+        priorMinZoomRef.current = map.getMinZoom();
+      if (fitTimeoutRef.current) window.clearTimeout(fitTimeoutRef.current);
+
+      fitTimeoutRef.current = window.setTimeout(() => {
+        const currentZoom = map.getZoom();
+        map.setMinZoom(Math.max(0, currentZoom - ALLOW_ZOOM_OUT_STEPS));
+      }, 0);
+      skipCorrectionRef.current = true;
+    },
+    [bounds, getPadding, map],
+  );
+
+  const startRelax = useCallback((onFinish?: () => void) => {
+    relaxGuardsRef.current = true;
+    if (relaxTimeoutRef.current) window.clearTimeout(relaxTimeoutRef.current);
+
+    relaxTimeoutRef.current = window.setTimeout(() => {
+      relaxGuardsRef.current = false;
+      onFinish?.();
+    }, INITIAL_RELAX_MS);
+  }, []);
+
+  useEffect(() => {
+    if (!bounds) {
+      if (fitTimeoutRef.current) {
+        window.clearTimeout(fitTimeoutRef.current);
+        fitTimeoutRef.current = null;
+      }
+      if (relaxTimeoutRef.current) {
+        window.clearTimeout(relaxTimeoutRef.current);
+        relaxTimeoutRef.current = null;
+      }
+      if (priorMinZoomRef.current !== null)
+        map.setMinZoom(priorMinZoomRef.current);
+
+      if (priorViscosityRef.current !== undefined) {
+        L.Util.setOptions(map, {
+          maxBoundsViscosity: priorViscosityRef.current,
+        });
+      }
+      map.setMaxBounds(undefined);
+      return () => {};
+    }
+
+    const size = map.getSize();
+    if (size.x > 0 && size.y > 0) {
+      applyFitBounds(false);
+      pendingFitRef.current = false;
+      startRelax();
+    } else {
+      pendingFitRef.current = true;
+      startRelax();
+    }
+    const handleResize = () => {
+      const nextSize = map.getSize();
+      if (nextSize.x > 0 && nextSize.y > 0 && pendingFitRef.current) {
+        startRelax(() => {
+          applyFitBounds(false);
+          pendingFitRef.current = false;
+        });
+        return;
+      }
+      if (nextSize.x > 0 && nextSize.y > 0) {
+        applyFitBounds(false);
+        startRelax();
+      }
+    };
+    map.on('resize', handleResize);
+
+    return () => {
+      map.off('resize', handleResize);
+      if (fitTimeoutRef.current) {
+        window.clearTimeout(fitTimeoutRef.current);
+        fitTimeoutRef.current = null;
+      }
+      if (relaxTimeoutRef.current) {
+        window.clearTimeout(relaxTimeoutRef.current);
+        relaxTimeoutRef.current = null;
+      }
+    };
+  }, [applyFitBounds, bounds, map, startRelax]);
+
+  useEffect(() => {
+    if (!bounds || !markerLatLngs.length) return () => {};
+
+    const handleViewChange = () => {
+      if (relaxGuardsRef.current) return;
+      if (skipCorrectionRef.current) {
+        skipCorrectionRef.current = false;
+        return;
+      }
+      if (correctingRef.current) {
+        correctingRef.current = false;
+        return;
+      }
+      const view = map.getBounds();
+      if (markerLatLngs.some((latLng) => view.contains(latLng))) return;
+
+      const center = map.getCenter();
+      const nearest = markerLatLngs.reduce((closest, current) =>
+        center.distanceTo(current) < center.distanceTo(closest)
+          ? current
+          : closest,
+      );
+      correctingRef.current = true;
+      map.panInside(nearest, { padding: getPadding(), animate: true });
+    };
+
+    map.on('moveend', handleViewChange);
+    map.on('zoomend', handleViewChange);
+    return () => {
+      map.off('moveend', handleViewChange);
+      map.off('zoomend', handleViewChange);
+    };
+  }, [bounds, getPadding, map, markerLatLngs]);
+
+  useEffect(
+    () => () => {
+      if (priorMinZoomRef.current !== null)
+        map.setMinZoom(priorMinZoomRef.current);
+
+      if (priorViscosityRef.current !== undefined) {
+        L.Util.setOptions(map, {
+          maxBoundsViscosity: priorViscosityRef.current,
+        });
+      }
+      map.setMaxBounds(undefined);
+    },
+    [map],
+  );
+
+  return (
+    <ResetViewControl
+      initialBoundsRef={initialBoundsRef}
+      initialOptionsRef={initialOptionsRef}
+    />
+  );
 }
 
 function MapClickReset({ onReset }: { readonly onReset: () => void }) {
@@ -212,6 +435,10 @@ function WorksheetMap() {
     if (!markers.length) return null;
     return L.latLngBounds(markers.map((marker) => [marker.lat, marker.lng]));
   }, [markers]);
+  const markerLatLngs = useMemo(
+    () => markers.map((marker) => L.latLng(marker.lat, marker.lng)),
+    [markers],
+  );
 
   const [tileUrl, setTileUrl] = useState(() => {
     const currentTheme = document.documentElement.dataset.theme;
@@ -241,48 +468,48 @@ function WorksheetMap() {
   return (
     <div className={styles.container}>
       <SurfaceComponent className={styles.mapCard}>
-        <MapContainer
-          className={styles.map}
-          center={defaultCenter}
-          zoom={15}
-          bounds={bounds ?? undefined}
-          scrollWheelZoom
-          preferCanvas
-        >
-          <TileLayer
-            key={tileUrl}
-            url={tileUrl}
-            attribution={tileAttribution}
-            subdomains={['a', 'b', 'c', 'd']}
-            maxZoom={19}
-          />
-          {markers.map((group) => {
-            const isHovered =
-              hoverCourse &&
-              group.courses.some((course) => course.crn === hoverCourse);
-            const isSelected = highlightedCode === group.code;
-            const variant =
-              (isSelected ? 'selected' : '') + (isHovered ? '-hovered' : '');
-            return (
-              <Marker
-                key={group.code}
-                position={[group.lat, group.lng]}
-                icon={getMarkerIcon(variant || 'default')}
-                eventHandlers={{
-                  click: () => setTemporaryHighlight(group.code),
-                }}
-              >
-                <Popup>
-                  <MarkerPopup group={group} />
-                </Popup>
-              </Marker>
-            );
-          })}
-          {bounds && <FitBounds bounds={bounds} />}
-          <MapClickReset onReset={() => setTemporaryHighlight(null)} />
-        </MapContainer>
-
-        {!markers.length && (
+        {markers.length ? (
+          <MapContainer
+            className={styles.map}
+            center={defaultCenter}
+            zoom={15}
+            bounds={bounds ?? undefined}
+            scrollWheelZoom
+            preferCanvas
+          >
+            <TileLayer
+              key={tileUrl}
+              url={tileUrl}
+              attribution={tileAttribution}
+              subdomains={['a', 'b', 'c', 'd']}
+              maxZoom={19}
+            />
+            {markers.map((group) => {
+              const isHovered =
+                hoverCourse &&
+                group.courses.some((course) => course.crn === hoverCourse);
+              const isSelected = highlightedCode === group.code;
+              const variant =
+                (isSelected ? 'selected' : '') + (isHovered ? '-hovered' : '');
+              return (
+                <Marker
+                  key={group.code}
+                  position={[group.lat, group.lng]}
+                  icon={getMarkerIcon(variant || 'default')}
+                  eventHandlers={{
+                    click: () => setTemporaryHighlight(group.code),
+                  }}
+                >
+                  <Popup>
+                    <MarkerPopup group={group} />
+                  </Popup>
+                </Marker>
+              );
+            })}
+            <ViewportGuards bounds={bounds} markerLatLngs={markerLatLngs} />
+            <MapClickReset onReset={() => setTemporaryHighlight(null)} />
+          </MapContainer>
+        ) : (
           <div className={styles.mapEmptyState}>
             <p>No mappable course locations yet.</p>
             <p className="mb-0 text-muted">
