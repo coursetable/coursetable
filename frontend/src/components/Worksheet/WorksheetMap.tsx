@@ -103,12 +103,43 @@ function ResetViewControl({
       button.setAttribute('href', '#');
       button.setAttribute('role', 'button');
       button.setAttribute('aria-label', 'Reset view');
-      button.innerHTML = '&#x2316;';
+      button.innerHTML = `
+  <svg
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="6.5"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    />
+
+    <path
+      d="
+        M12 3v3.2
+        M12 17.8v3.2
+        M3 12h3.2
+        M17.8 12h3.2
+      "
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+  </svg>
+`;
       button.style.fontSize = '18px';
       button.style.lineHeight = '26px';
       button.style.width = '30px';
       button.style.height = '30px';
       button.style.textAlign = 'center';
+      button.style.display = 'grid';
+      button.style.placeItems = 'center';
       button.style.textDecoration = 'none';
       button.style.color = '#2c3e50';
       button.style.background = '#fff';
