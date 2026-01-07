@@ -424,9 +424,8 @@ function WorksheetMap() {
       setShowSpinner(false);
     }
     return () => {
-      if (spinnerTimeoutRef.current) 
+      if (spinnerTimeoutRef.current)
         window.clearTimeout(spinnerTimeoutRef.current);
-      
     };
   }, [mapLoading]);
 
