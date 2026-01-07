@@ -6,7 +6,7 @@ const range = (num: number, min: number, max: number) =>
   num >= min && num < max;
 
 export const breakpoints = {
-  mobile: 768,
+  mobile: 992,
   tablet: 1200,
   smDesktop: 1320,
 };

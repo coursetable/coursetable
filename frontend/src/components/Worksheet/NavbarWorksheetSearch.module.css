@@ -2,6 +2,11 @@
   min-height: 0;
 }
 
+.containerMobile {
+  margin-left: auto;
+  margin-right: 0.75rem;
+}
+
 .toggleButtonGroup {
   /* Temporary width bump to fit the Map BETA chip; revert once Map leaves beta. */
   width: 320px;
@@ -11,6 +16,88 @@
   .toggleButtonGroup {
     width: 250px;
   }
+}
+
+/* Mobile dropdown styles - mimics the toggle button appearance */
+.viewDropdownToggle {
+  --bs-btn-active-bg: var(--color-primary);
+  --bs-btn-active-border-color: var(--color-primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  /* Fixed width to fit widest option (Calendar + caret) */
+  min-width: 105px;
+  padding: 0.25rem 0.65rem;
+  font-size: 14px;
+  background-color: var(--color-primary) !important;
+  border: var(--color-primary) 2px solid !important;
+  color: #fff !important;
+  border-radius: 0.375rem !important;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+/* Default Bootstrap caret styling */
+.viewDropdownToggle::after {
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  border-top-color: #fff;
+}
+
+.viewDropdownToggle:hover,
+.viewDropdownToggle:focus {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: none !important;
+  border-radius: 0.375rem !important;
+}
+
+.viewDropdownMenu {
+  min-width: 100%;
+  padding: 0;
+  border-radius: 0.375rem;
+  border: 2px solid var(--color-icon);
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 12px var(--color-shadow);
+  overflow: hidden;
+}
+
+.viewDropdownItem {
+  padding: 0.3rem 0.65rem;
+  font-size: 14px;
+  border-radius: 0;
+  color: var(--color-text);
+  text-align: left;
+  white-space: nowrap;
+  background-color: var(--color-surface);
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.viewDropdownItemActive {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+.viewDropdownItemActive:hover {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+.viewDropdownItem:hover {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+.viewDropdownItem:active {
+  background-color: var(--color-primary-hover) !important;
+  color: #fff !important;
 }
 
 .toggleButton {
@@ -27,6 +114,9 @@
     color var(--trans-dur);
   padding: 0.25rem 0;
   width: 33.3333%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: calc(1320px - 0.5px)) {
@@ -63,6 +153,10 @@
   gap: 0.32rem;
 }
 
+.viewDropdownItem .toggleButtonContent {
+  justify-content: flex-start;
+}
+
 .betaChip {
   padding: 0.02rem 0.42rem;
   border-radius: 999px;
@@ -78,13 +172,11 @@
     border-color var(--trans-dur);
 }
 
-.toggleButton:hover .betaChip {
-  background: #fff;
-  border-color: var(--color-primary-light);
-  color: var(--color-primary);
-}
-
+/* Beta chip inverted colors (white bg, primary text) */
 .betaChipActive,
+.viewDropdownItemActive .betaChip,
+.viewDropdownItem:hover .betaChip,
+.toggleButton:hover .betaChip,
 .toggleButton:global(.active) .betaChip {
   background: #fff;
   border-color: var(--color-primary-light);

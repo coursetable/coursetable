@@ -1,6 +1,11 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
-import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+  Button,
+  Dropdown,
+} from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
@@ -14,7 +19,17 @@ import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
-export function NavbarWorksheetSearch() {
+const viewLabels: { [key in WorksheetView]: string } = {
+  calendar: 'Calendar',
+  map: 'Map',
+  list: 'List',
+};
+
+export function NavbarWorksheetSearch({
+  isMobile,
+}: {
+  readonly isMobile: boolean;
+}) {
   const {
     worksheetView,
     changeWorksheetView,
@@ -81,6 +96,53 @@ export function NavbarWorksheetSearch() {
 
   if (authStatus !== 'authenticated' && !isExoticWorksheet) return null;
 
+  // Mobile: dropdown styled like toggle, flush right next to hamburger
+  if (isMobile) {
+    return (
+      <div className={styles.containerMobile}>
+        <Dropdown align="end">
+          <Dropdown.Toggle className={styles.viewDropdownToggle}>
+            <span className={styles.toggleButtonContent}>
+              <span>{viewLabels[worksheetView]}</span>
+              {worksheetView === 'map' && (
+                <span className={clsx(styles.betaChip, styles.betaChipActive)}>
+                  Beta
+                </span>
+              )}
+            </span>
+          </Dropdown.Toggle>
+          <Dropdown.Menu className={styles.viewDropdownMenu}>
+            {(['calendar', 'map', 'list'] as WorksheetView[]).map((view) => (
+              <Dropdown.Item
+                key={view}
+                className={clsx(
+                  styles.viewDropdownItem,
+                  worksheetView === view && styles.viewDropdownItemActive,
+                )}
+                onClick={() => changeWorksheetView(view)}
+              >
+                <span className={styles.toggleButtonContent}>
+                  <span>{viewLabels[view]}</span>
+                  {view === 'map' && (
+                    <span
+                      className={clsx(
+                        styles.betaChip,
+                        worksheetView === view && styles.betaChipActive,
+                      )}
+                    >
+                      Beta
+                    </span>
+                  )}
+                </span>
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+    );
+  }
+
+  // Desktop: show full toggle with controls
   return (
     <div className={clsx(styles.container, 'd-flex align-items-center')}>
       <ToggleButtonGroup

@@ -20,8 +20,12 @@ import {
   useMap,
   useMapEvent,
 } from 'react-leaflet';
+import { useShallow } from 'zustand/react/shallow';
 
+import FriendsDropdown from './FriendsDropdown';
+import SeasonDropdown from './SeasonDropdown';
 import WorksheetCalendarList from './WorksheetCalendarList';
+import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import WorksheetStats from './WorksheetStats';
 import buildingCoordinates from '../../data/buildingCoordinates';
 import type { WorksheetCourse } from '../../slices/WorksheetSlice';
@@ -389,12 +393,42 @@ function MarkerPopup({ group }: { readonly group: MarkerGroup }) {
 }
 
 function WorksheetMap() {
-  const courses = useStore((state) => state.courses);
-  const hoverCourse = useStore((state) => state.hoverCourse);
+  const { courses, hoverCourse, isMobile, isExoticWorksheet } = useStore(
+    useShallow((state) => ({
+      courses: state.courses,
+      hoverCourse: state.hoverCourse,
+      isMobile: state.isMobile,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+    })),
+  );
 
   const { markers, missing } = useLocationGroups(courses);
   const [highlightedCode, setHighlightedCode] = useState<string | null>(null);
   const highlightTimeout = useRef<number | null>(null);
+  const [mapLoading, setMapLoading] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const hasLoadedOnce = useRef(false);
+  const spinnerTimeoutRef = useRef<number | null>(null);
+
+  // Only show spinner after 0.5s of loading to avoid flash on cached loads
+  useEffect(() => {
+    if (mapLoading) {
+      spinnerTimeoutRef.current = window.setTimeout(() => {
+        setShowSpinner(true);
+      }, 500);
+    } else {
+      if (spinnerTimeoutRef.current) {
+        window.clearTimeout(spinnerTimeoutRef.current);
+        spinnerTimeoutRef.current = null;
+      }
+      setShowSpinner(false);
+    }
+    return () => {
+      if (spinnerTimeoutRef.current) 
+        window.clearTimeout(spinnerTimeoutRef.current);
+      
+    };
+  }, [mapLoading]);
 
   const setTemporaryHighlight = useCallback((code: string | null) => {
     if (highlightTimeout.current) {
@@ -467,48 +501,86 @@ function WorksheetMap() {
 
   return (
     <div className={styles.container}>
+      {isMobile && !isExoticWorksheet && (
+        <div className={styles.dropdowns}>
+          <WorksheetNumDropdown mobile />
+          <div className="d-flex">
+            <SeasonDropdown mobile />
+            <FriendsDropdown mobile />
+          </div>
+        </div>
+      )}
       <SurfaceComponent className={styles.mapCard}>
         {markers.length ? (
-          <MapContainer
-            className={styles.map}
-            center={defaultCenter}
-            zoom={15}
-            bounds={bounds ?? undefined}
-            scrollWheelZoom
-            preferCanvas
-          >
-            <TileLayer
-              key={tileUrl}
-              url={tileUrl}
-              attribution={tileAttribution}
-              subdomains={['a', 'b', 'c', 'd']}
-              maxZoom={19}
-            />
-            {markers.map((group) => {
-              const isHovered =
-                hoverCourse &&
-                group.courses.some((course) => course.crn === hoverCourse);
-              const isSelected = highlightedCode === group.code;
-              const variant =
-                (isSelected ? 'selected' : '') + (isHovered ? '-hovered' : '');
-              return (
-                <Marker
-                  key={group.code}
-                  position={[group.lat, group.lng]}
-                  icon={getMarkerIcon(variant || 'default')}
+          <>
+            <div
+              className={clsx(
+                styles.mapWrapper,
+                mapLoading && styles.mapBlurred,
+              )}
+            >
+              <MapContainer
+                className={styles.map}
+                center={defaultCenter}
+                zoom={15}
+                bounds={bounds ?? undefined}
+                scrollWheelZoom
+                preferCanvas
+              >
+                <TileLayer
+                  key={tileUrl}
+                  url={tileUrl}
+                  attribution={tileAttribution}
+                  subdomains={['a', 'b', 'c', 'd']}
+                  maxZoom={19}
                   eventHandlers={{
-                    click: () => setTemporaryHighlight(group.code),
+                    load() {
+                      if (!hasLoadedOnce.current) {
+                        hasLoadedOnce.current = true;
+                        setMapLoading(false);
+                      }
+                    },
                   }}
-                >
-                  <Popup>
-                    <MarkerPopup group={group} />
-                  </Popup>
-                </Marker>
-              );
-            })}
-            <ViewportGuards bounds={bounds} markerLatLngs={markerLatLngs} />
-            <MapClickReset onReset={() => setTemporaryHighlight(null)} />
-          </MapContainer>
+                />
+                {markers.map((group) => {
+                  const isHovered =
+                    hoverCourse &&
+                    group.courses.some((course) => course.crn === hoverCourse);
+                  const isSelected = highlightedCode === group.code;
+                  const variant =
+                    (isSelected ? 'selected' : '') +
+                    (isHovered ? '-hovered' : '');
+                  return (
+                    <Marker
+                      key={group.code}
+                      position={[group.lat, group.lng]}
+                      icon={getMarkerIcon(variant || 'default')}
+                      eventHandlers={{
+                        click: () => setTemporaryHighlight(group.code),
+                      }}
+                    >
+                      <Popup>
+                        <MarkerPopup group={group} />
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+                <ViewportGuards bounds={bounds} markerLatLngs={markerLatLngs} />
+                <MapClickReset onReset={() => setTemporaryHighlight(null)} />
+              </MapContainer>
+            </div>
+            {showSpinner && (
+              <div
+                className={clsx(
+                  styles.mapLoadingOverlay,
+                  !mapLoading && styles.mapLoadingOverlayHidden,
+                )}
+              >
+                <div className={styles.mapLoadingSpinner} />
+                <span className={styles.mapLoadingText}>Loading map...</span>
+              </div>
+            )}
+          </>
         ) : (
           <div className={styles.mapEmptyState}>
             <p>No mappable course locations yet.</p>

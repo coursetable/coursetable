@@ -57,8 +57,28 @@ function Worksheet() {
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'map') return <WorksheetMap />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
+
+  // Mobile list view - show dropdowns and list
+  if (worksheetView === 'list' && isMobile) {
+    return (
+      <>
+        {!isExoticWorksheet && (
+          <div className={styles.mobileListDropdowns}>
+            <WorksheetNumDropdown mobile />
+            <div className="d-flex">
+              <SeasonDropdown mobile />
+              <FriendsDropdown mobile />
+            </div>
+          </div>
+        )}
+        <WorksheetList />
+      </>
+    );
+  }
+
   const Icon = expanded ? FaCompressAlt : FaExpandAlt;
 
+  // Calendar view (default)
   return (
     <div className={styles.container}>
       {isMobile && !isExoticWorksheet && (
