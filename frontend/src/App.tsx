@@ -144,7 +144,7 @@ function App() {
         id={21}
       >
         Course location data is accurate as of December 2025. Please refer to
-        Yale Course Search (YCS) to see your course locations.
+        Yale Course Search (YCS) to see your up-to-date course locations.
       </Notice>
       <Navbar />
       <SentryRoutes>
