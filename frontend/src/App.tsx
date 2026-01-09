@@ -141,11 +141,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={20}
+        id={21}
       >
-        {/* CourseTable is expected to experience outages due to high loads and
-        usage during course selection this week. Please note down your courses
-        before then. */}
+        Course location data is accurate as of December 2025. Please refer to
+        Yale Course Search (YCS) to see your course locations.
       </Notice>
       <Navbar />
       <SentryRoutes>
