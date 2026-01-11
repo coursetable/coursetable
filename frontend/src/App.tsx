@@ -143,8 +143,8 @@ function App() {
         // Don't remove this wrapper.
         id={21}
       >
-        Course location data is accurate as of December 2025. Please refer to
-        Yale Course Search (YCS) to see your up-to-date course locations.
+        Course locations are accurate as of December 2025. Please refer to
+        Yale Course Search to see your up-to-date course locations.
       </Notice>
       <Navbar />
       <SentryRoutes>
