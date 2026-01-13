@@ -11,58 +11,6 @@ import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
 
-/**
- * Normalizes Google API errors into proper Error instances for Sentry.
- * Google API errors are plain objects with { body, headers, result, status }.
- */
-function normalizeGoogleApiError(
-  err: unknown,
-  context: string,
-): Error & { status?: number; googleError?: unknown } {
-  // Check if it's a Google API error object
-  if (
-    err &&
-    typeof err === 'object' &&
-    Object.hasOwn(err, 'status') &&
-    Object.hasOwn(err, 'result')
-  ) {
-    const { status, result } = err as {
-      status: number;
-      result?: {
-        error?: {
-          message?: string;
-          code?: number;
-          errors?: { message?: string; reason?: string; domain?: string }[];
-        };
-      };
-    };
-    // Extract error message - try message, then errors array details
-    const errorMessage =
-      result?.error?.message ||
-      result?.error?.errors?.[0]?.message ||
-      result?.error?.errors?.[0]?.reason ||
-      `Google Calendar API error (status: ${status})`;
-
-    const error = new Error(`${context}: ${errorMessage}`) as Error & {
-      status?: number;
-      googleError?: unknown;
-    };
-    error.status = status;
-    error.googleError = err;
-    return error;
-  }
-
-  // If it's already an Error, return it
-  if (err instanceof Error)
-    return err as Error & { status?: number; googleError?: unknown };
-
-  // Otherwise, wrap it in an Error
-  return new Error(`${context}: ${String(err)}`) as Error & {
-    status?: number;
-    googleError?: unknown;
-  };
-}
-
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const { gapi } = useGapi();
@@ -138,29 +86,6 @@ function GoogleCalendarButton(): React.JSX.Element {
     setExporting(true);
 
     try {
-      // Validate token with a lightweight API call before proceeding
-      // This prevents 403 errors by catching expired tokens early
-      try {
-        await gapi.client.calendar.calendarList.list({
-          maxResults: 1,
-        });
-      } catch (validationErr) {
-        const validationError = normalizeGoogleApiError(
-          validationErr,
-          'Token validation failed',
-        );
-        // If token is invalid (403), clear it and trigger re-auth
-        if (validationError.status === 403) {
-          gapi.client.setToken(null);
-          setExporting(false);
-          toast.info('Please sign in again to continue');
-          loginAndExportEvents();
-          return;
-        }
-        // If it's a different error, re-throw to be handled below
-        throw validationErr;
-      }
-
       // Get all previously added classes
       const eventList = await gapi.client.calendar.events.list({
         calendarId: 'primary',
@@ -203,50 +128,39 @@ function GoogleCalendarButton(): React.JSX.Element {
               resource: event,
             });
           } catch (err) {
-            const normalizedError = normalizeGoogleApiError(
-              err,
-              'Failed to insert GCal event',
-            );
             Sentry.addBreadcrumb({
               category: 'gcal',
               message: `Inserting GCal event ${JSON.stringify(event)}`,
               level: 'info',
             });
-            Sentry.captureException(normalizedError);
+            Sentry.captureException(err);
             toast.error('Failed to add event to Google Calendar');
           }
         }),
       );
       toast.success('Exported to Google Calendar!');
     } catch (err) {
-      const normalizedError = normalizeGoogleApiError(
-        err,
-        'Error exporting GCal events',
-      );
-
       // Handle 403 Forbidden - token expired or revoked
-      if (normalizedError.status === 403) {
-        // Clear the token to force re-authentication
+      if (
+        err &&
+        typeof err === 'object' &&
+        Object.hasOwn(err, 'status') &&
+        (err as { status: number }).status === 403
+      ) {
         gapi.client.setToken(null);
         setExporting(false);
         toast.info('Google Calendar access expired. Please sign in again.');
-        Sentry.addBreadcrumb({
-          category: 'gcal',
-          message: 'Token expired (403), cleared token for re-authentication',
-          level: 'warning',
-        });
-        // Automatically trigger re-authentication
         loginAndExportEvents();
         return;
       }
-      toast.error('Error exporting Google Calendar events');
 
       Sentry.addBreadcrumb({
         category: 'gcal',
         message: 'Exporting GCal events',
         level: 'info',
       });
-      Sentry.captureException(normalizedError);
+      Sentry.captureException(err);
+      toast.error('Error exporting Google Calendar events');
     } finally {
       setExporting(false);
     }
