@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../../store';
 import styles from './CalendarLockSettingsModal.module.css';
 
-const HOUR_OPTIONS = Array.from({ length: 17 }, (_, i) => i + 6);
+const HOUR_OPTIONS = Array.from({ length: 16 }, (_, i) => i + 7);
 
 function formatHour(hour: number): string {
   if (hour === 0) return '12am';

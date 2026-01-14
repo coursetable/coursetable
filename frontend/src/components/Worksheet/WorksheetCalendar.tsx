@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
-
 import CalendarEvent, { useEventStyle } from './CalendarEvent';
 import {
   ColorPickerModal,
@@ -38,41 +37,48 @@ function WorksheetCalendar() {
       calendarLockEnd: state.calendarLockEnd,
     })),
   );
-
   const eventStyleGetter = useEventStyle();
-
   const { earliest, latest, parsedCourses } = useMemo(() => {
-    const parsedCourses = getCalendarEvents('rbc', courses, viewedSeason);
-
+    const allCourses = getCalendarEvents('rbc', courses, viewedSeason);
     if (isCalendarViewLocked) {
+      const filteredCourses = allCourses.filter((course) => {
+        const courseEndHour = course.end.getHours();
+        const courseEndMinutes = course.end.getMinutes();
+        const courseStartHour = course.start.getHours();
+
+        const endsBeforeStart =
+          courseEndHour < calendarLockStart ||
+          (courseEndHour === calendarLockStart && courseEndMinutes === 0);
+
+        const startsAfterEnd = courseStartHour >= calendarLockEnd;
+
+        return !endsBeforeStart && !startsAfterEnd;
+      });
+
       return {
         earliest: new Date(0, 0, 0, calendarLockStart),
         latest: new Date(0, 0, 0, calendarLockEnd),
-        parsedCourses,
+        parsedCourses: filteredCourses,
       };
     }
-
-    if (parsedCourses.length === 0) {
+    if (allCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
         latest: new Date(0, 0, 0, 18),
-        parsedCourses,
+        parsedCourses: allCourses,
       };
     }
-
-    const earliest = new Date(parsedCourses[0]!.start);
-    const latest = new Date(parsedCourses[0]!.end);
+    const earliest = new Date(allCourses[0]!.start);
+    const latest = new Date(allCourses[0]!.end);
     earliest.setMinutes(0);
     latest.setMinutes(59);
-
-    for (const c of parsedCourses) {
+    for (const c of allCourses) {
       if (c.start.getHours() < earliest.getHours())
         earliest.setHours(c.start.getHours());
       if (c.end.getHours() > latest.getHours())
         latest.setHours(c.end.getHours());
     }
-
-    return { earliest, latest, parsedCourses };
+    return { earliest, latest, parsedCourses: allCourses };
   }, [
     courses,
     viewedSeason,
@@ -80,7 +86,6 @@ function WorksheetCalendar() {
     calendarLockStart,
     calendarLockEnd,
   ]);
-
   return (
     <>
       <Calendar
@@ -114,11 +119,9 @@ function WorksheetCalendar() {
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
       />
-
       <ColorPickerModal onClose={() => setOpenColorPickerEvent(null)} />
       <WorksheetMoveModal onClose={() => setOpenWorksheetMoveEvent(null)} />
     </>
   );
 }
-
 export default WorksheetCalendar;

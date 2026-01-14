@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import { FaLock, FaUnlock, FaCog, FaExpand, FaEye } from 'react-icons/fa';
+import {
+  FaLock,
+  FaUnlock,
+  FaCog,
+  FaExpandAlt,
+  FaCompressAlt,
+} from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 
 import NeedsLogin from './NeedsLogin';
@@ -64,6 +70,9 @@ function Worksheet() {
   const LockIcon = isCalendarViewLocked ? FaLock : FaUnlock;
   const lockLabel = isCalendarViewLocked ? 'Unlock view' : 'Lock view';
 
+  const FullScreenIcon = expanded ? FaCompressAlt : FaExpandAlt;
+  const fullScreenLabel = expanded ? 'Compress calendar' : 'Expand calendar';
+
   return (
     <div className={styles.container}>
       {isMobile && !isExoticWorksheet && (
@@ -79,9 +88,17 @@ function Worksheet() {
         <WorksheetCalendar />
         {!isMobile && (
           <div className={styles.calendarControls}>
-            <div className={styles.controlsTrigger}>
-              <FaEye className={styles.triggerIcon} size={10} />
-            </div>
+            <button
+              type="button"
+              className={styles.controlsTrigger}
+              onClick={() => setExpanded((x) => !x)}
+              aria-label={fullScreenLabel}
+              title={`${fullScreenLabel} + new buttons! (beta)`}
+            >
+              <FullScreenIcon className={styles.triggerIcon} size={11} />
+              <span className={styles.betaIndicator} aria-hidden="true" />
+            </button>
+
             <div className={styles.controlsMenu}>
               <button
                 type="button"
@@ -90,29 +107,17 @@ function Worksheet() {
                 aria-label={lockLabel}
                 title={lockLabel}
               >
-                <LockIcon size={10} />
+                <LockIcon size={11} />
               </button>
+
               <button
                 type="button"
                 className={styles.controlBtn}
-                onClick={() => {
-                  setCalendarLockSettingsOpen(true);
-                }}
+                onClick={() => setCalendarLockSettingsOpen(true)}
                 aria-label="Calendar time range settings"
                 title="Calendar time range settings"
               >
-                <FaCog size={10} />
-              </button>
-              <button
-                type="button"
-                className={styles.controlBtn}
-                onClick={() => {
-                  setExpanded((x) => !x);
-                }}
-                aria-label="Expand calendar"
-                title="Expand calendar"
-              >
-                <FaExpand size={10} />
+                <FaCog size={11} />
               </button>
             </div>
           </div>
