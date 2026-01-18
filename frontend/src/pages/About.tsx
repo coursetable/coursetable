@@ -63,9 +63,18 @@ function About() {
 
   const current: Person[] = [
     {
+      name: 'Reyansh Bahl',
+      image: rb,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/reybahl',
+        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
+      },
+    },
+    {
       name: 'Neil Song',
       image: ns,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         linkedin: 'https://www.linkedin.com/in/neil-song/',
         github: 'https://github.com/neilsong',
@@ -74,7 +83,7 @@ function About() {
     {
       name: 'Humphrey Xu',
       image: hx,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
         github: 'https://github.com/Etherite1',
@@ -101,25 +110,6 @@ function About() {
       },
     },
     {
-      name: 'Ben Xu',
-      image: bx,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
-        github: 'https://github.com/benzuzu',
-      },
-    },
-    {
-      name: 'Kenny Tung',
-      image: kt,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/tungk/',
-        github: 'https://github.com/kentng01/',
-        website: 'https://kenneru.netlify.app/',
-      },
-    },
-    {
       name: 'Filippo Fonseca',
       image: ff,
       role: 'Development',
@@ -127,15 +117,6 @@ function About() {
         github: 'https://github.com/filippo-fonseca',
         linkedin: 'https://www.linkedin.com/in/filippo-fonseca/',
         website: 'https://filippofonseca.com/',
-      },
-    },
-    {
-      name: 'Reyansh Bahl',
-      image: rb,
-      role: 'Development',
-      links: {
-        github: 'https://github.com/reybahl',
-        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
       },
     },
     {
@@ -224,6 +205,25 @@ function About() {
       name: 'Michelle M. Li',
       image: ml,
       role: 'Design Lead',
+    },
+    {
+      name: 'Ben Xu',
+      image: bx,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
+        github: 'https://github.com/benzuzu',
+      },
+    },
+    {
+      name: 'Kenny Tung',
+      image: kt,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/tungk/',
+        github: 'https://github.com/kentng01/',
+        website: 'https://kenneru.netlify.app/',
+      },
     },
     {
       name: 'Erik Boesen',
