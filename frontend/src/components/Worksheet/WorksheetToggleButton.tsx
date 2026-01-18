@@ -87,7 +87,7 @@ function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
         <OverlayTrigger
           placement="left"
           overlay={(overlayProps) => (
-            <Tooltip id="button-tooltip" {...overlayProps}>
+            <Tooltip id="worksheet-toggle-button-tooltip" {...overlayProps}>
               <span>
                 {props.data.value === 0
                   ? 'Main Worksheet'
