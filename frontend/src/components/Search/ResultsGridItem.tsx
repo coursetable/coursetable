@@ -100,7 +100,7 @@ function ResultsGridItem({
   if (!listing) return null;
 
   const timesSummary = toTimesSummary(listing.course);
-  const locationsSummary = toLocationsSummary(listing.course);
+  const locationsSummary = toLocationsSummary(listing.course, user?.hasEvals);
 
   return (
     <li className={styles.container} style={style}>
@@ -148,7 +148,11 @@ function ResultsGridItem({
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {locationsSummary === 'TBA' ? 'Location: TBA' : locationsSummary}
+              {locationsSummary === 'TBA'
+                ? 'Location: TBA'
+                : locationsSummary === 'Sign in to see'
+                  ? locationsSummary
+                  : `Location: ${locationsSummary}`}
             </TextComponent>
             <div className={styles.skillsAreas}>
               {[...listing.course.skills, ...listing.course.areas].map(

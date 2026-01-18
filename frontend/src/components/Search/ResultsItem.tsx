@@ -187,7 +187,7 @@ function ResultsItem({
           </span>
           <span className={colStyles.locCol}>
             <span className={styles.ellipsisText}>
-              {toLocationsSummary(listing.course)}
+              {toLocationsSummary(listing.course, user?.hasEvals)}
             </span>
           </span>
           <span className={colStyles.friendsCol}>
