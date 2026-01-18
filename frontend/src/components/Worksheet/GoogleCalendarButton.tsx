@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { hasGrantedAnyScopeGoogle, useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
@@ -20,6 +20,54 @@ function GoogleCalendarButton(): React.JSX.Element {
       courses: state.courses,
     })),
   );
+  const exportEventsRef = useRef<(() => Promise<void>) | null>(null);
+
+  const loginAndExportEvents = useGoogleLogin({
+    onSuccess(tokenResponse) {
+      if (!gapi) {
+        Sentry.captureException(new Error('gapi not loaded'));
+        return;
+      }
+      const hasAccess = hasGrantedAnyScopeGoogle(
+        tokenResponse,
+        'https://www.googleapis.com/auth/calendar.events',
+      );
+      if (!hasAccess) {
+        toast.error('You must grant access to export events');
+        return;
+      }
+      gapi.client.setToken({
+        access_token: tokenResponse.access_token,
+      });
+      void exportEventsRef.current?.();
+    },
+    scope: 'https://www.googleapis.com/auth/calendar.events',
+    onError(errorResponse) {
+      Sentry.addBreadcrumb({
+        category: 'gcal',
+        message: 'Logging in to GCal',
+        level: 'info',
+      });
+      Sentry.captureException(errorResponse);
+      toast.error('Error logging in to Google Calendar');
+    },
+    onNonOAuthError(nonOAuthError) {
+      if (nonOAuthError.type === 'popup_closed') {
+        toast.error('Google Calendar sign in popup closed');
+        return;
+      } else if (nonOAuthError.type === 'popup_failed_to_open') {
+        toast.error('Google Calendar sign in popup blocked');
+        return;
+      }
+      Sentry.addBreadcrumb({
+        category: 'gcal',
+        message: 'Logging in to GCal',
+        level: 'info',
+      });
+      Sentry.captureException(nonOAuthError);
+      toast.error('Error logging in to Google Calendar');
+    },
+  });
 
   const exportEvents = useCallback(async () => {
     if (!gapi) {
@@ -92,65 +140,34 @@ function GoogleCalendarButton(): React.JSX.Element {
       );
       toast.success('Exported to Google Calendar!');
     } catch (err) {
+      // Handle 403 Forbidden - token expired or revoked
+      if (
+        err &&
+        typeof err === 'object' &&
+        Object.hasOwn(err, 'status') &&
+        (err as { status: number }).status === 403
+      ) {
+        gapi.client.setToken(null);
+        setExporting(false);
+        toast.info('Google Calendar access expired. Please sign in again.');
+        loginAndExportEvents();
+        return;
+      }
+
       Sentry.addBreadcrumb({
         category: 'gcal',
         message: 'Exporting GCal events',
         level: 'info',
       });
       Sentry.captureException(err);
-      console.log(err);
       toast.error('Error exporting Google Calendar events');
     } finally {
       setExporting(false);
     }
-  }, [courses, gapi, viewedSeason]);
+  }, [courses, gapi, viewedSeason, loginAndExportEvents]);
 
-  const loginAndExportEvents = useGoogleLogin({
-    onSuccess(tokenResponse) {
-      if (!gapi) {
-        Sentry.captureException(new Error('gapi not loaded'));
-        return;
-      }
-      const hasAccess = hasGrantedAnyScopeGoogle(
-        tokenResponse,
-        'https://www.googleapis.com/auth/calendar.events',
-      );
-      if (!hasAccess) {
-        toast.error('You must grant access to export events');
-        return;
-      }
-      gapi.client.setToken({
-        access_token: tokenResponse.access_token,
-      });
-      void exportEvents();
-    },
-    scope: 'https://www.googleapis.com/auth/calendar.events',
-    onError(errorResponse) {
-      Sentry.addBreadcrumb({
-        category: 'gcal',
-        message: 'Logging in to GCal',
-        level: 'info',
-      });
-      Sentry.captureException(errorResponse);
-      toast.error('Error logging in to Google Calendar');
-    },
-    onNonOAuthError(nonOAuthError) {
-      if (nonOAuthError.type === 'popup_closed') {
-        toast.error('Google Calendar sign in popup closed');
-        return;
-      } else if (nonOAuthError.type === 'popup_failed_to_open') {
-        toast.error('Google Calendar sign in popup blocked');
-        return;
-      }
-      Sentry.addBreadcrumb({
-        category: 'gcal',
-        message: 'Logging in to GCal',
-        level: 'info',
-      });
-      Sentry.captureException(nonOAuthError);
-      toast.error('Error logging in to Google Calendar');
-    },
-  });
+  // Store exportEvents in ref so loginAndExportEvents can call it
+  exportEventsRef.current = exportEvents;
 
   return (
     <button

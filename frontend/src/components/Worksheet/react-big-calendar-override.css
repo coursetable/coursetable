@@ -46,9 +46,27 @@
   display: none !important;
 }
 
-.rbc-today,
-.rbc-current-time-indicator {
+.rbc-today {
   background-color: transparent !important;
+}
+
+.rbc-current-time-indicator {
+  background-color: var(--color-primary) !important;
+  height: 2px !important;
+  pointer-events: none;
+  box-shadow: 0 0 0.25rem var(--color-shadow);
+}
+
+.rbc-current-time-indicator::before {
+  content: '';
+  position: absolute;
+  left: -0.25rem;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  transform: translateY(-50%);
 }
 
 .rbc-header a:hover {

@@ -141,10 +141,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={18}
+        id={21}
       >
-        {/* Locations are temporarily unavailable - we are actively working on
-        resolving this issue. */}
+        Course locations are accurate as of December 2025. Please refer to Yale
+        Course Search to see your up-to-date course locations.
       </Notice>
       <Navbar />
       <SentryRoutes>
