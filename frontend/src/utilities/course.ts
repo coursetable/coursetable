@@ -81,7 +81,12 @@ export function toTimesSummary(
 
 export function toLocationsSummary(
   course: Pick<CatalogListing['course'], 'course_meetings'>,
+  hasEvals?: boolean,
 ): string {
+  // Hide locations for users without evaluation access
+  if (hasEvals === false) return 'HIDDEN';
+  if (hasEvals === undefined) return 'HIDDEN';
+
   if (course.course_meetings.every((m) => !m.location)) return 'TBA';
   const meeting = course.course_meetings[0]!;
   const summary = meeting.location

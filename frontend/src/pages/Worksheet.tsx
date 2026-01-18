@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import {
   FaLock,
@@ -19,6 +19,7 @@ import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
 import WorksheetList from '../components/Worksheet/WorksheetList';
+import WorksheetMap from '../components/Worksheet/WorksheetMap';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
@@ -51,6 +52,7 @@ function Worksheet() {
     })),
   );
   const [expanded, setExpanded] = useState(false);
+  const emptyMissingBuildingCodes = useMemo(() => new Set<string>(), []);
 
   useEffect(() => {
     const exoticWorksheet = parseCoursesFromURL();
@@ -66,6 +68,7 @@ function Worksheet() {
   // For unauthed users, they can only view exotic worksheets
   if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
+  if (worksheetView === 'map') return <WorksheetMap />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   const LockIcon = isCalendarViewLocked ? FaLock : FaUnlock;
   const lockLabel = isCalendarViewLocked ? 'Unlock view' : 'Lock view';
@@ -73,6 +76,25 @@ function Worksheet() {
   const FullScreenIcon = expanded ? FaCompressAlt : FaExpandAlt;
   const fullScreenLabel = expanded ? 'Compress calendar' : 'Expand calendar';
 
+  // Mobile list view - show dropdowns and list
+  if (worksheetView === 'list' && isMobile) {
+    return (
+      <>
+        {!isExoticWorksheet && (
+          <div className={styles.mobileListDropdowns}>
+            <WorksheetNumDropdown mobile />
+            <div className="d-flex">
+              <SeasonDropdown mobile />
+              <FriendsDropdown mobile />
+            </div>
+          </div>
+        )}
+        <WorksheetList />
+      </>
+    );
+  }
+
+  // Calendar view (default)
   return (
     <div className={styles.container}>
       {isMobile && !isExoticWorksheet && (
@@ -126,7 +148,14 @@ function Worksheet() {
       {(isMobile || !expanded) && (
         <div className={styles.calendarSidebar}>
           <WorksheetStats />
-          <WorksheetCalendarList />
+          <WorksheetCalendarList
+            highlightBuilding={null}
+            showLocation={false}
+            showMissingLocationIcon={false}
+            controlsMode="full"
+            missingBuildingCodes={emptyMissingBuildingCodes}
+            hideTooltipContext="calendar"
+          />
         </div>
       )}
       <CalendarLockSettingsModal />
