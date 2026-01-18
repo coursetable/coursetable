@@ -1,0 +1,13 @@
+name: Catalog Refresh
+
+on:
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Regenerate static catalog on server
+        run: |
+          curl --silent --show-error -H "X-FERRY-SECRET: ${{ secrets.FERRY_SECRET }}" https://api.coursetable.com/api/catalog/refresh
+          curl --silent --show-error -H "X-FERRY-SECRET: ${{ secrets.FERRY_SECRET }}" https://api-staging.coursetable.com/api/catalog/refresh
