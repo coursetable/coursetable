@@ -79,7 +79,7 @@ export default function CourseTableNavbar() {
       <Navbar
         expanded={navExpanded}
         onToggle={setNavExpanded}
-        expand="lg"
+        expand="md"
         className={clsx(
           'shadow-sm px-3 align-items-start',
           styles.navbar,
