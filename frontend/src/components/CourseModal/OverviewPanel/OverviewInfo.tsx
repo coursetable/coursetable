@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip, Collapse } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
@@ -365,13 +366,19 @@ function Professors({ course }: { readonly course: CourseInfo }) {
   );
 }
 
-function TimeLocation({ course }: { readonly course: CourseInfo }) {
+function TimeLocation({
+  course,
+  hasEvals,
+}: {
+  readonly course: CourseInfo;
+  readonly hasEvals: boolean;
+}) {
   return (
     <DataField
       name="Meetings"
       value={course.course_meetings.map((session, i) => {
         const locationTexts = [];
-        if (session.location) {
+        if (session.location && hasEvals) {
           locationTexts.push(session.location.building.code);
           // TODO use a tooltip instead
           if (session.location.building.building_name)
@@ -382,7 +389,7 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
           <div key={i}>
             {toWeekdaysDisplayString(session.days_of_week)}{' '}
             {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
-            {session.location && (
+            {hasEvals && session.location && (
               <>
                 {' '}
                 at{' '}
@@ -398,6 +405,12 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
                 ) : (
                   locationTexts.join(' ')
                 )}
+              </>
+            )}
+            {!hasEvals && (
+              <>
+                {' '}
+                <BsEyeSlash title="Sign in to see location" />
               </>
             )}
           </div>
@@ -417,6 +430,7 @@ function OverviewInfo({
   readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
 }) {
   const { numFriends } = useSearch();
+  const user = useStore((state) => state.user);
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
@@ -432,7 +446,7 @@ function OverviewInfo({
       />
       <Syllabus course={course} sameCourse={sameCourse} />
       <Professors course={course} />
-      <TimeLocation course={course} />
+      <TimeLocation course={course} hasEvals={Boolean(user?.hasEvals)} />
       <DataField name="Section" value={course.section} />
       <DataField
         name="Info"

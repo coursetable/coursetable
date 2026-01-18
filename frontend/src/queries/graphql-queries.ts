@@ -67,7 +67,7 @@ export const CourseModalOverviewDataDocument = gql`
           days_of_week
           start_time
           end_time
-          location {
+          location @include(if: $hasEvals) {
             room
             building {
               code

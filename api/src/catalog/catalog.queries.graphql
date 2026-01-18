@@ -20,6 +20,17 @@ query evalsBySeason($season: String!) {
     }
     last_enrollment
     last_enrollment_same_professors
+    course_meetings {
+      days_of_week
+      start_time
+      end_time
+      location {
+        room
+        building {
+          code
+        }
+      }
+    }
   }
 }
 
@@ -65,12 +76,6 @@ query catalogBySeason($season: String!) {
       days_of_week
       start_time
       end_time
-      location {
-        room
-        building {
-          code
-        }
-      }
     }
     title
     time_added
