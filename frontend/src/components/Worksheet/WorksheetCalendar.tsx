@@ -10,7 +10,11 @@ import {
   WorksheetMoveModal,
 } from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
-import { localizer, getCalendarEvents } from '../../utilities/calendar';
+import {
+  localizer,
+  getCalendarEvents,
+  type RBCEvent,
+} from '../../utilities/calendar';
 import './react-big-calendar-override.css';
 
 function WorksheetCalendar() {
@@ -70,6 +74,7 @@ function WorksheetCalendar() {
         max={latest}
         localizer={localizer}
         toolbar={false}
+        showCurrentTimeIndicator
         onSelectEvent={(event) => {
           setSearchParams((prev) => {
             prev.set(
@@ -80,9 +85,9 @@ function WorksheetCalendar() {
           });
         }}
         components={{
-          event: (event) => (
+          event: ({ event }: { readonly event: RBCEvent }) => (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <CalendarEvent {...event} />
+              <CalendarEvent event={event} />
             </div>
           ),
         }}
