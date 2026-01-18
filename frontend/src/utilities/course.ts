@@ -84,8 +84,8 @@ export function toLocationsSummary(
   hasEvals?: boolean,
 ): string {
   // Hide locations for users without evaluation access
-  if (hasEvals === false) return 'Sign in to see';
-  if (hasEvals === undefined) return 'Sign in to see';
+  if (hasEvals === false) return 'HIDDEN';
+  if (hasEvals === undefined) return 'HIDDEN';
 
   if (course.course_meetings.every((m) => !m.location)) return 'TBA';
   const meeting = course.course_meetings[0]!;

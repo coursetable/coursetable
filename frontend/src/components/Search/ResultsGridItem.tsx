@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import type { GridChildComponentProps } from 'react-window';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -148,11 +149,13 @@ function ResultsGridItem({
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {locationsSummary === 'TBA'
-                ? 'Location: TBA'
-                : locationsSummary === 'Sign in to see'
-                  ? locationsSummary
-                  : `Location: ${locationsSummary}`}
+              {locationsSummary === 'HIDDEN' ? (
+                <BsEyeSlash title="Sign in to see location" />
+              ) : locationsSummary === 'TBA' ? (
+                'Location: TBA'
+              ) : (
+                `Location: ${locationsSummary}`
+              )}
             </TextComponent>
             <div className={styles.skillsAreas}>
               {[...listing.course.skills, ...listing.course.areas].map(

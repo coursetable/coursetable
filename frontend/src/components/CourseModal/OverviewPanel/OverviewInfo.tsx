@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip, Collapse } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
@@ -406,7 +407,12 @@ function TimeLocation({
                 )}
               </>
             )}
-            {!hasEvals && <> (Sign in to see location)</>}
+            {!hasEvals && (
+              <>
+                {' '}
+                <BsEyeSlash title="Sign in to see location" />
+              </>
+            )}
           </div>
         );
       })}
