@@ -322,6 +322,14 @@ function ViewportGuards({
 
   useEffect(
     () => () => {
+      if (fitTimeoutRef.current) {
+        window.clearTimeout(fitTimeoutRef.current);
+        fitTimeoutRef.current = null;
+      }
+      if (relaxTimeoutRef.current) {
+        window.clearTimeout(relaxTimeoutRef.current);
+        relaxTimeoutRef.current = null;
+      }
       if (priorMinZoomRef.current !== null)
         map.setMinZoom(priorMinZoomRef.current);
 

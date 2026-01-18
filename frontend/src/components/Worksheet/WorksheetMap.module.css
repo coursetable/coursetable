@@ -17,7 +17,7 @@
   position: relative;
 }
 
-@media (max-width: calc(992px - 0.5px)) {
+@media (max-width: calc(768px - 0.5px)) {
   .mapCard {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -43,7 +43,7 @@
   border-radius: 12px;
 }
 
-@media (max-width: calc(992px - 0.5px)) {
+@media (max-width: calc(768px - 0.5px)) {
   .mapWrapper {
     height: max(calc(100vh - var(--height-navbar) - 2rem - 72px), 420px);
     min-height: 420px;
@@ -110,7 +110,7 @@
   gap: 1rem;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .container {
     flex-direction: row;
     align-items: flex-start;
