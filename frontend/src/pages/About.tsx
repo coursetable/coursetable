@@ -110,6 +110,25 @@ function About() {
       },
     },
     {
+      name: 'Ben Xu',
+      image: bx,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
+        github: 'https://github.com/benzuzu',
+      },
+    },
+    {
+      name: 'Kenny Tung',
+      image: kt,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/tungk/',
+        github: 'https://github.com/kentng01/',
+        website: 'https://kenneru.netlify.app/',
+      },
+    },
+    {
       name: 'Filippo Fonseca',
       image: ff,
       role: 'Development',
@@ -205,25 +224,6 @@ function About() {
       name: 'Michelle M. Li',
       image: ml,
       role: 'Design Lead',
-    },
-    {
-      name: 'Ben Xu',
-      image: bx,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
-        github: 'https://github.com/benzuzu',
-      },
-    },
-    {
-      name: 'Kenny Tung',
-      image: kt,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/tungk/',
-        github: 'https://github.com/kentng01/',
-        website: 'https://kenneru.netlify.app/',
-      },
     },
     {
       name: 'Erik Boesen',
