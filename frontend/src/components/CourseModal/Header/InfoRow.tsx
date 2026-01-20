@@ -3,7 +3,6 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { Option } from '../../../contexts/searchContext';
 import type {
   CourseSectionsQuery,
@@ -150,16 +149,16 @@ export default function ModalHeaderInfo({
 }) {
   const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
-  const courseCode = listing.course_code;
-  const season = listing.course.season_code;
+  const { backTarget } = useStore((state) => ({
+    backTarget: state.backTarget,
+  }));
   const { data, loading, error } = useCourseSectionsQuery({
     variables: {
-      courseCode,
-      seasonCode: season,
+      courseCode: listing.course_code,
+      seasonCode: listing.course.season_code,
       hasEvals: Boolean(user?.hasEvals),
     },
   });
-  const { backTarget } = useModalHistory();
   const sections =
     loading || error || !data?.listings
       ? []
@@ -168,6 +167,7 @@ export default function ModalHeaderInfo({
             numeric: true,
           }),
         );
+
   return (
     <div className={styles.modalTop}>
       {backTarget && (
