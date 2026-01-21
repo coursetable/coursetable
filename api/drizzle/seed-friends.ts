@@ -2,14 +2,18 @@ import { parseArgs } from 'node:util';
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { studentBluebookSettings, studentFriendRequests } from './schema.js';
+import {
+  studentBluebookSettings,
+  studentFriendRequests,
+  studentFriends,
+} from './schema.js';
 
 const { values } = parseArgs({
   options: {
     count: { type: 'string', default: '5' },
-    requests: { type: 'string', default: '0' },
+    requests: { type: 'string', default: '2' },
     prefix: { type: 'string', default: 'test' },
-    clean: { type: 'boolean', default: false },
+    clean: { type: 'boolean', default: true },
   },
 });
 
@@ -94,6 +98,31 @@ await db.transaction(async (tx) => {
           college: sql`excluded."college"`,
         },
       });
+  }
+
+  if (users.length > 1) {
+    const friendPairsTarget = Math.min(2, users.length - 1);
+    const friendPairs = new Set<string>();
+    const friendRows: { netId: string; friendNetId: string }[] = [];
+
+    while (
+      friendRows.length < friendPairsTarget * 2 &&
+      friendPairs.size < users.length ** 2
+    ) {
+      const fromIdx = Math.floor(Math.random() * users.length);
+      const toIdx = Math.floor(Math.random() * users.length);
+      if (fromIdx === toIdx) continue;
+      const from = users[fromIdx]!.netId;
+      const to = users[toIdx]!.netId;
+      const key = [from, to].sort().join('|');
+      if (friendPairs.has(key)) continue;
+      friendPairs.add(key);
+      friendRows.push({ netId: from, friendNetId: to });
+      friendRows.push({ netId: to, friendNetId: from });
+    }
+
+    if (friendRows.length)
+      await tx.insert(studentFriends).values(friendRows).onConflictDoNothing();
   }
 
   if (requests > 0 && users.length > 1) {

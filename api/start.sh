@@ -12,7 +12,8 @@ ENV=""
 OVERWRITE=false
 FERRY_SEED=false
 OFFLINE=false 
-SEED_FRIENDS=true
+SEED_FRIENDS=false
+SEED_FRIENDS_SET=false
 
 for ARGS in "$@"; do
   shift
@@ -23,12 +24,13 @@ for ARGS in "$@"; do
       "--overwrite") set -- "$@" "-o" ;;
       "--ferry_seed") set -- "$@" "-f" ;;
       "--offline") set -- "$@" "-x" ;;
-      "--no-seed-friends") set -- "$@" "-g" ;;
+      "--seed-friends") set -- "$@" "-g" ;;
+      "--no-seed-friends") set -- "$@" "-n" ;;
       *) set -- "$@" "$ARGS"
   esac
 done
 
-while getopts 'dspofxg' flag; do
+while getopts 'dspofxgn' flag; do
   case "${flag}" in
     d) ENV="dev" ;;
     s) ENV="staging" ;;
@@ -36,7 +38,8 @@ while getopts 'dspofxg' flag; do
     o) OVERWRITE=true ;;
     f) FERRY_SEED=true ;;
     x) OFFLINE=true ;;
-    g) SEED_FRIENDS=false ;;
+    g) SEED_FRIENDS=true; SEED_FRIENDS_SET=true ;;
+    n) SEED_FRIENDS=false; SEED_FRIENDS_SET=true ;;
   esac
 done
 
@@ -60,6 +63,10 @@ then
         export OVERWRITE_CATALOG='true'
         rm -rf postgres/data/
     fi
+    if [[ $FERRY_SEED == true && $SEED_FRIENDS_SET == false ]]
+    then
+        SEED_FRIENDS=true
+    fi
 
     # Set PULL_ALWAYS based on OFFLINE flag
     if [[ $OFFLINE == true ]]; then
@@ -77,7 +84,7 @@ then
     fi
     if [[ $SEED_FRIENDS == true ]]
     then
-        docker exec -it express /bin/bash -c "cd api && npx tsx drizzle/seed-friends.ts"
+        docker exec -it express /bin/bash -c "cd api && npm run db:seed:friends"
     fi
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
