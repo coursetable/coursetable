@@ -12,6 +12,7 @@ ENV=""
 OVERWRITE=false
 FERRY_SEED=false
 OFFLINE=false 
+SEED_FRIENDS=true
 
 for ARGS in "$@"; do
   shift
@@ -22,11 +23,12 @@ for ARGS in "$@"; do
       "--overwrite") set -- "$@" "-o" ;;
       "--ferry_seed") set -- "$@" "-f" ;;
       "--offline") set -- "$@" "-x" ;;
+      "--no-seed-friends") set -- "$@" "-g" ;;
       *) set -- "$@" "$ARGS"
   esac
 done
 
-while getopts 'dspofx' flag; do
+while getopts 'dspofxg' flag; do
   case "${flag}" in
     d) ENV="dev" ;;
     s) ENV="staging" ;;
@@ -34,6 +36,7 @@ while getopts 'dspofx' flag; do
     o) OVERWRITE=true ;;
     f) FERRY_SEED=true ;;
     x) OFFLINE=true ;;
+    g) SEED_FRIENDS=false ;;
   esac
 done
 
@@ -71,6 +74,10 @@ then
     if [[ $FERRY_SEED == true ]]
     then
         docker exec -it express /bin/bash -c "cd api && npm run db:push"
+    fi
+    if [[ $SEED_FRIENDS == true ]]
+    then
+        docker exec -it express /bin/bash -c "cd api && npx tsx drizzle/seed-friends.ts"
     fi
 
     doppler run --command "docker compose -f compose/docker-compose.yml -f compose/dev-compose.yml -p api logs -f"
