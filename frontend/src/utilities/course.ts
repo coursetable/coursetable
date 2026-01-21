@@ -146,6 +146,13 @@ export function getNumFriends(
   friends: FriendRecord,
   sameCourseIdToCrns?: { [key: string]: number[] },
 ): NumFriendsReturn {
+  // Reverse mapping: CRN -> same_course_id
+  const crnToSameCourseId = new Map<number, string>();
+  if (sameCourseIdToCrns) {
+    for (const [sameCourseId, crns] of Object.entries(sameCourseIdToCrns))
+      for (const crn of crns) crnToSameCourseId.set(crn, sameCourseId);
+  }
+
   // First, group friends by same_course_id + season
   const friendsBySameCourse = new Map<string, Set<string>>();
 
@@ -153,10 +160,10 @@ export function getNumFriends(
     for (const [seasonCode, worksheets] of friend.worksheets) {
       for (const w of worksheets.values()) {
         for (const course of w.courses) {
-          // Group by same_course_id if available, otherwise fall back to CRN
+          const sameCourseId = crnToSameCourseId.get(course.crn);
           const key =
-            course.same_course_id !== null
-              ? `${seasonCode}-${course.same_course_id}`
+            sameCourseId !== undefined
+              ? `${seasonCode}-${sameCourseId}`
               : `${seasonCode}-crn-${course.crn}`;
 
           if (!friendsBySameCourse.has(key))

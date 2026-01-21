@@ -1,7 +1,11 @@
 import type express from 'express';
 import { or, and, eq, inArray, sql } from 'drizzle-orm';
-import { gql } from 'graphql-request';
 import z from 'zod';
+import {
+  getSdk,
+  type CrnToSameCourseIdQuery,
+  type AllCrnsForSameCourseIdsQuery,
+} from './friends.queries.js';
 import {
   studentBluebookSettings,
   studentFriendRequests,
@@ -269,7 +273,6 @@ export const getFriendsWorksheets = async (
     },
   );
 
-  // Collect all unique CRNs grouped by season
   const seasonCrnMap = new Map<string, Set<number>>();
   for (const friendNetId of friendNetIds) {
     const friendWorksheets = friendWorksheetMap[friendNetId];
@@ -293,30 +296,16 @@ export const getFriendsWorksheets = async (
     }
   }
 
-  // Fetch same_course_id for all CRNs using GraphQL
   const crnToSameCourseId = new Map<string, number>();
   for (const [seasonCode, crns] of seasonCrnMap.entries()) {
     if (crns.size === 0) continue;
 
-    const query = gql`
-      query CrnToSameCourseId($crns: [Int!]!, $season: String!) {
-        listings(
-          where: {
-            crn: { _in: $crns }
-            course: { season_code: { _eq: $season } }
-          }
-        ) {
-          crn
-          course {
-            same_course_id
-          }
-        }
-      }
-    `;
-
-    const data = await graphqlClient.request<{
-      listings: { crn: number; course: { same_course_id: number } }[];
-    }>(query, { crns: Array.from(crns), season: seasonCode });
+    const data: CrnToSameCourseIdQuery = await getSdk(
+      graphqlClient,
+    ).CrnToSameCourseId({
+      crns: Array.from(crns),
+      season: seasonCode,
+    });
 
     for (const listing of data.listings) {
       const key = `${seasonCode}${listing.crn}`;
@@ -334,25 +323,12 @@ export const getFriendsWorksheets = async (
   for (const [seasonCode] of seasonCrnMap.entries()) {
     if (sameCourseIds.size === 0) continue;
 
-    const query = gql`
-      query AllCrnsForSameCourseIds($sameCourseIds: [Int!]!, $season: String!) {
-        courses(
-          where: {
-            same_course_id: { _in: $sameCourseIds }
-            season_code: { _eq: $season }
-          }
-        ) {
-          same_course_id
-          listings {
-            crn
-          }
-        }
-      }
-    `;
-
-    const data = await graphqlClient.request<{
-      courses: { same_course_id: number; listings: { crn: number }[] }[];
-    }>(query, { sameCourseIds: Array.from(sameCourseIds), season: seasonCode });
+    const data: AllCrnsForSameCourseIdsQuery = await getSdk(
+      graphqlClient,
+    ).AllCrnsForSameCourseIds({
+      sameCourseIds: Array.from(sameCourseIds),
+      season: seasonCode,
+    });
 
     for (const course of data.courses) {
       if (!sameCourseIdToCrns.has(course.same_course_id))

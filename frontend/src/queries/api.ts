@@ -539,7 +539,6 @@ const worksheetCourseSchema = z.object({
   crn: crnSchema,
   color: z.string(),
   hidden: z.boolean().nullable(),
-  same_course_id: z.number().nullable(),
 });
 
 // Shared schema for worksheet structure
@@ -581,6 +580,7 @@ export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
       data: userWorksheetsSchema,
+      sameCourseIdToCrns: z.record(z.array(z.number())),
     }),
     breadcrumb: {
       category: 'user',
