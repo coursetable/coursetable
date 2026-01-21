@@ -7,11 +7,15 @@ import { useShallow } from 'zustand/react/shallow';
 import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import { useStore } from '../../store';
 
+const EXPORT_WIDTH = 1600;
+const EXPORT_HEIGHT = 1000;
 const CANVAS_SCALE = 2; // Higher resolution export (2x)
-const WATERMARK_PADDING = 20; // Padding from canvas edges (base pixels)
-const WORDMARK_HEIGHT = 24; // Wordmark text height (base pixels)
+const WATERMARK_PADDING = 8; // Padding from canvas edges (base pixels)
+const WORDMARK_HEIGHT = 14; // Wordmark text height (base pixels)
 const MAX_RETRIES = 5; // Maximum retry attempts for watermark
 const RETRY_DELAY = 100; // Delay between retries in milliseconds
+
+const EXPORT_CLASS = 'exporting-png';
 
 const loadImage = (src: string): Promise<HTMLImageElement> =>
   fetch(src)
@@ -104,18 +108,21 @@ export default function PNGExportButton() {
         scale: CANVAS_SCALE,
         logging: false,
         useCORS: true,
+        onclone(doc) {
+          doc.body.classList.add(EXPORT_CLASS);
+        },
       });
 
       // HTML2Canvas result can't be drawn on directly
       // So we redraw it to add watermark
       const finalCanvas = document.createElement('canvas');
-      finalCanvas.width = canvas.width;
-      finalCanvas.height = canvas.height;
+      finalCanvas.width = EXPORT_WIDTH;
+      finalCanvas.height = EXPORT_HEIGHT;
       const finalCtx = finalCanvas.getContext('2d');
 
       if (!finalCtx) throw new Error('Failed to get canvas context.');
 
-      finalCtx.drawImage(canvas, 0, 0);
+      finalCtx.drawImage(canvas, 0, 0, finalCanvas.width, finalCanvas.height);
       await retryWatermark(finalCtx, finalCanvas.height);
 
       await new Promise<void>((resolve, reject) => {
