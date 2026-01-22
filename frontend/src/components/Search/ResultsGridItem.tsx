@@ -150,7 +150,18 @@ function ResultsGridItem({
               className={clsx(styles.oneLine, styles.smallText)}
             >
               {locationsSummary === 'HIDDEN' ? (
-                <BsEyeSlash title="Sign in to see location" />
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="location-hidden-tooltip" {...props}>
+                      Sign in to see location
+                    </Tooltip>
+                  )}
+                >
+                  <span>
+                    <BsEyeSlash />
+                  </span>
+                </OverlayTrigger>
               ) : locationsSummary === 'TBA' ? (
                 'Location: TBA'
               ) : (
