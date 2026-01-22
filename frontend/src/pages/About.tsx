@@ -38,6 +38,7 @@ import rb from '../images/headshots/reyansh-bahl.jpg';
 import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
+import yf from '../images/headshots/yavin-fickel.jpg';
 
 // Link logos
 import githubDark from '../images/link-logos/github-light.png';
@@ -157,6 +158,16 @@ function About() {
         github: 'https://github.com/aryans-15',
         linkedin: 'https://www.linkedin.com/in/aryans15/',
         website: 'https://aryans.dev/',
+      },
+    },
+    {
+      name: 'Yavin Fickel',
+      image: yf,
+      role: 'Development',
+      links: {
+        website: 'https://yavinfickel.com',
+        github: 'https://github.com/yav-fi',
+        linkedin: 'https://www.linkedin.com/in/yavin',
       },
     },
   ];
