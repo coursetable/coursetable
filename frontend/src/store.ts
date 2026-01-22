@@ -39,7 +39,6 @@ const basePersistKeys: (keyof Store)[] = [
   'theme',
   'coursePref',
   'professorPref',
-  'viewedPerson',
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
