@@ -34,6 +34,17 @@ export type EvalsBySeasonQuery = {
       enrolled: number;
       responses: number | null;
     } | null;
+    course_meetings: Array<{
+      __typename?: 'course_meetings';
+      days_of_week: number;
+      start_time: string;
+      end_time: string;
+      location: {
+        __typename?: 'locations';
+        room: string | null;
+        building: { __typename?: 'buildings'; code: string };
+      } | null;
+    }>;
   }>;
 };
 
@@ -90,11 +101,6 @@ export type CatalogBySeasonQuery = {
       days_of_week: number;
       start_time: string;
       end_time: string;
-      location: {
-        __typename?: 'locations';
-        room: string | null;
-        building: { __typename?: 'buildings'; code: string };
-      } | null;
     }>;
   }>;
 };
@@ -145,6 +151,17 @@ export const EvalsBySeasonDocument = gql`
       }
       last_enrollment
       last_enrollment_same_professors
+      course_meetings {
+        days_of_week
+        start_time
+        end_time
+        location {
+          room
+          building {
+            code
+          }
+        }
+      }
     }
   }
 `;
@@ -190,12 +207,6 @@ export const CatalogBySeasonDocument = gql`
         days_of_week
         start_time
         end_time
-        location {
-          room
-          building {
-            code
-          }
-        }
       }
       title
       time_added

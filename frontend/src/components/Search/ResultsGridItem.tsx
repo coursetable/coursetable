@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import type { GridChildComponentProps } from 'react-window';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -100,7 +101,7 @@ function ResultsGridItem({
   if (!listing) return null;
 
   const timesSummary = toTimesSummary(listing.course);
-  const locationsSummary = toLocationsSummary(listing.course);
+  const locationsSummary = toLocationsSummary(listing.course, user?.hasEvals);
 
   return (
     <li className={styles.container} style={style}>
@@ -148,7 +149,24 @@ function ResultsGridItem({
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {locationsSummary === 'TBA' ? 'Location: TBA' : locationsSummary}
+              {locationsSummary === 'HIDDEN' ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="location-hidden-tooltip" {...props}>
+                      Sign in to see location
+                    </Tooltip>
+                  )}
+                >
+                  <span>
+                    <BsEyeSlash />
+                  </span>
+                </OverlayTrigger>
+              ) : locationsSummary === 'TBA' ? (
+                'Location: TBA'
+              ) : (
+                `Location: ${locationsSummary}`
+              )}
             </TextComponent>
             <div className={styles.skillsAreas}>
               {[...listing.course.skills, ...listing.course.areas].map(

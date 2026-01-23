@@ -79,3 +79,8 @@
 .dropdowns {
   margin-bottom: -1rem;
 }
+
+.mobileListDropdowns {
+  padding: 1rem 0.5rem 0;
+  margin-bottom: 0.75rem;
+}

@@ -21,7 +21,7 @@ import {
 import { type Store, useStore } from '../store';
 
 // Utility Types
-type WorksheetView = 'calendar' | 'list';
+export type WorksheetView = 'calendar' | 'list' | 'map';
 
 export interface WorksheetCourse {
   crn: Crn;
@@ -33,6 +33,8 @@ export interface WorksheetCourse {
 const exoticWorksheetSchema = z.object({
   season: seasonSchema,
   name: z.string(),
+  // Only missing for legacy worksheets
+  creatorName: z.string().optional(),
   courses: z.array(
     z.object({
       crn: crnSchema,

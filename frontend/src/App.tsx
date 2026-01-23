@@ -141,17 +141,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={17}
+        id={21}
       >
-        {/* If you enjoy CourseTable, please consider{' '}
-        <a
-          href="https://www.buymeacoffee.com/coursetable"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
-        >
-          buying our team of volunteers a coffee!
-        </a> */}
+        {/* Course locations are accurate as of December 2025. Please refer to Yale
+        Course Search to see your up-to-date course locations. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
