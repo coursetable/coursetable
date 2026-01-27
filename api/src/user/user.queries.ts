@@ -15,7 +15,7 @@ export type CrnToSameCourseIdQuery = {
   listings: Array<{
     __typename?: 'listings';
     crn: number;
-    course: { __typename?: 'courses'; same_course_id: number };
+    course: { __typename?: 'courses'; sameCourseId: number };
   }>;
 };
 
@@ -30,7 +30,7 @@ export type AllCrnsForSameCourseIdsQuery = {
   __typename?: 'query_root';
   courses: Array<{
     __typename?: 'courses';
-    same_course_id: number;
+    sameCourseId: number;
     listings: Array<{ __typename?: 'listings'; crn: number }>;
   }>;
 };
@@ -42,7 +42,7 @@ export const CrnToSameCourseIdDocument = gql`
     ) {
       crn
       course {
-        same_course_id
+        sameCourseId: same_course_id
       }
     }
   }
@@ -55,7 +55,7 @@ export const AllCrnsForSameCourseIdsDocument = gql`
         season_code: { _eq: $season }
       }
     ) {
-      same_course_id
+      sameCourseId: same_course_id
       listings {
         crn
       }

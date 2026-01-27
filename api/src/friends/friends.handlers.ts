@@ -1,11 +1,7 @@
 import type express from 'express';
 import { or, and, eq, inArray, sql } from 'drizzle-orm';
 import z from 'zod';
-import {
-  getSdk,
-  type CrnToSameCourseIdQuery,
-  type AllCrnsForSameCourseIdsQuery,
-} from './friends.queries.js';
+import { getSdk } from './friends.queries.js';
 import {
   studentBluebookSettings,
   studentFriendRequests,
@@ -13,7 +9,10 @@ import {
   worksheets,
 } from '../../drizzle/schema.js';
 import { db, graphqlClient } from '../config.js';
-import { worksheetListToMap } from '../user/user.utils.js';
+import {
+  worksheetListToMap,
+  fetchSameCourseIdMappings,
+} from '../user/user.utils.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -296,49 +295,11 @@ export const getFriendsWorksheets = async (
     }
   }
 
-  const crnToSameCourseId = new Map<string, number>();
-  for (const [seasonCode, crns] of seasonCrnMap.entries()) {
-    if (crns.size === 0) continue;
+  // Fetch sameCourseId mappings
+  const { crnToSameCourseId, sameCourseIdToCrns } =
+    await fetchSameCourseIdMappings(seasonCrnMap, graphqlClient, getSdk);
 
-    const data: CrnToSameCourseIdQuery = await getSdk(
-      graphqlClient,
-    ).CrnToSameCourseId({
-      crns: Array.from(crns),
-      season: seasonCode,
-    });
-
-    for (const listing of data.listings) {
-      const key = `${seasonCode}${listing.crn}`;
-      crnToSameCourseId.set(key, listing.course.same_course_id);
-    }
-  }
-
-  // Get all unique same_course_id values
-  const sameCourseIds = new Set<number>();
-  for (const sameCourseId of crnToSameCourseId.values())
-    sameCourseIds.add(sameCourseId);
-
-  // Fetch ALL CRNs that have these same_course_id values
-  const sameCourseIdToCrns = new Map<number, number[]>();
-  for (const [seasonCode] of seasonCrnMap.entries()) {
-    if (sameCourseIds.size === 0) continue;
-
-    const data: AllCrnsForSameCourseIdsQuery = await getSdk(
-      graphqlClient,
-    ).AllCrnsForSameCourseIds({
-      sameCourseIds: Array.from(sameCourseIds),
-      season: seasonCode,
-    });
-
-    for (const course of data.courses) {
-      if (!sameCourseIdToCrns.has(course.same_course_id))
-        sameCourseIdToCrns.set(course.same_course_id, []);
-      for (const listing of course.listings)
-        sameCourseIdToCrns.get(course.same_course_id)!.push(listing.crn);
-    }
-  }
-
-  // Enrich worksheet data with same_course_id
+  // Enrich worksheet data with sameCourseId
   const enrichedWorksheetMap: typeof friendWorksheetMap = {};
   for (const friendNetId of friendNetIds) {
     const friendWorksheets = friendWorksheetMap[friendNetId];
@@ -360,7 +321,7 @@ export const getFriendsWorksheets = async (
           }[]
         ).map((course) => ({
           ...course,
-          same_course_id:
+          sameCourseId:
             crnToSameCourseId.get(`${seasonCode}${course.crn}`) ?? null,
         }));
 

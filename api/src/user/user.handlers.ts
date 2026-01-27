@@ -3,12 +3,12 @@ import chroma from 'chroma-js';
 import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
+import { getSdk } from './user.queries.js';
 import {
-  getSdk,
-  type CrnToSameCourseIdQuery,
-  type AllCrnsForSameCourseIdsQuery,
-} from './user.queries.js';
-import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
+  getNextAvailableWsNumber,
+  worksheetListToMap,
+  fetchSameCourseIdMappings,
+} from './user.utils.js';
 
 import {
   studentBluebookSettings,
@@ -247,50 +247,14 @@ export const getUserWorksheet = async (
     }
   }
 
-  // Fetch same_course_id for all CRNs using GraphQL
-  const crnToSameCourseId = new Map<string, number>();
-  for (const [seasonCode, crns] of seasonCrnMap.entries()) {
-    if (crns.size === 0) continue;
+  // Fetch sameCourseId mappings
+  const { sameCourseIdToCrns } = await fetchSameCourseIdMappings(
+    seasonCrnMap,
+    graphqlClient,
+    getSdk,
+  );
 
-    const data: CrnToSameCourseIdQuery = await getSdk(
-      graphqlClient,
-    ).CrnToSameCourseId({
-      crns: Array.from(crns),
-      season: seasonCode,
-    });
-
-    for (const listing of data.listings) {
-      const key = `${seasonCode}${listing.crn}`;
-      crnToSameCourseId.set(key, listing.course.same_course_id);
-    }
-  }
-
-  // Collect all unique same_course_ids
-  const sameCourseIds = new Set<number>();
-  for (const sameCourseId of crnToSameCourseId.values())
-    sameCourseIds.add(sameCourseId);
-
-  // Fetch ALL CRNs that have these same_course_id values
-  const sameCourseIdToCrns = new Map<number, number[]>();
-  for (const [seasonCode] of seasonCrnMap.entries()) {
-    if (sameCourseIds.size === 0) continue;
-
-    const data: AllCrnsForSameCourseIdsQuery = await getSdk(
-      graphqlClient,
-    ).AllCrnsForSameCourseIds({
-      sameCourseIds: Array.from(sameCourseIds),
-      season: seasonCode,
-    });
-
-    for (const course of data.courses) {
-      if (!sameCourseIdToCrns.has(course.same_course_id))
-        sameCourseIdToCrns.set(course.same_course_id, []);
-      for (const listing of course.listings)
-        sameCourseIdToCrns.get(course.same_course_id)!.push(listing.crn);
-    }
-  }
-
-  // Build worksheet data without same_course_id on individual courses
+  // Build worksheet data without sameCourseId on individual courses
   const worksheetData = allWorksheets[netId] ?? {};
 
   // Convert sameCourseIdToCrns Map to plain object

@@ -1,16 +1,16 @@
-# Query to map CRNs to their same_course_id for a specific season
+# Query to map CRNs to their sameCourseId for a specific season
 query CrnToSameCourseId($crns: [Int!]!, $season: String!) {
   listings(
     where: { crn: { _in: $crns }, course: { season_code: { _eq: $season } } }
   ) {
     crn
     course {
-      same_course_id
+      sameCourseId: same_course_id
     }
   }
 }
 
-# Query to fetch all CRNs for courses with specified same_course_ids
+# Query to fetch all CRNs for courses with specified sameCourseIds
 query AllCrnsForSameCourseIds($sameCourseIds: [Int!]!, $season: String!) {
   courses(
     where: {
@@ -18,7 +18,7 @@ query AllCrnsForSameCourseIds($sameCourseIds: [Int!]!, $season: String!) {
       season_code: { _eq: $season }
     }
   ) {
-    same_course_id
+    sameCourseId: same_course_id
     listings {
       crn
     }

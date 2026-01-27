@@ -138,13 +138,27 @@ export function checkConflict(
   return conflicts;
 }
 
-/**
- * Key is season code + crn;
- * Value is the list of friends taking the class
- */
 export type NumFriendsReturn = {
   [seasonCodeCrn: `${Season}${Crn}`]: Set<string>;
 };
+
+// Checks if the course has sameCourseId
+function isSameCourseIdKey(key: string): boolean {
+  return !key.includes('-crn-');
+}
+
+function parseCrnKey(key: string): `${Season}${Crn}` {
+  return key.replace(/-crn-/u, '') as `${Season}${Crn}`;
+}
+
+function parseSameCourseIdKey(key: string): {
+  season: Season;
+  sameCourseId: string;
+} {
+  const [season, sameCourseId] = key.split('-') as [Season, string];
+  return { season, sameCourseId };
+}
+
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
 export function getNumFriends(
@@ -182,27 +196,16 @@ export function getNumFriends(
   // Now map each CRN to its friends list (grouped by same_course_id)
   const numFriends: NumFriendsReturn = {};
 
-  // For each group of CRNs with the same same_course_id, map them
-  // all to the same friends
   for (const [sameCourseKey, friendsSet] of friendsBySameCourse.entries()) {
-    // SameCourseKey is like "202403-180120621" (season-same_course_id)
-    // or "202403-crn-21093" (season-crn-CRN) for courses without same_course_id
-    if (sameCourseKey.includes('-crn-')) {
-      // Fall back to CRN-specific key for courses without same_course_id
-      const crnKey = sameCourseKey.replace(/-crn-/u, '');
-      numFriends[crnKey as `${Season}${Crn}`] = friendsSet;
+    if (!isSameCourseIdKey(sameCourseKey)) {
+      const crnKey = parseCrnKey(sameCourseKey);
+      numFriends[crnKey] = friendsSet;
     } else if (sameCourseIdToCrns) {
-      // Extract the same_course_id from the key
-      const [seasonCode, sameCourseId] = sameCourseKey.split('-') as [
-        Season,
-        string,
-      ];
+      const { season, sameCourseId } = parseSameCourseIdKey(sameCourseKey);
       const crnsForThisCourse = sameCourseIdToCrns[sameCourseId];
-
       if (crnsForThisCourse) {
-        // Map all CRNs with this same_course_id to the friends set
         for (const crn of crnsForThisCourse)
-          numFriends[`${seasonCode}${crn}` as `${Season}${Crn}`] = friendsSet;
+          numFriends[`${season}${crn}` as `${Season}${Crn}`] = friendsSet;
       }
     }
   }
