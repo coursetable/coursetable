@@ -40,6 +40,7 @@ const exoticWorksheetSchema = z.object({
       crn: crnSchema,
       color: z.string(),
       hidden: z.boolean(),
+      same_course_id: z.number().nullable().optional(),
     }),
   ),
 });
@@ -152,7 +153,12 @@ export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
             0,
             {
               name: courses.data.name,
-              courses: courses.data.courses,
+              courses: courses.data.courses.map((c) => ({
+                crn: c.crn,
+                color: c.color,
+                hidden: c.hidden as boolean | null,
+                same_course_id: c.same_course_id ?? null,
+              })),
               private: false,
             },
           ],
