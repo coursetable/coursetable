@@ -4,6 +4,7 @@ import saveFile from 'file-saver';
 import html2canvas from 'html2canvas';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
+import ctWhite from '../../images/brand/ct_white.svg';
 import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import { useStore } from '../../store';
 
@@ -43,18 +44,20 @@ const loadImage = (src: string): Promise<HTMLImageElement> =>
 const drawWatermark = async (
   ctx: CanvasRenderingContext2D,
   canvasHeight: number,
+  theme: 'light' | 'dark',
 ): Promise<void> => {
-  const wordmarkImg = await loadImage(wordmarkOutlines);
+  const logoSrc = theme === 'dark' ? ctWhite : wordmarkOutlines;
+  const logoImg = await loadImage(logoSrc);
 
   const scaledPadding = WATERMARK_PADDING * CANVAS_SCALE;
   const scaledWordmarkHeight = WORDMARK_HEIGHT * CANVAS_SCALE;
 
   const wordmarkY = canvasHeight - scaledWordmarkHeight - scaledPadding;
 
-  const wordmarkAspectRatio = wordmarkImg.width / wordmarkImg.height;
-  const wordmarkWidth = scaledWordmarkHeight * wordmarkAspectRatio;
+  const logoAspectRatio = logoImg.width / logoImg.height;
+  const wordmarkWidth = scaledWordmarkHeight * logoAspectRatio;
   ctx.drawImage(
-    wordmarkImg,
+    logoImg,
     scaledPadding,
     wordmarkY,
     wordmarkWidth,
@@ -66,11 +69,12 @@ const drawWatermark = async (
 const retryWatermark = async (
   ctx: CanvasRenderingContext2D,
   canvasHeight: number,
+  theme: 'light' | 'dark',
 ): Promise<void> => {
   let lastError: Error | undefined = undefined;
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
-      await drawWatermark(ctx, canvasHeight);
+      await drawWatermark(ctx, canvasHeight, theme);
       return;
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
@@ -87,9 +91,10 @@ const retryWatermark = async (
 };
 
 export default function PNGExportButton() {
-  const { viewedSeason } = useStore(
+  const { viewedSeason, theme } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
+      theme: state.theme,
     })),
   );
   const [isExporting, setIsExporting] = useState(false);
@@ -104,12 +109,13 @@ export default function PNGExportButton() {
         throw new Error('Calendar not found. Please try again.');
 
       const canvas = await html2canvas(calendarElement, {
-        backgroundColor: '#ffffff',
+        backgroundColor: theme === 'dark' ? '#121212' : '#ffffff',
         scale: CANVAS_SCALE,
         logging: false,
         useCORS: true,
         onclone(doc) {
           doc.body.classList.add(EXPORT_CLASS);
+          doc.documentElement.dataset.theme = theme;
         },
       });
 
@@ -123,7 +129,7 @@ export default function PNGExportButton() {
       if (!finalCtx) throw new Error('Failed to get canvas context.');
 
       finalCtx.drawImage(canvas, 0, 0, finalCanvas.width, finalCanvas.height);
-      await retryWatermark(finalCtx, finalCanvas.height);
+      await retryWatermark(finalCtx, finalCanvas.height, theme);
 
       await new Promise<void>((resolve, reject) => {
         finalCanvas.toBlob((blob) => {
