@@ -1,8 +1,6 @@
-import React, { useState, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import clsx from 'clsx';
 import { Form, Badge } from 'react-bootstrap';
-import MultiToggle from 'react-multi-toggle';
 
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -17,18 +15,7 @@ import { createProfModalLink } from '../../../utilities/display';
 import RelatedCoursesList from '../../RelatedCoursesList';
 import type { ModalNavigationFunction } from '../CourseModal';
 
-import styles from './OverviewRatings.module.css';
-import './react-multi-toggle-override.css';
-
-type Filter = 'course' | 'professor';
-
 type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
-
-// Hold index of each filter option
-const optionsIndx = {
-  course: 0,
-  professor: 1,
-};
 
 function createProfSummary(
   courseProfessors: RelatedCourseInfo['course_professors'],
@@ -104,11 +91,6 @@ function OverviewRatings({
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
 
-  const options = [
-    { displayName: `Course (${sameCourseNormalized.length})`, value: 'course' },
-    { displayName: 'Prof', value: 'professor' },
-  ] as const;
-  const [filter, setFilter] = useState<Filter>('course');
   const { groupSameProf, togglePref } = useStore(
     useShallow((state) => ({
       groupSameProf: state.coursePref.groupSameProf,
@@ -139,53 +121,9 @@ function OverviewRatings({
   }
   return (
     <>
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <div
-        className={styles.filterContainer}
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight')
-            setFilter(options[(optionsIndx[filter] + 1) % 2]!.value);
-        }}
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-        tabIndex={0}
-      >
-        <MultiToggle
-          options={options}
-          selectedOption={filter}
-          onSelectOption={(val) => setFilter(val)}
-          className={clsx(styles.evaluationsFilter, 'mb-2')}
-        />
-      </div>
-      {filter === 'professor' ? (
-        <div className="alert alert-info m-3">
-          <p>
-            We've moved! To view course offerings by each professor, click on
-            their name on the left, or select from the list below.
-          </p>
-          <ul>
-            {listing.course.course_professors.map((prof) => (
-              <li key={prof.professor.professor_id}>
-                <Link
-                  to={createProfModalLink(
-                    prof.professor.professor_id,
-                    searchParams,
-                  )}
-                  onClick={() => {
-                    navigate('push', {
-                      type: 'professor',
-                      data: prof.professor.professor_id,
-                    });
-                  }}
-                >
-                  {prof.professor.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : sameCourseNormalized.length !== 0 ? (
+      {sameCourseNormalized.length !== 0 ? (
         <>
-          <Form.Check type="switch">
+          <Form.Check type="switch" className="mb-3">
             <Form.Check.Input
               checked={groupSameProf}
               onChange={() => {
