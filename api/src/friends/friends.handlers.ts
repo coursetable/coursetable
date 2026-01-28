@@ -1,14 +1,18 @@
 import type express from 'express';
 import { or, and, eq, inArray, sql } from 'drizzle-orm';
 import z from 'zod';
+import { getSdk } from './friends.queries.js';
 import {
   studentBluebookSettings,
   studentFriendRequests,
   studentFriends,
   worksheets,
 } from '../../drizzle/schema.js';
-import { db } from '../config.js';
-import { worksheetListToMap } from '../user/user.utils.js';
+import { db, graphqlClient } from '../config.js';
+import {
+  worksheetListToMap,
+  fetchSameCourseIdMappings,
+} from '../user/user.utils.js';
 
 const FriendsOpRequestSchema = z.object({
   friendNetId: z.string(),
@@ -268,6 +272,67 @@ export const getFriendsWorksheets = async (
     },
   );
 
+  const seasonCrnMap = new Map<string, Set<number>>();
+  for (const friendNetId of friendNetIds) {
+    const friendWorksheets = friendWorksheetMap[friendNetId];
+    if (!friendWorksheets) continue;
+
+    for (const [seasonStr, worksheetsByNum] of Object.entries(
+      friendWorksheets,
+    )) {
+      const seasonCode = String(seasonStr);
+      if (!seasonCrnMap.has(seasonCode))
+        seasonCrnMap.set(seasonCode, new Set());
+
+      for (const worksheet of Object.values(worksheetsByNum)) {
+        for (const course of worksheet.courses as {
+          crn: number;
+          color: string;
+          hidden: boolean | null;
+        }[])
+          seasonCrnMap.get(seasonCode)!.add(course.crn);
+      }
+    }
+  }
+
+  // Fetch sameCourseId mappings
+  const { crnToSameCourseId, sameCourseIdToCrns } =
+    await fetchSameCourseIdMappings(seasonCrnMap, graphqlClient, getSdk);
+
+  // Enrich worksheet data with sameCourseId
+  const enrichedWorksheetMap: typeof friendWorksheetMap = {};
+  for (const friendNetId of friendNetIds) {
+    const friendWorksheets = friendWorksheetMap[friendNetId];
+    if (!friendWorksheets) continue;
+
+    enrichedWorksheetMap[friendNetId] = {};
+    for (const [seasonStr, worksheetsByNum] of Object.entries(
+      friendWorksheets,
+    )) {
+      const seasonCode = String(seasonStr);
+      enrichedWorksheetMap[friendNetId][seasonCode] = {};
+
+      for (const [worksheetNum, worksheet] of Object.entries(worksheetsByNum)) {
+        const enrichedCourses = (
+          worksheet.courses as {
+            crn: number;
+            color: string;
+            hidden: boolean | null;
+          }[]
+        ).map((course) => ({
+          ...course,
+          sameCourseId:
+            crnToSameCourseId.get(`${seasonCode}${course.crn}`) ?? null,
+        }));
+
+        enrichedWorksheetMap[friendNetId][seasonCode][Number(worksheetNum)] = {
+          ...worksheet,
+          courses: enrichedCourses,
+        };
+      }
+    }
+  }
+
   const friendInfoMap = Object.fromEntries(
     friendInfos.map((friendInfo) => [
       friendInfo.netId,
@@ -281,12 +346,20 @@ export const getFriendsWorksheets = async (
       friendNetId,
       {
         name: friendInfoMap[friendNetId]?.name ?? null,
-        worksheets: friendWorksheetMap[friendNetId] ?? {},
+        worksheets: enrichedWorksheetMap[friendNetId] ?? {},
       },
     ]),
   );
 
-  res.status(200).json({ friends: aggregateInfo });
+  // Include the sameCourseIdToCrns map in the response
+  const sameCourseIdToCrnsObj: { [key: string]: number[] } = {};
+  for (const [sameCourseId, crns] of sameCourseIdToCrns.entries())
+    sameCourseIdToCrnsObj[String(sameCourseId)] = crns;
+
+  res.status(200).json({
+    friends: aggregateInfo,
+    sameCourseIdToCrns: sameCourseIdToCrnsObj,
+  });
 };
 
 export const getNames = async (

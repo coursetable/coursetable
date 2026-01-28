@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import type { ListChildComponentProps } from 'react-window';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -187,7 +188,23 @@ function ResultsItem({
           </span>
           <span className={colStyles.locCol}>
             <span className={styles.ellipsisText}>
-              {toLocationsSummary(listing.course)}
+              {toLocationsSummary(listing.course, user?.hasEvals) ===
+              'HIDDEN' ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="location-hidden-tooltip" {...props}>
+                      Sign in to see location
+                    </Tooltip>
+                  )}
+                >
+                  <span>
+                    <BsEyeSlash />
+                  </span>
+                </OverlayTrigger>
+              ) : (
+                toLocationsSummary(listing.course, user?.hasEvals)
+              )}
             </span>
           </span>
           <span className={colStyles.friendsCol}>

@@ -21,7 +21,7 @@ import {
 import { type Store, useStore } from '../store';
 
 // Utility Types
-type WorksheetView = 'calendar' | 'list';
+export type WorksheetView = 'calendar' | 'list' | 'map';
 
 export interface WorksheetCourse {
   crn: Crn;
