@@ -1,16 +1,36 @@
 import { useEffect, useRef, useState } from 'react';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import {
+  DropdownButton,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
+import { FaLock, FaLockOpen, FaStar } from 'react-icons/fa6';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
-import type { Option } from '../../contexts/searchContext';
 import { updateWorksheetMetadata } from '../../queries/api';
-import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
+import {
+  useWorksheetNumberOptions,
+  type WorksheetNumberOption,
+} from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Input } from '../Typography';
 import styles from './WorksheetNumberDropdown.module.css';
+
+function getWorksheetIcon(
+  worksheetNumber: number,
+  isPrivate: boolean | undefined,
+) {
+  if (worksheetNumber === 0) return <FaStar />;
+  return isPrivate ? (
+    <FaLock style={{ transform: 'scale(0.9)' }} />
+  ) : (
+    <FaLockOpen style={{ transform: 'scale(0.9)' }} />
+  );
+}
 
 function WSNameInput({
   startingInput,
@@ -66,7 +86,7 @@ function WSNameInput({
   );
 }
 
-function OptionWithActionButtons(props: OptionProps<Option<number>>) {
+function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
   const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [animateButtonsIn, setAnimateButtonsIn] = useState(false);
@@ -192,7 +212,28 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
       }}
     >
       <div className={styles.optionContent}>
+        {/* Star/Lock/Unlock icon left of Worksheet name */}
+        <OverlayTrigger
+          placement="left"
+          overlay={(overlayProps) => (
+            <Tooltip id="worksheet-number-dropdown-tooltip" {...overlayProps}>
+              <span>
+                {props.data.value === 0
+                  ? 'Main Worksheet'
+                  : props.data.isPrivate
+                    ? 'Private Worksheet'
+                    : 'Public Worksheet'}
+              </span>
+            </Tooltip>
+          )}
+        >
+          <div>{getWorksheetIcon(props.data.value, props.data.isPrivate)}</div>
+        </OverlayTrigger>
+
+        {/* Name of worksheet */}
         <span className={styles.optionName}>{props.data.label}</span>
+
+        {/* Edit/Delete buttons */}
         {props.data.value !== 0 && viewedPerson === 'me' && (
           <div className={styles.iconContainer}>
             <MdEdit
@@ -221,7 +262,7 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
 function MenuListWithAdd({
   children,
   ...props
-}: MenuListProps<Option<number>>) {
+}: MenuListProps<WorksheetNumberOption>) {
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const { viewedSeason, viewedPerson } = useStore(
@@ -267,7 +308,7 @@ function MenuListWithAdd({
 function WorksheetNumDropdownDesktop({
   options,
 }: {
-  readonly options: { [worksheetNumber: number]: Option<number> };
+  readonly options: { [worksheetNumber: number]: WorksheetNumberOption };
 }) {
   const viewedWorksheetNumber = useStore(
     (state) => state.viewedWorksheetNumber,
@@ -279,8 +320,15 @@ function WorksheetNumDropdownDesktop({
       displayOptionLabel
       selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
+      Icon={
+        // Star/Lock/Unlock icon in dropdown button
+        getWorksheetIcon(
+          viewedWorksheetNumber,
+          options[viewedWorksheetNumber]?.isPrivate,
+        )
+      }
     >
-      <PopoutSelect<Option<number>, false>
+      <PopoutSelect<WorksheetNumberOption, false>
         value={options[viewedWorksheetNumber]}
         options={Object.values(options)}
         showControl={false}
@@ -297,7 +345,7 @@ function WorksheetNumDropdownDesktop({
 function WorksheetNumDropdownMobile({
   options,
 }: {
-  readonly options: { [worksheetNumber: number]: Option<number> };
+  readonly options: { [worksheetNumber: number]: WorksheetNumberOption };
 }) {
   const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useStore(
     useShallow((state) => ({

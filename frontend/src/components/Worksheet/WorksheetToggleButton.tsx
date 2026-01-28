@@ -1,15 +1,17 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import { FaPlus, FaMinus, FaLock, FaLockOpen, FaStar } from 'react-icons/fa';
 import { MdErrorOutline } from 'react-icons/md';
-
+import { components, type OptionProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
-import type { Option } from '../../contexts/searchContext';
 import { updateWorksheetCourses } from '../../queries/api';
-import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
+import {
+  useWorksheetNumberOptions,
+  type WorksheetNumberOption,
+} from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
@@ -73,6 +75,45 @@ function CourseConflictIcon({
         )}
       </div>
     </Fade>
+  );
+}
+
+function getWorksheetIcon(
+  worksheetNumber: number,
+  isPrivate: boolean | undefined,
+) {
+  if (worksheetNumber === 0) return <FaStar />;
+  return isPrivate ? (
+    <FaLock style={{ transform: 'scale(0.9)' }} />
+  ) : (
+    <FaLockOpen style={{ transform: 'scale(0.9)' }} />
+  );
+}
+
+function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
+  return (
+    <components.Option {...props}>
+      <div className={styles.popoutOption}>
+        {/* Star/Lock/Unlock Icon in front of worksheet name in options */}
+        <OverlayTrigger
+          placement="left"
+          overlay={(overlayProps) => (
+            <Tooltip id="worksheet-toggle-button-tooltip" {...overlayProps}>
+              <span>
+                {props.data.value === 0
+                  ? 'Main Worksheet'
+                  : props.data.isPrivate
+                    ? 'Private Worksheet'
+                    : 'Public Worksheet'}
+              </span>
+            </Tooltip>
+          )}
+        >
+          {getWorksheetIcon(props.data.value, props.data.isPrivate)}
+        </OverlayTrigger>
+        <span>{props.data.label}</span>
+      </div>
+    </components.Option>
   );
 }
 
@@ -218,13 +259,18 @@ function WorksheetToggleButton({
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
+          Icon={getWorksheetIcon(
+            worksheetOptions[selectedWorksheet]!.value,
+            worksheetOptions[selectedWorksheet]!.isPrivate,
+          )}
         >
-          <PopoutSelect<Option<number>, false>
+          <PopoutSelect<WorksheetNumberOption, false>
             value={worksheetOptions[selectedWorksheet]}
             options={Object.values(worksheetOptions)}
             onChange={(option) => setSelectedWorksheet(option!.value)}
             showControl={false}
             minWidth={200}
+            components={{ Option: PopoutOption }}
           />
         </Popout>
       )}
