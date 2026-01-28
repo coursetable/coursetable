@@ -170,6 +170,16 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/yavin',
       },
     },
+    {
+      name: 'Michael Canudas',
+      image: mc,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/michaelcanudas',
+        linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
+        website: 'https://michaelcanudas.com/',
+      },
+    },
   ];
 
   // Order within role categories is best guess at reverse chronological
