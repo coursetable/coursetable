@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
-import { FaPlus, FaMinus, FaLock, FaLockOpen, FaStar } from 'react-icons/fa';
+import { FaPlus, FaMinus, FaLock, FaUnlockAlt, FaStar } from 'react-icons/fa';
 import { MdErrorOutline } from 'react-icons/md';
 import { components, type OptionProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
@@ -86,7 +86,7 @@ function getWorksheetIcon(
   return isPrivate ? (
     <FaLock style={{ transform: 'scale(0.9)' }} />
   ) : (
-    <FaLockOpen style={{ transform: 'scale(0.9)' }} />
+    <FaUnlockAlt style={{ transform: 'scale(0.9)' }} />
   );
 }
 

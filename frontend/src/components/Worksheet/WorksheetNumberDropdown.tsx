@@ -5,7 +5,7 @@ import {
   OverlayTrigger,
   Tooltip,
 } from 'react-bootstrap';
-import { FaLock, FaLockOpen, FaStar } from 'react-icons/fa6';
+import { FaLock, FaUnlockAlt, FaStar } from 'react-icons/fa';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
@@ -28,7 +28,7 @@ function getWorksheetIcon(
   return isPrivate ? (
     <FaLock style={{ transform: 'scale(0.9)' }} />
   ) : (
-    <FaLockOpen style={{ transform: 'scale(0.9)' }} />
+    <FaUnlockAlt style={{ transform: 'scale(0.9)' }} />
   );
 }
 
