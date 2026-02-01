@@ -43,6 +43,10 @@
   border-radius: 12px;
 }
 
+:global([data-theme='dark']) .map :global(.leaflet-tile) {
+  filter: brightness(1.18) contrast(0.92) saturate(0.9);
+}
+
 @media (max-width: calc(768px - 0.5px)) {
   .mapWrapper {
     height: max(calc(100vh - var(--height-navbar) - 2rem - 72px), 420px);
