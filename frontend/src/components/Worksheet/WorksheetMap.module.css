@@ -56,7 +56,6 @@
 :global([data-theme='dark']) .map :global(.leaflet-popup-content-wrapper a) {
   color: var(--color-text);
 }
-
 @media (max-width: calc(768px - 0.5px)) {
   .mapWrapper {
     height: max(calc(100vh - var(--height-navbar) - 2rem - 72px), 420px);
