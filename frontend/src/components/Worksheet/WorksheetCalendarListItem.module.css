@@ -52,6 +52,10 @@
   color: var(--color-text-tertiary);
 }
 
+.courseCodeHidden .courseLocation {
+  color: var(--color-hidden);
+}
+
 .courseCode {
   text-align: left;
   overflow: hidden;
