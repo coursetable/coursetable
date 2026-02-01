@@ -56,6 +56,10 @@
   color: var(--color-hidden);
 }
 
+.listItem:hover .courseCodeHidden .courseLocation {
+  color: var(--color-text);
+}
+
 .courseCode {
   text-align: left;
   overflow: hidden;
