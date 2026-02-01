@@ -57,7 +57,7 @@
 }
 
 .listItem:hover .courseCodeHidden .courseLocation {
-  color: var(--color-text);
+  color: var(--color-text-tertiary);
 }
 
 .courseCode {
