@@ -179,7 +179,10 @@ export function getNumFriends(
     for (const [seasonCode, worksheets] of friend.worksheets) {
       for (const w of worksheets.values()) {
         for (const course of w.courses) {
-          const sameCourseId = crnToSameCourseId.get(course.crn);
+          // Prioritize sameCourseId from course data, then fall back to lookup
+          const sameCourseId =
+            course.sameCourseId?.toString() ??
+            crnToSameCourseId.get(course.crn);
           const key =
             sameCourseId !== undefined
               ? `${seasonCode}-${sameCourseId}`

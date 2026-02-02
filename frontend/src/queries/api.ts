@@ -539,6 +539,7 @@ const worksheetCourseSchema = z.object({
   crn: crnSchema,
   color: z.string(),
   hidden: z.boolean().nullable(),
+  sameCourseId: z.number().nullable().optional(),
 });
 
 // Shared schema for worksheet structure
