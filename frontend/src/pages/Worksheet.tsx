@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as Sentry from '@sentry/react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import {
   FaLock,
   FaUnlock,
@@ -110,16 +111,24 @@ function Worksheet() {
         <WorksheetCalendar />
         {!isMobile && (
           <div className={styles.calendarControls}>
-            <button
-              type="button"
-              className={styles.controlsTrigger}
-              onClick={() => setExpanded((x) => !x)}
-              aria-label={fullScreenLabel}
-              title={`${fullScreenLabel} + new buttons! (beta)`}
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="worksheet-fullscreen-tooltip">
+                  {fullScreenLabel} + new buttons! (beta)
+                </Tooltip>
+              }
             >
-              <FullScreenIcon className={styles.triggerIcon} size={11} />
-              <span className={styles.betaIndicator} aria-hidden="true" />
-            </button>
+              <button
+                type="button"
+                className={styles.controlsTrigger}
+                onClick={() => setExpanded((x) => !x)}
+                aria-label={fullScreenLabel}
+              >
+                <FullScreenIcon className={styles.triggerIcon} size={11} />
+                <span className={styles.betaIndicator} aria-hidden="true" />
+              </button>
+            </OverlayTrigger>
 
             <div className={styles.controlsMenu}>
               <button

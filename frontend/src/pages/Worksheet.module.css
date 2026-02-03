@@ -14,6 +14,7 @@
 
 .calendar {
   box-shadow: 0 2px 6px 0 var(--color-shadow);
+  border-radius: 8px;
 
   /* Each hour in RBC has a min-height of 40px, and a day is at most 12hr */
   height: max(calc(100vh - var(--height-navbar) - 2rem), 480px);
@@ -21,7 +22,6 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
-  border-radius: 8px;
 }
 
 @media (max-width: calc(768px - 0.5px)) {
@@ -44,8 +44,8 @@
 
 .calendarControls {
   position: absolute;
-  top: 0%;
-  right: 0%;
+  top: 0;
+  right: 0;
   z-index: 2;
   transform: translate(50%, -40%);
 }
@@ -62,15 +62,15 @@
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
   cursor: pointer;
+  padding: 0;
+  appearance: none;
+  font: inherit;
+  line-height: 1;
   transition:
     transform 0.1s ease,
     background-color var(--trans-dur),
     color var(--trans-dur),
     border-color var(--trans-dur);
-  padding: 0;
-  appearance: none;
-  font: inherit;
-  line-height: 1;
 }
 
 .triggerIcon {
@@ -105,7 +105,8 @@
   background-color: var(--color-bg-button-hover);
 }
 
-.calendarControls:hover .controlsTrigger {
+.calendarControls:hover .controlsTrigger,
+.calendarControls:focus-within .controlsTrigger {
   transform: scale(1.05);
 }
 
@@ -126,7 +127,8 @@
     visibility 0.3s ease;
 }
 
-.calendarControls:hover .controlsMenu {
+.calendarControls:hover .controlsMenu,
+.calendarControls:focus-within .controlsMenu {
   opacity: 1;
   visibility: visible;
 }
@@ -142,14 +144,15 @@
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
   cursor: pointer;
-  transition:
-    background-color var(--trans-dur),
-    color var(--trans-dur),
-    border-color var(--trans-dur);
   padding: 0;
   appearance: none;
   font: inherit;
   line-height: 1;
+  transition:
+    transform 0.1s ease,
+    background-color var(--trans-dur),
+    color var(--trans-dur),
+    border-color var(--trans-dur);
 }
 
 .controlBtn:hover {

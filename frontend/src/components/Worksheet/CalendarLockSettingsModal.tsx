@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useStore } from '../../store';
+import CustomSelect from '../Search/CustomSelect';
 import styles from './CalendarLockSettingsModal.module.css';
 
+type HourOption = { value: number; label: string };
 const HOUR_OPTIONS = Array.from({ length: 16 }, (_, i) => i + 7);
 
 function formatHour(hour: number): string {
@@ -50,6 +52,18 @@ function CalendarLockSettingsModal() {
     setEndHour(end);
   };
 
+  const hourOptions: HourOption[] = useMemo(
+    () =>
+      HOUR_OPTIONS.map((hour) => ({
+        value: hour,
+        label: formatHour(hour),
+      })),
+    [],
+  );
+
+  const startValue = hourOptions.find((o) => o.value === startHour) ?? null;
+  const endValue = hourOptions.find((o) => o.value === endHour) ?? null;
+
   const isValid = startHour < endHour;
 
   return (
@@ -92,32 +106,32 @@ function CalendarLockSettingsModal() {
         <div className={styles.customRange}>
           <Form.Group className={styles.formGroup}>
             <Form.Label className={styles.label}>Start Time</Form.Label>
-            <Form.Select
-              value={startHour}
-              onChange={(e) => setStartHour(Number(e.target.value))}
+            <CustomSelect<HourOption>
               className={styles.select}
-            >
-              {HOUR_OPTIONS.map((hour) => (
-                <option key={hour} value={hour}>
-                  {formatHour(hour)}
-                </option>
-              ))}
-            </Form.Select>
+              options={hourOptions}
+              value={startValue}
+              onChange={(opt) => {
+                if (!opt) return;
+                setStartHour(opt.value);
+              }}
+              isClearable={false}
+              menuPortalTarget={document.body}
+            />
           </Form.Group>
 
           <Form.Group className={styles.formGroup}>
             <Form.Label className={styles.label}>End Time</Form.Label>
-            <Form.Select
-              value={endHour}
-              onChange={(e) => setEndHour(Number(e.target.value))}
+            <CustomSelect<HourOption>
               className={styles.select}
-            >
-              {HOUR_OPTIONS.map((hour) => (
-                <option key={hour} value={hour}>
-                  {formatHour(hour)}
-                </option>
-              ))}
-            </Form.Select>
+              options={hourOptions}
+              value={endValue}
+              onChange={(opt) => {
+                if (!opt) return;
+                setEndHour(opt.value);
+              }}
+              isClearable={false}
+              menuPortalTarget={document.body}
+            />
           </Form.Group>
         </div>
 
