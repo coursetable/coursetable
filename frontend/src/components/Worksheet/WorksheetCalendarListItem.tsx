@@ -30,7 +30,13 @@ export default function WorksheetCalendarListItem({
   } = useWorksheetCalendarListContext();
   const target = useCourseModalLink(listing);
   const setHoverCourse = useStore((state) => state.setHoverCourse);
-  const locationSummary = toLocationsSummary(listing.course);
+  const { viewedPerson, user } = useStore(
+    useShallow((state) => ({
+      viewedPerson: state.viewedPerson,
+      user: state.user,
+    })),
+  );
+  const locationSummary = toLocationsSummary(listing.course, user?.hasEvals);
   const locationDisplay =
     locationSummary === 'TBA' ? 'Location: TBA' : locationSummary;
   const missingCoordinate =
@@ -48,12 +54,6 @@ export default function WorksheetCalendarListItem({
     !locationSummary ||
     locationSummary.toUpperCase() === 'TBA' ||
     missingCoordinate;
-
-  const { viewedPerson } = useStore(
-    useShallow((state) => ({
-      viewedPerson: state.viewedPerson,
-    })),
-  );
 
   return (
     <ListGroup.Item
