@@ -204,8 +204,13 @@ export function getNumFriends(
       const crnKey = parseCrnKey(sameCourseKey);
       numFriends[crnKey] = friendsSet;
     } else if (sameCourseIdToCrns) {
-      const { season, sameCourseId } = parseSameCourseIdKey(sameCourseKey);
-      const crnsForThisCourse = sameCourseIdToCrns[sameCourseId];
+      const crnsForThisCourse = sameCourseIdToCrns[sameCourseKey];
+      const { season } = parseSameCourseIdKey(sameCourseKey);
+      console.log('[DEBUG] Mapping friends to CRNs:', {
+        sameCourseKey,
+        crnsForThisCourse,
+        friendsCount: friendsSet.size,
+      });
       if (crnsForThisCourse) {
         for (const crn of crnsForThisCourse)
           numFriends[`${season}${crn}` as `${Season}${Crn}`] = friendsSet;
