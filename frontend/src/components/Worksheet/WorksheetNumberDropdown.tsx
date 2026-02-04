@@ -5,10 +5,10 @@ import {
   OverlayTrigger,
   Tooltip,
 } from 'react-bootstrap';
-import { FaLock, FaLockOpen, FaStar } from 'react-icons/fa6';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
+import WorksheetStatusIcon from './WorksheetStatusIcon';
 import { updateWorksheetMetadata } from '../../queries/api';
 import {
   useWorksheetNumberOptions,
@@ -19,18 +19,6 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Input } from '../Typography';
 import styles from './WorksheetNumberDropdown.module.css';
-
-function getWorksheetIcon(
-  worksheetNumber: number,
-  isPrivate: boolean | undefined,
-) {
-  if (worksheetNumber === 0) return <FaStar />;
-  return isPrivate ? (
-    <FaLock style={{ transform: 'scale(0.9)' }} />
-  ) : (
-    <FaLockOpen style={{ transform: 'scale(0.9)' }} />
-  );
-}
 
 function WSNameInput({
   startingInput,
@@ -227,7 +215,9 @@ function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
             </Tooltip>
           )}
         >
-          <div>{getWorksheetIcon(props.data.value, props.data.isPrivate)}</div>
+          <div>
+            {WorksheetStatusIcon(props.data.value, props.data.isPrivate)}
+          </div>
         </OverlayTrigger>
 
         {/* Name of worksheet */}
@@ -322,7 +312,7 @@ function WorksheetNumDropdownDesktop({
       clearIcon={false}
       Icon={
         // Star/Lock/Unlock icon in dropdown button
-        getWorksheetIcon(
+        WorksheetStatusIcon(
           viewedWorksheetNumber,
           options[viewedWorksheetNumber]?.isPrivate,
         )

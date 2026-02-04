@@ -1,10 +1,11 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
-import { FaPlus, FaMinus, FaLock, FaLockOpen, FaStar } from 'react-icons/fa';
+import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { MdErrorOutline } from 'react-icons/md';
 import { components, type OptionProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
+import WorksheetStatusIcon from './WorksheetStatusIcon';
 import { CUR_YEAR } from '../../config';
 import { useWorksheetInfo } from '../../contexts/ferryContext';
 import { updateWorksheetCourses } from '../../queries/api';
@@ -78,18 +79,6 @@ function CourseConflictIcon({
   );
 }
 
-function getWorksheetIcon(
-  worksheetNumber: number,
-  isPrivate: boolean | undefined,
-) {
-  if (worksheetNumber === 0) return <FaStar />;
-  return isPrivate ? (
-    <FaLock style={{ transform: 'scale(0.9)' }} />
-  ) : (
-    <FaLockOpen style={{ transform: 'scale(0.9)' }} />
-  );
-}
-
 function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
   return (
     <components.Option {...props}>
@@ -109,7 +98,7 @@ function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
             </Tooltip>
           )}
         >
-          {getWorksheetIcon(props.data.value, props.data.isPrivate)}
+          {WorksheetStatusIcon(props.data.value, props.data.isPrivate)}
         </OverlayTrigger>
         <span>{props.data.label}</span>
       </div>
@@ -259,7 +248,7 @@ function WorksheetToggleButton({
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
-          Icon={getWorksheetIcon(
+          Icon={WorksheetStatusIcon(
             worksheetOptions[selectedWorksheet]!.value,
             worksheetOptions[selectedWorksheet]!.isPrivate,
           )}
