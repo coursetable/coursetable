@@ -22,6 +22,7 @@ type Props = {
   readonly displayOptionLabel?: boolean;
   readonly className?: string;
   readonly wrapperClassName?: string;
+  readonly dropdownClassName?: string;
   readonly notifications?: number;
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
@@ -87,6 +88,7 @@ export function Popout({
   displayOptionLabel,
   className,
   wrapperClassName,
+  dropdownClassName,
   notifications,
   colors,
   dataTutorial,
@@ -172,7 +174,7 @@ export function Popout({
       {/* Dropdown */}
       {isComponentVisible ? (
         <div
-          className={styles.dropdown}
+          className={clsx(styles.dropdown, dropdownClassName)}
           ref={dropdownRef}
           style={
             dropdownXOffset
