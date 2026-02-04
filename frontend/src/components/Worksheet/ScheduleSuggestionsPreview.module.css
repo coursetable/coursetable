@@ -1,0 +1,75 @@
+.scheduleNav {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin: 0;
+  width: fit-content;
+}
+
+.scheduleCount {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.credits {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.addedRow {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+}
+
+.addedSummary {
+  color: var(--color-text-secondary);
+  min-width: 0;
+  word-break: break-word;
+}
+
+.calendarWrapper {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+  padding: 0.5rem;
+}
+
+.calendarViewport {
+  min-width: 700px;
+}
+
+.calendar {
+  height: 400px;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .scheduleNav {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .addedRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scheduleCount {
+    text-align: center;
+  }
+
+  .calendarViewport {
+    min-width: 560px;
+  }
+
+  .calendar {
+    height: 330px;
+  }
+}

@@ -1,0 +1,45 @@
+.dialog {
+  max-width: 1024px !important;
+}
+
+.dialog :global(.modal-content) {
+  background-color: var(--color-surface);
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+.dialog :global(.modal-header) {
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem 1rem 0.75rem !important;
+}
+
+.dialog :global(.modal-title) {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.dialog :global(.modal-header) :global(.btn-close),
+.dialog :global(.modal-header) :global(.close) {
+  color: var(--color-text);
+}
+
+.dialog :global(.modal-body) {
+  padding: 1rem !important;
+}
+
+.dialog :global(.modal-footer) {
+  border-top: 1px solid var(--color-border);
+  padding: 0.75rem 1rem 1rem !important;
+}
+
+.searchMeta {
+  color: var(--color-text-tertiary);
+  font-size: 0.85rem;
+  margin-right: auto;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .dialog :global(.modal-dialog) {
+    margin: 1.75rem 0.5rem;
+  }
+}
