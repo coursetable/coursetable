@@ -28,6 +28,19 @@ export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   challengeTries: bigint('challengeTries', { mode: 'number' })
     .default(0)
     .notNull(),
+
+  preferredFirstName: varchar('preferredFirstName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  preferredLastName: varchar('preferredLastName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  isHideMajor: boolean('isHideMajor').notNull().default(false),
+  isHideSchool: boolean('isHideSchool').notNull().default(false),
+  isHideYear: boolean('isHideYear').notNull().default(false),
+  // IsHideEmail: boolean('isHideEmail').notNull().default(false),
+  // bio: varchar('bio', { length: 256 }).default(sql`NULL`),
+  // TODO: Add profile picture
 });
 
 export const studentFriendRequests = pgTable(

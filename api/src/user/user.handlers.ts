@@ -495,3 +495,130 @@ export const getUserWishlist = async (
     data: data.map(({ season, crn }) => ({ season: String(season), crn })),
   });
 };
+
+export const getUserPublicProfile = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.params;
+
+  if (!netId) {
+    res.status(400).json({ error: 'MISSING_NETID' });
+    return;
+  }
+
+  const studentProfile = await db.query.studentBluebookSettings.findFirst({
+    where: eq(studentBluebookSettings.netId, netId),
+    columns: {
+      netId: true,
+      firstName: true,
+      lastName: true,
+      preferredFirstName: true,
+      preferredLastName: true,
+      email: true,
+      year: true,
+      school: true,
+      major: true,
+      isHideMajor: true,
+      isHideSchool: true,
+      isHideYear: true,
+    },
+  });
+
+  if (!studentProfile) {
+    res.status(404).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
+
+  let displayName = null;
+  if (studentProfile.preferredFirstName && studentProfile.preferredLastName)
+    displayName = `${studentProfile.preferredFirstName} ${studentProfile.preferredLastName}`;
+  else if (studentProfile.firstName && studentProfile.lastName)
+    displayName = `${studentProfile.firstName} ${studentProfile.lastName}`;
+
+  res.json({
+    netId: studentProfile.netId,
+    displayName,
+    email: studentProfile.email,
+    school: studentProfile.isHideSchool ? null : studentProfile.school,
+    major: studentProfile.isHideMajor ? null : studentProfile.major,
+    year: studentProfile.isHideYear ? null : studentProfile.year,
+  });
+};
+
+export const getOwnProfile = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const studentProfile = await db.query.studentBluebookSettings.findFirst({
+    where: eq(studentBluebookSettings.netId, netId),
+    columns: {
+      netId: true,
+      firstName: true,
+      lastName: true,
+      preferredFirstName: true,
+      preferredLastName: true,
+      email: true,
+      year: true,
+      school: true,
+      major: true,
+      isHideMajor: true,
+      isHideSchool: true,
+      isHideYear: true,
+      evaluationsEnabled: true,
+    },
+  });
+
+  if (!studentProfile) {
+    res.status(404).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
+
+  res.json({
+    netId: studentProfile.netId,
+    firstName: studentProfile.firstName,
+    lastName: studentProfile.lastName,
+    preferredFirstName: studentProfile.preferredFirstName,
+    preferredLastName: studentProfile.preferredLastName,
+    email: studentProfile.email,
+    year: studentProfile.year,
+    school: studentProfile.school,
+    major: studentProfile.major,
+    isHideMajor: studentProfile.isHideMajor,
+    isHideSchool: studentProfile.isHideSchool,
+    isHideYear: studentProfile.isHideYear,
+    evaluationsEnabled: studentProfile.evaluationsEnabled,
+  });
+};
+
+const UpdateProfileSchema = z.object({
+  preferredFirstName: z.string().max(256).nullable().optional(),
+  preferredLastName: z.string().max(256).nullable().optional(),
+  isHideMajor: z.boolean().optional(),
+  isHideSchool: z.boolean().optional(),
+  isHideYear: z.boolean().optional(),
+});
+
+export const updateProfile = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const bodyParseRes = UpdateProfileSchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+
+  const updateData = bodyParseRes.data;
+
+  await db
+    .update(studentBluebookSettings)
+    .set(updateData)
+    .where(eq(studentBluebookSettings.netId, netId));
+
+  res.sendStatus(200);
+};

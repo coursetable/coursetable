@@ -1,0 +1,238 @@
+.pageContainer {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.card {
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  margin: 0 1rem;
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--color-text);
+  font-family: var(--font-family-display);
+}
+
+.section {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-surface-elevated);
+  border-radius: 8px;
+  transition: background-color var(--trans-dur);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.section h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  font-family: var(--font-family-display);
+}
+
+.field {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  border-radius: 4px;
+  min-height: auto;
+  flex-wrap: nowrap;
+  gap: 1rem;
+}
+
+.field label {
+  width: 100px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  padding-top: 2px;
+  flex-shrink: 0;
+  font-family: var(--font-family-base);
+}
+
+.nameInputs {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.nameInput {
+  flex: 1;
+  min-width: 0; /* This prevents the inputs from overflowing their container */
+}
+
+.nameInput::placeholder {
+  color: var(
+    --color-text-tertiary
+  ); /* This is CourseTable's lightest text color */
+
+  opacity: 1; /* Ensure consistent opacity across browsers */
+}
+
+.field span {
+  flex: 0 1 200px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-family: var(--font-family-base);
+  line-height: 1.5;
+}
+
+.editButton {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--trans-dur);
+  font-family: var(--font-family-base);
+  cursor: pointer;
+}
+
+.editButton:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.hideOption {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: auto;
+  padding: 4px 0;
+  width: 120px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: var(--font-family-base);
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 18px;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.switch input[type='checkbox'] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 18px;
+  background-color: var(--color-surface);
+  transition: 0.4s;
+  border-radius: 18px;
+  border: 1px solid #d1d5db;
+}
+
+.slider::before {
+  position: absolute;
+  content: '';
+  height: 14px;
+  width: 14px;
+  left: 1px;
+  bottom: 1px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+}
+
+input[type='checkbox']:checked + .slider {
+  background-color: #60a5fa;
+}
+
+input[type='checkbox']:checked + .slider::before {
+  transform: translateX(18px);
+  border-color: #60a5fa;
+}
+
+/* Disabled state */
+input[type='checkbox']:disabled + .slider {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input[type='checkbox']:disabled:checked + .slider {
+  background-color: #93c5fd;
+}
+
+input[type='checkbox']:disabled:checked + .slider::before {
+  border-color: #93c5fd;
+}
+
+.hideOption:hover {
+  color: var(--color-text);
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .pageContainer {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .field {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .field label {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .hideOption {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
