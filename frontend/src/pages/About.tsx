@@ -147,7 +147,7 @@ function About() {
       links: {
         github: 'https://github.com/michaelcanudas',
         linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
-        website: 'https://canudas.org/',
+        website: 'https://michaelcanudas.com/',
       },
     },
     {
@@ -168,16 +168,6 @@ function About() {
         website: 'https://yavinfickel.com',
         github: 'https://github.com/yav-fi',
         linkedin: 'https://www.linkedin.com/in/yavin',
-      },
-    },
-    {
-      name: 'Michael Canudas',
-      image: mc,
-      role: 'Development',
-      links: {
-        github: 'https://github.com/michaelcanudas',
-        linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
-        website: 'https://michaelcanudas.com/',
       },
     },
   ];
