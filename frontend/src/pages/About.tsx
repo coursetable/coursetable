@@ -147,7 +147,7 @@ function About() {
       links: {
         github: 'https://github.com/michaelcanudas',
         linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
-        website: 'https://canudas.org/',
+        website: 'https://michaelcanudas.com/',
       },
     },
     {
