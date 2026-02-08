@@ -63,7 +63,7 @@ export async function fetchSameCourseIdMappings(
   },
 ): Promise<{
   crnToSameCourseId: Map<string, number>;
-  sameCourseIdToCrns: Map<number, number[]>;
+  sameCourseIdToCrns: Map<string, number[]>;
 }> {
   // Fetch sameCourseId for all CRNs using GraphQL
   const crnToSameCourseId = new Map<string, number>();
@@ -86,21 +86,27 @@ export async function fetchSameCourseIdMappings(
   for (const sameCourseId of crnToSameCourseId.values())
     sameCourseIds.add(sameCourseId);
 
-  // Fetch ALL CRNs that have these sameCourseId values
-  const sameCourseIdToCrns = new Map<number, number[]>();
-  for (const [seasonCode] of seasonCrnMap.entries()) {
-    if (sameCourseIds.size === 0) continue;
+  // Fetch ALL CRNs that have these sameCourseId values (per season)
+  const sameCourseIdToCrns = new Map<string, number[]>();
+  for (const [seasonCode, crns] of seasonCrnMap.entries()) {
+    const seasonSameCourseIds = new Set<number>();
+    for (const crn of crns) {
+      const sameCourseId = crnToSameCourseId.get(`${seasonCode}${crn}`);
+      if (sameCourseId) seasonSameCourseIds.add(sameCourseId);
+    }
+
+    if (seasonSameCourseIds.size === 0) continue;
 
     const data = await getSdk(graphqlClient).AllCrnsForSameCourseIds({
-      sameCourseIds: Array.from(sameCourseIds),
+      sameCourseIds: Array.from(seasonSameCourseIds),
       season: seasonCode,
     });
 
     for (const course of data.courses) {
-      if (!sameCourseIdToCrns.has(course.sameCourseId))
-        sameCourseIdToCrns.set(course.sameCourseId, []);
+      const key = `${seasonCode}-${course.sameCourseId}`;
+      if (!sameCourseIdToCrns.has(key)) sameCourseIdToCrns.set(key, []);
       for (const listing of course.listings)
-        sameCourseIdToCrns.get(course.sameCourseId)!.push(listing.crn);
+        sameCourseIdToCrns.get(key)!.push(listing.crn);
     }
   }
 
