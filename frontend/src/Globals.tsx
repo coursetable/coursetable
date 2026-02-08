@@ -21,6 +21,7 @@ import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
+import { WishlistProvider } from './contexts/wishlistContext';
 
 import './index.css';
 
@@ -69,11 +70,13 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
             <FerryProvider>
               {/* SearchProvider must be inside WorksheetProvider because the
                     former depends on the currently viewed worksheet */}
-              <SearchProvider>
-                <MDXProvider components={components}>
-                  <div id="base">{children}</div>
-                </MDXProvider>
-              </SearchProvider>
+              <WishlistProvider>
+                <SearchProvider>
+                  <MDXProvider components={components}>
+                    <div id="base">{children}</div>
+                  </MDXProvider>
+                </SearchProvider>
+              </WishlistProvider>
               <ToastContainer toastClassName="rounded" />
             </FerryProvider>
           </ApolloProvider>

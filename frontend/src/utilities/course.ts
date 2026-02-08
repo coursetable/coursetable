@@ -1,6 +1,7 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
 import type { SortKeys } from '../contexts/searchContext';
+import type { WishlistItemWithListings } from '../contexts/wishlistContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -30,6 +31,16 @@ export function isInWorksheet(
       ?.get(listing.course.season_code)
       ?.get(worksheetNumber)
       ?.courses.some((course) => course.crn === listing.crn) ?? false
+  );
+}
+
+export function isInWishlist(
+  listingSameCourseId: number,
+  wishlist: WishlistItemWithListings[] | undefined,
+): boolean {
+  if (!wishlist) return false;
+  return wishlist.some(
+    (wishlistItem) => wishlistItem.sameCourseId === listingSameCourseId,
   );
 }
 
@@ -104,6 +115,12 @@ export type ListingWithTimes = {
       start_time: string;
       end_time: string;
     }[];
+  };
+};
+
+export type ListingWithOtherListings = {
+  course: {
+    listings: { course_code: string }[];
   };
 };
 

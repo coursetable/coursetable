@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { CUR_YEAR } from '../../../config';
 import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
+import WishlistToggleButton from '../../Wishlist/WishlistToggleButton';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
@@ -62,7 +63,25 @@ function MoreButton({
     <DropdownButton
       as="div"
       drop="down"
-      title={<IoIosMore size={20} />}
+      title={
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 300, hide: 0 }}
+          overlay={(props) => (
+            <Tooltip id="button-tooltip" {...props}>
+              <small>More</small>
+            </Tooltip>
+          )}
+        >
+          <button
+            type="button"
+            className={styles.moreButton}
+            aria-label="Share"
+          >
+            <IoIosMore size={20} />
+          </button>
+        </OverlayTrigger>
+      }
       variant="none"
       className={styles.moreDropdown}
     >
@@ -180,6 +199,7 @@ export default function ModalHeaderControls({
       />
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
+        <WishlistToggleButton listing={listing} modal />
         <ShareButton listing={listing} />
         <MoreButton listing={listing} />
       </div>

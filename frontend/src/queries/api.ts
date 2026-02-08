@@ -631,12 +631,16 @@ export async function fetchUserWorksheets() {
   return res;
 }
 
-const userWishlistSchema = z.array(
-  z.object({
-    season: seasonSchema,
-    crn: crnSchema,
-  }),
-);
+const userWishlistSchema = z.object({
+  data: z.array(
+    z.object({
+      season: seasonSchema,
+      crn: crnSchema,
+    }),
+  ),
+});
+
+export type WishlistItem = { season: Season; crn: Crn };
 
 export async function fetchUserWishlist() {
   return await fetchAPI('/user/wishlist', {
