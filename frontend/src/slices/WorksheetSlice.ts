@@ -21,7 +21,7 @@ import {
 import { type Store, useStore } from '../store';
 
 // Utility Types
-type WorksheetView = 'calendar' | 'list';
+export type WorksheetView = 'calendar' | 'list' | 'map';
 
 export interface WorksheetCourse {
   crn: Crn;
@@ -33,11 +33,14 @@ export interface WorksheetCourse {
 const exoticWorksheetSchema = z.object({
   season: seasonSchema,
   name: z.string(),
+  // Only missing for legacy worksheets
+  creatorName: z.string().optional(),
   courses: z.array(
     z.object({
       crn: crnSchema,
       color: z.string(),
       hidden: z.boolean(),
+      same_course_id: z.number().nullable().optional(),
     }),
   ),
 });
@@ -150,7 +153,12 @@ export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
             0,
             {
               name: courses.data.name,
-              courses: courses.data.courses,
+              courses: courses.data.courses.map((c) => ({
+                crn: c.crn,
+                color: c.color,
+                hidden: c.hidden as boolean | null,
+                same_course_id: c.same_course_id ?? null,
+              })),
               private: false,
             },
           ],

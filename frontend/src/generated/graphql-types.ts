@@ -693,6 +693,7 @@ export type Courses = {
   last_updated: Maybe<Scalars['timestamp']['output']>;
   /** An array relationship */
   listings: Array<Listings>;
+  /** CRN of the primary listing */
   primary_crn: Maybe<Scalars['Crn']['output']>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: Maybe<Scalars['String']['output']>;
@@ -831,6 +832,7 @@ export type CoursesAvgOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -936,6 +938,7 @@ export type CoursesMaxOrderBy = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
   last_updated: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: InputMaybe<OrderBy>;
@@ -1002,6 +1005,7 @@ export type CoursesMinOrderBy = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
   last_updated: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: InputMaybe<OrderBy>;
@@ -1188,6 +1192,7 @@ export type CoursesStddevOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -1226,6 +1231,7 @@ export type CoursesStddevPopOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -1264,6 +1270,7 @@ export type CoursesStddevSampOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -1331,6 +1338,7 @@ export type CoursesStreamCursorValueInput = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<Scalars['Int']['input']>;
   last_updated: InputMaybe<Scalars['timestamp']['input']>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<Scalars['Int']['input']>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes: InputMaybe<Scalars['String']['input']>;
@@ -1388,6 +1396,7 @@ export type CoursesSumOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -1426,6 +1435,7 @@ export type CoursesVarPopOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -1464,6 +1474,7 @@ export type CoursesVarSampOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -1502,6 +1513,7 @@ export type CoursesVarianceOrderBy = {
   last_enrollment_course_id: InputMaybe<OrderBy>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id: InputMaybe<OrderBy>;
+  /** CRN of the primary listing */
   primary_crn: InputMaybe<OrderBy>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id: InputMaybe<OrderBy>;
@@ -1827,10 +1839,7 @@ export type EvaluationQuestions = {
   evaluation_narratives: Array<EvaluationNarratives>;
   /** An array relationship */
   evaluation_ratings: Array<EvaluationRatings>;
-  /**
-   * True if the question has narrative responses.
-   *         False if the question has categorica/numerical responses
-   */
+  /** True if the question has narrative responses. False if the question has categorical/numerical responses */
   is_narrative: Scalars['Boolean']['output'];
   /** JSON array of possible responses (only if the question is not a narrative) */
   options: Scalars['StringArr']['output'];
@@ -1838,13 +1847,7 @@ export type EvaluationQuestions = {
   question_code: Scalars['String']['output'];
   /** The question text */
   question_text: Scalars['String']['output'];
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
+  /** [computed] Question type. The 'Overall' and 'Workload' tags are used to compute average ratings, while others are purely for identification purposes. No other commonality, other than that they contain similar keywords, is guaranteed—for example, they may have different options, or even differ in being narrative or not. */
   tag: Maybe<Scalars['String']['output']>;
 };
 
@@ -1920,10 +1923,7 @@ export type EvaluationQuestionsStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type EvaluationQuestionsStreamCursorValueInput = {
-  /**
-   * True if the question has narrative responses.
-   *         False if the question has categorica/numerical responses
-   */
+  /** True if the question has narrative responses. False if the question has categorical/numerical responses */
   is_narrative: InputMaybe<Scalars['Boolean']['input']>;
   /** JSON array of possible responses (only if the question is not a narrative) */
   options: InputMaybe<Scalars['jsonb']['input']>;
@@ -1931,13 +1931,7 @@ export type EvaluationQuestionsStreamCursorValueInput = {
   question_code: InputMaybe<Scalars['String']['input']>;
   /** The question text */
   question_text: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
+  /** [computed] Question type. The 'Overall' and 'Workload' tags are used to compute average ratings, while others are purely for identification purposes. No other commonality, other than that they contain similar keywords, is guaranteed—for example, they may have different options, or even differ in being narrative or not. */
   tag: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2330,10 +2324,7 @@ export type Listings = {
   season: Seasons;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Scalars['Season']['output'];
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: Scalars['String']['output'];
   /** Subject the course is listed under (e.g. "AMST") */
   subject: Scalars['String']['output'];
@@ -2402,10 +2393,7 @@ export type ListingsMaxOrderBy = {
   school: InputMaybe<OrderBy>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<OrderBy>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<OrderBy>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<OrderBy>;
@@ -2429,10 +2417,7 @@ export type ListingsMinOrderBy = {
   school: InputMaybe<OrderBy>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<OrderBy>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<OrderBy>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<OrderBy>;
@@ -2537,10 +2522,7 @@ export type ListingsStreamCursorValueInput = {
   school: InputMaybe<Scalars['String']['input']>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<Scalars['String']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Scalars['String']['input']>;
@@ -2810,13 +2792,10 @@ export enum OrderBy {
 /** columns and relationships of "professors" */
 export type Professors = {
   __typename?: 'professors';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
+  /** [computed] Average rating of the professor assessed via the "Overall assessment" question in courses taught */
   average_rating: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n: Maybe<Scalars['Int']['output']>;
+  average_rating_n: Scalars['Int']['output'];
   /** An array relationship */
   course_professors: Array<CourseProfessors>;
   /** [computed] Number of courses taught */
@@ -2899,10 +2878,7 @@ export type ProfessorsStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type ProfessorsStreamCursorValueInput = {
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
+  /** [computed] Average rating of the professor assessed via the "Overall assessment" question in courses taught */
   average_rating: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: InputMaybe<Scalars['Int']['input']>;

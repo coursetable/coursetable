@@ -10,6 +10,7 @@ import {
   db,
   FRONTEND_ENDPOINT,
   COURSETABLE_ORIGINS,
+  isDev,
 } from '../config.js';
 import winston from '../logging/winston.js';
 
@@ -57,7 +58,9 @@ export const passportConfig = (
     new CasStrategy(
       {
         version: 'CAS2.0',
-        ssoBaseURL: 'https://secure.its.yale.edu/cas',
+        ssoBaseURL: isDev
+          ? 'https://secure-tst.its.yale.edu/cas'
+          : 'https://secure.its.yale.edu/cas',
       },
       async (profile, done) => {
         // Create or update user's profile

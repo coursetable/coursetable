@@ -20,6 +20,9 @@ import type {
 } from '../generated/graphql-types';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 
+// Coalesce identical concurrent worksheet updates (e.g., double-clicks).
+const inflightWorksheetUpdates = new Map<string, Promise<boolean>>();
+
 type BaseFetchOptions = {
   breadcrumb: Sentry.Breadcrumb & {
     message: string;
@@ -119,9 +122,9 @@ async function fetchAPI(
       let errorCode = '';
       // First: try to parse out a structured error code
       try {
-        errorCode = String(
-          ((await res.json()) as { error?: unknown } | null)?.error ?? '',
-        );
+        const parsedError = ((await res.json()) as { error?: unknown } | null)
+          ?.error;
+        errorCode = typeof parsedError === 'string' ? parsedError : '';
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
@@ -162,48 +165,86 @@ async function fetchAPI(
   }
 }
 
-export function updateWorksheetCourses(
-  body: {
-    season: Season;
-    crn: Crn;
-    worksheetNumber: number;
-  } & (
-    | {
-        action: 'add';
-        color: string;
-        hidden: boolean;
-      }
-    | {
-        action: 'remove' | 'update';
-        color?: string;
-        hidden?: boolean;
-      }
-  ),
+type UpdateWorksheetCourseAction = {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+} & (
+  | {
+      action: 'add';
+      color: string;
+      hidden: boolean;
+    }
+  | {
+      action: 'remove' | 'update';
+      color?: string;
+      hidden?: boolean;
+    }
+);
+
+export async function updateWorksheetCourses(
+  body: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
 ): Promise<boolean> {
-  return fetchAPI('/user/updateWorksheetCourses', {
-    body,
-    handleErrorCode(err) {
-      switch (err) {
-        // These errors can be triggered if the user clicks the button twice
-        // in a row
-        // TODO: we should debounce the request instead
-        case 'ALREADY_BOOKMARKED':
-          toast.error('You have already added this class to your worksheet');
-          return true;
-        case 'NOT_BOOKMARKED':
-          toast.error(
-            'You have already removed this class from your worksheet',
-          );
-          return true;
-        default:
-          return false;
-      }
-    },
-    breadcrumb: {
-      category: 'worksheet',
-      message: 'Updating worksheet',
-    },
-  });
+  const MAX_BATCH_SIZE = 50; // Keep payloads small to avoid 413 Request Entity Too Large.
+
+  const requestInternal = (
+    payload: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
+  ) =>
+    fetchAPI('/user/updateWorksheetCourses', {
+      body: payload,
+      handleErrorCode(err) {
+        switch (err) {
+          // These errors can be triggered if the user clicks the button twice
+          // in a row. we coalesce identical in-flight requests above to avoid
+          // the race but keep the handler for safety.
+          case 'ALREADY_BOOKMARKED':
+            toast.error('You have already added this class to your worksheet');
+            return true;
+          case 'NOT_BOOKMARKED':
+            toast.error(
+              'You have already removed this class from your worksheet',
+            );
+            return true;
+          default:
+            return false;
+        }
+      },
+      breadcrumb: {
+        category: 'worksheet',
+        message: 'Updating worksheet',
+      },
+    });
+
+  const request = (
+    payload: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
+  ) => {
+    const key = JSON.stringify(payload);
+    const existing = inflightWorksheetUpdates.get(key);
+    if (existing) return existing;
+    const pending = requestInternal(payload).finally(() =>
+      inflightWorksheetUpdates.delete(key),
+    );
+    inflightWorksheetUpdates.set(key, pending);
+    return pending;
+  };
+
+  if (!Array.isArray(body) || body.length <= MAX_BATCH_SIZE)
+    return request(body);
+
+  for (let i = 0; i < body.length; i += MAX_BATCH_SIZE) {
+    const batch = body.slice(i, i + MAX_BATCH_SIZE);
+    if (batch.length === 0) continue;
+    if (batch.length === 1) {
+      const [single] = batch;
+      const ok = await request(single!);
+      if (!ok) return false;
+    } else {
+      const ok = await request(batch);
+      if (!ok) return false;
+    }
+  }
+
+  return true;
 }
 
 export async function updateWishlistCourses(
@@ -493,22 +534,28 @@ export async function getUserInfo() {
   return res;
 }
 
-const userWorksheetsSchema = z
+// Shared schema for worksheet courses (used by both user and friends)
+const worksheetCourseSchema = z.object({
+  crn: crnSchema,
+  color: z.string(),
+  hidden: z.boolean().nullable(),
+  sameCourseId: z.number().nullable().optional(),
+});
+
+// Shared schema for worksheet structure
+const worksheetSchema = z.object({
+  name: z.string(),
+  private: z.boolean().optional(),
+  courses: z.array(worksheetCourseSchema),
+});
+
+// Shared schema for season/worksheet mapping with transform
+const worksheetsMapSchema = z
   .record(
     // Key: season
     z.record(
       // Key: worksheet number
-      z.object({
-        name: z.string(),
-        private: z.boolean().optional(),
-        courses: z.array(
-          z.object({
-            crn: crnSchema,
-            color: z.string(),
-            hidden: z.boolean().nullable(),
-          }),
-        ),
-      }),
+      worksheetSchema,
     ),
   )
   .transform((data) => {
@@ -524,6 +571,8 @@ const userWorksheetsSchema = z
     return res;
   });
 
+const userWorksheetsSchema = worksheetsMapSchema;
+
 // Change index type to be more specific. We don't use the key type of z.record
 // on purpose; see https://github.com/colinhacks/zod/pull/2287
 export type UserWorksheets = z.infer<typeof userWorksheetsSchema>;
@@ -532,6 +581,7 @@ export async function fetchUserWorksheets() {
   const res = await fetchAPI('/user/worksheets', {
     schema: z.object({
       data: userWorksheetsSchema,
+      sameCourseIdToCrns: z.record(z.array(z.number())),
     }),
     breadcrumb: {
       category: 'user',
@@ -601,7 +651,7 @@ export async function fetchUserWishlist() {
 const friendsSchema = z.record(
   z.object({
     name: z.string().nullable(),
-    worksheets: userWorksheetsSchema,
+    worksheets: worksheetsMapSchema,
   }),
 );
 
@@ -614,6 +664,7 @@ export function fetchFriendWorksheets() {
   return fetchAPI('/friends/worksheets', {
     schema: z.object({
       friends: friendsSchema,
+      sameCourseIdToCrns: z.record(z.array(z.number())).optional(),
     }),
     breadcrumb: {
       category: 'friends',
