@@ -190,7 +190,18 @@ function ResultsItem({
             <span className={styles.ellipsisText}>
               {toLocationsSummary(listing.course, user?.hasEvals) ===
               'HIDDEN' ? (
-                <BsEyeSlash title="Sign in to see location" />
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="location-hidden-tooltip" {...props}>
+                      Sign in to see location
+                    </Tooltip>
+                  )}
+                >
+                  <span>
+                    <BsEyeSlash />
+                  </span>
+                </OverlayTrigger>
               ) : (
                 toLocationsSummary(listing.course, user?.hasEvals)
               )}
