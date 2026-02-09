@@ -5,6 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
+import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger, Fade, Modal } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
@@ -13,7 +14,7 @@ import { useApolloClient } from '@apollo/client';
 
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
-import { useWorksheetInfo } from '../../contexts/ferryContext';
+import { seasons, useWorksheetInfo } from '../../contexts/ferryContext';
 import type { Option } from '../../contexts/searchContext';
 import type { LatestCurrentOfferingQuery } from '../../generated/graphql-types';
 import { updateWorksheetCourses } from '../../queries/api';
@@ -181,16 +182,15 @@ function WorksheetToggleButton({
       let targetCrn = listing.crn;
       let targetWorksheetNumber = selectedWorksheet;
 
-      const shouldCheckLatest =
-        !inWorksheet && !CUR_YEAR.includes(listing.course.season_code);
+      const sameCourseId = listing.course.same_course_id;
 
-      if (shouldCheckLatest && listing.course.same_course_id !== undefined) {
+      if (!inWorksheet && sameCourseId !== undefined) {
         try {
           const { data } = await client.query<LatestCurrentOfferingQuery>({
             query: LatestCurrentOfferingDocument,
             variables: {
-              sameCourseId: listing.course.same_course_id,
-              seasonCodes: CUR_YEAR,
+              sameCourseId,
+              seasonCodes: seasons,
             },
           });
           const [latestCourse] = data.courses;
@@ -212,10 +212,14 @@ function WorksheetToggleButton({
                 targetWorksheetNumber = getRelevantWorksheetNumber(
                   latestCourse.season_code,
                 );
+              } else {
+                // User cancelled the modal, don't add anything
+                return;
               }
             }
           }
-        } catch {
+        } catch (error: unknown) {
+          Sentry.captureException(error);
           // If lookup fails, fall back to adding the selected listing
         }
       }
