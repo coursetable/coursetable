@@ -102,9 +102,11 @@ function Profile() {
 
   const sortedWorksheetCourses = useMemo(
     () =>
-      [...worksheetCourses].sort((a, b) =>
-        alphaSort(a.listing.course.title, b.listing.course.title),
-      ),
+      worksheetCourses
+        .filter((course) => !course.hidden)
+        .sort((a, b) =>
+          alphaSort(a.listing.course.title, b.listing.course.title),
+        ),
     [worksheetCourses],
   );
 
@@ -298,7 +300,7 @@ function Profile() {
                     </div>
                     <div className={styles.friendActions}>
                       <Button
-                        variant="outline-danger"
+                        variant="primary"
                         size="sm"
                         onClick={() => handleRemoveFriend(friendNetId as NetId)}
                       >
