@@ -404,8 +404,20 @@ export async function fetchCatalog(season: Season) {
 
 type CourseEvals = EvalsBySeasonQuery['courses'][number];
 
+type CourseMeetingWithLocation = CoursePublic['course_meetings'][number] & {
+  location?: CourseEvals['course_meetings'][number]['location'];
+};
+
+type CoursePublicWithOptionalLocation = Omit<
+  CoursePublic,
+  'course_meetings'
+> & {
+  course_meetings: CourseMeetingWithLocation[];
+};
+
 export type CatalogListing = CoursePublic['listings'][number] & {
-  course: CoursePublic & Partial<CourseEvals>;
+  course: CoursePublicWithOptionalLocation &
+    Partial<Omit<CourseEvals, 'course_meetings'>>;
 };
 
 export async function fetchEvals(season: Season) {

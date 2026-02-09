@@ -199,3 +199,20 @@ query CourseSections(
     }
   }
 }
+
+query LatestCurrentOffering($sameCourseId: Int!, $seasonCodes: [String!]!) {
+  courses(
+    where: {
+      same_course_id: { _eq: $sameCourseId }
+      season_code: { _in: $seasonCodes }
+    }
+    order_by: { season_code: desc }
+    limit: 1
+  ) {
+    season_code
+    listings(limit: 1) {
+      crn
+      course_code
+    }
+  }
+}
