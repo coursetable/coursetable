@@ -190,7 +190,7 @@ function WorksheetToggleButton({
             query: LatestCurrentOfferingDocument,
             variables: {
               sameCourseId,
-              seasonCodes: seasons,
+              seasonCodes: seasons as string[],
             },
           });
           const [latestCourse] = data.courses;
