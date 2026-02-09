@@ -134,9 +134,6 @@ export default function ScheduleSuggestionsControls({
             placeholder="Exclude specific course codes"
             className={styles.exclusionSelect}
           />
-          <Form.Text className="text-muted">
-            {exclusionOptions.length.toLocaleString()} available to add
-          </Form.Text>
         </div>
       </div>
     </div>

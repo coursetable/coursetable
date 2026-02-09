@@ -57,6 +57,40 @@
   background-color: var(--color-select);
 }
 
+.buttonGroup {
+  display: flex;
+}
+
+.buttonGroupItem {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+}
+
+.buttonGroupItem .button,
+.buttonGroupItem :global(.dropdown) {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.buttonGroup .button {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.buttonGroup :global(.dropdown) {
+  width: 100%;
+}
+
+.buttonGroup :global(.dropdown-toggle) {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .button:global(.form-control):focus {
   color: var(--color-text);
 }
@@ -67,6 +101,24 @@
 
 .button :global(.dropdown-menu) {
   min-width: 20rem !important;
+}
+
+.buttonGroupItem:not(:first-child) .button,
+.buttonGroupItem:not(:first-child) :global(.dropdown) {
+  margin-left: -2px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.buttonGroupItem:not(:last-child) .button,
+.buttonGroupItem:not(:last-child) :global(.dropdown) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.buttonGroupItem:hover .button,
+.buttonGroupItem:hover :global(.dropdown) {
+  z-index: 2;
 }
 
 .courseList {

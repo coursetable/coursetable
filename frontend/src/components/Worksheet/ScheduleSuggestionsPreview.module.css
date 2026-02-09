@@ -48,6 +48,42 @@
   height: 400px;
 }
 
+.eventWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.excludeButtonWrapper {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 1;
+}
+
+.excludeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  background: rgb(0 0 0 / 25%);
+  border: none;
+  border-radius: 3px;
+  color: inherit;
+  cursor: pointer;
+}
+
+.excludeButton:hover {
+  background: rgb(0 0 0 / 45%);
+}
+
+.eventContent {
+  height: 100%;
+}
+
 @media (max-width: calc(768px - 0.5px)) {
   .scheduleNav {
     align-items: stretch;

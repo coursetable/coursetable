@@ -110,6 +110,11 @@ export default function useScheduleSuggestionsModel({
     [worksheetCourses],
   );
 
+  const worksheetCourseCodes = useMemo(
+    () => new Set(visibleWorksheetListings.map((l) => l.course_code)),
+    [visibleWorksheetListings],
+  );
+
   const fixedCourseCount = visibleWorksheetListings.length;
 
   useEffect(() => {
@@ -128,10 +133,6 @@ export default function useScheduleSuggestionsModel({
   const catalogListingsByCode = useMemo(() => {
     if (!seasonCatalog) return new Map<string, CatalogListing[]>();
 
-    const worksheetCourseCodes = new Set(
-      visibleWorksheetListings.map((listing) => listing.course_code),
-    );
-
     const listingsByCode = new Map<string, CatalogListing[]>();
     for (const listing of seasonCatalog.data.values()) {
       const code = listing.course_code;
@@ -143,7 +144,7 @@ export default function useScheduleSuggestionsModel({
     }
 
     return listingsByCode;
-  }, [seasonCatalog, visibleWorksheetListings]);
+  }, [seasonCatalog, worksheetCourseCodes]);
 
   const exclusionOptions = useMemo(() => {
     const options: CourseOption[] = [];
@@ -169,10 +170,22 @@ export default function useScheduleSuggestionsModel({
 
   const selectedExclusionOptions = useMemo(
     () =>
-      excludedCourseCodes
-        .map((code) => exclusionOptionByCode.get(code))
-        .filter((option): option is CourseOption => Boolean(option)),
+      excludedCourseCodes.map(
+        (code) =>
+          exclusionOptionByCode.get(code) ?? { value: code, label: code },
+      ),
     [excludedCourseCodes, exclusionOptionByCode],
+  );
+
+  const exclusionOptionsWithSelected = useMemo(
+    () =>
+      [
+        ...exclusionOptions,
+        ...excludedCourseCodes
+          .filter((code) => !exclusionOptionByCode.has(code))
+          .map((code) => ({ value: code, label: code }) as CourseOption),
+      ].sort((a, b) => a.value.localeCompare(b.value, 'en-US')),
+    [exclusionOptions, excludedCourseCodes, exclusionOptionByCode],
   );
 
   const excludedSet = useMemo(
@@ -329,13 +342,11 @@ export default function useScheduleSuggestionsModel({
   const currentSchedule =
     validSchedules[Math.min(selectedIndex, validSchedules.length - 1)];
 
-  const events = useMemo(
-    () =>
-      currentSchedule
-        ? toScheduleEvents(currentSchedule.listings, viewedSeason)
-        : [],
-    [currentSchedule, viewedSeason],
-  );
+  const events = useMemo(() => {
+    if (!currentSchedule) return [];
+    const rawEvents = toScheduleEvents(currentSchedule.listings, viewedSeason);
+    return rawEvents.filter((e) => !excludedSet.has(e.listing.course_code));
+  }, [currentSchedule, viewedSeason, excludedSet]);
 
   const { earliest, latest } = useMemo(
     () => getCalendarBounds(events),
@@ -345,9 +356,10 @@ export default function useScheduleSuggestionsModel({
   const addedCourseLabels = useMemo(
     () =>
       (currentSchedule?.addedListings ?? [])
+        .filter((listing) => !excludedSet.has(listing.course_code))
         .map((listing) => listingSummary(listing))
         .sort((a, b) => a.localeCompare(b, 'en-US')),
-    [currentSchedule?.addedListings],
+    [currentSchedule?.addedListings, excludedSet],
   );
 
   const status: ScheduleSuggestionsStatus = useMemo(() => {
@@ -408,6 +420,13 @@ export default function useScheduleSuggestionsModel({
   const onNextSchedule = () =>
     setSelectedIndex((index) => Math.min(validSchedules.length - 1, index + 1));
 
+  const onExcludeCourse = (courseCode: string) => {
+    if (worksheetCourseCodes.has(courseCode)) return;
+    setExcludedCourseCodes((prev) =>
+      prev.includes(courseCode) ? prev : [...prev, courseCode],
+    );
+  };
+
   return {
     catalogLoading,
     menuPortalTarget,
@@ -415,7 +434,7 @@ export default function useScheduleSuggestionsModel({
     targetCreditsInput,
     parsedTargetCredits,
     requiredTags,
-    exclusionOptions,
+    exclusionOptions: exclusionOptionsWithSelected,
     selectedExclusionOptions,
     allAvailableTags,
     status,
@@ -434,6 +453,8 @@ export default function useScheduleSuggestionsModel({
     onTargetCreditsBlur,
     onToggleTag,
     onExcludedCourseCodesChange: setExcludedCourseCodes,
+    worksheetCourseCodes,
+    onExcludeCourse,
     onPreviousSchedule,
     onNextSchedule,
   };

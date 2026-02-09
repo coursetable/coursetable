@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import { Alert, Button, Modal } from 'react-bootstrap';
 
 import { useEventStyle } from './CalendarEvent';
@@ -79,10 +80,22 @@ export default function ScheduleSuggestionsModal({
   show,
   onHide,
 }: ScheduleSuggestionsModalProps) {
+  const [, setSearchParams] = useSearchParams();
   const model = useScheduleSuggestionsModel({ show });
   const eventStyleGetter = useEventStyle();
 
   const alert = statusAlert(model.status);
+
+  const onCourseClick = (listing: {
+    crn: number;
+    course: { season_code: string };
+  }) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('course-modal', `${listing.course.season_code}-${listing.crn}`);
+      return next;
+    });
+  };
 
   return (
     <Modal
@@ -129,8 +142,11 @@ export default function ScheduleSuggestionsModal({
                 earliest={model.earliest}
                 latest={model.latest}
                 eventStyleGetter={eventStyleGetter}
+                worksheetCourseCodes={model.worksheetCourseCodes}
                 onPrevious={model.onPreviousSchedule}
                 onNext={model.onNextSchedule}
+                onCourseClick={onCourseClick}
+                onExcludeCourse={model.onExcludeCourse}
               />
             )}
           </>

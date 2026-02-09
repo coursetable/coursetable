@@ -152,122 +152,130 @@ function WorksheetCalendarList({
       {showControls && (
         <SurfaceComponent elevated className={styles.container}>
           <div className="shadow-sm p-2">
-            <ButtonGroup className="w-100">
+            <ButtonGroup className={clsx(styles.buttonGroup, 'w-100')}>
               {showHideButton && !isReadonlyWorksheet && (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>{areHidden ? 'Show' : 'Hide'} all</span>
-                    </Tooltip>
-                  )}
-                >
-                  <Button
-                    onClick={async () => {
-                      await setCourseHidden({
-                        season: viewedSeason,
-                        worksheetNumber: viewedWorksheetNumber,
-                        crn: courses.map((course) => course.listing.crn),
-                        hidden: !areHidden,
-                      });
-                      await worksheetsRefresh();
-                    }}
-                    variant="none"
-                    className={clsx(styles.button, 'px-3 w-100')}
-                    aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
+                <div className={styles.buttonGroupItem}>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={(props) => (
+                      <Tooltip id="button-tooltip" {...props}>
+                        <span>{areHidden ? 'Show' : 'Hide'} all</span>
+                      </Tooltip>
+                    )}
                   >
-                    <HideShowIcon
-                      className={clsx(styles.icon, 'my-auto pe-2')}
-                      size={32}
-                    />
-                  </Button>
-                </OverlayTrigger>
+                    <Button
+                      onClick={async () => {
+                        await setCourseHidden({
+                          season: viewedSeason,
+                          worksheetNumber: viewedWorksheetNumber,
+                          crn: courses.map((course) => course.listing.crn),
+                          hidden: !areHidden,
+                        });
+                        await worksheetsRefresh();
+                      }}
+                      variant="none"
+                      className={clsx(styles.button, 'px-3')}
+                      aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
+                    >
+                      <HideShowIcon
+                        className={clsx(styles.icon, 'my-auto pe-2')}
+                        size={32}
+                      />
+                    </Button>
+                  </OverlayTrigger>
+                </div>
               )}
 
               {showSettings && (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>Worksheet Settings</span>
-                    </Tooltip>
-                  )}
-                >
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setSettingsModalOpen(true);
-                    }}
-                    variant="none"
-                    className={clsx(styles.button, 'px-3 w-100')}
-                    aria-label="Worksheet Settings"
+                <div className={styles.buttonGroupItem}>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={(props) => (
+                      <Tooltip id="button-tooltip" {...props}>
+                        <span>Worksheet Settings</span>
+                      </Tooltip>
+                    )}
                   >
-                    <CiSettings className={clsx(styles.icon)} size={32} />
-                  </Button>
-                </OverlayTrigger>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setSettingsModalOpen(true);
+                      }}
+                      variant="none"
+                      className={clsx(styles.button, 'px-3')}
+                      aria-label="Worksheet Settings"
+                    >
+                      <CiSettings className={styles.icon} size={32} />
+                    </Button>
+                  </OverlayTrigger>
+                </div>
               )}
 
               {showExport && (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>Suggest schedules</span>
-                    </Tooltip>
-                  )}
-                >
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setScheduleModalOpen(true);
-                    }}
-                    variant="none"
-                    className={clsx(styles.button, 'px-3 w-100')}
-                    aria-label="Suggest schedules"
+                <div className={styles.buttonGroupItem}>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={(props) => (
+                      <Tooltip id="button-tooltip" {...props}>
+                        <span>Suggest schedules</span>
+                      </Tooltip>
+                    )}
                   >
-                    <MdAutoAwesome className={clsx(styles.icon)} size={22} />
-                  </Button>
-                </OverlayTrigger>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setScheduleModalOpen(true);
+                      }}
+                      variant="none"
+                      className={clsx(styles.button, 'px-3')}
+                      aria-label="Suggest schedules"
+                    >
+                      <MdAutoAwesome className={styles.icon} size={22} />
+                    </Button>
+                  </OverlayTrigger>
+                </div>
               )}
 
               {showExport && (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      <span>Export worksheet calendar</span>
-                    </Tooltip>
-                  )}
-                >
-                  <DropdownButton
-                    as="div"
-                    drop="down"
-                    align="end"
-                    title={
-                      <TbCalendarDown
-                        className={clsx(styles.icon, styles.calendarIcon)}
-                        size={22}
-                      />
-                    }
-                    variant="none"
-                    className={clsx(styles.button, 'w-100 btn')}
+                <div className={styles.buttonGroupItem}>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={(props) => (
+                      <Tooltip id="button-tooltip" {...props}>
+                        <span>Export worksheet calendar</span>
+                      </Tooltip>
+                    )}
                   >
-                    <Dropdown.Item eventKey="1" as="div">
-                      <GoogleCalendarButton />
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="2" as="div">
-                      <ICSExportButton />
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="3" as="div">
-                      <PNGExportButton />
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="4" as="div">
-                      <URLExportButton />
-                    </Dropdown.Item>
-                  </DropdownButton>
-                </OverlayTrigger>
+                    <DropdownButton
+                      as="div"
+                      drop="down"
+                      align="end"
+                      title={
+                        <TbCalendarDown
+                          className={clsx(styles.icon, styles.calendarIcon)}
+                          size={22}
+                        />
+                      }
+                      variant="none"
+                      className={clsx(styles.button, 'btn')}
+                    >
+                      <Dropdown.Item eventKey="1" as="div">
+                        <GoogleCalendarButton />
+                      </Dropdown.Item>
+                      <Dropdown.Item eventKey="2" as="div">
+                        <ICSExportButton />
+                      </Dropdown.Item>
+                      <Dropdown.Item eventKey="3" as="div">
+                        <PNGExportButton />
+                      </Dropdown.Item>
+                      <Dropdown.Item eventKey="4" as="div">
+                        <URLExportButton />
+                      </Dropdown.Item>
+                    </DropdownButton>
+                  </OverlayTrigger>
+                </div>
               )}
             </ButtonGroup>
           </div>

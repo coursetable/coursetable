@@ -1,11 +1,56 @@
 import type { CSSProperties } from 'react';
-import { Alert, Button } from 'react-bootstrap';
+import { Alert, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { MdClose } from 'react-icons/md';
 import { Calendar } from 'react-big-calendar';
 
 import { CalendarEventBody } from './CalendarEvent';
 import { formatCredits } from './scheduleSuggestionsUtils';
 import { localizer, type RBCEvent } from '../../utilities/calendar';
 import styles from './ScheduleSuggestionsPreview.module.css';
+
+function ScheduleSuggestionEvent({
+  event,
+  worksheetCourseCodes,
+  onExcludeCourse,
+}: {
+  readonly event: RBCEvent;
+  readonly worksheetCourseCodes: ReadonlySet<string>;
+  readonly onExcludeCourse: (courseCode: string) => void;
+}) {
+  const isWorksheetCourse = worksheetCourseCodes.has(event.listing.course_code);
+
+  return (
+    <div className={styles.eventWrapper}>
+      {!isWorksheetCourse && (
+        <div className={styles.excludeButtonWrapper}>
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) => (
+              <Tooltip id={`exclude-${event.listing.crn}`} {...props}>
+                Exclude course
+              </Tooltip>
+            )}
+          >
+            <button
+              type="button"
+              className={styles.excludeButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                onExcludeCourse(event.listing.course_code);
+              }}
+              aria-label="Exclude course"
+            >
+              <MdClose size={10} />
+            </button>
+          </OverlayTrigger>
+        </div>
+      )}
+      <div className={styles.eventContent}>
+        <CalendarEventBody event={event} compact />
+      </div>
+    </div>
+  );
+}
 
 type ScheduleSuggestionsPreviewProps = {
   readonly addedCourseLabels: readonly string[];
@@ -16,8 +61,14 @@ type ScheduleSuggestionsPreviewProps = {
   readonly earliest: Date;
   readonly latest: Date;
   readonly eventStyleGetter: (event: RBCEvent) => { style: CSSProperties };
+  readonly worksheetCourseCodes: ReadonlySet<string>;
   readonly onPrevious: () => void;
   readonly onNext: () => void;
+  readonly onCourseClick: (listing: {
+    crn: number;
+    course: { season_code: string };
+  }) => void;
+  readonly onExcludeCourse: (courseCode: string) => void;
 };
 
 export default function ScheduleSuggestionsPreview({
@@ -29,8 +80,11 @@ export default function ScheduleSuggestionsPreview({
   earliest,
   latest,
   eventStyleGetter,
+  worksheetCourseCodes,
   onPrevious,
   onNext,
+  onCourseClick,
+  onExcludeCourse,
 }: ScheduleSuggestionsPreviewProps) {
   return (
     <>
@@ -86,9 +140,14 @@ export default function ScheduleSuggestionsPreview({
               localizer={localizer}
               toolbar={false}
               showCurrentTimeIndicator={false}
+              onSelectEvent={(event) => onCourseClick(event.listing)}
               components={{
                 event: ({ event }: { readonly event: RBCEvent }) => (
-                  <CalendarEventBody event={event} />
+                  <ScheduleSuggestionEvent
+                    event={event}
+                    worksheetCourseCodes={worksheetCourseCodes}
+                    onExcludeCourse={onExcludeCourse}
+                  />
                 ),
               }}
               eventPropGetter={eventStyleGetter}

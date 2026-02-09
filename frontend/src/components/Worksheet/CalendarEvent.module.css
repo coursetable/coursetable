@@ -3,6 +3,27 @@
   height: 100%;
 }
 
+.eventCompact {
+  padding-right: 18px;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .eventCompactShort {
+    line-height: 1;
+    margin-top: -3px;
+    padding-bottom: 0;
+  }
+
+  .eventCompactShort strong,
+  .eventCompactShort .courseCodeText {
+    line-height: 1;
+  }
+
+  .eventCompactShort br {
+    margin: -2px 0;
+  }
+}
+
 .eventButtons {
   display: flex;
   gap: 2px;
@@ -44,6 +65,7 @@
 }
 
 .locationText {
+  font-size: 12px;
   font-weight: 500;
 }
 
