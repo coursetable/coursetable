@@ -142,7 +142,7 @@ function DropdownContent({
           )}
           {authStatus === 'authenticated' && (
             <DropdownItem icon={FcBusinessman} to="/profile">
-              Profile
+              Profile (beta)
             </DropdownItem>
           )}
           {authStatus === 'authenticated' ? (
