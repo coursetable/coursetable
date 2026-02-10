@@ -1,4 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
+import clsx from 'clsx';
 import { Alert, Button, Modal } from 'react-bootstrap';
 
 import { useEventStyle } from './CalendarEvent';
@@ -80,9 +81,13 @@ export default function ScheduleSuggestionsModal({
   show,
   onHide,
 }: ScheduleSuggestionsModalProps) {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const model = useScheduleSuggestionsModel({ show });
   const eventStyleGetter = useEventStyle();
+
+  const isInBackground =
+    show &&
+    (searchParams.has('course-modal') || searchParams.has('prof-modal'));
 
   const alert = statusAlert(model.status);
 
@@ -103,7 +108,10 @@ export default function ScheduleSuggestionsModal({
       onHide={onHide}
       centered
       scrollable
-      dialogClassName={styles.dialog}
+      dialogClassName={clsx(
+        styles.dialog,
+        isInBackground && styles.dialogInBackground,
+      )}
     >
       <Modal.Header closeButton>
         <Modal.Title>Potential schedules</Modal.Title>

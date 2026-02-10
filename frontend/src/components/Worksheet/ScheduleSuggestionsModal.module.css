@@ -8,6 +8,15 @@
   border-radius: 8px !important;
 }
 
+.dialogInBackground :global(.modal-content) {
+  opacity: 0.7;
+  filter: brightness(0.95);
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    filter 0.15s ease;
+}
+
 .dialog :global(.modal-header) {
   border-bottom: 1px solid var(--color-border);
   padding: 1rem 1rem 0.75rem !important;
