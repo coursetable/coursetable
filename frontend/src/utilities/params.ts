@@ -205,15 +205,69 @@ export function createFilterLink<K extends keyof Filters>(
   }
 
   if (Array.isArray(value)) {
-    const values = value.map((v) =>
-      typeof v === 'object' && Object.hasOwn(v, 'value') ? v.value : v,
-    );
+    const values = value.map((v) => {
+      if (typeof v === 'object' && Object.hasOwn(v, 'value')) 
+        return String((v as { value: string | number }).value);
+      
+      return String(v as string | number);
+    });
     newSearch.set(key, values.join(','));
   } else if (typeof value === 'object' && Object.hasOwn(value, 'value')) {
-    newSearch.set(key, value.value.toString());
+    newSearch.set(key, String((value as { value: string | number }).value));
   } else {
-    newSearch.set(key, value.toString());
+    newSearch.set(key, String(value as string | boolean));
   }
 
   return `?${newSearch.toString()}`;
+}
+
+/**
+ * Builds a full query string from all filters, excluding defaults and
+ * optionally season.
+ */
+export function buildFullFilterQueryString(
+  filters: Filters,
+  defaultFilters: Filters,
+  options?: { excludeSeason?: boolean },
+): string {
+  const params = new URLSearchParams();
+
+  (Object.keys(filters) as (keyof Filters)[]).forEach((key) => {
+    // Skip season if requested
+    if (options?.excludeSeason && key === 'selectSeasons') return;
+
+    const value = filters[key];
+    const defaultValue = defaultFilters[key];
+
+    // Skip if value equals default
+    if (JSON.stringify(value) === JSON.stringify(defaultValue)) return;
+
+    // Serialize the value (same logic as createFilterLink)
+    if (Array.isArray(value)) {
+      const parts = value.map((v) => {
+        // Filter array elements can be Option (object with value) or string
+        /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+        if (typeof v === 'object' && v !== null && Object.hasOwn(v, 'value')) 
+          return String((v as { value: string | number }).value);
+        
+        /* eslint-enable @typescript-eslint/no-unnecessary-condition */
+        return String(v as string | number);
+      });
+      if (parts.length > 0) params.set(key, parts.join(','));
+    } else if (
+      // SelectSortBy is Option<SortKeys> (object with value)
+      /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+      typeof value === 'object' &&
+      value !== null &&
+      Object.hasOwn(value as object, 'value')
+    ) {
+      /* eslint-enable @typescript-eslint/no-unnecessary-condition */
+      params.set(key, String((value as { value: string | number }).value));
+    } else {
+      params.set(key, String(value as string | boolean));
+    }
+  });
+
+  const queryString = params.toString();
+  return queryString ? `?${queryString}` : '';
 }
