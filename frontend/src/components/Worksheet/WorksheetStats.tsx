@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
+import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
+import WorksheetNumDropdown from './WorksheetNumberDropdown';
+import { updateWorksheetCourses } from '../../queries/api';
+import type { Crn, Season } from '../../queries/graphql-types';
+import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -11,8 +16,8 @@ import {
   getWorkloadRatings,
   isDiscussionSection,
 } from '../../utilities/course';
+import { useComponentVisible } from '../../utilities/display';
 import SkillBadge from '../SkillBadge';
-
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -84,20 +89,83 @@ function NoStatsTip({
   );
 }
 
+type CourseUpdate = {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+  action: 'add';
+  color: string;
+  hidden: boolean;
+};
+
+function buildCourseUpdates(
+  currentCourses: readonly WorksheetCourse[],
+  targetSeason: Season,
+  targetWorksheetNumber: number,
+  targetWorksheet: { courses: { crn: Crn }[] } | undefined,
+): CourseUpdate[] {
+  const updates: CourseUpdate[] = [];
+
+  for (const course of currentCourses) {
+    if (
+      targetWorksheet &&
+      targetWorksheet.courses.some((c) => c.crn === course.listing.crn)
+    )
+      continue;
+
+    updates.push({
+      season: targetSeason,
+      crn: course.listing.crn,
+      worksheetNumber: targetWorksheetNumber,
+      action: 'add',
+      color: course.color,
+      hidden: course.hidden ?? false,
+    });
+  }
+
+  return updates;
+}
+
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
+  const {
+    elemRef: popupRef,
+    isComponentVisible: showExportPopup,
+    setIsComponentVisible: setShowExportPopup,
+  } = useComponentVisible<HTMLDivElement>(false);
+
+  useEffect(() => {
+    if (!showExportPopup) return undefined;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowExportPopup(false);
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [showExportPopup, setShowExportPopup]);
+
   const {
     courses,
     isExoticWorksheet,
-    exoticWorksheet,
     exitExoticWorksheet,
+    exoticWorksheet,
     isMobile,
+    viewedSeason,
+    viewedWorksheetNumber,
+    worksheets,
+    worksheetsRefresh,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
-      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
-      exoticWorksheet: state.exoticWorksheet,
+      isExoticWorksheet: Boolean(state.exoticWorksheet),
       exitExoticWorksheet: state.exitExoticWorksheet,
+      exoticWorksheet: state.exoticWorksheet,
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      worksheets: state.worksheets,
+      worksheetsRefresh: state.worksheetsRefresh,
       isMobile: state.isMobile,
     })),
   );
@@ -276,18 +344,160 @@ export default function WorksheetStats() {
                 </dd>
               </div>
             </dl>
-            {isExoticWorksheet && isMobile && (
-              <>
-                <div className={styles.spacer} />
-                <dl>
-                  <div className={styles.wide}>
-                    <dt>Viewing exported worksheet</dt>
-                    <Button variant="primary" onClick={exitExoticWorksheet}>
-                      Exit
+            <div className={styles.spacer} />
+            <dl>
+              {isExoticWorksheet && (
+                <div className={styles.wide}>
+                  {isMobile ? (
+                    <>
+                      <dt>Viewing exported worksheet</dt>
+                      <div className={styles.buttonGroup}>
+                        {user ? (
+                          <Button
+                            variant="primary"
+                            onClick={() => setShowExportPopup(true)}
+                          >
+                            Import
+                          </Button>
+                        ) : (
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="login-tooltip">
+                                <small>
+                                  Sign in to import courses into your worksheets
+                                </small>
+                              </Tooltip>
+                            }
+                          >
+                            <span>
+                              <Button variant="primary" disabled>
+                                Import
+                              </Button>
+                            </span>
+                          </OverlayTrigger>
+                        )}
+                        <Button
+                          variant="secondary"
+                          onClick={exitExoticWorksheet}
+                        >
+                          Exit
+                        </Button>
+                      </div>
+                    </>
+                  ) : user ? (
+                    <Button
+                      className={styles.fullWidthButton}
+                      variant="primary"
+                      onClick={() => setShowExportPopup(true)}
+                    >
+                      Import into your own worksheet
+                    </Button>
+                  ) : (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip id="login-tooltip">
+                          <small>
+                            Sign in to import courses into your worksheets
+                          </small>
+                        </Tooltip>
+                      }
+                    >
+                      <span className={styles.fullWidthButtonWrapper}>
+                        <Button
+                          className={styles.fullWidthButton}
+                          variant="primary"
+                          disabled
+                        >
+                          Import into your own worksheet
+                        </Button>
+                      </span>
+                    </OverlayTrigger>
+                  )}
+                </div>
+              )}
+            </dl>
+
+            {showExportPopup && (
+              <div className={styles.popup}>
+                <div className={styles.popupContent} ref={popupRef}>
+                  <div className={styles.popupHeader}>
+                    <h5>Import Into Worksheet</h5>
+                    <Button
+                      className={styles.closeButton}
+                      onClick={() => setShowExportPopup(false)}
+                    >
+                      ×
                     </Button>
                   </div>
-                </dl>
-              </>
+                  <div className={styles.importContainer}>
+                    <WorksheetNumDropdown
+                      mobile={false}
+                      person="me"
+                      season={exoticWorksheet?.data.season}
+                    />
+                    <Button
+                      variant="primary"
+                      disabled={isImporting}
+                      onClick={async () => {
+                        if (isImporting) return;
+                        setIsImporting(true);
+                        const season =
+                          exoticWorksheet?.data.season ?? viewedSeason;
+                        const targetWorksheet = worksheets
+                          ?.get(season)
+                          ?.get(viewedWorksheetNumber);
+
+                        if (courses.length === 0) {
+                          toast.error(
+                            'Current worksheet has no courses to copy',
+                          );
+                          setIsImporting(false);
+                          return;
+                        }
+
+                        const updates = buildCourseUpdates(
+                          courses,
+                          season,
+                          viewedWorksheetNumber,
+                          targetWorksheet,
+                        );
+
+                        if (updates.length === 0) {
+                          toast.error(
+                            'All courses are already in the target worksheet',
+                          );
+                          setIsImporting(false);
+                          return;
+                        }
+
+                        try {
+                          const success = await updateWorksheetCourses(updates);
+                          if (success) {
+                            await worksheetsRefresh();
+                            toast.success(
+                              `Successfully imported ${updates.length} course${
+                                updates.length === 1 ? '' : 's'
+                              }`,
+                            );
+                            setShowExportPopup(false);
+                          }
+                        } catch (error) {
+                          toast.error(
+                            'Failed to import courses. Please try again.',
+                          );
+                          console.error('Failed to import courses:', error);
+                        } finally {
+                          setIsImporting(false);
+                        }
+                      }}
+                    >
+                      {isImporting ? 'Importing...' : 'Import'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>
