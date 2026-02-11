@@ -11,6 +11,7 @@ import { Button, Tooltip, OverlayTrigger, Fade, Modal } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { MdErrorOutline } from 'react-icons/md';
 import { useApolloClient } from '@apollo/client';
+import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_YEAR } from '../../config';
@@ -195,6 +196,7 @@ function WorksheetToggleButton({
       let targetSeason = listing.course.season_code;
       let targetCrn = listing.crn;
       let targetWorksheetNumber = selectedWorksheet;
+      let switchedToLatest = false;
 
       const sameCourseId = listing.course.same_course_id;
 
@@ -222,6 +224,10 @@ function WorksheetToggleButton({
               if (addChoice === 'latest') {
                 targetSeason = latestCourse.season_code;
                 targetCrn = latestListing.crn;
+                targetWorksheetNumber = getRelevantWorksheetNumber(
+                  latestCourse.season_code,
+                );
+                switchedToLatest = true;
               } else if (addChoice === 'cancel') {
                 // User cancelled the modal, don't add anything
                 return;
@@ -238,6 +244,26 @@ function WorksheetToggleButton({
           targetSeason,
           targetWorksheetNumber,
         );
+        const targetWorksheet = worksheets
+          ?.get(targetSeason)
+          ?.get(targetWorksheetNumber);
+        if (
+          targetWorksheet?.courses.some((course) => course.crn === targetCrn)
+        ) {
+          const worksheetName =
+            targetWorksheet.name ||
+            (targetWorksheetNumber === 0
+              ? 'Main Worksheet'
+              : `Worksheet ${targetWorksheetNumber}`);
+          if (switchedToLatest) {
+            toast.error(
+              `The latest version of this course already exists in your currently selected worksheet (${worksheetName}).`,
+            );
+          } else {
+            toast.error(`This course already exists in "${worksheetName}".`);
+          }
+          return;
+        }
       }
 
       const success = await updateWorksheetCourses({
@@ -255,11 +281,13 @@ function WorksheetToggleButton({
       inWorksheet,
       client,
       confirmAddLatestOffering,
+      getRelevantWorksheetNumber,
       resolveWorksheetNumberForSeason,
       listing.crn,
       listing.course.season_code,
       listing.course.same_course_id,
       selectedWorksheet,
+      worksheets,
       worksheetsRefresh,
     ],
   );
