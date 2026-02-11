@@ -112,22 +112,28 @@ function WorksheetToggleButton({
       })),
     );
   const client = useApolloClient();
-  const pendingLatestChoiceRef = useRef<((useLatest: boolean) => void) | null>(
-    null,
-  );
+  const pendingLatestChoiceRef = useRef<
+    ((choice: 'latest' | 'historical' | 'cancel') => void) | null
+  >(null);
   const [latestOfferingPrompt, setLatestOfferingPrompt] = useState<{
     courseCode: string;
     seasonCode: Season;
   } | null>(null);
 
-  const resolveLatestOfferingPrompt = useCallback((useLatest: boolean) => {
-    pendingLatestChoiceRef.current?.(useLatest);
-    pendingLatestChoiceRef.current = null;
-    setLatestOfferingPrompt(null);
-  }, []);
+  const resolveLatestOfferingPrompt = useCallback(
+    (choice: 'latest' | 'historical' | 'cancel') => {
+      pendingLatestChoiceRef.current?.(choice);
+      pendingLatestChoiceRef.current = null;
+      setLatestOfferingPrompt(null);
+    },
+    [],
+  );
 
   const confirmAddLatestOffering = useCallback(
-    (courseCode: string, seasonCode: Season): Promise<boolean> =>
+    (
+      courseCode: string,
+      seasonCode: Season,
+    ): Promise<'latest' | 'historical' | 'cancel'> =>
       new Promise((resolve) => {
         pendingLatestChoiceRef.current = resolve;
         setLatestOfferingPrompt({ courseCode, seasonCode });
@@ -137,7 +143,7 @@ function WorksheetToggleButton({
 
   useEffect(
     () => () => {
-      pendingLatestChoiceRef.current?.(false);
+      pendingLatestChoiceRef.current?.('cancel');
       pendingLatestChoiceRef.current = null;
     },
     [],
@@ -152,17 +158,25 @@ function WorksheetToggleButton({
   const [selectedWorksheet, setSelectedWorksheet] = useState(
     defaultWorksheetNumber,
   );
-  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
-    defaultWorksheetNumber,
-  );
-  if (prevWorksheetCtx !== defaultWorksheetNumber) {
-    setSelectedWorksheet(defaultWorksheetNumber);
-    setPrevWorksheetCtx(defaultWorksheetNumber);
-  }
+  useEffect(() => {
+    setSelectedWorksheet(
+      getRelevantWorksheetNumber(listing.course.season_code),
+    );
+  }, [listing.course.season_code, listing.crn, getRelevantWorksheetNumber]);
 
   const worksheetOptions = useWorksheetNumberOptions(
     'me',
     listing.course.season_code,
+  );
+
+  const resolveWorksheetNumberForSeason = useCallback(
+    (seasonCode: Season, preferredWorksheetNumber: number) => {
+      const seasonWorksheets = worksheets?.get(seasonCode);
+      if (seasonWorksheets?.has(preferredWorksheetNumber))
+        return preferredWorksheetNumber;
+      return getRelevantWorksheetNumber(seasonCode);
+    },
+    [worksheets, getRelevantWorksheetNumber],
   );
 
   const inWorksheet = useMemo(
@@ -197,22 +211,18 @@ function WorksheetToggleButton({
           const [latestListing] = latestCourse?.listings ?? [];
           if (latestCourse && latestListing) {
             const hasLatestOffering =
-              latestCourse.season_code !== listing.course.season_code ||
-              latestListing.crn !== listing.crn;
+              latestCourse.season_code !== listing.course.season_code;
 
             if (hasLatestOffering) {
-              const addLatest = await confirmAddLatestOffering(
+              const addChoice = await confirmAddLatestOffering(
                 latestListing.course_code,
                 latestCourse.season_code,
               );
 
-              if (addLatest) {
+              if (addChoice === 'latest') {
                 targetSeason = latestCourse.season_code;
                 targetCrn = latestListing.crn;
-                targetWorksheetNumber = getRelevantWorksheetNumber(
-                  latestCourse.season_code,
-                );
-              } else {
+              } else if (addChoice === 'cancel') {
                 // User cancelled the modal, don't add anything
                 return;
               }
@@ -222,6 +232,12 @@ function WorksheetToggleButton({
           Sentry.captureException(error);
           // If lookup fails, fall back to adding the selected listing
         }
+      }
+      if (!inWorksheet) {
+        targetWorksheetNumber = resolveWorksheetNumberForSeason(
+          targetSeason,
+          targetWorksheetNumber,
+        );
       }
 
       const success = await updateWorksheetCourses({
@@ -239,7 +255,7 @@ function WorksheetToggleButton({
       inWorksheet,
       client,
       confirmAddLatestOffering,
-      getRelevantWorksheetNumber,
+      resolveWorksheetNumberForSeason,
       listing.crn,
       listing.course.season_code,
       listing.course.same_course_id,
@@ -329,7 +345,7 @@ function WorksheetToggleButton({
       )}
       <Modal
         show={latestOfferingPrompt !== null}
-        onHide={() => resolveLatestOfferingPrompt(false)}
+        onHide={() => resolveLatestOfferingPrompt('cancel')}
         centered
       >
         <Modal.Header closeButton>
@@ -347,11 +363,11 @@ function WorksheetToggleButton({
         <Modal.Footer>
           <Button
             variant="secondary"
-            onClick={() => resolveLatestOfferingPrompt(false)}
+            onClick={() => resolveLatestOfferingPrompt('historical')}
           >
             Add historical
           </Button>
-          <Button onClick={() => resolveLatestOfferingPrompt(true)}>
+          <Button onClick={() => resolveLatestOfferingPrompt('latest')}>
             Add latest
           </Button>
         </Modal.Footer>
