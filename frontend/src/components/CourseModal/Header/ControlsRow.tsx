@@ -25,7 +25,7 @@ function ShareButton({
     const params = new URLSearchParams(window.location.search);
     const courseModal = params.get('course-modal');
 
-    const url = `${window.location.origin}${window.location.pathname}${
+    const url = `${window.location.origin}/catalog${
       courseModal !== null ? `?course-modal=${courseModal}` : ''
     }`;
     const textToCopy = `${listing.course_code} -- CourseTable: ${url}`;

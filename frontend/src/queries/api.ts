@@ -241,6 +241,11 @@ export async function updateWorksheetCourses(
               'You have already removed this class from your worksheet',
             );
             return true;
+          case 'WORKSHEET_NOT_FOUND':
+            toast.error(
+              'That worksheet does not exist for this season. Try your main worksheet.',
+            );
+            return true;
           default:
             return false;
         }

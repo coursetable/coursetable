@@ -3765,7 +3765,7 @@ export type CourseModalOverviewDataQuery = {
         days_of_week: number;
         start_time: string;
         end_time: string;
-        location: {
+        location?: {
           __typename?: 'locations';
           room: string | null;
           building: {
