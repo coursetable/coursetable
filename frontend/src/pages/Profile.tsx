@@ -1,16 +1,19 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { TextComponent } from '../components/Typography';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
+import { resetCatalogCache, useFerry } from '../contexts/ferryContext';
 import type { Option } from '../contexts/searchContext';
 import type { NetId } from '../queries/graphql-types';
 import { useStore, type Store } from '../store';
+import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';
 import styles from './Profile.module.css';
 
@@ -59,6 +62,9 @@ function Profile() {
     viewedWorksheetNumber,
     changeViewedWorksheetNumber,
   } = useStore(useShallow(selectProfileStore));
+  const { requestSeasons } = useFerry();
+
+  const [catalogRefreshing, setCatalogRefreshing] = useState(false);
 
   const [searchParams] = useSearchParams();
 
@@ -144,6 +150,19 @@ function Profile() {
     void removeFriend(friendNetId, false);
   };
 
+  const handleCatalogCacheRefresh = async () => {
+    setCatalogRefreshing(true);
+    try {
+      bumpCatalogCacheBustToken();
+      resetCatalogCache();
+      toast.info('Catalog cache cleared. Re-fetching catalog data...');
+      await requestSeasons([viewedSeason]);
+      toast.success('Catalog data refreshed.');
+    } finally {
+      setCatalogRefreshing(false);
+    }
+  };
+
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
       <div className={styles.headerContainer}>
@@ -174,198 +193,252 @@ function Profile() {
         )}
       </div>
 
-      <div className={styles.twoColumnLayout}>
-        <Card className={styles.profileCard}>
-          <Card.Body className={clsx(styles.cardBody, styles.scrollCard)}>
-            <h3 className={styles.sectionTitle}>Basic Info</h3>
-            <div className={styles.infoRow}>
-              <TextComponent type="secondary" className={styles.label}>
-                Name
-              </TextComponent>
-              <TextComponent className={styles.value}>
-                {fullName || 'Not available'}
-              </TextComponent>
-            </div>
-            <div className={styles.infoRow}>
-              <TextComponent type="secondary" className={styles.label}>
-                Net ID
-              </TextComponent>
-              <TextComponent className={styles.value}>
-                {currentUser.netId}
-              </TextComponent>
-            </div>
-            <div className={styles.infoRow}>
-              <TextComponent type="secondary" className={styles.label}>
-                Email
-              </TextComponent>
-              <TextComponent className={styles.value}>
-                {currentUser.email || 'Not available'}
-              </TextComponent>
-            </div>
-            <div className={styles.infoRow}>
-              <TextComponent type="secondary" className={styles.label}>
-                Class Year
-              </TextComponent>
-              <TextComponent className={styles.value}>
-                {currentUser.year ? String(currentUser.year) : 'Not available'}
-              </TextComponent>
-            </div>
-            {currentUser.school && (
-              <div className={styles.infoRow}>
-                <TextComponent type="secondary" className={styles.label}>
-                  School
-                </TextComponent>
-                <TextComponent className={styles.value}>
-                  {currentUser.school}
-                </TextComponent>
-              </div>
-            )}
-            <div className={styles.infoRow}>
-              <TextComponent type="secondary" className={styles.label}>
-                Major
-              </TextComponent>
-              <TextComponent className={styles.value}>
-                {currentUser.major || 'Undeclared'}
-              </TextComponent>
-            </div>
-          </Card.Body>
-        </Card>
-
-        <Card className={styles.profileCard}>
-          <Card.Body className={clsx(styles.cardBody, styles.scrollCard)}>
-            <h3 className={styles.sectionTitle}>Friends</h3>
-            <div className={styles.friendForm}>
-              <AddFriendDropdown
-                mobile={false}
-                removeFriend={removeFriend}
-                fullWidth
-              />
-            </div>
-
-            {friendsLoading && (
-              <TextComponent type="secondary">Loading friends...</TextComponent>
-            )}
-
-            {!friendsLoading && friendRequestsList.length > 0 && (
-              <div className={styles.friendRequests}>
-                <TextComponent type="secondary">Pending requests</TextComponent>
-                {friendRequestsList.map((request) => (
-                  <div key={request.netId} className={styles.friendRequestItem}>
-                    <TextComponent>
-                      {request.name || request.netId}
+      <Tabs
+        defaultActiveKey="overview"
+        className={styles.profileTabs}
+        variant="tabs"
+        transition={false}
+      >
+        <Tab eventKey="overview" title="Overview">
+          <div className={styles.tabContent}>
+            <div className={styles.twoColumnLayout}>
+              <Card className={styles.profileCard}>
+                <Card.Body className={clsx(styles.cardBody, styles.scrollCard)}>
+                  <h3 className={styles.sectionTitle}>Basic Info</h3>
+                  <div className={styles.infoRow}>
+                    <TextComponent type="secondary" className={styles.label}>
+                      Name
                     </TextComponent>
-                    <div className={styles.friendActions}>
-                      <Button
-                        size="sm"
-                        variant="outline-success"
-                        onClick={() => {
-                          void addFriend(request.netId);
-                        }}
-                      >
-                        Accept
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline-danger"
-                        onClick={() => {
-                          void removeFriend(request.netId, true);
-                        }}
-                      >
-                        Decline
-                      </Button>
-                    </div>
+                    <TextComponent className={styles.value}>
+                      {fullName || 'Not available'}
+                    </TextComponent>
                   </div>
-                ))}
-              </div>
-            )}
-
-            {!friendsLoading && friendsList.length === 0 ? (
-              <TextComponent type="secondary" className="mt-1">
-                No friends yet
-              </TextComponent>
-            ) : !friendsLoading ? (
-              <div className={styles.friendsList}>
-                {friendsList.map(([friendNetId, friendData]) => (
-                  <div key={friendNetId} className={styles.friendItem}>
-                    <div className={styles.friendDetails}>
-                      <TextComponent className={styles.friendName}>
-                        {friendData.name || friendNetId}
+                  <div className={styles.infoRow}>
+                    <TextComponent type="secondary" className={styles.label}>
+                      Net ID
+                    </TextComponent>
+                    <TextComponent className={styles.value}>
+                      {currentUser.netId}
+                    </TextComponent>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <TextComponent type="secondary" className={styles.label}>
+                      Email
+                    </TextComponent>
+                    <TextComponent className={styles.value}>
+                      {currentUser.email || 'Not available'}
+                    </TextComponent>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <TextComponent type="secondary" className={styles.label}>
+                      Class Year
+                    </TextComponent>
+                    <TextComponent className={styles.value}>
+                      {currentUser.year
+                        ? String(currentUser.year)
+                        : 'Not available'}
+                    </TextComponent>
+                  </div>
+                  {currentUser.school && (
+                    <div className={styles.infoRow}>
+                      <TextComponent type="secondary" className={styles.label}>
+                        School
                       </TextComponent>
-                      <TextComponent
-                        type="secondary"
-                        className={styles.friendNetId}
-                      >
-                        {friendNetId}
+                      <TextComponent className={styles.value}>
+                        {currentUser.school}
                       </TextComponent>
                     </div>
-                    <div className={styles.friendActions}>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleRemoveFriend(friendNetId as NetId)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
+                  )}
+                  <div className={styles.infoRow}>
+                    <TextComponent type="secondary" className={styles.label}>
+                      Major
+                    </TextComponent>
+                    <TextComponent className={styles.value}>
+                      {currentUser.major || 'Undeclared'}
+                    </TextComponent>
                   </div>
-                ))}
-              </div>
-            ) : null}
-          </Card.Body>
-        </Card>
+                </Card.Body>
+              </Card>
 
-        <Card className={styles.profileCard}>
-          <Card.Body className={clsx(styles.cardBody, styles.scrollCard)}>
-            <h3 className={styles.sectionTitle}>Worksheets</h3>
-            {!worksheetsLoading && selectedWorksheetOption && (
-              <div className={styles.friendForm}>
-                <Popout
-                  key={selectedWorksheetOption.value}
-                  buttonText={selectedWorksheetOption.label}
-                  clearIcon={false}
-                  className={styles.profileSelectButton}
-                  wrapperClassName={styles.profileSelectWrapper}
-                  dropdownClassName={styles.profileSelectDropdown}
-                >
-                  <PopoutSelect<Option<number>, false>
-                    value={selectedWorksheetOption}
-                    options={worksheetOptions}
-                    showControl={false}
-                    minWidth={0}
-                    onChange={(option) => {
-                      if (option) changeViewedWorksheetNumber(option.value);
-                    }}
-                  />
-                </Popout>
-              </div>
-            )}
-            {worksheetsLoading ? (
-              <TextComponent type="secondary">
-                Loading worksheets...
-              </TextComponent>
-            ) : worksheetError ? (
-              <TextComponent type="secondary">
-                Failed to load worksheet.
-              </TextComponent>
-            ) : sortedWorksheetCourses.length === 0 ? (
-              <TextComponent type="secondary">No courses yet</TextComponent>
-            ) : (
-              <ul className="ps-3 my-2">
-                {sortedWorksheetCourses.map(({ listing, crn }) => (
-                  <li key={crn}>
-                    <Link
-                      to={createCourseModalLink(listing, searchParams)}
-                      className={styles.friendLink}
-                    >
-                      <TextComponent>{listing.course.title}</TextComponent>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card.Body>
-        </Card>
-      </div>
+              <Card className={styles.profileCard}>
+                <Card.Body className={clsx(styles.cardBody, styles.scrollCard)}>
+                  <h3 className={styles.sectionTitle}>Friends</h3>
+                  <div className={styles.friendForm}>
+                    <AddFriendDropdown
+                      mobile={false}
+                      removeFriend={removeFriend}
+                      fullWidth
+                    />
+                  </div>
+
+                  {friendsLoading && (
+                    <TextComponent type="secondary">
+                      Loading friends...
+                    </TextComponent>
+                  )}
+
+                  {!friendsLoading && friendRequestsList.length > 0 && (
+                    <div className={styles.friendRequests}>
+                      <TextComponent type="secondary">
+                        Pending requests
+                      </TextComponent>
+                      {friendRequestsList.map((request) => (
+                        <div
+                          key={request.netId}
+                          className={styles.friendRequestItem}
+                        >
+                          <TextComponent>
+                            {request.name || request.netId}
+                          </TextComponent>
+                          <div className={styles.friendActions}>
+                            <Button
+                              size="sm"
+                              variant="outline-success"
+                              onClick={() => {
+                                void addFriend(request.netId);
+                              }}
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline-danger"
+                              onClick={() => {
+                                void removeFriend(request.netId, true);
+                              }}
+                            >
+                              Decline
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {!friendsLoading && friendsList.length === 0 ? (
+                    <TextComponent type="secondary" className="mt-1">
+                      No friends yet
+                    </TextComponent>
+                  ) : !friendsLoading ? (
+                    <div className={styles.friendsList}>
+                      {friendsList.map(([friendNetId, friendData]) => (
+                        <div key={friendNetId} className={styles.friendItem}>
+                          <div className={styles.friendDetails}>
+                            <TextComponent className={styles.friendName}>
+                              {friendData.name || friendNetId}
+                            </TextComponent>
+                            <TextComponent
+                              type="secondary"
+                              className={styles.friendNetId}
+                            >
+                              {friendNetId}
+                            </TextComponent>
+                          </div>
+                          <div className={styles.friendActions}>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={() =>
+                                handleRemoveFriend(friendNetId as NetId)
+                              }
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </Card.Body>
+              </Card>
+
+              <Card className={styles.profileCard}>
+                <Card.Body className={clsx(styles.cardBody, styles.scrollCard)}>
+                  <h3 className={styles.sectionTitle}>Worksheets</h3>
+                  {!worksheetsLoading && selectedWorksheetOption && (
+                    <div className={styles.friendForm}>
+                      <Popout
+                        key={selectedWorksheetOption.value}
+                        buttonText={selectedWorksheetOption.label}
+                        clearIcon={false}
+                        className={styles.profileSelectButton}
+                        wrapperClassName={styles.profileSelectWrapper}
+                        dropdownClassName={styles.profileSelectDropdown}
+                      >
+                        <PopoutSelect<Option<number>, false>
+                          value={selectedWorksheetOption}
+                          options={worksheetOptions}
+                          showControl={false}
+                          minWidth={0}
+                          onChange={(option) => {
+                            if (option)
+                              changeViewedWorksheetNumber(option.value);
+                          }}
+                        />
+                      </Popout>
+                    </div>
+                  )}
+                  {worksheetsLoading ? (
+                    <TextComponent type="secondary">
+                      Loading worksheets...
+                    </TextComponent>
+                  ) : worksheetError ? (
+                    <TextComponent type="secondary">
+                      Failed to load worksheet.
+                    </TextComponent>
+                  ) : sortedWorksheetCourses.length === 0 ? (
+                    <TextComponent type="secondary">
+                      No courses yet
+                    </TextComponent>
+                  ) : (
+                    <ul className="ps-3 my-2">
+                      {sortedWorksheetCourses.map(({ listing, crn }) => (
+                        <li key={crn}>
+                          <Link
+                            to={createCourseModalLink(listing, searchParams)}
+                            className={styles.friendLink}
+                          >
+                            <TextComponent>
+                              {listing.course.title}
+                            </TextComponent>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        </Tab>
+        <Tab eventKey="advanced" title="Advanced">
+          <div className={styles.tabContent}>
+            <Card className={styles.profileCard}>
+              <Card.Body className={styles.cardBody}>
+                <h3 className={styles.sectionTitle}>Advanced Settings</h3>
+                <div className={styles.settingsRow}>
+                  <div className={styles.settingText}>
+                    <TextComponent>Clear cached catalog data</TextComponent>
+                    <TextComponent type="secondary">
+                      Forces a re-fetch of the catalog if your browser cached an
+                      incomplete response.
+                    </TextComponent>
+                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className={styles.settingsButton}
+                    onClick={handleCatalogCacheRefresh}
+                    disabled={catalogRefreshing}
+                  >
+                    {catalogRefreshing ? 'Refreshing...' : 'Clear cache'}
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+        </Tab>
+      </Tabs>
     </div>
   );
 }

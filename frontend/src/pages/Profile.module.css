@@ -79,6 +79,30 @@
   gap: 1rem;
 }
 
+.profileTabs {
+  margin-top: 1rem;
+}
+
+.profileTabs :global(.nav-tabs) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.profileTabs :global(.nav-link) {
+  color: var(--color-text-secondary);
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+
+.profileTabs :global(.nav-link.active) {
+  color: var(--color-primary);
+  background-color: transparent;
+  border-bottom-color: var(--color-primary);
+}
+
+.tabContent {
+  margin-top: 1rem;
+}
+
 @media (min-width: 1200px) {
   .twoColumnLayout {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -152,6 +176,24 @@
   text-decoration: underline;
 }
 
+.settingsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+}
+
+.settingText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.settingsButton {
+  flex-shrink: 0;
+}
+
 .profileSelectWrapper {
   width: 100%;
 }
@@ -191,6 +233,11 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+
+  .settingsRow {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .value {
