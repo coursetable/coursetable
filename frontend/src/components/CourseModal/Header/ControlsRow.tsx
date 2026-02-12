@@ -16,11 +16,7 @@ import type { CourseModalPrefetchListingDataFragment } from '../../../generated/
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
-function ShareButton({
-  listing,
-}: {
-  readonly listing: CourseModalPrefetchListingDataFragment;
-}) {
+function ShareButton() {
   const copyToClipboard = () => {
     const params = new URLSearchParams(window.location.search);
     const courseModal = params.get('course-modal');
@@ -28,11 +24,9 @@ function ShareButton({
     const url = `${window.location.origin}/catalog${
       courseModal !== null ? `?course-modal=${courseModal}` : ''
     }`;
-    const textToCopy = `${listing.course_code} -- CourseTable: ${url}`;
-
-    navigator.clipboard.writeText(textToCopy).then(
+    navigator.clipboard.writeText(url).then(
       () => {
-        toast.success('Course and URL copied to clipboard!');
+        toast.success('URL copied to clipboard!');
       },
       (err: unknown) => {
         console.error('Error copying to clipboard: ', err);
@@ -180,7 +174,7 @@ export default function ModalHeaderControls({
       />
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
-        <ShareButton listing={listing} />
+        <ShareButton />
         <MoreButton listing={listing} />
       </div>
     </div>
