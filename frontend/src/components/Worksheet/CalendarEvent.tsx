@@ -18,8 +18,8 @@ export function CalendarEventBody({
 }) {
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
-  const walkConnector = chroma(event.color).css();
-  const connectorOffset = 4;
+  const walkAccent = chroma(event.color).darken(0.8).css();
+  const connectorOffset = 1;
   const eventRef = useRef<HTMLDivElement | null>(null);
   const [connectorHeight, setConnectorHeight] = useState<number | null>(null);
 
@@ -49,7 +49,7 @@ export function CalendarEventBody({
       (event.end.getTime() - event.start.getTime()) / 60000,
     );
     const updateConnector = () => {
-      const {height} = node.getBoundingClientRect();
+      const { height } = node.getBoundingClientRect();
       if (!Number.isFinite(height) || height <= 0) return;
       const pxPerMinute = height / durationMinutes;
       const gapMinutes =
@@ -77,7 +77,7 @@ export function CalendarEventBody({
             className={styles.walkBadgeDots}
             style={
               {
-                '--walk-connector': walkConnector,
+                '--walk-connector': walkAccent,
                 '--walk-connector-height': connectorHeight
                   ? `${connectorHeight}px`
                   : undefined,
@@ -86,7 +86,7 @@ export function CalendarEventBody({
             }
             aria-hidden
           />
-          <WalkBadge walk={event.walkBefore} />
+          <WalkBadge walk={event.walkBefore} accentColor={walkAccent} />
         </>
       )}
       <strong className={styles.courseCodeText}>{formattedTitle}</strong>
@@ -109,15 +109,19 @@ export function CalendarEventBody({
   );
 }
 
-function WalkBadge({ walk }: { readonly walk: WalkBefore }) {
-  const base = chroma(walk.color);
-  const border = base.alpha(0.7).css();
+function WalkBadge({
+  walk,
+  accentColor,
+}: {
+  readonly walk: WalkBefore;
+  readonly accentColor: string;
+}) {
   return (
     <div
       className={styles.walkBadge}
       style={
         {
-          '--walk-border': border,
+          '--walk-accent': accentColor,
         } as React.CSSProperties
       }
     >
@@ -163,6 +167,7 @@ export function useEventStyle() {
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event: CourseRBCEvent) => {
+      const hasWalkBefore = Boolean(event.walkBefore);
       const color = chroma(event.color);
       const style: React.CSSProperties = {
         backgroundColor: color.alpha(0.85).css(),
@@ -173,12 +178,13 @@ export function useEventStyle() {
       if (isMobile) return { style };
       if (hoverCourse && hoverCourse === event.listing.crn) {
         style.zIndex = 2;
-        style.filter = 'saturate(130%)';
-      } else if (hoverCourse) {
+        if (!hasWalkBefore) style.filter = 'saturate(130%)';
+      } else if (hoverCourse && !hasWalkBefore) {
         style.opacity = '30%';
       }
       return {
         style,
+        className: hasWalkBefore ? 'rbc-event-with-walk-badge' : undefined,
       };
     },
     [isMobile, hoverCourse],

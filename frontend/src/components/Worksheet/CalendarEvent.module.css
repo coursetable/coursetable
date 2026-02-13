@@ -64,7 +64,7 @@
 .walkBadge {
   position: absolute;
   left: 8px;
-  top: -6px;
+  top: -1px;
   transform: translateY(-100%);
   display: inline-flex;
   align-items: center;
@@ -72,7 +72,7 @@
   padding: 1px 5px 1px 1px;
   border-radius: 999px;
   background: var(--color-surface);
-  border: 1px solid var(--walk-border);
+  border: 1px solid var(--walk-accent);
   color: var(--color-text-tertiary);
   font-size: 10px;
   font-weight: 500;
@@ -92,7 +92,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--walk-border);
+  background: var(--walk-accent);
   color: var(--color-text-light);
 }
 
