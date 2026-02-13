@@ -1,6 +1,8 @@
 .event {
   width: 100%;
   height: 100%;
+  position: relative;
+  overflow: visible;
 }
 
 .eventButtons {
@@ -44,7 +46,7 @@
 }
 
 .locationText {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .lastUpdatedText {
@@ -57,4 +59,73 @@
   .locationText {
     display: none;
   }
+}
+
+.walkBadge {
+  position: absolute;
+  left: 8px;
+  top: -6px;
+  transform: translateY(-100%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 5px 1px 1px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid var(--walk-border);
+  color: var(--color-text-tertiary);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  box-shadow:
+    0 10px 22px rgb(0 0 0 / 12%),
+    0 4px 8px rgb(0 0 0 / 10%);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+
+.walkBadgeIconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--walk-border);
+  color: var(--color-text-light);
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .walkBadge {
+    padding: 1px 6px;
+    font-size: 9px;
+  }
+
+  .walkBadgeIconWrap {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.walkBadgeIcon {
+  font-size: 10px;
+}
+
+.walkBadgeDots {
+  position: absolute;
+  left: 4px;
+  bottom: calc(100% + var(--walk-connector-offset, 0px));
+  height: var(--walk-connector-height, 24px);
+  width: 2px;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--walk-connector, var(--color-text-tertiary)) 0,
+    var(--walk-connector, var(--color-text-tertiary)) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+  opacity: 1;
+  pointer-events: none;
 }

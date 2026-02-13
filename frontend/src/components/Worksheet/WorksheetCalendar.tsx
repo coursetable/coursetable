@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -12,9 +12,125 @@ import { useStore } from '../../store';
 import {
   localizer,
   getCalendarEvents,
-  type RBCEvent,
+  type CourseRBCEvent,
+  type WalkBefore,
 } from '../../utilities/calendar';
+import {
+  getBuildingCodeFromLocation,
+  getWalkingMinutes,
+} from '../../utilities/walking';
 import './react-big-calendar-override.css';
+
+const MAX_WALK_GAP_MINUTES = 30;
+
+type WalkPair = {
+  minutes: number;
+  fromCode: string;
+  toCode: string;
+  color: string;
+  nextEvent: CourseRBCEvent;
+};
+
+type EventCluster = {
+  start: Date;
+  end: Date;
+  events: CourseRBCEvent[];
+};
+
+function findFarthestWalkPair(
+  previousEvents: CourseRBCEvent[],
+  nextEvents: CourseRBCEvent[],
+): WalkPair | null {
+  let best: WalkPair | null = null;
+  for (const previous of previousEvents) {
+    const fromCode = getBuildingCodeFromLocation(previous.location);
+    if (!fromCode) continue;
+    for (const next of nextEvents) {
+      const gapMinutes =
+        (next.start.getTime() - previous.end.getTime()) / 60000;
+      if (gapMinutes < 0 || gapMinutes > MAX_WALK_GAP_MINUTES) continue;
+      const toCode = getBuildingCodeFromLocation(next.location);
+      if (!toCode) continue;
+      const minutes = getWalkingMinutes(fromCode, toCode);
+      if (minutes === null) continue;
+      if (!best || minutes > best.minutes) {
+        best = {
+          minutes,
+          fromCode,
+          toCode,
+          color: next.color,
+          nextEvent: next,
+        };
+      }
+    }
+  }
+  return best;
+}
+
+function eventKey(event: CourseRBCEvent) {
+  return `${event.listing.crn}-${event.start.getTime()}-${event.end.getTime()}`;
+}
+
+function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
+  const byDay = new Map<number, CourseRBCEvent[]>();
+  for (const event of events) {
+    const day = event.start.getDay();
+    const dayEvents = byDay.get(day) ?? [];
+    dayEvents.push(event);
+    byDay.set(day, dayEvents);
+  }
+
+  const walkBeforeMap = new Map<string, WalkBefore>();
+  for (const dayEvents of byDay.values()) {
+    const sorted = [...dayEvents].sort(
+      (a, b) =>
+        a.start.getTime() - b.start.getTime() ||
+        a.end.getTime() - b.end.getTime(),
+    );
+
+    const clusters: EventCluster[] = [];
+    let current: EventCluster | null = null;
+
+    for (const event of sorted) {
+      if (!current) {
+        current = { start: event.start, end: event.end, events: [event] };
+        continue;
+      }
+
+      if (event.start <= current.end) {
+        current.events.push(event);
+        if (event.end > current.end) current.end = event.end;
+        continue;
+      }
+
+      clusters.push(current);
+      current = { start: event.start, end: event.end, events: [event] };
+    }
+
+    if (current) clusters.push(current);
+
+    for (let i = 0; i < clusters.length - 1; i += 1) {
+      const previous = clusters[i]!;
+      const next = clusters[i + 1]!;
+      const gapMinutes =
+        (next.start.getTime() - previous.end.getTime()) / 60000;
+      if (gapMinutes <= 0 || gapMinutes > MAX_WALK_GAP_MINUTES) continue;
+
+      const farthest = findFarthestWalkPair(previous.events, next.events);
+      if (!farthest) continue;
+
+      walkBeforeMap.set(eventKey(farthest.nextEvent), {
+        minutes: farthest.minutes,
+        gapMinutes,
+        fromCode: farthest.fromCode,
+        toCode: farthest.toCode,
+        color: farthest.color,
+      });
+    }
+  }
+
+  return walkBeforeMap;
+}
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
@@ -38,10 +154,14 @@ function WorksheetCalendar() {
     })),
   );
   const eventStyleGetter = useEventStyle();
+  const allCourses = useMemo(
+    () => getCalendarEvents('rbc', courses, viewedSeason),
+    [courses, viewedSeason],
+  );
   const { earliest, latest, parsedCourses } = useMemo(() => {
-    const allCourses = getCalendarEvents('rbc', courses, viewedSeason);
+    const allCoursesList = allCourses;
     if (isCalendarViewLocked) {
-      const filteredCourses = allCourses.filter((course) => {
+      const filteredCourses = allCoursesList.filter((course) => {
         const courseEndHour = course.end.getHours();
         const courseEndMinutes = course.end.getMinutes();
         const courseStartHour = course.start.getHours();
@@ -61,38 +181,55 @@ function WorksheetCalendar() {
         parsedCourses: filteredCourses,
       };
     }
-    if (allCourses.length === 0) {
+    if (allCoursesList.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
         latest: new Date(0, 0, 0, 18),
-        parsedCourses: allCourses,
+        parsedCourses: allCoursesList,
       };
     }
-    const earliest = new Date(allCourses[0]!.start);
-    const latest = new Date(allCourses[0]!.end);
+    const earliest = new Date(allCoursesList[0]!.start);
+    const latest = new Date(allCoursesList[0]!.end);
     earliest.setMinutes(0);
     latest.setMinutes(59);
-    for (const c of allCourses) {
+    for (const c of allCoursesList) {
       if (c.start.getHours() < earliest.getHours())
         earliest.setHours(c.start.getHours());
       if (c.end.getHours() > latest.getHours())
         latest.setHours(c.end.getHours());
     }
-    return { earliest, latest, parsedCourses: allCourses };
-  }, [
-    courses,
-    viewedSeason,
-    isCalendarViewLocked,
-    calendarLockStart,
-    calendarLockEnd,
-  ]);
+    return { earliest, latest, parsedCourses: allCoursesList };
+  }, [allCourses, isCalendarViewLocked, calendarLockStart, calendarLockEnd]);
+
+  const [walkBeforeByKey, setWalkBeforeByKey] = useState<
+    Map<string, WalkBefore>
+  >(new Map());
+  useEffect(() => {
+    let cancelled = false;
+    const timeout = window.setTimeout(() => {
+      const computed = buildWalkBeforeMap(parsedCourses);
+      if (!cancelled) setWalkBeforeByKey(computed);
+    }, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [parsedCourses]);
+
+  const displayEvents = useMemo(() => {
+    if (walkBeforeByKey.size === 0) return parsedCourses;
+    return parsedCourses.map((event) => {
+      const walkBefore = walkBeforeByKey.get(eventKey(event));
+      return walkBefore ? { ...event, walkBefore } : event;
+    });
+  }, [parsedCourses, walkBeforeByKey]);
   return (
     <>
       <Calendar
         // Show Mon-Fri
         defaultView="work_week"
         views={['work_week']}
-        events={parsedCourses}
+        events={displayEvents}
         // Earliest course time or 8am if no courses
         min={earliest}
         // Latest course time or 6pm if no courses
@@ -110,8 +247,14 @@ function WorksheetCalendar() {
           });
         }}
         components={{
-          event: ({ event }: { readonly event: RBCEvent }) => (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+          event: ({ event }: { readonly event: CourseRBCEvent }) => (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+              }}
+            >
               <CalendarEvent event={event} />
             </div>
           ),
