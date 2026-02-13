@@ -1,4 +1,5 @@
-import { FaLock, FaLockOpen, FaStar } from 'react-icons/fa6';
+import { FaUnlockAlt } from 'react-icons/fa';
+import { FaLock, FaStar } from 'react-icons/fa6';
 
 export default function WorksheetStatusIcon(
   worksheetNumber: number,
@@ -8,6 +9,6 @@ export default function WorksheetStatusIcon(
   return isPrivate ? (
     <FaLock style={{ transform: 'scale(0.9)' }} />
   ) : (
-    <FaLockOpen style={{ transform: 'scale(0.9)' }} />
+    <FaUnlockAlt style={{ transform: 'scale(0.9)' }} />
   );
 }
