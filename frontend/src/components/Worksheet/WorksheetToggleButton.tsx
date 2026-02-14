@@ -17,6 +17,7 @@ import { useShallow } from 'zustand/react/shallow';
 import WorksheetStatusIcon from './WorksheetStatusIcon';
 import { CUR_YEAR } from '../../config';
 import { seasons, useWorksheetInfo } from '../../contexts/ferryContext';
+import type { Option } from '../../contexts/searchContext';
 import type { LatestCurrentOfferingQuery } from '../../generated/graphql-types';
 import { updateWorksheetCourses } from '../../queries/api';
 import { LatestCurrentOfferingDocument } from '../../queries/graphql-queries';
