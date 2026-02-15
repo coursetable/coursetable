@@ -99,6 +99,10 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 #### Request
 
 - This route should only be requested by Ferry
+- Query parameters:
+  - `seasons` (optional): Comma-separated list of season codes to refresh (e.g. `202501,202502`). When provided, only these seasons are refreshed. Invalid codes are ignored and logged.
+  - `all` (optional): When `true`, refreshes all seasons. Ignored when `seasons` is provided.
+  - When neither is provided, refreshes the last `NUM_SEASONS` seasons.
 
 #### Response
 
