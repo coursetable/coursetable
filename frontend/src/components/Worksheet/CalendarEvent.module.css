@@ -64,7 +64,7 @@
 .walkBadge {
   position: absolute;
   left: 8px;
-  top: -1px;
+  top: var(--walk-badge-top, 0);
   transform: translateY(-100%);
   display: inline-flex;
   align-items: center;
@@ -83,6 +83,7 @@
     0 4px 8px rgb(0 0 0 / 10%);
   backdrop-filter: blur(2px);
   pointer-events: none;
+  opacity: var(--walk-chip-opacity, 1);
 }
 
 .walkBadgeIconWrap {
@@ -126,6 +127,6 @@
     transparent 2px,
     transparent 5px
   );
-  opacity: 1;
+  opacity: var(--walk-chip-opacity, 1);
   pointer-events: none;
 }

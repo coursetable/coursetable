@@ -18,12 +18,19 @@ export function CalendarEventBody({
 }) {
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
-  const walkAccent = chroma(event.color).darken(0.8).css();
-  const connectorOffset = 1;
+  const walkConnector = chroma(event.color).css();
+  const walkAccent = chroma(event.color).css();
+  const connectorOffset = 4;
   const eventRef = useRef<HTMLDivElement | null>(null);
+  const walkBadgeRef = useRef<HTMLDivElement | null>(null);
   const [connectorHeight, setConnectorHeight] = useState<number | null>(null);
+  const [walkBadgeTop, setWalkBadgeTop] = useState(0);
 
   const isMobile = useStore((state) => state.isMobile);
+  const hoverCourse = useStore((state) => state.hoverCourse);
+  const isCalendarViewLocked = useStore((state) => state.isCalendarViewLocked);
+  const calendarLockStart = useStore((state) => state.calendarLockStart);
+  const calendarLockEnd = useStore((state) => state.calendarLockEnd);
 
   // This splits the title into separate lines for mobile!
   const formattedTitle = isMobile
@@ -40,6 +47,7 @@ export function CalendarEventBody({
   useLayoutEffect(() => {
     if (!event.walkBefore) {
       setConnectorHeight(null);
+      setWalkBadgeTop(0);
       return undefined;
     }
     const node = eventRef.current;
@@ -54,30 +62,83 @@ export function CalendarEventBody({
       const pxPerMinute = height / durationMinutes;
       const gapMinutes =
         event.walkBefore?.gapMinutes ?? event.walkBefore.minutes;
+      let gapPx = Math.max(0, gapMinutes * pxPerMinute);
+      const eventNode = node.closest('.rbc-event');
+      const daySlotNode = node.closest('.rbc-day-slot');
+      const eventHeightPercent =
+        eventNode instanceof HTMLElement
+          ? Number.parseFloat(eventNode.style.height)
+          : Number.NaN;
+      if (
+        daySlotNode instanceof HTMLElement &&
+        Number.isFinite(eventHeightPercent) &&
+        eventHeightPercent > 0
+      ) {
+        const daySlotHeight = daySlotNode.getBoundingClientRect().height;
+        const gapPercent = (gapMinutes / durationMinutes) * eventHeightPercent;
+        if (Number.isFinite(daySlotHeight) && daySlotHeight > 0)
+          gapPx = (daySlotHeight * gapPercent) / 100;
+      }
+      const badgeHeight =
+        walkBadgeRef.current?.getBoundingClientRect().height ?? 0;
+      const badgeTopNudge = 2;
+      const nextWalkBadgeTop =
+        badgeHeight > 0 && gapPx < badgeHeight ? (badgeHeight - gapPx) / 2 : 0;
+      setWalkBadgeTop(nextWalkBadgeTop - badgeTopNudge);
+
       const endInset = 6;
       const heightScale = 1.4;
-      const nextHeight = Math.max(
-        0,
-        gapMinutes * pxPerMinute * heightScale - endInset,
-      );
+      const nextHeight = Math.max(0, gapPx * heightScale - endInset);
       setConnectorHeight(nextHeight);
     };
     updateConnector();
-    if (typeof ResizeObserver === 'undefined') return undefined;
+    // Recompute after layout settles; RBC adjusts inline styles during render.
+    const frame = window.requestAnimationFrame(updateConnector);
+    if (typeof ResizeObserver === 'undefined')
+      return () => window.cancelAnimationFrame(frame);
     const observer = new ResizeObserver(() => updateConnector());
     observer.observe(node);
-    return () => observer.disconnect();
-  }, [event.end, event.start, event.walkBefore]);
+    if (walkBadgeRef.current) observer.observe(walkBadgeRef.current);
+    const observedEventNode = node.closest('.rbc-event');
+    const observedDaySlotNode = node.closest('.rbc-day-slot');
+    if (observedEventNode instanceof HTMLElement)
+      observer.observe(observedEventNode);
+    if (observedDaySlotNode instanceof HTMLElement)
+      observer.observe(observedDaySlotNode);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [
+    event.end,
+    event.start,
+    event.walkBefore,
+    isCalendarViewLocked,
+    calendarLockStart,
+    calendarLockEnd,
+  ]);
+
+  const walkChipOpacity =
+    !isMobile && hoverCourse && hoverCourse !== event.listing.crn ? 0.3 : 1;
 
   return (
-    <div ref={eventRef} className={styles.event} style={{ color: textColor }}>
+    <div
+      ref={eventRef}
+      className={styles.event}
+      style={
+        {
+          color: textColor,
+          '--walk-chip-opacity': walkChipOpacity,
+        } as React.CSSProperties
+      }
+    >
       {event.walkBefore && (
         <>
           <span
             className={styles.walkBadgeDots}
             style={
               {
-                '--walk-connector': walkAccent,
+                '--walk-connector': walkConnector,
                 '--walk-connector-height': connectorHeight
                   ? `${connectorHeight}px`
                   : undefined,
@@ -86,7 +147,12 @@ export function CalendarEventBody({
             }
             aria-hidden
           />
-          <WalkBadge walk={event.walkBefore} accentColor={walkAccent} />
+          <WalkBadge
+            walk={event.walkBefore}
+            accentColor={walkAccent}
+            badgeTop={walkBadgeTop}
+            badgeRef={walkBadgeRef}
+          />
         </>
       )}
       <strong className={styles.courseCodeText}>{formattedTitle}</strong>
@@ -112,16 +178,22 @@ export function CalendarEventBody({
 function WalkBadge({
   walk,
   accentColor,
+  badgeTop,
+  badgeRef,
 }: {
   readonly walk: WalkBefore;
   readonly accentColor: string;
+  readonly badgeTop: number;
+  readonly badgeRef: React.RefObject<HTMLDivElement | null>;
 }) {
   return (
     <div
+      ref={badgeRef}
       className={styles.walkBadge}
       style={
         {
           '--walk-accent': accentColor,
+          '--walk-badge-top': `${badgeTop}px`,
         } as React.CSSProperties
       }
     >
@@ -167,24 +239,31 @@ export function useEventStyle() {
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event: CourseRBCEvent) => {
-      const hasWalkBefore = Boolean(event.walkBefore);
       const color = chroma(event.color);
+      let backgroundColor = color.alpha(0.85).css();
+      let borderColor = color.css();
+
+      if (!isMobile && hoverCourse) {
+        if (hoverCourse === event.listing.crn) {
+          const emphasized = color.saturate(1);
+          backgroundColor = emphasized.alpha(0.9).css();
+          borderColor = emphasized.css();
+        } else {
+          backgroundColor = color.alpha(0.3).css();
+          borderColor = color.alpha(0.3).css();
+        }
+      }
+
       const style: React.CSSProperties = {
-        backgroundColor: color.alpha(0.85).css(),
-        borderColor: color.css(),
+        backgroundColor,
+        borderColor,
         borderWidth: '2px',
       };
       // Hover management is too hard on mobile and not very useful
       if (isMobile) return { style };
-      if (hoverCourse && hoverCourse === event.listing.crn) {
-        style.zIndex = 2;
-        if (!hasWalkBefore) style.filter = 'saturate(130%)';
-      } else if (hoverCourse && !hasWalkBefore) {
-        style.opacity = '30%';
-      }
+      if (hoverCourse && hoverCourse === event.listing.crn) style.zIndex = 2;
       return {
         style,
-        className: hasWalkBefore ? 'rbc-event-with-walk-badge' : undefined,
       };
     },
     [isMobile, hoverCourse],

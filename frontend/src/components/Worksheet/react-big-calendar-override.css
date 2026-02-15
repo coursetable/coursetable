@@ -83,12 +83,8 @@
   overflow: visible !important;
 }
 
-.rbc-event:not(.rbc-event-with-walk-badge):hover {
-  filter: brightness(85%);
-  z-index: 2;
-}
-
-.rbc-event.rbc-event-with-walk-badge:hover {
+.rbc-event:hover {
+  box-shadow: inset 0 0 0 1000px rgb(0 0 0 / 15%);
   z-index: 2;
 }
 
