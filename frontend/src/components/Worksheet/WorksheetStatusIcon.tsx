@@ -1,14 +1,19 @@
-import { FaUnlockAlt } from 'react-icons/fa';
-import { FaLock, FaStar } from 'react-icons/fa6';
+import { FaLock, FaUnlock, FaStar } from 'react-icons/fa';
+import styles from './WorksheetStatusIcon.module.css';
 
 export default function WorksheetStatusIcon(
   worksheetNumber: number,
   isPrivate: boolean | undefined,
 ) {
-  if (worksheetNumber === 0) return <FaStar />;
-  return isPrivate ? (
-    <FaLock style={{ transform: 'scale(0.9)' }} />
-  ) : (
-    <FaUnlockAlt style={{ transform: 'scale(0.9)' }} />
+  return (
+    <div className={styles.statusIconContainer}>
+      {worksheetNumber === 0 ? (
+        <FaStar />
+      ) : isPrivate ? (
+        <FaLock style={{ transform: 'scale(0.85)' }} />
+      ) : (
+        <FaUnlock style={{ transform: 'scale(0.85)' }} />
+      )}
+    </div>
   );
 }
