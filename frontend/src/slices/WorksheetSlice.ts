@@ -292,29 +292,44 @@ export const useWorksheetEffects = () => {
   setWorksheetInfo(courses, worksheetLoading, worksheetError);
 };
 
+export type WorksheetNumberOption = Option<number> & {
+  isPrivate: undefined | boolean;
+};
+
 // Auxiliary Functions
 export function useWorksheetNumberOptions(
   person: 'me' | NetId,
   season: Season,
-): { [worksheetNumber: number]: Option<number> } {
+): { [worksheetNumber: number]: WorksheetNumberOption } {
   const { worksheets, friends } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
     })),
   );
+
   const seasonWorksheet = (
     person === 'me' ? worksheets : friends?.[person]?.worksheets
   )?.get(season);
+
   const options = seasonWorksheet
     ? Object.fromEntries(
         [...seasonWorksheet.entries()].map(([key, value]) => [
           key,
-          { value: key, label: value.name },
+          {
+            value: key,
+            label: value.name,
+            isPrivate: value.private,
+          } as WorksheetNumberOption,
         ]),
       )
     : {};
+
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  options[0] ??= { value: 0, label: 'Main Worksheet' };
+  options[0] ??= {
+    value: 0,
+    label: 'Main Worksheet',
+    isPrivate: false,
+  };
   return options;
 }
