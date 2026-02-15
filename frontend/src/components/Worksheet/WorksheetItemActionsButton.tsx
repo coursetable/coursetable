@@ -82,7 +82,7 @@ function WorksheetItemActionsButton({
                 <OverlayTrigger
                   placement="bottom"
                   overlay={
-                    <Tooltip id="color-tooltip">
+                    <Tooltip id="worksheet-item-color-tooltip">
                       <small>Change color</small>
                     </Tooltip>
                   }
@@ -103,7 +103,7 @@ function WorksheetItemActionsButton({
                 <OverlayTrigger
                   placement="bottom"
                   overlay={
-                    <Tooltip id="move-tooltip">
+                    <Tooltip id="worksheet-item-move-tooltip">
                       <small>Move to another worksheet</small>
                     </Tooltip>
                   }

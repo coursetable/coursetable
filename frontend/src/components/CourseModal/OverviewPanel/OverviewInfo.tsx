@@ -413,7 +413,7 @@ function TimeLocation({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="location-hidden-tooltip" {...props}>
+                    <Tooltip id="overview-location-hidden-tooltip" {...props}>
                       Sign in to see location
                     </Tooltip>
                   )}

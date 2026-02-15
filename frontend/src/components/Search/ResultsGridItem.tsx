@@ -153,7 +153,10 @@ function ResultsGridItem({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="location-hidden-tooltip" {...props}>
+                    <Tooltip
+                      id="results-grid-location-hidden-tooltip"
+                      {...props}
+                    >
                       Sign in to see location
                     </Tooltip>
                   )}

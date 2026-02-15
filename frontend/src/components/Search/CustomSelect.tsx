@@ -215,7 +215,13 @@ function ControlWithUnionIndicator(props: any) {
       <div className="flex-grow-1">
         <components.Control {...props} />
       </div>
-      <OverlayTrigger overlay={(p) => <Tooltip {...p}>{label}</Tooltip>}>
+      <OverlayTrigger
+        overlay={(p) => (
+          <Tooltip id="custom-select-union-intersection-tooltip" {...p}>
+            {label}
+          </Tooltip>
+        )}
+      >
         <button
           type="button"
           className={clsx(
