@@ -8,7 +8,7 @@ import React, {
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger, Fade, Modal } from 'react-bootstrap';
-import { FaPlus, FaMinus } from 'react-icons/fa6';
+import { FaPlus, FaMinus } from 'react-icons/fa';
 import { MdErrorOutline } from 'react-icons/md';
 import { useApolloClient } from '@apollo/client';
 import { components, type OptionProps } from 'react-select';

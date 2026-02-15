@@ -159,7 +159,7 @@ export function Popout({
 
         {text && clearIcon ? (
           <IoClose
-            className={clsx(styles.clearIcon, 'ms-1')}
+            className={styles.clearIcon}
             onClick={(e) => {
               // Prevent parent popout button onClick from firing and opening
               // dropdown
@@ -168,7 +168,7 @@ export function Popout({
             }}
           />
         ) : arrowIcon ? (
-          <ArrowIcon className={clsx(styles.arrowIcon, 'ms-1')} />
+          <ArrowIcon className={styles.arrowIcon} />
         ) : null}
         {notifications ? <NotificationIcon count={notifications} /> : null}
       </button>
