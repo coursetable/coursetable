@@ -10,41 +10,66 @@ import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
+export function CalendarEventBody({
+  event,
+  compact = false,
+}: {
+  readonly event: RBCEvent;
+  readonly compact?: boolean;
+}) {
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
 
   const isMobile = useStore((state) => state.isMobile);
 
-  // This splits the title into separate lines for mobile!
+  const words = event.title.split(' ');
   const formattedTitle = isMobile
-    ? event.title.split(' ').map((word, index) => (
+    ? words.map((word, index) => (
         <React.Fragment key={index}>
           {word}
-          {index < event.title.split(' ').length - 1 && <br />}
+          {index < words.length - 1 && <br />}
         </React.Fragment>
       ))
     : event.title;
 
   const lastMod = event.listing.course.last_updated as string | undefined;
 
+  const isShortClass =
+    compact && (event.end.getTime() - event.start.getTime()) / (1000 * 60) < 75;
+
+  const hideCourseNameBr = isMobile && compact && isShortClass;
+
+  const eventClassName = compact
+    ? [
+        styles.event,
+        styles.eventCompact,
+        isShortClass && styles.eventCompactShort,
+      ]
+        .filter(Boolean)
+        .join(' ')
+    : styles.event;
+
   return (
-    <div className={styles.event} style={{ color: textColor }}>
+    <div className={eventClassName} style={{ color: textColor }}>
       <strong className={styles.courseCodeText}>{formattedTitle}</strong>
-      <br />
+      {!hideCourseNameBr && <br />}
       <ResponsiveEllipsis
         className={styles.courseNameText}
         text={event.description}
         maxLine="1"
         basedOn="words"
       />
-      <small className={styles.locationText}>{event.location}</small>
-      <br />
-      {lastMod && (
-        <ResponsiveEllipsis
-          className={styles.lastUpdatedText}
-          text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
-        />
+      {!isShortClass && (
+        <small className={styles.locationText}>{event.location}</small>
+      )}
+      {!compact && lastMod && (
+        <>
+          <br />
+          <ResponsiveEllipsis
+            className={styles.lastUpdatedText}
+            text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
+          />
+        </>
       )}
     </div>
   );
