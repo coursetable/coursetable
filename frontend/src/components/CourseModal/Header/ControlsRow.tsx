@@ -23,6 +23,7 @@ function copyToClipboard(text: string, successMessage: string) {
     },
     (err: unknown) => {
       console.error('Error copying to clipboard: ', err);
+      toast.error('Failed to copy to clipboard (try manual copy)');
     },
   );
 }
