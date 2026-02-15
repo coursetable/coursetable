@@ -172,7 +172,6 @@ export function Popout({
         ) : null}
         {notifications ? <NotificationIcon count={notifications} /> : null}
       </button>
-
       {/* Dropdown */}
       {isComponentVisible ? (
         <div

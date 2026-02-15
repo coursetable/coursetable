@@ -264,6 +264,7 @@ function WorksheetCalendarList({
           )}
         </WorksheetCalendarListContext.Provider>
       </SurfaceComponent>
+
       <Modal
         show={settingsModalOpen}
         onHide={() => setSettingsModalOpen(false)}
