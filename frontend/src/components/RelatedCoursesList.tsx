@@ -98,7 +98,7 @@ function RatingNumbers({
       key={i}
       placement="top"
       overlay={(props) => (
-        <Tooltip id="related-courses-rating-tooltip" {...props}>
+        <Tooltip id={`related-courses-rating-${identifier}-tooltip`} {...props}>
           These colors are randomly generated.{' '}
           {hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see
           real ratings.

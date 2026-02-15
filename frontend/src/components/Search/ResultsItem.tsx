@@ -193,7 +193,10 @@ function ResultsItem({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="results-location-hidden-tooltip" {...props}>
+                    <Tooltip
+                      id={`results-location-hidden-${listing.crn}-tooltip`}
+                      {...props}
+                    >
                       Sign in to see location
                     </Tooltip>
                   )}
