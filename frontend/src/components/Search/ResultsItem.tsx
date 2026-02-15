@@ -193,7 +193,10 @@ function ResultsItem({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="location-hidden-tooltip" {...props}>
+                    <Tooltip
+                      id={`results-location-hidden-${listing.crn}-tooltip`}
+                      {...props}
+                    >
                       Sign in to see location
                     </Tooltip>
                   )}
@@ -212,7 +215,10 @@ function ResultsItem({
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
+                  <Tooltip
+                    id={`results-friends-${listing.crn}-tooltip`}
+                    {...props}
+                  >
                     {[...friends].join(' • ')}
                   </Tooltip>
                 )}
