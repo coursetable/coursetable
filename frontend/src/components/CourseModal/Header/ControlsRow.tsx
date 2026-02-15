@@ -16,33 +16,51 @@ import type { CourseModalPrefetchListingDataFragment } from '../../../generated/
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
-function ShareButton() {
-  const copyToClipboard = () => {
+function copyToClipboard(text: string, successMessage: string) {
+  navigator.clipboard.writeText(text).then(
+    () => {
+      toast.success(successMessage);
+    },
+    (err: unknown) => {
+      console.error('Error copying to clipboard: ', err);
+    },
+  );
+}
+
+function ShareButton({
+  listing,
+}: {
+  readonly listing: CourseModalPrefetchListingDataFragment;
+}) {
+  const getCourseUrl = () => {
     const params = new URLSearchParams(window.location.search);
     const courseModal = params.get('course-modal');
-
-    const url = `${window.location.origin}/catalog${
+    return `${window.location.origin}/catalog${
       courseModal !== null ? `?course-modal=${courseModal}` : ''
     }`;
-    navigator.clipboard.writeText(url).then(
-      () => {
-        toast.success('URL copied to clipboard!');
-      },
-      (err: unknown) => {
-        console.error('Error copying to clipboard: ', err);
-      },
-    );
   };
 
   return (
-    <button
-      type="button"
-      className={styles.shareButton}
-      onClick={copyToClipboard}
-      aria-label="Share"
+    <DropdownButton
+      as="div"
+      drop="down"
+      title={<FaRegShareFromSquare size={20} />}
+      variant="none"
+      className={styles.shareDropdown}
     >
-      <FaRegShareFromSquare size={20} />
-    </button>
+      <Dropdown.Item
+        onClick={() =>
+          copyToClipboard(listing.course_code, 'Course code copied!')
+        }
+      >
+        Copy course code
+      </Dropdown.Item>
+      <Dropdown.Item
+        onClick={() => copyToClipboard(getCourseUrl(), 'URL copied!')}
+      >
+        Copy course URL
+      </Dropdown.Item>
+    </DropdownButton>
   );
 }
 
@@ -174,7 +192,7 @@ export default function ModalHeaderControls({
       />
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
-        <ShareButton />
+        <ShareButton listing={listing} />
         <MoreButton listing={listing} />
       </div>
     </div>

@@ -34,9 +34,11 @@
   color: var(--color-text-tertiary);
 }
 
-.shareButton {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+.shareDropdown {
+  cursor: pointer;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 0;
 }
 
 .moreDropdown {
@@ -47,24 +49,27 @@
 }
 
 .moreDropdown svg,
-.shareButton svg {
+.shareDropdown svg {
   color: var(--color-primary);
 }
 
 .moreDropdown:hover svg,
-.shareButton:hover svg {
+.shareDropdown:hover svg {
   color: var(--color-primary-hover);
 }
 
-.moreDropdown :global(.dropdown-toggle) {
+.moreDropdown :global(.dropdown-toggle),
+.shareDropdown :global(.dropdown-toggle) {
   padding: 0;
 }
 
-.moreDropdown :global(.dropdown-toggle)::after {
+.moreDropdown :global(.dropdown-toggle)::after,
+.shareDropdown :global(.dropdown-toggle)::after {
   display: none;
 }
 
-.moreDropdown :global(.dropdown-menu) {
+.moreDropdown :global(.dropdown-menu),
+.shareDropdown :global(.dropdown-menu) {
   width: 250px;
 }
 
