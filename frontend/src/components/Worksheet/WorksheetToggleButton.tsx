@@ -17,7 +17,6 @@ import { useShallow } from 'zustand/react/shallow';
 import WorksheetStatusIcon from './WorksheetStatusIcon';
 import { CUR_YEAR } from '../../config';
 import { seasons, useWorksheetInfo } from '../../contexts/ferryContext';
-import type { Option } from '../../contexts/searchContext';
 import type { LatestCurrentOfferingQuery } from '../../generated/graphql-types';
 import { updateWorksheetCourses } from '../../queries/api';
 import { LatestCurrentOfferingDocument } from '../../queries/graphql-queries';
@@ -393,8 +392,8 @@ function WorksheetToggleButton({
           displayOptionLabel
           className={styles.worksheetDropdown}
           Icon={WorksheetStatusIcon(
-            worksheetOptions[selectedWorksheet]!.value,
-            worksheetOptions[selectedWorksheet]!.isPrivate,
+            worksheetOptions[selectedWorksheet]?.value ?? 0,
+            worksheetOptions[selectedWorksheet]?.isPrivate ?? false,
           )}
         >
           <PopoutSelect<WorksheetNumberOption, false>
