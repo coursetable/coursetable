@@ -670,3 +670,97 @@ export type CourseSectionsQueryResult = Apollo.QueryResult<
   Types.CourseSectionsQuery,
   Types.CourseSectionsQueryVariables
 >;
+export const LatestCurrentOfferingDocument = gql`
+  query LatestCurrentOffering($sameCourseId: Int!, $seasonCodes: [String!]!) {
+    courses(
+      where: {
+        same_course_id: { _eq: $sameCourseId }
+        season_code: { _in: $seasonCodes }
+      }
+      order_by: { season_code: desc }
+      limit: 1
+    ) {
+      season_code
+      listings(limit: 1) {
+        crn
+        course_code
+      }
+    }
+  }
+`;
+
+/**
+ * __useLatestCurrentOfferingQuery__
+ *
+ * To run a query within a React component, call `useLatestCurrentOfferingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestCurrentOfferingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestCurrentOfferingQuery({
+ *   variables: {
+ *      sameCourseId: // value for 'sameCourseId'
+ *      seasonCodes: // value for 'seasonCodes'
+ *   },
+ * });
+ */
+export function useLatestCurrentOfferingQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    Types.LatestCurrentOfferingQuery,
+    Types.LatestCurrentOfferingQueryVariables
+  > &
+    (
+      | { variables: Types.LatestCurrentOfferingQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.LatestCurrentOfferingQuery,
+    Types.LatestCurrentOfferingQueryVariables
+  >(LatestCurrentOfferingDocument, options);
+}
+export function useLatestCurrentOfferingLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.LatestCurrentOfferingQuery,
+    Types.LatestCurrentOfferingQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.LatestCurrentOfferingQuery,
+    Types.LatestCurrentOfferingQueryVariables
+  >(LatestCurrentOfferingDocument, options);
+}
+export function useLatestCurrentOfferingSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.LatestCurrentOfferingQuery,
+        Types.LatestCurrentOfferingQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.LatestCurrentOfferingQuery,
+    Types.LatestCurrentOfferingQueryVariables
+  >(LatestCurrentOfferingDocument, options);
+}
+export type LatestCurrentOfferingQueryHookResult = ReturnType<
+  typeof useLatestCurrentOfferingQuery
+>;
+export type LatestCurrentOfferingLazyQueryHookResult = ReturnType<
+  typeof useLatestCurrentOfferingLazyQuery
+>;
+export type LatestCurrentOfferingSuspenseQueryHookResult = ReturnType<
+  typeof useLatestCurrentOfferingSuspenseQuery
+>;
+export type LatestCurrentOfferingQueryResult = Apollo.QueryResult<
+  Types.LatestCurrentOfferingQuery,
+  Types.LatestCurrentOfferingQueryVariables
+>;
