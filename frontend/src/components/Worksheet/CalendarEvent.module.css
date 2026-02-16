@@ -103,11 +103,19 @@
   min-height: 16px;
 }
 
-.walkWarningEmoji {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 2px;
-  line-height: 1;
+.walkWarningIconChip {
+  margin-left: 2px;
+  margin-right: 4px;
+  color: #ff9d43;
+  vertical-align: text-bottom;
+}
+
+.walkWarningIconModal {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.22em;
+  color: #ff9d43;
+  vertical-align: -0.08em;
 }
 
 .walkBadgeOpen {

@@ -24,9 +24,8 @@ export function getWalkingSeconds(
   if (!a || !b) return null;
   if (a === b) return 0;
 
-  if (walkingETAs.durations_seconds) 
+  if (walkingETAs.durations_seconds)
     return walkingETAs.durations_seconds[a]?.[b] ?? null;
-  
 
   const upper = walkingETAs.durations_upper;
   if (!upper) return null;

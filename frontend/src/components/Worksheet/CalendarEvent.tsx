@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import clsx from 'clsx';
 import { Modal } from 'react-bootstrap';
+import { BsExclamationTriangleFill } from 'react-icons/bs';
 import { FaWalking } from 'react-icons/fa';
 import chroma from 'chroma-js';
 import LinesEllipsis from 'react-lines-ellipsis';
@@ -318,9 +319,11 @@ function WalkBadge({
       )}
       <span className={styles.walkBadgeEta}>
         {!hasEnoughTime && (
-          <span className={styles.walkWarningEmoji} aria-hidden>
-            ⚠️
-          </span>
+          <BsExclamationTriangleFill
+            className={styles.walkWarningIconChip}
+            size={12}
+            aria-hidden
+          />
         )}
         {walk.minutes} min walk
       </span>
@@ -443,9 +446,10 @@ function WalkDetailsModal({
               </span>
               <strong className={styles.walkModalMinutes}>
                 {!hasEnoughTime && (
-                  <span className={styles.walkWarningEmoji} aria-hidden>
-                    ⚠️
-                  </span>
+                  <BsExclamationTriangleFill
+                    className={styles.walkWarningIconModal}
+                    aria-hidden
+                  />
                 )}
                 {walk.minutes} minutes
               </strong>
