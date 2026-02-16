@@ -39,6 +39,12 @@ type CourseData = {
 };
 
 let courseData: CourseData = {};
+
+export const resetCatalogCache = () => {
+  courseData = {};
+  catalogLoadAttempted.clear();
+  evalsLoadAttempted.clear();
+};
 const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     // Both data have been loaded; nothing to do
@@ -54,7 +60,10 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
         fetchCatalog(season),
         fetchCatalogMetadata(),
       ]);
-      if (!data || !metadata) return null;
+      if (!data || !metadata) {
+        catalogLoadAttempted.delete(season);
+        return null;
+      }
       // TODO: directly use the course-indexed data in frontend
       const catalogOldFormat = new Map<Crn, CatalogListing>();
       for (const course of data.values()) {
@@ -67,7 +76,10 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
       if (evalsLoadAttempted.has(season) || !includeEvals)
         return Promise.resolve(null);
       evalsLoadAttempted.add(season);
-      return fetchEvals(season);
+      return fetchEvals(season).then((evalsData) => {
+        if (!evalsData) evalsLoadAttempted.delete(season);
+        return evalsData;
+      });
     })();
     const [catalog, evals] = await Promise.all([catalogPromise, evalsPromise]);
     // Note! If we are fetching evals without fetching catalog, then a
