@@ -210,12 +210,23 @@ export type CourseRBCEvent = {
   walkBefore?: WalkBefore;
 };
 
+export type WalkClassSummary = {
+  courseCode: string;
+  courseTitle: string;
+  location: string;
+  start: Date;
+  end: Date;
+  color: string;
+};
+
 export type WalkBefore = {
   minutes: number;
   gapMinutes: number;
   fromCode: string;
   toCode: string;
   color: string;
+  fromClass: WalkClassSummary;
+  toClass: WalkClassSummary;
 };
 
 export type RBCEvent = CourseRBCEvent;

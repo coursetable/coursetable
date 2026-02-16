@@ -82,8 +82,47 @@
     0 10px 22px rgb(0 0 0 / 12%),
     0 4px 8px rgb(0 0 0 / 10%);
   backdrop-filter: blur(2px);
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    padding-right 0.18s ease,
+    gap 0.18s ease;
+  outline: none;
   opacity: var(--walk-chip-opacity, 1);
+}
+
+.walkBadgeWarning {
+  padding-left: 4px;
+}
+
+.walkBadgeEta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 16px;
+}
+
+.walkWarningEmoji {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 2px;
+  line-height: 1;
+}
+
+.walkBadgeOpen {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--walk-accent);
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transform: translateX(-2px);
+  transition:
+    max-width 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .walkBadgeIconWrap {
@@ -103,6 +142,14 @@
     font-size: 9px;
   }
 
+  .walkBadgeWarning {
+    padding-left: 5px;
+  }
+
+  .walkBadgeEta {
+    min-height: 14px;
+  }
+
   .walkBadgeIconWrap {
     width: 14px;
     height: 14px;
@@ -113,11 +160,34 @@
   font-size: 10px;
 }
 
+.walkBadge:focus-visible {
+  box-shadow:
+    0 0 0 2px rgb(255 255 255 / 88%),
+    0 0 0 4px var(--walk-accent),
+    0 12px 24px rgb(0 0 0 / 24%);
+}
+
+.walkBadge:hover {
+  transform: translateY(calc(-100% - 1px));
+  gap: 6px;
+  padding-right: 10px;
+  box-shadow:
+    0 12px 26px rgb(0 0 0 / 16%),
+    0 4px 10px rgb(0 0 0 / 14%);
+}
+
+.walkBadge:hover .walkBadgeOpen,
+.walkBadge:focus-visible .walkBadgeOpen {
+  max-width: 40px;
+  opacity: 1;
+  transform: translateX(0);
+}
+
 .walkBadgeDots {
   position: absolute;
   left: 4px;
   bottom: calc(100% + var(--walk-connector-offset, 0px));
-  height: var(--walk-connector-height, 24px);
+  height: var(--walk-connector-height, 0);
   width: 2px;
   border-radius: 0;
   background: repeating-linear-gradient(
@@ -129,4 +199,316 @@
   );
   opacity: var(--walk-chip-opacity, 1);
   pointer-events: none;
+}
+
+.walkModalDialog {
+  max-width: min(760px, calc(100vw - 24px));
+}
+
+.walkModalContent {
+  border-radius: 18px;
+  border: 1px solid rgb(42 50 71 / 12%);
+  box-shadow: 0 32px 80px rgb(11 18 31 / 28%);
+  overflow: hidden;
+}
+
+.walkModalHeader {
+  border-bottom: 1px solid rgb(42 50 71 / 12%);
+  padding: 18px 24px 12px;
+}
+
+.walkModalTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
+.walkModalBetaPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.22rem 0.72rem;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  border: 1px solid var(--color-primary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur),
+    border-color var(--trans-dur);
+}
+
+.walkModalBody {
+  padding: 14px 24px 18px;
+}
+
+.walkModalLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 0.92fr);
+  grid-template-areas:
+    'fromClass howItWorks'
+    'middle howItWorks'
+    'toClass howItWorks';
+  align-items: start;
+  gap: 0 16px;
+}
+
+.walkModalFromClass {
+  grid-area: fromClass;
+}
+
+.walkModalToClass {
+  grid-area: toClass;
+}
+
+.walkModalMiddle {
+  grid-area: middle;
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  align-items: stretch;
+  column-gap: 16px;
+  padding-left: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.walkModalRouteLine {
+  --walk-route-color: #2fc77f;
+
+  width: 8px;
+  place-self: stretch stretch;
+  min-height: 72px;
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+}
+
+.walkModalRouteLine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--walk-route-color) 0,
+    var(--walk-route-color) 10px,
+    transparent 10px,
+    transparent 18px
+  );
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: walk-trace-in 1200ms cubic-bezier(0.19, 0.88, 0.28, 1) forwards;
+}
+
+@keyframes walk-trace-in {
+  from {
+    opacity: 0.55;
+    transform: scaleY(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.walkModalClassBlock {
+  border-radius: 6px;
+  border: 2px solid var(--walk-class-border-color, rgb(42 50 71 / 18%));
+  background: var(--walk-class-bg-color, rgb(42 50 71 / 12%));
+  color: var(--walk-class-text-color, #fff);
+  box-shadow: none;
+  padding: 6px 8px;
+}
+
+.walkModalClassHeading {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.walkModalCourseCode {
+  font-size: 1em;
+  line-height: 1.25;
+  letter-spacing: normal;
+}
+
+.walkModalCourseTitle {
+  display: block;
+  font-size: 1em;
+  line-height: 1.25;
+  margin-top: 1px;
+}
+
+.walkModalClassMeta {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: inherit;
+  opacity: 0.88;
+}
+
+.walkModalEta {
+  min-width: 0;
+  padding: 12px 0;
+}
+
+.walkModalEta > *:first-child {
+  margin-top: 0;
+}
+
+.walkModalEta > *:last-child {
+  margin-bottom: 0;
+}
+
+.walkModalEtaLabel {
+  display: block;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.walkModalMinutes {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(1.7rem, 3.7vw, 2.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  min-width: 0;
+}
+
+.walkModalDisclaimer {
+  margin: 8px 0 0;
+  color: var(--color-text-tertiary);
+  font-size: 0.88rem;
+  line-height: 1.38;
+}
+
+.walkModalTimingMessage {
+  margin: 10px 0 0;
+  color: var(--color-text-tertiary);
+  font-size: 0.92rem;
+  line-height: 1.38;
+}
+
+.walkModalHowItWorks {
+  grid-area: howItWorks;
+  align-self: stretch;
+  border-left: 1px solid rgb(42 50 71 / 14%);
+  margin-left: 16px;
+  padding-left: 16px;
+}
+
+.walkModalHowItWorksHeading {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.walkModalHowItWorksToggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.walkModalHowItWorksChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95em;
+  line-height: 1;
+  transform: rotate(-90deg);
+  transition: transform 0.18s ease;
+}
+
+.walkModalHowItWorksChevronExpanded {
+  transform: rotate(0deg);
+}
+
+@media (max-width: 768px) {
+  .walkModalTitle {
+    font-size: 1.25rem;
+  }
+
+  .walkModalLayout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'fromClass'
+      'middle'
+      'toClass'
+      'howItWorks';
+    gap: 0;
+  }
+
+  .walkModalMiddle {
+    grid-template-columns: 6px minmax(0, 1fr);
+    column-gap: 13px;
+    padding-left: 12px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  .walkModalRouteLine {
+    width: 6px;
+    min-height: 62px;
+  }
+
+  .walkModalClassHeading {
+    font-size: 0.92rem;
+  }
+
+  .walkModalClassMeta {
+    font-size: 0.82rem;
+  }
+
+  .walkModalEtaLabel {
+    font-size: 1rem;
+  }
+
+  .walkModalMinutes {
+    font-size: clamp(1.45rem, 7.3vw, 2.2rem);
+  }
+
+  .walkModalEta {
+    padding: 10px 0;
+  }
+
+  .walkModalTimingMessage {
+    margin-top: 9px;
+  }
+
+  .walkModalHowItWorks {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid rgb(42 50 71 / 14%);
+    padding-top: 10px;
+  }
+
+  .walkModalHowItWorksToggle {
+    width: auto;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 2px 0;
+  }
 }

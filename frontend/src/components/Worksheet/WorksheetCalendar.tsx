@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
-import CalendarEvent, { useEventStyle } from './CalendarEvent';
+import CalendarEvent, {
+  type WalkModalInteraction,
+  useEventStyle,
+} from './CalendarEvent';
 import {
   ColorPickerModal,
   WorksheetMoveModal,
@@ -22,12 +25,14 @@ import {
 import './react-big-calendar-override.css';
 
 const MAX_WALK_GAP_MINUTES = 30;
+const WALK_MODAL_SELECT_SUPPRESSION_MS = 350;
+const WALK_MODAL_CLOSE_SUPPRESSION_MS = 600;
 
 type WalkPair = {
   minutes: number;
   fromCode: string;
   toCode: string;
-  color: string;
+  previousEvent: CourseRBCEvent;
   nextEvent: CourseRBCEvent;
 };
 
@@ -58,7 +63,7 @@ function findFarthestWalkPair(
           minutes,
           fromCode,
           toCode,
-          color: next.color,
+          previousEvent: previous,
           nextEvent: next,
         };
       }
@@ -124,7 +129,23 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
         gapMinutes,
         fromCode: farthest.fromCode,
         toCode: farthest.toCode,
-        color: farthest.color,
+        color: farthest.nextEvent.color,
+        fromClass: {
+          courseCode: farthest.previousEvent.title,
+          courseTitle: farthest.previousEvent.description,
+          location: farthest.previousEvent.location || farthest.fromCode,
+          start: farthest.previousEvent.start,
+          end: farthest.previousEvent.end,
+          color: farthest.previousEvent.color,
+        },
+        toClass: {
+          courseCode: farthest.nextEvent.title,
+          courseTitle: farthest.nextEvent.description,
+          location: farthest.nextEvent.location || farthest.toCode,
+          start: farthest.nextEvent.start,
+          end: farthest.nextEvent.end,
+          color: farthest.nextEvent.color,
+        },
       });
     }
   }
@@ -204,6 +225,9 @@ function WorksheetCalendar() {
   const [walkBeforeByKey, setWalkBeforeByKey] = useState<
     Map<string, WalkBefore>
   >(new Map());
+  const [selectedEvent, setSelectedEvent] = useState<CourseRBCEvent | null>(
+    null,
+  );
   useEffect(() => {
     let cancelled = false;
     const timeout = window.setTimeout(() => {
@@ -223,6 +247,54 @@ function WorksheetCalendar() {
       return walkBefore ? { ...event, walkBefore } : event;
     });
   }, [parsedCourses, walkBeforeByKey]);
+  const suppressSelectEventUntilRef = useRef(0);
+  const walkModalOpenRef = useRef(false);
+  const skipNextSelectEventRef = useRef(false);
+  const clearSkipSelectTimeoutRef = useRef<number | null>(null);
+  const armSelectSuppression = useCallback((durationMs: number) => {
+    skipNextSelectEventRef.current = true;
+    suppressSelectEventUntilRef.current = Math.max(
+      suppressSelectEventUntilRef.current,
+      Date.now() + durationMs,
+    );
+    if (clearSkipSelectTimeoutRef.current)
+      window.clearTimeout(clearSkipSelectTimeoutRef.current);
+    clearSkipSelectTimeoutRef.current = window.setTimeout(() => {
+      skipNextSelectEventRef.current = false;
+      clearSkipSelectTimeoutRef.current = null;
+    }, durationMs);
+  }, []);
+  const suppressCalendarEventSelection = useCallback(
+    (interaction: WalkModalInteraction) => {
+      if (interaction === 'open') walkModalOpenRef.current = true;
+      if (interaction === 'close') walkModalOpenRef.current = false;
+      const suppressionWindowMs =
+        interaction === 'close'
+          ? WALK_MODAL_CLOSE_SUPPRESSION_MS
+          : WALK_MODAL_SELECT_SUPPRESSION_MS;
+      armSelectSuppression(suppressionWindowMs);
+      setSelectedEvent(null);
+    },
+    [armSelectSuppression],
+  );
+  useEffect(() => {
+    if (!selectedEvent) return;
+    const hasSelectedEvent = displayEvents.some(
+      (event) =>
+        event.listing.crn === selectedEvent.listing.crn &&
+        event.start.getTime() === selectedEvent.start.getTime() &&
+        event.end.getTime() === selectedEvent.end.getTime(),
+    );
+    if (!hasSelectedEvent) setSelectedEvent(null);
+  }, [displayEvents, selectedEvent]);
+  useEffect(
+    () => () => {
+      if (clearSkipSelectTimeoutRef.current)
+        window.clearTimeout(clearSkipSelectTimeoutRef.current);
+      walkModalOpenRef.current = false;
+    },
+    [],
+  );
   return (
     <>
       <Calendar
@@ -237,7 +309,31 @@ function WorksheetCalendar() {
         localizer={localizer}
         toolbar={false}
         showCurrentTimeIndicator
-        onSelectEvent={(event) => {
+        selected={selectedEvent}
+        onSelectEvent={(event, clickEvent) => {
+          if (walkModalOpenRef.current) return;
+          const { target } = clickEvent;
+          if (
+            target instanceof Element &&
+            target.closest('[data-walk-modal-trigger="true"]')
+          ) {
+            setSelectedEvent(null);
+            return;
+          }
+          if (skipNextSelectEventRef.current) {
+            skipNextSelectEventRef.current = false;
+            if (clearSkipSelectTimeoutRef.current) {
+              window.clearTimeout(clearSkipSelectTimeoutRef.current);
+              clearSkipSelectTimeoutRef.current = null;
+            }
+            setSelectedEvent(null);
+            return;
+          }
+          if (Date.now() < suppressSelectEventUntilRef.current) {
+            setSelectedEvent(null);
+            return;
+          }
+          setSelectedEvent(event);
           setSearchParams((prev) => {
             prev.set(
               'course-modal',
@@ -255,7 +351,10 @@ function WorksheetCalendar() {
                 height: '100%',
               }}
             >
-              <CalendarEvent event={event} />
+              <CalendarEvent
+                event={event}
+                onWalkModalInteraction={suppressCalendarEventSelection}
+              />
             </div>
           ),
         }}
