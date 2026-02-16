@@ -28,14 +28,8 @@ const MAX_WALK_GAP_MINUTES = 30;
 const WALK_MODAL_SELECT_SUPPRESSION_MS = 350;
 const WALK_MODAL_CLOSE_SUPPRESSION_MS = 600;
 
-type WalkingTimeStats = {
-  walkableClasses: number;
-  unwalkableClasses: number;
-};
-
 type WorksheetCalendarProps = {
   readonly showWalkingTimes?: boolean;
-  readonly onWalkingStatsChange?: (stats: WalkingTimeStats) => void;
 };
 
 type WalkPair = {
@@ -165,7 +159,6 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
 
 function WorksheetCalendar({
   showWalkingTimes = true,
-  onWalkingStatsChange,
 }: WorksheetCalendarProps) {
   const [, setSearchParams] = useSearchParams();
   const {
@@ -252,20 +245,6 @@ function WorksheetCalendar({
       window.clearTimeout(timeout);
     };
   }, [parsedCourses]);
-
-  const walkingStats = useMemo(() => {
-    let walkableClasses = 0;
-    let unwalkableClasses = 0;
-    for (const walk of walkBeforeByKey.values()) {
-      if (walk.minutes <= walk.gapMinutes) walkableClasses += 1;
-      else unwalkableClasses += 1;
-    }
-    return { walkableClasses, unwalkableClasses };
-  }, [walkBeforeByKey]);
-
-  useEffect(() => {
-    onWalkingStatsChange?.(walkingStats);
-  }, [onWalkingStatsChange, walkingStats]);
 
   const displayEvents = useMemo(() => {
     if (!showWalkingTimes || walkBeforeByKey.size === 0) return parsedCourses;

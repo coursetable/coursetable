@@ -23,7 +23,6 @@ import WorksheetList from '../components/Worksheet/WorksheetList';
 import WorksheetMap from '../components/Worksheet/WorksheetMap';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
 import WorksheetStats from '../components/Worksheet/WorksheetStats';
-import WorksheetWalkingTime from '../components/Worksheet/WorksheetWalkingTime';
 
 import { parseCoursesFromURL } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
@@ -63,10 +62,6 @@ function Worksheet() {
     );
     if (savedPreference === null) return true;
     return savedPreference !== '0' && savedPreference !== 'false';
-  });
-  const [walkingStats, setWalkingStats] = useState({
-    walkableClasses: 0,
-    unwalkableClasses: 0,
   });
   const emptyMissingBuildingCodes = useMemo(() => new Set<string>(), []);
 
@@ -131,10 +126,7 @@ function Worksheet() {
         </div>
       )}
       <SurfaceComponent className={styles.calendar}>
-        <WorksheetCalendar
-          showWalkingTimes={showWalkingTimes}
-          onWalkingStatsChange={setWalkingStats}
-        />
+        <WorksheetCalendar showWalkingTimes={showWalkingTimes} />
         {!isMobile && (
           <div className={styles.calendarControls}>
             <OverlayTrigger
@@ -183,12 +175,6 @@ function Worksheet() {
       {(isMobile || !expanded) && (
         <div className={styles.calendarSidebar}>
           <WorksheetStats />
-          <WorksheetWalkingTime
-            walkableClasses={walkingStats.walkableClasses}
-            unwalkableClasses={walkingStats.unwalkableClasses}
-            showWalkingTimes={showWalkingTimes}
-            onShowWalkingTimesChange={setShowWalkingTimes}
-          />
           <WorksheetCalendarList
             highlightBuilding={null}
             showLocation={false}
@@ -196,6 +182,8 @@ function Worksheet() {
             controlsMode="full"
             missingBuildingCodes={emptyMissingBuildingCodes}
             hideTooltipContext="calendar"
+            showWalkingTimes={showWalkingTimes}
+            onShowWalkingTimesChange={setShowWalkingTimes}
           />
         </div>
       )}
