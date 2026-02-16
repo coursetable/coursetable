@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Collapse, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import styles from './WorksheetWalkingTime.module.css';
@@ -16,9 +16,14 @@ export default function WorksheetWalkingTime({
   showWalkingTimes,
   onShowWalkingTimesChange,
 }: WorksheetWalkingTimeProps) {
-  const [shown, setShown] = useState(showWalkingTimes);
+  const [shown, setShown] = useState(true);
+  const hasMountedRef = useRef(false);
 
   useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
     setShown((previousShown) =>
       previousShown === showWalkingTimes ? previousShown : showWalkingTimes,
     );
@@ -38,7 +43,7 @@ export default function WorksheetWalkingTime({
           placement="top"
           overlay={
             <Tooltip id="show-walking-times-tooltip">
-              {showWalkingTimes ? 'Hide times' : 'Show times'}
+              {showWalkingTimes ? 'Hide walk times' : 'Show walk times'}
             </Tooltip>
           }
         >
