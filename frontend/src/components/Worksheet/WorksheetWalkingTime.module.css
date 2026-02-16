@@ -1,0 +1,113 @@
+.container {
+  background: #a0a0a022;
+  border-radius: 8px;
+  transition: border-radius 0.3s step-end;
+  overflow: hidden;
+}
+
+.toggleButton {
+  position: relative;
+  width: 100%;
+  padding: 0.5em;
+  overflow: visible;
+}
+
+.toggleButton button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: inherit;
+  padding: 0;
+}
+
+.headerSwitch {
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+}
+
+.headerSwitch :global(.form-check) {
+  margin: 0;
+  min-height: 0;
+  padding-left: 2.1em;
+}
+
+.headerSwitch :global(.form-check-input) {
+  cursor: pointer;
+}
+
+.content {
+  padding: 1em 0.5em;
+}
+
+.stats {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1em;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats > div {
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
+  border-radius: 8px;
+  width: 45%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.stats dt,
+.stats dd {
+  margin: 0;
+  padding: 0.5em;
+  font-weight: 600;
+  font-size: 14px;
+  flex-grow: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.stats dt {
+  border-radius: 8px 0 0 8px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.stats dd {
+  border-radius: 0 8px 8px 0;
+}
+
+.metricValue {
+  color: var(--color-text-dark);
+}
+
+.walkableZero {
+  background-color: rgb(160 160 160 / 40%);
+}
+
+.walkablePositive {
+  background-color: #63b37b;
+}
+
+.unwalkableZero {
+  background-color: #63b37b;
+}
+
+.unwalkablePositive {
+  background-color: #ffeb84;
+}
