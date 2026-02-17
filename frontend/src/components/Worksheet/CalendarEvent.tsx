@@ -417,11 +417,11 @@ function WalkDetailsModal({
                   your classes. Estimates are pre-calculated and not definitive.
                 </p>
                 <p className={styles.walkModalDisclaimer}>
-                  When multiple class-to-class routes are possible in the same
-                  gap, CourseTable shows the combination with the longest
-                  estimated walk. You can hide or remove classes to change which
-                  classes are used for walking-time estimates. You can also
-                  entirely hide walking times in Worksheet Settings.
+                  When multiple classes share the same gap, CourseTable shows
+                  the combination with the longest estimated walk. You can hide
+                  or remove classes to change which are used for walking-time
+                  estimates. To hide walking times entirely, visit Worksheet
+                  Settings.
                 </p>
                 <p className={styles.walkModalDisclaimer}>
                   Actual walking times may vary depending on route choice,
