@@ -427,6 +427,9 @@ function WalkDetailsModal({
                   in-building travel, individual walk speed, traffic, weather,
                   construction, and other factors. Check important information.
                 </p>
+                <p className={styles.walkModalDisclaimer}>
+                  You can hide walk times in Worksheet Settings.
+                </p>
               </div>
             )}
           </div>
