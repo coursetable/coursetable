@@ -146,7 +146,7 @@
 
 @media (max-width: calc(768px - 0.5px)) {
   .walkBadge {
-    padding: 1px 6px;
+    padding: 1px 5px 1px 1px;
     font-size: 9px;
   }
 
