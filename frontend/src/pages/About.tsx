@@ -12,6 +12,7 @@ import ash from '../images/headshots/aryan-sharma.jpg';
 import bx from '../images/headshots/ben-xu.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
+import eboug from '../images/headshots/eli-bouganim.jpeg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
 import ff from '../images/headshots/filippo-fonseca.jpg';
@@ -168,6 +169,16 @@ function About() {
         website: 'https://yavinfickel.com',
         github: 'https://github.com/yav-fi',
         linkedin: 'https://www.linkedin.com/in/yavin',
+      },
+    },
+    {
+      name: 'Eli Bouganim',
+      image: eboug,
+      role: 'Development',
+      links: {
+        website: 'https://elibouganim.web.app',
+        github: 'https://github.com/eliboug',
+        linkedin: 'https://www.linkedin.com/in/eli-bouganim/',
       },
     },
   ];
