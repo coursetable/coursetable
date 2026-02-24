@@ -177,6 +177,13 @@ export function CalendarEventBody({
     setIsWalkModalOpen(false);
   }, [onWalkModalInteraction]);
 
+  useEffect(() => {
+    if (!walkBefore && isWalkModalOpen) {
+      setIsWalkModalOpen(false);
+      onWalkModalInteraction?.('close');
+    }
+  }, [walkBefore, isWalkModalOpen, onWalkModalInteraction]);
+
   return (
     <div
       ref={eventRef}

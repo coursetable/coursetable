@@ -34,6 +34,7 @@ type WorksheetCalendarProps = {
 
 type WalkPair = {
   minutes: number;
+  gapMinutes: number;
   fromCode: string;
   toCode: string;
   previousEvent: CourseRBCEvent;
@@ -65,6 +66,7 @@ function findFarthestWalkPair(
       if (!best || minutes > best.minutes) {
         best = {
           minutes,
+          gapMinutes,
           fromCode,
           toCode,
           previousEvent: previous,
@@ -106,7 +108,7 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
         continue;
       }
 
-      if (event.start <= current.end) {
+      if (event.start < current.end) {
         current.events.push(event);
         if (event.end > current.end) current.end = event.end;
         continue;
@@ -123,14 +125,14 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
       const next = clusters[i + 1]!;
       const gapMinutes =
         (next.start.getTime() - previous.end.getTime()) / 60000;
-      if (gapMinutes <= 0 || gapMinutes > MAX_WALK_GAP_MINUTES) continue;
+      if (gapMinutes < 0 || gapMinutes > MAX_WALK_GAP_MINUTES) continue;
 
       const farthest = findFarthestWalkPair(previous.events, next.events);
       if (!farthest) continue;
 
       walkBeforeMap.set(eventKey(farthest.nextEvent), {
         minutes: farthest.minutes,
-        gapMinutes,
+        gapMinutes: farthest.gapMinutes,
         fromCode: farthest.fromCode,
         toCode: farthest.toCode,
         color: farthest.nextEvent.color,

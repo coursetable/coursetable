@@ -25,7 +25,11 @@ export function getWalkingSeconds(
   if (a === b) return 0;
 
   if (walkingETAs.durations_seconds)
-    return walkingETAs.durations_seconds[a]?.[b] ?? null;
+    {return (
+      walkingETAs.durations_seconds[a]?.[b] ??
+      walkingETAs.durations_seconds[b]?.[a] ??
+      null
+    );}
 
   const upper = walkingETAs.durations_upper;
   if (!upper) return null;
@@ -38,5 +42,5 @@ export function getWalkingMinutes(
 ): number | null {
   const seconds = getWalkingSeconds(fromCode, toCode);
   if (seconds === null || Number.isNaN(seconds)) return null;
-  return Math.round(seconds / 60);
+  return Math.ceil(seconds / 60);
 }
