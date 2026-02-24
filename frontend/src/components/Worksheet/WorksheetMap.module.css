@@ -43,6 +43,7 @@
   border-radius: 12px;
 }
 
+/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
 .map :global(.leaflet-control-attribution) {
   font-size: 8px;
   line-height: 1.05;
