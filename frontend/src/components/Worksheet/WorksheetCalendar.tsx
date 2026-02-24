@@ -186,9 +186,8 @@ function WorksheetCalendar({
     [courses, viewedSeason],
   );
   const { earliest, latest, parsedCourses } = useMemo(() => {
-    const allCoursesList = allCourses;
     if (isCalendarViewLocked) {
-      const filteredCourses = allCoursesList.filter((course) => {
+      const filteredCourses = allCourses.filter((course) => {
         const courseEndHour = course.end.getHours();
         const courseEndMinutes = course.end.getMinutes();
         const courseStartHour = course.start.getHours();
@@ -208,24 +207,24 @@ function WorksheetCalendar({
         parsedCourses: filteredCourses,
       };
     }
-    if (allCoursesList.length === 0) {
+    if (allCourses.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
         latest: new Date(0, 0, 0, 18),
-        parsedCourses: allCoursesList,
+        parsedCourses: allCourses,
       };
     }
-    const earliest = new Date(allCoursesList[0]!.start);
-    const latest = new Date(allCoursesList[0]!.end);
+    const earliest = new Date(allCourses[0]!.start);
+    const latest = new Date(allCourses[0]!.end);
     earliest.setMinutes(0);
     latest.setMinutes(59);
-    for (const c of allCoursesList) {
+    for (const c of allCourses) {
       if (c.start.getHours() < earliest.getHours())
         earliest.setHours(c.start.getHours());
       if (c.end.getHours() > latest.getHours())
         latest.setHours(c.end.getHours());
     }
-    return { earliest, latest, parsedCourses: allCoursesList };
+    return { earliest, latest, parsedCourses: allCourses };
   }, [allCourses, isCalendarViewLocked, calendarLockStart, calendarLockEnd]);
 
   const [walkBeforeByKey, setWalkBeforeByKey] = useState<
@@ -282,6 +281,25 @@ function WorksheetCalendar({
       setSelectedEvent(null);
     },
     [armSelectSuppression],
+  );
+  const calendarComponents = useMemo(
+    () => ({
+      event: ({ event }: { readonly event: CourseRBCEvent }) => (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+          }}
+        >
+          <CalendarEvent
+            event={event}
+            onWalkModalInteraction={suppressCalendarEventSelection}
+          />
+        </div>
+      ),
+    }),
+    [suppressCalendarEventSelection],
   );
   useEffect(() => {
     if (!selectedEvent) return;
@@ -348,22 +366,7 @@ function WorksheetCalendar({
             return prev;
           });
         }}
-        components={{
-          event: ({ event }: { readonly event: CourseRBCEvent }) => (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-              }}
-            >
-              <CalendarEvent
-                event={event}
-                onWalkModalInteraction={suppressCalendarEventSelection}
-              />
-            </div>
-          ),
-        }}
+        components={calendarComponents}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
       />

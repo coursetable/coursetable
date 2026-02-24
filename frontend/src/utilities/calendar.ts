@@ -229,8 +229,6 @@ export type WalkBefore = {
   toClass: WalkClassSummary;
 };
 
-export type RBCEvent = CourseRBCEvent;
-
 export function getCalendarEvents(
   type: 'gcal',
   courses: WorksheetCourse[],

@@ -32,13 +32,6 @@ function formatMeetingTime(start: Date, end: Date) {
   return `${weekdayFormatter.format(start)}, ${timeFormatter.format(start)}-${timeFormatter.format(end)}`;
 }
 
-function getWalkGapMinutes(walk: WalkBefore) {
-  return Math.max(
-    0,
-    (walk.toClass.start.getTime() - walk.fromClass.end.getTime()) / 60000,
-  );
-}
-
 function formatMinutes(minutes: number) {
   const rounded = Math.max(0, Math.round(minutes));
   return `${rounded} minute${rounded === 1 ? '' : 's'}`;
@@ -55,8 +48,7 @@ export function CalendarEventBody({
   const walkBaseColor = chroma(event.color);
   const textColor =
     chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
-  const walkConnector = walkBaseColor.css();
-  const walkAccent = walkBaseColor.css();
+  const walkColor = walkBaseColor.css();
   const connectorOffset = 4;
   const eventRef = useRef<HTMLDivElement | null>(null);
   const walkBadgeRef = useRef<HTMLButtonElement | null>(null);
@@ -141,12 +133,7 @@ export function CalendarEventBody({
         badgeHeight > 0 && gapPx < badgeHeight ? (badgeHeight - gapPx) / 2 : 0;
       setWalkBadgeTop(nextWalkBadgeTop - badgeTopNudge);
 
-      // Let the connector reach the final dot at the previous event edge.
-      const connectorClearance = 0;
-      const nextHeight = Math.max(
-        0,
-        gapPx - connectorOffset - connectorClearance,
-      );
+      const nextHeight = Math.max(0, gapPx - connectorOffset);
       setConnectorHeight(nextHeight);
     };
     updateConnector();
@@ -178,23 +165,17 @@ export function CalendarEventBody({
 
   const walkChipOpacity =
     !isMobile && hoverCourse && hoverCourse !== event.listing.crn ? 0.3 : 1;
-  const notifyWalkInteraction = useCallback(
-    (interaction: WalkModalInteraction) => {
-      onWalkModalInteraction?.(interaction);
-    },
-    [onWalkModalInteraction],
-  );
   const suppressClassModalOpen = useCallback(() => {
-    notifyWalkInteraction('press');
-  }, [notifyWalkInteraction]);
+    onWalkModalInteraction?.('press');
+  }, [onWalkModalInteraction]);
   const openWalkModal = useCallback(() => {
-    notifyWalkInteraction('open');
+    onWalkModalInteraction?.('open');
     setIsWalkModalOpen(true);
-  }, [notifyWalkInteraction]);
+  }, [onWalkModalInteraction]);
   const hideWalkModal = useCallback(() => {
-    notifyWalkInteraction('close');
+    onWalkModalInteraction?.('close');
     setIsWalkModalOpen(false);
-  }, [notifyWalkInteraction]);
+  }, [onWalkModalInteraction]);
 
   return (
     <div
@@ -213,7 +194,7 @@ export function CalendarEventBody({
             className={styles.walkBadgeDots}
             style={
               {
-                '--walk-connector': walkConnector,
+                '--walk-connector': walkColor,
                 '--walk-connector-height':
                   connectorHeight !== null ? `${connectorHeight}px` : undefined,
                 '--walk-connector-offset': `${connectorOffset}px`,
@@ -223,7 +204,7 @@ export function CalendarEventBody({
           />
           <WalkBadge
             walk={walkBefore}
-            accentColor={walkAccent}
+            accentColor={walkColor}
             badgeTop={walkBadgeTop}
             badgeRef={walkBadgeRef}
             onPressStart={suppressClassModalOpen}
@@ -271,7 +252,8 @@ function WalkBadge({
   readonly onPressStart: () => void;
   readonly onClick: () => void;
 }) {
-  const hasEnoughTime = walk.minutes <= getWalkGapMinutes(walk);
+  const availableMinutes = Math.max(0, walk.gapMinutes);
+  const hasEnoughTime = walk.minutes <= availableMinutes;
 
   return (
     <button
@@ -343,7 +325,7 @@ function WalkDetailsModal({
   readonly show: boolean;
   readonly onHide: () => void;
 }) {
-  const availableMinutes = getWalkGapMinutes(walk);
+  const availableMinutes = Math.max(0, walk.gapMinutes);
   const hasEnoughTime = walk.minutes <= availableMinutes;
   const routeColor = chroma(walk.toClass.color).css();
   const isMobile = useStore((state) => state.isMobile);
