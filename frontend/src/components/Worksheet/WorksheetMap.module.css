@@ -43,6 +43,12 @@
   border-radius: 12px;
 }
 
+.map :global(.leaflet-control-attribution) {
+  font-size: 8px;
+  line-height: 1.05;
+  padding: 0 3px;
+}
+
 :global([data-theme='dark']) .map :global(.leaflet-tile) {
   filter: brightness(1.18) contrast(0.92) saturate(0.9);
 }
