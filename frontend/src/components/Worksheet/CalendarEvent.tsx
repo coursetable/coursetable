@@ -392,26 +392,24 @@ function WalkDetailsModal({
                 'How it works'
               )}
             </h3>
-            {showHowItWorksContent && (
-              <div id={howItWorksContentId}>
-                <p className={styles.walkModalDisclaimer}>
-                  CourseTable uses Google Maps to predict walking times between
-                  your classes. Estimates are pre-calculated and not definitive.
-                </p>
-                <p className={styles.walkModalDisclaimer}>
-                  When multiple classes share the same gap, CourseTable shows
-                  the combination with the longest estimated walk. You can hide
-                  or remove classes to change which are used for walking-time
-                  estimates. To hide walking times entirely, visit Worksheet
-                  Settings.
-                </p>
-                <p className={styles.walkModalDisclaimer}>
-                  Actual walking times may vary depending on route choice,
-                  in-building travel, individual walk speed, traffic, weather,
-                  construction, and other factors. Check important information.
-                </p>
-              </div>
-            )}
+            <div id={howItWorksContentId} hidden={!showHowItWorksContent}>
+              <p className={styles.walkModalDisclaimer}>
+                CourseTable uses Google Maps to predict walking times between
+                your classes. Estimates are pre-calculated and not definitive.
+              </p>
+              <p className={styles.walkModalDisclaimer}>
+                When multiple classes share the same gap, CourseTable shows the
+                combination with the longest estimated walk. You can hide or
+                remove classes to change which are used for walking-time
+                estimates. To hide walking times entirely, visit Worksheet
+                Settings.
+              </p>
+              <p className={styles.walkModalDisclaimer}>
+                Actual walking times may vary depending on route choice,
+                in-building travel, individual walk speed, traffic, weather,
+                construction, and other factors. Check important information.
+              </p>
+            </div>
           </div>
           <div className={styles.walkModalMiddle}>
             <span

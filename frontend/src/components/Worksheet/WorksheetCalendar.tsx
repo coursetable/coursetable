@@ -61,7 +61,7 @@ function findFarthestWalkPair(
       const toCode = getBuildingCodeFromLocation(next.location);
       if (!toCode) continue;
       const minutes = getWalkingMinutes(fromCode, toCode);
-      if (minutes === null) continue;
+      if (minutes === null || minutes <= 0) continue;
       if (!best || minutes > best.minutes) {
         best = {
           minutes,
