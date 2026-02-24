@@ -12,7 +12,7 @@ Given:
 Steps:
 
 1. Search for `building_name` on [Google Maps](https://www.google.com/maps), preferably on a desktop
-2. On the displayed map, hover over the red pin of the location, and right click
+2. On the displayed map, hover over the red pin of the location, and right-click
 3. A coordinate (eg. `41.25689..., -72.98969...`) will show. Click this to copy to clipboard
 4. The first number (eg. `41.25689...`) is the location's `latitude`
 5. The second number (eg. `-72.98969...)` is the location's `longitude`
