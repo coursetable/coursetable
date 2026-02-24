@@ -24,12 +24,13 @@ export function getWalkingSeconds(
   if (!a || !b) return null;
   if (a === b) return 0;
 
-  if (walkingETAs.durations_seconds)
-    {return (
+  if (walkingETAs.durations_seconds) {
+    return (
       walkingETAs.durations_seconds[a]?.[b] ??
       walkingETAs.durations_seconds[b]?.[a] ??
       null
-    );}
+    );
+  }
 
   const upper = walkingETAs.durations_upper;
   if (!upper) return null;
