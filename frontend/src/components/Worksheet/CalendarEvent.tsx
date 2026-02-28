@@ -6,6 +6,7 @@ import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
+import { isDiscussionSection } from '../../utilities/course';
 import styles from './CalendarEvent.module.css';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -31,6 +32,8 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
   return (
     <div className={styles.event} style={{ color: textColor }}>
       <strong className={styles.courseCodeText}>{formattedTitle}</strong>
+      {isDiscussionSection(event.listing.course) &&
+        ` ${event.listing.course.section.padStart(2, '0')}`}
       <br />
       <ResponsiveEllipsis
         className={styles.courseNameText}
