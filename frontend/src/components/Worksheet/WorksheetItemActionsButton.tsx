@@ -83,7 +83,7 @@ function WorksheetItemActionsButton({
                   placement="bottom"
                   overlay={
                     <Tooltip
-                      id={`worksheet-item-color-${event.listing.crn}-tooltip`}
+                      id={`worksheet-item-color-${event.listing.crn}-${event.start.getTime()}-tooltip`}
                     >
                       <small>Change color</small>
                     </Tooltip>
@@ -106,7 +106,7 @@ function WorksheetItemActionsButton({
                   placement="bottom"
                   overlay={
                     <Tooltip
-                      id={`worksheet-item-move-${event.listing.crn}-tooltip`}
+                      id={`worksheet-item-move-${event.listing.crn}-${event.start.getTime()}-tooltip`}
                     >
                       <small>Move to another worksheet</small>
                     </Tooltip>
