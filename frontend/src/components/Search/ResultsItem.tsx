@@ -56,7 +56,7 @@ function Rating({
       placement="top"
       overlay={(props) => (
         <Tooltip
-          id={`results-blur-rating-${listing.crn}-${name}-tooltip`}
+          id={`results-blur-rating-${listing.course.season_code}-${listing.crn}-${name}-tooltip`}
           {...props}
         >
           These colors are randomly generated.{' '}
@@ -197,7 +197,7 @@ function ResultsItem({
                   placement="top"
                   overlay={(props) => (
                     <Tooltip
-                      id={`results-location-hidden-${listing.crn}-tooltip`}
+                      id={`results-location-hidden-${listing.course.season_code}-${listing.crn}-tooltip`}
                       {...props}
                     >
                       Sign in to see location
@@ -219,7 +219,7 @@ function ResultsItem({
                 placement="top"
                 overlay={(props) => (
                   <Tooltip
-                    id={`results-friends-${listing.crn}-tooltip`}
+                    id={`results-friends-${listing.course.season_code}-${listing.crn}-tooltip`}
                     {...props}
                   >
                     {[...friends].join(' • ')}

@@ -131,7 +131,10 @@ export function CourseCode({
             );
           }
           return (
-            <Tooltip id={`course-code-${listing.crn}-tooltip`} {...props}>
+            <Tooltip
+              id={`course-code-${listing.course.season_code}-${listing.crn}-tooltip`}
+              {...props}
+            >
               <small>{subjectName ?? '[unknown]'}</small>
             </Tooltip>
           );

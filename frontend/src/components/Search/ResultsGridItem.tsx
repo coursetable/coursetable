@@ -38,7 +38,7 @@ function Rating({
       placement="top"
       overlay={(props) => (
         <Tooltip
-          id={`results-grid-rating-${listing.crn}-${name}-tooltip`}
+          id={`results-grid-rating-${listing.course.season_code}-${listing.crn}-${name}-tooltip`}
           {...props}
         >
           {hasEvals
@@ -157,7 +157,7 @@ function ResultsGridItem({
                   placement="top"
                   overlay={(props) => (
                     <Tooltip
-                      id={`results-grid-location-hidden-${listing.crn}-tooltip`}
+                      id={`results-grid-location-hidden-${listing.course.season_code}-${listing.crn}-tooltip`}
                       {...props}
                     >
                       Sign in to see location
