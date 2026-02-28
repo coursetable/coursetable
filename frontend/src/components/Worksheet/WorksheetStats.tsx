@@ -66,7 +66,7 @@ function NoStatsTip({
       <OverlayTrigger
         placement="top"
         overlay={(props) => (
-          <Tooltip {...props} id="conflict-icon-button-tooltip">
+          <Tooltip {...props} id="worksheet-stats-conflict-tooltip">
             <small>
               Computed with {coursesWithRating} course
               {coursesWithRating === 1 ? '' : 's'}.{' '}
@@ -203,7 +203,7 @@ export default function WorksheetStats() {
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id="login-tooltip">
+                    <Tooltip id="worksheet-stats-workload-login-tooltip">
                       <small>
                         {user ? 'Complete the challenge' : 'Sign in'} to see
                         ratings
@@ -239,7 +239,7 @@ export default function WorksheetStats() {
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id="login-tooltip">
+                    <Tooltip id="worksheet-stats-rating-login-tooltip">
                       <small>
                         {user ? 'Complete the challenge' : 'Sign in'} to see
                         ratings
@@ -266,7 +266,11 @@ export default function WorksheetStats() {
                     .map((x, i) => (
                       <OverlayTrigger
                         key={i}
-                        overlay={<Tooltip>{x.courseCode}</Tooltip>}
+                        overlay={
+                          <Tooltip id={`worksheet-stats-skill-${i}-tooltip`}>
+                            {x.courseCode}
+                          </Tooltip>
+                        }
                       >
                         <span>
                           <SkillBadge skill={x.label} />
