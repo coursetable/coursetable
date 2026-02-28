@@ -1,0 +1,79 @@
+.controlsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.controlRow {
+  align-items: flex-start;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 190px minmax(0, 1fr);
+}
+
+.controlLabel {
+  color: var(--color-text);
+  font-weight: 600;
+  line-height: 1.25;
+  padding-top: 0.35rem;
+}
+
+.controlInput {
+  min-width: 0;
+}
+
+.numberInput {
+  max-width: 160px;
+}
+
+.targetRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.targetField {
+  min-width: 0;
+}
+
+.targetLabel {
+  margin-bottom: 0.25rem;
+}
+
+.requirementsList {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+  max-height: 160px;
+  overflow-y: auto;
+  padding: 0.6rem 0.7rem;
+}
+
+.requirementOption {
+  margin-bottom: 0;
+}
+
+.tagBadge {
+  font-size: 0.75rem;
+}
+
+.exclusionSelect {
+  min-width: 0;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .controlRow {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .controlLabel {
+    padding-top: 0;
+  }
+
+  .requirementsList {
+    max-height: 180px;
+  }
+}
