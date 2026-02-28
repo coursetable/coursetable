@@ -83,7 +83,10 @@ function CourseConflictIcon({
           <OverlayTrigger
             placement="top"
             overlay={(props) => (
-              <Tooltip {...props} id="worksheet-toggle-conflict-tooltip">
+              <Tooltip
+                {...props}
+                id={`worksheet-toggle-conflict-${listing.crn}-tooltip`}
+              >
                 <small>{warning}</small>
               </Tooltip>
             )}
@@ -341,7 +344,7 @@ function WorksheetToggleButton({
         <OverlayTrigger
           placement="top"
           overlay={
-            <Tooltip id="worksheet-toggle-disabled-tooltip">
+            <Tooltip id={`worksheet-toggle-disabled-${listing.crn}-tooltip`}>
               {buttonLabel}
             </Tooltip>
           }

@@ -169,7 +169,7 @@ function Prereqs({
             key={i}
             placement="top"
             overlay={(props) => (
-              <Tooltip id={`${s.course}-tooltip`} {...props}>
+              <Tooltip id={`overview-prereq-${i}-tooltip`} {...props}>
                 {s.course}{' '}
                 {info
                   ? info.course.title

@@ -37,7 +37,10 @@ function Rating({
     <OverlayTrigger
       placement="top"
       overlay={(props) => (
-        <Tooltip id={`${name}-tooltip`} {...props}>
+        <Tooltip
+          id={`results-grid-rating-${listing.crn}-${name}-tooltip`}
+          {...props}
+        >
           {hasEvals
             ? name
             : `${name} (These colors are randomly generated. ${hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see real ratings)`}

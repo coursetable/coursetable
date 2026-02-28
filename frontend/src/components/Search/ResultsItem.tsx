@@ -55,7 +55,10 @@ function Rating({
     <OverlayTrigger
       placement="top"
       overlay={(props) => (
-        <Tooltip id="blur-rating-tooltip" {...props}>
+        <Tooltip
+          id={`results-blur-rating-${listing.crn}-${name}-tooltip`}
+          {...props}
+        >
           These colors are randomly generated.{' '}
           {hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see
           real ratings.
