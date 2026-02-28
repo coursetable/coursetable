@@ -152,12 +152,17 @@ async function fetchData(
   }
 }
 
-export async function fetchCatalog(overwrite: boolean, latestN?: number) {
+export async function fetchCatalog(
+  overwrite: boolean,
+  latestN?: number,
+  seasonsToRefresh?: string[],
+) {
   try {
     await generateMetadata();
     const seasons = (await getSdk(graphqlClient).listSeasons()).seasons.map(
       (x) => x.season_code,
     );
+    const sortedSeasons = seasons.sort((a, b) => Number(b) - Number(a));
 
     winston.info(`Fetched ${seasons.length} seasons`);
 
@@ -165,7 +170,7 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
     // copied to frontend
     await fs.writeFile(
       `${STATIC_FILE_DIR}/seasons.json`,
-      JSON.stringify(seasons.sort((a, b) => Number(b) - Number(a))),
+      JSON.stringify(sortedSeasons),
     );
 
     const infoAttributes = await getSdk(graphqlClient).courseAttributes();
@@ -190,12 +195,30 @@ export async function fetchCatalog(overwrite: boolean, latestN?: number) {
       'utf-8',
     );
 
-    // For each season, fetch all courses inside it and save
-    // (if overwrite, file does not exist, or season is one of the latest N)
+    // Determine which seasons to fetch: specific list, all, or latest N
+    const validSeasonsToRefresh = seasonsToRefresh?.length
+      ? seasonsToRefresh.filter((s) => sortedSeasons.includes(s))
+      : undefined;
+    if (seasonsToRefresh?.length) {
+      const invalid = seasonsToRefresh.filter(
+        (s) => !sortedSeasons.includes(s),
+      );
+      if (invalid.length)
+        winston.warn(`Ignoring invalid season codes: ${invalid.join(', ')}`);
+      if (validSeasonsToRefresh?.length) {
+        winston.info(
+          `Refreshing ${validSeasonsToRefresh.length} specified seasons`,
+        );
+      }
+    }
 
-    const processSeasons = seasons.flatMap((season, idx) =>
+    const seasonsToProcess = validSeasonsToRefresh?.length
+      ? validSeasonsToRefresh
+      : sortedSeasons.filter((_, idx) => overwrite || idx < (latestN ?? 0));
+
+    const processSeasons = seasonsToProcess.flatMap((season) =>
       (['evals', 'public'] as const).map((type) =>
-        fetchData(season, type, overwrite || idx < (latestN ?? 0)),
+        fetchData(season, type, true),
       ),
     );
     await Promise.all(processSeasons);
