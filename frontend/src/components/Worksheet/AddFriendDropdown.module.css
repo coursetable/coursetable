@@ -29,3 +29,24 @@
   height: 20px;
   width: 20px;
 }
+
+.popoutWrapperFullWidth {
+  width: 100%;
+}
+
+.popoutButtonFullWidth {
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-between;
+  margin: 0;
+  min-height: 38px;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  background-color: var(--color-select);
+  border: 1px solid var(--color-border-control);
+}
+
+.popoutDropdownFullWidth {
+  width: 100%;
+}

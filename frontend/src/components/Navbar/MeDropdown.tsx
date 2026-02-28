@@ -11,6 +11,7 @@ import {
   FcFeedback,
   FcPuzzle,
   FcNews,
+  FcBusinessman,
 } from 'react-icons/fc';
 
 import { useShallow } from 'zustand/react/shallow';
@@ -137,6 +138,11 @@ function DropdownContent({
               }}
             >
               Tutorial
+            </DropdownItem>
+          )}
+          {authStatus === 'authenticated' && (
+            <DropdownItem icon={FcBusinessman} to="/profile">
+              Profile (beta)
             </DropdownItem>
           )}
           {authStatus === 'authenticated' ? (
