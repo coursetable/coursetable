@@ -1,25 +1,47 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from 'react';
+import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
-import { Button, Tooltip, OverlayTrigger, Fade } from 'react-bootstrap';
+import { Button, Tooltip, OverlayTrigger, Fade, Modal } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { MdErrorOutline } from 'react-icons/md';
-
+import { useApolloClient } from '@apollo/client';
+import { components, type OptionProps } from 'react-select';
+import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
+import WorksheetStatusIcon from './WorksheetStatusIcon';
 import { CUR_YEAR } from '../../config';
-import { useWorksheetInfo } from '../../contexts/ferryContext';
-import type { Option } from '../../contexts/searchContext';
+import { seasons, useWorksheetInfo } from '../../contexts/ferryContext';
+import type { LatestCurrentOfferingQuery } from '../../generated/graphql-types';
 import { updateWorksheetCourses } from '../../queries/api';
-import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
+import { LatestCurrentOfferingDocument } from '../../queries/graphql-queries';
+import type { Season } from '../../queries/graphql-types';
+import {
+  useWorksheetNumberOptions,
+  type WorksheetNumberOption,
+} from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { worksheetColors } from '../../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
+  toSeasonString,
   type ListingWithTimes,
 } from '../../utilities/course';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import styles from './WorksheetToggleButton.module.css';
+
+type ListingWithHistoricalInfo = ListingWithTimes & {
+  course: ListingWithTimes['course'] & {
+    same_course_id?: number;
+  };
+};
 
 function CourseConflictIcon({
   listing,
@@ -27,7 +49,7 @@ function CourseConflictIcon({
   modal,
   worksheetNumber,
 }: {
-  readonly listing: ListingWithTimes;
+  readonly listing: ListingWithHistoricalInfo;
   readonly inWorksheet: boolean;
   readonly modal: boolean;
   readonly worksheetNumber: number;
@@ -76,12 +98,39 @@ function CourseConflictIcon({
   );
 }
 
+function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
+  return (
+    <components.Option {...props}>
+      <div className={styles.popoutOption}>
+        {/* Star/Lock/Unlock Icon in front of worksheet name in options */}
+        <OverlayTrigger
+          placement="left"
+          overlay={(overlayProps) => (
+            <Tooltip id="worksheet-toggle-button-tooltip" {...overlayProps}>
+              <span>
+                {props.data.value === 0
+                  ? 'Main Worksheet'
+                  : props.data.isPrivate
+                    ? 'Private Worksheet'
+                    : 'Public Worksheet'}
+              </span>
+            </Tooltip>
+          )}
+        >
+          {WorksheetStatusIcon(props.data.value, props.data.isPrivate)}
+        </OverlayTrigger>
+        <span>{props.data.label}</span>
+      </div>
+    </components.Option>
+  );
+}
+
 function WorksheetToggleButton({
   listing,
   modal,
   inWorksheet: inWorksheetProp,
 }: {
-  readonly listing: ListingWithTimes;
+  readonly listing: ListingWithHistoricalInfo;
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
@@ -93,6 +142,43 @@ function WorksheetToggleButton({
         getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
       })),
     );
+  const client = useApolloClient();
+  const pendingLatestChoiceRef = useRef<
+    ((choice: 'latest' | 'historical' | 'cancel') => void) | null
+  >(null);
+  const [latestOfferingPrompt, setLatestOfferingPrompt] = useState<{
+    courseCode: string;
+    seasonCode: Season;
+  } | null>(null);
+
+  const resolveLatestOfferingPrompt = useCallback(
+    (choice: 'latest' | 'historical' | 'cancel') => {
+      pendingLatestChoiceRef.current?.(choice);
+      pendingLatestChoiceRef.current = null;
+      setLatestOfferingPrompt(null);
+    },
+    [],
+  );
+
+  const confirmAddLatestOffering = useCallback(
+    (
+      courseCode: string,
+      seasonCode: Season,
+    ): Promise<'latest' | 'historical' | 'cancel'> =>
+      new Promise((resolve) => {
+        pendingLatestChoiceRef.current = resolve;
+        setLatestOfferingPrompt({ courseCode, seasonCode });
+      }),
+    [],
+  );
+
+  useEffect(
+    () => () => {
+      pendingLatestChoiceRef.current?.('cancel');
+      pendingLatestChoiceRef.current = null;
+    },
+    [],
+  );
 
   const defaultWorksheetNumber = getRelevantWorksheetNumber(
     listing.course.season_code,
@@ -103,17 +189,25 @@ function WorksheetToggleButton({
   const [selectedWorksheet, setSelectedWorksheet] = useState(
     defaultWorksheetNumber,
   );
-  const [prevWorksheetCtx, setPrevWorksheetCtx] = useState(
-    defaultWorksheetNumber,
-  );
-  if (prevWorksheetCtx !== defaultWorksheetNumber) {
-    setSelectedWorksheet(defaultWorksheetNumber);
-    setPrevWorksheetCtx(defaultWorksheetNumber);
-  }
+  useEffect(() => {
+    setSelectedWorksheet(
+      getRelevantWorksheetNumber(listing.course.season_code),
+    );
+  }, [listing.course.season_code, listing.crn, getRelevantWorksheetNumber]);
 
   const worksheetOptions = useWorksheetNumberOptions(
     'me',
     listing.course.season_code,
+  );
+
+  const resolveWorksheetNumberForSeason = useCallback(
+    (seasonCode: Season, preferredWorksheetNumber: number) => {
+      const seasonWorksheets = worksheets?.get(seasonCode);
+      if (seasonWorksheets?.has(preferredWorksheetNumber))
+        return preferredWorksheetNumber;
+      return getRelevantWorksheetNumber(seasonCode);
+    },
+    [worksheets, getRelevantWorksheetNumber],
   );
 
   const inWorksheet = useMemo(
@@ -129,11 +223,84 @@ function WorksheetToggleButton({
       e.preventDefault();
       e.stopPropagation();
 
+      let targetSeason = listing.course.season_code;
+      let targetCrn = listing.crn;
+      let targetWorksheetNumber = selectedWorksheet;
+      let switchedToLatest = false;
+
+      const sameCourseId = listing.course.same_course_id;
+
+      if (!inWorksheet && sameCourseId !== undefined) {
+        try {
+          const { data } = await client.query<LatestCurrentOfferingQuery>({
+            query: LatestCurrentOfferingDocument,
+            variables: {
+              sameCourseId,
+              seasonCodes: seasons as string[],
+            },
+          });
+          const [latestCourse] = data.courses;
+          const [latestListing] = latestCourse?.listings ?? [];
+          if (latestCourse && latestListing) {
+            const hasLatestOffering =
+              latestCourse.season_code !== listing.course.season_code;
+
+            if (hasLatestOffering) {
+              const addChoice = await confirmAddLatestOffering(
+                latestListing.course_code,
+                latestCourse.season_code,
+              );
+
+              if (addChoice === 'latest') {
+                targetSeason = latestCourse.season_code;
+                targetCrn = latestListing.crn;
+                targetWorksheetNumber = getRelevantWorksheetNumber(
+                  latestCourse.season_code,
+                );
+                switchedToLatest = true;
+              } else if (addChoice === 'cancel') {
+                // User cancelled the modal, don't add anything
+                return;
+              }
+            }
+          }
+        } catch (error: unknown) {
+          Sentry.captureException(error);
+          // If lookup fails, fall back to adding the selected listing
+        }
+      }
+      if (!inWorksheet) {
+        targetWorksheetNumber = resolveWorksheetNumberForSeason(
+          targetSeason,
+          targetWorksheetNumber,
+        );
+        const targetWorksheet = worksheets
+          ?.get(targetSeason)
+          ?.get(targetWorksheetNumber);
+        if (
+          targetWorksheet?.courses.some((course) => course.crn === targetCrn)
+        ) {
+          const worksheetName =
+            targetWorksheet.name ||
+            (targetWorksheetNumber === 0
+              ? 'Main Worksheet'
+              : `Worksheet ${targetWorksheetNumber}`);
+          if (switchedToLatest) {
+            toast.error(
+              `The latest version of this course already exists in your currently selected worksheet (${worksheetName}).`,
+            );
+          } else {
+            toast.error(`This course already exists in "${worksheetName}".`);
+          }
+          return;
+        }
+      }
+
       const success = await updateWorksheetCourses({
         action: inWorksheet ? 'remove' : 'add',
-        season: listing.course.season_code,
-        crn: listing.crn,
-        worksheetNumber: selectedWorksheet,
+        season: targetSeason,
+        crn: targetCrn,
+        worksheetNumber: targetWorksheetNumber,
         color:
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
         hidden: false,
@@ -142,9 +309,15 @@ function WorksheetToggleButton({
     },
     [
       inWorksheet,
+      client,
+      confirmAddLatestOffering,
+      getRelevantWorksheetNumber,
+      resolveWorksheetNumberForSeason,
       listing.crn,
       listing.course.season_code,
+      listing.course.same_course_id,
       selectedWorksheet,
+      worksheets,
       worksheetsRefresh,
     ],
   );
@@ -218,16 +391,50 @@ function WorksheetToggleButton({
           clearIcon={false}
           displayOptionLabel
           className={styles.worksheetDropdown}
+          Icon={WorksheetStatusIcon(
+            worksheetOptions[selectedWorksheet]?.value ?? 0,
+            worksheetOptions[selectedWorksheet]?.isPrivate ?? false,
+          )}
         >
-          <PopoutSelect<Option<number>, false>
+          <PopoutSelect<WorksheetNumberOption, false>
             value={worksheetOptions[selectedWorksheet]}
             options={Object.values(worksheetOptions)}
             onChange={(option) => setSelectedWorksheet(option!.value)}
             showControl={false}
             minWidth={200}
+            components={{ Option: PopoutOption }}
           />
         </Popout>
       )}
+      <Modal
+        show={latestOfferingPrompt !== null}
+        onHide={() => resolveLatestOfferingPrompt('cancel')}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Add latest offering?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {latestOfferingPrompt && (
+            <>
+              This course is from a past semester. Add the latest offering (
+              {latestOfferingPrompt.courseCode},{' '}
+              {toSeasonString(latestOfferingPrompt.seasonCode)}) instead?
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => resolveLatestOfferingPrompt('historical')}
+          >
+            Add historical
+          </Button>
+          <Button onClick={() => resolveLatestOfferingPrompt('latest')}>
+            Add latest
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
