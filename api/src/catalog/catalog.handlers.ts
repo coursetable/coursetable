@@ -88,13 +88,31 @@ export async function generateCSVCatalog(
   res.send(csv);
 }
 
+function parseSeasonsParam(
+  query: express.Request['query'],
+): string[] | undefined {
+  const param = query.seasons;
+  if (!param) return undefined;
+  const raw = Array.isArray(param) ? param : [param];
+  return raw
+    .flatMap((s) => String(s).split(','))
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 export async function refreshCatalog(
   req: express.Request,
   res: express.Response,
 ): Promise<void> {
-  winston.info('Refreshing catalog');
-  // Overwrite the last NUM_SEASONS seasons when the refresh endpoint is hit
+  const seasonsToRefresh = parseSeasonsParam(req.query);
   const all = req.query.all === 'true';
-  await fetchCatalog(true, all ? undefined : NUM_SEASONS);
+
+  winston.info(
+    seasonsToRefresh?.length
+      ? `Refreshing catalog for seasons: ${seasonsToRefresh.join(', ')}`
+      : 'Refreshing catalog',
+  );
+
+  await fetchCatalog(true, all ? undefined : NUM_SEASONS, seasonsToRefresh);
   res.sendStatus(200);
 }
