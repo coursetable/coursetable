@@ -168,7 +168,7 @@ function toRBCEvent({
   color,
   listing,
   days,
-}: CalendarEvent): RBCEvent[] {
+}: CalendarEvent): CourseRBCEvent[] {
   // These are already LOCAL times because the time strings have no timezone!
   const firstStart = new Date(start);
   const firstEnd = new Date(end);
@@ -183,6 +183,7 @@ function toRBCEvent({
     const endTimeCpy = new Date(endTime);
     endTimeCpy.setDate(endTimeCpy.getDate() - endTimeCpy.getDay() + day);
     return {
+      kind: 'course',
       title: summary,
       // No instructors for RBC
       description: listing.course.title,
@@ -197,7 +198,8 @@ function toRBCEvent({
 
 type GCalEvent = gapi.client.calendar.EventInput;
 type ICSEvent = string;
-export type RBCEvent = {
+export type CourseRBCEvent = {
+  kind: 'course';
   title: string;
   description: string;
   start: Date;
@@ -205,6 +207,25 @@ export type RBCEvent = {
   listing: CatalogListing;
   color: string;
   location: string;
+  walkBefore?: WalkBefore;
+};
+
+export type WalkClassSummary = {
+  courseCode: string;
+  courseTitle: string;
+  location: string;
+  start: Date;
+  end: Date;
+  color: string;
+};
+
+export type WalkBefore = {
+  minutes: number;
+  gapMinutes: number;
+  fromCode: string;
+  toCode: string;
+  fromClass: WalkClassSummary;
+  toClass: WalkClassSummary;
 };
 
 export function getCalendarEvents(
@@ -221,7 +242,7 @@ export function getCalendarEvents(
   type: 'rbc',
   courses: WorksheetCourse[],
   viewedSeason: Season,
-): RBCEvent[];
+): CourseRBCEvent[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics' | 'rbc',
   courses: WorksheetCourse[],
@@ -249,7 +270,9 @@ export function getCalendarEvents(
       ? isoString(semester.end, '23:59').replace(/[:-]/gu, '')
       : // Irrelevant for rbc
         '';
-    return l.course.course_meetings.flatMap<GCalEvent | ICSEvent | RBCEvent>(
+    return l.course.course_meetings.flatMap<
+      GCalEvent | ICSEvent | CourseRBCEvent
+    >(
       ({
         days_of_week: daysOfWeek,
         start_time: startTime,

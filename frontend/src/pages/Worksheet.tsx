@@ -28,6 +28,8 @@ import { parseCoursesFromURL } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
+const SHOW_WALKING_TIMES_STORAGE_KEY = 'worksheet-calendar-show-walking-times';
+
 function Worksheet() {
   const {
     isMobile,
@@ -53,12 +55,28 @@ function Worksheet() {
     })),
   );
   const [expanded, setExpanded] = useState(false);
+  const [showWalkingTimes, setShowWalkingTimes] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const savedPreference = window.localStorage.getItem(
+      SHOW_WALKING_TIMES_STORAGE_KEY,
+    );
+    if (savedPreference === null) return true;
+    return savedPreference !== '0' && savedPreference !== 'false';
+  });
   const emptyMissingBuildingCodes = useMemo(() => new Set<string>(), []);
 
   useEffect(() => {
     const exoticWorksheet = parseCoursesFromURL();
     useStore.setState({ exoticWorksheet });
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(
+      SHOW_WALKING_TIMES_STORAGE_KEY,
+      showWalkingTimes ? '1' : '0',
+    );
+  }, [showWalkingTimes]);
 
   // Wait for search query to finish
   if (worksheetError) {
@@ -108,7 +126,7 @@ function Worksheet() {
         </div>
       )}
       <SurfaceComponent className={styles.calendar}>
-        <WorksheetCalendar />
+        <WorksheetCalendar showWalkingTimes={showWalkingTimes} />
         {!isMobile && (
           <div className={styles.calendarControls}>
             <OverlayTrigger
@@ -164,6 +182,8 @@ function Worksheet() {
             controlsMode="full"
             missingBuildingCodes={emptyMissingBuildingCodes}
             hideTooltipContext="calendar"
+            showWalkingTimes={showWalkingTimes}
+            onShowWalkingTimesChange={setShowWalkingTimes}
           />
         </div>
       )}
