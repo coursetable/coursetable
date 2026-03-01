@@ -3,6 +3,47 @@
   border-color: var(--color-border);
 }
 
+.aggregateContainer {
+  margin: 0 1rem 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background-color: var(--color-surface-elevated);
+}
+
+.aggregateRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.aggregateItem {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aggregateLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.aggregateRatingCell {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  border-radius: 6px;
+  padding: 3px 10px;
+  line-height: 1.5;
+  min-height: 1.5rem;
+}
+
 .filterContainer {
   display: flex;
   margin: auto;
