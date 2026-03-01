@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState ,type  SyntheticEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -135,7 +135,6 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
         gapMinutes: farthest.gapMinutes,
         fromCode: farthest.fromCode,
         toCode: farthest.toCode,
-        color: farthest.nextEvent.color,
         fromClass: {
           courseCode: farthest.previousEvent.title,
           courseTitle: farthest.previousEvent.description,
@@ -321,6 +320,41 @@ function WorksheetCalendar({
     },
     [],
   );
+  const handleSelectEvent = useCallback(
+    (event: CourseRBCEvent, clickEvent: SyntheticEvent<HTMLElement>) => {
+      if (walkModalOpenRef.current) return;
+      const { target } = clickEvent;
+      if (
+        target instanceof Element &&
+        target.closest('[data-walk-modal-trigger="true"]')
+      ) {
+        setSelectedEvent(null);
+        return;
+      }
+      if (skipNextSelectEventRef.current) {
+        skipNextSelectEventRef.current = false;
+        if (clearSkipSelectTimeoutRef.current) {
+          window.clearTimeout(clearSkipSelectTimeoutRef.current);
+          clearSkipSelectTimeoutRef.current = null;
+        }
+        setSelectedEvent(null);
+        return;
+      }
+      if (Date.now() < suppressSelectEventUntilRef.current) {
+        setSelectedEvent(null);
+        return;
+      }
+      setSelectedEvent(event);
+      setSearchParams((prev) => {
+        prev.set(
+          'course-modal',
+          `${event.listing.course.season_code}-${event.listing.crn}`,
+        );
+        return prev;
+      });
+    },
+    [setSearchParams],
+  );
   return (
     <>
       <Calendar
@@ -336,38 +370,7 @@ function WorksheetCalendar({
         toolbar={false}
         showCurrentTimeIndicator
         selected={selectedEvent}
-        onSelectEvent={(event, clickEvent) => {
-          if (walkModalOpenRef.current) return;
-          const { target } = clickEvent;
-          if (
-            target instanceof Element &&
-            target.closest('[data-walk-modal-trigger="true"]')
-          ) {
-            setSelectedEvent(null);
-            return;
-          }
-          if (skipNextSelectEventRef.current) {
-            skipNextSelectEventRef.current = false;
-            if (clearSkipSelectTimeoutRef.current) {
-              window.clearTimeout(clearSkipSelectTimeoutRef.current);
-              clearSkipSelectTimeoutRef.current = null;
-            }
-            setSelectedEvent(null);
-            return;
-          }
-          if (Date.now() < suppressSelectEventUntilRef.current) {
-            setSelectedEvent(null);
-            return;
-          }
-          setSelectedEvent(event);
-          setSearchParams((prev) => {
-            prev.set(
-              'course-modal',
-              `${event.listing.course.season_code}-${event.listing.crn}`,
-            );
-            return prev;
-          });
-        }}
+        onSelectEvent={handleSelectEvent}
         components={calendarComponents}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}

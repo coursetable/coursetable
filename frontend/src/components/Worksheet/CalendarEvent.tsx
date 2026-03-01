@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useRef,
   useState,
@@ -158,6 +159,8 @@ export function CalendarEventBody({
     event.end,
     event.start,
     walkBefore,
+    // Calendar lock changes can alter RBC inline positioning without changing the event data.
+    // Keep these as deps so we recompute connector/badge pixel offsets.
     isCalendarViewLocked,
     calendarLockStart,
     calendarLockEnd,
@@ -281,14 +284,6 @@ function WalkBadge({
         e.stopPropagation();
         onPressStart();
       }}
-      onMouseDown={(e) => {
-        e.stopPropagation();
-        onPressStart();
-      }}
-      onTouchStart={(e) => {
-        e.stopPropagation();
-        onPressStart();
-      }}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -336,7 +331,7 @@ function WalkDetailsModal({
   const hasEnoughTime = walk.minutes <= availableMinutes;
   const routeColor = chroma(walk.toClass.color).css();
   const isMobile = useStore((state) => state.isMobile);
-  const howItWorksContentId = React.useId();
+  const howItWorksContentId = useId();
   const [isHowItWorksExpanded, setIsHowItWorksExpanded] = useState(!isMobile);
   const isHowItWorksCollapsible = isMobile;
   const showHowItWorksContent =

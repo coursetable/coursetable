@@ -224,7 +224,6 @@ export type WalkBefore = {
   gapMinutes: number;
   fromCode: string;
   toCode: string;
-  color: string;
   fromClass: WalkClassSummary;
   toClass: WalkClassSummary;
 };
