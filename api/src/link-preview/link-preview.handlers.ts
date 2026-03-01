@@ -4,11 +4,24 @@ import { getSdk } from './link-preview.queries.js';
 import { graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
-// For Prettier formatting. If you add a language tag before the template
-// literal, it will recognize them as embedded languages and format those
-const identity = (strings: TemplateStringsArray, ...values: unknown[]) =>
-  String.raw({ raw: strings }, ...values);
-const html = identity;
+// Escapes special HTML characters to prevent XSS when interpolating
+// user-controlled values into HTML strings
+function escapeHtml(value: unknown): string {
+  return String(value)
+    .replace(/&/gu, '&amp;')
+    .replace(/</gu, '&lt;')
+    .replace(/>/gu, '&gt;')
+    .replace(/"/gu, '&quot;')
+    .replace(/'/gu, '&#39;');
+}
+
+// Tagged template literal that auto-escapes all interpolated values
+const html = (strings: TemplateStringsArray, ...values: unknown[]): string =>
+  strings.reduce<string>(
+    (result, str, i) =>
+      result + str + (i < values.length ? escapeHtml(values[i]) : ''),
+    '',
+  );
 
 const defaultMetadata = {
   title: 'CourseTable',
