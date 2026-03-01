@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import fsPromises from 'node:fs/promises';
 import https from 'node:https';
 import express from 'express';
 import * as Sentry from '@sentry/node';
@@ -31,6 +31,7 @@ import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
+import savedSearches from './savedSearches/savedSearches.routes.js';
 import user from './user/user.routes.js';
 
 const app = express();
@@ -139,6 +140,7 @@ friends(app);
 canny(app);
 user(app);
 linkPreview(app);
+savedSearches(app);
 
 app.get('/api/ping', (req, res) => {
   res.json('pong');
@@ -162,26 +164,26 @@ app.use(
   },
 );
 
-if (isDev) {
-  // Serve dev with custom SSL.
-  https
-    .createServer(
-      {
-        key: fs.readFileSync('./src/keys/server.key'),
-        cert: fs.readFileSync('./src/keys/server.cert'),
-      },
-      app,
-    )
-    .listen(API_PORT, () => {
+async function startServer(): Promise<void> {
+  if (isDev) {
+    // Serve dev with custom SSL.
+    const [key, cert] = await Promise.all([
+      fsPromises.readFile('./src/keys/server.key'),
+      fsPromises.readFile('./src/keys/server.cert'),
+    ]);
+    https.createServer({ key, cert }, app).listen(API_PORT, () => {
       winston.info(`Secure dev proxy listening on port ${API_PORT}`);
     });
-} else {
-  // In prod: just listen on the port. We use traefik to reverse proxy and
-  // provide SSL.
-  app.listen(API_PORT, () => {
-    winston.info(`Insecure API listening on port ${API_PORT}`);
-  });
+  } else {
+    // In prod: just listen on the port. We use traefik to reverse proxy and
+    // provide SSL.
+    app.listen(API_PORT, () => {
+      winston.info(`Insecure API listening on port ${API_PORT}`);
+    });
+  }
 }
+
+void startServer();
 
 // Generate the static catalog on start. We do this *after* starting listening
 winston.info('Updating static catalog');

@@ -812,3 +812,89 @@ export async function checkAuth() {
   if (res.auth) Sentry.setUser({ username: res.netId });
   return res.auth;
 }
+
+// Saved Searches API
+
+const savedSearchSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  queryString: z.string(),
+  seasonSpecific: z.boolean(),
+  createdAt: z.number(),
+});
+
+export type SavedSearch = z.infer<typeof savedSearchSchema>;
+
+export async function fetchSavedSearches() {
+  return await fetchAPI('/savedSearches', {
+    schema: z.object({
+      data: z.array(savedSearchSchema),
+    }),
+    breadcrumb: {
+      category: 'savedSearches',
+      message: 'Fetching saved searches',
+    },
+  });
+}
+
+export async function createSavedSearch(
+  name: string,
+  queryString: string,
+  seasonSpecific: boolean = false,
+) {
+  return await fetchAPI('/savedSearches/create', {
+    body: { name, queryString, seasonSpecific },
+    schema: savedSearchSchema,
+    breadcrumb: {
+      category: 'savedSearches',
+      message: 'Creating saved search',
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'DUPLICATE_NAME':
+          toast.error('A saved search with this name already exists');
+          return true;
+        default:
+          return false;
+      }
+    },
+  });
+}
+
+export async function updateSavedSearch(id: number, name: string) {
+  return await fetchAPI('/savedSearches/update', {
+    body: { id, name },
+    breadcrumb: {
+      category: 'savedSearches',
+      message: 'Updating saved search',
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'SEARCH_NOT_FOUND':
+          toast.error('Saved search not found');
+          return true;
+        default:
+          return false;
+      }
+    },
+  });
+}
+
+export async function deleteSavedSearch(id: number) {
+  return await fetchAPI('/savedSearches/delete', {
+    body: { id },
+    breadcrumb: {
+      category: 'savedSearches',
+      message: 'Deleting saved search',
+    },
+    handleErrorCode(err) {
+      switch (err) {
+        case 'SEARCH_NOT_FOUND':
+          toast.error('Saved search not found');
+          return true;
+        default:
+          return false;
+      }
+    },
+  });
+}
