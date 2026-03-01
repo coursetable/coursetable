@@ -162,7 +162,10 @@ function WorksheetCalendarList({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip
+                      id="worksheet-calendar-show-hide-tooltip"
+                      {...props}
+                    >
                       <span>{areHidden ? 'Show' : 'Hide'} all</span>
                     </Tooltip>
                   )}
@@ -193,7 +196,10 @@ function WorksheetCalendarList({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip
+                      id="worksheet-calendar-settings-tooltip"
+                      {...props}
+                    >
                       <span>Worksheet Settings</span>
                     </Tooltip>
                   )}
@@ -217,7 +223,7 @@ function WorksheetCalendarList({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip id="worksheet-calendar-export-tooltip" {...props}>
                       <span>Export worksheet calendar</span>
                     </Tooltip>
                   )}
@@ -288,7 +294,7 @@ function WorksheetCalendarList({
               <OverlayTrigger
                 placement="right"
                 overlay={
-                  <Tooltip id="tooltip-disabled">
+                  <Tooltip id="worksheet-settings-private-disabled-tooltip">
                     Your main worksheet must always be public.
                   </Tooltip>
                 }

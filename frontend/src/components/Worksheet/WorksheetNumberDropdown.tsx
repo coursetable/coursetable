@@ -204,7 +204,10 @@ function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
         <OverlayTrigger
           placement="left"
           overlay={(overlayProps) => (
-            <Tooltip id="worksheet-number-dropdown-tooltip" {...overlayProps}>
+            <Tooltip
+              id={`worksheet-number-dropdown-${props.data.value}-tooltip`}
+              {...overlayProps}
+            >
               <span>
                 {props.data.value === 0
                   ? 'Main Worksheet'

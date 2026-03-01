@@ -169,7 +169,7 @@ function Prereqs({
             key={i}
             placement="top"
             overlay={(props) => (
-              <Tooltip id={`${s.course}-tooltip`} {...props}>
+              <Tooltip id={`overview-prereq-${i}-tooltip`} {...props}>
                 {s.course}{' '}
                 {info
                   ? info.course.title
@@ -413,7 +413,7 @@ function TimeLocation({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="location-hidden-tooltip" {...props}>
+                    <Tooltip id="overview-location-hidden-tooltip" {...props}>
                       Sign in to see location
                     </Tooltip>
                   )}
