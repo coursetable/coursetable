@@ -1,5 +1,5 @@
 import type express from 'express';
-import { or, and, eq, inArray, sql } from 'drizzle-orm';
+import { or, and, eq, inArray, sql, gte, lte } from 'drizzle-orm';
 import z from 'zod';
 import { getSdk } from './friends.queries.js';
 import {
@@ -366,7 +366,20 @@ export const getNames = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
+  const { includeAllYears } = req.query;
+  const currentYear = new Date().getFullYear();
+  const minYear = currentYear - 3;
+
+  const whereCondition =
+    includeAllYears === 'true'
+      ? undefined
+      : and(
+          gte(studentBluebookSettings.year, minYear),
+          lte(studentBluebookSettings.year, currentYear),
+        );
+
   const names = await db.query.studentBluebookSettings.findMany({
+    where: whereCondition,
     columns: {
       netId: true,
       college: true,
