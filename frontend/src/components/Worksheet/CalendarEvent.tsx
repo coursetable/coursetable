@@ -163,7 +163,8 @@ export function CalendarEventBody({
     event.end,
     event.start,
     walkBefore,
-    // Calendar lock changes can alter RBC inline positioning without changing the event data.
+    // Calendar lock changes can alter RBC inline positioning
+    // without changing the event data.
     // Keep these as deps so we recompute connector/badge pixel offsets.
     isCalendarViewLocked,
     calendarLockStart,
@@ -198,7 +199,8 @@ export function CalendarEventBody({
     let frame = 0;
     const measureLineHeight = (lineNode: HTMLElement) => {
       const clone = lineNode.cloneNode(true) as HTMLElement;
-      clone.classList.remove(styles.eventLineHidden);
+      if (styles.eventLineHidden)
+        clone.classList.remove(styles.eventLineHidden);
       clone.style.position = 'absolute';
       clone.style.visibility = 'hidden';
       clone.style.pointerEvents = 'none';
@@ -218,16 +220,18 @@ export function CalendarEventBody({
     };
 
     const updateVisibleLines = () => {
-      const lineNodes = Array.from(
+      const eventLineNodes = Array.from(
         contentNode.querySelectorAll<HTMLElement>('[data-event-line="true"]'),
       );
-      if (lineNodes.length === 0) return;
+      if (eventLineNodes.length === 0) return;
+      const [codeLineNode] = eventLineNodes;
+      if (!codeLineNode) return;
       const availableHeight = contentNode.clientHeight;
-      const codeHeight = measureLineHeight(lineNodes[0]) ?? 0;
+      const codeHeight = measureLineHeight(codeLineNode) ?? 0;
       let usedHeight = codeHeight;
       let nextHideFromLine: number | null = null;
 
-      for (const [index, lineNode] of lineNodes.entries()) {
+      for (const [index, lineNode] of eventLineNodes.entries()) {
         if (index === 0) continue;
         const lineHeight = measureLineHeight(lineNode);
         if (lineHeight === null) continue;
