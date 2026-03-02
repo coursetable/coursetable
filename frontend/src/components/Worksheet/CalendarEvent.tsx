@@ -52,10 +52,14 @@ export function CalendarEventBody({
   const walkColor = walkBaseColor.css();
   const connectorOffset = 4;
   const eventRef = useRef<HTMLDivElement | null>(null);
+  const eventContentRef = useRef<HTMLDivElement | null>(null);
   const walkBadgeRef = useRef<HTMLButtonElement | null>(null);
   const [connectorHeight, setConnectorHeight] = useState<number | null>(null);
   const [walkBadgeTop, setWalkBadgeTop] = useState(0);
   const [isWalkModalOpen, setIsWalkModalOpen] = useState(false);
+  const [hideFromLineIndex, setHideFromLineIndex] = useState<number | null>(
+    null,
+  );
 
   const isMobile = useStore((state) => state.isMobile);
   const hoverCourse = useStore((state) => state.hoverCourse);
@@ -187,6 +191,81 @@ export function CalendarEventBody({
     }
   }, [walkBefore, isWalkModalOpen, onWalkModalInteraction]);
 
+  useLayoutEffect(() => {
+    const contentNode = eventContentRef.current;
+    if (!contentNode) return undefined;
+
+    let frame = 0;
+    const measureLineHeight = (lineNode: HTMLElement) => {
+      const clone = lineNode.cloneNode(true) as HTMLElement;
+      clone.classList.remove(styles.eventLineHidden);
+      clone.style.position = 'absolute';
+      clone.style.visibility = 'hidden';
+      clone.style.pointerEvents = 'none';
+      clone.style.left = '0';
+      clone.style.top = '0';
+      clone.style.width = `${contentNode.clientWidth}px`;
+      clone.style.height = 'auto';
+      clone.style.maxHeight = 'none';
+      clone.style.overflow = 'visible';
+      contentNode.appendChild(clone);
+      const isHiddenByStyles =
+        window.getComputedStyle(clone).display === 'none';
+      const {height} = clone.getBoundingClientRect();
+      clone.remove();
+      if (isHiddenByStyles) return null;
+      return Number.isFinite(height) && height > 0 ? height : null;
+    };
+
+    const updateVisibleLines = () => {
+      const lineNodes = Array.from(
+        contentNode.querySelectorAll<HTMLElement>('[data-event-line="true"]'),
+      );
+      if (lineNodes.length === 0) return;
+      const availableHeight = contentNode.clientHeight;
+      const codeHeight = measureLineHeight(lineNodes[0]) ?? 0;
+      let usedHeight = codeHeight;
+      let nextHideFromLine: number | null = null;
+
+      for (const [index, lineNode] of lineNodes.entries()) {
+        if (index === 0) continue;
+        const lineHeight = measureLineHeight(lineNode);
+        if (lineHeight === null) continue;
+        if (usedHeight + lineHeight <= availableHeight + 0.5) {
+          usedHeight += lineHeight;
+          continue;
+        }
+        nextHideFromLine = index;
+        break;
+      }
+      setHideFromLineIndex((prev) =>
+        prev === nextHideFromLine ? prev : nextHideFromLine,
+      );
+    };
+
+    const scheduleUpdate = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateVisibleLines);
+    };
+
+    scheduleUpdate();
+
+    if (typeof ResizeObserver === 'undefined')
+      return () => window.cancelAnimationFrame(frame);
+
+    const observer = new ResizeObserver(() => scheduleUpdate());
+    observer.observe(contentNode);
+    const lineNodes = contentNode.querySelectorAll<HTMLElement>(
+      '[data-event-line="true"]',
+    );
+    for (const lineNode of lineNodes) observer.observe(lineNode);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [formattedTitle, event.description, event.location, lastMod, isMobile]);
+
   return (
     <div
       ref={eventRef}
@@ -227,22 +306,60 @@ export function CalendarEventBody({
           />
         </>
       )}
-      <strong className={styles.courseCodeText}>{formattedTitle}</strong>
-      <br />
-      <ResponsiveEllipsis
-        className={styles.courseNameText}
-        text={event.description}
-        maxLine="1"
-        basedOn="words"
-      />
-      <small className={styles.locationText}>{event.location}</small>
-      <br />
-      {lastMod && (
-        <ResponsiveEllipsis
-          className={styles.lastUpdatedText}
-          text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
-        />
-      )}
+      <div ref={eventContentRef} className={styles.eventContent}>
+        <strong
+          data-event-line="true"
+          className={clsx(styles.eventLine, styles.courseCodeText)}
+        >
+          {formattedTitle}
+        </strong>
+        <div
+          data-event-line="true"
+          className={clsx(
+            styles.eventLine,
+            hideFromLineIndex !== null &&
+              hideFromLineIndex <= 1 &&
+              styles.eventLineHidden,
+          )}
+        >
+          <ResponsiveEllipsis
+            className={styles.courseNameText}
+            text={event.description}
+            maxLine="1"
+            basedOn="words"
+          />
+        </div>
+        <small
+          data-event-line="true"
+          className={clsx(
+            styles.eventLine,
+            styles.locationText,
+            hideFromLineIndex !== null &&
+              hideFromLineIndex <= 2 &&
+              styles.eventLineHidden,
+          )}
+        >
+          {event.location}
+        </small>
+        {lastMod && (
+          <div
+            data-event-line="true"
+            className={clsx(
+              styles.eventLine,
+              hideFromLineIndex !== null &&
+                hideFromLineIndex <= 3 &&
+                styles.eventLineHidden,
+            )}
+          >
+            <ResponsiveEllipsis
+              className={styles.lastUpdatedText}
+              text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
+              maxLine="1"
+              basedOn="words"
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
