@@ -211,7 +211,7 @@ export function CalendarEventBody({
       contentNode.appendChild(clone);
       const isHiddenByStyles =
         window.getComputedStyle(clone).display === 'none';
-      const {height} = clone.getBoundingClientRect();
+      const { height } = clone.getBoundingClientRect();
       clone.remove();
       if (isHiddenByStyles) return null;
       return Number.isFinite(height) && height > 0 ? height : null;
