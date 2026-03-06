@@ -8,7 +8,10 @@ import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
-import { toLocationsSummary } from '../../utilities/course';
+import {
+  isDiscussionSection,
+  toLocationsSummary,
+} from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
@@ -75,6 +78,8 @@ export default function WorksheetCalendarListItem({
         )}
       >
         <strong>{listing.course_code}</strong>
+        {isDiscussionSection(listing.course) &&
+          ` ${listing.course.section.padStart(2, '0')}`}
         <br />
         <span className={styles.courseTitle}>{listing.course.title}</span>
         {showLocation && (
