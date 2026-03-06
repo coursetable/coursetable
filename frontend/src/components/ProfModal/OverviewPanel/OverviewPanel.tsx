@@ -327,7 +327,10 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
                 <li key={subject}>
                   <OverlayTrigger
                     overlay={(props) => (
-                      <Tooltip id="color-tooltip" {...props}>
+                      <Tooltip
+                        id={`prof-overview-subject-${subject}-tooltip`}
+                        {...props}
+                      >
                         {subjects[subject] ?? '[Unknown]'}
                       </Tooltip>
                     )}

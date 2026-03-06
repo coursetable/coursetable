@@ -83,7 +83,10 @@ function CourseConflictIcon({
           <OverlayTrigger
             placement="top"
             overlay={(props) => (
-              <Tooltip {...props} id="conflict-icon-button-tooltip">
+              <Tooltip
+                {...props}
+                id={`worksheet-toggle-conflict-${listing.crn}-tooltip`}
+              >
                 <small>{warning}</small>
               </Tooltip>
             )}
@@ -106,7 +109,10 @@ function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
         <OverlayTrigger
           placement="left"
           overlay={(overlayProps) => (
-            <Tooltip id="worksheet-toggle-button-tooltip" {...overlayProps}>
+            <Tooltip
+              id={`worksheet-toggle-button-${props.data.value}-tooltip`}
+              {...overlayProps}
+            >
               <span>
                 {props.data.value === 0
                   ? 'Main Worksheet'
@@ -337,7 +343,11 @@ function WorksheetToggleButton({
       <div className={styles.container}>
         <OverlayTrigger
           placement="top"
-          overlay={<Tooltip id="tooltip-disabled">{buttonLabel}</Tooltip>}
+          overlay={
+            <Tooltip id={`worksheet-toggle-disabled-${listing.crn}-tooltip`}>
+              {buttonLabel}
+            </Tooltip>
+          }
         >
           <Button
             className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
@@ -366,7 +376,7 @@ function WorksheetToggleButton({
           placement="top"
           delay={modal ? { show: 300, hide: 0 } : undefined}
           overlay={(props) => (
-            <Tooltip id="button-tooltip" {...props}>
+            <Tooltip id={`worksheet-toggle-${listing.crn}-tooltip`} {...props}>
               <small>{buttonLabel}</small>
             </Tooltip>
           )}
