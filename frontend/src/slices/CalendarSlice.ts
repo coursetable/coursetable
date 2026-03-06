@@ -5,26 +5,45 @@ import type { RBCEvent } from '../utilities/calendar';
 interface CalendarSliceState {
   openColorPickerEvent: RBCEvent | null;
   openWorksheetMoveEvent: RBCEvent | null;
+  isCalendarViewLocked: boolean;
+  calendarLockStart: number;
+  calendarLockEnd: number;
+  isCalendarLockSettingsOpen: boolean;
 }
 
 interface CalendarSliceActions {
   setOpenColorPickerEvent: (value: RBCEvent | null) => void;
   setOpenWorksheetMoveEvent: (value: RBCEvent | null) => void;
+  setCalendarViewLocked: (locked: boolean) => void;
+  setCalendarLockRange: (start: number, end: number) => void;
+  setCalendarLockSettingsOpen: (open: boolean) => void;
 }
 
 export interface CalendarSlice
-  extends CalendarSliceState,
-    CalendarSliceActions {}
+  extends CalendarSliceState, CalendarSliceActions {}
 
 export const createCalendarSlice: StateCreator<Store, [], [], CalendarSlice> = (
   set,
 ) => ({
   openColorPickerEvent: null,
   openWorksheetMoveEvent: null,
+  isCalendarViewLocked: false,
   setOpenColorPickerEvent(value) {
     set({ openColorPickerEvent: value });
   },
   setOpenWorksheetMoveEvent(value) {
     set({ openWorksheetMoveEvent: value });
+  },
+  setCalendarViewLocked(locked) {
+    set({ isCalendarViewLocked: locked });
+  },
+  calendarLockStart: 8,
+  calendarLockEnd: 18,
+  isCalendarLockSettingsOpen: false,
+  setCalendarLockRange(start, end) {
+    set({ calendarLockStart: start, calendarLockEnd: end });
+  },
+  setCalendarLockSettingsOpen(open) {
+    set({ isCalendarLockSettingsOpen: open });
   },
 });

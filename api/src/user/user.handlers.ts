@@ -3,7 +3,12 @@ import chroma from 'chroma-js';
 import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
-import { getNextAvailableWsNumber, worksheetListToMap } from './user.utils.js';
+import { getSdk } from './user.queries.js';
+import {
+  getNextAvailableWsNumber,
+  worksheetListToMap,
+  fetchSameCourseIdMappings,
+} from './user.utils.js';
 
 import {
   studentBluebookSettings,
@@ -11,7 +16,7 @@ import {
   worksheets,
   wishlistCourses,
 } from '../../drizzle/schema.js';
-import { db } from '../config.js';
+import { db, graphqlClient } from '../config.js';
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
   z.object({
@@ -226,8 +231,40 @@ export const getUserWorksheet = async (
 
   const allWorksheets = worksheetListToMap(userWorksheets);
 
+  // Collect all unique CRNs grouped by season
+  const seasonCrnMap = new Map<string, Set<number>>();
+  for (const worksheetsBySeason of Object.values(allWorksheets)) {
+    for (const [seasonCode, worksheetsByNum] of Object.entries(
+      worksheetsBySeason,
+    )) {
+      if (!seasonCrnMap.has(seasonCode))
+        seasonCrnMap.set(seasonCode, new Set());
+
+      for (const worksheet of Object.values(worksheetsByNum)) {
+        for (const course of worksheet.courses)
+          seasonCrnMap.get(seasonCode)!.add(course.crn);
+      }
+    }
+  }
+
+  // Fetch sameCourseId mappings
+  const { sameCourseIdToCrns } = await fetchSameCourseIdMappings(
+    seasonCrnMap,
+    graphqlClient,
+    getSdk,
+  );
+
+  // Build worksheet data without sameCourseId on individual courses
+  const worksheetData = allWorksheets[netId] ?? {};
+
+  // Convert sameCourseIdToCrns Map to plain object
+  const sameCourseIdToCrnsObj: { [key: string]: number[] } = {};
+  for (const [sameCourseId, crns] of sameCourseIdToCrns.entries())
+    sameCourseIdToCrnsObj[String(sameCourseId)] = crns;
+
   res.json({
-    data: allWorksheets[netId] ?? {},
+    data: worksheetData,
+    sameCourseIdToCrns: sameCourseIdToCrnsObj,
   });
 };
 

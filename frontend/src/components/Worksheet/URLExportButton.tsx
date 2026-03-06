@@ -6,18 +6,30 @@ import type { ExoticWorksheet } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 
 export default function URLExportButton() {
-  const { viewedSeason, viewedWorksheetName, courses } = useStore(
+  const { viewedSeason, viewedWorksheetName, courses, user } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetName: state.worksheetMemo.getViewedWorksheetName(state),
       courses: state.courses,
+      user: state.user,
     })),
   );
 
   async function handleExport() {
+    if (!user) {
+      toast.error('You are not logged in!');
+      return;
+    }
+    // Format creator name: "FirstName LastName" or fallback to netId
+    const creatorName =
+      user.firstName && user.lastName
+        ? `${user.firstName} ${user.lastName}`
+        : user.netId;
+
     const payload: ExoticWorksheet = {
       season: viewedSeason,
       name: viewedWorksheetName,
+      creatorName,
       courses: courses.map((c) => ({
         crn: c.listing.crn,
         hidden: c.hidden ?? false,
