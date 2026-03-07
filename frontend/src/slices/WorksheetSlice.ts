@@ -114,9 +114,7 @@ interface WorksheetSliceMemo {
 }
 
 export interface WorksheetSlice
-  extends WorksheetState,
-    WorksheetActions,
-    WorksheetSliceMemo {}
+  extends WorksheetState, WorksheetActions, WorksheetSliceMemo {}
 
 // Utility Functions
 function seasonsWithDataFirst(

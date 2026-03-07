@@ -20,8 +20,7 @@ interface CalendarSliceActions {
 }
 
 export interface CalendarSlice
-  extends CalendarSliceState,
-    CalendarSliceActions {}
+  extends CalendarSliceState, CalendarSliceActions {}
 
 export const createCalendarSlice: StateCreator<Store, [], [], CalendarSlice> = (
   set,

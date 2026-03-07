@@ -1,14 +1,10 @@
 import React, { useCallback } from 'react';
 import chroma from 'chroma-js';
-import LinesEllipsis from 'react-lines-ellipsis';
-import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
 import type { RBCEvent } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
-
-const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
   const textColor =
@@ -32,19 +28,13 @@ export function CalendarEventBody({ event }: { readonly event: RBCEvent }) {
     <div className={styles.event} style={{ color: textColor }}>
       <strong className={styles.courseCodeText}>{formattedTitle}</strong>
       <br />
-      <ResponsiveEllipsis
-        className={styles.courseNameText}
-        text={event.description}
-        maxLine="1"
-        basedOn="words"
-      />
+      <span className={styles.courseNameText}>{event.description}</span>
       <small className={styles.locationText}>{event.location}</small>
       <br />
       {lastMod && (
-        <ResponsiveEllipsis
-          className={styles.lastUpdatedText}
-          text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
-        />
+        <span className={styles.lastUpdatedText}>
+          Last updated: {new Date(lastMod).toLocaleDateString()}
+        </span>
       )}
     </div>
   );
