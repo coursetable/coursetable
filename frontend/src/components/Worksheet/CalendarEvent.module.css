@@ -40,7 +40,9 @@
 
 .courseNameText {
   font-size: 12px;
-  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .locationText {
@@ -51,6 +53,9 @@
   font-size: 12px;
   font-weight: 500;
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: calc(768px - 0.5px)) {

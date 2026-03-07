@@ -120,7 +120,6 @@
         "react-icons": "^5.4.0",
         "react-ios-pwa-prompt": "^2.0.6",
         "react-leaflet": "4.2.1",
-        "react-lines-ellipsis": "^0.15.4",
         "react-router-dom": "^7.1.1",
         "react-scroll": "^1.9.0",
         "react-select": "^5.9.0",
@@ -152,7 +151,6 @@
         "@types/react-big-calendar": "^1.16.0",
         "@types/react-dom": "^19.0.2",
         "@types/react-helmet": "^6.1.11",
-        "@types/react-lines-ellipsis": "^0.15.6",
         "@types/react-scroll": "^1.8.10",
         "@types/react-window": "^1.8.8",
         "@types/reactour": "^1.18.5",
@@ -1153,8 +1151,6 @@
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
     "@types/react-helmet": ["@types/react-helmet@6.1.11", "", { "dependencies": { "@types/react": "*" } }, "sha512-0QcdGLddTERotCXo3VFlUSWO3ztraw8nZ6e3zJSgG7apwV5xt+pJUS8ewPBqT4NYB1optGLprNQzFleIY84u/g=="],
-
-    "@types/react-lines-ellipsis": ["@types/react-lines-ellipsis@0.15.6", "", { "dependencies": { "@types/lodash": "*", "@types/react": "*" } }, "sha512-76cyWLa1SnLGOPQ+yJy7Ea0D2rWFt3dHOxO+xTQxyBCZdKrlbd/nHpldDSAqexZaI4gGsfHFRG7r0Z4neWeyJA=="],
 
     "@types/react-scroll": ["@types/react-scroll@1.8.10", "", { "dependencies": { "@types/react": "*" } }, "sha512-RD4Z7grbdNGOKwKnUBKar6zNxqaW3n8m9QSrfvljW+gmkj1GArb8AFBomVr6xMOgHPD3v1uV3BrIf01py57daQ=="],
 
@@ -2683,8 +2679,6 @@
     "react-leaflet": ["react-leaflet@4.2.1", "", { "dependencies": { "@react-leaflet/core": "^2.1.0" }, "peerDependencies": { "leaflet": "^1.9.0", "react": "^18.0.0", "react-dom": "^18.0.0" } }, "sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q=="],
 
     "react-lifecycles-compat": ["react-lifecycles-compat@3.0.4", "", {}, "sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA=="],
-
-    "react-lines-ellipsis": ["react-lines-ellipsis@0.15.4", "", { "peerDependencies": { "react": "*", "react-dom": "*" } }, "sha512-bIcoVRulN6RdBb9QByRPan7vDjxJv4jhII9eMs5ZkCK4QYEbPiY+8g+IM7/B0kb8UbRRRgR7KwpPWI9j8d2FYg=="],
 
     "react-overlays": ["react-overlays@5.2.1", "", { "dependencies": { "@babel/runtime": "^7.13.8", "@popperjs/core": "^2.11.6", "@restart/hooks": "^0.4.7", "@types/warning": "^3.0.0", "dom-helpers": "^5.2.0", "prop-types": "^15.7.2", "uncontrollable": "^7.2.1", "warning": "^4.0.3" }, "peerDependencies": { "react": ">=16.3.0", "react-dom": ">=16.3.0" } }, "sha512-GLLSOLWr21CqtJn8geSwQfoJufdt3mfdsnIiQswouuQ2MMPns+ihZklxvsTDKD3cR2tF8ELbi5xUsvqVhR6WvA=="],
 
