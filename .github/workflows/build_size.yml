@@ -30,7 +30,7 @@ jobs:
         uses: preactjs/compressed-size-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          install-script: 'bun install'
+          install-script: 'rm -rf ../node_modules && bun install'
           build-script: build
           clean-script: clean
           pattern: 'build/assets/*.{js,css}'
