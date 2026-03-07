@@ -39,6 +39,8 @@
 }
 
 .courseNameText {
+  display: block;
+  max-width: 100%;
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -50,6 +52,8 @@
 }
 
 .lastUpdatedText {
+  display: block;
+  max-width: 100%;
   font-size: 12px;
   font-weight: 500;
   font-style: italic;
