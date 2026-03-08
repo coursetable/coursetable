@@ -4,6 +4,7 @@ import 'graphiql/graphiql.css';
 
 import { CUR_SEASON, GRAPHQL_API_ENDPOINT } from '../config';
 
+// GraphiQL expects fetch.preconnect for subscription setup; we use HTTP-only
 const graphiqlFetch = Object.assign(
   (url: RequestInfo | URL, args?: RequestInit) =>
     fetch(url, { ...args, credentials: 'include' }),

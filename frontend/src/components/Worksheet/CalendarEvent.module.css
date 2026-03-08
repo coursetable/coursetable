@@ -27,6 +27,15 @@
   border: 1px solid #ccc !important;
 }
 
+.courseNameText {
+  display: block;
+  max-width: 100%;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (max-width: 768px) {
   .courseCodeText {
     text-align: left;
@@ -36,15 +45,6 @@
   .courseNameText {
     display: none;
   }
-}
-
-.courseNameText {
-  display: block;
-  max-width: 100%;
-  font-size: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .locationText {
