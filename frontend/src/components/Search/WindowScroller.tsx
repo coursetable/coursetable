@@ -37,8 +37,6 @@ export default function WindowScroller({
     };
   }, [isGrid]);
 
-  // TODO
-
   return children({
     ref,
     outerRef,
