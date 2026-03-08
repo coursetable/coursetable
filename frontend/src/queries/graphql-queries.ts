@@ -170,27 +170,6 @@ export function useCourseModalOverviewDataLazyQuery(
     Types.CourseModalOverviewDataQueryVariables
   >(CourseModalOverviewDataDocument, options);
 }
-// @ts-ignore
-export function useCourseModalOverviewDataSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.CourseModalOverviewDataQuery,
-    Types.CourseModalOverviewDataQueryVariables
-  >,
-): Apollo.UseSuspenseQueryResult<
-  Types.CourseModalOverviewDataQuery,
-  Types.CourseModalOverviewDataQueryVariables
->;
-export function useCourseModalOverviewDataSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.CourseModalOverviewDataQuery,
-        Types.CourseModalOverviewDataQueryVariables
-      >,
-): Apollo.UseSuspenseQueryResult<
-  Types.CourseModalOverviewDataQuery | undefined,
-  Types.CourseModalOverviewDataQueryVariables
->;
 export function useCourseModalOverviewDataSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -302,27 +281,6 @@ export function useSearchEvaluationNarrativesLazyQuery(
     Types.SearchEvaluationNarrativesQueryVariables
   >(SearchEvaluationNarrativesDocument, options);
 }
-// @ts-ignore
-export function useSearchEvaluationNarrativesSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.SearchEvaluationNarrativesQuery,
-    Types.SearchEvaluationNarrativesQueryVariables
-  >,
-): Apollo.UseSuspenseQueryResult<
-  Types.SearchEvaluationNarrativesQuery,
-  Types.SearchEvaluationNarrativesQueryVariables
->;
-export function useSearchEvaluationNarrativesSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.SearchEvaluationNarrativesQuery,
-        Types.SearchEvaluationNarrativesQueryVariables
-      >,
-): Apollo.UseSuspenseQueryResult<
-  Types.SearchEvaluationNarrativesQuery | undefined,
-  Types.SearchEvaluationNarrativesQueryVariables
->;
 export function useSearchEvaluationNarrativesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -420,27 +378,6 @@ export function useProfModalOverviewDataLazyQuery(
     Types.ProfModalOverviewDataQueryVariables
   >(ProfModalOverviewDataDocument, options);
 }
-// @ts-ignore
-export function useProfModalOverviewDataSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.ProfModalOverviewDataQuery,
-    Types.ProfModalOverviewDataQueryVariables
-  >,
-): Apollo.UseSuspenseQueryResult<
-  Types.ProfModalOverviewDataQuery,
-  Types.ProfModalOverviewDataQueryVariables
->;
-export function useProfModalOverviewDataSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.ProfModalOverviewDataQuery,
-        Types.ProfModalOverviewDataQueryVariables
-      >,
-): Apollo.UseSuspenseQueryResult<
-  Types.ProfModalOverviewDataQuery | undefined,
-  Types.ProfModalOverviewDataQueryVariables
->;
 export function useProfModalOverviewDataSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -525,27 +462,6 @@ export function useCourseModalFromUrlLazyQuery(
     Types.CourseModalFromUrlQueryVariables
   >(CourseModalFromUrlDocument, options);
 }
-// @ts-ignore
-export function useCourseModalFromUrlSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.CourseModalFromUrlQuery,
-    Types.CourseModalFromUrlQueryVariables
-  >,
-): Apollo.UseSuspenseQueryResult<
-  Types.CourseModalFromUrlQuery,
-  Types.CourseModalFromUrlQueryVariables
->;
-export function useCourseModalFromUrlSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.CourseModalFromUrlQuery,
-        Types.CourseModalFromUrlQueryVariables
-      >,
-): Apollo.UseSuspenseQueryResult<
-  Types.CourseModalFromUrlQuery | undefined,
-  Types.CourseModalFromUrlQueryVariables
->;
 export function useCourseModalFromUrlSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -630,27 +546,6 @@ export function usePrereqLinkInfoLazyQuery(
     Types.PrereqLinkInfoQueryVariables
   >(PrereqLinkInfoDocument, options);
 }
-// @ts-ignore
-export function usePrereqLinkInfoSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.PrereqLinkInfoQuery,
-    Types.PrereqLinkInfoQueryVariables
-  >,
-): Apollo.UseSuspenseQueryResult<
-  Types.PrereqLinkInfoQuery,
-  Types.PrereqLinkInfoQueryVariables
->;
-export function usePrereqLinkInfoSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.PrereqLinkInfoQuery,
-        Types.PrereqLinkInfoQueryVariables
-      >,
-): Apollo.UseSuspenseQueryResult<
-  Types.PrereqLinkInfoQuery | undefined,
-  Types.PrereqLinkInfoQueryVariables
->;
 export function usePrereqLinkInfoSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -752,27 +647,6 @@ export function useCourseSectionsLazyQuery(
     Types.CourseSectionsQueryVariables
   >(CourseSectionsDocument, options);
 }
-// @ts-ignore
-export function useCourseSectionsSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.CourseSectionsQuery,
-    Types.CourseSectionsQueryVariables
-  >,
-): Apollo.UseSuspenseQueryResult<
-  Types.CourseSectionsQuery,
-  Types.CourseSectionsQueryVariables
->;
-export function useCourseSectionsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.CourseSectionsQuery,
-        Types.CourseSectionsQueryVariables
-      >,
-): Apollo.UseSuspenseQueryResult<
-  Types.CourseSectionsQuery | undefined,
-  Types.CourseSectionsQueryVariables
->;
 export function useCourseSectionsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -867,27 +741,6 @@ export function useLatestCurrentOfferingLazyQuery(
     Types.LatestCurrentOfferingQueryVariables
   >(LatestCurrentOfferingDocument, options);
 }
-// @ts-ignore
-export function useLatestCurrentOfferingSuspenseQuery(
-  baseOptions?: Apollo.SuspenseQueryHookOptions<
-    Types.LatestCurrentOfferingQuery,
-    Types.LatestCurrentOfferingQueryVariables
-  >,
-): Apollo.UseSuspenseQueryResult<
-  Types.LatestCurrentOfferingQuery,
-  Types.LatestCurrentOfferingQueryVariables
->;
-export function useLatestCurrentOfferingSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        Types.LatestCurrentOfferingQuery,
-        Types.LatestCurrentOfferingQueryVariables
-      >,
-): Apollo.UseSuspenseQueryResult<
-  Types.LatestCurrentOfferingQuery | undefined,
-  Types.LatestCurrentOfferingQueryVariables
->;
 export function useLatestCurrentOfferingSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
