@@ -211,6 +211,13 @@ export const SearchEvaluationNarrativesDocument = gql`
             tag
           }
         }
+        evaluation_narrative_summaries {
+          summary
+          evaluation_question {
+            question_text
+            tag
+          }
+        }
         evaluation_ratings {
           rating
           evaluation_question {
