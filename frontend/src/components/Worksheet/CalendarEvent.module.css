@@ -27,6 +27,15 @@
   border: 1px solid #ccc !important;
 }
 
+.courseNameText {
+  display: block;
+  max-width: 100%;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (max-width: 768px) {
   .courseCodeText {
     text-align: left;
@@ -38,19 +47,19 @@
   }
 }
 
-.courseNameText {
-  font-size: 12px;
-  white-space: pre-wrap;
-}
-
 .locationText {
   font-weight: 500;
 }
 
 .lastUpdatedText {
+  display: block;
+  max-width: 100%;
   font-size: 12px;
   font-weight: 500;
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: calc(768px - 0.5px)) {
