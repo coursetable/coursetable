@@ -11,15 +11,12 @@ import { Modal } from 'react-bootstrap';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import { FaWalking } from 'react-icons/fa';
 import chroma from 'chroma-js';
-import LinesEllipsis from 'react-lines-ellipsis';
-import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
 import type { CourseRBCEvent, WalkBefore } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 
-const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 const weekdayFormatter = new Intl.DateTimeFormat('en-US', {
   weekday: 'long',
 });
@@ -326,12 +323,7 @@ export function CalendarEventBody({
               styles.eventLineHidden,
           )}
         >
-          <ResponsiveEllipsis
-            className={styles.courseNameText}
-            text={event.description}
-            maxLine="1"
-            basedOn="words"
-          />
+          <span className={styles.courseNameText}>{event.description}</span>
         </div>
         <small
           data-event-line="true"
@@ -355,12 +347,9 @@ export function CalendarEventBody({
                 styles.eventLineHidden,
             )}
           >
-            <ResponsiveEllipsis
-              className={styles.lastUpdatedText}
-              text={`Last updated: ${new Date(lastMod).toLocaleDateString()}`}
-              maxLine="1"
-              basedOn="words"
-            />
+            <span className={styles.lastUpdatedText}>
+              Last updated: {new Date(lastMod).toLocaleDateString()}
+            </span>
           </div>
         )}
       </div>

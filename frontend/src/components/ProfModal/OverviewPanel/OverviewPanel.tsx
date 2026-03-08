@@ -199,7 +199,10 @@ function SeasonRatingChart({
         data={chartData}
         options={getChartOptions(false, {
           title(items) {
-            return toSeasonString(uniformScaleToSeason(items[0]!.parsed.x));
+            const {
+              parsed: { x },
+            } = items[0]!;
+            return x !== null ? toSeasonString(uniformScaleToSeason(x)) : '';
           },
           label(item) {
             const point = item.raw as ChartPoint;
