@@ -2,7 +2,6 @@ import React, {
   createContext,
   useContext,
   useMemo,
-  useRef,
   useState,
   useCallback,
   useEffect,
@@ -108,7 +107,7 @@ export function ModalHistoryProvider({
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [history, setHistory] = useState<HistoryEntry[]>([]);
-  const isClosingRef = useRef(false);
+  const [isClosing, setIsClosing] = useState(false);
   const courseFromURL = useCourseInfoFromURL(history.length === 0);
   const profFromURL = useProfInfoFromURL();
 
@@ -122,10 +121,10 @@ export function ModalHistoryProvider({
       !searchParams.has('course-modal') &&
       !searchParams.has('prof-modal')
     )
-      isClosingRef.current = false;
+      setIsClosing(false);
   }, [history.length, searchParams]);
 
-  if (history.length === 0 && !isClosingRef.current) {
+  if (history.length === 0 && !isClosing) {
     if (courseFromURL) setHistory([{ type: 'course', data: courseFromURL }]);
     else if (profFromURL)
       setHistory([{ type: 'professor', data: profFromURL }]);
@@ -145,7 +144,7 @@ export function ModalHistoryProvider({
     [history, setHistory],
   );
   const closeModal = useCallback(() => {
-    isClosingRef.current = true;
+    setIsClosing(true);
     setHistory([]);
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
