@@ -168,7 +168,7 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
 function WorksheetCalendar({
   showWalkingTimes = true,
 }: WorksheetCalendarProps) {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     courses,
     viewedSeason,
@@ -319,6 +319,9 @@ function WorksheetCalendar({
     );
     if (!hasSelectedEvent) setSelectedEvent(null);
   }, [displayEvents, selectedEvent]);
+  useEffect(() => {
+    if (!searchParams.has('course-modal')) setSelectedEvent(null);
+  }, [searchParams]);
   useEffect(
     () => () => {
       if (clearSkipSelectTimeoutRef.current)
