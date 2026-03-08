@@ -41,6 +41,8 @@ type WorksheetCalendarListProps = {
   readonly controlsMode: 'full' | 'hide-only' | 'none' | 'map';
   readonly missingBuildingCodes: Set<string>;
   readonly hideTooltipContext: 'calendar' | 'map';
+  readonly showWalkingTimes?: boolean;
+  readonly onShowWalkingTimesChange?: (showWalkingTimes: boolean) => void;
 };
 
 function WorksheetCalendarList({
@@ -50,6 +52,8 @@ function WorksheetCalendarList({
   controlsMode,
   missingBuildingCodes,
   hideTooltipContext,
+  showWalkingTimes = true,
+  onShowWalkingTimesChange,
 }: WorksheetCalendarListProps) {
   const {
     courses,
@@ -58,6 +62,7 @@ function WorksheetCalendarList({
     isReadonlyWorksheet,
     isExoticWorksheet,
     isViewedWorksheetPrivate,
+    worksheetView,
     viewedPerson,
   } = useStore(
     useShallow((state) => ({
@@ -68,6 +73,7 @@ function WorksheetCalendarList({
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
       isViewedWorksheetPrivate:
         state.worksheetMemo.getIsViewedWorksheetPrivate(state),
+      worksheetView: state.worksheetView,
       viewedPerson: state.viewedPerson,
     })),
   );
@@ -87,6 +93,8 @@ function WorksheetCalendarList({
     (controlsMode === 'full' || controlsMode === 'map') &&
     !isExoticWorksheet &&
     viewedPerson === 'me';
+  const showWalkTimesSetting =
+    worksheetView === 'calendar' && Boolean(onShowWalkingTimesChange);
   const showExport = controlsMode === 'full';
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -308,6 +316,23 @@ function WorksheetCalendarList({
                 label="Private Worksheet"
                 checked={privateState}
                 onChange={() => setPrivateState(!privateState)}
+              />
+            )}
+            {showWalkTimesSetting && (
+              <Form.Check
+                type="switch"
+                id="show-walk-times-switch"
+                className="mt-3"
+                label={
+                  <span className={styles.walkTimesLabel}>
+                    Show walk times
+                    <span className={styles.betaPill}>Beta</span>
+                  </span>
+                }
+                checked={showWalkingTimes}
+                onChange={(event) =>
+                  onShowWalkingTimesChange?.(event.currentTarget.checked)
+                }
               />
             )}
 
