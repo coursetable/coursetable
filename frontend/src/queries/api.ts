@@ -722,14 +722,17 @@ const userNamesSchema = z.array(
 
 export type UserNames = z.infer<typeof userNamesSchema>;
 
-export function fetchAllNames() {
-  return fetchAPI('/friends/names', {
+export function fetchAllNames(includeAllYears = false) {
+  const queryParams = includeAllYears ? '?includeAllYears=true' : '';
+  return fetchAPI(`/friends/names${queryParams}`, {
     schema: z.object({
       names: userNamesSchema,
     }),
     breadcrumb: {
       category: 'friends',
-      message: 'Fetching all user names',
+      message: includeAllYears
+        ? 'Fetching all user names'
+        : 'Fetching recent user names',
     },
   });
 }
