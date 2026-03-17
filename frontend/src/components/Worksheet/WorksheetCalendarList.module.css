@@ -148,6 +148,7 @@
   display: flex !important;
   align-items: center;
   gap: 0.35rem;
+  padding-left: 0.5rem !important;
 }
 
 .walkTimesLabel {
