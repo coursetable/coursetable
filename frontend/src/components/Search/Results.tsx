@@ -171,14 +171,14 @@ function Results({
           numResults={data?.length ?? 0}
         />
       )}
-      {isMobile && (
+      {isMobile && page === 'catalog' && (
         <div className={styles.resultsMobileHeader}>
           <RandomButton />
           <LastUpdated />
         </div>
       )}
       {resultsListing}
-      <FloatingWorksheet />
+      {page === 'catalog' && <FloatingWorksheet />}
     </div>
   );
 }

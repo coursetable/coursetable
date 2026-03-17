@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import type { ListChildComponentProps } from 'react-window';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -54,7 +55,10 @@ function Rating({
     <OverlayTrigger
       placement="top"
       overlay={(props) => (
-        <Tooltip id="blur-rating-tooltip" {...props}>
+        <Tooltip
+          id={`results-blur-rating-${listing.course.season_code}-${listing.crn}-${name}-tooltip`}
+          {...props}
+        >
           These colors are randomly generated.{' '}
           {hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see
           real ratings.
@@ -187,7 +191,26 @@ function ResultsItem({
           </span>
           <span className={colStyles.locCol}>
             <span className={styles.ellipsisText}>
-              {toLocationsSummary(listing.course)}
+              {toLocationsSummary(listing.course, user?.hasEvals) ===
+              'HIDDEN' ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip
+                      id={`results-location-hidden-${listing.course.season_code}-${listing.crn}-tooltip`}
+                      {...props}
+                    >
+                      Sign in to see location
+                    </Tooltip>
+                  )}
+                >
+                  <span>
+                    <BsEyeSlash />
+                  </span>
+                </OverlayTrigger>
+              ) : (
+                toLocationsSummary(listing.course, user?.hasEvals)
+              )}
             </span>
           </span>
           <span className={colStyles.friendsCol}>
@@ -195,7 +218,10 @@ function ResultsItem({
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
+                  <Tooltip
+                    id={`results-friends-${listing.course.season_code}-${listing.crn}-tooltip`}
+                    {...props}
+                  >
                     {[...friends].join(' • ')}
                   </Tooltip>
                 )}

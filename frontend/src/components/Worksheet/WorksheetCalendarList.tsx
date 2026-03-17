@@ -1,39 +1,60 @@
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
-  ListGroup,
   Button,
+  ButtonGroup,
   Dropdown,
   DropdownButton,
-  ButtonGroup,
-  OverlayTrigger,
-  Tooltip,
-  Modal,
   Form,
+  ListGroup,
+  Modal,
+  OverlayTrigger,
   Spinner,
+  Tooltip,
 } from 'react-bootstrap';
-import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown } from 'react-icons/tb';
-
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
+
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
+import WorksheetCalendarListContext from './WorksheetCalendarListContext';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import {
   setCourseHidden,
-  updateWorksheetMetadata,
   updateWorksheetCourses,
+  updateWorksheetMetadata,
 } from '../../queries/api';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
 
-function WorksheetCalendarList() {
+type WorksheetCalendarListProps = {
+  readonly highlightBuilding: string | null;
+  readonly showLocation: boolean;
+  readonly showMissingLocationIcon: boolean;
+  readonly controlsMode: 'full' | 'hide-only' | 'none' | 'map';
+  readonly missingBuildingCodes: Set<string>;
+  readonly hideTooltipContext: 'calendar' | 'map';
+  readonly showWalkingTimes?: boolean;
+  readonly onShowWalkingTimesChange?: (showWalkingTimes: boolean) => void;
+};
+
+function WorksheetCalendarList({
+  highlightBuilding,
+  showLocation,
+  showMissingLocationIcon,
+  controlsMode,
+  missingBuildingCodes,
+  hideTooltipContext,
+  showWalkingTimes = true,
+  onShowWalkingTimesChange,
+}: WorksheetCalendarListProps) {
   const {
     courses,
     viewedSeason,
@@ -41,6 +62,7 @@ function WorksheetCalendarList() {
     isReadonlyWorksheet,
     isExoticWorksheet,
     isViewedWorksheetPrivate,
+    worksheetView,
     viewedPerson,
   } = useStore(
     useShallow((state) => ({
@@ -51,9 +73,11 @@ function WorksheetCalendarList() {
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
       isViewedWorksheetPrivate:
         state.worksheetMemo.getIsViewedWorksheetPrivate(state),
+      worksheetView: state.worksheetView,
       viewedPerson: state.viewedPerson,
     })),
   );
+
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
 
   const areHidden = useMemo(
@@ -63,9 +87,20 @@ function WorksheetCalendarList() {
 
   const HideShowIcon = areHidden ? BsEyeSlash : BsEye;
 
+  const showControls = controlsMode !== 'none';
+  const showHideButton = controlsMode !== 'none';
+  const showSettings =
+    (controlsMode === 'full' || controlsMode === 'map') &&
+    !isExoticWorksheet &&
+    viewedPerson === 'me';
+  const showWalkTimesSetting =
+    worksheetView === 'calendar' && Boolean(onShowWalkingTimesChange);
+  const showExport = controlsMode === 'full';
+
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
   const [updatingWSState, setUpdatingWSState] = useState(false);
+
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
 
@@ -73,21 +108,40 @@ function WorksheetCalendarList() {
     setPrivateState(isViewedWorksheetPrivate);
   }, [isViewedWorksheetPrivate]);
 
+  const contextValue = useMemo(
+    () => ({
+      showLocation,
+      showMissingLocationIcon,
+      highlightBuilding,
+      missingBuildingCodes,
+      hideTooltipContext,
+    }),
+    [
+      showLocation,
+      showMissingLocationIcon,
+      highlightBuilding,
+      missingBuildingCodes,
+      hideTooltipContext,
+    ],
+  );
+
   const handleClearAll = async () => {
     if (courses.length === 0) return;
     const courseCount = courses.length;
+
     const actions = courses.map((course) => ({
       action: 'remove' as const,
       season: viewedSeason,
       crn: course.listing.crn,
       worksheetNumber: viewedWorksheetNumber,
     }));
+
     setClearing(true);
     try {
-      // Remove all courses from the current worksheet in a single batch request
       await updateWorksheetCourses(actions);
       await worksheetsRefresh();
       setClearModalOpen(false);
+
       toast.success(
         courseCount === 1
           ? 'Removed class from worksheet'
@@ -97,117 +151,134 @@ function WorksheetCalendarList() {
       setClearing(false);
     }
   };
+
   return (
     <div>
-      <SurfaceComponent elevated className={styles.container}>
-        <div className="shadow-sm p-2">
-          <ButtonGroup className="w-100">
-            {!isReadonlyWorksheet && (
-              <OverlayTrigger
-                placement="top"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>{areHidden ? 'Show' : 'Hide'} all</span>
-                  </Tooltip>
-                )}
-              >
-                <Button
-                  onClick={async () => {
-                    await setCourseHidden({
-                      season: viewedSeason,
-                      worksheetNumber: viewedWorksheetNumber,
-                      crn: courses.map((course) => course.listing.crn),
-                      hidden: !areHidden,
-                    });
-                    await worksheetsRefresh();
-                  }}
-                  variant="none"
-                  className={clsx(styles.button, 'px-3 w-100')}
-                  aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
+      {showControls && (
+        <SurfaceComponent elevated className={styles.container}>
+          <div className="shadow-sm p-2">
+            <ButtonGroup className="w-100">
+              {showHideButton && !isReadonlyWorksheet && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip
+                      id="worksheet-calendar-show-hide-tooltip"
+                      {...props}
+                    >
+                      <span>{areHidden ? 'Show' : 'Hide'} all</span>
+                    </Tooltip>
+                  )}
                 >
-                  <HideShowIcon
-                    className={clsx(styles.icon, 'my-auto pe-2')}
-                    size={32}
-                  />
-                </Button>
-              </OverlayTrigger>
-            )}
-            {!isExoticWorksheet && viewedPerson === 'me' && (
-              <OverlayTrigger
-                placement="top"
-                overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
-                    <span>Worksheet Settings</span>
-                  </Tooltip>
-                )}
-              >
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setSettingsModalOpen(true);
-                  }}
-                  variant="none"
-                  className={clsx(styles.button, 'px-3 w-100')}
-                  aria-label="Worksheet Settings"
-                >
-                  <CiSettings className={clsx(styles.icon)} size={32} />
-                </Button>
-              </OverlayTrigger>
-            )}
-            <OverlayTrigger
-              placement="top"
-              overlay={(props) => (
-                <Tooltip id="button-tooltip" {...props}>
-                  <span>Export worksheet calendar</span>
-                </Tooltip>
+                  <Button
+                    onClick={async () => {
+                      await setCourseHidden({
+                        season: viewedSeason,
+                        worksheetNumber: viewedWorksheetNumber,
+                        crn: courses.map((course) => course.listing.crn),
+                        hidden: !areHidden,
+                      });
+                      await worksheetsRefresh();
+                    }}
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label={`${areHidden ? 'Show' : 'Hide'} all`}
+                  >
+                    <HideShowIcon
+                      className={clsx(styles.icon, 'my-auto pe-2')}
+                      size={32}
+                    />
+                  </Button>
+                </OverlayTrigger>
               )}
-            >
-              <DropdownButton
-                as="div"
-                drop="down"
-                align="end"
-                title={
-                  <TbCalendarDown
-                    className={clsx(styles.icon, styles.calendarIcon)}
-                    size={22}
-                  />
-                }
-                variant="none"
-                className={clsx(styles.button, 'w-100 btn')}
-              >
-                <Dropdown.Item eventKey="1" as="div">
-                  <GoogleCalendarButton />
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="2" as="div">
-                  <ICSExportButton />
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="3" as="div">
-                  <PNGExportButton />
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="4" as="div">
-                  <URLExportButton />
-                </Dropdown.Item>
-              </DropdownButton>
-            </OverlayTrigger>
-          </ButtonGroup>
-        </div>
-      </SurfaceComponent>
+
+              {showSettings && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip
+                      id="worksheet-calendar-settings-tooltip"
+                      {...props}
+                    >
+                      <span>Worksheet Settings</span>
+                    </Tooltip>
+                  )}
+                >
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setSettingsModalOpen(true);
+                    }}
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label="Worksheet Settings"
+                  >
+                    <CiSettings className={clsx(styles.icon)} size={32} />
+                  </Button>
+                </OverlayTrigger>
+              )}
+
+              {showExport && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="worksheet-calendar-export-tooltip" {...props}>
+                      <span>Export worksheet calendar</span>
+                    </Tooltip>
+                  )}
+                >
+                  <DropdownButton
+                    as="div"
+                    drop="down"
+                    align="end"
+                    title={
+                      <TbCalendarDown
+                        className={clsx(styles.icon, styles.calendarIcon)}
+                        size={22}
+                      />
+                    }
+                    variant="none"
+                    className={clsx(styles.button, 'w-100 btn')}
+                  >
+                    <Dropdown.Item eventKey="1" as="div">
+                      <GoogleCalendarButton />
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="2" as="div">
+                      <ICSExportButton />
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="3" as="div">
+                      <PNGExportButton />
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="4" as="div">
+                      <URLExportButton />
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </OverlayTrigger>
+              )}
+            </ButtonGroup>
+          </div>
+        </SurfaceComponent>
+      )}
+
       <SurfaceComponent className={styles.courseList}>
-        {courses.length > 0 ? (
-          <ListGroup variant="flush">
-            {courses.map((course) => (
-              <WorksheetCalendarListItem
-                key={viewedSeason + course.crn}
-                listing={course.listing}
-                hidden={course.hidden ?? false}
-              />
-            ))}
-          </ListGroup>
-        ) : (
-          <NoCourses />
-        )}
+        <WorksheetCalendarListContext.Provider value={contextValue}>
+          {courses.length > 0 ? (
+            <ListGroup variant="flush">
+              {courses.map((course) => (
+                <WorksheetCalendarListItem
+                  key={viewedSeason + course.crn}
+                  listing={course.listing}
+                  hidden={course.hidden ?? false}
+                />
+              ))}
+            </ListGroup>
+          ) : (
+            <NoCourses />
+          )}
+        </WorksheetCalendarListContext.Provider>
       </SurfaceComponent>
+
       <Modal
         show={settingsModalOpen}
         onHide={() => setSettingsModalOpen(false)}
@@ -216,13 +287,14 @@ function WorksheetCalendarList() {
         <Modal.Header closeButton>
           <Modal.Title>Worksheet Settings</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           <Form>
             {viewedWorksheetNumber === 0 ? (
               <OverlayTrigger
                 placement="right"
                 overlay={
-                  <Tooltip id="tooltip-disabled">
+                  <Tooltip id="worksheet-settings-private-disabled-tooltip">
                     Your main worksheet must always be public.
                   </Tooltip>
                 }
@@ -246,6 +318,24 @@ function WorksheetCalendarList() {
                 onChange={() => setPrivateState(!privateState)}
               />
             )}
+            {showWalkTimesSetting && (
+              <Form.Check
+                type="switch"
+                id="show-walk-times-switch"
+                className="mt-3"
+                label={
+                  <span className={styles.walkTimesLabel}>
+                    Show walk times
+                    <span className={styles.betaPill}>Beta</span>
+                  </span>
+                }
+                checked={showWalkingTimes}
+                onChange={(event) =>
+                  onShowWalkingTimesChange?.(event.currentTarget.checked)
+                }
+              />
+            )}
+
             {courses.length > 0 && (
               <div className="mt-4">
                 <button
@@ -265,6 +355,7 @@ function WorksheetCalendarList() {
             )}
           </Form>
         </Modal.Body>
+
         <Modal.Footer>
           <Button
             variant="secondary"
@@ -304,6 +395,7 @@ function WorksheetCalendarList() {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal
         show={clearModalOpen}
         onHide={() => !clearing && setClearModalOpen(false)}
@@ -312,6 +404,7 @@ function WorksheetCalendarList() {
         <Modal.Header closeButton>
           <Modal.Title>Clear All Classes</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           <p>
             Are you sure you want to{' '}
@@ -326,6 +419,7 @@ function WorksheetCalendarList() {
           </p>
           <p className="text-muted small mb-0">This action cannot be undone.</p>
         </Modal.Body>
+
         <Modal.Footer>
           <Button
             variant="secondary"

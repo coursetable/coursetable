@@ -121,6 +121,7 @@ function SectionsDropdown({
 function CourseCode({ code }: { readonly code: string }) {
   // It seems that course code will always contain exactly one space
   const [subject, number] = code.split(' ');
+  const tooltipId = `modal-course-code-${code.replace(/\s/gu, '-')}-tooltip`;
   return (
     <>
       <OverlayTrigger
@@ -128,7 +129,7 @@ function CourseCode({ code }: { readonly code: string }) {
         overlay={(props) => {
           const subjectName = subjects[subject!];
           return (
-            <Tooltip id="button-tooltip" {...props}>
+            <Tooltip id={tooltipId} {...props}>
               <small>{subjectName ?? '[unknown]'}</small>
             </Tooltip>
           );

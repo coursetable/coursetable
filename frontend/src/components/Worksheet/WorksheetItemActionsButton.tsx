@@ -19,7 +19,7 @@ import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import { updateWorksheetCourses } from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
-import { type RBCEvent, localizer } from '../../utilities/calendar';
+import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
@@ -28,7 +28,7 @@ function WorksheetItemActionsButton({
   event,
   className,
 }: {
-  readonly event: RBCEvent;
+  readonly event: CourseRBCEvent;
   readonly className?: string;
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -82,7 +82,9 @@ function WorksheetItemActionsButton({
                 <OverlayTrigger
                   placement="bottom"
                   overlay={
-                    <Tooltip id="color-tooltip">
+                    <Tooltip
+                      id={`worksheet-item-color-${event.listing.crn}-${event.start.getTime()}-tooltip`}
+                    >
                       <small>Change color</small>
                     </Tooltip>
                   }
@@ -103,7 +105,9 @@ function WorksheetItemActionsButton({
                 <OverlayTrigger
                   placement="bottom"
                   overlay={
-                    <Tooltip id="move-tooltip">
+                    <Tooltip
+                      id={`worksheet-item-move-${event.listing.crn}-${event.start.getTime()}-tooltip`}
+                    >
                       <small>Move to another worksheet</small>
                     </Tooltip>
                   }
@@ -336,7 +340,7 @@ function Preview({
   event,
   color,
 }: {
-  readonly event: RBCEvent;
+  readonly event: CourseRBCEvent;
   readonly color: string;
 }) {
   const eventStyleGetter = useEventStyle();

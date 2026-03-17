@@ -16,39 +16,52 @@ import type { CourseModalPrefetchListingDataFragment } from '../../../generated/
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
+function copyToClipboard(text: string, successMessage: string) {
+  navigator.clipboard.writeText(text).then(
+    () => {
+      toast.success(successMessage);
+    },
+    (err: unknown) => {
+      console.error('Error copying to clipboard: ', err);
+      toast.error('Failed to copy to clipboard (try manual copy)');
+    },
+  );
+}
+
 function ShareButton({
   listing,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
-  const copyToClipboard = () => {
+  const getCourseUrl = () => {
     const params = new URLSearchParams(window.location.search);
     const courseModal = params.get('course-modal');
-
-    const url = `${window.location.origin}${window.location.pathname}${
+    return `${window.location.origin}/catalog${
       courseModal !== null ? `?course-modal=${courseModal}` : ''
     }`;
-    const textToCopy = `${listing.course_code} -- CourseTable: ${url}`;
-
-    navigator.clipboard.writeText(textToCopy).then(
-      () => {
-        toast.success('Course and URL copied to clipboard!');
-      },
-      (err: unknown) => {
-        console.error('Error copying to clipboard: ', err);
-      },
-    );
   };
 
   return (
-    <button
-      type="button"
-      className={styles.shareButton}
-      onClick={copyToClipboard}
-      aria-label="Share"
+    <DropdownButton
+      as="div"
+      drop="down"
+      title={<FaRegShareFromSquare size={20} />}
+      variant="none"
+      className={styles.shareDropdown}
     >
-      <FaRegShareFromSquare size={20} />
-    </button>
+      <Dropdown.Item
+        onClick={() =>
+          copyToClipboard(listing.course_code, 'Course code copied!')
+        }
+      >
+        Copy course code
+      </Dropdown.Item>
+      <Dropdown.Item
+        onClick={() => copyToClipboard(getCourseUrl(), 'URL copied!')}
+      >
+        Copy course URL
+      </Dropdown.Item>
+    </DropdownButton>
   );
 }
 
