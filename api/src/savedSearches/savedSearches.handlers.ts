@@ -22,12 +22,12 @@ const CreateSavedSearchSchema = z.object({
 });
 
 const UpdateSavedSearchSchema = z.object({
-  id: z.number(),
+  id: z.number().int().positive(),
   name: z.string().min(1).max(64),
 });
 
 const DeleteSavedSearchSchema = z.object({
-  id: z.number(),
+  id: z.number().int().positive(),
 });
 
 export const getSavedSearches = async (

@@ -183,7 +183,10 @@ async function startServer(): Promise<void> {
   }
 }
 
-void startServer();
+void startServer().catch((err: unknown) => {
+  winston.error('Server startup failed', err);
+  process.exit(1);
+});
 
 // Generate the static catalog on start. We do this *after* starting listening
 winston.info('Updating static catalog');
