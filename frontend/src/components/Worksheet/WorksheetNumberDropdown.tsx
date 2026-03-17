@@ -200,6 +200,7 @@ function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
       }}
     >
       <div className={styles.optionContent}>
+        {/* Star/Lock/Unlock icon left of Worksheet name */}
         <OverlayTrigger
           placement="left"
           overlay={(overlayProps) => (
@@ -221,7 +222,11 @@ function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
             {WorksheetStatusIcon(props.data.value, props.data.isPrivate)}
           </div>
         </OverlayTrigger>
+
+        {/* Name of worksheet */}
         <span className={styles.optionName}>{props.data.label}</span>
+
+        {/* Edit/Delete buttons */}
         {props.data.value !== 0 && viewedPerson === 'me' && (
           <div className={styles.iconContainer}>
             <MdEdit
@@ -308,10 +313,13 @@ function WorksheetNumDropdownDesktop({
       displayOptionLabel
       selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
-      Icon={WorksheetStatusIcon(
-        viewedWorksheetNumber,
-        options[viewedWorksheetNumber]?.isPrivate,
-      )}
+      Icon={
+        // Star/Lock/Unlock icon in dropdown button
+        WorksheetStatusIcon(
+          viewedWorksheetNumber,
+          options[viewedWorksheetNumber]?.isPrivate,
+        )
+      }
     >
       <PopoutSelect<WorksheetNumberOption, false>
         value={options[viewedWorksheetNumber]}
