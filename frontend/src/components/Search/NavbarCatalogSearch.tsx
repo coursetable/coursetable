@@ -9,6 +9,7 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import AdvancedPanel from './AdvancedPanel';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
+import SavedSearchesDropdown from './SavedSearchesDropdown';
 import {
   useSearch,
   filterLabels,
@@ -296,6 +297,9 @@ export function NavbarCatalogSearch() {
             />
           )}
           <AdvancedPanel />
+
+          {/* Saved searches dropdown (includes Save current search inside) */}
+          <SavedSearchesDropdown />
 
           {/* Reset filters & sorting button */}
           <Button

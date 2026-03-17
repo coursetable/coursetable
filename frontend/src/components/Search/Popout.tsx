@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import type { Option } from '../../contexts/searchContext';
@@ -9,6 +10,7 @@ import styles from './Popout.module.css';
 type Props = {
   readonly children: React.ReactNode;
   readonly buttonText: string;
+  readonly onOpenChange?: (open: boolean) => void;
   readonly onReset?: () => void;
   readonly arrowIcon?: boolean;
   readonly clearIcon?: boolean;
@@ -25,6 +27,7 @@ type Props = {
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
   readonly Icon?: React.JSX.Element;
+  readonly betaTooltip?: string;
 };
 
 function getText(
@@ -79,6 +82,7 @@ function NotificationIcon({ count }: { readonly count: number }) {
 export function Popout({
   children,
   buttonText,
+  onOpenChange,
   onReset,
   arrowIcon = true,
   clearIcon = true,
@@ -91,10 +95,16 @@ export function Popout({
   colors,
   dataTutorial,
   Icon,
+  betaTooltip,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLButtonElement, HTMLDivElement>(false);
+
+  useEffect(() => {
+    onOpenChange?.(isComponentVisible);
+  }, [isComponentVisible, onOpenChange]);
+
   const text = getText(
     selectedOptions,
     maxDisplayOptions,
@@ -138,6 +148,40 @@ export function Popout({
     else setDropdownXOffset(0);
   }, [isComponentVisible, dropdownRef, dropdownXOffset]);
 
+  const triggerButton = (
+    <button
+      type="button"
+      onClick={() => setIsComponentVisible(!isComponentVisible)}
+      style={buttonStyles(isComponentVisible)}
+      ref={toggleRef}
+      className={clsx(
+        className,
+        styles.button,
+        betaTooltip && styles.buttonWithBeta,
+      )}
+      data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
+    >
+      {Icon ?? null}
+      <div>{text ?? buttonText}</div>
+
+      {text && clearIcon ? (
+        <IoClose
+          className={styles.clearIcon}
+          onClick={(e) => {
+            e.stopPropagation();
+            onReset?.();
+          }}
+        />
+      ) : arrowIcon ? (
+        <ArrowIcon className={styles.arrowIcon} />
+      ) : null}
+      {notifications ? <NotificationIcon count={notifications} /> : null}
+      {betaTooltip ? (
+        <span className={styles.betaIndicator} aria-hidden="true" />
+      ) : null}
+    </button>
+  );
+
   return (
     <div
       data-tutorial={
@@ -145,33 +189,18 @@ export function Popout({
       }
       className={clsx(styles.wrapper, wrapperClassName)}
     >
-      {/* Popout button */}
-      <button
-        type="button"
-        onClick={() => setIsComponentVisible(!isComponentVisible)}
-        style={buttonStyles(isComponentVisible)}
-        ref={toggleRef}
-        className={clsx(className, styles.button)}
-        data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
-      >
-        {Icon ?? null}
-        <div>{text ?? buttonText}</div>
-
-        {text && clearIcon ? (
-          <IoClose
-            className={styles.clearIcon}
-            onClick={(e) => {
-              // Prevent parent popout button onClick from firing and opening
-              // dropdown
-              e.stopPropagation();
-              onReset?.();
-            }}
-          />
-        ) : arrowIcon ? (
-          <ArrowIcon className={styles.arrowIcon} />
-        ) : null}
-        {notifications ? <NotificationIcon count={notifications} /> : null}
-      </button>
+      {betaTooltip ? (
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id="saved-searches-beta-tooltip">{betaTooltip}</Tooltip>
+          }
+        >
+          {triggerButton}
+        </OverlayTrigger>
+      ) : (
+        triggerButton
+      )}
       {/* Dropdown */}
       {isComponentVisible ? (
         <div

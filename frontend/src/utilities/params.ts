@@ -1,3 +1,4 @@
+import { isEqual } from './common';
 import { schools, skillsAreas, subjects, weekdays } from './constants';
 import { toSeasonString } from './course';
 import type { Filters, SortKeys } from '../contexts/searchContext';
@@ -196,24 +197,130 @@ export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
   defaultValue: Filters[K],
+  currentSearch?: string,
 ): string {
-  const newSearch = new URLSearchParams(window.location.search);
+  const base = currentSearch ?? window.location.search;
+  const newSearch = new URLSearchParams(
+    base.startsWith('?') ? base.slice(1) : base,
+  );
 
-  if (JSON.stringify(value) === JSON.stringify(defaultValue)) {
+  if (isEqual(value, defaultValue)) {
     newSearch.delete(key);
     return `?${newSearch.toString()}`;
   }
 
   if (Array.isArray(value)) {
-    const values = value.map((v) =>
-      typeof v === 'object' && Object.hasOwn(v, 'value') ? v.value : v,
-    );
+    const values = value.map((v) => {
+      if (typeof v === 'object' && Object.hasOwn(v, 'value'))
+        return String((v as { value: string | number }).value);
+
+      return String(v as string | number);
+    });
     newSearch.set(key, values.join(','));
   } else if (typeof value === 'object' && Object.hasOwn(value, 'value')) {
-    newSearch.set(key, value.value.toString());
+    newSearch.set(key, String((value as { value: string | number }).value));
   } else {
-    newSearch.set(key, value.toString());
+    newSearch.set(key, String(value as string | boolean));
   }
 
   return `?${newSearch.toString()}`;
+}
+
+/**
+ * Builds a full query string from all filters, excluding defaults and
+ * optionally season.
+ */
+export function buildFullFilterQueryString(
+  filters: Filters,
+  defaultFilters: Filters,
+  options?: { excludeSeason?: boolean },
+): string {
+  const params = new URLSearchParams();
+
+  (Object.keys(filters) as (keyof Filters)[]).forEach((key) => {
+    // Skip season if requested
+    if (options?.excludeSeason && key === 'selectSeasons') return;
+
+    const value = filters[key];
+    const defaultValue = defaultFilters[key];
+
+    // Skip if value equals default
+    if (isEqual(value, defaultValue)) return;
+
+    // Serialize the value (same logic as createFilterLink)
+    if (Array.isArray(value)) {
+      const parts = value.map((v) => {
+        // Filter array elements can be Option (object with value) or string
+        /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+        if (typeof v === 'object' && v !== null && Object.hasOwn(v, 'value'))
+          return String((v as { value: string | number }).value);
+
+        /* eslint-enable @typescript-eslint/no-unnecessary-condition */
+        return String(v as string | number);
+      });
+      if (parts.length > 0) params.set(key, parts.join(','));
+    } else if (
+      // SelectSortBy is Option<SortKeys> (object with value)
+      /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+      typeof value === 'object' &&
+      value !== null &&
+      Object.hasOwn(value as object, 'value')
+    ) {
+      /* eslint-enable @typescript-eslint/no-unnecessary-condition */
+      params.set(key, String((value as { value: string | number }).value));
+    } else {
+      params.set(key, String(value as string | boolean));
+    }
+  });
+
+  const queryString = params.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
+/** Params to preserve when syncing URL (e.g. course-modal, prof-modal). */
+const PRESERVE_PARAMS = new Set(['course-modal', 'prof-modal']);
+
+/**
+ * Builds URLSearchParams from filter state for the catalog, preserving
+ * non-filter params (e.g. course-modal, prof-modal) from the current URL.
+ * Used for centralized single-pass URL sync.
+ */
+export function buildCatalogSearchParams(
+  filters: Filters,
+  defaultFilters: Filters,
+  currentParams: URLSearchParams,
+): URLSearchParams {
+  const result = new URLSearchParams();
+
+  // Copy preserved params first
+  PRESERVE_PARAMS.forEach((key) => {
+    const v = currentParams.get(key);
+    if (v !== null) result.set(key, v);
+  });
+
+  // Add filter params (excluding defaults)
+  (Object.keys(filters) as (keyof Filters)[]).forEach((key) => {
+    const value = filters[key];
+    const defaultValue = defaultFilters[key];
+
+    if (isEqual(value, defaultValue)) return;
+
+    if (Array.isArray(value)) {
+      const parts = value.map((v) => {
+        if (typeof v === 'object' && Object.hasOwn(v as object, 'value'))
+          return String((v as { value: string | number }).value);
+        return String(v as string | number);
+      });
+      if (parts.length > 0) result.set(key, parts.join(','));
+    } else if (
+      typeof value === 'object' &&
+      Object.hasOwn(value as object, 'value')
+    ) {
+      result.set(key, String((value as { value: string | number }).value));
+    } else {
+      result.set(key, String(value as string | boolean));
+    }
+  });
+
+  return result;
 }
