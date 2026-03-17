@@ -30,6 +30,14 @@ jobs:
           doppler-config: prod
           inject-env-vars: true
 
+      - name: Set DB_URL
+        run: |
+          if [ -z "${DB_URL}" ]; then
+            DB_URL="postgresql://${DB_USER}:${DB_ROOT_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+            echo "::add-mask::${DB_URL}"
+            echo "DB_URL=${DB_URL}" >> $GITHUB_ENV
+          fi
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
