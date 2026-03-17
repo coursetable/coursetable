@@ -25,14 +25,16 @@ import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListContext from './WorksheetCalendarListContext';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import {
   setCourseHidden,
   updateWorksheetCourses,
   updateWorksheetMetadata,
 } from '../../queries/api';
 import type { Crn, Season } from '../../queries/graphql-types';
-import type { WorksheetCourse } from '../../slices/WorksheetSlice';
+import {
+  useWorksheetNumberOptions,
+  type WorksheetCourse,
+} from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
@@ -147,6 +149,17 @@ function WorksheetCalendarList({
 
   const [showImportRow, setShowImportRow] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [importTargetWorksheet, setImportTargetWorksheet] = useState(0);
+
+  useEffect(() => {
+    if (!isExoticWorksheet) {
+      setShowImportRow(false);
+      setImportTargetWorksheet(0);
+    }
+  }, [isExoticWorksheet]);
+
+  const importSeason = exoticWorksheet?.data.season ?? viewedSeason;
+  const importWorksheetOptions = useWorksheetNumberOptions('me', importSeason);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
@@ -366,12 +379,31 @@ function WorksheetCalendarList({
             <Collapse in={showImportRow}>
               <div>
                 <div className={styles.importRow}>
-                  <span className={styles.importLabel}>Import into:</span>
-                  <WorksheetNumDropdown
-                    mobile={false}
-                    person="me"
-                    season={exoticWorksheet?.data.season}
-                  />
+                  <div className={styles.importTopRow}>
+                    <span className={styles.importLabel}>Import into:</span>
+                    <DropdownButton
+                      size="sm"
+                      variant="outline-secondary"
+                      className={styles.importDropdown}
+                      title={
+                        importWorksheetOptions[importTargetWorksheet]?.label ??
+                        'Main Worksheet'
+                      }
+                      onSelect={(key) => {
+                        if (key !== null) setImportTargetWorksheet(Number(key));
+                      }}
+                    >
+                      {Object.values(importWorksheetOptions).map((opt) => (
+                        <Dropdown.Item
+                          key={opt.value}
+                          eventKey={opt.value}
+                          active={opt.value === importTargetWorksheet}
+                        >
+                          {opt.label}
+                        </Dropdown.Item>
+                      ))}
+                    </DropdownButton>
+                  </div>
                   <Button
                     variant="primary"
                     size="sm"
@@ -379,11 +411,10 @@ function WorksheetCalendarList({
                     onClick={async () => {
                       if (isImporting) return;
                       setIsImporting(true);
-                      const season =
-                        exoticWorksheet?.data.season ?? viewedSeason;
+
                       const targetWorksheet = worksheets
-                        ?.get(season)
-                        ?.get(viewedWorksheetNumber);
+                        ?.get(importSeason)
+                        ?.get(importTargetWorksheet);
 
                       if (courses.length === 0) {
                         toast.error(
@@ -395,8 +426,8 @@ function WorksheetCalendarList({
 
                       const actions = buildCourseImports(
                         courses,
-                        season,
-                        viewedWorksheetNumber,
+                        importSeason,
+                        importTargetWorksheet,
                         targetWorksheet,
                       );
 
