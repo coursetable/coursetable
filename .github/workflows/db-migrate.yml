@@ -13,6 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - uses: dopplerhq/secrets-fetch-action@v1.2.0
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
@@ -21,9 +26,8 @@ jobs:
           inject-env-vars: true
 
       - name: Install dependencies
-        run: npm install
-        working-directory: ./api
+        run: bun install --frozen-lockfile
 
       - name: Run DB migration
-        run: npm run db:push
+        run: bunx drizzle-kit push:pg
         working-directory: ./api
