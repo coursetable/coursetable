@@ -6,6 +6,16 @@ import { savedSearches } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 import winston from '../logging/winston.js';
 
+/** PostgreSQL error code for unique_violation */
+const PG_UNIQUE_VIOLATION = '23505';
+
+function isUniqueViolation(err: unknown): boolean {
+  const e = err as { code?: string; cause?: { code?: string } };
+  return (
+    e.code === PG_UNIQUE_VIOLATION || e.cause?.code === PG_UNIQUE_VIOLATION
+  );
+}
+
 const CreateSavedSearchSchema = z.object({
   name: z.string().min(1).max(64),
   queryString: z.string().max(2048),
@@ -62,7 +72,7 @@ export const createSavedSearch = async (
 
   const { name, queryString } = bodyParseRes.data;
 
-  // Check for duplicate names (optional, but user-friendly)
+  // Optimistic duplicate check; DB unique constraint enforces atomically
   const existing = await db.query.savedSearches.findFirst({
     where: and(eq(savedSearches.netId, netId), eq(savedSearches.name, name)),
   });
@@ -72,22 +82,30 @@ export const createSavedSearch = async (
     return;
   }
 
-  const [created] = await db
-    .insert(savedSearches)
-    .values({
-      netId,
-      name,
-      queryString,
-      createdAt: Date.now(),
-    })
-    .returning({
-      id: savedSearches.id,
-      name: savedSearches.name,
-      queryString: savedSearches.queryString,
-      createdAt: savedSearches.createdAt,
-    });
+  try {
+    const [created] = await db
+      .insert(savedSearches)
+      .values({
+        netId,
+        name,
+        queryString,
+        createdAt: Date.now(),
+      })
+      .returning({
+        id: savedSearches.id,
+        name: savedSearches.name,
+        queryString: savedSearches.queryString,
+        createdAt: savedSearches.createdAt,
+      });
 
-  res.json(created);
+    res.json(created);
+  } catch (err) {
+    if (isUniqueViolation(err)) {
+      res.status(400).json({ error: 'DUPLICATE_NAME' });
+      return;
+    }
+    throw err;
+  }
 };
 
 export const updateSavedSearch = async (
@@ -114,12 +132,20 @@ export const updateSavedSearch = async (
     return;
   }
 
-  await db
-    .update(savedSearches)
-    .set({ name })
-    .where(and(eq(savedSearches.id, id), eq(savedSearches.netId, netId)));
+  try {
+    await db
+      .update(savedSearches)
+      .set({ name })
+      .where(and(eq(savedSearches.id, id), eq(savedSearches.netId, netId)));
 
-  res.sendStatus(200);
+    res.sendStatus(200);
+  } catch (err) {
+    if (isUniqueViolation(err)) {
+      res.status(400).json({ error: 'DUPLICATE_NAME' });
+      return;
+    }
+    throw err;
+  }
 };
 
 export const deleteSavedSearch = async (

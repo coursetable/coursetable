@@ -153,5 +153,8 @@ export const savedSearches = pgTable(
   },
   (table) => ({
     savedSearchesNetidIdx: index('saved_searches_netid_idx').on(table.netId),
+    savedSearchesNameUniqueIdx: uniqueIndex(
+      'saved_searches_name_unique_idx',
+    ).on(table.netId, table.name),
   }),
 );
