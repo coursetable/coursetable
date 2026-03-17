@@ -88,7 +88,7 @@
 }
 
 .importDropdown :global(.btn) {
-  background-color: var(--color-surface) !important;
+  background-color: transparent !important;
   color: var(--color-text) !important;
   border-color: var(--color-border-control) !important;
   max-width: 14rem;
