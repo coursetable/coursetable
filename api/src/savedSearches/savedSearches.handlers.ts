@@ -4,17 +4,11 @@ import z from 'zod';
 
 import { savedSearches } from '../../drizzle/schema.js';
 import { db } from '../config.js';
-import { hasPgCode, PG_UNIQUE_VIOLATION } from '../db/pgErrors.js';
 import winston from '../logging/winston.js';
 
 const CreateSavedSearchSchema = z.object({
   name: z.string().min(1).max(64),
   queryString: z.string().max(2048),
-});
-
-const UpdateSavedSearchSchema = z.object({
-  id: z.number().int().positive(),
-  name: z.string().min(1).max(64),
 });
 
 const DeleteSavedSearchSchema = z.object({
@@ -58,77 +52,27 @@ export const createSavedSearch = async (
 
   const { name, queryString } = bodyParseRes.data;
 
-  // Optimistic duplicate check; DB unique constraint enforces atomically
-  const existing = await db.query.savedSearches.findFirst({
-    where: and(eq(savedSearches.netId, netId), eq(savedSearches.name, name)),
-  });
+  const [created] = await db
+    .insert(savedSearches)
+    .values({
+      netId,
+      name,
+      queryString,
+      createdAt: Date.now(),
+    })
+    .onConflictDoNothing({ target: [savedSearches.netId, savedSearches.name] })
+    .returning({
+      id: savedSearches.id,
+      name: savedSearches.name,
+      queryString: savedSearches.queryString,
+      createdAt: savedSearches.createdAt,
+    });
 
-  if (existing) {
+  if (!created) {
     res.status(400).json({ error: 'DUPLICATE_NAME' });
     return;
   }
-
-  try {
-    const [created] = await db
-      .insert(savedSearches)
-      .values({
-        netId,
-        name,
-        queryString,
-        createdAt: Date.now(),
-      })
-      .returning({
-        id: savedSearches.id,
-        name: savedSearches.name,
-        queryString: savedSearches.queryString,
-        createdAt: savedSearches.createdAt,
-      });
-
-    res.json(created);
-  } catch (err) {
-    if (hasPgCode(err, PG_UNIQUE_VIOLATION)) {
-      res.status(400).json({ error: 'DUPLICATE_NAME' });
-      return;
-    }
-    throw err;
-  }
-};
-
-export const updateSavedSearch = async (
-  req: express.Request,
-  res: express.Response,
-): Promise<void> => {
-  const { netId } = req.user!;
-
-  const bodyParseRes = UpdateSavedSearchSchema.safeParse(req.body);
-  if (!bodyParseRes.success) {
-    res.status(400).json({ error: 'INVALID_REQUEST' });
-    return;
-  }
-
-  const { id, name } = bodyParseRes.data;
-
-  const where = and(eq(savedSearches.id, id), eq(savedSearches.netId, netId));
-
-  try {
-    const [updated] = await db
-      .update(savedSearches)
-      .set({ name })
-      .where(where)
-      .returning({ id: savedSearches.id });
-
-    if (!updated) {
-      res.status(404).json({ error: 'SEARCH_NOT_FOUND' });
-      return;
-    }
-    res.sendStatus(200);
-  } catch (err) {
-    if (hasPgCode(err, PG_UNIQUE_VIOLATION)) {
-      res.status(400).json({ error: 'DUPLICATE_NAME' });
-      return;
-    }
-    throw err;
-  }
+  res.json(created);
 };
 
 export const deleteSavedSearch = async (
