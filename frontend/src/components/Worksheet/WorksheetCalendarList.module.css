@@ -95,6 +95,7 @@
   text-align: left;
   display: inline-flex !important;
   align-items: center;
+  gap: 0.35rem;
 }
 
 .importDropdownTitle {
@@ -141,6 +142,12 @@
 .clearAllButton:focus:not(:disabled) {
   border-color: #adb5bd;
   background-color: #f8f9fa;
+}
+
+.importDropdownItem {
+  display: flex !important;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .walkTimesLabel {

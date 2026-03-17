@@ -25,6 +25,7 @@ import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListContext from './WorksheetCalendarListContext';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
+import WorksheetStatusIcon from './WorksheetStatusIcon';
 import {
   setCourseHidden,
   updateWorksheetCourses,
@@ -386,10 +387,17 @@ function WorksheetCalendarList({
                       variant="outline-secondary"
                       className={styles.importDropdown}
                       title={
-                        <span className={styles.importDropdownTitle}>
-                          {importWorksheetOptions[importTargetWorksheet]
-                            ?.label ?? 'Main Worksheet'}
-                        </span>
+                        <>
+                          {WorksheetStatusIcon(
+                            importTargetWorksheet,
+                            importWorksheetOptions[importTargetWorksheet]
+                              ?.isPrivate,
+                          )}
+                          <span className={styles.importDropdownTitle}>
+                            {importWorksheetOptions[importTargetWorksheet]
+                              ?.label ?? 'Main Worksheet'}
+                          </span>
+                        </>
                       }
                       onSelect={(key) => {
                         if (key !== null) setImportTargetWorksheet(Number(key));
@@ -400,7 +408,9 @@ function WorksheetCalendarList({
                           key={opt.value}
                           eventKey={opt.value}
                           active={opt.value === importTargetWorksheet}
+                          className={styles.importDropdownItem}
                         >
+                          {WorksheetStatusIcon(opt.value, opt.isPrivate)}
                           {opt.label}
                         </Dropdown.Item>
                       ))}
