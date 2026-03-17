@@ -1,0 +1,36 @@
+name: DB Migration
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch or ref to migrate from'
+        required: false
+        default: 'master'
+
+jobs:
+  db-migrate:
+    name: Run Drizzle DB migration
+    runs-on: self-hosted
+    environment:
+      name: Production
+      url: https://coursetable.com
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod
+          inject-env-vars: true
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./api
+
+      - name: Run DB migration
+        run: npm run db:push
+        working-directory: ./api
