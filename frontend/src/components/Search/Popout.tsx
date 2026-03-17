@@ -9,6 +9,7 @@ import styles from './Popout.module.css';
 type Props = {
   readonly children: React.ReactNode;
   readonly buttonText: string;
+  readonly onOpenChange?: (open: boolean) => void;
   readonly onReset?: () => void;
   readonly arrowIcon?: boolean;
   readonly clearIcon?: boolean;
@@ -79,6 +80,7 @@ function NotificationIcon({ count }: { readonly count: number }) {
 export function Popout({
   children,
   buttonText,
+  onOpenChange,
   onReset,
   arrowIcon = true,
   clearIcon = true,
@@ -95,6 +97,11 @@ export function Popout({
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLButtonElement, HTMLDivElement>(false);
+
+  useEffect(() => {
+    onOpenChange?.(isComponentVisible);
+  }, [isComponentVisible, onOpenChange]);
+
   const text = getText(
     selectedOptions,
     maxDisplayOptions,

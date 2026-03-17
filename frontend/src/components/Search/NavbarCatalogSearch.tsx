@@ -173,6 +173,7 @@ export function NavbarCatalogSearch() {
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [savedSearchRefreshKey, setSavedSearchRefreshKey] = useState(0);
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -302,7 +303,7 @@ export function NavbarCatalogSearch() {
           <AdvancedPanel />
 
           {/* Saved searches dropdown */}
-          <SavedSearchesDropdown />
+          <SavedSearchesDropdown refreshKey={savedSearchRefreshKey} />
 
           {/* Save search button */}
           <Button
@@ -336,6 +337,7 @@ export function NavbarCatalogSearch() {
       <SaveSearchModal
         show={showSaveModal}
         onHide={() => setShowSaveModal(false)}
+        onSave={() => setSavedSearchRefreshKey((k) => k + 1)}
       />
     </>
   );

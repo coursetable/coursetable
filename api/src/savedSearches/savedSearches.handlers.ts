@@ -4,6 +4,7 @@ import z from 'zod';
 
 import { savedSearches } from '../../drizzle/schema.js';
 import { db } from '../config.js';
+import winston from '../logging/winston.js';
 
 const CreateSavedSearchSchema = z.object({
   name: z.string().min(1).max(64),
@@ -24,7 +25,12 @@ export const getSavedSearches = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  const { netId } = req.user!;
+  const netId = req.user?.netId;
+  if (!netId) {
+    winston.warn('getSavedSearches: no user/netId on request');
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
 
   const searches = await db.query.savedSearches.findMany({
     where: eq(savedSearches.netId, netId),
@@ -38,6 +44,9 @@ export const getSavedSearches = async (
     orderBy: [desc(savedSearches.createdAt)],
   });
 
+  winston.info(
+    `getSavedSearches: netId=${netId} returning ${searches.length} searches`,
+  );
   res.json({ data: searches });
 };
 

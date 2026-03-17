@@ -10,9 +10,21 @@ import {
 import { authBasic } from '../auth/auth.handlers.js';
 
 export default (app: express.Express): void => {
-  app.use('/api/savedSearches/*', authBasic);
-  app.get('/api/savedSearches', asyncHandler(getSavedSearches));
-  app.post('/api/savedSearches/create', asyncHandler(createSavedSearch));
-  app.post('/api/savedSearches/update', asyncHandler(updateSavedSearch));
-  app.post('/api/savedSearches/delete', asyncHandler(deleteSavedSearch));
+  // Each route gets authBasic explicitly; app.use with path can mismatch GET
+  app.get('/api/savedSearches', authBasic, asyncHandler(getSavedSearches));
+  app.post(
+    '/api/savedSearches/create',
+    authBasic,
+    asyncHandler(createSavedSearch),
+  );
+  app.post(
+    '/api/savedSearches/update',
+    authBasic,
+    asyncHandler(updateSavedSearch),
+  );
+  app.post(
+    '/api/savedSearches/delete',
+    authBasic,
+    asyncHandler(deleteSavedSearch),
+  );
 };

@@ -15,10 +15,12 @@ import styles from './SavedSearchesDropdown.module.css';
 
 interface SavedSearchesDropdownProps {
   readonly onSearchApplied?: () => void;
+  readonly refreshKey?: number;
 }
 
 export default function SavedSearchesDropdown({
   onSearchApplied,
+  refreshKey = 0,
 }: SavedSearchesDropdownProps) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -42,10 +44,10 @@ export default function SavedSearchesDropdown({
 
   useEffect(() => {
     if (isOpen) void loadSearches();
-  }, [isOpen]);
+  }, [isOpen, refreshKey]);
 
   const handleApplySearch = (search: SavedSearch) => {
-    navigate(`/catalog${search.queryString}`);
+    void navigate(`/catalog${search.queryString}`);
     setIsOpen(false);
     onSearchApplied?.();
   };
@@ -78,10 +80,9 @@ export default function SavedSearchesDropdown({
 
   return (
     <Popout
-      title="Saved Searches"
-      icon={<MdBookmark size={18} />}
-      open={isOpen}
-      setOpen={setIsOpen}
+      buttonText="Saved Searches"
+      Icon={<MdBookmark size={18} />}
+      onOpenChange={setIsOpen}
     >
       <div className={styles.container}>
         {isLoading ? (

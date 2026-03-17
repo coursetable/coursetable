@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -200,6 +201,16 @@ export type Filters = {
 
 export type FilterList = { [K in keyof Filters]: FilterHandle<K> };
 
+/** Extracts raw filter values from FilterList for URL/API serialization. */
+export function getFilterValues(filterList: FilterList): Filters {
+  return Object.fromEntries(
+    (Object.keys(filterList) as (keyof Filters)[]).map((k) => [
+      k,
+      filterList[k].value,
+    ]),
+  ) as Filters;
+}
+
 export const filterLabels: { [K in keyof Filters]: string } = {
   searchText: 'Search',
   selectSubjects: 'Subject',
@@ -277,6 +288,7 @@ export type FilterHandle<K extends keyof Filters> = ReturnType<
 function useFilterState<K extends keyof Filters>(key: K) {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const skipSyncToUrlRef = useRef(false);
 
   const [value, setValue] = useState(() => {
     try {
@@ -294,15 +306,42 @@ function useFilterState<K extends keyof Filters>(key: K) {
     }
   });
 
+  // Sync state FROM URL when URL changes (e.g. saved search, back button).
+  // This prevents old filter state from overwriting the navigated URL.
   useEffect(() => {
-    if (location.pathname === '/catalog') {
-      try {
-        const newUrl = createFilterLink(key, value, defaultFilters[key]);
-        if (newUrl !== location.search) {
-          sessionStorage.setItem('lastCatalogSearch', newUrl);
-          setSearchParams(new URLSearchParams(newUrl.slice(1)));
-        }
-      } catch {}
+    if (location.pathname !== '/catalog') return;
+    try {
+      const urlValue = searchParams.get(key);
+      const fromUrl = urlValue
+        ? getFilterFromParams(
+            key,
+            decodeURIComponent(urlValue),
+            defaultFilters[key],
+          )
+        : defaultFilters[key];
+      if (!isEqual(fromUrl, value)) {
+        skipSyncToUrlRef.current = true;
+        setValue(fromUrl);
+      }
+    } catch {
+      // Ignore parse errors
+    }
+  }, [location.search, location.pathname, key, searchParams, value]);
+
+  useEffect(() => {
+    if (location.pathname !== '/catalog') return;
+    if (skipSyncToUrlRef.current) {
+      skipSyncToUrlRef.current = false;
+      return;
+    }
+    try {
+      const newUrl = createFilterLink(key, value, defaultFilters[key]);
+      if (newUrl !== location.search) {
+        sessionStorage.setItem('lastCatalogSearch', newUrl);
+        setSearchParams(new URLSearchParams(newUrl.slice(1)));
+      }
+    } catch {
+      // Ignore
     }
   }, [key, value, location.pathname, location.search, setSearchParams]);
 

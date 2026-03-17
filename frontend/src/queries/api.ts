@@ -826,7 +826,7 @@ const savedSearchSchema = z.object({
 export type SavedSearch = z.infer<typeof savedSearchSchema>;
 
 export async function fetchSavedSearches() {
-  return await fetchAPI('/savedSearches', {
+  return await fetchAPI(`/savedSearches?_=${Date.now()}`, {
     schema: z.object({
       data: z.array(savedSearchSchema),
     }),

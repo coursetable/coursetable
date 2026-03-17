@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
-import { defaultFilters, useSearch } from '../../contexts/searchContext';
+import {
+  defaultFilters,
+  getFilterValues,
+  useSearch,
+} from '../../contexts/searchContext';
 import { createSavedSearch } from '../../queries/api';
 import { buildFullFilterQueryString } from '../../utilities/params';
 import styles from './SaveSearchModal.module.css';
@@ -38,9 +42,12 @@ export default function SaveSearchModal({
     setIsSaving(true);
 
     try {
-      const queryString = buildFullFilterQueryString(filters, defaultFilters, {
-        excludeSeason: !seasonSpecific,
-      });
+      const filterValues = getFilterValues(filters);
+      const queryString = buildFullFilterQueryString(
+        filterValues,
+        defaultFilters,
+        { excludeSeason: !seasonSpecific },
+      );
 
       const result = await createSavedSearch(name, queryString, seasonSpecific);
 

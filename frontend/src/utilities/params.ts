@@ -1,3 +1,4 @@
+import { isEqual } from './common';
 import { schools, skillsAreas, subjects, weekdays } from './constants';
 import { toSeasonString } from './course';
 import type { Filters, SortKeys } from '../contexts/searchContext';
@@ -199,16 +200,16 @@ export function createFilterLink<K extends keyof Filters>(
 ): string {
   const newSearch = new URLSearchParams(window.location.search);
 
-  if (JSON.stringify(value) === JSON.stringify(defaultValue)) {
+  if (isEqual(value, defaultValue)) {
     newSearch.delete(key);
     return `?${newSearch.toString()}`;
   }
 
   if (Array.isArray(value)) {
     const values = value.map((v) => {
-      if (typeof v === 'object' && Object.hasOwn(v, 'value')) 
+      if (typeof v === 'object' && Object.hasOwn(v, 'value'))
         return String((v as { value: string | number }).value);
-      
+
       return String(v as string | number);
     });
     newSearch.set(key, values.join(','));
@@ -240,16 +241,16 @@ export function buildFullFilterQueryString(
     const defaultValue = defaultFilters[key];
 
     // Skip if value equals default
-    if (JSON.stringify(value) === JSON.stringify(defaultValue)) return;
+    if (isEqual(value, defaultValue)) return;
 
     // Serialize the value (same logic as createFilterLink)
     if (Array.isArray(value)) {
       const parts = value.map((v) => {
         // Filter array elements can be Option (object with value) or string
         /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-        if (typeof v === 'object' && v !== null && Object.hasOwn(v, 'value')) 
+        if (typeof v === 'object' && v !== null && Object.hasOwn(v, 'value'))
           return String((v as { value: string | number }).value);
-        
+
         /* eslint-enable @typescript-eslint/no-unnecessary-condition */
         return String(v as string | number);
       });
@@ -270,4 +271,52 @@ export function buildFullFilterQueryString(
 
   const queryString = params.toString();
   return queryString ? `?${queryString}` : '';
+}
+
+/** Params to preserve when syncing URL (e.g. course-modal, prof-modal). */
+const PRESERVE_PARAMS = new Set(['course-modal', 'prof-modal']);
+
+/**
+ * Builds URLSearchParams from filter state for the catalog, preserving
+ * non-filter params (e.g. course-modal, prof-modal) from the current URL.
+ * Used for centralized single-pass URL sync.
+ */
+export function buildCatalogSearchParams(
+  filters: Filters,
+  defaultFilters: Filters,
+  currentParams: URLSearchParams,
+): URLSearchParams {
+  const result = new URLSearchParams();
+
+  // Copy preserved params first
+  PRESERVE_PARAMS.forEach((key) => {
+    const v = currentParams.get(key);
+    if (v !== null) result.set(key, v);
+  });
+
+  // Add filter params (excluding defaults)
+  (Object.keys(filters) as (keyof Filters)[]).forEach((key) => {
+    const value = filters[key];
+    const defaultValue = defaultFilters[key];
+
+    if (isEqual(value, defaultValue)) return;
+
+    if (Array.isArray(value)) {
+      const parts = value.map((v) => {
+        if (typeof v === 'object' && Object.hasOwn(v as object, 'value'))
+          return String((v as { value: string | number }).value);
+        return String(v as string | number);
+      });
+      if (parts.length > 0) result.set(key, parts.join(','));
+    } else if (
+      typeof value === 'object' &&
+      Object.hasOwn(value as object, 'value')
+    ) {
+      result.set(key, String((value as { value: string | number }).value));
+    } else {
+      result.set(key, String(value as string | boolean));
+    }
+  });
+
+  return result;
 }
