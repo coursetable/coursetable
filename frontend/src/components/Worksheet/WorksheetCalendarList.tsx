@@ -432,10 +432,9 @@ function WorksheetCalendarList({
                       );
 
                       if (actions.length === 0) {
-                        toast.error(
-                          'All courses are already in the target worksheet',
-                        );
+                        toast.success('All courses imported successfully');
                         setIsImporting(false);
+                        setShowImportRow(false);
                         return;
                       }
 
