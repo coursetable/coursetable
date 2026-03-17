@@ -322,61 +322,39 @@ function WorksheetCalendarList({
                 </OverlayTrigger>
               )}
 
-              {showImport &&
-                (user ? (
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={(props) => (
-                      <Tooltip
-                        id="worksheet-calendar-import-tooltip"
-                        {...props}
-                      >
-                        <span>Import courses into your worksheet</span>
-                      </Tooltip>
-                    )}
+              {showImport && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="worksheet-calendar-import-tooltip" {...props}>
+                      <span>
+                        {user
+                          ? 'Import courses into your worksheet'
+                          : 'Sign in to import courses into your worksheets'}
+                      </span>
+                    </Tooltip>
+                  )}
+                >
+                  <Button
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label="Import courses"
+                    aria-expanded={showImportRow}
+                    onClick={() => {
+                      if (!user) {
+                        toast.info('Sign in to import courses');
+                        return;
+                      }
+                      setShowImportRow(!showImportRow);
+                    }}
                   >
-                    <Button
-                      variant="none"
-                      className={clsx(styles.button, 'px-3 w-100')}
-                      aria-label="Import courses"
-                      aria-expanded={showImportRow}
-                      onClick={() => setShowImportRow(!showImportRow)}
-                    >
-                      <TbCalendarUp
-                        className={clsx(styles.icon, styles.calendarIcon)}
-                        size={22}
-                      />
-                    </Button>
-                  </OverlayTrigger>
-                ) : (
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={(props) => (
-                      <Tooltip
-                        id="worksheet-calendar-import-tooltip"
-                        {...props}
-                      >
-                        <small>
-                          Sign in to import courses into your worksheets
-                        </small>
-                      </Tooltip>
-                    )}
-                  >
-                    <span className="w-100">
-                      <Button
-                        variant="none"
-                        className={clsx(styles.button, 'px-3 w-100')}
-                        disabled
-                        aria-label="Import courses"
-                      >
-                        <TbCalendarUp
-                          className={clsx(styles.icon, styles.calendarIcon)}
-                          size={22}
-                        />
-                      </Button>
-                    </span>
-                  </OverlayTrigger>
-                ))}
+                    <TbCalendarUp
+                      className={clsx(styles.icon, styles.calendarIcon)}
+                      size={22}
+                    />
+                  </Button>
+                </OverlayTrigger>
+              )}
             </ButtonGroup>
 
             <Collapse in={showImportRow}>
