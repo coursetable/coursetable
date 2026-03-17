@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Button } from 'react-bootstrap';
 import { IoClose } from 'react-icons/io5';
-import { MdSave } from 'react-icons/md';
 import RCSlider from 'rc-slider';
 import { GlobalHotKeys } from 'react-hotkeys';
 
@@ -11,7 +10,6 @@ import AdvancedPanel from './AdvancedPanel';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
 import SavedSearchesDropdown from './SavedSearchesDropdown';
-import SaveSearchModal from './SaveSearchModal';
 import {
   useSearch,
   filterLabels,
@@ -172,8 +170,6 @@ export function NavbarCatalogSearch() {
   const isTablet = useStore((state) => state.isTablet);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [savedSearchRefreshKey, setSavedSearchRefreshKey] = useState(0);
 
   const searchTextInput = useRef<HTMLInputElement>(null);
 
@@ -302,18 +298,8 @@ export function NavbarCatalogSearch() {
           )}
           <AdvancedPanel />
 
-          {/* Saved searches dropdown */}
-          <SavedSearchesDropdown refreshKey={savedSearchRefreshKey} />
-
-          {/* Save search button */}
-          <Button
-            className={styles.saveButton}
-            variant="primary"
-            onClick={() => setShowSaveModal(true)}
-            title="Save current search"
-          >
-            <MdSave size={18} />
-          </Button>
+          {/* Saved searches dropdown (includes Save current search inside) */}
+          <SavedSearchesDropdown />
 
           {/* Reset filters & sorting button */}
           <Button
@@ -332,13 +318,6 @@ export function NavbarCatalogSearch() {
           </Button>
         </div>
       </Form>
-
-      {/* Save search modal */}
-      <SaveSearchModal
-        show={showSaveModal}
-        onHide={() => setShowSaveModal(false)}
-        onSave={() => setSavedSearchRefreshKey((k) => k + 1)}
-      />
     </>
   );
 }

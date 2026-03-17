@@ -1,8 +1,54 @@
 .container {
-  min-width: 300px;
-  max-width: 400px;
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
   max-height: 400px;
   overflow-y: auto;
+}
+
+.dropdownTitle {
+  margin: 0;
+  padding: 0.75rem 1rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.dropdownDescription {
+  margin: 0 1rem 0.75rem;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+.addInputContainer {
+  padding: 0.5rem 1rem;
+}
+
+.addInput {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+}
+
+.addInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.saveButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: calc(100% - 1rem);
+  margin: 0 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
 }
 
 .loading,
@@ -28,6 +74,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
   padding: 0.75rem 1rem;
   background: var(--color-background);
   border: 1px solid var(--color-border);
@@ -35,6 +82,7 @@
   cursor: pointer;
   transition: all 0.2s;
   width: 100%;
+  min-width: 0;
   text-align: left;
 }
 
@@ -46,6 +94,7 @@
 .searchInfo {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .searchName {
@@ -54,16 +103,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.searchBadge {
-  display: inline-block;
-  margin-top: 0.25rem;
-  padding: 0.125rem 0.5rem;
-  font-size: 0.75rem;
-  color: var(--color-primary);
-  background: var(--color-primary-subtle);
-  border-radius: 0.25rem;
 }
 
 .deleteButton {

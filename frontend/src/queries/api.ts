@@ -819,7 +819,6 @@ const savedSearchSchema = z.object({
   id: z.number(),
   name: z.string(),
   queryString: z.string(),
-  seasonSpecific: z.boolean(),
   createdAt: z.number(),
 });
 
@@ -837,13 +836,9 @@ export async function fetchSavedSearches() {
   });
 }
 
-export async function createSavedSearch(
-  name: string,
-  queryString: string,
-  seasonSpecific: boolean = false,
-) {
+export async function createSavedSearch(name: string, queryString: string) {
   return await fetchAPI('/savedSearches/create', {
-    body: { name, queryString, seasonSpecific },
+    body: { name, queryString },
     schema: savedSearchSchema,
     breadcrumb: {
       category: 'savedSearches',

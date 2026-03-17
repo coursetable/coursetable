@@ -289,6 +289,7 @@ function useFilterState<K extends keyof Filters>(key: K) {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const skipSyncToUrlRef = useRef(false);
+  const lastUrlProcessedRef = useRef<string | null>(null);
 
   const [value, setValue] = useState(() => {
     try {
@@ -306,10 +307,12 @@ function useFilterState<K extends keyof Filters>(key: K) {
     }
   });
 
-  // Sync state FROM URL when URL changes (e.g. saved search, back button).
-  // This prevents old filter state from overwriting the navigated URL.
+  // Sync state FROM URL when URL changes externally (e.g. saved search, back).
+  // Must NOT run when value changed locally—that would revert user input.
   useEffect(() => {
     if (location.pathname !== '/catalog') return;
+    if (location.search === lastUrlProcessedRef.current) return;
+    lastUrlProcessedRef.current = location.search;
     try {
       const urlValue = searchParams.get(key);
       const fromUrl = urlValue
@@ -319,14 +322,12 @@ function useFilterState<K extends keyof Filters>(key: K) {
             defaultFilters[key],
           )
         : defaultFilters[key];
-      if (!isEqual(fromUrl, value)) {
-        skipSyncToUrlRef.current = true;
-        setValue(fromUrl);
-      }
+      skipSyncToUrlRef.current = true;
+      setValue(fromUrl);
     } catch {
       // Ignore parse errors
     }
-  }, [location.search, location.pathname, key, searchParams, value]);
+  }, [location.search, location.pathname, key, searchParams]);
 
   useEffect(() => {
     if (location.pathname !== '/catalog') return;
@@ -335,10 +336,17 @@ function useFilterState<K extends keyof Filters>(key: K) {
       return;
     }
     try {
-      const newUrl = createFilterLink(key, value, defaultFilters[key]);
+      const newUrl = createFilterLink(
+        key,
+        value,
+        defaultFilters[key],
+        location.search,
+      );
       if (newUrl !== location.search) {
-        sessionStorage.setItem('lastCatalogSearch', newUrl);
-        setSearchParams(new URLSearchParams(newUrl.slice(1)));
+        const queryPart = newUrl.startsWith('?') ? newUrl.slice(1) : newUrl;
+        const toStore = queryPart ? newUrl : '';
+        sessionStorage.setItem('lastCatalogSearch', toStore);
+        setSearchParams(new URLSearchParams(queryPart));
       }
     } catch {
       // Ignore

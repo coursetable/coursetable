@@ -9,7 +9,6 @@ import winston from '../logging/winston.js';
 const CreateSavedSearchSchema = z.object({
   name: z.string().min(1).max(64),
   queryString: z.string().max(2048),
-  seasonSpecific: z.boolean().optional().default(false),
 });
 
 const UpdateSavedSearchSchema = z.object({
@@ -38,7 +37,6 @@ export const getSavedSearches = async (
       id: true,
       name: true,
       queryString: true,
-      seasonSpecific: true,
       createdAt: true,
     },
     orderBy: [desc(savedSearches.createdAt)],
@@ -62,7 +60,7 @@ export const createSavedSearch = async (
     return;
   }
 
-  const { name, queryString, seasonSpecific } = bodyParseRes.data;
+  const { name, queryString } = bodyParseRes.data;
 
   // Check for duplicate names (optional, but user-friendly)
   const existing = await db.query.savedSearches.findFirst({
@@ -80,14 +78,12 @@ export const createSavedSearch = async (
       netId,
       name,
       queryString,
-      seasonSpecific,
       createdAt: Date.now(),
     })
     .returning({
       id: savedSearches.id,
       name: savedSearches.name,
       queryString: savedSearches.queryString,
-      seasonSpecific: savedSearches.seasonSpecific,
       createdAt: savedSearches.createdAt,
     });
 

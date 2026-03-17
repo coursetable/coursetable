@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import type { Option } from '../../contexts/searchContext';
@@ -26,6 +27,7 @@ type Props = {
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
   readonly Icon?: React.JSX.Element;
+  readonly betaTooltip?: string;
 };
 
 function getText(
@@ -93,6 +95,7 @@ export function Popout({
   colors,
   dataTutorial,
   Icon,
+  betaTooltip,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
@@ -145,6 +148,40 @@ export function Popout({
     else setDropdownXOffset(0);
   }, [isComponentVisible, dropdownRef, dropdownXOffset]);
 
+  const triggerButton = (
+    <button
+      type="button"
+      onClick={() => setIsComponentVisible(!isComponentVisible)}
+      style={buttonStyles(isComponentVisible)}
+      ref={toggleRef}
+      className={clsx(
+        className,
+        styles.button,
+        betaTooltip && styles.buttonWithBeta,
+      )}
+      data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
+    >
+      {Icon ?? null}
+      <div>{text ?? buttonText}</div>
+
+      {text && clearIcon ? (
+        <IoClose
+          className={styles.clearIcon}
+          onClick={(e) => {
+            e.stopPropagation();
+            onReset?.();
+          }}
+        />
+      ) : arrowIcon ? (
+        <ArrowIcon className={styles.arrowIcon} />
+      ) : null}
+      {notifications ? <NotificationIcon count={notifications} /> : null}
+      {betaTooltip ? (
+        <span className={styles.betaIndicator} aria-hidden="true" />
+      ) : null}
+    </button>
+  );
+
   return (
     <div
       data-tutorial={
@@ -152,33 +189,18 @@ export function Popout({
       }
       className={clsx(styles.wrapper, wrapperClassName)}
     >
-      {/* Popout button */}
-      <button
-        type="button"
-        onClick={() => setIsComponentVisible(!isComponentVisible)}
-        style={buttonStyles(isComponentVisible)}
-        ref={toggleRef}
-        className={clsx(className, styles.button)}
-        data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
-      >
-        {Icon ?? null}
-        <div>{text ?? buttonText}</div>
-
-        {text && clearIcon ? (
-          <IoClose
-            className={styles.clearIcon}
-            onClick={(e) => {
-              // Prevent parent popout button onClick from firing and opening
-              // dropdown
-              e.stopPropagation();
-              onReset?.();
-            }}
-          />
-        ) : arrowIcon ? (
-          <ArrowIcon className={styles.arrowIcon} />
-        ) : null}
-        {notifications ? <NotificationIcon count={notifications} /> : null}
-      </button>
+      {betaTooltip ? (
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id="saved-searches-beta-tooltip">{betaTooltip}</Tooltip>
+          }
+        >
+          {triggerButton}
+        </OverlayTrigger>
+      ) : (
+        triggerButton
+      )}
       {/* Dropdown */}
       {isComponentVisible ? (
         <div

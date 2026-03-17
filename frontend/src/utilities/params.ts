@@ -197,8 +197,12 @@ export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
   defaultValue: Filters[K],
+  currentSearch?: string,
 ): string {
-  const newSearch = new URLSearchParams(window.location.search);
+  const base = currentSearch ?? window.location.search;
+  const newSearch = new URLSearchParams(
+    base.startsWith('?') ? base.slice(1) : base,
+  );
 
   if (isEqual(value, defaultValue)) {
     newSearch.delete(key);

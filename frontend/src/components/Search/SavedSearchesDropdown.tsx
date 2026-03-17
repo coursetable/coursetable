@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
-import { MdBookmark, MdDelete } from 'react-icons/md';
+import { MdBookmark, MdDelete, MdSave } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
 import { Popout } from './Popout';
 import {
+  defaultFilters,
+  getFilterValues,
+  useSearch,
+} from '../../contexts/searchContext';
+import {
   fetchSavedSearches,
   deleteSavedSearch,
+  createSavedSearch,
   type SavedSearch,
 } from '../../queries/api';
+import { buildFullFilterQueryString } from '../../utilities/params';
 import Spinner from '../Spinner';
+import { Input } from '../Typography';
 import styles from './SavedSearchesDropdown.module.css';
 
 interface SavedSearchesDropdownProps {
@@ -31,6 +39,14 @@ export default function SavedSearchesDropdown({
     id: number;
     name: string;
   } | null>(null);
+  const [isAddingSearch, setIsAddingSearch] = useState(false);
+  const [addingName, setAddingName] = useState('');
+  const addInputRef = useRef<HTMLInputElement>(null);
+  const { filters } = useSearch();
+
+  useEffect(() => {
+    if (isAddingSearch && addInputRef.current) addInputRef.current.focus();
+  }, [isAddingSearch]);
 
   const loadSearches = async () => {
     setIsLoading(true);
@@ -79,57 +95,140 @@ export default function SavedSearchesDropdown({
   };
 
   return (
-    <Popout
-      buttonText="Saved Searches"
-      Icon={<MdBookmark size={18} />}
-      onOpenChange={setIsOpen}
-    >
-      <div className={styles.container}>
-        {isLoading ? (
-          <div className={styles.loading}>
-            <Spinner message="Loading saved searches..." />
-          </div>
-        ) : searches.length === 0 ? (
-          <div className={styles.empty}>
-            <p>No saved searches yet.</p>
-            <p className={styles.emptyHint}>
-              Save a search to quickly return to it later!
-            </p>
-          </div>
-        ) : (
-          <div className={styles.searchList}>
-            {searches.map((search) => (
-              <button
-                key={search.id}
-                type="button"
-                className={styles.searchItem}
-                onClick={() => handleApplySearch(search)}
-              >
-                <div className={styles.searchInfo}>
-                  <div className={styles.searchName}>{search.name}</div>
-                  {search.seasonSpecific && (
-                    <div className={styles.searchBadge}>Season-specific</div>
-                  )}
-                </div>
+    <>
+      <Popout
+        buttonText="Saved Searches"
+        Icon={<MdBookmark size={18} />}
+        onOpenChange={setIsOpen}
+      >
+        <div className={styles.container}>
+          <h3 className={styles.dropdownTitle}>Saved Searches</h3>
+          <p className={styles.dropdownDescription}>
+            Add a new search below, or click one to apply. Saved searches use
+            the currently selected season when you apply them.
+          </p>
+          {isAddingSearch ? (
+            <div className={styles.addInputContainer}>
+              <Input
+                className={styles.addInput}
+                type="text"
+                value={addingName}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setAddingName(e.target.value)
+                }
+                placeholder="Name this search... (Enter to save)"
+                maxLength={64}
+                ref={addInputRef}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  e.stopPropagation();
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const name = addingName.trim();
+                    if (name) {
+                      const filterValues = getFilterValues(filters);
+                      const queryString = buildFullFilterQueryString(
+                        filterValues,
+                        defaultFilters,
+                        { excludeSeason: true },
+                      );
+                      void createSavedSearch(name, queryString).then(
+                        (result) => {
+                          if (result) {
+                            toast.success('Search saved');
+                            void loadSearches();
+                          }
+                        },
+                      );
+                    }
+                    setAddingName('');
+                    setIsAddingSearch(false);
+                  } else if (e.key === 'Escape') {
+                    setAddingName('');
+                    setIsAddingSearch(false);
+                  }
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLInputElement>) =>
+                  e.stopPropagation()
+                }
+                onBlur={() => {
+                  if (addingName.trim()) {
+                    const filterValues = getFilterValues(filters);
+                    const queryString = buildFullFilterQueryString(
+                      filterValues,
+                      defaultFilters,
+                      { excludeSeason: true },
+                    );
+                    void createSavedSearch(addingName.trim(), queryString).then(
+                      (result) => {
+                        if (result) {
+                          toast.success('Search saved');
+                          void loadSearches();
+                        }
+                      },
+                    );
+                  }
+                  setAddingName('');
+                  setIsAddingSearch(false);
+                }}
+              />
+            </div>
+          ) : (
+            <Button
+              variant="primary"
+              size="sm"
+              className={styles.saveButton}
+              onClick={() => setIsAddingSearch(true)}
+              title="Save current search"
+            >
+              <MdSave size={16} />
+              Save current search
+            </Button>
+          )}
+          {isLoading ? (
+            <div className={styles.loading}>
+              <Spinner message="Loading saved searches..." />
+            </div>
+          ) : searches.length === 0 ? (
+            <div className={styles.empty}>
+              <p>No saved searches yet.</p>
+              <p className={styles.emptyHint}>
+                Save a search to quickly return to it later!
+              </p>
+            </div>
+          ) : (
+            <div className={styles.searchList}>
+              {searches.map((search) => (
                 <button
+                  key={search.id}
                   type="button"
-                  className={styles.deleteButton}
-                  onClick={(e) => handleDeleteClick(e, search.id, search.name)}
-                  disabled={deletingId === search.id}
-                  title="Delete saved search"
-                  aria-label={`Delete ${search.name}`}
+                  className={styles.searchItem}
+                  onClick={() => handleApplySearch(search)}
                 >
-                  {deletingId === search.id ? (
-                    <Spinner className={styles.spinner} message={undefined} />
-                  ) : (
-                    <MdDelete size={18} />
-                  )}
+                  <div className={styles.searchInfo}>
+                    <div className={styles.searchName}>{search.name}</div>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={(e) =>
+                      handleDeleteClick(e, search.id, search.name)
+                    }
+                    disabled={deletingId === search.id}
+                    title="Delete saved search"
+                    aria-label={`Delete ${search.name}`}
+                  >
+                    {deletingId === search.id ? (
+                      <Spinner className={styles.spinner} message={undefined} />
+                    ) : (
+                      <MdDelete size={18} />
+                    )}
+                  </button>
                 </button>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </Popout>
       <Modal
         show={deleteConfirm !== null}
         onHide={() => setDeleteConfirm(null)}
@@ -158,6 +257,6 @@ export default function SavedSearchesDropdown({
           </Button>
         </Modal.Footer>
       </Modal>
-    </Popout>
+    </>
   );
 }

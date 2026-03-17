@@ -149,7 +149,6 @@ export const savedSearches = pgTable(
     netId: varchar('netId', { length: 8 }).notNull(),
     name: varchar('name', { length: 64 }).notNull(),
     queryString: varchar('queryString', { length: 2048 }).notNull(),
-    seasonSpecific: boolean('seasonSpecific').notNull().default(false),
     createdAt: bigint('createdAt', { mode: 'number' }).notNull(),
   },
   (table) => ({
