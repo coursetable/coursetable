@@ -362,17 +362,19 @@ function WorksheetCalendarList({
                       </Tooltip>
                     )}
                   >
-                    <Button
-                      variant="none"
-                      className={clsx(styles.button, 'px-3 w-100')}
-                      disabled
-                      aria-label="Import courses"
-                    >
-                      <TbCalendarUp
-                        className={clsx(styles.icon, styles.calendarIcon)}
-                        size={22}
-                      />
-                    </Button>
+                    <span className="w-100">
+                      <Button
+                        variant="none"
+                        className={clsx(styles.button, 'px-3 w-100')}
+                        disabled
+                        aria-label="Import courses"
+                      >
+                        <TbCalendarUp
+                          className={clsx(styles.icon, styles.calendarIcon)}
+                          size={22}
+                        />
+                      </Button>
+                    </span>
                   </OverlayTrigger>
                 ))}
             </ButtonGroup>
