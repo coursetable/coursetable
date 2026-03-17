@@ -69,6 +69,49 @@
   min-width: 20rem !important;
 }
 
+.importRow {
+  padding: 0.5rem 0;
+  text-align: left;
+}
+
+.importTopRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+}
+
+.importLabel {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.importDropdown :global(.btn) {
+  background-color: transparent !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border-control) !important;
+  max-width: 14rem;
+  text-align: left;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.importDropdownTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.importDropdown :global(.btn:hover),
+.importDropdown :global(.btn:focus) {
+  background-color: var(--color-surface-active) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border-control) !important;
+}
+
 .courseList {
   overflow-x: hidden;
   border-bottom-left-radius: 8px;
@@ -99,6 +142,13 @@
 .clearAllButton:focus:not(:disabled) {
   border-color: #adb5bd;
   background-color: #f8f9fa;
+}
+
+.importDropdownItem {
+  display: flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  padding-left: 0.5rem !important;
 }
 
 .walkTimesLabel {
