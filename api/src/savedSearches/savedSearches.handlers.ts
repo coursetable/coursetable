@@ -122,22 +122,19 @@ export const updateSavedSearch = async (
 
   const { id, name } = bodyParseRes.data;
 
-  // Verify ownership
-  const existing = await db.query.savedSearches.findFirst({
-    where: and(eq(savedSearches.id, id), eq(savedSearches.netId, netId)),
-  });
-
-  if (!existing) {
-    res.status(404).json({ error: 'SEARCH_NOT_FOUND' });
-    return;
-  }
+  const where = and(eq(savedSearches.id, id), eq(savedSearches.netId, netId));
 
   try {
-    await db
+    const [updated] = await db
       .update(savedSearches)
       .set({ name })
-      .where(and(eq(savedSearches.id, id), eq(savedSearches.netId, netId)));
+      .where(where)
+      .returning({ id: savedSearches.id });
 
+    if (!updated) {
+      res.status(404).json({ error: 'SEARCH_NOT_FOUND' });
+      return;
+    }
     res.sendStatus(200);
   } catch (err) {
     if (isUniqueViolation(err)) {
@@ -162,19 +159,16 @@ export const deleteSavedSearch = async (
 
   const { id } = bodyParseRes.data;
 
-  // Verify ownership before deleting
-  const existing = await db.query.savedSearches.findFirst({
-    where: and(eq(savedSearches.id, id), eq(savedSearches.netId, netId)),
-  });
+  const where = and(eq(savedSearches.id, id), eq(savedSearches.netId, netId));
 
-  if (!existing) {
+  const [deleted] = await db
+    .delete(savedSearches)
+    .where(where)
+    .returning({ id: savedSearches.id });
+
+  if (!deleted) {
     res.status(404).json({ error: 'SEARCH_NOT_FOUND' });
     return;
   }
-
-  await db
-    .delete(savedSearches)
-    .where(and(eq(savedSearches.id, id), eq(savedSearches.netId, netId)));
-
   res.sendStatus(200);
 };
