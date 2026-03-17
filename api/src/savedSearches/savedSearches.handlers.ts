@@ -4,17 +4,8 @@ import z from 'zod';
 
 import { savedSearches } from '../../drizzle/schema.js';
 import { db } from '../config.js';
+import { hasPgCode, PG_UNIQUE_VIOLATION } from '../db/pgErrors.js';
 import winston from '../logging/winston.js';
-
-/** PostgreSQL error code for unique_violation */
-const PG_UNIQUE_VIOLATION = '23505';
-
-function isUniqueViolation(err: unknown): boolean {
-  const e = err as { code?: string; cause?: { code?: string } };
-  return (
-    e.code === PG_UNIQUE_VIOLATION || e.cause?.code === PG_UNIQUE_VIOLATION
-  );
-}
 
 const CreateSavedSearchSchema = z.object({
   name: z.string().min(1).max(64),
@@ -34,12 +25,7 @@ export const getSavedSearches = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  const netId = req.user?.netId;
-  if (!netId) {
-    winston.warn('getSavedSearches: no user/netId on request');
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
+  const { netId } = req.user!;
 
   const searches = await db.query.savedSearches.findMany({
     where: eq(savedSearches.netId, netId),
@@ -100,7 +86,7 @@ export const createSavedSearch = async (
 
     res.json(created);
   } catch (err) {
-    if (isUniqueViolation(err)) {
+    if (hasPgCode(err, PG_UNIQUE_VIOLATION)) {
       res.status(400).json({ error: 'DUPLICATE_NAME' });
       return;
     }
@@ -137,7 +123,7 @@ export const updateSavedSearch = async (
     }
     res.sendStatus(200);
   } catch (err) {
-    if (isUniqueViolation(err)) {
+    if (hasPgCode(err, PG_UNIQUE_VIOLATION)) {
       res.status(400).json({ error: 'DUPLICATE_NAME' });
       return;
     }
