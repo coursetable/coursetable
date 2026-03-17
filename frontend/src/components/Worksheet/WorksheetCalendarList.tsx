@@ -386,8 +386,10 @@ function WorksheetCalendarList({
                       variant="outline-secondary"
                       className={styles.importDropdown}
                       title={
-                        importWorksheetOptions[importTargetWorksheet]?.label ??
-                        'Main Worksheet'
+                        <span className={styles.importDropdownTitle}>
+                          {importWorksheetOptions[importTargetWorksheet]
+                            ?.label ?? 'Main Worksheet'}
+                        </span>
                       }
                       onSelect={(key) => {
                         if (key !== null) setImportTargetWorksheet(Number(key));

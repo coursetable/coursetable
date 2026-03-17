@@ -92,18 +92,23 @@
   color: var(--color-text) !important;
   border-color: var(--color-border-control) !important;
   max-width: 14rem;
+  text-align: left;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+.importDropdownTitle {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: left;
-  padding-left: 0;
+  min-width: 0;
 }
 
 .importDropdown :global(.btn:hover),
 .importDropdown :global(.btn:focus) {
-  background-color: var(--color-surface-active);
-  color: var(--color-text);
-  border-color: var(--color-border-control);
+  background-color: var(--color-surface-active) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border-control) !important;
 }
 
 .courseList {
