@@ -95,7 +95,7 @@ export default function WorksheetStats() {
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
-      isExoticWorksheet: Boolean(state.exoticWorksheet),
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
       exitExoticWorksheet: state.exitExoticWorksheet,
       exoticWorksheet: state.exoticWorksheet,
       isMobile: state.isMobile,

@@ -152,11 +152,11 @@ function WorksheetCalendarList({
   const [importTargetWorksheet, setImportTargetWorksheet] = useState(0);
 
   useEffect(() => {
-    if (!isExoticWorksheet) {
+    if (!isExoticWorksheet || !user) {
       setShowImportRow(false);
       setImportTargetWorksheet(0);
     }
-  }, [isExoticWorksheet]);
+  }, [isExoticWorksheet, user]);
 
   const importSeason = exoticWorksheet?.data.season ?? viewedSeason;
   const importWorksheetOptions = useWorksheetNumberOptions('me', importSeason);
