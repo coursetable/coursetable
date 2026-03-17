@@ -2,11 +2,6 @@ name: DB Migration
 
 on:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Branch or ref to migrate from'
-        required: false
-        default: 'master'
 
 jobs:
   db-migrate:
@@ -17,8 +12,6 @@ jobs:
       url: https://coursetable.com
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref }}
 
       - uses: dopplerhq/secrets-fetch-action@v1.2.0
         with:
