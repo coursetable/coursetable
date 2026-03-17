@@ -4,7 +4,6 @@ import asyncHandler from 'express-async-handler';
 import {
   getSavedSearches,
   createSavedSearch,
-  updateSavedSearch,
   deleteSavedSearch,
 } from './savedSearches.handlers.js';
 import { authBasic } from '../auth/auth.handlers.js';
@@ -16,11 +15,6 @@ export default (app: express.Express): void => {
     '/api/savedSearches/create',
     authBasic,
     asyncHandler(createSavedSearch),
-  );
-  app.post(
-    '/api/savedSearches/update',
-    authBasic,
-    asyncHandler(updateSavedSearch),
   );
   app.post(
     '/api/savedSearches/delete',
