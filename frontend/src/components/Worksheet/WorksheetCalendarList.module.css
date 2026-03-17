@@ -69,6 +69,20 @@
   min-width: 20rem !important;
 }
 
+.importRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+}
+
+.importLabel {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .courseList {
   overflow-x: hidden;
   border-bottom-left-radius: 8px;

@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import {
   Button,
   ButtonGroup,
+  Collapse,
   Dropdown,
   DropdownButton,
   Form,
@@ -14,7 +15,7 @@ import {
 } from 'react-bootstrap';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
-import { TbCalendarDown } from 'react-icons/tb';
+import { TbCalendarDown, TbCalendarUp } from 'react-icons/tb';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -24,15 +25,55 @@ import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListContext from './WorksheetCalendarListContext';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
+import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import {
   setCourseHidden,
   updateWorksheetCourses,
   updateWorksheetMetadata,
 } from '../../queries/api';
+import type { Crn, Season } from '../../queries/graphql-types';
+import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
+
+type CourseImportAction = {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+  action: 'add';
+  color: string;
+  hidden: boolean;
+};
+
+function buildCourseImports(
+  currentCourses: readonly WorksheetCourse[],
+  targetSeason: Season,
+  targetWorksheetNumber: number,
+  targetWorksheet: { courses: { crn: Crn }[] } | undefined,
+): CourseImportAction[] {
+  const actions: CourseImportAction[] = [];
+
+  for (const course of currentCourses) {
+    if (
+      targetWorksheet &&
+      targetWorksheet.courses.some((c) => c.crn === course.listing.crn)
+    )
+      continue;
+
+    actions.push({
+      season: targetSeason,
+      crn: course.listing.crn,
+      worksheetNumber: targetWorksheetNumber,
+      action: 'add',
+      color: course.color,
+      hidden: course.hidden ?? false,
+    });
+  }
+
+  return actions;
+}
 
 type WorksheetCalendarListProps = {
   readonly highlightBuilding: string | null;
@@ -61,9 +102,12 @@ function WorksheetCalendarList({
     viewedWorksheetNumber,
     isReadonlyWorksheet,
     isExoticWorksheet,
+    exoticWorksheet,
     isViewedWorksheetPrivate,
     worksheetView,
     viewedPerson,
+    worksheets,
+    user,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
@@ -71,10 +115,13 @@ function WorksheetCalendarList({
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      exoticWorksheet: state.exoticWorksheet,
       isViewedWorksheetPrivate:
         state.worksheetMemo.getIsViewedWorksheetPrivate(state),
       worksheetView: state.worksheetView,
       viewedPerson: state.viewedPerson,
+      worksheets: state.worksheets,
+      user: state.user,
     })),
   );
 
@@ -96,6 +143,10 @@ function WorksheetCalendarList({
   const showWalkTimesSetting =
     worksheetView === 'calendar' && Boolean(onShowWalkingTimesChange);
   const showExport = controlsMode === 'full';
+  const showImport = controlsMode === 'full' && isExoticWorksheet;
+
+  const [showImportRow, setShowImportRow] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
@@ -256,7 +307,133 @@ function WorksheetCalendarList({
                   </DropdownButton>
                 </OverlayTrigger>
               )}
+
+              {showImport &&
+                (user ? (
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={(props) => (
+                      <Tooltip
+                        id="worksheet-calendar-import-tooltip"
+                        {...props}
+                      >
+                        <span>Import courses into your worksheet</span>
+                      </Tooltip>
+                    )}
+                  >
+                    <Button
+                      variant="none"
+                      className={clsx(styles.button, 'px-3 w-100')}
+                      aria-label="Import courses"
+                      aria-expanded={showImportRow}
+                      onClick={() => setShowImportRow(!showImportRow)}
+                    >
+                      <TbCalendarUp
+                        className={clsx(styles.icon, styles.calendarIcon)}
+                        size={22}
+                      />
+                    </Button>
+                  </OverlayTrigger>
+                ) : (
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={(props) => (
+                      <Tooltip
+                        id="worksheet-calendar-import-tooltip"
+                        {...props}
+                      >
+                        <small>
+                          Sign in to import courses into your worksheets
+                        </small>
+                      </Tooltip>
+                    )}
+                  >
+                    <Button
+                      variant="none"
+                      className={clsx(styles.button, 'px-3 w-100')}
+                      disabled
+                      aria-label="Import courses"
+                    >
+                      <TbCalendarUp
+                        className={clsx(styles.icon, styles.calendarIcon)}
+                        size={22}
+                      />
+                    </Button>
+                  </OverlayTrigger>
+                ))}
             </ButtonGroup>
+
+            <Collapse in={showImportRow}>
+              <div>
+                <div className={styles.importRow}>
+                  <span className={styles.importLabel}>Import into:</span>
+                  <WorksheetNumDropdown
+                    mobile={false}
+                    person="me"
+                    season={exoticWorksheet?.data.season}
+                  />
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    disabled={isImporting}
+                    onClick={async () => {
+                      if (isImporting) return;
+                      setIsImporting(true);
+                      const season =
+                        exoticWorksheet?.data.season ?? viewedSeason;
+                      const targetWorksheet = worksheets
+                        ?.get(season)
+                        ?.get(viewedWorksheetNumber);
+
+                      if (courses.length === 0) {
+                        toast.error(
+                          'Current worksheet has no courses to import',
+                        );
+                        setIsImporting(false);
+                        return;
+                      }
+
+                      const actions = buildCourseImports(
+                        courses,
+                        season,
+                        viewedWorksheetNumber,
+                        targetWorksheet,
+                      );
+
+                      if (actions.length === 0) {
+                        toast.error(
+                          'All courses are already in the target worksheet',
+                        );
+                        setIsImporting(false);
+                        return;
+                      }
+
+                      try {
+                        const success = await updateWorksheetCourses(actions);
+                        if (success) {
+                          await worksheetsRefresh();
+                          toast.success(
+                            `Imported ${actions.length} course${
+                              actions.length === 1 ? '' : 's'
+                            }`,
+                          );
+                          setShowImportRow(false);
+                        }
+                      } catch (error) {
+                        toast.error(
+                          'Failed to import courses. Please try again.',
+                        );
+                        console.error('Failed to import courses:', error);
+                      } finally {
+                        setIsImporting(false);
+                      }
+                    }}
+                  >
+                    {isImporting ? 'Importing...' : 'Confirm'}
+                  </Button>
+                </div>
+              </div>
+            </Collapse>
           </div>
         </SurfaceComponent>
       )}
