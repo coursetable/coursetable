@@ -1,4 +1,4 @@
-import fsPromises from 'node:fs/promises';
+import fs from 'node:fs';
 import https from 'node:https';
 import express from 'express';
 import * as Sentry from '@sentry/node';
@@ -164,29 +164,26 @@ app.use(
   },
 );
 
-async function startServer(): Promise<void> {
-  if (isDev) {
-    // Serve dev with custom SSL.
-    const [key, cert] = await Promise.all([
-      fsPromises.readFile('./src/keys/server.key'),
-      fsPromises.readFile('./src/keys/server.cert'),
-    ]);
-    https.createServer({ key, cert }, app).listen(API_PORT, () => {
+if (isDev) {
+  // Serve dev with custom SSL.
+  https
+    .createServer(
+      {
+        key: fs.readFileSync('./src/keys/server.key'),
+        cert: fs.readFileSync('./src/keys/server.cert'),
+      },
+      app,
+    )
+    .listen(API_PORT, () => {
       winston.info(`Secure dev proxy listening on port ${API_PORT}`);
     });
-  } else {
-    // In prod: just listen on the port. We use traefik to reverse proxy and
-    // provide SSL.
-    app.listen(API_PORT, () => {
-      winston.info(`Insecure API listening on port ${API_PORT}`);
-    });
-  }
+} else {
+  // In prod: just listen on the port. We use traefik to reverse proxy and
+  // provide SSL.
+  app.listen(API_PORT, () => {
+    winston.info(`Insecure API listening on port ${API_PORT}`);
+  });
 }
-
-void startServer().catch((err: unknown) => {
-  winston.error('Server startup failed', err);
-  process.exit(1);
-});
 
 // Generate the static catalog on start. We do this *after* starting listening
 winston.info('Updating static catalog');
