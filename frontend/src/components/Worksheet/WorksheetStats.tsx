@@ -12,6 +12,7 @@ import {
   isDiscussionSection,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
+
 import styles from './WorksheetStats.module.css';
 
 function StatPill({
@@ -85,19 +86,18 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-
   const {
     courses,
     isExoticWorksheet,
-    exitExoticWorksheet,
     exoticWorksheet,
+    exitExoticWorksheet,
     isMobile,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
-      exitExoticWorksheet: state.exitExoticWorksheet,
       exoticWorksheet: state.exoticWorksheet,
+      exitExoticWorksheet: state.exitExoticWorksheet,
       isMobile: state.isMobile,
     })),
   );
