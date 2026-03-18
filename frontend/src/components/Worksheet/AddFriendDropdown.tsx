@@ -175,25 +175,28 @@ function AddFriendDropdownDesktop() {
     let cancelled = false;
     setIsLoading(true);
     async function doSearch() {
-      const data = await searchNames(searchText);
-      if (cancelled) return;
-      if (data) {
-        setSearchResults(
-          data.names
-            .filter(
-              (name) => name.netId !== user?.netId && !isFriend(name.netId),
-            )
-            .map((name) => ({
-              value: name.netId,
-              label:
-                name.first && name.last
-                  ? `${name.first} ${name.last} (${name.netId})`
-                  : name.netId,
-              type: 'searchResult',
-            })),
-        );
+      try {
+        const data = await searchNames(searchText);
+        if (cancelled) return;
+        if (data) {
+          setSearchResults(
+            data.names
+              .filter(
+                (name) => name.netId !== user?.netId && !isFriend(name.netId),
+              )
+              .map((name) => ({
+                value: name.netId,
+                label:
+                  name.first && name.last
+                    ? `${name.first} ${name.last} (${name.netId})`
+                    : name.netId,
+                type: 'searchResult',
+              })),
+          );
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
       }
-      setIsLoading(false);
     }
     // Debounce: wait 300ms after the user stops typing
     const timer = setTimeout(() => {
