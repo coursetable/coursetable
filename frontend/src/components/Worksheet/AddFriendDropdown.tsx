@@ -12,7 +12,7 @@ import {
   type OptionProps,
 } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
-import { fetchAllNames, type UserNames } from '../../queries/api';
+import { searchNames } from '../../queries/api';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
@@ -162,43 +162,51 @@ function AddFriendDropdownDesktop() {
     })),
   );
   const { isFriend } = useContext(FriendContext)!;
-  const [allNames, setAllNames] = useState<UserNames>([]);
+  const [searchResults, setSearchResults] = useState<OptionType[]>([]);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    async function fetchNames() {
-      const data = await fetchAllNames();
-      if (data) setAllNames(data.names);
+    if (searchText.length < 3) {
+      setSearchResults([]);
       setIsLoading(false);
+      return undefined;
     }
-    void fetchNames();
-  }, []);
-
-  const searchResults = useMemo(() => {
-    if (searchText.length < 3) return [];
-    return allNames
-      .filter(
-        (name) =>
-          name.netId !== user?.netId &&
-          !isFriend(name.netId) &&
-          ((name.first &&
-            name.last &&
-            `${name.first} ${name.last}`
-              .toLowerCase()
-              .includes(searchText.toLowerCase())) ||
-            name.netId.includes(searchText.toLowerCase())),
-      )
-      .map((name) => ({
-        value: name.netId,
-        label:
-          name.first && name.last
-            ? `${name.first} ${name.last} (${name.netId})`
-            : name.netId,
-        type: 'searchResult',
-      }));
-  }, [allNames, searchText, user?.netId, isFriend]);
+    let cancelled = false;
+    setIsLoading(true);
+    async function doSearch() {
+      try {
+        const data = await searchNames(searchText);
+        if (cancelled) return;
+        if (data) {
+          setSearchResults(
+            data.names
+              .filter(
+                (name) => name.netId !== user?.netId && !isFriend(name.netId),
+              )
+              .map((name) => ({
+                value: name.netId,
+                label:
+                  name.first && name.last
+                    ? `${name.first} ${name.last} (${name.netId})`
+                    : name.netId,
+                type: 'searchResult',
+              })),
+          );
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+    // Debounce: wait 300ms after the user stops typing
+    const timer = setTimeout(() => {
+      void doSearch();
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [searchText, user?.netId, isFriend]);
   const friendRequestOptions = useMemo(
     () =>
       friendRequests?.map((request) => ({
