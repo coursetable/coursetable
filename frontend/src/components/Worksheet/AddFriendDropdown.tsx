@@ -169,6 +169,7 @@ function AddFriendDropdownDesktop() {
   useEffect(() => {
     if (searchText.length < 3) {
       setSearchResults([]);
+      setIsLoading(false);
       return undefined;
     }
     let cancelled = false;

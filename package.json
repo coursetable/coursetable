@@ -36,7 +36,6 @@
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@graphql-codegen/typescript-operations": "^4.4.0",
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
-    "@types/express-rate-limit": "^6.0.2",
     "@types/image-size": "^0.8.0",
     "@types/sharp": "^0.32.0",
     "commander": "^13.0.0",
