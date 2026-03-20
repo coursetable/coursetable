@@ -62,6 +62,7 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
       ]);
       if (!data || !metadata) {
         catalogLoadAttempted.delete(season);
+        evalsLoadAttempted.delete(season);
         return null;
       }
       // TODO: directly use the course-indexed data in frontend

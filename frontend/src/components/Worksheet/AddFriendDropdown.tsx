@@ -217,9 +217,7 @@ function AddFriendDropdownDesktop({
     <Popout
       buttonText="Add friend"
       notifications={friendRequests?.length}
-      className={fullWidth ? styles.popoutButtonFullWidth : undefined}
-      wrapperClassName={fullWidth ? styles.popoutWrapperFullWidth : undefined}
-      dropdownClassName={fullWidth ? styles.popoutDropdownFullWidth : undefined}
+      fullWidth={fullWidth}
     >
       <PopoutSelect
         placeholder="Enter friend's name"

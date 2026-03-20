@@ -361,9 +361,7 @@ function Profile() {
                         key={selectedWorksheetOption.value}
                         buttonText={selectedWorksheetOption.label}
                         clearIcon={false}
-                        className={styles.profileSelectButton}
-                        wrapperClassName={styles.profileSelectWrapper}
-                        dropdownClassName={styles.profileSelectDropdown}
+                        fullWidth
                       >
                         <PopoutSelect<Option<number>, false>
                           value={selectedWorksheetOption}
