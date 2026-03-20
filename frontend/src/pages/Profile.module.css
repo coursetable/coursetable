@@ -250,14 +250,6 @@
 }
 
 @media (max-width: calc(576px - 0.5px)) {
-  .container {
-    width: 90vw;
-  }
-
-  .cardBody {
-    padding: 1rem;
-  }
-
   .friendItem {
     flex-direction: column;
     align-items: flex-start;

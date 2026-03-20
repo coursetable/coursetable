@@ -70,19 +70,19 @@ function Profile() {
 
   useEffect(() => {
     if (!currentUser) void userRefresh();
+  }, [currentUser, userRefresh]);
+
+  useEffect(() => {
     if (!worksheets) void worksheetsRefresh();
+  }, [worksheets, worksheetsRefresh]);
+
+  useEffect(() => {
     if (!friends) void friendRefresh();
+  }, [friends, friendRefresh]);
+
+  useEffect(() => {
     if (!friendRequests) void friendReqRefresh();
-  }, [
-    currentUser,
-    userRefresh,
-    worksheets,
-    worksheetsRefresh,
-    friends,
-    friendRefresh,
-    friendRequests,
-    friendReqRefresh,
-  ]);
+  }, [friendRequests, friendReqRefresh]);
 
   const worksheetOptions = useMemo(() => {
     if (!worksheets) return [];
