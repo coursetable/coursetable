@@ -202,20 +202,30 @@ function ControlWithUnionIndicator(props: any) {
     isIntersection,
     setIsIntersection,
     unionIntersectionButtonLabel,
+    handle,
   } =
     // Props injected by react-select. These are all the props passed to the
     // *base* Select component, not Custom components. I'm casting it to Props
     // just for convenience.
-    (props as { selectProps: Props }).selectProps;
+    (props as { selectProps: Props & { handle?: string } }).selectProps;
   // Should not happen
   if (isIntersection === undefined) return <components.Control {...props} />;
   const label = unionIntersectionButtonLabel(isIntersection);
+  const tooltipId = handle
+    ? `custom-select-union-${handle}-tooltip`
+    : 'custom-select-union-intersection-tooltip';
   return (
     <div className="d-flex">
       <div className="flex-grow-1">
         <components.Control {...props} />
       </div>
-      <OverlayTrigger overlay={(p) => <Tooltip {...p}>{label}</Tooltip>}>
+      <OverlayTrigger
+        overlay={(p) => (
+          <Tooltip id={tooltipId} {...p}>
+            {label}
+          </Tooltip>
+        )}
+      >
         <button
           type="button"
           className={clsx(

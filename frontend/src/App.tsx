@@ -26,7 +26,7 @@ import { suspended } from './utilities/display';
 import { createCatalogLink } from './utilities/navigation';
 import styles from './App.module.css';
 
-const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
+const SentryRoutes = Sentry.withSentryReactRouterV7Routing(Routes);
 
 const Landing = suspended(() => import('./pages/Landing'));
 const About = suspended(() => import('./pages/About'));

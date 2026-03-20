@@ -26,7 +26,8 @@ import {
 import { pick } from './utilities/common';
 
 export interface Store
-  extends AuthSlice,
+  extends
+    AuthSlice,
     CalendarSlice,
     UserSlice,
     ThemeSlice,

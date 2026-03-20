@@ -47,7 +47,7 @@ export default function WorksheetHideButton({
     <OverlayTrigger
       placement="bottom"
       overlay={(props) => (
-        <Tooltip id="button-tooltip" {...props}>
+        <Tooltip id={`worksheet-hide-button-${crn}-tooltip`} {...props}>
           <small>{buttonLabel}</small>
         </Tooltip>
       )}

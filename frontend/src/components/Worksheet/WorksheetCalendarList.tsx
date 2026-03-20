@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import {
   Button,
   ButtonGroup,
+  Collapse,
   Dropdown,
   DropdownButton,
   Form,
@@ -14,7 +15,7 @@ import {
 } from 'react-bootstrap';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
-import { TbCalendarDown } from 'react-icons/tb';
+import { TbCalendarDown, TbCalendarUp } from 'react-icons/tb';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -24,15 +25,58 @@ import PNGExportButton from './PNGExportButton';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListContext from './WorksheetCalendarListContext';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
+import WorksheetStatusIcon from './WorksheetStatusIcon';
 import {
   setCourseHidden,
   updateWorksheetCourses,
   updateWorksheetMetadata,
 } from '../../queries/api';
+import type { Crn, Season } from '../../queries/graphql-types';
+import {
+  useWorksheetNumberOptions,
+  type WorksheetCourse,
+} from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
+
+type CourseImportAction = {
+  season: Season;
+  crn: Crn;
+  worksheetNumber: number;
+  action: 'add';
+  color: string;
+  hidden: boolean;
+};
+
+function buildCourseImports(
+  currentCourses: readonly WorksheetCourse[],
+  targetSeason: Season,
+  targetWorksheetNumber: number,
+  targetWorksheet: { courses: { crn: Crn }[] } | undefined,
+): CourseImportAction[] {
+  const actions: CourseImportAction[] = [];
+
+  for (const course of currentCourses) {
+    if (
+      targetWorksheet &&
+      targetWorksheet.courses.some((c) => c.crn === course.listing.crn)
+    )
+      continue;
+
+    actions.push({
+      season: targetSeason,
+      crn: course.listing.crn,
+      worksheetNumber: targetWorksheetNumber,
+      action: 'add',
+      color: course.color,
+      hidden: course.hidden ?? false,
+    });
+  }
+
+  return actions;
+}
 
 type WorksheetCalendarListProps = {
   readonly highlightBuilding: string | null;
@@ -41,6 +85,8 @@ type WorksheetCalendarListProps = {
   readonly controlsMode: 'full' | 'hide-only' | 'none' | 'map';
   readonly missingBuildingCodes: Set<string>;
   readonly hideTooltipContext: 'calendar' | 'map';
+  readonly showWalkingTimes?: boolean;
+  readonly onShowWalkingTimesChange?: (showWalkingTimes: boolean) => void;
 };
 
 function WorksheetCalendarList({
@@ -50,6 +96,8 @@ function WorksheetCalendarList({
   controlsMode,
   missingBuildingCodes,
   hideTooltipContext,
+  showWalkingTimes = true,
+  onShowWalkingTimesChange,
 }: WorksheetCalendarListProps) {
   const {
     courses,
@@ -57,8 +105,12 @@ function WorksheetCalendarList({
     viewedWorksheetNumber,
     isReadonlyWorksheet,
     isExoticWorksheet,
+    exoticWorksheet,
     isViewedWorksheetPrivate,
+    worksheetView,
     viewedPerson,
+    worksheets,
+    user,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
@@ -66,9 +118,13 @@ function WorksheetCalendarList({
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      exoticWorksheet: state.exoticWorksheet,
       isViewedWorksheetPrivate:
         state.worksheetMemo.getIsViewedWorksheetPrivate(state),
+      worksheetView: state.worksheetView,
       viewedPerson: state.viewedPerson,
+      worksheets: state.worksheets,
+      user: state.user,
     })),
   );
 
@@ -87,7 +143,24 @@ function WorksheetCalendarList({
     (controlsMode === 'full' || controlsMode === 'map') &&
     !isExoticWorksheet &&
     viewedPerson === 'me';
+  const showWalkTimesSetting =
+    worksheetView === 'calendar' && Boolean(onShowWalkingTimesChange);
   const showExport = controlsMode === 'full';
+  const showImport = controlsMode === 'full' && isExoticWorksheet;
+
+  const [showImportRow, setShowImportRow] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [importTargetWorksheet, setImportTargetWorksheet] = useState(0);
+
+  useEffect(() => {
+    if (!isExoticWorksheet || !user) {
+      setShowImportRow(false);
+      setImportTargetWorksheet(0);
+    }
+  }, [isExoticWorksheet, user]);
+
+  const importSeason = exoticWorksheet?.data.season ?? viewedSeason;
+  const importWorksheetOptions = useWorksheetNumberOptions('me', importSeason);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
@@ -154,7 +227,10 @@ function WorksheetCalendarList({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip
+                      id="worksheet-calendar-show-hide-tooltip"
+                      {...props}
+                    >
                       <span>{areHidden ? 'Show' : 'Hide'} all</span>
                     </Tooltip>
                   )}
@@ -185,7 +261,10 @@ function WorksheetCalendarList({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip
+                      id="worksheet-calendar-settings-tooltip"
+                      {...props}
+                    >
                       <span>Worksheet Settings</span>
                     </Tooltip>
                   )}
@@ -209,7 +288,7 @@ function WorksheetCalendarList({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip id="worksheet-calendar-export-tooltip" {...props}>
                       <span>Export worksheet calendar</span>
                     </Tooltip>
                   )}
@@ -242,7 +321,141 @@ function WorksheetCalendarList({
                   </DropdownButton>
                 </OverlayTrigger>
               )}
+
+              {showImport && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="worksheet-calendar-import-tooltip" {...props}>
+                      <span>
+                        {user
+                          ? 'Import courses into your worksheet'
+                          : 'Sign in to import courses into your worksheets'}
+                      </span>
+                    </Tooltip>
+                  )}
+                >
+                  <Button
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label="Import courses"
+                    aria-expanded={showImportRow}
+                    onClick={() => {
+                      if (!user) {
+                        toast.info('Sign in to import courses');
+                        return;
+                      }
+                      setShowImportRow(!showImportRow);
+                    }}
+                  >
+                    <TbCalendarUp
+                      className={clsx(styles.icon, styles.calendarIcon)}
+                      size={22}
+                    />
+                  </Button>
+                </OverlayTrigger>
+              )}
             </ButtonGroup>
+
+            <Collapse in={showImportRow}>
+              <div>
+                <div className={styles.importRow}>
+                  <div className={styles.importTopRow}>
+                    <span className={styles.importLabel}>Import into:</span>
+                    <DropdownButton
+                      size="sm"
+                      variant="outline-secondary"
+                      className={styles.importDropdown}
+                      title={
+                        <>
+                          {WorksheetStatusIcon(
+                            importTargetWorksheet,
+                            importWorksheetOptions[importTargetWorksheet]
+                              ?.isPrivate,
+                          )}
+                          <span className={styles.importDropdownTitle}>
+                            {importWorksheetOptions[importTargetWorksheet]
+                              ?.label ?? 'Main Worksheet'}
+                          </span>
+                        </>
+                      }
+                      onSelect={(key) => {
+                        if (key !== null) setImportTargetWorksheet(Number(key));
+                      }}
+                    >
+                      {Object.values(importWorksheetOptions).map((opt) => (
+                        <Dropdown.Item
+                          key={opt.value}
+                          eventKey={opt.value}
+                          active={opt.value === importTargetWorksheet}
+                          className={styles.importDropdownItem}
+                        >
+                          {WorksheetStatusIcon(opt.value, opt.isPrivate)}
+                          {opt.label}
+                        </Dropdown.Item>
+                      ))}
+                    </DropdownButton>
+                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    disabled={isImporting}
+                    onClick={async () => {
+                      if (isImporting) return;
+                      setIsImporting(true);
+
+                      const targetWorksheet = worksheets
+                        ?.get(importSeason)
+                        ?.get(importTargetWorksheet);
+
+                      if (courses.length === 0) {
+                        toast.error(
+                          'Current worksheet has no courses to import',
+                        );
+                        setIsImporting(false);
+                        return;
+                      }
+
+                      const actions = buildCourseImports(
+                        courses,
+                        importSeason,
+                        importTargetWorksheet,
+                        targetWorksheet,
+                      );
+
+                      if (actions.length === 0) {
+                        toast.success('All courses imported successfully');
+                        setIsImporting(false);
+                        setShowImportRow(false);
+                        return;
+                      }
+
+                      try {
+                        const success = await updateWorksheetCourses(actions);
+                        if (success) {
+                          await worksheetsRefresh();
+                          toast.success(
+                            `Imported ${actions.length} course${
+                              actions.length === 1 ? '' : 's'
+                            }`,
+                          );
+                          setShowImportRow(false);
+                        }
+                      } catch (error) {
+                        toast.error(
+                          'Failed to import courses. Please try again.',
+                        );
+                        console.error('Failed to import courses:', error);
+                      } finally {
+                        setIsImporting(false);
+                      }
+                    }}
+                  >
+                    {isImporting ? 'Importing...' : 'Confirm'}
+                  </Button>
+                </div>
+              </div>
+            </Collapse>
           </div>
         </SurfaceComponent>
       )}
@@ -280,7 +493,7 @@ function WorksheetCalendarList({
               <OverlayTrigger
                 placement="right"
                 overlay={
-                  <Tooltip id="tooltip-disabled">
+                  <Tooltip id="worksheet-settings-private-disabled-tooltip">
                     Your main worksheet must always be public.
                   </Tooltip>
                 }
@@ -302,6 +515,23 @@ function WorksheetCalendarList({
                 label="Private Worksheet"
                 checked={privateState}
                 onChange={() => setPrivateState(!privateState)}
+              />
+            )}
+            {showWalkTimesSetting && (
+              <Form.Check
+                type="switch"
+                id="show-walk-times-switch"
+                className="mt-3"
+                label={
+                  <span className={styles.walkTimesLabel}>
+                    Show walk times
+                    <span className={styles.betaPill}>Beta</span>
+                  </span>
+                }
+                checked={showWalkingTimes}
+                onChange={(event) =>
+                  onShowWalkingTimesChange?.(event.currentTarget.checked)
+                }
               />
             )}
 

@@ -104,8 +104,8 @@ function GoogleCalendarButton(): React.JSX.Element {
       // Delete all previously added classes
       if (eventList.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        await Promise.all(
-          eventList.result.items.map((event) => {
+        const deletePromises = eventList.result.items
+          .map((event) => {
             if (event.id.startsWith('coursetable') && event.recurringEventId) {
               if (!deletedIds.has(event.recurringEventId)) {
                 deletedIds.add(event.recurringEventId);
@@ -115,9 +115,10 @@ function GoogleCalendarButton(): React.JSX.Element {
                 });
               }
             }
-            return undefined;
-          }),
-        );
+            return null;
+          })
+          .filter((p): p is NonNullable<typeof p> => p !== null);
+        await Promise.all(deletePromises);
       }
       const events = getCalendarEvents('gcal', courses, viewedSeason);
       await Promise.all(
