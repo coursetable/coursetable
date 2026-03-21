@@ -18,6 +18,32 @@ const RETRY_DELAY = 100; // Delay between retries in milliseconds
 
 const EXPORT_CLASS = 'exporting-png';
 
+const EXPORT_BG = {
+  light: '#ffffff',
+  dark: '#121212',
+} as const;
+
+function drawCaptureLetterboxed(
+  ctx: CanvasRenderingContext2D,
+  source: HTMLCanvasElement,
+  theme: 'light' | 'dark',
+): void {
+  const bg = EXPORT_BG[theme];
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, EXPORT_WIDTH, EXPORT_HEIGHT);
+
+  const scale = Math.min(
+    EXPORT_WIDTH / source.width,
+    EXPORT_HEIGHT / source.height,
+  );
+  const drawW = source.width * scale;
+  const drawH = source.height * scale;
+  const offsetX = (EXPORT_WIDTH - drawW) / 2;
+  const offsetY = (EXPORT_HEIGHT - drawH) / 2;
+
+  ctx.drawImage(source, offsetX, offsetY, drawW, drawH);
+}
+
 const loadImage = (src: string): Promise<HTMLImageElement> =>
   fetch(src)
     .then((response) => response.blob())
@@ -109,7 +135,7 @@ export default function PNGExportButton() {
         throw new Error('Calendar not found. Please try again.');
 
       const canvas = await html2canvas(calendarElement, {
-        backgroundColor: theme === 'dark' ? '#121212' : '#ffffff',
+        backgroundColor: theme === 'dark' ? EXPORT_BG.dark : EXPORT_BG.light,
         scale: CANVAS_SCALE,
         logging: false,
         useCORS: true,
@@ -119,8 +145,7 @@ export default function PNGExportButton() {
         },
       });
 
-      // HTML2Canvas result can't be drawn on directly
-      // So we redraw it to add watermark
+      // Letterbox capture, then watermark
       const finalCanvas = document.createElement('canvas');
       finalCanvas.width = EXPORT_WIDTH;
       finalCanvas.height = EXPORT_HEIGHT;
@@ -128,7 +153,7 @@ export default function PNGExportButton() {
 
       if (!finalCtx) throw new Error('Failed to get canvas context.');
 
-      finalCtx.drawImage(canvas, 0, 0, finalCanvas.width, finalCanvas.height);
+      drawCaptureLetterboxed(finalCtx, canvas, theme);
       await retryWatermark(finalCtx, finalCanvas.height, theme);
 
       await new Promise<void>((resolve, reject) => {
