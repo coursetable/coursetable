@@ -168,6 +168,10 @@ export default defineConfig({
         display: 'standalone',
         theme_color: '#ffffff',
       },
+      // Default Workbox limit is 2 MiB
+      workbox: {
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+      },
     }),
   ],
   build: {
