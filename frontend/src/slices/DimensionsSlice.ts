@@ -23,8 +23,7 @@ interface DimensionsSliceActions {
 }
 
 export interface DimensionsSlice
-  extends DimensionsSliceState,
-    DimensionsSliceActions {}
+  extends DimensionsSliceState, DimensionsSliceActions {}
 
 export const createDimensionsSlice: StateCreator<
   Store,

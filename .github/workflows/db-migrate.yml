@@ -1,0 +1,35 @@
+name: DB Migration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  db-migrate:
+    name: Run Drizzle DB migration
+    runs-on: self-hosted
+    environment:
+      name: Production
+      url: https://coursetable.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dopplerhq/secrets-fetch-action@v1.2.0
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: coursetable
+          doppler-config: prod
+          inject-env-vars: true
+
+      - name: Set DB_URL
+        run: |
+          if [ -z "${DB_URL}" ]; then
+            echo "DB_URL=postgresql://${DB_USER}:${DB_ROOT_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" >> $GITHUB_ENV
+          fi
+
+      - name: Run DB migration
+        run: |
+          docker run --rm --network db \
+            -e DB_URL="${DB_URL}" \
+            -v "${{ github.workspace }}:/app" -w /app \
+            oven/bun:latest \
+            sh -c "bun install --frozen-lockfile && cd api && bunx drizzle-kit push:pg"

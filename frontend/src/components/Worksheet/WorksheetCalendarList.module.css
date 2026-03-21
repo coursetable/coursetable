@@ -57,40 +57,6 @@
   background-color: var(--color-select);
 }
 
-.buttonGroup {
-  display: flex;
-}
-
-.buttonGroupItem {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-}
-
-.buttonGroupItem .button,
-.buttonGroupItem :global(.dropdown) {
-  flex: 1;
-  min-width: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.buttonGroup .button {
-  width: 100%;
-  margin-bottom: 0;
-}
-
-.buttonGroup :global(.dropdown) {
-  width: 100%;
-}
-
-.buttonGroup :global(.dropdown-toggle) {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .button:global(.form-control):focus {
   color: var(--color-text);
 }
@@ -103,22 +69,47 @@
   min-width: 20rem !important;
 }
 
-.buttonGroupItem:not(:first-child) .button,
-.buttonGroupItem:not(:first-child) :global(.dropdown) {
-  margin-left: -2px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+.importRow {
+  padding: 0.5rem 0;
+  text-align: left;
 }
 
-.buttonGroupItem:not(:last-child) .button,
-.buttonGroupItem:not(:last-child) :global(.dropdown) {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+.importTopRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
 }
 
-.buttonGroupItem:hover .button,
-.buttonGroupItem:hover :global(.dropdown) {
-  z-index: 2;
+.importLabel {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.importDropdown :global(.btn) {
+  background-color: transparent !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border-control) !important;
+  max-width: 14rem;
+  text-align: left;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.importDropdownTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.importDropdown :global(.btn:hover),
+.importDropdown :global(.btn:focus) {
+  background-color: var(--color-surface-active) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border-control) !important;
 }
 
 .courseList {
@@ -151,4 +142,33 @@
 .clearAllButton:focus:not(:disabled) {
   border-color: #adb5bd;
   background-color: #f8f9fa;
+}
+
+.importDropdownItem {
+  display: flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  padding-left: 0.5rem !important;
+}
+
+.walkTimesLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.betaPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.14rem 0.46rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-transform: uppercase;
 }

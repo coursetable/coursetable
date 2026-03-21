@@ -1,10 +1,10 @@
 import type { StateCreator } from 'zustand';
 import type { Store } from '../store';
-import type { RBCEvent } from '../utilities/calendar';
+import type { CourseRBCEvent } from '../utilities/calendar';
 
 interface CalendarSliceState {
-  openColorPickerEvent: RBCEvent | null;
-  openWorksheetMoveEvent: RBCEvent | null;
+  openColorPickerEvent: CourseRBCEvent | null;
+  openWorksheetMoveEvent: CourseRBCEvent | null;
   isCalendarViewLocked: boolean;
   calendarLockStart: number;
   calendarLockEnd: number;
@@ -12,16 +12,15 @@ interface CalendarSliceState {
 }
 
 interface CalendarSliceActions {
-  setOpenColorPickerEvent: (value: RBCEvent | null) => void;
-  setOpenWorksheetMoveEvent: (value: RBCEvent | null) => void;
+  setOpenColorPickerEvent: (value: CourseRBCEvent | null) => void;
+  setOpenWorksheetMoveEvent: (value: CourseRBCEvent | null) => void;
   setCalendarViewLocked: (locked: boolean) => void;
   setCalendarLockRange: (start: number, end: number) => void;
   setCalendarLockSettingsOpen: (open: boolean) => void;
 }
 
 export interface CalendarSlice
-  extends CalendarSliceState,
-    CalendarSliceActions {}
+  extends CalendarSliceState, CalendarSliceActions {}
 
 export const createCalendarSlice: StateCreator<Store, [], [], CalendarSlice> = (
   set,

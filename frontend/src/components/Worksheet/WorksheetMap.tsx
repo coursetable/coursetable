@@ -179,6 +179,16 @@ function NoRefocusZoomControl() {
   return null;
 }
 
+function RemoveLeafletAttributionPrefix() {
+  const map = useMap();
+
+  useEffect(() => {
+    map.attributionControl.setPrefix('');
+  }, [map]);
+
+  return null;
+}
+
 function ViewportGuards({
   bounds,
   markerLatLngs,
@@ -623,6 +633,7 @@ function WorksheetMap() {
                 })}
                 <ViewportGuards bounds={bounds} markerLatLngs={markerLatLngs} />
                 <MapClickReset onReset={() => setTemporaryHighlight(null)} />
+                <RemoveLeafletAttributionPrefix />
                 <NoRefocusZoomControl />
               </MapContainer>
             </div>
