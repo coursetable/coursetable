@@ -28,7 +28,8 @@
 .addedSummary {
   color: var(--color-text-secondary);
   min-width: 0;
-  word-break: break-word;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .calendarWrapper {

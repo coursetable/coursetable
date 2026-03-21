@@ -51,7 +51,10 @@ export default function ScheduleSuggestionsControls({
         <div className={styles.controlLabel}>Targets</div>
         <div className={styles.controlInput}>
           <div className={styles.targetRow}>
-            <Form.Group className={styles.targetField}>
+            <Form.Group
+              className={styles.targetField}
+              controlId="schedule-target-courses"
+            >
               <Form.Label className={styles.targetLabel}>
                 # of courses
               </Form.Label>
@@ -67,7 +70,10 @@ export default function ScheduleSuggestionsControls({
               />
             </Form.Group>
 
-            <Form.Group className={styles.targetField}>
+            <Form.Group
+              className={styles.targetField}
+              controlId="schedule-target-credits"
+            >
               <Form.Label className={styles.targetLabel}>
                 Ideal credits
               </Form.Label>

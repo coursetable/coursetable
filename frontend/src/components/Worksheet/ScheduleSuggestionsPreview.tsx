@@ -8,6 +8,10 @@ import { formatCredits } from './scheduleSuggestionsUtils';
 import { localizer, type RBCEvent } from '../../utilities/calendar';
 import styles from './ScheduleSuggestionsPreview.module.css';
 
+function excludeTooltipId(event: RBCEvent) {
+  return `exclude-${event.listing.crn}-${event.start.getTime()}-${event.end.getTime()}`;
+}
+
 function ScheduleSuggestionEvent({
   event,
   worksheetCourseCodes,
@@ -18,6 +22,7 @@ function ScheduleSuggestionEvent({
   readonly onExcludeCourse: (courseCode: string) => void;
 }) {
   const isWorksheetCourse = worksheetCourseCodes.has(event.listing.course_code);
+  const tooltipId = excludeTooltipId(event);
 
   return (
     <div className={styles.eventWrapper}>
@@ -26,7 +31,7 @@ function ScheduleSuggestionEvent({
           <OverlayTrigger
             placement="top"
             overlay={(props) => (
-              <Tooltip id={`exclude-${event.listing.crn}`} {...props}>
+              <Tooltip id={tooltipId} {...props}>
                 Exclude course
               </Tooltip>
             )}
