@@ -30,6 +30,7 @@ const EMPTY_RESULT: ScheduleEnumeration = {
   schedules: [],
   nodesVisited: 0,
   baseHasConflict: false,
+  truncated: false,
 };
 
 const SCHEDULE_CACHE = new Map<string, ScheduleEnumeration>();
@@ -115,11 +116,6 @@ export default function useScheduleSuggestionsModel({
     [worksheetCourses],
   );
 
-  const worksheetCourseCodes = useMemo(
-    () => new Set(visibleWorksheetListings.map((l) => l.course_code)),
-    [visibleWorksheetListings],
-  );
-
   const worksheetSelectionRows = useMemo(
     () =>
       visibleWorksheetListings.map((listing) => ({
@@ -194,15 +190,13 @@ export default function useScheduleSuggestionsModel({
     const listingsByCode = new Map<string, CatalogListing[]>();
     for (const listing of seasonCatalog.data.values()) {
       const code = listing.course_code;
-      if (worksheetCourseCodes.has(code)) continue;
-
       const current = listingsByCode.get(code);
       if (current) current.push(listing);
       else listingsByCode.set(code, [listing]);
     }
 
     return listingsByCode;
-  }, [seasonCatalog, worksheetCourseCodes]);
+  }, [seasonCatalog]);
 
   const exclusionOptions = useMemo(() => {
     const options: CourseOption[] = [];
@@ -261,18 +255,34 @@ export default function useScheduleSuggestionsModel({
 
   const optionalListings = useMemo(() => {
     const listings: CatalogListing[] = [];
+    const seenCrn = new Set<string>();
 
-    for (const [code, codeListings] of catalogListingsByCode.entries()) {
-      if (excludedSet.has(code)) continue;
+    const pushListing = (listing: CatalogListing) => {
+      if (seenCrn.has(String(listing.crn))) return;
+      if (!hasSchedulableMeeting(listing)) return;
+      if (excludedSet.has(listing.course_code)) return;
+      seenCrn.add(String(listing.crn));
+      listings.push(listing);
+    };
 
-      for (const listing of codeListings) {
-        if (!hasSchedulableMeeting(listing)) continue;
-        listings.push(listing);
+    for (const [, codeListings] of catalogListingsByCode.entries())
+      for (const listing of codeListings) pushListing(listing);
+
+    if (restrictWorksheetSubset) {
+      for (const listing of visibleWorksheetListings) {
+        if (selectedWorksheetCrnsEffective.has(listing.crn)) continue;
+        pushListing(listing);
       }
     }
 
     return listings;
-  }, [catalogListingsByCode, excludedSet]);
+  }, [
+    catalogListingsByCode,
+    excludedSet,
+    restrictWorksheetSubset,
+    selectedWorksheetCrnsEffective,
+    visibleWorksheetListings,
+  ]);
 
   const parsedTargetCredits = useMemo<ParsedCreditsInput>(
     () => parseCreditsInput(targetCreditsInput),
@@ -360,29 +370,30 @@ export default function useScheduleSuggestionsModel({
     viewedSeason,
   ]);
 
-  const { schedules, nodesVisited, baseHasConflict } = useMemo(() => {
-    if (!canRunEnumeration || !cacheKey) return EMPTY_RESULT;
+  const { schedules, nodesVisited, baseHasConflict, truncated } =
+    useMemo(() => {
+      if (!canRunEnumeration || !cacheKey) return EMPTY_RESULT;
 
-    return getCachedEnumeration(cacheKey, () =>
-      enumerateSchedules({
-        fixedListings: fixedListingsForEnumeration,
-        optionalListings,
-        additionalCourses: additionalCoursesNeeded,
-        requiredTags,
-        targetCredits: parsedTargetCredits.value,
-        maxResults: SCHEDULE_MAX_RESULTS,
-        maxNodes: SCHEDULE_MAX_NODES,
-      }),
-    );
-  }, [
-    additionalCoursesNeeded,
-    cacheKey,
-    canRunEnumeration,
-    fixedListingsForEnumeration,
-    optionalListings,
-    parsedTargetCredits.value,
-    requiredTags,
-  ]);
+      return getCachedEnumeration(cacheKey, () =>
+        enumerateSchedules({
+          fixedListings: fixedListingsForEnumeration,
+          optionalListings,
+          additionalCourses: additionalCoursesNeeded,
+          requiredTags,
+          targetCredits: parsedTargetCredits.value,
+          maxResults: SCHEDULE_MAX_RESULTS,
+          maxNodes: SCHEDULE_MAX_NODES,
+        }),
+      );
+    }, [
+      additionalCoursesNeeded,
+      cacheKey,
+      canRunEnumeration,
+      fixedListingsForEnumeration,
+      optionalListings,
+      parsedTargetCredits.value,
+      requiredTags,
+    ]);
 
   const validSchedules = useMemo(
     () =>
@@ -520,6 +531,7 @@ export default function useScheduleSuggestionsModel({
     status,
     canRunEnumeration,
     nodesVisited,
+    enumerationTruncated: truncated,
     addedCourseLabels,
     selectedIndex,
     validSchedulesCount: validSchedules.length,

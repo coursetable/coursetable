@@ -60,7 +60,8 @@ function statusAlert(status: ScheduleSuggestionsStatus) {
     case 'missing_tags':
       return (
         <Alert variant="warning" className="mt-3 mb-0">
-          No eligible courses found.
+          No courses match the selected requirements given your current
+          worksheet and exclusions. Try removing exclusions or relaxing filters.
         </Alert>
       );
 
@@ -178,6 +179,8 @@ export default function ScheduleSuggestionsModal({
         {model.canRunEnumeration && model.nodesVisited > 0 && (
           <span className={styles.searchMeta}>
             Explored {model.nodesVisited.toLocaleString()} combinations
+            {model.enumerationTruncated &&
+              ' (stopped early; not all schedules were explored)'}
           </span>
         )}
         <Button variant="secondary" onClick={onHide}>

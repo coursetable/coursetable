@@ -18,8 +18,9 @@ function ScheduleSuggestionEventBody({
 }: {
   readonly event: CourseRBCEvent;
 }) {
-  const textColor =
-    chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
+  const contrastWhite = chroma.contrast(event.color, 'white');
+  const contrastBlack = chroma.contrast(event.color, 'black');
+  const textColor = contrastWhite >= contrastBlack ? 'white' : 'black';
   const durationMin =
     (event.end.getTime() - event.start.getTime()) / (1000 * 60);
   const isShortClass = durationMin < 75;

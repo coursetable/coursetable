@@ -42,6 +42,8 @@ export type ScheduleEnumeration = {
   readonly schedules: ScheduleResult[];
   readonly nodesVisited: number;
   readonly baseHasConflict: boolean;
+  /** True when search stopped early due to {@link SCHEDULE_MAX_NODES} or {@link SCHEDULE_MAX_RESULTS}. */
+  readonly truncated: boolean;
 };
 
 type CourseGroup = {
@@ -367,6 +369,7 @@ export function enumerateSchedules(
       schedules: [],
       nodesVisited: 0,
       baseHasConflict: true,
+      truncated: false,
     };
   }
 
@@ -384,6 +387,7 @@ export function enumerateSchedules(
         schedules: [],
         nodesVisited: 0,
         baseHasConflict: true,
+        truncated: false,
       };
     }
 
@@ -412,6 +416,7 @@ export function enumerateSchedules(
       schedules: singleSchedule,
       nodesVisited: 0,
       baseHasConflict: false,
+      truncated: false,
     };
   }
 
@@ -422,6 +427,7 @@ export function enumerateSchedules(
       schedules: [],
       nodesVisited: 0,
       baseHasConflict: false,
+      truncated: false,
     };
   }
 
@@ -576,5 +582,6 @@ export function enumerateSchedules(
     schedules,
     nodesVisited,
     baseHasConflict: false,
+    truncated: shouldStop,
   };
 }
