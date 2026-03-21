@@ -1,12 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {
+  FaLock,
+  FaUnlock,
+  FaCog,
+  FaExpandAlt,
+  FaCompressAlt,
+} from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 
 import NeedsLogin from './NeedsLogin';
 import ErrorPage from '../components/ErrorPage';
 import Spinner from '../components/Spinner';
 import { SurfaceComponent } from '../components/Typography';
+import CalendarLockSettingsModal from '../components/Worksheet/CalendarLockSettingsModal';
 import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
 import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
@@ -20,6 +28,8 @@ import { parseCoursesFromURL } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
 import styles from './Worksheet.module.css';
 
+const SHOW_WALKING_TIMES_STORAGE_KEY = 'worksheet-calendar-show-walking-times';
+
 function Worksheet() {
   const {
     isMobile,
@@ -28,6 +38,9 @@ function Worksheet() {
     worksheetError,
     worksheetView,
     isExoticWorksheet,
+    isCalendarViewLocked,
+    setCalendarViewLocked,
+    setCalendarLockSettingsOpen,
   } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -36,15 +49,34 @@ function Worksheet() {
       worksheetError: state.worksheetError,
       worksheetView: state.worksheetView,
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      isCalendarViewLocked: state.isCalendarViewLocked,
+      setCalendarViewLocked: state.setCalendarViewLocked,
+      setCalendarLockSettingsOpen: state.setCalendarLockSettingsOpen,
     })),
   );
   const [expanded, setExpanded] = useState(false);
+  const [showWalkingTimes, setShowWalkingTimes] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const savedPreference = window.localStorage.getItem(
+      SHOW_WALKING_TIMES_STORAGE_KEY,
+    );
+    if (savedPreference === null) return true;
+    return savedPreference !== '0' && savedPreference !== 'false';
+  });
   const emptyMissingBuildingCodes = useMemo(() => new Set<string>(), []);
 
   useEffect(() => {
     const exoticWorksheet = parseCoursesFromURL();
     useStore.setState({ exoticWorksheet });
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(
+      SHOW_WALKING_TIMES_STORAGE_KEY,
+      showWalkingTimes ? '1' : '0',
+    );
+  }, [showWalkingTimes]);
 
   // Wait for search query to finish
   if (worksheetError) {
@@ -57,6 +89,11 @@ function Worksheet() {
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'map') return <WorksheetMap />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
+  const LockIcon = isCalendarViewLocked ? FaLock : FaUnlock;
+  const lockLabel = isCalendarViewLocked ? 'Unlock view' : 'Lock view';
+
+  const FullScreenIcon = expanded ? FaCompressAlt : FaExpandAlt;
+  const fullScreenLabel = expanded ? 'Compress calendar' : 'Expand calendar';
 
   // Mobile list view - show dropdowns and list
   if (worksheetView === 'list' && isMobile) {
@@ -76,8 +113,6 @@ function Worksheet() {
     );
   }
 
-  const Icon = expanded ? FaCompressAlt : FaExpandAlt;
-
   // Calendar view (default)
   return (
     <div className={styles.container}>
@@ -91,18 +126,50 @@ function Worksheet() {
         </div>
       )}
       <SurfaceComponent className={styles.calendar}>
-        <WorksheetCalendar />
+        <WorksheetCalendar showWalkingTimes={showWalkingTimes} />
         {!isMobile && (
-          <button
-            type="button"
-            className={styles.expandBtn}
-            onClick={() => {
-              setExpanded((x) => !x);
-            }}
-            aria-label={`${expanded ? 'Collapse' : 'Expand'} calendar`}
-          >
-            <Icon className={styles.expandIcon} size={12} />
-          </button>
+          <div className={styles.calendarControls}>
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="worksheet-fullscreen-tooltip">
+                  {fullScreenLabel} + new buttons! (beta)
+                </Tooltip>
+              }
+            >
+              <button
+                type="button"
+                className={styles.controlsTrigger}
+                onClick={() => setExpanded((x) => !x)}
+                aria-label={fullScreenLabel}
+              >
+                <FullScreenIcon className={styles.triggerIcon} size={11} />
+                <span className={styles.betaIndicator} aria-hidden="true" />
+              </button>
+            </OverlayTrigger>
+
+            <div className={styles.controlsMenu}>
+              <button
+                type="button"
+                className={styles.controlBtn}
+                onClick={() => setCalendarViewLocked(!isCalendarViewLocked)}
+                aria-label={lockLabel}
+                title={lockLabel}
+              >
+                <LockIcon size={11} />
+              </button>
+
+              <button
+                type="button"
+                className={styles.controlBtn}
+                onClick={() => setCalendarLockSettingsOpen(true)}
+                aria-label="Calendar time range settings"
+                title="Calendar time range settings"
+              >
+                <FaCog size={11} />
+              </button>
+            </div>
+          </div>
         )}
       </SurfaceComponent>
       {(isMobile || !expanded) && (
@@ -115,9 +182,12 @@ function Worksheet() {
             controlsMode="full"
             missingBuildingCodes={emptyMissingBuildingCodes}
             hideTooltipContext="calendar"
+            showWalkingTimes={showWalkingTimes}
+            onShowWalkingTimesChange={setShowWalkingTimes}
           />
         </div>
       )}
+      <CalendarLockSettingsModal />
     </div>
   );
 }

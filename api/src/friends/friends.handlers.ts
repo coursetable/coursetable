@@ -353,8 +353,8 @@ export const getFriendsWorksheets = async (
 
   // Include the sameCourseIdToCrns map in the response
   const sameCourseIdToCrnsObj: { [key: string]: number[] } = {};
-  for (const [sameCourseId, crns] of sameCourseIdToCrns.entries())
-    sameCourseIdToCrnsObj[String(sameCourseId)] = crns;
+  for (const [key, crns] of sameCourseIdToCrns.entries())
+    sameCourseIdToCrnsObj[key] = crns;
 
   res.status(200).json({
     friends: aggregateInfo,

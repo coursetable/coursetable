@@ -66,7 +66,7 @@ export const passportConfig = (
         // Create or update user's profile
         winston.info("Creating user's profile");
 
-        const [existingUser] = await db
+        const [insertedUser] = await db
           .insert(studentBluebookSettings)
           .values({
             netId: profile.user,
@@ -74,6 +74,18 @@ export const passportConfig = (
           })
           .onConflictDoNothing()
           .returning();
+
+        const existingUser =
+          insertedUser ??
+          (await db.query.studentBluebookSettings.findFirst({
+            where: eq(studentBluebookSettings.netId, profile.user),
+            columns: {
+              email: true,
+              firstName: true,
+              lastName: true,
+              evaluationsEnabled: true,
+            },
+          }));
 
         const user = {
           netId: profile.user,

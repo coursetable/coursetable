@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useState,
   useCallback,
+  useEffect,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFerry } from './ferryContext';
@@ -106,9 +107,24 @@ export function ModalHistoryProvider({
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [isClosing, setIsClosing] = useState(false);
   const courseFromURL = useCourseInfoFromURL(history.length === 0);
   const profFromURL = useProfInfoFromURL();
-  if (history.length === 0) {
+
+  // When closeModal runs, setSearchParams updates the URL asynchronously.
+  // Before navigation completes, searchParams still has the old value, so we'd
+  // incorrectly repopulate history. Skip repopulation until URL is updated
+  // (React 19 + React Router 7 timing).
+  useEffect(() => {
+    if (
+      history.length === 0 &&
+      !searchParams.has('course-modal') &&
+      !searchParams.has('prof-modal')
+    )
+      setIsClosing(false);
+  }, [history.length, searchParams]);
+
+  if (history.length === 0 && !isClosing) {
     if (courseFromURL) setHistory([{ type: 'course', data: courseFromURL }]);
     else if (profFromURL)
       setHistory([{ type: 'professor', data: profFromURL }]);
@@ -128,11 +144,13 @@ export function ModalHistoryProvider({
     [history, setHistory],
   );
   const closeModal = useCallback(() => {
+    setIsClosing(true);
     setHistory([]);
-    setSearchParams((s) => {
-      s.delete('course-modal');
-      s.delete('prof-modal');
-      return s;
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete('course-modal');
+      next.delete('prof-modal');
+      return next;
     });
   }, [setSearchParams]);
 

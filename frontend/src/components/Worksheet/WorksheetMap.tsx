@@ -162,6 +162,33 @@ function ResetViewControl({
   return null;
 }
 
+function NoRefocusZoomControl() {
+  const map = useMap();
+
+  useEffect(() => {
+    class ZoomNoRefocus extends L.Control.Zoom {
+      _refocusOnMap() {}
+    }
+    const control = new ZoomNoRefocus({ position: 'topleft' });
+    map.addControl(control);
+    return () => {
+      map.removeControl(control);
+    };
+  }, [map]);
+
+  return null;
+}
+
+function RemoveLeafletAttributionPrefix() {
+  const map = useMap();
+
+  useEffect(() => {
+    map.attributionControl.setPrefix('');
+  }, [map]);
+
+  return null;
+}
+
 function ViewportGuards({
   bounds,
   markerLatLngs,
@@ -564,6 +591,7 @@ function WorksheetMap() {
                 bounds={bounds ?? undefined}
                 scrollWheelZoom
                 preferCanvas
+                zoomControl={false}
               >
                 <TileLayer
                   key={tileUrl}
@@ -605,6 +633,8 @@ function WorksheetMap() {
                 })}
                 <ViewportGuards bounds={bounds} markerLatLngs={markerLatLngs} />
                 <MapClickReset onReset={() => setTemporaryHighlight(null)} />
+                <RemoveLeafletAttributionPrefix />
+                <NoRefocusZoomControl />
               </MapContainer>
             </div>
             {showSpinner && (

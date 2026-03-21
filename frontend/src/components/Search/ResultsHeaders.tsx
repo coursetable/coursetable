@@ -13,11 +13,13 @@ function HeaderCol({
   className,
   children,
   tooltip,
+  tooltipId,
   sortOption,
 }: {
   readonly className: string | undefined;
   readonly children: React.ReactNode;
   readonly tooltip?: string | React.JSX.Element;
+  readonly tooltipId?: string;
   readonly sortOption?: SortKeys;
 }) {
   return (
@@ -26,7 +28,10 @@ function HeaderCol({
         <OverlayTrigger
           placement="bottom"
           overlay={(props) => (
-            <Tooltip id="button-tooltip" {...props}>
+            <Tooltip
+              id={tooltipId ?? `header-${sortOption ?? 'col'}-tooltip`}
+              {...props}
+            >
               {typeof tooltip === 'string' ? <span>{tooltip}</span> : tooltip}
             </Tooltip>
           )}
@@ -80,6 +85,7 @@ function ResultsHeaders({
             <HeaderCol
               className={colStyles.codeCol}
               tooltip="Course code and section"
+              tooltipId="results-header-code-tooltip"
               sortOption="course_code"
             >
               Code
@@ -98,6 +104,7 @@ function ResultsHeaders({
                   average across all professors)
                 </span>
               }
+              tooltipId="results-header-overall-tooltip"
               sortOption="overall"
             >
               Overall
@@ -113,6 +120,7 @@ function ResultsHeaders({
                   average across all professors)
                 </span>
               }
+              tooltipId="results-header-workload-tooltip"
               sortOption="workload"
             >
               Work
@@ -127,6 +135,7 @@ function ResultsHeaders({
                   them)
                 </span>
               }
+              tooltipId="results-header-professors-tooltip"
               sortOption="average_professor_rating"
             >
               Professors
@@ -142,6 +151,7 @@ function ResultsHeaders({
                   professor was teaching)
                 </span>
               }
+              tooltipId="results-header-enrollment-tooltip"
               sortOption="enrollment"
             >
               #
@@ -158,6 +168,7 @@ function ResultsHeaders({
                   (sort order based on day and starting time)
                 </span>
               }
+              tooltipId="results-header-meets-tooltip"
               sortOption="time"
             >
               Meets
@@ -168,6 +179,7 @@ function ResultsHeaders({
             <HeaderCol
               className={colStyles.friendsCol}
               tooltip="Number of friends shopping this course"
+              tooltipId="results-header-friends-tooltip"
               sortOption="friend"
             >
               #F
@@ -175,6 +187,7 @@ function ResultsHeaders({
             <HeaderCol
               className={colStyles.addedCol}
               tooltip="Date the course was added to our catalog"
+              tooltipId="results-header-added-tooltip"
               sortOption="added"
             >
               Added

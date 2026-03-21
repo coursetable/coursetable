@@ -26,7 +26,8 @@ import {
 import { pick } from './utilities/common';
 
 export interface Store
-  extends AuthSlice,
+  extends
+    AuthSlice,
     CalendarSlice,
     UserSlice,
     ThemeSlice,
@@ -42,6 +43,9 @@ const basePersistKeys: (keyof Store)[] = [
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
+  'isCalendarViewLocked',
+  'calendarLockStart',
+  'calendarLockEnd',
 ];
 const PersistKeys = basePersistKeys.concat(
   Object.keys(defaultPreferences) as (keyof Store)[],

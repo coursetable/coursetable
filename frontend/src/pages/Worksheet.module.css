@@ -1,4 +1,6 @@
 .container {
+  --calendar-control-size: 22px;
+
   display: flex;
   gap: 1rem;
   padding: 1rem;
@@ -12,6 +14,7 @@
 
 .calendar {
   box-shadow: 0 2px 6px 0 var(--color-shadow);
+  border-radius: 8px;
 
   /* Each hour in RBC has a min-height of 40px, and a day is at most 12hr */
   height: max(calc(100vh - var(--height-navbar) - 2rem), 480px);
@@ -19,7 +22,6 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
-  border-radius: 8px;
 }
 
 @media (max-width: calc(768px - 0.5px)) {
@@ -40,28 +42,122 @@
   }
 }
 
-.expandBtn {
-  padding: 3px;
+.calendarControls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  transform: translate(50%, -40%);
+}
+
+.controlsTrigger {
+  position: relative;
+  width: var(--calendar-control-size);
+  height: var(--calendar-control-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
   background-color: var(--color-bg-button);
   color: var(--color-text-secondary);
-  position: absolute;
-  top: 0%;
-  right: 0%;
-  z-index: 2;
-  transform: translate(50%, -40%);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  padding: 0;
+  appearance: none;
+  font: inherit;
+  line-height: 1;
   transition:
-    transform 0.05s linear,
+    transform 0.1s ease,
     background-color var(--trans-dur),
-    color var(--trans-dur);
+    color var(--trans-dur),
+    border-color var(--trans-dur);
 }
 
-.expandIcon {
+.triggerIcon {
   display: block;
 }
 
-.expandBtn:hover {
-  transform: translate(50%, -40%) scale(1.1);
+.betaIndicator {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-primary, #3b82f6);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.controlsTrigger:hover {
+  background-color: var(--color-bg-button-hover);
+}
+
+.calendarControls:hover .controlsTrigger,
+.calendarControls:focus-within .controlsTrigger {
+  transform: scale(1.05);
+}
+
+.controlsMenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.calendarControls:hover .controlsMenu,
+.calendarControls:focus-within .controlsMenu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.controlBtn {
+  width: var(--calendar-control-size);
+  height: var(--calendar-control-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  padding: 0;
+  appearance: none;
+  font: inherit;
+  line-height: 1;
+  transition:
+    transform 0.1s ease,
+    background-color var(--trans-dur),
+    color var(--trans-dur),
+    border-color var(--trans-dur);
+}
+
+.controlBtn:hover {
+  transform: scale(1.1);
+  background-color: var(--color-bg-button-hover);
 }
 
 .calendarSidebar {
