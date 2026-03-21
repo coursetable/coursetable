@@ -2,9 +2,9 @@ import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Alert, Button, Modal } from 'react-bootstrap';
 
-import { useEventStyle } from './CalendarEvent';
 import ScheduleSuggestionsControls from './ScheduleSuggestionsControls';
 import ScheduleSuggestionsPreview from './ScheduleSuggestionsPreview';
+import { suggestionEventStyleGetter } from './scheduleSuggestionsUtils';
 import useScheduleSuggestionsModel, {
   type ScheduleSuggestionsStatus,
 } from './useScheduleSuggestionsModel';
@@ -37,7 +37,15 @@ function statusAlert(status: ScheduleSuggestionsStatus) {
     case 'target_below_fixed':
       return (
         <Alert variant="warning" className="mt-3 mb-0">
-          Target courses is lower than your current worksheet count.
+          Course count must be at least as large as the number of worksheet
+          courses fixed in this search.
+        </Alert>
+      );
+
+    case 'subset_empty':
+      return (
+        <Alert variant="warning" className="mt-3 mb-0">
+          Select at least one worksheet course, or turn off worksheet filtering.
         </Alert>
       );
 
@@ -83,7 +91,6 @@ export default function ScheduleSuggestionsModal({
 }: ScheduleSuggestionsModalProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const model = useScheduleSuggestionsModel({ show });
-  const eventStyleGetter = useEventStyle();
 
   const isInBackground =
     show &&
@@ -124,6 +131,13 @@ export default function ScheduleSuggestionsModal({
         ) : (
           <>
             <ScheduleSuggestionsControls
+              restrictWorksheetSubset={model.restrictWorksheetSubset}
+              onRestrictWorksheetSubsetChange={
+                model.onRestrictWorksheetSubsetChange
+              }
+              worksheetSelectionRows={model.worksheetSelectionRows}
+              selectedWorksheetCrns={model.selectedWorksheetCrnsEffective}
+              onToggleWorksheetCrn={model.onToggleWorksheetCrn}
               targetCoursesInput={model.targetCoursesInput}
               targetCreditsInput={model.targetCreditsInput}
               parsedTargetCredits={model.parsedTargetCredits}
@@ -149,8 +163,8 @@ export default function ScheduleSuggestionsModal({
                 events={model.events}
                 earliest={model.earliest}
                 latest={model.latest}
-                eventStyleGetter={eventStyleGetter}
-                worksheetCourseCodes={model.worksheetCourseCodes}
+                eventStyleGetter={suggestionEventStyleGetter}
+                fixedListingCrns={model.fixedListingCrns}
                 onPrevious={model.onPreviousSchedule}
                 onNext={model.onNextSchedule}
                 onCourseClick={onCourseClick}

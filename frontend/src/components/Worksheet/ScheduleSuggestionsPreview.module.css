@@ -85,6 +85,36 @@
   height: 100%;
 }
 
+.suggestionEventInner {
+  box-sizing: border-box;
+  font-size: 12px;
+  height: 100%;
+  min-width: 0;
+  padding-right: 18px;
+  width: 100%;
+}
+
+.suggestionEventInnerShort {
+  line-height: 1.1;
+}
+
+.suggestionEventCode {
+  font-size: inherit;
+}
+
+.suggestionEventTitle {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestionEventLoc {
+  display: block;
+  font-weight: 500;
+}
+
 @media (max-width: calc(768px - 0.5px)) {
   .scheduleNav {
     align-items: stretch;

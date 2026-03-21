@@ -1,7 +1,13 @@
+import type { CSSProperties } from 'react';
+import chroma from 'chroma-js';
+
 import type { CatalogListing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
 import type { WorksheetCourse } from '../../slices/WorksheetSlice';
-import { getCalendarEvents, type RBCEvent } from '../../utilities/calendar';
+import {
+  getCalendarEvents,
+  type CourseRBCEvent,
+} from '../../utilities/calendar';
 import { worksheetColors } from '../../utilities/constants';
 
 export type ParsedCreditsInput = {
@@ -46,10 +52,23 @@ export function listingSummary(listing: CatalogListing): string {
   return `${listing.course_code}-${String(listing.course.section).padStart(2, '0')}`;
 }
 
+export function suggestionEventStyleGetter(event: CourseRBCEvent): {
+  style: CSSProperties;
+} {
+  const color = chroma(event.color);
+  return {
+    style: {
+      backgroundColor: color.alpha(0.85).css(),
+      borderColor: color.css(),
+      borderWidth: '2px',
+    },
+  };
+}
+
 export function toScheduleEvents(
   listings: readonly CatalogListing[],
   viewedSeason: Season,
-): RBCEvent[] {
+): CourseRBCEvent[] {
   const scheduleCourses: WorksheetCourse[] = listings.map((listing, index) => ({
     crn: listing.crn,
     listing,
@@ -87,7 +106,7 @@ export function areCalendarEventsConflictFree(
   return true;
 }
 
-export function getCalendarBounds(events: readonly RBCEvent[]): {
+export function getCalendarBounds(events: readonly CourseRBCEvent[]): {
   readonly earliest: Date;
   readonly latest: Date;
 } {

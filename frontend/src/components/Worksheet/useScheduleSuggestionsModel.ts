@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import {
@@ -15,12 +15,12 @@ import {
 } from './scheduleSuggestionsUtils';
 import { useCourseData } from '../../contexts/ferryContext';
 import type { CatalogListing } from '../../queries/api';
+import type { Crn } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { skillsAreas } from '../../utilities/constants';
 import {
   enumerateSchedules,
   hasSchedulableMeeting,
-  isListingsConflictFree,
   SCHEDULE_MAX_NODES,
   SCHEDULE_MAX_RESULTS,
   type ScheduleEnumeration,
@@ -59,6 +59,7 @@ export type ScheduleSuggestionsStatus =
   | { readonly kind: 'no_catalog' }
   | { readonly kind: 'invalid_credits' }
   | { readonly kind: 'target_below_fixed' }
+  | { readonly kind: 'subset_empty' }
   | {
       readonly kind: 'insufficient_eligible';
       readonly needed: number;
@@ -93,6 +94,10 @@ export default function useScheduleSuggestionsModel({
   const [requiredTags, setRequiredTags] = useState<string[]>([]);
   const [excludedCourseCodes, setExcludedCourseCodes] = useState<string[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [restrictWorksheetSubset, setRestrictWorksheetSubset] = useState(false);
+  const [selectedWorksheetCrns, setSelectedWorksheetCrns] = useState<Set<Crn>>(
+    () => new Set(),
+  );
 
   const menuPortalTarget = useMemo(
     () =>
@@ -115,20 +120,73 @@ export default function useScheduleSuggestionsModel({
     [visibleWorksheetListings],
   );
 
-  const fixedCourseCount = visibleWorksheetListings.length;
+  const worksheetSelectionRows = useMemo(
+    () =>
+      visibleWorksheetListings.map((listing) => ({
+        crn: listing.crn,
+        label: listingSummary(listing),
+      })),
+    [visibleWorksheetListings],
+  );
+
+  const visibleWorksheetCrnSet = useMemo(
+    () => new Set(visibleWorksheetListings.map((l) => l.crn)),
+    [visibleWorksheetListings],
+  );
+
+  const selectedWorksheetCrnsEffective = useMemo(() => {
+    if (!restrictWorksheetSubset) return visibleWorksheetCrnSet;
+    return new Set(
+      [...selectedWorksheetCrns].filter((crn) =>
+        visibleWorksheetCrnSet.has(crn),
+      ),
+    );
+  }, [restrictWorksheetSubset, selectedWorksheetCrns, visibleWorksheetCrnSet]);
+
+  const fixedListingsForEnumeration = useMemo(() => {
+    if (!restrictWorksheetSubset) return visibleWorksheetListings;
+    return visibleWorksheetListings.filter((l) =>
+      selectedWorksheetCrnsEffective.has(l.crn),
+    );
+  }, [
+    restrictWorksheetSubset,
+    selectedWorksheetCrnsEffective,
+    visibleWorksheetListings,
+  ]);
+
+  const fixedCourseCount = fixedListingsForEnumeration.length;
+
+  const fixedListingCrns = useMemo(
+    () => new Set(fixedListingsForEnumeration.map((l) => l.crn)),
+    [fixedListingsForEnumeration],
+  );
+
+  const enumerationFixedCourseCodes = useMemo(
+    () => new Set(fixedListingsForEnumeration.map((l) => l.course_code)),
+    [fixedListingsForEnumeration],
+  );
+
+  const fullWorksheetCount = visibleWorksheetListings.length;
+
+  const prevShowRef = useRef(false);
 
   useEffect(() => {
-    if (!show) return;
+    const justOpened = show && !prevShowRef.current;
+    prevShowRef.current = show;
+
+    if (!justOpened) return;
 
     SCHEDULE_CACHE.clear();
-    const defaultTarget = Math.max(fixedCourseCount + 1, 4);
+    const defaultTarget = Math.max(fullWorksheetCount + 1, 4);
     setTargetCourses(defaultTarget);
     setTargetCoursesInput(String(defaultTarget));
     setTargetCreditsInput('');
     setRequiredTags([]);
     setExcludedCourseCodes([]);
     setSelectedIndex(0);
-  }, [show, fixedCourseCount]);
+    setRestrictWorksheetSubset(false);
+    setSelectedWorksheetCrns(new Set());
+  }, [show, fullWorksheetCount]);
 
   const catalogListingsByCode = useMemo(() => {
     if (!seasonCatalog) return new Map<string, CatalogListing[]>();
@@ -235,7 +293,7 @@ export default function useScheduleSuggestionsModel({
   const availableTagSet = useMemo(() => {
     const tags = new Set<string>();
 
-    for (const listing of visibleWorksheetListings) {
+    for (const listing of fixedListingsForEnumeration) {
       for (const tag of [...listing.course.skills, ...listing.course.areas])
         tags.add(tag);
     }
@@ -249,18 +307,22 @@ export default function useScheduleSuggestionsModel({
     }
 
     return tags;
-  }, [catalogListingsByCode, eligibleCourseCodes, visibleWorksheetListings]);
+  }, [catalogListingsByCode, eligibleCourseCodes, fixedListingsForEnumeration]);
 
   const missingRequiredTags = useMemo(
     () => requiredTags.filter((tag) => !availableTagSet.has(tag)),
     [requiredTags, availableTagSet],
   );
 
+  const subsetSelectionValid =
+    !restrictWorksheetSubset || selectedWorksheetCrnsEffective.size > 0;
+
   const canRunEnumeration =
     show &&
     Boolean(seasonCatalog) &&
     !catalogLoading &&
     parsedTargetCredits.isValid &&
+    subsetSelectionValid &&
     additionalCoursesNeeded >= 0 &&
     additionalCoursesNeeded <= eligibleCourseCodes.length &&
     missingRequiredTags.length === 0;
@@ -268,7 +330,7 @@ export default function useScheduleSuggestionsModel({
   const cacheKey = useMemo(() => {
     if (!seasonCatalog) return '';
 
-    const worksheetKey = visibleWorksheetListings
+    const worksheetKey = fixedListingsForEnumeration
       .map((listing) => `${listing.course_code}:${listing.crn}`)
       .sort((a, b) => a.localeCompare(b, 'en-US'))
       .join(',');
@@ -291,11 +353,11 @@ export default function useScheduleSuggestionsModel({
   }, [
     additionalCoursesNeeded,
     excludedCourseCodes,
+    fixedListingsForEnumeration,
     parsedTargetCredits.value,
     requiredTags,
     seasonCatalog,
     viewedSeason,
-    visibleWorksheetListings,
   ]);
 
   const { schedules, nodesVisited, baseHasConflict } = useMemo(() => {
@@ -303,7 +365,7 @@ export default function useScheduleSuggestionsModel({
 
     return getCachedEnumeration(cacheKey, () =>
       enumerateSchedules({
-        fixedListings: visibleWorksheetListings,
+        fixedListings: fixedListingsForEnumeration,
         optionalListings,
         additionalCourses: additionalCoursesNeeded,
         requiredTags,
@@ -316,18 +378,16 @@ export default function useScheduleSuggestionsModel({
     additionalCoursesNeeded,
     cacheKey,
     canRunEnumeration,
+    fixedListingsForEnumeration,
     optionalListings,
     parsedTargetCredits.value,
     requiredTags,
-    visibleWorksheetListings,
   ]);
 
   const validSchedules = useMemo(
     () =>
-      schedules.filter(
-        (schedule) =>
-          isListingsConflictFree(schedule.listings) &&
-          areCalendarEventsConflictFree(schedule.listings, viewedSeason),
+      schedules.filter((schedule) =>
+        areCalendarEventsConflictFree(schedule.listings, viewedSeason),
       ),
     [schedules, viewedSeason],
   );
@@ -344,9 +404,8 @@ export default function useScheduleSuggestionsModel({
 
   const events = useMemo(() => {
     if (!currentSchedule) return [];
-    const rawEvents = toScheduleEvents(currentSchedule.listings, viewedSeason);
-    return rawEvents.filter((e) => !excludedSet.has(e.listing.course_code));
-  }, [currentSchedule, viewedSeason, excludedSet]);
+    return toScheduleEvents(currentSchedule.listings, viewedSeason);
+  }, [currentSchedule, viewedSeason]);
 
   const { earliest, latest } = useMemo(
     () => getCalendarBounds(events),
@@ -356,15 +415,16 @@ export default function useScheduleSuggestionsModel({
   const addedCourseLabels = useMemo(
     () =>
       (currentSchedule?.addedListings ?? [])
-        .filter((listing) => !excludedSet.has(listing.course_code))
         .map((listing) => listingSummary(listing))
         .sort((a, b) => a.localeCompare(b, 'en-US')),
-    [currentSchedule?.addedListings, excludedSet],
+    [currentSchedule?.addedListings],
   );
 
   const status: ScheduleSuggestionsStatus = useMemo(() => {
     if (seasonCatalog === undefined) return { kind: 'no_catalog' };
     if (!parsedTargetCredits.isValid) return { kind: 'invalid_credits' };
+    if (restrictWorksheetSubset && selectedWorksheetCrnsEffective.size === 0)
+      return { kind: 'subset_empty' };
     if (additionalCoursesNeeded < 0) return { kind: 'target_below_fixed' };
     if (additionalCoursesNeeded > eligibleCourseCodes.length) {
       return {
@@ -383,7 +443,9 @@ export default function useScheduleSuggestionsModel({
     eligibleCourseCodes.length,
     missingRequiredTags.length,
     parsedTargetCredits.isValid,
+    restrictWorksheetSubset,
     seasonCatalog,
+    selectedWorksheetCrnsEffective.size,
     validSchedules.length,
   ]);
 
@@ -421,10 +483,28 @@ export default function useScheduleSuggestionsModel({
     setSelectedIndex((index) => Math.min(validSchedules.length - 1, index + 1));
 
   const onExcludeCourse = (courseCode: string) => {
-    if (worksheetCourseCodes.has(courseCode)) return;
+    if (enumerationFixedCourseCodes.has(courseCode)) return;
     setExcludedCourseCodes((prev) =>
       prev.includes(courseCode) ? prev : [...prev, courseCode],
     );
+  };
+
+  const onRestrictWorksheetSubsetChange = (checked: boolean) => {
+    setRestrictWorksheetSubset(checked);
+    if (checked) {
+      setSelectedWorksheetCrns(
+        new Set(visibleWorksheetListings.map((l) => l.crn)),
+      );
+    }
+  };
+
+  const onToggleWorksheetCrn = (crn: Crn, checked: boolean) => {
+    setSelectedWorksheetCrns((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(crn);
+      else next.delete(crn);
+      return next;
+    });
   };
 
   return {
@@ -453,7 +533,12 @@ export default function useScheduleSuggestionsModel({
     onTargetCreditsBlur,
     onToggleTag,
     onExcludedCourseCodesChange: setExcludedCourseCodes,
-    worksheetCourseCodes,
+    restrictWorksheetSubset,
+    onRestrictWorksheetSubsetChange,
+    worksheetSelectionRows,
+    selectedWorksheetCrnsEffective,
+    onToggleWorksheetCrn,
+    fixedListingCrns,
     onExcludeCourse,
     onPreviousSchedule,
     onNextSchedule,

@@ -1,32 +1,62 @@
 import type { CSSProperties } from 'react';
+import clsx from 'clsx';
 import { Alert, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdClose } from 'react-icons/md';
+import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 
-import { CalendarEventBody } from './CalendarEvent';
 import { formatCredits } from './scheduleSuggestionsUtils';
-import { localizer, type RBCEvent } from '../../utilities/calendar';
+import { localizer, type CourseRBCEvent } from '../../utilities/calendar';
 import styles from './ScheduleSuggestionsPreview.module.css';
 
-function excludeTooltipId(event: RBCEvent) {
+function excludeTooltipId(event: CourseRBCEvent) {
   return `exclude-${event.listing.crn}-${event.start.getTime()}-${event.end.getTime()}`;
+}
+
+function ScheduleSuggestionEventBody({
+  event,
+}: {
+  readonly event: CourseRBCEvent;
+}) {
+  const textColor =
+    chroma.contrast(event.color, 'white') > 2 ? 'white' : 'black';
+  const durationMin =
+    (event.end.getTime() - event.start.getTime()) / (1000 * 60);
+  const isShortClass = durationMin < 75;
+
+  return (
+    <div
+      className={clsx(
+        styles.suggestionEventInner,
+        isShortClass && styles.suggestionEventInnerShort,
+      )}
+      style={{ color: textColor }}
+    >
+      <strong className={styles.suggestionEventCode}>{event.title}</strong>
+      {!isShortClass && <br />}
+      <span className={styles.suggestionEventTitle}>{event.description}</span>
+      {!isShortClass && (
+        <small className={styles.suggestionEventLoc}>{event.location}</small>
+      )}
+    </div>
+  );
 }
 
 function ScheduleSuggestionEvent({
   event,
-  worksheetCourseCodes,
+  fixedListingCrns,
   onExcludeCourse,
 }: {
-  readonly event: RBCEvent;
-  readonly worksheetCourseCodes: ReadonlySet<string>;
+  readonly event: CourseRBCEvent;
+  readonly fixedListingCrns: ReadonlySet<number>;
   readonly onExcludeCourse: (courseCode: string) => void;
 }) {
-  const isWorksheetCourse = worksheetCourseCodes.has(event.listing.course_code);
+  const isFixedListing = fixedListingCrns.has(event.listing.crn);
   const tooltipId = excludeTooltipId(event);
 
   return (
     <div className={styles.eventWrapper}>
-      {!isWorksheetCourse && (
+      {!isFixedListing && (
         <div className={styles.excludeButtonWrapper}>
           <OverlayTrigger
             placement="top"
@@ -51,7 +81,7 @@ function ScheduleSuggestionEvent({
         </div>
       )}
       <div className={styles.eventContent}>
-        <CalendarEventBody event={event} compact />
+        <ScheduleSuggestionEventBody event={event} />
       </div>
     </div>
   );
@@ -62,11 +92,13 @@ type ScheduleSuggestionsPreviewProps = {
   readonly selectedIndex: number;
   readonly totalSchedules: number;
   readonly credits: number | undefined;
-  readonly events: RBCEvent[];
+  readonly events: CourseRBCEvent[];
   readonly earliest: Date;
   readonly latest: Date;
-  readonly eventStyleGetter: (event: RBCEvent) => { style: CSSProperties };
-  readonly worksheetCourseCodes: ReadonlySet<string>;
+  readonly eventStyleGetter: (event: CourseRBCEvent) => {
+    style: CSSProperties;
+  };
+  readonly fixedListingCrns: ReadonlySet<number>;
   readonly onPrevious: () => void;
   readonly onNext: () => void;
   readonly onCourseClick: (listing: {
@@ -85,7 +117,7 @@ export default function ScheduleSuggestionsPreview({
   earliest,
   latest,
   eventStyleGetter,
-  worksheetCourseCodes,
+  fixedListingCrns,
   onPrevious,
   onNext,
   onCourseClick,
@@ -147,10 +179,10 @@ export default function ScheduleSuggestionsPreview({
               showCurrentTimeIndicator={false}
               onSelectEvent={(event) => onCourseClick(event.listing)}
               components={{
-                event: ({ event }: { readonly event: RBCEvent }) => (
+                event: ({ event }: { readonly event: CourseRBCEvent }) => (
                   <ScheduleSuggestionEvent
                     event={event}
-                    worksheetCourseCodes={worksheetCourseCodes}
+                    fixedListingCrns={fixedListingCrns}
                     onExcludeCourse={onExcludeCourse}
                   />
                 ),

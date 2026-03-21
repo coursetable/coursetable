@@ -6,11 +6,22 @@ import type {
   ParsedCreditsInput,
   RequirementTag,
 } from './scheduleSuggestionsUtils';
+import type { Crn } from '../../queries/graphql-types';
 import CustomSelect from '../Search/CustomSelect';
 import SkillBadge from '../SkillBadge';
 import styles from './ScheduleSuggestionsControls.module.css';
 
+type WorksheetSelectionRow = {
+  readonly crn: Crn;
+  readonly label: string;
+};
+
 type ScheduleSuggestionsControlsProps = {
+  readonly restrictWorksheetSubset: boolean;
+  readonly onRestrictWorksheetSubsetChange: (checked: boolean) => void;
+  readonly worksheetSelectionRows: readonly WorksheetSelectionRow[];
+  readonly selectedWorksheetCrns: ReadonlySet<Crn>;
+  readonly onToggleWorksheetCrn: (crn: Crn, checked: boolean) => void;
   readonly targetCoursesInput: string;
   readonly targetCreditsInput: string;
   readonly parsedTargetCredits: ParsedCreditsInput;
@@ -28,6 +39,11 @@ type ScheduleSuggestionsControlsProps = {
 };
 
 export default function ScheduleSuggestionsControls({
+  restrictWorksheetSubset,
+  onRestrictWorksheetSubsetChange,
+  worksheetSelectionRows,
+  selectedWorksheetCrns,
+  onToggleWorksheetCrn,
   targetCoursesInput,
   targetCreditsInput,
   parsedTargetCredits,
@@ -44,9 +60,50 @@ export default function ScheduleSuggestionsControls({
   onExcludedCourseCodesChange,
 }: ScheduleSuggestionsControlsProps) {
   const exclusionsLabelId = useId();
+  const worksheetSubsetLegendId = useId();
+  const canPickWorksheetSubset = worksheetSelectionRows.length > 0;
 
   return (
     <div className={styles.controlsColumn}>
+      <div className={styles.controlRow}>
+        <div className={styles.controlLabel} id={worksheetSubsetLegendId}>
+          Worksheet
+        </div>
+        <div className={styles.controlInput}>
+          <Form.Check
+            type="checkbox"
+            id="schedule-restrict-worksheet-subset"
+            checked={restrictWorksheetSubset}
+            disabled={!canPickWorksheetSubset}
+            onChange={(event) =>
+              onRestrictWorksheetSubsetChange(event.target.checked)
+            }
+            label="Only include certain courses"
+            className={styles.subsetToggle}
+          />
+          {restrictWorksheetSubset && canPickWorksheetSubset && (
+            <fieldset
+              className={styles.worksheetPickList}
+              aria-labelledby={worksheetSubsetLegendId}
+            >
+              {worksheetSelectionRows.map((row) => (
+                <Form.Check
+                  key={row.crn}
+                  type="checkbox"
+                  id={`schedule-ws-${row.crn}`}
+                  checked={selectedWorksheetCrns.has(row.crn)}
+                  onChange={(event) =>
+                    onToggleWorksheetCrn(row.crn, event.target.checked)
+                  }
+                  label={row.label}
+                  className={styles.worksheetPickOption}
+                />
+              ))}
+            </fieldset>
+          )}
+        </div>
+      </div>
+
       <div className={styles.controlRow}>
         <div className={styles.controlLabel}>Targets</div>
         <div className={styles.controlInput}>
