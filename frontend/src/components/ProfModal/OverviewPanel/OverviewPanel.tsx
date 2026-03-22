@@ -22,8 +22,8 @@ import {
 } from 'chart.js';
 import chroma from 'chroma-js';
 import { Line } from 'react-chartjs-2';
-import { useShallow } from 'zustand/react/shallow';
 
+import { useShallow } from 'zustand/react/shallow';
 import type { Season } from '../../../queries/graphql-types';
 import { useStore } from '../../../store';
 import { subjects } from '../../../utilities/constants';
