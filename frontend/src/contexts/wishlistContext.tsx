@@ -41,16 +41,37 @@ const WishlistContext = createContext<Store | undefined>(undefined);
 WishlistContext.displayName = 'WishlistContext';
 
 function useWishlistWithMetadata(wishlist?: WishlistItem[]) {
-  const listingIds =
-    wishlist?.map((wishlistItem) =>
-      getListingId(wishlistItem.season, wishlistItem.crn),
-    ) ?? [];
-  const { data: queryRes } = useCourseDataFromListingIdsQuery({
+  const listingIds = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          (wishlist ?? []).map((wishlistItem) =>
+            getListingId(wishlistItem.season, wishlistItem.crn),
+          ),
+        ),
+      ),
+    [wishlist],
+  );
+
+  const {
+    data: queryRes,
+    loading: listingLoading,
+    error: listingError,
+  } = useCourseDataFromListingIdsQuery({
     variables: { listingIds },
     skip: listingIds.length === 0,
   });
 
-  if (queryRes?.listings) {
+  const wishlistWithMetadata = useMemo(():
+    | WishlistItemWithMetadata[]
+    | undefined => {
+    if (listingIds.length === 0) {
+      if (wishlist?.length === 0) return [];
+      return undefined;
+    }
+    if (listingLoading) return undefined;
+    if (listingError) return undefined;
+    if (!queryRes?.listings) return undefined;
     return queryRes.listings.map((queryListing) => ({
       season: queryListing.season_code,
       crn: queryListing.crn,
@@ -58,14 +79,22 @@ function useWishlistWithMetadata(wishlist?: WishlistItem[]) {
       listingId: queryListing.listing_id,
       sameCourseId: queryListing.course.same_course_id,
     }));
-  }
-  return undefined;
+  }, [listingError, listingIds.length, listingLoading, queryRes, wishlist]);
+
+  return { wishlistWithMetadata, listingLoading, listingError };
 }
 
 export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
   const user = useStore((state) => state.user);
-  const sameCourseIds =
-    wishlist?.map((wishlistItem) => wishlistItem.sameCourseId) ?? [];
+  const sameCourseIds = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          wishlist?.map((wishlistItem) => wishlistItem.sameCourseId) ?? [],
+        ),
+      ),
+    [wishlist],
+  );
   const {
     data: queryRes,
     loading,
@@ -98,11 +127,11 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
     });
 
     const uniqueSameCourseIdMap = new Map<number, WishlistItemWithListings>();
-    for (const { crn, sameCourseId, season } of wishlist) {
+    for (const { crn, sameCourseId, season, courseCode } of wishlist) {
       if (uniqueSameCourseIdMap.has(sameCourseId)) continue;
 
       const listings: WishlistListing[] = [];
-      const courseCodes = new Set<string>();
+      const courseCodes = new Set<string>([courseCode]);
       if (queryResMap.has(sameCourseId)) {
         for (const queryItem of queryResMap.get(sameCourseId)!) {
           courseCodes.add(queryItem.courseCode);
@@ -133,7 +162,7 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
     }));
     // Sort listings by smallest lexicographic course code
     return dataReturn.sort((a, b) =>
-      a.courseCodes[0]!.localeCompare(b.courseCodes[0]!, 'en-US'),
+      (a.courseCodes[0] ?? '').localeCompare(b.courseCodes[0] ?? '', 'en-US'),
     );
   }, [queryRes, loading, error, wishlist]);
   return { loading, error, data };
@@ -145,21 +174,29 @@ export function WishlistProvider({
   readonly children: React.ReactNode;
 }) {
   const userWishlist = useStore((state) => state.wishlist);
-  const wishlistWithMetadata = useWishlistWithMetadata(userWishlist);
+  const { wishlistWithMetadata, listingLoading, listingError } =
+    useWishlistWithMetadata(userWishlist);
 
   const {
-    loading: wishlistLoading,
-    error: wishlistError,
+    loading: sameCourseLoading,
+    error: sameCourseError,
     data: wishlistCourses,
   } = useWishlistInfo(wishlistWithMetadata);
 
   const store = useMemo(
     () => ({
       wishlistCourses,
-      wishlistLoading: wishlistLoading || !userWishlist,
-      wishlistError,
+      wishlistLoading: listingLoading || sameCourseLoading || !userWishlist,
+      wishlistError: listingError ?? sameCourseError,
     }),
-    [userWishlist, wishlistCourses, wishlistLoading, wishlistError],
+    [
+      userWishlist,
+      wishlistCourses,
+      listingLoading,
+      sameCourseLoading,
+      listingError,
+      sameCourseError,
+    ],
   );
 
   return (
