@@ -69,9 +69,106 @@
   min-width: 20rem !important;
 }
 
+.importRow {
+  padding: 0.5rem 0;
+  text-align: left;
+}
+
+.importTopRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+}
+
+.importLabel {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.importDropdown :global(.btn) {
+  background-color: transparent !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border-control) !important;
+  max-width: 14rem;
+  text-align: left;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.importDropdownTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.importDropdown :global(.btn:hover),
+.importDropdown :global(.btn:focus) {
+  background-color: var(--color-surface-active) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border-control) !important;
+}
+
 .courseList {
   overflow-x: hidden;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   box-shadow: 0 2px 6px 0 var(--color-shadow);
+}
+
+.clearAllButton {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.clearAllButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clearAllButton:hover:not(:disabled) {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}
+
+.clearAllButton:focus:not(:disabled) {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}
+
+.importDropdownItem {
+  display: flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  padding-left: 0.5rem !important;
+}
+
+.walkTimesLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.betaPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.14rem 0.46rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-transform: uppercase;
 }

@@ -81,7 +81,12 @@ export function toTimesSummary(
 
 export function toLocationsSummary(
   course: Pick<CatalogListing['course'], 'course_meetings'>,
+  hasEvals?: boolean,
 ): string {
+  // Hide locations for users without evaluation access
+  if (hasEvals === false) return 'HIDDEN';
+  if (hasEvals === undefined) return 'HIDDEN';
+
   if (course.course_meetings.every((m) => !m.location)) return 'TBA';
   const meeting = course.course_meetings[0]!;
   const summary = meeting.location
@@ -133,25 +138,77 @@ export function checkConflict(
   return conflicts;
 }
 
-/**
- * Key is season code + crn;
- * Value is the list of friends taking the class
- */
 export type NumFriendsReturn = {
   [seasonCodeCrn: `${Season}${Crn}`]: Set<string>;
 };
+
+// Checks if the course has sameCourseId
+function isSameCourseIdKey(key: string): boolean {
+  return !key.includes('-crn-');
+}
+
+function parseCrnKey(key: string): `${Season}${Crn}` {
+  return key.replace(/-crn-/u, '') as `${Season}${Crn}`;
+}
+
+function parseSameCourseIdKey(key: string): {
+  season: Season;
+  sameCourseId: string;
+} {
+  const [season, sameCourseId] = key.split('-') as [Season, string];
+  return { season, sameCourseId };
+}
+
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
-export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
-  const numFriends: NumFriendsReturn = {};
+export function getNumFriends(
+  friends: FriendRecord,
+  sameCourseIdToCrns?: { [key: string]: number[] },
+): NumFriendsReturn {
+  // Reverse mapping: CRN -> same_course_id
+  const crnToSameCourseId = new Map<number, string>();
+  if (sameCourseIdToCrns) {
+    for (const [sameCourseId, crns] of Object.entries(sameCourseIdToCrns))
+      for (const crn of crns) crnToSameCourseId.set(crn, sameCourseId);
+  }
+
+  // First, group friends by same_course_id + season
+  const friendsBySameCourse = new Map<string, Set<string>>();
+
   for (const [netId, friend] of Object.entries(friends)) {
     for (const [seasonCode, worksheets] of friend.worksheets) {
       for (const w of worksheets.values()) {
         for (const course of w.courses) {
-          (numFriends[`${seasonCode}${course.crn}`] ??= new Set()).add(
-            friend.name ?? netId,
-          );
+          // Prioritize sameCourseId from course data, then fall back to lookup
+          const sameCourseId =
+            course.sameCourseId?.toString() ??
+            crnToSameCourseId.get(course.crn);
+          const key =
+            sameCourseId !== undefined
+              ? `${seasonCode}-${sameCourseId}`
+              : `${seasonCode}-crn-${course.crn}`;
+
+          if (!friendsBySameCourse.has(key))
+            friendsBySameCourse.set(key, new Set());
+          friendsBySameCourse.get(key)!.add(friend.name ?? netId);
         }
+      }
+    }
+  }
+
+  // Now map each CRN to its friends list (grouped by same_course_id)
+  const numFriends: NumFriendsReturn = {};
+
+  for (const [sameCourseKey, friendsSet] of friendsBySameCourse.entries()) {
+    if (!isSameCourseIdKey(sameCourseKey)) {
+      const crnKey = parseCrnKey(sameCourseKey);
+      numFriends[crnKey] = friendsSet;
+    } else if (sameCourseIdToCrns) {
+      const crnsForThisCourse = sameCourseIdToCrns[sameCourseKey];
+      const { season } = parseSameCourseIdKey(sameCourseKey);
+      if (crnsForThisCourse) {
+        for (const crn of crnsForThisCourse)
+          numFriends[`${season}${crn}` as `${Season}${Crn}`] = friendsSet;
       }
     }
   }

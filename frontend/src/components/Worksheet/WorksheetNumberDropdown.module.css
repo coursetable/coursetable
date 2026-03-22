@@ -18,6 +18,7 @@
 .optionContent {
   display: flex;
   flex: 1;
+  gap: 8px;
   align-items: center; /* vertical centering */
   justify-content: space-between;
   width: 100%;

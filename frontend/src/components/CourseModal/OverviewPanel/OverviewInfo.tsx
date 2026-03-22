@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip, Collapse } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
-import LinesEllipsis from 'react-lines-ellipsis';
-import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
 import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import { useSearch } from '../../../contexts/searchContext';
@@ -30,27 +29,33 @@ import { LinkLikeText } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
 
-const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
-
 type CourseInfo = NonNullable<CourseModalOverviewDataQuery['self']>['course'];
 
 function Description({ course }: { readonly course: CourseInfo }) {
+  const [expanded, setExpanded] = useState(false);
   const [clamped, setClamped] = useState(false);
-  const [lines, setLines] = useState(8);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (el) setClamped(el.scrollHeight > el.clientHeight);
+  }, [course.description, expanded]);
+
   return (
     <>
-      <ResponsiveEllipsis
-        className={styles.description}
-        text={course.description || 'no description'}
-        maxLine={lines}
-        basedOn="words"
-        onReflow={(rleState) => setClamped(rleState.clamped)}
-      />
-      {clamped && (
+      <div
+        ref={ref}
+        className={[styles.description, !expanded && styles.descriptionClamped]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {course.description || 'no description'}
+      </div>
+      {clamped && !expanded && (
         <div className="d-flex justify-content-center">
           <LinkLikeText
             onClick={() => {
-              setLines(100);
+              setExpanded(true);
             }}
             title="Read more"
           >
@@ -168,7 +173,7 @@ function Prereqs({
             key={i}
             placement="top"
             overlay={(props) => (
-              <Tooltip id={`${s.course}-tooltip`} {...props}>
+              <Tooltip id={`overview-prereq-${i}-tooltip`} {...props}>
                 {s.course}{' '}
                 {info
                   ? info.course.title
@@ -365,13 +370,19 @@ function Professors({ course }: { readonly course: CourseInfo }) {
   );
 }
 
-function TimeLocation({ course }: { readonly course: CourseInfo }) {
+function TimeLocation({
+  course,
+  hasEvals,
+}: {
+  readonly course: CourseInfo;
+  readonly hasEvals: boolean;
+}) {
   return (
     <DataField
       name="Meetings"
       value={course.course_meetings.map((session, i) => {
         const locationTexts = [];
-        if (session.location) {
+        if (session.location && hasEvals) {
           locationTexts.push(session.location.building.code);
           // TODO use a tooltip instead
           if (session.location.building.building_name)
@@ -382,7 +393,7 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
           <div key={i}>
             {toWeekdaysDisplayString(session.days_of_week)}{' '}
             {to12HourTime(session.start_time)}–{to12HourTime(session.end_time)}
-            {session.location && (
+            {hasEvals && session.location && (
               <>
                 {' '}
                 at{' '}
@@ -398,6 +409,23 @@ function TimeLocation({ course }: { readonly course: CourseInfo }) {
                 ) : (
                   locationTexts.join(' ')
                 )}
+              </>
+            )}
+            {!hasEvals && (
+              <>
+                {' '}
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="overview-location-hidden-tooltip" {...props}>
+                      Sign in to see location
+                    </Tooltip>
+                  )}
+                >
+                  <span>
+                    <BsEyeSlash />
+                  </span>
+                </OverlayTrigger>
               </>
             )}
           </div>
@@ -417,6 +445,7 @@ function OverviewInfo({
   readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
 }) {
   const { numFriends } = useSearch();
+  const user = useStore((state) => state.user);
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
@@ -432,7 +461,7 @@ function OverviewInfo({
       />
       <Syllabus course={course} sameCourse={sameCourse} />
       <Professors course={course} />
-      <TimeLocation course={course} />
+      <TimeLocation course={course} hasEvals={Boolean(user?.hasEvals)} />
       <DataField name="Section" value={course.section} />
       <DataField
         name="Info"

@@ -1,6 +1,11 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
-import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+  Button,
+  Dropdown,
+} from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
@@ -9,11 +14,22 @@ import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
 import type { NetId } from '../../queries/graphql-types';
+import type { WorksheetView } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { LinkLikeText } from '../Typography';
 import styles from './NavbarWorksheetSearch.module.css';
 
-export function NavbarWorksheetSearch() {
+const viewLabels: { [key in WorksheetView]: string } = {
+  calendar: 'Calendar',
+  map: 'Map',
+  list: 'List',
+};
+
+export function NavbarWorksheetSearch({
+  isMobile,
+}: {
+  readonly isMobile: boolean;
+}) {
   const {
     worksheetView,
     changeWorksheetView,
@@ -38,6 +54,7 @@ export function NavbarWorksheetSearch() {
       authStatus: state.authStatus,
     })),
   );
+  const isMapSelected = worksheetView === 'map';
 
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>
@@ -79,13 +96,60 @@ export function NavbarWorksheetSearch() {
 
   if (authStatus !== 'authenticated' && !isExoticWorksheet) return null;
 
+  // Mobile: dropdown styled like toggle, flush right next to hamburger
+  if (isMobile) {
+    return (
+      <div className={styles.containerMobile}>
+        <Dropdown align="end">
+          <Dropdown.Toggle className={styles.viewDropdownToggle}>
+            <span className={styles.toggleButtonContent}>
+              <span>{viewLabels[worksheetView]}</span>
+              {worksheetView === 'map' && (
+                <span className={clsx(styles.betaChip, styles.betaChipActive)}>
+                  Beta
+                </span>
+              )}
+            </span>
+          </Dropdown.Toggle>
+          <Dropdown.Menu className={styles.viewDropdownMenu}>
+            {(['calendar', 'map', 'list'] as WorksheetView[]).map((view) => (
+              <Dropdown.Item
+                key={view}
+                className={clsx(
+                  styles.viewDropdownItem,
+                  worksheetView === view && styles.viewDropdownItemActive,
+                )}
+                onClick={() => changeWorksheetView(view)}
+              >
+                <span className={styles.toggleButtonContent}>
+                  <span>{viewLabels[view]}</span>
+                  {view === 'map' && (
+                    <span
+                      className={clsx(
+                        styles.betaChip,
+                        worksheetView === view && styles.betaChipActive,
+                      )}
+                    >
+                      Beta
+                    </span>
+                  )}
+                </span>
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+    );
+  }
+
+  // Desktop: show full toggle with controls
   return (
-    <div className="d-flex align-items-center">
+    <div className={clsx(styles.container, 'd-flex align-items-center')}>
       <ToggleButtonGroup
         name="worksheet-view-toggle"
         type="radio"
         value={worksheetView}
-        onChange={(val: 'calendar' | 'list') => changeWorksheetView(val)}
+        onChange={(val: WorksheetView) => changeWorksheetView(val)}
         className={clsx(styles.toggleButtonGroup, 'ms-2 me-3')}
         data-tutorial="worksheet-2"
       >
@@ -95,6 +159,23 @@ export function NavbarWorksheetSearch() {
           value="calendar"
         >
           Calendar
+        </ToggleButton>
+        <ToggleButton
+          id="view-toggle-map"
+          className={styles.toggleButton}
+          value="map"
+        >
+          <span className={styles.toggleButtonContent}>
+            <span>Map</span>
+            <span
+              className={clsx(
+                styles.betaChip,
+                isMapSelected && styles.betaChipActive,
+              )}
+            >
+              Beta
+            </span>
+          </span>
         </ToggleButton>
         <ToggleButton
           id="view-toggle-list"
@@ -118,8 +199,15 @@ export function NavbarWorksheetSearch() {
           />
         </>
       ) : (
-        <div>
-          <Button variant="primary" onClick={exitExoticWorksheet}>
+        <div className={styles.exoticWorksheetContainer}>
+          <span className={styles.exoticWorksheetText}>
+            Viewing exported worksheet
+          </span>
+          <Button
+            variant="primary"
+            className={styles.exoticExitButton}
+            onClick={exitExoticWorksheet}
+          >
             Exit
           </Button>
         </div>

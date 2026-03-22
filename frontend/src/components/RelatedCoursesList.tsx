@@ -12,7 +12,7 @@ import {
 import { MdInfoOutline } from 'react-icons/md';
 
 // @popperjs/core is provided by react-bootstrap
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { detectOverflow } from '@popperjs/core';
 
 import type { ModalNavigationFunction } from './CourseModal/CourseModal';
@@ -98,7 +98,7 @@ function RatingNumbers({
       key={i}
       placement="top"
       overlay={(props) => (
-        <Tooltip id="color-tooltip" {...props}>
+        <Tooltip id={`related-courses-rating-${identifier}-tooltip`} {...props}>
           These colors are randomly generated.{' '}
           {hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see
           real ratings.

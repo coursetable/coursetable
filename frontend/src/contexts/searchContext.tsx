@@ -439,18 +439,24 @@ export function SearchProvider({
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const { worksheets, friends, getRelevantWorksheetNumber } = useStore(
+  const {
+    worksheets,
+    friends,
+    sameCourseIdToCrns,
+    getRelevantWorksheetNumber,
+  } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
+      sameCourseIdToCrns: state.sameCourseIdToCrns,
       getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
     })),
   );
 
   const numFriends = useMemo(() => {
     if (!friends) return {};
-    return getNumFriends(friends);
-  }, [friends]);
+    return getNumFriends(friends, sameCourseIdToCrns);
+  }, [friends, sameCourseIdToCrns]);
 
   const processedSearchText = useMemo(
     () =>

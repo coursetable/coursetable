@@ -5,13 +5,17 @@
   overflow: hidden;
   border-color: var(--color-border);
   transition:
+    background-color 0.25s ease,
     border-color var(--trans-dur),
-    background-color var(--trans-dur),
     color var(--trans-dur);
 }
 
 .listItem:hover {
   background-color: var(--color-primary-subdued);
+}
+
+.listItemHighlighted {
+  animation: highlight-flash 0.9s ease forwards;
 }
 
 .hideButton {
@@ -42,6 +46,20 @@
   text-overflow: ellipsis;
 }
 
+.courseLocation {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+}
+
+.courseCodeHidden .courseLocation {
+  color: var(--color-hidden);
+}
+
+.listItem:hover .courseCodeHidden .courseLocation {
+  color: var(--color-text-tertiary);
+}
+
 .courseCode {
   text-align: left;
   overflow: hidden;
@@ -55,4 +73,31 @@
 
 .courseCodeHidden {
   color: var(--color-hidden);
+}
+
+.tbaIcon {
+  margin-left: 0.2rem;
+  color: #ff9d43;
+}
+
+.tbaIconWrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+@keyframes highlight-flash {
+  0% {
+    background-color: var(--color-primary-subdued);
+    border-color: var(--color-primary);
+  }
+
+  60% {
+    background-color: var(--color-primary-subdued-2);
+    border-color: var(--color-border);
+  }
+
+  100% {
+    background-color: transparent;
+    border-color: var(--color-border);
+  }
 }
