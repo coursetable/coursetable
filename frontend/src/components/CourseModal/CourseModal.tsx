@@ -7,7 +7,6 @@ import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useModalHistory } from '../../hooks/useModalHistory';
-import { useStore } from '../../store';
 import {
   toSeasonDate,
   toSeasonString,
@@ -39,8 +38,7 @@ function CourseModal({
 }) {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   const [searchParams] = useSearchParams();
-  const { closeModal } = useModalHistory();
-  const navigate = useStore((state) => state.navigate);
+  const { closeModal, navigate } = useModalHistory();
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,

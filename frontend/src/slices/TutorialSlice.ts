@@ -25,6 +25,8 @@ export const createTutorialSlice: StateCreator<Store, [], [], TutorialSlice> = (
   toggleTutorial(open: boolean) {
     set({
       currentStep: 0,
+      // Tutorial visibility uses !hasShownTutorial in Tutorial.tsx, so we store
+      // the inverse of the open flag.
       hasShownTutorial: !open,
     });
   },

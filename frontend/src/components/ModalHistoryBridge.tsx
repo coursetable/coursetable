@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useFerry } from '../contexts/ferryContext';
@@ -54,6 +54,31 @@ export default function ModalHistoryBridge() {
   const profFromURL = useProfInfoFromURL();
 
   const searchKey = searchParams.toString();
+
+  const prevCourseModalRef = useRef<string | null | undefined>(undefined);
+  const prevProfModalRef = useRef<string | null | undefined>(undefined);
+
+  // After popping the last frame, suppress blocks re-open from the same URL.
+  // Clear suppression when course-modal / prof-modal *values* change so
+  // another deep link hydrates. Do not clear on unrelated searchKey edits.
+  useEffect(() => {
+    const params = new URLSearchParams(searchKey);
+    const c = params.get('course-modal');
+    const p = params.get('prof-modal');
+    const hadPrev = prevCourseModalRef.current !== undefined;
+    const modalParamsChanged =
+      hadPrev &&
+      (c !== prevCourseModalRef.current || p !== prevProfModalRef.current);
+    prevCourseModalRef.current = c;
+    prevProfModalRef.current = p;
+    if (
+      suppressInitialFromUrl &&
+      historyLen === 0 &&
+      (c !== null || p !== null) &&
+      modalParamsChanged
+    )
+      clearUrlSuppression();
+  }, [clearUrlSuppression, historyLen, searchKey, suppressInitialFromUrl]);
 
   useEffect(() => {
     const params = new URLSearchParams(searchKey);

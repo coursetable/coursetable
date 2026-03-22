@@ -356,10 +356,11 @@ function Professors({ course }: { readonly course: CourseInfo }) {
           <Link
             to={createProfModalLink(professor.professor_id, searchParams)}
             onClick={() => {
-              navigate('push', {
-                type: 'professor',
-                data: professor.professor_id,
-              });
+              navigate(
+                'push',
+                { type: 'professor', data: professor.professor_id },
+                searchParams,
+              );
             }}
           >
             {professor.name}

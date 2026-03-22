@@ -43,6 +43,11 @@ export interface ModalHistorySlice
 
 export type ModalHistoryNavigateFn = ModalHistorySlice['navigate'];
 
+function assertNever(value: never): never {
+  void value;
+  throw new Error('Unexpected history entry type');
+}
+
 function createHistoryEntryLink(
   entry: HistoryEntry,
   searchParams: URLSearchParams,
@@ -52,8 +57,10 @@ function createHistoryEntryLink(
       return createCourseModalLink(entry.data, searchParams);
     case 'professor':
       return createProfModalLink(entry.data, searchParams);
-    default:
-      return undefined;
+    default: {
+      const exhaustive: never = entry;
+      return assertNever(exhaustive);
+    }
   }
 }
 
@@ -87,12 +94,15 @@ export const createModalHistorySlice: StateCreator<
     const newBackTarget =
       newHistory.length > 1 ? newHistory[newHistory.length - 2] : undefined;
 
+    const poppedToEmpty = mode === 'pop' && newHistory.length === 0;
+
     set({
       history: newHistory,
       currentModal: newCurrentModal,
       backTarget: newBackTarget
         ? createHistoryEntryLink(newBackTarget, searchParams)
         : undefined,
+      ...(poppedToEmpty ? { suppressInitialFromUrl: true } : {}),
     });
   },
 
