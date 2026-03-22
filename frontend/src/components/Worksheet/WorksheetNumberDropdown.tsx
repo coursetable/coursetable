@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import {
+  DropdownButton,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
-import type { Option } from '../../contexts/searchContext';
+import WorksheetStatusIcon from './WorksheetStatusIcon';
 import { updateWorksheetMetadata } from '../../queries/api';
-import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
+import {
+  useWorksheetNumberOptions,
+  type WorksheetNumberOption,
+} from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
@@ -66,8 +74,12 @@ function WSNameInput({
   );
 }
 
-function OptionWithActionButtons(props: OptionProps<Option<number>>) {
+function OptionWithActionButtons(props: OptionProps<WorksheetNumberOption>) {
   const [isRenamingWorksheet, setIsRenamingWorksheet] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [animateButtonsIn, setAnimateButtonsIn] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const {
     viewedSeason,
@@ -82,6 +94,35 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
       viewedPerson: state.viewedPerson,
     })),
   );
+
+  useEffect(() => {
+    if (isConfirmingDelete && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const popup = document.createElement('div');
+      popup.className = styles.confirmationPopup!;
+      popup.textContent = 'Are you sure?';
+      popup.style.position = 'fixed';
+      popup.style.top = `${rect.top + rect.height / 2}px`;
+      popup.style.left = `${rect.right}px`;
+      popup.style.transform = 'translateY(-50%)';
+      document.body.appendChild(popup);
+
+      return () => {
+        document.body.removeChild(popup);
+      };
+    }
+    return undefined;
+  }, [isConfirmingDelete]);
+
+  useEffect(() => {
+    if (isConfirmingDelete) {
+      requestAnimationFrame(() => {
+        setAnimateButtonsIn(true);
+      });
+    } else {
+      setAnimateButtonsIn(false);
+    }
+  }, [isConfirmingDelete]);
 
   if (isRenamingWorksheet) {
     return (
@@ -101,6 +142,52 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
       />
     );
   }
+
+  if (isConfirmingDelete) {
+    return (
+      <components.Option {...props} className={styles.noPaddingOption}>
+        <div className={styles.confirmContainer} ref={containerRef}>
+          <div
+            className={`${styles.confirmButtons ?? ''} ${
+              animateButtonsIn && styles.confirmButtonsVisible
+                ? styles.confirmButtonsVisible
+                : ''
+            }`}
+          >
+            <button
+              type="button"
+              className={styles.keepButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsConfirmingDelete(false);
+              }}
+            >
+              Keep
+            </button>
+            <button
+              type="button"
+              className={styles.deleteButton}
+              onClick={async (e) => {
+                e.stopPropagation();
+                setIsConfirmingDelete(false);
+                await updateWorksheetMetadata({
+                  action: 'delete',
+                  season: viewedSeason,
+                  worksheetNumber: props.data.value,
+                });
+                if (viewedWorksheetNumber === props.data.value)
+                  changeViewedWorksheetNumber(0);
+                await worksheetsRefresh();
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </components.Option>
+    );
+  }
+
   return (
     <components.Option
       {...props}
@@ -113,7 +200,33 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
       }}
     >
       <div className={styles.optionContent}>
+        {/* Star/Lock/Unlock icon left of Worksheet name */}
+        <OverlayTrigger
+          placement="left"
+          overlay={(overlayProps) => (
+            <Tooltip
+              id={`worksheet-number-dropdown-${props.data.value}-tooltip`}
+              {...overlayProps}
+            >
+              <span>
+                {props.data.value === 0
+                  ? 'Main Worksheet'
+                  : props.data.isPrivate
+                    ? 'Private Worksheet'
+                    : 'Public Worksheet'}
+              </span>
+            </Tooltip>
+          )}
+        >
+          <div>
+            {WorksheetStatusIcon(props.data.value, props.data.isPrivate)}
+          </div>
+        </OverlayTrigger>
+
+        {/* Name of worksheet */}
         <span className={styles.optionName}>{props.data.label}</span>
+
+        {/* Edit/Delete buttons */}
         {props.data.value !== 0 && viewedPerson === 'me' && (
           <div className={styles.iconContainer}>
             <MdEdit
@@ -123,21 +236,15 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
                 setIsRenamingWorksheet(true);
               }}
             />
-            <MdDelete
-              className={styles.deleteWorksheetIcon}
-              onClick={async (e) => {
-                e.stopPropagation();
-                await updateWorksheetMetadata({
-                  action: 'delete',
-                  season: viewedSeason,
-                  worksheetNumber: props.data.value,
-                });
-                if (viewedWorksheetNumber === props.data.value)
-                  changeViewedWorksheetNumber(0);
-
-                await worksheetsRefresh();
-              }}
-            />
+            <div>
+              <MdDelete
+                className={styles.deleteWorksheetIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsConfirmingDelete(true);
+                }}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -148,7 +255,7 @@ function OptionWithActionButtons(props: OptionProps<Option<number>>) {
 function MenuListWithAdd({
   children,
   ...props
-}: MenuListProps<Option<number>>) {
+}: MenuListProps<WorksheetNumberOption>) {
   const [isAddingWorksheet, setIsAddingWorksheet] = useState(false);
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const { viewedSeason, viewedPerson } = useStore(
@@ -194,7 +301,7 @@ function MenuListWithAdd({
 function WorksheetNumDropdownDesktop({
   options,
 }: {
-  readonly options: { [worksheetNumber: number]: Option<number> };
+  readonly options: { [worksheetNumber: number]: WorksheetNumberOption };
 }) {
   const viewedWorksheetNumber = useStore(
     (state) => state.viewedWorksheetNumber,
@@ -206,8 +313,15 @@ function WorksheetNumDropdownDesktop({
       displayOptionLabel
       selectedOptions={options[viewedWorksheetNumber]}
       clearIcon={false}
+      Icon={
+        // Star/Lock/Unlock icon in dropdown button
+        WorksheetStatusIcon(
+          viewedWorksheetNumber,
+          options[viewedWorksheetNumber]?.isPrivate,
+        )
+      }
     >
-      <PopoutSelect<Option<number>, false>
+      <PopoutSelect<WorksheetNumberOption, false>
         value={options[viewedWorksheetNumber]}
         options={Object.values(options)}
         showControl={false}
@@ -224,7 +338,7 @@ function WorksheetNumDropdownDesktop({
 function WorksheetNumDropdownMobile({
   options,
 }: {
-  readonly options: { [worksheetNumber: number]: Option<number> };
+  readonly options: { [worksheetNumber: number]: WorksheetNumberOption };
 }) {
   const { changeViewedWorksheetNumber, viewedWorksheetNumber } = useStore(
     useShallow((state) => ({
@@ -243,16 +357,7 @@ function WorksheetNumDropdownMobile({
       }}
     >
       {Object.values(options).map(({ value, label }) => (
-        <Dropdown.Item
-          key={value}
-          eventKey={value}
-          className="d-flex"
-          // Styling if this is the current number
-          style={{
-            backgroundColor:
-              value === viewedWorksheetNumber ? 'var(--color-primary)' : '',
-          }}
-        >
+        <Dropdown.Item key={value} eventKey={value} className="d-flex">
           <div className="mx-auto">{label}</div>
         </Dropdown.Item>
       ))}

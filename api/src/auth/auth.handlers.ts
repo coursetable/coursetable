@@ -1,4 +1,5 @@
 import type express from 'express';
+import * as Sentry from '@sentry/node';
 import { Strategy as CasStrategy } from '@coursetable/passport-cas';
 import { eq } from 'drizzle-orm';
 import passport from 'passport';
@@ -9,6 +10,7 @@ import {
   db,
   FRONTEND_ENDPOINT,
   COURSETABLE_ORIGINS,
+  isDev,
 } from '../config.js';
 import winston from '../logging/winston.js';
 
@@ -56,13 +58,15 @@ export const passportConfig = (
     new CasStrategy(
       {
         version: 'CAS2.0',
-        ssoBaseURL: 'https://secure.its.yale.edu/cas',
+        ssoBaseURL: isDev
+          ? 'https://secure-tst.its.yale.edu/cas'
+          : 'https://secure.its.yale.edu/cas',
       },
       async (profile, done) => {
         // Create or update user's profile
         winston.info("Creating user's profile");
 
-        const [existingUser] = await db
+        const [insertedUser] = await db
           .insert(studentBluebookSettings)
           .values({
             netId: profile.user,
@@ -70,6 +74,18 @@ export const passportConfig = (
           })
           .onConflictDoNothing()
           .returning();
+
+        const existingUser =
+          insertedUser ??
+          (await db.query.studentBluebookSettings.findFirst({
+            where: eq(studentBluebookSettings.netId, profile.user),
+            columns: {
+              email: true,
+              firstName: true,
+              lastName: true,
+              evaluationsEnabled: true,
+            },
+          }));
 
         const user = {
           netId: profile.user,
@@ -83,7 +99,7 @@ export const passportConfig = (
           lastName: existingUser?.lastName ?? null,
         };
         try {
-          const data = (await fetch('https://yalies.io/api/people', {
+          const data = (await fetch('https://api.yalies.io/v2/people', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${YALIES_API_KEY}`,
@@ -134,6 +150,7 @@ export const passportConfig = (
             .where(eq(studentBluebookSettings.netId, profile.user));
         } catch (err) {
           winston.error(`Yalies connection error: ${String(err)}`);
+          Sentry.captureException(err);
         }
         done(null, user);
       },

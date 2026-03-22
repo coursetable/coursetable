@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsEyeSlash } from 'react-icons/bs';
 import type { GridChildComponentProps } from 'react-window';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -36,7 +37,10 @@ function Rating({
     <OverlayTrigger
       placement="top"
       overlay={(props) => (
-        <Tooltip id={`${name}-tooltip`} {...props}>
+        <Tooltip
+          id={`results-grid-rating-${listing.course.season_code}-${listing.crn}-${name}-tooltip`}
+          {...props}
+        >
           {hasEvals
             ? name
             : `${name} (These colors are randomly generated. ${hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see real ratings)`}
@@ -100,7 +104,7 @@ function ResultsGridItem({
   if (!listing) return null;
 
   const timesSummary = toTimesSummary(listing.course);
-  const locationsSummary = toLocationsSummary(listing.course);
+  const locationsSummary = toLocationsSummary(listing.course, user?.hasEvals);
 
   return (
     <li className={styles.container} style={style}>
@@ -148,7 +152,27 @@ function ResultsGridItem({
               type="secondary"
               className={clsx(styles.oneLine, styles.smallText)}
             >
-              {locationsSummary === 'TBA' ? 'Location: TBA' : locationsSummary}
+              {locationsSummary === 'HIDDEN' ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip
+                      id={`results-grid-location-hidden-${listing.course.season_code}-${listing.crn}-tooltip`}
+                      {...props}
+                    >
+                      Sign in to see location
+                    </Tooltip>
+                  )}
+                >
+                  <span>
+                    <BsEyeSlash />
+                  </span>
+                </OverlayTrigger>
+              ) : locationsSummary === 'TBA' ? (
+                'Location: TBA'
+              ) : (
+                `Location: ${locationsSummary}`
+              )}
             </TextComponent>
             <div className={styles.skillsAreas}>
               {[...listing.course.skills, ...listing.course.areas].map(

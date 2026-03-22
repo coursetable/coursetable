@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
+import { hasGrantedAnyScopeGoogle, useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import Spinner from '../../components/Spinner';
@@ -12,19 +13,68 @@ import { toSeasonString } from '../../utilities/course';
 
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
-  const { gapi, authInstance, user, setUser } = useGapi();
+  const { gapi } = useGapi();
   const { viewedSeason, courses } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       courses: state.courses,
     })),
   );
-  const exportButtonRef = useRef<HTMLButtonElement>(null);
+  const exportEventsRef = useRef<(() => Promise<void>) | null>(null);
+
+  const loginAndExportEvents = useGoogleLogin({
+    onSuccess(tokenResponse) {
+      if (!gapi) {
+        Sentry.captureException(new Error('gapi not loaded'));
+        return;
+      }
+      const hasAccess = hasGrantedAnyScopeGoogle(
+        tokenResponse,
+        'https://www.googleapis.com/auth/calendar.events',
+      );
+      if (!hasAccess) {
+        toast.error('You must grant access to export events');
+        return;
+      }
+      gapi.client.setToken({
+        access_token: tokenResponse.access_token,
+      });
+      void exportEventsRef.current?.();
+    },
+    scope: 'https://www.googleapis.com/auth/calendar.events',
+    onError(errorResponse) {
+      Sentry.addBreadcrumb({
+        category: 'gcal',
+        message: 'Logging in to GCal',
+        level: 'info',
+      });
+      Sentry.captureException(errorResponse);
+      toast.error('Error logging in to Google Calendar');
+    },
+    onNonOAuthError(nonOAuthError) {
+      if (nonOAuthError.type === 'popup_closed') {
+        toast.error('Google Calendar sign in popup closed');
+        return;
+      } else if (nonOAuthError.type === 'popup_failed_to_open') {
+        toast.error('Google Calendar sign in popup blocked');
+        return;
+      }
+      Sentry.addBreadcrumb({
+        category: 'gcal',
+        message: 'Logging in to GCal',
+        level: 'info',
+      });
+      Sentry.captureException(nonOAuthError);
+      toast.error('Error logging in to Google Calendar');
+    },
+  });
+
   const exportEvents = useCallback(async () => {
     if (!gapi) {
       Sentry.captureException(new Error('gapi not loaded'));
       return;
     }
+
     const seasonString = toSeasonString(viewedSeason);
     const semester = academicCalendars[viewedSeason];
     if (!semester) {
@@ -54,8 +104,8 @@ function GoogleCalendarButton(): React.JSX.Element {
       // Delete all previously added classes
       if (eventList.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        await Promise.all(
-          eventList.result.items.map((event) => {
+        const deletePromises = eventList.result.items
+          .map((event) => {
             if (event.id.startsWith('coursetable') && event.recurringEventId) {
               if (!deletedIds.has(event.recurringEventId)) {
                 deletedIds.add(event.recurringEventId);
@@ -65,9 +115,10 @@ function GoogleCalendarButton(): React.JSX.Element {
                 });
               }
             }
-            return undefined;
-          }),
-        );
+            return null;
+          })
+          .filter((p): p is NonNullable<typeof p> => p !== null);
+        await Promise.all(deletePromises);
       }
       const events = getCalendarEvents('gcal', courses, viewedSeason);
       await Promise.all(
@@ -90,6 +141,20 @@ function GoogleCalendarButton(): React.JSX.Element {
       );
       toast.success('Exported to Google Calendar!');
     } catch (err) {
+      // Handle 403 Forbidden - token expired or revoked
+      if (
+        err &&
+        typeof err === 'object' &&
+        Object.hasOwn(err, 'status') &&
+        (err as { status: number }).status === 403
+      ) {
+        gapi.client.setToken(null);
+        setExporting(false);
+        toast.info('Google Calendar access expired. Please sign in again.');
+        loginAndExportEvents();
+        return;
+      }
+
       Sentry.addBreadcrumb({
         category: 'gcal',
         message: 'Exporting GCal events',
@@ -100,45 +165,24 @@ function GoogleCalendarButton(): React.JSX.Element {
     } finally {
       setExporting(false);
     }
-  }, [courses, gapi, viewedSeason]);
+  }, [courses, gapi, viewedSeason, loginAndExportEvents]);
 
-  useEffect(() => {
-    if (!authInstance || user || !exportButtonRef.current) return;
-
-    authInstance.attachClickHandler(
-      exportButtonRef.current,
-      {},
-      (googleUser) => {
-        // TODO: is this needed?
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (!user) {
-          setUser(googleUser);
-          void exportEvents();
-        }
-      },
-      (err) => {
-        if ((err as { error?: unknown }).error === 'popup_closed_by_user') {
-          toast.error('Google Calendar sign in popup closed');
-          return;
-        }
-        Sentry.addBreadcrumb({
-          category: 'gcal',
-          message: 'Signing into GCal',
-          level: 'info',
-        });
-        Sentry.captureException(err);
-        toast.error('Error signing in to Google Calendar');
-      },
-    );
-  }, [authInstance, user, setUser, exportEvents]);
+  // Store exportEvents in ref so loginAndExportEvents can call it
+  exportEventsRef.current = exportEvents;
 
   return (
     <button
       type="button"
-      ref={exportButtonRef}
-      onClick={user && !exporting ? exportEvents : undefined}
+      onClick={
+        !exporting
+          ? () => {
+              if (!gapi?.client.getToken()) loginAndExportEvents();
+              else void exportEvents();
+            }
+          : undefined
+      }
     >
-      {authInstance && !exporting ? (
+      {!exporting ? (
         <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
       ) : (
         <Spinner message={undefined} />

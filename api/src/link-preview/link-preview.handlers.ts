@@ -1,13 +1,27 @@
 import type express from 'express';
+import LZString from 'lz-string';
 import { getSdk } from './link-preview.queries.js';
 import { graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
-// For Prettier formatting. If you add a language tag before the template
-// literal, it will recognize them as embedded languages and format those
-const identity = (strings: TemplateStringsArray, ...values: unknown[]) =>
-  String.raw({ raw: strings }, ...values);
-const html = identity;
+// Escapes special HTML characters to prevent XSS when interpolating
+// user-controlled values into HTML strings
+function escapeHtml(value: unknown): string {
+  return String(value)
+    .replace(/&/gu, '&amp;')
+    .replace(/</gu, '&lt;')
+    .replace(/>/gu, '&gt;')
+    .replace(/"/gu, '&quot;')
+    .replace(/'/gu, '&#39;');
+}
+
+// Tagged template literal that auto-escapes all interpolated values
+const html = (strings: TemplateStringsArray, ...values: unknown[]): string =>
+  strings.reduce<string>(
+    (result, str, i) =>
+      result + str + (i < values.length ? escapeHtml(values[i]) : ''),
+    '',
+  );
 
 const defaultMetadata = {
   title: 'CourseTable',
@@ -72,7 +86,50 @@ async function getCourseMetadata(query: unknown) {
   };
 }
 
+function getWorksheetMetadata(url: string) {
+  try {
+    const urlObj = new URL(url, 'https://coursetable.com');
+    if (urlObj.pathname !== '/worksheet') return null;
+
+    const wsParam = urlObj.searchParams.get('ws');
+    if (!wsParam) return null;
+
+    try {
+      const decompressed = LZString.decompressFromEncodedURIComponent(wsParam);
+      if (!decompressed) return null;
+
+      const parsed = JSON.parse(decompressed) as {
+        name?: string;
+        creatorName?: string;
+      };
+
+      if (!parsed.name) return null;
+
+      const title = parsed.creatorName
+        ? `${parsed.name} by ${parsed.creatorName} | CourseTable Worksheet`
+        : `${parsed.name} | CourseTable Worksheet`;
+      const description = parsed.creatorName
+        ? `View ${parsed.creatorName}'s worksheet: ${parsed.name}`
+        : `View worksheet: ${parsed.name}`;
+
+      return {
+        title,
+        description,
+        image: 'https://coursetable.com/favicon.png',
+      };
+    } catch {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+}
+
 function getPageMetadata(url: string) {
+  // Check if it's a worksheet URL first
+  const worksheetMetadata = getWorksheetMetadata(url);
+  if (worksheetMetadata) return worksheetMetadata;
+
   // TODO: we should probably just dynamically render these HTML pages
   switch (url) {
     case '/releases/link-preview':
