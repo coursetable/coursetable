@@ -18,6 +18,9 @@ const RETRY_DELAY = 100; // Delay between retries in milliseconds
 
 const EXPORT_CLASS = 'exporting-png';
 
+const EXPORT_LAYOUT_WIDTH = EXPORT_WIDTH / CANVAS_SCALE;
+const EXPORT_LAYOUT_HEIGHT = EXPORT_HEIGHT / CANVAS_SCALE;
+
 const EXPORT_BG = {
   light: '#ffffff',
   dark: '#121212',
@@ -42,6 +45,26 @@ function drawCaptureLetterboxed(
   const offsetY = (EXPORT_HEIGHT - drawH) / 2;
 
   ctx.drawImage(source, offsetX, offsetY, drawW, drawH);
+}
+
+/** Widen cloned calendar so capture matches desktop export, not viewport. */
+function applyExportLayoutToClonedCalendar(doc: Document): void {
+  const cal = doc.querySelector<HTMLElement>('.rbc-calendar');
+  if (!cal) return;
+
+  cal.style.setProperty('box-sizing', 'border-box', 'important');
+  cal.style.setProperty('width', `${EXPORT_LAYOUT_WIDTH}px`, 'important');
+  cal.style.setProperty('max-width', `${EXPORT_LAYOUT_WIDTH}px`, 'important');
+  cal.style.setProperty('min-height', `${EXPORT_LAYOUT_HEIGHT}px`, 'important');
+  cal.style.setProperty('height', 'auto', 'important');
+  cal.style.setProperty('overflow', 'visible', 'important');
+
+  let node: HTMLElement | null = cal.parentElement;
+  for (let depth = 0; node && node !== doc.body && depth < 10; depth += 1) {
+    node.style.setProperty('overflow', 'visible', 'important');
+    node.style.setProperty('max-width', 'none', 'important');
+    node = node.parentElement;
+  }
 }
 
 const loadImage = (src: string): Promise<HTMLImageElement> =>
@@ -142,6 +165,7 @@ export default function PNGExportButton() {
         onclone(doc) {
           doc.body.classList.add(EXPORT_CLASS);
           doc.documentElement.dataset.theme = theme;
+          applyExportLayoutToClonedCalendar(doc);
         },
       });
 
