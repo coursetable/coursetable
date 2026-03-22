@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -264,7 +263,12 @@ function RatingChart({
 }: {
   readonly coursesTaught: RelatedCourseInfo[];
 }) {
-  const [curveByCourse, setCurveByCourse] = useState(false);
+  const { curveByCourse, togglePref } = useStore(
+    useShallow((state) => ({
+      curveByCourse: state.professorPref.curveByCourse,
+      togglePref: state.togglePref,
+    })),
+  );
   const coursesWithRatings = coursesTaught.filter(
     (c) => (c.evaluation_statistic?.avg_rating ?? 0) > 0,
   );
@@ -276,12 +280,12 @@ function RatingChart({
         <Form.Check.Input
           checked={curveByCourse}
           onChange={() => {
-            setCurveByCourse(!curveByCourse);
+            togglePref('professorPref', 'curveByCourse');
           }}
         />
         <Form.Check.Label
           onClick={() => {
-            setCurveByCourse(!curveByCourse);
+            togglePref('professorPref', 'curveByCourse');
           }}
         >
           Separate curves for each course

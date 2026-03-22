@@ -3,9 +3,9 @@ import type { WishlistItemWithListings } from '../../contexts/wishlistContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import { createCourseModalLink } from '../../utilities/display';
 import { TextComponent } from '../Typography';
-import gridStyles from './WishlistGrid.module.css';
+import itemsStyles from './WishlistItems.module.css';
 
-function WishlistGrid({
+function WishlistItems({
   data,
   courseLinkClassName,
 }: {
@@ -16,13 +16,13 @@ function WishlistGrid({
 
   if (data.length === 0) {
     return (
-      <div className={gridStyles.emptyState}>
+      <div className={itemsStyles.emptyState}>
         <img
           alt=""
-          className={gridStyles.emptyIllustration}
+          className={itemsStyles.emptyIllustration}
           src={NoCoursesFound}
         />
-        <p className={gridStyles.emptyTitle}>No saved courses yet</p>
+        <p className={itemsStyles.emptyTitle}>No saved courses yet</p>
         <TextComponent type="secondary">
           Bookmark courses from the catalog or course modal; they&apos;ll show
           up on this list.
@@ -57,4 +57,4 @@ function WishlistGrid({
   );
 }
 
-export default WishlistGrid;
+export default WishlistItems;

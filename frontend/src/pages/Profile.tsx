@@ -9,7 +9,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { TextComponent } from '../components/Typography';
-import WishlistGrid from '../components/Wishlist/WishlistGrid';
+import WishlistItems from '../components/Wishlist/WishlistItems';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import {
   resetCatalogCache,
@@ -467,7 +467,7 @@ function Profile() {
                     <Spinner animation="border" aria-label="Loading wishlist" />
                   </div>
                 ) : (
-                  <WishlistGrid
+                  <WishlistItems
                     data={wishlistCourses}
                     courseLinkClassName={styles.friendLink}
                   />

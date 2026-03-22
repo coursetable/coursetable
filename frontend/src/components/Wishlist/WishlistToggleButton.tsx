@@ -18,11 +18,9 @@ import styles from './WishlistToggleButton.module.css';
 function WishlistToggleButton({
   listing,
   modal,
-  inWishlist: inWishlistProp,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
   readonly modal: boolean;
-  readonly inWishlist?: boolean;
 }) {
   const { worksheets, wishlistRefresh, isLgDesktop } = useStore(
     useShallow((state) => ({
@@ -36,10 +34,8 @@ function WishlistToggleButton({
   const { wishlistCourses } = useWishlist();
 
   const inWishlist = useMemo(
-    () =>
-      inWishlistProp ??
-      isInWishlist(listing.course.same_course_id, wishlistCourses),
-    [inWishlistProp, listing, wishlistCourses],
+    () => isInWishlist(listing.course.same_course_id, wishlistCourses),
+    [listing.course.same_course_id, wishlistCourses],
   );
 
   // Should theoretically only be one course (unique by same_course_id)
@@ -59,16 +55,11 @@ function WishlistToggleButton({
       try {
         const addRemove = inWishlist ? 'remove' : 'add';
         if (addRemove === 'add') {
-          let ok = false;
-          try {
-            ok = await updateWishlistCourses({
-              action: 'add',
-              season: listing.course.season_code,
-              crn: listing.crn,
-            });
-          } catch {
-            ok = false;
-          }
+          const ok = await updateWishlistCourses({
+            action: 'add',
+            season: listing.course.season_code,
+            crn: listing.crn,
+          }).catch(() => false);
           if (!ok) {
             toast.error(
               'Could not add this course to your wishlist. Please try again.',
