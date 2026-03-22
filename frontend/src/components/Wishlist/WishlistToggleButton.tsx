@@ -10,6 +10,7 @@ import { useModalHistory } from '../../contexts/modalHistoryContext';
 import { useWishlist } from '../../contexts/wishlistContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { updateWishlistCourses } from '../../queries/api';
+import type { Crn, Season } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { isInWishlist } from '../../utilities/course';
 import styles from './WishlistToggleButton.module.css';
@@ -55,47 +56,71 @@ function WishlistToggleButton({
       e.preventDefault();
       e.stopPropagation();
 
-      // Determine if we are adding or removing the course
-      const addRemove = inWishlist ? 'remove' : 'add';
-      if (addRemove === 'add') {
-        const ok = await updateWishlistCourses({
-          action: addRemove,
-          season: listing.course.season_code,
-          crn: listing.crn,
-        });
-        if (ok) {
-          toast.info(
-            <span>
-              Saved to your wishlist{' '}
-              <span className="text-nowrap">
-                (
-                <Link
-                  to="/profile?tab=wishlist"
-                  className="fw-semibold"
-                  onClick={() => {
-                    closeModal();
-                  }}
-                >
-                  view in profile
-                </Link>
-                )
-              </span>
-            </span>,
-          );
+      try {
+        const addRemove = inWishlist ? 'remove' : 'add';
+        if (addRemove === 'add') {
+          let ok = false;
+          try {
+            ok = await updateWishlistCourses({
+              action: 'add',
+              season: listing.course.season_code,
+              crn: listing.crn,
+            });
+          } catch {
+            ok = false;
+          }
+          if (!ok) {
+            toast.error(
+              'Could not add this course to your wishlist. Please try again.',
+            );
+          } else {
+            toast.info(
+              <span>
+                Saved to your wishlist{' '}
+                <span className="text-nowrap">
+                  (
+                  <Link
+                    to="/profile?tab=wishlist"
+                    className="fw-semibold"
+                    onClick={() => {
+                      closeModal();
+                    }}
+                  >
+                    view in profile
+                  </Link>
+                  )
+                </span>
+              </span>,
+            );
+          }
+        } else {
+          const failures: { season: Season; crn: Crn }[] = [];
+          for (const course of sameCoursesInWishlist) {
+            try {
+              const ok = await updateWishlistCourses({
+                action: 'remove',
+                season: course.season,
+                crn: course.crn,
+              });
+              if (!ok)
+                failures.push({ season: course.season, crn: course.crn });
+            } catch {
+              failures.push({ season: course.season, crn: course.crn });
+            }
+          }
+          if (failures.length > 0) {
+            toast.error(
+              failures.length === sameCoursesInWishlist.length
+                ? 'Could not remove these courses from your wishlist.'
+                : `Could not remove ${failures.length} item(s) from your wishlist.`,
+            );
+          } else if (sameCoursesInWishlist.length > 0) {
+            toast.success('Removed from wishlist');
+          }
         }
-      } else {
-        await Promise.all(
-          sameCoursesInWishlist.map((course) =>
-            updateWishlistCourses({
-              action: addRemove,
-              season: course.season,
-              crn: course.crn,
-            }),
-          ),
-        );
+      } finally {
+        await wishlistRefresh();
       }
-
-      await wishlistRefresh();
     },
     [closeModal, inWishlist, wishlistRefresh, listing, sameCoursesInWishlist],
   );

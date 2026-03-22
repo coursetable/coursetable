@@ -23,8 +23,10 @@ import {
 } from 'chart.js';
 import chroma from 'chroma-js';
 import { Line } from 'react-chartjs-2';
+import { useShallow } from 'zustand/react/shallow';
 
 import type { Season } from '../../../queries/graphql-types';
+import { useStore } from '../../../store';
 import { subjects } from '../../../utilities/constants';
 import { toSeasonString } from '../../../utilities/course';
 import RelatedCoursesList from '../../RelatedCoursesList';
@@ -181,7 +183,7 @@ function SeasonRatingChart({
   const chartData: ChartData<'line', { x: number; y: number }[]> = {
     datasets: [
       {
-        label: 'Average Rating',
+        label: 'Average rating',
         data: points,
         borderColor: '#468FF2',
         backgroundColor: 'rgba(0, 0, 255, 0.1)',
@@ -291,7 +293,12 @@ function RatingChart({
 }
 
 function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
-  const [groupRecurringCourses, setGroupRecurringCourses] = useState(true);
+  const { groupRecurringCourses, togglePref } = useStore(
+    useShallow((state) => ({
+      groupRecurringCourses: state.professorPref.groupRecurringCourses,
+      togglePref: state.togglePref,
+    })),
+  );
   const coursesTaught = professor.course_professors
     .map((c) => c.course)
     .sort((a, b) => b.season_code.localeCompare(a.season_code, 'en-US'));
@@ -362,12 +369,12 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           <Form.Check.Input
             checked={groupRecurringCourses}
             onChange={() => {
-              setGroupRecurringCourses(!groupRecurringCourses);
+              togglePref('professorPref', 'groupRecurringCourses');
             }}
           />
           <Form.Check.Label
             onClick={() => {
-              setGroupRecurringCourses(!groupRecurringCourses);
+              togglePref('professorPref', 'groupRecurringCourses');
             }}
           >
             Group recurring courses

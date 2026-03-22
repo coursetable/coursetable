@@ -118,14 +118,16 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
       };
       uniqueSameCourseIdMap.set(sameCourseId, wishlistItem);
     }
-    const dataReturn: WishlistItemWithListings[] = Array.from(
+    let dataReturn: WishlistItemWithListings[] = Array.from(
       uniqueSameCourseIdMap.values(),
     );
     // Sorting course codes for each listing
-    dataReturn.forEach((item) => ({
+    dataReturn = dataReturn.map((item) => ({
       ...item,
-      courseCodes: item.courseCodes.sort((a, b) => a.localeCompare(b, 'en-US')),
-      listings: item.listings.sort((a, b) =>
+      courseCodes: [...item.courseCodes].sort((a, b) =>
+        a.localeCompare(b, 'en-US'),
+      ),
+      listings: [...item.listings].sort((a, b) =>
         a.season.localeCompare(b.season, 'en-US'),
       ),
     }));
@@ -167,4 +169,9 @@ export function WishlistProvider({
   );
 }
 
-export const useWishlist = () => useContext(WishlistContext)!;
+export function useWishlist() {
+  const ctx = useContext(WishlistContext);
+  if (ctx === undefined)
+    throw new Error('useWishlist must be used within a WishlistProvider');
+  return ctx;
+}
