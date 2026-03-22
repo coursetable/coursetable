@@ -3,11 +3,9 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Form, Badge } from 'react-bootstrap';
 
 import { useShallow } from 'zustand/react/shallow';
-import {
-  useModalHistory,
-  type Store,
-} from '../../../contexts/modalHistoryContext';
 import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
+import { useModalHistory } from '../../../hooks/useModalHistory';
+import type { ModalHistoryNavigateFn } from '../../../slices/ModalHistorySlice';
 import { useStore } from '../../../store';
 import { ratingColormap } from '../../../utilities/constants';
 import { isDiscussionSection } from '../../../utilities/course';
@@ -19,7 +17,7 @@ type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
 
 function createProfSummary(
   courseProfessors: RelatedCourseInfo['course_professors'],
-  navigate: Store['navigate'],
+  navigate: ModalHistoryNavigateFn,
   searchParams: URLSearchParams,
 ) {
   const profsByName = courseProfessors.toSorted((a, b) =>

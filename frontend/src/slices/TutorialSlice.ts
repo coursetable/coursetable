@@ -12,8 +12,7 @@ interface TutorialSliceActions {
 }
 
 export interface TutorialSlice
-  extends TutorialSliceState,
-    TutorialSliceActions {}
+  extends TutorialSliceState, TutorialSliceActions {}
 
 export const createTutorialSlice: StateCreator<Store, [], [], TutorialSlice> = (
   set,

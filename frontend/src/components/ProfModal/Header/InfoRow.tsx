@@ -14,10 +14,8 @@ export default function ModalHeaderInfo({
   readonly professor: ProfInfo;
 }) {
   const [searchParams] = useSearchParams();
-  const { backTarget, navigate } = useStore((state) => ({
-    backTarget: state.backTarget,
-    navigate: state.navigate,
-  }));
+  const backTarget = useStore((state) => state.backTarget);
+  const navigate = useStore((state) => state.navigate);
   return (
     <div className={styles.modalTop}>
       {backTarget && (

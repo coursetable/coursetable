@@ -17,11 +17,11 @@ import { detectOverflow } from '@popperjs/core';
 
 import type { ModalNavigationFunction } from './CourseModal/CourseModal';
 import { RatingBubble } from './Typography';
-import { useModalHistory } from '../contexts/modalHistoryContext';
 import type {
   ProfModalOverviewDataQuery,
   CourseModalOverviewDataQuery,
 } from '../generated/graphql-types';
+import { useModalHistory } from '../hooks/useModalHistory';
 import { useStore } from '../store';
 import { generateRandomColor } from '../utilities/common';
 import { ratingColormap, workloadColormap } from '../utilities/constants';

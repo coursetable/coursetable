@@ -150,9 +150,7 @@ export default function ModalHeaderInfo({
 }) {
   const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
-  const { backTarget } = useStore((state) => ({
-    backTarget: state.backTarget,
-  }));
+  const backTarget = useStore((state) => state.backTarget);
   const { data, loading, error } = useCourseSectionsQuery({
     variables: {
       courseCode: listing.course_code,

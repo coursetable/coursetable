@@ -11,8 +11,8 @@ import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../../config';
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
+import { useModalHistory } from '../../../hooks/useModalHistory';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 

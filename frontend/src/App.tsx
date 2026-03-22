@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet';
 import { useShallow } from 'zustand/react/shallow';
 import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
+import ModalHistoryBridge from './components/ModalHistoryBridge';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import ProfModal from './components/ProfModal/ProfModal';
@@ -184,6 +185,7 @@ function App() {
       <Footer />
       {/* Globally overlaid components */}
       <Tutorial />
+      <ModalHistoryBridge />
       <Modal />
     </div>
   );
