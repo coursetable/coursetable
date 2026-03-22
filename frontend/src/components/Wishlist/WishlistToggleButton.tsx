@@ -30,6 +30,7 @@ function WishlistToggleButton({
     })),
   );
   const { closeModal } = useModalHistory();
+  const tooltipId = `wishlist-tooltip-${listing.course.season_code}-${listing.crn}`;
 
   const { wishlistCourses } = useWishlist();
 
@@ -44,8 +45,11 @@ function WishlistToggleButton({
       wishlistCourses.filter(
         (item) => item.sameCourseId === listing.course.same_course_id,
       ),
-    [listing, wishlistCourses],
+    [listing.course.same_course_id, wishlistCourses],
   );
+
+  const buttonLabel = inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist';
+  const loggedOutLabel = 'Log in to add to your wishlist';
 
   const toggleWishlist = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,8 +57,7 @@ function WishlistToggleButton({
       e.stopPropagation();
 
       try {
-        const addRemove = inWishlist ? 'remove' : 'add';
-        if (addRemove === 'add') {
+        if (!inWishlist) {
           const ok = await updateWishlistCourses({
             action: 'add',
             season: listing.course.season_code,
@@ -113,7 +116,14 @@ function WishlistToggleButton({
         await wishlistRefresh();
       }
     },
-    [closeModal, inWishlist, wishlistRefresh, listing, sameCoursesInWishlist],
+    [
+      closeModal,
+      inWishlist,
+      wishlistRefresh,
+      listing.course.season_code,
+      listing.crn,
+      sameCoursesInWishlist,
+    ],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;
@@ -124,15 +134,12 @@ function WishlistToggleButton({
     return (
       <OverlayTrigger
         placement="top"
-        overlay={
-          <Tooltip id="tooltip-disabled">
-            Log in to add to your wishlist
-          </Tooltip>
-        }
+        overlay={<Tooltip id={tooltipId}>{loggedOutLabel}</Tooltip>}
       >
         <Button
           className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
           disabled
+          aria-label={loggedOutLabel}
         >
           <FaBookmark size={size} className={styles.disabledButtonIcon} />
         </Button>
@@ -146,10 +153,8 @@ function WishlistToggleButton({
         placement="top"
         delay={modal ? { show: 300, hide: 0 } : undefined}
         overlay={(props) => (
-          <Tooltip id="button-tooltip" {...props}>
-            <small>
-              {inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-            </small>
+          <Tooltip id={tooltipId} {...props}>
+            <small>{buttonLabel}</small>
           </Tooltip>
         )}
       >
@@ -160,6 +165,7 @@ function WishlistToggleButton({
             styles.toggleButton,
           )}
           onClick={toggleWishlist}
+          aria-label={buttonLabel}
         >
           <Icon size={size} />
         </Button>
