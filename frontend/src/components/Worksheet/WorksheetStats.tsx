@@ -66,7 +66,7 @@ function NoStatsTip({
       <OverlayTrigger
         placement="top"
         overlay={(props) => (
-          <Tooltip {...props} id="conflict-icon-button-tooltip">
+          <Tooltip {...props} id="worksheet-stats-conflict-tooltip">
             <small>
               Computed with {coursesWithRating} course
               {coursesWithRating === 1 ? '' : 's'}.{' '}
@@ -86,11 +86,19 @@ function NoStatsTip({
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, isExoticWorksheet, exitExoticWorksheet } = useStore(
+  const {
+    courses,
+    isExoticWorksheet,
+    exoticWorksheet,
+    exitExoticWorksheet,
+    isMobile,
+  } = useStore(
     useShallow((state) => ({
       courses: state.courses,
-      isExoticWorksheet: state.isExoticWorksheet,
+      isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      exoticWorksheet: state.exoticWorksheet,
       exitExoticWorksheet: state.exitExoticWorksheet,
+      isMobile: state.isMobile,
     })),
   );
   const user = useStore((state) => state.user);
@@ -153,6 +161,18 @@ export default function WorksheetStats() {
       <Collapse in={shown}>
         <div>
           <div className={styles.stats}>
+            {isExoticWorksheet && exoticWorksheet?.data && (
+              <div className={styles.worksheetInfo}>
+                <div className={styles.worksheetName}>
+                  {exoticWorksheet.data.name}
+                </div>
+                {exoticWorksheet.data.creatorName && (
+                  <div className={styles.creatorName}>
+                    by {exoticWorksheet.data.creatorName}
+                  </div>
+                )}
+              </div>
+            )}
             <dl>
               <div>
                 <dt>Total courses</dt>
@@ -183,7 +203,7 @@ export default function WorksheetStats() {
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id="login-tooltip">
+                    <Tooltip id="worksheet-stats-workload-login-tooltip">
                       <small>
                         {user ? 'Complete the challenge' : 'Sign in'} to see
                         ratings
@@ -219,7 +239,7 @@ export default function WorksheetStats() {
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id="login-tooltip">
+                    <Tooltip id="worksheet-stats-rating-login-tooltip">
                       <small>
                         {user ? 'Complete the challenge' : 'Sign in'} to see
                         ratings
@@ -246,7 +266,11 @@ export default function WorksheetStats() {
                     .map((x, i) => (
                       <OverlayTrigger
                         key={i}
-                        overlay={<Tooltip>{x.courseCode}</Tooltip>}
+                        overlay={
+                          <Tooltip id={`worksheet-stats-skill-${i}-tooltip`}>
+                            {x.courseCode}
+                          </Tooltip>
+                        }
                       >
                         <span>
                           <SkillBadge skill={x.label} />
@@ -256,17 +280,19 @@ export default function WorksheetStats() {
                 </dd>
               </div>
             </dl>
-            <div className={styles.spacer} />
-            <dl>
-              {isExoticWorksheet && (
-                <div className={styles.wide}>
-                  <dt>Viewing exported worksheet</dt>
-                  <Button variant="primary" onClick={exitExoticWorksheet}>
-                    Exit
-                  </Button>
-                </div>
-              )}
-            </dl>
+            {isExoticWorksheet && isMobile && (
+              <>
+                <div className={styles.spacer} />
+                <dl>
+                  <div className={styles.wide}>
+                    <dt>Viewing exported worksheet</dt>
+                    <Button variant="primary" onClick={exitExoticWorksheet}>
+                      Exit
+                    </Button>
+                  </div>
+                </dl>
+              </>
+            )}
           </div>
         </div>
       </Collapse>

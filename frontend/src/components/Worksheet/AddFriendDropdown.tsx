@@ -154,7 +154,11 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
   );
 }
 
-function AddFriendDropdownDesktop() {
+function AddFriendDropdownDesktop({
+  fullWidth,
+}: {
+  readonly fullWidth: boolean;
+}) {
   const { user, friendRequests } = useStore(
     useShallow((state) => ({
       user: state.user,
@@ -210,9 +214,14 @@ function AddFriendDropdownDesktop() {
   );
 
   return (
-    <Popout buttonText="Add friend" notifications={friendRequests?.length}>
+    <Popout
+      buttonText="Add friend"
+      notifications={friendRequests?.length}
+      fullWidth={fullWidth}
+    >
       <PopoutSelect
         placeholder="Enter friend's name"
+        minWidth={fullWidth ? 0 : 400}
         options={[
           { label: 'Search results', options: searchResults },
           { label: 'Incoming requests', options: friendRequestOptions },
@@ -237,9 +246,11 @@ function AddFriendDropdownDesktop() {
 function AddFriendDropdown({
   removeFriend,
   mobile,
+  fullWidth = false,
 }: {
   readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
   readonly mobile: boolean;
+  readonly fullWidth?: boolean;
 }) {
   const friends = useStore((state) => state.friends);
 
@@ -253,7 +264,7 @@ function AddFriendDropdown({
   );
   return (
     <FriendContext.Provider value={contextValue}>
-      {mobile ? null : <AddFriendDropdownDesktop />}
+      {mobile ? null : <AddFriendDropdownDesktop fullWidth={fullWidth} />}
     </FriendContext.Provider>
   );
 }

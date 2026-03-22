@@ -17,32 +17,52 @@ import WishlistToggleButton from '../../Wishlist/WishlistToggleButton';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
+function copyToClipboard(text: string, successMessage: string) {
+  navigator.clipboard.writeText(text).then(
+    () => {
+      toast.success(successMessage);
+    },
+    (err: unknown) => {
+      console.error('Error copying to clipboard: ', err);
+      toast.error('Failed to copy to clipboard (try manual copy)');
+    },
+  );
+}
+
 function ShareButton({
   listing,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
-  const copyToClipboard = () => {
-    const textToCopy = `${listing.course_code} -- CourseTable: ${window.location.href}`;
-    navigator.clipboard.writeText(textToCopy).then(
-      () => {
-        toast.success('Course and URL copied to clipboard!');
-      },
-      (err: unknown) => {
-        console.error('Error copying to clipboard: ', err);
-      },
-    );
+  const getCourseUrl = () => {
+    const params = new URLSearchParams(window.location.search);
+    const courseModal = params.get('course-modal');
+    return `${window.location.origin}/catalog${
+      courseModal !== null ? `?course-modal=${courseModal}` : ''
+    }`;
   };
 
   return (
-    <button
-      type="button"
-      className={styles.shareButton}
-      onClick={copyToClipboard}
-      aria-label="Share"
+    <DropdownButton
+      as="div"
+      drop="down"
+      title={<FaRegShareFromSquare size={20} />}
+      variant="none"
+      className={styles.shareDropdown}
     >
-      <FaRegShareFromSquare size={20} />
-    </button>
+      <Dropdown.Item
+        onClick={() =>
+          copyToClipboard(listing.course_code, 'Course code copied!')
+        }
+      >
+        Copy course code
+      </Dropdown.Item>
+      <Dropdown.Item
+        onClick={() => copyToClipboard(getCourseUrl(), 'URL copied!')}
+      >
+        Copy course URL
+      </Dropdown.Item>
+    </DropdownButton>
   );
 }
 
@@ -56,25 +76,7 @@ function MoreButton({
     <DropdownButton
       as="div"
       drop="down"
-      title={
-        <OverlayTrigger
-          placement="top"
-          delay={{ show: 300, hide: 0 }}
-          overlay={(props) => (
-            <Tooltip id="button-tooltip" {...props}>
-              <small>More</small>
-            </Tooltip>
-          )}
-        >
-          <button
-            type="button"
-            className={styles.moreButton}
-            aria-label="Share"
-          >
-            <IoIosMore size={20} />
-          </button>
-        </OverlayTrigger>
-      }
+      title={<IoIosMore size={20} />}
       variant="none"
       className={styles.moreDropdown}
     >

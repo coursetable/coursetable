@@ -7,7 +7,7 @@ import {
   matchRoutes,
 } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
-import { enableMapSet } from 'immer';
+import { enableMapSet, setAutoFreeze } from 'immer';
 
 // Globals has to be imported first, because it contains all the base CSS!
 // eslint-disable-next-line import/order
@@ -17,13 +17,14 @@ import { isDev } from './config';
 import { TutorialProvider } from './contexts/tutorialContext';
 
 enableMapSet();
+setAutoFreeze(false);
 
 Sentry.init({
   enabled: !isDev,
   dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [
-    // See https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
-    Sentry.reactRouterV6BrowserTracingIntegration({
+    // See https://docs.sentry.io/platforms/javascript/guides/react/features/react-router/v7/
+    Sentry.reactRouterV7BrowserTracingIntegration({
       useEffect,
       useLocation,
       useNavigationType,

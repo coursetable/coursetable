@@ -658,6 +658,8 @@ export type Courses = {
   /** Course description */
   description?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
+  evaluation_narrative_summaries: Array<Evaluation_Narrative_Summaries>;
+  /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
@@ -682,6 +684,7 @@ export type Courses = {
   last_updated?: Maybe<Scalars['timestamp']['output']>;
   /** An array relationship */
   listings: Array<Listings>;
+  /** CRN of the primary listing */
   primary_crn?: Maybe<Scalars['Int']['output']>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes?: Maybe<Scalars['String']['output']>;
@@ -740,6 +743,15 @@ export type CoursesCourse_ProfessorsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Course_Professors_Order_By>>;
   where?: InputMaybe<Course_Professors_Bool_Exp>;
+};
+
+/** columns and relationships of "courses" */
+export type CoursesEvaluation_Narrative_SummariesArgs = {
+  distinct_on?: InputMaybe<Array<Evaluation_Narrative_Summaries_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Evaluation_Narrative_Summaries_Order_By>>;
+  where?: InputMaybe<Evaluation_Narrative_Summaries_Bool_Exp>;
 };
 
 /** columns and relationships of "courses" */
@@ -820,6 +832,7 @@ export type Courses_Avg_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -852,6 +865,7 @@ export type Courses_Bool_Exp = {
   course_professors?: InputMaybe<Course_Professors_Bool_Exp>;
   credits?: InputMaybe<Float8_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
+  evaluation_narrative_summaries?: InputMaybe<Evaluation_Narrative_Summaries_Bool_Exp>;
   evaluation_narratives?: InputMaybe<Evaluation_Narratives_Bool_Exp>;
   evaluation_ratings?: InputMaybe<Evaluation_Ratings_Bool_Exp>;
   evaluation_statistic?: InputMaybe<Evaluation_Statistics_Bool_Exp>;
@@ -925,6 +939,7 @@ export type Courses_Max_Order_By = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
   last_updated?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes?: InputMaybe<Order_By>;
@@ -991,6 +1006,7 @@ export type Courses_Min_Order_By = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
   last_updated?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes?: InputMaybe<Order_By>;
@@ -1035,6 +1051,7 @@ export type Courses_Order_By = {
   course_professors_aggregate?: InputMaybe<Course_Professors_Aggregate_Order_By>;
   credits?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
+  evaluation_narrative_summaries_aggregate?: InputMaybe<Evaluation_Narrative_Summaries_Aggregate_Order_By>;
   evaluation_narratives_aggregate?: InputMaybe<Evaluation_Narratives_Aggregate_Order_By>;
   evaluation_ratings_aggregate?: InputMaybe<Evaluation_Ratings_Aggregate_Order_By>;
   evaluation_statistic?: InputMaybe<Evaluation_Statistics_Order_By>;
@@ -1177,6 +1194,7 @@ export type Courses_Stddev_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -1215,6 +1233,7 @@ export type Courses_Stddev_Pop_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -1253,6 +1272,7 @@ export type Courses_Stddev_Samp_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -1320,6 +1340,7 @@ export type Courses_Stream_Cursor_Value_Input = {
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Scalars['Int']['input']>;
   last_updated?: InputMaybe<Scalars['timestamp']['input']>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Scalars['Int']['input']>;
   /** Registrar's notes (e.g. preference selection links, optional writing credits, etc.) */
   regnotes?: InputMaybe<Scalars['String']['input']>;
@@ -1377,6 +1398,7 @@ export type Courses_Sum_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -1415,6 +1437,7 @@ export type Courses_Var_Pop_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -1453,6 +1476,7 @@ export type Courses_Var_Samp_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -1491,6 +1515,7 @@ export type Courses_Variance_Order_By = {
   last_enrollment_course_id?: InputMaybe<Order_By>;
   /** [computed] Most recent previous offering of course (excluding future ones) */
   last_offered_course_id?: InputMaybe<Order_By>;
+  /** CRN of the primary listing */
   primary_crn?: InputMaybe<Order_By>;
   /** [computed] Unique ID for grouping courses by historical offering. All courses with a given ID are identical offerings across different semesters. Same as 'same_course_id' with the constraint that all courses in a group were taught by the same professors. */
   same_course_and_profs_id?: InputMaybe<Order_By>;
@@ -1505,6 +1530,153 @@ export enum Cursor_Ordering {
   /** descending ordering of the cursor */
   Desc = 'DESC',
 }
+
+/** columns and relationships of "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries = {
+  __typename?: 'evaluation_narrative_summaries';
+  /** An object relationship */
+  course: Courses;
+  /** The course these narrative comments summarize */
+  course_id: Scalars['Int']['output'];
+  /** An object relationship */
+  evaluation_question: Evaluation_Questions;
+  /** Question code for the summarized narrative responses */
+  question_code: Scalars['String']['output'];
+  /** AI-generated summary of student narrative comments */
+  summary: Scalars['String']['output'];
+};
+
+/** order by aggregate values of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Aggregate_Order_By = {
+  avg?: InputMaybe<Evaluation_Narrative_Summaries_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Evaluation_Narrative_Summaries_Max_Order_By>;
+  min?: InputMaybe<Evaluation_Narrative_Summaries_Min_Order_By>;
+  stddev?: InputMaybe<Evaluation_Narrative_Summaries_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Evaluation_Narrative_Summaries_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Evaluation_Narrative_Summaries_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Evaluation_Narrative_Summaries_Sum_Order_By>;
+  var_pop?: InputMaybe<Evaluation_Narrative_Summaries_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Evaluation_Narrative_Summaries_Var_Samp_Order_By>;
+  variance?: InputMaybe<Evaluation_Narrative_Summaries_Variance_Order_By>;
+};
+
+/** order by avg() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Avg_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "evaluation_narrative_summaries". All fields are combined with a logical 'AND'. */
+export type Evaluation_Narrative_Summaries_Bool_Exp = {
+  _and?: InputMaybe<Array<Evaluation_Narrative_Summaries_Bool_Exp>>;
+  _not?: InputMaybe<Evaluation_Narrative_Summaries_Bool_Exp>;
+  _or?: InputMaybe<Array<Evaluation_Narrative_Summaries_Bool_Exp>>;
+  course?: InputMaybe<Courses_Bool_Exp>;
+  course_id?: InputMaybe<Int_Comparison_Exp>;
+  evaluation_question?: InputMaybe<Evaluation_Questions_Bool_Exp>;
+  question_code?: InputMaybe<String_Comparison_Exp>;
+  summary?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Max_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+  /** Question code for the summarized narrative responses */
+  question_code?: InputMaybe<Order_By>;
+  /** AI-generated summary of student narrative comments */
+  summary?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Min_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+  /** Question code for the summarized narrative responses */
+  question_code?: InputMaybe<Order_By>;
+  /** AI-generated summary of student narrative comments */
+  summary?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "evaluation_narrative_summaries". */
+export type Evaluation_Narrative_Summaries_Order_By = {
+  course?: InputMaybe<Courses_Order_By>;
+  course_id?: InputMaybe<Order_By>;
+  evaluation_question?: InputMaybe<Evaluation_Questions_Order_By>;
+  question_code?: InputMaybe<Order_By>;
+  summary?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "evaluation_narrative_summaries" */
+export enum Evaluation_Narrative_Summaries_Select_Column {
+  /** column name */
+  CourseId = 'course_id',
+  /** column name */
+  QuestionCode = 'question_code',
+  /** column name */
+  Summary = 'summary',
+}
+
+/** order by stddev() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Stddev_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Stddev_Pop_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Stddev_Samp_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Evaluation_Narrative_Summaries_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Evaluation_Narrative_Summaries_Stream_Cursor_Value_Input = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Scalars['Int']['input']>;
+  /** Question code for the summarized narrative responses */
+  question_code?: InputMaybe<Scalars['String']['input']>;
+  /** AI-generated summary of student narrative comments */
+  summary?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** order by sum() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Sum_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Var_Pop_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Var_Samp_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "evaluation_narrative_summaries" */
+export type Evaluation_Narrative_Summaries_Variance_Order_By = {
+  /** The course these narrative comments summarize */
+  course_id?: InputMaybe<Order_By>;
+};
 
 /** columns and relationships of "evaluation_narratives" */
 export type Evaluation_Narratives = {
@@ -1816,10 +1988,7 @@ export type Evaluation_Questions = {
   evaluation_narratives: Array<Evaluation_Narratives>;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /**
-   * True if the question has narrative responses.
-   *         False if the question has categorica/numerical responses
-   */
+  /** True if the question has narrative responses. False if the question has categorical/numerical responses */
   is_narrative: Scalars['Boolean']['output'];
   /** JSON array of possible responses (only if the question is not a narrative) */
   options?: Maybe<Scalars['jsonb']['output']>;
@@ -1827,13 +1996,7 @@ export type Evaluation_Questions = {
   question_code: Scalars['String']['output'];
   /** The question text */
   question_text: Scalars['String']['output'];
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
+  /** [computed] Question type. The 'Overall' and 'Workload' tags are used to compute average ratings, while others are purely for identification purposes. No other commonality, other than that they contain similar keywords, is guaranteed—for example, they may have different options, or even differ in being narrative or not. */
   tag?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1909,10 +2072,7 @@ export type Evaluation_Questions_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Evaluation_Questions_Stream_Cursor_Value_Input = {
-  /**
-   * True if the question has narrative responses.
-   *         False if the question has categorica/numerical responses
-   */
+  /** True if the question has narrative responses. False if the question has categorical/numerical responses */
   is_narrative?: InputMaybe<Scalars['Boolean']['input']>;
   /** JSON array of possible responses (only if the question is not a narrative) */
   options?: InputMaybe<Scalars['jsonb']['input']>;
@@ -1920,13 +2080,7 @@ export type Evaluation_Questions_Stream_Cursor_Value_Input = {
   question_code?: InputMaybe<Scalars['String']['input']>;
   /** The question text */
   question_text?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * [computed] Question type. The 'Overall' and 'Workload' tags
-   *         are used to compute average ratings, while others are purely for
-   *         identification purposes. No other commonality, other than that they
-   *         contain similar keywords, is guaranteed—for example, they may have
-   *         different options, or even differ in being narrative or not.
-   */
+  /** [computed] Question type. The 'Overall' and 'Workload' tags are used to compute average ratings, while others are purely for identification purposes. No other commonality, other than that they contain similar keywords, is guaranteed—for example, they may have different options, or even differ in being narrative or not. */
   tag?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2319,10 +2473,7 @@ export type Listings = {
   season: Seasons;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Scalars['String']['output'];
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section: Scalars['String']['output'];
   /** Subject the course is listed under (e.g. "AMST") */
   subject: Scalars['String']['output'];
@@ -2391,10 +2542,7 @@ export type Listings_Max_Order_By = {
   school?: InputMaybe<Order_By>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code?: InputMaybe<Order_By>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section?: InputMaybe<Order_By>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject?: InputMaybe<Order_By>;
@@ -2418,10 +2566,7 @@ export type Listings_Min_Order_By = {
   school?: InputMaybe<Order_By>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code?: InputMaybe<Order_By>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section?: InputMaybe<Order_By>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject?: InputMaybe<Order_By>;
@@ -2526,10 +2671,7 @@ export type Listings_Stream_Cursor_Value_Input = {
   school?: InputMaybe<Scalars['String']['input']>;
   /** When the course/listing is being taught, mapping to `seasons` */
   season_code?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * Course section. Note that the section number is the same for
-   *         all cross-listings.
-   */
+  /** Course section. Note that the section number is the same for all cross-listings. */
   section?: InputMaybe<Scalars['String']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject?: InputMaybe<Scalars['String']['input']>;
@@ -2799,13 +2941,10 @@ export enum Order_By {
 /** columns and relationships of "professors" */
 export type Professors = {
   __typename?: 'professors';
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
+  /** [computed] Average rating of the professor assessed via the "Overall assessment" question in courses taught */
   average_rating?: Maybe<Scalars['float8']['output']>;
   /** [computed] Number of courses used to compute `average_rating` */
-  average_rating_n?: Maybe<Scalars['Int']['output']>;
+  average_rating_n: Scalars['Int']['output'];
   /** An array relationship */
   course_professors: Array<Course_Professors>;
   /** [computed] Number of courses taught */
@@ -2888,10 +3027,7 @@ export type Professors_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Professors_Stream_Cursor_Value_Input = {
-  /**
-   * [computed] Average rating of the professor assessed via
-   *         the "Overall assessment" question in courses taught
-   */
+  /** [computed] Average rating of the professor assessed via the "Overall assessment" question in courses taught */
   average_rating?: InputMaybe<Scalars['float8']['input']>;
   /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n?: InputMaybe<Scalars['Int']['input']>;
@@ -2927,6 +3063,10 @@ export type Query_Root = {
   courses: Array<Courses>;
   /** fetch data from the table: "courses" using primary key columns */
   courses_by_pk?: Maybe<Courses>;
+  /** An array relationship */
+  evaluation_narrative_summaries: Array<Evaluation_Narrative_Summaries>;
+  /** fetch data from the table: "evaluation_narrative_summaries" using primary key columns */
+  evaluation_narrative_summaries_by_pk?: Maybe<Evaluation_Narrative_Summaries>;
   /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
@@ -3025,6 +3165,19 @@ export type Query_RootCoursesArgs = {
 
 export type Query_RootCourses_By_PkArgs = {
   course_id: Scalars['Int']['input'];
+};
+
+export type Query_RootEvaluation_Narrative_SummariesArgs = {
+  distinct_on?: InputMaybe<Array<Evaluation_Narrative_Summaries_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Evaluation_Narrative_Summaries_Order_By>>;
+  where?: InputMaybe<Evaluation_Narrative_Summaries_Bool_Exp>;
+};
+
+export type Query_RootEvaluation_Narrative_Summaries_By_PkArgs = {
+  course_id: Scalars['Int']['input'];
+  question_code: Scalars['String']['input'];
 };
 
 export type Query_RootEvaluation_NarrativesArgs = {
@@ -3272,6 +3425,12 @@ export type Subscription_Root = {
   /** fetch data from the table in a streaming manner: "courses" */
   courses_stream: Array<Courses>;
   /** An array relationship */
+  evaluation_narrative_summaries: Array<Evaluation_Narrative_Summaries>;
+  /** fetch data from the table: "evaluation_narrative_summaries" using primary key columns */
+  evaluation_narrative_summaries_by_pk?: Maybe<Evaluation_Narrative_Summaries>;
+  /** fetch data from the table in a streaming manner: "evaluation_narrative_summaries" */
+  evaluation_narrative_summaries_stream: Array<Evaluation_Narrative_Summaries>;
+  /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
   evaluation_narratives_by_pk?: Maybe<Evaluation_Narratives>;
@@ -3419,6 +3578,25 @@ export type Subscription_RootCourses_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Courses_Stream_Cursor_Input>>;
   where?: InputMaybe<Courses_Bool_Exp>;
+};
+
+export type Subscription_RootEvaluation_Narrative_SummariesArgs = {
+  distinct_on?: InputMaybe<Array<Evaluation_Narrative_Summaries_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Evaluation_Narrative_Summaries_Order_By>>;
+  where?: InputMaybe<Evaluation_Narrative_Summaries_Bool_Exp>;
+};
+
+export type Subscription_RootEvaluation_Narrative_Summaries_By_PkArgs = {
+  course_id: Scalars['Int']['input'];
+  question_code: Scalars['String']['input'];
+};
+
+export type Subscription_RootEvaluation_Narrative_Summaries_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Evaluation_Narrative_Summaries_Stream_Cursor_Input>>;
+  where?: InputMaybe<Evaluation_Narrative_Summaries_Bool_Exp>;
 };
 
 export type Subscription_RootEvaluation_NarrativesArgs = {

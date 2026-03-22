@@ -61,7 +61,7 @@ export default function CourseTableNavbar() {
   const isMobile = useStore((state) => state.isMobile);
 
   const showCatalogSearch = !isMobile && location.pathname === '/catalog';
-  const showWorksheetSearch = !isMobile && location.pathname === '/worksheet';
+  const isWorksheetPage = location.pathname === '/worksheet';
 
   const [showPWAPrompt, setShowPWAPrompt] = useState(false);
   const [isIOSNotInstalled, setIsIOSNotInstalled] = useState(false);
@@ -101,7 +101,7 @@ export default function CourseTableNavbar() {
           {showCatalogSearch && <RandomButton />}
         </div>
         {showCatalogSearch && <NavbarCatalogSearch />}
-        {showWorksheetSearch && <NavbarWorksheetSearch />}
+        {isWorksheetPage && <NavbarWorksheetSearch isMobile={isMobile} />}
 
         {/* Mobile nav toggle */}
         <Navbar.Toggle

@@ -12,11 +12,13 @@ export default function WorksheetHideButton({
   crn,
   className,
   color,
+  context = 'calendar',
 }: {
   readonly hidden: boolean;
   readonly crn: Crn;
   readonly className?: string;
   readonly color?: string;
+  readonly context?: 'calendar' | 'map';
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const {
@@ -29,16 +31,23 @@ export default function WorksheetHideButton({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       viewedPerson: state.viewedPerson,
-      isReadonlyWorksheet: state.isReadonlyWorksheet,
+      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
     })),
   );
   if (isReadonlyWorksheet || viewedPerson !== 'me') return null;
-  const buttonLabel = `${hidden ? 'Show' : 'Hide'} in calendar`;
+  const buttonLabel =
+    context === 'map'
+      ? hidden
+        ? 'Show on map'
+        : 'Hide from map'
+      : hidden
+        ? 'Show in calendar'
+        : 'Hide from calendar';
   return (
     <OverlayTrigger
       placement="bottom"
       overlay={(props) => (
-        <Tooltip id="button-tooltip" {...props}>
+        <Tooltip id={`worksheet-hide-button-${crn}-tooltip`} {...props}>
           <small>{buttonLabel}</small>
         </Tooltip>
       )}

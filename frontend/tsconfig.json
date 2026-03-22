@@ -5,6 +5,8 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
     "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     // We use ESLint for this
     "allowUnreachableCode": true,
     "jsx": "react-jsx",

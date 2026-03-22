@@ -241,7 +241,7 @@ export const defaultFilters: Filters = {
   selectDays: [],
   timeBounds: [toRangeTime('7:00'), toRangeTime('22:00')],
   enrollBounds: [1, 528],
-  numBounds: [0, 1000],
+  numBounds: [0, 10000],
   selectSchools: [],
   selectCredits: [],
   selectCourseInfoAttributes: [],
@@ -439,18 +439,24 @@ export function SearchProvider({
 
   const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
 
-  const { worksheets, friends, getRelevantWorksheetNumber } = useStore(
+  const {
+    worksheets,
+    friends,
+    sameCourseIdToCrns,
+    getRelevantWorksheetNumber,
+  } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
+      sameCourseIdToCrns: state.sameCourseIdToCrns,
       getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
     })),
   );
 
   const numFriends = useMemo(() => {
     if (!friends) return {};
-    return getNumFriends(friends);
-  }, [friends]);
+    return getNumFriends(friends, sameCourseIdToCrns);
+  }, [friends, sameCourseIdToCrns]);
 
   const processedSearchText = useMemo(
     () =>
@@ -566,8 +572,14 @@ export function SearchProvider({
             return listing.course_code;
           case 'type':
             return 'lecture'; // TODO: add other types like fysem, discussion, etc.
-          case 'number':
-            return Number(listing.number.replace(/\D/gu, ''));
+          case 'number': {
+            const numString = listing.number.replace(/\D/gu, '');
+
+            let number = Number(numString);
+            if (numString.length === 3) number *= 10;
+
+            return number;
+          }
           case 'listings.subjects':
             return listing.course.listings.map((l) => l.subject);
           case 'listings.course-codes':
@@ -679,10 +691,14 @@ export function SearchProvider({
         }
 
         if (numBounds.isNonEmpty) {
-          const number = Number(listing.number.replace(/\D/gu, ''));
+          const numString = listing.number.replace(/\D/gu, '');
+
+          let number = Number(numString);
+          if (numString.length === 3) number *= 10;
+
           if (
             number < numBounds.value[0] ||
-            (numBounds.value[1] < 1000 && number > numBounds.value[1])
+            (numBounds.value[1] < 10000 && number > numBounds.value[1])
           )
             return false;
         }

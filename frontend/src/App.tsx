@@ -27,7 +27,7 @@ import { suspended } from './utilities/display';
 import { createCatalogLink } from './utilities/navigation';
 import styles from './App.module.css';
 
-const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
+const SentryRoutes = Sentry.withSentryReactRouterV7Routing(Routes);
 
 const Landing = suspended(() => import('./pages/Landing'));
 const About = suspended(() => import('./pages/About'));
@@ -38,6 +38,7 @@ const Challenge = suspended(() => import('./pages/Challenge'));
 const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const Join = suspended(() => import('./pages/Join'));
+const Profile = suspended(() => import('./pages/Profile'));
 const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
@@ -142,9 +143,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={14}
+        id={21}
       >
-        {/* None */}
+        {/* Course locations are accurate as of December 2025. Please refer to Yale
+        Course Search to see your up-to-date course locations. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -163,6 +165,7 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/graphiql" element={<Graphiql />} />
           <Route path="/login" element={<Landing />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Challenge handles its own auth */}

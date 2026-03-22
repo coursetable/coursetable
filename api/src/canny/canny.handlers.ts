@@ -32,7 +32,7 @@ export const cannyIdentify = async (
   // Make another request to Yalies.io to get most up-to-date info
   // (also done upon login, but our cookies last a while)
   try {
-    const data = (await fetch('https://yalies.io/api/people', {
+    const data = (await fetch('https://api.yalies.io/v2/people', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${YALIES_API_KEY}`,

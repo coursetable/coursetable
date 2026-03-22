@@ -24,9 +24,7 @@ import {
 import chroma from 'chroma-js';
 import { Line } from 'react-chartjs-2';
 
-import { useShallow } from 'zustand/react/shallow';
 import type { Season } from '../../../queries/graphql-types';
-import { useStore } from '../../../store';
 import { subjects } from '../../../utilities/constants';
 import { toSeasonString } from '../../../utilities/course';
 import RelatedCoursesList from '../../RelatedCoursesList';
@@ -200,7 +198,10 @@ function SeasonRatingChart({
         data={chartData}
         options={getChartOptions(false, {
           title(items) {
-            return toSeasonString(uniformScaleToSeason(items[0]!.parsed.x));
+            const {
+              parsed: { x },
+            } = items[0]!;
+            return x !== null ? toSeasonString(uniformScaleToSeason(x)) : '';
           },
           label(item) {
             const point = item.raw as ChartPoint;
@@ -318,7 +319,10 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
                 <li key={subject}>
                   <OverlayTrigger
                     overlay={(props) => (
-                      <Tooltip id="color-tooltip" {...props}>
+                      <Tooltip
+                        id={`prof-overview-subject-${subject}-tooltip`}
+                        {...props}
+                      >
                         {subjects[subject] ?? '[Unknown]'}
                       </Tooltip>
                     )}
@@ -358,12 +362,12 @@ function OverviewPanel({ professor }: { readonly professor: ProfInfo }) {
           <Form.Check.Input
             checked={groupRecurringCourses}
             onChange={() => {
-              togglePref('professorPref', 'groupRecurringCourses');
+              setGroupRecurringCourses(!groupRecurringCourses);
             }}
           />
           <Form.Check.Label
             onClick={() => {
-              togglePref('professorPref', 'groupRecurringCourses');
+              setGroupRecurringCourses(!groupRecurringCourses);
             }}
           >
             Group recurring courses

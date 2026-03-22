@@ -24,6 +24,7 @@ interface UserState {
   wishlist?: WishlistItem[];
   friendRequests?: FriendRequests;
   friends?: FriendRecord;
+  sameCourseIdToCrns?: { [key: string]: number[] };
 }
 
 interface UserActions {
@@ -48,6 +49,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   wishlist: undefined,
   friendRequests: undefined,
   friends: undefined,
+  sameCourseIdToCrns: undefined,
   async userRefresh() {
     const data = await getUserInfo();
     set({ user: data });
@@ -62,7 +64,10 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   },
   async friendRefresh() {
     const data = await fetchFriendWorksheets();
-    set({ friends: data?.friends });
+    set({
+      friends: data?.friends,
+      sameCourseIdToCrns: data?.sameCourseIdToCrns,
+    });
   },
   async friendReqRefresh() {
     const data = await fetchFriendReqs();

@@ -8,9 +8,11 @@ import ag from '../images/headshots/abhijit-gupta.jpg';
 import ae from '../images/headshots/aidan-evans.jpg';
 import as from '../images/headshots/alex-schapiro.jpg';
 import az from '../images/headshots/anna-zhang.jpg';
+import ash from '../images/headshots/aryan-sharma.jpg';
 import bx from '../images/headshots/ben-xu.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
+import eboug from '../images/headshots/eli-bouganim.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
 import ff from '../images/headshots/filippo-fonseca.jpg';
@@ -27,6 +29,7 @@ import lt from '../images/headshots/leck-tang.jpg';
 import lz from '../images/headshots/lily-zhou.jpg';
 import lh from '../images/headshots/lucas-huang.jpg';
 import my from '../images/headshots/max-yuan.jpg';
+import mc from '../images/headshots/michael-canudas.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import ma from '../images/headshots/murad-avliyakulov.jpg';
 import nk from '../images/headshots/nalin-khanna.jpg';
@@ -36,6 +39,7 @@ import rb from '../images/headshots/reyansh-bahl.jpg';
 import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
+import yf from '../images/headshots/yavin-fickel.jpg';
 
 // Link logos
 import githubDark from '../images/link-logos/github-light.png';
@@ -62,9 +66,18 @@ function About() {
 
   const current: Person[] = [
     {
+      name: 'Reyansh Bahl',
+      image: rb,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/reybahl',
+        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
+      },
+    },
+    {
       name: 'Neil Song',
       image: ns,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         linkedin: 'https://www.linkedin.com/in/neil-song/',
         github: 'https://github.com/neilsong',
@@ -73,7 +86,7 @@ function About() {
     {
       name: 'Humphrey Xu',
       image: hx,
-      role: 'CourseTable Co-Lead',
+      role: 'Past Lead, Advisor',
       links: {
         linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
         github: 'https://github.com/Etherite1',
@@ -129,12 +142,43 @@ function About() {
       },
     },
     {
-      name: 'Reyansh Bahl',
-      image: rb,
+      name: 'Michael Canudas',
+      image: mc,
       role: 'Development',
       links: {
-        github: 'https://github.com/reybahl',
-        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
+        github: 'https://github.com/michaelcanudas',
+        linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
+        website: 'https://michaelcanudas.com/',
+      },
+    },
+    {
+      name: 'Aryan Sharma',
+      image: ash,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/aryans-15',
+        linkedin: 'https://www.linkedin.com/in/aryans15/',
+        website: 'https://aryans.dev/',
+      },
+    },
+    {
+      name: 'Yavin Fickel',
+      image: yf,
+      role: 'Development',
+      links: {
+        website: 'https://yavinfickel.com',
+        github: 'https://github.com/yav-fi',
+        linkedin: 'https://www.linkedin.com/in/yavin',
+      },
+    },
+    {
+      name: 'Eli Bouganim',
+      image: eboug,
+      role: 'Development',
+      links: {
+        website: 'https://elibouganim.web.app',
+        github: 'https://github.com/eliboug',
+        linkedin: 'https://www.linkedin.com/in/eli-bouganim/',
       },
     },
   ];
