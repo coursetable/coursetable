@@ -9,7 +9,11 @@ import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { TextComponent } from '../components/Typography';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
-import { resetCatalogCache, useFerry } from '../contexts/ferryContext';
+import {
+  resetCatalogCache,
+  useFerry,
+  useWorksheetInfo,
+} from '../contexts/ferryContext';
 import type { Option } from '../contexts/searchContext';
 import type { NetId } from '../queries/graphql-types';
 import { useStore, type Store } from '../store';
@@ -22,9 +26,6 @@ const selectProfileStore = (state: Store) => ({
   userRefresh: state.userRefresh,
   worksheets: state.worksheets,
   worksheetsRefresh: state.worksheetsRefresh,
-  worksheetCourses: state.courses,
-  worksheetLoading: state.worksheetLoading,
-  worksheetError: state.worksheetError,
   friends: state.friends,
   friendRequests: state.friendRequests,
   friendRefresh: state.friendRefresh,
@@ -32,8 +33,6 @@ const selectProfileStore = (state: Store) => ({
   removeFriend: state.removeFriend,
   addFriend: state.addFriend,
   viewedSeason: state.viewedSeason,
-  viewedWorksheetNumber: state.viewedWorksheetNumber,
-  changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
 });
 
 const alphaSort = (a: string, b: string) =>
@@ -49,9 +48,6 @@ function Profile() {
     userRefresh,
     worksheets,
     worksheetsRefresh,
-    worksheetCourses,
-    worksheetLoading,
-    worksheetError,
     friends,
     friendRequests,
     friendRefresh,
@@ -59,12 +55,14 @@ function Profile() {
     removeFriend,
     addFriend,
     viewedSeason,
-    viewedWorksheetNumber,
-    changeViewedWorksheetNumber,
   } = useStore(useShallow(selectProfileStore));
   const { requestSeasons } = useFerry();
 
   const [catalogRefreshing, setCatalogRefreshing] = useState(false);
+
+  const [profileWorksheetNumber, setProfileWorksheetNumber] = useState(
+    () => useStore.getState().viewedWorksheetNumber,
+  );
 
   const [searchParams] = useSearchParams();
 
@@ -83,6 +81,25 @@ function Profile() {
   useEffect(() => {
     if (!friendRequests) void friendReqRefresh();
   }, [friendRequests, friendReqRefresh]);
+
+  useEffect(() => {
+    if (!worksheets) return;
+    const seasonWs = worksheets.get(viewedSeason);
+    if (!seasonWs) return;
+    const globalWs = useStore.getState().viewedWorksheetNumber;
+    setProfileWorksheetNumber((cur) => {
+      if (seasonWs.has(cur)) return cur;
+      if (seasonWs.has(globalWs)) return globalWs;
+      const nums = [...seasonWs.keys()].sort((a, b) => a - b);
+      return nums.includes(0) ? 0 : (nums[0] ?? 0);
+    });
+  }, [worksheets, viewedSeason]);
+
+  const {
+    loading: profileWorksheetCatalogLoading,
+    error: profileWorksheetCatalogError,
+    data: profileWorksheetCourses,
+  } = useWorksheetInfo(worksheets, viewedSeason, profileWorksheetNumber);
 
   const worksheetOptions = useMemo(() => {
     if (!worksheets) return [];
@@ -108,22 +125,22 @@ function Profile() {
 
   const sortedWorksheetCourses = useMemo(
     () =>
-      worksheetCourses
+      profileWorksheetCourses
         .filter((course) => !course.hidden)
         .sort((a, b) =>
           alphaSort(a.listing.course.title, b.listing.course.title),
         ),
-    [worksheetCourses],
+    [profileWorksheetCourses],
   );
 
   const selectedWorksheetOption = useMemo(
     () =>
       worksheetOptions.find(
-        (option) => option.value === viewedWorksheetNumber,
+        (option) => option.value === profileWorksheetNumber,
       ) ??
       worksheetOptions[0] ??
       null,
-    [worksheetOptions, viewedWorksheetNumber],
+    [worksheetOptions, profileWorksheetNumber],
   );
 
   if (!currentUser) {
@@ -144,7 +161,7 @@ function Profile() {
   const friendsList = friends ? Object.entries(friends) : [];
   const friendRequestsList = friendRequests ?? [];
   const friendsLoading = !friends || !friendRequests;
-  const worksheetsLoading = !worksheets || worksheetLoading;
+  const worksheetsLoading = !worksheets || profileWorksheetCatalogLoading;
 
   const handleRemoveFriend = (friendNetId: NetId) => {
     void removeFriend(friendNetId, false);
@@ -369,8 +386,7 @@ function Profile() {
                           showControl={false}
                           minWidth={0}
                           onChange={(option) => {
-                            if (option)
-                              changeViewedWorksheetNumber(option.value);
+                            if (option) setProfileWorksheetNumber(option.value);
                           }}
                         />
                       </Popout>
@@ -380,7 +396,7 @@ function Profile() {
                     <TextComponent type="secondary">
                       Loading worksheets...
                     </TextComponent>
-                  ) : worksheetError ? (
+                  ) : profileWorksheetCatalogError ? (
                     <TextComponent type="secondary">
                       Failed to load worksheet.
                     </TextComponent>
