@@ -1,9 +1,12 @@
 import React, { useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
+import { useModalHistory } from '../../contexts/modalHistoryContext';
 import { useWishlist } from '../../contexts/wishlistContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { updateWishlistCourses } from '../../queries/api';
@@ -27,6 +30,7 @@ function WishlistToggleButton({
       isLgDesktop: state.isLgDesktop,
     })),
   );
+  const { closeModal } = useModalHistory();
 
   const { wishlistCourses } = useWishlist();
 
@@ -54,11 +58,31 @@ function WishlistToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWishlist ? 'remove' : 'add';
       if (addRemove === 'add') {
-        await updateWishlistCourses({
+        const ok = await updateWishlistCourses({
           action: addRemove,
           season: listing.course.season_code,
           crn: listing.crn,
         });
+        if (ok) {
+          toast.info(
+            <span>
+              Saved to your wishlist{' '}
+              <span className="text-nowrap">
+                (
+                <Link
+                  to="/profile?tab=wishlist"
+                  className="fw-semibold"
+                  onClick={() => {
+                    closeModal();
+                  }}
+                >
+                  view in profile
+                </Link>
+                )
+              </span>
+            </span>,
+          );
+        }
       } else {
         await Promise.all(
           sameCoursesInWishlist.map((course) =>
@@ -73,7 +97,7 @@ function WishlistToggleButton({
 
       await wishlistRefresh();
     },
-    [inWishlist, wishlistRefresh, listing, sameCoursesInWishlist],
+    [closeModal, inWishlist, wishlistRefresh, listing, sameCoursesInWishlist],
   );
 
   const size = modal ? 20 : isLgDesktop ? 16 : 14;

@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
-import { Button, Card, Tab, Tabs } from 'react-bootstrap';
+import { Button, Card, Spinner, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { TextComponent } from '../components/Typography';
+import WishlistGrid from '../components/Wishlist/WishlistGrid';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import {
   resetCatalogCache,
@@ -15,6 +17,7 @@ import {
   useWorksheetInfo,
 } from '../contexts/ferryContext';
 import type { Option } from '../contexts/searchContext';
+import { useWishlist } from '../contexts/wishlistContext';
 import type { NetId } from '../queries/graphql-types';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
@@ -64,7 +67,14 @@ function Profile() {
     () => useStore.getState().viewedWorksheetNumber,
   );
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const profileTabParam = searchParams.get('tab');
+  const activeProfileTab =
+    profileTabParam === 'wishlist' || profileTabParam === 'advanced'
+      ? profileTabParam
+      : 'overview';
+
+  const { wishlistLoading, wishlistError, wishlistCourses } = useWishlist();
 
   useEffect(() => {
     if (!currentUser) void userRefresh();
@@ -81,6 +91,10 @@ function Profile() {
   useEffect(() => {
     if (!friendRequests) void friendReqRefresh();
   }, [friendRequests, friendReqRefresh]);
+
+  useEffect(() => {
+    if (wishlistError) Sentry.captureException(wishlistError);
+  }, [wishlistError]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -211,7 +225,14 @@ function Profile() {
       </div>
 
       <Tabs
-        defaultActiveKey="overview"
+        activeKey={activeProfileTab}
+        onSelect={(k) => {
+          if (k === null) return;
+          const next = new URLSearchParams(searchParams);
+          if (k === 'overview') next.delete('tab');
+          else next.set('tab', k);
+          setSearchParams(next, { replace: true });
+        }}
         className={styles.profileTabs}
         variant="tabs"
         transition={false}
@@ -423,6 +444,36 @@ function Profile() {
                 </Card.Body>
               </Card>
             </div>
+          </div>
+        </Tab>
+        <Tab eventKey="wishlist" title="Wishlist">
+          <div className={styles.tabContent}>
+            <Card className={styles.profileCard}>
+              <Card.Body className={styles.cardBody}>
+                <h3 className={styles.sectionTitle}>Wishlist</h3>
+                <TextComponent
+                  type="secondary"
+                  className={styles.wishlistIntro}
+                >
+                  Courses you bookmark appear here. Use the bookmark icon on a
+                  course to add or remove them.
+                </TextComponent>
+                {wishlistError ? (
+                  <TextComponent type="secondary">
+                    Couldn&apos;t load your wishlist. Try again later.
+                  </TextComponent>
+                ) : wishlistLoading ? (
+                  <div className="d-flex justify-content-center py-5">
+                    <Spinner animation="border" aria-label="Loading wishlist" />
+                  </div>
+                ) : (
+                  <WishlistGrid
+                    data={wishlistCourses}
+                    courseLinkClassName={styles.friendLink}
+                  />
+                )}
+              </Card.Body>
+            </Card>
           </div>
         </Tab>
         <Tab eventKey="advanced" title="Advanced">
