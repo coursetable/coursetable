@@ -19,6 +19,11 @@ import type {
   EvalsBySeasonQuery,
 } from '../generated/graphql-types';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
+import {
+  bumpCatalogCacheBustToken,
+  getCatalogCacheBustToken,
+  isCatalogEndpoint,
+} from '../utilities/catalogCache';
 
 // Coalesce identical concurrent worksheet updates (e.g., double-clicks).
 const inflightWorksheetUpdates = new Map<string, Promise<boolean>>();
@@ -28,11 +33,30 @@ type BaseFetchOptions = {
     message: string;
     category: string;
   };
+  cacheBust?: boolean;
   /**
    * Receives the parsed error code. If it returns true, the error is considered
    * handled and no further reporting is done. Only HTTP errors can be handled.
    */
   handleErrorCode?: (errCode: string) => boolean;
+};
+
+const isJsonParseError = (err: unknown) =>
+  err instanceof SyntaxError ||
+  (typeof err === 'object' &&
+    err !== null &&
+    Object.hasOwn(err, 'name') &&
+    (err as { name?: string }).name === 'SyntaxError');
+
+const buildApiUrl = (endpointSuffix: string, cacheBust: boolean) => {
+  const url = new URL(`${API_ENDPOINT}/api${endpointSuffix}`);
+  if (isCatalogEndpoint(endpointSuffix)) {
+    const token = cacheBust
+      ? bumpCatalogCacheBustToken()
+      : getCatalogCacheBustToken();
+    if (token) url.searchParams.set('cacheBust', token);
+  }
+  return url.toString();
 };
 
 function parseWithWarning<T extends z.ZodSchema<unknown>>(
@@ -88,20 +112,18 @@ async function fetchAPI<T extends z.ZodSchema>(
 ): Promise<z.infer<T> | undefined>;
 async function fetchAPI(
   endpointSuffix: string,
-  {
-    body,
-    method,
-    schema,
-    breadcrumb,
-    handleErrorCode,
-  }: BaseFetchOptions & {
+  options: BaseFetchOptions & {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     body?: {};
     method?: 'POST' | 'GET';
     schema?: z.ZodType<unknown>;
   },
 ): Promise<unknown> {
+  const { body, method, schema, breadcrumb, handleErrorCode, cacheBust } =
+    options;
   const payload = JSON.stringify(body);
+  const isCatalogRequest = isCatalogEndpoint(endpointSuffix);
+  const shouldCacheBust = Boolean(cacheBust);
   const fetchInit: RequestInit = body
     ? {
         method: 'POST',
@@ -115,9 +137,13 @@ async function fetchAPI(
         method: method ?? 'GET',
         credentials: 'include',
       };
+  if (isCatalogRequest && shouldCacheBust) fetchInit.cache = 'no-store';
   const noResExpected = !schema && fetchInit.method === 'POST';
   try {
-    const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, fetchInit);
+    const res = await fetch(
+      buildApiUrl(endpointSuffix, shouldCacheBust),
+      fetchInit,
+    );
     if (!res.ok) {
       let errorCode = '';
       // First: try to parse out a structured error code
@@ -147,10 +173,20 @@ async function fetchAPI(
     }
     // If no res body is expected, return early
     if (noResExpected) return true;
-    const rawData: unknown = await res.json();
-    // Only parse if a schema is provided
-    if (!schema) return rawData;
-    return parseWithWarning(schema, rawData, breadcrumb);
+    try {
+      const rawData: unknown = await res.json();
+      // Only parse if a schema is provided
+      if (!schema) return rawData;
+      return parseWithWarning(schema, rawData, breadcrumb);
+    } catch (err) {
+      if (isCatalogRequest && !shouldCacheBust && isJsonParseError(err)) {
+        return await fetchAPI(endpointSuffix, {
+          ...options,
+          cacheBust: true,
+        });
+      }
+      throw err;
+    }
   } catch (err) {
     Sentry.addBreadcrumb({
       level: 'info',

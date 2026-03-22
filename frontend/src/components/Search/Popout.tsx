@@ -21,10 +21,12 @@ type Props = {
   readonly displayOptionLabel?: boolean;
   readonly className?: string;
   readonly wrapperClassName?: string;
+  readonly dropdownClassName?: string;
   readonly notifications?: number;
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
   readonly Icon?: React.JSX.Element;
+  readonly fullWidth?: boolean;
 };
 
 function getText(
@@ -87,10 +89,12 @@ export function Popout({
   displayOptionLabel,
   className,
   wrapperClassName,
+  dropdownClassName,
   notifications,
   colors,
   dataTutorial,
   Icon,
+  fullWidth,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
@@ -128,6 +132,10 @@ export function Popout({
     // this is on purpose: when resizing the window, the resize event fires
     // before reflow happens, so the dropdown tends to flicker and become
     // unstable.
+    if (!isComponentVisible) {
+      setDropdownXOffset(0);
+      return;
+    }
     if (!dropdownRef.current) return;
     const dropdownRect = dropdownRef.current.getBoundingClientRect();
     // Cancel the effect of the existing x-shift
@@ -136,14 +144,18 @@ export function Popout({
     if (realRight > window.innerWidth)
       setDropdownXOffset(Math.max(-realLeft, window.innerWidth - realRight));
     else setDropdownXOffset(0);
-  }, [isComponentVisible, dropdownRef, dropdownXOffset]);
+  }, [isComponentVisible, dropdownXOffset, dropdownRef]);
 
   return (
     <div
       data-tutorial={
         dataTutorial ? `catalog-${dataTutorial}-observe` : undefined
       }
-      className={clsx(styles.wrapper, wrapperClassName)}
+      className={clsx(
+        styles.wrapper,
+        fullWidth && styles.wrapperFullWidth,
+        wrapperClassName,
+      )}
     >
       {/* Popout button */}
       <button
@@ -151,7 +163,11 @@ export function Popout({
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
         ref={toggleRef}
-        className={clsx(className, styles.button)}
+        className={clsx(
+          className,
+          styles.button,
+          fullWidth && styles.buttonFullWidth,
+        )}
         data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
       >
         {Icon ?? null}
@@ -172,10 +188,13 @@ export function Popout({
         ) : null}
         {notifications ? <NotificationIcon count={notifications} /> : null}
       </button>
-      {/* Dropdown */}
       {isComponentVisible ? (
         <div
-          className={styles.dropdown}
+          className={clsx(
+            styles.dropdown,
+            fullWidth && styles.dropdownFullWidth,
+            dropdownClassName,
+          )}
           ref={dropdownRef}
           style={
             dropdownXOffset
