@@ -362,22 +362,41 @@ export const getFriendsWorksheets = async (
   });
 };
 
+const GetNamesRequestSchema = z.object({
+  query: z.string().min(1).max(100),
+});
+
 export const getNames = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  const names = await db.query.studentBluebookSettings.findMany({
-    columns: {
-      netId: true,
-      college: true,
-    },
-    extras: {
+  const queryParseRes = GetNamesRequestSchema.safeParse(req.query);
+  if (!queryParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+  const { query } = queryParseRes.data;
+  // Use ILIKE for case-insensitive prefix search on name or netId.
+  // Limit results to prevent bulk enumeration.
+  const names = await db
+    .select({
+      netId: studentBluebookSettings.netId,
+      college: studentBluebookSettings.college,
       first: sql<string | null>`${studentBluebookSettings.firstName}`.as(
         'first',
       ),
       last: sql<string | null>`${studentBluebookSettings.lastName}`.as('last'),
-    },
-  });
+    })
+    .from(studentBluebookSettings)
+    .where(
+      sql`(
+        ${studentBluebookSettings.netId} ILIKE ${`${query}%`}
+        OR ${studentBluebookSettings.firstName} ILIKE ${`${query}%`}
+        OR ${studentBluebookSettings.lastName} ILIKE ${`${query}%`}
+        OR (${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}) ILIKE ${`${query}%`}
+      )`,
+    )
+    .limit(20);
 
   res.status(200).json({ names });
 };

@@ -4,9 +4,11 @@ import express from 'express';
 import * as Sentry from '@sentry/node';
 import RedisStore from 'connect-redis';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
+import { RedisStore as RateLimitRedisStore } from 'rate-limit-redis';
 
 // Import this at the top before any user modules
 import './sentry-instrument.js';
@@ -92,14 +94,31 @@ app.use(
   }),
 );
 
-// Rate limit
-// const authRateLimiter = rateLimit({
-// windowMs: 15 * 60 * 1000, // 15 minutes
-// max: 100, // Limit each IP to 100 requests per windowMs
-// standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-// legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-// message: 'Too many requests, please try again later',
-// });
+// Rate limiting backed by Redis so limits are shared across instances.
+const rateLimitStore = new RateLimitRedisStore({
+  sendCommand: (...args: string[]) => redisClient.sendCommand(args),
+  prefix: 'rl:',
+});
+
+// General API rate limit: 200 requests per 15 minutes per IP
+const generalRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: rateLimitStore,
+  message: { error: 'TOO_MANY_REQUESTS' },
+});
+
+// Stricter limit for auth and challenge endpoints: 20 requests per 15 minutes
+const sensitiveRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: rateLimitStore,
+  message: { error: 'TOO_MANY_REQUESTS' },
+});
 
 // Configuring passport
 passportConfig(passport);
@@ -131,6 +150,11 @@ app.use(morgan);
 // Has to go after Ferry because it consumes the request body stream
 // and the http-proxy needs a stream to consume.
 app.use(express.json());
+
+// Apply rate limiting
+app.use('/api/', generalRateLimiter);
+app.use('/api/auth/', sensitiveRateLimiter);
+app.use('/api/challenge/', sensitiveRateLimiter);
 
 // Activate catalog and CAS authentication
 challenge(app);

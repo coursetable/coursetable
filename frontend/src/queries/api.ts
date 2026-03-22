@@ -758,14 +758,14 @@ const userNamesSchema = z.array(
 
 export type UserNames = z.infer<typeof userNamesSchema>;
 
-export function fetchAllNames() {
-  return fetchAPI('/friends/names', {
+export function searchNames(query: string) {
+  return fetchAPI(`/friends/names?query=${encodeURIComponent(query)}`, {
     schema: z.object({
       names: userNamesSchema,
     }),
     breadcrumb: {
       category: 'friends',
-      message: 'Fetching all user names',
+      message: 'Searching user names',
     },
   });
 }
