@@ -55,7 +55,7 @@ function CourseModal({
   const onNavigation: ModalNavigationFunction = (mode, l, target) => {
     if (mode === 'pop') {
       setView('overview');
-      navigate('pop');
+      navigate('pop', undefined, searchParams);
     } else if (mode === 'change-view') {
       setView(target);
     } else {

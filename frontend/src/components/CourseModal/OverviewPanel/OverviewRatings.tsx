@@ -36,10 +36,14 @@ function createProfSummary(
               key={professor.professor_id}
               to={createProfModalLink(professor.professor_id, searchParams)}
               onClick={() => {
-                navigate('push', {
-                  type: 'professor',
-                  data: professor.professor_id,
-                });
+                navigate(
+                  'push',
+                  {
+                    type: 'professor',
+                    data: professor.professor_id,
+                  },
+                  searchParams,
+                );
               }}
             >
               {prof.professor.name}

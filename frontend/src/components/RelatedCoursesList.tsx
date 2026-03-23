@@ -233,10 +233,15 @@ function CourseLink({
         to={createCourseModalLink(targetListingDefinite, searchParams)}
         course={course}
         onClick={() => {
-          if (onNavigation)
+          if (onNavigation) {
             onNavigation('push', targetListingDefinite, 'evals');
-          else
-            navigate('push', { type: 'course', data: targetListingDefinite });
+          } else {
+            navigate(
+              'push',
+              { type: 'course', data: targetListingDefinite },
+              searchParams,
+            );
+          }
         }}
         columnWidth={columnWidth}
         extraText={extraText}
@@ -279,8 +284,11 @@ function CourseLink({
                 className={styles.courseLink}
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  if (onNavigation) onNavigation('push', l, 'evals');
-                  else navigate('push', { type: 'course', data: l });
+                  if (onNavigation) 
+                    onNavigation('push', l, 'evals');
+                   else 
+                    navigate('push', { type: 'course', data: l }, searchParams);
+                  
                 }}
               >
                 {l.course_code}
