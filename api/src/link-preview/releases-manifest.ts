@@ -35,8 +35,7 @@ function toAbsoluteImage(urlOrPath: string | undefined): string {
   if (!urlOrPath) return `${SITE_ORIGIN}/favicon.png`;
   try {
     const u = new URL(urlOrPath, SITE_ORIGIN);
-    if (u.origin !== new URL(SITE_ORIGIN).origin)
-      return `${SITE_ORIGIN}/favicon.png`;
+    if (u.origin !== SITE_ORIGIN) return `${SITE_ORIGIN}/favicon.png`;
     return u.href;
   } catch {
     return `${SITE_ORIGIN}/favicon.png`;
@@ -117,6 +116,7 @@ export async function getReleaseOgMetadata(
         `releases-meta.json HTTP ${String(res.status)} from ${manifestUrl}`,
       );
       if (cache) {
+        throttleNextRetry(now);
         if (path === '/releases') return cache.parsed.index;
         return cache.parsed.byPath.get(path) ?? null;
       }
@@ -129,6 +129,7 @@ export async function getReleaseOgMetadata(
         `releases-meta.json failed validation: ${parsed.error.message}`,
       );
       if (cache) {
+        throttleNextRetry(now);
         if (path === '/releases') return cache.parsed.index;
         return cache.parsed.byPath.get(path) ?? null;
       }

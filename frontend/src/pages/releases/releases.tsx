@@ -36,8 +36,8 @@ function ReleaseNotes() {
     <Container className={styles.container}>
       <h1 className={styles.title}>Release Notes</h1>
       <Row>
-        {releaseNotes.map((note, index) => (
-          <div key={index} className="col-md-6 col-lg-4 mb-4">
+        {releaseNotes.map((note) => (
+          <div key={note.path} className="col-md-6 col-lg-4 mb-4">
             <Card className={styles.card}>
               <Card.Body>
                 <Card.Title>{note.title}</Card.Title>

@@ -91,9 +91,8 @@ ${ld}
 /** Null when `urlOrPath` is not a valid URL against SITE_ORIGIN. */
 function toAbsoluteCoursetableUrl(urlOrPath: string): string | null {
   try {
-    const base = new URL(SITE_ORIGIN);
     const u = new URL(urlOrPath, SITE_ORIGIN);
-    if (u.origin !== base.origin)
+    if (u.origin !== SITE_ORIGIN)
       return `${SITE_ORIGIN}${u.pathname}${u.search}`;
     return `${u.origin}${u.pathname}${u.search}`;
   } catch {

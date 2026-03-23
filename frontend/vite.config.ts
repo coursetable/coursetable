@@ -29,6 +29,16 @@ const releasesMetaAbsPath = resolve(
  * (used by link-preview API fetch and the release index).
  */
 function releasesMetaPublicPlugin(): Plugin {
+  const readManifest = (): string => {
+    try {
+      return readFileSync(releasesMetaAbsPath, 'utf8');
+    } catch {
+      throw new Error(
+        `releases-meta.json not found at ${releasesMetaAbsPath}. ` +
+          'Ensure src/releases/releases-meta.json exists.',
+      );
+    }
+  };
   return {
     name: 'releases-meta-public',
     configureServer(server) {
@@ -36,7 +46,7 @@ function releasesMetaPublicPlugin(): Plugin {
         const pathOnly = req.url?.split('?')[0];
         if (pathOnly === '/releases-meta.json') {
           res.setHeader('Content-Type', 'application/json; charset=utf-8');
-          res.end(readFileSync(releasesMetaAbsPath, 'utf8'));
+          res.end(readManifest());
           return;
         }
         next();
@@ -46,7 +56,7 @@ function releasesMetaPublicPlugin(): Plugin {
       this.emitFile({
         type: 'asset',
         fileName: 'releases-meta.json',
-        source: readFileSync(releasesMetaAbsPath, 'utf8'),
+        source: readManifest(),
       });
     },
   };
