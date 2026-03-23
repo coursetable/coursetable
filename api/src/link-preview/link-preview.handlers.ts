@@ -207,11 +207,17 @@ function getWorksheetMetadata(url: string) {
   }
 }
 
-function getPageMetadata(url: string) {
-  const worksheetMetadata = getWorksheetMetadata(url);
+/**
+ * @param pathname - Path only (e.g. `/releases/quist`); used for static release
+ *   pages so query strings on the original `url` param do not break matching.
+ * @param worksheetSourceUrl - Full canonical URL; worksheet previews need
+ *   `?ws=`.
+ */
+function getPageMetadata(pathname: string, worksheetSourceUrl: string) {
+  const worksheetMetadata = getWorksheetMetadata(worksheetSourceUrl);
   if (worksheetMetadata) return worksheetMetadata;
 
-  switch (url) {
+  switch (pathname) {
     case '/releases/link-preview':
       return {
         title:
@@ -240,8 +246,9 @@ function getPageMetadata(url: string) {
 }
 
 function pageFromUrlQueryParam(urlParam: string): PageModel {
-  const metadata = getPageMetadata(urlParam);
   const canonicalUrl = toAbsoluteCoursetableUrl(urlParam);
+  const { pathname } = new URL(canonicalUrl);
+  const metadata = getPageMetadata(pathname, canonicalUrl);
   return {
     ...metadata,
     canonicalUrl,
@@ -310,8 +317,11 @@ export async function generateLinkPreview(
   const courseQ = req.query['course-modal'];
   const profQ = req.query['prof-modal'];
   const urlQ = req.query.url;
+  const hasCourseModal = typeof courseQ === 'string' && courseQ.length > 0;
+  const hasProfModal = typeof profQ === 'string' && profQ.length > 0;
+  const hasUrl = Boolean(firstQueryValue(urlQ));
   winston.info(
-    `Generating link preview for course-modal=${firstQueryValue(courseQ)} prof-modal=${firstQueryValue(profQ)} url=${firstQueryValue(urlQ)}, UA=${String(req.headers['user-agent'] ?? '')}`,
+    `Link preview request: hasCourseModal=${String(hasCourseModal)} hasProfModal=${String(hasProfModal)} hasUrl=${String(hasUrl)}, UA=${String(req.headers['user-agent'] ?? '')}`,
   );
 
   const page = await resolveLinkPreviewPage(req);

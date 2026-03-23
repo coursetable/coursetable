@@ -46,7 +46,6 @@ export type ProfessorMetadataQuery = {
     __typename?: 'professors';
     professor_id: number;
     name: string;
-    email: string | null;
     courses_taught: number;
   }>;
 };
@@ -56,7 +55,6 @@ export const ProfessorMetadataDocument = gql`
     professors(where: { professor_id: { _eq: $professorId } }, limit: 1) {
       professor_id
       name
-      email
       courses_taught
     }
   }
