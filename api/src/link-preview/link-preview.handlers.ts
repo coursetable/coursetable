@@ -1,10 +1,11 @@
 import type express from 'express';
 import LZString from 'lz-string';
 import { getSdk } from './link-preview.queries.js';
-import { graphqlClient } from '../config.js';
+import { getReleaseOgMetadata } from './releases-manifest.js';
+import { FRONTEND_ENDPOINT, graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
 
-const SITE_ORIGIN = 'https://coursetable.com';
+const SITE_ORIGIN = new URL(FRONTEND_ENDPOINT).origin;
 
 // Escapes special HTML characters to prevent XSS when interpolating
 // user-controlled values into HTML strings
@@ -213,42 +214,26 @@ function getWorksheetMetadata(url: string) {
  * @param worksheetSourceUrl - Full canonical URL; worksheet previews need
  *   `?ws=`.
  */
-function getPageMetadata(pathname: string, worksheetSourceUrl: string) {
+async function getPageMetadata(pathname: string, worksheetSourceUrl: string) {
   const worksheetMetadata = getWorksheetMetadata(worksheetSourceUrl);
   if (worksheetMetadata) return worksheetMetadata;
 
-  switch (pathname) {
-    case '/releases/link-preview':
-      return {
-        title:
-          'Optimizing Bot Traffic Handling for Link Previews: a Long Journey',
-        description:
-          "This post summarizes our recent effort to make social media links display a preview card. In the process, we gained a lot of insight about CourseTable's infrastructure setup. We will also share the paths we've explored and our eventual solution, hoping that these conclusions can help others in a similar situation.",
-        image: defaultMetadata.image,
-      };
-    case '/releases/quist':
-      return {
-        title: 'Introducing Quist, a new query language for CourseTable',
-        description:
-          'The goal of Quist is to provide a more powerful and flexible way to filter and search for classes on CourseTable. We believe that Quist will enable a lot of advanced use cases that are otherwise difficult to express with purely graphical interfaces.',
-        image: defaultMetadata.image,
-      };
-    case '/releases/fall23':
-      return {
-        title: 'CourseTable 23Fall/Winter Release Notes',
-        description:
-          'Discover the latest features and improvements in our Fall 2023 update.',
-        image: defaultMetadata.image,
-      };
-    default:
-      return defaultMetadata;
+  const releaseOg = await getReleaseOgMetadata(pathname);
+  if (releaseOg) {
+    return {
+      title: releaseOg.title,
+      description: releaseOg.description,
+      image: releaseOg.image,
+    };
   }
+
+  return defaultMetadata;
 }
 
-function pageFromUrlQueryParam(urlParam: string): PageModel {
+async function pageFromUrlQueryParam(urlParam: string): Promise<PageModel> {
   const canonicalUrl = toAbsoluteCoursetableUrl(urlParam);
   const { pathname } = new URL(canonicalUrl);
-  const metadata = getPageMetadata(pathname, canonicalUrl);
+  const metadata = await getPageMetadata(pathname, canonicalUrl);
   return {
     ...metadata,
     canonicalUrl,
@@ -281,7 +266,7 @@ async function resolveLinkPreviewPage(
   const profQ = req.query['prof-modal'];
   const urlQ = req.query.url;
   if (firstQueryValue(urlQ))
-    return pageFromUrlQueryParam(firstQueryValue(urlQ));
+    return await pageFromUrlQueryParam(firstQueryValue(urlQ));
   if (typeof courseQ === 'string') {
     const parsed = await getCourseLinkPreviewPage(courseQ);
     return (

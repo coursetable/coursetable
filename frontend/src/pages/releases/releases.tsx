@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card, Row, Container } from 'react-bootstrap';
+import releaseManifest from '../../releases/releases-meta.json';
 import styles from './releases.module.css';
 
 type ReleaseNote = {
@@ -9,43 +10,12 @@ type ReleaseNote = {
   date: string;
 };
 
-const releaseNotes: ReleaseNote[] = [
-  // Add more releases below
-  {
-    title: 'Fall 2024 Release',
-    summary:
-      'Discover the latest features and improvements in our Fall 2024 update.',
-    path: '/releases/fall24',
-    date: '2025-01-12',
-  },
-  {
-    title: 'Spring 2024 Release',
-    summary:
-      'Discover the latest features and improvements in our Spring 2024 update.',
-    path: '/releases/spring24',
-    date: '2024-08-26',
-  },
-  {
-    title: 'Link preview release recap',
-    summary:
-      'Our recent effort to make social media links display a preview card.',
-    path: '/releases/link-preview',
-    date: '2024-07-24',
-  },
-  {
-    title: 'Quist Release',
-    summary: 'Introducing Quist: our new language for advanced queries.',
-    path: '/releases/quist',
-    date: '2024-02-23',
-  },
-  {
-    title: 'Fall 2023 Release',
-    summary:
-      'Discover the latest features and improvements in our Fall 2023 update.',
-    path: '/releases/fall23',
-    date: '2024-01-21',
-  },
-];
+const releaseNotes: ReleaseNote[] = releaseManifest.entries.map((e) => ({
+  path: e.path,
+  date: e.date,
+  summary: e.summary,
+  title: e.listTitle,
+}));
 
 // Sort release notes by date, newest first
 releaseNotes.sort((a, b) => b.date.localeCompare(a.date));

@@ -1,4 +1,7 @@
 import dns from 'node:dns';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import mdx from '@mdx-js/rollup';
 import basicSsl from '@vitejs/plugin-basic-ssl';
@@ -10,11 +13,44 @@ import remarkGfm from 'remark-gfm';
 import { visualizer } from 'rollup-plugin-visualizer';
 import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
 
 dns.setDefaultResultOrder('verbatim');
+
+const releasesMetaAbsPath = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  'src/releases/releases-meta.json',
+);
+
+/**
+ * Serves and emits `/releases-meta.json` from `src/releases/releases-meta.json`
+ * (used by link-preview API fetch and the release index).
+ */
+function releasesMetaPublicPlugin(): Plugin {
+  return {
+    name: 'releases-meta-public',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const pathOnly = req.url?.split('?')[0];
+        if (pathOnly === '/releases-meta.json') {
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.end(readFileSync(releasesMetaAbsPath, 'utf8'));
+          return;
+        }
+        next();
+      });
+    },
+    generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'releases-meta.json',
+        source: readFileSync(releasesMetaAbsPath, 'utf8'),
+      });
+    },
+  };
+}
 
 // https://github.com/facebook/docusaurus/blob/main/packages/docusaurus-utils/src/markdownUtils.ts
 // Note! Heading IDs use the syntax `## heading (#id)` instead of the usually
@@ -89,6 +125,7 @@ function remarkPluginAddHeadingId(): Transformer {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    releasesMetaPublicPlugin(),
     {
       enforce: 'pre',
       ...mdx({
