@@ -284,11 +284,9 @@ function CourseLink({
                 className={styles.courseLink}
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
-                  if (onNavigation) 
-                    onNavigation('push', l, 'evals');
-                   else 
+                  if (onNavigation) onNavigation('push', l, 'evals');
+                  else
                     navigate('push', { type: 'course', data: l }, searchParams);
-                  
                 }}
               >
                 {l.course_code}
