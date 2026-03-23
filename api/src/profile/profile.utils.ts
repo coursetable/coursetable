@@ -16,6 +16,8 @@ export interface ProfileNames {
   preferredLastName: string | null;
 }
 
+// Defaults must stay in sync with studentBluebookSettings visibility column
+// defaults in api/drizzle/schema.ts (profileVisibilityEnum).
 const DEFAULT_PRIVACY: ProfilePrivacySettings = {
   nameVisibility: 'public',
   emailVisibility: 'self',

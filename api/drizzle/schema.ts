@@ -1,6 +1,7 @@
 import { relations, sql } from 'drizzle-orm';
 import {
   pgTable,
+  pgEnum,
   boolean,
   varchar,
   bigint,
@@ -10,6 +11,13 @@ import {
   serial,
   integer,
 } from 'drizzle-orm/pg-core';
+
+/** Shared by name / email / year / school / major visibility columns. */
+export const profileVisibilityEnum = pgEnum('profile_visibility', [
+  'self',
+  'friends',
+  'public',
+]);
 
 export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   netId: varchar('netId', { length: 8 }).primaryKey().notNull(),
@@ -23,19 +31,19 @@ export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   preferredLastName: varchar('preferredLastName', { length: 256 }).default(
     sql`NULL`,
   ),
-  nameVisibility: varchar('nameVisibility', { length: 16 })
+  nameVisibility: profileVisibilityEnum('nameVisibility')
     .notNull()
     .default('public'),
-  emailVisibility: varchar('emailVisibility', { length: 16 })
+  emailVisibility: profileVisibilityEnum('emailVisibility')
     .notNull()
     .default('self'),
-  yearVisibility: varchar('yearVisibility', { length: 16 })
+  yearVisibility: profileVisibilityEnum('yearVisibility')
     .notNull()
     .default('friends'),
-  schoolVisibility: varchar('schoolVisibility', { length: 16 })
+  schoolVisibility: profileVisibilityEnum('schoolVisibility')
     .notNull()
     .default('friends'),
-  majorVisibility: varchar('majorVisibility', { length: 16 })
+  majorVisibility: profileVisibilityEnum('majorVisibility')
     .notNull()
     .default('friends'),
   email: varchar('email', { length: 256 }).default(sql`NULL`),

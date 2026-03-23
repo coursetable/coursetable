@@ -108,20 +108,14 @@ export const requestChallenge = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled, evaluationsRevoked } =
+  const { challengeTries, evaluationsEnabled } =
     (await db.query.studentBluebookSettings.findFirst({
       where: eq(studentBluebookSettings.netId, netId),
       columns: {
         challengeTries: true,
         evaluationsEnabled: true,
-        evaluationsRevoked: true,
       },
     }))!;
-
-  if (evaluationsRevoked) {
-    res.status(403).json({ error: 'EVALS_REVOKED' });
-    return;
-  }
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -192,20 +186,14 @@ export const verifyChallenge = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled, evaluationsRevoked } =
+  const { challengeTries, evaluationsEnabled } =
     (await db.query.studentBluebookSettings.findFirst({
       where: eq(studentBluebookSettings.netId, netId),
       columns: {
         challengeTries: true,
         evaluationsEnabled: true,
-        evaluationsRevoked: true,
       },
     }))!;
-
-  if (evaluationsRevoked) {
-    res.status(403).json({ error: 'EVALS_REVOKED' });
-    return;
-  }
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -265,7 +253,7 @@ export const verifyChallenge = async (
   const results = checkChallenge(trueEvals, answers);
 
   if (results.every((x) => x)) {
-    // Enable evaluations and respond with success
+    // Grant evals (including restoring access after self-service revocation).
     await db
       .update(studentBluebookSettings)
       .set({
