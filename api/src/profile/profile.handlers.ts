@@ -119,7 +119,7 @@ const buildOwnProfileResponse = (profile: StudentProfileRow) => {
     year: profile.year,
     school: profile.school,
     major: profile.major,
-    hasEvals: profile.evaluationsEnabled,
+    hasEvals: profile.evaluationsEnabled && !profile.evaluationsRevoked,
     evalsRevoked: profile.evaluationsRevoked,
     privacy,
   };
@@ -288,6 +288,13 @@ export const revokeEvaluationsAccess = async (
     .where(eq(studentBluebookSettings.netId, netId));
 
   req.user!.evals = false;
+
+  await new Promise<void>((resolve, reject) => {
+    req.session.save((err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
 
   res.status(200).json({ hasEvals: false, evalsRevoked: true });
 };
