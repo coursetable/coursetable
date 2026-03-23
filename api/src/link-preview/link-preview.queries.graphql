@@ -8,3 +8,12 @@ query courseMetadata($listingId: Int!) {
     }
   }
 }
+
+query professorMetadata($professorId: Int!) {
+  professors(where: { professor_id: { _eq: $professorId } }, limit: 1) {
+    professor_id
+    name
+    email
+    courses_taught
+  }
+}

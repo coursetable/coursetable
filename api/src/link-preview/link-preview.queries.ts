@@ -36,6 +36,32 @@ export const CourseMetadataDocument = gql`
   }
 `;
 
+export type ProfessorMetadataQueryVariables = Types.Exact<{
+  professorId: Types.Scalars['Int']['input'];
+}>;
+
+export type ProfessorMetadataQuery = {
+  __typename?: 'query_root';
+  professors: Array<{
+    __typename?: 'professors';
+    professor_id: number;
+    name: string;
+    email: string | null;
+    courses_taught: number;
+  }>;
+};
+
+export const ProfessorMetadataDocument = gql`
+  query professorMetadata($professorId: Int!) {
+    professors(where: { professor_id: { _eq: $professorId } }, limit: 1) {
+      professor_id
+      name
+      email
+      courses_taught
+    }
+  }
+`;
+
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
   operationName: string,
@@ -67,6 +93,22 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'courseMetadata',
+        'query',
+        variables,
+      );
+    },
+    professorMetadata(
+      variables: ProfessorMetadataQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<ProfessorMetadataQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ProfessorMetadataQuery>(
+            ProfessorMetadataDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'professorMetadata',
         'query',
         variables,
       );

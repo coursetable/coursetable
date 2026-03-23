@@ -478,6 +478,16 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 - Body:
   - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
 
+## Link preview (crawlers / OG)
+
+### `GET` `/api/link-preview`
+
+Returns minimal HTML for crawlers and link-preview bots: canonical URL, Open
+Graph / Twitter meta, and JSON-LD (`Course`, `Person`, or `WebPage` as
+appropriate). Query parameters: `course-modal`, `prof-modal`, or `url`
+(`url` takes precedence). Used when edge rules forward bot traffic from
+catalog/worksheet URLs to this endpoint.
+
 ## Health check
 
 ### `GET` `/api/ping`
