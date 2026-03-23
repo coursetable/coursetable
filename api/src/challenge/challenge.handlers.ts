@@ -108,14 +108,20 @@ export const requestChallenge = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled } =
+  const { challengeTries, evaluationsEnabled, evaluationsRevoked } =
     (await db.query.studentBluebookSettings.findFirst({
       where: eq(studentBluebookSettings.netId, netId),
       columns: {
         challengeTries: true,
         evaluationsEnabled: true,
+        evaluationsRevoked: true,
       },
     }))!;
+
+  if (evaluationsRevoked) {
+    res.status(403).json({ error: 'EVALS_REVOKED' });
+    return;
+  }
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -186,14 +192,20 @@ export const verifyChallenge = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  const { challengeTries, evaluationsEnabled } =
+  const { challengeTries, evaluationsEnabled, evaluationsRevoked } =
     (await db.query.studentBluebookSettings.findFirst({
       where: eq(studentBluebookSettings.netId, netId),
       columns: {
         challengeTries: true,
         evaluationsEnabled: true,
+        evaluationsRevoked: true,
       },
     }))!;
+
+  if (evaluationsRevoked) {
+    res.status(403).json({ error: 'EVALS_REVOKED' });
+    return;
+  }
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -258,6 +270,7 @@ export const verifyChallenge = async (
       .update(studentBluebookSettings)
       .set({
         evaluationsEnabled: true,
+        evaluationsRevoked: false,
       })
       .where(eq(studentBluebookSettings.netId, netId));
   }

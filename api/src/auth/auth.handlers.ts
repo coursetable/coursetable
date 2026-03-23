@@ -84,16 +84,16 @@ export const passportConfig = (
               firstName: true,
               lastName: true,
               evaluationsEnabled: true,
+              evaluationsRevoked: true,
             },
           }));
 
+        const isEvaluationsRevoked = Boolean(existingUser?.evaluationsRevoked);
+
         const user = {
           netId: profile.user,
-          // If we already have evaluations enabled in DB, never disable it
-          // TODO: temporary; we should have three states, manually enabled for
-          // faculty (never revoke), automatically synced from Yalies
-          // (expiring based on Yalies data), and disabled
-          evals: Boolean(existingUser?.evaluationsEnabled),
+          evals:
+            Boolean(existingUser?.evaluationsEnabled) && !isEvaluationsRevoked,
           email: existingUser?.email ?? null,
           firstName: existingUser?.firstName ?? null,
           lastName: existingUser?.lastName ?? null,
@@ -123,9 +123,11 @@ export const passportConfig = (
           // Enable evaluations if user has a school code
           // or is a member of an approved organization (for faculty).
           // also leave evaluations enabled if the user already has access.
-          user.evals ||=
-            Boolean(yaliesUserData.school_code) ||
-            ALLOWED_ORG_CODES.includes(yaliesUserData.organization_code);
+          if (!isEvaluationsRevoked) {
+            user.evals ||=
+              Boolean(yaliesUserData.school_code) ||
+              ALLOWED_ORG_CODES.includes(yaliesUserData.organization_code);
+          }
           // TODO: these should be customizable by the user via profile page
           user.firstName = yaliesUserData.first_name ?? user.firstName;
           user.lastName = yaliesUserData.last_name ?? user.lastName;
@@ -135,6 +137,7 @@ export const passportConfig = (
             .update(studentBluebookSettings)
             .set({
               evaluationsEnabled: user.evals,
+              evaluationsRevoked: isEvaluationsRevoked,
               firstName: user.firstName,
               lastName: user.lastName,
               email: user.email,
@@ -176,6 +179,7 @@ export const passportConfig = (
         firstName: true,
         lastName: true,
         evaluationsEnabled: true,
+        evaluationsRevoked: true,
       },
     });
     if (!student) {
@@ -184,7 +188,7 @@ export const passportConfig = (
     }
     done(null, {
       netId,
-      evals: Boolean(student.evaluationsEnabled),
+      evals: Boolean(student.evaluationsEnabled) && !student.evaluationsRevoked,
       // Convert nulls to undefined
       email: student.email ?? undefined,
       firstName: student.firstName ?? undefined,

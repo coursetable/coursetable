@@ -14,8 +14,30 @@ import {
 export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   netId: varchar('netId', { length: 8 }).primaryKey().notNull(),
   evaluationsEnabled: boolean('evaluationsEnabled').notNull(),
+  evaluationsRevoked: boolean('evaluationsRevoked').notNull().default(false),
   firstName: varchar('firstName', { length: 256 }).default(sql`NULL`),
   lastName: varchar('lastName', { length: 256 }).default(sql`NULL`),
+  preferredFirstName: varchar('preferredFirstName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  preferredLastName: varchar('preferredLastName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  nameVisibility: varchar('nameVisibility', { length: 16 })
+    .notNull()
+    .default('public'),
+  emailVisibility: varchar('emailVisibility', { length: 16 })
+    .notNull()
+    .default('self'),
+  yearVisibility: varchar('yearVisibility', { length: 16 })
+    .notNull()
+    .default('friends'),
+  schoolVisibility: varchar('schoolVisibility', { length: 16 })
+    .notNull()
+    .default('friends'),
+  majorVisibility: varchar('majorVisibility', { length: 16 })
+    .notNull()
+    .default('friends'),
   email: varchar('email', { length: 256 }).default(sql`NULL`),
   upi: bigint('upi', { mode: 'number' }),
   school: varchar('school', { length: 256 }).default(sql`NULL`),
