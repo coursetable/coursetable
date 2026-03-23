@@ -68,8 +68,19 @@ function parseManifest(data: z.infer<typeof manifestSchema>): ParsedManifest {
 const TTL_MS = 5 * 60 * 1000;
 /** Avoid hanging link-preview requests if the frontend is unreachable. */
 const MANIFEST_FETCH_TIMEOUT_MS = 8_000;
+const RETRY_BACKOFF_MS = 60_000;
 
 let cache: { parsed: ParsedManifest; fetchedAt: number } | null = null;
+let nextRetryAt = 0;
+
+function setCache(parsed: ParsedManifest, fetchedAt: number): void {
+  cache = { parsed, fetchedAt };
+  nextRetryAt = fetchedAt + TTL_MS;
+}
+
+function throttleNextRetry(now: number): void {
+  nextRetryAt = now + RETRY_BACKOFF_MS;
+}
 
 export async function getReleaseOgMetadata(
   pathname: string,
@@ -82,9 +93,11 @@ export async function getReleaseOgMetadata(
   if (path !== '/releases' && !path.startsWith('/releases/')) return null;
 
   const now = Date.now();
-  if (cache && now - cache.fetchedAt < TTL_MS) {
-    if (path === '/releases') return cache.parsed.index;
-    return cache.parsed.byPath.get(path) ?? null;
+  if (cache) {
+    if (now - cache.fetchedAt < TTL_MS || now < nextRetryAt) {
+      if (path === '/releases') return cache.parsed.index;
+      return cache.parsed.byPath.get(path) ?? null;
+    }
   }
 
   const manifestUrl = new URL('/releases-meta.json', FRONTEND_ENDPOINT).href;
@@ -122,8 +135,8 @@ export async function getReleaseOgMetadata(
       return null;
     }
     const normalized = parseManifest(parsed.data);
-    // eslint-disable-next-line require-atomic-updates -- best-effort cache after await
-    cache = { parsed: normalized, fetchedAt: Date.now() };
+    const fetchedAt = Date.now();
+    setCache(normalized, fetchedAt);
     if (path === '/releases') return normalized.index;
     return normalized.byPath.get(path) ?? null;
   } catch (err) {
@@ -140,6 +153,7 @@ export async function getReleaseOgMetadata(
       winston.warn(`releases-meta.json fetch error: ${String(err)}`);
     }
     if (cache) {
+      throttleNextRetry(now);
       if (path === '/releases') return cache.parsed.index;
       return cache.parsed.byPath.get(path) ?? null;
     }

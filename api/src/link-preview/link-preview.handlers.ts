@@ -109,6 +109,15 @@ function pathnameFromCanonicalUrl(canonicalUrl: string): string | null {
   }
 }
 
+function normalizedCanonicalUrl(
+  pathname: string,
+  originalCanonicalUrl: string,
+): string {
+  // Worksheet previews depend on the `ws` query param.
+  if (pathname === '/worksheet') return originalCanonicalUrl;
+  return `${SITE_ORIGIN}${pathname}`;
+}
+
 async function getCourseLinkPreviewPage(
   courseModalParam: string,
 ): Promise<PageModel | null> {
@@ -256,12 +265,13 @@ async function getPageMetadata(pathname: string, worksheetSourceUrl: string) {
 }
 
 async function pageFromUrlQueryParam(urlParam: string): Promise<PageModel> {
-  const canonicalUrl = toAbsoluteCoursetableUrl(urlParam);
-  if (canonicalUrl === null) return defaultPageModel();
+  const originalCanonicalUrl = toAbsoluteCoursetableUrl(urlParam);
+  if (originalCanonicalUrl === null) return defaultPageModel();
 
-  const pathname = pathnameFromCanonicalUrl(canonicalUrl);
+  const pathname = pathnameFromCanonicalUrl(originalCanonicalUrl);
   if (pathname === null) return defaultPageModel();
 
+  const canonicalUrl = normalizedCanonicalUrl(pathname, originalCanonicalUrl);
   const metadata = await getPageMetadata(pathname, canonicalUrl);
   return {
     ...metadata,
@@ -345,7 +355,8 @@ export async function generateLinkPreview(
     winston.warn(`Link preview resolve failed: ${String(err)}`);
   }
 
-  winston.info(`Generated link preview for ${page.title}`);
+  const pagePath = pathnameFromCanonicalUrl(page.canonicalUrl) ?? 'unknown';
+  winston.info(`Generated link preview for path=${pagePath}`);
 
   res
     .header('Content-Type', 'text/html; charset=utf-8')
