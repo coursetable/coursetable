@@ -183,8 +183,11 @@ export const getUserInfo = async (
       netId: true,
       firstName: true,
       lastName: true,
+      preferredFirstName: true,
+      preferredLastName: true,
       email: true,
       evaluationsEnabled: true,
+      evaluationsRevoked: true,
       year: true,
       school: true,
       major: true,
@@ -193,10 +196,14 @@ export const getUserInfo = async (
 
   res.json({
     netId,
-    firstName: studentProfile?.firstName ?? null,
-    lastName: studentProfile?.lastName ?? null,
+    firstName:
+      studentProfile?.preferredFirstName ?? studentProfile?.firstName ?? null,
+    lastName:
+      studentProfile?.preferredLastName ?? studentProfile?.lastName ?? null,
     email: studentProfile?.email ?? null,
-    hasEvals: studentProfile?.evaluationsEnabled ?? false,
+    hasEvals:
+      Boolean(studentProfile?.evaluationsEnabled) &&
+      !studentProfile?.evaluationsRevoked,
     year: studentProfile?.year ?? null,
     school: studentProfile?.school ?? null,
     major: studentProfile?.major ?? null,
