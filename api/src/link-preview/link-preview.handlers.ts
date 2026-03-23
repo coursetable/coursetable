@@ -88,11 +88,25 @@ ${ld}
 </html>`;
 }
 
-function toAbsoluteCoursetableUrl(urlOrPath: string): string {
-  const base = new URL(SITE_ORIGIN);
-  const u = new URL(urlOrPath, SITE_ORIGIN);
-  if (u.origin !== base.origin) return `${SITE_ORIGIN}${u.pathname}${u.search}`;
-  return `${u.origin}${u.pathname}${u.search}`;
+/** Null when `urlOrPath` is not a valid URL against SITE_ORIGIN. */
+function toAbsoluteCoursetableUrl(urlOrPath: string): string | null {
+  try {
+    const base = new URL(SITE_ORIGIN);
+    const u = new URL(urlOrPath, SITE_ORIGIN);
+    if (u.origin !== base.origin)
+      return `${SITE_ORIGIN}${u.pathname}${u.search}`;
+    return `${u.origin}${u.pathname}${u.search}`;
+  } catch {
+    return null;
+  }
+}
+
+function pathnameFromCanonicalUrl(canonicalUrl: string): string | null {
+  try {
+    return new URL(canonicalUrl).pathname;
+  } catch {
+    return null;
+  }
 }
 
 async function getCourseLinkPreviewPage(
@@ -101,72 +115,83 @@ async function getCourseLinkPreviewPage(
   if (!/^\d{6}-\d{5}$/u.test(courseModalParam)) return null;
   const [seasonCode, crn] = courseModalParam.split('-');
   if (!seasonCode || !crn) return null;
-  const data = await getSdk(graphqlClient).courseMetadata({
-    listingId:
-      (Number.parseInt(seasonCode, 10) - 200000) * 100000 +
-      Number.parseInt(crn, 10),
-  });
-  if (!data.listings_by_pk) return null;
-  const listing = data.listings_by_pk;
-  const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`;
-  const description = truncatedText(
-    listing.course.description,
-    300,
-    'No description available',
-  );
-  const canonicalUrl = `${SITE_ORIGIN}/catalog?course-modal=${courseModalParam}`;
-  const courseName = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title}`;
-  const jsonLd: JsonLdObject = {
-    '@context': 'https://schema.org',
-    '@type': 'Course',
-    name: courseName,
-    description: truncatedText(listing.course.description, 500, description),
-    url: canonicalUrl,
-    provider: {
-      '@type': 'Organization',
-      name: 'CourseTable',
-      url: SITE_ORIGIN,
-    },
-  };
-  return {
-    title,
-    description,
-    image: defaultMetadata.image,
-    canonicalUrl,
-    jsonLd,
-  };
+
+  try {
+    const data = await getSdk(graphqlClient).courseMetadata({
+      listingId:
+        (Number.parseInt(seasonCode, 10) - 200000) * 100000 +
+        Number.parseInt(crn, 10),
+    });
+    if (!data.listings_by_pk) return null;
+    const listing = data.listings_by_pk;
+    const title = `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`;
+    const description = truncatedText(
+      listing.course.description,
+      300,
+      'No description available',
+    );
+    const canonicalUrl = `${SITE_ORIGIN}/catalog?course-modal=${courseModalParam}`;
+    const courseName = `${listing.course_code} ${listing.section.padStart(2, '0')}: ${listing.course.title}`;
+    const jsonLd: JsonLdObject = {
+      '@context': 'https://schema.org',
+      '@type': 'Course',
+      name: courseName,
+      description: truncatedText(listing.course.description, 500, description),
+      url: canonicalUrl,
+      provider: {
+        '@type': 'Organization',
+        name: 'CourseTable',
+        url: SITE_ORIGIN,
+      },
+    };
+    return {
+      title,
+      description,
+      image: defaultMetadata.image,
+      canonicalUrl,
+      jsonLd,
+    };
+  } catch (err) {
+    winston.warn(`courseMetadata link-preview failed: ${String(err)}`);
+    return null;
+  }
 }
 
 async function getProfessorLinkPreviewPage(
   professorId: number,
   rawProfParam: string,
 ): Promise<PageModel | null> {
-  const data = await getSdk(graphqlClient).professorMetadata({
-    professorId,
-  });
-  const [prof] = data.professors;
-  if (!prof) return null;
-  const canonicalUrl = `${SITE_ORIGIN}/catalog?prof-modal=${rawProfParam}`;
-  const title = `${prof.name} | CourseTable`;
-  const description =
-    prof.courses_taught > 0
-      ? `View ${prof.name}'s courses and teaching history on CourseTable (${prof.courses_taught} courses).`
-      : `View ${prof.name}'s courses on CourseTable.`;
-  const jsonLd: JsonLdObject = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: prof.name,
-    url: canonicalUrl,
-    jobTitle: 'Instructor',
-    worksFor: { '@type': 'Organization', name: 'Yale University' },
-  };
-  return {
-    title,
-    description,
-    image: defaultMetadata.image,
-    canonicalUrl,
-    jsonLd,
-  };
+  try {
+    const data = await getSdk(graphqlClient).professorMetadata({
+      professorId,
+    });
+    const [prof] = data.professors;
+    if (!prof) return null;
+    const canonicalUrl = `${SITE_ORIGIN}/catalog?prof-modal=${rawProfParam}`;
+    const title = `${prof.name} | CourseTable`;
+    const description =
+      prof.courses_taught > 0
+        ? `View ${prof.name}'s courses and teaching history on CourseTable (${prof.courses_taught} courses).`
+        : `View ${prof.name}'s courses on CourseTable.`;
+    const jsonLd: JsonLdObject = {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: prof.name,
+      url: canonicalUrl,
+      jobTitle: 'Instructor',
+      worksFor: { '@type': 'Organization', name: 'Yale University' },
+    };
+    return {
+      title,
+      description,
+      image: defaultMetadata.image,
+      canonicalUrl,
+      jsonLd,
+    };
+  } catch (err) {
+    winston.warn(`professorMetadata link-preview failed: ${String(err)}`);
+    return null;
+  }
 }
 
 function getWorksheetMetadata(url: string) {
@@ -232,7 +257,11 @@ async function getPageMetadata(pathname: string, worksheetSourceUrl: string) {
 
 async function pageFromUrlQueryParam(urlParam: string): Promise<PageModel> {
   const canonicalUrl = toAbsoluteCoursetableUrl(urlParam);
-  const { pathname } = new URL(canonicalUrl);
+  if (canonicalUrl === null) return defaultPageModel();
+
+  const pathname = pathnameFromCanonicalUrl(canonicalUrl);
+  if (pathname === null) return defaultPageModel();
+
   const metadata = await getPageMetadata(pathname, canonicalUrl);
   return {
     ...metadata,
@@ -309,7 +338,12 @@ export async function generateLinkPreview(
     `Link preview request: hasCourseModal=${String(hasCourseModal)} hasProfModal=${String(hasProfModal)} hasUrl=${String(hasUrl)}, UA=${String(req.headers['user-agent'] ?? '')}`,
   );
 
-  const page = await resolveLinkPreviewPage(req);
+  let page = defaultPageModel();
+  try {
+    page = await resolveLinkPreviewPage(req);
+  } catch (err) {
+    winston.warn(`Link preview resolve failed: ${String(err)}`);
+  }
 
   winston.info(`Generated link preview for ${page.title}`);
 

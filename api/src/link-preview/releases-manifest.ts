@@ -89,9 +89,15 @@ export async function getReleaseOgMetadata(
 
   const manifestUrl = new URL('/releases-meta.json', FRONTEND_ENDPOINT).href;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, MANIFEST_FETCH_TIMEOUT_MS);
+
   try {
     const res = await fetch(manifestUrl, {
       headers: { Accept: 'application/json' },
+      signal: controller.signal,
     });
     if (!res.ok) {
       winston.warn(
@@ -138,5 +144,7 @@ export async function getReleaseOgMetadata(
       return cache.parsed.byPath.get(path) ?? null;
     }
     return null;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
