@@ -6,12 +6,12 @@ import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import { useSearch } from '../../../contexts/searchContext';
 import type {
   CourseModalOverviewDataQuery,
   PrereqLinkInfoQuery,
 } from '../../../generated/graphql-types';
+import { useModalHistory } from '../../../hooks/useModalHistory';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import { schools } from '../../../utilities/constants';
@@ -356,10 +356,11 @@ function Professors({ course }: { readonly course: CourseInfo }) {
           <Link
             to={createProfModalLink(professor.professor_id, searchParams)}
             onClick={() => {
-              navigate('push', {
-                type: 'professor',
-                data: professor.professor_id,
-              });
+              navigate(
+                'push',
+                { type: 'professor', data: professor.professor_id },
+                searchParams,
+              );
             }}
           >
             {professor.name}

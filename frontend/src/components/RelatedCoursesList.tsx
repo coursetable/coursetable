@@ -17,11 +17,11 @@ import { detectOverflow } from '@popperjs/core';
 
 import type { ModalNavigationFunction } from './CourseModal/CourseModal';
 import { RatingBubble } from './Typography';
-import { useModalHistory } from '../contexts/modalHistoryContext';
 import type {
   ProfModalOverviewDataQuery,
   CourseModalOverviewDataQuery,
 } from '../generated/graphql-types';
+import { useModalHistory } from '../hooks/useModalHistory';
 import { useStore } from '../store';
 import { generateRandomColor } from '../utilities/common';
 import { ratingColormap, workloadColormap } from '../utilities/constants';
@@ -233,10 +233,15 @@ function CourseLink({
         to={createCourseModalLink(targetListingDefinite, searchParams)}
         course={course}
         onClick={() => {
-          if (onNavigation)
+          if (onNavigation) {
             onNavigation('push', targetListingDefinite, 'evals');
-          else
-            navigate('push', { type: 'course', data: targetListingDefinite });
+          } else {
+            navigate(
+              'push',
+              { type: 'course', data: targetListingDefinite },
+              searchParams,
+            );
+          }
         }}
         columnWidth={columnWidth}
         extraText={extraText}
@@ -280,7 +285,8 @@ function CourseLink({
                 to={createCourseModalLink(l, searchParams)}
                 onClick={() => {
                   if (onNavigation) onNavigation('push', l, 'evals');
-                  else navigate('push', { type: 'course', data: l });
+                  else
+                    navigate('push', { type: 'course', data: l }, searchParams);
                 }}
               >
                 {l.course_code}
