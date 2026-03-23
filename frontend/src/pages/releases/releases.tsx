@@ -10,11 +10,22 @@ type ReleaseNote = {
   date: string;
 };
 
-const releaseNotes: ReleaseNote[] = releaseManifest.entries.map((e) => ({
+/** Mirrors `releases-meta.json` entries; `listTitle` is optional at runtime. */
+type ManifestEntry = {
+  path: string;
+  date: string;
+  summary: string;
+  title: string;
+  listTitle?: string;
+};
+
+const releaseNotes: ReleaseNote[] = (
+  releaseManifest.entries as ManifestEntry[]
+).map((e) => ({
   path: e.path,
   date: e.date,
   summary: e.summary,
-  title: e.listTitle,
+  title: e.listTitle || e.title || e.summary || e.path,
 }));
 
 // Sort release notes by date, newest first

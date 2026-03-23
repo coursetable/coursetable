@@ -66,6 +66,8 @@ function parseManifest(data: z.infer<typeof manifestSchema>): ParsedManifest {
 }
 
 const TTL_MS = 5 * 60 * 1000;
+/** Avoid hanging link-preview requests if the frontend is unreachable. */
+const MANIFEST_FETCH_TIMEOUT_MS = 8_000;
 
 let cache: { parsed: ParsedManifest; fetchedAt: number } | null = null;
 
@@ -119,7 +121,18 @@ export async function getReleaseOgMetadata(
     if (path === '/releases') return normalized.index;
     return normalized.byPath.get(path) ?? null;
   } catch (err) {
-    winston.warn(`releases-meta.json fetch error: ${String(err)}`);
+    const isAbort =
+      (err instanceof Error && err.name === 'AbortError') ||
+      (typeof DOMException !== 'undefined' &&
+        err instanceof DOMException &&
+        err.name === 'AbortError');
+    if (isAbort) {
+      winston.warn(
+        `releases-meta.json fetch timed out after ${String(MANIFEST_FETCH_TIMEOUT_MS)}ms (${manifestUrl})`,
+      );
+    } else {
+      winston.warn(`releases-meta.json fetch error: ${String(err)}`);
+    }
     if (cache) {
       if (path === '/releases') return cache.parsed.index;
       return cache.parsed.byPath.get(path) ?? null;
