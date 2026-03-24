@@ -62,8 +62,7 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
       <BrowserRouter>
         <GapiProvider>
           <ApolloProvider client={client}>
-            {/* SearchProvider must be inside WorksheetProvider because the
-                    former depends on the currently viewed worksheet */}
+            {/* SearchProvider uses worksheet/catalog state from Zustand */}
             <SearchProvider>
               <MDXProvider components={components}>
                 <div id="base">{children}</div>

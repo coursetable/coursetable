@@ -53,51 +53,83 @@ const loadCatalog = (season: Season, includeEvals: boolean): Promise<void> =>
       (!includeEvals || evalsLoadAttempted.has(season))
     )
       return;
+
     const catalogPromise = (async () => {
-      if (catalogLoadAttempted.has(season)) return null;
+      if (catalogLoadAttempted.has(season)) {
+        if (courseData[season]) return null;
+        catalogLoadAttempted.delete(season);
+      }
       catalogLoadAttempted.add(season);
-      const [data, metadata] = await Promise.all([
-        fetchCatalog(season),
-        fetchCatalogMetadata(),
-      ]);
-      if (!data || !metadata) {
+      try {
+        const [data, metadata] = await Promise.all([
+          fetchCatalog(season),
+          fetchCatalogMetadata(),
+        ]);
+        if (!data || !metadata) {
+          catalogLoadAttempted.delete(season);
+          evalsLoadAttempted.delete(season);
+          throw new Error('Failed to load catalog or metadata');
+        }
+        const catalogOldFormat = new Map<Crn, CatalogListing>();
+        for (const course of data.values()) {
+          for (const listing of course.listings)
+            catalogOldFormat.set(listing.crn, { ...listing, course });
+        }
+        return { metadata, data: catalogOldFormat };
+      } catch (err: unknown) {
         catalogLoadAttempted.delete(season);
         evalsLoadAttempted.delete(season);
-        return null;
+        throw err;
       }
-      const catalogOldFormat = new Map<Crn, CatalogListing>();
-      for (const course of data.values()) {
-        for (const listing of course.listings)
-          catalogOldFormat.set(listing.crn, { ...listing, course });
-      }
-      return { metadata, data: catalogOldFormat };
     })();
+
     const evalsPromise = (() => {
       if (evalsLoadAttempted.has(season) || !includeEvals)
         return Promise.resolve(null);
       evalsLoadAttempted.add(season);
-      return fetchEvals(season).then((evalsData) => {
-        if (!evalsData) evalsLoadAttempted.delete(season);
-        return evalsData;
-      });
+      return fetchEvals(season)
+        .then((evalsData) => {
+          if (!evalsData) evalsLoadAttempted.delete(season);
+          return evalsData;
+        })
+        .catch((err: unknown) => {
+          evalsLoadAttempted.delete(season);
+          throw err;
+        });
     })();
-    const [catalog, evals] = await Promise.all([catalogPromise, evalsPromise]);
-    const seasonCatalog = catalog ?? courseData[season];
-    if (!seasonCatalog) return;
-    if (evals) {
-      const courseById = new Map<number, CatalogListing['course']>();
-      for (const listing of seasonCatalog.data.values())
-        courseById.set(listing.course.course_id, listing.course);
-      for (const [courseId, ratings] of evals) {
-        const course = courseById.get(courseId);
-        if (course) Object.assign(course, ratings);
+
+    try {
+      const [catalog, evals] = await Promise.all([
+        catalogPromise,
+        evalsPromise,
+      ]);
+      const seasonCatalog = catalog ?? courseData[season];
+      if (!seasonCatalog) {
+        catalogLoadAttempted.delete(season);
+        evalsLoadAttempted.delete(season);
+        throw new Error('No catalog data available for season');
       }
+      if (evals) {
+        const courseById = new Map<number, CatalogListing['course']>();
+        for (const listing of seasonCatalog.data.values())
+          courseById.set(listing.course.course_id, listing.course);
+        for (const [courseId, ratings] of evals) {
+          const course = courseById.get(courseId);
+          if (course) Object.assign(course, ratings);
+        }
+      }
+      courseData = {
+        ...courseData,
+        [season]: seasonCatalog,
+      };
+      notifyCatalogCacheUpdated();
+    } catch (err: unknown) {
+      if (!courseData[season]) {
+        catalogLoadAttempted.delete(season);
+        evalsLoadAttempted.delete(season);
+      }
+      throw err;
     }
-    courseData = {
-      ...courseData,
-      [season]: seasonCatalog,
-    };
-    notifyCatalogCacheUpdated();
   });
 
 export function loadCatalogSeason(

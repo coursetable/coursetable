@@ -47,6 +47,7 @@ export const createFerrySlice: StateCreator<Store, [], [], FerrySlice> = (
     ferryCatalogRevision: 0,
 
     async requestSeasons(requestedSeasons) {
+      set({ ferryErrors: [] });
       const { authStatus, user } = get();
       const fetches = requestedSeasons.map(async (season) => {
         if (!seasons.includes(season)) return;
