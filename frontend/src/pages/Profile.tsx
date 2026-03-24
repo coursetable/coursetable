@@ -20,6 +20,7 @@ import {
   getMyProfile,
   revokeEvaluationsAccess,
   updateMyProfile,
+  type MyProfile,
   type ProfilePrivacy,
 } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
@@ -27,6 +28,41 @@ import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';
 import styles from './Profile.module.css';
+
+const PROFILE_TAB_KEYS = ['overview', 'privacy', 'advanced'] as const;
+type ProfileTabKey = (typeof PROFILE_TAB_KEYS)[number];
+
+function isProfileTabKey(key: string): key is ProfileTabKey {
+  return PROFILE_TAB_KEYS.includes(key as ProfileTabKey);
+}
+
+function tabParamToActiveKey(tabParam: string | null): ProfileTabKey {
+  if (tabParam === 'overview') return 'overview';
+  if (tabParam === 'settings' || tabParam === 'privacy') return 'privacy';
+  if (tabParam === 'advanced') return 'advanced';
+  return 'overview';
+}
+
+/** URL: omit default tab; Settings → `settings`; Advanced → `advanced`. */
+function activeKeyToTabParam(key: ProfileTabKey): string | null {
+  if (key === 'overview') return null;
+  if (key === 'privacy') return 'settings';
+  return 'advanced';
+}
+
+function nameFieldPlaceholders(
+  profile: Pick<
+    MyProfile,
+    'displayFirstName' | 'displayLastName' | 'firstName' | 'lastName'
+  >,
+  user: { firstName?: string | null; lastName?: string | null },
+) {
+  return {
+    first:
+      profile.displayFirstName ?? profile.firstName ?? user.firstName ?? '',
+    last: profile.displayLastName ?? profile.lastName ?? user.lastName ?? '',
+  };
+}
 
 const selectProfileStore = (state: Store) => ({
   user: state.user,
@@ -89,8 +125,8 @@ function Profile() {
   const [catalogRefreshing, setCatalogRefreshing] = useState(false);
   const [preferredFirstNameInput, setPreferredFirstNameInput] = useState('');
   const [preferredLastNameInput, setPreferredLastNameInput] = useState('');
-  const [legalFirstPlaceholder, setLegalFirstPlaceholder] = useState('');
-  const [legalLastPlaceholder, setLegalLastPlaceholder] = useState('');
+  const [placeholderFirstName, setPlaceholderFirstName] = useState('');
+  const [placeholderLastName, setPlaceholderLastName] = useState('');
   const [privacyDraft, setPrivacyDraft] = useState<ProfilePrivacy | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [revokingEvals, setRevokingEvals] = useState(false);
@@ -101,7 +137,22 @@ function Profile() {
     () => useStore.getState().viewedWorksheetNumber,
   );
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTabKey = tabParamToActiveKey(searchParams.get('tab'));
+
+  const handleProfileTabSelect = (key: string | null) => {
+    if (key === null || !isProfileTabKey(key)) return;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        const param = activeKeyToTabParam(key);
+        if (param === null) next.delete('tab');
+        else next.set('tab', param);
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   useEffect(() => {
     if (!currentUser) void userRefresh();
@@ -125,9 +176,10 @@ function Profile() {
       if (!data) return;
       setPreferredFirstNameInput(data.preferredFirstName ?? '');
       setPreferredLastNameInput(data.preferredLastName ?? '');
-      setLegalFirstPlaceholder(data.firstName ?? currentUser.firstName ?? '');
-      setLegalLastPlaceholder(data.lastName ?? currentUser.lastName ?? '');
       setPrivacyDraft(data.privacy);
+      const { first, last } = nameFieldPlaceholders(data, currentUser);
+      setPlaceholderFirstName(first);
+      setPlaceholderLastName(last);
     });
   }, [currentUser]);
 
@@ -247,9 +299,10 @@ function Profile() {
       if (!updated) return;
       setPreferredFirstNameInput(updated.preferredFirstName ?? '');
       setPreferredLastNameInput(updated.preferredLastName ?? '');
-      setLegalFirstPlaceholder(updated.firstName ?? '');
-      setLegalLastPlaceholder(updated.lastName ?? '');
       setPrivacyDraft(updated.privacy);
+      const { first, last } = nameFieldPlaceholders(updated, currentUser);
+      setPlaceholderFirstName(first);
+      setPlaceholderLastName(last);
       await Promise.all([userRefresh(), friendRefresh(), friendReqRefresh()]);
       toast.success('Profile settings updated.');
     } finally {
@@ -312,7 +365,8 @@ function Profile() {
       </div>
 
       <Tabs
-        defaultActiveKey="overview"
+        activeKey={activeTabKey}
+        onSelect={handleProfileTabSelect}
         className={styles.profileTabs}
         variant="tabs"
         transition={false}
@@ -567,11 +621,7 @@ function Profile() {
                             onChange={(event) =>
                               setPreferredFirstNameInput(event.target.value)
                             }
-                            placeholder={
-                              legalFirstPlaceholder.trim().length > 0
-                                ? `Legal: ${legalFirstPlaceholder}`
-                                : 'Optional'
-                            }
+                            placeholder={placeholderFirstName}
                           />
                         </Form.Group>
                         <Form.Group
@@ -585,20 +635,9 @@ function Profile() {
                             onChange={(event) =>
                               setPreferredLastNameInput(event.target.value)
                             }
-                            placeholder={
-                              legalLastPlaceholder.trim().length > 0
-                                ? `Legal: ${legalLastPlaceholder}`
-                                : 'Optional'
-                            }
+                            placeholder={placeholderLastName}
                           />
                         </Form.Group>
-                        {(legalFirstPlaceholder.trim().length > 0 ||
-                          legalLastPlaceholder.trim().length > 0) && (
-                          <Form.Text muted className="d-block">
-                            Legal name on file:{' '}
-                            {`${legalFirstPlaceholder} ${legalLastPlaceholder}`.trim()}
-                          </Form.Text>
-                        )}
                       </div>
                     </section>
                     <section className={styles.settingsSection}>
