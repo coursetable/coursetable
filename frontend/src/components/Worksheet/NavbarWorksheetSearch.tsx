@@ -62,9 +62,11 @@ export function NavbarWorksheetSearch({
         toast.warn(
           <div>
             You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
-            {friendNetId}.{' '}
-            <b>This is irreversible without another friend request.</b> Do you
-            want to continue?
+            {friendNetId}.
+            <br />
+            <b>This is irreversible without another friend request.</b>
+            <br />
+            Do you want to continue?
             <br />
             <LinkLikeText
               className="mx-2"
