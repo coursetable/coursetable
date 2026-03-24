@@ -17,7 +17,6 @@ import 'core-js/proposals/change-array-by-copy-stage-4';
 import ErrorPage from './components/ErrorPage';
 import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
-import { FerryProvider } from './contexts/ferryContext';
 import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
 
@@ -63,18 +62,14 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
       <BrowserRouter>
         <GapiProvider>
           <ApolloProvider client={client}>
-            {/* FerryProvider must be inside UserProvider because the former
-              depends on login status */}
-            <FerryProvider>
-              {/* SearchProvider must be inside WorksheetProvider because the
+            {/* SearchProvider must be inside WorksheetProvider because the
                     former depends on the currently viewed worksheet */}
-              <SearchProvider>
-                <MDXProvider components={components}>
-                  <div id="base">{children}</div>
-                </MDXProvider>
-              </SearchProvider>
-              <ToastContainer toastClassName="rounded" />
-            </FerryProvider>
+            <SearchProvider>
+              <MDXProvider components={components}>
+                <div id="base">{children}</div>
+              </MDXProvider>
+            </SearchProvider>
+            <ToastContainer toastClassName="rounded" />
           </ApolloProvider>
         </GapiProvider>
       </BrowserRouter>
