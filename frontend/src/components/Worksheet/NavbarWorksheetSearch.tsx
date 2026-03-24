@@ -69,7 +69,7 @@ export function NavbarWorksheetSearch({
             Do you want to continue?
             <br />
             <LinkLikeText
-              className="mx-2"
+              className="me-2"
               onClick={async () => {
                 if (!isRequest && viewedPerson === friendNetId)
                   changeViewedPerson('me');
@@ -81,7 +81,6 @@ export function NavbarWorksheetSearch({
               Yes
             </LinkLikeText>
             <LinkLikeText
-              className="mx-2"
               onClick={() => {
                 toast.dismiss(`remove-${friendNetId}`);
                 resolve();
