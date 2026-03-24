@@ -29,7 +29,7 @@ import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';
 import styles from './Profile.module.css';
 
-const PROFILE_TAB_KEYS = ['overview', 'privacy', 'advanced'] as const;
+const PROFILE_TAB_KEYS = ['overview', 'settings', 'advanced'] as const;
 type ProfileTabKey = (typeof PROFILE_TAB_KEYS)[number];
 
 function isProfileTabKey(key: string): key is ProfileTabKey {
@@ -38,15 +38,14 @@ function isProfileTabKey(key: string): key is ProfileTabKey {
 
 function tabParamToActiveKey(tabParam: string | null): ProfileTabKey {
   if (tabParam === 'overview') return 'overview';
-  if (tabParam === 'settings' || tabParam === 'privacy') return 'privacy';
+  if (tabParam === 'settings') return 'settings';
   if (tabParam === 'advanced') return 'advanced';
   return 'overview';
 }
 
-/** URL: omit default tab; Settings → `settings`; Advanced → `advanced`. */
 function activeKeyToTabParam(key: ProfileTabKey): string | null {
   if (key === 'overview') return null;
-  if (key === 'privacy') return 'settings';
+  if (key === 'settings') return 'settings';
   return 'advanced';
 }
 
@@ -590,7 +589,7 @@ function Profile() {
             </div>
           </div>
         </Tab>
-        <Tab eventKey="privacy" title="Settings">
+        <Tab eventKey="settings" title="Settings">
           <div className={styles.tabContent}>
             <Card className={clsx(styles.profileCard, 'mb-3')}>
               <Card.Body className={styles.cardBody}>
