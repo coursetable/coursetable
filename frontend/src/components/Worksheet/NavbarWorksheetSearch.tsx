@@ -60,7 +60,7 @@ export function NavbarWorksheetSearch({
     (friendNetId: NetId, isRequest: boolean) =>
       new Promise<void>((resolve) => {
         toast.warn(
-          <>
+          <div>
             You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
             {friendNetId}.{' '}
             <b>This is irreversible without another friend request.</b> Do you
@@ -87,7 +87,7 @@ export function NavbarWorksheetSearch({
             >
               No
             </LinkLikeText>
-          </>,
+          </div>,
           { autoClose: false, toastId: `remove-${friendNetId}` },
         );
       }),
