@@ -5,7 +5,11 @@ import { Card } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 
 import { TextComponent } from '../components/Typography';
-import { getSharedProfile, type SharedProfile } from '../queries/api';
+import {
+  getSharedProfile,
+  isLoadedSharedProfile,
+  type SharedProfile,
+} from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import { useStore } from '../store';
 import styles from './UserProfile.module.css';
@@ -28,6 +32,7 @@ function UserProfile() {
   const [profile, setProfile] = useState<SharedProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,11 +43,16 @@ function UserProfile() {
     }
     setLoading(true);
     setNotFound(false);
+    setLoadError(false);
     setProfile(null);
     void getSharedProfile(netId as NetId).then((data) => {
       if (cancelled) return;
       setLoading(false);
-      if (!data) {
+      if (data === undefined) {
+        setLoadError(true);
+        return;
+      }
+      if (!isLoadedSharedProfile(data)) {
         setNotFound(true);
         return;
       }
@@ -88,6 +98,10 @@ function UserProfile() {
           <h3 className={styles.sectionTitle}>Profile</h3>
           {loading ? (
             <TextComponent type="secondary">Loading profile...</TextComponent>
+          ) : loadError ? (
+            <TextComponent type="secondary">
+              Could not load this profile. Try again in a moment.
+            </TextComponent>
           ) : notFound || !profile ? (
             <TextComponent type="secondary">Profile not found.</TextComponent>
           ) : (

@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button, Card, Form, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { useApolloClient } from '@apollo/client';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
@@ -83,10 +84,13 @@ function Profile() {
     viewedSeason,
   } = useStore(useShallow(selectProfileStore));
   const { requestSeasons } = useFerry();
+  const apolloClient = useApolloClient();
 
   const [catalogRefreshing, setCatalogRefreshing] = useState(false);
   const [preferredFirstNameInput, setPreferredFirstNameInput] = useState('');
   const [preferredLastNameInput, setPreferredLastNameInput] = useState('');
+  const [legalFirstPlaceholder, setLegalFirstPlaceholder] = useState('');
+  const [legalLastPlaceholder, setLegalLastPlaceholder] = useState('');
   const [privacyDraft, setPrivacyDraft] = useState<ProfilePrivacy | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [revokingEvals, setRevokingEvals] = useState(false);
@@ -119,15 +123,10 @@ function Profile() {
     if (!currentUser) return;
     void getMyProfile().then((data) => {
       if (!data) return;
-      setPreferredFirstNameInput(
-        data.preferredFirstName ??
-          data.firstName ??
-          currentUser.firstName ??
-          '',
-      );
-      setPreferredLastNameInput(
-        data.preferredLastName ?? data.lastName ?? currentUser.lastName ?? '',
-      );
+      setPreferredFirstNameInput(data.preferredFirstName ?? '');
+      setPreferredLastNameInput(data.preferredLastName ?? '');
+      setLegalFirstPlaceholder(data.firstName ?? currentUser.firstName ?? '');
+      setLegalLastPlaceholder(data.lastName ?? currentUser.lastName ?? '');
       setPrivacyDraft(data.privacy);
     });
   }, [currentUser]);
@@ -248,6 +247,8 @@ function Profile() {
       if (!updated) return;
       setPreferredFirstNameInput(updated.preferredFirstName ?? '');
       setPreferredLastNameInput(updated.preferredLastName ?? '');
+      setLegalFirstPlaceholder(updated.firstName ?? '');
+      setLegalLastPlaceholder(updated.lastName ?? '');
       setPrivacyDraft(updated.privacy);
       await Promise.all([userRefresh(), friendRefresh(), friendReqRefresh()]);
       toast.success('Profile settings updated.');
@@ -272,6 +273,7 @@ function Profile() {
       const res = await revokeEvaluationsAccess();
       if (!res) return;
       await userRefresh();
+      await apolloClient.resetStore();
       toast.success('Evaluations access revoked.');
       void navigate('/challenge');
     } finally {
@@ -565,7 +567,11 @@ function Profile() {
                             onChange={(event) =>
                               setPreferredFirstNameInput(event.target.value)
                             }
-                            placeholder="Optional"
+                            placeholder={
+                              legalFirstPlaceholder.trim().length > 0
+                                ? `Legal: ${legalFirstPlaceholder}`
+                                : 'Optional'
+                            }
                           />
                         </Form.Group>
                         <Form.Group
@@ -579,9 +585,20 @@ function Profile() {
                             onChange={(event) =>
                               setPreferredLastNameInput(event.target.value)
                             }
-                            placeholder="Optional"
+                            placeholder={
+                              legalLastPlaceholder.trim().length > 0
+                                ? `Legal: ${legalLastPlaceholder}`
+                                : 'Optional'
+                            }
                           />
                         </Form.Group>
+                        {(legalFirstPlaceholder.trim().length > 0 ||
+                          legalLastPlaceholder.trim().length > 0) && (
+                          <Form.Text muted className="d-block">
+                            Legal name on file:{' '}
+                            {`${legalFirstPlaceholder} ${legalLastPlaceholder}`.trim()}
+                          </Form.Text>
+                        )}
                       </div>
                     </section>
                     <section className={styles.settingsSection}>

@@ -6,6 +6,7 @@ import React, {
   createContext,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
+import clsx from 'clsx';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import {
   components as selectComponents,
@@ -89,16 +90,22 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         <Spinner className={styles.spinner} message={undefined} />
       ) : (
         <>
-          <MdPersonAdd
-            className={styles.addFriendIcon}
-            onClick={handler(addFriend)}
-            title="Accept friend request"
-          />
-          <MdPersonRemove
-            className={styles.removeFriendIcon}
+          <button
+            type="button"
+            className={clsx(styles.iconButton, styles.iconButtonRemove)}
+            aria-label="Decline friend request"
             onClick={handler((id) => removeFriend(id, true))}
-            title="Decline friend request"
-          />
+          >
+            <MdPersonRemove className={styles.removeFriendIcon} />
+          </button>
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label="Accept friend request"
+            onClick={handler(addFriend)}
+          >
+            <MdPersonAdd className={styles.addFriendIcon} />
+          </button>
         </>
       )}
     </div>

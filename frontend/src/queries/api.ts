@@ -39,6 +39,12 @@ type BaseFetchOptions = {
    * handled and no further reporting is done. Only HTTP errors can be handled.
    */
   handleErrorCode?: (errCode: string) => boolean;
+  /**
+   * When the API returns a JSON `{ error: "<code>" }` body, map that code to a
+   * return value instead of using default toasts / throws. Used e.g. for 404
+   * profile vs session expiry (both may use USER_NOT_FOUND).
+   */
+  mapHttpError?: { [errorCode: string]: unknown };
 };
 
 const isJsonParseError = (err: unknown) =>
@@ -119,8 +125,15 @@ async function fetchAPI(
     schema?: z.ZodType<unknown>;
   },
 ): Promise<unknown> {
-  const { body, method, schema, breadcrumb, handleErrorCode, cacheBust } =
-    options;
+  const {
+    body,
+    method,
+    schema,
+    breadcrumb,
+    handleErrorCode,
+    mapHttpError,
+    cacheBust,
+  } = options;
   const payload = JSON.stringify(body);
   const isCatalogRequest = isCatalogEndpoint(endpointSuffix);
   const shouldCacheBust = Boolean(cacheBust);
@@ -154,6 +167,8 @@ async function fetchAPI(
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
+      if (mapHttpError && errorCode && Object.hasOwn(mapHttpError, errorCode))
+        return mapHttpError[errorCode];
       // Handle common errors uniformly
       switch (errorCode) {
         case 'USER_NOT_FOUND':
@@ -688,14 +703,34 @@ const sharedProfileSchema = z.object({
 
 export type SharedProfile = z.infer<typeof sharedProfileSchema>;
 
-export function getSharedProfile(netId: NetId) {
+export const sharedProfileNotFound = { notFound: true as const };
+
+export type SharedProfileResult =
+  | SharedProfile
+  | typeof sharedProfileNotFound
+  | undefined;
+
+export function isLoadedSharedProfile(
+  value: SharedProfileResult,
+): value is SharedProfile {
+  return (
+    value !== undefined &&
+    typeof value === 'object' &&
+    Object.hasOwn(value, 'netId')
+  );
+}
+
+export function getSharedProfile(netId: NetId): Promise<SharedProfileResult> {
   return fetchAPI(`/profile/${netId}`, {
     schema: sharedProfileSchema,
+    mapHttpError: {
+      USER_NOT_FOUND: sharedProfileNotFound,
+    },
     breadcrumb: {
       category: 'profile',
       message: 'Fetching shared profile',
     },
-  });
+  }) as Promise<SharedProfileResult>;
 }
 
 const profileSearchResultSchema = z.object({
