@@ -68,6 +68,25 @@
   padding: 1.5rem;
 }
 
+.cardBody :global(.form-control),
+.cardBody :global(.form-select),
+.cardBody :global(.form-check-input) {
+  transition:
+    background-color var(--trans-dur),
+    border-color var(--trans-dur),
+    color var(--trans-dur),
+    box-shadow var(--trans-dur);
+}
+
+.cardBody :global(.form-control::placeholder) {
+  transition: color var(--trans-dur);
+}
+
+.cardBody :global(.form-label),
+.cardBody :global(.form-check-label) {
+  transition: color var(--trans-dur);
+}
+
 .scrollCard {
   max-height: 360px;
   overflow: auto;
@@ -144,6 +163,7 @@
   gap: 0.5rem;
   flex-wrap: wrap;
   margin-bottom: 0.75rem;
+  max-width: 420px;
 }
 
 .friendRequests {
@@ -176,6 +196,10 @@
   text-decoration: underline;
 }
 
+.friendProfileLink {
+  text-decoration: none;
+}
+
 .settingsRow {
   display: flex;
   justify-content: space-between;
@@ -192,6 +216,81 @@
 
 .settingsButton {
   flex-shrink: 0;
+}
+
+.settingsSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.settingsSection + .settingsSection {
+  margin-top: 1.4rem;
+}
+
+.settingsSectionTitle {
+  font-weight: 600;
+}
+
+.visibilityDisclaimer {
+  margin-top: 0.35rem;
+  margin-bottom: 0.15rem;
+  max-width: 42rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.settingsSectionFields {
+  margin-top: 0.45rem;
+}
+
+.settingsSectionFieldsTwoCol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.compactField {
+  max-width: 340px;
+}
+
+.privacyGrid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.privacyRow {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.privacyRow:last-child {
+  border-bottom: none;
+}
+
+.privacyLabel {
+  font-weight: 500;
+}
+
+.visibilityOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+
+.settingsActions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dangerRow {
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+  padding-top: 1rem;
 }
 
 @media (max-width: calc(768px - 0.5px)) {
@@ -217,6 +316,19 @@
   .settingsRow {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .settingsSectionFieldsTwoCol {
+    grid-template-columns: 1fr;
+  }
+
+  .compactField {
+    max-width: 100%;
+  }
+
+  .privacyRow {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
   }
 
   .value {

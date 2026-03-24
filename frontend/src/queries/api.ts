@@ -587,6 +587,147 @@ export async function getUserInfo() {
   return res;
 }
 
+const visibilitySettingSchema = z.union([
+  z.literal('self'),
+  z.literal('friends'),
+  z.literal('public'),
+]);
+
+const profilePrivacySchema = z.object({
+  nameVisibility: visibilitySettingSchema,
+  emailVisibility: visibilitySettingSchema,
+  yearVisibility: visibilitySettingSchema,
+  schoolVisibility: visibilitySettingSchema,
+  majorVisibility: visibilitySettingSchema,
+});
+
+const myProfileSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  preferredFirstName: z.string().nullable(),
+  preferredLastName: z.string().nullable(),
+  displayFirstName: z.string().nullable(),
+  displayLastName: z.string().nullable(),
+  displayName: z.string().nullable(),
+  email: z.string().nullable(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  hasEvals: z.boolean(),
+  evalsRevoked: z.boolean(),
+  privacy: profilePrivacySchema,
+});
+
+export type MyProfile = z.infer<typeof myProfileSchema>;
+export type ProfilePrivacy = z.infer<typeof profilePrivacySchema>;
+
+export function getMyProfile() {
+  return fetchAPI('/profile/me', {
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Fetching my profile settings',
+    },
+  });
+}
+
+export function updateMyProfile(body: {
+  preferredFirstName?: string | null;
+  preferredLastName?: string | null;
+  privacy?: Partial<ProfilePrivacy>;
+}) {
+  return fetchAPI('/profile/me', {
+    body,
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Updating profile settings',
+    },
+  });
+}
+
+const revokeEvaluationsSchema = z.object({
+  hasEvals: z.boolean(),
+  evalsRevoked: z.boolean(),
+});
+
+export function revokeEvaluationsAccess() {
+  return fetchAPI('/profile/me/revokeEvaluations', {
+    body: {},
+    schema: revokeEvaluationsSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Revoking evaluations access',
+    },
+  });
+}
+
+const sharedProfileSchema = z.object({
+  netId: netIdSchema,
+  relation: z.union([
+    z.literal('self'),
+    z.literal('friend'),
+    z.literal('stranger'),
+  ]),
+  displayName: z.string().nullable(),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  visible: z.object({
+    name: z.boolean(),
+    email: z.boolean(),
+    year: z.boolean(),
+    school: z.boolean(),
+    major: z.boolean(),
+  }),
+});
+
+export type SharedProfile = z.infer<typeof sharedProfileSchema>;
+
+export function getSharedProfile(netId: NetId) {
+  return fetchAPI(`/profile/${netId}`, {
+    schema: sharedProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Fetching shared profile',
+    },
+  });
+}
+
+const profileSearchResultSchema = z.object({
+  netId: netIdSchema,
+  relation: z.union([
+    z.literal('self'),
+    z.literal('friend'),
+    z.literal('stranger'),
+  ]),
+  displayName: z.string().nullable(),
+});
+
+const profileSearchSchema = z.object({
+  profiles: z.array(profileSearchResultSchema),
+});
+
+export type ProfileSearchResult = z.infer<typeof profileSearchResultSchema>;
+
+export function searchProfiles(query: string, limit = 20) {
+  const params = new URLSearchParams({
+    q: query,
+    limit: String(limit),
+  });
+  return fetchAPI(`/profile/search?${params.toString()}`, {
+    schema: profileSearchSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Searching profiles',
+    },
+  });
+}
+
 // Shared schema for worksheet courses (used by both user and friends)
 const worksheetCourseSchema = z.object({
   crn: crnSchema,

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { Button, Card, Tab, Tabs } from 'react-bootstrap';
+import { Button, Card, Form, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
@@ -15,6 +15,12 @@ import {
   useWorksheetInfo,
 } from '../contexts/ferryContext';
 import type { Option } from '../contexts/searchContext';
+import {
+  getMyProfile,
+  revokeEvaluationsAccess,
+  updateMyProfile,
+  type ProfilePrivacy,
+} from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
@@ -41,6 +47,26 @@ const alphaSort = (a: string, b: string) =>
     sensitivity: 'base',
   });
 
+const visibilityLabels: {
+  value: keyof ProfilePrivacy;
+  label: string;
+}[] = [
+  { value: 'nameVisibility', label: 'Name' },
+  { value: 'emailVisibility', label: 'Email' },
+  { value: 'yearVisibility', label: 'Class Year' },
+  { value: 'schoolVisibility', label: 'School' },
+  { value: 'majorVisibility', label: 'Major' },
+];
+
+const visibilityOptions: {
+  value: 'public' | 'friends' | 'self';
+  label: string;
+}[] = [
+  { value: 'public', label: 'Public' },
+  { value: 'friends', label: 'Friends' },
+  { value: 'self', label: 'Only me' },
+];
+
 function Profile() {
   const navigate = useNavigate();
   const {
@@ -59,6 +85,13 @@ function Profile() {
   const { requestSeasons } = useFerry();
 
   const [catalogRefreshing, setCatalogRefreshing] = useState(false);
+  const [preferredFirstNameInput, setPreferredFirstNameInput] = useState('');
+  const [preferredLastNameInput, setPreferredLastNameInput] = useState('');
+  const [privacyDraft, setPrivacyDraft] = useState<ProfilePrivacy | null>(null);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [revokingEvals, setRevokingEvals] = useState(false);
+  const [revokeArmed, setRevokeArmed] = useState(false);
+  const [revokeConfirmed, setRevokeConfirmed] = useState(false);
 
   const [profileWorksheetNumber, setProfileWorksheetNumber] = useState(
     () => useStore.getState().viewedWorksheetNumber,
@@ -81,6 +114,23 @@ function Profile() {
   useEffect(() => {
     if (!friendRequests) void friendReqRefresh();
   }, [friendRequests, friendReqRefresh]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    void getMyProfile().then((data) => {
+      if (!data) return;
+      setPreferredFirstNameInput(
+        data.preferredFirstName ??
+          data.firstName ??
+          currentUser.firstName ??
+          '',
+      );
+      setPreferredLastNameInput(
+        data.preferredLastName ?? data.lastName ?? currentUser.lastName ?? '',
+      );
+      setPrivacyDraft(data.privacy);
+    });
+  }, [currentUser]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -177,6 +227,55 @@ function Profile() {
       toast.success('Catalog data refreshed.');
     } finally {
       setCatalogRefreshing(false);
+    }
+  };
+
+  const handleSaveProfileSettings = async () => {
+    if (!privacyDraft) return;
+    setSavingProfile(true);
+    try {
+      const updated = await updateMyProfile({
+        preferredFirstName:
+          preferredFirstNameInput.trim().length > 0
+            ? preferredFirstNameInput.trim()
+            : null,
+        preferredLastName:
+          preferredLastNameInput.trim().length > 0
+            ? preferredLastNameInput.trim()
+            : null,
+        privacy: privacyDraft,
+      });
+      if (!updated) return;
+      setPreferredFirstNameInput(updated.preferredFirstName ?? '');
+      setPreferredLastNameInput(updated.preferredLastName ?? '');
+      setPrivacyDraft(updated.privacy);
+      await Promise.all([userRefresh(), friendRefresh(), friendReqRefresh()]);
+      toast.success('Profile settings updated.');
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handleRevokeEvaluations = async () => {
+    if (!revokeConfirmed) {
+      toast.info('Check the confirmation box first.');
+      return;
+    }
+    if (!revokeArmed) {
+      setRevokeArmed(true);
+      toast.warn('Click "Revoke access" again to confirm.');
+      return;
+    }
+    setRevokeArmed(false);
+    setRevokingEvals(true);
+    try {
+      const res = await revokeEvaluationsAccess();
+      if (!res) return;
+      await userRefresh();
+      toast.success('Evaluations access revoked.');
+      void navigate('/challenge');
+    } finally {
+      setRevokingEvals(false);
     }
   };
 
@@ -304,9 +403,14 @@ function Profile() {
                           key={request.netId}
                           className={styles.friendRequestItem}
                         >
-                          <TextComponent>
-                            {request.name || request.netId}
-                          </TextComponent>
+                          <Link
+                            to={`/u/${request.netId}`}
+                            className={styles.friendProfileLink}
+                          >
+                            <TextComponent>
+                              {request.name || request.netId}
+                            </TextComponent>
+                          </Link>
                           <div className={styles.friendActions}>
                             <Button
                               size="sm"
@@ -341,9 +445,14 @@ function Profile() {
                       {friendsList.map(([friendNetId, friendData]) => (
                         <div key={friendNetId} className={styles.friendItem}>
                           <div className={styles.friendDetails}>
-                            <TextComponent className={styles.friendName}>
-                              {friendData.name || friendNetId}
-                            </TextComponent>
+                            <Link
+                              to={`/u/${friendNetId}`}
+                              className={styles.friendProfileLink}
+                            >
+                              <TextComponent className={styles.friendName}>
+                                {friendData.name || friendNetId}
+                              </TextComponent>
+                            </Link>
                             <TextComponent
                               type="secondary"
                               className={styles.friendNetId}
@@ -425,6 +534,127 @@ function Profile() {
             </div>
           </div>
         </Tab>
+        <Tab eventKey="privacy" title="Settings">
+          <div className={styles.tabContent}>
+            <Card className={clsx(styles.profileCard, 'mb-3')}>
+              <Card.Body className={styles.cardBody}>
+                {!privacyDraft ? (
+                  <TextComponent type="secondary">
+                    Loading profile settings...
+                  </TextComponent>
+                ) : (
+                  <>
+                    <section className={styles.settingsSection}>
+                      <TextComponent className={styles.settingsSectionTitle}>
+                        Preferences
+                      </TextComponent>
+                      <div
+                        className={clsx(
+                          styles.settingsSectionFields,
+                          styles.settingsSectionFieldsTwoCol,
+                        )}
+                      >
+                        <Form.Group
+                          controlId="preferredFirstName"
+                          className={styles.compactField}
+                        >
+                          <Form.Label>Preferred first name</Form.Label>
+                          <Form.Control
+                            value={preferredFirstNameInput}
+                            maxLength={256}
+                            onChange={(event) =>
+                              setPreferredFirstNameInput(event.target.value)
+                            }
+                            placeholder="Optional"
+                          />
+                        </Form.Group>
+                        <Form.Group
+                          controlId="preferredLastName"
+                          className={styles.compactField}
+                        >
+                          <Form.Label>Preferred last name</Form.Label>
+                          <Form.Control
+                            value={preferredLastNameInput}
+                            maxLength={256}
+                            onChange={(event) =>
+                              setPreferredLastNameInput(event.target.value)
+                            }
+                            placeholder="Optional"
+                          />
+                        </Form.Group>
+                      </div>
+                    </section>
+                    <section className={styles.settingsSection}>
+                      <TextComponent className={styles.settingsSectionTitle}>
+                        Visibility
+                      </TextComponent>
+                      {privacyDraft.nameVisibility !== 'public' && (
+                        <TextComponent
+                          type="secondary"
+                          className={styles.visibilityDisclaimer}
+                        >
+                          Because your name is not public, students who are not
+                          your friends will only see your NetID when you send
+                          them a friend request. The same applies in the other
+                          direction: if someone requests you, you may only see
+                          their NetID until you are friends, depending on their
+                          privacy settings.
+                        </TextComponent>
+                      )}
+                      <div
+                        className={clsx(
+                          styles.settingsSectionFields,
+                          styles.privacyGrid,
+                        )}
+                      >
+                        {visibilityLabels.map(({ value, label }) => (
+                          <div key={value} className={styles.privacyRow}>
+                            <TextComponent className={styles.privacyLabel}>
+                              {label}
+                            </TextComponent>
+                            <div className={styles.visibilityOptions}>
+                              {visibilityOptions.map((option) => {
+                                const optionId = `${value}-${option.value}`;
+                                return (
+                                  <Form.Check
+                                    key={option.value}
+                                    inline
+                                    type="radio"
+                                    id={optionId}
+                                    name={`visibility-${value}`}
+                                    label={option.label}
+                                    checked={
+                                      privacyDraft[value] === option.value
+                                    }
+                                    onChange={() => {
+                                      setPrivacyDraft({
+                                        ...privacyDraft,
+                                        [value]: option.value,
+                                      });
+                                    }}
+                                  />
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                    <div className={styles.settingsActions}>
+                      <Button
+                        variant="primary"
+                        onClick={handleSaveProfileSettings}
+                        disabled={savingProfile}
+                      >
+                        {savingProfile ? 'Saving...' : 'Save profile settings'}
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </Card.Body>
+            </Card>
+          </div>
+        </Tab>
         <Tab eventKey="advanced" title="Advanced">
           <div className={styles.tabContent}>
             <Card className={styles.profileCard}>
@@ -448,6 +678,46 @@ function Profile() {
                     {catalogRefreshing ? 'Refreshing...' : 'Clear cache'}
                   </Button>
                 </div>
+                {currentUser.hasEvals && (
+                  <div className={clsx(styles.settingsRow, styles.dangerRow)}>
+                    <div className={styles.settingText}>
+                      <TextComponent>Revoke evaluations access</TextComponent>
+                      <TextComponent type="secondary">
+                        You will lose access to evaluation data until access is
+                        restored.
+                      </TextComponent>
+                      <Form.Check
+                        id="revoke-confirm"
+                        type="checkbox"
+                        label="I understand and want to revoke access."
+                        checked={revokeConfirmed}
+                        onChange={(event) => {
+                          setRevokeConfirmed(event.target.checked);
+                          if (!event.target.checked) setRevokeArmed(false);
+                        }}
+                      />
+                    </div>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className={styles.settingsButton}
+                      onClick={handleRevokeEvaluations}
+                      disabled={revokingEvals || !revokeConfirmed}
+                      style={{
+                        cursor:
+                          revokingEvals || !revokeConfirmed
+                            ? 'not-allowed'
+                            : 'pointer',
+                      }}
+                    >
+                      {revokingEvals
+                        ? 'Revoking...'
+                        : revokeArmed
+                          ? 'Confirm revoke'
+                          : 'Revoke access'}
+                    </Button>
+                  </div>
+                )}
               </Card.Body>
             </Card>
           </div>

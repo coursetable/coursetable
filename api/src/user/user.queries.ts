@@ -85,14 +85,16 @@ export function getSdk(
     CrnToSameCourseId(
       variables: CrnToSameCourseIdQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<CrnToSameCourseIdQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<CrnToSameCourseIdQuery>(
-            CrnToSameCourseIdDocument,
+          client.request<CrnToSameCourseIdQuery>({
+            document: CrnToSameCourseIdDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'CrnToSameCourseId',
         'query',
         variables,
@@ -101,14 +103,16 @@ export function getSdk(
     AllCrnsForSameCourseIds(
       variables: AllCrnsForSameCourseIdsQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<AllCrnsForSameCourseIdsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<AllCrnsForSameCourseIdsQuery>(
-            AllCrnsForSameCourseIdsDocument,
+          client.request<AllCrnsForSameCourseIdsQuery>({
+            document: AllCrnsForSameCourseIdsDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'AllCrnsForSameCourseIds',
         'query',
         variables,
