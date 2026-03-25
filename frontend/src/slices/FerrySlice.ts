@@ -63,11 +63,18 @@ export const createFerrySlice: StateCreator<Store, [], [], FerrySlice> = (
           set({ ferryRequests: get().ferryRequests - 1 });
         }
       });
-      await Promise.all(fetches).catch((err: unknown) => {
-        Sentry.captureException(err);
+      const results = await Promise.allSettled(fetches);
+      const errors = results
+        .filter(
+          (result): result is PromiseRejectedResult =>
+            result.status === 'rejected',
+        )
+        .map((result) => result.reason as object);
+      if (errors.length > 0) {
+        for (const err of errors) Sentry.captureException(err);
         toast.error('Failed to fetch course information');
-        set({ ferryErrors: [...get().ferryErrors, err as object] });
-      });
+        set({ ferryErrors: errors });
+      }
     },
   };
 };
