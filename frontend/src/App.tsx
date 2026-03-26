@@ -138,10 +138,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={21}
+        id={22}
       >
-        {/* Course locations are accurate as of December 2025. Please refer to Yale
-        Course Search to see your up-to-date course locations. */}
+        Message from our sponsor: Mechanize is hiring junior SWEs ($300K base +
+        equity) to work on RL environments for frontier AI labs.
       </Notice>
       <Navbar />
       <SentryRoutes>
