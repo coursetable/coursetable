@@ -2,7 +2,7 @@ import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.css';
 
-import { DEFAULT_SEASON, GRAPHQL_API_ENDPOINT } from '../config';
+import { CUR_SEASON, GRAPHQL_API_ENDPOINT } from '../config';
 
 // GraphiQL expects fetch.preconnect for subscription setup; we use HTTP-only
 const graphiqlFetch = Object.assign(
@@ -34,7 +34,7 @@ function Graphiql() {
       <GraphiQL
         fetcher={fetcher}
         defaultQuery={`{
-  courses(where: { season_code: { _eq: "${DEFAULT_SEASON}" } }) {
+  courses(where: { season_code: { _eq: "${CUR_SEASON}" } }) {
     title
     credits
     # Get information about the course's meetings

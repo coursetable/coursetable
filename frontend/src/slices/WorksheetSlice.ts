@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { DEFAULT_SEASON } from '../config';
+import { CUR_SEASON } from '../config';
 import {
   seasons as allSeasons,
   useWorksheetInfo,
@@ -173,7 +173,7 @@ export const createWorksheetSlice: StateCreator<
   WorksheetSlice
 > = (set, get) => ({
   viewedPerson: 'me',
-  viewedSeason: DEFAULT_SEASON,
+  viewedSeason: CUR_SEASON,
   viewedWorksheetNumber: 0,
   changeViewedPerson(newPerson) {
     set({ viewedWorksheetNumber: 0, viewedPerson: newPerson });
