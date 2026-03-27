@@ -116,21 +116,6 @@ interface WorksheetSliceMemo {
 export interface WorksheetSlice
   extends WorksheetState, WorksheetActions, WorksheetSliceMemo {}
 
-// Utility Functions
-function seasonsWithDataFirst(
-  seasons: Season[],
-  worksheets: UserWorksheets | undefined,
-) {
-  if (!worksheets) return seasons;
-  return seasons.toSorted((a, b) => {
-    const aHasData = worksheets.has(a);
-    const bHasData = worksheets.has(b);
-    if (aHasData && !bHasData) return -1;
-    if (!aHasData && bHasData) return 1;
-    return Number(b) - Number(a);
-  });
-}
-
 export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
   const searchParams = new URLSearchParams(window.location.search);
   if (!searchParams.has('ws')) return undefined;
@@ -227,9 +212,7 @@ export const createWorksheetSlice: StateCreator<
           : state.friends?.[state.viewedPerson]?.worksheets) ??
           new Map()) as UserWorksheets,
     ),
-    getSeasonCodes: memoize((state: Store) =>
-      seasonsWithDataFirst(allSeasons, state.worksheets),
-    ),
+    getSeasonCodes: memoize(() => allSeasons),
     getIsExoticWorksheet: memoize((state: Store) =>
       Boolean(state.exoticWorksheet),
     ),
