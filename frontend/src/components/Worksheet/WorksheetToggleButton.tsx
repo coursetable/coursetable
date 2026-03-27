@@ -15,7 +15,7 @@ import { components, type OptionProps } from 'react-select';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import WorksheetStatusIcon from './WorksheetStatusIcon';
-import { CUR_YEAR } from '../../config';
+import { CURRENT_SEASON, CUR_YEAR } from '../../config';
 import { seasons, useWorksheetInfo } from '../../contexts/ferryContext';
 import type { LatestCurrentOfferingQuery } from '../../generated/graphql-types';
 import { updateWorksheetCourses } from '../../queries/api';
@@ -30,6 +30,7 @@ import { worksheetColors } from '../../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
+  isSeasonAtOrAfter,
   toSeasonString,
   type ListingWithTimes,
 } from '../../utilities/course';
@@ -249,7 +250,8 @@ function WorksheetToggleButton({
           const [latestListing] = latestCourse?.listings ?? [];
           if (latestCourse && latestListing) {
             const hasLatestOffering =
-              latestCourse.season_code !== listing.course.season_code;
+              latestCourse.season_code !== listing.course.season_code &&
+              !isSeasonAtOrAfter(latestCourse.season_code, CURRENT_SEASON);
 
             if (hasLatestOffering) {
               const addChoice = await confirmAddLatestOffering(

@@ -2,6 +2,7 @@
 import { weekdays } from './constants';
 import type { SortKeys } from '../contexts/searchContext';
 import type { Courses, Listings } from '../generated/graphql-types';
+import seasonsData from '../generated/seasons.json';
 import type {
   FriendRecord,
   UserWorksheets,
@@ -9,6 +10,8 @@ import type {
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
 import type { WorksheetCourse } from '../slices/WorksheetSlice';
+
+const SEASON_ORDER = seasonsData as Season[];
 
 export function truncatedText(
   text: string | null | undefined,
@@ -37,6 +40,17 @@ export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
   const season = ['Spring', 'Summer', 'Fall'][Number(seasonCode[5]) - 1]!;
   return `${season} ${year}`;
+}
+
+/**
+ * True when `season` is the same as or chronologically after `anchor`.
+ * `seasons.json` is newest-first; more recent terms have lower indices.
+ */
+export function isSeasonAtOrAfter(season: Season, anchor: Season): boolean {
+  const idx = SEASON_ORDER.indexOf(season);
+  const idxAnchor = SEASON_ORDER.indexOf(anchor);
+  if (idx === -1 || idxAnchor === -1) return false;
+  return idx <= idxAnchor;
 }
 
 // A "best guess" for when the season's courses are first published.

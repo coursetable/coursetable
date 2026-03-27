@@ -12,7 +12,7 @@ import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
 import { useShallow } from 'zustand/react/shallow';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { CUR_SEASON } from '../config';
+import { DEFAULT_SEASON } from '../config';
 import buildingsData from '../generated/buildings.json';
 import type { Buildings } from '../generated/graphql-types';
 import type { CatalogListing } from '../queries/api';
@@ -237,7 +237,9 @@ export const defaultFilters: Filters = {
   overallBounds: [1, 5],
   workloadBounds: [1, 5],
   professorBounds: [1, 5],
-  selectSeasons: [{ value: CUR_SEASON, label: toSeasonString(CUR_SEASON) }],
+  selectSeasons: [
+    { value: DEFAULT_SEASON, label: toSeasonString(DEFAULT_SEASON) },
+  ],
   selectDays: [],
   timeBounds: [toRangeTime('7:00'), toRangeTime('22:00')],
   enrollBounds: [1, 528],
