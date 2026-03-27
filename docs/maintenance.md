@@ -26,4 +26,4 @@ This section outlines the process for retrieving a new season's course data. Fol
 
 1. Update `frontend/src/config.ts`
 
-   In general, you should modify `DEFAULT_SEASON`, `CURRENT_SEASON`, `CUR_YEAR`, and `academicCalendars`. See [this PR](https://github.com/coursetable/coursetable/pull/1811/files#diff-fa2c9e63d85b91989ec85c89b8143cfc9c5cf949ec4fee597c7923d4c57c1727) for an example.
+   In general, you should modify `DEFAULT_SEASON`, `CUR_YEAR`, and `academicCalendars`. See [this PR](https://github.com/coursetable/coursetable/pull/1811/files#diff-fa2c9e63d85b91989ec85c89b8143cfc9c5cf949ec4fee597c7923d4c57c1727) for an example.

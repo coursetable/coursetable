@@ -11,14 +11,9 @@ export const GRAPHQL_API_ENDPOINT = isDev
 /** Season selected by default in catalog and worksheet season picker. */
 export const DEFAULT_SEASON = '202603' as Season;
 
-/**
- * The real-world current semester for UX. The "add latest offering?" worksheet
- * prompt is omitted when the latest catalog term is this season or later
- * (e.g. Spring 2026 onward when this is `202601`).
- */
-export const CURRENT_SEASON = '202601' as Season;
-
-// Courses in the current year have no evaluations yet
+// Courses in the current year have no evaluations yet. Also: if both the
+// listing and the API "latest" term are in this set, we skip the worksheet
+// "add latest offering?" modal (avoids false "past semester" across that window).
 export const CUR_YEAR = ['202601', '202602', '202603', '202701'] as Season[];
 
 // We use this format to avoid dealing with time zones.
