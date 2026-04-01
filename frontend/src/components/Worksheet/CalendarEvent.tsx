@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useId,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -15,7 +14,6 @@ import chroma from 'chroma-js';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
-import { aprilFoolsCourseNumberDisplay } from '../../utilities/aprilFools';
 import type { CourseRBCEvent, WalkBefore } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 
@@ -75,15 +73,6 @@ export function CalendarEventBody({
         </React.Fragment>
       ))
     : event.title;
-
-  const aprilFoolsCourseNumber = useMemo(
-    () => aprilFoolsCourseNumberDisplay(event.listing.number),
-    [event.listing.number],
-  );
-
-  const courseCodeLine = isMobile
-    ? formattedTitle
-    : `${event.listing.subject} ${aprilFoolsCourseNumber}`;
 
   const lastMod = event.listing.course.last_updated as string | undefined;
 
@@ -276,15 +265,7 @@ export function CalendarEventBody({
       window.cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, [
-    formattedTitle,
-    event.listing.subject,
-    event.listing.number,
-    event.description,
-    event.location,
-    lastMod,
-    isMobile,
-  ]);
+  }, [formattedTitle, event.description, event.location, lastMod, isMobile]);
 
   return (
     <div
@@ -331,7 +312,7 @@ export function CalendarEventBody({
           data-event-line="true"
           className={clsx(styles.eventLine, styles.courseCodeText)}
         >
-          {courseCodeLine}
+          {formattedTitle}
         </strong>
         <div
           data-event-line="true"

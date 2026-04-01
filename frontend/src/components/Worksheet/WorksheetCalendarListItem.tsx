@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -9,7 +8,6 @@ import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
-import { aprilFoolsCourseNumberDisplay } from '../../utilities/aprilFools';
 import { toLocationsSummary } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
@@ -37,10 +35,6 @@ export default function WorksheetCalendarListItem({
       viewedPerson: state.viewedPerson,
       user: state.user,
     })),
-  );
-  const aprilFoolsCourseNumber = useMemo(
-    () => aprilFoolsCourseNumberDisplay(listing.number),
-    [listing.number],
   );
   const locationSummary = toLocationsSummary(listing.course, user?.hasEvals);
   const locationDisplay =
@@ -80,7 +74,7 @@ export default function WorksheetCalendarListItem({
           'ps-1 pe-2',
         )}
       >
-        <strong>{`${listing.subject} ${aprilFoolsCourseNumber}`}</strong>
+        <strong>{listing.course_code}</strong>
         <br />
         <span className={styles.courseTitle}>{listing.course.title}</span>
         {showLocation && (

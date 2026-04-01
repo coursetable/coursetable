@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip, Popover } from 'react-bootstrap';
@@ -11,7 +10,6 @@ import { IoMdSunny } from 'react-icons/io';
 import { IoPersonOutline } from 'react-icons/io5';
 import type { CatalogListing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
-import { aprilFoolsCourseNumberDisplay } from '../../utilities/aprilFools';
 import {
   subjects,
   ratingColormap,
@@ -122,10 +120,6 @@ export function CourseCode({
     ? ` ${listing.course.section.padStart(2, '0')}`
     : '';
 
-  const aprilFoolsCourseNumber = useMemo(
-    () => aprilFoolsCourseNumberDisplay(listing.number),
-    [listing.number],
-  );
   return (
     <>
       <OverlayTrigger
@@ -149,7 +143,7 @@ export function CourseCode({
       >
         <span>{listing.subject}</span>
       </OverlayTrigger>{' '}
-      {aprilFoolsCourseNumber}
+      {listing.number}
       {subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (
