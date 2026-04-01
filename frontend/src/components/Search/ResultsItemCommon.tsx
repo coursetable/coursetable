@@ -119,7 +119,6 @@ export function CourseCode({
   const section = listing.course.section
     ? ` ${listing.course.section.padStart(2, '0')}`
     : '';
-
   return (
     <>
       <OverlayTrigger
