@@ -1,6 +1,8 @@
+import clsx from 'clsx';
 import { Element } from 'react-scroll';
 import 'rc-slider/assets/index.css';
 
+import harvardChrome from '../aprilFoolsHarvardChrome.module.css';
 import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';
 import { useSearch } from '../contexts/searchContext';
@@ -14,7 +16,7 @@ function Search() {
 
   // TODO: add state if courseLoadError is present
   return (
-    <div className={styles.searchBase}>
+    <div className={clsx(styles.searchBase, harvardChrome.harvardChrome)}>
       {isMobile && <MobileSearchForm />}
       <Element name="catalog" className="d-flex justify-content-center">
         <Results

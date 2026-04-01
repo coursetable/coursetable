@@ -141,7 +141,7 @@ function App() {
         id={23}
         variant="crimson"
       >
-        Harvard students can now access CourseTable.
+        Harvard students can now access CourseTable!
       </Notice>
       <Navbar />
       <SentryRoutes>
