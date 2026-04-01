@@ -138,19 +138,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={27}
+        id={23}
         variant="crimson"
       >
-        Harvard students can now access{' '}
-        <a
-          href="https://beta.my.harvard.edu/?q=&school=All&term=All&sort=relevance&page=1"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
-        >
-          CourseTable
-        </a>
-        .
+        Harvard students can now access CourseTable.
       </Notice>
       <Navbar />
       <SentryRoutes>
