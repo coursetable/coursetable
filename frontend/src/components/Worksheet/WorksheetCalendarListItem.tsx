@@ -9,7 +9,7 @@ import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
-import { courseNumberAsRomanDisplay } from '../../utilities/aprilFools';
+import { aprilFoolsCourseNumberDisplay } from '../../utilities/aprilFools';
 import { toLocationsSummary } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
@@ -38,8 +38,8 @@ export default function WorksheetCalendarListItem({
       user: state.user,
     })),
   );
-  const romanCourseNumber = useMemo(
-    () => courseNumberAsRomanDisplay(listing.number),
+  const aprilFoolsCourseNumber = useMemo(
+    () => aprilFoolsCourseNumberDisplay(listing.number),
     [listing.number],
   );
   const locationSummary = toLocationsSummary(listing.course, user?.hasEvals);
@@ -80,7 +80,7 @@ export default function WorksheetCalendarListItem({
           'ps-1 pe-2',
         )}
       >
-        <strong>{`${listing.subject} ${romanCourseNumber}`}</strong>
+        <strong>{`${listing.subject} ${aprilFoolsCourseNumber}`}</strong>
         <br />
         <span className={styles.courseTitle}>{listing.course.title}</span>
         {showLocation && (

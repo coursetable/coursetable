@@ -138,16 +138,17 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={25}
+        id={27}
+        variant="crimson"
       >
-        Explore the{' '}
+        Harvard students can now access{' '}
         <a
           href="https://beta.my.harvard.edu/?q=&school=All&term=All&sort=relevance&page=1"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: 'white', textDecoration: 'underline' }}
         >
-          redesigned, AI-native CourseTable
+          CourseTable
         </a>
         .
       </Notice>

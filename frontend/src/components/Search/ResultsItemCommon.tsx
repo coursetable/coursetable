@@ -11,7 +11,7 @@ import { IoMdSunny } from 'react-icons/io';
 import { IoPersonOutline } from 'react-icons/io5';
 import type { CatalogListing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
-import { courseNumberAsRomanDisplay } from '../../utilities/aprilFools';
+import { aprilFoolsCourseNumberDisplay } from '../../utilities/aprilFools';
 import {
   subjects,
   ratingColormap,
@@ -122,8 +122,8 @@ export function CourseCode({
     ? ` ${listing.course.section.padStart(2, '0')}`
     : '';
 
-  const romanCourseNumber = useMemo(
-    () => courseNumberAsRomanDisplay(listing.number),
+  const aprilFoolsCourseNumber = useMemo(
+    () => aprilFoolsCourseNumberDisplay(listing.number),
     [listing.number],
   );
   return (
@@ -149,7 +149,7 @@ export function CourseCode({
       >
         <span>{listing.subject}</span>
       </OverlayTrigger>{' '}
-      {romanCourseNumber}
+      {aprilFoolsCourseNumber}
       {subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (
