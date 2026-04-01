@@ -1,6 +1,6 @@
 import logo from '../../images/brand/bluebook.svg';
-import wordmarkOutlinesDark from '../../images/brand/ct_white.svg';
-import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
+import wordmarkOutlines from '../../images/brand/ct_april.svg';
+import wordmarkOutlinesDark from '../../images/brand/ct_april_white.svg';
 import { useStore } from '../../store';
 import styles from './Logo.module.css';
 

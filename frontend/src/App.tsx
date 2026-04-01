@@ -138,9 +138,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={22}
+        id={23}
+        variant="crimson"
       >
-        YaleMeals is live — no more dining hall guesswork. Download it today.
+        Harvard students can now access CourseTable!
       </Notice>
       <Navbar />
       <SentryRoutes>

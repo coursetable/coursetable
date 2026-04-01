@@ -1,14 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  DropdownButton,
-  Dropdown,
-  OverlayTrigger,
-  Tooltip,
-} from 'react-bootstrap';
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { components, type OptionProps, type MenuListProps } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
 import WorksheetStatusIcon from './WorksheetStatusIcon';
+import harvardChrome from '../../aprilFoolsHarvardChrome.module.css';
 import { updateWorksheetMetadata } from '../../queries/api';
 import {
   useWorksheetNumberOptions,
@@ -348,20 +344,23 @@ function WorksheetNumDropdownMobile({
   );
 
   return (
-    <DropdownButton
+    <Dropdown
       className={styles.dropdownButton}
-      variant="primary"
-      title={options[viewedWorksheetNumber]?.label ?? 'Worksheet'}
       onSelect={(v) => {
         if (v) changeViewedWorksheetNumber(Number(v));
       }}
     >
-      {Object.values(options).map(({ value, label }) => (
-        <Dropdown.Item key={value} eventKey={value} className="d-flex">
-          <div className="mx-auto">{label}</div>
-        </Dropdown.Item>
-      ))}
-    </DropdownButton>
+      <Dropdown.Toggle variant="primary" id="worksheet-number-dropdown">
+        {options[viewedWorksheetNumber]?.label ?? 'Worksheet'}
+      </Dropdown.Toggle>
+      <Dropdown.Menu className={harvardChrome.harvardChrome}>
+        {Object.values(options).map(({ value, label }) => (
+          <Dropdown.Item key={value} eventKey={value} className="d-flex">
+            <div className="mx-auto">{label}</div>
+          </Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
   );
 }
 
