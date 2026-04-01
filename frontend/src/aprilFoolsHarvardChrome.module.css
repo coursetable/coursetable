@@ -1,0 +1,38 @@
+/* April Fools: Harvard crimson on navbar + search chrome (revert via git). */
+
+.harvardChrome {
+  --color-primary: #a51c30;
+  --color-primary-light: #c53030;
+  --color-primary-hover: #7a1524;
+  --color-primary-subdued: #a51c304d;
+  --color-primary-subdued-2: #a51c3026;
+  --bs-link-color: #a51c30 !important;
+  --bs-link-hover-color: #7a1524 !important;
+}
+
+[data-theme='dark'] .harvardChrome {
+  --color-primary: #e85d6f;
+  --color-primary-light: #f08090;
+  --color-primary-hover: #ffb3be;
+  --color-primary-subdued: #e85d6f4d;
+  --color-primary-subdued-2: #e85d6f26;
+  --bs-link-color: #e85d6f !important;
+  --bs-link-hover-color: #ffb3be !important;
+}
+
+/* rc-slider lives inside chrome; global rc-slider-override.css uses blue */
+.harvardChrome :global(.rc-slider-track) {
+  background-color: #c53030 !important;
+}
+
+.harvardChrome :global(.rc-slider-handle) {
+  border: solid 2px #a51c30 !important;
+}
+
+[data-theme='dark'] .harvardChrome :global(.rc-slider-track) {
+  background-color: #e85d6f !important;
+}
+
+[data-theme='dark'] .harvardChrome :global(.rc-slider-handle) {
+  border: solid 2px #e85d6f !important;
+}
