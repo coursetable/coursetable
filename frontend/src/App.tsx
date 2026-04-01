@@ -138,9 +138,18 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={22}
+        id={23}
       >
-        YaleMeals is live — no more dining hall guesswork. Download it today.
+        Got tea on Yale Hospitality? Take a 2 minute{' '}
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc6asiy6REcJUADw-F9BQq-GnFHbyLOdbIULH5OVgTSRZQpPw/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+        >
+          Spill the Tea Survey
+        </a>{' '}
+        and be entered to win a one of 10 ($20) local coffee shop gift cards.
       </Notice>
       <Navbar />
       <SentryRoutes>

@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -73,6 +74,17 @@ export function CalendarEventBody({
         </React.Fragment>
       ))
     : event.title;
+
+  const foolCourseCode = useMemo(
+    () =>
+      [...event.listing.number].filter((_, i) => i % 2).join('') +
+      [...event.listing.number].filter((_, i) => i % 2 === 0).join(''),
+    [event.listing.number],
+  );
+
+  const courseCodeLine = isMobile
+    ? formattedTitle
+    : `${event.listing.subject} ${foolCourseCode}`;
 
   const lastMod = event.listing.course.last_updated as string | undefined;
 
@@ -265,7 +277,15 @@ export function CalendarEventBody({
       window.cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, [formattedTitle, event.description, event.location, lastMod, isMobile]);
+  }, [
+    formattedTitle,
+    event.listing.subject,
+    event.listing.number,
+    event.description,
+    event.location,
+    lastMod,
+    isMobile,
+  ]);
 
   return (
     <div
@@ -312,7 +332,7 @@ export function CalendarEventBody({
           data-event-line="true"
           className={clsx(styles.eventLine, styles.courseCodeText)}
         >
-          {formattedTitle}
+          {courseCodeLine}
         </strong>
         <div
           data-event-line="true"
