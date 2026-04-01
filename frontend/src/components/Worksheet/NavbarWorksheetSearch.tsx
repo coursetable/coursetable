@@ -13,6 +13,7 @@ import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 
+import harvardChrome from '../../aprilFoolsHarvardChrome.module.css';
 import type { NetId } from '../../queries/graphql-types';
 import type { WorksheetView } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
@@ -112,7 +113,12 @@ export function NavbarWorksheetSearch({
               )}
             </span>
           </Dropdown.Toggle>
-          <Dropdown.Menu className={styles.viewDropdownMenu}>
+          <Dropdown.Menu
+            className={clsx(
+              styles.viewDropdownMenu,
+              harvardChrome.harvardChrome,
+            )}
+          >
             {(['calendar', 'map', 'list'] as WorksheetView[]).map((view) => (
               <Dropdown.Item
                 key={view}

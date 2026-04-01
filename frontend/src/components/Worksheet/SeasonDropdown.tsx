@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 
 import { useShallow } from 'zustand/react/shallow';
+import harvardChrome from '../../aprilFoolsHarvardChrome.module.css';
 import type { Option } from '../../contexts/searchContext';
 import type { Season } from '../../queries/graphql-types';
 import { useStore } from '../../store';
@@ -62,26 +63,26 @@ function SeasonDropdownMobile() {
   );
 
   return (
-    <DropdownButton
-      variant="dark"
-      title={toSeasonString(viewedSeason)}
-      onSelect={(s) => changeViewedSeason(s as Season)}
-    >
-      {seasonCodes.map((season) => (
-        <Dropdown.Item
-          key={season}
-          eventKey={season}
-          className="d-flex"
-          // Styling if this is the current season
-          style={{
-            backgroundColor:
-              season === viewedSeason ? 'var(--color-primary)' : '',
-          }}
-        >
-          <div className="mx-auto">{toSeasonString(season)}</div>
-        </Dropdown.Item>
-      ))}
-    </DropdownButton>
+    <Dropdown onSelect={(s) => changeViewedSeason(s as Season)}>
+      <Dropdown.Toggle variant="dark" id="worksheet-season-dropdown">
+        {toSeasonString(viewedSeason)}
+      </Dropdown.Toggle>
+      <Dropdown.Menu className={harvardChrome.harvardChrome}>
+        {seasonCodes.map((season) => (
+          <Dropdown.Item
+            key={season}
+            eventKey={season}
+            className="d-flex"
+            style={{
+              backgroundColor:
+                season === viewedSeason ? 'var(--color-primary)' : '',
+            }}
+          >
+            <div className="mx-auto">{toSeasonString(season)}</div>
+          </Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
   );
 }
 

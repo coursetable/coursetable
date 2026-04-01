@@ -308,6 +308,8 @@ function CustomSelect<
     borderRadius: 8,
     colors: {
       ...theme.colors,
+      primary: 'var(--color-primary)', // Selected option accent (default #2684FF)
+      primary75: 'color-mix(in srgb, var(--color-primary) 75%, white)', // Between primary and white
       primary50: 'color-mix(in srgb, var(--color-primary) 38%, white)', // OptionBackground :focus
       primary25: 'var(--color-primary-subdued)', // OptionBackground :hover
       neutral0: 'var(--color-select)', // AllBackground & optionText :selected
