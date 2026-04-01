@@ -3,12 +3,13 @@
   <!-- Generator: Adobe Illustrator 29.2.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 116)  -->
   <defs>
     <style>
+      /* Dark navbar: light word + crimson accent */
       .st0 {
-        fill: #fff;
+        fill: #f5f5f5;
       }
 
       .st1 {
-        fill: #0d71ba;
+        fill: #a51c30;
       }
     </style>
   </defs>

@@ -15,6 +15,7 @@ import chroma from 'chroma-js';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
+import { courseNumberAsRomanDisplay } from '../../utilities/aprilFools';
 import type { CourseRBCEvent, WalkBefore } from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 
@@ -75,16 +76,14 @@ export function CalendarEventBody({
       ))
     : event.title;
 
-  const foolCourseCode = useMemo(
-    () =>
-      [...event.listing.number].filter((_, i) => i % 2).join('') +
-      [...event.listing.number].filter((_, i) => i % 2 === 0).join(''),
+  const romanCourseNumber = useMemo(
+    () => courseNumberAsRomanDisplay(event.listing.number),
     [event.listing.number],
   );
 
   const courseCodeLine = isMobile
     ? formattedTitle
-    : `${event.listing.subject} ${foolCourseCode}`;
+    : `${event.listing.subject} ${romanCourseNumber}`;
 
   const lastMod = event.listing.course.last_updated as string | undefined;
 
