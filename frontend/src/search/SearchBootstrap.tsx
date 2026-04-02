@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   type SetStateAction,
 } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -50,31 +49,26 @@ import {
 import { createFilterLink, getFilterFromParams } from '../utilities/params';
 
 function useSearchUrlHydration() {
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const patchSearchFilters = useStore((s) => s.patchSearchFilters);
-  const didHydrateRef = useRef(false);
 
   useLayoutEffect(() => {
-    if (didHydrateRef.current) return;
-    didHydrateRef.current = true;
+    if (location.pathname !== '/catalog') return;
     const updates = SEARCH_FILTER_KEYS.reduce<Partial<Filters>>((acc, key) => {
       const urlValue = searchParams.get(key);
-      if (!urlValue) return acc;
+      if (urlValue === null) return acc;
       try {
         return {
           ...acc,
-          [key]: getFilterFromParams(
-            key,
-            decodeURIComponent(urlValue),
-            defaultFilters[key],
-          ),
+          [key]: getFilterFromParams(key, urlValue, defaultFilters[key]),
         };
       } catch {
         return acc;
       }
     }, {});
     if (Object.keys(updates).length > 0) patchSearchFilters(updates);
-  }, [patchSearchFilters, searchParams]);
+  }, [location.pathname, patchSearchFilters, searchParams]);
 }
 
 function useFilterState<K extends keyof Filters>(key: K): FilterHandle<K> {

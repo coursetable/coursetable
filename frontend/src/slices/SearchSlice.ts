@@ -53,12 +53,14 @@ export const createSearchSlice: StateCreator<Store, [], [], SearchSlice> = (
           : value;
       return {
         searchFilters: { ...state.searchFilters, [key]: next },
+        searchTimingStartMs: Date.now(),
       };
     }),
 
   patchSearchFilters: (partial) =>
     set((state) => ({
       searchFilters: { ...state.searchFilters, ...partial },
+      searchTimingStartMs: Date.now(),
     })),
 
   setSearchData: (data) => set({ searchData: data }),
