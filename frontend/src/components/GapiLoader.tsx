@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/react';
 
 import { useStore } from '../store';
 
@@ -16,22 +17,30 @@ export function GapiLoader() {
     let cancelled = false;
 
     async function loadGapi() {
-      const { loadGapiInsideDOM } = await import('gapi-script');
-      const newGapi = await loadGapiInsideDOM();
-      await new Promise<void>((resolve) => {
-        newGapi.load(GAPI_CLIENT_NAME, () => {
-          resolve();
+      try {
+        const { loadGapiInsideDOM } = await import('gapi-script');
+        const newGapi = await loadGapiInsideDOM();
+        await new Promise<void>((resolve) => {
+          newGapi.load(GAPI_CLIENT_NAME, () => {
+            resolve();
+          });
         });
-      });
-      await Promise.all([
-        newGapi.client.init({
-          apiKey: import.meta.env.VITE_DEV_GCAL_API_KEY,
-          clientId: import.meta.env.VITE_DEV_GCAL_CLIENT_ID,
-          scope: SCOPES,
-        }),
-        newGapi.client.load('calendar', 'v3'),
-      ]);
-      if (!cancelled) setGapi(newGapi);
+        await Promise.all([
+          newGapi.client.init({
+            apiKey: import.meta.env.VITE_DEV_GCAL_API_KEY,
+            clientId: import.meta.env.VITE_DEV_GCAL_CLIENT_ID,
+            scope: SCOPES,
+          }),
+          newGapi.client.load('calendar', 'v3'),
+        ]);
+        if (!cancelled) setGapi(newGapi);
+      } catch (err) {
+        if (!cancelled) {
+          console.error('Failed to load Google API client:', err);
+          Sentry.captureException(err);
+          setGapi(null);
+        }
+      }
     }
 
     void loadGapi();
