@@ -9,7 +9,6 @@ import {
   seasons as allSeasons,
   useWorksheetInfo,
 } from '../contexts/ferryContext';
-import type { Option } from '../contexts/searchContext';
 import type { CatalogListing, UserWorksheets } from '../queries/api';
 import {
   type Season,
@@ -18,6 +17,7 @@ import {
   crnSchema,
   seasonSchema,
 } from '../queries/graphql-types';
+import type { Option } from '../search/searchTypes';
 import { type Store, useStore } from '../store';
 
 // Utility Types

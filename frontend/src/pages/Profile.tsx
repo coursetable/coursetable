@@ -14,8 +14,8 @@ import {
   useFerry,
   useWorksheetInfo,
 } from '../contexts/ferryContext';
-import type { Option } from '../contexts/searchContext';
 import type { NetId } from '../queries/graphql-types';
+import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';

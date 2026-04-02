@@ -20,6 +20,7 @@ import {
   defaultPreferences,
   type ProfileSlice,
 } from './slices/ProfileSlice';
+import { createSearchSlice, type SearchSlice } from './slices/SearchSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import {
   createTutorialSlice,
@@ -43,6 +44,7 @@ export interface Store
     TutorialSlice,
     ModalHistorySlice,
     ProfileSlice,
+    SearchSlice,
     WorksheetSlice {}
 
 const basePersistKeys: (keyof Store)[] = [
@@ -74,6 +76,7 @@ export const useStore = create<Store>()(
         ...createTutorialSlice(...a),
         ...createModalHistorySlice(...a),
         ...createProfileSlice(...a),
+        ...createSearchSlice(...a),
         ...createWorksheetSlice(...a),
       })),
     ),
