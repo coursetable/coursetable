@@ -9,7 +9,6 @@ import Select, {
   type StylesConfig,
   type Theme as SelectTheme,
   type ThemeConfig,
-  type CSSObjectWithLabel,
 } from 'react-select';
 import makeAnimated from 'react-select/animated';
 import type { Option } from '../../contexts/searchContext';
@@ -76,7 +75,7 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
       paddingBottom: 0,
       borderRadius: '8px',
     }),
-    menuPortal: (base) => aprilFoolsMenuPortalStyles(base),
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     multiValue: (base) => base,
     multiValueLabel: (base) => base,
     option: (base, { isSelected }) => ({
@@ -88,26 +87,6 @@ function defaultStyles<T extends Option<number | string>>(): StylesConfig<T> {
       ...base,
       color: isDisabled ? 'var(--color-text-tertiary)' : undefined,
     }),
-  };
-}
-
-function aprilFoolsMenuPortalStyles(
-  base: CSSObjectWithLabel,
-): CSSObjectWithLabel {
-  const isDark =
-    typeof document !== 'undefined' &&
-    document.documentElement.getAttribute('data-theme') === 'dark';
-  return {
-    ...base,
-    zIndex: 9999,
-    '--color-primary': isDark ? '#e85d6f' : '#a51c30',
-    '--color-primary-hover': isDark ? '#ffb3be' : '#7a1524',
-    '--color-primary-subdued': isDark
-      ? 'rgba(232, 93, 111, 0.45)'
-      : 'rgba(165, 28, 48, 0.3)',
-    '--color-primary-subdued-2': isDark
-      ? 'rgba(232, 93, 111, 0.2)'
-      : 'rgba(165, 28, 48, 0.15)',
   };
 }
 
@@ -308,9 +287,7 @@ function CustomSelect<
     borderRadius: 8,
     colors: {
       ...theme.colors,
-      primary: 'var(--color-primary)', // Selected option accent (default #2684FF)
-      primary75: 'color-mix(in srgb, var(--color-primary) 75%, white)', // Between primary and white
-      primary50: 'color-mix(in srgb, var(--color-primary) 38%, white)', // OptionBackground :focus
+      primary50: '#85c2ff', // OptionBackground :focus
       primary25: 'var(--color-primary-subdued)', // OptionBackground :hover
       neutral0: 'var(--color-select)', // AllBackground & optionText :selected
       neutral10: 'var(--color-bg-button)', // SelectedOptionBackground & disabledBorder
