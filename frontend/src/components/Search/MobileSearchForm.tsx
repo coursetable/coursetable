@@ -7,7 +7,6 @@ import { scroller } from 'react-scroll';
 import CustomSelect from './CustomSelect';
 import ResultsColumnSort from './ResultsColumnSort';
 import Toggle from './Toggle';
-import harvardChrome from '../../aprilFoolsHarvardChrome.module.css';
 import {
   useSearch,
   type Filters,
@@ -160,9 +159,7 @@ export default function MobileSearchForm() {
   }, [coursesLoading, doneInitialScroll, scrollToResults]);
 
   return (
-    <SurfaceComponent
-      className={clsx(styles.searchContainer, harvardChrome.harvardChrome)}
-    >
+    <SurfaceComponent className={styles.searchContainer}>
       <Form className={styles.searchForm} onSubmit={scrollToResults}>
         <div className="d-flex justify-content-between pt-4">
           {/* Reset filters button */}

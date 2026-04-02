@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { MdPersonRemove } from 'react-icons/md';
 import { components as selectComponents, type OptionProps } from 'react-select';
-import harvardChrome from '../../aprilFoolsHarvardChrome.module.css';
 import type { Option } from '../../contexts/searchContext';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
@@ -20,32 +19,30 @@ function FriendsDropdownMobile({
 }) {
   const changeViewedPerson = useStore((state) => state.changeViewedPerson);
   return (
-    <Dropdown
+    <DropdownButton
+      variant="primary"
+      title={viewedPerson?.label ?? "Friends' worksheets"}
       onSelect={(p) => {
         if (p) changeViewedPerson(p as NetId | 'me');
       }}
     >
-      <Dropdown.Toggle variant="primary" id="worksheet-friends-dropdown">
-        {viewedPerson?.label ?? "Friends' worksheets"}
-      </Dropdown.Toggle>
-      <Dropdown.Menu className={harvardChrome.harvardChrome}>
-        {[{ value: 'me', label: 'Me' }, ...options].map(({ value, label }) => (
-          <Dropdown.Item
-            key={value}
-            eventKey={value}
-            className="d-flex"
-            style={{
-              backgroundColor:
-                value === (viewedPerson?.value ?? 'me')
-                  ? 'var(--color-primary)'
-                  : '',
-            }}
-          >
-            <div className="mx-auto">{label}</div>
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
+      {[{ value: 'me', label: 'Me' }, ...options].map(({ value, label }) => (
+        <Dropdown.Item
+          key={value}
+          eventKey={value}
+          className="d-flex"
+          // Styling if this is the current person
+          style={{
+            backgroundColor:
+              value === (viewedPerson?.value ?? 'me')
+                ? 'var(--color-primary)'
+                : '',
+          }}
+        >
+          <div className="mx-auto">{label}</div>
+        </Dropdown.Item>
+      ))}
+    </DropdownButton>
   );
 }
 

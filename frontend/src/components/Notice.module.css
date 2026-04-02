@@ -21,15 +21,6 @@
   text-align: center;
 }
 
-.bannerCrimson {
-  background: linear-gradient(
-    90deg,
-    rgb(124 28 41) 0%,
-    rgb(165 28 48) 50%,
-    rgb(190 60 75) 100%
-  );
-}
-
 .closeButton {
   margin-right: 15px;
   transition: 0.33s ease-out;

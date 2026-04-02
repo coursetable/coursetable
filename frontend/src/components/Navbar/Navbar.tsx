@@ -6,7 +6,6 @@ import PWAPrompt from 'react-ios-pwa-prompt';
 import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
-import harvardChrome from '../../aprilFoolsHarvardChrome.module.css';
 import { API_ENDPOINT } from '../../config';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
@@ -76,9 +75,7 @@ export default function CourseTableNavbar() {
   }, []);
 
   return (
-    <SurfaceComponent
-      className={clsx(styles.container, harvardChrome.harvardChrome)}
-    >
+    <SurfaceComponent className={styles.container}>
       <Navbar
         expanded={navExpanded}
         onToggle={setNavExpanded}
