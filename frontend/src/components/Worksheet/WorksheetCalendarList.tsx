@@ -304,7 +304,11 @@ function WorksheetCalendarList({
                       />
                     }
                     variant="none"
-                    className={clsx(styles.button, 'w-100 btn')}
+                    className={clsx(
+                      styles.button,
+                      styles.exportCalendarDropdown,
+                      'w-100 btn',
+                    )}
                   >
                     <Dropdown.Item eventKey="1" as="div">
                       <GoogleCalendarButton />
