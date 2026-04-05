@@ -156,7 +156,7 @@
     "url": "https://map.yale.edu/?id=1910#!m/559982"
   },
   {
-    "building_name": null,
+    "building_name": "Ezra Stiles College",
     "code": "ES",
     "url": "https://map.yale.edu/?id=1910#!m/559931"
   },
@@ -266,7 +266,7 @@
     "code": "K",
     "url": "https://map.yale.edu/?id=1910#!m/559945"
   },
-  { "building_name": "Kline Biology Tower", "code": "KBT", "url": "" },
+  { "building_name": null, "code": "KBT", "url": "" },
   {
     "building_name": "Kline Geology Laboratory",
     "code": "KGL",

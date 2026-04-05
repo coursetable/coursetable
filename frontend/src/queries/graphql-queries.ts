@@ -86,6 +86,11 @@ export const CourseModalOverviewDataDocument = gql`
         }
         last_enrollment @include(if: $hasEvals)
         last_enrollment_same_professors @include(if: $hasEvals)
+        average_rating @include(if: $hasEvals)
+        average_rating_same_professors @include(if: $hasEvals)
+        average_workload @include(if: $hasEvals)
+        average_workload_same_professors @include(if: $hasEvals)
+        average_professor_rating @include(if: $hasEvals)
         credits
         classnotes
         regnotes
@@ -227,13 +232,6 @@ export const SearchEvaluationNarrativesDocument = gql`
       course {
         evaluation_narratives {
           comment
-          evaluation_question {
-            question_text
-            tag
-          }
-        }
-        evaluation_narrative_summaries {
-          summary
           evaluation_question {
             question_text
             tag

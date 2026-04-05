@@ -669,8 +669,6 @@ export type Courses = {
   /** Course description */
   description: Maybe<Scalars['String']['output']>;
   /** An array relationship */
-  evaluation_narrative_summaries: Array<EvaluationNarrativeSummaries>;
-  /** An array relationship */
   evaluation_narratives: Array<EvaluationNarratives>;
   /** An array relationship */
   evaluation_ratings: Array<EvaluationRatings>;
@@ -754,15 +752,6 @@ export type CoursesCourseProfessorsArgs = {
   offset: InputMaybe<Scalars['Int']['input']>;
   order_by: InputMaybe<Array<CourseProfessorsOrderBy>>;
   where: InputMaybe<CourseProfessorsBoolExp>;
-};
-
-/** columns and relationships of "courses" */
-export type CoursesEvaluationNarrativeSummariesArgs = {
-  distinct_on: InputMaybe<Array<EvaluationNarrativeSummariesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<EvaluationNarrativeSummariesOrderBy>>;
-  where: InputMaybe<EvaluationNarrativeSummariesBoolExp>;
 };
 
 /** columns and relationships of "courses" */
@@ -876,7 +865,6 @@ export type CoursesBoolExp = {
   course_professors: InputMaybe<CourseProfessorsBoolExp>;
   credits: InputMaybe<Float8ComparisonExp>;
   description: InputMaybe<StringComparisonExp>;
-  evaluation_narrative_summaries: InputMaybe<EvaluationNarrativeSummariesBoolExp>;
   evaluation_narratives: InputMaybe<EvaluationNarrativesBoolExp>;
   evaluation_ratings: InputMaybe<EvaluationRatingsBoolExp>;
   evaluation_statistic: InputMaybe<EvaluationStatisticsBoolExp>;
@@ -1062,7 +1050,6 @@ export type CoursesOrderBy = {
   course_professors_aggregate: InputMaybe<CourseProfessorsAggregateOrderBy>;
   credits: InputMaybe<OrderBy>;
   description: InputMaybe<OrderBy>;
-  evaluation_narrative_summaries_aggregate: InputMaybe<EvaluationNarrativeSummariesAggregateOrderBy>;
   evaluation_narratives_aggregate: InputMaybe<EvaluationNarrativesAggregateOrderBy>;
   evaluation_ratings_aggregate: InputMaybe<EvaluationRatingsAggregateOrderBy>;
   evaluation_statistic: InputMaybe<EvaluationStatisticsOrderBy>;
@@ -1541,153 +1528,6 @@ export enum CursorOrdering {
   /** descending ordering of the cursor */
   Desc = 'DESC',
 }
-
-/** columns and relationships of "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummaries = {
-  __typename?: 'evaluation_narrative_summaries';
-  /** An object relationship */
-  course: Courses;
-  /** The course these narrative comments summarize */
-  course_id: Scalars['Int']['output'];
-  /** An object relationship */
-  evaluation_question: EvaluationQuestions;
-  /** Question code for the summarized narrative responses */
-  question_code: Scalars['String']['output'];
-  /** AI-generated summary of student narrative comments */
-  summary: Scalars['String']['output'];
-};
-
-/** order by aggregate values of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesAggregateOrderBy = {
-  avg: InputMaybe<EvaluationNarrativeSummariesAvgOrderBy>;
-  count: InputMaybe<OrderBy>;
-  max: InputMaybe<EvaluationNarrativeSummariesMaxOrderBy>;
-  min: InputMaybe<EvaluationNarrativeSummariesMinOrderBy>;
-  stddev: InputMaybe<EvaluationNarrativeSummariesStddevOrderBy>;
-  stddev_pop: InputMaybe<EvaluationNarrativeSummariesStddevPopOrderBy>;
-  stddev_samp: InputMaybe<EvaluationNarrativeSummariesStddevSampOrderBy>;
-  sum: InputMaybe<EvaluationNarrativeSummariesSumOrderBy>;
-  var_pop: InputMaybe<EvaluationNarrativeSummariesVarPopOrderBy>;
-  var_samp: InputMaybe<EvaluationNarrativeSummariesVarSampOrderBy>;
-  variance: InputMaybe<EvaluationNarrativeSummariesVarianceOrderBy>;
-};
-
-/** order by avg() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesAvgOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
-
-/** Boolean expression to filter rows from the table "evaluation_narrative_summaries". All fields are combined with a logical 'AND'. */
-export type EvaluationNarrativeSummariesBoolExp = {
-  _and: InputMaybe<Array<EvaluationNarrativeSummariesBoolExp>>;
-  _not: InputMaybe<EvaluationNarrativeSummariesBoolExp>;
-  _or: InputMaybe<Array<EvaluationNarrativeSummariesBoolExp>>;
-  course: InputMaybe<CoursesBoolExp>;
-  course_id: InputMaybe<IntComparisonExp>;
-  evaluation_question: InputMaybe<EvaluationQuestionsBoolExp>;
-  question_code: InputMaybe<StringComparisonExp>;
-  summary: InputMaybe<StringComparisonExp>;
-};
-
-/** order by max() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesMaxOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-  /** Question code for the summarized narrative responses */
-  question_code: InputMaybe<OrderBy>;
-  /** AI-generated summary of student narrative comments */
-  summary: InputMaybe<OrderBy>;
-};
-
-/** order by min() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesMinOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-  /** Question code for the summarized narrative responses */
-  question_code: InputMaybe<OrderBy>;
-  /** AI-generated summary of student narrative comments */
-  summary: InputMaybe<OrderBy>;
-};
-
-/** Ordering options when selecting data from "evaluation_narrative_summaries". */
-export type EvaluationNarrativeSummariesOrderBy = {
-  course: InputMaybe<CoursesOrderBy>;
-  course_id: InputMaybe<OrderBy>;
-  evaluation_question: InputMaybe<EvaluationQuestionsOrderBy>;
-  question_code: InputMaybe<OrderBy>;
-  summary: InputMaybe<OrderBy>;
-};
-
-/** select columns of table "evaluation_narrative_summaries" */
-export enum EvaluationNarrativeSummariesSelectColumn {
-  /** column name */
-  CourseId = 'course_id',
-  /** column name */
-  QuestionCode = 'question_code',
-  /** column name */
-  Summary = 'summary',
-}
-
-/** order by stddev() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesStddevOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
-
-/** order by stddev_pop() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesStddevPopOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
-
-/** order by stddev_samp() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesStddevSampOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
-
-/** Streaming cursor of the table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesStreamCursorInput = {
-  /** Stream column input with initial value */
-  initial_value: EvaluationNarrativeSummariesStreamCursorValueInput;
-  /** cursor ordering */
-  ordering: InputMaybe<CursorOrdering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type EvaluationNarrativeSummariesStreamCursorValueInput = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<Scalars['Int']['input']>;
-  /** Question code for the summarized narrative responses */
-  question_code: InputMaybe<Scalars['String']['input']>;
-  /** AI-generated summary of student narrative comments */
-  summary: InputMaybe<Scalars['String']['input']>;
-};
-
-/** order by sum() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesSumOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
-
-/** order by var_pop() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesVarPopOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
-
-/** order by var_samp() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesVarSampOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
-
-/** order by variance() on columns of table "evaluation_narrative_summaries" */
-export type EvaluationNarrativeSummariesVarianceOrderBy = {
-  /** The course these narrative comments summarize */
-  course_id: InputMaybe<OrderBy>;
-};
 
 /** columns and relationships of "evaluation_narratives" */
 export type EvaluationNarratives = {
@@ -3075,10 +2915,6 @@ export type QueryRoot = {
   /** fetch data from the table: "courses" using primary key columns */
   courses_by_pk: Maybe<Courses>;
   /** An array relationship */
-  evaluation_narrative_summaries: Array<EvaluationNarrativeSummaries>;
-  /** fetch data from the table: "evaluation_narrative_summaries" using primary key columns */
-  evaluation_narrative_summaries_by_pk: Maybe<EvaluationNarrativeSummaries>;
-  /** An array relationship */
   evaluation_narratives: Array<EvaluationNarratives>;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
   evaluation_narratives_by_pk: Maybe<EvaluationNarratives>;
@@ -3176,19 +3012,6 @@ export type QueryRootCoursesArgs = {
 
 export type QueryRootCoursesByPkArgs = {
   course_id: Scalars['Int']['input'];
-};
-
-export type QueryRootEvaluationNarrativeSummariesArgs = {
-  distinct_on: InputMaybe<Array<EvaluationNarrativeSummariesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<EvaluationNarrativeSummariesOrderBy>>;
-  where: InputMaybe<EvaluationNarrativeSummariesBoolExp>;
-};
-
-export type QueryRootEvaluationNarrativeSummariesByPkArgs = {
-  course_id: Scalars['Int']['input'];
-  question_code: Scalars['String']['input'];
 };
 
 export type QueryRootEvaluationNarrativesArgs = {
@@ -3436,12 +3259,6 @@ export type SubscriptionRoot = {
   /** fetch data from the table in a streaming manner: "courses" */
   courses_stream: Array<Courses>;
   /** An array relationship */
-  evaluation_narrative_summaries: Array<EvaluationNarrativeSummaries>;
-  /** fetch data from the table: "evaluation_narrative_summaries" using primary key columns */
-  evaluation_narrative_summaries_by_pk: Maybe<EvaluationNarrativeSummaries>;
-  /** fetch data from the table in a streaming manner: "evaluation_narrative_summaries" */
-  evaluation_narrative_summaries_stream: Array<EvaluationNarrativeSummaries>;
-  /** An array relationship */
   evaluation_narratives: Array<EvaluationNarratives>;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
   evaluation_narratives_by_pk: Maybe<EvaluationNarratives>;
@@ -3589,25 +3406,6 @@ export type SubscriptionRootCoursesStreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<CoursesStreamCursorInput>>;
   where: InputMaybe<CoursesBoolExp>;
-};
-
-export type SubscriptionRootEvaluationNarrativeSummariesArgs = {
-  distinct_on: InputMaybe<Array<EvaluationNarrativeSummariesSelectColumn>>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  offset: InputMaybe<Scalars['Int']['input']>;
-  order_by: InputMaybe<Array<EvaluationNarrativeSummariesOrderBy>>;
-  where: InputMaybe<EvaluationNarrativeSummariesBoolExp>;
-};
-
-export type SubscriptionRootEvaluationNarrativeSummariesByPkArgs = {
-  course_id: Scalars['Int']['input'];
-  question_code: Scalars['String']['input'];
-};
-
-export type SubscriptionRootEvaluationNarrativeSummariesStreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<EvaluationNarrativeSummariesStreamCursorInput>>;
-  where: InputMaybe<EvaluationNarrativeSummariesBoolExp>;
 };
 
 export type SubscriptionRootEvaluationNarrativesArgs = {
@@ -3945,6 +3743,11 @@ export type CourseModalOverviewDataQuery = {
       section: string;
       last_enrollment?: number | null;
       last_enrollment_same_professors?: boolean | null;
+      average_rating?: number | null;
+      average_rating_same_professors?: number | null;
+      average_workload?: number | null;
+      average_workload_same_professors?: number | null;
+      average_professor_rating?: number | null;
       credits: number | null;
       classnotes: string | null;
       regnotes: string | null;
@@ -4060,15 +3863,6 @@ export type SearchEvaluationNarrativesQuery = {
       evaluation_narratives: Array<{
         __typename?: 'evaluation_narratives';
         comment: string;
-        evaluation_question: {
-          __typename?: 'evaluation_questions';
-          question_text: string;
-          tag: string | null;
-        };
-      }>;
-      evaluation_narrative_summaries: Array<{
-        __typename?: 'evaluation_narrative_summaries';
-        summary: string;
         evaluation_question: {
           __typename?: 'evaluation_questions';
           question_text: string;
