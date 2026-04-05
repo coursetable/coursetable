@@ -71,6 +71,9 @@
 .moreDropdown :global(.dropdown-menu),
 .shareDropdown :global(.dropdown-menu) {
   width: 250px;
+
+  /* Overrides .toolbarIconSlot line-height:0 so items stay readable */
+  line-height: normal;
 }
 
 .toolBar {
