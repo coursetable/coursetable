@@ -9,10 +9,12 @@ export const GRAPHQL_API_ENDPOINT = isDev
   : `${import.meta.env.VITE_API_ENDPOINT}/ferry`;
 
 // Used for which season to show by default in catalog and worksheet
-export const CUR_SEASON = '202601' as Season;
+export const CUR_SEASON = '202603' as Season;
 
-// Courses in the current year have no evaluations yet
-export const CUR_YEAR = ['202601', '202602'] as Season[];
+// Courses in the current year have no evaluations yet. Also: if both the
+// listing and the API "latest" term are in this set, we skip the worksheet
+// "add latest offering?" modal (avoids false "past semester" across that window).
+export const CUR_YEAR = ['202601', '202602', '202603', '202701'] as Season[];
 
 // We use this format to avoid dealing with time zones.
 // TODO: this should be a Temporal.PlainDate
@@ -48,6 +50,7 @@ export type SeasonCalendar = {
 // Use fully-closed indexing, i.e. "start" and "end" both included
 // For breaks, the academic calendar uses wordings such as "begins after the
 // last academic obligations"—in this case, it actually starts on the next day
+// as of 2026, you can refer to: https://yalecollege.yale.edu/academics/academic-calendar/future-and-future-provisional-academic-calendars
 export const academicCalendars: { [season: Season]: SeasonCalendar } = {
   ['202203' as Season]: {
     start: [2022, 8, 31],
@@ -204,6 +207,45 @@ export const academicCalendars: { [season: Season]: SeasonCalendar } = {
       },
     ],
     transfers: [{ date: [2026, 1, 23], day: 1 }],
+  },
+  ['202603' as Season]: {
+    start: [2026, 9, 2],
+    end: [2026, 12, 11],
+    breaks: [
+      {
+        name: 'Labor Day',
+        start: [2026, 9, 7],
+        end: [2026, 9, 7],
+      },
+      {
+        name: 'October recess',
+        start: [2026, 10, 21],
+        end: [2026, 10, 25],
+      },
+      {
+        name: 'November recess',
+        start: [2026, 11, 23],
+        end: [2026, 11, 29],
+      },
+    ],
+    transfers: [{ date: [2026, 9, 4], day: 1 }],
+  },
+  ['202701' as Season]: {
+    start: [2027, 1, 19],
+    end: [2027, 4, 30],
+    breaks: [
+      {
+        name: 'Martin Luther King Jr. Day',
+        start: [2027, 1, 18],
+        end: [2027, 1, 18],
+      },
+      {
+        name: 'Spring recess',
+        start: [2027, 3, 8],
+        end: [2027, 3, 21],
+      },
+    ],
+    transfers: [{ date: [2027, 1, 29], day: 1 }],
   },
   // Add more entries above, but don't remove any
 };

@@ -1,7 +1,5 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
-import type { SortKeys } from '../contexts/searchContext';
-import type { WishlistItemWithListings } from '../contexts/wishlistContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -9,6 +7,8 @@ import type {
   CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import type { SortKeys } from '../search/searchTypes';
+import type { WishlistItemWithListings } from '../search/wishlistContext';
 import type { WorksheetCourse } from '../slices/WorksheetSlice';
 
 export function truncatedText(

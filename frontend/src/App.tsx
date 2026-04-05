@@ -7,21 +7,18 @@ import { Helmet } from 'react-helmet';
 import { useShallow } from 'zustand/react/shallow';
 import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
+import ModalHistoryBridge from './components/ModalHistoryBridge';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import ProfModal from './components/ProfModal/ProfModal';
 import Spinner from './components/Spinner';
-import {
-  useModalHistory,
-  ModalHistoryProvider,
-} from './contexts/modalHistoryContext';
-import { useTutorial } from './contexts/tutorialContext';
+import Tutorial from './components/Tutorial';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
 import Worksheet from './pages/Worksheet';
-
 import { useStore, useInitStore } from './store';
+
 import { suspended } from './utilities/display';
 import { createCatalogLink } from './utilities/navigation';
 import styles from './App.module.css';
@@ -49,10 +46,9 @@ const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
 const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
-const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function Modal() {
-  const { currentModal } = useModalHistory();
+  const currentModal = useStore((state) => state.currentModal);
   if (!currentModal) return null;
   switch (currentModal.type) {
     case 'course':
@@ -105,7 +101,7 @@ function AuthenticatedRoutes() {
 
 function App() {
   const location = useLocation();
-  const { isTutorialOpen } = useTutorial();
+
   useInitStore();
 
   useEffect(() => {
@@ -142,10 +138,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={21}
+        id={24}
       >
-        {/* Course locations are accurate as of December 2025. Please refer to Yale
-        Course Search to see your up-to-date course locations. */}
+        YaleMeals is live — no more dining hall guesswork. Download it today.
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -188,11 +183,9 @@ function App() {
       </SentryRoutes>
       <Footer />
       {/* Globally overlaid components */}
-      {isTutorialOpen && <Tutorial />}
-      {/* ModalProvider reads the location so it must be within the app */}
-      <ModalHistoryProvider>
-        <Modal />
-      </ModalHistoryProvider>
+      <Tutorial />
+      <ModalHistoryBridge />
+      <Modal />
     </div>
   );
 }

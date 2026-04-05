@@ -11,14 +11,11 @@ import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { TextComponent } from '../components/Typography';
 import WishlistItems from '../components/Wishlist/WishlistItems';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
-import {
-  resetCatalogCache,
-  useFerry,
-  useWorksheetInfo,
-} from '../contexts/ferryContext';
-import type { Option } from '../contexts/searchContext';
-import { useWishlist } from '../contexts/wishlistContext';
+import { resetCatalogCache } from '../ferry/ferryCatalogCache';
+import { useFerry, useWorksheetInfo } from '../hooks/useFerry';
 import type { NetId } from '../queries/graphql-types';
+import type { Option } from '../search/searchTypes';
+import { useWishlist } from '../search/wishlistContext';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';
