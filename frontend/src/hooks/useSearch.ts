@@ -1,4 +1,5 @@
 import { useMemo, type SetStateAction } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { defaultFilters, emptyFilters } from '../search/searchConstants';
 import type { FilterList, Filters } from '../search/searchTypes';
@@ -32,14 +33,27 @@ function buildFilterHandles(
 }
 
 export function useSearch() {
-  const searchFilters = useStore((s) => s.searchFilters);
-  const setSearchFilter = useStore((s) => s.setSearchFilter);
-  const coursesLoading = useStore((s) => s.coursesLoading);
-  const searchData = useStore((s) => s.searchData);
-  const multiSeasons = useStore((s) => s.multiSeasons);
-  const numFriends = useStore((s) => s.numFriends);
-  const duration = useStore((s) => s.duration);
-  const setSearchStartTime = useStore((s) => s.setSearchStartTime);
+  const {
+    searchFilters,
+    setSearchFilter,
+    coursesLoading,
+    searchData,
+    multiSeasons,
+    numFriends,
+    duration,
+    setSearchStartTime,
+  } = useStore(
+    useShallow((s) => ({
+      searchFilters: s.searchFilters,
+      setSearchFilter: s.setSearchFilter,
+      coursesLoading: s.coursesLoading,
+      searchData: s.searchData,
+      multiSeasons: s.multiSeasons,
+      numFriends: s.numFriends,
+      duration: s.duration,
+      setSearchStartTime: s.setSearchStartTime,
+    })),
+  );
 
   const filters = useMemo(
     () => buildFilterHandles(searchFilters, setSearchFilter),

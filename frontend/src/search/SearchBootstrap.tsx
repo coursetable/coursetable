@@ -719,15 +719,15 @@ export function SearchBootstrap({
     processedSearchText,
   ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     useStore.getState().setSearchNumFriends(numFriends);
   }, [numFriends]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     useStore.getState().setSearchMultiSeasons(multiSeasons);
   }, [multiSeasons]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     useStore.getState().setSearchCoursesLoading(coursesLoading);
   }, [coursesLoading]);
 
