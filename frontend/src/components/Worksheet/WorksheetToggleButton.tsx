@@ -249,8 +249,14 @@ function WorksheetToggleButton({
           const [latestCourse] = data.courses;
           const [latestListing] = latestCourse?.listings ?? [];
           if (latestCourse && latestListing) {
+            // Skip when both terms are in CUR_YEAR: avoids "past semester" for
+            // e.g. Fall 2026 listing vs Spring 2027 latest (same update cycle).
             const hasLatestOffering =
-              latestCourse.season_code !== listing.course.season_code;
+              latestCourse.season_code !== listing.course.season_code &&
+              !(
+                CUR_YEAR.includes(listing.course.season_code) &&
+                CUR_YEAR.includes(latestCourse.season_code)
+              );
 
             if (hasLatestOffering) {
               const addChoice = await confirmAddLatestOffering(
