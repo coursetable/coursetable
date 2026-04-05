@@ -21,11 +21,8 @@ import type {
   Filters,
   Option,
 } from './searchTypes';
-import {
-  useCourseData,
-  useWorksheetInfo,
-  seasons,
-} from '../contexts/ferryContext';
+import { seasons } from '../data/catalogSeasons';
+import { useCourseData, useWorksheetInfo } from '../hooks/useFerry';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';

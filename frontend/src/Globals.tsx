@@ -19,7 +19,6 @@ import ErrorPage from './components/ErrorPage';
 import { GapiLoader } from './components/GapiLoader';
 import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
-import { FerryProvider } from './contexts/ferryContext';
 import { SearchBootstrap } from './search/SearchBootstrap';
 
 import './index.css';
@@ -65,18 +64,13 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
         <GoogleOAuthProvider clientId={import.meta.env.VITE_DEV_GCAL_CLIENT_ID}>
           <GapiLoader />
           <ApolloProvider client={client}>
-            {/* FerryProvider must be inside UserProvider because the former
-              depends on login status */}
-            <FerryProvider>
-              {/* SearchBootstrap syncs catalog filters to Zustand and depends on
-                  worksheet state from the store (same as before the migration) */}
-              <SearchBootstrap>
-                <MDXProvider components={components}>
-                  <div id="base">{children}</div>
-                </MDXProvider>
-              </SearchBootstrap>
-              <ToastContainer toastClassName="rounded" />
-            </FerryProvider>
+            {/* SearchBootstrap syncs search filters and catalog data into Zustand */}
+            <SearchBootstrap>
+              <MDXProvider components={components}>
+                <div id="base">{children}</div>
+              </MDXProvider>
+            </SearchBootstrap>
+            <ToastContainer toastClassName="rounded" />
           </ApolloProvider>
         </GoogleOAuthProvider>
       </BrowserRouter>
