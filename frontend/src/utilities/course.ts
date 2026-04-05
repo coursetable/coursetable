@@ -118,12 +118,6 @@ export type ListingWithTimes = {
   };
 };
 
-export type ListingWithOtherListings = {
-  course: {
-    listings: { course_code: string }[];
-  };
-};
-
 export function checkConflict(
   worksheetData: WorksheetCourse[],
   listing: ListingWithTimes,

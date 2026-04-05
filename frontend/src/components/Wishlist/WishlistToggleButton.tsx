@@ -60,16 +60,13 @@ function WishlistToggleButton({
 
       try {
         if (!inWishlist) {
+          // ALREADY_BOOKMARKED etc. toast in api.ts handleErrorCode
           const ok = await updateWishlistCourses({
             action: 'add',
             season: listing.course.season_code,
             crn: listing.crn,
-          }).catch(() => false);
-          if (!ok) {
-            toast.error(
-              'Could not add this course to your wishlist. Please try again.',
-            );
-          } else {
+          });
+          if (ok) {
             toast.info(
               <span>
                 Saved to your wishlist{' '}
