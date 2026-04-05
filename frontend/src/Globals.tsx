@@ -19,7 +19,7 @@ import ErrorPage from './components/ErrorPage';
 import { GapiLoader } from './components/GapiLoader';
 import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
-import { SearchProvider } from './contexts/searchContext';
+import { SearchBootstrap } from './search/SearchBootstrap';
 
 import './index.css';
 
@@ -64,12 +64,12 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
         <GoogleOAuthProvider clientId={import.meta.env.VITE_DEV_GCAL_CLIENT_ID}>
           <GapiLoader />
           <ApolloProvider client={client}>
-            {/* SearchProvider uses worksheet/catalog state from Zustand */}
-            <SearchProvider>
+            {/* SearchBootstrap syncs search filters and catalog data into Zustand */}
+            <SearchBootstrap>
               <MDXProvider components={components}>
                 <div id="base">{children}</div>
               </MDXProvider>
-            </SearchProvider>
+            </SearchBootstrap>
             <ToastContainer toastClassName="rounded" />
           </ApolloProvider>
         </GoogleOAuthProvider>

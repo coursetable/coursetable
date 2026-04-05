@@ -3,12 +3,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
-import type { Option } from '../../../contexts/searchContext';
 import type {
   CourseSectionsQuery,
   CourseModalPrefetchListingDataFragment,
 } from '../../../generated/graphql-types';
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
+import type { Option } from '../../../search/searchTypes';
 import { useStore } from '../../../store';
 import { extraInfo, subjects } from '../../../utilities/constants';
 import {

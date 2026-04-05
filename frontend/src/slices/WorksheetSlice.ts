@@ -5,7 +5,6 @@ import { z } from 'zod';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_SEASON } from '../config';
-import type { Option } from '../contexts/searchContext';
 import { seasons as allSeasons } from '../data/catalogSeasons';
 import { useWorksheetInfo } from '../hooks/useFerry';
 import type { UserWorksheets } from '../queries/api';
@@ -16,6 +15,7 @@ import {
   crnSchema,
   seasonSchema,
 } from '../queries/graphql-types';
+import type { Option } from '../search/searchTypes';
 import { type Store, useStore } from '../store';
 import type { WorksheetCourse } from '../types/worksheetCourse';
 
