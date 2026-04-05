@@ -19,7 +19,6 @@ import ErrorPage from './components/ErrorPage';
 import { GapiLoader } from './components/GapiLoader';
 import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
-import { GapiProvider } from './contexts/gapiContext';
 import { SearchProvider } from './contexts/searchContext';
 
 import './index.css';
