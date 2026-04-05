@@ -11,6 +11,7 @@ import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
+import { createFerrySlice, type FerrySlice } from './slices/FerrySlice';
 import { createGapiSlice, type GapiSlice } from './slices/GapiSlice';
 import {
   createModalHistorySlice,
@@ -45,6 +46,7 @@ export interface Store
     TutorialSlice,
     ModalHistorySlice,
     ProfileSlice,
+    FerrySlice,
     WorksheetSlice {}
 
 const basePersistKeys: (keyof Store)[] = [
@@ -77,6 +79,7 @@ export const useStore = create<Store>()(
         ...createTutorialSlice(...a),
         ...createModalHistorySlice(...a),
         ...createProfileSlice(...a),
+        ...createFerrySlice(...a),
         ...createWorksheetSlice(...a),
       })),
     ),

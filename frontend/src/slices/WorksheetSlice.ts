@@ -5,12 +5,10 @@ import { z } from 'zod';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_SEASON } from '../config';
-import {
-  seasons as allSeasons,
-  useWorksheetInfo,
-} from '../contexts/ferryContext';
 import type { Option } from '../contexts/searchContext';
-import type { CatalogListing, UserWorksheets } from '../queries/api';
+import { seasons as allSeasons } from '../data/catalogSeasons';
+import { useWorksheetInfo } from '../hooks/useFerry';
+import type { UserWorksheets } from '../queries/api';
 import {
   type Season,
   type Crn,
@@ -19,16 +17,12 @@ import {
   seasonSchema,
 } from '../queries/graphql-types';
 import { type Store, useStore } from '../store';
+import type { WorksheetCourse } from '../types/worksheetCourse';
 
 // Utility Types
 export type WorksheetView = 'calendar' | 'list' | 'map';
 
-export interface WorksheetCourse {
-  crn: Crn;
-  color: string;
-  listing: CatalogListing;
-  hidden: boolean | null;
-}
+export type { WorksheetCourse };
 
 const exoticWorksheetSchema = z.object({
   season: seasonSchema,
