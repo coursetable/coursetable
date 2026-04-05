@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import type { WishlistItemWithListings } from '../../contexts/wishlistContext';
 import NoCoursesFound from '../../images/no_courses_found.svg';
+import type { WishlistItemWithListings } from '../../search/wishlistContext';
 import { createCourseModalLink } from '../../utilities/display';
 import { TextComponent } from '../Typography';
 import itemsStyles from './WishlistItems.module.css';

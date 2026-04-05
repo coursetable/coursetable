@@ -6,11 +6,11 @@ import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 import { useShallow } from 'zustand/react/shallow';
-import { useModalHistory } from '../../contexts/modalHistoryContext';
-import { useWishlist } from '../../contexts/wishlistContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
+import { useModalHistory } from '../../hooks/useModalHistory';
 import { updateWishlistCourses } from '../../queries/api';
 import type { Crn, Season } from '../../queries/graphql-types';
+import { useWishlist } from '../../search/wishlistContext';
 import { useStore } from '../../store';
 import { isInWishlist } from '../../utilities/course';
 import styles from './WishlistToggleButton.module.css';
