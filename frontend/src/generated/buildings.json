@@ -65,6 +65,7 @@
     "url": "https://map.yale.edu/?id=1910#!m/531533"
   },
   { "building_name": null, "code": "BRW35", "url": "" },
+  { "building_name": "53 Broadway", "code": "BRW53", "url": "" },
   { "building_name": null, "code": "C", "url": "" },
   { "building_name": null, "code": "CALHIL", "url": "" },
   { "building_name": null, "code": "CC", "url": "" },
@@ -155,7 +156,7 @@
     "url": "https://map.yale.edu/?id=1910#!m/559982"
   },
   {
-    "building_name": null,
+    "building_name": "Ezra Stiles College",
     "code": "ES",
     "url": "https://map.yale.edu/?id=1910#!m/559931"
   },

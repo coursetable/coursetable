@@ -11,12 +11,21 @@ import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
+import { createGapiSlice, type GapiSlice } from './slices/GapiSlice';
+import {
+  createModalHistorySlice,
+  type ModalHistorySlice,
+} from './slices/ModalHistorySlice';
 import {
   createProfileSlice,
   defaultPreferences,
   type ProfileSlice,
 } from './slices/ProfileSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
+import {
+  createTutorialSlice,
+  type TutorialSlice,
+} from './slices/TutorialSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import {
   createWorksheetSlice,
@@ -26,11 +35,15 @@ import {
 import { pick } from './utilities/common';
 
 export interface Store
-  extends AuthSlice,
+  extends
+    AuthSlice,
     CalendarSlice,
     UserSlice,
     ThemeSlice,
     DimensionsSlice,
+    GapiSlice,
+    TutorialSlice,
+    ModalHistorySlice,
     ProfileSlice,
     WorksheetSlice {}
 
@@ -42,6 +55,7 @@ const basePersistKeys: (keyof Store)[] = [
   'viewedSeason',
   'viewedWorksheetNumber',
   'worksheetView',
+  'hasShownTutorial',
   'isCalendarViewLocked',
   'calendarLockStart',
   'calendarLockEnd',
@@ -59,6 +73,9 @@ export const useStore = create<Store>()(
         ...createUserSlice(...a),
         ...createThemeSlice(...a),
         ...createDimensionsSlice(...a),
+        ...createGapiSlice(...a),
+        ...createTutorialSlice(...a),
+        ...createModalHistorySlice(...a),
         ...createProfileSlice(...a),
         ...createWorksheetSlice(...a),
       })),

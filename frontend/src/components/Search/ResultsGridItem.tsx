@@ -37,7 +37,10 @@ function Rating({
     <OverlayTrigger
       placement="top"
       overlay={(props) => (
-        <Tooltip id={`${name}-tooltip`} {...props}>
+        <Tooltip
+          id={`results-grid-rating-${listing.course.season_code}-${listing.crn}-${name}-tooltip`}
+          {...props}
+        >
           {hasEvals
             ? name
             : `${name} (These colors are randomly generated. ${hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see real ratings)`}
@@ -153,7 +156,10 @@ function ResultsGridItem({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="location-hidden-tooltip" {...props}>
+                    <Tooltip
+                      id={`results-grid-location-hidden-${listing.course.season_code}-${listing.crn}-tooltip`}
+                      {...props}
+                    >
                       Sign in to see location
                     </Tooltip>
                   )}

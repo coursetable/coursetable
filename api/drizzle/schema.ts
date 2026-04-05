@@ -1,6 +1,7 @@
 import { relations, sql } from 'drizzle-orm';
 import {
   pgTable,
+  pgEnum,
   boolean,
   varchar,
   bigint,
@@ -11,11 +12,40 @@ import {
   integer,
 } from 'drizzle-orm/pg-core';
 
+/** Shared by name / email / year / school / major visibility columns. */
+export const profileVisibilityEnum = pgEnum('profile_visibility', [
+  'self',
+  'friends',
+  'public',
+]);
+
 export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   netId: varchar('netId', { length: 8 }).primaryKey().notNull(),
   evaluationsEnabled: boolean('evaluationsEnabled').notNull(),
+  evaluationsRevoked: boolean('evaluationsRevoked').notNull().default(false),
   firstName: varchar('firstName', { length: 256 }).default(sql`NULL`),
   lastName: varchar('lastName', { length: 256 }).default(sql`NULL`),
+  preferredFirstName: varchar('preferredFirstName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  preferredLastName: varchar('preferredLastName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  nameVisibility: profileVisibilityEnum('nameVisibility')
+    .notNull()
+    .default('public'),
+  emailVisibility: profileVisibilityEnum('emailVisibility')
+    .notNull()
+    .default('self'),
+  yearVisibility: profileVisibilityEnum('yearVisibility')
+    .notNull()
+    .default('friends'),
+  schoolVisibility: profileVisibilityEnum('schoolVisibility')
+    .notNull()
+    .default('friends'),
+  majorVisibility: profileVisibilityEnum('majorVisibility')
+    .notNull()
+    .default('friends'),
   email: varchar('email', { length: 256 }).default(sql`NULL`),
   upi: bigint('upi', { mode: 'number' }),
   school: varchar('school', { length: 256 }).default(sql`NULL`),
@@ -139,5 +169,22 @@ export const wishlistCourses = pgTable(
       table.season,
       table.crn,
     ),
+  }),
+);
+
+export const savedSearches = pgTable(
+  'savedSearches',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    name: varchar('name', { length: 64 }).notNull(),
+    queryString: varchar('queryString', { length: 2048 }).notNull(),
+    createdAt: bigint('createdAt', { mode: 'number' }).notNull(),
+  },
+  (table) => ({
+    savedSearchesNetidIdx: index('saved_searches_netid_idx').on(table.netId),
+    savedSearchesNameUniqueIdx: uniqueIndex(
+      'saved_searches_name_unique_idx',
+    ).on(table.netId, table.name),
   }),
 );

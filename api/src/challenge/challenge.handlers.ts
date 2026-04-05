@@ -253,11 +253,12 @@ export const verifyChallenge = async (
   const results = checkChallenge(trueEvals, answers);
 
   if (results.every((x) => x)) {
-    // Enable evaluations and respond with success
+    // Grant evals (including restoring access after self-service revocation).
     await db
       .update(studentBluebookSettings)
       .set({
         evaluationsEnabled: true,
+        evaluationsRevoked: false,
       })
       .where(eq(studentBluebookSettings.netId, netId));
   }

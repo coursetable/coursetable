@@ -3630,6 +3630,17 @@ export type EvalsBySeasonQuery = {
       enrolled: number;
       responses: number | null;
     } | null;
+    course_meetings: Array<{
+      __typename?: 'course_meetings';
+      days_of_week: number;
+      start_time: string;
+      end_time: string;
+      location: {
+        __typename?: 'locations';
+        room: string | null;
+        building: { __typename?: 'buildings'; code: string };
+      } | null;
+    }>;
   }>;
 };
 
@@ -3686,11 +3697,6 @@ export type CatalogBySeasonQuery = {
       days_of_week: number;
       start_time: string;
       end_time: string;
-      location: {
-        __typename?: 'locations';
-        room: string | null;
-        building: { __typename?: 'buildings'; code: string };
-      } | null;
     }>;
   }>;
 };
@@ -3737,6 +3743,11 @@ export type CourseModalOverviewDataQuery = {
       section: string;
       last_enrollment?: number | null;
       last_enrollment_same_professors?: boolean | null;
+      average_rating?: number | null;
+      average_rating_same_professors?: number | null;
+      average_workload?: number | null;
+      average_workload_same_professors?: number | null;
+      average_professor_rating?: number | null;
       credits: number | null;
       classnotes: string | null;
       regnotes: string | null;
@@ -3759,7 +3770,7 @@ export type CourseModalOverviewDataQuery = {
         days_of_week: number;
         start_time: string;
         end_time: string;
-        location: {
+        location?: {
           __typename?: 'locations';
           room: string | null;
           building: {
@@ -3950,4 +3961,18 @@ export type CourseSectionsQuery = {
       };
     } & CourseModalPrefetchListingDataFragment
   >;
+};
+
+export type LatestCurrentOfferingQueryVariables = Exact<{
+  sameCourseId: Scalars['Int']['input'];
+  seasonCodes: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+export type LatestCurrentOfferingQuery = {
+  __typename?: 'query_root';
+  courses: Array<{
+    __typename?: 'courses';
+    season_code: Season;
+    listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
+  }>;
 };

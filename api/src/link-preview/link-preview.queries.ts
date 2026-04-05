@@ -58,14 +58,16 @@ export function getSdk(
     courseMetadata(
       variables: CourseMetadataQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<CourseMetadataQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<CourseMetadataQuery>(
-            CourseMetadataDocument,
+          client.request<CourseMetadataQuery>({
+            document: CourseMetadataDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'courseMetadata',
         'query',
         variables,

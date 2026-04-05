@@ -12,6 +12,7 @@ import ash from '../images/headshots/aryan-sharma.jpg';
 import bx from '../images/headshots/ben-xu.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
+import eboug from '../images/headshots/eli-bouganim.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
 import ff from '../images/headshots/filippo-fonseca.jpg';
@@ -112,25 +113,6 @@ function About() {
       },
     },
     {
-      name: 'Ben Xu',
-      image: bx,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
-        github: 'https://github.com/benzuzu',
-      },
-    },
-    {
-      name: 'Kenny Tung',
-      image: kt,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/tungk/',
-        github: 'https://github.com/kentng01/',
-        website: 'https://kenneru.netlify.app/',
-      },
-    },
-    {
       name: 'Filippo Fonseca',
       image: ff,
       role: 'Development',
@@ -168,6 +150,16 @@ function About() {
         website: 'https://yavinfickel.com',
         github: 'https://github.com/yav-fi',
         linkedin: 'https://www.linkedin.com/in/yavin',
+      },
+    },
+    {
+      name: 'Eli Bouganim',
+      image: eboug,
+      role: 'Development',
+      links: {
+        website: 'https://elibouganim.web.app',
+        github: 'https://github.com/eliboug',
+        linkedin: 'https://www.linkedin.com/in/eli-bouganim/',
       },
     },
   ];
@@ -304,6 +296,24 @@ function About() {
       name: 'Shayna Sragovicz',
       image: ss,
       role: 'Development',
+    },
+    {
+      name: 'Ben Xu',
+      image: bx,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
+        github: 'https://github.com/benzuzu',
+      },
+    },
+    {
+      name: 'Kenny Tung',
+      image: kt,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/tungk/',
+        github: 'https://github.com/kentng01/',
+      },
     },
     {
       name: 'Dylan Fernandez de Lara',

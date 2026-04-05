@@ -9,15 +9,18 @@ import type chroma from 'chroma-js';
 import MultiToggle from 'react-multi-toggle';
 import { useShallow } from 'zustand/react/shallow';
 
-import {
-  useModalHistory,
-  type Store,
-} from '../../../contexts/modalHistoryContext';
 import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
+import { useModalHistory } from '../../../hooks/useModalHistory';
+import type { ModalHistoryNavigateFn } from '../../../slices/ModalHistorySlice';
 import { useStore } from '../../../store';
 import { generateRandomColor } from '../../../utilities/common';
 import { ratingColormap, workloadColormap } from '../../../utilities/constants';
-import { isDiscussionSection } from '../../../utilities/course';
+import {
+  getOverallRatings,
+  getProfessorRatings,
+  getWorkloadRatings,
+  isDiscussionSection,
+} from '../../../utilities/course';
 import { createProfModalLink } from '../../../utilities/display';
 import RelatedCoursesList from '../../RelatedCoursesList';
 import { RatingBubble } from '../../Typography';
@@ -30,29 +33,15 @@ type Filter = 'course' | 'professor';
 
 type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
 
-type CourseProfessor = { professor: { professor_id: number } };
-
 // Hold index of each filter option
 const optionsIndx = {
   course: 0,
   professor: 1,
 };
 
-function average(values: readonly number[]) {
-  if (values.length === 0) return null;
-  return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
-function professorKey(courseProfessors: readonly CourseProfessor[]) {
-  return [...courseProfessors]
-    .map((p) => p.professor.professor_id)
-    .sort((a, b) => a - b)
-    .join('-');
-}
-
 function createProfSummary(
   courseProfessors: RelatedCourseInfo['course_professors'],
-  navigate: Store['navigate'],
+  navigate: ModalHistoryNavigateFn,
   searchParams: URLSearchParams,
 ) {
   const profsByName = courseProfessors.toSorted((a, b) =>
@@ -71,10 +60,14 @@ function createProfSummary(
               key={professor.professor_id}
               to={createProfModalLink(professor.professor_id, searchParams)}
               onClick={() => {
-                navigate('push', {
-                  type: 'professor',
-                  data: professor.professor_id,
-                });
+                navigate(
+                  'push',
+                  {
+                    type: 'professor',
+                    data: professor.professor_id,
+                  },
+                  searchParams,
+                );
               }}
             >
               {prof.professor.name}
@@ -206,71 +199,14 @@ function OverviewRatings({
       togglePref: state.togglePref,
     })),
   );
-  const listingProfessorSetKey = professorKey(
-    listing.course.course_professors as unknown as CourseProfessor[],
-  );
-  let sameRatingSum = 0;
-  let sameRatingCount = 0;
-  let allRatingSum = 0;
-  let allRatingCount = 0;
-  let sameWorkloadSum = 0;
-  let sameWorkloadCount = 0;
-  let allWorkloadSum = 0;
-  let allWorkloadCount = 0;
-  for (const course of sameCourseNormalized) {
-    const courseProfKey = professorKey(
-      course.course_professors as unknown as CourseProfessor[],
-    );
-    const isSameProf = courseProfKey === listingProfessorSetKey;
-    const avgRating = course.evaluation_statistic?.avg_rating;
-    if (typeof avgRating === 'number') {
-      allRatingSum += avgRating;
-      allRatingCount += 1;
-      if (isSameProf) {
-        sameRatingSum += avgRating;
-        sameRatingCount += 1;
-      }
-    }
-    const avgWorkload = course.evaluation_statistic?.avg_workload;
-    if (typeof avgWorkload === 'number') {
-      allWorkloadSum += avgWorkload;
-      allWorkloadCount += 1;
-      if (isSameProf) {
-        sameWorkloadSum += avgWorkload;
-        sameWorkloadCount += 1;
-      }
-    }
-  }
-  const overallSameProf =
-    sameRatingCount > 0 ? sameRatingSum / sameRatingCount : null;
-  const overallAll = allRatingCount > 0 ? allRatingSum / allRatingCount : null;
-  const overallStat = overallSameProf ?? overallAll;
-  const overallDisplay =
-    overallSameProf !== null
-      ? overallSameProf.toFixed(1)
-      : overallAll !== null
-        ? `~${overallAll.toFixed(1)}`
-        : 'N/A';
 
-  const workloadSameProf =
-    sameWorkloadCount > 0 ? sameWorkloadSum / sameWorkloadCount : null;
-  const workloadAll =
-    allWorkloadCount > 0 ? allWorkloadSum / allWorkloadCount : null;
-  const workloadStat = workloadSameProf ?? workloadAll;
-  const workloadDisplay =
-    workloadSameProf !== null
-      ? workloadSameProf.toFixed(1)
-      : workloadAll !== null
-        ? `~${workloadAll.toFixed(1)}`
-        : 'N/A';
-
-  const professorStat = average(
-    listing.course.course_professors
-      .map((p) => p.professor.average_rating)
-      .filter((x): x is number => typeof x === 'number'),
-  );
-  const professorDisplay =
-    professorStat !== null ? professorStat.toFixed(1) : 'N/A';
+  const summaryCourse = listing.course;
+  const overallStat = getOverallRatings(summaryCourse, 'stat');
+  const overallDisplay = getOverallRatings(summaryCourse, 'display');
+  const workloadStat = getWorkloadRatings(summaryCourse, 'stat');
+  const workloadDisplay = getWorkloadRatings(summaryCourse, 'display');
+  const professorStat = getProfessorRatings(summaryCourse, 'stat');
+  const professorDisplay = getProfessorRatings(summaryCourse, 'display');
 
   const coursesByProf = new Map<
     string,
@@ -306,11 +242,9 @@ function OverviewRatings({
             colorMap={ratingColormap}
             tooltip={
               <span>
-                Average course rating
-                <br />
-                (same professor and all cross-listed courses. If this professor
-                hasn't taught the course before, a ~ denotes an average across
-                all professors)
+                Same course rating as catalog search: computed on the server
+                across cross-listed sections. A ~ means the all-professors
+                aggregate when same-professor data is unavailable.
               </span>
             }
             hasEvals={hasEvals}
@@ -324,11 +258,9 @@ function OverviewRatings({
             colorMap={workloadColormap}
             tooltip={
               <span>
-                Average workload rating
-                <br />
-                (same professor and all cross-listed courses. If this professor
-                hasn't taught the course before, a ~ denotes an average across
-                all professors)
+                Same workload rating as catalog search: server aggregate across
+                cross-listed sections. ~ indicates all-professors aggregate when
+                same-professor data is unavailable.
               </span>
             }
             hasEvals={hasEvals}
@@ -342,10 +274,8 @@ function OverviewRatings({
             colorMap={ratingColormap}
             tooltip={
               <span>
-                Average professor course rating
-                <br />
-                (if there are multiple professors, we take the average between
-                them)
+                Same professor rating as the catalog Professor column for this
+                offering (server aggregate).
               </span>
             }
             hasEvals={hasEvals}
@@ -366,7 +296,7 @@ function OverviewRatings({
         <MultiToggle
           options={options}
           selectedOption={filter}
-          onSelectOption={(val) => setFilter(val as Filter)}
+          onSelectOption={(val: string) => setFilter(val as Filter)}
           className={clsx(styles.evaluationsFilter, 'mb-2')}
         />
       </div>
@@ -385,10 +315,14 @@ function OverviewRatings({
                     searchParams,
                   )}
                   onClick={() => {
-                    navigate('push', {
-                      type: 'professor',
-                      data: prof.professor.professor_id,
-                    });
+                    navigate(
+                      'push',
+                      {
+                        type: 'professor',
+                        data: prof.professor.professor_id,
+                      },
+                      searchParams,
+                    );
                   }}
                 >
                   {prof.professor.name}

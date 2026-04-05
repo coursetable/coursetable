@@ -114,24 +114,7 @@ interface WorksheetSliceMemo {
 }
 
 export interface WorksheetSlice
-  extends WorksheetState,
-    WorksheetActions,
-    WorksheetSliceMemo {}
-
-// Utility Functions
-function seasonsWithDataFirst(
-  seasons: Season[],
-  worksheets: UserWorksheets | undefined,
-) {
-  if (!worksheets) return seasons;
-  return seasons.toSorted((a, b) => {
-    const aHasData = worksheets.has(a);
-    const bHasData = worksheets.has(b);
-    if (aHasData && !bHasData) return -1;
-    if (!aHasData && bHasData) return 1;
-    return Number(b) - Number(a);
-  });
-}
+  extends WorksheetState, WorksheetActions, WorksheetSliceMemo {}
 
 export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
   const searchParams = new URLSearchParams(window.location.search);
@@ -203,6 +186,7 @@ export const createWorksheetSlice: StateCreator<
       '',
       `${window.location.pathname}${searchParams}`,
     );
+    void get().worksheetsRefresh();
   },
   worksheetView: 'calendar',
   hoverCourse: null,
@@ -228,9 +212,7 @@ export const createWorksheetSlice: StateCreator<
           : state.friends?.[state.viewedPerson]?.worksheets) ??
           new Map()) as UserWorksheets,
     ),
-    getSeasonCodes: memoize((state: Store) =>
-      seasonsWithDataFirst(allSeasons, state.worksheets),
-    ),
+    getSeasonCodes: memoize(() => allSeasons),
     getIsExoticWorksheet: memoize((state: Store) =>
       Boolean(state.exoticWorksheet),
     ),
@@ -292,29 +274,44 @@ export const useWorksheetEffects = () => {
   setWorksheetInfo(courses, worksheetLoading, worksheetError);
 };
 
+export type WorksheetNumberOption = Option<number> & {
+  isPrivate: undefined | boolean;
+};
+
 // Auxiliary Functions
 export function useWorksheetNumberOptions(
   person: 'me' | NetId,
   season: Season,
-): { [worksheetNumber: number]: Option<number> } {
+): { [worksheetNumber: number]: WorksheetNumberOption } {
   const { worksheets, friends } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       friends: state.friends,
     })),
   );
+
   const seasonWorksheet = (
     person === 'me' ? worksheets : friends?.[person]?.worksheets
   )?.get(season);
+
   const options = seasonWorksheet
     ? Object.fromEntries(
         [...seasonWorksheet.entries()].map(([key, value]) => [
           key,
-          { value: key, label: value.name },
+          {
+            value: key,
+            label: value.name,
+            isPrivate: value.private,
+          } as WorksheetNumberOption,
         ]),
       )
     : {};
+
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  options[0] ??= { value: 0, label: 'Main Worksheet' };
+  options[0] ??= {
+    value: 0,
+    label: 'Main Worksheet',
+    isPrivate: false,
+  };
   return options;
 }

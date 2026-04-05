@@ -14,7 +14,6 @@ import { enableMapSet, setAutoFreeze } from 'immer';
 import Globals from './Globals';
 import App from './App';
 import { isDev } from './config';
-import { TutorialProvider } from './contexts/tutorialContext';
 
 enableMapSet();
 setAutoFreeze(false);
@@ -23,8 +22,8 @@ Sentry.init({
   enabled: !isDev,
   dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [
-    // See https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
-    Sentry.reactRouterV6BrowserTracingIntegration({
+    // See https://docs.sentry.io/platforms/javascript/guides/react/features/react-router/v7/
+    Sentry.reactRouterV7BrowserTracingIntegration({
       useEffect,
       useLocation,
       useNavigationType,
@@ -59,8 +58,6 @@ const root = createRoot(domNode);
 
 root.render(
   <Globals>
-    <TutorialProvider>
-      <App />
-    </TutorialProvider>
+    <App />
   </Globals>,
 );

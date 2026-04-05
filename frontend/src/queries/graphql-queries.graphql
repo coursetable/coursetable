@@ -23,7 +23,7 @@ query CourseModalOverviewData(
         days_of_week
         start_time
         end_time
-        location {
+        location @include(if: $hasEvals) {
           room
           building {
             code
@@ -42,6 +42,11 @@ query CourseModalOverviewData(
       }
       last_enrollment @include(if: $hasEvals)
       last_enrollment_same_professors @include(if: $hasEvals)
+      average_rating @include(if: $hasEvals)
+      average_rating_same_professors @include(if: $hasEvals)
+      average_workload @include(if: $hasEvals)
+      average_workload_same_professors @include(if: $hasEvals)
+      average_professor_rating @include(if: $hasEvals)
       credits
       classnotes
       regnotes
@@ -196,6 +201,23 @@ query CourseSections(
           name
         }
       }
+    }
+  }
+}
+
+query LatestCurrentOffering($sameCourseId: Int!, $seasonCodes: [String!]!) {
+  courses(
+    where: {
+      same_course_id: { _eq: $sameCourseId }
+      season_code: { _in: $seasonCodes }
+    }
+    order_by: { season_code: desc }
+    limit: 1
+  ) {
+    season_code
+    listings(limit: 1) {
+      crn
+      course_code
     }
   }
 }

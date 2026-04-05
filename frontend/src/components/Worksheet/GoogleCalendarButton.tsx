@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import Spinner from '../../components/Spinner';
 import { academicCalendars } from '../../config';
-import { useGapi } from '../../contexts/gapiContext';
 import GCalIcon from '../../images/gcal.svg';
 import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
@@ -13,7 +12,7 @@ import { toSeasonString } from '../../utilities/course';
 
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
-  const { gapi } = useGapi();
+  const gapi = useStore((s) => s.gapi);
   const { viewedSeason, courses } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
@@ -104,8 +103,8 @@ function GoogleCalendarButton(): React.JSX.Element {
       // Delete all previously added classes
       if (eventList.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        await Promise.all(
-          eventList.result.items.map((event) => {
+        const deletePromises = eventList.result.items
+          .map((event) => {
             if (event.id.startsWith('coursetable') && event.recurringEventId) {
               if (!deletedIds.has(event.recurringEventId)) {
                 deletedIds.add(event.recurringEventId);
@@ -115,9 +114,10 @@ function GoogleCalendarButton(): React.JSX.Element {
                 });
               }
             }
-            return undefined;
-          }),
-        );
+            return null;
+          })
+          .filter((p): p is NonNullable<typeof p> => p !== null);
+        await Promise.all(deletePromises);
       }
       const events = getCalendarEvents('gcal', courses, viewedSeason);
       await Promise.all(
