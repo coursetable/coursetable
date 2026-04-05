@@ -1,31 +1,33 @@
 import React, {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
-  useState,
+  type SetStateAction,
 } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import debounce from 'lodash.debounce';
 import { buildEvaluator } from 'quist';
 import { useShallow } from 'zustand/react/shallow';
-import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
-import { CUR_SEASON } from '../config';
-import buildingsData from '../generated/buildings.json';
-import type { Buildings } from '../generated/graphql-types';
+import {
+  defaultFilters,
+  emptyFilters,
+  SEARCH_FILTER_KEYS,
+} from './searchConstants';
+import type {
+  BooleanAttributes,
+  FilterHandle,
+  Filters,
+  Option,
+} from './searchTypes';
+import { seasons } from '../data/catalogSeasons';
+import { useCourseData, useWorksheetInfo } from '../hooks/useFerry';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
 import { isEqual } from '../utilities/common';
-import {
-  skillsAreas,
-  subjects,
-  schools,
-  courseInfoAttributes,
-  weekdays,
-} from '../utilities/constants';
+import { weekdays } from '../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
@@ -39,260 +41,38 @@ import {
   sortCourses,
   toLocationsSummary,
   toRangeTime,
-  toSeasonString,
   toWeekdayStrings,
-  type NumFriendsReturn,
 } from '../utilities/course';
 import { createFilterLink, getFilterFromParams } from '../utilities/params';
 
-export type Option<T extends string | number = string> = {
-  label: string;
-  value: T;
-};
+function useSearchUrlHydration() {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const patchSearchFilters = useStore((s) => s.patchSearchFilters);
 
-export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
-  label: type,
-  options: Object.entries(
-    skillsAreas[type.toLowerCase() as 'areas' | 'skills'],
-  ).map(
-    ([code, name]): Option => ({
-      label: `${code} - ${name}`,
-      value: code,
-    }),
-  ),
-}));
-
-const sortCriteria = {
-  course_code: 'Sort by course code',
-  title: 'Sort by course title',
-  friend: 'Sort by # of friends',
-  added: 'Sort by date added',
-  last_modified: 'Sort by last modified',
-  overall: 'Sort by course rating',
-  average_professor_rating: 'Sort by professor rating',
-  workload: 'Sort by workload',
-  average_gut_rating: 'Sort by guts (overall - workload)',
-  enrollment: 'Sort by last enrollment',
-  time: 'Sort by days & times',
-  location: 'Sort by locations',
-};
-
-export const sortByOptions = Object.fromEntries(
-  Object.entries(sortCriteria).map(([k, v]) => [k, { value: k, label: v }]),
-) as { [k in SortKeys]: Option<SortKeys> };
-
-export type SortKeys = keyof typeof sortCriteria;
-
-export const subjectsOptions = Object.entries(subjects).map(
-  ([code, name]): Option => ({
-    label: `${code} - ${name}`,
-    value: code,
-  }),
-);
-
-export const schoolsOptions = Object.entries(schools).map(
-  ([code, name]): Option => ({
-    label: name,
-    value: code,
-  }),
-);
-
-const buildings = buildingsData as Buildings[];
-
-export const buildingOptions = buildings.map(
-  (building): Option => ({
-    value: building.code,
-    label: building.building_name
-      ? `${building.code} (${building.building_name})`
-      : building.code,
-  }),
-);
-
-export const seasonsOptions = seasons.map(
-  (x): Option<Season> => ({
-    value: x,
-    label: toSeasonString(x),
-  }),
-);
-
-export const courseInfoAttributesOptions = courseInfoAttributes.map(
-  (attr): Option => ({
-    label: attr,
-    value: attr,
-  }),
-);
-
-export const booleanAttributes = {
-  fysem: 'First-year seminar',
-  sysem: 'Sophomore seminar',
-  colsem: 'College seminar',
-  discussion: 'Discussion section',
-  graduate: 'Graduate-level course',
-};
-
-type SortOrderType = 'desc' | 'asc';
-
-type Store = {
-  filters: FilterList;
-  coursesLoading: boolean;
-  searchData: CatalogListing[] | null;
-  multiSeasons: boolean;
-  numFriends: NumFriendsReturn;
-  duration: number;
-  setStartTime: React.Dispatch<React.SetStateAction<number>>;
-};
-
-const SearchContext = createContext<Store | undefined>(undefined);
-SearchContext.displayName = 'SearchContext';
-
-export type BooleanOptions =
-  | 'searchDescription'
-  | 'enableQuist'
-  | 'hideCancelled'
-  | 'hideConflicting';
-
-export type BooleanAttributes = keyof typeof booleanAttributes;
-
-export interface CategoricalFilters {
-  selectSubjects: string;
-  selectSkillsAreas: string;
-  selectSeasons: Season;
-  selectDays: number;
-  selectSchools: string;
-  selectCredits: number;
-  selectCourseInfoAttributes: string;
-  selectBuilding: string;
+  useLayoutEffect(() => {
+    if (location.pathname !== '/catalog') return;
+    const updates = SEARCH_FILTER_KEYS.reduce<Partial<Filters>>((acc, key) => {
+      const urlValue = searchParams.get(key);
+      if (urlValue === null) return acc;
+      try {
+        return {
+          ...acc,
+          [key]: getFilterFromParams(key, urlValue, defaultFilters[key]),
+        };
+      } catch {
+        return acc;
+      }
+    }, {});
+    if (Object.keys(updates).length > 0) patchSearchFilters(updates);
+  }, [location.pathname, patchSearchFilters, searchParams]);
 }
 
-export type NumericFilters =
-  | 'overallBounds'
-  | 'workloadBounds'
-  | 'professorBounds'
-  | 'timeBounds'
-  | 'enrollBounds'
-  | 'numBounds';
-
-// All attributes that one class can have multiple of; these filters will show
-// a "union or intersection" button. Declaring it as a separate data structure
-// instead of colocating it with each categorical filter definition, because
-// this seems to make the categorical filter definitions more consistent.
-export type IntersectableFilters =
-  | 'selectSubjects'
-  | 'selectSkillsAreas'
-  | 'selectDays'
-  | 'selectSchools'
-  | 'selectCourseInfoAttributes';
-
-export type Filters = {
-  [P in BooleanOptions]: boolean;
-} & {
-  [P in keyof CategoricalFilters]: Option<CategoricalFilters[P]>[];
-} & {
-  [P in NumericFilters]: [number, number];
-} & {
-  searchText: string;
-  selectSortBy: Option<SortKeys>;
-  sortOrder: SortOrderType;
-  intersectingFilters: IntersectableFilters[];
-  includeAttributes: BooleanAttributes[];
-  excludeAttributes: BooleanAttributes[];
-};
-
-export type FilterList = { [K in keyof Filters]: FilterHandle<K> };
-
-export const filterLabels: { [K in keyof Filters]: string } = {
-  searchText: 'Search',
-  selectSubjects: 'Subject',
-  selectSkillsAreas: 'Areas/Skills',
-  overallBounds: 'Overall',
-  workloadBounds: 'Workload',
-  professorBounds: 'Professor',
-  selectSeasons: 'Season',
-  selectDays: 'Day',
-  timeBounds: 'Time',
-  enrollBounds: '# Enrolled',
-  numBounds: 'Course #',
-  selectSchools: 'School',
-  selectCredits: 'Credit',
-  selectCourseInfoAttributes: 'Info',
-  searchDescription: 'Include descriptions in search',
-  selectBuilding: 'Building',
-  enableQuist: 'Enable Quist',
-  // "Cancelled" and "conflicting" are also boolean attributes, but there's
-  // little reason one would want to "only include conflicting courses", so
-  // we don't add them to includedAttributes/excludedAttributes.
-  hideCancelled: 'Hide cancelled courses',
-  hideConflicting: 'Hide courses with conflicting times',
-  includeAttributes: 'Include', // Unused
-  excludeAttributes: 'Exclude', // Unused
-  selectSortBy: 'Sort By', // Unused
-  sortOrder: 'Sort Order', // Unused
-  intersectingFilters: 'Union or Intersection', // Unused
-};
-
-export const defaultFilters: Filters = {
-  searchText: '',
-  selectSubjects: [],
-  selectSkillsAreas: [],
-  overallBounds: [1, 5],
-  workloadBounds: [1, 5],
-  professorBounds: [1, 5],
-  selectSeasons: [{ value: CUR_SEASON, label: toSeasonString(CUR_SEASON) }],
-  selectDays: [],
-  timeBounds: [toRangeTime('7:00'), toRangeTime('22:00')],
-  enrollBounds: [1, 528],
-  numBounds: [0, 10000],
-  selectSchools: [],
-  selectCredits: [],
-  selectCourseInfoAttributes: [],
-  selectBuilding: [],
-  searchDescription: false,
-  enableQuist: false,
-  hideCancelled: true,
-  hideConflicting: false,
-  includeAttributes: [],
-  excludeAttributes: ['discussion'],
-  selectSortBy: sortByOptions.course_code,
-  sortOrder: 'asc',
-  intersectingFilters: [],
-};
-
-// Empty vs. default:
-// "Empty" means it won't filter any course out; "default" just means it's like
-// that on first load. Only the below three filters have different empty states.
-// Filters are rendered as "active" (blue) when they are non-empty.
-// The "cross" can reset the button to empty.
-// The only way to reset to default is to click the "reset" button.
-const emptyFilters: Filters = {
-  ...defaultFilters,
-  selectSeasons: [],
-  hideCancelled: false,
-  excludeAttributes: [],
-};
-
-export type FilterHandle<K extends keyof Filters> = ReturnType<
-  typeof useFilterState<K>
->;
-
-function useFilterState<K extends keyof Filters>(key: K) {
+function useFilterState<K extends keyof Filters>(key: K): FilterHandle<K> {
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [value, setValue] = useState(() => {
-    try {
-      const urlValue = searchParams.get(key);
-      if (urlValue) {
-        return getFilterFromParams(
-          key,
-          decodeURIComponent(urlValue),
-          defaultFilters[key],
-        );
-      }
-      return defaultFilters[key];
-    } catch {
-      return defaultFilters[key];
-    }
-  });
+  const [, setSearchParams] = useSearchParams();
+  const value = useStore((s) => s.searchFilters[key]);
+  const setSearchFilter = useStore((s) => s.setSearchFilter);
 
   useEffect(() => {
     if (location.pathname === '/catalog') {
@@ -302,20 +82,28 @@ function useFilterState<K extends keyof Filters>(key: K) {
           sessionStorage.setItem('lastCatalogSearch', newUrl);
           setSearchParams(new URLSearchParams(newUrl.slice(1)));
         }
-      } catch {}
+      } catch {
+        /* Ignore */
+      }
     }
   }, [key, value, location.pathname, location.search, setSearchParams]);
 
   return useMemo(
     () => ({
       value,
-      set: setValue,
+      set(v: SetStateAction<Filters[K]>) {
+        setSearchFilter(key, v);
+      },
       isDefault: isEqual(value, defaultFilters[key]),
       isNonEmpty: !isEqual(value, emptyFilters[key]),
-      resetToDefault: () => setValue(defaultFilters[key]),
-      resetToEmpty: () => setValue(emptyFilters[key]),
+      resetToDefault() {
+        setSearchFilter(key, defaultFilters[key]);
+      },
+      resetToEmpty() {
+        setSearchFilter(key, emptyFilters[key]);
+      },
     }),
-    [value, key, setValue],
+    [value, key, setSearchFilter],
   );
 }
 
@@ -400,11 +188,13 @@ function applyBooleanAttributes(
   return true;
 }
 
-export function SearchProvider({
+export function SearchBootstrap({
   children,
 }: {
   readonly children: React.ReactNode;
 }) {
+  useSearchUrlHydration();
+
   const searchText = useFilterState('searchText');
   const selectSubjects = useFilterState('selectSubjects');
   const selectSkillsAreas = useFilterState('selectSkillsAreas');
@@ -434,10 +224,10 @@ export function SearchProvider({
 
   const intersectingFilters = useFilterState('intersectingFilters');
 
-  const [startTime, setStartTime] = useState(Date.now());
-  const [duration, setDuration] = useState(0);
-
-  const [searchData, setSearchData] = useState<CatalogListing[] | null>(null);
+  const setSearchData = useStore((s) => s.setSearchData);
+  const searchData = useStore((s) => s.searchData);
+  const searchFilters = useStore((s) => s.searchFilters);
+  const searchTimingStartMs = useStore((s) => s.searchTimingStartMs);
 
   const {
     worksheets,
@@ -902,6 +692,7 @@ export function SearchProvider({
       searchDescription.value,
       intersectingFilters.value,
       selectBuilding.value,
+      setSearchData,
     ],
   );
 
@@ -925,93 +716,25 @@ export function SearchProvider({
     processedSearchText,
   ]);
 
-  const filters = useMemo(
-    () => ({
-      searchText,
-      selectSubjects,
-      selectSkillsAreas,
-      overallBounds,
-      workloadBounds,
-      professorBounds,
-      selectSeasons,
-      selectDays,
-      timeBounds,
-      enrollBounds,
-      numBounds,
-      selectSchools,
-      selectCredits,
-      selectCourseInfoAttributes,
-      searchDescription,
-      enableQuist,
-      hideCancelled,
-      hideConflicting,
-      includeAttributes,
-      excludeAttributes,
-      selectSortBy,
-      sortOrder,
-      intersectingFilters,
-      selectBuilding,
-    }),
-    [
-      searchText,
-      selectSubjects,
-      selectSkillsAreas,
-      overallBounds,
-      workloadBounds,
-      professorBounds,
-      selectSeasons,
-      selectDays,
-      timeBounds,
-      enrollBounds,
-      numBounds,
-      selectSchools,
-      selectCredits,
-      selectCourseInfoAttributes,
-      searchDescription,
-      enableQuist,
-      hideCancelled,
-      hideConflicting,
-      includeAttributes,
-      excludeAttributes,
-      selectSortBy,
-      sortOrder,
-      intersectingFilters,
-      selectBuilding,
-    ],
-  );
+  useLayoutEffect(() => {
+    useStore.getState().setSearchNumFriends(numFriends);
+  }, [numFriends]);
+
+  useLayoutEffect(() => {
+    useStore.getState().setSearchMultiSeasons(multiSeasons);
+  }, [multiSeasons]);
+
+  useLayoutEffect(() => {
+    useStore.getState().setSearchCoursesLoading(coursesLoading);
+  }, [coursesLoading]);
 
   // TODO this is not an effect
   useEffect(() => {
     if (!coursesLoading) {
-      const durInSecs = Math.abs(Date.now() - startTime) / 1000;
-      setDuration(durInSecs);
+      const durInSecs = Math.abs(Date.now() - searchTimingStartMs) / 1000;
+      useStore.getState().setSearchDuration(durInSecs);
     }
-  }, [filters, coursesLoading, searchData, startTime]);
+  }, [searchFilters, coursesLoading, searchData, searchTimingStartMs]);
 
-  const store = useMemo(
-    () => ({
-      filters,
-      coursesLoading,
-      searchData,
-      multiSeasons,
-      numFriends,
-      duration,
-      setStartTime,
-    }),
-    [
-      filters,
-      coursesLoading,
-      searchData,
-      multiSeasons,
-      numFriends,
-      duration,
-      setStartTime,
-    ],
-  );
-
-  return (
-    <SearchContext.Provider value={store}>{children}</SearchContext.Provider>
-  );
+  return <>{children}</>;
 }
-
-export const useSearch = () => useContext(SearchContext)!;

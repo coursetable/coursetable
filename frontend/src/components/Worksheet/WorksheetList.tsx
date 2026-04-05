@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { useSearch } from '../../contexts/searchContext';
+import { useSearch } from '../../hooks/useSearch';
 import { useStore } from '../../store';
 import { sortCourses } from '../../utilities/course';
 import Results from '../Search/Results';
