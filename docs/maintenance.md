@@ -27,3 +27,7 @@ This section outlines the process for retrieving a new season's course data. Fol
 1. Update `frontend/src/config.ts`
 
    In general, you should modify `CUR_SEASON`, `CUR_YEAR`, and `academicCalendars`. See [this PR](https://github.com/coursetable/coursetable/pull/1811/files#diff-fa2c9e63d85b91989ec85c89b8143cfc9c5cf949ec4fee597c7923d4c57c1727) for an example.
+
+## Release notes (social / link preview)
+
+When you add a new release post, add an MDX page and route in `frontend/src/App.tsx`, then append an entry to `frontend/src/releases/releases-meta.json` (and run the frontend build so `/releases-meta.json` is published). The API fetches that file from `FRONTEND_ENDPOINT` for Open Graph metadata, and no API redeploy is required for copy or new paths once the JSON is live.

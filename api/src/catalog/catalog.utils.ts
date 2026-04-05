@@ -18,6 +18,24 @@ const exists = (p: string) =>
     () => false,
   );
 
+/** `sitemap_YYYYSS.xml` — higher season code (more recent term) sorts first. */
+const SITEMAP_SEASON_FILENAME = /^sitemap_(?<season>\d{6})\.xml$/u;
+
+function compareSeasonSitemapFiles(a: string, b: string): number {
+  const sa = SITEMAP_SEASON_FILENAME.exec(a)?.groups?.season;
+  const sb = SITEMAP_SEASON_FILENAME.exec(b)?.groups?.season;
+  if (!sa && !sb) return a.localeCompare(b);
+  if (!sa) return 1;
+  if (!sb) return -1;
+  return Number(sb) - Number(sa);
+}
+
+function compareSitemapListings(a: SitemapListing, b: SitemapListing): number {
+  const byDate = b.lastmod.localeCompare(a.lastmod);
+  if (byDate !== 0) return byDate;
+  return Number(a.crn) - Number(b.crn);
+}
+
 function transformCourseToSitemapListings(
   course: CatalogBySeasonQuery['courses'][number],
 ): SitemapListing[] {
@@ -49,7 +67,8 @@ async function generateSeasonSitemap(
 ): Promise<void> {
   await fs.mkdir(SITEMAP_DIR, { recursive: true });
   const [today] = new Date().toISOString().split('T');
-  const links = courses.map((course: SitemapListing) => ({
+  const sortedCourses = [...courses].sort(compareSitemapListings);
+  const links = sortedCourses.map((course: SitemapListing) => ({
     url: `/catalog?course-modal=${seasonCode}-${course.crn}`,
     lastmod: course.lastmod,
     priority: 0.8,
@@ -68,15 +87,17 @@ async function generateSeasonSitemap(
 
 export async function generateSitemapIndex(): Promise<void> {
   await fs.mkdir(SITEMAP_DIR, { recursive: true });
-  const sitemapFiles = await fs.readdir(SITEMAP_DIR);
-  const sitemapUrls = sitemapFiles
+  const sitemapFiles = (await fs.readdir(SITEMAP_DIR))
     .filter(
       (file) =>
         file.startsWith('sitemap_') &&
         file.endsWith('.xml') &&
         file !== 'sitemap_index.xml',
     )
-    .map((file) => `https://api.coursetable.com/api/sitemaps/${file}`);
+    .sort(compareSeasonSitemapFiles);
+  const sitemapUrls = sitemapFiles.map(
+    (file) => `https://api.coursetable.com/api/sitemaps/${file}`,
+  );
 
   const links = sitemapUrls.map((url) => ({ url }));
 
