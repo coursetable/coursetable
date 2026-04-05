@@ -8,8 +8,8 @@ import type {
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
 import type { SortKeys } from '../search/searchTypes';
-import type { WishlistItemWithListings } from '../search/wishlistContext';
 import type { WorksheetCourse } from '../slices/WorksheetSlice';
+import type { WishlistItemWithListings } from '../types/wishlist';
 
 export function truncatedText(
   text: string | null | undefined,

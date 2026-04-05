@@ -1,12 +1,13 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { ApolloError } from '@apollo/client';
+import type { StateCreator } from 'zustand';
 import type { WishlistItem } from '../queries/api';
 import {
   useCourseDataFromListingIdsQuery,
   useCourseDataFromSameCourseIdsQuery,
 } from '../queries/graphql-queries';
-import type { Crn, Season } from '../queries/graphql-types';
-import { useStore } from '../store';
+import { type Store, useStore } from '../store';
+import type { WishlistItemWithListings } from '../types/wishlist';
 import { getListingId } from '../utilities/course';
 
 type WishlistItemWithMetadata = WishlistItem & {
@@ -22,23 +23,32 @@ type WishlistListing = WishlistItemWithMetadata & {
   profName?: string;
 };
 
-export type WishlistItemWithListings = {
-  crn: Crn;
-  courseCodes: string[];
-  sameCourseId: number;
-  season: Season;
-  listings: WishlistListing[];
-};
-
-type Store = {
-  // Controls which courses are displayed
+interface WishlistState {
   wishlistCourses: WishlistItemWithListings[];
   wishlistLoading: boolean;
   wishlistError?: ApolloError;
-};
+}
 
-const WishlistContext = createContext<Store | undefined>(undefined);
-WishlistContext.displayName = 'WishlistContext';
+interface WishlistActions {
+  setWishlistDisplay: (
+    wishlistCourses: WishlistItemWithListings[],
+    wishlistLoading: boolean,
+    wishlistError?: ApolloError,
+  ) => void;
+}
+
+export interface WishlistSlice extends WishlistState, WishlistActions {}
+
+export const createWishlistSlice: StateCreator<Store, [], [], WishlistSlice> = (
+  set,
+) => ({
+  wishlistCourses: [],
+  wishlistLoading: false,
+  wishlistError: undefined,
+  setWishlistDisplay(wishlistCourses, wishlistLoading, wishlistError) {
+    set({ wishlistCourses, wishlistLoading, wishlistError });
+  },
+});
 
 function useWishlistWithMetadata(wishlist?: WishlistItem[]) {
   const listingIds = useMemo(
@@ -84,7 +94,7 @@ function useWishlistWithMetadata(wishlist?: WishlistItem[]) {
   return { wishlistWithMetadata, listingLoading, listingError };
 }
 
-export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
+function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
   const user = useStore((state) => state.user);
   const sameCourseIds = useMemo(
     () =>
@@ -150,7 +160,6 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
     let dataReturn: WishlistItemWithListings[] = Array.from(
       uniqueSameCourseIdMap.values(),
     );
-    // Sorting course codes for each listing
     dataReturn = dataReturn.map((item) => ({
       ...item,
       courseCodes: [...item.courseCodes].sort((a, b) =>
@@ -160,7 +169,6 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
         a.season.localeCompare(b.season, 'en-US'),
       ),
     }));
-    // Sort listings by smallest lexicographic course code
     return dataReturn.sort((a, b) =>
       (a.courseCodes[0] ?? '').localeCompare(b.courseCodes[0] ?? '', 'en-US'),
     );
@@ -168,12 +176,11 @@ export function useWishlistInfo(wishlist?: WishlistItemWithMetadata[]) {
   return { loading, error, data };
 }
 
-export function WishlistProvider({
-  children,
-}: {
-  readonly children: React.ReactNode;
-}) {
+/** Writes Apollo-derived wishlist UI state to the store. */
+export function useWishlistEffects() {
   const userWishlist = useStore((state) => state.wishlist);
+  const setWishlistDisplay = useStore((state) => state.setWishlistDisplay);
+
   const { wishlistWithMetadata, listingLoading, listingError } =
     useWishlistWithMetadata(userWishlist);
 
@@ -183,32 +190,9 @@ export function WishlistProvider({
     data: wishlistCourses,
   } = useWishlistInfo(wishlistWithMetadata);
 
-  const store = useMemo(
-    () => ({
-      wishlistCourses,
-      wishlistLoading: listingLoading || sameCourseLoading || !userWishlist,
-      wishlistError: listingError ?? sameCourseError,
-    }),
-    [
-      userWishlist,
-      wishlistCourses,
-      listingLoading,
-      sameCourseLoading,
-      listingError,
-      sameCourseError,
-    ],
+  setWishlistDisplay(
+    wishlistCourses,
+    listingLoading || sameCourseLoading || !userWishlist,
+    listingError ?? sameCourseError,
   );
-
-  return (
-    <WishlistContext.Provider value={store}>
-      {children}
-    </WishlistContext.Provider>
-  );
-}
-
-export function useWishlist() {
-  const ctx = useContext(WishlistContext);
-  if (ctx === undefined)
-    throw new Error('useWishlist must be used within a WishlistProvider');
-  return ctx;
 }
