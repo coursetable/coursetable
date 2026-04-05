@@ -314,8 +314,8 @@ export function CalendarEventBody({
           className={clsx(styles.eventLine, styles.courseCodeText)}
         >
           {formattedTitle}
+          {formatSectionSuffix(event.listing.course)}
         </strong>
-        {formatSectionSuffix(event.listing.course)}
         <div
           data-event-line="true"
           className={clsx(
