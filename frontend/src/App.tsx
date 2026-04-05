@@ -138,10 +138,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={21}
+        id={24}
       >
-        {/* Course locations are accurate as of December 2025. Please refer to Yale
-        Course Search to see your up-to-date course locations. */}
+        YaleMeals is live — no more dining hall guesswork. Download it today.
       </Notice>
       <Navbar />
       <SentryRoutes>
