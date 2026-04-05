@@ -9,6 +9,7 @@ import type {
 import type { Crn, Season } from '../queries/graphql-types';
 import type { SortKeys } from '../search/searchTypes';
 import type { WorksheetCourse } from '../slices/WorksheetSlice';
+import type { WishlistItemWithListings } from '../types/wishlist';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -30,6 +31,16 @@ export function isInWorksheet(
       ?.get(listing.course.season_code)
       ?.get(worksheetNumber)
       ?.courses.some((course) => course.crn === listing.crn) ?? false
+  );
+}
+
+export function isInWishlist(
+  listingSameCourseId: number,
+  wishlist: WishlistItemWithListings[] | undefined,
+): boolean {
+  if (!wishlist) return false;
+  return wishlist.some(
+    (wishlistItem) => wishlistItem.sameCourseId === listingSameCourseId,
   );
 }
 

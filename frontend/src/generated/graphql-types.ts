@@ -4169,6 +4169,52 @@ export type CourseSectionsQuery = {
   >;
 };
 
+export type CourseDataFromListingIdsQueryVariables = Exact<{
+  listingIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+}>;
+
+export type CourseDataFromListingIdsQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    listing_id: number;
+    crn: Crn;
+    course_code: string;
+    season_code: Season;
+    course: { __typename?: 'courses'; same_course_id: number };
+  }>;
+};
+
+export type CourseDataFromSameCourseIdsQueryVariables = Exact<{
+  sameCourseIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+  hasEvals: Scalars['Boolean']['input'];
+}>;
+
+export type CourseDataFromSameCourseIdsQuery = {
+  __typename?: 'query_root';
+  listings: Array<{
+    __typename?: 'listings';
+    course_code: string;
+    crn: Crn;
+    listing_id: number;
+    season_code: Season;
+    course: {
+      __typename?: 'courses';
+      same_course_id: number;
+      title: string;
+      course_professors: Array<{
+        __typename?: 'course_professors';
+        professor: { __typename?: 'professors'; name: string };
+      }>;
+      evaluation_statistic?: {
+        __typename?: 'evaluation_statistics';
+        avg_workload: number | null;
+        avg_rating: number | null;
+      } | null;
+    };
+  }>;
+};
+
 export type LatestCurrentOfferingQueryVariables = Exact<{
   sameCourseId: Scalars['Int']['input'];
   seasonCodes: Array<Scalars['String']['input']> | Scalars['String']['input'];

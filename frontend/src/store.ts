@@ -30,6 +30,11 @@ import {
 } from './slices/TutorialSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
 import {
+  createWishlistSlice,
+  useWishlistEffects,
+  type WishlistSlice,
+} from './slices/WishlistSlice';
+import {
   createWorksheetSlice,
   useWorksheetEffects,
   type WorksheetSlice,
@@ -49,6 +54,7 @@ export interface Store
     ProfileSlice,
     FerrySlice,
     SearchSlice,
+    WishlistSlice,
     WorksheetSlice {}
 
 const basePersistKeys: (keyof Store)[] = [
@@ -83,6 +89,7 @@ export const useStore = create<Store>()(
         ...createProfileSlice(...a),
         ...createFerrySlice(...a),
         ...createSearchSlice(...a),
+        ...createWishlistSlice(...a),
         ...createWorksheetSlice(...a),
       })),
     ),
@@ -155,5 +162,6 @@ export const useInitStore = () => {
   useAuth();
   useDimensions();
   useTheme();
+  useWishlistEffects();
   useWorksheetEffects();
 };
