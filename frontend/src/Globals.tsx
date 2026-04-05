@@ -20,7 +20,6 @@ import { GapiLoader } from './components/GapiLoader';
 import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
-import { GapiProvider } from './contexts/gapiContext';
 import { SearchBootstrap } from './search/SearchBootstrap';
 
 import './index.css';
