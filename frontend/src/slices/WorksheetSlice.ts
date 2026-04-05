@@ -5,12 +5,9 @@ import { z } from 'zod';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { CUR_SEASON } from '../config';
-import {
-  seasons as allSeasons,
-  useWorksheetInfo,
-} from '../contexts/ferryContext';
-import type { Option } from '../contexts/searchContext';
-import type { CatalogListing, UserWorksheets } from '../queries/api';
+import { seasons as allSeasons } from '../data/catalogSeasons';
+import { useWorksheetInfo } from '../hooks/useFerry';
+import type { UserWorksheets } from '../queries/api';
 import {
   type Season,
   type Crn,
@@ -18,17 +15,14 @@ import {
   crnSchema,
   seasonSchema,
 } from '../queries/graphql-types';
+import type { Option } from '../search/searchTypes';
 import { type Store, useStore } from '../store';
+import type { WorksheetCourse } from '../types/worksheetCourse';
 
 // Utility Types
 export type WorksheetView = 'calendar' | 'list' | 'map';
 
-export interface WorksheetCourse {
-  crn: Crn;
-  color: string;
-  listing: CatalogListing;
-  hidden: boolean | null;
-}
+export type { WorksheetCourse };
 
 const exoticWorksheetSchema = z.object({
   season: seasonSchema,
@@ -114,24 +108,7 @@ interface WorksheetSliceMemo {
 }
 
 export interface WorksheetSlice
-  extends WorksheetState,
-    WorksheetActions,
-    WorksheetSliceMemo {}
-
-// Utility Functions
-function seasonsWithDataFirst(
-  seasons: Season[],
-  worksheets: UserWorksheets | undefined,
-) {
-  if (!worksheets) return seasons;
-  return seasons.toSorted((a, b) => {
-    const aHasData = worksheets.has(a);
-    const bHasData = worksheets.has(b);
-    if (aHasData && !bHasData) return -1;
-    if (!aHasData && bHasData) return 1;
-    return Number(b) - Number(a);
-  });
-}
+  extends WorksheetState, WorksheetActions, WorksheetSliceMemo {}
 
 export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
   const searchParams = new URLSearchParams(window.location.search);
@@ -203,6 +180,7 @@ export const createWorksheetSlice: StateCreator<
       '',
       `${window.location.pathname}${searchParams}`,
     );
+    void get().worksheetsRefresh();
   },
   worksheetView: 'calendar',
   hoverCourse: null,
@@ -228,9 +206,7 @@ export const createWorksheetSlice: StateCreator<
           : state.friends?.[state.viewedPerson]?.worksheets) ??
           new Map()) as UserWorksheets,
     ),
-    getSeasonCodes: memoize((state: Store) =>
-      seasonsWithDataFirst(allSeasons, state.worksheets),
-    ),
+    getSeasonCodes: memoize(() => allSeasons),
     getIsExoticWorksheet: memoize((state: Store) =>
       Boolean(state.exoticWorksheet),
     ),

@@ -16,8 +16,9 @@ import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
 import WorksheetStatusIcon from './WorksheetStatusIcon';
 import { CUR_YEAR } from '../../config';
-import { seasons, useWorksheetInfo } from '../../contexts/ferryContext';
+import { seasons } from '../../data/catalogSeasons';
 import type { LatestCurrentOfferingQuery } from '../../generated/graphql-types';
+import { useWorksheetInfo } from '../../hooks/useFerry';
 import { updateWorksheetCourses } from '../../queries/api';
 import { LatestCurrentOfferingDocument } from '../../queries/graphql-queries';
 import type { Season } from '../../queries/graphql-types';
@@ -83,7 +84,10 @@ function CourseConflictIcon({
           <OverlayTrigger
             placement="top"
             overlay={(props) => (
-              <Tooltip {...props} id="conflict-icon-button-tooltip">
+              <Tooltip
+                {...props}
+                id={`worksheet-toggle-conflict-${listing.crn}-tooltip`}
+              >
                 <small>{warning}</small>
               </Tooltip>
             )}
@@ -106,7 +110,10 @@ function PopoutOption(props: OptionProps<WorksheetNumberOption>) {
         <OverlayTrigger
           placement="left"
           overlay={(overlayProps) => (
-            <Tooltip id="worksheet-toggle-button-tooltip" {...overlayProps}>
+            <Tooltip
+              id={`worksheet-toggle-button-${props.data.value}-tooltip`}
+              {...overlayProps}
+            >
               <span>
                 {props.data.value === 0
                   ? 'Main Worksheet'
@@ -242,8 +249,14 @@ function WorksheetToggleButton({
           const [latestCourse] = data.courses;
           const [latestListing] = latestCourse?.listings ?? [];
           if (latestCourse && latestListing) {
+            // Skip when both terms are in CUR_YEAR: avoids "past semester" for
+            // e.g. Fall 2026 listing vs Spring 2027 latest (same update cycle).
             const hasLatestOffering =
-              latestCourse.season_code !== listing.course.season_code;
+              latestCourse.season_code !== listing.course.season_code &&
+              !(
+                CUR_YEAR.includes(listing.course.season_code) &&
+                CUR_YEAR.includes(latestCourse.season_code)
+              );
 
             if (hasLatestOffering) {
               const addChoice = await confirmAddLatestOffering(
@@ -337,7 +350,11 @@ function WorksheetToggleButton({
       <div className={styles.container}>
         <OverlayTrigger
           placement="top"
-          overlay={<Tooltip id="tooltip-disabled">{buttonLabel}</Tooltip>}
+          overlay={
+            <Tooltip id={`worksheet-toggle-disabled-${listing.crn}-tooltip`}>
+              {buttonLabel}
+            </Tooltip>
+          }
         >
           <Button
             className={clsx('p-0', styles.toggleButton, styles.disabledButton)}
@@ -366,7 +383,7 @@ function WorksheetToggleButton({
           placement="top"
           delay={modal ? { show: 300, hide: 0 } : undefined}
           overlay={(props) => (
-            <Tooltip id="button-tooltip" {...props}>
+            <Tooltip id={`worksheet-toggle-${listing.crn}-tooltip`} {...props}>
               <small>{buttonLabel}</small>
             </Tooltip>
           )}

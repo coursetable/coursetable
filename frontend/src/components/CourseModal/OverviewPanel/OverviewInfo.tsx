@@ -1,19 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip, Collapse } from 'react-bootstrap';
 import { BsEyeSlash } from 'react-icons/bs';
 import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
-import LinesEllipsis from 'react-lines-ellipsis';
-import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
-import { useSearch } from '../../../contexts/searchContext';
 import type {
   CourseModalOverviewDataQuery,
   PrereqLinkInfoQuery,
 } from '../../../generated/graphql-types';
+import { useModalHistory } from '../../../hooks/useModalHistory';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import { schools } from '../../../utilities/constants';
@@ -31,27 +28,33 @@ import { LinkLikeText } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
 
-const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
-
 type CourseInfo = NonNullable<CourseModalOverviewDataQuery['self']>['course'];
 
 function Description({ course }: { readonly course: CourseInfo }) {
+  const [expanded, setExpanded] = useState(false);
   const [clamped, setClamped] = useState(false);
-  const [lines, setLines] = useState(8);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (el) setClamped(el.scrollHeight > el.clientHeight);
+  }, [course.description, expanded]);
+
   return (
     <>
-      <ResponsiveEllipsis
-        className={styles.description}
-        text={course.description || 'no description'}
-        maxLine={lines}
-        basedOn="words"
-        onReflow={(rleState) => setClamped(rleState.clamped)}
-      />
-      {clamped && (
+      <div
+        ref={ref}
+        className={[styles.description, !expanded && styles.descriptionClamped]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {course.description || 'no description'}
+      </div>
+      {clamped && !expanded && (
         <div className="d-flex justify-content-center">
           <LinkLikeText
             onClick={() => {
-              setLines(100);
+              setExpanded(true);
             }}
             title="Read more"
           >
@@ -169,7 +172,7 @@ function Prereqs({
             key={i}
             placement="top"
             overlay={(props) => (
-              <Tooltip id={`${s.course}-tooltip`} {...props}>
+              <Tooltip id={`overview-prereq-${i}-tooltip`} {...props}>
                 {s.course}{' '}
                 {info
                   ? info.course.title
@@ -352,10 +355,11 @@ function Professors({ course }: { readonly course: CourseInfo }) {
           <Link
             to={createProfModalLink(professor.professor_id, searchParams)}
             onClick={() => {
-              navigate('push', {
-                type: 'professor',
-                data: professor.professor_id,
-              });
+              navigate(
+                'push',
+                { type: 'professor', data: professor.professor_id },
+                searchParams,
+              );
             }}
           >
             {professor.name}
@@ -413,7 +417,7 @@ function TimeLocation({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="location-hidden-tooltip" {...props}>
+                    <Tooltip id="overview-location-hidden-tooltip" {...props}>
                       Sign in to see location
                     </Tooltip>
                   )}
@@ -440,7 +444,7 @@ function OverviewInfo({
   readonly listing: NonNullable<CourseModalOverviewDataQuery['self']>;
   readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
 }) {
-  const { numFriends } = useSearch();
+  const numFriends = useStore((state) => state.numFriends);
   const user = useStore((state) => state.user);
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),

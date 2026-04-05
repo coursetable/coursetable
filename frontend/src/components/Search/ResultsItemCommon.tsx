@@ -50,7 +50,7 @@ export function SeasonTag({
     <OverlayTrigger
       placement="top"
       overlay={(props) => (
-        <Tooltip id="button-tooltip" {...props}>
+        <Tooltip id={`season-tag-${season}-tooltip`} {...props}>
           <small>{toSeasonString(season)}</small>
         </Tooltip>
       )}
@@ -131,7 +131,10 @@ export function CourseCode({
             );
           }
           return (
-            <Tooltip id="button-tooltip" {...props}>
+            <Tooltip
+              id={`course-code-${listing.course.season_code}-${listing.crn}-tooltip`}
+              {...props}
+            >
               <small>{subjectName ?? '[unknown]'}</small>
             </Tooltip>
           );

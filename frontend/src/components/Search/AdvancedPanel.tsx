@@ -7,24 +7,26 @@ import CustomSelect from './CustomSelect';
 import { Popout } from './Popout';
 import ResultsColumnSort from './ResultsColumnSort';
 import Toggle from './Toggle';
+import { useSearch } from '../../hooks/useSearch';
 import {
-  useSearch,
-  type FilterHandle,
-  type Filters,
-  type BooleanOptions,
-  type CategoricalFilters,
-  type NumericFilters,
   filterLabels,
   defaultFilters,
-  type IntersectableFilters,
-  sortByOptions,
   skillsAreasOptions,
   subjectsOptions,
   schoolsOptions,
   seasonsOptions,
   courseInfoAttributesOptions,
   buildingOptions,
-} from '../../contexts/searchContext';
+} from '../../search/searchConstants';
+import {
+  sortByOptions,
+  type BooleanOptions,
+  type CategoricalFilters,
+  type FilterHandle,
+  type Filters,
+  type IntersectableFilters,
+  type NumericFilters,
+} from '../../search/searchTypes';
 
 import { useStore } from '../../store';
 import {

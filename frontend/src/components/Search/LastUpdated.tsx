@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { MdUpdate } from 'react-icons/md';
-import { useFerry } from '../../contexts/ferryContext';
+import { useFerry } from '../../hooks/useFerry';
 import { TextComponent } from '../Typography';
 
 function toRelativeTime(date: Date) {

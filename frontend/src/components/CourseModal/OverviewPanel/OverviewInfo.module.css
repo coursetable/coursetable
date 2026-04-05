@@ -2,6 +2,13 @@
   white-space: pre-wrap;
 }
 
+.descriptionClamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .labelBubble {
   font-weight: 550;
   color: rgb(136 136 136);

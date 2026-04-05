@@ -13,7 +13,7 @@ import {
   CourseCode,
   ratingTypes,
 } from './ResultsItemCommon';
-import { useSearch } from '../../contexts/searchContext';
+import { useSearch } from '../../hooks/useSearch';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { generateRandomColor } from '../../utilities/common';
@@ -55,7 +55,10 @@ function Rating({
     <OverlayTrigger
       placement="top"
       overlay={(props) => (
-        <Tooltip id="blur-rating-tooltip" {...props}>
+        <Tooltip
+          id={`results-blur-rating-${listing.course.season_code}-${listing.crn}-${name}-tooltip`}
+          {...props}
+        >
           These colors are randomly generated.{' '}
           {hasEvals === false ? 'Complete the challenge' : 'Sign in'} to see
           real ratings.
@@ -193,7 +196,10 @@ function ResultsItem({
                 <OverlayTrigger
                   placement="top"
                   overlay={(props) => (
-                    <Tooltip id="location-hidden-tooltip" {...props}>
+                    <Tooltip
+                      id={`results-location-hidden-${listing.course.season_code}-${listing.crn}-tooltip`}
+                      {...props}
+                    >
                       Sign in to see location
                     </Tooltip>
                   )}
@@ -212,7 +218,10 @@ function ResultsItem({
               <OverlayTrigger
                 placement="top"
                 overlay={(props) => (
-                  <Tooltip id="button-tooltip" {...props}>
+                  <Tooltip
+                    id={`results-friends-${listing.course.season_code}-${listing.crn}-tooltip`}
+                    {...props}
+                  >
                     {[...friends].join(' • ')}
                   </Tooltip>
                 )}

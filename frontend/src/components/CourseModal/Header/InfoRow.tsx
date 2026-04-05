@@ -3,13 +3,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
-import type { Option } from '../../../contexts/searchContext';
 import type {
   CourseSectionsQuery,
   CourseModalPrefetchListingDataFragment,
 } from '../../../generated/graphql-types';
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
+import type { Option } from '../../../search/searchTypes';
 import { useStore } from '../../../store';
 import { extraInfo, subjects } from '../../../utilities/constants';
 import {
@@ -121,6 +120,7 @@ function SectionsDropdown({
 function CourseCode({ code }: { readonly code: string }) {
   // It seems that course code will always contain exactly one space
   const [subject, number] = code.split(' ');
+  const tooltipId = `modal-course-code-${code.replace(/\s/gu, '-')}-tooltip`;
   return (
     <>
       <OverlayTrigger
@@ -128,7 +128,7 @@ function CourseCode({ code }: { readonly code: string }) {
         overlay={(props) => {
           const subjectName = subjects[subject!];
           return (
-            <Tooltip id="button-tooltip" {...props}>
+            <Tooltip id={tooltipId} {...props}>
               <small>{subjectName ?? '[unknown]'}</small>
             </Tooltip>
           );
@@ -150,16 +150,14 @@ export default function ModalHeaderInfo({
 }) {
   const user = useStore((state) => state.user);
   const [searchParams] = useSearchParams();
-  const courseCode = listing.course_code;
-  const season = listing.course.season_code;
+  const backTarget = useStore((state) => state.backTarget);
   const { data, loading, error } = useCourseSectionsQuery({
     variables: {
-      courseCode,
-      seasonCode: season,
+      courseCode: listing.course_code,
+      seasonCode: listing.course.season_code,
       hasEvals: Boolean(user?.hasEvals),
     },
   });
-  const { backTarget } = useModalHistory();
   const sections =
     loading || error || !data?.listings
       ? []
@@ -168,6 +166,7 @@ export default function ModalHeaderInfo({
             numeric: true,
           }),
         );
+
   return (
     <div className={styles.modalTop}>
       {backTarget && (

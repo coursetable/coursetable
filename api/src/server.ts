@@ -31,6 +31,8 @@ import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
 import morgan from './logging/morgan.js';
 import winston from './logging/winston.js';
+import profile from './profile/profile.routes.js';
+import savedSearches from './savedSearches/savedSearches.routes.js';
 import user from './user/user.routes.js';
 
 const app = express();
@@ -138,7 +140,9 @@ casAuth(app);
 friends(app);
 canny(app);
 user(app);
+profile(app);
 linkPreview(app);
+savedSearches(app);
 
 app.get('/api/ping', (req, res) => {
   res.json('pong');
