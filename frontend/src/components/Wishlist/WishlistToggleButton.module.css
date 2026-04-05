@@ -1,11 +1,12 @@
 .container {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .toggleButton {
   gap: 1rem;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
   background-color: transparent;
   border-width: 0;
   color: var(--color-primary) !important;
