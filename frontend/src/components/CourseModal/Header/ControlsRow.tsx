@@ -194,9 +194,15 @@ export default function ModalHeaderControls({
       />
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
-        <WishlistToggleButton listing={listing} modal />
-        <ShareButton listing={listing} />
-        <MoreButton listing={listing} />
+        <div className={styles.toolbarIconSlot}>
+          <WishlistToggleButton listing={listing} modal />
+        </div>
+        <div className={styles.toolbarIconSlot}>
+          <ShareButton listing={listing} />
+        </div>
+        <div className={styles.toolbarIconSlot}>
+          <MoreButton listing={listing} />
+        </div>
       </div>
     </div>
   );

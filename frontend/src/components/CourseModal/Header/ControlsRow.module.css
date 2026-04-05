@@ -36,15 +36,11 @@
 
 .shareDropdown {
   cursor: pointer;
-  margin-top: auto;
-  margin-bottom: auto;
   padding: 0;
 }
 
 .moreDropdown {
   cursor: pointer;
-  margin-top: auto;
-  margin-bottom: auto;
   padding: 0;
 }
 
@@ -60,7 +56,11 @@
 
 .moreDropdown :global(.dropdown-toggle),
 .shareDropdown :global(.dropdown-toggle) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
+  line-height: 0;
 }
 
 .moreDropdown :global(.dropdown-toggle)::after,
@@ -77,4 +77,24 @@
   display: flex;
   align-items: center;
   gap: 1em;
+}
+
+/*
+ * Single-height track for 20px icons: inline SVGs default to baseline alignment;
+ * block + line-height 0 matches Button vs Dropdown toggle.
+ */
+.toolbarIconSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  line-height: 0;
+}
+
+.toolbarIconSlot :global(svg) {
+  display: block;
+}
+
+.toolbarIconSlot :global(.btn) {
+  line-height: 0;
 }
