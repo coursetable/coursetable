@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { useState, type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Form, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -22,6 +22,11 @@ import { createProfModalLink } from '../../../utilities/display';
 import RelatedCoursesList from '../../RelatedCoursesList';
 import { RatingBubble } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
+
+import styles from './OverviewRatings.module.css';
+import './react-multi-toggle-override.css';
+
+type Filter = 'course' | 'professor';
 
 type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
 
@@ -189,6 +194,12 @@ function OverviewRatings({
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
 
+  const options = [
+    { displayName: `Course (${sameCourseNormalized.length})`, value: 'course' },
+    { displayName: 'Prof', value: 'professor' },
+  ] as const;
+  const [filter, setFilter] = useState<Filter>('course');
+
   const { groupSameProf, togglePref } = useStore(
     useShallow((state) => ({
       groupSameProf: state.coursePref.groupSameProf,
@@ -355,7 +366,7 @@ function OverviewRatings({
         <MultiToggle
           options={options}
           selectedOption={filter}
-          onSelectOption={(val) => setFilter(val)}
+          onSelectOption={(val) => setFilter(val as Filter)}
           className={clsx(styles.evaluationsFilter, 'mb-2')}
         />
       </div>
