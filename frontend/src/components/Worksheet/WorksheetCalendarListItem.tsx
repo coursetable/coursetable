@@ -9,7 +9,7 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import {
-  isDiscussionSection,
+  formatSectionSuffix,
   toLocationsSummary,
 } from '../../utilities/course';
 import { useCourseModalLink } from '../../utilities/display';
@@ -78,8 +78,7 @@ export default function WorksheetCalendarListItem({
         )}
       >
         <strong>{listing.course_code}</strong>
-        {isDiscussionSection(listing.course) &&
-          ` ${listing.course.section.padStart(2, '0')}`}
+        {formatSectionSuffix(listing.course)}
         <br />
         <span className={styles.courseTitle}>{listing.course.title}</span>
         {showLocation && (

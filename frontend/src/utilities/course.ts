@@ -479,6 +479,16 @@ export function isDiscussionSection(
 }
 
 /**
+ * @param course a course
+ * @returns section number padded to two characters or empty string if NA
+ */
+export function formatSectionSuffix(course: Pick<Courses, 'section'>): string {
+  return isDiscussionSection(course) && course.section.length > 0
+    ? ` ${course.section.padStart(2, '0')}`
+    : '';
+}
+
+/**
  * @param time A time in the format `hh:mm` (24 hour)
  * @returns Number of 5 minutes past midnight
  */
