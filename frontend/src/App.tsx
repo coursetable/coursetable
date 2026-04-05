@@ -35,6 +35,7 @@ const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const Join = suspended(() => import('./pages/Join'));
 const Profile = suspended(() => import('./pages/Profile'));
+const UserProfile = suspended(() => import('./pages/UserProfile'));
 const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
@@ -169,6 +170,7 @@ function App() {
         <Route path="/joinus" element={<Join />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacypolicy" element={<Privacy />} />
+        <Route path="/u/:netId" element={<UserProfile />} />
 
         <Route path="/Table" element={<Navigate to={createCatalogLink()} />} />
 

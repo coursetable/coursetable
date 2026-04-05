@@ -39,6 +39,12 @@ type BaseFetchOptions = {
    * handled and no further reporting is done. Only HTTP errors can be handled.
    */
   handleErrorCode?: (errCode: string) => boolean;
+  /**
+   * When the API returns a JSON `{ error: "<code>" }` body, map that code to a
+   * return value instead of using default toasts / throws. Used e.g. for 404
+   * profile vs session expiry (both may use USER_NOT_FOUND).
+   */
+  mapHttpError?: { [errorCode: string]: unknown };
 };
 
 const isJsonParseError = (err: unknown) =>
@@ -119,8 +125,15 @@ async function fetchAPI(
     schema?: z.ZodType<unknown>;
   },
 ): Promise<unknown> {
-  const { body, method, schema, breadcrumb, handleErrorCode, cacheBust } =
-    options;
+  const {
+    body,
+    method,
+    schema,
+    breadcrumb,
+    handleErrorCode,
+    mapHttpError,
+    cacheBust,
+  } = options;
   const payload = JSON.stringify(body);
   const isCatalogRequest = isCatalogEndpoint(endpointSuffix);
   const shouldCacheBust = Boolean(cacheBust);
@@ -154,6 +167,8 @@ async function fetchAPI(
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
+      if (mapHttpError && errorCode && Object.hasOwn(mapHttpError, errorCode))
+        return mapHttpError[errorCode];
       // Handle common errors uniformly
       switch (errorCode) {
         case 'USER_NOT_FOUND':
@@ -585,6 +600,167 @@ export async function getUserInfo() {
     },
   });
   return res;
+}
+
+const visibilitySettingSchema = z.union([
+  z.literal('self'),
+  z.literal('friends'),
+  z.literal('public'),
+]);
+
+const profilePrivacySchema = z.object({
+  nameVisibility: visibilitySettingSchema,
+  emailVisibility: visibilitySettingSchema,
+  yearVisibility: visibilitySettingSchema,
+  schoolVisibility: visibilitySettingSchema,
+  majorVisibility: visibilitySettingSchema,
+});
+
+const myProfileSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  preferredFirstName: z.string().nullable(),
+  preferredLastName: z.string().nullable(),
+  displayFirstName: z.string().nullable(),
+  displayLastName: z.string().nullable(),
+  displayName: z.string().nullable(),
+  email: z.string().nullable(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  hasEvals: z.boolean(),
+  evalsRevoked: z.boolean(),
+  privacy: profilePrivacySchema,
+});
+
+export type MyProfile = z.infer<typeof myProfileSchema>;
+export type ProfilePrivacy = z.infer<typeof profilePrivacySchema>;
+
+export function getMyProfile() {
+  return fetchAPI('/profile/me', {
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Fetching my profile settings',
+    },
+  });
+}
+
+export function updateMyProfile(body: {
+  preferredFirstName?: string | null;
+  preferredLastName?: string | null;
+  privacy?: Partial<ProfilePrivacy>;
+}) {
+  return fetchAPI('/profile/me', {
+    body,
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Updating profile settings',
+    },
+  });
+}
+
+const revokeEvaluationsSchema = z.object({
+  hasEvals: z.boolean(),
+  evalsRevoked: z.boolean(),
+});
+
+export function revokeEvaluationsAccess() {
+  return fetchAPI('/profile/me/revokeEvaluations', {
+    body: {},
+    schema: revokeEvaluationsSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Revoking evaluations access',
+    },
+  });
+}
+
+const sharedProfileSchema = z.object({
+  netId: netIdSchema,
+  relation: z.union([
+    z.literal('self'),
+    z.literal('friend'),
+    z.literal('stranger'),
+  ]),
+  displayName: z.string().nullable(),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  visible: z.object({
+    name: z.boolean(),
+    email: z.boolean(),
+    year: z.boolean(),
+    school: z.boolean(),
+    major: z.boolean(),
+  }),
+});
+
+export type SharedProfile = z.infer<typeof sharedProfileSchema>;
+
+export const sharedProfileNotFound = { notFound: true as const };
+
+export type SharedProfileResult =
+  | SharedProfile
+  | typeof sharedProfileNotFound
+  | undefined;
+
+export function isLoadedSharedProfile(
+  value: SharedProfileResult,
+): value is SharedProfile {
+  return (
+    value !== undefined &&
+    typeof value === 'object' &&
+    Object.hasOwn(value, 'netId')
+  );
+}
+
+export function getSharedProfile(netId: NetId): Promise<SharedProfileResult> {
+  return fetchAPI(`/profile/${netId}`, {
+    schema: sharedProfileSchema,
+    mapHttpError: {
+      USER_NOT_FOUND: sharedProfileNotFound,
+    },
+    breadcrumb: {
+      category: 'profile',
+      message: 'Fetching shared profile',
+    },
+  }) as Promise<SharedProfileResult>;
+}
+
+const profileSearchResultSchema = z.object({
+  netId: netIdSchema,
+  relation: z.union([
+    z.literal('self'),
+    z.literal('friend'),
+    z.literal('stranger'),
+  ]),
+  displayName: z.string().nullable(),
+});
+
+const profileSearchSchema = z.object({
+  profiles: z.array(profileSearchResultSchema),
+});
+
+export type ProfileSearchResult = z.infer<typeof profileSearchResultSchema>;
+
+export function searchProfiles(query: string, limit = 20) {
+  const params = new URLSearchParams({
+    q: query,
+    limit: String(limit),
+  });
+  return fetchAPI(`/profile/search?${params.toString()}`, {
+    schema: profileSearchSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Searching profiles',
+    },
+  });
 }
 
 // Shared schema for worksheet courses (used by both user and friends)
