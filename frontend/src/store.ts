@@ -11,6 +11,7 @@ import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
+import { createGapiSlice, type GapiSlice } from './slices/GapiSlice';
 import {
   createModalHistorySlice,
   type ModalHistorySlice,
@@ -41,6 +42,7 @@ export interface Store
     UserSlice,
     ThemeSlice,
     DimensionsSlice,
+    GapiSlice,
     TutorialSlice,
     ModalHistorySlice,
     ProfileSlice,
@@ -73,6 +75,7 @@ export const useStore = create<Store>()(
         ...createUserSlice(...a),
         ...createThemeSlice(...a),
         ...createDimensionsSlice(...a),
+        ...createGapiSlice(...a),
         ...createTutorialSlice(...a),
         ...createModalHistorySlice(...a),
         ...createProfileSlice(...a),

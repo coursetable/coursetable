@@ -9,12 +9,14 @@ import {
   createHttpLink,
 } from '@apollo/client';
 import { MDXProvider } from '@mdx-js/react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'core-js/proposals/array-grouping-v2';
 import 'core-js/proposals/change-array-by-copy-stage-4';
 
 import ErrorPage from './components/ErrorPage';
+import { GapiLoader } from './components/GapiLoader';
 import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
 import { FerryProvider } from './contexts/ferryContext';
@@ -61,7 +63,8 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
       {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
       <BrowserRouter>
-        <GapiProvider>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_DEV_GCAL_CLIENT_ID}>
+          <GapiLoader />
           <ApolloProvider client={client}>
             {/* FerryProvider must be inside UserProvider because the former
               depends on login status */}
@@ -76,7 +79,7 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
               <ToastContainer toastClassName="rounded" />
             </FerryProvider>
           </ApolloProvider>
-        </GapiProvider>
+        </GoogleOAuthProvider>
       </BrowserRouter>
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>
