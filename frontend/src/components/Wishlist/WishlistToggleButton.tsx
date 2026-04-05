@@ -48,7 +48,9 @@ function WishlistToggleButton({
     [listing.course.same_course_id, wishlistCourses],
   );
 
-  const buttonLabel = inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist';
+  const buttonLabel = inWishlist
+    ? 'Remove from Wishlist'
+    : 'Add to Wishlist (Beta!)';
   const loggedOutLabel = 'Log in to add to your wishlist';
 
   const toggleWishlist = useCallback(
