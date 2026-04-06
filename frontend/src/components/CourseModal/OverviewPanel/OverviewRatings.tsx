@@ -1,12 +1,18 @@
 import React, { useState, type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { Form, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {
+  Form,
+  Badge,
+  OverlayTrigger,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
+} from 'react-bootstrap';
 import { AiOutlineStar } from 'react-icons/ai';
 import { BiBookOpen } from 'react-icons/bi';
 import { IoPersonOutline } from 'react-icons/io5';
 import type chroma from 'chroma-js';
-import MultiToggle from 'react-multi-toggle';
 import { useShallow } from 'zustand/react/shallow';
 
 import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
@@ -27,16 +33,14 @@ import { RatingBubble } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 
 import styles from './OverviewRatings.module.css';
-import './react-multi-toggle-override.css';
 
 type Filter = 'course' | 'professor';
 
 type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
 
-// Hold index of each filter option
-const optionsIndx = {
-  course: 0,
-  professor: 1,
+type CourseProfOption = {
+  readonly displayName: string;
+  readonly value: Filter;
 };
 
 function createProfSummary(
@@ -98,6 +102,38 @@ function createProfSummary(
   return { key: names.join(' • '), links };
 }
 
+function CourseProfFilter({
+  options,
+  filter,
+  onChange,
+}: {
+  readonly options: readonly CourseProfOption[];
+  readonly filter: Filter;
+  readonly onChange: (value: Filter) => void;
+}) {
+  return (
+    <ToggleButtonGroup
+      type="radio"
+      name="course-modal-ratings-view"
+      value={filter}
+      onChange={(val) => onChange(val as Filter)}
+      className={clsx(styles.filterToggleGroup, 'mb-2')}
+      aria-label="Evaluation ratings view"
+    >
+      {options.map((opt) => (
+        <ToggleButton
+          key={opt.value}
+          id={`overview-ratings-${opt.value}`}
+          className={styles.filterToggleButton}
+          value={opt.value}
+        >
+          {opt.displayName}
+        </ToggleButton>
+      ))}
+    </ToggleButtonGroup>
+  );
+}
+
 function AggregateRating({
   label,
   Icon,
@@ -135,10 +171,9 @@ function AggregateRating({
         </Tooltip>
       )}
     >
-      <div
-        className={styles.aggregateItem}
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-        tabIndex={0}
+      <button
+        type="button"
+        className={clsx(styles.aggregateItem, styles.aggregateTrigger)}
         aria-label={
           hasEvals
             ? `${label}: ${display}`
@@ -162,7 +197,7 @@ function AggregateRating({
             className={styles.aggregateRatingCell}
           />
         )}
-      </div>
+      </button>
     </OverlayTrigger>
   );
 }
@@ -187,10 +222,10 @@ function OverviewRatings({
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
 
-  const options = [
+  const options: readonly CourseProfOption[] = [
     { displayName: `Course (${sameCourseNormalized.length})`, value: 'course' },
     { displayName: 'Prof', value: 'professor' },
-  ] as const;
+  ];
   const [filter, setFilter] = useState<Filter>('course');
 
   const { groupSameProf, togglePref } = useStore(
@@ -283,21 +318,11 @@ function OverviewRatings({
           />
         </div>
       </div>
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <div
-        className={styles.filterContainer}
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight')
-            setFilter(options[(optionsIndx[filter] + 1) % 2]!.value);
-        }}
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-        tabIndex={0}
-      >
-        <MultiToggle
+      <div className={styles.filterContainer}>
+        <CourseProfFilter
           options={options}
-          selectedOption={filter}
-          onSelectOption={(val: string) => setFilter(val as Filter)}
-          className={clsx(styles.evaluationsFilter, 'mb-2')}
+          filter={filter}
+          onChange={setFilter}
         />
       </div>
       {filter === 'professor' ? (
