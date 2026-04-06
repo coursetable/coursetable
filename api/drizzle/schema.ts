@@ -46,6 +46,10 @@ export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   majorVisibility: profileVisibilityEnum('majorVisibility')
     .notNull()
     .default('friends'),
+  profilePageEnabled: boolean('profilePageEnabled').notNull().default(true),
+  allowAnonymousProfileView: boolean('allowAnonymousProfileView')
+    .notNull()
+    .default(false),
   email: varchar('email', { length: 256 }).default(sql`NULL`),
   upi: bigint('upi', { mode: 'number' }),
   school: varchar('school', { length: 256 }).default(sql`NULL`),
