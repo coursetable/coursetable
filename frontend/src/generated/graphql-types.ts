@@ -3945,6 +3945,11 @@ export type CourseModalOverviewDataQuery = {
       section: string;
       last_enrollment?: number | null;
       last_enrollment_same_professors?: boolean | null;
+      average_rating?: number | null;
+      average_rating_same_professors?: number | null;
+      average_workload?: number | null;
+      average_workload_same_professors?: number | null;
+      average_professor_rating?: number | null;
       credits: number | null;
       classnotes: string | null;
       regnotes: string | null;
