@@ -587,6 +587,70 @@ export async function getUserInfo() {
   return res;
 }
 
+const visibilitySettingSchema = z.union([
+  z.literal('self'),
+  z.literal('friends'),
+  z.literal('public'),
+]);
+
+const profilePrivacySchema = z.object({
+  nameVisibility: visibilitySettingSchema,
+  emailVisibility: visibilitySettingSchema,
+  yearVisibility: visibilitySettingSchema,
+  schoolVisibility: visibilitySettingSchema,
+  majorVisibility: visibilitySettingSchema,
+});
+
+const myProfileSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  preferredFirstName: z.string().nullable(),
+  preferredLastName: z.string().nullable(),
+  displayFirstName: z.string().nullable(),
+  displayLastName: z.string().nullable(),
+  displayName: z.string().nullable(),
+  email: z.string().nullable(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  hasEvals: z.boolean(),
+  evalsRevoked: z.boolean(),
+  profilePageEnabled: z.boolean(),
+  allowAnonymousProfileView: z.boolean(),
+  privacy: profilePrivacySchema,
+});
+
+export type MyProfile = z.infer<typeof myProfileSchema>;
+export type ProfilePrivacy = z.infer<typeof profilePrivacySchema>;
+
+export function getMyProfile() {
+  return fetchAPI('/profile/me', {
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Fetching my profile settings',
+    },
+  });
+}
+
+export function updateMyProfile(body: {
+  preferredFirstName?: string | null;
+  preferredLastName?: string | null;
+  profilePageEnabled?: boolean;
+  allowAnonymousProfileView?: boolean;
+  privacy?: Partial<ProfilePrivacy>;
+}) {
+  return fetchAPI('/profile/me', {
+    body,
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Updating profile settings',
+    },
+  });
+}
+
 // Shared schema for worksheet courses (used by both user and friends)
 const worksheetCourseSchema = z.object({
   crn: crnSchema,
