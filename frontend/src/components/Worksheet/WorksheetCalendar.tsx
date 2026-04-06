@@ -235,9 +235,9 @@ function WorksheetCalendar({
     return { earliest, latest, parsedCourses: allCourses };
   }, [allCourses, isCalendarViewLocked, calendarLockStart, calendarLockEnd]);
 
-  const [walkBeforeByKey, setWalkBeforeByKey] = useState<
-    Map<string, WalkBefore>
-  >(new Map());
+  const [walkBeforeByKey, setWalkBeforeByKey] = useState(
+    new Map<string, WalkBefore>(),
+  );
   const [selectedEvent, setSelectedEvent] = useState<CourseRBCEvent | null>(
     null,
   );
