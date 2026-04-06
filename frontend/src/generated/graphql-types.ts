@@ -4071,6 +4071,15 @@ export type SearchEvaluationNarrativesQuery = {
           tag: string | null;
         };
       }>;
+      evaluation_narrative_summaries: Array<{
+        __typename?: 'evaluation_narrative_summaries';
+        summary: string;
+        evaluation_question: {
+          __typename?: 'evaluation_questions';
+          question_text: string;
+          tag: string | null;
+        };
+      }>;
       evaluation_ratings: Array<{
         __typename?: 'evaluation_ratings';
         rating: NumberArr;
