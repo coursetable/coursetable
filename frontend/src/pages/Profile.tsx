@@ -10,12 +10,8 @@ import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { TextComponent } from '../components/Typography';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
-import {
-  resetCatalogCache,
-  useFerry,
-  useWorksheetInfo,
-} from '../contexts/ferryContext';
-import type { Option } from '../contexts/searchContext';
+import { resetCatalogCache } from '../ferry/ferryCatalogCache';
+import { useFerry, useWorksheetInfo } from '../hooks/useFerry';
 import {
   getMyProfile,
   revokeEvaluationsAccess,
@@ -24,6 +20,7 @@ import {
   type ProfilePrivacy,
 } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
+import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';

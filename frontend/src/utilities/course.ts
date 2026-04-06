@@ -1,6 +1,5 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
-import type { SortKeys } from '../contexts/searchContext';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -8,6 +7,7 @@ import type {
   CatalogListing,
 } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
+import type { SortKeys } from '../search/searchTypes';
 import type { WorksheetCourse } from '../slices/WorksheetSlice';
 
 export function truncatedText(
@@ -476,6 +476,16 @@ export function isDiscussionSection(
   // Checks whether the section field consists only of letters -- if so, the
   // class is a discussion section.
   return /^[A-Z]*$/u.test(listing.section);
+}
+
+/**
+ * @param course a course
+ * @returns section number padded to two characters or empty string if NA
+ */
+export function formatSectionSuffix(course: Pick<Courses, 'section'>): string {
+  return isDiscussionSection(course) && course.section.length > 0
+    ? ` ${course.section.padStart(2, '0')}`
+    : '';
 }
 
 /**
