@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { Button, Card, Form, Tab, Tabs } from 'react-bootstrap';
+import { Button, Card, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { useShallow } from 'zustand/react/shallow';
@@ -11,7 +11,6 @@ import { TextComponent } from '../components/Typography';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import { resetCatalogCache } from '../ferry/ferryCatalogCache';
 import { useFerry, useWorksheetInfo } from '../hooks/useFerry';
-import { getMyProfile, updateMyProfile } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
@@ -57,10 +56,6 @@ function Profile() {
   const { requestSeasons } = useFerry();
 
   const [catalogRefreshing, setCatalogRefreshing] = useState(false);
-  const [profilePageEnabled, setProfilePageEnabled] = useState(true);
-  const [allowAnonymousProfileView, setAllowAnonymousProfileView] =
-    useState(false);
-  const [savingProfilePrivacy, setSavingProfilePrivacy] = useState(false);
 
   const [profileWorksheetNumber, setProfileWorksheetNumber] = useState(
     () => useStore.getState().viewedWorksheetNumber,
@@ -83,15 +78,6 @@ function Profile() {
   useEffect(() => {
     if (!friendRequests) void friendReqRefresh();
   }, [friendRequests, friendReqRefresh]);
-
-  useEffect(() => {
-    if (!currentUser) return;
-    void getMyProfile().then((data) => {
-      if (!data) return;
-      setProfilePageEnabled(data.profilePageEnabled);
-      setAllowAnonymousProfileView(data.allowAnonymousProfileView);
-    });
-  }, [currentUser]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -188,25 +174,6 @@ function Profile() {
       toast.success('Catalog data refreshed.');
     } finally {
       setCatalogRefreshing(false);
-    }
-  };
-
-  const persistProfilePrivacy = async (
-    nextPageEnabled: boolean,
-    nextAllowAnonymous: boolean,
-  ) => {
-    const allowAnonymous = nextPageEnabled ? nextAllowAnonymous : false;
-    setSavingProfilePrivacy(true);
-    try {
-      const updated = await updateMyProfile({
-        profilePageEnabled: nextPageEnabled,
-        allowAnonymousProfileView: allowAnonymous,
-      });
-      if (!updated) return;
-      setProfilePageEnabled(updated.profilePageEnabled);
-      setAllowAnonymousProfileView(updated.allowAnonymousProfileView);
-    } finally {
-      setSavingProfilePrivacy(false);
     }
   };
 
@@ -460,49 +427,6 @@ function Profile() {
             <Card className={styles.profileCard}>
               <Card.Body className={styles.cardBody}>
                 <h3 className={styles.sectionTitle}>Advanced Settings</h3>
-                <div className={styles.settingsRow}>
-                  <div className={styles.settingText}>
-                    <TextComponent>Public profile page</TextComponent>
-                    <TextComponent type="secondary">
-                      Shareable URL:{' '}
-                      <Link to={`/u/${currentUser.netId}`}>
-                        /u/{currentUser.netId}
-                      </Link>
-                      . Turning the profile page off returns “not found” for
-                      that URL. Field visibility for signed-in viewers still
-                      applies when the page is on.
-                    </TextComponent>
-                  </div>
-                  <div className="d-flex flex-column align-items-end gap-2">
-                    <Form.Check
-                      type="switch"
-                      id="profile-page-enabled"
-                      label="Show my profile page"
-                      checked={profilePageEnabled}
-                      disabled={savingProfilePrivacy}
-                      onChange={(event) => {
-                        const on = event.target.checked;
-                        void persistProfilePrivacy(
-                          on,
-                          on ? allowAnonymousProfileView : false,
-                        );
-                      }}
-                    />
-                    <Form.Check
-                      type="switch"
-                      id="profile-anonymous-view"
-                      label="Allow logged-out visitors to view my profile page"
-                      checked={allowAnonymousProfileView}
-                      disabled={!profilePageEnabled || savingProfilePrivacy}
-                      onChange={(event) => {
-                        void persistProfilePrivacy(
-                          profilePageEnabled,
-                          event.target.checked,
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
                 <div className={styles.settingsRow}>
                   <div className={styles.settingText}>
                     <TextComponent>Clear cached catalog data</TextComponent>
