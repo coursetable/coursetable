@@ -17,7 +17,7 @@ function escapeHtml(value: unknown): string {
 
 // Tagged template literal that auto-escapes all interpolated values
 const html = (strings: TemplateStringsArray, ...values: unknown[]): string =>
-  strings.reduce<string>(
+  strings.reduce(
     (result, str, i) =>
       result + str + (i < values.length ? escapeHtml(values[i]) : ''),
     '',

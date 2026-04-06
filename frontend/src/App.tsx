@@ -139,9 +139,7 @@ function App() {
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
         id={24}
-      >
-        YaleMeals is live — no more dining hall guesswork. Download it today.
-      </Notice>
+      />
       <Navbar />
       <SentryRoutes>
         <Route element={<AuthenticatedRoutes />}>

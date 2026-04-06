@@ -1,0 +1,14 @@
+diff --git a/build/core/index.js b/build/core/index.js
+index 8ac31c16d3f3b0a4f331e562d70ab9290b0c7cda..cd96a56d46936130cd348ddcd7884211ec2c6532 100755
+--- a/build/core/index.js
++++ b/build/core/index.js
+@@ -25,7 +25,8 @@ function dashesCamelCase(str) {
+ }
+ var getFilePath = exports.getFilePath = function getFilePath(context, styleFilePath) {
+   var settings = context.settings['css-modules'];
+-  var dirName = _path["default"].dirname(context.getFilename());
++  // Patched; see https://github.com/atfzl/eslint-plugin-css-modules/issues/104
++  var dirName = _path["default"].dirname(context.filename);
+   var basePath = settings && settings.basePath ? settings.basePath : '';
+   return styleFilePath.startsWith('.') ? _path["default"].resolve(dirName, styleFilePath) : _path["default"].resolve(basePath, styleFilePath);
+ };

@@ -98,7 +98,7 @@ export const worksheetCourses = pgTable(
     id: serial('id').primaryKey().notNull(),
     worksheetId: integer('worksheetId')
       .notNull()
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      // eslint-disable-next-line no-use-before-define
       .references(() => worksheets.id),
     crn: integer('crn').notNull(),
     color: varchar('color', { length: 32 }).notNull(),
