@@ -7,7 +7,8 @@ import {
   type SyntheticEvent,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Calendar } from 'react-big-calendar';
+import { Button, Form, Modal } from 'react-bootstrap';
+import { Calendar, type SlotInfo } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 import CalendarEvent, {
@@ -23,7 +24,9 @@ import {
   localizer,
   getCalendarEvents,
   type CourseRBCEvent,
+  type CustomRBCEvent,
   type WalkBefore,
+  type WorksheetCalendarEvent,
 } from '../../utilities/calendar';
 import {
   getBuildingCodeFromLocation,
@@ -34,6 +37,8 @@ import './react-big-calendar-override.css';
 const MAX_WALK_GAP_MINUTES = 30;
 const WALK_MODAL_SELECT_SUPPRESSION_MS = 350;
 const WALK_MODAL_CLOSE_SUPPRESSION_MS = 600;
+const CUSTOM_EVENT_DURATION_MINUTES = 30;
+const CUSTOM_EVENT_LABEL = 'Custom Event';
 
 type WorksheetCalendarProps = {
   readonly showWalkingTimes?: boolean;
@@ -87,6 +92,23 @@ function findFarthestWalkPair(
 
 function eventKey(event: CourseRBCEvent) {
   return `${event.listing.crn}-${event.start.getTime()}-${event.end.getTime()}`;
+}
+
+function getMinutesSinceMidnight(date: Date) {
+  return date.getHours() * 60 + date.getMinutes();
+}
+
+function toTimeInputValue(date: Date) {
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+function applyTimeToDate(baseDate: Date, timeValue: string) {
+  const [hours, minutes] = timeValue.split(':');
+  const next = new Date(baseDate);
+  next.setHours(Number(hours), Number(minutes), 0, 0);
+  return next;
 }
 
 function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
@@ -241,6 +263,18 @@ function WorksheetCalendar({
   const [selectedEvent, setSelectedEvent] = useState<CourseRBCEvent | null>(
     null,
   );
+  const [customEvents, setCustomEvents] = useState<CustomRBCEvent[]>([]);
+  const customEventIdRef = useRef(0);
+  const [editingCustomEventId, setEditingCustomEventId] = useState<
+    string | null
+  >(null);
+  const [customEventNameDraft, setCustomEventNameDraft] = useState('');
+  const [customEventLocationDraft, setCustomEventLocationDraft] = useState('');
+  const [customEventStartDraft, setCustomEventStartDraft] = useState('');
+  const [customEventEndDraft, setCustomEventEndDraft] = useState('');
+  const [customEventFormError, setCustomEventFormError] = useState<
+    string | null
+  >(null);
   useEffect(() => {
     let cancelled = false;
     const timeout = window.setTimeout(() => {
@@ -260,10 +294,161 @@ function WorksheetCalendar({
       return walkBefore ? { ...event, walkBefore } : event;
     });
   }, [parsedCourses, showWalkingTimes, walkBeforeByKey]);
+  const hasRangeConflict = useCallback(
+    (
+      day: number,
+      rangeStart: number,
+      rangeEnd: number,
+      ignoreCustomEventId?: string,
+    ) => {
+      const overlaps = (start: number, end: number) =>
+        start < rangeEnd && end > rangeStart;
+
+      for (const event of parsedCourses) {
+        if (event.start.getDay() !== day) continue;
+        const classStart = getMinutesSinceMidnight(event.start);
+        const classEnd = getMinutesSinceMidnight(event.end);
+        if (overlaps(classStart, classEnd)) return true;
+
+        const walkBefore = walkBeforeByKey.get(eventKey(event));
+        if (!walkBefore) continue;
+        const walkEnd = classStart;
+        const walkStart = walkEnd - walkBefore.gapMinutes;
+        if (overlaps(walkStart, walkEnd)) return true;
+      }
+
+      for (const customEvent of customEvents) {
+        if (customEvent.id === ignoreCustomEventId) continue;
+        if (customEvent.start.getDay() !== day) continue;
+        const customStart = getMinutesSinceMidnight(customEvent.start);
+        const customEnd = getMinutesSinceMidnight(customEvent.end);
+        if (overlaps(customStart, customEnd)) return true;
+      }
+
+      return false;
+    },
+    [parsedCourses, walkBeforeByKey, customEvents],
+  );
   const suppressSelectEventUntilRef = useRef(0);
   const walkModalOpenRef = useRef(false);
   const skipNextSelectEventRef = useRef(false);
   const clearSkipSelectTimeoutRef = useRef<number | null>(null);
+  const openCustomEventEditor = useCallback((event: CustomRBCEvent) => {
+    setEditingCustomEventId(event.id);
+    setCustomEventNameDraft(event.title);
+    setCustomEventLocationDraft(event.location);
+    setCustomEventStartDraft(toTimeInputValue(event.start));
+    setCustomEventEndDraft(toTimeInputValue(event.end));
+    setCustomEventFormError(null);
+  }, []);
+  const closeCustomEventEditor = useCallback(() => {
+    setEditingCustomEventId(null);
+    setCustomEventFormError(null);
+  }, []);
+  const createCustomEvent = useCallback(
+    (slotStartDate: Date) => {
+      const slotStart = new Date(slotStartDate);
+      slotStart.setSeconds(0, 0);
+      slotStart.setMinutes(
+        Math.floor(slotStart.getMinutes() / CUSTOM_EVENT_DURATION_MINUTES) *
+          CUSTOM_EVENT_DURATION_MINUTES,
+      );
+      const slotEnd = new Date(slotStart);
+      slotEnd.setMinutes(slotEnd.getMinutes() + CUSTOM_EVENT_DURATION_MINUTES);
+      const day = slotStart.getDay();
+      const slotStartMinutes = getMinutesSinceMidnight(slotStart);
+      const slotEndMinutes = slotStartMinutes + CUSTOM_EVENT_DURATION_MINUTES;
+      if (hasRangeConflict(day, slotStartMinutes, slotEndMinutes)) return;
+
+      const customEvent: CustomRBCEvent = {
+        kind: 'custom',
+        id: `custom-${slotStart.getTime()}-${customEventIdRef.current}`,
+        title: CUSTOM_EVENT_LABEL,
+        location: '',
+        start: slotStart,
+        end: slotEnd,
+      };
+      customEventIdRef.current += 1;
+      setCustomEvents((prev) => [...prev, customEvent]);
+      openCustomEventEditor(customEvent);
+    },
+    [hasRangeConflict, openCustomEventEditor],
+  );
+  const handleSelectSlot = useCallback(
+    ({ start, action }: SlotInfo) => {
+      if (action === 'doubleClick') return;
+      createCustomEvent(start);
+    },
+    [createCustomEvent],
+  );
+  useEffect(() => {
+    setCustomEvents([]);
+    customEventIdRef.current = 0;
+    setEditingCustomEventId(null);
+  }, [viewedSeason]);
+  const editingCustomEvent = useMemo(
+    () =>
+      customEvents.find((event) => event.id === editingCustomEventId) ?? null,
+    [customEvents, editingCustomEventId],
+  );
+  const saveCustomEventChanges = useCallback(() => {
+    if (!editingCustomEvent) return;
+    if (!customEventStartDraft || !customEventEndDraft) {
+      setCustomEventFormError('Please set both start and end times.');
+      return;
+    }
+    const nextStart = applyTimeToDate(
+      editingCustomEvent.start,
+      customEventStartDraft,
+    );
+    const nextEnd = applyTimeToDate(
+      editingCustomEvent.start,
+      customEventEndDraft,
+    );
+    if (nextEnd <= nextStart) {
+      setCustomEventFormError('End time must be after start time.');
+      return;
+    }
+    const day = nextStart.getDay();
+    const nextStartMinutes = getMinutesSinceMidnight(nextStart);
+    const nextEndMinutes = getMinutesSinceMidnight(nextEnd);
+    if (
+      hasRangeConflict(
+        day,
+        nextStartMinutes,
+        nextEndMinutes,
+        editingCustomEvent.id,
+      )
+    ) {
+      setCustomEventFormError(
+        'Time overlaps another class, walking block, or custom event.',
+      );
+      return;
+    }
+
+    setCustomEvents((prev) =>
+      prev.map((event) =>
+        event.id === editingCustomEvent.id
+          ? {
+              ...event,
+              title: customEventNameDraft.trim() || CUSTOM_EVENT_LABEL,
+              location: customEventLocationDraft.trim(),
+              start: nextStart,
+              end: nextEnd,
+            }
+          : event,
+      ),
+    );
+    closeCustomEventEditor();
+  }, [
+    editingCustomEvent,
+    customEventStartDraft,
+    customEventEndDraft,
+    hasRangeConflict,
+    customEventNameDraft,
+    customEventLocationDraft,
+    closeCustomEventEditor,
+  ]);
   const armSelectSuppression = useCallback((durationMs: number) => {
     skipNextSelectEventRef.current = true;
     suppressSelectEventUntilRef.current = Math.max(
@@ -292,22 +477,39 @@ function WorksheetCalendar({
   );
   const calendarComponents = useMemo(
     () => ({
-      event: ({ event }: { readonly event: CourseRBCEvent }) => (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-          }}
-        >
-          <CalendarEvent
-            event={event}
-            onWalkModalInteraction={suppressCalendarEventSelection}
-          />
-        </div>
-      ),
+      event({ event }: { readonly event: WorksheetCalendarEvent }) {
+        if (event.kind === 'custom') {
+          return (
+            <div className="ct-custom-event-content">
+              <span className="ct-custom-event-title">{event.title}</span>
+              <span className="ct-custom-event-meta">
+                {event.location || 'Custom Event'}
+              </span>
+            </div>
+          );
+        }
+
+        return (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+            }}
+          >
+            <CalendarEvent
+              event={event}
+              onWalkModalInteraction={suppressCalendarEventSelection}
+            />
+          </div>
+        );
+      },
     }),
     [suppressCalendarEventSelection],
+  );
+  const calendarEvents = useMemo<WorksheetCalendarEvent[]>(
+    () => [...displayEvents, ...customEvents],
+    [displayEvents, customEvents],
   );
   useEffect(() => {
     if (!selectedEvent) return;
@@ -331,7 +533,14 @@ function WorksheetCalendar({
     [],
   );
   const handleSelectEvent = useCallback(
-    (event: CourseRBCEvent, clickEvent: SyntheticEvent<HTMLElement>) => {
+    (
+      event: WorksheetCalendarEvent,
+      clickEvent: SyntheticEvent<HTMLElement>,
+    ) => {
+      if (event.kind === 'custom') {
+        openCustomEventEditor(event);
+        return;
+      }
       if (walkModalOpenRef.current) return;
       const { target } = clickEvent;
       if (
@@ -363,7 +572,7 @@ function WorksheetCalendar({
         return prev;
       });
     },
-    [setSearchParams],
+    [setSearchParams, openCustomEventEditor],
   );
   return (
     <>
@@ -371,20 +580,84 @@ function WorksheetCalendar({
         // Show Mon-Fri
         defaultView="work_week"
         views={['work_week']}
-        events={displayEvents}
+        events={calendarEvents}
         // Earliest course time or 8am if no courses
         min={earliest}
         // Latest course time or 6pm if no courses
         max={latest}
         localizer={localizer}
         toolbar={false}
+        selectable="ignoreEvents"
         showCurrentTimeIndicator
         selected={selectedEvent}
         onSelectEvent={handleSelectEvent}
+        onSelectSlot={handleSelectSlot}
         components={calendarComponents}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
       />
+      <Modal
+        show={editingCustomEvent !== null}
+        onHide={closeCustomEventEditor}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Custom Event</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="custom-event-name">
+            <Form.Label>Event Name</Form.Label>
+            <Form.Control
+              type="text"
+              value={customEventNameDraft}
+              onChange={(e) => setCustomEventNameDraft(e.target.value)}
+              placeholder={CUSTOM_EVENT_LABEL}
+              maxLength={120}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="custom-event-location">
+            <Form.Label>Location</Form.Label>
+            <Form.Control
+              type="text"
+              value={customEventLocationDraft}
+              onChange={(e) => setCustomEventLocationDraft(e.target.value)}
+              placeholder="Optional"
+              maxLength={120}
+            />
+          </Form.Group>
+          <div className="d-flex gap-2">
+            <Form.Group className="flex-fill" controlId="custom-event-start">
+              <Form.Label>Start</Form.Label>
+              <Form.Control
+                type="time"
+                step={60}
+                value={customEventStartDraft}
+                onChange={(e) => setCustomEventStartDraft(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="flex-fill" controlId="custom-event-end">
+              <Form.Label>End</Form.Label>
+              <Form.Control
+                type="time"
+                step={60}
+                value={customEventEndDraft}
+                onChange={(e) => setCustomEventEndDraft(e.target.value)}
+              />
+            </Form.Group>
+          </div>
+          {customEventFormError && (
+            <p className="text-danger mt-3 mb-0">{customEventFormError}</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeCustomEventEditor}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={saveCustomEventChanges}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <ColorPickerModal onClose={() => setOpenColorPickerEvent(null)} />
       <WorksheetMoveModal onClose={() => setOpenWorksheetMoveEvent(null)} />
     </>

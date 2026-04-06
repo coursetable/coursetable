@@ -14,7 +14,11 @@ import chroma from 'chroma-js';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
-import type { CourseRBCEvent, WalkBefore } from '../../utilities/calendar';
+import type {
+  CourseRBCEvent,
+  WalkBefore,
+  WorksheetCalendarEvent,
+} from '../../utilities/calendar';
 import styles from './CalendarEvent.module.css';
 
 const weekdayFormatter = new Intl.DateTimeFormat('en-US', {
@@ -652,7 +656,17 @@ export function useEventStyle() {
   const isMobile = useStore((state) => state.isMobile);
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
-    (event: CourseRBCEvent) => {
+    (event: WorksheetCalendarEvent) => {
+      if (event.kind === 'custom') {
+        return {
+          className: 'ct-custom-event',
+          style: {
+            boxShadow: 'none',
+            zIndex: 1,
+          } satisfies React.CSSProperties,
+        };
+      }
+
       const color = chroma(event.color);
       let backgroundColor = color.alpha(0.85).css();
       let borderColor = color.css();

@@ -210,6 +210,17 @@ export type CourseRBCEvent = {
   walkBefore?: WalkBefore;
 };
 
+export type CustomRBCEvent = {
+  kind: 'custom';
+  id: string;
+  title: string;
+  location: string;
+  start: Date;
+  end: Date;
+};
+
+export type WorksheetCalendarEvent = CourseRBCEvent | CustomRBCEvent;
+
 export type WalkClassSummary = {
   courseCode: string;
   courseTitle: string;
