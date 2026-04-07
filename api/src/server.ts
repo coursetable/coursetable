@@ -27,6 +27,7 @@ import {
   COURSETABLE_ORIGINS,
   NUM_SEASONS,
 } from './config.js';
+import courseAlerts from './courseAlerts/courseAlerts.routes.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
 import morgan from './logging/morgan.js';
@@ -143,6 +144,7 @@ user(app);
 profile(app);
 linkPreview(app);
 savedSearches(app);
+courseAlerts(app);
 
 app.get('/api/ping', (req, res) => {
   res.json('pong');

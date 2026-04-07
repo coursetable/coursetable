@@ -10,6 +10,7 @@ import { FaRegShareFromSquare } from 'react-icons/fa6';
 import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
+import CourseAlertBellButton from './CourseAlertBellButton';
 import { CUR_YEAR } from '../../../config';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import { useModalHistory } from '../../../hooks/useModalHistory';
@@ -193,6 +194,7 @@ export default function ModalHeaderControls({
       />
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
+        <CourseAlertBellButton listing={listing} />
         <ShareButton listing={listing} />
         <MoreButton listing={listing} />
       </div>

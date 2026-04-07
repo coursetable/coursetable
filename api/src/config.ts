@@ -96,3 +96,9 @@ export const COURSETABLE_ORIGINS = [
   /^https:\/\/.+\.coursetable\.com$/u,
   /^https:\/\/.+\.coursetable\.pages\.dev$/u,
 ];
+
+export const RESEND_API_KEY = process.env.RESEND_API_KEY ?? '';
+export const COURSE_ALERT_FROM_EMAIL = 'CourseTable <updates@coursetable.com>';
+export const COURSE_ALERT_REPLY_TO = 'coursetable.at.yale@gmail.com';
+export const COURSE_ALERT_CRON_SECRET =
+  process.env.COURSE_ALERT_CRON_SECRET ?? '';

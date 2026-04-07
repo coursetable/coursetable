@@ -1,0 +1,33 @@
+.bell {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.bell:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bell:hover:not(:disabled) {
+  color: var(--color-primary-hover);
+}
+
+.bellSubscribed {
+  color: var(--color-primary-hover);
+}
+
+.toastProfileLink {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.toastProfileLink:hover {
+  color: var(--color-primary-hover);
+}

@@ -816,6 +816,91 @@ export function removeFriend(friendNetId: string) {
   });
 }
 
+const courseAlertStatusSchema = z.object({
+  subscribed: z.boolean(),
+  subscriptionId: z.number().nullable(),
+});
+
+export function getCourseAlertStatus(listingId: number) {
+  return fetchAPI(`/courseAlerts/status?listingId=${listingId}`, {
+    schema: courseAlertStatusSchema,
+    breadcrumb: {
+      category: 'courseAlerts',
+      message: 'Checking course email alert status',
+    },
+  });
+}
+
+const subscribeCourseAlertResponseSchema = z.object({
+  id: z.number(),
+  listingId: z.number(),
+  createdAt: z.number(),
+});
+
+export function subscribeCourseAlert(listingId: number) {
+  return fetchAPI('/courseAlerts/subscribe', {
+    body: { listingId },
+    schema: subscribeCourseAlertResponseSchema,
+    handleErrorCode(errCode) {
+      if (errCode === 'LISTING_NOT_FOUND') {
+        toast.error('This course listing was not found.');
+        return true;
+      }
+      return false;
+    },
+    breadcrumb: {
+      category: 'courseAlerts',
+      message: 'Subscribing to course email alerts',
+    },
+  });
+}
+
+export function unsubscribeCourseAlert(subscriptionId: number) {
+  return fetchAPI('/courseAlerts/unsubscribe', {
+    body: { id: subscriptionId },
+    method: 'POST',
+    handleErrorCode(errCode) {
+      if (errCode === 'SUBSCRIPTION_NOT_FOUND') {
+        toast.error('That alert was already removed.');
+        return true;
+      }
+      return false;
+    },
+    breadcrumb: {
+      category: 'courseAlerts',
+      message: 'Unsubscribing from course email alerts',
+    },
+  });
+}
+
+const courseAlertListSchema = z.object({
+  subscriptions: z.array(
+    z.object({
+      id: z.number(),
+      listingId: z.number(),
+      createdAt: z.number(),
+      seasonCode: z.string().nullable(),
+      crn: z.number().nullable(),
+      courseCode: z.string().nullable(),
+      title: z.string().nullable(),
+    }),
+  ),
+});
+
+export type CourseAlertSubscriptionRow = z.infer<
+  typeof courseAlertListSchema
+>['subscriptions'][number];
+
+export function listCourseAlerts() {
+  return fetchAPI('/courseAlerts', {
+    schema: courseAlertListSchema,
+    breadcrumb: {
+      category: 'courseAlerts',
+      message: 'Listing course email alerts',
+    },
+  });
+}
+
 export async function checkAuth() {
   const res = await fetchAPI('/auth/check', {
     schema: z.union([
