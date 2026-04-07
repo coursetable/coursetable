@@ -858,7 +858,6 @@ export function subscribeCourseAlert(listingId: number) {
 export function unsubscribeCourseAlert(subscriptionId: number) {
   return fetchAPI('/courseAlerts/unsubscribe', {
     body: { id: subscriptionId },
-    method: 'POST',
     handleErrorCode(errCode) {
       if (errCode === 'SUBSCRIPTION_NOT_FOUND') {
         toast.error('That alert was already removed.');

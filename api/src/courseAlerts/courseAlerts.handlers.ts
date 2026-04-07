@@ -61,7 +61,7 @@ function cronAuthorized(req: express.Request): boolean {
       winston.warn(
         'courseAlerts: COURSE_ALERT_CRON_SECRET unset; allowing dispatch in dev only',
       );
-      return isDev;
+      return true;
     }
     winston.error('courseAlerts: COURSE_ALERT_CRON_SECRET unset in production');
     return false;

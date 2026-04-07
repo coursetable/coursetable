@@ -16,11 +16,11 @@ import {
   unsubscribeCourseAlert,
   type CourseAlertSubscriptionRow,
 } from '../queries/api';
-import type { NetId, Season } from '../queries/graphql-types';
+import type { NetId } from '../queries/graphql-types';
 import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
-import { toSeasonString } from '../utilities/course';
+import { isCatalogSeasonCode, toSeasonString } from '../utilities/course';
 import { createCourseModalLink } from '../utilities/display';
 import styles from './Profile.module.css';
 
@@ -66,6 +66,9 @@ function Profile() {
     CourseAlertSubscriptionRow[]
   >([]);
   const [courseAlertsLoading, setCourseAlertsLoading] = useState(false);
+  const [courseAlertRemovingId, setCourseAlertRemovingId] = useState<
+    number | null
+  >(null);
 
   const [profileWorksheetNumber, setProfileWorksheetNumber] = useState(
     () => useStore.getState().viewedWorksheetNumber,
@@ -504,8 +507,8 @@ function Profile() {
                           >
                             {[
                               s.courseCode,
-                              s.seasonCode
-                                ? toSeasonString(s.seasonCode as Season)
+                              s.seasonCode && isCatalogSeasonCode(s.seasonCode)
+                                ? toSeasonString(s.seasonCode)
                                 : null,
                             ]
                               .filter(Boolean)
@@ -519,13 +522,19 @@ function Profile() {
                             'flex-shrink-0',
                             styles.settingsButton,
                           )}
+                          disabled={courseAlertRemovingId === s.id}
                           onClick={() => {
                             void (async () => {
-                              const ok = await unsubscribeCourseAlert(s.id);
-                              if (ok) {
-                                toast.success('Alert removed.');
-                                const data = await listCourseAlerts();
-                                if (data) setCourseAlerts(data.subscriptions);
+                              setCourseAlertRemovingId(s.id);
+                              try {
+                                const ok = await unsubscribeCourseAlert(s.id);
+                                if (ok) {
+                                  toast.success('Alert removed.');
+                                  const data = await listCourseAlerts();
+                                  if (data) setCourseAlerts(data.subscriptions);
+                                }
+                              } finally {
+                                setCourseAlertRemovingId(null);
                               }
                             })();
                           }}

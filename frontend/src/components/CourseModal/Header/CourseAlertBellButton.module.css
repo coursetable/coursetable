@@ -18,8 +18,21 @@
   color: var(--color-primary-hover);
 }
 
+.bell:focus-visible:not(:disabled) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 .bellSubscribed {
   color: var(--color-primary-hover);
+}
+
+.bellSubscribed:focus-visible:not(:disabled) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+  outline-color: var(--color-primary-hover);
 }
 
 .toastProfileLink {

@@ -3,6 +3,7 @@ import {
   COURSE_ALERT_REPLY_TO,
   FRONTEND_ENDPOINT,
   RESEND_API_KEY,
+  RESEND_FETCH_TIMEOUT_MS,
 } from '../config.js';
 import winston from '../logging/winston.js';
 
@@ -11,7 +12,8 @@ function escapeHtml(s: string): string {
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
 function courseUpdateEmailBodies(params: {
@@ -68,28 +70,33 @@ export async function sendCourseUpdateEmail(params: {
     safeUrl,
   });
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: COURSE_ALERT_FROM_EMAIL,
-      reply_to: COURSE_ALERT_REPLY_TO,
-      to: [params.to],
-      subject: `CourseTable: ${params.courseCode} was updated`,
-      html,
-      text,
-    }),
-  });
-
-  if (!res.ok) {
-    const errBody = await res.text();
-    winston.error(
-      `courseAlerts: Resend error ${res.status}: ${errBody.slice(0, 500)}`,
-    );
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: COURSE_ALERT_FROM_EMAIL,
+        reply_to: COURSE_ALERT_REPLY_TO,
+        to: [params.to],
+        subject: `CourseTable: ${params.courseCode} was updated`,
+        html,
+        text,
+      }),
+      signal: AbortSignal.timeout(RESEND_FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) {
+      const errBody = await res.text();
+      winston.error(
+        `courseAlerts: Resend error ${res.status}: ${errBody.slice(0, 500)}`,
+      );
+      return false;
+    }
+    return true;
+  } catch (err) {
+    winston.error(`courseAlerts: Resend request failed: ${String(err)}`);
     return false;
   }
-  return true;
 }

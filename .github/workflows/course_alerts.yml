@@ -1,5 +1,8 @@
 name: Course alert emails
 
+permissions:
+  contents: none
+
 on:
   schedule:
     - cron: '0 16 * * *'
@@ -8,8 +11,6 @@ on:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - name: Run course alert dispatch
         env:

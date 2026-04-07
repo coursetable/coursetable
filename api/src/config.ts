@@ -102,3 +102,4 @@ export const COURSE_ALERT_FROM_EMAIL = 'CourseTable <updates@coursetable.com>';
 export const COURSE_ALERT_REPLY_TO = 'coursetable.at.yale@gmail.com';
 export const COURSE_ALERT_CRON_SECRET =
   process.env.COURSE_ALERT_CRON_SECRET ?? '';
+export const RESEND_FETCH_TIMEOUT_MS = 10_000;
