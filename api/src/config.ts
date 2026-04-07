@@ -102,3 +102,10 @@ export const COURSE_ALERT_FROM_EMAIL = 'CourseTable <updates@coursetable.com>';
 export const COURSE_ALERT_REPLY_TO = 'coursetable.at.yale@gmail.com';
 export const COURSE_ALERT_CRON_SECRET =
   process.env.COURSE_ALERT_CRON_SECRET ?? '';
+/** Timeout (ms) for Resend POST /emails. Min 1000; bad env → 10_000. */
+export const RESEND_FETCH_TIMEOUT_MS = (() => {
+  const raw = process.env.RESEND_FETCH_TIMEOUT_MS;
+  if (raw === undefined || raw === '') return 10_000;
+  const n = Number.parseInt(raw, 10);
+  return Number.isFinite(n) && n >= 1000 ? n : 10_000;
+})();

@@ -25,25 +25,39 @@ export default function CourseAlertBellButton({
   const [subscribed, setSubscribed] = useState(false);
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
+  const [statusFetchFailed, setStatusFetchFailed] = useState(false);
 
-  const refresh = useCallback(() => {
+  const refresh = useCallback(async () => {
     if (!user) return;
     const id = getListingId(listing.course.season_code, listing.crn);
     setLoading(true);
-    void getCourseAlertStatus(id).then((res) => {
+    setStatusFetchFailed(false);
+    try {
+      const res = await getCourseAlertStatus(id);
+      if (!res) {
+        setStatusFetchFailed(true);
+        setSubscribed(false);
+        setSubscriptionId(null);
+      } else {
+        setSubscribed(res.subscribed);
+        setSubscriptionId(res.subscriptionId);
+      }
+    } catch {
+      setStatusFetchFailed(true);
+      setSubscribed(false);
+      setSubscriptionId(null);
+    } finally {
       setLoading(false);
-      if (!res) return;
-      setSubscribed(res.subscribed);
-      setSubscriptionId(res.subscriptionId);
-    });
+    }
   }, [user, listing.course.season_code, listing.crn]);
 
   useEffect(() => {
     if (!user) {
       setLoading(false);
+      setStatusFetchFailed(false);
       return;
     }
-    refresh();
+    void refresh();
   }, [user, refresh]);
 
   if (!user) return null;
@@ -52,6 +66,10 @@ export default function CourseAlertBellButton({
 
   const onToggle = async () => {
     if (busy || loading) return;
+    if (statusFetchFailed) {
+      void refresh();
+      return;
+    }
     setBusy(true);
     try {
       if (subscribed && subscriptionId !== null) {
@@ -91,9 +109,11 @@ export default function CourseAlertBellButton({
     }
   };
 
-  const tooltip = subscribed
-    ? 'Email alerts on — click to turn off'
-    : 'Email me when this course updates';
+  const tooltip = statusFetchFailed
+    ? 'Could not load alert status — click to retry'
+    : subscribed
+      ? 'Email alerts on — click to turn off'
+      : 'Email me when this course updates';
 
   return (
     <OverlayTrigger
@@ -109,7 +129,7 @@ export default function CourseAlertBellButton({
         className={clsx(styles.bell, subscribed && styles.bellSubscribed)}
         aria-label={tooltip}
         aria-pressed={subscribed}
-        disabled={loading || busy}
+        disabled={(loading || busy) && !statusFetchFailed}
         onClick={() => {
           void onToggle();
         }}

@@ -33,6 +33,13 @@ export function isInWorksheet(
   );
 }
 
+/** Yale catalog season_code: six digits; term is 1–3 at index 5 (same as {@link toSeasonString}). */
+export function isCatalogSeasonCode(value: string): value is Season {
+  if (!/^\d{6}$/u.test(value)) return false;
+  const term = value[5]!;
+  return term === '1' || term === '2' || term === '3';
+}
+
 export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
   const season = ['Spring', 'Summer', 'Fall'][Number(seasonCode[5]) - 1]!;
