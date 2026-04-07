@@ -46,6 +46,10 @@ export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   majorVisibility: profileVisibilityEnum('majorVisibility')
     .notNull()
     .default('friends'),
+  profilePageEnabled: boolean('profilePageEnabled').notNull().default(true),
+  allowAnonymousProfileView: boolean('allowAnonymousProfileView')
+    .notNull()
+    .default(false),
   email: varchar('email', { length: 256 }).default(sql`NULL`),
   upi: bigint('upi', { mode: 'number' }),
   school: varchar('school', { length: 256 }).default(sql`NULL`),
@@ -98,7 +102,7 @@ export const worksheetCourses = pgTable(
     id: serial('id').primaryKey().notNull(),
     worksheetId: integer('worksheetId')
       .notNull()
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      // eslint-disable-next-line no-use-before-define
       .references(() => worksheets.id),
     crn: integer('crn').notNull(),
     color: varchar('color', { length: 32 }).notNull(),

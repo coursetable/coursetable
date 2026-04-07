@@ -1,7 +1,7 @@
 import { schools, skillsAreas, subjects, weekdays } from './constants';
 import { toSeasonString } from './course';
-import type { Filters, SortKeys } from '../contexts/searchContext';
 import type { Season } from '../queries/graphql-types';
+import type { Filters, SortKeys } from '../search/searchTypes';
 
 export function getFilterFromParams<K extends keyof Filters>(
   key: K,

@@ -4,7 +4,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaBars, FaTh } from 'react-icons/fa';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { type SortKeys, sortByOptions } from '../../contexts/searchContext';
+import { type SortKeys, sortByOptions } from '../../search/searchTypes';
 import { SurfaceComponent } from '../Typography';
 import colStyles from './ResultsCols.module.css';
 import styles from './ResultsHeaders.module.css';

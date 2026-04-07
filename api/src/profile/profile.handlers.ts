@@ -22,6 +22,8 @@ const VisibilitySettingSchema = z.enum(['self', 'friends', 'public']);
 const UpdateOwnProfileSchema = z.object({
   preferredFirstName: z.string().max(256).nullable().optional(),
   preferredLastName: z.string().max(256).nullable().optional(),
+  profilePageEnabled: z.boolean().optional(),
+  allowAnonymousProfileView: z.boolean().optional(),
   privacy: z
     .object({
       nameVisibility: VisibilitySettingSchema.optional(),
@@ -63,6 +65,8 @@ type StudentProfileRow = {
   major: string | null;
   evaluationsEnabled: boolean;
   evaluationsRevoked: boolean;
+  profilePageEnabled: boolean;
+  allowAnonymousProfileView: boolean;
 };
 
 const profileColumns = {
@@ -82,6 +86,8 @@ const profileColumns = {
   major: true,
   evaluationsEnabled: true,
   evaluationsRevoked: true,
+  profilePageEnabled: true,
+  allowAnonymousProfileView: true,
 } as const;
 
 const getRelation = async (
@@ -121,6 +127,8 @@ const buildOwnProfileResponse = (profile: StudentProfileRow) => {
     major: profile.major,
     hasEvals: profile.evaluationsEnabled && !profile.evaluationsRevoked,
     evalsRevoked: profile.evaluationsRevoked,
+    profilePageEnabled: profile.profilePageEnabled,
+    allowAnonymousProfileView: profile.allowAnonymousProfileView,
     privacy,
   };
 };
@@ -203,7 +211,18 @@ export const getSharedProfile = async (
     return;
   }
 
-  const relation = await getRelation(req.user?.netId ?? null, targetNetId);
+  if (!profile.profilePageEnabled) {
+    res.status(404).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
+
+  const viewerNetId = req.user?.netId ?? null;
+  if (viewerNetId === null && !profile.allowAnonymousProfileView) {
+    res.status(404).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
+
+  const relation = await getRelation(viewerNetId, targetNetId);
 
   res.json(buildSharedProfileResponse(profile, relation));
 };
@@ -244,6 +263,13 @@ export const updateOwnProfile = async (
   if (preferredLastName !== undefined)
     updates.preferredLastName = preferredLastName;
 
+  if (bodyParse.data.profilePageEnabled !== undefined)
+    updates.profilePageEnabled = bodyParse.data.profilePageEnabled;
+  if (bodyParse.data.allowAnonymousProfileView !== undefined) {
+    updates.allowAnonymousProfileView =
+      bodyParse.data.allowAnonymousProfileView;
+  }
+
   const { privacy } = bodyParse.data;
   if (privacy) {
     if (privacy.nameVisibility) updates.nameVisibility = privacy.nameVisibility;
@@ -255,6 +281,11 @@ export const updateOwnProfile = async (
     if (privacy.majorVisibility)
       updates.majorVisibility = privacy.majorVisibility;
   }
+
+  if (updates.profilePageEnabled === false)
+    updates.allowAnonymousProfileView = false;
+  else if (updates.allowAnonymousProfileView === true)
+    updates.profilePageEnabled = true;
 
   if (!current.firstName && updates.preferredFirstName)
     updates.firstName = updates.preferredFirstName;
@@ -313,12 +344,15 @@ export const searchProfiles = async (
   const { q, limit } = queryParse.data;
 
   const candidates = (await db.query.studentBluebookSettings.findMany({
-    where: or(
-      ilike(studentBluebookSettings.netId, `%${q}%`),
-      ilike(studentBluebookSettings.firstName, `%${q}%`),
-      ilike(studentBluebookSettings.lastName, `%${q}%`),
-      ilike(studentBluebookSettings.preferredFirstName, `%${q}%`),
-      ilike(studentBluebookSettings.preferredLastName, `%${q}%`),
+    where: and(
+      eq(studentBluebookSettings.profilePageEnabled, true),
+      or(
+        ilike(studentBluebookSettings.netId, `%${q}%`),
+        ilike(studentBluebookSettings.firstName, `%${q}%`),
+        ilike(studentBluebookSettings.lastName, `%${q}%`),
+        ilike(studentBluebookSettings.preferredFirstName, `%${q}%`),
+        ilike(studentBluebookSettings.preferredLastName, `%${q}%`),
+      ),
     ),
     columns: profileColumns,
     limit,

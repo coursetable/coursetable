@@ -18,12 +18,6 @@ import {
 import { useStore } from '../store';
 import styles from './Challenge.module.css';
 
-type Answer = {
-  courseRatingId: number;
-  courseRatingIndex: number;
-  answer: string;
-};
-
 function renderRequestError(requestError: string, navigate: NavigateFunction) {
   if (requestError === 'USER_NOT_FOUND') {
     return {
@@ -112,7 +106,7 @@ function Challenge() {
   // Stores body of response for the /api/challenge/request API call
   const [resBody, setResBody] = useState<RequestChallengeResBody | null>(null);
   // Stores user's answers
-  const [answers, setAnswers] = useState<Answer[]>([
+  const [answers, setAnswers] = useState([
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
