@@ -8,6 +8,8 @@ on:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Run course alert dispatch
         env:
