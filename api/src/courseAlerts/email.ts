@@ -124,10 +124,10 @@ export async function sendCourseUpdateEmail(params: {
       if (res.ok) return true;
       if (res.status === 429 && attempt < RESEND_RATE_LIMIT_RETRIES) {
         const ms = retryAfterMs(res);
+        resendNextAllowedAt = Math.max(resendNextAllowedAt, Date.now() + ms);
         winston.warn(
           `courseAlerts: Resend 429; retry ${String(attempt + 1)}/${String(RESEND_RATE_LIMIT_RETRIES)} in ${String(ms)}ms`,
         );
-        await sleep(ms);
         continue;
       }
       const errBody = await res.text();
