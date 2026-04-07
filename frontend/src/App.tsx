@@ -139,11 +139,8 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={21}
-      >
-        {/* Course locations are accurate as of December 2025. Please refer to Yale
-        Course Search to see your up-to-date course locations. */}
-      </Notice>
+        id={24}
+      />
       <Navbar />
       <SentryRoutes>
         <Route element={<AuthenticatedRoutes />}>

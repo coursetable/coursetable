@@ -3,7 +3,7 @@ import 'rc-slider/assets/index.css';
 
 import MobileSearchForm from '../components/Search/MobileSearchForm';
 import Results from '../components/Search/Results';
-import { useSearch } from '../contexts/searchContext';
+import { useSearch } from '../hooks/useSearch';
 import { useStore } from '../store';
 import styles from './Search.module.css';
 import './rc-slider-override.css';

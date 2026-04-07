@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { useFerry } from '../contexts/ferryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../generated/graphql-types';
+import { useFerry } from '../hooks/useFerry';
 import { useCourseModalFromUrlQuery } from '../queries/graphql-queries';
 import { useStore } from '../store';
 import { parseCourseModalQuery } from '../utilities/modalHistoryUrl';
