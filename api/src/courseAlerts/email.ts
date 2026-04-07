@@ -4,8 +4,38 @@ import {
   FRONTEND_ENDPOINT,
   RESEND_API_KEY,
   RESEND_FETCH_TIMEOUT_MS,
+  RESEND_MIN_INTERVAL_MS,
+  RESEND_RATE_LIMIT_RETRIES,
 } from '../config.js';
 import winston from '../logging/winston.js';
+
+let resendNextAllowedAt = 0;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function paceResend(): Promise<void> {
+  for (;;) {
+    const now = Date.now();
+    const until = resendNextAllowedAt;
+    if (now >= until) {
+      resendNextAllowedAt = now + RESEND_MIN_INTERVAL_MS;
+      return;
+    }
+    await sleep(until - now);
+  }
+}
+
+function retryAfterMs(res: Response): number {
+  const h = res.headers.get('retry-after');
+  if (!h) return 1000;
+  const sec = Number.parseInt(h, 10);
+  if (Number.isFinite(sec) && sec >= 0) return Math.min(sec * 1000, 60_000);
+  return 1000;
+}
 
 function escapeHtml(s: string): string {
   return s
@@ -70,31 +100,43 @@ export async function sendCourseUpdateEmail(params: {
     safeUrl,
   });
 
+  const body = JSON.stringify({
+    from: COURSE_ALERT_FROM_EMAIL,
+    reply_to: COURSE_ALERT_REPLY_TO,
+    to: [params.to],
+    subject: `CourseTable: ${params.courseCode} was updated`,
+    html,
+    text,
+  });
+
   try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: COURSE_ALERT_FROM_EMAIL,
-        reply_to: COURSE_ALERT_REPLY_TO,
-        to: [params.to],
-        subject: `CourseTable: ${params.courseCode} was updated`,
-        html,
-        text,
-      }),
-      signal: AbortSignal.timeout(RESEND_FETCH_TIMEOUT_MS),
-    });
-    if (!res.ok) {
+    for (let attempt = 0; attempt <= RESEND_RATE_LIMIT_RETRIES; attempt += 1) {
+      await paceResend();
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body,
+        signal: AbortSignal.timeout(RESEND_FETCH_TIMEOUT_MS),
+      });
+      if (res.ok) return true;
+      if (res.status === 429 && attempt < RESEND_RATE_LIMIT_RETRIES) {
+        const ms = retryAfterMs(res);
+        winston.warn(
+          `courseAlerts: Resend 429; retry ${String(attempt + 1)}/${String(RESEND_RATE_LIMIT_RETRIES)} in ${String(ms)}ms`,
+        );
+        await sleep(ms);
+        continue;
+      }
       const errBody = await res.text();
       winston.error(
         `courseAlerts: Resend error ${res.status}: ${errBody.slice(0, 500)}`,
       );
       return false;
     }
-    return true;
+    return false;
   } catch (err) {
     winston.error(`courseAlerts: Resend request failed: ${String(err)}`);
     return false;

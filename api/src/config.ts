@@ -103,3 +103,7 @@ export const COURSE_ALERT_REPLY_TO = 'coursetable.at.yale@gmail.com';
 export const COURSE_ALERT_CRON_SECRET =
   process.env.COURSE_ALERT_CRON_SECRET ?? '';
 export const RESEND_FETCH_TIMEOUT_MS = 10_000;
+/** Min ms between Resend API calls (default team limit is 5 req/s). */
+export const RESEND_MIN_INTERVAL_MS = 250;
+/** Max retries after Resend HTTP 429 (uses Retry-After when present). */
+export const RESEND_RATE_LIMIT_RETRIES = 5;
