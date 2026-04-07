@@ -124,6 +124,9 @@ function Profile() {
   const [placeholderFirstName, setPlaceholderFirstName] = useState('');
   const [placeholderLastName, setPlaceholderLastName] = useState('');
   const [privacyDraft, setPrivacyDraft] = useState<ProfilePrivacy | null>(null);
+  const [profilePageEnabled, setProfilePageEnabled] = useState(true);
+  const [allowAnonymousProfileView, setAllowAnonymousProfileView] =
+    useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [revokingEvals, setRevokingEvals] = useState(false);
   const [revokeArmed, setRevokeArmed] = useState(false);
@@ -173,6 +176,8 @@ function Profile() {
       setPreferredFirstNameInput(data.preferredFirstName ?? '');
       setPreferredLastNameInput(data.preferredLastName ?? '');
       setPrivacyDraft(data.privacy);
+      setProfilePageEnabled(data.profilePageEnabled);
+      setAllowAnonymousProfileView(data.allowAnonymousProfileView);
       const { first, last } = nameFieldPlaceholders(data, currentUser);
       setPlaceholderFirstName(first);
       setPlaceholderLastName(last);
@@ -290,12 +295,16 @@ function Profile() {
           preferredLastNameInput.trim().length > 0
             ? preferredLastNameInput.trim()
             : null,
+        profilePageEnabled,
+        allowAnonymousProfileView,
         privacy: privacyDraft,
       });
       if (!updated) return;
       setPreferredFirstNameInput(updated.preferredFirstName ?? '');
       setPreferredLastNameInput(updated.preferredLastName ?? '');
       setPrivacyDraft(updated.privacy);
+      setProfilePageEnabled(updated.profilePageEnabled);
+      setAllowAnonymousProfileView(updated.allowAnonymousProfileView);
       const { first, last } = nameFieldPlaceholders(updated, currentUser);
       setPlaceholderFirstName(first);
       setPlaceholderLastName(last);
@@ -635,6 +644,46 @@ function Profile() {
                           />
                         </Form.Group>
                       </div>
+                    </section>
+                    <section className={styles.settingsSection}>
+                      <TextComponent className={styles.settingsSectionTitle}>
+                        Profile page
+                      </TextComponent>
+                      <TextComponent
+                        type="secondary"
+                        className={styles.visibilityDisclaimer}
+                      >
+                        Shareable URL:{' '}
+                        <Link to={`/u/${currentUser.netId}`}>
+                          /u/{currentUser.netId}
+                        </Link>
+                        . Turning the profile page off makes that URL show “page
+                        not found” for everyone. Field visibility below still
+                        applies for signed-in viewers when the page is on.
+                      </TextComponent>
+                      <Form.Check
+                        type="switch"
+                        id="profile-page-enabled"
+                        className="mb-2"
+                        label="Show my profile page"
+                        checked={profilePageEnabled}
+                        onChange={(event) => {
+                          const on = event.target.checked;
+                          setProfilePageEnabled(on);
+                          if (!on) setAllowAnonymousProfileView(false);
+                        }}
+                      />
+                      <Form.Check
+                        type="switch"
+                        id="profile-anonymous-view"
+                        className="mb-2"
+                        label="Allow logged-out visitors to view my profile page"
+                        checked={allowAnonymousProfileView}
+                        disabled={!profilePageEnabled}
+                        onChange={(event) =>
+                          setAllowAnonymousProfileView(event.target.checked)
+                        }
+                      />
                     </section>
                     <section className={styles.settingsSection}>
                       <TextComponent className={styles.settingsSectionTitle}>

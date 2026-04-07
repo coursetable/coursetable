@@ -631,6 +631,8 @@ const myProfileSchema = z.object({
   major: z.string().nullable(),
   hasEvals: z.boolean(),
   evalsRevoked: z.boolean(),
+  profilePageEnabled: z.boolean(),
+  allowAnonymousProfileView: z.boolean(),
   privacy: profilePrivacySchema,
 });
 
@@ -650,6 +652,8 @@ export function getMyProfile() {
 export function updateMyProfile(body: {
   preferredFirstName?: string | null;
   preferredLastName?: string | null;
+  profilePageEnabled?: boolean;
+  allowAnonymousProfileView?: boolean;
   privacy?: Partial<ProfilePrivacy>;
 }) {
   return fetchAPI('/profile/me', {

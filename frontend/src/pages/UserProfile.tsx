@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { Card } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 
+import NotFound from './NotFound';
 import { TextComponent } from '../components/Typography';
 import {
   getSharedProfile,
@@ -70,6 +71,7 @@ function UserProfile() {
 
   if (!netId) return <Navigate to="/profile" replace />;
   if (currentUser?.netId === netId) return <Navigate to="/profile" replace />;
+  if (!loading && !loadError && notFound) return <NotFound />;
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
