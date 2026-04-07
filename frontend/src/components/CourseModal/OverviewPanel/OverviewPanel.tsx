@@ -65,7 +65,7 @@ function OverviewPanel({
 
   return (
     <Row className="m-auto">
-      <Col md={7} className="px-0 mt-0 mb-3">
+      <Col md={7} className="ps-0 pe-3 mt-0 mb-3">
         <OverviewInfo
           onNavigation={onNavigation}
           listing={listing}
