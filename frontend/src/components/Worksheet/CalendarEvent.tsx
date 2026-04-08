@@ -1,4 +1,6 @@
 import React, {
+  cloneElement,
+  isValidElement,
   useCallback,
   useEffect,
   useId,
@@ -698,6 +700,28 @@ function CalendarEvent({
   );
 }
 
+export function BigCalendarGhostFocusWrapper({
+  event,
+  children,
+}: React.PropsWithChildren<{ readonly event: CourseRBCEvent }>) {
+  const cluster = event.overlapCluster;
+  if (
+    cluster &&
+    cluster.peers.length > 1 &&
+    cluster.index > 0 &&
+    isValidElement(children)
+  ) {
+    return cloneElement(
+      children as React.ReactElement<{
+        tabIndex?: number;
+        'aria-hidden'?: boolean | 'true' | 'false';
+      }>,
+      { tabIndex: -1, 'aria-hidden': true },
+    );
+  }
+  return children;
+}
+
 export function useEventStyle() {
   const hoverCourse = useStore((state) => state.hoverCourse);
   const isMobile = useStore((state) => state.isMobile);
@@ -708,7 +732,7 @@ export function useEventStyle() {
       if (isGhost) {
         return {
           style: {
-            opacity: 0,
+            visibility: 'hidden' as const,
             pointerEvents: 'none' as const,
             borderWidth: 0,
             backgroundColor: 'transparent',

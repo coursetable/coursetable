@@ -11,6 +11,7 @@ import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 import CalendarEvent, {
+  BigCalendarGhostFocusWrapper,
   type WalkModalInteraction,
   useEventStyle,
 } from './CalendarEvent';
@@ -43,6 +44,17 @@ const RBC_EVENT_WRAP_STYLE = {
   flexDirection: 'column' as const,
   height: '100%',
 };
+
+function promoteWalkBeforeToStackedPrimaries(events: CourseRBCEvent[]) {
+  for (const e of events) {
+    const cluster = e.overlapCluster;
+    if (!cluster || cluster.peers.length < 2) continue;
+    const [primary] = cluster.peers;
+    if (!primary || primary.walkBefore) continue;
+    const donor = cluster.peers.find((p) => p.walkBefore);
+    if (donor?.walkBefore) primary.walkBefore = donor.walkBefore;
+  }
+}
 
 type WorksheetCalendarProps = {
   readonly showWalkingTimes?: boolean;
@@ -270,7 +282,9 @@ function WorksheetCalendar({
             return walkBefore ? { ...event, walkBefore } : event;
           })
         : parsedCourses;
-    return attachOverlapClusters(withWalk);
+    const clustered = attachOverlapClusters(withWalk);
+    promoteWalkBeforeToStackedPrimaries(clustered);
+    return clustered;
   }, [parsedCourses, showWalkingTimes, walkBeforeByKey]);
   const suppressSelectEventUntilRef = useRef(0);
   const walkModalOpenRef = useRef(false);
@@ -333,6 +347,7 @@ function WorksheetCalendar({
   }, [selectedEvent]);
   const calendarComponents = useMemo(
     () => ({
+      eventWrapper: BigCalendarGhostFocusWrapper,
       event({ event }: { readonly event: CourseRBCEvent }) {
         const cluster = event.overlapCluster;
         if (cluster && cluster.peers.length > 1 && cluster.index > 0)
