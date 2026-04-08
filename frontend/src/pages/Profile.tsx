@@ -11,10 +11,16 @@ import { TextComponent } from '../components/Typography';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import { resetCatalogCache } from '../ferry/ferryCatalogCache';
 import { useFerry, useWorksheetInfo } from '../hooks/useFerry';
+import {
+  listCourseAlerts,
+  unsubscribeCourseAlert,
+  type CourseAlertSubscriptionRow,
+} from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
+import { isCatalogSeasonCode, toSeasonString } from '../utilities/course';
 import { createCourseModalLink } from '../utilities/display';
 import styles from './Profile.module.css';
 
@@ -56,12 +62,38 @@ function Profile() {
   const { requestSeasons } = useFerry();
 
   const [catalogRefreshing, setCatalogRefreshing] = useState(false);
+  const [courseAlerts, setCourseAlerts] = useState<
+    CourseAlertSubscriptionRow[]
+  >([]);
+  const [courseAlertsLoading, setCourseAlertsLoading] = useState(false);
+  const [courseAlertRemovingId, setCourseAlertRemovingId] = useState<
+    number | null
+  >(null);
 
   const [profileWorksheetNumber, setProfileWorksheetNumber] = useState(
     () => useStore.getState().viewedWorksheetNumber,
   );
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const profileTabParam = searchParams.get('tab');
+  const profileActiveKey =
+    profileTabParam === 'alerts' || profileTabParam === 'advanced'
+      ? profileTabParam
+      : 'overview';
+
+  const handleProfileTabSelect = (key: string | null) => {
+    if (key !== 'overview' && key !== 'alerts' && key !== 'advanced') return;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (key === 'overview') next.delete('tab');
+        else next.set('tab', key);
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   useEffect(() => {
     if (!currentUser) void userRefresh();
@@ -78,6 +110,23 @@ function Profile() {
   useEffect(() => {
     if (!friendRequests) void friendReqRefresh();
   }, [friendRequests, friendReqRefresh]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      setCourseAlerts([]);
+      return undefined;
+    }
+    let cancelled = false;
+    setCourseAlertsLoading(true);
+    void listCourseAlerts().then((data) => {
+      if (cancelled) return;
+      setCourseAlertsLoading(false);
+      if (data) setCourseAlerts(data.subscriptions);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUser]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -208,7 +257,8 @@ function Profile() {
       </div>
 
       <Tabs
-        defaultActiveKey="overview"
+        activeKey={profileActiveKey}
+        onSelect={handleProfileTabSelect}
         className={styles.profileTabs}
         variant="tabs"
         transition={false}
@@ -420,6 +470,83 @@ function Profile() {
                 </Card.Body>
               </Card>
             </div>
+          </div>
+        </Tab>
+        <Tab eventKey="alerts" title="Alerts">
+          <div className={styles.tabContent}>
+            <Card className={styles.profileCard}>
+              <Card.Body className={styles.cardBody}>
+                <h3 className={styles.sectionTitle}>Course catalog email</h3>
+                <TextComponent type="secondary" className="mb-4">
+                  To get alerts when data changes for some course, click the
+                  bell icon next to &ldquo;Add to worksheet&rdquo;.
+                </TextComponent>
+                {courseAlertsLoading ? (
+                  <TextComponent type="secondary">Loading…</TextComponent>
+                ) : courseAlerts.length === 0 ? (
+                  <TextComponent type="secondary">
+                    No active alerts. Open a course and click the bell next to
+                    Add to worksheet.
+                  </TextComponent>
+                ) : (
+                  <ul className="list-unstyled mb-0">
+                    {courseAlerts.map((s) => (
+                      <li
+                        key={s.id}
+                        className="d-flex justify-content-between align-items-center gap-2 py-2 border-bottom"
+                      >
+                        <div className="min-w-0">
+                          <TextComponent className="text-break">
+                            {s.title ??
+                              s.courseCode ??
+                              `Listing ${s.listingId}`}
+                          </TextComponent>
+                          <TextComponent
+                            type="secondary"
+                            className="small d-block text-break"
+                          >
+                            {[
+                              s.courseCode,
+                              s.seasonCode && isCatalogSeasonCode(s.seasonCode)
+                                ? toSeasonString(s.seasonCode)
+                                : null,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
+                          </TextComponent>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          className={clsx(
+                            'flex-shrink-0',
+                            styles.settingsButton,
+                          )}
+                          disabled={courseAlertRemovingId === s.id}
+                          onClick={() => {
+                            void (async () => {
+                              setCourseAlertRemovingId(s.id);
+                              try {
+                                const ok = await unsubscribeCourseAlert(s.id);
+                                if (ok) {
+                                  toast.success('Alert removed.');
+                                  const data = await listCourseAlerts();
+                                  if (data) setCourseAlerts(data.subscriptions);
+                                }
+                              } finally {
+                                setCourseAlertRemovingId(null);
+                              }
+                            })();
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </Card.Body>
+            </Card>
           </div>
         </Tab>
         <Tab eventKey="advanced" title="Advanced">

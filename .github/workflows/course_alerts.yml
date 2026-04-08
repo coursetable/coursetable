@@ -1,0 +1,25 @@
+name: Course alert emails
+
+permissions:
+  contents: none
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run course alert dispatch
+        env:
+          URL: ${{ secrets.COURSE_ALERT_DISPATCH_URL }}
+          SECRET: ${{ secrets.COURSE_ALERT_CRON_SECRET }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$SECRET" ]; then
+            echo "Skipping: set COURSE_ALERT_DISPATCH_URL and COURSE_ALERT_CRON_SECRET"
+            exit 0
+          fi
+          curl -fsS -X POST "$URL" \
+            -H "X-CourseTable-Course-Alert-Cron: $SECRET"

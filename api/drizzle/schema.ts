@@ -192,3 +192,22 @@ export const savedSearches = pgTable(
     ).on(table.netId, table.name),
   }),
 );
+
+export const courseAlertSubscriptions = pgTable(
+  'courseAlertSubscriptions',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    listingId: integer('listingId').notNull(),
+    watermarkLastUpdatedMs: bigint('watermarkLastUpdatedMs', {
+      mode: 'number',
+    }),
+    createdAt: bigint('createdAt', { mode: 'number' }).notNull(),
+  },
+  (table) => ({
+    courseAlertNetListingUnique: uniqueIndex(
+      'course_alert_sub_net_listing_idx',
+    ).on(table.netId, table.listingId),
+    courseAlertNetIdx: index('course_alert_sub_net_idx').on(table.netId),
+  }),
+);
