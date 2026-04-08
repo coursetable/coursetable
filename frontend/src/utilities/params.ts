@@ -208,7 +208,11 @@ export function createFilterLink<K extends keyof Filters>(
     const values = value.map((v) =>
       typeof v === 'object' && Object.hasOwn(v, 'value') ? v.value : v,
     );
-    newSearch.set(key, values.join(','));
+    // Avoid `?key=` (empty string): getFilterFromParams treats ''
+    // as "use default", which breaks filters whose empty state differs
+    // from default (e.g. selectSeasons).
+    if (values.length === 0) newSearch.delete(key);
+    else newSearch.set(key, values.join(','));
   } else if (typeof value === 'object' && Object.hasOwn(value, 'value')) {
     newSearch.set(key, value.value.toString());
   } else {
