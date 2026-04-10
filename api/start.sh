@@ -80,7 +80,7 @@ then
 
     if [[ $FERRY_SEED == true ]]
     then
-        docker exec -it express /bin/bash -c "cd api && npm run db:push"
+        docker exec -it express /bin/bash -c "cd api && npm run db:migrate"
     fi
     if [[ $SEED_FRIENDS == true ]]
     then

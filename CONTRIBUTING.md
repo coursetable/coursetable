@@ -138,10 +138,10 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ```sh
    docker exec -it express sh
    # Inside the express container's terminal
-   cd api && npm run db:push
+   cd api && npm run db:migrate
    ```
 
-   Make sure to complete any confirmation dialogs that appear. Remember that any changes to `api/drizzle/schema.ts` will require running this step again.
+   Remember that any changes to `api/drizzle/schema.ts` require running `db:migrate` again from `api` and committing new files under `drizzle/migrations/`.
 
 1. In a separate terminal window, start the frontend:
 
@@ -183,7 +183,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
 - `relation "studentBluebookSettings" does not exist`
 
-  Make sure to seed the Postgres database (`npm run db:push`) after starting the containers.
+  Make sure to seed the Postgres database (`npm run db:migrate`) after starting the containers.
 
 ## Running offline
 

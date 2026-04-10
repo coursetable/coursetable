@@ -28,6 +28,7 @@ jobs:
 
       - name: Run DB migration
         run: |
+          # Apply committed SQL
           # Run as the Actions user so bind-mounted node_modules stays deletable by checkout
           docker run --rm --network db \
             --user "$(id -u):$(id -g)" \
@@ -35,4 +36,4 @@ jobs:
             -e DB_URL="${DB_URL}" \
             -v "${{ github.workspace }}:/app" -w /app \
             oven/bun:latest \
-            sh -c "bun install --frozen-lockfile && cd api && bunx drizzle-kit push:pg"
+            sh -c "bun install --frozen-lockfile && cd api && bunx drizzle-kit migrate"

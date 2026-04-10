@@ -53,13 +53,22 @@ Here's the data flow for user data:
 2. The API directly connects to this database using Drizzle.
 3. The frontend requests the Express endpoint, which then makes DB calls.
 
-If you want to make changes to the DB schema, you can do so by modifying the `api/drizzle/schema.ts` file. This file is used to generate the DB schema and the TypeScript types for the API. For every update, and also for the initial setup, you need to run `npm run db:push` in the `express` container. You can do this by running:
+If you want to make changes to the DB schema, edit `api/drizzle/schema.ts`, then run migrations from `api` (this generates SQL when your schema differs from the last snapshot, then applies pending migrations; in CI only the apply step runs). You can run this on your **host** with Bun (same `package.json` script as `npm run`):
 
 ```bash
-docker exec -it express "cd api && npm run db:push"
+cd api
+doppler run -- bun run db:migrate
 ```
 
-Note that if you delete the local container images and start them again, the DB is now empty. You need to run `db:push` to re-initialize the DB. Then, on the dev frontend, you need to log in again because your user record does not exist anymore. If you don't want to go through the challenge process, you can visit `http://localhost:8081` and modify the database, in `studentBluebookSettings#evaluationsEnabled`.
+Or **inside the `express` container** (Node/npm):
+
+```bash
+docker exec -it express sh -c "cd api && npm run db:migrate"
+```
+
+Commit any new files under `api/drizzle/migrations/`. To apply already-generated SQL without running `generate` first (e.g. troubleshooting), run `bunx drizzle-kit migrate` from `api`.
+
+Note that if you delete the local container images and start them again, the DB is now empty. You need to run `db:migrate` to apply migrations and re-initialize the schema. Then, on the dev frontend, you need to log in again because your user record does not exist anymore. If you don't want to go through the challenge process, you can visit `http://localhost:8081` and modify the database, in `studentBluebookSettings#evaluationsEnabled`.
 
 ### Working with course data
 
