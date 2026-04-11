@@ -1,48 +1,3 @@
-/* Match worksheet NavbarWorksheetSearch ToggleButtonGroup styling */
-.filterToggleGroup {
-  width: 100%;
-  max-width: 320px;
-}
-
-.filterToggleButton {
-  --bs-btn-active-bg: var(--color-primary);
-  --bs-btn-active-border-color: var(--color-primary);
-
-  flex: 1 1 0;
-  min-width: 0;
-  font-size: 14px;
-  font-weight: 500;
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  border: var(--color-icon) 2px solid;
-  padding: 0.25rem 0.35rem;
-  transition:
-    border-color var(--trans-dur),
-    background-color var(--trans-dur),
-    color var(--trans-dur);
-}
-
-.filterToggleButton:hover {
-  background-color: var(--color-surface-hover);
-  color: var(--color-text);
-  border: var(--color-primary-hover) 2px solid;
-}
-
-.filterToggleButton:active {
-  background-color: var(--color-surface-active) !important;
-  color: var(--color-text) !important;
-}
-
-.filterToggleButton:focus {
-  box-shadow: none !important;
-}
-
-.filterToggleButton:global(.active) {
-  background-color: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
-  color: #fff !important;
-}
-
 .aggregateContainer {
   margin: 0 0 0.75rem;
   padding: 0.75rem;
@@ -100,10 +55,4 @@
   padding: 3px 10px;
   line-height: 1.5;
   min-height: 1.5rem;
-}
-
-.filterContainer {
-  display: flex;
-  margin: auto;
-  justify-content: center;
 }

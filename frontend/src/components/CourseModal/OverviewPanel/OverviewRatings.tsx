@@ -1,14 +1,7 @@
-import React, { useState, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import {
-  Form,
-  Badge,
-  OverlayTrigger,
-  Tooltip,
-  ToggleButton,
-  ToggleButtonGroup,
-} from 'react-bootstrap';
+import { Form, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { AiOutlineStar } from 'react-icons/ai';
 import { BiBookOpen } from 'react-icons/bi';
 import { IoPersonOutline } from 'react-icons/io5';
@@ -34,14 +27,7 @@ import type { ModalNavigationFunction } from '../CourseModal';
 
 import styles from './OverviewRatings.module.css';
 
-type Filter = 'course' | 'professor';
-
 type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
-
-type CourseProfOption = {
-  readonly displayName: string;
-  readonly value: Filter;
-};
 
 function createProfSummary(
   courseProfessors: RelatedCourseInfo['course_professors'],
@@ -100,38 +86,6 @@ function createProfSummary(
     </>
   );
   return { key: names.join(' • '), links };
-}
-
-function CourseProfFilter({
-  options,
-  filter,
-  onChange,
-}: {
-  readonly options: readonly CourseProfOption[];
-  readonly filter: Filter;
-  readonly onChange: (value: Filter) => void;
-}) {
-  return (
-    <ToggleButtonGroup
-      type="radio"
-      name="course-modal-ratings-view"
-      value={filter}
-      onChange={(val) => onChange(val as Filter)}
-      className={clsx(styles.filterToggleGroup, 'mb-2')}
-      aria-label="Evaluation ratings view"
-    >
-      {options.map((opt) => (
-        <ToggleButton
-          key={opt.value}
-          id={`overview-ratings-${opt.value}`}
-          className={styles.filterToggleButton}
-          value={opt.value}
-        >
-          {opt.displayName}
-        </ToggleButton>
-      ))}
-    </ToggleButtonGroup>
-  );
 }
 
 function AggregateRating({
@@ -221,12 +175,6 @@ function OverviewRatings({
         b.season_code.localeCompare(a.season_code, 'en-US') ||
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
-
-  const options: readonly CourseProfOption[] = [
-    { displayName: `Course (${sameCourseNormalized.length})`, value: 'course' },
-    { displayName: 'Prof', value: 'professor' },
-  ];
-  const [filter, setFilter] = useState<Filter>('course');
 
   const { groupSameProf, togglePref } = useStore(
     useShallow((state) => ({
@@ -318,45 +266,7 @@ function OverviewRatings({
           />
         </div>
       </div>
-      <div className={styles.filterContainer}>
-        <CourseProfFilter
-          options={options}
-          filter={filter}
-          onChange={setFilter}
-        />
-      </div>
-      {filter === 'professor' ? (
-        <div className="alert alert-info m-3">
-          <p>
-            We've moved! To view course offerings by each professor, click on
-            their name on the left, or select from the list below.
-          </p>
-          <ul>
-            {listing.course.course_professors.map((prof) => (
-              <li key={prof.professor.professor_id}>
-                <Link
-                  to={createProfModalLink(
-                    prof.professor.professor_id,
-                    searchParams,
-                  )}
-                  onClick={() => {
-                    navigate(
-                      'push',
-                      {
-                        type: 'professor',
-                        data: prof.professor.professor_id,
-                      },
-                      searchParams,
-                    );
-                  }}
-                >
-                  {prof.professor.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : sameCourseNormalized.length !== 0 ? (
+      {sameCourseNormalized.length !== 0 ? (
         <>
           <Form.Check type="switch" className="mb-3">
             <Form.Check.Input
