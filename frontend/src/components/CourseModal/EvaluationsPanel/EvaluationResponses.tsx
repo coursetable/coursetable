@@ -1,14 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { OverlayTrigger, Tab, Tabs, Tooltip } from 'react-bootstrap';
 import { HiSparkles } from 'react-icons/hi2';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import { MdInfoOutline } from 'react-icons/md';
 import Mark from 'mark.js';
 import type { SearchEvaluationNarrativesQuery } from '../../../generated/graphql-types';
 import { evalQuestionTags } from '../../../utilities/constants';
 import { truncatedText } from '../../../utilities/course';
-import { Input, TextComponent } from '../../Typography';
+import { Input, LinkLikeText, TextComponent } from '../../Typography';
 import styles from './EvaluationResponses.module.css';
 
 function CommentRows({
@@ -35,6 +36,71 @@ function CommentRows({
     ];
   }
   return filteredResps;
+}
+
+function AiSummary({
+  tag,
+  text,
+}: {
+  readonly tag: string;
+  readonly text: string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const [clamped, setClamped] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    // Measure only against the collapsed state; when expanded the element
+    // grows to fit the content, so scrollHeight === clientHeight.
+    if (!expanded) setClamped(el.scrollHeight > el.clientHeight);
+  }, [text, expanded]);
+
+  return (
+    <div className={styles.summaryCard}>
+      <div className={styles.summaryHeader}>
+        <HiSparkles className={styles.summaryIcon} aria-hidden />
+        <span className={styles.summaryLabel}>AI Summary</span>
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id={`ai-summary-tooltip-${tag}`}>
+              Generated from student comments — may be imperfect.
+            </Tooltip>
+          }
+        >
+          <button
+            type="button"
+            className={styles.summaryInfo}
+            aria-label="About AI summaries"
+          >
+            <MdInfoOutline aria-hidden />
+          </button>
+        </OverlayTrigger>
+      </div>
+      <div
+        ref={bodyRef}
+        className={clsx(styles.summaryBody, !expanded && styles.summaryClamped)}
+      >
+        <TextComponent type="secondary">{text}</TextComponent>
+      </div>
+      {(clamped || expanded) && (
+        <div className={styles.summaryToggle}>
+          <LinkLikeText
+            onClick={() => setExpanded((prev) => !prev)}
+            title={expanded ? 'Show less' : 'Show more'}
+          >
+            {expanded ? (
+              <IoIosArrowUp size={18} />
+            ) : (
+              <IoIosArrowDown size={18} />
+            )}
+          </LinkLikeText>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // Allow some variations in question text for the same tag, and make them
@@ -206,34 +272,7 @@ function EvaluationResponses({
                   </TextComponent>
                 </p>
                 {summariesByTag[tag] && (
-                  <div className={styles.summaryCard}>
-                    <div className={styles.summaryHeader}>
-                      <HiSparkles className={styles.summaryIcon} aria-hidden />
-                      <span className={styles.summaryLabel}>AI Summary</span>
-                      <OverlayTrigger
-                        placement="top"
-                        overlay={
-                          <Tooltip id={`ai-summary-tooltip-${tag}`}>
-                            Generated from student comments — may be imperfect.
-                          </Tooltip>
-                        }
-                      >
-                        <button
-                          type="button"
-                          className={styles.summaryInfo}
-                          aria-label="About AI summaries"
-                        >
-                          <MdInfoOutline aria-hidden />
-                        </button>
-                      </OverlayTrigger>
-                    </div>
-                    <TextComponent
-                      type="secondary"
-                      className={styles.summaryBody}
-                    >
-                      {summariesByTag[tag]}
-                    </TextComponent>
-                  </div>
+                  <AiSummary tag={tag} text={summariesByTag[tag]} />
                 )}
                 <CommentRows responses={responses} filter={filter} />
               </Tab>

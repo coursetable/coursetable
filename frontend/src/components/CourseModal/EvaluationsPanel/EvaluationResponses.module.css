@@ -149,6 +149,22 @@ mark {
   line-height: 1.55;
 }
 
+/* Collapsed state: clamp to 3 lines. Matches the "Read more" pattern used by
+   the course description in OverviewInfo (-webkit-line-clamp). */
+.summaryClamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.summaryToggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
 @keyframes summary-reveal {
   from {
     opacity: 0;
