@@ -56,9 +56,7 @@ Here's the data flow for user data:
 If you want to make changes to the DB schema, you can do so by modifying the `api/drizzle/schema.ts` file. This file is used to generate the DB schema and the TypeScript types for the API. For every update, and also for the initial setup, you need to run `npm run db:migrate` in the `express` container. You can do this by running:
 
 ```bash
-docker exec -it express sh
-# Inside the express container's terminal
-cd api && npm run db:migrate
+docker exec -it express "cd api && npm run db:migrate"
 ```
 
 When you change the schema, `db:migrate` generates new SQL under `api/drizzle/migrations/` as needed; **commit those files** with your PR. Deploy applies only that committed SQL (`drizzle-kit migrate` in CD), not a fresh `generate` from the server.
