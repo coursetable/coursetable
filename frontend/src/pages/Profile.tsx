@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
-import { Button, Card, Form, Tab, Tabs } from 'react-bootstrap';
+import { Button, Card, Form, Spinner, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useApolloClient } from '@apollo/client';
 import { toast } from 'react-toastify';
@@ -9,9 +10,11 @@ import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { TextComponent } from '../components/Typography';
+import WishlistItems from '../components/Wishlist/WishlistItems';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import { resetCatalogCache } from '../ferry/ferryCatalogCache';
 import { useFerry, useWorksheetInfo } from '../hooks/useFerry';
+import { useWishlist } from '../hooks/useWishlist';
 import {
   getMyProfile,
   revokeEvaluationsAccess,
@@ -26,7 +29,12 @@ import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';
 import styles from './Profile.module.css';
 
-const PROFILE_TAB_KEYS = ['overview', 'settings', 'advanced'] as const;
+const PROFILE_TAB_KEYS = [
+  'overview',
+  'settings',
+  'wishlist',
+  'advanced',
+] as const;
 type ProfileTabKey = (typeof PROFILE_TAB_KEYS)[number];
 
 function isProfileTabKey(key: string): key is ProfileTabKey {
@@ -36,6 +44,7 @@ function isProfileTabKey(key: string): key is ProfileTabKey {
 function tabParamToActiveKey(tabParam: string | null): ProfileTabKey {
   if (tabParam === 'overview') return 'overview';
   if (tabParam === 'settings') return 'settings';
+  if (tabParam === 'wishlist') return 'wishlist';
   if (tabParam === 'advanced') return 'advanced';
   return 'overview';
 }
@@ -43,6 +52,7 @@ function tabParamToActiveKey(tabParam: string | null): ProfileTabKey {
 function activeKeyToTabParam(key: ProfileTabKey): string | null {
   if (key === 'overview') return null;
   if (key === 'settings') return 'settings';
+  if (key === 'wishlist') return 'wishlist';
   return 'advanced';
 }
 
@@ -153,6 +163,8 @@ function Profile() {
     );
   };
 
+  const { wishlistLoading, wishlistError, wishlistCourses } = useWishlist();
+
   useEffect(() => {
     if (!currentUser) void userRefresh();
   }, [currentUser, userRefresh]);
@@ -183,6 +195,10 @@ function Profile() {
       setPlaceholderLastName(last);
     });
   }, [currentUser]);
+
+  useEffect(() => {
+    if (wishlistError) Sentry.captureException(wishlistError);
+  }, [wishlistError]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -751,6 +767,36 @@ function Profile() {
                       </Button>
                     </div>
                   </>
+                )}
+              </Card.Body>
+            </Card>
+          </div>
+        </Tab>
+        <Tab eventKey="wishlist" title="Wishlist">
+          <div className={styles.tabContent}>
+            <Card className={styles.profileCard}>
+              <Card.Body className={styles.cardBody}>
+                <h3 className={styles.sectionTitle}>Wishlist</h3>
+                <TextComponent
+                  type="secondary"
+                  className={styles.wishlistIntro}
+                >
+                  Courses you bookmark appear here. Use the bookmark icon on a
+                  course to add or remove them.
+                </TextComponent>
+                {wishlistError ? (
+                  <TextComponent type="secondary">
+                    Couldn&apos;t load your wishlist. Try again later.
+                  </TextComponent>
+                ) : wishlistLoading ? (
+                  <div className="d-flex justify-content-center py-5">
+                    <Spinner animation="border" aria-label="Loading wishlist" />
+                  </div>
+                ) : (
+                  <WishlistItems
+                    data={wishlistCourses}
+                    courseLinkClassName={styles.friendLink}
+                  />
                 )}
               </Card.Body>
             </Card>
