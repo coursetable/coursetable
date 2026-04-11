@@ -60,7 +60,6 @@
     "pnpm": "please-use-bun"
   },
   "overrides": {
-    "eslint-plugin-react-hooks": "Please see https://github.com/facebook/react/issues/35045 (this is a comment—remove once it's resolved)",
     "eslint-plugin-react-hooks": "7.0.0"
   },
   "patchedDependencies": {

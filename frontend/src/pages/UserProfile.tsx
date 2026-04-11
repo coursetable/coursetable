@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import { Card } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 
-import NotFound from './NotFound';
 import { TextComponent } from '../components/Typography';
 import {
   getSharedProfile,
@@ -13,7 +12,10 @@ import {
 } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import { useStore } from '../store';
+import { suspended } from '../utilities/display';
 import styles from './UserProfile.module.css';
+
+const NotFound = suspended(() => import('./NotFound'));
 
 const formatValue = ({
   value,
@@ -104,9 +106,7 @@ function UserProfile() {
             <TextComponent type="secondary">
               Could not load this profile. Try again in a moment.
             </TextComponent>
-          ) : notFound || !profile ? (
-            <TextComponent type="secondary">Profile not found.</TextComponent>
-          ) : (
+          ) : profile ? (
             <>
               <div className={styles.infoRow}>
                 <TextComponent type="secondary" className={styles.label}>
@@ -172,7 +172,7 @@ function UserProfile() {
                 </TextComponent>
               </div>
             </>
-          )}
+          ) : null}
         </Card.Body>
       </Card>
 
