@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { OverlayTrigger, Tab, Tabs, Tooltip } from 'react-bootstrap';
@@ -38,16 +38,11 @@ function CommentRows({
   return filteredResps;
 }
 
-function AiSummary({
-  tag,
-  text,
-}: {
-  readonly tag: string;
-  readonly text: string;
-}) {
+function AiSummary({ text }: { readonly text: string }) {
   const [expanded, setExpanded] = useState(false);
   const [clamped, setClamped] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const tooltipId = useId();
 
   useEffect(() => {
     const el = bodyRef.current;
@@ -65,7 +60,7 @@ function AiSummary({
         <OverlayTrigger
           placement="top"
           overlay={
-            <Tooltip id={`ai-summary-tooltip-${tag}`}>
+            <Tooltip id={tooltipId}>
               Generated from student comments — may be imperfect.
             </Tooltip>
           }
@@ -273,7 +268,7 @@ function EvaluationResponses({
                   </TextComponent>
                 </p>
                 {summariesByTag[tag] && (
-                  <AiSummary tag={tag} text={summariesByTag[tag]} />
+                  <AiSummary text={summariesByTag[tag]} />
                 )}
                 <CommentRows responses={responses} filter={filter} />
               </Tab>
