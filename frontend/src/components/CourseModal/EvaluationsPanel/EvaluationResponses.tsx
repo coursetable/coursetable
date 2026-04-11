@@ -175,7 +175,8 @@ function EvaluationResponses({
     const map: { [tag: string]: string } = {};
     for (const s of info.evaluation_narrative_summaries) {
       const tag =
-        s.evaluation_question.tag ?? s.evaluation_question.question_text;
+        s.evaluation_question.tag ??
+        canonicalizeQuestionText(s.evaluation_question.question_text);
       if (s.summary) map[tag] = s.summary;
     }
     return map;
