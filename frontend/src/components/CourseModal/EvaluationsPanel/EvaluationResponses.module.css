@@ -115,16 +115,23 @@ mark {
   padding: 0;
   background: transparent;
   border: none;
+  border-radius: 3px;
   color: var(--color-text-tertiary);
   cursor: help;
   font-size: 13px;
-  transition: color var(--trans-dur);
+  transition:
+    color var(--trans-dur),
+    box-shadow var(--trans-dur);
 }
 
-.summaryInfo:hover,
+.summaryInfo:hover {
+  color: var(--color-primary);
+}
+
 .summaryInfo:focus-visible {
   color: var(--color-primary);
   outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
 }
 
 .summaryBody {
