@@ -75,3 +75,94 @@ mark {
 .filterInput {
   margin-bottom: 5px;
 }
+
+.summaryCard {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem 0.65rem 1rem;
+  margin: 0.5rem 0 0.75rem;
+  background-color: var(--color-primary-subdued-2);
+  animation: summary-reveal 0.35s ease-out both;
+}
+
+/* 3px gradient left edge — echoes the blue→teal accent used in
+   Notice.module.css so the AI accent reads as native to the app. */
+.summaryCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary) 0%,
+    rgb(99 166 208) 100%
+  );
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.3rem;
+}
+
+.summaryIcon {
+  font-size: 13px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.summaryLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+}
+
+.summaryInfo {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-text-tertiary);
+  cursor: help;
+  font-size: 13px;
+  transition: color var(--trans-dur);
+}
+
+.summaryInfo:hover,
+.summaryInfo:focus-visible {
+  color: var(--color-primary);
+  outline: none;
+}
+
+.summaryBody {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+@keyframes summary-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summaryCard {
+    animation: none;
+  }
+}

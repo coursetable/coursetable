@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
-import { Tab, Tabs } from 'react-bootstrap';
+import { OverlayTrigger, Tab, Tabs, Tooltip } from 'react-bootstrap';
+import { HiSparkles } from 'react-icons/hi2';
+import { MdInfoOutline } from 'react-icons/md';
 import Mark from 'mark.js';
 import type { SearchEvaluationNarrativesQuery } from '../../../generated/graphql-types';
 import { evalQuestionTags } from '../../../utilities/constants';
@@ -101,6 +103,18 @@ function EvaluationResponses({
     return [tempResponses, sortedResponses];
   }, [info]);
 
+  // AI-generated summaries indexed by tag
+  const summariesByTag = useMemo(() => {
+    if (!info) return {};
+    const map: { [tag: string]: string } = {};
+    for (const s of info.evaluation_narrative_summaries) {
+      const tag =
+        s.evaluation_question.tag ?? s.evaluation_question.question_text;
+      if (s.summary) map[tag] = s.summary;
+    }
+    return map;
+  }, [info]);
+
   // Number of questions
   const numQuestions = Object.keys(origResponses).length;
 
@@ -191,6 +205,36 @@ function EvaluationResponses({
                     responses
                   </TextComponent>
                 </p>
+                {summariesByTag[tag] && (
+                  <div className={styles.summaryCard}>
+                    <div className={styles.summaryHeader}>
+                      <HiSparkles className={styles.summaryIcon} aria-hidden />
+                      <span className={styles.summaryLabel}>AI Summary</span>
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id={`ai-summary-tooltip-${tag}`}>
+                            Generated from student comments — may be imperfect.
+                          </Tooltip>
+                        }
+                      >
+                        <button
+                          type="button"
+                          className={styles.summaryInfo}
+                          aria-label="About AI summaries"
+                        >
+                          <MdInfoOutline aria-hidden />
+                        </button>
+                      </OverlayTrigger>
+                    </div>
+                    <TextComponent
+                      type="secondary"
+                      className={styles.summaryBody}
+                    >
+                      {summariesByTag[tag]}
+                    </TextComponent>
+                  </div>
+                )}
                 <CommentRows responses={responses} filter={filter} />
               </Tab>
             ),
