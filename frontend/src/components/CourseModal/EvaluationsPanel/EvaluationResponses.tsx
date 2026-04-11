@@ -46,10 +46,20 @@ function AiSummary({ text }: { readonly text: string }) {
 
   useEffect(() => {
     const el = bodyRef.current;
-    if (!el) return;
+    if (!el) return undefined;
     // Measure only against the collapsed state; when expanded the element
     // grows to fit the content, so scrollHeight === clientHeight.
-    if (!expanded) setClamped(el.scrollHeight > el.clientHeight);
+    const measure = () => {
+      if (!expanded) setClamped(el.scrollHeight > el.clientHeight);
+    };
+    measure();
+    // Tab panes render with display: none until their tab is active, so the
+    // initial measurement reads 0 for every inactive pane. A ResizeObserver
+    // re-runs measurement when the element transitions from 0×0 (hidden) to
+    // its real size, and on any subsequent layout changes.
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [text, expanded]);
 
   return (
