@@ -53,7 +53,7 @@ Here's the data flow for user data:
 2. The API directly connects to this database using Drizzle.
 3. The frontend requests the Express endpoint, which then makes DB calls.
 
-If you want to make changes to the DB schema, edit `api/drizzle/schema.ts`, then run migrations from `api` (this generates SQL when your schema differs from the last snapshot, then applies pending migrations; in CI only the apply step runs). You can run this on your **host** with Bun (same `package.json` script as `npm run`):
+If you want to make changes to the DB schema, edit `api/drizzle/schema.ts`, then run migrations from `api` (this generates SQL when your schema differs from the last snapshot, then applies pending migrations; in CD only the apply step runs). You can run this on your **host** with Bun (same `package.json` script as `npm run`):
 
 ```bash
 cd api
@@ -66,9 +66,7 @@ Or **inside the `express` container** (Node/npm):
 docker exec -it express sh -c "cd api && npm run db:migrate"
 ```
 
-Commit any new files under `api/drizzle/migrations/`. To apply already-generated SQL without running `generate` first (e.g. troubleshooting), run `bunx drizzle-kit migrate` from `api`.
-
-Note that if you delete the local container images and start them again, the DB is now empty. You need to run `db:migrate` to apply migrations and re-initialize the schema. Then, on the dev frontend, you need to log in again because your user record does not exist anymore. If you don't want to go through the challenge process, you can visit `http://localhost:8081` and modify the database, in `studentBluebookSettings#evaluationsEnabled`.
+Commit any new files under `api/drizzle/migrations/`. When your schema already matches the snapshots, `generate` is a no-op before `migrate`; running `bunx drizzle-kit migrate` alone from `api` is apply-only and matches what runs in CD.
 
 ### Working with course data
 

@@ -28,7 +28,6 @@ jobs:
 
       - name: Run DB migration
         run: |
-          # Apply committed SQL
           # Run as the Actions user so bind-mounted node_modules stays deletable by checkout
           docker run --rm --network db \
             --user "$(id -u):$(id -g)" \
