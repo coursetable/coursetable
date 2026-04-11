@@ -133,7 +133,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    You should see something like `express         | {"level":"info","message":"Sitemap index generated at static/sitemaps/sitemap_index.xml","timestamp":"2024-11-23 17:14:10:1410"}`. You can test that the API is working by going to https://localhost:3001/api/ping which should show you a page that says "pong".
 
-1. In a separate terminal window, connect to the `express` container's execution context and apply database migrations:
+1. In a separate terminal window, connect to the `express` container's execution context and seed the Postgres DB:
 
    ```sh
    docker exec -it express sh
@@ -141,7 +141,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    cd api && npm run db:migrate
    ```
 
-   Remember that any changes to `api/drizzle/schema.ts` require running `db:migrate` again from `api` and committing new files under `api/drizzle/migrations/`.
+   Remember that any changes to `api/drizzle/schema.ts` will require running this step again, and you should commit any new files under `api/drizzle/migrations/` with your PR.
 
 1. In a separate terminal window, start the frontend:
 
@@ -183,7 +183,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
 - `relation "studentBluebookSettings" does not exist`
 
-  Run migrations so the schema exists: from `api`, `doppler run -- bun run db:migrate` (or `npm run db:migrate` inside the `express` container).
+  Make sure to seed the Postgres database (`npm run db:migrate`) after starting the containers.
 
 ## Running offline
 
