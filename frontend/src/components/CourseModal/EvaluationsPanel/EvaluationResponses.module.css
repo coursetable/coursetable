@@ -139,12 +139,12 @@ mark {
   line-height: 1.55;
 }
 
-/* Collapsed state: clamp to 3 lines. Matches the "Read more" pattern used by
+/* Collapsed state: clamp to 6 lines. Matches the "Read more" pattern used by
    the course description in OverviewInfo (-webkit-line-clamp). */
 .summaryClamped {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
