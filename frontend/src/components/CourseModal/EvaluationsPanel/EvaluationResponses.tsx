@@ -52,11 +52,12 @@ function AiSummary({ text }: { readonly text: string }) {
     // long enough to warrant a toggle. When expanded, the element grows to
     // fit its content (scrollHeight === clientHeight), so we temporarily
     // apply the clamp class to measure overflow.
+    const clampClass = styles.summaryClamped;
     const measure = () => {
-      if (expanded) {
-        el.classList.add(styles.summaryClamped);
+      if (expanded && clampClass) {
+        el.classList.add(clampClass);
         const overflowing = el.scrollHeight > el.clientHeight;
-        el.classList.remove(styles.summaryClamped);
+        el.classList.remove(clampClass);
         setClamped(overflowing);
       } else {
         setClamped(el.scrollHeight > el.clientHeight);
