@@ -810,6 +810,20 @@ export function requestAddFriend(friendNetId: NetId) {
   });
 }
 
+const worksheetDemandSchema = z.object({
+  demand: z.number().int().nonnegative(),
+});
+
+export async function fetchWorksheetDemand(crn: number, season: string) {
+  return fetchAPI(`/demand/worksheet?crn=${crn}&season=${season}`, {
+    schema: worksheetDemandSchema,
+    breadcrumb: {
+      category: 'demand',
+      message: 'Fetching worksheet demand',
+    },
+  });
+}
+
 export function removeFriend(friendNetId: string) {
   return fetchAPI('/friends/remove', {
     body: { friendNetId },
