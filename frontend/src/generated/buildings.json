@@ -58,14 +58,13 @@
     "url": "https://map.yale.edu/?id=1910#!m/559547"
   },
   { "building_name": "Branford College", "code": "BR", "url": "" },
-  { "building_name": "Brady Memorial Laboratory", "code": "BRADY", "url": "" },
+  { "building_name": null, "code": "BRADY", "url": "" },
   {
     "building_name": "Beinecke Rare Book Library",
     "code": "BRBL",
     "url": "https://map.yale.edu/?id=1910#!m/531533"
   },
   { "building_name": null, "code": "BRW35", "url": "" },
-  { "building_name": "53 Broadway", "code": "BRW53", "url": "" },
   { "building_name": null, "code": "C", "url": "" },
   { "building_name": null, "code": "CALHIL", "url": "" },
   { "building_name": null, "code": "CC", "url": "" },
@@ -76,7 +75,6 @@
   },
   { "building_name": null, "code": "CH100", "url": "" },
   { "building_name": "100 College Street", "code": "CO100", "url": "" },
-  { "building_name": "101 College Street", "code": "CO101", "url": "" },
   {
     "building_name": "451 College Street",
     "code": "CO451",
@@ -226,7 +224,6 @@
     "code": "HLH31",
     "url": "https://map.yale.edu/?id=1910#!m/559990"
   },
-  { "building_name": "37 Hillhouse Avenue", "code": "HLH37", "url": "" },
   { "building_name": "46 Hillhouse Avenue", "code": "HLH46", "url": "" },
   {
     "building_name": "51 Hillhouse Avenue",
@@ -266,7 +263,7 @@
     "code": "K",
     "url": "https://map.yale.edu/?id=1910#!m/559945"
   },
-  { "building_name": "Kline Biology Tower", "code": "KBT", "url": "" },
+  { "building_name": null, "code": "KBT", "url": "" },
   {
     "building_name": "Kline Geology Laboratory",
     "code": "KGL",

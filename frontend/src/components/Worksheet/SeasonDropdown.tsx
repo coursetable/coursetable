@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import { useShallow } from 'zustand/react/shallow';
-import type { Option } from '../../contexts/searchContext';
 import type { Season } from '../../queries/graphql-types';
+import type { Option } from '../../search/searchTypes';
 import { useStore } from '../../store';
 import { toSeasonString } from '../../utilities/course';
 import { Popout } from '../Search/Popout';

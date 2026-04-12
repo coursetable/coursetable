@@ -6,7 +6,6 @@ import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 
-import { useSearch } from '../../../contexts/searchContext';
 import type {
   CourseModalOverviewDataQuery,
   PrereqLinkInfoQuery,
@@ -445,7 +444,7 @@ function OverviewInfo({
   readonly listing: NonNullable<CourseModalOverviewDataQuery['self']>;
   readonly sameCourse: CourseModalOverviewDataQuery['sameCourse'];
 }) {
-  const { numFriends } = useSearch();
+  const numFriends = useStore((state) => state.numFriends);
   const user = useStore((state) => state.user);
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),

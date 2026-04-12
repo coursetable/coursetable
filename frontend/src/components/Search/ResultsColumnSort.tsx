@@ -6,11 +6,8 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import {
-  useSearch,
-  type Option,
-  type SortKeys,
-} from '../../contexts/searchContext';
+import { useSearch } from '../../hooks/useSearch';
+import type { Option, SortKeys } from '../../search/searchTypes';
 import styles from './ResultsColumnSort.module.css';
 
 const isNumeric: { [key in SortKeys]: boolean } = {

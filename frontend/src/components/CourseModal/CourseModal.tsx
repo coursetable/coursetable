@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
+import OverviewPanel from './OverviewPanel/OverviewPanel';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useModalHistory } from '../../hooks/useModalHistory';
 import {
@@ -15,10 +16,8 @@ import {
 import { suspended } from '../../utilities/display';
 import styles from './CourseModal.module.css';
 
-// We can only split subviews of CourseModal because CourseModal contains core
-// logic that determines whether itself is visible.
-// Maybe we should split more code into the subviews?
-const OverviewPanel = suspended(() => import('./OverviewPanel/OverviewPanel'));
+// Evaluations is still lazy-loaded; overview is bundled with CourseModal so
+// opening the course modal cannot fail on a separate chunk fetch/init.
 const EvaluationsPanel = suspended(
   () => import('./EvaluationsPanel/EvaluationsPanel'),
 );

@@ -19,6 +19,7 @@ import type {
   WalkBefore,
   WorksheetCalendarEvent,
 } from '../../utilities/calendar';
+import { formatSectionSuffix } from '../../utilities/course';
 import styles from './CalendarEvent.module.css';
 
 const weekdayFormatter = new Intl.DateTimeFormat('en-US', {
@@ -317,6 +318,7 @@ export function CalendarEventBody({
           className={clsx(styles.eventLine, styles.courseCodeText)}
         >
           {formattedTitle}
+          {formatSectionSuffix(event.listing.course)}
         </strong>
         <div
           data-event-line="true"

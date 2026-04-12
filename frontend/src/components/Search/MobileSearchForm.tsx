@@ -7,21 +7,23 @@ import { scroller } from 'react-scroll';
 import CustomSelect from './CustomSelect';
 import ResultsColumnSort from './ResultsColumnSort';
 import Toggle from './Toggle';
+import { useSearch } from '../../hooks/useSearch';
 import {
-  useSearch,
-  type Filters,
-  type CategoricalFilters,
-  type NumericFilters,
-  type FilterHandle,
-  filterLabels,
   defaultFilters,
-  type IntersectableFilters,
+  filterLabels,
   skillsAreasOptions,
   subjectsOptions,
   schoolsOptions,
   seasonsOptions,
+} from '../../search/searchConstants';
+import {
   sortByOptions,
-} from '../../contexts/searchContext';
+  type CategoricalFilters,
+  type FilterHandle,
+  type Filters,
+  type IntersectableFilters,
+  type NumericFilters,
+} from '../../search/searchTypes';
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
-import type { Option } from '../../contexts/searchContext';
+import type { Option } from '../../search/searchTypes';
 import { useComponentVisibleDropdown } from '../../utilities/display';
 import styles from './Popout.module.css';
 

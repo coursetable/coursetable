@@ -212,7 +212,7 @@ export const verifyChallenge = async (
   }
 
   const { token, salt, answers } = bodyParseRes.data;
-  // eslint-disable-next-line @typescript-eslint/init-declarations
+  // eslint-disable-next-line init-declarations
   let trueEvals: VerifyEvalsQuery;
   // Catch malformed token decryption errors
   try {

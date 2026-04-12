@@ -194,6 +194,11 @@
   flex-shrink: 0;
 }
 
+.wishlistIntro {
+  display: block;
+  margin-bottom: 1.75rem;
+}
+
 @media (max-width: calc(768px - 0.5px)) {
   .container {
     width: 90vw;

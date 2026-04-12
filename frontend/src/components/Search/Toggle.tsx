@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { IoFlaskOutline } from 'react-icons/io5';
-import {
-  useSearch,
-  filterLabels,
-  type BooleanOptions,
-} from '../../contexts/searchContext';
+import { useSearch } from '../../hooks/useSearch';
+import { filterLabels } from '../../search/searchConstants';
+import type { BooleanOptions } from '../../search/searchTypes';
 import styles from './Toggle.module.css';
 
 export default function Toggle<K extends BooleanOptions>({

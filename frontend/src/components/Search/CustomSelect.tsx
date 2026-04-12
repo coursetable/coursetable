@@ -11,7 +11,7 @@ import Select, {
   type ThemeConfig,
 } from 'react-select';
 import makeAnimated from 'react-select/animated';
-import type { Option } from '../../contexts/searchContext';
+import type { Option } from '../../search/searchTypes';
 import styles from './CustomSelect.module.css';
 
 // Styles for the select indicators

@@ -42,6 +42,11 @@ query CourseModalOverviewData(
       }
       last_enrollment @include(if: $hasEvals)
       last_enrollment_same_professors @include(if: $hasEvals)
+      average_rating @include(if: $hasEvals)
+      average_rating_same_professors @include(if: $hasEvals)
+      average_workload @include(if: $hasEvals)
+      average_workload_same_professors @include(if: $hasEvals)
+      average_professor_rating @include(if: $hasEvals)
       credits
       classnotes
       regnotes
@@ -202,6 +207,43 @@ query CourseSections(
         professor {
           name
         }
+      }
+    }
+  }
+}
+
+query CourseDataFromListingIds($listingIds: [Int!]!) {
+  listings(where: { listing_id: { _in: $listingIds } }) {
+    listing_id
+    crn
+    course_code
+    season_code
+    course {
+      same_course_id
+    }
+  }
+}
+
+query CourseDataFromSameCourseIds(
+  $sameCourseIds: [Int!]!
+  $hasEvals: Boolean!
+) {
+  listings(where: { course: { same_course_id: { _in: $sameCourseIds } } }) {
+    course_code
+    crn
+    listing_id
+    season_code
+    course {
+      same_course_id
+      title
+      course_professors {
+        professor {
+          name
+        }
+      }
+      evaluation_statistic @include(if: $hasEvals) {
+        avg_workload
+        avg_rating
       }
     }
   }

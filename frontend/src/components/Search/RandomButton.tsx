@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useSearch } from '../../contexts/searchContext';
+import { useSearch } from '../../hooks/useSearch';
 import { createCourseModalLink } from '../../utilities/display';
 import styles from './RandomButton.module.css';
 

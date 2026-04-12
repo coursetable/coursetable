@@ -4,12 +4,12 @@ import { RxCheck, RxCross2 } from 'react-icons/rx';
 import { components } from 'react-select';
 
 import CustomSelect from './CustomSelect';
+import { useSearch } from '../../hooks/useSearch';
 import {
   booleanAttributes,
-  useSearch,
-  type Option,
   type BooleanAttributes,
-} from '../../contexts/searchContext';
+  type Option,
+} from '../../search/searchTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function CustomControl(props: any) {
