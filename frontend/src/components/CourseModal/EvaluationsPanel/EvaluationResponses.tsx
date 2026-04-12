@@ -58,6 +58,7 @@ function AiSummary({ text }: { readonly text: string }) {
     // initial measurement reads 0 for every inactive pane. A ResizeObserver
     // re-runs measurement when the element transitions from 0×0 (hidden) to
     // its real size, and on any subsequent layout changes.
+    if (typeof ResizeObserver === 'undefined') return undefined;
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
