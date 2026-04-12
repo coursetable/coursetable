@@ -11,7 +11,6 @@ import type {
   PrereqLinkInfoQuery,
 } from '../../../generated/graphql-types';
 import { useModalHistory } from '../../../hooks/useModalHistory';
-import { useWorksheetDemand } from '../../../hooks/useWorksheetDemand';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
 import { useStore } from '../../../store';
 import { schools } from '../../../utilities/constants';
@@ -450,11 +449,6 @@ function OverviewInfo({
   const alsoTaking = [
     ...(numFriends[`${listing.season_code}${listing.crn}`] ?? []),
   ];
-  const { demand, loading: demandLoading } = useWorksheetDemand(
-    listing.crn,
-    listing.season_code,
-    Boolean(user),
-  );
   const { course } = listing;
   const [enrollment, isRealData] = getEnrolled(course, 'modal');
   return (
@@ -479,15 +473,6 @@ function OverviewInfo({
               ))}
             </ul>
           ) : null
-        }
-      />
-      <DataField
-        name="Demand"
-        value={demandLoading ? '…' : demand}
-        tooltip={
-          <span>
-            How many students have added this course to their worksheet
-          </span>
         }
       />
       <DataField
