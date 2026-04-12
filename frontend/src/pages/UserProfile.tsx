@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Card } from 'react-bootstrap';
@@ -66,36 +66,35 @@ function UserProfile() {
     };
   }, [netId]);
 
-  const displayName = useMemo(() => {
-    if (!profile) return null;
-    return profile.displayName ?? profile.netId;
-  }, [profile]);
-
   if (!netId) return <Navigate to="/profile" replace />;
   if (currentUser?.netId === netId) return <Navigate to="/profile" replace />;
   if (!loading && !loadError && notFound) return <NotFound />;
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <div className={styles.headerContainer}>
-        <div
-          className={clsx(
-            profile?.visible.name
-              ? styles.profileAvatar
-              : styles.profileAvatarAnon,
-          )}
-        >
-          {profile?.visible.name && profile.firstName && profile.lastName ? (
-            <span>
-              {profile.firstName[0]!}
-              {profile.lastName[0]!}
-            </span>
-          ) : (
-            <BsFillPersonFill size={20} />
-          )}
+      {profile ? (
+        <div className={styles.headerContainer}>
+          <div
+            className={clsx(
+              profile.visible.name
+                ? styles.profileAvatar
+                : styles.profileAvatarAnon,
+            )}
+          >
+            {profile.visible.name && profile.firstName && profile.lastName ? (
+              <span>
+                {profile.firstName[0]!}
+                {profile.lastName[0]!}
+              </span>
+            ) : (
+              <BsFillPersonFill size={20} />
+            )}
+          </div>
+          <h1 className={styles.profileHeader}>
+            {profile.displayName ?? profile.netId}
+          </h1>
         </div>
-        <h1 className={styles.profileHeader}>{displayName ?? netId}</h1>
-      </div>
+      ) : null}
 
       <Card className={styles.profileCard}>
         <Card.Body className={styles.cardBody}>
