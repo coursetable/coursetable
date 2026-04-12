@@ -39,7 +39,7 @@ function CommentRows({
 }
 
 function AiSummary({ text }: { readonly text: string }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [clamped, setClamped] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
   const tooltipId = useId();
