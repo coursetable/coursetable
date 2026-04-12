@@ -175,11 +175,13 @@ function UserProfile() {
         </Card.Body>
       </Card>
 
-      <div className="mt-3">
-        <Link to="/profile" className={styles.friendLink}>
-          Back to my profile
-        </Link>
-      </div>
+      {currentUser ? (
+        <div className="mt-3">
+          <Link to="/profile" className={styles.friendLink}>
+            Back to my profile
+          </Link>
+        </div>
+      ) : null}
     </div>
   );
 }

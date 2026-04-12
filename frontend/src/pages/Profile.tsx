@@ -182,6 +182,10 @@ function Profile() {
   }, [friendRequests, friendReqRefresh]);
 
   useEffect(() => {
+    void friendReqRefresh();
+  }, [friendReqRefresh]);
+
+  useEffect(() => {
     if (!currentUser) return;
     void getMyProfile().then((data) => {
       if (!data) return;
@@ -482,7 +486,10 @@ function Profile() {
                         >
                           <Link
                             to={`/u/${request.netId}`}
-                            className={styles.friendProfileLink}
+                            className={clsx(
+                              styles.friendProfileLink,
+                              styles.friendRowLink,
+                            )}
                           >
                             <TextComponent>
                               {request.name || request.netId}
@@ -521,22 +528,23 @@ function Profile() {
                     <div className={styles.friendsList}>
                       {friendsList.map(([friendNetId, friendData]) => (
                         <div key={friendNetId} className={styles.friendItem}>
-                          <div className={styles.friendDetails}>
-                            <Link
-                              to={`/u/${friendNetId}`}
-                              className={styles.friendProfileLink}
-                            >
-                              <TextComponent className={styles.friendName}>
-                                {friendData.name || friendNetId}
-                              </TextComponent>
-                            </Link>
+                          <Link
+                            to={`/u/${friendNetId}`}
+                            className={clsx(
+                              styles.friendProfileLink,
+                              styles.friendRowLink,
+                            )}
+                          >
+                            <TextComponent className={styles.friendName}>
+                              {friendData.name || friendNetId}
+                            </TextComponent>
                             <TextComponent
                               type="secondary"
                               className={styles.friendNetId}
                             >
                               {friendNetId}
                             </TextComponent>
-                          </div>
+                          </Link>
                           <div className={styles.friendActions}>
                             <Button
                               variant="primary"
