@@ -39,7 +39,7 @@ function CommentRows({
 }
 
 function AiSummary({ text }: { readonly text: string }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [clamped, setClamped] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
   const tooltipId = useId();
@@ -48,10 +48,19 @@ function AiSummary({ text }: { readonly text: string }) {
   useEffect(() => {
     const el = bodyRef.current;
     if (!el) return undefined;
-    // Measure only against the collapsed state; when expanded the element
-    // grows to fit the content, so scrollHeight === clientHeight.
+    // Measure against the clamped state so we know whether the summary is
+    // long enough to warrant a toggle. When expanded, the element grows to
+    // fit its content (scrollHeight === clientHeight), so we temporarily
+    // apply the clamp class to measure overflow.
     const measure = () => {
-      if (!expanded) setClamped(el.scrollHeight > el.clientHeight);
+      if (expanded) {
+        el.classList.add(styles.summaryClamped);
+        const overflowing = el.scrollHeight > el.clientHeight;
+        el.classList.remove(styles.summaryClamped);
+        setClamped(overflowing);
+      } else {
+        setClamped(el.scrollHeight > el.clientHeight);
+      }
     };
     measure();
     // Tab panes render with display: none until their tab is active, so the
@@ -93,7 +102,7 @@ function AiSummary({ text }: { readonly text: string }) {
       >
         <TextComponent type="secondary">{text}</TextComponent>
       </div>
-      {(clamped || expanded) && (
+      {clamped && (
         <div className={styles.summaryToggle}>
           <LinkLikeText
             onClick={() => setExpanded((prev) => !prev)}
