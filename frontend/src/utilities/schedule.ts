@@ -3,6 +3,7 @@ import type { CatalogListing } from '../queries/api';
 const FLOAT_EPSILON = 1e-9;
 export const SCHEDULE_MAX_RESULTS = 200;
 export const SCHEDULE_MAX_NODES = 250_000;
+const SCHEDULE_MAX_FIXED_OVERLAP_BRANCHES = 48;
 
 type MeetingRange = {
   readonly days: number;
@@ -210,6 +211,66 @@ export function isListingsConflictFree(
   return areMeetingsConflictFree(allMeetings);
 }
 
+function twoListingsTimeConflict(
+  a: CatalogListing,
+  b: CatalogListing,
+): boolean {
+  const { meetings: ma, hasInvalidMeeting: ia } = collectListingMeetings(a);
+  const { meetings: mb, hasInvalidMeeting: ib } = collectListingMeetings(b);
+  if (ia || ib) return false;
+  return hasConflict(ma, mb);
+}
+
+function overlapComponents(
+  listings: readonly CatalogListing[],
+): CatalogListing[][] {
+  const n = listings.length;
+  if (n === 0) return [];
+
+  const parent = Array.from({ length: n }, (_, i) => i);
+  const find = (i: number): number => {
+    if (parent[i] !== i) parent[i] = find(parent[i]!);
+    return parent[i];
+  };
+  const union = (i: number, j: number) => {
+    const ri = find(i);
+    const rj = find(j);
+    if (ri !== rj) parent[ri] = rj;
+  };
+
+  for (let i = 0; i < n; i += 1) {
+    for (let j = i + 1; j < n; j += 1)
+      if (twoListingsTimeConflict(listings[i]!, listings[j]!)) union(i, j);
+  }
+
+  const byRoot = new Map<number, CatalogListing[]>();
+  for (let i = 0; i < n; i += 1) {
+    const r = find(i);
+    const list = byRoot.get(r) ?? [];
+    list.push(listings[i]!);
+    byRoot.set(r, list);
+  }
+
+  return [...byRoot.values()];
+}
+
+function* fixedOverlapBranchChoices(
+  components: CatalogListing[][],
+): Generator<CatalogListing[]> {
+  const widths = components.map((c) => c.length);
+  const total = widths.reduce((acc, w) => acc * w, 1);
+  for (let n = 0; n < total; n += 1) {
+    let x = n;
+    const choice: CatalogListing[] = [];
+    for (let i = 0; i < components.length; i += 1) {
+      const w = widths[i]!;
+      choice.push(components[i]![x % w]!);
+      x = Math.floor(x / w);
+    }
+    yield choice;
+  }
+}
+
 function addTags(tagCounts: Map<string, number>, tags: readonly string[]) {
   for (const tag of tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
 }
@@ -347,6 +408,107 @@ function buildCreditBounds(
 export function enumerateSchedules(
   options: ScheduleOptions,
 ): ScheduleEnumeration {
+  const {
+    fixedListings: inputFixedListings,
+    optionalListings,
+    additionalCourses: inputAdditionalCourses,
+    maxResults = SCHEDULE_MAX_RESULTS,
+  } = options;
+
+  const fixedSorted = sortListings(inputFixedListings);
+
+  const fixedCandidatesForBranch = buildScheduleCandidates(fixedSorted);
+  if (
+    fixedSorted.length > 0 &&
+    fixedCandidatesForBranch.length === fixedSorted.length &&
+    !isListingsConflictFree(fixedSorted)
+  ) {
+    const components = overlapComponents(fixedSorted);
+    const product = components.reduce(
+      (acc, c) => acc * Math.max(1, c.length),
+      1,
+    );
+
+    const overlapResolutionTruncated =
+      product > SCHEDULE_MAX_FIXED_OVERLAP_BRANCHES;
+    const branchListings: CatalogListing[][] = overlapResolutionTruncated
+      ? [components.map((comp) => sortListings(comp)[0]!).filter(Boolean)]
+      : [...fixedOverlapBranchChoices(components)];
+
+    const seenKeys = new Set<string>();
+    const mergedSchedules: ScheduleResult[] = [];
+    let totalNodes = 0;
+    let truncated = overlapResolutionTruncated;
+
+    for (const chosen of branchListings) {
+      if (!isListingsConflictFree(chosen)) continue;
+
+      const notChosenCodes = new Set<string>();
+      for (let ci = 0; ci < components.length; ci += 1) {
+        const comp = components[ci]!;
+        const pick = chosen[ci];
+        if (!pick) continue;
+        for (const L of comp)
+          if (L.crn !== pick.crn) notChosenCodes.add(L.course_code);
+      }
+
+      const filteredOptional = optionalListings.filter(
+        (l) => !notChosenCodes.has(l.course_code),
+      );
+
+      const branchAdditional =
+        Math.max(0, Math.floor(inputAdditionalCourses)) +
+        (fixedSorted.length - chosen.length);
+
+      const sub = enumerateSchedulesCore({
+        ...options,
+        fixedListings: chosen,
+        optionalListings: filteredOptional,
+        additionalCourses: branchAdditional,
+      });
+
+      totalNodes += sub.nodesVisited;
+      truncated ||= sub.truncated;
+
+      for (const s of sub.schedules) {
+        const k = listingsKey(s.listings);
+        if (seenKeys.has(k)) continue;
+        seenKeys.add(k);
+        mergedSchedules.push(s);
+        if (mergedSchedules.length >= maxResults) {
+          truncated = true;
+          break;
+        }
+      }
+      if (mergedSchedules.length >= maxResults) break;
+    }
+
+    mergedSchedules.sort((a, b) => {
+      const tc = options.targetCredits;
+      if (tc !== undefined) {
+        const aDiff = Math.abs(a.credits - tc);
+        const bDiff = Math.abs(b.credits - tc);
+        if (aDiff !== bDiff) return aDiff - bDiff;
+      }
+      if (a.credits !== b.credits) return b.credits - a.credits;
+      return listingsKey(a.listings).localeCompare(
+        listingsKey(b.listings),
+        'en-US',
+      );
+    });
+
+    return {
+      schedules: mergedSchedules,
+      nodesVisited: totalNodes,
+      baseHasConflict: mergedSchedules.length === 0,
+      truncated,
+    };
+  }
+
+  return enumerateSchedulesCore(options);
+}
+
+function enumerateSchedulesCore(options: ScheduleOptions): ScheduleEnumeration {
   const {
     fixedListings: inputFixedListings,
     optionalListings,

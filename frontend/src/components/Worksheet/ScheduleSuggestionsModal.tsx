@@ -68,8 +68,10 @@ function statusAlert(status: ScheduleSuggestionsStatus) {
     case 'base_conflict':
       return (
         <Alert variant="warning" className="mt-3 mb-0">
-          Your current worksheet courses conflict with each other. Resolve those
-          conflicts first.
+          We couldn't build schedules from this worksheet: a section may have
+          invalid meeting times, or there are more overlapping time combinations
+          than we can explore. Try the worksheet filter to lock fewer courses or
+          simplify overlaps.
         </Alert>
       );
 
