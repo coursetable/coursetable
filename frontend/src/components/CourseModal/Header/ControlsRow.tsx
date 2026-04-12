@@ -11,8 +11,9 @@ import { IoIosMore } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
 import { CUR_YEAR } from '../../../config';
-import { useModalHistory } from '../../../contexts/modalHistoryContext';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
+import { useModalHistory } from '../../../hooks/useModalHistory';
+import WishlistToggleButton from '../../Wishlist/WishlistToggleButton';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
 
@@ -193,8 +194,15 @@ export default function ModalHeaderControls({
       />
       <div className={styles.toolBar}>
         <WorksheetToggleButton listing={listing} modal />
-        <ShareButton listing={listing} />
-        <MoreButton listing={listing} />
+        <div className={styles.toolbarIconSlot}>
+          <WishlistToggleButton listing={listing} modal />
+        </div>
+        <div className={styles.toolbarIconSlot}>
+          <ShareButton listing={listing} />
+        </div>
+        <div className={styles.toolbarIconSlot}>
+          <MoreButton listing={listing} />
+        </div>
       </div>
     </div>
   );

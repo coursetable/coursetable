@@ -1,6 +1,7 @@
 import { relations, sql } from 'drizzle-orm';
 import {
   pgTable,
+  pgEnum,
   boolean,
   varchar,
   bigint,
@@ -11,11 +12,44 @@ import {
   integer,
 } from 'drizzle-orm/pg-core';
 
+/** Shared by name / email / year / school / major visibility columns. */
+export const profileVisibilityEnum = pgEnum('profile_visibility', [
+  'self',
+  'friends',
+  'public',
+]);
+
 export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   netId: varchar('netId', { length: 8 }).primaryKey().notNull(),
   evaluationsEnabled: boolean('evaluationsEnabled').notNull(),
+  evaluationsRevoked: boolean('evaluationsRevoked').notNull().default(false),
   firstName: varchar('firstName', { length: 256 }).default(sql`NULL`),
   lastName: varchar('lastName', { length: 256 }).default(sql`NULL`),
+  preferredFirstName: varchar('preferredFirstName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  preferredLastName: varchar('preferredLastName', { length: 256 }).default(
+    sql`NULL`,
+  ),
+  nameVisibility: profileVisibilityEnum('nameVisibility')
+    .notNull()
+    .default('public'),
+  emailVisibility: profileVisibilityEnum('emailVisibility')
+    .notNull()
+    .default('self'),
+  yearVisibility: profileVisibilityEnum('yearVisibility')
+    .notNull()
+    .default('friends'),
+  schoolVisibility: profileVisibilityEnum('schoolVisibility')
+    .notNull()
+    .default('friends'),
+  majorVisibility: profileVisibilityEnum('majorVisibility')
+    .notNull()
+    .default('friends'),
+  profilePageEnabled: boolean('profilePageEnabled').notNull().default(true),
+  allowAnonymousProfileView: boolean('allowAnonymousProfileView')
+    .notNull()
+    .default(false),
   email: varchar('email', { length: 256 }).default(sql`NULL`),
   upi: bigint('upi', { mode: 'number' }),
   school: varchar('school', { length: 256 }).default(sql`NULL`),
@@ -68,7 +102,7 @@ export const worksheetCourses = pgTable(
     id: serial('id').primaryKey().notNull(),
     worksheetId: integer('worksheetId')
       .notNull()
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      // eslint-disable-next-line no-use-before-define
       .references(() => worksheets.id),
     crn: integer('crn').notNull(),
     color: varchar('color', { length: 32 }).notNull(),
