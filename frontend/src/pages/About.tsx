@@ -39,6 +39,7 @@ import rb from '../images/headshots/reyansh-bahl.jpg';
 import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
+import wf from '../images/headshots/william-feng.jpg';
 import yf from '../images/headshots/yavin-fickel.jpg';
 
 // Link logos
@@ -160,6 +161,16 @@ function About() {
         website: 'https://elibouganim.web.app',
         github: 'https://github.com/eliboug',
         linkedin: 'https://www.linkedin.com/in/eli-bouganim/',
+      },
+    },
+    {
+      name: 'William Feng',
+      image: wf,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/WFeng7',
+        linkedin: 'https://www.linkedin.com/in/william-feng7',
+        website: 'https://wsfeng.dev/',
       },
     },
   ];
