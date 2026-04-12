@@ -10,7 +10,8 @@ import {
 } from '@apollo/client';
 import { MDXProvider } from '@mdx-js/react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'sonner';
+import 'sonner/dist/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'core-js/proposals/array-grouping-v2';
 import 'core-js/proposals/change-array-by-copy-stage-4';
@@ -70,7 +71,7 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
                 <div id="base">{children}</div>
               </MDXProvider>
             </SearchBootstrap>
-            <ToastContainer toastClassName="rounded" />
+            <Toaster position="top-right" richColors closeButton />
           </ApolloProvider>
         </GoogleOAuthProvider>
       </BrowserRouter>
