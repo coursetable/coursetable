@@ -13,7 +13,7 @@ import {
   type ParsedCreditsInput,
   type RequirementTag,
 } from './scheduleSuggestionsUtils';
-import { useCourseData } from '../../contexts/ferryContext';
+import { useCourseData } from '../../hooks/useFerry';
 import type { CatalogListing } from '../../queries/api';
 import type { Crn } from '../../queries/graphql-types';
 import { useStore } from '../../store';
