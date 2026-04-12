@@ -486,7 +486,7 @@ function OverviewInfo({
         value={demandLoading ? '…' : demand}
         tooltip={
           <span>
-            How many students have added this course to their worksheet
+            How many students have added this course to their Main Worksheet
           </span>
         }
       />
