@@ -39,10 +39,11 @@ function CommentRows({
 }
 
 function AiSummary({ text }: { readonly text: string }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [clamped, setClamped] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
   const tooltipId = useId();
+  const summaryBodyId = useId();
 
   useEffect(() => {
     const el = bodyRef.current;
@@ -85,6 +86,7 @@ function AiSummary({ text }: { readonly text: string }) {
         </OverlayTrigger>
       </div>
       <div
+        id={summaryBodyId}
         ref={bodyRef}
         className={clsx(styles.summaryBody, !expanded && styles.summaryClamped)}
       >
@@ -95,6 +97,13 @@ function AiSummary({ text }: { readonly text: string }) {
           <LinkLikeText
             onClick={() => setExpanded((prev) => !prev)}
             title={expanded ? 'Show less' : 'Show more'}
+            aria-expanded={expanded}
+            aria-controls={summaryBodyId}
+            aria-label={
+              expanded
+                ? 'Show less of the AI summary'
+                : 'Show more of the AI summary'
+            }
           >
             {expanded ? (
               <IoIosArrowUp size={18} />
