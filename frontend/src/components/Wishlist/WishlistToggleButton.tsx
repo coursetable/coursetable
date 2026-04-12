@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { useShallow } from 'zustand/react/shallow';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';

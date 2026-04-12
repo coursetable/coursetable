@@ -1,5 +1,5 @@
 import { DateLocalizer, type DateLocalizerSpec } from 'react-big-calendar';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import { weekdays } from './constants';
 import { toSeasonString } from './course';

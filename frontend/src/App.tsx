@@ -138,8 +138,11 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={24}
-      />
+        id={25}
+      >
+        For registration week, note down your courses in case CourseTable
+        experiences outages.
+      </Notice>
       <Navbar />
       <SentryRoutes>
         <Route element={<AuthenticatedRoutes />}>
