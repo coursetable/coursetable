@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { Button, Card, Spinner, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';

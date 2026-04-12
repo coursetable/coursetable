@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import type { StateCreator } from 'zustand';
 import {
   getUserInfo,

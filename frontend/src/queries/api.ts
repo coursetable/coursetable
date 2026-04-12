@@ -2,7 +2,7 @@
 // swap this file with a file that serves static data instead of making network
 // requests.
 import * as Sentry from '@sentry/react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import z from 'zod';
 
 import {
