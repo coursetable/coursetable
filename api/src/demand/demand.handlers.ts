@@ -4,7 +4,6 @@ import z from 'zod';
 
 import { worksheetCourses, worksheets } from '../../drizzle/schema.js';
 import { db } from '../config.js';
-import winston from '../logging/winston.js';
 
 const GetWorksheetDemandSchema = z.object({
   crn: z.coerce.number().int().positive(),
@@ -36,8 +35,5 @@ export const getWorksheetDemand = async (
       ),
     );
 
-  winston.info(
-    `getWorksheetDemand: crn=${crn} season=${season} demand=${result!.demand}`,
-  );
   res.json({ demand: result!.demand });
 };
