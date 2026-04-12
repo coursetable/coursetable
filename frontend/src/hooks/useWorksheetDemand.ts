@@ -11,13 +11,22 @@ export function useWorksheetDemand(
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!enabled) return;
-    setLoading(true);
-    setDemand(null);
-    void fetchWorksheetDemand(crn, season).then((res) => {
-      setDemand(res?.demand ?? null);
+    let active = true;
+    if (enabled) {
+      setLoading(true);
+      setDemand(null);
+      void fetchWorksheetDemand(crn, season).then((res) => {
+        if (!active) return;
+        setDemand(res?.demand ?? null);
+        setLoading(false);
+      });
+    } else {
+      setDemand(null);
       setLoading(false);
-    });
+    }
+    return () => {
+      active = false;
+    };
   }, [crn, season, enabled]);
 
   return { demand, loading };
