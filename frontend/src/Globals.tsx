@@ -71,7 +71,12 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
                 <div id="base">{children}</div>
               </MDXProvider>
             </SearchBootstrap>
-            <Toaster position="top-right" richColors closeButton />
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              duration={5000}
+            />
           </ApolloProvider>
         </GoogleOAuthProvider>
       </BrowserRouter>
