@@ -26,10 +26,12 @@ const FriendContext = createContext<{
   removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 } | null>(null);
 
+type OptionKind = 'searchResult' | 'incomingRequest' | 'alreadyFriend';
+
 interface OptionType {
   value: NetId;
   label: string;
-  type: string;
+  type: OptionKind;
 }
 
 function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
@@ -100,42 +102,34 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
     );
   }
 
-  // For incoming requests
-  if (data.type === 'incomingRequest') {
-    return (
-      // TODO
-      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
-      <div
-        {...innerProps}
-        className={styles.friendOption}
-        role="button"
-        tabIndex={0}
-        onKeyDown={preventOptionSelection}
-        onClick={preventOptionSelection}
-      >
-        <span className={styles.friendOptionText}>{children}</span>
-        {isLoading ? (
-          <Spinner className={styles.spinner} message={undefined} />
-        ) : (
-          <>
-            <MdPersonAdd
-              className={styles.addFriendIcon}
-              onClick={handler(addFriend)}
-              title="Accept friend request"
-            />
-            <MdPersonRemove
-              className={styles.removeFriendIcon}
-              onClick={handler((id) => removeFriend(id, true))}
-              title="Decline friend request"
-            />
-          </>
-        )}
-      </div>
-    );
-  }
-
   return (
-    <selectComponents.Option {...props}>{children}</selectComponents.Option>
+    // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+    <div
+      {...innerProps}
+      className={styles.friendOption}
+      role="button"
+      tabIndex={0}
+      onKeyDown={preventOptionSelection}
+      onClick={preventOptionSelection}
+    >
+      <span className={styles.friendOptionText}>{children}</span>
+      {isLoading ? (
+        <Spinner className={styles.spinner} message={undefined} />
+      ) : (
+        <>
+          <MdPersonAdd
+            className={styles.addFriendIcon}
+            onClick={handler(addFriend)}
+            title="Accept friend request"
+          />
+          <MdPersonRemove
+            className={styles.removeFriendIcon}
+            onClick={handler((id) => removeFriend(id, true))}
+            title="Decline friend request"
+          />
+        </>
+      )}
+    </div>
   );
 }
 
@@ -204,18 +198,19 @@ function AddFriendDropdownDesktop({
   const searchResults = useMemo(() => {
     if (searchText.length < 3) return [];
     return allNames
-      .filter(
-        (name) =>
-          name.netId !== user?.netId &&
-          ((name.first &&
-            name.last &&
-            `${name.first} ${name.last}`
-              .toLowerCase()
-              .includes(searchText.toLowerCase())) ||
-            name.netId.includes(searchText.toLowerCase())),
-      )
+      .filter((name) => {
+        if (name.netId === user?.netId) return false;
+        const query = searchText.toLowerCase();
+        const fullName =
+          name.first && name.last
+            ? `${name.first} ${name.last}`.toLowerCase()
+            : '';
+        return (
+          fullName.includes(query) || name.netId.toLowerCase().includes(query)
+        );
+      })
       .map((name) => {
-        let type = 'searchResult';
+        let type: OptionKind = 'searchResult';
         if (isFriend(name.netId)) type = 'alreadyFriend';
         else if (incomingRequestIds.has(name.netId)) type = 'incomingRequest';
         return {

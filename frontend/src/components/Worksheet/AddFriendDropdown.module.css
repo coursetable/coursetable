@@ -31,7 +31,7 @@
 }
 
 .alreadyAddedLabel {
-  color: var(--color-text-secondary, #888);
+  color: var(--color-text-secondary);
   font-size: 0.85em;
   font-style: italic;
   margin-left: 8px;
