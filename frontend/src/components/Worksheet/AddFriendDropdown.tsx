@@ -57,6 +57,23 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
       setIsLoading(false);
     };
 
+  if (data.type === 'alreadyFriend') {
+    return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+      <div
+        {...innerProps}
+        className={styles.friendOption}
+        role="button"
+        tabIndex={0}
+        onKeyDown={preventOptionSelection}
+        onClick={preventOptionSelection}
+      >
+        <span className={styles.friendOptionText}>{children}</span>
+        <span className={styles.alreadyAddedLabel}>Already added</span>
+      </div>
+    );
+  }
+
   if (data.type === 'searchResult') {
     return (
       // TODO
@@ -180,13 +197,16 @@ function AddFriendDropdownDesktop({
     void fetchNames();
   }, []);
 
+  const incomingRequestIds = useMemo(
+    () => new Set(friendRequests?.map((r) => r.netId) ?? []),
+    [friendRequests],
+  );
   const searchResults = useMemo(() => {
     if (searchText.length < 3) return [];
     return allNames
       .filter(
         (name) =>
           name.netId !== user?.netId &&
-          !isFriend(name.netId) &&
           ((name.first &&
             name.last &&
             `${name.first} ${name.last}`
@@ -194,15 +214,20 @@ function AddFriendDropdownDesktop({
               .includes(searchText.toLowerCase())) ||
             name.netId.includes(searchText.toLowerCase())),
       )
-      .map((name) => ({
-        value: name.netId,
-        label:
-          name.first && name.last
-            ? `${name.first} ${name.last} (${name.netId})`
-            : name.netId,
-        type: 'searchResult',
-      }));
-  }, [allNames, searchText, user?.netId, isFriend]);
+      .map((name) => {
+        let type = 'searchResult';
+        if (isFriend(name.netId)) type = 'alreadyFriend';
+        else if (incomingRequestIds.has(name.netId)) type = 'incomingRequest';
+        return {
+          value: name.netId,
+          label:
+            name.first && name.last
+              ? `${name.first} ${name.last} (${name.netId})`
+              : name.netId,
+          type,
+        };
+      });
+  }, [allNames, searchText, user?.netId, isFriend, incomingRequestIds]);
   const friendRequestOptions = useMemo(
     () =>
       friendRequests?.map((request) => ({
