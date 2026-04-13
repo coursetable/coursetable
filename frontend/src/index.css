@@ -175,3 +175,11 @@ pre {
 pre code {
   color: var(--color-text);
 }
+
+/*
+ * Sonner sets --width inline (356px). Plain rules lose to that, so !important
+ * is needed to theme from our stylesheet.
+ */
+[data-sonner-toaster] {
+  --width: min(20rem, calc(100vw - 2rem)) !important;
+}

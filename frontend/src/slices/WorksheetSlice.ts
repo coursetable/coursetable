@@ -1,6 +1,6 @@
 import { decompressFromEncodedURIComponent } from 'lz-string';
 import { memoize } from 'proxy-memoize';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';

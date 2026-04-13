@@ -1,4 +1,5 @@
 import type express from 'express';
+
 import { and, count, eq, inArray, isNull, or } from 'drizzle-orm';
 import z from 'zod';
 
@@ -22,6 +23,7 @@ export const getWorksheetDemand = async (
   }
 
   const { crn, season } = queryParseRes.data;
+
   const seasonStr = String(season);
   const sdk = getSdk(graphqlClient);
 

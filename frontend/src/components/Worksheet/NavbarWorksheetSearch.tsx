@@ -6,7 +6,7 @@ import {
   Button,
   Dropdown,
 } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
@@ -59,7 +59,7 @@ export function NavbarWorksheetSearch({
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>
       new Promise<void>((resolve) => {
-        toast.warn(
+        toast.warning(
           <div>
             You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
             {friendNetId}.
@@ -89,7 +89,7 @@ export function NavbarWorksheetSearch({
               No
             </LinkLikeText>
           </div>,
-          { autoClose: false, toastId: `remove-${friendNetId}` },
+          { duration: Infinity, id: `remove-${friendNetId}` },
         );
       }),
     [changeViewedPerson, viewedPerson, removeFriend],

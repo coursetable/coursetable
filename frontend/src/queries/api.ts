@@ -2,7 +2,7 @@
 // swap this file with a file that serves static data instead of making network
 // requests.
 import * as Sentry from '@sentry/react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import z from 'zod';
 
 import {
@@ -806,6 +806,20 @@ export function requestAddFriend(friendNetId: NetId) {
           // TODO: handle other errors
           return false;
       }
+    },
+  });
+}
+
+const worksheetDemandSchema = z.object({
+  demand: z.number().int().nonnegative(),
+});
+
+export async function fetchWorksheetDemand(crn: number, season: string) {
+  return fetchAPI(`/demand/worksheet?crn=${crn}&season=${season}`, {
+    schema: worksheetDemandSchema,
+    breadcrumb: {
+      category: 'demand',
+      message: 'Fetching worksheet demand',
     },
   });
 }
