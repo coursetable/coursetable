@@ -228,7 +228,7 @@ function AddFriendDropdownDesktop({
     return (
       friendRequests
         ?.filter((request) => !shownInSearch.has(request.netId))
-        .map((request) => ({
+        .map<OptionType>((request) => ({
           value: request.netId,
           label: request.name ?? request.netId,
           type: 'incomingRequest',
