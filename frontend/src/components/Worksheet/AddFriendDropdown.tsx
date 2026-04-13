@@ -228,15 +228,18 @@ function AddFriendDropdownDesktop({
         };
       });
   }, [allNames, searchText, user?.netId, isFriend, incomingRequestIds]);
-  const friendRequestOptions = useMemo(
-    () =>
-      friendRequests?.map((request) => ({
-        value: request.netId,
-        label: request.name ?? request.netId,
-        type: 'incomingRequest',
-      })) || [],
-    [friendRequests],
-  );
+  const friendRequestOptions = useMemo(() => {
+    const shownInSearch = new Set(searchResults.map((o) => o.value));
+    return (
+      friendRequests
+        ?.filter((request) => !shownInSearch.has(request.netId))
+        .map((request) => ({
+          value: request.netId,
+          label: request.name ?? request.netId,
+          type: 'incomingRequest',
+        })) || []
+    );
+  }, [friendRequests, searchResults]);
 
   return (
     <Popout
