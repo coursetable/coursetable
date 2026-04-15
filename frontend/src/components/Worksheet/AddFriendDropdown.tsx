@@ -200,9 +200,7 @@ function AddFriendDropdownDesktop({
               ) ?? [];
           setSearchResults(nextResults);
         } finally {
-          if (!cancelled) 
-            setIsLoading(false);
-          
+          if (!cancelled) setIsLoading(false);
         }
       })();
     }, 180);
