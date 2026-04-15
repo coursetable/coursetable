@@ -50,8 +50,11 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
     async (e: React.MouseEvent) => {
       e.stopPropagation();
       setIsLoading(true);
-      await action(data.value);
-      setIsLoading(false);
+      try {
+        await action(data.value);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
   if (data.type === 'searchResult') {
@@ -134,8 +137,11 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
             onClick={async (e) => {
               e.stopPropagation(); // Prevent event from bubbling to the main select handler
               setIsLoading(true);
-              await requestAddFriend(data.value);
-              setIsLoading(false);
+              try {
+                await requestAddFriend(data.value);
+              } finally {
+                setIsLoading(false);
+              }
             }}
             title="Send friend request"
           />
@@ -173,26 +179,32 @@ function AddFriendDropdownDesktop({
 
     setIsLoading(true);
     const timeoutId = setTimeout(() => {
-      void searchProfiles(searchText, 20).then((data) => {
-        if (cancelled) return;
-        const nextResults =
-          data?.profiles
-            .filter(
-              (profile) =>
-                profile.netId !== user?.netId && !isFriend(profile.netId),
-            )
-            .map(
-              (profile): OptionType => ({
-                value: profile.netId,
-                label: profile.displayName
-                  ? `${profile.displayName} (${profile.netId})`
-                  : profile.netId,
-                type: 'searchResult',
-              }),
-            ) ?? [];
-        setSearchResults(nextResults);
-        setIsLoading(false);
-      });
+      void (async () => {
+        try {
+          const data = await searchProfiles(searchText, 20);
+          if (cancelled) return;
+          const nextResults =
+            data?.profiles
+              .filter(
+                (profile) =>
+                  profile.netId !== user?.netId && !isFriend(profile.netId),
+              )
+              .map(
+                (profile): OptionType => ({
+                  value: profile.netId,
+                  label: profile.displayName
+                    ? `${profile.displayName} (${profile.netId})`
+                    : profile.netId,
+                  type: 'searchResult',
+                }),
+              ) ?? [];
+          setSearchResults(nextResults);
+        } finally {
+          if (!cancelled) 
+            setIsLoading(false);
+          
+        }
+      })();
     }, 180);
 
     return () => {

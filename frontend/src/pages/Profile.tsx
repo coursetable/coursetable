@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
-import { TextComponent } from '../components/Typography';
+import { LinkLikeText, TextComponent } from '../components/Typography';
 import WishlistItems from '../components/Wishlist/WishlistItems';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import { resetCatalogCache } from '../ferry/ferryCatalogCache';
@@ -174,16 +174,11 @@ function Profile() {
   }, [worksheets, worksheetsRefresh]);
 
   useEffect(() => {
-    if (!friends) void friendRefresh();
-  }, [friends, friendRefresh]);
-
-  useEffect(() => {
-    if (!friendRequests) void friendReqRefresh();
-  }, [friendRequests, friendReqRefresh]);
-
-  useEffect(() => {
+    if (!currentUser) return;
+    if (activeTabKey !== 'overview') return;
+    void friendRefresh();
     void friendReqRefresh();
-  }, [friendReqRefresh]);
+  }, [activeTabKey, currentUser, friendRefresh, friendReqRefresh]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -265,6 +260,43 @@ function Profile() {
     [worksheetOptions, profileWorksheetNumber],
   );
 
+  const removeFriendWithConfirmation = useCallback(
+    (friendNetId: NetId, isRequest: boolean) =>
+      new Promise<void>((resolve) => {
+        toast.warning(
+          <div>
+            You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
+            {friendNetId}.
+            <br />
+            <b>This is irreversible without another friend request.</b>
+            <br />
+            Do you want to continue?
+            <br />
+            <LinkLikeText
+              className="me-2"
+              onClick={async () => {
+                await removeFriend(friendNetId, isRequest);
+                resolve();
+                toast.dismiss(`remove-${friendNetId}`);
+              }}
+            >
+              Yes
+            </LinkLikeText>
+            <LinkLikeText
+              onClick={() => {
+                toast.dismiss(`remove-${friendNetId}`);
+                resolve();
+              }}
+            >
+              No
+            </LinkLikeText>
+          </div>,
+          { duration: Infinity, id: `remove-${friendNetId}` },
+        );
+      }),
+    [removeFriend],
+  );
+
   if (!currentUser) {
     return (
       <div className={clsx(styles.container, 'mx-auto')}>
@@ -284,10 +316,6 @@ function Profile() {
   const friendRequestsList = friendRequests ?? [];
   const friendsLoading = !friends || !friendRequests;
   const worksheetsLoading = !worksheets || profileWorksheetCatalogLoading;
-
-  const handleRemoveFriend = (friendNetId: NetId) => {
-    void removeFriend(friendNetId, false);
-  };
 
   const handleCatalogCacheRefresh = async () => {
     setCatalogRefreshing(true);
@@ -463,7 +491,7 @@ function Profile() {
                   <div className={styles.friendForm}>
                     <AddFriendDropdown
                       mobile={false}
-                      removeFriend={removeFriend}
+                      removeFriend={removeFriendWithConfirmation}
                       fullWidth
                     />
                   </div>
@@ -498,7 +526,7 @@ function Profile() {
                           <div className={styles.friendActions}>
                             <Button
                               size="sm"
-                              variant="outline-success"
+                              variant="primary"
                               onClick={() => {
                                 void addFriend(request.netId);
                               }}
@@ -507,9 +535,12 @@ function Profile() {
                             </Button>
                             <Button
                               size="sm"
-                              variant="outline-danger"
+                              variant="secondary"
                               onClick={() => {
-                                void removeFriend(request.netId, true);
+                                void removeFriendWithConfirmation(
+                                  request.netId,
+                                  true,
+                                );
                               }}
                             >
                               Decline
@@ -549,9 +580,12 @@ function Profile() {
                             <Button
                               variant="primary"
                               size="sm"
-                              onClick={() =>
-                                handleRemoveFriend(friendNetId as NetId)
-                              }
+                              onClick={() => {
+                                void removeFriendWithConfirmation(
+                                  friendNetId as NetId,
+                                  false,
+                                );
+                              }}
                             >
                               Remove
                             </Button>
