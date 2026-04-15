@@ -1,4 +1,4 @@
-import type { Config } from 'drizzle-kit';
+import { defineConfig } from 'drizzle-kit';
 
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
@@ -6,10 +6,13 @@ const die = (err: string) => {
 
 const getEnv = (name: string) => process.env[name] ?? die(name);
 
-export default {
+const config = {
+  dialect: 'postgresql' as const,
   schema: './drizzle/schema.ts',
-  driver: 'pg',
+  out: './drizzle/migrations',
   dbCredentials: {
-    connectionString: getEnv('DB_URL'),
+    url: getEnv('DB_URL'),
   },
-} satisfies Config;
+};
+
+export default defineConfig(config);

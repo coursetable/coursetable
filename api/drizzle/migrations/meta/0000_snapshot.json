@@ -1,0 +1,652 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.savedSearches": {
+      "name": "savedSearches",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "netId": {
+          "name": "netId",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "queryString": {
+          "name": "queryString",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "saved_searches_netid_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "saved_searches_netid_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
+        },
+        "saved_searches_name_unique_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "saved_searches_name_unique_idx",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
+    },
+    "public.studentBluebookSettings": {
+      "name": "studentBluebookSettings",
+      "schema": "",
+      "columns": {
+        "netId": {
+          "name": "netId",
+          "type": "varchar(8)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "evaluationsEnabled": {
+          "name": "evaluationsEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evaluationsRevoked": {
+          "name": "evaluationsRevoked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "firstName": {
+          "name": "firstName",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "lastName": {
+          "name": "lastName",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "preferredFirstName": {
+          "name": "preferredFirstName",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "preferredLastName": {
+          "name": "preferredLastName",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "nameVisibility": {
+          "name": "nameVisibility",
+          "type": "profile_visibility",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'public'"
+        },
+        "emailVisibility": {
+          "name": "emailVisibility",
+          "type": "profile_visibility",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'self'"
+        },
+        "yearVisibility": {
+          "name": "yearVisibility",
+          "type": "profile_visibility",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'friends'"
+        },
+        "schoolVisibility": {
+          "name": "schoolVisibility",
+          "type": "profile_visibility",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'friends'"
+        },
+        "majorVisibility": {
+          "name": "majorVisibility",
+          "type": "profile_visibility",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'friends'"
+        },
+        "profilePageEnabled": {
+          "name": "profilePageEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "allowAnonymousProfileView": {
+          "name": "allowAnonymousProfileView",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "upi": {
+          "name": "upi",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "school": {
+          "name": "school",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "year": {
+          "name": "year",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "college": {
+          "name": "college",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "major": {
+          "name": "major",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "curriculum": {
+          "name": "curriculum",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "NULL"
+        },
+        "challengeTries": {
+          "name": "challengeTries",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
+    },
+    "public.studentFriendRequests": {
+      "name": "studentFriendRequests",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "netId": {
+          "name": "netId",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "friendNetId": {
+          "name": "friendNetId",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "friend_requests_unique_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "friendNetId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "friend_requests_unique_idx",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
+        },
+        "friend_requests_netid_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "friend_requests_netid_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
+    },
+    "public.studentFriends": {
+      "name": "studentFriends",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "netId": {
+          "name": "netId",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "friendNetId": {
+          "name": "friendNetId",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "friends_unique_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "friendNetId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "friends_unique_idx",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
+        },
+        "friends_netid_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "friends_netid_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
+    },
+    "public.wishlistCourses": {
+      "name": "wishlistCourses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "netId": {
+          "name": "netId",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "crn": {
+          "name": "crn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "wishlist_netid_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "wishlist_netid_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
+        },
+        "wishlist_unique_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "season",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "crn",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "wishlist_unique_idx",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
+    },
+    "public.worksheetCourses": {
+      "name": "worksheetCourses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "worksheetId": {
+          "name": "worksheetId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "crn": {
+          "name": "crn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hidden": {
+          "name": "hidden",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "worksheet_id_idx": {
+          "columns": [
+            {
+              "expression": "worksheetId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "worksheet_id_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
+        },
+        "worksheet_courses_unique_idx": {
+          "columns": [
+            {
+              "expression": "worksheetId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "crn",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "worksheet_courses_unique_idx",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "worksheetCourses_worksheetId_worksheets_id_fk": {
+          "name": "worksheetCourses_worksheetId_worksheets_id_fk",
+          "tableFrom": "worksheetCourses",
+          "columnsFrom": ["worksheetId"],
+          "tableTo": "worksheets",
+          "columnsTo": ["id"],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
+    },
+    "public.worksheets": {
+      "name": "worksheets",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "netId": {
+          "name": "netId",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "worksheetNumber": {
+          "name": "worksheetNumber",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "private": {
+          "name": "private",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {
+        "worksheets_unique_idx": {
+          "columns": [
+            {
+              "expression": "netId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "season",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "worksheetNumber",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "with": {},
+          "name": "worksheets_unique_idx",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
+    }
+  },
+  "enums": {
+    "public.profile_visibility": {
+      "name": "profile_visibility",
+      "schema": "public",
+      "values": ["self", "friends", "public"]
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "id": "06bdab36-58f9-4b19-8afe-089f3042feb7",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "sequences": {},
+  "policies": {},
+  "views": {},
+  "roles": {}
+}

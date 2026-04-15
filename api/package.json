@@ -6,7 +6,8 @@
     "prestart": "npm run codegen",
     "start": "npm run codegen:format && tsx watch src/server.ts",
     "start:prod": "tsx src/server.ts",
-    "db:push": "drizzle-kit push:pg",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit generate && drizzle-kit migrate",
     "db:seed:friends": "tsx drizzle/seed-friends.ts",
     "codegen": "graphql-codegen --config graphql-codegen.ts && tsx ../tools/fix-gql-generated-code.mts",
     "codegen:format": "prettier -w src/**/*.queries.ts src/graphql-types.ts"
@@ -18,7 +19,7 @@
     "connect-redis": "^7.1.1",
     "cors": "^2.8.5",
     "csv-writer": "^1.6.0",
-    "drizzle-orm": "^0.30.10",
+    "drizzle-orm": "^0.45.2",
     "express": "^4.21.2",
     "express-async-handler": "^1.2.0",
     "express-session": "^1.18.1",
@@ -49,6 +50,6 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.10.5",
     "@types/passport": "^1.0.17",
-    "drizzle-kit": "^0.20.18"
+    "drizzle-kit": "^0.31.10"
   }
 }

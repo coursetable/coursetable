@@ -53,13 +53,15 @@ Here's the data flow for user data:
 2. The API directly connects to this database using Drizzle.
 3. The frontend requests the Express endpoint, which then makes DB calls.
 
-If you want to make changes to the DB schema, you can do so by modifying the `api/drizzle/schema.ts` file. This file is used to generate the DB schema and the TypeScript types for the API. For every update, and also for the initial setup, you need to run `npm run db:push` in the `express` container. You can do this by running:
+If you want to make changes to the DB schema, you can do so by modifying the `api/drizzle/schema.ts` file. This file is used to generate the DB schema and the TypeScript types for the API. For every update, and also for the initial setup, you need to run `npm run db:migrate` in the `express` container. You can do this by running:
 
 ```bash
-docker exec -it express "cd api && npm run db:push"
+docker exec -it express sh -c "cd api && npm run db:migrate"
 ```
 
-Note that if you delete the local container images and start them again, the DB is now empty. You need to run `db:push` to re-initialize the DB. Then, on the dev frontend, you need to log in again because your user record does not exist anymore. If you don't want to go through the challenge process, you can visit `http://localhost:8081` and modify the database, in `studentBluebookSettings#evaluationsEnabled`.
+When you change the schema, `db:migrate` generates new SQL under `api/drizzle/migrations/` as needed; **commit those files** with your PR. Deploy applies only that committed SQL (`drizzle-kit migrate` in CD), not a fresh `generate` from the server.
+
+Note that if you delete the local container images and start them again, the DB is now empty. You need to run `db:migrate` to re-initialize the DB. Then, on the dev frontend, you need to log in again because your user record does not exist anymore. If you don't want to go through the challenge process, you can visit `http://localhost:8081` and modify the database, in `studentBluebookSettings#evaluationsEnabled`.
 
 ### Working with course data
 
