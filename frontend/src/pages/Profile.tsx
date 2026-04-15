@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { Button, Card, Form, Spinner, Tab, Tabs } from 'react-bootstrap';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useApolloClient } from '@apollo/client';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
@@ -342,7 +342,7 @@ function Profile() {
     }
     if (!revokeArmed) {
       setRevokeArmed(true);
-      toast.warn('Click "Revoke access" again to confirm.');
+      toast.warning('Click "Revoke access" again to confirm.');
       return;
     }
     setRevokeArmed(false);

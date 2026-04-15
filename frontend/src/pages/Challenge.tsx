@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Form, Button, Row } from 'react-bootstrap';
 import { FiExternalLink } from 'react-icons/fi';
 import { useApolloClient } from '@apollo/client';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import Spinner from '../components/Spinner';
 import { TextComponent, SurfaceComponent } from '../components/Typography';
