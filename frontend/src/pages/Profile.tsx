@@ -370,7 +370,7 @@ function Profile() {
     }
     if (!revokeArmed) {
       setRevokeArmed(true);
-      toast.warning('Click "Revoke access" again to confirm.');
+      toast.warning('Click "Confirm revoke" to finish.');
       return;
     }
     setRevokeArmed(false);
