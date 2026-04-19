@@ -141,8 +141,8 @@ function App() {
         // Don't remove this wrapper.
         id={25}
       >
-        For registration week, note down your courses in case CourseTable
-        experiences outages.
+        {/* For registration week, note down your courses in case CourseTable
+        experiences outages. */}
       </Notice>
       <Navbar />
       <SentryRoutes>
