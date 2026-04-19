@@ -15,7 +15,7 @@ import {
   emptyFilters,
   SEARCH_FILTER_KEYS,
 } from './searchConstants';
-import { matchesSearchText } from './searchTextMatch';
+import { searchMatchQuality } from './searchTextMatch';
 import type {
   BooleanAttributes,
   FilterHandle,
@@ -425,6 +425,7 @@ export function SearchBootstrap({
         return [...data.values()];
       });
 
+      const qualityMap = new Map<CatalogListing, number>();
       const filtered = listings.filter((listing: CatalogListing) => {
         // For empty bounds, don't apply filters at all to include no ratings
         if (overallBounds.isNonEmpty) {
@@ -622,16 +623,19 @@ export function SearchBootstrap({
 
         if (quistPredicate) return quistPredicate(listing);
         // Handle search text. Each token must match something.
-        return matchesSearchText(listing, processedSearchTextParam, {
+        const quality = searchMatchQuality(listing, processedSearchTextParam, {
           searchDescription: searchDescription.value,
         });
+        if (quality > 0) qualityMap.set(listing, quality);
+        return quality > 0;
       });
-      // Apply sorting order.
+      // Apply sorting order, with match quality as primary when searching.
       setSearchData(
         sortCourses(
           filtered,
           { key: selectSortBy.value.value, type: sortOrder.value },
           numFriends,
+          qualityMap.size > 0 ? qualityMap : undefined,
         ),
       );
     },
