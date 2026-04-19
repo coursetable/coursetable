@@ -49,9 +49,9 @@ function fuzzyMatchesAnyWord(
   text: string,
   maxDist: number,
 ): boolean {
-  for (const word of text.toLowerCase().split(/\s+/u)) 
+  for (const word of text.toLowerCase().split(/\s+/u))
     if (word && editDistance(token, word, maxDist) <= maxDist) return true;
-  
+
   return false;
 }
 
