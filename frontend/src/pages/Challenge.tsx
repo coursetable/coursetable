@@ -170,7 +170,7 @@ function Challenge() {
         toast.success(
           "All of your responses were correct! Refresh the page if the courses aren't showing.",
         );
-        navigate(-1);
+        void navigate(-1);
       } catch {
         toast.error('Failed to update evaluation status');
       }
