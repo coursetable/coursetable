@@ -5,6 +5,8 @@ import React, {
   useContext,
   createContext,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
+import clsx from 'clsx';
 import { MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import {
   components as selectComponents,
@@ -12,7 +14,7 @@ import {
   type OptionProps,
 } from 'react-select';
 import { useShallow } from 'zustand/react/shallow';
-import { fetchAllNames, type UserNames } from '../../queries/api';
+import { searchProfiles } from '../../queries/api';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
 import { Popout } from '../Search/Popout';
@@ -26,7 +28,11 @@ const FriendContext = createContext<{
   removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 } | null>(null);
 
-type OptionKind = 'searchResult' | 'incomingRequest' | 'alreadyFriend';
+type OptionKind =
+  | 'searchResult'
+  | 'incomingRequest'
+  | 'outgoingRequest'
+  | 'alreadyFriend';
 
 interface OptionType {
   value: NetId;
@@ -45,18 +51,16 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
   const { removeFriend } = useContext(FriendContext)!;
   const [isLoading, setIsLoading] = useState(false);
 
-  const preventOptionSelection = (e: React.BaseSyntheticEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
   const handler =
     (action: (friendNetId: NetId) => Promise<void>) =>
     async (e: React.MouseEvent) => {
       e.stopPropagation();
       setIsLoading(true);
-      await action(data.value);
-      setIsLoading(false);
+      try {
+        await action(data.value);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
   if (data.type === 'alreadyFriend') {
@@ -67,8 +71,6 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         className={styles.friendOption}
         role="button"
         tabIndex={0}
-        onKeyDown={preventOptionSelection}
-        onClick={preventOptionSelection}
       >
         <span className={styles.friendOptionText}>{children}</span>
         <span className={styles.alreadyAddedLabel}>Already added</span>
@@ -76,17 +78,40 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
     );
   }
 
-  if (data.type === 'searchResult') {
+  if (data.type === 'outgoingRequest') {
     return (
-      // TODO
       // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
       <div
         {...innerProps}
         className={styles.friendOption}
         role="button"
         tabIndex={0}
-        onKeyDown={preventOptionSelection}
-        onClick={preventOptionSelection}
+      >
+        <span className={styles.friendOptionText}>{children}</span>
+        {isLoading ? (
+          <Spinner className={styles.spinner} message={undefined} />
+        ) : (
+          <button
+            type="button"
+            className={clsx(styles.iconButton, styles.iconButtonRemove)}
+            aria-label="Cancel friend request"
+            onClick={handler((id) => removeFriend(id, true))}
+          >
+            <MdPersonRemove className={styles.removeFriendIcon} />
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  if (data.type === 'searchResult') {
+    return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+      <div
+        {...innerProps}
+        className={styles.friendOption}
+        role="button"
+        tabIndex={0}
       >
         <span className={styles.friendOptionText}>{children}</span>
         {isLoading ? (
@@ -109,24 +134,28 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
       className={styles.friendOption}
       role="button"
       tabIndex={0}
-      onKeyDown={preventOptionSelection}
-      onClick={preventOptionSelection}
     >
       <span className={styles.friendOptionText}>{children}</span>
       {isLoading ? (
         <Spinner className={styles.spinner} message={undefined} />
       ) : (
         <>
-          <MdPersonAdd
-            className={styles.addFriendIcon}
-            onClick={handler(addFriend)}
-            title="Accept friend request"
-          />
-          <MdPersonRemove
-            className={styles.removeFriendIcon}
+          <button
+            type="button"
+            className={clsx(styles.iconButton, styles.iconButtonRemove)}
+            aria-label="Decline friend request"
             onClick={handler((id) => removeFriend(id, true))}
-            title="Decline friend request"
-          />
+          >
+            <MdPersonRemove className={styles.removeFriendIcon} />
+          </button>
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label="Accept friend request"
+            onClick={handler(addFriend)}
+          >
+            <MdPersonAdd className={styles.addFriendIcon} />
+          </button>
         </>
       )}
     </div>
@@ -155,8 +184,11 @@ function SingleValueComponent(props: SingleValueProps<OptionType, false>) {
             onClick={async (e) => {
               e.stopPropagation(); // Prevent event from bubbling to the main select handler
               setIsLoading(true);
-              await requestAddFriend(data.value);
-              setIsLoading(false);
+              try {
+                await requestAddFriend(data.value);
+              } finally {
+                setIsLoading(false);
+              }
             }}
             title="Send friend request"
           />
@@ -170,71 +202,80 @@ function AddFriendDropdownDesktop({
 }: {
   readonly fullWidth: boolean;
 }) {
-  const { user, friendRequests } = useStore(
+  const { user, friendRequests, outgoingFriendRequests } = useStore(
     useShallow((state) => ({
       user: state.user,
       friendRequests: state.friendRequests,
+      outgoingFriendRequests: state.outgoingFriendRequests,
     })),
   );
+  const navigate = useNavigate();
   const { isFriend } = useContext(FriendContext)!;
-  const [allNames, setAllNames] = useState<UserNames>([]);
+  const [searchResults, setSearchResults] = useState<OptionType[]>([]);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    async function fetchNames() {
-      const data = await fetchAllNames();
-      if (data) setAllNames(data.names);
+    let cancelled = false;
+    if (searchText.length < 2) {
+      setSearchResults([]);
       setIsLoading(false);
+      return () => {
+        cancelled = true;
+      };
     }
-    void fetchNames();
-  }, []);
 
-  const incomingRequestIds = useMemo(
-    () => new Set(friendRequests?.map((r) => r.netId) ?? []),
+    setIsLoading(true);
+    const timeoutId = setTimeout(() => {
+      void (async () => {
+        try {
+          const data = await searchProfiles(searchText, 20);
+          if (cancelled) return;
+          const nextResults =
+            data?.profiles
+              .filter(
+                (profile) =>
+                  profile.netId !== user?.netId && !isFriend(profile.netId),
+              )
+              .map(
+                (profile): OptionType => ({
+                  value: profile.netId,
+                  label: profile.displayName
+                    ? `${profile.displayName} (${profile.netId})`
+                    : profile.netId,
+                  type: 'searchResult',
+                }),
+              ) ?? [];
+          setSearchResults(nextResults);
+        } finally {
+          if (!cancelled) setIsLoading(false);
+        }
+      })();
+    }, 180);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [isFriend, searchText, user?.netId]);
+  const friendRequestOptions = useMemo(
+    (): OptionType[] =>
+      friendRequests?.map((request) => ({
+        value: request.netId,
+        label: request.name ?? request.netId,
+        type: 'incomingRequest',
+      })) || [],
     [friendRequests],
   );
-  const searchResults = useMemo(() => {
-    if (searchText.length < 3) return [];
-    return allNames
-      .filter((name) => {
-        if (name.netId === user?.netId) return false;
-        const query = searchText.toLowerCase();
-        const fullName =
-          name.first && name.last
-            ? `${name.first} ${name.last}`.toLowerCase()
-            : '';
-        return (
-          fullName.includes(query) || name.netId.toLowerCase().includes(query)
-        );
-      })
-      .map((name) => {
-        let type: OptionKind = 'searchResult';
-        if (isFriend(name.netId)) type = 'alreadyFriend';
-        else if (incomingRequestIds.has(name.netId)) type = 'incomingRequest';
-        return {
-          value: name.netId,
-          label:
-            name.first && name.last
-              ? `${name.first} ${name.last} (${name.netId})`
-              : name.netId,
-          type,
-        };
-      });
-  }, [allNames, searchText, user?.netId, isFriend, incomingRequestIds]);
-  const friendRequestOptions = useMemo(() => {
-    const shownInSearch = new Set(searchResults.map((o) => o.value));
-    return (
-      friendRequests
-        ?.filter((request) => !shownInSearch.has(request.netId))
-        .map<OptionType>((request) => ({
-          value: request.netId,
-          label: request.name ?? request.netId,
-          type: 'incomingRequest',
-        })) || []
-    );
-  }, [friendRequests, searchResults]);
+  const outgoingRequestOptions = useMemo(
+    (): OptionType[] =>
+      outgoingFriendRequests?.map((request) => ({
+        value: request.netId,
+        label: request.name ?? request.netId,
+        type: 'outgoingRequest',
+      })) || [],
+    [outgoingFriendRequests],
+  );
 
   return (
     <Popout
@@ -248,15 +289,20 @@ function AddFriendDropdownDesktop({
         options={[
           { label: 'Search results', options: searchResults },
           { label: 'Incoming requests', options: friendRequestOptions },
+          { label: 'Pending requests', options: outgoingRequestOptions },
         ]}
         isLoading={isLoading}
         loadingMessage={() => 'Loading names...'}
         noOptionsMessage={() =>
-          searchText.length < 3
-            ? 'Type at least 3 characters to search'
+          searchText.length < 2
+            ? 'Type at least 2 characters to search'
             : 'No results found'
         }
         onInputChange={setSearchText}
+        onChange={(option) => {
+          if (!option) return;
+          void navigate(`/u/${option.value}`);
+        }}
         components={{
           Option: OptionWithActionButtons,
           SingleValue: SingleValueComponent,

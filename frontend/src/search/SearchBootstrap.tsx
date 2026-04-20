@@ -15,6 +15,7 @@ import {
   emptyFilters,
   SEARCH_FILTER_KEYS,
 } from './searchConstants';
+import { matchesSearchText } from './searchTextMatch';
 import type {
   BooleanAttributes,
   FilterHandle,
@@ -621,38 +622,9 @@ export function SearchBootstrap({
 
         if (quistPredicate) return quistPredicate(listing);
         // Handle search text. Each token must match something.
-        for (const token of processedSearchTextParam) {
-          // First character of the course number
-          const numberFirstChar = listing.number.charAt(0);
-          if (
-            listing.subject.toLowerCase().startsWith(token) ||
-            listing.number.toLowerCase().startsWith(token) ||
-            // For course numbers that start with a letter,
-            // exclude this letter when comparing with the search token
-            (/\D/u.test(numberFirstChar) &&
-              listing.number
-                .toLowerCase()
-                .startsWith(numberFirstChar.toLowerCase() + token)) ||
-            (searchDescription.value &&
-              listing.course.description?.toLowerCase().includes(token)) ||
-            listing.course.title.toLowerCase().includes(token) ||
-            listing.course.course_professors.some((p) =>
-              p.professor.name.toLowerCase().includes(token),
-            ) ||
-            listing.course.course_meetings.some(({ location }) =>
-              // TODO catalog no longer stores building full name; we should
-              // fetch this as a separate query
-              // Do not match on room numbers because room numbers are more
-              // likely to be course numbers
-              location?.building.code.toLowerCase().startsWith(token),
-            )
-          )
-            continue;
-
-          return false;
-        }
-
-        return true;
+        return matchesSearchText(listing, processedSearchTextParam, {
+          searchDescription: searchDescription.value,
+        });
       });
       // Apply sorting order.
       setSearchData(

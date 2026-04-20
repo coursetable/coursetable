@@ -482,11 +482,12 @@ function OverviewInfo({
         }
       />
       <DataField
-        name="Demand"
+        name="In main worksheets"
         value={demandLoading ? '…' : demand}
         tooltip={
           <span>
             How many students have added this course to their Main Worksheet
+            (not marked as hidden)
           </span>
         }
       />

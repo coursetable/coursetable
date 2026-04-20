@@ -5,6 +5,7 @@ import {
   fetchUserWorksheets,
   fetchFriendWorksheets,
   fetchFriendReqs,
+  fetchOutgoingFriendReqs,
   addFriend as baseAddFriend,
   requestAddFriend as baseRequestAddFriend,
   removeFriend as baseRemoveFriend,
@@ -23,6 +24,7 @@ interface UserState {
   worksheets?: UserWorksheets;
   wishlist?: WishlistItem[];
   friendRequests?: FriendRequests;
+  outgoingFriendRequests?: FriendRequests;
   friends?: FriendRecord;
   sameCourseIdToCrns?: { [key: string]: number[] };
 }
@@ -48,6 +50,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   worksheets: undefined,
   wishlist: undefined,
   friendRequests: undefined,
+  outgoingFriendRequests: undefined,
   friends: undefined,
   sameCourseIdToCrns: undefined,
   async userRefresh() {
@@ -70,8 +73,14 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
     });
   },
   async friendReqRefresh() {
-    const data = await fetchFriendReqs();
-    set({ friendRequests: data?.requests });
+    const [data, outgoingData] = await Promise.all([
+      fetchFriendReqs(),
+      fetchOutgoingFriendReqs(),
+    ]);
+    set({
+      friendRequests: data?.requests,
+      outgoingFriendRequests: outgoingData?.requests,
+    });
   },
   async addFriend(friendNetId: NetId) {
     if (await baseAddFriend(friendNetId))
@@ -98,8 +107,13 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
       toast.error(
         `You already received a friend request from ${friendNetId}. Go approve the request instead!`,
       );
+    } else if (
+      get().outgoingFriendRequests?.find((x) => x.netId === friendNetId)
+    ) {
+      toast.error(`You already sent a friend request to ${friendNetId}.`);
     } else if (await baseRequestAddFriend(friendNetId)) {
       toast.info(`Sent friend request: ${friendNetId}`);
+      await get().friendReqRefresh();
     }
   },
 });
