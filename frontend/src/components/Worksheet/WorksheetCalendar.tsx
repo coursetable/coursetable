@@ -18,6 +18,7 @@ import {
   ColorPickerModal,
   WorksheetMoveModal,
 } from './WorksheetItemActionsButton';
+import { CUR_SEASON } from '../../config';
 import { useStore } from '../../store';
 import {
   localizer,
@@ -378,7 +379,7 @@ function WorksheetCalendar({
         max={latest}
         localizer={localizer}
         toolbar={false}
-        showCurrentTimeIndicator
+        showCurrentTimeIndicator={viewedSeason === CUR_SEASON}
         selected={selectedEvent}
         onSelectEvent={handleSelectEvent}
         components={calendarComponents}
