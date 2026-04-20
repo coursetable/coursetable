@@ -90,7 +90,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   async removeFriend(friendNetId: NetId, isRequest: boolean) {
     if (await baseRemoveFriend(friendNetId)) {
       toast.info(
-        `${isRequest ? 'Declined request from' : 'Removed friend'} ${friendNetId}`,
+        `${isRequest ? 'Removed pending request with' : 'Removed friend'} ${friendNetId}`,
       );
     }
     await Promise.all([get().friendRefresh(), get().friendReqRefresh()]);
