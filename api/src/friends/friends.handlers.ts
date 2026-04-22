@@ -104,13 +104,19 @@ export const removeFriend = async (
       )
       .returning();
     if (!friendDeleteRes) {
-      // No existing friend; try deleting the friend request
+      // No existing friend; try deleting the friend request (incoming or outgoing)
       const [reqDeleteRes] = await tx
         .delete(studentFriendRequests)
         .where(
-          and(
-            eq(studentFriendRequests.netId, friendNetId),
-            eq(studentFriendRequests.friendNetId, netId),
+          or(
+            and(
+              eq(studentFriendRequests.netId, friendNetId),
+              eq(studentFriendRequests.friendNetId, netId),
+            ),
+            and(
+              eq(studentFriendRequests.netId, netId),
+              eq(studentFriendRequests.friendNetId, friendNetId),
+            ),
           ),
         )
         .returning();
@@ -220,6 +226,46 @@ export const getRequestsForFriend = async (
   });
 
   const requests = friendRequestProfiles.map((profile) => ({
+    netId: profile.netId,
+    name: getVisibleDisplayName(
+      profile,
+      'stranger',
+      normalizeVisibility(profile.nameVisibility, 'public'),
+    ),
+  }));
+
+  res.status(200).json({ requests });
+};
+
+export const getOutgoingRequests = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const outgoingRequestProfiles = await db.transaction(async (tx) => {
+    const outgoingReqs = await tx.query.studentFriendRequests.findMany({
+      where: eq(studentFriendRequests.netId, netId),
+      columns: { friendNetId: true },
+    });
+
+    const pendingNetIds = outgoingReqs.map((r) => r.friendNetId);
+
+    if (pendingNetIds.length === 0) return [];
+    return tx
+      .select({
+        netId: studentBluebookSettings.netId,
+        firstName: studentBluebookSettings.firstName,
+        lastName: studentBluebookSettings.lastName,
+        preferredFirstName: studentBluebookSettings.preferredFirstName,
+        preferredLastName: studentBluebookSettings.preferredLastName,
+        nameVisibility: studentBluebookSettings.nameVisibility,
+      })
+      .from(studentBluebookSettings)
+      .where(inArray(studentBluebookSettings.netId, pendingNetIds));
+  });
+
+  const requests = outgoingRequestProfiles.map((profile) => ({
     netId: profile.netId,
     name: getVisibleDisplayName(
       profile,
