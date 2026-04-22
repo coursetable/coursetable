@@ -28,11 +28,7 @@ const FriendContext = createContext<{
   removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 } | null>(null);
 
-type OptionKind =
-  | 'searchResult'
-  | 'incomingRequest'
-  | 'outgoingRequest'
-  | 'alreadyFriend';
+type OptionKind = 'searchResult' | 'incomingRequest' | 'outgoingRequest';
 
 interface OptionType {
   value: NetId;
@@ -62,21 +58,6 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         setIsLoading(false);
       }
     };
-
-  if (data.type === 'alreadyFriend') {
-    return (
-      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
-      <div
-        {...innerProps}
-        className={styles.friendOption}
-        role="button"
-        tabIndex={0}
-      >
-        <span className={styles.friendOptionText}>{children}</span>
-        <span className={styles.alreadyAddedLabel}>Already added</span>
-      </div>
-    );
-  }
 
   if (data.type === 'outgoingRequest') {
     return (
