@@ -1,0 +1,106 @@
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.profileHeader {
+  font-weight: 600;
+  font-size: 25px;
+  margin: 0;
+}
+
+.profileAvatar,
+.profileAvatarAnon {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileAvatar {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+.profileAvatar span {
+  font-weight: bold;
+  transform: scaleX(0.8);
+}
+
+.profileAvatarAnon {
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+}
+
+.profileCard {
+  background-color: var(--color-surface);
+}
+
+.cardBody {
+  padding: 1.5rem;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 1rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.value {
+  font-weight: 400;
+  font-size: 15px;
+  text-align: right;
+}
+
+.friendLink {
+  text-decoration: underline;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .container {
+    width: 90vw;
+  }
+
+  .cardBody {
+    padding: 1rem;
+  }
+
+  .infoRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .value {
+    text-align: left;
+  }
+}

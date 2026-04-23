@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import type { StateCreator } from 'zustand';
 
 import { seasons } from '../data/catalogSeasons';

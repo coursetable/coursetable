@@ -1,12 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
-import { Tab, Tabs } from 'react-bootstrap';
+import { OverlayTrigger, Tab, Tabs, Tooltip } from 'react-bootstrap';
+import { HiSparkles } from 'react-icons/hi2';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import { MdInfoOutline } from 'react-icons/md';
 import Mark from 'mark.js';
 import type { SearchEvaluationNarrativesQuery } from '../../../generated/graphql-types';
 import { evalQuestionTags } from '../../../utilities/constants';
 import { truncatedText } from '../../../utilities/course';
-import { Input, TextComponent } from '../../Typography';
+import { Input, LinkLikeText, TextComponent } from '../../Typography';
 import styles from './EvaluationResponses.module.css';
 
 function CommentRows({
@@ -33,6 +36,96 @@ function CommentRows({
     ];
   }
   return filteredResps;
+}
+
+function AiSummary({ text }: { readonly text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const [clamped, setClamped] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const tooltipId = useId();
+  const summaryBodyId = useId();
+
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return undefined;
+    // Measure against the clamped state so we know whether the summary is
+    // long enough to warrant a toggle. When expanded, the element grows to
+    // fit its content (scrollHeight === clientHeight), so we temporarily
+    // apply the clamp class to measure overflow.
+    const clampClass = styles.summaryClamped;
+    const measure = () => {
+      if (expanded && clampClass) {
+        el.classList.add(clampClass);
+        const overflowing = el.scrollHeight > el.clientHeight;
+        el.classList.remove(clampClass);
+        setClamped(overflowing);
+      } else {
+        setClamped(el.scrollHeight > el.clientHeight);
+      }
+    };
+    measure();
+    // Tab panes render with display: none until their tab is active, so the
+    // initial measurement reads 0 for every inactive pane. A ResizeObserver
+    // re-runs measurement when the element transitions from 0×0 (hidden) to
+    // its real size, and on any subsequent layout changes.
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [text, expanded]);
+
+  return (
+    <div className={styles.summaryCard}>
+      <div className={styles.summaryHeader}>
+        <HiSparkles className={styles.summaryIcon} aria-hidden />
+        <span className={styles.summaryLabel}>AI Summary</span>
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id={tooltipId}>
+              Generated from student comments — may be imperfect.
+            </Tooltip>
+          }
+        >
+          <button
+            type="button"
+            className={styles.summaryInfo}
+            aria-label="About AI summaries"
+          >
+            <MdInfoOutline aria-hidden />
+          </button>
+        </OverlayTrigger>
+      </div>
+      <div
+        id={summaryBodyId}
+        ref={bodyRef}
+        className={clsx(styles.summaryBody, !expanded && styles.summaryClamped)}
+      >
+        <TextComponent type="secondary">{text}</TextComponent>
+      </div>
+      {clamped && (
+        <div className={styles.summaryToggle}>
+          <LinkLikeText
+            onClick={() => setExpanded((prev) => !prev)}
+            title={expanded ? 'Show less' : 'Show more'}
+            aria-expanded={expanded}
+            aria-controls={summaryBodyId}
+            aria-label={
+              expanded
+                ? 'Show less of the AI summary'
+                : 'Show more of the AI summary'
+            }
+          >
+            {expanded ? (
+              <IoIosArrowUp size={18} />
+            ) : (
+              <IoIosArrowDown size={18} />
+            )}
+          </LinkLikeText>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // Allow some variations in question text for the same tag, and make them
@@ -99,6 +192,19 @@ function EvaluationResponses({
       r.responses.sort((a, b) => b.length - a.length);
 
     return [tempResponses, sortedResponses];
+  }, [info]);
+
+  // AI-generated summaries indexed by tag
+  const summariesByTag = useMemo(() => {
+    if (!info) return {};
+    const map: { [tag: string]: string } = {};
+    for (const s of info.evaluation_narrative_summaries) {
+      const tag =
+        s.evaluation_question.tag ??
+        canonicalizeQuestionText(s.evaluation_question.question_text);
+      if (s.summary) map[tag] = s.summary;
+    }
+    return map;
   }, [info]);
 
   // Number of questions
@@ -191,6 +297,9 @@ function EvaluationResponses({
                     responses
                   </TextComponent>
                 </p>
+                {summariesByTag[tag] && (
+                  <AiSummary text={summariesByTag[tag]} />
+                )}
                 <CommentRows responses={responses} filter={filter} />
               </Tab>
             ),

@@ -20,7 +20,7 @@ export interface ProfileNames {
 // defaults in api/drizzle/schema.ts (profileVisibilityEnum).
 const DEFAULT_PRIVACY: ProfilePrivacySettings = {
   nameVisibility: 'public',
-  emailVisibility: 'self',
+  emailVisibility: 'friends',
   yearVisibility: 'friends',
   schoolVisibility: 'friends',
   majorVisibility: 'friends',

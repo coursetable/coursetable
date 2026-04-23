@@ -27,6 +27,7 @@ import {
   COURSETABLE_ORIGINS,
   NUM_SEASONS,
 } from './config.js';
+import demand from './demand/demand.routes.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
 import morgan from './logging/morgan.js';
@@ -137,6 +138,7 @@ app.use(express.json());
 challenge(app);
 catalog(app);
 casAuth(app);
+demand(app);
 friends(app);
 canny(app);
 user(app);

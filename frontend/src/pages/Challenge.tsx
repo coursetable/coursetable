@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Form, Button, Row } from 'react-bootstrap';
 import { FiExternalLink } from 'react-icons/fi';
 import { useApolloClient } from '@apollo/client';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import Spinner from '../components/Spinner';
 import { TextComponent, SurfaceComponent } from '../components/Typography';
@@ -170,7 +170,7 @@ function Challenge() {
         toast.success(
           "All of your responses were correct! Refresh the page if the courses aren't showing.",
         );
-        navigate(-1);
+        void navigate(-1);
       } catch {
         toast.error('Failed to update evaluation status');
       }

@@ -1,15 +1,31 @@
 .addFriendIcon {
-  position: absolute;
-  right: 10px;
   margin-top: 4px;
   cursor: pointer;
+  display: block;
 }
 
 .removeFriendIcon {
-  position: absolute;
-  right: 30px;
   margin-top: 4px;
   cursor: pointer;
+  display: block;
+}
+
+.iconButton {
+  position: absolute;
+  right: 10px;
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.iconButtonRemove {
+  right: 34px;
 }
 
 .friendOption {

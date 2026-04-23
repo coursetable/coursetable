@@ -36,7 +36,7 @@ export const studentBluebookSettings = pgTable('studentBluebookSettings', {
     .default('public'),
   emailVisibility: profileVisibilityEnum('emailVisibility')
     .notNull()
-    .default('self'),
+    .default('friends'),
   yearVisibility: profileVisibilityEnum('yearVisibility')
     .notNull()
     .default('friends'),

@@ -16,7 +16,7 @@ import {
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
 import { TbCalendarDown, TbCalendarUp } from 'react-icons/tb';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 
 import GoogleCalendarButton from './GoogleCalendarButton';

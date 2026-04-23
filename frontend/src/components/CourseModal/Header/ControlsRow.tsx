@@ -8,7 +8,7 @@ import {
 } from 'react-bootstrap';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import { IoIosMore } from 'react-icons/io';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { CUR_YEAR } from '../../../config';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';

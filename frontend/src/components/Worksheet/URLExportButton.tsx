@@ -1,6 +1,6 @@
 import { FaRegClipboard } from 'react-icons/fa';
 import { compressToEncodedURIComponent } from 'lz-string';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import type { ExoticWorksheet } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';

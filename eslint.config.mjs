@@ -61,6 +61,8 @@ export default defineConfig(
             './frontend/vite.config.ts',
             './eslint.config.mjs',
             '**/vite.config.ts',
+            '**/*.test.ts',
+            '**/*.test.tsx',
           ],
         },
       ],

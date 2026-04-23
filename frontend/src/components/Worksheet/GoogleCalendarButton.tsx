@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { hasGrantedAnyScopeGoogle, useGoogleLogin } from '@react-oauth/google';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import Spinner from '../../components/Spinner';
 import { academicCalendars } from '../../config';
