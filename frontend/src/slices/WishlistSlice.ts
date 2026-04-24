@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { ApolloError } from '@apollo/client';
 import type { StateCreator } from 'zustand';
 import type { WishlistItem } from '../queries/api';
@@ -189,10 +189,19 @@ export function useWishlistEffects() {
     error: sameCourseError,
     data: wishlistCourses,
   } = useWishlistInfo(wishlistWithMetadata);
-
-  setWishlistDisplay(
+  useEffect(() => {
+    setWishlistDisplay(
+      wishlistCourses,
+      listingLoading || sameCourseLoading || !userWishlist,
+      listingError ?? sameCourseError,
+    );
+  }, [
+    listingError,
+    listingLoading,
+    sameCourseError,
+    sameCourseLoading,
+    setWishlistDisplay,
+    userWishlist,
     wishlistCourses,
-    listingLoading || sameCourseLoading || !userWishlist,
-    listingError ?? sameCourseError,
-  );
+  ]);
 }

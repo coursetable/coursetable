@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   type SetStateAction,
 } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -42,6 +43,7 @@ import {
   sortCourses,
   toLocationsSummary,
   toRangeTime,
+  toSeasonString,
   toWeekdayStrings,
 } from '../utilities/course';
 import { createFilterLink, getFilterFromParams } from '../utilities/params';
@@ -229,6 +231,8 @@ export function SearchBootstrap({
   const searchData = useStore((s) => s.searchData);
   const searchFilters = useStore((s) => s.searchFilters);
   const searchTimingStartMs = useStore((s) => s.searchTimingStartMs);
+  const viewedSeason = useStore((s) => s.viewedSeason);
+  const changeViewedSeason = useStore((s) => s.changeViewedSeason);
 
   const {
     worksheets,
@@ -278,6 +282,47 @@ export function SearchBootstrap({
     courses: courseData,
     error: courseLoadError,
   } = useCourseData(processedSeasons);
+  const autoFallbackAttempts = useRef(0);
+  const fallbackPending = useRef(false);
+
+  useEffect(() => {
+    if (!courseLoadError) {
+      autoFallbackAttempts.current = 0;
+      fallbackPending.current = false;
+      return;
+    }
+    if (fallbackPending.current) return;
+    if (autoFallbackAttempts.current >= 3) {
+      setSearchData([]);
+      return;
+    }
+    if (selectSeasons.value.length !== 1) {
+      setSearchData([]);
+      return;
+    }
+    const currentSeason = selectSeasons.value[0]!.value;
+    const currentSeasonIndex = seasons.indexOf(currentSeason);
+    if (currentSeasonIndex < 0 || currentSeasonIndex + 1 >= seasons.length) {
+      setSearchData([]);
+      return;
+    }
+    const fallbackSeason = seasons[currentSeasonIndex + 1]!;
+    autoFallbackAttempts.current += 1;
+    fallbackPending.current = true;
+    selectSeasons.set([
+      {
+        value: fallbackSeason,
+        label: toSeasonString(fallbackSeason),
+      },
+    ]);
+    if (viewedSeason === currentSeason) changeViewedSeason(fallbackSeason);
+  }, [
+    changeViewedSeason,
+    courseLoadError,
+    selectSeasons,
+    setSearchData,
+    viewedSeason,
+  ]);
 
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;

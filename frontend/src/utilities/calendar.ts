@@ -214,7 +214,10 @@ export type CustomRBCEvent = {
   kind: 'custom';
   id: string;
   title: string;
+  description: string;
   location: string;
+  color: string;
+  worksheetNumber: number;
   start: Date;
   end: Date;
 };

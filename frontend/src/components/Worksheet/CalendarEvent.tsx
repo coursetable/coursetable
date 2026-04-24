@@ -660,9 +660,17 @@ export function useEventStyle() {
   const eventStyleGetter = useCallback(
     (event: WorksheetCalendarEvent) => {
       if (event.kind === 'custom') {
+        const color = chroma(event.color);
+        const textColor =
+          chroma.contrast(color.css(), 'white') > 2 ? 'white' : 'black';
         return {
-          className: 'ct-custom-event',
           style: {
+            backgroundColor: color.alpha(0.85).css(),
+            borderColor: color.css(),
+            borderWidth: '2px',
+            borderStyle: 'dotted',
+            color: textColor,
+            cursor: 'pointer',
             boxShadow: 'none',
             zIndex: 1,
           } satisfies React.CSSProperties,

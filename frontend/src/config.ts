@@ -8,8 +8,15 @@ export const GRAPHQL_API_ENDPOINT = isDev
   ? 'https://localhost:8085'
   : `${import.meta.env.VITE_API_ENDPOINT}/ferry`;
 
+function getDefaultSeason(now = new Date()): Season {
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const season = month >= 8 ? '03' : month >= 5 ? '02' : '01';
+  return `${year}${season}` as Season;
+}
+
 // Used for which season to show by default in catalog and worksheet
-export const CUR_SEASON = '202603' as Season;
+export const CUR_SEASON = getDefaultSeason();
 
 // Courses in the current year have no evaluations yet. Also: if both the
 // listing and the API "latest" term are in this set, we skip the worksheet

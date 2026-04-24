@@ -81,6 +81,12 @@
 
 .rbc-event {
   overflow: visible !important;
+  padding: 0 !important;
+}
+
+.rbc-event-content {
+  width: 100%;
+  height: 100%;
 }
 
 .rbc-event:hover {
@@ -88,57 +94,47 @@
   z-index: 2;
 }
 
-.rbc-event.ct-custom-event {
-  background: linear-gradient(
-    135deg,
-    rgb(108 117 125 / 34%) 0%,
-    rgb(140 152 164 / 38%) 100%
-  ) !important;
-  border: 2px solid rgb(95 106 117 / 78%) !important;
-  box-shadow: none !important;
-  cursor: pointer !important;
+.rbc-event-label {
+  display: none !important;
 }
 
-.rbc-event.ct-custom-event:hover {
-  box-shadow: inset 0 0 0 1000px rgb(0 0 0 / 6%) !important;
-  z-index: 2;
-}
-
-.ct-custom-event-content {
-  width: 100%;
+.ct-calendar-shell {
+  position: relative;
   height: 100%;
-  padding: 3px 6px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1px;
-  overflow: hidden;
-  color: rgb(45 53 61 / 95%);
+}
+
+.ct-calendar-shell > .rbc-calendar {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+body.ct-custom-event-resizing,
+body.ct-custom-event-resizing * {
+  cursor: row-resize !important;
   user-select: none;
 }
 
-.ct-custom-event-title {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.15;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.ct-custom-event-meta {
-  display: block;
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: 0.01em;
-  opacity: 0.75;
-  text-transform: uppercase;
-}
-
-.rbc-event-label {
-  display: none !important;
+.ct-custom-event-drag-hint {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: rgb(255 255 255 / 92%);
+  color: var(--color-text-tertiary);
+  font-size: 11px;
+  line-height: 1;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 12%);
 }
 
 @media (max-width: calc(768px - 0.5px)) {

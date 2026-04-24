@@ -126,7 +126,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: true,
+        enabled: process.env.VITE_ENABLE_DEV_PWA === 'true',
       },
       injectRegister: 'auto',
       manifest: {
