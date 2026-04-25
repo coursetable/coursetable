@@ -46,6 +46,7 @@ export default function SavedSearchesDropdown({
   const addInputRef = useRef<HTMLInputElement>(null);
   const saveInFlightRef = useRef(false);
   const { filters } = useSearch();
+  const defaultSavedSearchName = filters.searchText.value.trim();
 
   useEffect(() => {
     if (isAddingSearch && addInputRef.current) addInputRef.current.focus();
@@ -202,7 +203,10 @@ export default function SavedSearchesDropdown({
               variant="primary"
               size="sm"
               className={styles.saveButton}
-              onClick={() => setIsAddingSearch(true)}
+              onClick={() => {
+                setAddingName(defaultSavedSearchName);
+                setIsAddingSearch(true);
+              }}
               title="Save current search"
             >
               <MdSave size={16} />
