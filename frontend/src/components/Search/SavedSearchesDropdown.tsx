@@ -15,8 +15,8 @@ import {
 import { defaultFilters } from '../../search/searchConstants';
 import { getFilterValues } from '../../search/searchTypes';
 import {
-  buildFullFilterQueryString,
-  sanitizeFilterQueryString,
+  buildSavedSearchQueryString,
+  sanitizeSavedSearchQueryString,
 } from '../../utilities/params';
 import Spinner from '../Spinner';
 import { Input } from '../Typography';
@@ -67,7 +67,7 @@ export default function SavedSearchesDropdown({
   }, [isOpen, refreshKey]);
 
   const handleApplySearch = (search: SavedSearch) => {
-    const queryString = sanitizeFilterQueryString(
+    const queryString = sanitizeSavedSearchQueryString(
       search.queryString,
       defaultFilters,
     );
@@ -101,8 +101,8 @@ export default function SavedSearchesDropdown({
     setIsSavingSearch(true);
     try {
       const filterValues = getFilterValues(filters);
-      const queryString = sanitizeFilterQueryString(
-        buildFullFilterQueryString(filterValues, defaultFilters),
+      const queryString = sanitizeSavedSearchQueryString(
+        buildSavedSearchQueryString(filterValues, defaultFilters),
         defaultFilters,
       );
       const result = await createSavedSearch(name, queryString);

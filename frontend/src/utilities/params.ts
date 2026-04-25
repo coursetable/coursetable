@@ -295,7 +295,7 @@ export function createFilterLink<K extends keyof Filters>(
  * Builds a saved-search query string from filters, excluding defaults and
  * season.
  */
-export function buildFullFilterQueryString(
+export function buildSavedSearchQueryString(
   filters: Filters,
   defaultFilters: Filters,
 ): string {
@@ -317,7 +317,7 @@ export function buildFullFilterQueryString(
   return queryString ? `?${queryString}` : '';
 }
 
-export function sanitizeFilterQueryString(
+export function sanitizeSavedSearchQueryString(
   queryString: string,
   defaultFilters: Filters,
 ): string {
@@ -339,7 +339,7 @@ export function sanitizeFilterQueryString(
     ) as never;
   });
 
-  return buildFullFilterQueryString(filters, defaultFilters);
+  return buildSavedSearchQueryString(filters, defaultFilters);
 }
 
 /** Params to preserve when syncing URL (e.g. course-modal, prof-modal). */
