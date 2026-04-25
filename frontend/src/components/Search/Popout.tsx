@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import clsx from 'clsx';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
@@ -101,6 +101,7 @@ export function Popout({
   betaTooltip,
   fullWidth,
 }: Props) {
+  const betaTooltipId = useId();
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLButtonElement, HTMLDivElement>(false);
@@ -206,9 +207,7 @@ export function Popout({
       {betaTooltip ? (
         <OverlayTrigger
           placement="top"
-          overlay={
-            <Tooltip id="saved-searches-beta-tooltip">{betaTooltip}</Tooltip>
-          }
+          overlay={<Tooltip id={betaTooltipId}>{betaTooltip}</Tooltip>}
         >
           {triggerButton}
         </OverlayTrigger>
