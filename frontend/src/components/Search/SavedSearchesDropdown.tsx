@@ -146,16 +146,16 @@ export default function SavedSearchesDropdown({
   return (
     <>
       <Popout
-        ariaLabel="Saved Searches"
+        ariaLabel="Saved Filters / Searches"
         Icon={<MdBookmark size={18} />}
         className={styles.savedSearchTrigger}
         onOpenChange={setIsOpen}
       >
         <div className={styles.container}>
-          <h3 className={styles.dropdownTitle}>Saved Searches</h3>
+          <h3 className={styles.dropdownTitle}>Saved Filters / Searches</h3>
           <p className={styles.dropdownDescription}>
-            Add a new search below, or click one to apply. Saved searches use
-            the currently selected season when you apply them.
+            Save your current search text and filter combination, or click one
+            to apply it. Saved filters use the currently selected season.
           </p>
           {isAddingSearch ? (
             <div className={styles.addInputContainer}>
@@ -210,7 +210,7 @@ export default function SavedSearchesDropdown({
               title="Save current search"
             >
               <MdSave size={16} />
-              Save current search
+              Save current filters / search
             </Button>
           )}
           {isLoading ? (
@@ -219,9 +219,9 @@ export default function SavedSearchesDropdown({
             </div>
           ) : searches.length === 0 ? (
             <div className={styles.empty}>
-              <p>No saved searches yet.</p>
+              <p>No saved filters or searches yet.</p>
               <p className={styles.emptyHint}>
-                Save a search to quickly return to it later!
+                Save your current filters to quickly return to them later!
               </p>
             </div>
           ) : (
