@@ -2,20 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import { MdBookmark, MdDelete, MdSave } from 'react-icons/md';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import { Popout } from './Popout';
-import {
-  defaultFilters,
-  getFilterValues,
-  useSearch,
-} from '../../contexts/searchContext';
+import { useSearch } from '../../hooks/useSearch';
 import {
   fetchSavedSearches,
   deleteSavedSearch,
   createSavedSearch,
   type SavedSearch,
 } from '../../queries/api';
+import { defaultFilters } from '../../search/searchConstants';
+import { getFilterValues } from '../../search/searchTypes';
 import { buildFullFilterQueryString } from '../../utilities/params';
 import Spinner from '../Spinner';
 import { Input } from '../Typography';

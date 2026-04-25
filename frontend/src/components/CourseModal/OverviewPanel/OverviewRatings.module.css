@@ -1,22 +1,58 @@
-.evaluationsFilter {
+.aggregateContainer {
+  margin: 0 0 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
   background-color: var(--color-surface-elevated);
-  border-color: var(--color-border);
 }
 
-.filterContainer {
+.aggregateRow {
   display: flex;
-  margin: auto;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
-.filterContainer:focus {
-  outline: none;
+.aggregateItem {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.filterContainer:focus-visible .evaluationsFilter {
+.aggregateTrigger {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  cursor: help;
+}
+
+.aggregateTrigger:focus-visible {
   outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
-.evaluationsFilter :global(.toggleOption) {
-  color: var(--color-text);
+.aggregateLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.aggregateRatingCell {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  border-radius: 6px;
+  padding: 3px 10px;
+  line-height: 1.5;
+  min-height: 1.5rem;
 }

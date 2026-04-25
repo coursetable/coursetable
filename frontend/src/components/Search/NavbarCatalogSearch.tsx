@@ -10,19 +10,21 @@ import AdvancedPanel from './AdvancedPanel';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
 import SavedSearchesDropdown from './SavedSearchesDropdown';
+import { useSearch } from '../../hooks/useSearch';
 import {
-  useSearch,
-  filterLabels,
-  type FilterHandle,
-  type Filters,
-  type CategoricalFilters,
-  type NumericFilters,
   defaultFilters,
-  type IntersectableFilters,
+  filterLabels,
   skillsAreasOptions,
   subjectsOptions,
   seasonsOptions,
-} from '../../contexts/searchContext';
+} from '../../search/searchConstants';
+import type {
+  CategoricalFilters,
+  FilterHandle,
+  Filters,
+  IntersectableFilters,
+  NumericFilters,
+} from '../../search/searchTypes';
 import { useStore } from '../../store';
 import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
 import { TextComponent, Input } from '../Typography';

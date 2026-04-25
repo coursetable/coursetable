@@ -2,7 +2,7 @@
 // swap this file with a file that serves static data instead of making network
 // requests.
 import * as Sentry from '@sentry/react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import z from 'zod';
 
 import {
@@ -19,6 +19,11 @@ import type {
   EvalsBySeasonQuery,
 } from '../generated/graphql-types';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
+import {
+  bumpCatalogCacheBustToken,
+  getCatalogCacheBustToken,
+  isCatalogEndpoint,
+} from '../utilities/catalogCache';
 
 // Coalesce identical concurrent worksheet updates (e.g., double-clicks).
 const inflightWorksheetUpdates = new Map<string, Promise<boolean>>();
@@ -28,11 +33,36 @@ type BaseFetchOptions = {
     message: string;
     category: string;
   };
+  cacheBust?: boolean;
   /**
    * Receives the parsed error code. If it returns true, the error is considered
    * handled and no further reporting is done. Only HTTP errors can be handled.
    */
   handleErrorCode?: (errCode: string) => boolean;
+  /**
+   * When the API returns a JSON `{ error: "<code>" }` body, map that code to a
+   * return value instead of using default toasts / throws. Used e.g. for 404
+   * profile vs session expiry (both may use USER_NOT_FOUND).
+   */
+  mapHttpError?: { [errorCode: string]: unknown };
+};
+
+const isJsonParseError = (err: unknown) =>
+  err instanceof SyntaxError ||
+  (typeof err === 'object' &&
+    err !== null &&
+    Object.hasOwn(err, 'name') &&
+    (err as { name?: string }).name === 'SyntaxError');
+
+const buildApiUrl = (endpointSuffix: string, cacheBust: boolean) => {
+  const url = new URL(`${API_ENDPOINT}/api${endpointSuffix}`);
+  if (isCatalogEndpoint(endpointSuffix)) {
+    const token = cacheBust
+      ? bumpCatalogCacheBustToken()
+      : getCatalogCacheBustToken();
+    if (token) url.searchParams.set('cacheBust', token);
+  }
+  return url.toString();
 };
 
 function parseWithWarning<T extends z.ZodSchema<unknown>>(
@@ -88,20 +118,25 @@ async function fetchAPI<T extends z.ZodSchema>(
 ): Promise<z.infer<T> | undefined>;
 async function fetchAPI(
   endpointSuffix: string,
-  {
-    body,
-    method,
-    schema,
-    breadcrumb,
-    handleErrorCode,
-  }: BaseFetchOptions & {
+  options: BaseFetchOptions & {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     body?: {};
     method?: 'POST' | 'GET';
     schema?: z.ZodType<unknown>;
   },
 ): Promise<unknown> {
+  const {
+    body,
+    method,
+    schema,
+    breadcrumb,
+    handleErrorCode,
+    mapHttpError,
+    cacheBust,
+  } = options;
   const payload = JSON.stringify(body);
+  const isCatalogRequest = isCatalogEndpoint(endpointSuffix);
+  const shouldCacheBust = Boolean(cacheBust);
   const fetchInit: RequestInit = body
     ? {
         method: 'POST',
@@ -115,9 +150,13 @@ async function fetchAPI(
         method: method ?? 'GET',
         credentials: 'include',
       };
+  if (isCatalogRequest && shouldCacheBust) fetchInit.cache = 'no-store';
   const noResExpected = !schema && fetchInit.method === 'POST';
   try {
-    const res = await fetch(`${API_ENDPOINT}/api${endpointSuffix}`, fetchInit);
+    const res = await fetch(
+      buildApiUrl(endpointSuffix, shouldCacheBust),
+      fetchInit,
+    );
     if (!res.ok) {
       let errorCode = '';
       // First: try to parse out a structured error code
@@ -128,6 +167,8 @@ async function fetchAPI(
       } catch {}
       // Fall back to status text
       errorCode ||= res.statusText;
+      if (mapHttpError && errorCode && Object.hasOwn(mapHttpError, errorCode))
+        return mapHttpError[errorCode];
       // Handle common errors uniformly
       switch (errorCode) {
         case 'USER_NOT_FOUND':
@@ -147,10 +188,20 @@ async function fetchAPI(
     }
     // If no res body is expected, return early
     if (noResExpected) return true;
-    const rawData: unknown = await res.json();
-    // Only parse if a schema is provided
-    if (!schema) return rawData;
-    return parseWithWarning(schema, rawData, breadcrumb);
+    try {
+      const rawData: unknown = await res.json();
+      // Only parse if a schema is provided
+      if (!schema) return rawData;
+      return parseWithWarning(schema, rawData, breadcrumb);
+    } catch (err) {
+      if (isCatalogRequest && !shouldCacheBust && isJsonParseError(err)) {
+        return await fetchAPI(endpointSuffix, {
+          ...options,
+          cacheBust: true,
+        });
+      }
+      throw err;
+    }
   } catch (err) {
     Sentry.addBreadcrumb({
       level: 'info',
@@ -551,6 +602,171 @@ export async function getUserInfo() {
   return res;
 }
 
+const visibilitySettingSchema = z.union([
+  z.literal('self'),
+  z.literal('friends'),
+  z.literal('public'),
+]);
+
+const profilePrivacySchema = z.object({
+  nameVisibility: visibilitySettingSchema,
+  emailVisibility: visibilitySettingSchema,
+  yearVisibility: visibilitySettingSchema,
+  schoolVisibility: visibilitySettingSchema,
+  majorVisibility: visibilitySettingSchema,
+});
+
+const myProfileSchema = z.object({
+  netId: netIdSchema,
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  preferredFirstName: z.string().nullable(),
+  preferredLastName: z.string().nullable(),
+  displayFirstName: z.string().nullable(),
+  displayLastName: z.string().nullable(),
+  displayName: z.string().nullable(),
+  email: z.string().nullable(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  hasEvals: z.boolean(),
+  evalsRevoked: z.boolean(),
+  profilePageEnabled: z.boolean(),
+  allowAnonymousProfileView: z.boolean(),
+  privacy: profilePrivacySchema,
+});
+
+export type MyProfile = z.infer<typeof myProfileSchema>;
+export type ProfilePrivacy = z.infer<typeof profilePrivacySchema>;
+
+export function getMyProfile() {
+  return fetchAPI('/profile/me', {
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Fetching my profile settings',
+    },
+  });
+}
+
+export function updateMyProfile(body: {
+  preferredFirstName?: string | null;
+  preferredLastName?: string | null;
+  profilePageEnabled?: boolean;
+  allowAnonymousProfileView?: boolean;
+  privacy?: Partial<ProfilePrivacy>;
+}) {
+  return fetchAPI('/profile/me', {
+    body,
+    schema: myProfileSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Updating profile settings',
+    },
+  });
+}
+
+const revokeEvaluationsSchema = z.object({
+  hasEvals: z.boolean(),
+  evalsRevoked: z.boolean(),
+});
+
+export function revokeEvaluationsAccess() {
+  return fetchAPI('/profile/me/revokeEvaluations', {
+    body: {},
+    schema: revokeEvaluationsSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Revoking evaluations access',
+    },
+  });
+}
+
+const sharedProfileSchema = z.object({
+  netId: netIdSchema,
+  relation: z.union([
+    z.literal('self'),
+    z.literal('friend'),
+    z.literal('stranger'),
+  ]),
+  displayName: z.string().nullable(),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  email: z.string().nullable(),
+  year: z.number().nullable(),
+  school: z.string().nullable(),
+  major: z.string().nullable(),
+  visible: z.object({
+    name: z.boolean(),
+    email: z.boolean(),
+    year: z.boolean(),
+    school: z.boolean(),
+    major: z.boolean(),
+  }),
+});
+
+export type SharedProfile = z.infer<typeof sharedProfileSchema>;
+
+export const sharedProfileNotFound = { notFound: true as const };
+
+export type SharedProfileResult =
+  | SharedProfile
+  | typeof sharedProfileNotFound
+  | undefined;
+
+export function isLoadedSharedProfile(
+  value: SharedProfileResult,
+): value is SharedProfile {
+  return (
+    value !== undefined &&
+    typeof value === 'object' &&
+    Object.hasOwn(value, 'netId')
+  );
+}
+
+export function getSharedProfile(netId: NetId): Promise<SharedProfileResult> {
+  return fetchAPI(`/profile/${netId}`, {
+    schema: sharedProfileSchema,
+    mapHttpError: {
+      USER_NOT_FOUND: sharedProfileNotFound,
+    },
+    breadcrumb: {
+      category: 'profile',
+      message: 'Fetching shared profile',
+    },
+  }) as Promise<SharedProfileResult>;
+}
+
+const profileSearchResultSchema = z.object({
+  netId: netIdSchema,
+  relation: z.union([
+    z.literal('self'),
+    z.literal('friend'),
+    z.literal('stranger'),
+  ]),
+  displayName: z.string().nullable(),
+});
+
+const profileSearchSchema = z.object({
+  profiles: z.array(profileSearchResultSchema),
+});
+
+export type ProfileSearchResult = z.infer<typeof profileSearchResultSchema>;
+
+export function searchProfiles(query: string, limit = 20) {
+  const params = new URLSearchParams({
+    q: query,
+    limit: String(limit),
+  });
+  return fetchAPI(`/profile/search?${params.toString()}`, {
+    schema: profileSearchSchema,
+    breadcrumb: {
+      category: 'profile',
+      message: 'Searching profiles',
+    },
+  });
+}
+
 // Shared schema for worksheet courses (used by both user and friends)
 const worksheetCourseSchema = z.object({
   crn: crnSchema,
@@ -648,12 +864,16 @@ export async function fetchUserWorksheets() {
   return res;
 }
 
-const userWishlistSchema = z.array(
-  z.object({
-    season: seasonSchema,
-    crn: crnSchema,
-  }),
-);
+const userWishlistSchema = z.object({
+  data: z.array(
+    z.object({
+      season: seasonSchema,
+      crn: crnSchema,
+    }),
+  ),
+});
+
+export type WishlistItem = { season: Season; crn: Crn };
 
 export async function fetchUserWishlist() {
   return await fetchAPI('/user/wishlist', {
@@ -766,6 +986,20 @@ export function requestAddFriend(friendNetId: NetId) {
           // TODO: handle other errors
           return false;
       }
+    },
+  });
+}
+
+const worksheetDemandSchema = z.object({
+  demand: z.number().int().nonnegative(),
+});
+
+export async function fetchWorksheetDemand(crn: number, season: string) {
+  return fetchAPI(`/demand/worksheet?crn=${crn}&season=${season}`, {
+    schema: worksheetDemandSchema,
+    breadcrumb: {
+      category: 'demand',
+      message: 'Fetching worksheet demand',
     },
   });
 }
