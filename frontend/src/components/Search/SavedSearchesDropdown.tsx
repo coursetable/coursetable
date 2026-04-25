@@ -73,6 +73,7 @@ export default function SavedSearchesDropdown({
     );
     void navigate(`/catalog${queryString}`);
     setIsOpen(false);
+    toast.success(`Filters from ${search.name} applied`);
     onSearchApplied?.();
   };
 
@@ -161,31 +162,44 @@ export default function SavedSearchesDropdown({
           </p>
           {isAddingSearch ? (
             <div className={styles.addInputContainer}>
-              <Input
-                className={styles.addInput}
-                type="text"
-                value={addingName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setAddingName(e.target.value)
-                }
-                placeholder="Name this search... (Enter to save)"
-                maxLength={64}
-                ref={addInputRef}
-                disabled={isSavingSearch}
-                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  e.stopPropagation();
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    void saveCurrentSearch(addingName);
-                  } else if (e.key === 'Escape') {
-                    cancelAddingSearch();
+              <div className={styles.addInputRow}>
+                <Input
+                  className={styles.addInput}
+                  type="text"
+                  value={addingName}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAddingName(e.target.value)
                   }
-                }}
-                onMouseDown={(e: React.MouseEvent<HTMLInputElement>) =>
-                  e.stopPropagation()
-                }
-                onBlur={cancelAddingSearch}
-              />
+                  placeholder="Name this search..."
+                  maxLength={64}
+                  ref={addInputRef}
+                  disabled={isSavingSearch}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    e.stopPropagation();
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      void saveCurrentSearch(addingName);
+                    } else if (e.key === 'Escape') {
+                      cancelAddingSearch();
+                    }
+                  }}
+                  onMouseDown={(e: React.MouseEvent<HTMLInputElement>) =>
+                    e.stopPropagation()
+                  }
+                  onBlur={cancelAddingSearch}
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={isSavingSearch || !addingName.trim()}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    saveCurrentSearch(addingName).catch(console.error);
+                  }}
+                >
+                  Save
+                </Button>
+              </div>
             </div>
           ) : (
             <Button

@@ -6,6 +6,7 @@ import { scroller } from 'react-scroll';
 
 import CustomSelect from './CustomSelect';
 import ResultsColumnSort from './ResultsColumnSort';
+import SavedSearchesDropdown from './SavedSearchesDropdown';
 import Toggle from './Toggle';
 import { useSearch } from '../../hooks/useSearch';
 import {
@@ -163,19 +164,22 @@ export default function MobileSearchForm() {
   return (
     <SurfaceComponent className={styles.searchContainer}>
       <Form className={styles.searchForm} onSubmit={scrollToResults}>
-        <div className="d-flex justify-content-between pt-4">
-          {/* Reset filters button */}
-          <button
-            type="button"
-            className={clsx(styles.resetFiltersBtn, 'me-auto')}
-            onClick={() => {
-              Object.values(filters).forEach((filter) =>
-                filter.resetToDefault(),
-              );
-            }}
-          >
-            Reset filters
-          </button>
+        <div className="d-flex justify-content-between align-items-center pt-4">
+          <div className="d-flex align-items-center gap-2">
+            {/* Reset filters button */}
+            <button
+              type="button"
+              className={styles.resetFiltersBtn}
+              onClick={() => {
+                Object.values(filters).forEach((filter) =>
+                  filter.resetToDefault(),
+                );
+              }}
+            >
+              Reset filters
+            </button>
+            <SavedSearchesDropdown />
+          </div>
           {/* Number of results shown text */}
           <small className={clsx(styles.numResults, 'ms-auto')}>
             <TextComponent type="tertiary">
