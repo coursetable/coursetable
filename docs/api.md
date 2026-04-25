@@ -267,7 +267,22 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 **Status: 200**
 
 - Body:
-  - `requests`: `array`
+  - `requests`: `array` (incoming: users who have sent a friend request to you)
+    - `netId`: `NetId`
+    - `name`: `string | null`
+
+### `GET` `/api/friends/getOutgoingRequests`
+
+#### Request
+
+- Needs credentials
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `requests`: `array` (outgoing: users you have sent a friend request to, still pending)
     - `netId`: `NetId`
     - `name`: `string | null`
 
