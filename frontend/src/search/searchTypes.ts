@@ -97,3 +97,13 @@ export type FilterHandle<K extends keyof Filters> = {
 };
 
 export type FilterList = { [K in keyof Filters]: FilterHandle<K> };
+
+/** Raw filter object from FilterList (e.g. URL / API). */
+export function getFilterValues(filterList: FilterList): Filters {
+  return Object.fromEntries(
+    (Object.keys(filterList) as (keyof Filters)[]).map((k) => [
+      k,
+      filterList[k].value,
+    ]),
+  ) as Filters;
+}

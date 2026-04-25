@@ -1,14 +1,43 @@
-import { schools, skillsAreas, subjects, weekdays } from './constants';
+import { isEqual } from './common';
+import {
+  courseInfoAttributes,
+  credits,
+  schools,
+  skillsAreas,
+  subjects,
+  weekdays,
+} from './constants';
 import { toSeasonString } from './course';
 import type { Season } from '../queries/graphql-types';
-import type { Filters, SortKeys } from '../search/searchTypes';
+import {
+  booleanAttributes,
+  sortByOptions,
+  type BooleanAttributes,
+  type Filters,
+  type SortKeys,
+} from '../search/searchTypes';
+
+// List of filter params where an empty url value means an empty array
+const EMPTY_ARRAY_PARAM_KEYS = new Set<keyof Filters>([
+  'selectCourseInfoAttributes',
+  'selectCredits',
+  'selectDays',
+  'selectSchools',
+  'selectSeasons',
+  'selectSkillsAreas',
+  'selectSubjects',
+  'selectBuilding',
+  'intersectingFilters',
+  'includeAttributes',
+  'excludeAttributes',
+]);
 
 export function getFilterFromParams<K extends keyof Filters>(
   key: K,
   value: string,
   fallback: Filters[K],
 ): Filters[K] {
-  if (value === '') return fallback;
+  if (value === '') return getEmptyFilterFromParams(key, fallback);
 
   try {
     const result = ((): Filters[K] => {
@@ -25,16 +54,16 @@ export function getFilterFromParams<K extends keyof Filters>(
         case 'hideCancelled':
         case 'hideConflicting':
         case 'searchDescription':
-          return handleBooleanFilter(value);
+          return handleBooleanFilter(value, fallback);
 
         case 'searchText':
           return value as Filters[K];
 
         case 'selectSortBy':
-          return handleSortByFilter(value);
+          return handleSortByFilter(value, fallback);
 
         case 'sortOrder':
-          return handleSortOrderFilter(value);
+          return handleSortOrderFilter(value, fallback);
 
         case 'selectCourseInfoAttributes':
         case 'selectCredits':
@@ -51,7 +80,7 @@ export function getFilterFromParams<K extends keyof Filters>(
 
         case 'includeAttributes':
         case 'excludeAttributes':
-          return value.split(',') as Filters[K];
+          return handleBooleanAttributesParam(value, fallback);
 
         default:
           console.warn(`Unhandled filter type: ${key}`);
@@ -63,6 +92,15 @@ export function getFilterFromParams<K extends keyof Filters>(
     console.warn(`Error parsing filter ${key}:`, e);
     return fallback;
   }
+}
+
+function getEmptyFilterFromParams<K extends keyof Filters>(
+  key: K,
+  fallback: Filters[K],
+): Filters[K] {
+  if (EMPTY_ARRAY_PARAM_KEYS.has(key)) return [] as unknown as Filters[K];
+  if (key === 'searchText') return '' as Filters[K];
+  return fallback;
 }
 
 function handleBoundsFilter<K extends keyof Filters>(
@@ -81,19 +119,25 @@ function handleBoundsFilter<K extends keyof Filters>(
 
 function handleBooleanFilter<K extends keyof Filters>(
   value: string,
+  fallback: Filters[K],
 ): Filters[K] {
+  if (value !== 'true' && value !== 'false') return fallback;
   return (value === 'true') as Filters[K];
 }
 
 function handleSortByFilter<K extends keyof Filters>(
   value: string,
+  fallback: Filters[K],
 ): Filters[K] {
+  if (!Object.hasOwn(sortByOptions, value)) return fallback;
   return { value: value as SortKeys, label: value } as Filters[K];
 }
 
 function handleSortOrderFilter<K extends keyof Filters>(
   value: string,
+  fallback: Filters[K],
 ): Filters[K] {
+  if (value !== 'asc' && value !== 'desc') return fallback;
   return (value === 'asc' ? 'asc' : 'desc') as Filters[K];
 }
 
@@ -120,11 +164,17 @@ function handleSelectFilter<K extends keyof Filters>(
           return found ? { value: Number(val), label: found[0] } : null;
         }
         case 'selectCredits':
+          if (!credits.some((credit) => String(credit) === val)) return null;
           return {
             value: Number(val),
             label: val,
           };
         case 'selectCourseInfoAttributes':
+          if (!courseInfoAttributes.includes(val)) return null;
+          return {
+            value: val,
+            label: val,
+          };
         case 'selectBuilding':
           return {
             value: val,
@@ -192,32 +242,115 @@ function handleIntersectingFiltersParam<K extends keyof Filters>(
   return filters as Filters[K];
 }
 
-export function createFilterLink<K extends keyof Filters>(
-  key: K,
-  value: Filters[K],
-  defaultValue: Filters[K],
+function handleBooleanAttributesParam<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+): Filters[K] {
+  const attrs = value.split(',');
+  if (!attrs.every((attr) => Object.hasOwn(booleanAttributes, attr)))
+    return fallback;
+
+  return attrs as BooleanAttributes[] as Filters[K];
+}
+
+function serializeArrayFilterValue(value: readonly unknown[]) {
+  return value
+    .map((v) => {
+      if (typeof v === 'object' && v !== null && Object.hasOwn(v, 'value'))
+        return String((v as { value: string | number }).value);
+      return String(v as string | number);
+    })
+    .join(',');
+}
+
+function serializeFilterValue(value: Filters[keyof Filters]) {
+  if (Array.isArray(value)) return serializeArrayFilterValue(value);
+  if (typeof value === 'object' && Object.hasOwn(value, 'value'))
+    return String((value as { value: string | number }).value);
+  return String(value as string | boolean);
+}
+
+/**
+ * Builds a saved-search query string from filters, excluding defaults and
+ * season.
+ */
+export function buildSavedSearchQueryString(
+  filters: Filters,
+  defaultFilters: Filters,
 ): string {
-  const newSearch = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams();
 
-  if (JSON.stringify(value) === JSON.stringify(defaultValue)) {
-    newSearch.delete(key);
-    return `?${newSearch.toString()}`;
-  }
+  (Object.keys(filters) as (keyof Filters)[]).forEach((key) => {
+    if (key === 'selectSeasons') return;
 
-  if (Array.isArray(value)) {
-    const values = value.map((v) =>
-      typeof v === 'object' && Object.hasOwn(v, 'value') ? v.value : v,
-    );
-    // Avoid `?key=` (empty string): getFilterFromParams treats ''
-    // as "use default", which breaks filters whose empty state differs
-    // from default (e.g. selectSeasons).
-    if (values.length === 0) newSearch.delete(key);
-    else newSearch.set(key, values.join(','));
-  } else if (typeof value === 'object' && Object.hasOwn(value, 'value')) {
-    newSearch.set(key, value.value.toString());
-  } else {
-    newSearch.set(key, value.toString());
-  }
+    const value = filters[key];
+    const defaultValue = defaultFilters[key];
 
-  return `?${newSearch.toString()}`;
+    // Skip if value equals default
+    if (isEqual(value, defaultValue)) return;
+
+    params.set(key, serializeFilterValue(value));
+  });
+
+  const queryString = params.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
+export function sanitizeSavedSearchQueryString(
+  queryString: string,
+  defaultFilters: Filters,
+): string {
+  const params = new URLSearchParams(
+    queryString.startsWith('?') ? queryString.slice(1) : queryString,
+  );
+  const filters = { ...defaultFilters };
+
+  (Object.keys(defaultFilters) as (keyof Filters)[]).forEach((key) => {
+    if (key === 'selectSeasons') return;
+
+    const value = params.get(key);
+    if (value === null) return;
+
+    filters[key] = getFilterFromParams(
+      key,
+      value,
+      defaultFilters[key],
+    ) as never;
+  });
+
+  return buildSavedSearchQueryString(filters, defaultFilters);
+}
+
+/** Params to preserve when syncing URL (e.g. course-modal, prof-modal). */
+const PRESERVE_PARAMS = new Set(['course-modal', 'prof-modal']);
+
+/**
+ * Builds URLSearchParams from filter state for the catalog, preserving
+ * non-filter params (e.g. course-modal, prof-modal) from the current URL.
+ * Used for centralized single-pass URL sync.
+ */
+export function buildCatalogSearchParams(
+  filters: Filters,
+  defaultFilters: Filters,
+  currentParams: URLSearchParams,
+): URLSearchParams {
+  const result = new URLSearchParams();
+
+  // Copy preserved params first
+  PRESERVE_PARAMS.forEach((key) => {
+    const v = currentParams.get(key);
+    if (v !== null) result.set(key, v);
+  });
+
+  // Add filter params (excluding defaults)
+  (Object.keys(filters) as (keyof Filters)[]).forEach((key) => {
+    const value = filters[key];
+    const defaultValue = defaultFilters[key];
+
+    if (isEqual(value, defaultValue)) return;
+
+    result.set(key, serializeFilterValue(value));
+  });
+
+  return result;
 }
