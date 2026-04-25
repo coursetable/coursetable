@@ -87,7 +87,7 @@ function CourseModal({
         scrollable
         onHide={closeModal}
         dialogClassName={styles.dialog}
-        animation={false}
+        animation
         centered
       >
         <Modal.Header className={styles.modalHeader} closeButton>
