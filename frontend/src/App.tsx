@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useLocation,
+  Link,
+} from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
@@ -142,10 +149,10 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={25}
+        id={26}
       >
-        {/* For registration week, note down your courses in case CourseTable
-        experiences outages. */}
+        Read our <Link to="/releases/spring26">latest release notes</Link>.
+        We've shipped a lot over the past year!
       </Notice>
       <Navbar />
       <SentryRoutes>
