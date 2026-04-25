@@ -270,27 +270,6 @@ function serializeFilterValue(value: Filters[keyof Filters]) {
   return String(value as string | boolean);
 }
 
-export function createFilterLink<K extends keyof Filters>(
-  key: K,
-  value: Filters[K],
-  defaultValue: Filters[K],
-  currentSearch?: string,
-): string {
-  const base = currentSearch ?? window.location.search;
-  const newSearch = new URLSearchParams(
-    base.startsWith('?') ? base.slice(1) : base,
-  );
-
-  if (isEqual(value, defaultValue)) {
-    newSearch.delete(key);
-    return `?${newSearch.toString()}`;
-  }
-
-  newSearch.set(key, serializeFilterValue(value));
-
-  return `?${newSearch.toString()}`;
-}
-
 /**
  * Builds a saved-search query string from filters, excluding defaults and
  * season.
