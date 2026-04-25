@@ -1,15 +1,43 @@
 import { isEqual } from './common';
-import { schools, skillsAreas, subjects, weekdays } from './constants';
+import {
+  courseInfoAttributes,
+  credits,
+  schools,
+  skillsAreas,
+  subjects,
+  weekdays,
+} from './constants';
 import { toSeasonString } from './course';
 import type { Season } from '../queries/graphql-types';
-import type { Filters, SortKeys } from '../search/searchTypes';
+import {
+  booleanAttributes,
+  sortByOptions,
+  type BooleanAttributes,
+  type Filters,
+  type SortKeys,
+} from '../search/searchTypes';
+
+// List of filter params where an empty url value means an empty array
+const EMPTY_ARRAY_PARAM_KEYS = new Set<keyof Filters>([
+  'selectCourseInfoAttributes',
+  'selectCredits',
+  'selectDays',
+  'selectSchools',
+  'selectSeasons',
+  'selectSkillsAreas',
+  'selectSubjects',
+  'selectBuilding',
+  'intersectingFilters',
+  'includeAttributes',
+  'excludeAttributes',
+]);
 
 export function getFilterFromParams<K extends keyof Filters>(
   key: K,
   value: string,
   fallback: Filters[K],
 ): Filters[K] {
-  if (value === '') return fallback;
+  if (value === '') return getEmptyFilterFromParams(key, fallback);
 
   try {
     const result = ((): Filters[K] => {
@@ -26,16 +54,16 @@ export function getFilterFromParams<K extends keyof Filters>(
         case 'hideCancelled':
         case 'hideConflicting':
         case 'searchDescription':
-          return handleBooleanFilter(value);
+          return handleBooleanFilter(value, fallback);
 
         case 'searchText':
           return value as Filters[K];
 
         case 'selectSortBy':
-          return handleSortByFilter(value);
+          return handleSortByFilter(value, fallback);
 
         case 'sortOrder':
-          return handleSortOrderFilter(value);
+          return handleSortOrderFilter(value, fallback);
 
         case 'selectCourseInfoAttributes':
         case 'selectCredits':
@@ -52,7 +80,7 @@ export function getFilterFromParams<K extends keyof Filters>(
 
         case 'includeAttributes':
         case 'excludeAttributes':
-          return value.split(',') as Filters[K];
+          return handleBooleanAttributesParam(value, fallback);
 
         default:
           console.warn(`Unhandled filter type: ${key}`);
@@ -64,6 +92,15 @@ export function getFilterFromParams<K extends keyof Filters>(
     console.warn(`Error parsing filter ${key}:`, e);
     return fallback;
   }
+}
+
+function getEmptyFilterFromParams<K extends keyof Filters>(
+  key: K,
+  fallback: Filters[K],
+): Filters[K] {
+  if (EMPTY_ARRAY_PARAM_KEYS.has(key)) return [] as unknown as Filters[K];
+  if (key === 'searchText') return '' as Filters[K];
+  return fallback;
 }
 
 function handleBoundsFilter<K extends keyof Filters>(
@@ -82,19 +119,25 @@ function handleBoundsFilter<K extends keyof Filters>(
 
 function handleBooleanFilter<K extends keyof Filters>(
   value: string,
+  fallback: Filters[K],
 ): Filters[K] {
+  if (value !== 'true' && value !== 'false') return fallback;
   return (value === 'true') as Filters[K];
 }
 
 function handleSortByFilter<K extends keyof Filters>(
   value: string,
+  fallback: Filters[K],
 ): Filters[K] {
+  if (!Object.hasOwn(sortByOptions, value)) return fallback;
   return { value: value as SortKeys, label: value } as Filters[K];
 }
 
 function handleSortOrderFilter<K extends keyof Filters>(
   value: string,
+  fallback: Filters[K],
 ): Filters[K] {
+  if (value !== 'asc' && value !== 'desc') return fallback;
   return (value === 'asc' ? 'asc' : 'desc') as Filters[K];
 }
 
@@ -121,11 +164,17 @@ function handleSelectFilter<K extends keyof Filters>(
           return found ? { value: Number(val), label: found[0] } : null;
         }
         case 'selectCredits':
+          if (!credits.some((credit) => String(credit) === val)) return null;
           return {
             value: Number(val),
             label: val,
           };
         case 'selectCourseInfoAttributes':
+          if (!courseInfoAttributes.includes(val)) return null;
+          return {
+            value: val,
+            label: val,
+          };
         case 'selectBuilding':
           return {
             value: val,
@@ -193,6 +242,34 @@ function handleIntersectingFiltersParam<K extends keyof Filters>(
   return filters as Filters[K];
 }
 
+function handleBooleanAttributesParam<K extends keyof Filters>(
+  value: string,
+  fallback: Filters[K],
+): Filters[K] {
+  const attrs = value.split(',');
+  if (!attrs.every((attr) => Object.hasOwn(booleanAttributes, attr)))
+    return fallback;
+
+  return attrs as BooleanAttributes[] as Filters[K];
+}
+
+function serializeArrayFilterValue(value: readonly unknown[]) {
+  return value
+    .map((v) => {
+      if (typeof v === 'object' && v !== null && Object.hasOwn(v, 'value'))
+        return String((v as { value: string | number }).value);
+      return String(v as string | number);
+    })
+    .join(',');
+}
+
+function serializeFilterValue(value: Filters[keyof Filters]) {
+  if (Array.isArray(value)) return serializeArrayFilterValue(value);
+  if (typeof value === 'object' && Object.hasOwn(value, 'value'))
+    return String((value as { value: string | number }).value);
+  return String(value as string | boolean);
+}
+
 export function createFilterLink<K extends keyof Filters>(
   key: K,
   value: Filters[K],
@@ -209,22 +286,7 @@ export function createFilterLink<K extends keyof Filters>(
     return `?${newSearch.toString()}`;
   }
 
-  if (Array.isArray(value)) {
-    const values = value.map((v) => {
-      if (typeof v === 'object' && Object.hasOwn(v, 'value'))
-        return String((v as { value: string | number }).value);
-      return String(v as string | number);
-    });
-    // Avoid `?key=` (empty string): getFilterFromParams treats ''
-    // as "use default", which breaks filters whose empty state differs
-    // from default (e.g. selectSeasons).
-    if (values.length === 0) newSearch.delete(key);
-    else newSearch.set(key, values.join(','));
-  } else if (typeof value === 'object' && Object.hasOwn(value, 'value')) {
-    newSearch.set(key, String((value as { value: string | number }).value));
-  } else {
-    newSearch.set(key, String(value as string | boolean));
-  }
+  newSearch.set(key, serializeFilterValue(value));
 
   return `?${newSearch.toString()}`;
 }
@@ -250,34 +312,37 @@ export function buildFullFilterQueryString(
     // Skip if value equals default
     if (isEqual(value, defaultValue)) return;
 
-    // Serialize the value (same logic as createFilterLink)
-    if (Array.isArray(value)) {
-      const parts = value.map((v) => {
-        // Filter array elements can be Option (object with value) or string
-        /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-        if (typeof v === 'object' && v !== null && Object.hasOwn(v, 'value'))
-          return String((v as { value: string | number }).value);
-
-        /* eslint-enable @typescript-eslint/no-unnecessary-condition */
-        return String(v as string | number);
-      });
-      if (parts.length > 0) params.set(key, parts.join(','));
-    } else if (
-      // SelectSortBy is Option<SortKeys> (object with value)
-      /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-      typeof value === 'object' &&
-      value !== null &&
-      Object.hasOwn(value as object, 'value')
-    ) {
-      /* eslint-enable @typescript-eslint/no-unnecessary-condition */
-      params.set(key, String((value as { value: string | number }).value));
-    } else {
-      params.set(key, String(value as string | boolean));
-    }
+    params.set(key, serializeFilterValue(value));
   });
 
   const queryString = params.toString();
   return queryString ? `?${queryString}` : '';
+}
+
+export function sanitizeFilterQueryString(
+  queryString: string,
+  defaultFilters: Filters,
+  options?: { excludeSeason?: boolean },
+): string {
+  const params = new URLSearchParams(
+    queryString.startsWith('?') ? queryString.slice(1) : queryString,
+  );
+  const filters = { ...defaultFilters };
+
+  (Object.keys(defaultFilters) as (keyof Filters)[]).forEach((key) => {
+    if (options?.excludeSeason && key === 'selectSeasons') return;
+
+    const value = params.get(key);
+    if (value === null) return;
+
+    filters[key] = getFilterFromParams(
+      key,
+      value,
+      defaultFilters[key],
+    ) as never;
+  });
+
+  return buildFullFilterQueryString(filters, defaultFilters, options);
 }
 
 /** Params to preserve when syncing URL (e.g. course-modal, prof-modal). */
@@ -308,21 +373,7 @@ export function buildCatalogSearchParams(
 
     if (isEqual(value, defaultValue)) return;
 
-    if (Array.isArray(value)) {
-      const parts = value.map((v) => {
-        if (typeof v === 'object' && Object.hasOwn(v as object, 'value'))
-          return String((v as { value: string | number }).value);
-        return String(v as string | number);
-      });
-      if (parts.length > 0) result.set(key, parts.join(','));
-    } else if (
-      typeof value === 'object' &&
-      Object.hasOwn(value as object, 'value')
-    ) {
-      result.set(key, String((value as { value: string | number }).value));
-    } else {
-      result.set(key, String(value as string | boolean));
-    }
+    result.set(key, serializeFilterValue(value));
   });
 
   return result;

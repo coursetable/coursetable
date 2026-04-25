@@ -1090,25 +1090,6 @@ export async function createSavedSearch(name: string, queryString: string) {
   });
 }
 
-export async function updateSavedSearch(id: number, name: string) {
-  return await fetchAPI('/savedSearches/update', {
-    body: { id, name },
-    breadcrumb: {
-      category: 'savedSearches',
-      message: 'Updating saved search',
-    },
-    handleErrorCode(err) {
-      switch (err) {
-        case 'SEARCH_NOT_FOUND':
-          toast.error('Saved search not found');
-          return true;
-        default:
-          return false;
-      }
-    },
-  });
-}
-
 export async function deleteSavedSearch(id: number) {
   return await fetchAPI('/savedSearches/delete', {
     body: { id },

@@ -14,7 +14,10 @@ import {
 } from '../../queries/api';
 import { defaultFilters } from '../../search/searchConstants';
 import { getFilterValues } from '../../search/searchTypes';
-import { buildFullFilterQueryString } from '../../utilities/params';
+import {
+  buildFullFilterQueryString,
+  sanitizeFilterQueryString,
+} from '../../utilities/params';
 import Spinner from '../Spinner';
 import { Input } from '../Typography';
 import styles from './SavedSearchesDropdown.module.css';
@@ -38,8 +41,10 @@ export default function SavedSearchesDropdown({
     name: string;
   } | null>(null);
   const [isAddingSearch, setIsAddingSearch] = useState(false);
+  const [isSavingSearch, setIsSavingSearch] = useState(false);
   const [addingName, setAddingName] = useState('');
   const addInputRef = useRef<HTMLInputElement>(null);
+  const saveInFlightRef = useRef(false);
   const { filters } = useSearch();
 
   useEffect(() => {
@@ -61,9 +66,57 @@ export default function SavedSearchesDropdown({
   }, [isOpen, refreshKey]);
 
   const handleApplySearch = (search: SavedSearch) => {
-    void navigate(`/catalog${search.queryString}`);
+    const queryString = sanitizeFilterQueryString(
+      search.queryString,
+      defaultFilters,
+      { excludeSeason: true },
+    );
+    void navigate(`/catalog${queryString}`);
     setIsOpen(false);
     onSearchApplied?.();
+  };
+
+  const cancelAddingSearch = () => {
+    if (saveInFlightRef.current) return;
+    setAddingName('');
+    setIsAddingSearch(false);
+  };
+
+  const finishSavingSearch = () => {
+    saveInFlightRef.current = false;
+    setIsSavingSearch(false);
+  };
+
+  const saveCurrentSearch = async (rawName: string) => {
+    const name = rawName.trim();
+    if (!name || saveInFlightRef.current) return;
+
+    if (searches.some((search) => search.name === name)) {
+      toast.error('A saved search with this name already exists');
+      return;
+    }
+
+    saveInFlightRef.current = true;
+    setIsSavingSearch(true);
+    try {
+      const filterValues = getFilterValues(filters);
+      const queryString = sanitizeFilterQueryString(
+        buildFullFilterQueryString(filterValues, defaultFilters, {
+          excludeSeason: true,
+        }),
+        defaultFilters,
+        { excludeSeason: true },
+      );
+      const result = await createSavedSearch(name, queryString);
+      if (result) {
+        toast.success('Search saved');
+        setAddingName('');
+        setIsAddingSearch(false);
+        await loadSearches();
+      }
+    } finally {
+      finishSavingSearch();
+    }
   };
 
   const handleDeleteClick = (
@@ -117,57 +170,20 @@ export default function SavedSearchesDropdown({
                 placeholder="Name this search... (Enter to save)"
                 maxLength={64}
                 ref={addInputRef}
+                disabled={isSavingSearch}
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                   e.stopPropagation();
                   if (e.key === 'Enter') {
                     e.preventDefault();
-                    const name = addingName.trim();
-                    if (name) {
-                      const filterValues = getFilterValues(filters);
-                      const queryString = buildFullFilterQueryString(
-                        filterValues,
-                        defaultFilters,
-                        { excludeSeason: true },
-                      );
-                      void createSavedSearch(name, queryString).then(
-                        (result) => {
-                          if (result) {
-                            toast.success('Search saved');
-                            void loadSearches();
-                          }
-                        },
-                      );
-                    }
-                    setAddingName('');
-                    setIsAddingSearch(false);
+                    void saveCurrentSearch(addingName);
                   } else if (e.key === 'Escape') {
-                    setAddingName('');
-                    setIsAddingSearch(false);
+                    cancelAddingSearch();
                   }
                 }}
                 onMouseDown={(e: React.MouseEvent<HTMLInputElement>) =>
                   e.stopPropagation()
                 }
-                onBlur={() => {
-                  if (addingName.trim()) {
-                    const filterValues = getFilterValues(filters);
-                    const queryString = buildFullFilterQueryString(
-                      filterValues,
-                      defaultFilters,
-                      { excludeSeason: true },
-                    );
-                    void createSavedSearch(addingName.trim(), queryString).then(
-                      (result) => {
-                        if (result) {
-                          toast.success('Search saved');
-                          void loadSearches();
-                        }
-                      },
-                    );
-                  }
-                  setAddingName('');
-                  setIsAddingSearch(false);
-                }}
+                onBlur={cancelAddingSearch}
               />
             </div>
           ) : (
@@ -196,15 +212,14 @@ export default function SavedSearchesDropdown({
           ) : (
             <div className={styles.searchList}>
               {searches.map((search) => (
-                <button
-                  key={search.id}
-                  type="button"
-                  className={styles.searchItem}
-                  onClick={() => handleApplySearch(search)}
-                >
-                  <div className={styles.searchInfo}>
+                <div key={search.id} className={styles.searchItem}>
+                  <button
+                    type="button"
+                    className={styles.applyButton}
+                    onClick={() => handleApplySearch(search)}
+                  >
                     <div className={styles.searchName}>{search.name}</div>
-                  </div>
+                  </button>
                   <button
                     type="button"
                     className={styles.deleteButton}
@@ -221,7 +236,7 @@ export default function SavedSearchesDropdown({
                       <MdDelete size={18} />
                     )}
                   </button>
-                </button>
+                </div>
               ))}
             </div>
           )}
