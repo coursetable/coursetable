@@ -14,9 +14,9 @@ const releaseNotes: ReleaseNote[] = [
   {
     title: '2025 + Spring 2026 Release',
     summary:
-      'New worksheet tools, map view, profile pages, wishlists, and many polishes and infra upgrades.',
+      'Discover the latest features and improvements in our 2025 + Spring 2026 update.',
     path: '/releases/spring26',
-    date: '2026-04-25',
+    date: '2026-04-27',
   },
   {
     title: 'Fall 2024 Release',

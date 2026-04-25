@@ -158,7 +158,7 @@ function getPageMetadata(url: string) {
       return {
         title: 'CourseTable 2025 + Spring 2026 Release Notes',
         description:
-          'New worksheet tools, map view, profile pages, wishlists, AI eval summaries, and more.',
+          'Discover the latest features and improvements in our 2025 + Spring 2026 update.',
         image: 'https://coursetable.com/favicon.png',
       };
     default:
