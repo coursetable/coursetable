@@ -1,0 +1,162 @@
+# CourseTable 2025 + Spring 2026 Release Notes
+
+_2026-04-25_
+
+Hi everyone\!
+
+We hope you've had a great semester and a productive start to reading week\! This school year was another successful year for CourseTable. We welcomed several new team members and shipped many new features.
+
+Last January, [we documented what we did in the fall 2024 semester](/releases/fall24), and since then we have made many new changes. We document the most notable changes here outlined below. Please also [let us know](https://feedback.coursetable.com/) what you want to see next\!
+
+Best,  
+Reyansh Bahl ([@reybahl](https://github.com/reybahl))  
+On behalf of the CourseTable team
+
+P.S. If you enjoy this post and/or are a regular user of CourseTable, please consider supporting our work through [Buy me a coffee](https://www.buymeacoffee.com/coursetable)\! We are Yale students who work on this for free :)
+
+<img
+  src="/images/release_notes/spring_26/coursetable-wordmark.png"
+  alt="CourseTable wordmark."
+  width="400"
+/>
+
+## Download calendar as PNG
+
+You can now download your calendar as a PNG, making it even simpler to send your classes to your friends\!
+
+This feature is contributed by Aryan Sharma ([@aryans-15](https://github.com/aryans-15)).
+
+## Clear worksheet
+
+You can now clear your whole worksheet at once: open worksheet settings and use “Clear All Classes”. All courses are removed in one go, and you'll see a short confirmation when it's done.
+
+This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+
+## Add identifying information to exotic worksheets
+
+When you open a shared worksheet link, you can now see the worksheet's name and who created it.
+
+This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+
+## Show current time indicator on worksheet calendar
+
+We now display a current time indicator on the calendar view, similar to Google Calendar, so that you know what's coming up next on your schedule\!
+
+This feature is contributed by Aryan Sharma ([@aryans-15](https://github.com/aryans-15)).
+
+## Map for classes
+
+Knowing where courses are located on Yale's campus can be tricky, especially for first-years and transfers. To ease this friction, we've added a map that displays all your worksheet's classes. Hovering over courses in the right panel light up locations in orange, and clicking on a pin opens a popup showing all relevant courses at that given location. The map integrates seamlessly with dark mode and is mobile-friendly.
+
+This feature is contributed by Yavin Fickel ([@yav-fi](https://github.com/yav-fi)).
+
+## Cross-listed friends
+
+We now show friends enrolled in cross-listed versions of a course directly in the course modal, so you no longer need to click through each cross-listing to see who's taking it\!
+
+This feature is contributed by William Feng ([@WFeng7](https://github.com/WFeng7)).
+
+## Calendar toggle + related UI updates
+
+The worksheet view switcher (Calendar, Map, and List) and related UI were refined so you can move between a schedule, campus map, and list layout more easily.
+
+This feature is contributed by Yanga Booker.
+
+## Prompt latest offering for historical course adds
+
+When adding a course from a past semester, we ask you if you'd like to add the latest offering of the course instead; that way, you don't accidentally save outdated classes.
+
+This feature is contributed by Aryan Sharma ([@aryans-15](https://github.com/aryans-15)).
+
+## Private worksheet indicator
+
+Secondary worksheets that are public or private are easier to read at a glance in the worksheet selector, with a consistent icon treatment next to their names.
+
+This feature is contributed by Brent Hu.
+
+## Show walking times on calendar
+
+Building on our focus to make Yale courses easier to navigate and plan for, we've implemented walking times displayed for back-to-back classes. To show our best guess efficiently and intelligently, we draw from walking time combinations pre-calculated with Google Maps API. We also warn you if your walk time exceeds the gap between classes, helping you build a feasible worksheet. Clicking on walk-time chips gives more details on our calculation.
+
+This feature is contributed by Yavin Fickel ([@yav-fi](https://github.com/yav-fi)).
+
+## Import worksheet
+
+You can import a schedule from a shared worksheet URL into one of your worksheets: choose the destination worksheet, and the courses are added in bulk. If a friend or DUS exports and shares a worksheet with you, you can easily bring those courses into your worksheet.
+
+This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+
+## Profile pages
+
+CourseTable now has profile pages\! [Your own profile page](/profile) is a central hub to manage your account info, friends, and privacy settings, with per-field controls allowing you to set each detail to public, friends-only, or private. Other Yalies can view your public profile at the `/u/:netId` path, seeing only what you've chosen to share (by default, your details are private)\!
+
+This feature is contributed by Aryan Sharma ([@aryans-15](https://github.com/aryans-15)).
+
+## Discussion section indicator in worksheet
+
+The worksheet list makes it clearer when a row corresponds to a discussion section, so the pieces of a course are easier to tell apart at a glance.
+
+This feature is contributed by Brent Hu.
+
+## Aggregate ratings on course modal
+
+We now show overall, workload, and professor ratings directly in the course modal, so you can view aggregate ratings without clicking away\!
+
+This feature is contributed by William Feng ([@WFeng7](https://github.com/WFeng7)).
+
+## Wishlists
+
+Wishlists let you save courses you're interested in without committing them to a worksheet. They're a lightweight way to track possibilities as you explore the course catalog or save courses for future seasons\!
+
+This feature is contributed by Ben Xu ([@benzuzu](https://github.com/benzuzu)), Humphrey Xu ([@Etherite1](https://github.com/Etherite1)), Aryan Sharma ([@aryans-15](https://github.com/aryans-15)), and Reyansh Bahl ([@reybahl](https://github.com/reybahl))
+
+## AI course evaluation summaries
+
+We've begun rolling out summaries of course evaluations to make it easier to get an at-a-glance overview of the evaluation narratives. We started with fall 2025 and will be adding summaries for other seasons soon\!
+
+This feature is contributed by Eli Bouganim ([@eliboug](https://github.com/eliboug)) and Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+
+## Show number of main worksheets with course
+
+The course modal overview now surfaces how many main worksheets a course appears in (using the same kind of “demand” signal you may know from the catalog), so you can see how popular a class is in one place.
+
+This feature is contributed by Michael Canudas ([@michaelcanudas](https://github.com/michaelcanudas)).
+
+## Ferry locations logic updates
+
+After Yale Course Search restricted locations to signed-in users, we had to rethink how Ferry, our scraper that runs daily to keep course data up to date, ingests room locations (including a larger data migration: either freezing locations to a known snapshot or using a short‑lived session to refresh them) so we stay aligned with YCS. On CourseTable we now only expose course locations to users who have evaluations access.
+
+This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+
+## Bug fixes, polishes, infra
+
+- CourseTable no longer remembers which friend's profile you had open across full page reloads, so a refresh or a later visit won't land you on someone else's profile by surprise. Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+- For worksheet export as calendar, if Google stops allowing the export (for example when access expired), you'll be nudged to sign in to Google again and can finish the export without getting stuck in a dead end. Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+- The course share control is now a small menu: you can copy just the course code or just the link, depending on what you want to paste. Contributed by Eli Bouganim ([@eliboug](https://github.com/eliboug)).
+- The shareable link you copy points to the course in the catalog, even if you had the course modal open from another page (like your worksheet). Contributed by Eli Bouganim ([@eliboug](https://github.com/eliboug)).
+- We upgraded many of our core libraries: React 19, React Router 7, Vite 6, and Zustand 5. Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)) and Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+- If the CourseTable maintainers had to manually turn on evaluations access for your account, that access stays put when you log in instead of sometimes being lost on the next sign-in. Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+- We made the course modal overview a bit easier to read: there's more breathing room between the two main columns on larger screens. Contributed by William Feng ([@WFeng7](https://github.com/WFeng7)).
+- We updated the library we use to display the success/error notifications (“toasts”) in the top right of the app. Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+- We've finished migrating global app state from React Context to Zustand to make state management more predictable and maintainable across our codebase. Contributed by Neil Song ([@neilsong](https://github.com/neilsong)) and Aryan Sharma ([@aryans-15](https://github.com/aryans-15)).
+- Over the summer, Yale Course Search changed how buildings, rooms, and meeting rows are represented, while our location and course meeting tables and sync logic still assumed the old shape. That mismatch caused location rows to get wiped or rewritten, bad foreign keys, and noisy or duplicate course meeting rows per run. We realigned the importer and DB sync (updating the incremental course meetings logic, resolving location IDs from building+room, deduping, and stricter diff/equality rules) so schedules and rooms stay consistent with what Yale publishes, addressing a locations issue that showed up over the summer. This was contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)) and Neil Song ([@neilsong](https://github.com/neilsong)).
+
+## Spring 2025 changelog
+
+We accomplished a lot last spring as well\! We'll keep it short as these have been in production for a while now:
+
+- Centralized course attribute selector: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena))
+- Separate curves for each course in prof modal: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena))
+- Add, remove, rename worksheets: Contributed by Humphrey Xu ([@Etherite1](https://github.com/Etherite1))
+- Debugging tips for outdated browsers: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena))
+- Add “Open Course Demand Statistics” link: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena))
+- Private worksheets: Contributed by Humphrey Xu ([@Etherite1](https://github.com/Etherite1))
+- User toggle preferences persisted: Contributed by Neil Song ([@neilsong](https://github.com/neilsong))
+- Location filter: Contributed by Henry Zheng ([@henrypzheng](https://github.com/henrypzheng))
+- PWA installation: Contributed by Abheek Dhawan ([@abheekda1](https://github.com/abheekda1))
+- Time added + last modified: Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl))
+- Encode search queries in URL params: Contributed by Michael Canudas ([@michaelcanudas](https://github.com/michaelcanudas))
+- Worksheet item actions (switch class' workspace), calendar additions and fixes: Contributed by Filippo Fonseca ([@filippo-fonseca](https://github.com/filippo-fonseca))
+- 4 digit course code transition: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)) and Michael Canudas ([@michaelcanudas](https://github.com/michaelcanudas))
+- Add confirmation before deleting worksheet: Contributed by Aniketh Malyala ([@AniM824](https://github.com/AniM824))
+- Migrate to Yalies API v2: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena))
