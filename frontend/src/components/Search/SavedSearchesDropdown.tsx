@@ -148,8 +148,9 @@ export default function SavedSearchesDropdown({
   return (
     <>
       <Popout
-        buttonText="Saved Searches"
+        ariaLabel="Saved Searches"
         Icon={<MdBookmark size={18} />}
+        className={styles.savedSearchTrigger}
         onOpenChange={setIsOpen}
       >
         <div className={styles.container}>

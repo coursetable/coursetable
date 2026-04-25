@@ -9,7 +9,8 @@ import styles from './Popout.module.css';
 
 type Props = {
   readonly children: React.ReactNode;
-  readonly buttonText: string;
+  readonly buttonText?: string;
+  readonly ariaLabel?: string;
   readonly onOpenChange?: (open: boolean) => void;
   readonly onReset?: () => void;
   readonly arrowIcon?: boolean;
@@ -84,6 +85,7 @@ function NotificationIcon({ count }: { readonly count: number }) {
 export function Popout({
   children,
   buttonText,
+  ariaLabel,
   onOpenChange,
   onReset,
   arrowIcon = true,
@@ -170,9 +172,11 @@ export function Popout({
         fullWidth && styles.buttonFullWidth,
       )}
       data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
+      aria-label={ariaLabel}
+      title={buttonText ? undefined : ariaLabel}
     >
       {Icon ?? null}
-      <div>{text ?? buttonText}</div>
+      {text || buttonText ? <div>{text ?? buttonText}</div> : null}
 
       {text && clearIcon ? (
         <IoClose
