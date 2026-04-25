@@ -69,7 +69,6 @@ export default function SavedSearchesDropdown({
     const queryString = sanitizeFilterQueryString(
       search.queryString,
       defaultFilters,
-      { excludeSeason: true },
     );
     void navigate(`/catalog${queryString}`);
     setIsOpen(false);
@@ -102,11 +101,8 @@ export default function SavedSearchesDropdown({
     try {
       const filterValues = getFilterValues(filters);
       const queryString = sanitizeFilterQueryString(
-        buildFullFilterQueryString(filterValues, defaultFilters, {
-          excludeSeason: true,
-        }),
+        buildFullFilterQueryString(filterValues, defaultFilters),
         defaultFilters,
-        { excludeSeason: true },
       );
       const result = await createSavedSearch(name, queryString);
       if (result) {

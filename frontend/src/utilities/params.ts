@@ -292,19 +292,17 @@ export function createFilterLink<K extends keyof Filters>(
 }
 
 /**
- * Builds a full query string from all filters, excluding defaults and
- * optionally season.
+ * Builds a saved-search query string from filters, excluding defaults and
+ * season.
  */
 export function buildFullFilterQueryString(
   filters: Filters,
   defaultFilters: Filters,
-  options?: { excludeSeason?: boolean },
 ): string {
   const params = new URLSearchParams();
 
   (Object.keys(filters) as (keyof Filters)[]).forEach((key) => {
-    // Skip season if requested
-    if (options?.excludeSeason && key === 'selectSeasons') return;
+    if (key === 'selectSeasons') return;
 
     const value = filters[key];
     const defaultValue = defaultFilters[key];
@@ -322,7 +320,6 @@ export function buildFullFilterQueryString(
 export function sanitizeFilterQueryString(
   queryString: string,
   defaultFilters: Filters,
-  options?: { excludeSeason?: boolean },
 ): string {
   const params = new URLSearchParams(
     queryString.startsWith('?') ? queryString.slice(1) : queryString,
@@ -330,7 +327,7 @@ export function sanitizeFilterQueryString(
   const filters = { ...defaultFilters };
 
   (Object.keys(defaultFilters) as (keyof Filters)[]).forEach((key) => {
-    if (options?.excludeSeason && key === 'selectSeasons') return;
+    if (key === 'selectSeasons') return;
 
     const value = params.get(key);
     if (value === null) return;
@@ -342,7 +339,7 @@ export function sanitizeFilterQueryString(
     ) as never;
   });
 
-  return buildFullFilterQueryString(filters, defaultFilters, options);
+  return buildFullFilterQueryString(filters, defaultFilters);
 }
 
 /** Params to preserve when syncing URL (e.g. course-modal, prof-modal). */
