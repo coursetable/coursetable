@@ -29,7 +29,7 @@ type Props = {
   readonly colors?: { [optionValue: string]: string };
   readonly dataTutorial?: number;
   readonly Icon?: React.JSX.Element;
-  readonly betaTooltip?: string;
+  readonly tooltipText?: string;
   readonly fullWidth?: boolean;
 };
 
@@ -100,10 +100,10 @@ export function Popout({
   colors,
   dataTutorial,
   Icon,
-  betaTooltip,
+  tooltipText,
   fullWidth,
 }: Props) {
-  const betaTooltipId = useId();
+  const tooltipId = useId();
   // Ref to detect outside clicks for popout button and dropdown
   const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisibleDropdown<HTMLButtonElement, HTMLDivElement>(false);
@@ -168,12 +168,10 @@ export function Popout({
       className={clsx(
         className,
         styles.button,
-        betaTooltip && styles.buttonWithBeta,
         fullWidth && styles.buttonFullWidth,
       )}
       data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
       aria-label={ariaLabel}
-      title={buttonText ? undefined : ariaLabel}
     >
       {Icon ?? null}
       {text || buttonText ? <div>{text ?? buttonText}</div> : null}
@@ -191,9 +189,6 @@ export function Popout({
         <ArrowIcon className={styles.arrowIcon} />
       ) : null}
       {notifications ? <NotificationIcon count={notifications} /> : null}
-      {betaTooltip ? (
-        <span className={styles.betaIndicator} aria-hidden="true" />
-      ) : null}
     </button>
   );
 
@@ -208,10 +203,10 @@ export function Popout({
         wrapperClassName,
       )}
     >
-      {betaTooltip ? (
+      {tooltipText ? (
         <OverlayTrigger
           placement="top"
-          overlay={<Tooltip id={betaTooltipId}>{betaTooltip}</Tooltip>}
+          overlay={<Tooltip id={tooltipId}>{tooltipText}</Tooltip>}
         >
           {triggerButton}
         </OverlayTrigger>

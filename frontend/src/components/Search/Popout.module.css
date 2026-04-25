@@ -94,34 +94,6 @@
   z-index: 2;
 }
 
-.buttonWithBeta {
-  position: relative;
-}
-
-.betaIndicator {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 6px;
-  height: 6px;
-  background-color: var(--color-primary, #3b82f6);
-  border-radius: 50%;
-  animation: beta-pulse 2s ease-in-out infinite;
-}
-
-@keyframes beta-pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.6;
-    transform: scale(1.2);
-  }
-}
-
 .notificationIcon span {
   position: relative;
   width: 20px;

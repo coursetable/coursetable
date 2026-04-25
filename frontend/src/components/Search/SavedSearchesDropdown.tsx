@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
-import { MdBookmark, MdDelete, MdSave } from 'react-icons/md';
+import { MdDelete, MdSavedSearch } from 'react-icons/md';
 import { toast } from 'sonner';
 
 import { Popout } from './Popout';
@@ -147,8 +147,9 @@ export default function SavedSearchesDropdown({
     <>
       <Popout
         ariaLabel="Saved Filters / Searches"
-        Icon={<MdBookmark size={18} />}
+        Icon={<MdSavedSearch size={18} />}
         className={styles.savedSearchTrigger}
+        tooltipText="Saved Filters / Searches"
         onOpenChange={setIsOpen}
       >
         <div className={styles.container}>
@@ -209,7 +210,6 @@ export default function SavedSearchesDropdown({
               }}
               title="Save current search"
             >
-              <MdSave size={16} />
               Save current filters / search
             </Button>
           )}
