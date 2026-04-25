@@ -170,6 +170,7 @@ function Slider<K extends NumericFilters>({
 
 export function NavbarCatalogSearch() {
   const isTablet = useStore((state) => state.isTablet);
+  const resetSearchFilters = useStore((state) => state.patchSearchFilters);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
 
@@ -308,9 +309,7 @@ export function NavbarCatalogSearch() {
             className={styles.resetButton}
             variant="danger"
             onClick={() => {
-              Object.values(filters).forEach((filter) =>
-                filter.resetToDefault(),
-              );
+              resetSearchFilters(defaultFilters);
               setStartTime(Date.now());
             }}
             // Cannot reset if no filters have changed
