@@ -25,6 +25,7 @@ import {
   type IntersectableFilters,
   type NumericFilters,
 } from '../../search/searchTypes';
+import { useStore } from '../../store';
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
 
@@ -143,6 +144,7 @@ function Slider<K extends NumericFilters>({
 
 export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
+  const resetSearchFilters = useStore((state) => state.patchSearchFilters);
   const { searchText, selectSortBy } = filters;
   const scrollToResults = useCallback((event?: React.FormEvent) => {
     if (event) event.preventDefault();
@@ -171,9 +173,7 @@ export default function MobileSearchForm() {
               type="button"
               className={styles.resetFiltersBtn}
               onClick={() => {
-                Object.values(filters).forEach((filter) =>
-                  filter.resetToDefault(),
-                );
+                resetSearchFilters(defaultFilters);
               }}
             >
               Reset filters
