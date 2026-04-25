@@ -74,7 +74,6 @@ export default function SavedSearchesDropdown({
       defaultFilters,
     );
     void navigate(`/catalog${queryString}`);
-    setIsOpen(false);
     toast.success(`Filters from ${search.name} applied`);
     onSearchApplied?.();
   };
@@ -114,6 +113,8 @@ export default function SavedSearchesDropdown({
         setIsAddingSearch(false);
         await loadSearches();
       }
+    } catch (err: unknown) {
+      Sentry.captureException(err);
     } finally {
       finishSavingSearch();
     }
@@ -194,9 +195,7 @@ export default function SavedSearchesDropdown({
                   disabled={isSavingSearch || !addingName.trim()}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
-                    void saveCurrentSearch(addingName).catch((err: unknown) => {
-                      Sentry.captureException(err);
-                    });
+                    void saveCurrentSearch(addingName);
                   }}
                 >
                   Save
