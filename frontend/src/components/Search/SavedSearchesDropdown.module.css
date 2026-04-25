@@ -111,6 +111,8 @@
 }
 
 .searchName {
+  display: block;
+  min-width: 0;
   font-weight: 500;
   color: var(--color-text);
   overflow: hidden;

@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import { Modal, Button } from 'react-bootstrap';
 import { MdDelete, MdSavedSearch } from 'react-icons/md';
 import { toast } from 'sonner';
@@ -52,19 +53,20 @@ export default function SavedSearchesDropdown({
     if (isAddingSearch && addInputRef.current) addInputRef.current.focus();
   }, [isAddingSearch]);
 
-  const loadSearches = async () => {
+  const loadSearches = useCallback(async () => {
     setIsLoading(true);
     try {
       const result = await fetchSavedSearches();
       if (result) setSearches(result.data);
+      else setSearches([]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (isOpen) void loadSearches();
-  }, [isOpen, refreshKey]);
+  }, [isOpen, refreshKey, loadSearches]);
 
   const handleApplySearch = (search: SavedSearch) => {
     const queryString = sanitizeSavedSearchQueryString(
@@ -192,7 +194,9 @@ export default function SavedSearchesDropdown({
                   disabled={isSavingSearch || !addingName.trim()}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
-                    saveCurrentSearch(addingName).catch(console.error);
+                    void saveCurrentSearch(addingName).catch((err: unknown) => {
+                      Sentry.captureException(err);
+                    });
                   }}
                 >
                   Save
@@ -233,7 +237,7 @@ export default function SavedSearchesDropdown({
                     className={styles.applyButton}
                     onClick={() => handleApplySearch(search)}
                   >
-                    <div className={styles.searchName}>{search.name}</div>
+                    <span className={styles.searchName}>{search.name}</span>
                   </button>
                   <button
                     type="button"
@@ -279,7 +283,11 @@ export default function SavedSearchesDropdown({
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleDeleteConfirm().catch(console.error)}
+            onClick={() => {
+              void handleDeleteConfirm().catch((err: unknown) => {
+                Sentry.captureException(err);
+              });
+            }}
           >
             Delete
           </Button>
