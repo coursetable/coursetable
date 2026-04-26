@@ -343,6 +343,10 @@ export const searchProfiles = async (
 
   const { q, limit } = queryParse.data;
 
+  const spaceIdx = q.indexOf(' ');
+  const firstPart = spaceIdx !== -1 ? q.slice(0, spaceIdx) : null;
+  const lastPart = spaceIdx !== -1 ? q.slice(spaceIdx + 1) : null;
+
   const candidates = (await db.query.studentBluebookSettings.findMany({
     where: and(
       eq(studentBluebookSettings.profilePageEnabled, true),
@@ -352,6 +356,43 @@ export const searchProfiles = async (
         ilike(studentBluebookSettings.lastName, `%${q}%`),
         ilike(studentBluebookSettings.preferredFirstName, `%${q}%`),
         ilike(studentBluebookSettings.preferredLastName, `%${q}%`),
+        // "First Last" split matching
+        ...(firstPart && lastPart
+          ? [
+              and(
+                or(
+                  ilike(studentBluebookSettings.firstName, `%${firstPart}%`),
+                  ilike(
+                    studentBluebookSettings.preferredFirstName,
+                    `%${firstPart}%`,
+                  ),
+                ),
+                or(
+                  ilike(studentBluebookSettings.lastName, `%${lastPart}%`),
+                  ilike(
+                    studentBluebookSettings.preferredLastName,
+                    `%${lastPart}%`,
+                  ),
+                ),
+              ),
+              and(
+                or(
+                  ilike(studentBluebookSettings.firstName, `%${lastPart}%`),
+                  ilike(
+                    studentBluebookSettings.preferredFirstName,
+                    `%${lastPart}%`,
+                  ),
+                ),
+                or(
+                  ilike(studentBluebookSettings.lastName, `%${firstPart}%`),
+                  ilike(
+                    studentBluebookSettings.preferredLastName,
+                    `%${firstPart}%`,
+                  ),
+                ),
+              ),
+            ]
+          : []),
       ),
     ),
     columns: profileColumns,
