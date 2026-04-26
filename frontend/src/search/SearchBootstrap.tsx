@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   type SetStateAction,
 } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -44,50 +45,69 @@ import {
   toRangeTime,
   toWeekdayStrings,
 } from '../utilities/course';
-import { createFilterLink, getFilterFromParams } from '../utilities/params';
+import {
+  buildCatalogSearchParams,
+  getFilterFromParams,
+} from '../utilities/params';
+
+type PendingUrlHydration = {
+  search: string;
+  updates: Partial<Filters>;
+};
+
+function hasAppliedHydration(
+  searchFilters: Filters,
+  updates: Partial<Filters>,
+) {
+  return (Object.keys(updates) as (keyof Filters)[]).every((key) => {
+    const value = updates[key];
+    return value === undefined || isEqual(searchFilters[key], value);
+  });
+}
 
 function useSearchUrlHydration() {
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const patchSearchFilters = useStore((s) => s.patchSearchFilters);
+  const pendingHydrationRef = useRef<PendingUrlHydration | null>(null);
+  const clearPendingHydration = useCallback(() => {
+    pendingHydrationRef.current = null;
+  }, []);
 
   useLayoutEffect(() => {
     if (location.pathname !== '/catalog') return;
+    const { searchFilters } = useStore.getState();
+    const searchParams = new URLSearchParams(location.search);
     const updates = SEARCH_FILTER_KEYS.reduce<Partial<Filters>>((acc, key) => {
       const urlValue = searchParams.get(key);
-      if (urlValue === null) return acc;
+      if (urlValue === null && key === 'selectSeasons') return acc;
       try {
-        return {
-          ...acc,
-          [key]: getFilterFromParams(key, urlValue, defaultFilters[key]),
-        };
+        const next =
+          urlValue === null
+            ? defaultFilters[key]
+            : getFilterFromParams(key, urlValue, defaultFilters[key]);
+        if (isEqual(searchFilters[key], next)) return acc;
+        return { ...acc, [key]: next };
       } catch {
         return acc;
       }
     }, {});
-    if (Object.keys(updates).length > 0) patchSearchFilters(updates);
-  }, [location.pathname, patchSearchFilters, searchParams]);
+    if (Object.keys(updates).length > 0) {
+      pendingHydrationRef.current = {
+        search: location.search,
+        updates,
+      };
+      patchSearchFilters(updates);
+    } else {
+      pendingHydrationRef.current = null;
+    }
+  }, [location.pathname, location.search, patchSearchFilters]);
+
+  return { clearPendingHydration, pendingHydrationRef };
 }
 
 function useFilterState<K extends keyof Filters>(key: K): FilterHandle<K> {
-  const location = useLocation();
-  const [, setSearchParams] = useSearchParams();
   const value = useStore((s) => s.searchFilters[key]);
   const setSearchFilter = useStore((s) => s.setSearchFilter);
-
-  useEffect(() => {
-    if (location.pathname === '/catalog') {
-      try {
-        const newUrl = createFilterLink(key, value, defaultFilters[key]);
-        if (newUrl !== location.search) {
-          sessionStorage.setItem('lastCatalogSearch', newUrl);
-          setSearchParams(new URLSearchParams(newUrl.slice(1)));
-        }
-      } catch {
-        /* Ignore */
-      }
-    }
-  }, [key, value, location.pathname, location.search, setSearchParams]);
 
   return useMemo(
     () => ({
@@ -106,6 +126,49 @@ function useFilterState<K extends keyof Filters>(key: K): FilterHandle<K> {
     }),
     [value, key, setSearchFilter],
   );
+}
+
+function useSearchUrlSync(
+  pendingHydrationRef: React.RefObject<PendingUrlHydration | null>,
+  clearPendingHydration: () => void,
+) {
+  const location = useLocation();
+  const [, setSearchParams] = useSearchParams();
+  const searchFilters = useStore((s) => s.searchFilters);
+
+  useEffect(() => {
+    if (location.pathname !== '/catalog') return;
+    const pendingHydration = pendingHydrationRef.current;
+    if (
+      pendingHydration?.search === location.search &&
+      !hasAppliedHydration(searchFilters, pendingHydration.updates)
+    )
+      return;
+    if (pendingHydration?.search === location.search) clearPendingHydration();
+
+    const searchParams = new URLSearchParams(location.search);
+    const nextParams = buildCatalogSearchParams(
+      searchFilters,
+      defaultFilters,
+      searchParams,
+    );
+    const nextSearch = nextParams.toString();
+
+    if (nextSearch === searchParams.toString()) return;
+
+    sessionStorage.setItem(
+      'lastCatalogSearch',
+      nextSearch ? `?${nextSearch}` : '',
+    );
+    setSearchParams(nextParams);
+  }, [
+    location.pathname,
+    location.search,
+    clearPendingHydration,
+    pendingHydrationRef,
+    searchFilters,
+    setSearchParams,
+  ]);
 }
 
 const targetTypes = {
@@ -194,7 +257,9 @@ export function SearchBootstrap({
 }: {
   readonly children: React.ReactNode;
 }) {
-  useSearchUrlHydration();
+  const { clearPendingHydration, pendingHydrationRef } =
+    useSearchUrlHydration();
+  useSearchUrlSync(pendingHydrationRef, clearPendingHydration);
 
   const searchText = useFilterState('searchText');
   const selectSubjects = useFilterState('selectSubjects');
