@@ -263,13 +263,17 @@ function Profile() {
   );
 
   const removeFriendWithConfirmation = useCallback(
-    (friendNetId: NetId, isRequest: boolean) =>
+    (friendNetId: NetId, action: 'friend' | 'incoming' | 'outgoing') =>
       new Promise<void>((resolve) => {
+        const actionLabel =
+          action === 'outgoing'
+            ? 'cancel your friend request to'
+            : action === 'incoming'
+              ? 'decline the friend request from'
+              : 'remove';
         toast.warning(
           <div>
-            You are about to{' '}
-            {isRequest ? 'remove the pending friend request with' : 'remove'}{' '}
-            {friendNetId}.
+            You are about to {actionLabel} {friendNetId}.
             <br />
             <b>This is irreversible without another friend request.</b>
             <br />
@@ -278,7 +282,7 @@ function Profile() {
             <LinkLikeText
               className="me-2"
               onClick={async () => {
-                await removeFriend(friendNetId, isRequest);
+                await removeFriend(friendNetId, action);
                 resolve();
                 toast.dismiss(`remove-${friendNetId}`);
               }}
@@ -543,7 +547,7 @@ function Profile() {
                               onClick={() => {
                                 void removeFriendWithConfirmation(
                                   request.netId,
-                                  true,
+                                  'incoming',
                                 );
                               }}
                             >
@@ -583,7 +587,7 @@ function Profile() {
                               onClick={() => {
                                 void removeFriendWithConfirmation(
                                   request.netId,
-                                  true,
+                                  'outgoing',
                                 );
                               }}
                             >
@@ -627,7 +631,7 @@ function Profile() {
                               onClick={() => {
                                 void removeFriendWithConfirmation(
                                   friendNetId as NetId,
-                                  false,
+                                  'friend',
                                 );
                               }}
                             >

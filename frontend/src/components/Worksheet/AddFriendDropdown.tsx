@@ -25,7 +25,10 @@ import styles from './AddFriendDropdown.module.css';
 
 const FriendContext = createContext<{
   isFriend: (netId: NetId) => boolean;
-  removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
+  removeFriend: (
+    netId: NetId,
+    action: 'friend' | 'incoming' | 'outgoing',
+  ) => Promise<void>;
 } | null>(null);
 
 type OptionKind =
@@ -95,7 +98,7 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
             type="button"
             className={styles.iconButton}
             aria-label="Cancel friend request"
-            onClick={handler((id) => removeFriend(id, true))}
+            onClick={handler((id) => removeFriend(id, 'outgoing'))}
           >
             <MdPersonRemove className={styles.removeFriendIcon} />
           </button>
@@ -147,7 +150,7 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
             type="button"
             className={clsx(styles.iconButton, styles.iconButtonRemove)}
             aria-label="Decline friend request"
-            onClick={handler((id) => removeFriend(id, true))}
+            onClick={handler((id) => removeFriend(id, 'incoming'))}
           >
             <MdPersonRemove className={styles.removeFriendIcon} />
           </button>
@@ -314,7 +317,10 @@ function AddFriendDropdown({
   mobile,
   fullWidth = false,
 }: {
-  readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
+  readonly removeFriend: (
+    netId: NetId,
+    action: 'friend' | 'incoming' | 'outgoing',
+  ) => Promise<void>;
   readonly mobile: boolean;
   readonly fullWidth?: boolean;
 }) {

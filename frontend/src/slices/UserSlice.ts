@@ -36,7 +36,10 @@ interface UserActions {
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
   addFriend: (friendNetId: NetId) => Promise<void>;
-  removeFriend: (friendNetId: NetId, isRequest: boolean) => Promise<void>;
+  removeFriend: (
+    friendNetId: NetId,
+    action: 'friend' | 'incoming' | 'outgoing',
+  ) => Promise<void>;
   requestAddFriend: (friendNetId: NetId) => Promise<void>;
 }
 
@@ -87,11 +90,18 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
       toast.info(`Added friend: ${friendNetId}`);
     await Promise.all([get().friendRefresh(), get().friendReqRefresh()]);
   },
-  async removeFriend(friendNetId: NetId, isRequest: boolean) {
+  async removeFriend(
+    friendNetId: NetId,
+    action: 'friend' | 'incoming' | 'outgoing',
+  ) {
     if (await baseRemoveFriend(friendNetId)) {
-      toast.info(
-        `${isRequest ? 'Removed pending request with' : 'Removed friend'} ${friendNetId}`,
-      );
+      const msg =
+        action === 'friend'
+          ? `Removed friend ${friendNetId}`
+          : action === 'outgoing'
+            ? `Cancelled friend request to ${friendNetId}`
+            : `Declined friend request from ${friendNetId}`;
+      toast.info(msg);
     }
     await Promise.all([get().friendRefresh(), get().friendReqRefresh()]);
   },
