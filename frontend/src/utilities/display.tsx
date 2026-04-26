@@ -97,14 +97,17 @@ export function useComponentVisibleDropdown<
 
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
+    const target = event.target as Node;
     const portal = document.querySelector('#portal');
+    const isModalClick =
+      target instanceof Element && target.closest('.modal, .modal-backdrop');
     if (
       toggleRef.current &&
       dropdownRef.current &&
-      !toggleRef.current.contains(event.target as Node) &&
-      !dropdownRef.current.contains(event.target as Node) &&
-      portal &&
-      !portal.contains(event.target as Node)
+      !toggleRef.current.contains(target) &&
+      !dropdownRef.current.contains(target) &&
+      !isModalClick &&
+      (!portal || !portal.contains(target))
     ) {
       if (callback) callback(isComponentVisible);
 
