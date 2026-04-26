@@ -93,7 +93,7 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         ) : (
           <button
             type="button"
-            className={clsx(styles.iconButton, styles.iconButtonRemove)}
+            className={styles.iconButton}
             aria-label="Cancel friend request"
             onClick={handler((id) => removeFriend(id, true))}
           >
