@@ -380,7 +380,7 @@ function WorksheetCalendar({
         localizer={localizer}
         toolbar={false}
         scrollToTime={viewedSeason === CUR_SEASON ? new Date() : earliest}
-        showCurrentTimeIndicator={viewedSeason === CUR_SEASON}
+        getNow={() => (viewedSeason === CUR_SEASON ? new Date() : new Date(0))}
         selected={selectedEvent}
         onSelectEvent={handleSelectEvent}
         components={calendarComponents}
