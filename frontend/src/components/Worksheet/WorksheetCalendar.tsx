@@ -379,6 +379,7 @@ function WorksheetCalendar({
         max={latest}
         localizer={localizer}
         toolbar={false}
+        scrollToTime={viewedSeason === CUR_SEASON ? new Date() : earliest}
         showCurrentTimeIndicator={viewedSeason === CUR_SEASON}
         selected={selectedEvent}
         onSelectEvent={handleSelectEvent}
