@@ -117,11 +117,14 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         {isLoading ? (
           <Spinner className={styles.spinner} message={undefined} />
         ) : (
-          <MdPersonAdd
-            className={styles.addFriendIcon}
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label="Send friend request"
             onClick={handler(requestAddFriend)}
-            title="Send friend request"
-          />
+          >
+            <MdPersonAdd className={styles.addFriendIcon} />
+          </button>
         )}
       </div>
     );
