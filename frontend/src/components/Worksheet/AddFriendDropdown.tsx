@@ -231,6 +231,9 @@ function AddFriendDropdownDesktop({
         try {
           const data = await searchProfiles(searchText, 20);
           if (cancelled) return;
+          const outgoingSet = new Set(
+            outgoingFriendRequests?.map((r) => r.netId) ?? [],
+          );
           const nextResults =
             data?.profiles
               .filter((profile) => profile.netId !== user?.netId)
@@ -242,7 +245,9 @@ function AddFriendDropdownDesktop({
                     : profile.netId,
                   type: isFriend(profile.netId)
                     ? 'alreadyFriend'
-                    : 'searchResult',
+                    : outgoingSet.has(profile.netId)
+                      ? 'outgoingRequest'
+                      : 'searchResult',
                 }),
               ) ?? [];
           setSearchResults(nextResults);
@@ -256,7 +261,7 @@ function AddFriendDropdownDesktop({
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [isFriend, searchText, user?.netId]);
+  }, [isFriend, outgoingFriendRequests, searchText, user?.netId]);
   const friendRequestOptions = useMemo(
     (): OptionType[] =>
       friendRequests?.map((request) => ({
@@ -265,15 +270,6 @@ function AddFriendDropdownDesktop({
         type: 'incomingRequest',
       })) || [],
     [friendRequests],
-  );
-  const outgoingRequestOptions = useMemo(
-    (): OptionType[] =>
-      outgoingFriendRequests?.map((request) => ({
-        value: request.netId,
-        label: request.name ?? request.netId,
-        type: 'outgoingRequest',
-      })) || [],
-    [outgoingFriendRequests],
   );
 
   return (
@@ -288,7 +284,6 @@ function AddFriendDropdownDesktop({
         options={[
           { label: 'Search results', options: searchResults },
           { label: 'Incoming requests', options: friendRequestOptions },
-          { label: 'Pending requests', options: outgoingRequestOptions },
         ]}
         isLoading={isLoading}
         loadingMessage={() => 'Loading names...'}
