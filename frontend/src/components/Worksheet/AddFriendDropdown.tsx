@@ -28,7 +28,11 @@ const FriendContext = createContext<{
   removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 } | null>(null);
 
-type OptionKind = 'searchResult' | 'incomingRequest' | 'outgoingRequest';
+type OptionKind =
+  | 'searchResult'
+  | 'incomingRequest'
+  | 'outgoingRequest'
+  | 'alreadyFriend';
 
 interface OptionType {
   value: NetId;
@@ -58,6 +62,21 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         setIsLoading(false);
       }
     };
+
+  if (data.type === 'alreadyFriend') {
+    return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+      <div
+        {...innerProps}
+        className={styles.friendOption}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.friendOptionText}>{children}</span>
+        <span className={styles.alreadyAddedLabel}>Already added</span>
+      </div>
+    );
+  }
 
   if (data.type === 'outgoingRequest') {
     return (
@@ -214,17 +233,16 @@ function AddFriendDropdownDesktop({
           if (cancelled) return;
           const nextResults =
             data?.profiles
-              .filter(
-                (profile) =>
-                  profile.netId !== user?.netId && !isFriend(profile.netId),
-              )
+              .filter((profile) => profile.netId !== user?.netId)
               .map(
                 (profile): OptionType => ({
                   value: profile.netId,
                   label: profile.displayName
                     ? `${profile.displayName} (${profile.netId})`
                     : profile.netId,
-                  type: 'searchResult',
+                  type: isFriend(profile.netId)
+                    ? 'alreadyFriend'
+                    : 'searchResult',
                 }),
               ) ?? [];
           setSearchResults(nextResults);
