@@ -114,11 +114,13 @@ You can save your current catalog search text and filter combination under a nam
 
 This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
 
-## Ferry locations logic updates
+## Ferry updates: locations and sync memory
 
-After Yale Course Search restricted locations to signed-in users, we had to rethink how Ferry, our scraper that runs daily to keep course data up to date, ingests room locations (including a larger data migration: either freezing locations to a known snapshot or using a short-lived session to refresh them) so we stay aligned with YCS. On CourseTable we now only expose course locations to users who have evaluations access.
+Ferry is our crawler that runs on a schedule to pull course and evaluation data from Yale Course Search and related sources, transform it, and load it into the database that powers CourseTable. After Yale Course Search restricted locations to signed-in users, we had to rethink how Ferry ingests room locations—whether to freeze them to a known snapshot or use a short-lived session to refresh them, so that we stay aligned with YCS. On CourseTable, we now only show course room locations to users who have evaluations access, which lines up with how that data is now gated at the source.
 
-This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
+Separately, as the volume of data we process has grown, the import courses step in Ferry began spiking to very high memory. We refactored that path: pre-aggregating ratings, avoiding large per-row list builds, and computing professor course counts more efficiently. On a full run we see on the order of ~60% less peak memory in that part of the pipeline.
+
+Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl))
 
 ## Bug fixes, polishes, infra
 
@@ -129,6 +131,7 @@ This feature is contributed by Reyansh Bahl ([@reybahl](https://github.com/reyba
 - We upgraded many of our core libraries: React 19, React Router 7, Vite 6, and Zustand 5. Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)) and Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
 - If the CourseTable maintainers had to manually turn on evaluations access for your account, that access stays put when you log in instead of sometimes being lost on the next sign-in. Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
 - We made the course modal overview a bit easier to read: there's more breathing room between the two main columns on larger screens. Contributed by William Feng ([@WFeng7](https://github.com/WFeng7)).
+- We removed the old "Professors" tab from the course modal; it was redundant with professor information elsewhere in the UI. Contributed by Michael Canudas ([@michaelcanudas](https://github.com/michaelcanudas)).
 - We updated the library we use to display the success/error notifications (“toasts”) in the top right of the app. Contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)).
 - We've finished migrating global app state from React Context to Zustand to make state management more predictable and maintainable across our codebase. Contributed by Neil Song ([@neilsong](https://github.com/neilsong)) and Aryan Sharma ([@aryans-15](https://github.com/aryans-15)).
 - Over the summer, Yale Course Search changed how buildings, rooms, and meeting rows are represented, while our location and course meeting tables and sync logic still assumed the old shape. That mismatch caused location rows to get wiped or rewritten, bad foreign keys, and noisy or duplicate course meeting rows per run. We realigned the importer and DB sync (updating the incremental course meetings logic, resolving location IDs from building+room, deduping, and stricter diff/equality rules) so schedules and rooms stay consistent with what Yale publishes, addressing a locations issue that showed up over the summer. This was contributed by Reyansh Bahl ([@reybahl](https://github.com/reybahl)) and Neil Song ([@neilsong](https://github.com/neilsong)).
@@ -152,5 +155,7 @@ We accomplished a lot last spring as well\! We'll keep it short as these have be
 - 4 digit course code transition: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena)) and Michael Canudas ([@michaelcanudas](https://github.com/michaelcanudas))
 - Add confirmation before deleting worksheet: Contributed by Aniketh Malyala ([@AniM824](https://github.com/AniM824))
 - Migrate to Yalies API v2: Contributed by Sida Chen ([@Josh-Cena](https://github.com/josh-cena))
+
+We're also very grateful to our graduating seniors, with a special thank-you to Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)) and Sida Chen ([@Josh-Cena](https://github.com/josh-cena)) for years of impact on the CourseTable product and the team.
 
 More is on the way, including custom events and course update email notifications. We expect to roll out much of it by early next semester!
