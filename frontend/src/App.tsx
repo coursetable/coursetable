@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useLocation,
+  Link,
+} from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
@@ -47,6 +54,9 @@ const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
 const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
+const Spring26Release = suspended(
+  () => import('./pages/releases/spring26.mdx'),
+);
 
 function Modal() {
   const currentModal = useStore((state) => state.currentModal);
@@ -139,10 +149,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={25}
+        id={26}
       >
-        {/* For registration week, note down your courses in case CourseTable
-        experiences outages. */}
+        Read our <Link to="/releases/spring26">latest release notes</Link>.
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -180,6 +189,7 @@ function App() {
         <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases/spring24" element={<Spring24Release />} />
         <Route path="/releases/fall24" element={<Fall24Release />} />
+        <Route path="/releases/spring26" element={<Spring26Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />
