@@ -152,7 +152,6 @@ function App() {
         id={26}
       >
         Read our <Link to="/releases/spring26">latest release notes</Link>.
-        We've shipped a lot over the past year!
       </Notice>
       <Navbar />
       <SentryRoutes>
