@@ -343,16 +343,46 @@ export const searchProfiles = async (
 
   const { q, limit } = queryParse.data;
 
+  const spaceIdx = q.indexOf(' ');
+  const nameCondition =
+    spaceIdx === -1
+      ? or(
+          ilike(studentBluebookSettings.netId, `%${q}%`),
+          ilike(studentBluebookSettings.firstName, `%${q}%`),
+          ilike(studentBluebookSettings.lastName, `%${q}%`),
+          ilike(studentBluebookSettings.preferredFirstName, `%${q}%`),
+          ilike(studentBluebookSettings.preferredLastName, `%${q}%`),
+        )
+      : (() => {
+          const first = q.slice(0, spaceIdx);
+          const last = q.slice(spaceIdx + 1);
+          const firstFields = or(
+            ilike(studentBluebookSettings.firstName, `%${first}%`),
+            ilike(studentBluebookSettings.preferredFirstName, `%${first}%`),
+          );
+          const lastFields = or(
+            ilike(studentBluebookSettings.lastName, `%${last}%`),
+            ilike(studentBluebookSettings.preferredLastName, `%${last}%`),
+          );
+          // Also try last-first order
+          const lastFirstFields = or(
+            ilike(studentBluebookSettings.lastName, `%${first}%`),
+            ilike(studentBluebookSettings.preferredLastName, `%${first}%`),
+          );
+          const firstLastFields = or(
+            ilike(studentBluebookSettings.firstName, `%${last}%`),
+            ilike(studentBluebookSettings.preferredFirstName, `%${last}%`),
+          );
+          return or(
+            and(firstFields, lastFields),
+            and(lastFirstFields, firstLastFields),
+          );
+        })();
+
   const candidates = (await db.query.studentBluebookSettings.findMany({
     where: and(
       eq(studentBluebookSettings.profilePageEnabled, true),
-      or(
-        ilike(studentBluebookSettings.netId, `%${q}%`),
-        ilike(studentBluebookSettings.firstName, `%${q}%`),
-        ilike(studentBluebookSettings.lastName, `%${q}%`),
-        ilike(studentBluebookSettings.preferredFirstName, `%${q}%`),
-        ilike(studentBluebookSettings.preferredLastName, `%${q}%`),
-      ),
+      nameCondition,
     ),
     columns: profileColumns,
     limit,
