@@ -16,16 +16,16 @@ export function shouldBlockSearchIndexing(hostname: string): boolean {
  *
  * - **`course-modal` on any path:** `/catalog?course-modal=…`
  * - **`prof-modal` on any path** (no `course-modal`): `/catalog?prof-modal=…`
- * - **`/catalog` or `/worksheet` with neither param:** bare path (drop filters,
- *   search text, extra keys).
+ * - **Otherwise:** `origin + pathname` only (drops `utm_*`, duplicate keys,
+ *   search text, etc.).
  *
  * If both modal params exist, `course-modal` wins (see ModalHistoryBridge).
  */
-export function getCatalogWorksheetCanonicalHref(
+export function getCanonicalHref(
   origin: string,
   pathname: string,
   searchParams: URLSearchParams,
-): string | null {
+): string {
   const courseModal = searchParams.get('course-modal');
   if (courseModal)
     return `${origin}/catalog?course-modal=${encodeURIComponent(courseModal)}`;
@@ -33,8 +33,6 @@ export function getCatalogWorksheetCanonicalHref(
   const profModal = searchParams.get('prof-modal');
   if (profModal)
     return `${origin}/catalog?prof-modal=${encodeURIComponent(profModal)}`;
-
-  if (pathname !== '/catalog' && pathname !== '/worksheet') return null;
 
   return `${origin}${pathname}`;
 }
