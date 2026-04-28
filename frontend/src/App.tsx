@@ -18,6 +18,7 @@ import ModalHistoryBridge from './components/ModalHistoryBridge';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import ProfModal from './components/ProfModal/ProfModal';
+import SeoMeta from './components/SeoMeta';
 import Spinner from './components/Spinner';
 import Tutorial from './components/Tutorial';
 
@@ -143,6 +144,7 @@ function App() {
           content="CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It's run by a small team of volunteers within the Yale Computer Society and is completely open source."
         />
       </Helmet>
+      <SeoMeta />
       <Notice
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
