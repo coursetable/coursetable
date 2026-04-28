@@ -2,13 +2,11 @@ import { useMemo } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
-import {
-  getCatalogWorksheetCanonicalHref,
-  shouldBlockSearchIndexing,
-} from '../utilities/seo';
+import { getCanonicalHref, shouldBlockSearchIndexing } from '../utilities/seo';
 
 /**
- * Staging: noindex. Catalog/worksheet: rel=canonical for query variants.
+ * Staging: noindex. Modal params → canonical `/catalog?…`; every other route
+ * uses origin + pathname so tracking/search junk in the query is dropped.
  */
 export default function SeoMeta() {
   const { pathname } = useLocation();
@@ -22,7 +20,7 @@ export default function SeoMeta() {
 
   const canonicalHref = useMemo(
     () =>
-      getCatalogWorksheetCanonicalHref(
+      getCanonicalHref(
         window.location.origin,
         pathname,
         new URLSearchParams(qs),
@@ -30,12 +28,10 @@ export default function SeoMeta() {
     [pathname, qs],
   );
 
-  if (!blockIndexing && !canonicalHref) return null;
-
   return (
     <Helmet>
       {blockIndexing && <meta name="robots" content="noindex, nofollow" />}
-      {canonicalHref && <link rel="canonical" href={canonicalHref} />}
+      <link rel="canonical" href={canonicalHref} />
     </Helmet>
   );
 }
