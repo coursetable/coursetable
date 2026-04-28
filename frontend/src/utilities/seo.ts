@@ -12,8 +12,12 @@ export function shouldBlockSearchIndexing(hostname: string): boolean {
 }
 
 /**
- * Preferred URL for catalog/worksheet: path + only `course-modal` or
- * `prof-modal` (no filters, search text, or duplicate keys).
+ * Canonical URL for SPA routes:
+ *
+ * - **`course-modal` on any path:** `/catalog?course-modal=…`
+ * - **`prof-modal` on any path** (no `course-modal`): `/catalog?prof-modal=…`
+ * - **`/catalog` or `/worksheet` with neither param:** bare path (drop filters,
+ *   search text, extra keys).
  *
  * If both modal params exist, `course-modal` wins (see ModalHistoryBridge).
  */
@@ -22,15 +26,15 @@ export function getCatalogWorksheetCanonicalHref(
   pathname: string,
   searchParams: URLSearchParams,
 ): string | null {
-  if (pathname !== '/catalog' && pathname !== '/worksheet') return null;
-
   const courseModal = searchParams.get('course-modal');
-  const profModal = searchParams.get('prof-modal');
-
   if (courseModal)
-    return `${origin}${pathname}?course-modal=${encodeURIComponent(courseModal)}`;
+    return `${origin}/catalog?course-modal=${encodeURIComponent(courseModal)}`;
+
+  const profModal = searchParams.get('prof-modal');
   if (profModal)
-    return `${origin}${pathname}?prof-modal=${encodeURIComponent(profModal)}`;
+    return `${origin}/catalog?prof-modal=${encodeURIComponent(profModal)}`;
+
+  if (pathname !== '/catalog' && pathname !== '/worksheet') return null;
 
   return `${origin}${pathname}`;
 }

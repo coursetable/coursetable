@@ -8,7 +8,8 @@ import {
 } from '../utilities/seo';
 
 /**
- * Staging: noindex. Catalog/worksheet: rel=canonical for query variants.
+ * Staging: noindex. Modal query params → canonical `/catalog?…`; catalog and
+ * worksheet otherwise get bare-path canonicals (no filter/search noise).
  */
 export default function SeoMeta() {
   const { pathname } = useLocation();
