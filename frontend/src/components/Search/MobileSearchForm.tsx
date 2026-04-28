@@ -6,22 +6,26 @@ import { scroller } from 'react-scroll';
 
 import CustomSelect from './CustomSelect';
 import ResultsColumnSort from './ResultsColumnSort';
+import SavedSearchesDropdown from './SavedSearchesDropdown';
 import Toggle from './Toggle';
+import { useSearch } from '../../hooks/useSearch';
 import {
-  useSearch,
-  type Filters,
-  type CategoricalFilters,
-  type NumericFilters,
-  type FilterHandle,
-  filterLabels,
   defaultFilters,
-  type IntersectableFilters,
+  filterLabels,
   skillsAreasOptions,
   subjectsOptions,
   schoolsOptions,
   seasonsOptions,
+} from '../../search/searchConstants';
+import {
   sortByOptions,
-} from '../../contexts/searchContext';
+  type CategoricalFilters,
+  type FilterHandle,
+  type Filters,
+  type IntersectableFilters,
+  type NumericFilters,
+} from '../../search/searchTypes';
+import { useStore } from '../../store';
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
 
@@ -140,6 +144,7 @@ function Slider<K extends NumericFilters>({
 
 export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
+  const resetSearchFilters = useStore((state) => state.patchSearchFilters);
   const { searchText, selectSortBy } = filters;
   const scrollToResults = useCallback((event?: React.FormEvent) => {
     if (event) event.preventDefault();
@@ -161,19 +166,20 @@ export default function MobileSearchForm() {
   return (
     <SurfaceComponent className={styles.searchContainer}>
       <Form className={styles.searchForm} onSubmit={scrollToResults}>
-        <div className="d-flex justify-content-between pt-4">
-          {/* Reset filters button */}
-          <button
-            type="button"
-            className={clsx(styles.resetFiltersBtn, 'me-auto')}
-            onClick={() => {
-              Object.values(filters).forEach((filter) =>
-                filter.resetToDefault(),
-              );
-            }}
-          >
-            Reset filters
-          </button>
+        <div className="d-flex justify-content-between align-items-center pt-4">
+          <div className="d-flex align-items-center gap-2">
+            {/* Reset filters button */}
+            <button
+              type="button"
+              className={styles.resetFiltersBtn}
+              onClick={() => {
+                resetSearchFilters(defaultFilters);
+              }}
+            >
+              Reset filters
+            </button>
+            <SavedSearchesDropdown />
+          </div>
           {/* Number of results shown text */}
           <small className={clsx(styles.numResults, 'ms-auto')}>
             <TextComponent type="tertiary">

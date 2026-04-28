@@ -6,7 +6,7 @@ import {
   Button,
   Dropdown,
 } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import AddFriendDropdown from './AddFriendDropdown';
 import FriendsDropdown from './FriendsDropdown';
@@ -59,15 +59,17 @@ export function NavbarWorksheetSearch({
   const removeFriendWithConfirmation = useCallback(
     (friendNetId: NetId, isRequest: boolean) =>
       new Promise<void>((resolve) => {
-        toast.warn(
-          <>
+        toast.warning(
+          <div>
             You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
-            {friendNetId}.{' '}
-            <b>This is irreversible without another friend request.</b> Do you
-            want to continue?
+            {friendNetId}.
+            <br />
+            <b>This is irreversible without another friend request.</b>
+            <br />
+            Do you want to continue?
             <br />
             <LinkLikeText
-              className="mx-2"
+              className="me-2"
               onClick={async () => {
                 if (!isRequest && viewedPerson === friendNetId)
                   changeViewedPerson('me');
@@ -79,7 +81,6 @@ export function NavbarWorksheetSearch({
               Yes
             </LinkLikeText>
             <LinkLikeText
-              className="mx-2"
               onClick={() => {
                 toast.dismiss(`remove-${friendNetId}`);
                 resolve();
@@ -87,8 +88,8 @@ export function NavbarWorksheetSearch({
             >
               No
             </LinkLikeText>
-          </>,
-          { autoClose: false, toastId: `remove-${friendNetId}` },
+          </div>,
+          { duration: Infinity, id: `remove-${friendNetId}` },
         );
       }),
     [changeViewedPerson, viewedPerson, removeFriend],

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FaImage } from 'react-icons/fa';
 import saveFile from 'file-saver';
 import html2canvas from 'html2canvas';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
 import { useStore } from '../../store';

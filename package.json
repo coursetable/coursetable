@@ -8,7 +8,7 @@
     "frontend"
   ],
   "scripts": {
-    "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run lint:css:check && bun run resize-image:check && bun run typecheck",
+    "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run lint:css:check && bun run resize-image:check && bun run typecheck && bun run --cwd frontend test",
     "checks:fix": "bun run format && bun run lint && bun run lint:css && bun run resize-image",
     "typecheck": "tsc && tsc -p frontend && tsc -p api",
     "depcheck": "bunx depcheck . --ignore-patterns=api,frontend && bunx depcheck api && bunx depcheck frontend",
@@ -39,10 +39,10 @@
     "@types/image-size": "^0.8.0",
     "@types/sharp": "^0.32.0",
     "commander": "^13.0.0",
-    "eslint": "^9.17.0",
-    "eslint-config-jc": "^6.0.1",
+    "eslint": "^10.2.0",
+    "eslint-config-jc": "^7.1.0",
     "eslint-plugin-css-modules": "^2.12.0",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-63e3235-20250105",
+    "eslint-plugin-react-compiler": "^19.1.0-rc.2",
     "husky": "^9.1.7",
     "image-size": "^1.2.0",
     "lint-staged": "^15.3.0",
@@ -51,13 +51,18 @@
     "stylelint": "^16.12.0",
     "stylelint-config-standard": "^36.0.1",
     "tsconfig-jc": "^2.3.1",
-    "typescript": "~5.7.3",
-    "typescript-eslint": "^8.19.1",
+    "typescript": "~6.0.3",
     "typescript-plugin-css-modules": "^5.1.0"
   },
   "engines": {
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
+  },
+  "overrides": {
+    "eslint-plugin-react-hooks": "7.0.0"
+  },
+  "patchedDependencies": {
+    "eslint-plugin-css-modules@2.12.0": "patches/eslint-plugin-css-modules@2.12.0.patch"
   }
 }

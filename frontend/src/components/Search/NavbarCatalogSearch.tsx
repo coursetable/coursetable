@@ -9,19 +9,22 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import AdvancedPanel from './AdvancedPanel';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
+import SavedSearchesDropdown from './SavedSearchesDropdown';
+import { useSearch } from '../../hooks/useSearch';
 import {
-  useSearch,
-  filterLabels,
-  type FilterHandle,
-  type Filters,
-  type CategoricalFilters,
-  type NumericFilters,
   defaultFilters,
-  type IntersectableFilters,
+  filterLabels,
   skillsAreasOptions,
   subjectsOptions,
   seasonsOptions,
-} from '../../contexts/searchContext';
+} from '../../search/searchConstants';
+import type {
+  CategoricalFilters,
+  FilterHandle,
+  Filters,
+  IntersectableFilters,
+  NumericFilters,
+} from '../../search/searchTypes';
 import { useStore } from '../../store';
 import { searchSpeed, skillsAreasColors } from '../../utilities/constants';
 import { TextComponent, Input } from '../Typography';
@@ -167,6 +170,7 @@ function Slider<K extends NumericFilters>({
 
 export function NavbarCatalogSearch() {
   const isTablet = useStore((state) => state.isTablet);
+  const resetSearchFilters = useStore((state) => state.patchSearchFilters);
   const [searchParams] = useSearchParams();
   const hasCourseModal = searchParams.has('course-modal');
 
@@ -297,14 +301,15 @@ export function NavbarCatalogSearch() {
           )}
           <AdvancedPanel />
 
+          {/* Saved searches dropdown (includes Save current search inside) */}
+          <SavedSearchesDropdown />
+
           {/* Reset filters & sorting button */}
           <Button
             className={styles.resetButton}
             variant="danger"
             onClick={() => {
-              Object.values(filters).forEach((filter) =>
-                filter.resetToDefault(),
-              );
+              resetSearchFilters(defaultFilters);
               setStartTime(Date.now());
             }}
             // Cannot reset if no filters have changed

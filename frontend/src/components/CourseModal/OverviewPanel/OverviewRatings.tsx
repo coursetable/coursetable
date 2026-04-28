@@ -1,17 +1,31 @@
 import React, { type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Form, Badge } from 'react-bootstrap';
-
+import clsx from 'clsx';
+import { Form, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { AiOutlineStar } from 'react-icons/ai';
+import { BiBookOpen } from 'react-icons/bi';
+import { IoPersonOutline } from 'react-icons/io5';
+import type chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
+
 import type { CourseModalOverviewDataQuery } from '../../../generated/graphql-types';
 import { useModalHistory } from '../../../hooks/useModalHistory';
 import type { ModalHistoryNavigateFn } from '../../../slices/ModalHistorySlice';
 import { useStore } from '../../../store';
-import { ratingColormap } from '../../../utilities/constants';
-import { isDiscussionSection } from '../../../utilities/course';
+import { generateRandomColor } from '../../../utilities/common';
+import { ratingColormap, workloadColormap } from '../../../utilities/constants';
+import {
+  getOverallRatings,
+  getProfessorRatings,
+  getWorkloadRatings,
+  isDiscussionSection,
+} from '../../../utilities/course';
 import { createProfModalLink } from '../../../utilities/display';
 import RelatedCoursesList from '../../RelatedCoursesList';
+import { RatingBubble } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
+
+import styles from './OverviewRatings.module.css';
 
 type RelatedCourseInfo = CourseModalOverviewDataQuery['sameCourse'][number];
 
@@ -74,6 +88,74 @@ function createProfSummary(
   return { key: names.join(' • '), links };
 }
 
+function AggregateRating({
+  label,
+  Icon,
+  stat,
+  display,
+  colorMap,
+  tooltip,
+  hasEvals,
+  randomSeed,
+}: {
+  readonly label: string;
+  readonly Icon: React.ComponentType<{ readonly size?: number }>;
+  readonly stat: number | null;
+  readonly display: string;
+  readonly colorMap: chroma.Scale;
+  readonly tooltip: React.ReactNode;
+  readonly hasEvals: boolean | undefined;
+  readonly randomSeed: string;
+}) {
+  const accessPrompt =
+    hasEvals === false ? 'Complete the challenge' : 'Sign in';
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={(props) => (
+        <Tooltip id={`aggregate-${label.toLowerCase()}`} {...props}>
+          {hasEvals ? (
+            tooltip
+          ) : (
+            <span>
+              These colors are randomly generated. {accessPrompt} to see real
+              ratings.
+            </span>
+          )}
+        </Tooltip>
+      )}
+    >
+      <button
+        type="button"
+        className={clsx(styles.aggregateItem, styles.aggregateTrigger)}
+        aria-label={
+          hasEvals
+            ? `${label}: ${display}`
+            : `${label}: ${accessPrompt} to see rating`
+        }
+      >
+        <div className={styles.aggregateLabel}>
+          <Icon size={14} /> {label}
+        </div>
+        {hasEvals ? (
+          <RatingBubble
+            rating={stat}
+            colorMap={colorMap}
+            className={styles.aggregateRatingCell}
+          >
+            {display}
+          </RatingBubble>
+        ) : (
+          <RatingBubble
+            color={generateRandomColor(randomSeed)}
+            className={styles.aggregateRatingCell}
+          />
+        )}
+      </button>
+    </OverlayTrigger>
+  );
+}
+
 function OverviewRatings({
   onNavigation,
   listing,
@@ -85,6 +167,7 @@ function OverviewRatings({
 }) {
   const [searchParams] = useSearchParams();
   const { navigate } = useModalHistory();
+  const hasEvals = useStore((state) => state.user?.hasEvals);
   const sameCourseNormalized = sameCourse
     .filter((o) => !isDiscussionSection(o) && o.extra_info === 'ACTIVE')
     .sort(
@@ -99,6 +182,15 @@ function OverviewRatings({
       togglePref: state.togglePref,
     })),
   );
+
+  const summaryCourse = listing.course;
+  const overallStat = getOverallRatings(summaryCourse, 'stat');
+  const overallDisplay = getOverallRatings(summaryCourse, 'display');
+  const workloadStat = getWorkloadRatings(summaryCourse, 'stat');
+  const workloadDisplay = getWorkloadRatings(summaryCourse, 'display');
+  const professorStat = getProfessorRatings(summaryCourse, 'stat');
+  const professorDisplay = getProfessorRatings(summaryCourse, 'display');
+
   const coursesByProf = new Map<
     string,
     { title: ReactNode; courses: RelatedCourseInfo[] }
@@ -123,6 +215,57 @@ function OverviewRatings({
   }
   return (
     <>
+      <div className={styles.aggregateContainer}>
+        <div className={styles.aggregateRow}>
+          <AggregateRating
+            label="Overall"
+            Icon={AiOutlineStar}
+            stat={overallStat}
+            display={overallDisplay}
+            colorMap={ratingColormap}
+            tooltip={
+              <span>
+                Same course rating as catalog search: computed on the server
+                across cross-listed sections. A ~ means the all-professors
+                aggregate when same-professor data is unavailable.
+              </span>
+            }
+            hasEvals={hasEvals}
+            randomSeed={`${listing.course_code}${listing.crn}overall-agg`}
+          />
+          <AggregateRating
+            label="Work"
+            Icon={BiBookOpen}
+            stat={workloadStat}
+            display={workloadDisplay}
+            colorMap={workloadColormap}
+            tooltip={
+              <span>
+                Same workload rating as catalog search: server aggregate across
+                cross-listed sections. ~ indicates all-professors aggregate when
+                same-professor data is unavailable.
+              </span>
+            }
+            hasEvals={hasEvals}
+            randomSeed={`${listing.course_code}${listing.crn}workload-agg`}
+          />
+          <AggregateRating
+            label="Prof"
+            Icon={IoPersonOutline}
+            stat={professorStat}
+            display={professorDisplay}
+            colorMap={ratingColormap}
+            tooltip={
+              <span>
+                Same professor rating as the catalog Professor column for this
+                offering (server aggregate).
+              </span>
+            }
+            hasEvals={hasEvals}
+            randomSeed={`${listing.course_code}${listing.crn}prof-agg`}
+          />
+        </div>
+      </div>
       {sameCourseNormalized.length !== 0 ? (
         <>
           <Form.Check type="switch" className="mb-3">

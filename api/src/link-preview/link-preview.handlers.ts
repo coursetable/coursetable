@@ -17,7 +17,7 @@ function escapeHtml(value: unknown): string {
 
 // Tagged template literal that auto-escapes all interpolated values
 const html = (strings: TemplateStringsArray, ...values: unknown[]): string =>
-  strings.reduce<string>(
+  strings.reduce(
     (result, str, i) =>
       result + str + (i < values.length ? escapeHtml(values[i]) : ''),
     '',
@@ -152,6 +152,13 @@ function getPageMetadata(url: string) {
         title: 'CourseTable 23Fall/Winter Release Notes',
         description:
           'Discover the latest features and improvements in our Fall 2023 update.',
+        image: 'https://coursetable.com/favicon.png',
+      };
+    case '/releases/spring26':
+      return {
+        title: 'CourseTable 2025 + Spring 2026 Release Notes',
+        description:
+          'Discover the latest features and improvements in our 2025 + Spring 2026 update.',
         image: 'https://coursetable.com/favicon.png',
       };
     default:

@@ -1,11 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { hasGrantedAnyScopeGoogle, useGoogleLogin } from '@react-oauth/google';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import Spinner from '../../components/Spinner';
 import { academicCalendars } from '../../config';
-import { useGapi } from '../../contexts/gapiContext';
 import GCalIcon from '../../images/gcal.svg';
 import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
@@ -13,7 +12,7 @@ import { toSeasonString } from '../../utilities/course';
 
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
-  const { gapi } = useGapi();
+  const gapi = useStore((s) => s.gapi);
   const { viewedSeason, courses } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,

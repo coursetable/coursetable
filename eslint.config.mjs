@@ -3,15 +3,16 @@
 
 // @ts-check
 
+import { defineConfig } from 'eslint/config';
+
 import jcRules from 'eslint-config-jc';
 
 // @ts-expect-error: no typings yet
 import cssModulesPlugin from 'eslint-plugin-css-modules';
 
 import reactCompiler from 'eslint-plugin-react-compiler';
-import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
   ...jcRules({
     typescriptTypeCheck: true,
     node: ['api/**/*'],
@@ -52,7 +53,7 @@ export default tseslint.config(
       ],
       'css-modules/no-unused-class': 'error',
       'css-modules/no-undef-class': 'error',
-      'import/no-extraneous-dependencies': [
+      'import-x/no-extraneous-dependencies': [
         'error',
         {
           devDependencies: [
@@ -60,10 +61,12 @@ export default tseslint.config(
             './frontend/vite.config.ts',
             './eslint.config.mjs',
             '**/vite.config.ts',
+            '**/*.test.ts',
+            '**/*.test.tsx',
           ],
         },
       ],
-      'import/order': [
+      'import-x/order': [
         'error',
         {
           groups: ['builtin', 'external', 'sibling', 'parent', 'index'],

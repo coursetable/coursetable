@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useLocation,
+  Link,
+} from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
@@ -36,6 +43,7 @@ const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const Join = suspended(() => import('./pages/Join'));
 const Profile = suspended(() => import('./pages/Profile'));
+const UserProfile = suspended(() => import('./pages/UserProfile'));
 const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
 // TODO: use import.meta.glob instead of manual import
 const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
@@ -47,6 +55,9 @@ const Spring24Release = suspended(
   () => import('./pages/releases/spring24.mdx'),
 );
 const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
+const Spring26Release = suspended(
+  () => import('./pages/releases/spring26.mdx'),
+);
 
 function Modal() {
   const currentModal = useStore((state) => state.currentModal);
@@ -140,10 +151,9 @@ function App() {
         // won't see the updated content.
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
-        id={21}
+        id={26}
       >
-        {/* Course locations are accurate as of December 2025. Please refer to Yale
-        Course Search to see your up-to-date course locations. */}
+        Read our <Link to="/releases/spring26">latest release notes</Link>.
       </Notice>
       <Navbar />
       <SentryRoutes>
@@ -172,6 +182,7 @@ function App() {
         <Route path="/joinus" element={<Join />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacypolicy" element={<Privacy />} />
+        <Route path="/u/:netId" element={<UserProfile />} />
 
         <Route path="/Table" element={<Navigate to={createCatalogLink()} />} />
 
@@ -180,6 +191,7 @@ function App() {
         <Route path="/releases/link-preview" element={<LinkPreview />} />
         <Route path="/releases/spring24" element={<Spring24Release />} />
         <Route path="/releases/fall24" element={<Fall24Release />} />
+        <Route path="/releases/spring26" element={<Spring26Release />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />

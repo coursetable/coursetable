@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Form, Button, Row } from 'react-bootstrap';
 import { FiExternalLink } from 'react-icons/fi';
 import { useApolloClient } from '@apollo/client';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import Spinner from '../components/Spinner';
 import { TextComponent, SurfaceComponent } from '../components/Typography';
@@ -17,12 +17,6 @@ import {
 } from '../queries/api';
 import { useStore } from '../store';
 import styles from './Challenge.module.css';
-
-type Answer = {
-  courseRatingId: number;
-  courseRatingIndex: number;
-  answer: string;
-};
 
 function renderRequestError(requestError: string, navigate: NavigateFunction) {
   if (requestError === 'USER_NOT_FOUND') {
@@ -112,7 +106,7 @@ function Challenge() {
   // Stores body of response for the /api/challenge/request API call
   const [resBody, setResBody] = useState<RequestChallengeResBody | null>(null);
   // Stores user's answers
-  const [answers, setAnswers] = useState<Answer[]>([
+  const [answers, setAnswers] = useState([
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
@@ -176,7 +170,7 @@ function Challenge() {
         toast.success(
           "All of your responses were correct! Refresh the page if the courses aren't showing.",
         );
-        navigate(-1);
+        void navigate(-1);
       } catch {
         toast.error('Failed to update evaluation status');
       }

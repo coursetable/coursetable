@@ -11,6 +11,8 @@ import {
   createDimensionsSlice,
   type DimensionsSlice,
 } from './slices/DimensionsSlice';
+import { createFerrySlice, type FerrySlice } from './slices/FerrySlice';
+import { createGapiSlice, type GapiSlice } from './slices/GapiSlice';
 import {
   createModalHistorySlice,
   type ModalHistorySlice,
@@ -20,12 +22,18 @@ import {
   defaultPreferences,
   type ProfileSlice,
 } from './slices/ProfileSlice';
+import { createSearchSlice, type SearchSlice } from './slices/SearchSlice';
 import { createThemeSlice, type ThemeSlice } from './slices/ThemeSlice';
 import {
   createTutorialSlice,
   type TutorialSlice,
 } from './slices/TutorialSlice';
 import { createUserSlice, type UserSlice } from './slices/UserSlice';
+import {
+  createWishlistSlice,
+  useWishlistEffects,
+  type WishlistSlice,
+} from './slices/WishlistSlice';
 import {
   createWorksheetSlice,
   useWorksheetEffects,
@@ -40,9 +48,13 @@ export interface Store
     UserSlice,
     ThemeSlice,
     DimensionsSlice,
+    GapiSlice,
     TutorialSlice,
     ModalHistorySlice,
     ProfileSlice,
+    FerrySlice,
+    SearchSlice,
+    WishlistSlice,
     WorksheetSlice {}
 
 const basePersistKeys: (keyof Store)[] = [
@@ -71,9 +83,13 @@ export const useStore = create<Store>()(
         ...createUserSlice(...a),
         ...createThemeSlice(...a),
         ...createDimensionsSlice(...a),
+        ...createGapiSlice(...a),
         ...createTutorialSlice(...a),
         ...createModalHistorySlice(...a),
         ...createProfileSlice(...a),
+        ...createFerrySlice(...a),
+        ...createSearchSlice(...a),
+        ...createWishlistSlice(...a),
         ...createWorksheetSlice(...a),
       })),
     ),
@@ -146,5 +162,6 @@ export const useInitStore = () => {
   useAuth();
   useDimensions();
   useTheme();
+  useWishlistEffects();
   useWorksheetEffects();
 };

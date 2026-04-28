@@ -1,6 +1,6 @@
 import React from 'react';
 import CustomSelect from './CustomSelect';
-import type { Option } from '../../contexts/searchContext';
+import type { Option } from '../../search/searchTypes';
 
 export function PopoutSelect<
   T extends Option<number | string>,

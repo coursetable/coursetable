@@ -1,5 +1,5 @@
 import type express from 'express';
-import { or, and, eq, inArray, sql } from 'drizzle-orm';
+import { or, and, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 import { getSdk } from './friends.queries.js';
 import {
@@ -9,6 +9,12 @@ import {
   worksheets,
 } from '../../drizzle/schema.js';
 import { db, graphqlClient } from '../config.js';
+import {
+  canViewerSee,
+  getSelfDisplayNames,
+  getVisibleDisplayName,
+  normalizeVisibility,
+} from '../profile/profile.utils.js';
 import {
   worksheetListToMap,
   fetchSameCourseIdMappings,
@@ -98,13 +104,19 @@ export const removeFriend = async (
       )
       .returning();
     if (!friendDeleteRes) {
-      // No existing friend; try deleting the friend request
+      // No existing friend; try deleting the friend request (incoming or outgoing)
       const [reqDeleteRes] = await tx
         .delete(studentFriendRequests)
         .where(
-          and(
-            eq(studentFriendRequests.netId, friendNetId),
-            eq(studentFriendRequests.friendNetId, netId),
+          or(
+            and(
+              eq(studentFriendRequests.netId, friendNetId),
+              eq(studentFriendRequests.friendNetId, netId),
+            ),
+            and(
+              eq(studentFriendRequests.netId, netId),
+              eq(studentFriendRequests.friendNetId, friendNetId),
+            ),
           ),
         )
         .returning();
@@ -191,7 +203,7 @@ export const getRequestsForFriend = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
-  const friendNames = await db.transaction(async (tx) => {
+  const friendRequestProfiles = await db.transaction(async (tx) => {
     const friendReqs = await tx.query.studentFriendRequests.findMany({
       where: eq(studentFriendRequests.friendNetId, netId),
       columns: { netId: true },
@@ -203,15 +215,66 @@ export const getRequestsForFriend = async (
     return tx
       .select({
         netId: studentBluebookSettings.netId,
-        name: sql<
-          string | null
-        >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+        firstName: studentBluebookSettings.firstName,
+        lastName: studentBluebookSettings.lastName,
+        preferredFirstName: studentBluebookSettings.preferredFirstName,
+        preferredLastName: studentBluebookSettings.preferredLastName,
+        nameVisibility: studentBluebookSettings.nameVisibility,
       })
       .from(studentBluebookSettings)
       .where(inArray(studentBluebookSettings.netId, reqFriends));
   });
 
-  res.status(200).json({ requests: friendNames });
+  const requests = friendRequestProfiles.map((profile) => ({
+    netId: profile.netId,
+    name: getVisibleDisplayName(
+      profile,
+      'stranger',
+      normalizeVisibility(profile.nameVisibility, 'public'),
+    ),
+  }));
+
+  res.status(200).json({ requests });
+};
+
+export const getOutgoingRequests = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const outgoingRequestProfiles = await db.transaction(async (tx) => {
+    const outgoingReqs = await tx.query.studentFriendRequests.findMany({
+      where: eq(studentFriendRequests.netId, netId),
+      columns: { friendNetId: true },
+    });
+
+    const pendingNetIds = outgoingReqs.map((r) => r.friendNetId);
+
+    if (pendingNetIds.length === 0) return [];
+    return tx
+      .select({
+        netId: studentBluebookSettings.netId,
+        firstName: studentBluebookSettings.firstName,
+        lastName: studentBluebookSettings.lastName,
+        preferredFirstName: studentBluebookSettings.preferredFirstName,
+        preferredLastName: studentBluebookSettings.preferredLastName,
+        nameVisibility: studentBluebookSettings.nameVisibility,
+      })
+      .from(studentBluebookSettings)
+      .where(inArray(studentBluebookSettings.netId, pendingNetIds));
+  });
+
+  const requests = outgoingRequestProfiles.map((profile) => ({
+    netId: profile.netId,
+    name: getVisibleDisplayName(
+      profile,
+      'stranger',
+      normalizeVisibility(profile.nameVisibility, 'public'),
+    ),
+  }));
+
+  res.status(200).json({ requests });
 };
 
 export const getFriendsWorksheets = async (
@@ -261,9 +324,11 @@ export const getFriendsWorksheets = async (
       const friendInfos = await tx
         .select({
           netId: studentBluebookSettings.netId,
-          name: sql<
-            string | null
-          >`${studentBluebookSettings.firstName} || ' ' || ${studentBluebookSettings.lastName}`,
+          firstName: studentBluebookSettings.firstName,
+          lastName: studentBluebookSettings.lastName,
+          preferredFirstName: studentBluebookSettings.preferredFirstName,
+          preferredLastName: studentBluebookSettings.preferredLastName,
+          nameVisibility: studentBluebookSettings.nameVisibility,
         })
         .from(studentBluebookSettings)
         .where(inArray(studentBluebookSettings.netId, friendNetIds));
@@ -337,7 +402,11 @@ export const getFriendsWorksheets = async (
     friendInfos.map((friendInfo) => [
       friendInfo.netId,
       {
-        name: friendInfo.name,
+        name: getVisibleDisplayName(
+          friendInfo,
+          'friend',
+          normalizeVisibility(friendInfo.nameVisibility, 'public'),
+        ),
       },
     ]),
   );
@@ -370,14 +439,27 @@ export const getNames = async (
     columns: {
       netId: true,
       college: true,
-    },
-    extras: {
-      first: sql<string | null>`${studentBluebookSettings.firstName}`.as(
-        'first',
-      ),
-      last: sql<string | null>`${studentBluebookSettings.lastName}`.as('last'),
+      firstName: true,
+      lastName: true,
+      preferredFirstName: true,
+      preferredLastName: true,
+      nameVisibility: true,
     },
   });
 
-  res.status(200).json({ names });
+  res.status(200).json({
+    names: names.map((name) => {
+      const displayNames = getSelfDisplayNames(name);
+      const canSeeName = canViewerSee(
+        normalizeVisibility(name.nameVisibility, 'public'),
+        'stranger',
+      );
+      return {
+        netId: name.netId,
+        college: name.college,
+        first: canSeeName ? displayNames.displayFirstName : null,
+        last: canSeeName ? displayNames.displayLastName : null,
+      };
+    }),
+  });
 };

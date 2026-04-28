@@ -10,9 +10,9 @@ import remarkGfm from 'remark-gfm';
 import { visualizer } from 'rollup-plugin-visualizer';
 import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
-import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from 'vitest/config';
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -202,5 +202,8 @@ export default defineConfig({
     port: process.env.FRONTEND_ENDPOINT
       ? Number(new URL(process.env.FRONTEND_ENDPOINT).port || 3000)
       : 3000,
+  },
+  test: {
+    environment: 'node',
   },
 });

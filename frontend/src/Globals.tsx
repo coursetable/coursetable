@@ -9,17 +9,18 @@ import {
   createHttpLink,
 } from '@apollo/client';
 import { MDXProvider } from '@mdx-js/react';
-import { ToastContainer } from 'react-toastify';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Toaster } from 'sonner';
+import 'sonner/dist/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'core-js/proposals/array-grouping-v2';
 import 'core-js/proposals/change-array-by-copy-stage-4';
 
 import ErrorPage from './components/ErrorPage';
+import { GapiLoader } from './components/GapiLoader';
 import { components } from './components/markdown';
 import { isDev, API_ENDPOINT } from './config';
-import { FerryProvider } from './contexts/ferryContext';
-import { GapiProvider } from './contexts/gapiContext';
-import { SearchProvider } from './contexts/searchContext';
+import { SearchBootstrap } from './search/SearchBootstrap';
 
 import './index.css';
 
@@ -61,22 +62,23 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
       {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
       <BrowserRouter>
-        <GapiProvider>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_DEV_GCAL_CLIENT_ID}>
+          <GapiLoader />
           <ApolloProvider client={client}>
-            {/* FerryProvider must be inside UserProvider because the former
-              depends on login status */}
-            <FerryProvider>
-              {/* SearchProvider must be inside WorksheetProvider because the
-                    former depends on the currently viewed worksheet */}
-              <SearchProvider>
-                <MDXProvider components={components}>
-                  <div id="base">{children}</div>
-                </MDXProvider>
-              </SearchProvider>
-              <ToastContainer toastClassName="rounded" />
-            </FerryProvider>
+            {/* SearchBootstrap syncs search filters and catalog data into Zustand */}
+            <SearchBootstrap>
+              <MDXProvider components={components}>
+                <div id="base">{children}</div>
+              </MDXProvider>
+            </SearchBootstrap>
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              duration={5000}
+            />
           </ApolloProvider>
-        </GapiProvider>
+        </GoogleOAuthProvider>
       </BrowserRouter>
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>

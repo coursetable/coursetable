@@ -28,7 +28,10 @@ jobs:
 
       - name: Run DB migration
         run: |
+          # Run as the Actions user so bind-mounted node_modules stays deletable by checkout
           docker run --rm --network db \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/tmp \
             -e DB_URL="${DB_URL}" \
             -v "${{ github.workspace }}:/app" -w /app \
             oven/bun:latest \

@@ -41,6 +41,7 @@ mark {
   font-weight: 500;
   position: sticky;
   top: -1rem;
+  z-index: 1;
   background-color: var(--color-surface);
 }
 
@@ -74,4 +75,82 @@ mark {
 
 .filterInput {
   margin-bottom: 5px;
+}
+
+.summaryCard {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  margin: 0.5rem 0 0.75rem;
+  background-color: var(--color-primary-subdued-2);
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.3rem;
+}
+
+.summaryIcon {
+  font-size: 13px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.summaryLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+}
+
+.summaryInfo {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  color: var(--color-text-tertiary);
+  cursor: help;
+  font-size: 13px;
+  transition:
+    color var(--trans-dur),
+    box-shadow var(--trans-dur);
+}
+
+.summaryInfo:hover {
+  color: var(--color-primary);
+}
+
+.summaryInfo:focus-visible {
+  color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.summaryBody {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* Collapsed state: clamp to 6 lines. Matches the "Read more" pattern used by
+   the course description in OverviewInfo (-webkit-line-clamp). */
+.summaryClamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.summaryToggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
 }
