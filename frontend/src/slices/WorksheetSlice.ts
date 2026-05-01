@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { CUR_SEASON } from '../config';
+import { DEFAULT_SEASON } from '../config';
 import { seasons as allSeasons } from '../data/catalogSeasons';
 import { useWorksheetInfo } from '../hooks/useFerry';
 import type { UserWorksheets } from '../queries/api';
@@ -152,7 +152,7 @@ export const createWorksheetSlice: StateCreator<
   WorksheetSlice
 > = (set, get) => ({
   viewedPerson: 'me',
-  viewedSeason: CUR_SEASON,
+  viewedSeason: DEFAULT_SEASON,
   viewedWorksheetNumber: 0,
   changeViewedPerson(newPerson) {
     set({ viewedWorksheetNumber: 0, viewedPerson: newPerson });
