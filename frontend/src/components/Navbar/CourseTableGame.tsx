@@ -266,9 +266,8 @@ export default function CourseTableGame({
         const wA = getWorkloadRatings(pair[0].course, 'stat')!;
         const wB = getWorkloadRatings(pair[1].course, 'stat')!;
         const higherIdx: 0 | 1 = wA >= wB ? 0 : 1;
-        if (idx === phase.picked) 
-          return phase.correct ? 'correct' : 'wrong';
-        
+        if (idx === phase.picked) return phase.correct ? 'correct' : 'wrong';
+
         return idx === higherIdx ? 'correct' : 'other';
       };
 
