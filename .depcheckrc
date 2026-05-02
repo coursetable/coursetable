@@ -18,6 +18,9 @@ ignores:
   - stylelint-config-standard
   - lint-staged
 
+  # Pinned CLI for CI Pages deploy (`bunx wrangler`), not imported in TS
+  - wrangler
+
   # This is actually unused, but we keep it just in case you want to use it
   - core-js
 

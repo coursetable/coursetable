@@ -11,7 +11,7 @@
     "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run lint:css:check && bun run resize-image:check && bun run typecheck && bun run --cwd frontend test",
     "checks:fix": "bun run format && bun run lint && bun run lint:css && bun run resize-image",
     "typecheck": "tsc && tsc -p frontend && tsc -p api",
-    "depcheck": "bunx depcheck . --ignore-patterns=api,frontend --ignores=wrangler && bunx depcheck api && bunx depcheck frontend",
+    "depcheck": "bunx depcheck . --ignore-patterns=api,frontend && bunx depcheck api && bunx depcheck frontend",
     "format": "prettier --write .",
     "format:check": "prettier -l .",
     "lint": "eslint --fix .",
