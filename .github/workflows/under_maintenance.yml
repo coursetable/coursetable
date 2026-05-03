@@ -22,6 +22,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
       - uses: dopplerhq/secrets-fetch-action@v1.2.0
         id: doppler
         with:
@@ -29,11 +31,9 @@ jobs:
           doppler-project: coursetable
           doppler-config: prod
           inject-env-vars: true
-      - name: Install Wrangler CLI
-        run: bun install --global wrangler
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
         run: |
           mv infra/under_maintenance/site/maintenance.html infra/under_maintenance/site/index.html
-          wrangler pages deploy infra/under_maintenance/site --project-name=coursetable --branch=master
+          bunx wrangler pages deploy infra/under_maintenance/site --project-name=coursetable --branch=master
