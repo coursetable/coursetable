@@ -75,13 +75,11 @@ jobs:
           inject-env-vars: true
       - name: Build Frontend
         run: cd frontend && bun run build
-      - name: Install Wrangler CLI
-        run: bun install --global wrangler
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
         run: |
-          wrangler pages deploy frontend/build --project-name=coursetable --branch=staging
+          bunx wrangler pages deploy frontend/build --project-name=coursetable --branch=staging
 
   api-build-and-deploy:
     needs: changes

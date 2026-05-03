@@ -52,7 +52,8 @@
     "stylelint-config-standard": "^36.0.1",
     "tsconfig-jc": "^2.3.1",
     "typescript": "~6.0.3",
-    "typescript-plugin-css-modules": "^5.1.0"
+    "typescript-plugin-css-modules": "^5.1.0",
+    "wrangler": "4.85.0"
   },
   "engines": {
     "npm": "please-use-bun",
