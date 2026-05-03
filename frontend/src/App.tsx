@@ -1,12 +1,5 @@
 import { useEffect } from 'react';
-import {
-  Routes,
-  Route,
-  Navigate,
-  Outlet,
-  useLocation,
-  Link,
-} from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
@@ -152,9 +145,7 @@ function App() {
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
         id={26}
-      >
-        Read our <Link to="/releases/spring26">latest release notes</Link>.
-      </Notice>
+      />
       <Navbar />
       <SentryRoutes>
         <Route element={<AuthenticatedRoutes />}>
