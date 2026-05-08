@@ -76,6 +76,16 @@ function About() {
       },
     },
     {
+      name: 'Aryan Sharma',
+      image: ash,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/aryans-15',
+        linkedin: 'https://www.linkedin.com/in/aryans15/',
+        website: 'https://aryansharma.com/',
+      },
+    },
+    {
       name: 'Neil Song',
       image: ns,
       role: 'Past Lead, Advisor',
@@ -91,26 +101,6 @@ function About() {
       links: {
         linkedin: 'https://www.linkedin.com/in/humphrey-xu/',
         github: 'https://github.com/Etherite1',
-      },
-    },
-    {
-      name: 'Alex Schapiro',
-      image: as,
-      role: 'Past Lead, Advisor',
-      links: {
-        github: 'https://github.com/bearsyankees',
-        linkedin: 'https://www.linkedin.com/in/aschap/',
-        website: 'https://alexschapiro.com/',
-      },
-    },
-    {
-      name: 'Sida Chen',
-      image: sc,
-      role: 'Past Lead, Advisor',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
-        github: 'https://github.com/Josh-Cena/',
-        website: 'https://joshcena.com/',
       },
     },
     {
@@ -131,16 +121,6 @@ function About() {
         github: 'https://github.com/michaelcanudas',
         linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
         website: 'https://michaelcanudas.com/',
-      },
-    },
-    {
-      name: 'Aryan Sharma',
-      image: ash,
-      role: 'Development',
-      links: {
-        github: 'https://github.com/aryans-15',
-        linkedin: 'https://www.linkedin.com/in/aryans15/',
-        website: 'https://aryans.dev/',
       },
     },
     {
@@ -186,6 +166,26 @@ function About() {
       name: 'Harry Yu',
       image: hy,
       role: 'Cofounder',
+    },
+    {
+      name: 'Alex Schapiro',
+      image: as,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/bearsyankees',
+        linkedin: 'https://www.linkedin.com/in/aschap/',
+        website: 'https://alexschapiro.com/',
+      },
+    },
+    {
+      name: 'Sida Chen',
+      image: sc,
+      role: 'CourseTable Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
+        github: 'https://github.com/Josh-Cena/',
+        website: 'https://joshcena.com/',
+      },
     },
     {
       name: 'Lucas Huang',
