@@ -10,8 +10,8 @@ import {
 import * as Sentry from '@sentry/react';
 import PullToRefresh from 'pulltorefreshjs';
 import { Helmet } from 'react-helmet';
-
 import { useShallow } from 'zustand/react/shallow';
+
 import CourseModal from './components/CourseModal/CourseModal';
 import Footer from './components/Footer';
 import ModalHistoryBridge from './components/ModalHistoryBridge';
