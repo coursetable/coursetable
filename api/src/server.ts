@@ -28,6 +28,7 @@ import {
   NUM_SEASONS,
 } from './config.js';
 import demand from './demand/demand.routes.js';
+import events from './events/events.routes.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
 import morgan from './logging/morgan.js';
@@ -58,7 +59,9 @@ app.use(
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
   Object.keys(req.headers).forEach((header) => {
-    if (header.startsWith('x-coursetable-')) delete req.headers[header];
+    const lower = header.toLowerCase();
+    if (lower === 'x-coursetable-bot') return;
+    if (lower.startsWith('x-coursetable-')) delete req.headers[header];
   });
 
   next();
@@ -145,6 +148,7 @@ user(app);
 profile(app);
 linkPreview(app);
 savedSearches(app);
+events(app);
 
 app.get('/api/ping', (req, res) => {
   res.json('pong');
