@@ -15,11 +15,15 @@ export function userAgentLooksLikeBot(userAgent: string | undefined): boolean {
   return BOT_UA_SUBSTRINGS.some((s) => ua.includes(s));
 }
 
+function headerValues(value: string | string[] | undefined): string[] {
+  if (value === undefined) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
 export function isCourseTableScraperHeader(
   value: string | string[] | undefined,
 ): boolean {
-  if (value === undefined) return false;
-  const v = Array.isArray(value) ? value[0] : value;
-  if (v === undefined) return false;
-  return v.trim().toLowerCase() === 'scraper';
+  return headerValues(value).some(
+    (entry) => entry.trim().toLowerCase() === 'scraper',
+  );
 }

@@ -40,48 +40,55 @@ function enqueue(event: AppEvent): void {
   if (queue.length >= MAX_QUEUE) void flush();
 }
 
-async function flush(): Promise<void> {
-  if (queue.length === 0) return;
-  const batch = queue.splice(0, queue.length);
-  const body = JSON.stringify({
+function requeue(batch: AppEvent[]): void {
+  queue.unshift(...batch);
+}
+
+function flushBody(batch: AppEvent[]): string {
+  return JSON.stringify({
     session_id: getSessionId(),
     client: clientKind(),
     app_version: String(import.meta.env.VITE_APP_VERSION ?? 'unknown'),
     events: batch,
   });
+}
+
+async function postEventsBatch(batch: AppEvent[]): Promise<boolean> {
   try {
-    await fetch(`${API_ENDPOINT}/api/events`, {
+    const res = await fetch(`${API_ENDPOINT}/api/events`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body,
+      body: flushBody(batch),
     });
-  } catch {}
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function flush(): Promise<void> {
+  if (queue.length === 0) return;
+  const batch = queue.splice(0, queue.length);
+  const ok = await postEventsBatch(batch);
+  if (!ok) requeue(batch);
 }
 
 function flushBeacon(): void {
   if (queue.length === 0) return;
   const batch = queue.splice(0, queue.length);
-  const body = JSON.stringify({
-    session_id: getSessionId(),
-    client: clientKind(),
-    app_version: String(import.meta.env.VITE_APP_VERSION ?? 'unknown'),
-    events: batch,
-  });
+  const body = flushBody(batch);
   if (typeof navigator.sendBeacon === 'function') {
-    navigator.sendBeacon(
+    const ok = navigator.sendBeacon(
       `${API_ENDPOINT}/api/events`,
       new Blob([body], { type: 'application/json' }),
     );
-  } else {
-    void fetch(`${API_ENDPOINT}/api/events`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body,
-      keepalive: true,
-    });
+    if (!ok) requeue(batch);
+    return;
   }
+  void postEventsBatch(batch).then((ok) => {
+    if (!ok) requeue(batch);
+  });
 }
 
 function maybeEmitSessionStart(): void {
