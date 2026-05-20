@@ -42,6 +42,7 @@ function enqueue(event: AppEvent): void {
 
 function requeue(batch: AppEvent[]): void {
   queue.unshift(...batch);
+  if (queue.length > MAX_QUEUE) queue.splice(MAX_QUEUE);
 }
 
 function flushBody(batch: AppEvent[]): string {
