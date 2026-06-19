@@ -321,10 +321,6 @@ function About() {
       name: 'Kenny Tung',
       image: kt,
       role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/tungk/',
-        github: 'https://github.com/kentng01/',
-      },
     },
     {
       name: 'Dylan Fernandez de Lara',
