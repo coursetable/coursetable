@@ -8,8 +8,11 @@ export const GRAPHQL_API_ENDPOINT = isDev
   ? 'https://localhost:8085'
   : `${import.meta.env.VITE_API_ENDPOINT}/ferry`;
 
+// The season we're actually in (used for time indicator, etc.)
+export const CUR_SEASON = '202601' as Season;
+
 // Used for which season to show by default in catalog and worksheet
-export const CUR_SEASON = '202603' as Season;
+export const DEFAULT_SEASON = '202603' as Season;
 
 // Courses in the current year have no evaluations yet. Also: if both the
 // listing and the API "latest" term are in this set, we skip the worksheet
