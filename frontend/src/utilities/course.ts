@@ -458,15 +458,22 @@ export function sortCourses(
     type: 'desc' | 'asc';
   },
   numFriends: NumFriendsReturn,
+  matchQuality?: ReadonlyMap<CatalogListing, number>,
 ): CatalogListing[] {
-  return courses.toSorted(
-    (a, b) =>
+  return courses.toSorted((a, b) => {
+    // When search text is active, stronger matches sort first
+    if (matchQuality) {
+      const qDiff = (matchQuality.get(b) ?? 0) - (matchQuality.get(a) ?? 0);
+      if (qDiff !== 0) return qDiff;
+    }
+    return (
       compareByKey(a, b, ordering.key, ordering.type, numFriends) ||
       // Define a stable sort order for courses that compare equal
       compareByKey(a, b, 'season_code', 'desc', numFriends) ||
       compareByKey(a, b, 'course_code', 'asc', numFriends) ||
-      compareByKey(a, b, 'section', 'asc', numFriends),
-  );
+      compareByKey(a, b, 'section', 'asc', numFriends)
+    );
+  });
 }
 
 type CourseWithEnrolled = {
