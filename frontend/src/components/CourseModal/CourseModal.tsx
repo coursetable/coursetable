@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
@@ -8,6 +8,7 @@ import ModalHeaderInfo from './Header/InfoRow';
 import OverviewPanel from './OverviewPanel/OverviewPanel';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useModalHistory } from '../../hooks/useModalHistory';
+import { track } from '../../lib/track';
 import {
   toSeasonDate,
   toSeasonString,
@@ -37,7 +38,34 @@ function CourseModal({
 }) {
   const [view, setView] = useState<'overview' | 'evals'>('overview');
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const { closeModal, navigate } = useModalHistory();
+
+  const cameFrom = useMemo(() => {
+    const p = location.pathname;
+    if (p === '/catalog') return 'search' as const;
+    if (p === '/worksheet') return 'worksheet' as const;
+    if (p.startsWith('/u/')) return 'friend' as const;
+    return 'direct' as const;
+  }, [location.pathname]);
+
+  useEffect(() => {
+    track('course_view', {
+      course_code: listing.course_code,
+      term: listing.course.season_code,
+      came_from: cameFrom,
+    });
+  }, [listing.crn, listing.course.season_code, listing.course_code, cameFrom]);
+
+  useEffect(() => {
+    if (view === 'evals') {
+      track('eval_expand', {
+        course_code: listing.course_code,
+        term: listing.course.season_code,
+      });
+    }
+  }, [view, listing.course_code, listing.course.season_code]);
+
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
   const description = truncatedText(
     listing.course.description,
