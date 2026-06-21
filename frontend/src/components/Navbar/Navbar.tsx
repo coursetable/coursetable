@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Nav, Navbar } from 'react-bootstrap';
 import PWAPrompt from 'react-ios-pwa-prompt';
+import AppsDropdown from './AppsDropdown';
 import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
@@ -122,7 +123,9 @@ export default function CourseTableNavbar() {
               onClick={() => setNavExpanded(false)}
               className={styles.navbarLinks}
             >
-              <DarkModeButton className={styles.navbarDarkModeBtn} />
+              {isMobile && (
+                <DarkModeButton className={styles.navbarDarkModeBtn} />
+              )}
               <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
@@ -174,7 +177,10 @@ export default function CourseTableNavbar() {
                   </button>
                 </>
               ) : (
-                <MeDropdown />
+                <div className={styles.accountControls}>
+                  <AppsDropdown />
+                  <MeDropdown />
+                </div>
               )}
             </Nav>
           </Navbar.Collapse>

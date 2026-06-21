@@ -48,6 +48,12 @@
   position: relative;
 }
 
+.accountControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 @media (max-width: calc(768px - 0.5px)) {
   .navbarLinks {
     align-items: start;
