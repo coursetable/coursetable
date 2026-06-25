@@ -77,6 +77,7 @@ const selectProfileStore = (state: Store) => ({
   worksheetsRefresh: state.worksheetsRefresh,
   friends: state.friends,
   friendRequests: state.friendRequests,
+  outgoingFriendRequests: state.outgoingFriendRequests,
   friendRefresh: state.friendRefresh,
   friendReqRefresh: state.friendReqRefresh,
   removeFriend: state.removeFriend,
@@ -119,6 +120,7 @@ function Profile() {
     worksheetsRefresh,
     friends,
     friendRequests,
+    outgoingFriendRequests,
     friendRefresh,
     friendReqRefresh,
     removeFriend,
@@ -265,7 +267,8 @@ function Profile() {
       new Promise<void>((resolve) => {
         toast.warning(
           <div>
-            You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
+            You are about to{' '}
+            {isRequest ? 'remove the pending friend request with' : 'remove'}{' '}
             {friendNetId}.
             <br />
             <b>This is irreversible without another friend request.</b>
@@ -314,7 +317,8 @@ function Profile() {
   const hasName = Boolean(currentUser.firstName && currentUser.lastName);
   const friendsList = friends ? Object.entries(friends) : [];
   const friendRequestsList = friendRequests ?? [];
-  const friendsLoading = !friends || !friendRequests;
+  const outgoingFriendRequestsList = outgoingFriendRequests ?? [];
+  const friendsLoading = !friends || !friendRequests || !outgoingFriendRequests;
   const worksheetsLoading = !worksheets || profileWorksheetCatalogLoading;
 
   const handleCatalogCacheRefresh = async () => {
@@ -505,7 +509,7 @@ function Profile() {
                   {!friendsLoading && friendRequestsList.length > 0 && (
                     <div className={styles.friendRequests}>
                       <TextComponent type="secondary">
-                        Pending requests
+                        Incoming requests
                       </TextComponent>
                       {friendRequestsList.map((request) => (
                         <div
@@ -544,6 +548,46 @@ function Profile() {
                               }}
                             >
                               Decline
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {!friendsLoading && outgoingFriendRequestsList.length > 0 && (
+                    <div className={styles.friendRequests}>
+                      <TextComponent type="secondary">
+                        Pending requests
+                      </TextComponent>
+                      {outgoingFriendRequestsList.map((request) => (
+                        <div
+                          key={request.netId}
+                          className={styles.friendRequestItem}
+                        >
+                          <Link
+                            to={`/u/${request.netId}`}
+                            className={clsx(
+                              styles.friendProfileLink,
+                              styles.friendRowLink,
+                            )}
+                          >
+                            <TextComponent>
+                              {request.name || request.netId}
+                            </TextComponent>
+                          </Link>
+                          <div className={styles.friendActions}>
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => {
+                                void removeFriendWithConfirmation(
+                                  request.netId,
+                                  true,
+                                );
+                              }}
+                            >
+                              Cancel
                             </Button>
                           </div>
                         </div>

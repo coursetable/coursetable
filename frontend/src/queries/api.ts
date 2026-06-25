@@ -931,6 +931,18 @@ export function fetchFriendReqs() {
   });
 }
 
+export function fetchOutgoingFriendReqs() {
+  return fetchAPI('/friends/getOutgoingRequests', {
+    schema: z.object({
+      requests: friendRequestsSchema,
+    }),
+    breadcrumb: {
+      category: 'friends',
+      message: 'Fetching outgoing friend requests',
+    },
+  });
+}
+
 const userNamesSchema = z.array(
   z.object({
     netId: netIdSchema,
