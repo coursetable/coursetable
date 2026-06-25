@@ -69,6 +69,14 @@
   transform: translateY(-50%);
 }
 
+.exporting-png .rbc-current-time-indicator {
+  display: none !important;
+}
+
+.exporting-png [data-calendar-export-omit] {
+  display: none !important;
+}
+
 .rbc-header a:hover {
   color: black !important;
   text-decoration: none !important;
