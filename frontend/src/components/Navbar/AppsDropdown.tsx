@@ -1,87 +1,134 @@
 import React from 'react';
 import { Collapse } from 'react-bootstrap';
-import type { IconType } from 'react-icons';
-import { BsCalendar3, BsPeopleFill } from 'react-icons/bs';
-import {
-  FaFlask,
-  FaFutbol,
-  FaGraduationCap,
-  FaSmile,
-  FaUtensils,
-} from 'react-icons/fa';
-import { HiUserGroup } from 'react-icons/hi';
+import coursetableLogo from '../../images/apps-panel/coursetable.svg';
+import yaleMenusLogo from '../../images/apps-panel/yale-menus.png';
+import yaleImsLogo from '../../images/apps-panel/yaleims.png';
+import yaliesLogo from '../../images/apps-panel/yalies.png';
+import yaleClubsLogo from '../../images/apps-panel/yclubs.svg';
+import yLabsLogo from '../../images/apps-panel/ylabs.png';
+import yMeetsLogo from '../../images/apps-panel/ymeetslogo.png';
 import { useComponentVisible } from '../../utilities/display';
 import { SurfaceComponent } from '../Typography';
 import styles from './AppsDropdown.module.css';
 
 interface AppLink {
   readonly name: string;
-  readonly icon?: IconType;
-  readonly image?: string;
+  readonly href: string;
+  readonly image: string;
+  readonly imageShift?: 'up' | 'upMore';
+  readonly imageSize?: 'large' | 'xlarge';
+  readonly roundedImage?: boolean;
   readonly color: string;
 }
 
 const apps: readonly AppLink[] = [
   {
     name: 'CourseTable',
-    image: '/icon200x200.png',
+    href: 'https://coursetable.com',
+    image: coursetableLogo,
     color: '#468ff2',
   },
   {
     name: 'Yalies',
-    icon: BsPeopleFill,
+    href: 'https://yalies.io',
+    image: yaliesLogo,
     color: '#28639b',
   },
   {
     name: 'Yale Clubs',
-    icon: HiUserGroup,
+    href: 'https://yaleclubs.io',
+    image: yaleClubsLogo,
     color: '#438fd1',
   },
   {
     name: 'y/meets',
-    icon: BsCalendar3,
+    href: 'https://ymeets.com',
+    image: yMeetsLogo,
+    roundedImage: true,
     color: '#468ff2',
   },
   {
     name: 'Yale IMs',
-    icon: FaFutbol,
+    href: 'https://yaleims.com',
+    image: yaleImsLogo,
+    imageShift: 'up',
     color: '#e2ad16',
   },
   {
     name: 'y/labs',
-    icon: FaFlask,
+    href: 'https://yalelabs.io',
+    image: yLabsLogo,
+    imageShift: 'up',
     color: '#1678d3',
   },
   {
     name: 'Yale Meals',
-    icon: FaUtensils,
+    href: 'https://apps.apple.com/us/app/yalemeals/id6755962674',
+    image: yaleMenusLogo,
+    imageShift: 'upMore',
+    imageSize: 'xlarge',
     color: '#164b78',
-  },
-  {
-    name: 'MajorAudit',
-    icon: FaGraduationCap,
-    color: '#d94c3d',
-  },
-  {
-    name: 'YaleMoji',
-    icon: FaSmile,
-    color: '#141414',
   },
 ];
 
-function AppTile({ app }: { readonly app: AppLink }) {
-  const Icon = app.icon;
+function normalizeHostname(hostname: string) {
+  return hostname.replace(/^www\./u, '');
+}
+
+function AppTile({
+  app,
+  onClose,
+}: {
+  readonly app: AppLink;
+  readonly onClose: () => void;
+}) {
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const targetUrl = new URL(app.href);
+    if (
+      normalizeHostname(window.location.hostname) ===
+      normalizeHostname(targetUrl.hostname)
+    ) {
+      event.preventDefault();
+      onClose();
+      window.location.assign(targetUrl.origin);
+      return;
+    }
+    onClose();
+  };
+
   return (
-    <div className={styles.appTile}>
+    <a
+      className={styles.appTile}
+      href={app.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={handleClick}
+    >
       <span className={styles.appIcon} style={{ color: app.color }}>
-        {app.image ? (
-          <img src={app.image} alt="" />
-        ) : (
-          Icon && <Icon aria-hidden size={34} />
-        )}
+        <img
+          src={app.image}
+          alt=""
+          className={
+            [
+              app.imageShift === 'upMore'
+                ? styles.appIconImgUpMore
+                : app.imageShift === 'up'
+                  ? styles.appIconImgUp
+                  : undefined,
+              app.imageSize === 'xlarge'
+                ? styles.appIconImgXLarge
+                : app.imageSize === 'large'
+                  ? styles.appIconImgLarge
+                  : undefined,
+              app.roundedImage ? styles.appIconImgRounded : undefined,
+            ]
+              .filter(Boolean)
+              .join(' ') || undefined
+          }
+        />
       </span>
       <span>{app.name}</span>
-    </div>
+    </a>
   );
 }
 
@@ -109,10 +156,24 @@ export default function AppsDropdown() {
           <div>
             <div className={styles.appGrid}>
               {apps.map((app) => (
-                <AppTile key={app.name} app={app} />
+                <AppTile
+                  key={app.name}
+                  app={app}
+                  onClose={() => setIsComponentVisible(false)}
+                />
               ))}
             </div>
-            <p className={styles.attribution}>CourseTable is a y/cs product</p>
+            <p className={styles.attribution}>
+              CourseTable is a{' '}
+              <a
+                href="https://yalecomputersociety.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                y/cs
+              </a>{' '}
+              product
+            </p>
           </div>
         </Collapse>
       </SurfaceComponent>

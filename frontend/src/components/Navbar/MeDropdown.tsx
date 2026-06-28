@@ -6,14 +6,18 @@ import type { IconType } from 'react-icons';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { FaRegMoon, FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import {
+  FcCalendar,
+  FcComboChart,
   FcInfo,
   FcQuestions,
   FcFeedback,
   FcPuzzle,
   FcNews,
   FcBusinessman,
+  FcDownload,
+  FcLock,
 } from 'react-icons/fc';
-import { FiEdit2 } from 'react-icons/fi';
+import { FiSmile } from 'react-icons/fi';
 import { ImSun } from 'react-icons/im';
 
 import { useShallow } from 'zustand/react/shallow';
@@ -25,6 +29,9 @@ import { createCatalogLink } from '../../utilities/navigation';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
 
+const YALEMOJI_URL = 'https://yalemoji.com?ref=ct';
+const NOOP = () => {};
+
 function DropdownItem({
   icon: Icon,
   iconColor,
@@ -33,6 +40,7 @@ function DropdownItem({
   href,
   externalLink,
   onClick,
+  hideIcon = false,
 }: {
   readonly icon: IconType;
   readonly iconColor?: string;
@@ -41,10 +49,13 @@ function DropdownItem({
   readonly href?: string;
   readonly externalLink?: boolean;
   readonly onClick?: (e: React.MouseEvent) => void;
+  readonly hideIcon?: boolean;
 }) {
   const innerText = (
     <TextComponent className={styles.itemText} type="secondary">
-      <Icon size={20} className={styles.linkIcon} color={iconColor} />
+      {!hideIcon && (
+        <Icon size={20} className={styles.linkIcon} color={iconColor} />
+      )}
       {children}
     </TextComponent>
   );
@@ -64,6 +75,7 @@ function DropdownItem({
       <a
         href={href}
         className={styles.dropdownItem}
+        onClick={onClick}
         {...(externalLink && {
           target: '_blank',
           rel: 'noreferrer noopener',
@@ -87,11 +99,17 @@ function DropdownContent({
   setIsExpanded,
   initials,
   fullName,
+  showMobileNavLinks,
+  showInstallAsApp,
+  onInstallAsApp,
 }: {
   readonly isExpanded: boolean;
   readonly setIsExpanded: (visible: boolean) => void;
   readonly initials: string | undefined;
   readonly fullName: string | undefined;
+  readonly showMobileNavLinks: boolean;
+  readonly showInstallAsApp: boolean;
+  readonly onInstallAsApp: () => void;
 }) {
   const { isMobile, isTablet } = useStore(
     useShallow((state) => ({
@@ -100,18 +118,25 @@ function DropdownContent({
     })),
   );
   const authStatus = useStore((state) => state.authStatus);
+  const user = useStore((state) => state.user);
   const refreshAuth = useStore((state) => state.refreshAuth);
   const toggleTutorial = useStore((state) => state.toggleTutorial);
   const theme = useStore((state) => state.theme);
   const toggleTheme = useStore((state) => state.toggleTheme);
+  const userFirstName =
+    authStatus === 'authenticated' ? user?.firstName?.trim() : undefined;
+  const closeAndScroll = (e: React.MouseEvent) => {
+    setIsExpanded(false);
+    scrollToTop(e);
+  };
 
   return (
     <SurfaceComponent
       elevated
-      className={styles.collapseContainer}
-      onClick={() => {
-        setIsExpanded(true);
-      }}
+      className={clsx(
+        styles.collapseContainer,
+        showMobileNavLinks && styles.collapseContainerMobileInline,
+      )}
     >
       <Collapse in={isExpanded}>
         {/* Do not add vertical spacing to this div because it will break
@@ -130,9 +155,15 @@ function DropdownContent({
                 <FaRegMoon size={16} />
               )}
             </button>
-            <span className={styles.headerEdit} aria-hidden>
-              <FiEdit2 size={16} strokeWidth={1.5} />
-            </span>
+            <a
+              className={styles.headerEdit}
+              href={YALEMOJI_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Build your YaleMoji"
+            >
+              <FiSmile size={17} strokeWidth={1.7} />
+            </a>
             <div className={styles.headerInitials} title={fullName}>
               {initials ? (
                 <span>{initials}</span>
@@ -140,27 +171,90 @@ function DropdownContent({
                 <BsFillPersonFill size={40} />
               )}
             </div>
-            {initials && (
-              <span className={styles.yalemojiPrompt}>Build your YaleMoji</span>
+            {userFirstName && (
+              <span className={styles.yalemojiPrompt}>
+                Hello, {userFirstName}
+              </span>
             )}
           </div>
           <div className={styles.menuItems}>
-            <DropdownItem icon={FcInfo} to="/about">
+            {showMobileNavLinks && (
+              <>
+                <DropdownItem
+                  icon={FcComboChart}
+                  to={createCatalogLink()}
+                  onClick={closeAndScroll}
+                  hideIcon={showMobileNavLinks}
+                >
+                  Catalog
+                </DropdownItem>
+                <DropdownItem
+                  icon={FcCalendar}
+                  to="/worksheet"
+                  onClick={closeAndScroll}
+                  hideIcon={showMobileNavLinks}
+                >
+                  Worksheet
+                </DropdownItem>
+                {authStatus === 'authenticated' && user?.hasEvals === false && (
+                  <DropdownItem
+                    icon={FcLock}
+                    to="/challenge"
+                    onClick={closeAndScroll}
+                    hideIcon={showMobileNavLinks}
+                  >
+                    Challenge
+                  </DropdownItem>
+                )}
+              </>
+            )}
+            <DropdownItem
+              icon={FcInfo}
+              to="/about"
+              onClick={showMobileNavLinks ? closeAndScroll : undefined}
+              hideIcon={showMobileNavLinks}
+            >
               About
             </DropdownItem>
-            <DropdownItem icon={FcQuestions} to="/faq">
+            <DropdownItem
+              icon={FcQuestions}
+              to="/faq"
+              onClick={showMobileNavLinks ? closeAndScroll : undefined}
+              hideIcon={showMobileNavLinks}
+            >
               FAQ
             </DropdownItem>
             <DropdownItem
               icon={FcFeedback}
               href="https://feedback.coursetable.com/"
               externalLink
+              onClick={
+                showMobileNavLinks ? () => setIsExpanded(false) : undefined
+              }
+              hideIcon={showMobileNavLinks}
             >
               Feedback
             </DropdownItem>
-            <DropdownItem icon={FcNews} to="/releases">
+            <DropdownItem
+              icon={FcNews}
+              to="/releases"
+              onClick={showMobileNavLinks ? closeAndScroll : undefined}
+              hideIcon={showMobileNavLinks}
+            >
               Release notes
             </DropdownItem>
+            {showInstallAsApp && (
+              <DropdownItem
+                icon={FcDownload}
+                onClick={() => {
+                  setIsExpanded(false);
+                  onInstallAsApp();
+                }}
+                hideIcon={showMobileNavLinks}
+              >
+                Install as app
+              </DropdownItem>
+            )}
             {/* Try tutorial only on desktop */}
             {!isMobile && !isTablet && authStatus === 'authenticated' && (
               <DropdownItem
@@ -176,7 +270,12 @@ function DropdownContent({
               </DropdownItem>
             )}
             {authStatus === 'authenticated' && (
-              <DropdownItem icon={FcBusinessman} to="/profile">
+              <DropdownItem
+                icon={FcBusinessman}
+                to="/profile"
+                onClick={showMobileNavLinks ? closeAndScroll : undefined}
+                hideIcon={showMobileNavLinks}
+              >
                 Profile (beta)
               </DropdownItem>
             )}
@@ -185,10 +284,12 @@ function DropdownContent({
                 icon={FaSignOutAlt}
                 iconColor="#ed5f5f"
                 onClick={async () => {
+                  setIsExpanded(false);
                   await logout();
                   await refreshAuth();
                   window.location.href = '/';
                 }}
+                hideIcon={showMobileNavLinks}
               >
                 Sign out
               </DropdownItem>
@@ -197,6 +298,10 @@ function DropdownContent({
                 icon={FaSignInAlt}
                 iconColor="#30e36b"
                 href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
+                onClick={
+                  showMobileNavLinks ? () => setIsExpanded(false) : undefined
+                }
+                hideIcon={showMobileNavLinks}
               >
                 Sign in
               </DropdownItem>
@@ -208,10 +313,18 @@ function DropdownContent({
   );
 }
 
-function MeDropdown() {
+function MeDropdown({
+  showMobileNavLinks = false,
+  showInstallAsApp = false,
+  onInstallAsApp = NOOP,
+}: {
+  readonly showMobileNavLinks?: boolean;
+  readonly showInstallAsApp?: boolean;
+  readonly onInstallAsApp?: () => void;
+}) {
   // Ref to detect outside clicks for profile dropdown
   const { elemRef, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible<HTMLButtonElement>(false);
+    useComponentVisible<HTMLDivElement>(false);
   const user = useStore((state) => state.user);
   const hasName = Boolean(user?.firstName && user.lastName);
   const initials = hasName
@@ -221,11 +334,20 @@ function MeDropdown() {
     ? `${user!.firstName!} ${user!.lastName!}`
     : undefined;
   return (
-    <div className={clsx(styles.navbarMe, 'align-self-end')}>
+    <div
+      ref={elemRef}
+      className={clsx(
+        styles.navbarMe,
+        showMobileNavLinks && styles.navbarMeMobileInline,
+        'align-self-end',
+      )}
+    >
       <button
         type="button"
-        ref={elemRef}
-        className={clsx(hasName ? styles.meIcon : styles.anonIcon, 'm-auto')}
+        className={clsx(
+          hasName ? styles.meIcon : styles.anonIcon,
+          !showMobileNavLinks && 'm-auto',
+        )}
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         aria-label="Profile"
       >
@@ -244,6 +366,9 @@ function MeDropdown() {
         setIsExpanded={setIsComponentVisible}
         initials={initials}
         fullName={fullName}
+        showMobileNavLinks={showMobileNavLinks}
+        showInstallAsApp={showInstallAsApp}
+        onInstallAsApp={onInstallAsApp}
       />
     </div>
   );

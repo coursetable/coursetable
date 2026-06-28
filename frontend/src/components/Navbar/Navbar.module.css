@@ -38,12 +38,6 @@
   }
 }
 
-.navbarDarkModeBtn {
-  padding-right: 1rem !important;
-  transition: 0.1s;
-  display: flex;
-}
-
 .navbarLinks {
   position: relative;
 }
@@ -52,6 +46,17 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.mobileAccountControls {
+  flex: 1 1 0;
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: flex-start;
+  gap: 0.65rem;
 }
 
 @media (max-width: calc(768px - 0.5px)) {

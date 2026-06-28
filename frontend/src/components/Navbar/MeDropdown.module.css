@@ -30,6 +30,10 @@
   margin-bottom: auto;
 }
 
+.navbarMeMobileInline {
+  display: contents;
+}
+
 .meIcon,
 .anonIcon {
   width: 38px;
@@ -107,10 +111,15 @@
 
 .yalemojiPrompt {
   margin-top: 0.4rem;
+  color: var(--color-text-light);
   font-size: 0.78rem;
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+.yalemojiPrompt:hover {
+  color: var(--color-text-light);
 }
 
 .themeToggle {
@@ -140,8 +149,51 @@
   height: 30px;
   display: grid;
   place-items: center;
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: opacity 0.1s;
+}
+
+.headerEdit:hover {
+  color: var(--color-text-light);
+  opacity: 0.75;
+}
+
+[data-theme='dark'] .identityHeader,
+[data-theme='dark'] .identityHeader .yalemojiPrompt,
+[data-theme='dark'] .identityHeader .yalemojiPrompt:hover,
+[data-theme='dark'] .identityHeader .themeToggle,
+[data-theme='dark'] .identityHeader .headerEdit,
+[data-theme='dark'] .identityHeader .headerEdit:hover {
+  color: var(--color-text-dark);
 }
 
 .menuItems {
   padding: 0.4rem 1.25rem 0.55rem;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .collapseContainerMobileInline {
+    flex-basis: 100%;
+    width: calc(100vw - 1.5rem);
+    position: static;
+    margin-top: 0.65rem;
+    box-shadow: none;
+    border-radius: 0;
+    transform: none;
+    background-color: transparent !important;
+  }
+
+  .identityHeader {
+    min-height: 118px;
+    border-radius: 16px;
+  }
+
+  .menuItems {
+    padding: 0.55rem 0 0.2rem;
+  }
+
+  .dropdownItem {
+    padding: 0.5rem 0;
+  }
 }
