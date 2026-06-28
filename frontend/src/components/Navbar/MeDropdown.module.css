@@ -114,8 +114,7 @@
   color: var(--color-text-light);
   font-size: 0.78rem;
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
 }
 
 .yalemojiPrompt:hover {
