@@ -166,7 +166,7 @@ export default function AppsDropdown() {
             <p className={styles.attribution}>
               CourseTable is a{' '}
               <a
-                href="https://yalecomputersociety.com"
+                href="https://yalecomputersociety.org"
                 target="_blank"
                 rel="noopener noreferrer"
               >
