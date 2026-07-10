@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test": "node --no-deprecation --import tsx --test src/ferry/ferry.routes.test.ts",
     "prestart": "npm run codegen",
     "start": "npm run codegen:format && tsx watch src/server.ts",
     "start:prod": "tsx src/server.ts",

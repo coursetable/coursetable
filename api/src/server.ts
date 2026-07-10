@@ -5,7 +5,6 @@ import * as Sentry from '@sentry/node';
 import RedisStore from 'connect-redis';
 import cors from 'cors';
 import session from 'express-session';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 import passport from 'passport';
 
 // Import this at the top before any user modules
@@ -28,6 +27,7 @@ import {
   NUM_SEASONS,
 } from './config.js';
 import demand from './demand/demand.routes.js';
+import { registerFerryProxy } from './ferry/ferry.routes.js';
 import friends from './friends/friends.routes.js';
 import linkPreview from './link-preview/link-preview.routes.js';
 import morgan from './logging/morgan.js';
@@ -41,9 +41,6 @@ const app = express();
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
-
-// Enable url-encoding
-app.use(express.urlencoded({ extended: true }));
 
 // Enable Cross-Origin Resource Sharing
 // (i.e. let the frontend call the API when it's on a different domain)
@@ -108,30 +105,15 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
-// Add the authentication header to the request
-// Proxy initial HTTP requests to Ferry
-app.use(
-  '/ferry',
-  (req, res, next) => {
-    const hasuraRole = req.isAuthenticated() ? 'student' : 'anonymous';
-    // Important: all headers must be lowercase; otherwise it will not override
-    // existing headers on the request.
-    req.headers['x-hasura-role'] = hasuraRole;
-    req.headers['x-hasura-admin-secret'] = HASURA_GRAPHQL_ADMIN_SECRET;
-    next();
-  },
-  createProxyMiddleware({
-    target: 'http://graphql-engine:8080',
-    pathRewrite: { '^/ferry/': '/' },
-    xfwd: true,
-  }),
-);
+// Proxy initial GraphQL requests to Ferry.
+registerFerryProxy(app, { adminSecret: HASURA_GRAPHQL_ADMIN_SECRET });
 
 // Enable request logging.
 app.use(morgan);
 
-// Has to go after Ferry because it consumes the request body stream
-// and the http-proxy needs a stream to consume.
+// Body parsers have to go after Ferry because they consume the request stream
+// that the HTTP proxy forwards to Hasura.
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Activate catalog and CAS authentication
