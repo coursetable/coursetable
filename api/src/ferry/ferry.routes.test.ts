@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import {
   createServer,
   request as httpRequest,
@@ -247,6 +248,19 @@ async function createFerryFixture(): Promise<FerryFixture> {
     upstreamRequests,
   };
 }
+
+void test('registers request logging before the Ferry proxy', async () => {
+  const serverSource = await readFile(
+    new URL('../server.ts', import.meta.url),
+    'utf8',
+  );
+  const requestLoggingIndex = serverSource.indexOf('app.use(morgan);');
+  const ferryProxyIndex = serverSource.indexOf('registerFerryProxy(app,');
+
+  assert.notEqual(requestLoggingIndex, -1);
+  assert.notEqual(ferryProxyIndex, -1);
+  assert.ok(requestLoggingIndex < ferryProxyIndex);
+});
 
 void describe('Ferry proxy', () => {
   // Initialized by the suite's `before` hook.

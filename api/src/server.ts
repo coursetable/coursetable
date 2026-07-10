@@ -105,11 +105,11 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
-// Proxy initial GraphQL requests to Ferry.
-registerFerryProxy(app, { adminSecret: HASURA_GRAPHQL_ADMIN_SECRET });
-
 // Enable request logging.
 app.use(morgan);
+
+// Proxy initial GraphQL requests to Ferry.
+registerFerryProxy(app, { adminSecret: HASURA_GRAPHQL_ADMIN_SECRET });
 
 // Body parsers have to go after Ferry because they consume the request stream
 // that the HTTP proxy forwards to Hasura.
