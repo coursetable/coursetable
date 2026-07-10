@@ -28,6 +28,7 @@
     "sharp"
   ],
   "devDependencies": {
+    "@eslint/config-helpers": "^0.6.0",
     "@graphql-codegen/cli": "^5.0.3",
     "@graphql-codegen/import-types-preset": "^3.0.0",
     "@graphql-codegen/introspection": "^4.0.3",
@@ -50,8 +51,7 @@
     "sharp": "^0.33.5",
     "stylelint": "^16.12.0",
     "stylelint-config-standard": "^36.0.1",
-    "tsconfig-jc": "^2.3.1",
-    "typescript": "~6.0.3",
+    "typescript": "~7.0.2",
     "typescript-plugin-css-modules": "^5.1.0",
     "wrangler": "4.85.0"
   },
