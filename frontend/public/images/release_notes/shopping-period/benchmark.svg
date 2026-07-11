@@ -1,0 +1,58 @@
+<svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="100%" height="100%" rx="12" fill="#FDFDFC"/>
+  <!-- gridlines -->
+  <line x1="64" y1="86" x2="656" y2="86" stroke="#EEE" stroke-width="1"/>
+  <line x1="64" y1="16" x2="656" y2="16" stroke="#EEE" stroke-width="1"/>
+
+  <!-- 500 ms threshold (doubles as the 500 gridline) -->
+  <line x1="64" y1="226" x2="656" y2="226" stroke="#EEE" stroke-width="1"/>
+  <line x1="64" y1="156" x2="656" y2="156" stroke="#999" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="652" y="150" text-anchor="end" font-size="10" fill="#888">1 s</text>
+
+  <!-- axes -->
+  <line x1="64" y1="16" x2="64" y2="296" stroke="#444" stroke-width="1.2"/>
+  <line x1="64" y1="296" x2="656" y2="296" stroke="#444" stroke-width="1.2"/>
+
+  <!-- y tick labels -->
+  <text x="56" y="300" text-anchor="end" font-size="10" fill="#666">0</text>
+  <text x="56" y="230" text-anchor="end" font-size="10" fill="#666">500</text>
+  <text x="56" y="160" text-anchor="end" font-size="10" fill="#666">1000</text>
+  <text x="56" y="90" text-anchor="end" font-size="10" fill="#666">1500</text>
+  <text x="56" y="20" text-anchor="end" font-size="10" fill="#666">2000</text>
+  <text x="18" y="156" text-anchor="middle" font-size="11" fill="#333" transform="rotate(-90 18 156)">p99 latency (ms)</text>
+
+  <!-- x tick labels -->
+  <text x="64" y="312" text-anchor="middle" font-size="10" fill="#666">1</text>
+  <text x="283.3" y="312" text-anchor="middle" font-size="10" fill="#666">10</text>
+  <text x="436.6" y="312" text-anchor="middle" font-size="10" fill="#666">50</text>
+  <text x="502.6" y="312" text-anchor="middle" font-size="10" fill="#666">100</text>
+  <text x="590" y="312" text-anchor="middle" font-size="10" fill="#666">250</text>
+  <text x="656" y="312" text-anchor="middle" font-size="10" fill="#666">500</text>
+  <text x="360" y="332" text-anchor="middle" font-size="11" fill="#333">concurrent connections</text>
+
+  <!-- naive search API (trigram-indexed run) -->
+  <polyline points="64,293.3 283.3,291.1 436.6,264.1 502.6,262.3 590,205.6 656,34.3" fill="none" stroke="#4A7BB5" stroke-width="2.2"/>
+  <circle cx="64" cy="293.3" r="3.5" fill="#4A7BB5"/>
+  <circle cx="283.3" cy="291.1" r="3.5" fill="#4A7BB5"/>
+  <circle cx="436.6" cy="264.1" r="3.5" fill="#4A7BB5"/>
+  <circle cx="502.6" cy="262.3" r="3.5" fill="#4A7BB5"/>
+  <circle cx="590" cy="205.6" r="3.5" fill="#4A7BB5"/>
+  <circle cx="656" cy="34.3" r="3.5" fill="#4A7BB5"/>
+
+  <!-- static catalog (304 revalidation) -->
+  <polyline points="64,295.9 283.3,295.4 436.6,293.8 502.6,293.3 590,287.6 656,281.6" fill="none" stroke="#E58A3C" stroke-width="2.2"/>
+  <circle cx="64" cy="295.9" r="3.5" fill="#E58A3C"/>
+  <circle cx="283.3" cy="295.4" r="3.5" fill="#E58A3C"/>
+  <circle cx="436.6" cy="293.8" r="3.5" fill="#E58A3C"/>
+  <circle cx="502.6" cy="293.3" r="3.5" fill="#E58A3C"/>
+  <circle cx="590" cy="287.6" r="3.5" fill="#E58A3C"/>
+  <circle cx="656" cy="281.6" r="3.5" fill="#E58A3C"/>
+
+  <!-- legend -->
+  <line x1="84" y1="34" x2="112" y2="34" stroke="#4A7BB5" stroke-width="2.2"/>
+  <circle cx="98" cy="34" r="3" fill="#4A7BB5"/>
+  <text x="120" y="38" font-size="10.5" fill="#333">naive search API</text>
+  <line x1="84" y1="54" x2="112" y2="54" stroke="#E58A3C" stroke-width="2.2"/>
+  <circle cx="98" cy="54" r="3" fill="#E58A3C"/>
+  <text x="120" y="58" font-size="10.5" fill="#333">static catalog</text>
+</svg>

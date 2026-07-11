@@ -58,6 +58,9 @@ const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
 const Spring26Release = suspended(
   () => import('./pages/releases/spring26.mdx'),
 );
+const ShoppingPeriod = suspended(
+  () => import('./pages/releases/shopping-period.mdx'),
+);
 
 function Modal() {
   const currentModal = useStore((state) => state.currentModal);
@@ -192,6 +195,7 @@ function App() {
         <Route path="/releases/spring24" element={<Spring24Release />} />
         <Route path="/releases/fall24" element={<Fall24Release />} />
         <Route path="/releases/spring26" element={<Spring26Release />} />
+        <Route path="/releases/shopping-period" element={<ShoppingPeriod />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />

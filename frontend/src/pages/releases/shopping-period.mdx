@@ -1,0 +1,150 @@
+# How CourseTable Survives Shopping Period
+
+_2026-07-11_
+
+[CourseTable](/) is a student-run course discovery platform that allows Yale students to view course evaluations, build class schedules, and compare them with friends. Nearly all of Yale's 6,500+ undergraduates use the tool, and it serves 21M+ requests a month at peak. The site is built and operated entirely by a team of student volunteers, and our code is [open source](https://github.com/coursetable/coursetable).
+
+In this article, I'll give a high-level overview of our architecture, and explain how we keep the site alive during peak traffic.
+
+## Shopping period
+
+Every semester, Yale has a _shopping period_: a few days where students begin picking courses for the next term. During shopping period, nearly every undergrad opens CourseTable at once to search for courses, read evaluations, and build worksheets. This is when CourseTable faces the biggest load, and also an inconvenient time for us to be firefighting (since we want to plan our courses too). In addition, we have no autoscaling, no on-call rotation, and only utilize one self-managed server, which means our architectural choices are especially important.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/stats.svg"
+    alt="Key statistics: 21M+ requests per month, 6,500+ undergraduates served, 4,449 courses this semester, a 1.21 MB gzipped catalog payload, and one self-managed server"
+    width={680}
+  />
+  <figcaption>Statistics regarding recent CourseTable traffic.</figcaption>
+</figure>
+
+## The tech stack
+
+At its core, our frontend is a React SPA (single page application) built with Vite and statically served with Cloudflare Pages. Cloudflare also sits in front of our API, where we use its redirect rules to serve custom link previews to crawler bots (as covered in [a previous post](/releases/link-preview)). Everything else lives on a self-managed box behind Traefik, including our Express API in Docker, our Hasura instance exposing the course database as GraphQL, our two Postgres databases for course and user data, and our Redis store for sessions. The course data itself is produced by [Ferry](https://github.com/coursetable/ferry), a separate Python crawler that runs on GitHub Actions.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/stack.svg"
+    alt="CourseTable's stack in layers: a React SPA on Cloudflare Pages; Traefik as the edge proxy; an Express API in Docker alongside Hasura; Postgres with separate course and user databases plus Redis for sessions; and Ferry, a Python crawler on GitHub Actions, as the data pipeline"
+    width={680}
+  />
+  <figcaption>
+    Visualizing our tech stack. Everything below the client layer runs on a
+    single self-managed server, and Ferry runs offline on GitHub Actions.
+  </figcaption>
+</figure>
+
+## A basic architecture
+
+The easiest way to serve our course catalog is to build a search endpoint where the browser sends the query and filters, the server translates them into SQL, and the database returns a page of results. Most catalog sites initially work this way.
+
+But if we use such an architecture in shopping period, the thousands of students searching simultaneously will overload our backend. Since search is interactive, each user produces a stream of requests as they type, toggle filters, and re-sort, and every one of those requests becomes a database query on our singular machine.
+
+A standard fix here might involve horizontal scaling with a load balancer, or implementing a search cluster, or even utilizing read replicas. However, we want to minimize the need for unnecessary infrastructure, since it's expensive, and more importantly, maintaining it requires a lot of effort.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/naive-search.svg"
+    alt="The conventional search architecture: many browsers each send a GET /search request per keystroke to the server, which runs a SQL query against the database for every one, putting the database on the hot path"
+    width={640}
+  />
+  <figcaption>
+    A basic design, where every keystroke from every student becomes a database
+    query. This easily overwhelms a single machine.
+  </figcaption>
+</figure>
+
+## Design optimizations
+
+First, when taking a closer look at our data, we find that it's actually quite small. Semesters only have a few thousand courses: the current one has 4,449, and treating cross-listed courses as duplicates (e.g., a class offered as both MATH 101 and STAT 101 counts twice) gets us to 5,937 total course listings. This is only 6.2 MB of JSON, and 1.2 MB when gzipped. In addition to being small, this data is public, because every student sees the same catalog. Finally, it's read-mostly: in the average day, a course's metadata might only be written to a few times, but could receive millions of reads.
+
+### Keeping the catalog static
+
+Now, since our data is small, public, and read-mostly, we don't need to query a database on every request. Instead, we can pre-generate each semester's entire catalog as one JSON file and serve it with a one-hour cache lifetime. When a user opens the catalog, their browser downloads the semester once, and for the next hour, it only checks whether the file changed. Since our evaluation data is gated behind an eligibility check, we ship it as a second, auth-gated file (which is 148 KB gzipped), and allow the client to merge it into our pre-existing course objects. Together, these allow us to serve our catalog without GraphQL or SQL.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/architecture.svg"
+    alt="CourseTable architecture: a hot path where the browser fetches static catalog JSON from the API server, a live path where the browser queries Hasura and Postgres through a proxy for course details, and an offline path where the Ferry crawler ingests Yale data nightly and triggers a rewrite of the static files"
+    width={680}
+  />
+  <figcaption>
+    Our three paths. During shopping period, the orange one is most active.
+  </figcaption>
+</figure>
+
+### Searching in the browser
+
+Once a semester's data is downloaded, we execute all searches for it through the client. _This means there is no server-side course-search endpoint, meaning there is nothing to scale, because peak search traffic produces exactly zero requests._ Searching across multiple semesters then just means fetching more static files, each of which is cached independently. Of course, since searches run on the browser's main thread, expensive queries are slightly slower on old laptops than server-side searches would be. But the large majority of queries don't have enough filters to trigger these issues, making the tradeoff worth it.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/search-flow.svg"
+    alt="Sequence diagram of CourseTable's search: the browser fetches the course data (a 1.21 MB JSON file) once, then every keystroke is debounced 300 ms and filters 4,449 courses in memory, rendering without any server-side requests"
+    width={640}
+  />
+  <figcaption>The full lifecycle of a search session.</figcaption>
+</figure>
+
+### Keeping the payload small
+
+At this point, our design is fully dependent on the size of our static course files. For this reason, we try to keep the payload as small as possible. For each course, we only carry the 24 fields that are essential to rendering the catalog view, and defer everything else to a live query when a course is opened.
+
+Originally, we keyed this file by _listing_, which duplicated all of a course's data per cross-listing. Rekeying by _course_ deduplicated all that data in exchange for a single extra lookup when rendering: the client now stores each course once, and has listings point to it by ID. We're careful to keep this schema minimal, as it's the backbone behind our efficient search.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/payload-rekeying.svg"
+    alt="Before and after of the payload schema: keyed by listing, MATH 101 and STAT 101 each store a full copy of the same course data; keyed by course, one course object is stored once and both listings point to it by ID"
+    width={680}
+  />
+  <figcaption>
+    Rekeying our payloads so that cross-listings share course objects.
+  </figcaption>
+</figure>
+
+### Serving the tail via GraphQL
+
+Above, I described how we only statically carry the fields that are essential to the catalog view. But when we click on a course's modal, we need to view its full description, past offerings of the same course, professor history, and various other info. This data is the long tail: it's far rarer than catalog browsing, and it needs data our static payload deliberately omits. To fetch it, queries go through a thin proxy to [Hasura](https://hasura.io), which compiles a nested GraphQL query into a single SQL statement with joins. That way, our live path only costs one database round-trip, rather than the [N+1 issue](https://www.apollographql.com/docs/graphos/schema-design/guides/handling-n-plus-one) which hand-written resolvers tend to produce. Essentially, we're making the bet that users will scroll through a catalog a lot more than they'll click on random courses.
+
+### Refreshing data at 3 AM
+
+As mentioned previously, the course data is owned by Ferry. Every night around 3 AM, a GitHub action triggers Ferry to pull from Yale's course API and the evaluations system, reconcile cross-listings, and write to Postgres. The action then pings our API server's refresh endpoint with the semesters that actually changed, after which our server re-queries Hasura and rewrites the relevant static files in the background.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/refresh-pipeline.svg"
+    alt="The nightly refresh pipeline: a GitHub Action fires around 3 AM, Ferry crawls Yale's APIs, writes course data to Postgres, pings the refresh endpoint with the changed semesters, and the server rewrites the static files"
+    width={680}
+  />
+  <figcaption>The nightly offline refresh to keep our data recent.</figcaption>
+</figure>
+
+Since Yale focuses its updates on recent classes, we only need to regenerate data for the four latest semesters. Everything older than that was already generated in a backfill, and sits on disk as static files. It's extremely rare for Yale to edit prehistoric courses, but if they do, our refresh endpoint allows us to regenerate semesters manually.
+
+### Handling user data
+
+Finally, the last thing our server has to do during shopping period is handle user data (e.g., logins, friends, profiles). These are just small authenticated reads and writes against our user database, but since the catalog path is static, this is where we feel most of our load. Nevertheless, we don't do anything special here, and just follow standard system design practices, like batching writes and deduplicating requests that are being processed. This is because user data traffic is a small fraction of what our non-optimized catalog would have generated, so we don't worry about it too much.
+
+## Benchmarking
+
+To see how our optimized design compares to a naive one, we load-tested both against our dev stack. When simulating a shopping period, we found that a naive endpoint peaks at ~650 requests per second while pinning most of our Postgres cores, supporting only ~130 simultaneous searchers at 5 keystrokes per search (about 2% of our users). Our static design, on the other hand, keeps the database fully idle, supporting the full system load with ease.
+
+<figure>
+  <img
+    src="/images/release_notes/shopping-period/benchmark.svg"
+    alt="Plot of p99 latency versus concurrent connections: the naive search API's latency climbs steadily, crossing one second past 250 connections and approaching two seconds at 500, while the static catalog path stays nearly flat, peaking at 103 ms"
+    width={680}
+  />
+  <figcaption>
+    Measured p99 latency under load. Our optimized design handles shopping
+    period with ease when compared to a naive implementation.
+  </figcaption>
+</figure>
+
+## Conclusion
+
+Thanks to our modifications, CourseTable is now able to ignore the problem of serving large concurrent loads. Instead, since our data is small, public, and read-mostly, we can utilize precomputation, periodic fetching, and browser-fueled searches to our advantage. And if there's a moral to this story, it's that your search bar might not always need a backend.
+
+_This post is crossposted from [aryansharma.com](https://www.aryansharma.com/blog/coursetable)._
