@@ -8,7 +8,7 @@ In this article, I'll give a high-level overview of our architecture, and explai
 
 ## Shopping period
 
-Every semester, Yale has a _shopping period_: a few days where students begin picking courses for the next term. During shopping period, nearly every undergrad opens CourseTable at once to search for courses, read evaluations, and build worksheets. This is when CourseTable faces the biggest load, and also an inconvenient time for us to be firefighting (since we want to plan our courses too). In addition, we have no autoscaling, no on-call rotation, and only utilize one self-managed server, which means our architectural choices are especially important.
+Every semester, Yale has a _shopping period_: a few days where students begin picking courses for the next term. During shopping period, nearly every undergrad opens CourseTable at once to search for courses, read evaluations, and build worksheets. This is when CourseTable faces the biggest load, and also an inconvenient time for us to be firefighting (since we want to plan our courses too). In addition, we have no autoscaling, no on-call rotation, and only use one self-managed server, which means our architectural choices are especially important.
 
 <figure>
   <img
@@ -76,7 +76,7 @@ Now, since our data is small, public, and read-mostly, we don't need to query a 
 
 ### Searching in the browser
 
-Once a semester's data is downloaded, we execute all searches for it through the client. _This means there is no server-side course-search endpoint, meaning there is nothing to scale, because peak search traffic produces exactly zero requests._ Searching across multiple semesters then just means fetching more static files, each of which is cached independently. Of course, since searches run on the browser's main thread, expensive queries are slightly slower on old laptops than server-side searches would be. But the large majority of queries don't have enough filters to trigger these issues, making the tradeoff worth it.
+Once a semester's data is downloaded, we execute all searches for it through the client. Searching across multiple semesters then just means fetching more static files, each of which is cached independently. Of course, since searches run on the browser's main thread, expensive queries are slightly slower on old laptops than server-side searches would be. But the large majority of queries don't have enough filters to trigger these issues, making the tradeoff worth it.
 
 <figure>
   <img
