@@ -124,7 +124,8 @@ export function checkConflict(
 ): CatalogListing[] {
   const conflicts: CatalogListing[] = [];
   if (!listing.course.course_meetings.length) return conflicts;
-  loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
+  loopWorksheet: for (const { listing: worksheetCourse, hidden } of worksheetData) {
+    if (hidden) continue;
     if (worksheetCourse.course.season_code !== listing.course.season_code)
       continue;
     for (const meeting1 of worksheetCourse.course.course_meetings) {
