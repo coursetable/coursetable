@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { initTrack } from './lib/track';
 import { createAuthSlice, type AuthSlice } from './slices/AuthSlice';
 import {
   type CalendarSlice,
@@ -128,6 +129,7 @@ const useAuth = () => {
 
   useEffect(() => {
     if (!loaded) return;
+    initTrack();
     void refreshAuth();
   }, [loaded, refreshAuth]);
 };

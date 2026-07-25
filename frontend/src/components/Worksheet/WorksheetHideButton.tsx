@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { useShallow } from 'zustand/react/shallow';
+import { track } from '../../lib/track';
 import { setCourseHidden } from '../../queries/api';
 import type { Crn } from '../../queries/graphql-types';
 import { useStore } from '../../store';
@@ -55,14 +56,33 @@ export default function WorksheetHideButton({
       <Button
         variant="toggle"
         onClick={async (e) => {
-          // Prevent clicking hide button from opening course modal
           e.stopPropagation();
-          await setCourseHidden({
+          const ok = await setCourseHidden({
             season: viewedSeason,
             worksheetNumber: viewedWorksheetNumber,
             crn,
             hidden: !hidden,
           });
+          if (ok) {
+            const { courses, worksheets } = useStore.getState();
+            const courseCode =
+              courses.find((c) => c.crn === crn)?.listing.course_code ??
+              String(crn);
+            const ws = worksheets
+              ?.get(viewedSeason)
+              ?.get(viewedWorksheetNumber);
+            const worksheetName =
+              ws?.name ??
+              (viewedWorksheetNumber === 0
+                ? 'Main Worksheet'
+                : `Worksheet ${viewedWorksheetNumber}`);
+            track('worksheet_hide', {
+              course_code: courseCode,
+              term: viewedSeason,
+              worksheet_name: worksheetName,
+              hidden: !hidden,
+            });
+          }
           await worksheetsRefresh();
         }}
         className={clsx(styles.toggleButton, className)}

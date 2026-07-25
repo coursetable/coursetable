@@ -25,6 +25,7 @@ import type {
 } from './searchTypes';
 import { seasons } from '../data/catalogSeasons';
 import { useCourseData, useWorksheetInfo } from '../hooks/useFerry';
+import { track } from '../lib/track';
 import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 import { useStore } from '../store';
@@ -692,13 +693,18 @@ export function SearchBootstrap({
         });
       });
       // Apply sorting order.
-      setSearchData(
-        sortCourses(
-          filtered,
-          { key: selectSortBy.value.value, type: sortOrder.value },
-          numFriends,
-        ),
+      const sorted = sortCourses(
+        filtered,
+        { key: selectSortBy.value.value, type: sortOrder.value },
+        numFriends,
       );
+      setSearchData(sorted);
+      const sf = useStore.getState().searchFilters;
+      track('search', {
+        query: sf.searchText,
+        filters: sf,
+        n_results: sorted.length,
+      });
     },
     [
       processedSeasons,
