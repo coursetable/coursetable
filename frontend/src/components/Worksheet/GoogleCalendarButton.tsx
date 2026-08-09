@@ -10,6 +10,77 @@ import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
 
+const RATE_LIMIT_RETRIES = 4;
+const RATE_LIMIT_BASE_DELAY_MS = 400;
+
+type GCalClientError = {
+  status?: number;
+  body?: string;
+  result?: {
+    error?: {
+      errors?: { reason?: string }[];
+    };
+  };
+};
+
+function getGCalErrorReasons(err: unknown): string[] {
+  if (!err || typeof err !== 'object') return [];
+  const gcalErr = err as GCalClientError;
+  const reasons = new Set<string>();
+
+  for (const item of gcalErr.result?.error?.errors ?? [])
+    if (item.reason) reasons.add(item.reason);
+
+  if (typeof gcalErr.body === 'string') {
+    try {
+      const parsed = JSON.parse(gcalErr.body) as GCalClientError['result'];
+      for (const item of parsed?.error?.errors ?? [])
+        if (item.reason) reasons.add(item.reason);
+    } catch {
+      // Ignore malformed error bodies from gapi.
+    }
+  }
+
+  return [...reasons];
+}
+
+function isGCalRateLimitError(err: unknown): boolean {
+  if (!err || typeof err !== 'object') return false;
+  if ((err as GCalClientError).status !== 403) return false;
+  const reasons = getGCalErrorReasons(err);
+  return (
+    reasons.includes('rateLimitExceeded') ||
+    reasons.includes('userRateLimitExceeded')
+  );
+}
+
+function isGCalAuthError(err: unknown): boolean {
+  if (!err || typeof err !== 'object') return false;
+  return (err as GCalClientError).status === 403 && !isGCalRateLimitError(err);
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function withRateLimitRetry<T>(
+  operation: () => PromiseLike<T>,
+): Promise<T> {
+  for (let attempt = 0; attempt < RATE_LIMIT_RETRIES; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (!isGCalRateLimitError(err) || attempt === RATE_LIMIT_RETRIES - 1)
+        throw err;
+
+      await delay(RATE_LIMIT_BASE_DELAY_MS * 2 ** attempt);
+    }
+  }
+  throw new Error('Google Calendar rate limit retries exhausted');
+}
+
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const gapi = useStore((s) => s.gapi);
@@ -86,67 +157,81 @@ function GoogleCalendarButton(): React.JSX.Element {
 
     try {
       // Get all previously added classes
-      const eventList = await gapi.client.calendar.events.list({
-        calendarId: 'primary',
-        // TODO: this is UTC date, which shouldn't matter, but we want
-        // America/New_York. This is easily fixable once we use Temporal
-        timeMin: new Date(
-          Date.UTC(semester.start[0], semester.start[1] - 1, semester.start[2]),
-        ).toISOString(),
-        timeMax: new Date(
-          Date.UTC(semester.end[0], semester.end[1] - 1, semester.end[2]),
-        ).toISOString(),
-        singleEvents: true,
-        orderBy: 'startTime',
-      });
-
-      // Delete all previously added classes
-      if (eventList.result.items.length > 0) {
-        const deletedIds = new Set<string>();
-        const deletePromises = eventList.result.items
-          .map((event) => {
-            if (event.id.startsWith('coursetable') && event.recurringEventId) {
-              if (!deletedIds.has(event.recurringEventId)) {
-                deletedIds.add(event.recurringEventId);
-                return gapi.client.calendar.events.delete({
-                  calendarId: 'primary',
-                  eventId: event.recurringEventId,
-                });
-              }
-            }
-            return null;
-          })
-          .filter((p): p is NonNullable<typeof p> => p !== null);
-        await Promise.all(deletePromises);
-      }
-      const events = getCalendarEvents('gcal', courses, viewedSeason);
-      await Promise.all(
-        events.map(async (event) => {
-          try {
-            await gapi.client.calendar.events.insert({
-              calendarId: 'primary',
-              resource: event,
-            });
-          } catch (err) {
-            Sentry.addBreadcrumb({
-              category: 'gcal',
-              message: `Inserting GCal event ${JSON.stringify(event)}`,
-              level: 'info',
-            });
-            Sentry.captureException(err);
-            toast.error('Failed to add event to Google Calendar');
-          }
+      const eventList = await withRateLimitRetry(() =>
+        gapi.client.calendar.events.list({
+          calendarId: 'primary',
+          // TODO: this is UTC date, which shouldn't matter, but we want
+          // America/New_York. This is easily fixable once we use Temporal
+          timeMin: new Date(
+            Date.UTC(
+              semester.start[0],
+              semester.start[1] - 1,
+              semester.start[2],
+            ),
+          ).toISOString(),
+          timeMax: new Date(
+            Date.UTC(semester.end[0], semester.end[1] - 1, semester.end[2]),
+          ).toISOString(),
+          singleEvents: true,
+          orderBy: 'startTime',
         }),
       );
-      toast.success('Exported to Google Calendar!');
+
+      // Delete previously added classes sequentially to avoid quota spikes
+      if (eventList.result.items.length > 0) {
+        const recurringEventIds = [
+          ...new Set(
+            eventList.result.items.flatMap((event) => {
+              if (event.id.startsWith('coursetable') && event.recurringEventId)
+                return [event.recurringEventId];
+
+              return [];
+            }),
+          ),
+        ];
+        for (const eventId of recurringEventIds) {
+          await withRateLimitRetry(() =>
+            gapi.client.calendar.events.delete({
+              calendarId: 'primary',
+              eventId,
+            }),
+          );
+        }
+      }
+
+      const events = getCalendarEvents('gcal', courses, viewedSeason);
+      let failedCount = 0;
+      for (const event of events) {
+        try {
+          await withRateLimitRetry(() =>
+            gapi.client.calendar.events.insert({
+              calendarId: 'primary',
+              resource: event,
+            }),
+          );
+        } catch (err) {
+          failedCount += 1;
+          Sentry.addBreadcrumb({
+            category: 'gcal',
+            message: `Inserting GCal event ${JSON.stringify(event)}`,
+            level: 'info',
+          });
+          Sentry.captureException(err);
+        }
+      }
+
+      if (failedCount === 0) {
+        toast.success('Exported to Google Calendar!');
+      } else if (failedCount === events.length) {
+        toast.error('Failed to export events to Google Calendar');
+      } else {
+        toast.error(
+          `Exported to Google Calendar, but ${failedCount} of ${events.length} events failed`,
+        );
+      }
     } catch (err) {
-      // Handle 403 Forbidden - token expired or revoked
-      if (
-        err &&
-        typeof err === 'object' &&
-        Object.hasOwn(err, 'status') &&
-        (err as { status: number }).status === 403
-      ) {
+      // Auth expired/revoked — not the same as a rate-limit 403
+      if (isGCalAuthError(err)) {
         gapi.client.setToken(null);
         setExporting(false);
         toast.info('Google Calendar access expired. Please sign in again.');
@@ -160,7 +245,11 @@ function GoogleCalendarButton(): React.JSX.Element {
         level: 'info',
       });
       Sentry.captureException(err);
-      toast.error('Error exporting Google Calendar events');
+      toast.error(
+        isGCalRateLimitError(err)
+          ? 'Google Calendar rate limit hit. Please try again in a moment.'
+          : 'Error exporting Google Calendar events',
+      );
     } finally {
       setExporting(false);
     }
