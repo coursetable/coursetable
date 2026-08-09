@@ -245,11 +245,7 @@ function GoogleCalendarButton(): React.JSX.Element {
         level: 'info',
       });
       Sentry.captureException(err);
-      toast.error(
-        isGCalRateLimitError(err)
-          ? 'Google Calendar rate limit hit. Please try again in a moment.'
-          : 'Error exporting Google Calendar events',
-      );
+      toast.error('Error exporting Google Calendar events');
     } finally {
       setExporting(false);
     }
