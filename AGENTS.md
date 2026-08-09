@@ -80,7 +80,6 @@ Avoid:
 - Expand scope beyond what was asked.
 - Rewrite working code for taste alone.
 - Check in generated catalog dumps or large static assets unless the task requires it.
-- Assume `www.coursetable.com` and `coursetable.com` behave identically for third-party OAuth (origins must be registered separately).
 
 ## Docs map
 
