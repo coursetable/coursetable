@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { checkConflict, type ListingWithTimes } from './course';
+import {
+  checkConflict,
+  type ListingWithTimes,
+  to12HourTime,
+  toRangeTime,
+  toRealTime,
+  toSeasonString,
+  toWeekdaysDisplayString,
+  toWeekdayStrings,
+} from './course';
 import type { CatalogListing } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
 import type { WorksheetCourse } from '../types/worksheetCourse';
@@ -253,5 +262,58 @@ describe('checkConflict', () => {
     expect(
       checkConflict([makeWorksheetCourse(conflicting)], asCandidate(candidate)),
     ).toEqual([conflicting]);
+  });
+});
+
+describe('toRangeTime / toRealTime', () => {
+  it('converts midnight and noon', () => {
+    expect(toRangeTime('0:00')).toBe(0);
+    expect(toRangeTime('12:00')).toBe(144);
+    expect(toRealTime(0)).toBe('0:00');
+    expect(toRealTime(144)).toBe('12:00');
+  });
+
+  it('converts times on 5-minute boundaries', () => {
+    expect(toRangeTime('10:30')).toBe(126);
+    expect(toRangeTime('11:20')).toBe(136);
+    expect(toRealTime(126)).toBe('10:30');
+    expect(toRealTime(136)).toBe('11:20');
+  });
+
+  it('round-trips common class times', () => {
+    for (const time of ['9:00', '9:25', '13:30', '14:45', '23:55']) 
+      expect(toRealTime(toRangeTime(time))).toBe(time);
+    
+  });
+});
+
+describe('to12HourTime', () => {
+  it('formats morning, noon, afternoon, and midnight-hour times', () => {
+    expect(to12HourTime('0:05')).toBe('12:05am');
+    expect(to12HourTime('9:25')).toBe('9:25am');
+    expect(to12HourTime('12:00')).toBe('12:00pm');
+    expect(to12HourTime('13:30')).toBe('1:30pm');
+  });
+});
+
+describe('toSeasonString', () => {
+  it('formats spring, summer, and fall seasons', () => {
+    expect(toSeasonString('202601' as Season)).toBe('Spring 2026');
+    expect(toSeasonString('202602' as Season)).toBe('Summer 2026');
+    expect(toSeasonString('202603' as Season)).toBe('Fall 2026');
+  });
+});
+
+describe('toWeekdayStrings / toWeekdaysDisplayString', () => {
+  it('formats single days and common patterns', () => {
+    expect(toWeekdayStrings(MON)).toEqual(['M']);
+    expect(toWeekdayStrings(THU)).toEqual(['Th']);
+    expect(toWeekdayStrings(MON | WED | FRI)).toEqual(['M', 'W', 'F']);
+    expect(toWeekdayStrings(TUE | THU)).toEqual(['T', 'Th']);
+  });
+
+  it('collapses Monday–Friday to M–F', () => {
+    expect(toWeekdaysDisplayString(MON | TUE | WED | THU | FRI)).toBe('M–F');
+    expect(toWeekdaysDisplayString(MON | WED | FRI)).toBe('MWF');
   });
 });
