@@ -274,7 +274,16 @@ export async function updateWorksheetCourses(
   const request = (
     payload: UpdateWorksheetCourseAction | UpdateWorksheetCourseAction[],
   ) => {
-    const key = JSON.stringify(payload);
+    // Ignore randomly chosen add colors so rapid double-clicks coalesce.
+    // Keep color for update actions where it is intentional.
+    const normalize = (item: UpdateWorksheetCourseAction) => {
+      if (item.action !== 'add') return item;
+      const { color: _color, ...rest } = item;
+      return rest;
+    };
+    const key = JSON.stringify(
+      Array.isArray(payload) ? payload.map(normalize) : normalize(payload),
+    );
     const existing = inflightWorksheetUpdates.get(key);
     if (existing) return existing;
     const pending = requestInternal(payload).finally(() =>
