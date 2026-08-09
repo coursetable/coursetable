@@ -19,15 +19,12 @@ describe('academicCalendars', () => {
   ][];
 
   it('uses season keys of the form YYYYs where s is 1–3', () => {
-    for (const [season] of seasons) 
-      expect(season).toMatch(/^\d{4}0[123]$/u);
-    
+    for (const [season] of seasons) expect(season).toMatch(/^\d{4}0[123]$/u);
   });
 
   it('keeps each semester start on or before its end', () => {
-    for (const [, calendar] of seasons) 
+    for (const [, calendar] of seasons)
       expect(toUTC(calendar.start)).toBeLessThanOrEqual(toUTC(calendar.end));
-    
   });
 
   it('keeps each break start on or before its end', () => {
