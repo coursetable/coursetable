@@ -281,9 +281,8 @@ describe('toRangeTime / toRealTime', () => {
   });
 
   it('round-trips common class times', () => {
-    for (const time of ['9:00', '9:25', '13:30', '14:45', '23:55']) 
+    for (const time of ['9:00', '9:25', '13:30', '14:45', '23:55'])
       expect(toRealTime(toRangeTime(time))).toBe(time);
-    
   });
 });
 
