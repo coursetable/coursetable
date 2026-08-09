@@ -226,7 +226,7 @@ function GoogleCalendarButton(): React.JSX.Element {
         toast.error('Failed to export events to Google Calendar');
       } else {
         toast.error(
-          `Exported to Google Calendar, but ${failedCount} of ${events.length} events failed`,
+          `Failed to export ${failedCount} of ${events.length} events to Google Calendar`,
         );
       }
     } catch (err) {
