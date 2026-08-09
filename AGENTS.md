@@ -33,7 +33,7 @@ cd frontend && ./start.sh   # https://localhost:3000
 ## Git & pull requests
 
 - Base PRs on `master`.
-- Use **lowercase conventional commits**, e.g. `fix: ...`, `feat: ...`, `chore: ...`, `refactor`, `test: ...`, `docs: ...`.
+- Use **lowercase conventional commits**, e.g. `fix: ...`, `feat: ...`, `chore: ...`, `refactor: ...`, `test: ...`, `docs: ...`.
 - Prefer one logical change per PR.
 - PR descriptions must follow [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md): fill **Summary** and **Test plan (required)**. Leave every pre-flight checklist item unchecked — the human author marks those. Small/straightforward changes may skip the template as noted there.
 - Link issues with `Fixes #1234` when relevant.
@@ -70,7 +70,7 @@ Prefer deriving values during render, event handlers, and store actions. Use eff
 
 Avoid:
 
-- Props → local state sync effects (prefer controlled props or keyed remount)
+- Props → local state sync effects (prefer controlled props or keyed remount). Don’t copy existing ones; leave old instances unless the task is to fix them
 - Effects that only recompute derived data (compute in render or a selector)
 - Missing dependency arrays (re-run every render) except rare intentional cases
 - Putting business logic in effects when a Zustand action or click handler is clearer
