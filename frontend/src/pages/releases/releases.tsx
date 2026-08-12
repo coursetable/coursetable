@@ -12,6 +12,13 @@ type ReleaseNote = {
 const releaseNotes: ReleaseNote[] = [
   // Add more releases below
   {
+    title: 'Surviving Shopping Period',
+    summary:
+      "A high-level tour of CourseTable's architecture and how we keep the site alive during peak traffic.",
+    path: '/releases/shopping-period',
+    date: '2026-07-11',
+  },
+  {
     title: '2025 + Spring 2026 Release',
     summary:
       'Discover the latest features and improvements in our 2025 + Spring 2026 update.',

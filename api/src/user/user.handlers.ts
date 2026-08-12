@@ -97,12 +97,21 @@ async function updateWorksheetCourse(
 
   if (action === 'add') {
     if (existing) return 'ALREADY_BOOKMARKED';
-    await db.insert(worksheetCourses).values({
-      worksheetId: existingMeta.id,
-      crn,
-      color,
-      hidden,
-    });
+    // Concurrent double-adds can both pass the existence check above; treat
+    // unique conflicts as the same already-bookmarked outcome.
+    const [created] = await db
+      .insert(worksheetCourses)
+      .values({
+        worksheetId: existingMeta.id,
+        crn,
+        color,
+        hidden,
+      })
+      .onConflictDoNothing({
+        target: [worksheetCourses.worksheetId, worksheetCourses.crn],
+      })
+      .returning({ id: worksheetCourses.id });
+    if (!created) return 'ALREADY_BOOKMARKED';
   } else if (action === 'remove') {
     if (!existing) return 'NOT_BOOKMARKED';
     await db

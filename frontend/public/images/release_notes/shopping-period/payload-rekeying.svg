@@ -1,0 +1,39 @@
+<svg viewBox="0 0 680 204" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="100%" height="100%" rx="12" fill="#FDFDFC"/>
+  <defs>
+    <marker id="pArrOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E58A3C"/>
+    </marker>
+  </defs>
+
+  <line x1="340" y1="16" x2="340" y2="192" stroke="#DDD" stroke-width="1.5"/>
+
+  <!-- LEFT: keyed by listing -->
+  <text x="170" y="32" text-anchor="middle" font-size="12.5" font-weight="600" fill="#333">Keyed by listing (before)</text>
+
+  <rect x="35" y="52" width="270" height="56" rx="7" fill="none" stroke="#444" stroke-width="1.4"/>
+  <text x="50" y="75" font-size="10.5" font-family="ui-monospace, Menlo, monospace" font-weight="600" fill="#333">"MATH 101":</text>
+  <text x="50" y="93" font-size="10.5" font-family="ui-monospace, Menlo, monospace" fill="#888">{ title, prof, ratings, &#8230; }</text>
+
+  <rect x="35" y="124" width="270" height="56" rx="7" fill="none" stroke="#444" stroke-width="1.4"/>
+  <text x="50" y="147" font-size="10.5" font-family="ui-monospace, Menlo, monospace" font-weight="600" fill="#333">"STAT 101":</text>
+  <text x="50" y="165" font-size="10.5" font-family="ui-monospace, Menlo, monospace" fill="#888">{ title, prof, ratings, &#8230; }</text>
+
+
+  <!-- RIGHT: keyed by course -->
+  <text x="510" y="32" text-anchor="middle" font-size="12.5" font-weight="600" fill="#333">Keyed by course (after)</text>
+
+  <rect x="400" y="52" width="220" height="54" rx="7" fill="#E58A3C" fill-opacity="0.12" stroke="#E58A3C" stroke-width="1.4"/>
+  <text x="415" y="74" font-size="10.5" font-family="ui-monospace, Menlo, monospace" font-weight="600" fill="#B05E1C">1234:</text>
+  <text x="415" y="92" font-size="10.5" font-family="ui-monospace, Menlo, monospace" fill="#B05E1C">{ title, prof, ratings, &#8230; }</text>
+
+  <rect x="365" y="156" width="130" height="34" rx="7" fill="none" stroke="#444" stroke-width="1.4"/>
+  <text x="430" y="177" text-anchor="middle" font-size="10.5" font-family="ui-monospace, Menlo, monospace" fill="#333">"MATH 101"</text>
+  <rect x="525" y="156" width="130" height="34" rx="7" fill="none" stroke="#444" stroke-width="1.4"/>
+  <text x="590" y="177" text-anchor="middle" font-size="10.5" font-family="ui-monospace, Menlo, monospace" fill="#333">"STAT 101"</text>
+
+  <line x1="430" y1="156" x2="480" y2="106" stroke="#E58A3C" stroke-width="1.8" marker-end="url(#pArrOrange)"/>
+  <line x1="590" y1="156" x2="540" y2="106" stroke="#E58A3C" stroke-width="1.8" marker-end="url(#pArrOrange)"/>
+  <text x="510" y="138" text-anchor="middle" font-size="10" fill="#B05E1C">by ID</text>
+
+</svg>

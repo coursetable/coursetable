@@ -18,6 +18,7 @@ import ModalHistoryBridge from './components/ModalHistoryBridge';
 import Navbar from './components/Navbar/Navbar';
 import Notice from './components/Notice';
 import ProfModal from './components/ProfModal/ProfModal';
+import SeoMeta from './components/SeoMeta';
 import Spinner from './components/Spinner';
 import Tutorial from './components/Tutorial';
 
@@ -56,6 +57,9 @@ const Spring24Release = suspended(
 const Fall24Release = suspended(() => import('./pages/releases/fall24.mdx'));
 const Spring26Release = suspended(
   () => import('./pages/releases/spring26.mdx'),
+);
+const ShoppingPeriod = suspended(
+  () => import('./pages/releases/shopping-period.mdx'),
 );
 
 function Modal() {
@@ -143,6 +147,7 @@ function App() {
           content="CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It's run by a small team of volunteers within the Yale Computer Society and is completely open source."
         />
       </Helmet>
+      <SeoMeta />
       <Notice
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
@@ -190,6 +195,7 @@ function App() {
         <Route path="/releases/spring24" element={<Spring24Release />} />
         <Route path="/releases/fall24" element={<Fall24Release />} />
         <Route path="/releases/spring26" element={<Spring26Release />} />
+        <Route path="/releases/shopping-period" element={<ShoppingPeriod />} />
         <Route path="/releases" element={<ReleaseNotes />} />
         {/* Catch-all route to NotFound page */}
         <Route path="/*" element={<NotFound />} />
