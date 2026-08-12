@@ -154,6 +154,13 @@ function getPageMetadata(url: string) {
           'Discover the latest features and improvements in our Fall 2023 update.',
         image: 'https://coursetable.com/favicon.png',
       };
+    case '/releases/spring26':
+      return {
+        title: 'CourseTable 2025 + Spring 2026 Release Notes',
+        description:
+          'Discover the latest features and improvements in our 2025 + Spring 2026 update.',
+        image: 'https://coursetable.com/favicon.png',
+      };
     default:
       return defaultMetadata;
   }
