@@ -323,7 +323,7 @@ function Challenge() {
               Submit
             </Button>
             <Button
-              variant="link"
+              variant="primary"
               type="button"
               className="w-100 mt-2"
               onClick={loadChallenge}
