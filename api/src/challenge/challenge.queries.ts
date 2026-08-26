@@ -57,6 +57,7 @@ export const RequestEvalsDocument = gql`
         course: {
           season_code: { _eq: $season }
           average_rating: { _gt: $minRating }
+          section: { _eq: "1" }
         }
         evaluation_question: { tag: { _eq: "Overall" } }
         rating: { _is_null: false }
