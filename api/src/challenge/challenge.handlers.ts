@@ -20,6 +20,8 @@ import {
 import winston from '../logging/winston.js';
 
 const CHALLENGE_ALGORITHM = 'aes-256-ctr';
+const OVERFETCH_FACTOR = 10;
+const SHARED_EVAL_MIN_RESPONSES = 10;
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
@@ -131,21 +133,45 @@ export const requestChallenge = async (
   // Randomize the selected challenge courses by
   // randomly choosing a minimum rating
   const minRating = 1 + Math.random() * 4;
-  const evals = await getSdk(graphqlClient).requestEvals({
-    limit: NUM_CHALLENGE_COURSES,
-    season: CHALLENGE_SEASON,
-    minRating,
-  });
+  const [evals, seasonRatings] = await Promise.all([
+    getSdk(graphqlClient).requestEvals({
+      limit: NUM_CHALLENGE_COURSES * OVERFETCH_FACTOR,
+      season: CHALLENGE_SEASON,
+      minRating,
+    }),
+    getSdk(graphqlClient).seasonRatings({ season: CHALLENGE_SEASON }),
+  ]);
 
-  if (evals.evaluation_ratings.length < NUM_CHALLENGE_COURSES) {
+  const timesSeen = new Map<string, number>();
+  for (const { rating } of seasonRatings.evaluation_ratings) {
+    const key = JSON.stringify(rating);
+    timesSeen.set(key, (timesSeen.get(key) ?? 0) + 1);
+  }
+  const isShared = (rating: unknown) => {
+    const counts = rating as number[];
+    if (counts.reduce((a, b) => a + b, 0) < SHARED_EVAL_MIN_RESPONSES)
+      return false;
+    return (timesSeen.get(JSON.stringify(counts)) ?? 0) > 1;
+  };
+  const questions = evals.evaluation_ratings
+    .filter((x) => !isShared(x.rating))
+    .slice(0, NUM_CHALLENGE_COURSES);
+
+  if (questions.length < NUM_CHALLENGE_COURSES) {
     winston.error(
-      `Season ${CHALLENGE_SEASON} yielded ${evals.evaluation_ratings.length} of ${NUM_CHALLENGE_COURSES} challenge questions`,
+      `Season ${CHALLENGE_SEASON} yielded ${questions.length} of ${NUM_CHALLENGE_COURSES} challenge questions`,
     );
     res.status(503).json({ error: 'NO_CHALLENGE_AVAILABLE' });
     return;
   }
 
-  res.json(constructChallenge(evals, challengeTries, netId));
+  res.json(
+    constructChallenge(
+      { evaluation_ratings: questions },
+      challengeTries,
+      netId,
+    ),
+  );
 };
 
 const checkChallenge = (

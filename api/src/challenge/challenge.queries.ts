@@ -34,6 +34,15 @@ export type RequestEvalsQuery = {
   }>;
 };
 
+export type SeasonRatingsQueryVariables = Types.Exact<{
+  season: Types.InputMaybe<Types.Scalars['String']['input']>;
+}>;
+
+export type SeasonRatingsQuery = {
+  __typename?: 'query_root';
+  evaluation_ratings: Array<{ __typename?: 'evaluation_ratings'; rating: any }>;
+};
+
 export type VerifyEvalsQueryVariables = Types.Exact<{
   questionIds: Types.InputMaybe<
     Array<Types.Scalars['Int']['input']> | Types.Scalars['Int']['input']
@@ -80,6 +89,19 @@ export const RequestEvalsDocument = gql`
     }
   }
 `;
+export const SeasonRatingsDocument = gql`
+  query seasonRatings($season: String) {
+    evaluation_ratings(
+      where: {
+        course: { season_code: { _eq: $season } }
+        evaluation_question: { tag: { _eq: "Overall" } }
+        rating: { _is_null: false }
+      }
+    ) {
+      rating
+    }
+  }
+`;
 export const VerifyEvalsDocument = gql`
   query verifyEvals($questionIds: [Int!]) {
     evaluation_ratings(where: { id: { _in: $questionIds } }) {
@@ -122,6 +144,24 @@ export function getSdk(
             signal,
           }),
         'requestEvals',
+        'query',
+        variables,
+      );
+    },
+    seasonRatings(
+      variables?: SeasonRatingsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<SeasonRatingsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<SeasonRatingsQuery>({
+            document: SeasonRatingsDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'seasonRatings',
         'query',
         variables,
       );
