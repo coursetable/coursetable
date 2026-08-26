@@ -52,6 +52,18 @@ function renderRequestError(requestError: string, navigate: NavigateFunction) {
         </div>
       ),
     };
+  } else if (requestError === 'NO_CHALLENGE_AVAILABLE') {
+    return {
+      errorTitle: 'Challenge unavailable',
+      errorMessage: (
+        <div>
+          The challenge is temporarily unavailable while we refresh our
+          evaluation data. This is on our end, not yours - please{' '}
+          <NavLink to="/feedback">contact us</NavLink> and we'll enable your
+          account manually.
+        </div>
+      ),
+    };
   } else if (requestError === 'MAX_TRIES_REACHED') {
     return {
       errorTitle: 'Max attempts reached!',

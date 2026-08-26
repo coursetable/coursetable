@@ -17,6 +17,7 @@ import {
   graphqlClient,
   db,
 } from '../config.js';
+import winston from '../logging/winston.js';
 
 const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 
@@ -136,6 +137,14 @@ export const requestChallenge = async (
     minRating,
   });
 
+  if (evals.evaluation_ratings.length < NUM_CHALLENGE_COURSES) {
+    winston.error(
+      `Season ${CHALLENGE_SEASON} yielded ${evals.evaluation_ratings.length} of ${NUM_CHALLENGE_COURSES} challenge questions`,
+    );
+    res.status(503).json({ error: 'NO_CHALLENGE_AVAILABLE' });
+    return;
+  }
+
   res.json(constructChallenge(evals, challengeTries, netId));
 };
 
@@ -212,6 +221,10 @@ export const verifyChallenge = async (
   }
 
   const { token, salt, answers } = bodyParseRes.data;
+  if (answers.length !== NUM_CHALLENGE_COURSES) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
   // eslint-disable-next-line init-declarations
   let trueEvals: VerifyEvalsQuery;
   // Catch malformed token decryption errors
