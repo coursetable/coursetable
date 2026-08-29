@@ -4,6 +4,7 @@ import z from 'zod';
 
 import {
   canViewerSee,
+  escapeLike,
   getSelfDisplayNames,
   getVisibleDisplayName,
   normalizePrivacySettings,
@@ -330,6 +331,54 @@ export const revokeEvaluationsAccess = async (
   res.status(200).json({ hasEvals: false, evalsRevoked: true });
 };
 
+// Builds a Drizzle WHERE condition for a name/netId search query.
+// Single-token queries match against netId and all name fields.
+// Multi-token queries try all pairwise (token_i, token_j) combinations as
+// (first-name field, last-name field), covering first-last, last-first, and
+// compound names like "Mary Jo Smith". NetId is excluded from multi-token
+// matching — netIds are alphanumeric and cannot contain spaces.
+const buildNameCondition = (q: string) => {
+  // Deduplicate and cap at 4 tokens to bound pairwise combinations (≤12).
+  const tokens = [
+    ...new Set(
+      q
+        .split(' ')
+        .map((t) => escapeLike(t))
+        .filter((t) => t.length > 0),
+    ),
+  ].slice(0, 4) as [string, ...string[]];
+
+  if (tokens.length === 1) {
+    const [t] = tokens;
+    return or(
+      ilike(studentBluebookSettings.netId, `%${t}%`),
+      ilike(studentBluebookSettings.firstName, `%${t}%`),
+      ilike(studentBluebookSettings.lastName, `%${t}%`),
+      ilike(studentBluebookSettings.preferredFirstName, `%${t}%`),
+      ilike(studentBluebookSettings.preferredLastName, `%${t}%`),
+    );
+  }
+
+  const pairs = tokens.flatMap((first, i) =>
+    tokens
+      .filter((_, j) => j !== i)
+      .map((last) =>
+        and(
+          or(
+            ilike(studentBluebookSettings.firstName, `%${first}%`),
+            ilike(studentBluebookSettings.preferredFirstName, `%${first}%`),
+          ),
+          or(
+            ilike(studentBluebookSettings.lastName, `%${last}%`),
+            ilike(studentBluebookSettings.preferredLastName, `%${last}%`),
+          ),
+        ),
+      ),
+  );
+
+  return or(...pairs);
+};
+
 export const searchProfiles = async (
   req: express.Request,
   res: express.Response,
@@ -343,16 +392,12 @@ export const searchProfiles = async (
 
   const { q, limit } = queryParse.data;
 
+  const nameCondition = buildNameCondition(q);
+
   const candidates = (await db.query.studentBluebookSettings.findMany({
     where: and(
       eq(studentBluebookSettings.profilePageEnabled, true),
-      or(
-        ilike(studentBluebookSettings.netId, `%${q}%`),
-        ilike(studentBluebookSettings.firstName, `%${q}%`),
-        ilike(studentBluebookSettings.lastName, `%${q}%`),
-        ilike(studentBluebookSettings.preferredFirstName, `%${q}%`),
-        ilike(studentBluebookSettings.preferredLastName, `%${q}%`),
-      ),
+      nameCondition,
     ),
     columns: profileColumns,
     limit,

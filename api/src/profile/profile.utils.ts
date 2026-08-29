@@ -128,6 +128,8 @@ export const getSelfDisplayNames = (names: ProfileNames) => {
   };
 };
 
+export const escapeLike = (s: string): string => s.replace(/[%_\\]/gu, '\\$&');
+
 export const sanitizeNullableName = (
   value: unknown,
 ): string | null | undefined => {
