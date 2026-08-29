@@ -67,15 +67,6 @@ function About() {
 
   const current: Person[] = [
     {
-      name: 'Reyansh Bahl',
-      image: rb,
-      role: 'CourseTable Lead',
-      links: {
-        github: 'https://github.com/reybahl',
-        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
-      },
-    },
-    {
       name: 'Aryan Sharma',
       image: ash,
       role: 'CourseTable Lead',
@@ -83,6 +74,25 @@ function About() {
         github: 'https://github.com/aryans-15',
         linkedin: 'https://www.linkedin.com/in/aryans15/',
         website: 'https://aryansharma.com/',
+      },
+    },
+    {
+      name: 'William Feng',
+      image: wf,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/WFeng7',
+        linkedin: 'https://www.linkedin.com/in/william-feng7',
+        website: 'https://wsfeng.dev/',
+      },
+    },
+    {
+      name: 'Reyansh Bahl',
+      image: rb,
+      role: 'Past Lead, Advisor',
+      links: {
+        github: 'https://github.com/reybahl',
+        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
       },
     },
     {
@@ -141,16 +151,6 @@ function About() {
         website: 'https://elibouganim.web.app',
         github: 'https://github.com/eliboug',
         linkedin: 'https://www.linkedin.com/in/eli-bouganim/',
-      },
-    },
-    {
-      name: 'William Feng',
-      image: wf,
-      role: 'Development',
-      links: {
-        github: 'https://github.com/WFeng7',
-        linkedin: 'https://www.linkedin.com/in/william-feng7',
-        website: 'https://wsfeng.dev/',
       },
     },
   ];
