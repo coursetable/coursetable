@@ -137,7 +137,7 @@ hr {
 
 .dropdown-menu {
   max-height: 50vh;
-  min-width: 0 !important;
+  min-width: 0;
   overflow: scroll;
 }
 
