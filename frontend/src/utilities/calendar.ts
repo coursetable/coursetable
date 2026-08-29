@@ -198,6 +198,12 @@ function toRBCEvent({
 
 type GCalEvent = gapi.client.calendar.EventInput;
 type ICSEvent = string;
+export type CourseOverlapCluster = {
+  readonly clusterId: string;
+  readonly peers: CourseRBCEvent[];
+  readonly index: number;
+};
+
 export type CourseRBCEvent = {
   kind: 'course';
   title: string;
@@ -208,6 +214,7 @@ export type CourseRBCEvent = {
   color: string;
   location: string;
   walkBefore?: WalkBefore;
+  overlapCluster?: CourseOverlapCluster;
 };
 
 export type WalkClassSummary = {
