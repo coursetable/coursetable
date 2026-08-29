@@ -27,12 +27,18 @@ import SeasonDropdown from './SeasonDropdown';
 import WorksheetCalendarList from './WorksheetCalendarList';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import WorksheetStats from './WorksheetStats';
+import { CARTO_API_KEY } from '../../config';
 import buildingCoordinates from '../../data/buildingCoordinates';
 import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { SurfaceComponent } from '../Typography';
 
 import styles from './WorksheetMap.module.css';
+
+const basemapUrl = (theme: string | undefined) =>
+  `https://{s}.basemaps.cartocdn.com/${
+    theme === 'dark' ? 'dark_all' : 'light_all'
+  }/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`;
 
 type MarkerGroup = {
   code: string;
@@ -539,22 +545,15 @@ function WorksheetMap() {
     [markers],
   );
 
-  const [tileUrl, setTileUrl] = useState(() => {
-    const currentTheme = document.documentElement.dataset.theme;
-    return currentTheme === 'dark'
-      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-  });
+  const [tileUrl, setTileUrl] = useState(() =>
+    basemapUrl(document.documentElement.dataset.theme),
+  );
 
   useEffect(() => {
     const root = document.documentElement;
     const observer = new MutationObserver(() => {
       const nextTheme = root.dataset.theme;
-      setTileUrl(
-        nextTheme === 'dark'
-          ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-          : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-      );
+      setTileUrl(basemapUrl(nextTheme));
     });
     observer.observe(root, {
       attributes: true,

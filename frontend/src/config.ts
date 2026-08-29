@@ -4,6 +4,8 @@ export const isDev = import.meta.env.DEV;
 
 export const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
+export const CARTO_API_KEY = import.meta.env.VITE_CARTO_API_KEY;
+
 export const GRAPHQL_API_ENDPOINT = isDev
   ? 'https://localhost:8085'
   : `${import.meta.env.VITE_API_ENDPOINT}/ferry`;
