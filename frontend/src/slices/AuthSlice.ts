@@ -26,23 +26,23 @@ export const createAuthSlice: StateCreator<Store, [], [], AuthSlice> = (
   async refreshAuth() {
     set({ authStatus: 'loading' });
     const isAuthenticated = await checkAuth();
-    set({
-      authStatus: isAuthenticated ? 'initializing' : 'unauthenticated',
-    });
-    if (isAuthenticated) {
-      try {
-        await Promise.all([
-          get().userRefresh(),
-          get().worksheetsRefresh(),
-          get().wishlistRefresh(),
-          get().friendRefresh(),
-          get().friendReqRefresh(),
-        ]);
-      } catch (error) {
-        console.error('refreshAuth: one or more refresh calls failed', error);
-      } finally {
-        set({ authStatus: 'authenticated' });
-      }
+    if (!isAuthenticated) {
+      set({ authStatus: 'unauthenticated', user: undefined });
+      return;
+    }
+    set({ authStatus: 'initializing' });
+    try {
+      await Promise.all([
+        get().userRefresh(),
+        get().worksheetsRefresh(),
+        get().wishlistRefresh(),
+        get().friendRefresh(),
+        get().friendReqRefresh(),
+      ]);
+    } catch (error) {
+      console.error('refreshAuth: one or more refresh calls failed', error);
+    } finally {
+      set({ authStatus: 'authenticated' });
     }
   },
 });
