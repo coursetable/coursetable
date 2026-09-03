@@ -342,16 +342,19 @@ export const searchProfiles = async (
   }
 
   const { q, limit } = queryParse.data;
+  const tokens = q.split(/\s+/u).filter(Boolean);
 
   const candidates = (await db.query.studentBluebookSettings.findMany({
     where: and(
       eq(studentBluebookSettings.profilePageEnabled, true),
-      or(
-        ilike(studentBluebookSettings.netId, `%${q}%`),
-        ilike(studentBluebookSettings.firstName, `%${q}%`),
-        ilike(studentBluebookSettings.lastName, `%${q}%`),
-        ilike(studentBluebookSettings.preferredFirstName, `%${q}%`),
-        ilike(studentBluebookSettings.preferredLastName, `%${q}%`),
+      ...tokens.map((token) =>
+        or(
+          ilike(studentBluebookSettings.netId, `%${token}%`),
+          ilike(studentBluebookSettings.firstName, `%${token}%`),
+          ilike(studentBluebookSettings.lastName, `%${token}%`),
+          ilike(studentBluebookSettings.preferredFirstName, `%${token}%`),
+          ilike(studentBluebookSettings.preferredLastName, `%${token}%`),
+        ),
       ),
     ),
     columns: profileColumns,
