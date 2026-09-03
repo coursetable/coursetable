@@ -342,7 +342,25 @@ export const searchProfiles = async (
   }
 
   const { q, limit } = queryParse.data;
-  const tokens = q.split(/\s+/u).filter(Boolean);
+
+  // Tokenize in a way that's resilient to common user input formatting like:
+  // - commas: "Doe, Jane"
+  // - hyphens: "John-Smith"
+  // - suffixes: "John Smith Jr", "Jane Doe II"
+  // - apostrophes: "O'Connor"
+  const normalizedTokens = q
+    .replace(/['\u2019\-.,]+/gu, ' ')
+    .split(/\s+/u)
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  // These are common but often omitted/typed inconsistently in searches.
+  // By ignoring them, we avoid accidentally requiring them to match.
+  const ignoredSuffixTokens = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
+  const tokens = normalizedTokens.filter((t) => {
+    const norm = t.toLowerCase().replace(/[^a-z\d]/gu, '');
+    return norm.length > 0 && !ignoredSuffixTokens.has(norm);
+  });
 
   const candidates = (await db.query.studentBluebookSettings.findMany({
     where: and(
