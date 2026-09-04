@@ -1,12 +1,8 @@
 .addFriendIcon {
-  margin-top: 4px;
-  cursor: pointer;
   display: block;
 }
 
 .removeFriendIcon {
-  margin-top: 4px;
-  cursor: pointer;
   display: block;
 }
 
@@ -44,4 +40,10 @@
 .spinner {
   height: 20px;
   width: 20px;
+}
+
+.alreadyAddedLabel {
+  color: var(--color-text-secondary);
+  font-size: 0.85em;
+  margin-left: 8px;
 }
