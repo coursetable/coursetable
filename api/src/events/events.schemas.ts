@@ -24,7 +24,7 @@ export const incomingEventSchema = z.discriminatedUnion('event_type', [
     payload: z.object({
       query: z.string(),
       filters: z.record(z.unknown()),
-      n_results: z.number(),
+      n_results: z.number().int().nonnegative(),
     }),
   }),
   z.object({
