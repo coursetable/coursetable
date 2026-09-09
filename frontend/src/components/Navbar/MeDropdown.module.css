@@ -1,21 +1,24 @@
 .collapseContainer {
-  width: 200px;
+  width: 220px;
   position: absolute;
   top: 56px;
   right: 0;
   z-index: calc(420 + 69);
   box-shadow: 0 2px 6px 0 var(--color-shadow);
-  border-radius: 10px;
+  overflow: hidden;
+  border-radius: 18px;
   transform: translate(0, -10px);
 }
 
 .dropdownItem {
   display: block;
-  margin: 0.75rem 0;
+  margin: 0;
+  padding: 0.42rem 0;
 }
 
 .itemText {
   font-weight: 500;
+  font-size: 1rem;
 }
 
 .dropdownItem:hover .itemText {
@@ -27,11 +30,14 @@
   margin-bottom: auto;
 }
 
+.navbarMeMobileInline {
+  display: contents;
+}
+
 .meIcon,
 .anonIcon {
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
+  width: 38px;
+  height: 38px;
   display: flex;
   transition:
     border-color var(--trans-dur),
@@ -40,6 +46,7 @@
 }
 
 .meIcon {
+  border-radius: 9px;
   background-color: var(--color-primary);
   color: var(--color-text-light);
   align-items: center;
@@ -56,6 +63,7 @@
 }
 
 .anonIcon {
+  border-radius: 50%;
   background-color: var(--color-bg-button);
   color: var(--color-text-secondary);
 }
@@ -73,5 +81,118 @@
 }
 
 .linkIcon {
-  margin-right: 0.5rem;
+  margin-right: 0.75rem;
+}
+
+.identityHeader {
+  position: relative;
+  min-height: 108px;
+  padding: 0.7rem 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-light);
+  background-color: var(--color-primary);
+}
+
+.headerInitials {
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.headerInitials span {
+  font-weight: bold;
+  transform: scaleX(0.8);
+}
+
+.yalemojiPrompt {
+  margin-top: 0.4rem;
+  color: var(--color-text-light);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.yalemojiPrompt:hover {
+  color: var(--color-text-light);
+}
+
+.themeToggle {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  color: var(--color-text-light);
+  background-color: transparent;
+  transition: opacity 0.1s;
+}
+
+.themeToggle:hover {
+  opacity: 0.75;
+}
+
+.headerEdit {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: opacity 0.1s;
+}
+
+.headerEdit:hover {
+  color: var(--color-text-light);
+  opacity: 0.75;
+}
+
+[data-theme='dark'] .identityHeader,
+[data-theme='dark'] .identityHeader .yalemojiPrompt,
+[data-theme='dark'] .identityHeader .yalemojiPrompt:hover,
+[data-theme='dark'] .identityHeader .themeToggle,
+[data-theme='dark'] .identityHeader .headerEdit,
+[data-theme='dark'] .identityHeader .headerEdit:hover {
+  color: var(--color-text-dark);
+}
+
+.menuItems {
+  padding: 0.4rem 1.25rem 0.55rem;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .collapseContainerMobileInline {
+    flex-basis: 100%;
+    width: calc(100vw - 1.5rem);
+    position: static;
+    margin-top: 0.65rem;
+    box-shadow: none;
+    border-radius: 0;
+    transform: none;
+    background-color: transparent !important;
+  }
+
+  .identityHeader {
+    min-height: 118px;
+    border-radius: 16px;
+  }
+
+  .menuItems {
+    padding: 0.55rem 0 0.2rem;
+  }
+
+  .dropdownItem {
+    padding: 0.5rem 0;
+  }
 }
