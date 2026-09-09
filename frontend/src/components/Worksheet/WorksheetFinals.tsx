@@ -6,14 +6,17 @@ import { useShallow } from 'zustand/react/shallow';
 
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
+import WorksheetCalendarList from './WorksheetCalendarList';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import WorksheetStats from './WorksheetStats';
+import { academicCalendars } from '../../config';
 import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { createCourseModalLink } from '../../utilities/display';
 import {
   getFinalsWeekRange,
   parseFinalExamDate,
+  readingPeriodStart,
 } from '../../utilities/finalExam';
 import { SurfaceComponent } from '../Typography';
 
@@ -70,13 +73,23 @@ function ExamChip({
 
 function WorksheetFinals() {
   const [searchParams] = useSearchParams();
-  const { courses, isMobile, isExoticWorksheet } = useStore(
+  const {
+    courses,
+    isMobile,
+    isExoticWorksheet,
+    viewedSeason,
+    exoticWorksheet,
+  } = useStore(
     useShallow((state) => ({
       courses: state.courses,
       isMobile: state.isMobile,
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      viewedSeason: state.viewedSeason,
+      exoticWorksheet: state.exoticWorksheet,
     })),
   );
+  const effectiveSeason = exoticWorksheet?.data.season ?? viewedSeason;
+  const emptyMissingBuildingCodes = useMemo(() => new Set<string>(), []);
 
   const { entries, unscheduled } = useMemo(() => {
     const scheduledEntries: FinalExamEntry[] = [];
@@ -91,10 +104,17 @@ function WorksheetFinals() {
     return { entries: scheduledEntries, unscheduled: unscheduledCourses };
   }, [courses]);
 
-  const range = useMemo(
-    () => getFinalsWeekRange(entries.map((entry) => entry.date)),
-    [entries],
-  );
+  const range = useMemo(() => {
+    // Anchor to the day after the last day of class (start of reading
+    // period) so the finals view is meaningful even before every exam has
+    // been announced, and always spans the reading + exam period fully.
+    const calendar = academicCalendars[effectiveSeason];
+    const anchor = calendar ? readingPeriodStart(calendar.end) : undefined;
+    return getFinalsWeekRange(
+      entries.map((entry) => entry.date),
+      anchor,
+    );
+  }, [entries, effectiveSeason]);
 
   const weeks = useMemo(() => {
     if (!range) return [];
@@ -207,6 +227,14 @@ function WorksheetFinals() {
       </SurfaceComponent>
       <div className={styles.sidebar}>
         <WorksheetStats />
+        <WorksheetCalendarList
+          highlightBuilding={null}
+          showLocation={false}
+          showMissingLocationIcon={false}
+          controlsMode="full"
+          missingBuildingCodes={emptyMissingBuildingCodes}
+          hideTooltipContext="calendar"
+        />
       </div>
     </div>
   );

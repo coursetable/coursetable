@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { getFinalsWeekRange, parseFinalExamDate } from './finalExam';
+import {
+  getFinalsWeekRange,
+  parseFinalExamDate,
+  readingPeriodStart,
+} from './finalExam';
 
 describe('parseFinalExamDate', () => {
   it('parses a morning exam', () => {
@@ -79,5 +83,58 @@ describe('getFinalsWeekRange', () => {
       start: new Date(2025, 11, 8),
       end: new Date(2025, 11, 14),
     });
+  });
+
+  it('anchors to the Monday on/after reading period start, padded to two weeks', () => {
+    // Reading period starts Saturday, December 6, 2025 -> next Monday is Dec 8
+    const range = getFinalsWeekRange([], new Date(2025, 11, 6));
+    expect(range).toEqual({
+      start: new Date(2025, 11, 8),
+      end: new Date(2025, 11, 21),
+    });
+  });
+
+  it('does not skip class days when reading period already starts on a Monday', () => {
+    const range = getFinalsWeekRange([], new Date(2025, 11, 8));
+    expect(range).toEqual({
+      start: new Date(2025, 11, 8),
+      end: new Date(2025, 11, 21),
+    });
+  });
+
+  it('is unaffected by an exam that already falls within the two-week pad', () => {
+    // Reading period starts Sat, Dec 6 (-> Mon Dec 8); exam on Dec 18 is
+    // already within the padded Dec 8-21 window.
+    const range = getFinalsWeekRange(
+      [new Date(2025, 11, 18, 9)],
+      new Date(2025, 11, 6),
+    );
+    expect(range).toEqual({
+      start: new Date(2025, 11, 8),
+      end: new Date(2025, 11, 21),
+    });
+  });
+
+  it('extends past the two-week pad when a real exam falls later', () => {
+    // Reading period starts Sat, Dec 6 (-> Mon Dec 8); exam on Dec 26 falls
+    // outside the padded Dec 8-21 window.
+    const range = getFinalsWeekRange(
+      [new Date(2025, 11, 26, 9)],
+      new Date(2025, 11, 6),
+    );
+    expect(range).toEqual({
+      start: new Date(2025, 11, 8),
+      end: new Date(2025, 11, 28),
+    });
+  });
+});
+
+describe('readingPeriodStart', () => {
+  it('returns the day after the last day of class', () => {
+    expect(readingPeriodStart([2025, 12, 5])).toEqual(new Date(2025, 11, 6));
+  });
+
+  it('rolls over to the next month', () => {
+    expect(readingPeriodStart([2025, 11, 30])).toEqual(new Date(2025, 11, 1));
   });
 });

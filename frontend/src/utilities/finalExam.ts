@@ -1,3 +1,5 @@
+import type { SimpleDate } from '../config';
+
 // Final exam info comes from the registrar as unstructured free text, e.g.
 // "Friday, December 13, 2024 at 9am". These are the only two known sentinel
 // values that mean "no scheduled exam" rather than an unparsed date.
@@ -53,18 +55,50 @@ function startOfWeek(date: Date) {
   return d;
 }
 
+function nextMondayOnOrAfter(date: Date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const day = d.getDay();
+  d.setDate(d.getDate() + ((8 - day) % 7));
+  return d;
+}
+
+/**
+ * The first day of reading period: the day after the last day of class, as
+ * recorded in `academicCalendars` (see `config.ts`). Used to anchor the
+ * finals view even before every course's exam has been announced.
+ */
+export function readingPeriodStart(lastDayOfClass: SimpleDate): Date {
+  const [year, month, day] = lastDayOfClass;
+  const d = new Date(year, month - 1, day);
+  d.setDate(d.getDate() + 1);
+  return d;
+}
+
 /**
  * Given a set of final exam dates, returns the Monday-to-Sunday week span
  * (inclusive, covering every full week that contains a date) that contains
  * all of them, or `null` if there are none.
+ *
+ * When `anchor` (typically `readingPeriodStart`) is given, the range starts
+ * at the first Monday on or after it (skipping any remaining class days) and
+ * always spans at least two weeks from there, so the reading period and exam
+ * period are both visible even if few or no finals have been announced yet.
  */
 export function getFinalsWeekRange(
   dates: Date[],
+  anchor?: Date,
 ): { start: Date; end: Date } | null {
-  if (dates.length === 0) return null;
-  const times = dates.map((d) => d.getTime());
+  const effectiveAnchor = anchor ? nextMondayOnOrAfter(anchor) : undefined;
+  const allDates = effectiveAnchor ? [effectiveAnchor, ...dates] : dates;
+  if (allDates.length === 0) return null;
+  const times = allDates.map((d) => d.getTime());
   const start = startOfWeek(new Date(Math.min(...times)));
-  const end = startOfWeek(new Date(Math.max(...times)));
+  let end = startOfWeek(new Date(Math.max(...times)));
   end.setDate(end.getDate() + 6);
+  if (effectiveAnchor) {
+    const minEnd = new Date(start);
+    minEnd.setDate(minEnd.getDate() + 13);
+    if (end.getTime() < minEnd.getTime()) end = minEnd;
+  }
   return { start, end };
 }
