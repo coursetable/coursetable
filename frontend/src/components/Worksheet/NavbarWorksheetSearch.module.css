@@ -8,13 +8,13 @@
 }
 
 .toggleButtonGroup {
-  /* Temporary width bump to fit the Map BETA chip; revert once Map leaves beta. */
-  width: 320px;
+  /* Sized for 4 tabs (Calendar/Map/List/Finals) plus the Map BETA chip. */
+  width: 430px;
 }
 
 @media (max-width: calc(1200px - 0.5px)) {
   .toggleButtonGroup {
-    width: 250px;
+    width: 340px;
   }
 }
 
@@ -112,8 +112,8 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
-  padding: 0.25rem 0;
-  width: 33.3333%;
+  padding: 0.25rem 0.4rem;
+  flex: 1 1 0%;
   display: flex;
   align-items: center;
   justify-content: center;
