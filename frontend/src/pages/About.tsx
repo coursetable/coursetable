@@ -10,6 +10,7 @@ import as from '../images/headshots/alex-schapiro.jpg';
 import az from '../images/headshots/anna-zhang.jpg';
 import ash from '../images/headshots/aryan-sharma.jpg';
 import bx from '../images/headshots/ben-xu.jpg';
+import bh from '../images/headshots/brent-hu.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 import eboug from '../images/headshots/eli-bouganim.jpg';
@@ -151,6 +152,15 @@ function About() {
         website: 'https://elibouganim.web.app',
         github: 'https://github.com/eliboug',
         linkedin: 'https://www.linkedin.com/in/eli-bouganim/',
+      },
+    },
+    {
+      name: 'Brent Hu',
+      image: bh,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/brtboi',
+        linkedin: 'https://www.linkedin.com/in/brenthu/',
       },
     },
   ];
