@@ -57,12 +57,17 @@ export function NavbarWorksheetSearch({
   const isMapSelected = worksheetView === 'map';
 
   const removeFriendWithConfirmation = useCallback(
-    (friendNetId: NetId, isRequest: boolean) =>
+    (friendNetId: NetId, action: 'friend' | 'incoming' | 'outgoing') =>
       new Promise<void>((resolve) => {
+        const actionLabel =
+          action === 'outgoing'
+            ? 'cancel your friend request to'
+            : action === 'incoming'
+              ? 'decline the friend request from'
+              : 'remove';
         toast.warning(
           <div>
-            You are about to {isRequest ? 'decline a request from' : 'remove'}{' '}
-            {friendNetId}.
+            You are about to {actionLabel} {friendNetId}.
             <br />
             <b>This is irreversible without another friend request.</b>
             <br />
@@ -71,9 +76,9 @@ export function NavbarWorksheetSearch({
             <LinkLikeText
               className="me-2"
               onClick={async () => {
-                if (!isRequest && viewedPerson === friendNetId)
+                if (action === 'friend' && viewedPerson === friendNetId)
                   changeViewedPerson('me');
-                await removeFriend(friendNetId, isRequest);
+                await removeFriend(friendNetId, action);
                 resolve();
                 toast.dismiss(`remove-${friendNetId}`);
               }}
