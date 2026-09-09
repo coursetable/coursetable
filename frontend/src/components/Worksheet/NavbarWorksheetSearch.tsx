@@ -23,6 +23,7 @@ const viewLabels: { [key in WorksheetView]: string } = {
   calendar: 'Calendar',
   map: 'Map',
   list: 'List',
+  finals: 'Finals',
 };
 
 export function NavbarWorksheetSearch({
@@ -113,30 +114,32 @@ export function NavbarWorksheetSearch({
             </span>
           </Dropdown.Toggle>
           <Dropdown.Menu className={styles.viewDropdownMenu}>
-            {(['calendar', 'map', 'list'] as WorksheetView[]).map((view) => (
-              <Dropdown.Item
-                key={view}
-                className={clsx(
-                  styles.viewDropdownItem,
-                  worksheetView === view && styles.viewDropdownItemActive,
-                )}
-                onClick={() => changeWorksheetView(view)}
-              >
-                <span className={styles.toggleButtonContent}>
-                  <span>{viewLabels[view]}</span>
-                  {view === 'map' && (
-                    <span
-                      className={clsx(
-                        styles.betaChip,
-                        worksheetView === view && styles.betaChipActive,
-                      )}
-                    >
-                      Beta
-                    </span>
+            {(['calendar', 'map', 'list', 'finals'] as WorksheetView[]).map(
+              (view) => (
+                <Dropdown.Item
+                  key={view}
+                  className={clsx(
+                    styles.viewDropdownItem,
+                    worksheetView === view && styles.viewDropdownItemActive,
                   )}
-                </span>
-              </Dropdown.Item>
-            ))}
+                  onClick={() => changeWorksheetView(view)}
+                >
+                  <span className={styles.toggleButtonContent}>
+                    <span>{viewLabels[view]}</span>
+                    {view === 'map' && (
+                      <span
+                        className={clsx(
+                          styles.betaChip,
+                          worksheetView === view && styles.betaChipActive,
+                        )}
+                      >
+                        Beta
+                      </span>
+                    )}
+                  </span>
+                </Dropdown.Item>
+              ),
+            )}
           </Dropdown.Menu>
         </Dropdown>
       </div>
@@ -184,6 +187,13 @@ export function NavbarWorksheetSearch({
           value="list"
         >
           List
+        </ToggleButton>
+        <ToggleButton
+          id="view-toggle-finals"
+          className={styles.toggleButton}
+          value="finals"
+        >
+          Finals
         </ToggleButton>
       </ToggleButtonGroup>
       {!isExoticWorksheet ? (

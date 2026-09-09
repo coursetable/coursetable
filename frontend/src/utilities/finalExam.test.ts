@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseFinalExamDate } from './finalExam';
+import { getFinalsWeekRange, parseFinalExamDate } from './finalExam';
 
 describe('parseFinalExamDate', () => {
   it('parses a morning exam', () => {
@@ -39,5 +39,45 @@ describe('parseFinalExamDate', () => {
     expect(parseFinalExamDate(null)).toBeNull();
     expect(parseFinalExamDate(undefined)).toBeNull();
     expect(parseFinalExamDate('not a date')).toBeNull();
+  });
+});
+
+describe('getFinalsWeekRange', () => {
+  it('returns null for an empty list', () => {
+    expect(getFinalsWeekRange([])).toBeNull();
+  });
+
+  it('spans a single week when all dates fall in it', () => {
+    // Wednesday, December 10, 2025 and Friday, December 12, 2025
+    const range = getFinalsWeekRange([
+      new Date(2025, 11, 10, 9),
+      new Date(2025, 11, 12, 14),
+    ]);
+    // Monday, December 8, 2025 through Sunday, December 14, 2025
+    expect(range).toEqual({
+      start: new Date(2025, 11, 8),
+      end: new Date(2025, 11, 14),
+    });
+  });
+
+  it('spans multiple weeks when dates cross a week boundary', () => {
+    // Wednesday, December 10, 2025 and Tuesday, December 16, 2025
+    const range = getFinalsWeekRange([
+      new Date(2025, 11, 10, 9),
+      new Date(2025, 11, 16, 14),
+    ]);
+    expect(range).toEqual({
+      start: new Date(2025, 11, 8),
+      end: new Date(2025, 11, 21),
+    });
+  });
+
+  it('treats a Sunday exam as the last day of its week', () => {
+    // Sunday, December 14, 2025
+    const range = getFinalsWeekRange([new Date(2025, 11, 14, 9)]);
+    expect(range).toEqual({
+      start: new Date(2025, 11, 8),
+      end: new Date(2025, 11, 14),
+    });
   });
 });

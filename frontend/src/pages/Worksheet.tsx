@@ -19,6 +19,7 @@ import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
 import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
+import WorksheetFinals from '../components/Worksheet/WorksheetFinals';
 import WorksheetList from '../components/Worksheet/WorksheetList';
 import WorksheetMap from '../components/Worksheet/WorksheetMap';
 import WorksheetNumDropdown from '../components/Worksheet/WorksheetNumberDropdown';
@@ -88,6 +89,7 @@ function Worksheet() {
   if (authStatus === 'unauthenticated' && !isExoticWorksheet)
     return <NeedsLogin redirect="/worksheet" message="your worksheet" />;
   if (worksheetView === 'map') return <WorksheetMap />;
+  if (worksheetView === 'finals') return <WorksheetFinals />;
   if (worksheetView === 'list' && !isMobile) return <WorksheetList />;
   const LockIcon = isCalendarViewLocked ? FaLock : FaUnlock;
   const lockLabel = isCalendarViewLocked ? 'Unlock view' : 'Lock view';

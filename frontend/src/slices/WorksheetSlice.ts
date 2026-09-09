@@ -20,7 +20,7 @@ import { type Store, useStore } from '../store';
 import type { WorksheetCourse } from '../types/worksheetCourse';
 
 // Utility Types
-export type WorksheetView = 'calendar' | 'list' | 'map';
+export type WorksheetView = 'calendar' | 'list' | 'map' | 'finals';
 
 export type { WorksheetCourse };
 
@@ -52,8 +52,7 @@ interface WorksheetState {
   // Exotic worksheets do not have a corresponding worksheet in the worksheets
   // data structure and do not use any of the other worksheet-related data.
   exoticWorksheet:
-    | { data: ExoticWorksheet; worksheets: UserWorksheets }
-    | undefined;
+    { data: ExoticWorksheet; worksheets: UserWorksheets } | undefined;
 
   // Affect visual display
   worksheetView: WorksheetView;
@@ -133,7 +132,7 @@ export function parseCoursesFromURL(): WorksheetState['exoticWorksheet'] {
               courses: courses.data.courses.map((c) => ({
                 crn: c.crn,
                 color: c.color,
-                hidden: c.hidden as boolean | null,
+                hidden: c.hidden,
                 same_course_id: c.same_course_id ?? null,
               })),
               private: false,
@@ -296,7 +295,7 @@ export function useWorksheetNumberOptions(
             value: key,
             label: value.name,
             isPrivate: value.private,
-          } as WorksheetNumberOption,
+          },
         ]),
       )
     : {};

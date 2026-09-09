@@ -1,0 +1,170 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.dropdowns {
+  margin-bottom: -1rem;
+}
+
+.finalsCard {
+  flex: 1;
+  min-width: 0;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px 0 var(--color-shadow);
+}
+
+@media (min-width: 768px) {
+  .finalsCard {
+    position: sticky;
+    top: calc(1rem + 56px);
+    min-width: calc(75% - 1rem);
+    flex-grow: 1;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 220px;
+  gap: 0.25rem;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.weekRow {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(90px, 1fr));
+  gap: 4px;
+}
+
+.weekdayLabel {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  padding: 4px 0;
+}
+
+.dayCell {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 6px;
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: var(--color-bg-button);
+  transition:
+    background-color var(--trans-dur),
+    border-color var(--trans-dur);
+}
+
+.dayCellToday {
+  border-color: var(--color-primary);
+  border-width: 2px;
+}
+
+.dayNumber {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.dayEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.examChip {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: transform 0.1s ease;
+}
+
+.examChip:hover {
+  transform: scale(1.03);
+  text-decoration: none;
+  color: inherit;
+}
+
+.examChipTime {
+  font-weight: 600;
+}
+
+.examChipCode {
+  font-weight: 500;
+}
+
+.unscheduled {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.8rem;
+}
+
+.unscheduledLabel {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.unscheduledList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.unscheduledChip {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.unscheduledChip:hover {
+  background-color: var(--color-surface-hover);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    flex-basis: calc(25% - 1rem);
+    max-width: calc(25% - 1rem);
+  }
+}

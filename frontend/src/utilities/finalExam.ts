@@ -4,7 +4,7 @@
 const NO_EXAM_VALUES = new Set(['HTBA', 'No regular final examination']);
 
 const FINAL_EXAM_PATTERN =
-  /^\w+, (\w+) (\d{1,2}), (\d{4}) at (\d{1,2})(?::(\d{2}))?(am|pm)$/u;
+  /^\w+, (?<month>\w+) (?<day>\d{1,2}), (?<year>\d{4}) at (?<hour>\d{1,2})(?::(?<minute>\d{2}))?(?<meridiem>am|pm)$/u;
 
 const MONTHS = [
   'January',
@@ -30,25 +30,41 @@ export function parseFinalExamDate(
 ): Date | null {
   if (!finalExam || NO_EXAM_VALUES.has(finalExam)) return null;
   const match = FINAL_EXAM_PATTERN.exec(finalExam);
-  if (!match) return null;
-  const [, monthName, day, year, hour, minute, meridiem] = match as [
-    string,
-    string,
-    string,
-    string,
-    string,
-    string | undefined,
-    string,
-  ];
-  const month = MONTHS.indexOf(monthName);
+  if (!match?.groups) return null;
+  const { month: monthName, day, year, hour, minute, meridiem } = match.groups;
+  const month = MONTHS.indexOf(monthName!);
   if (month === -1) return null;
-  let hour24 = parseInt(hour, 10) % 12;
+  let hour24 = parseInt(hour!, 10) % 12;
   if (meridiem === 'pm') hour24 += 12;
   return new Date(
-    parseInt(year, 10),
+    parseInt(year!, 10),
     month,
-    parseInt(day, 10),
+    parseInt(day!, 10),
     hour24,
     minute ? parseInt(minute, 10) : 0,
   );
+}
+
+function startOfWeek(date: Date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const day = d.getDay();
+  // Shift back to Monday (day 1); Sunday (day 0) is 6 days after Monday.
+  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return d;
+}
+
+/**
+ * Given a set of final exam dates, returns the Monday-to-Sunday week span
+ * (inclusive, covering every full week that contains a date) that contains
+ * all of them, or `null` if there are none.
+ */
+export function getFinalsWeekRange(
+  dates: Date[],
+): { start: Date; end: Date } | null {
+  if (dates.length === 0) return null;
+  const times = dates.map((d) => d.getTime());
+  const start = startOfWeek(new Date(Math.min(...times)));
+  const end = startOfWeek(new Date(Math.max(...times)));
+  end.setDate(end.getDate() + 6);
+  return { start, end };
 }
