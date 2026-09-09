@@ -28,10 +28,16 @@ const FriendContext = createContext<{
   removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
 } | null>(null);
 
+type OptionKind =
+  | 'searchResult'
+  | 'incomingRequest'
+  | 'outgoingRequest'
+  | 'alreadyFriend';
+
 interface OptionType {
   value: NetId;
   label: string;
-  type: 'searchResult' | 'incomingRequest';
+  type: OptionKind;
 }
 
 function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
@@ -56,6 +62,47 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         setIsLoading(false);
       }
     };
+
+  if (data.type === 'alreadyFriend') {
+    return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+      <div
+        {...innerProps}
+        className={styles.friendOption}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.friendOptionText}>{children}</span>
+        <span className={styles.alreadyAddedLabel}>Already added</span>
+      </div>
+    );
+  }
+
+  if (data.type === 'outgoingRequest') {
+    return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+      <div
+        {...innerProps}
+        className={styles.friendOption}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.friendOptionText}>{children}</span>
+        {isLoading ? (
+          <Spinner className={styles.spinner} message={undefined} />
+        ) : (
+          <button
+            type="button"
+            className={clsx(styles.iconButton, styles.iconButtonRemove)}
+            aria-label="Cancel friend request"
+            onClick={handler((id) => removeFriend(id, true))}
+          >
+            <MdPersonRemove className={styles.removeFriendIcon} />
+          </button>
+        )}
+      </div>
+    );
+  }
 
   if (data.type === 'searchResult') {
     return (
@@ -155,10 +202,11 @@ function AddFriendDropdownDesktop({
 }: {
   readonly fullWidth: boolean;
 }) {
-  const { user, friendRequests } = useStore(
+  const { user, friendRequests, outgoingFriendRequests } = useStore(
     useShallow((state) => ({
       user: state.user,
       friendRequests: state.friendRequests,
+      outgoingFriendRequests: state.outgoingFriendRequests,
     })),
   );
   const navigate = useNavigate();
@@ -219,6 +267,15 @@ function AddFriendDropdownDesktop({
       })) || [],
     [friendRequests],
   );
+  const outgoingRequestOptions = useMemo(
+    (): OptionType[] =>
+      outgoingFriendRequests?.map((request) => ({
+        value: request.netId,
+        label: request.name ?? request.netId,
+        type: 'outgoingRequest',
+      })) || [],
+    [outgoingFriendRequests],
+  );
 
   return (
     <Popout
@@ -232,6 +289,7 @@ function AddFriendDropdownDesktop({
         options={[
           { label: 'Search results', options: searchResults },
           { label: 'Incoming requests', options: friendRequestOptions },
+          { label: 'Pending requests', options: outgoingRequestOptions },
         ]}
         isLoading={isLoading}
         loadingMessage={() => 'Loading names...'}
