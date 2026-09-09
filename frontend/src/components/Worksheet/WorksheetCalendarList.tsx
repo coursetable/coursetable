@@ -15,6 +15,7 @@ import {
 } from 'react-bootstrap';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CiSettings } from 'react-icons/ci';
+import { MdAutoAwesome } from 'react-icons/md';
 import { TbCalendarDown, TbCalendarUp } from 'react-icons/tb';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
@@ -22,6 +23,7 @@ import { useShallow } from 'zustand/react/shallow';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 import PNGExportButton from './PNGExportButton';
+import ScheduleSuggestionsModal from './ScheduleSuggestionsModal';
 import URLExportButton from './URLExportButton';
 import WorksheetCalendarListContext from './WorksheetCalendarListContext';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
@@ -163,6 +165,7 @@ function WorksheetCalendarList({
   const importWorksheetOptions = useWorksheetNumberOptions('me', importSeason);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
   const [updatingWSState, setUpdatingWSState] = useState(false);
 
@@ -280,6 +283,33 @@ function WorksheetCalendarList({
                     aria-label="Worksheet Settings"
                   >
                     <CiSettings className={clsx(styles.icon)} size={32} />
+                  </Button>
+                </OverlayTrigger>
+              )}
+
+              {showExport && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip
+                      id="worksheet-calendar-suggest-schedules-tooltip"
+                      {...props}
+                    >
+                      <span>Suggest schedules</span>
+                    </Tooltip>
+                  )}
+                >
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setScheduleModalOpen(true);
+                    }}
+                    variant="none"
+                    className={clsx(styles.button, 'px-3 w-100')}
+                    aria-label="Suggest schedules"
+                  >
+                    <MdAutoAwesome className={styles.icon} size={22} />
                   </Button>
                 </OverlayTrigger>
               )}
@@ -643,6 +673,11 @@ function WorksheetCalendarList({
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <ScheduleSuggestionsModal
+        show={scheduleModalOpen}
+        onHide={() => setScheduleModalOpen(false)}
+      />
     </div>
   );
 }
