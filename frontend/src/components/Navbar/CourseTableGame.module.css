@@ -1,0 +1,327 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  width: 90vw;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: relative;
+  border: 1px solid var(--color-border);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: color var(--trans-dur);
+}
+
+.closeBtn:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-contrast);
+}
+
+.progressBar {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width var(--trans-dur);
+}
+
+.roundLabel {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* 3-column grid: spacer | centred prompt | next button */
+.promptRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.prompt {
+  font-size: 1rem;
+  font-weight: 550;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.nextBtn {
+  justify-self: end;
+  padding: 0.45rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition:
+    background-color var(--trans-dur),
+    opacity var(--trans-dur),
+    visibility 0s;
+}
+
+.nextBtn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.nextBtnHidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cardsRow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.vsLabel {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.courseCard {
+  flex: 1;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition:
+    border-color var(--trans-dur),
+    background-color var(--trans-dur);
+  min-width: 0;
+  background-color: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.courseCard:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.courseCard:hover:not(.correct, .wrong, .other) {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-subdued-2);
+}
+
+.courseCard.correct {
+  border-color: #2a9d5c;
+  border-width: 3px;
+  background-color: rgb(42 157 92 / 10%);
+  cursor: default;
+}
+
+.courseCard.wrong {
+  border-color: #e05252;
+  border-width: 3px;
+  background-color: rgb(224 82 82 / 10%);
+  cursor: default;
+}
+
+.courseCard.other {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* ✓ / ✗ badge in the top-right corner of revealed cards */
+.cardBadge {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  z-index: 1;
+}
+
+.cardBadgeCorrect {
+  background-color: #2a9d5c;
+  color: #fff;
+}
+
+.cardBadgeWrong {
+  background-color: #e05252;
+  color: #fff;
+}
+
+.cardBody {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 280px;
+}
+
+.cardTitle {
+  font-weight: 550;
+  font-size: 1rem;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+  color: var(--color-text);
+  padding-right: 1.75rem; /* avoid overlap with badge */
+}
+
+/* Mirrors .badges + .courseCodes from the course modal header */
+.cardMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.cardCode {
+  font-size: 14px;
+  line-height: 20px;
+  margin-right: 0.25rem;
+}
+
+.cardDescription {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.cardProfessors {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.workloadRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.workloadLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.workloadBubble {
+  min-width: 2.8rem;
+  height: 1.6rem;
+  border-radius: 6px;
+  padding: 0 0.5rem;
+  justify-content: center;
+}
+
+/* Intro and finish screens */
+.centerScreen {
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+
+.gameTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+  color: var(--color-text);
+}
+
+.gameSubtitleSmall {
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.gameSubtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: 1.75rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.playBtn {
+  padding: 0.55rem 2.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition:
+    background-color var(--trans-dur),
+    opacity var(--trans-dur);
+}
+
+.playBtn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.scoreBig {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0.5rem 0 0.25rem;
+  color: var(--color-primary);
+}
+
+.scoreOf {
+  font-size: 0.9rem;
+  color: var(--color-text-tertiary);
+  margin-bottom: 1.75rem;
+}
+
+.fallbackMsg {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--color-text-secondary);
+}
