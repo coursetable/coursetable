@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { matchesSearchText } from './searchTextMatch';
+import { matchesSearchText, searchMatchQuality } from './searchTextMatch';
 import type { CatalogListing } from '../queries/api';
 import type { Crn } from '../queries/graphql-types';
 
@@ -237,5 +237,364 @@ describe('matchesSearchText — subject full-name matching', () => {
       title: 'Data Structures',
     });
     expect(matchesSearchText(listing, ['biology'], defaultOpts)).toBe(false);
+  });
+});
+
+// Fuzzy (typo tolerance) matching
+
+describe('matchesSearchText — typo tolerance', () => {
+  it('"algorthms" fuzzy-matches title word "Algorithms"', () => {
+    const listing = makeListing({ title: 'Design and Analysis of Algorithms' });
+    expect(matchesSearchText(listing, ['algorthms'], defaultOpts)).toBe(true);
+  });
+
+  it('"intrduction" fuzzy-matches title word "Introduction"', () => {
+    const listing = makeListing({
+      title: 'Introduction to Computer Science',
+    });
+    expect(matchesSearchText(listing, ['intrduction'], defaultOpts)).toBe(true);
+  });
+
+  it('"calclus" fuzzy-matches title word "Calculus"', () => {
+    const listing = makeListing({ title: 'Calculus of Functions' });
+    expect(matchesSearchText(listing, ['calclus'], defaultOpts)).toBe(true);
+  });
+
+  it('"psycology" fuzzy-matches subject name "Psychology"', () => {
+    const listing = makeListing({
+      subject: 'PSYC',
+      title: 'Research Methods',
+    });
+    expect(matchesSearchText(listing, ['psycology'], defaultOpts)).toBe(true);
+  });
+
+  it('"shakspeare" fuzzy-matches professor name "Shakespeare"', () => {
+    const listing = makeListing({
+      title: 'English Literature',
+      professors: ['William Shakespeare'],
+    });
+    expect(matchesSearchText(listing, ['shakspeare'], defaultOpts)).toBe(true);
+  });
+
+  it('short tokens (<=2 chars) do not fuzzy-match', () => {
+    const listing = makeListing({ subject: 'MATH', title: 'Data Structures' });
+    // "ds" should not fuzzy-match "Data" or "Structures"
+    expect(matchesSearchText(listing, ['ds'], defaultOpts)).toBe(false);
+  });
+
+  it('fuzzy match respects multi-token AND', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Introduction to Algorithms',
+    });
+    // Both tokens must match: "cpsc" exact + "algorthms" fuzzy
+    expect(matchesSearchText(listing, ['cpsc', 'algorthms'], defaultOpts)).toBe(
+      true,
+    );
+    // "algorthms" fuzzy matches but "xyz" matches nothing
+    expect(matchesSearchText(listing, ['algorthms', 'xyz'], defaultOpts)).toBe(
+      false,
+    );
+  });
+
+  it('does not fuzzy-match subject codes', () => {
+    // "cpss" is 1 edit from "cpsc" but subject codes are exact-only
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Data Structures',
+    });
+    expect(matchesSearchText(listing, ['cpss'], defaultOpts)).toBe(false);
+  });
+
+  it('does not fuzzy-match course numbers', () => {
+    const listing = makeListing({
+      number: '201',
+      title: 'Data Structures',
+    });
+    // "202" is 1 edit from "201" but numbers are exact-only
+    expect(matchesSearchText(listing, ['202'], defaultOpts)).toBe(false);
+  });
+
+  it('regression: exact queries still work unchanged', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      number: '201',
+      title: 'Introduction to Computer Science',
+      professors: ['Dana Angluin'],
+    });
+    expect(matchesSearchText(listing, ['cpsc'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['201'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['intro'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['cpsc', '201'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['angluin'], defaultOpts)).toBe(true);
+  });
+
+  it('rejects typos that exceed the max edit distance', () => {
+    const listing = makeListing({ title: 'Algorithms' });
+    // "algrthms" has 2 edits from "algorithms" — still within maxDist=2
+    expect(matchesSearchText(listing, ['algrthms'], defaultOpts)).toBe(true);
+    // "algrtms" has 3 edits — exceeds maxDist=2
+    expect(matchesSearchText(listing, ['algrtms'], defaultOpts)).toBe(false);
+  });
+
+  it('handles adjacent transpositions better than plain Levenshtein', () => {
+    const listing = makeListing({ title: 'Algorithms' });
+    // "algorihtms" — one transposition (th→ht), OSA distance 1
+    expect(matchesSearchText(listing, ['algorihtms'], defaultOpts)).toBe(true);
+    // "algorihtm" — transposition + missing 's', OSA distance 2
+    // (would be Levenshtein 3 and fail without transposition support)
+    expect(matchesSearchText(listing, ['algorihtm'], defaultOpts)).toBe(true);
+  });
+
+  it('"alogirhtms" is still too distant (3 transpositions)', () => {
+    const listing = makeListing({ title: 'Algorithms' });
+    // 3 separate transpositions → OSA distance 3 > maxDist 2
+    expect(matchesSearchText(listing, ['alogirhtms'], defaultOpts)).toBe(false);
+  });
+
+  it('transposition works for short tokens (length 3–4, maxDist 1)', () => {
+    const listing = makeListing({ title: 'The Art of Data' });
+    // "teh" → "the": one transposition, OSA distance 1
+    expect(matchesSearchText(listing, ['teh'], defaultOpts)).toBe(true);
+    // "daat" → "data": one transposition, OSA distance 1
+    expect(matchesSearchText(listing, ['daat'], defaultOpts)).toBe(true);
+  });
+});
+
+// Alias expansion
+
+describe('matchesSearchText — alias expansion', () => {
+  it('"cs" matches CPSC via alias', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Data Structures',
+    });
+    expect(matchesSearchText(listing, ['cs'], defaultOpts)).toBe(true);
+  });
+
+  it('"cs" with course number matches CPSC course', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      number: '201',
+      title: 'Introduction to Computer Science',
+    });
+    expect(matchesSearchText(listing, ['cs', '201'], defaultOpts)).toBe(true);
+  });
+
+  it('"cs" still matches subject codes starting with CS', () => {
+    const listing = makeListing({
+      subject: 'CSEC',
+      title: 'Computer Science and Economics',
+    });
+    expect(matchesSearchText(listing, ['cs'], defaultOpts)).toBe(true);
+  });
+
+  it('"orgo" matches courses with "Organic" in the title', () => {
+    const listing = makeListing({
+      subject: 'CHEM',
+      title: 'Organic Chemistry',
+    });
+    expect(matchesSearchText(listing, ['orgo'], defaultOpts)).toBe(true);
+  });
+
+  it('"orgo" does not match unrelated chemistry courses', () => {
+    const listing = makeListing({
+      subject: 'CHEM',
+      title: 'Physical Chemistry',
+    });
+    expect(matchesSearchText(listing, ['orgo'], defaultOpts)).toBe(false);
+  });
+
+  it('"polisci" matches PLSC via alias', () => {
+    const listing = makeListing({
+      subject: 'PLSC',
+      title: 'Introduction to Political Science',
+    });
+    expect(matchesSearchText(listing, ['polisci'], defaultOpts)).toBe(true);
+  });
+
+  it('"psych" already matches PSYC without alias (via subject name)', () => {
+    const listing = makeListing({
+      subject: 'PSYC',
+      title: 'Research Methods',
+    });
+    expect(matchesSearchText(listing, ['psych'], defaultOpts)).toBe(true);
+  });
+
+  it('"econ" already matches ECON without alias (via subject code prefix)', () => {
+    const listing = makeListing({
+      subject: 'ECON',
+      title: 'Intermediate Microeconomics',
+    });
+    expect(matchesSearchText(listing, ['econ'], defaultOpts)).toBe(true);
+  });
+
+  it('"ml" has no alias and does not match "Machine Learning"', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Machine Learning',
+    });
+    expect(matchesSearchText(listing, ['ml'], defaultOpts)).toBe(false);
+  });
+
+  it('"ai" has no alias and does not match "Artificial Intelligence"', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Artificial Intelligence',
+    });
+    expect(matchesSearchText(listing, ['ai'], defaultOpts)).toBe(false);
+  });
+
+  it('alias expansion preserves multi-token AND', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      number: '365',
+      title: 'Design and Analysis of Algorithms',
+    });
+    expect(matchesSearchText(listing, ['cs', '365'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['cs', '999'], defaultOpts)).toBe(false);
+  });
+});
+
+// Match quality tiers
+
+describe('searchMatchQuality — quality tiers', () => {
+  it('subject code prefix → quality 4', () => {
+    const listing = makeListing({ subject: 'CPSC', title: 'Data Structures' });
+    expect(searchMatchQuality(listing, ['cpsc'], defaultOpts)).toBe(4);
+  });
+
+  it('course number prefix → quality 4', () => {
+    const listing = makeListing({ number: '201', title: 'Data Structures' });
+    expect(searchMatchQuality(listing, ['201'], defaultOpts)).toBe(4);
+  });
+
+  it('building code prefix → quality 4', () => {
+    const listing = makeListing({
+      title: 'Intro',
+      buildingCodes: ['WTS'],
+    });
+    expect(searchMatchQuality(listing, ['wts'], defaultOpts)).toBe(4);
+  });
+
+  it('subject full name → quality 3', () => {
+    const listing = makeListing({
+      subject: 'PSYC',
+      title: 'Research Methods',
+    });
+    expect(searchMatchQuality(listing, ['psychology'], defaultOpts)).toBe(3);
+  });
+
+  it('alias expansion to subject code → quality 4', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Data Structures',
+    });
+    // Cs → cpsc → subject prefix match → same tier as direct prefix
+    expect(searchMatchQuality(listing, ['cs'], defaultOpts)).toBe(4);
+  });
+
+  it('alias expansion to title substring → quality 2', () => {
+    const listing = makeListing({
+      subject: 'CHEM',
+      title: 'Organic Chemistry',
+    });
+    // Orgo → organic → title substring match
+    expect(searchMatchQuality(listing, ['orgo'], defaultOpts)).toBe(2);
+  });
+
+  it('title substring → quality 2', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Introduction to Computer Science',
+    });
+    expect(searchMatchQuality(listing, ['introduction'], defaultOpts)).toBe(2);
+  });
+
+  it('professor name → quality 2', () => {
+    const listing = makeListing({
+      title: 'Intro',
+      professors: ['Dana Angluin'],
+    });
+    expect(searchMatchQuality(listing, ['angluin'], defaultOpts)).toBe(2);
+  });
+
+  it('fuzzy match → quality 1', () => {
+    const listing = makeListing({ title: 'Algorithms' });
+    expect(searchMatchQuality(listing, ['algorthms'], defaultOpts)).toBe(1);
+  });
+
+  it('no match → quality 0', () => {
+    const listing = makeListing({ title: 'Data Structures' });
+    expect(searchMatchQuality(listing, ['quantum'], defaultOpts)).toBe(0);
+  });
+
+  it('empty tokens → quality 4 (match everything)', () => {
+    const listing = makeListing({ title: 'Anything' });
+    expect(searchMatchQuality(listing, [], defaultOpts)).toBe(4);
+  });
+});
+
+describe('searchMatchQuality — multi-token and ranking', () => {
+  it('multi-token quality is minimum across tokens', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      title: 'Introduction to Algorithms',
+    });
+    // "cpsc" = 4 (subject prefix), "algorithms" = 2 (title substring)
+    expect(
+      searchMatchQuality(listing, ['cpsc', 'algorithms'], defaultOpts),
+    ).toBe(2);
+  });
+
+  it('alias-expanded subject match ranks equal to direct prefix', () => {
+    const cpsc = makeListing({ subject: 'CPSC', title: 'Data Structures' });
+    const csec = makeListing({
+      subject: 'CSEC',
+      title: 'CS and Economics',
+    });
+    // Both are quality 4: CSEC via direct prefix, CPSC via alias → subject prefix
+    expect(searchMatchQuality(csec, ['cs'], defaultOpts)).toBe(4);
+    expect(searchMatchQuality(cpsc, ['cs'], defaultOpts)).toBe(4);
+  });
+
+  it('exact title match outranks fuzzy match', () => {
+    const listing = makeListing({ title: 'Algorithms' });
+    const exactQ = searchMatchQuality(listing, ['algorithms'], defaultOpts);
+    const fuzzyQ = searchMatchQuality(listing, ['algorthms'], defaultOpts);
+    expect(exactQ).toBeGreaterThan(fuzzyQ);
+  });
+
+  it('subject name match outranks title substring', () => {
+    // "economics" matches ECON via subject name (quality 3)
+    const econSubject = makeListing({
+      subject: 'ECON',
+      title: 'Intermediate Microeconomics',
+    });
+    // "economics" appears in "microeconomics" title substring (quality 2)
+    const otherTitle = makeListing({
+      subject: 'HIST',
+      title: 'History of Economics',
+    });
+    expect(
+      searchMatchQuality(econSubject, ['economics'], defaultOpts),
+    ).toBeGreaterThan(
+      searchMatchQuality(otherTitle, ['economics'], defaultOpts),
+    );
+  });
+
+  it('existing boolean matching is unchanged', () => {
+    const listing = makeListing({
+      subject: 'CPSC',
+      number: '201',
+      title: 'Introduction to Computer Science',
+      professors: ['Dana Angluin'],
+    });
+    expect(matchesSearchText(listing, ['cpsc'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['201'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['intro'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['cpsc', '201'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['angluin'], defaultOpts)).toBe(true);
+    expect(matchesSearchText(listing, ['quantum'], defaultOpts)).toBe(false);
   });
 });
