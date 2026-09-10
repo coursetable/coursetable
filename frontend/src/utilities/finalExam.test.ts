@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getFinalsCalendarEvents,
   getFinalsWeekRange,
+  isWeekendDate,
   parseFinalExamDate,
   readingPeriodStart,
 } from './finalExam';
@@ -84,10 +85,10 @@ describe('getFinalsWeekRange', () => {
       new Date(2025, 11, 10, 9),
       new Date(2025, 11, 12, 14),
     ]);
-    // Monday, December 8, 2025 through Sunday, December 14, 2025
+    // Sunday, December 7, 2025 through Saturday, December 13, 2025
     expect(range).toEqual({
-      start: new Date(2025, 11, 8),
-      end: new Date(2025, 11, 14),
+      start: new Date(2025, 11, 7),
+      end: new Date(2025, 11, 13),
     });
   });
 
@@ -98,61 +99,73 @@ describe('getFinalsWeekRange', () => {
       new Date(2025, 11, 16, 14),
     ]);
     expect(range).toEqual({
-      start: new Date(2025, 11, 8),
-      end: new Date(2025, 11, 21),
+      start: new Date(2025, 11, 7),
+      end: new Date(2025, 11, 20),
     });
   });
 
-  it('treats a Sunday exam as the last day of its week', () => {
-    // Sunday, December 14, 2025
-    const range = getFinalsWeekRange([new Date(2025, 11, 14, 9)]);
+  it('treats a Saturday exam as the last day of its week', () => {
+    // Saturday, December 13, 2025
+    const range = getFinalsWeekRange([new Date(2025, 11, 13, 9)]);
     expect(range).toEqual({
-      start: new Date(2025, 11, 8),
-      end: new Date(2025, 11, 14),
+      start: new Date(2025, 11, 7),
+      end: new Date(2025, 11, 13),
     });
   });
 
-  it('anchors to the Monday on/after reading period start, padded to two weeks', () => {
-    // Reading period starts Saturday, December 6, 2025 -> next Monday is Dec 8
+  it('anchors to the Sunday on/after reading period start, padded to two weeks', () => {
+    // Reading period starts Saturday, December 6, 2025 -> next Sunday is Dec 7
     const range = getFinalsWeekRange([], new Date(2025, 11, 6));
     expect(range).toEqual({
-      start: new Date(2025, 11, 8),
-      end: new Date(2025, 11, 21),
+      start: new Date(2025, 11, 7),
+      end: new Date(2025, 11, 20),
     });
   });
 
-  it('does not skip class days when reading period already starts on a Monday', () => {
-    const range = getFinalsWeekRange([], new Date(2025, 11, 8));
+  it('does not skip class days when reading period already starts on a Sunday', () => {
+    const range = getFinalsWeekRange([], new Date(2025, 11, 7));
     expect(range).toEqual({
-      start: new Date(2025, 11, 8),
-      end: new Date(2025, 11, 21),
+      start: new Date(2025, 11, 7),
+      end: new Date(2025, 11, 20),
     });
   });
 
   it('is unaffected by an exam that already falls within the two-week pad', () => {
-    // Reading period starts Sat, Dec 6 (-> Mon Dec 8); exam on Dec 18 is
-    // already within the padded Dec 8-21 window.
+    // Reading period starts Sat, Dec 6 (-> Sun Dec 7); exam on Dec 18 is
+    // already within the padded Dec 7-20 window.
     const range = getFinalsWeekRange(
       [new Date(2025, 11, 18, 9)],
       new Date(2025, 11, 6),
     );
     expect(range).toEqual({
-      start: new Date(2025, 11, 8),
-      end: new Date(2025, 11, 21),
+      start: new Date(2025, 11, 7),
+      end: new Date(2025, 11, 20),
     });
   });
 
   it('extends past the two-week pad when a real exam falls later', () => {
-    // Reading period starts Sat, Dec 6 (-> Mon Dec 8); exam on Dec 26 falls
-    // outside the padded Dec 8-21 window.
+    // Reading period starts Sat, Dec 6 (-> Sun Dec 7); exam on Dec 26 falls
+    // outside the padded Dec 7-20 window.
     const range = getFinalsWeekRange(
       [new Date(2025, 11, 26, 9)],
       new Date(2025, 11, 6),
     );
     expect(range).toEqual({
-      start: new Date(2025, 11, 8),
-      end: new Date(2025, 11, 28),
+      start: new Date(2025, 11, 7),
+      end: new Date(2025, 11, 27),
     });
+  });
+});
+
+describe('isWeekendDate', () => {
+  it('treats Saturday and Sunday as weekend', () => {
+    expect(isWeekendDate(new Date(2025, 11, 13))).toBe(true); // Saturday
+    expect(isWeekendDate(new Date(2025, 11, 14))).toBe(true); // Sunday
+  });
+
+  it('treats weekdays as not weekend', () => {
+    expect(isWeekendDate(new Date(2025, 11, 12))).toBe(false); // Friday
+    expect(isWeekendDate(new Date(2025, 11, 8))).toBe(false); // Monday
   });
 });
 

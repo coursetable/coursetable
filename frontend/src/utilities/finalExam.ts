@@ -52,17 +52,21 @@ export function parseFinalExamDate(
 
 function startOfWeek(date: Date) {
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const day = d.getDay();
-  // Shift back to Monday (day 1); Sunday (day 0) is 6 days after Monday.
-  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  // Shift back to Sunday (day 0), the first day of the week.
+  d.setDate(d.getDate() - d.getDay());
   return d;
 }
 
-function nextMondayOnOrAfter(date: Date) {
+function nextSundayOnOrAfter(date: Date) {
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const day = d.getDay();
-  d.setDate(d.getDate() + ((8 - day) % 7));
+  d.setDate(d.getDate() + ((7 - d.getDay()) % 7));
   return d;
+}
+
+/** True if `date` falls on a Saturday or Sunday. */
+export function isWeekendDate(date: Date): boolean {
+  const day = date.getDay();
+  return day === 0 || day === 6;
 }
 
 /**
@@ -78,12 +82,12 @@ export function readingPeriodStart(lastDayOfClass: SimpleDate): Date {
 }
 
 /**
- * Given a set of final exam dates, returns the Monday-to-Sunday week span
+ * Given a set of final exam dates, returns the Sunday-to-Saturday week span
  * (inclusive, covering every full week that contains a date) that contains
  * all of them, or `null` if there are none.
  *
  * When `anchor` (typically `readingPeriodStart`) is given, the range starts
- * at the first Monday on or after it (skipping any remaining class days) and
+ * at the first Sunday on or after it (skipping any remaining class days) and
  * always spans at least two weeks from there, so the reading period and exam
  * period are both visible even if few or no finals have been announced yet.
  */
@@ -91,7 +95,7 @@ export function getFinalsWeekRange(
   dates: Date[],
   anchor?: Date,
 ): { start: Date; end: Date } | null {
-  const effectiveAnchor = anchor ? nextMondayOnOrAfter(anchor) : undefined;
+  const effectiveAnchor = anchor ? nextSundayOnOrAfter(anchor) : undefined;
   const allDates = effectiveAnchor ? [effectiveAnchor, ...dates] : dates;
   if (allDates.length === 0) return null;
   const times = allDates.map((d) => d.getTime());

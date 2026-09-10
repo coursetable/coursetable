@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { FaCalendarWeek, FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -15,6 +17,7 @@ import { useStore } from '../../store';
 import { createCourseModalLink } from '../../utilities/display';
 import {
   getFinalsWeekRange,
+  isWeekendDate,
   parseFinalExamDate,
   readingPeriodStart,
 } from '../../utilities/finalExam';
@@ -22,7 +25,9 @@ import { SurfaceComponent } from '../Typography';
 
 import styles from './WorksheetFinals.module.css';
 
-const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const SHOW_WEEKENDS_STORAGE_KEY = 'finals-calendar-show-weekends';
+const WEEKDAY_LABELS_FULL = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WEEKDAY_LABELS_WEEKDAYS_ONLY = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
 type FinalExamEntry = {
   course: WorksheetCourse;
@@ -112,6 +117,19 @@ function WorksheetFinals() {
   );
   const effectiveSeason = exoticWorksheet?.data.season ?? viewedSeason;
   const emptyMissingBuildingCodes = useMemo(() => new Set<string>(), []);
+  const [expanded, setExpanded] = useState(false);
+  const [showWeekends, setShowWeekends] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const saved = window.localStorage.getItem(SHOW_WEEKENDS_STORAGE_KEY);
+    return saved === '1' || saved === 'true';
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(
+      SHOW_WEEKENDS_STORAGE_KEY,
+      showWeekends ? '1' : '0',
+    );
+  }, [showWeekends]);
 
   const { entries, unscheduled } = useMemo(() => {
     const scheduledEntries: FinalExamEntry[] = [];
@@ -125,6 +143,18 @@ function WorksheetFinals() {
     scheduledEntries.sort((a, b) => a.date.getTime() - b.date.getTime());
     return { entries: scheduledEntries, unscheduled: unscheduledCourses };
   }, [courses]);
+
+  // Yale no longer schedules finals on weekends, so hide those columns by
+  // default; but never hide a real scheduled weekend exam, in case that
+  // changes or an older worksheet still has one.
+  const hasWeekendExam = useMemo(
+    () => entries.some((entry) => isWeekendDate(entry.date)),
+    [entries],
+  );
+  const effectiveShowWeekends = showWeekends || hasWeekendExam;
+  const weekdayLabels = effectiveShowWeekends
+    ? WEEKDAY_LABELS_FULL
+    : WEEKDAY_LABELS_WEEKDAYS_ONLY;
 
   const range = useMemo(() => {
     // Anchor to the day after the last day of class (start of reading
@@ -145,12 +175,16 @@ function WorksheetFinals() {
       const cur = new Date(range.start);
       cur.getTime() <= range.end.getTime();
       cur.setDate(cur.getDate() + 1)
-    )
-      days.push(new Date(cur));
+    ) {
+      if (effectiveShowWeekends || !isWeekendDate(cur))
+        days.push(new Date(cur));
+    }
+    const daysPerWeek = effectiveShowWeekends ? 7 : 5;
     const result: Date[][] = [];
-    for (let i = 0; i < days.length; i += 7) result.push(days.slice(i, i + 7));
+    for (let i = 0; i < days.length; i += daysPerWeek)
+      result.push(days.slice(i, i + daysPerWeek));
     return result;
-  }, [range]);
+  }, [range, effectiveShowWeekends]);
 
   const entriesByDay = useMemo(() => {
     const map = new Map<string, FinalExamEntry[]>();
@@ -164,6 +198,11 @@ function WorksheetFinals() {
   }, [entries]);
 
   const today = new Date();
+  const FullScreenIcon = expanded ? FaCompressAlt : FaExpandAlt;
+  const fullScreenLabel = expanded
+    ? 'Compress finals calendar'
+    : 'Expand finals calendar';
+  const weekendLabel = `${showWeekends ? 'Hide' : 'Show'} weekends`;
 
   return (
     <div className={styles.container}>
@@ -177,6 +216,41 @@ function WorksheetFinals() {
         </div>
       )}
       <SurfaceComponent className={styles.finalsCard}>
+        {!isMobile && (
+          <div className={styles.finalsControls}>
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="finals-fullscreen-tooltip">
+                  {fullScreenLabel}
+                </Tooltip>
+              }
+            >
+              <button
+                type="button"
+                className={styles.controlsTrigger}
+                onClick={() => setExpanded((x) => !x)}
+                aria-label={fullScreenLabel}
+              >
+                <FullScreenIcon className={styles.triggerIcon} size={11} />
+              </button>
+            </OverlayTrigger>
+            <div className={styles.controlsMenu}>
+              <button
+                type="button"
+                className={clsx(
+                  styles.controlBtn,
+                  showWeekends && styles.controlBtnActive,
+                )}
+                onClick={() => setShowWeekends((x) => !x)}
+                aria-label={weekendLabel}
+                title={weekendLabel}
+              >
+                <FaCalendarWeek size={11} />
+              </button>
+            </div>
+          </div>
+        )}
         {weeks.length === 0 ? (
           <div className={styles.emptyState}>
             <p>No final exam dates found yet.</p>
@@ -186,9 +260,17 @@ function WorksheetFinals() {
             </p>
           </div>
         ) : (
-          <div className={styles.grid} data-export-target="finals-calendar">
+          <div
+            className={styles.grid}
+            data-export-target="finals-calendar"
+            style={
+              {
+                '--finals-columns': weekdayLabels.length,
+              } as CSSProperties
+            }
+          >
             <div className={styles.weekRow}>
-              {WEEKDAY_LABELS.map((label) => (
+              {weekdayLabels.map((label) => (
                 <div key={label} className={styles.weekdayLabel}>
                   {label}
                 </div>
@@ -247,17 +329,19 @@ function WorksheetFinals() {
           </div>
         )}
       </SurfaceComponent>
-      <div className={styles.sidebar}>
-        <WorksheetStats />
-        <WorksheetCalendarList
-          highlightBuilding={null}
-          showLocation={false}
-          showMissingLocationIcon={false}
-          controlsMode="full"
-          missingBuildingCodes={emptyMissingBuildingCodes}
-          hideTooltipContext="calendar"
-        />
-      </div>
+      {(isMobile || !expanded) && (
+        <div className={styles.sidebar}>
+          <WorksheetStats />
+          <WorksheetCalendarList
+            highlightBuilding={null}
+            showLocation={false}
+            showMissingLocationIcon={false}
+            controlsMode="full"
+            missingBuildingCodes={emptyMissingBuildingCodes}
+            hideTooltipContext="calendar"
+          />
+        </div>
+      )}
     </div>
   );
 }

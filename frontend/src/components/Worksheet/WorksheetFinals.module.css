@@ -17,6 +17,7 @@
 }
 
 .finalsCard {
+  position: relative;
   flex: 1;
   min-width: 0;
   border-radius: 8px;
@@ -31,6 +32,114 @@
     min-width: calc(75% - 1rem);
     flex-grow: 1;
   }
+}
+
+/* Hover-reveal controls, mirroring .calendarControls in Worksheet.module.css
+   so the interaction feels the same in both views. */
+.finalsControls {
+  --finals-control-size: 22px;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  transform: translate(50%, -40%);
+}
+
+.controlsTrigger {
+  position: relative;
+  width: var(--finals-control-size);
+  height: var(--finals-control-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  padding: 0;
+  appearance: none;
+  font: inherit;
+  line-height: 1;
+  transition:
+    transform 0.1s ease,
+    background-color var(--trans-dur),
+    color var(--trans-dur),
+    border-color var(--trans-dur);
+}
+
+.triggerIcon {
+  display: block;
+}
+
+.controlsTrigger:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.finalsControls:hover .controlsTrigger,
+.finalsControls:focus-within .controlsTrigger {
+  transform: scale(1.05);
+}
+
+.controlsMenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.finalsControls:hover .controlsMenu,
+.finalsControls:focus-within .controlsMenu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.controlBtn {
+  width: var(--finals-control-size);
+  height: var(--finals-control-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background-color: var(--color-bg-button);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  padding: 0;
+  appearance: none;
+  font: inherit;
+  line-height: 1;
+  transition:
+    transform 0.1s ease,
+    background-color var(--trans-dur),
+    color var(--trans-dur),
+    border-color var(--trans-dur);
+}
+
+.controlBtn:hover {
+  transform: scale(1.1);
+  background-color: var(--color-surface-hover);
+}
+
+.controlBtnActive {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.controlBtnActive:hover {
+  background-color: var(--color-primary-hover);
 }
 
 .emptyState {
@@ -52,7 +161,7 @@
 
 .weekRow {
   display: grid;
-  grid-template-columns: repeat(7, minmax(100px, 1fr));
+  grid-template-columns: repeat(var(--finals-columns, 7), minmax(100px, 1fr));
   gap: 6px;
 }
 
