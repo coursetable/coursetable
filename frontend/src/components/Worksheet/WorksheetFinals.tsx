@@ -44,6 +44,9 @@ function formatExamTime(date: Date) {
   });
 }
 
+// Mirrors `useEventStyle` in CalendarEvent.tsx, so hovering a course in the
+// sidebar list highlights it the same way in both the Calendar and Finals
+// views.
 function ExamChip({
   entry,
   searchParams,
@@ -52,7 +55,23 @@ function ExamChip({
   readonly searchParams: URLSearchParams;
 }) {
   const { course, date } = entry;
+  const hoverCourse = useStore((state) => state.hoverCourse);
+  const isMobile = useStore((state) => state.isMobile);
+  const { crn } = course.listing;
   const color = chroma(course.color);
+  let backgroundColor = color.alpha(0.85).css();
+  let borderColor = color.css();
+  const isMatch = hoverCourse === crn;
+  if (!isMobile && hoverCourse) {
+    if (isMatch) {
+      const emphasized = color.saturate(1);
+      backgroundColor = emphasized.alpha(0.9).css();
+      borderColor = emphasized.css();
+    } else {
+      backgroundColor = color.alpha(0.3).css();
+      borderColor = color.alpha(0.3).css();
+    }
+  }
   const textColor =
     chroma.contrast(course.color, 'white') > 2 ? 'white' : 'black';
   return (
@@ -60,13 +79,16 @@ function ExamChip({
       to={createCourseModalLink(course.listing, searchParams)}
       className={styles.examChip}
       style={{
-        backgroundColor: color.alpha(0.85).css(),
-        borderColor: color.css(),
+        backgroundColor,
+        borderColor,
         color: textColor,
+        zIndex: !isMobile && isMatch ? 2 : undefined,
       }}
     >
+      <strong className={styles.examChipCode}>
+        {course.listing.course_code}
+      </strong>
       <span className={styles.examChipTime}>{formatExamTime(date)}</span>
-      <span className={styles.examChipCode}>{course.listing.course_code}</span>
     </Link>
   );
 }
