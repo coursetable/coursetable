@@ -1,21 +1,30 @@
 import saveFile from 'file-saver';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import ICSIcon from '../../images/ics.svg';
 import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
+import { getFinalsCalendarEvents } from '../../utilities/finalExam';
 
 export default function ICSExportButton() {
-  const { viewedSeason, courses } = useStore(
+  const { viewedSeason, courses, worksheetView } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       courses: state.courses,
+      worksheetView: state.worksheetView,
     })),
   );
+  const isFinals = worksheetView === 'finals';
 
   const exportICS = () => {
-    const events = getCalendarEvents('ics', courses, viewedSeason);
-    // Error already reported
-    if (events.length === 0) return;
+    const events = isFinals
+      ? getFinalsCalendarEvents('ics', courses)
+      : getCalendarEvents('ics', courses, viewedSeason);
+    if (events.length === 0) {
+      if (isFinals) toast.error('No final exam dates to export!');
+      // Otherwise error already reported by getCalendarEvents
+      return;
+    }
     const value = `BEGIN:VCALENDAR
 CALSCALE:GREGORIAN
 VERSION:2.0
@@ -40,7 +49,7 @@ ${events.join('\n')}
 END:VCALENDAR`;
     // Download to user's computer
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    saveFile(blob, `${viewedSeason}_worksheet.ics`);
+    saveFile(blob, `${viewedSeason}_${isFinals ? 'finals' : 'worksheet'}.ics`);
   };
 
   return (

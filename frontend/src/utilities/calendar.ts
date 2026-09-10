@@ -196,8 +196,8 @@ function toRBCEvent({
   });
 }
 
-type GCalEvent = gapi.client.calendar.EventInput;
-type ICSEvent = string;
+export type GCalEvent = gapi.client.calendar.EventInput;
+export type ICSEvent = string;
 export type CourseRBCEvent = {
   kind: 'course';
   title: string;
@@ -249,9 +249,7 @@ export function getCalendarEvents(
   viewedSeason: Season,
 ) {
   const seasonString = toSeasonString(viewedSeason);
-  const semester = academicCalendars[viewedSeason] as
-    | SeasonCalendar
-    | undefined;
+  const semester = academicCalendars[viewedSeason];
   if (!semester && type !== 'rbc') {
     toast.error(
       `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
@@ -353,4 +351,4 @@ export const localizer = new DateLocalizer({
 } satisfies Pick<
   DateLocalizerSpec,
   'firstOfWeek' | 'format' | 'formats'
-> as unknown as DateLocalizerSpec);
+>);

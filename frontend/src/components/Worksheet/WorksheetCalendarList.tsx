@@ -146,6 +146,10 @@ function WorksheetCalendarList({
   const showWalkTimesSetting =
     worksheetView === 'calendar' && Boolean(onShowWalkingTimesChange);
   const showExport = controlsMode === 'full';
+  const exportTooltipText =
+    worksheetView === 'finals'
+      ? 'Export finals calendar'
+      : 'Export worksheet calendar';
   const showImport = controlsMode === 'full' && isExoticWorksheet;
 
   const [showImportRow, setShowImportRow] = useState(false);
@@ -289,7 +293,7 @@ function WorksheetCalendarList({
                   placement="top"
                   overlay={(props) => (
                     <Tooltip id="worksheet-calendar-export-tooltip" {...props}>
-                      <span>Export worksheet calendar</span>
+                      <span>{exportTooltipText}</span>
                     </Tooltip>
                   )}
                 >

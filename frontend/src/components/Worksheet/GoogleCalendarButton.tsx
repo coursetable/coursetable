@@ -9,6 +9,10 @@ import GCalIcon from '../../images/gcal.svg';
 import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
+import {
+  getFinalsCalendarEvents,
+  readingPeriodStart,
+} from '../../utilities/finalExam';
 
 const RATE_LIMIT_RETRIES = 4;
 const RATE_LIMIT_BASE_DELAY_MS = 400;
@@ -84,12 +88,14 @@ async function withRateLimitRetry<T>(
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const gapi = useStore((s) => s.gapi);
-  const { viewedSeason, courses } = useStore(
+  const { viewedSeason, courses, worksheetView } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       courses: state.courses,
+      worksheetView: state.worksheetView,
     })),
   );
+  const isFinals = worksheetView === 'finals';
   const exportEventsRef = useRef<(() => Promise<void>) | null>(null);
 
   const loginAndExportEvents = useGoogleLogin({
@@ -153,9 +159,31 @@ function GoogleCalendarButton(): React.JSX.Element {
       );
       return;
     }
+
+    const events = isFinals
+      ? getFinalsCalendarEvents('gcal', courses)
+      : getCalendarEvents('gcal', courses, viewedSeason);
+    if (events.length === 0) {
+      if (isFinals) toast.error('No final exam dates to export!');
+      // Otherwise error already reported by getCalendarEvents
+      return;
+    }
+
     setExporting(true);
 
     try {
+      // Finals fall after the last day of class (semester.end), so widen the
+      // query window enough to cover the reading + exam period too.
+      const queryEnd = isFinals
+        ? (() => {
+            const d = readingPeriodStart(semester.end);
+            d.setDate(d.getDate() + 30);
+            return d;
+          })()
+        : new Date(
+            Date.UTC(semester.end[0], semester.end[1] - 1, semester.end[2]),
+          );
+
       // Get all previously added classes
       const eventList = await withRateLimitRetry(() =>
         gapi.client.calendar.events.list({
@@ -169,27 +197,25 @@ function GoogleCalendarButton(): React.JSX.Element {
               semester.start[2],
             ),
           ).toISOString(),
-          timeMax: new Date(
-            Date.UTC(semester.end[0], semester.end[1] - 1, semester.end[2]),
-          ).toISOString(),
+          timeMax: queryEnd.toISOString(),
           singleEvents: true,
           orderBy: 'startTime',
         }),
       );
 
-      // Delete previously added classes sequentially to avoid quota spikes
+      // Delete previously added classes sequentially to avoid quota spikes.
+      // Recurring (weekly meeting) events are deleted via their series id;
+      // one-off (finals) events are deleted directly by their own id.
       if (eventList.result.items.length > 0) {
-        const recurringEventIds = [
+        const idsToDelete = [
           ...new Set(
             eventList.result.items.flatMap((event) => {
-              if (event.id.startsWith('coursetable') && event.recurringEventId)
-                return [event.recurringEventId];
-
-              return [];
+              if (!event.id.startsWith('coursetable')) return [];
+              return [event.recurringEventId ?? event.id];
             }),
           ),
         ];
-        for (const eventId of recurringEventIds) {
+        for (const eventId of idsToDelete) {
           await withRateLimitRetry(() =>
             gapi.client.calendar.events.delete({
               calendarId: 'primary',
@@ -199,7 +225,6 @@ function GoogleCalendarButton(): React.JSX.Element {
         }
       }
 
-      const events = getCalendarEvents('gcal', courses, viewedSeason);
       let failedCount = 0;
       for (const event of events) {
         try {
@@ -249,7 +274,7 @@ function GoogleCalendarButton(): React.JSX.Element {
     } finally {
       setExporting(false);
     }
-  }, [courses, gapi, viewedSeason, loginAndExportEvents]);
+  }, [courses, gapi, viewedSeason, isFinals, loginAndExportEvents]);
 
   // Store exportEvents in ref so loginAndExportEvents can call it
   exportEventsRef.current = exportEvents;

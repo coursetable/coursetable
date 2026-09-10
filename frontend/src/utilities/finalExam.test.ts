@@ -1,10 +1,37 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  getFinalsCalendarEvents,
   getFinalsWeekRange,
   parseFinalExamDate,
   readingPeriodStart,
 } from './finalExam';
+import type { CatalogListing } from '../queries/api';
+import type { Crn } from '../queries/graphql-types';
+import type { WorksheetCourse } from '../types/worksheetCourse';
+
+function makeWorksheetCourse(overrides: {
+  crn?: number;
+  courseCode?: string;
+  title?: string;
+  finalExam?: string | null;
+  hidden?: boolean | null;
+}): WorksheetCourse {
+  const listing = {
+    crn: (overrides.crn ?? 10001) as Crn,
+    course_code: overrides.courseCode ?? 'CPSC 3230',
+    course: {
+      title: overrides.title ?? 'Systems Programming',
+      final_exam: overrides.finalExam ?? null,
+    },
+  } as CatalogListing;
+  return {
+    crn: listing.crn,
+    color: '#3366ff',
+    listing,
+    hidden: overrides.hidden ?? false,
+  };
+}
 
 describe('parseFinalExamDate', () => {
   it('parses a morning exam', () => {
@@ -136,5 +163,48 @@ describe('readingPeriodStart', () => {
 
   it('rolls over to the next month', () => {
     expect(readingPeriodStart([2025, 11, 30])).toEqual(new Date(2025, 11, 1));
+  });
+});
+
+describe('getFinalsCalendarEvents', () => {
+  it('skips courses with no scheduled exam', () => {
+    const htba = makeWorksheetCourse({ finalExam: 'HTBA' });
+    const noExam = makeWorksheetCourse({
+      crn: 2,
+      finalExam: 'No regular final examination',
+    });
+    expect(getFinalsCalendarEvents('ics', [htba, noExam])).toEqual([]);
+  });
+
+  it('skips hidden courses', () => {
+    const hidden = makeWorksheetCourse({
+      finalExam: 'Friday, December 12, 2025 at 9am',
+      hidden: true,
+    });
+    expect(getFinalsCalendarEvents('ics', [hidden])).toEqual([]);
+  });
+
+  it('builds a one-off ICS event 2 hours long, with no recurrence rule', () => {
+    const course = makeWorksheetCourse({
+      finalExam: 'Friday, December 12, 2025 at 9am',
+    });
+    const [event] = getFinalsCalendarEvents('ics', [course]);
+    expect(event).toContain('SUMMARY:CPSC 3230 Final Exam');
+    expect(event).toContain('DTSTART;TZID=America/New_York:20251212T090000');
+    expect(event).toContain('DTEND;TZID=America/New_York:20251212T110000');
+    expect(event).not.toContain('RRULE');
+  });
+
+  it('builds a one-off Google Calendar event 2 hours long', () => {
+    const course = makeWorksheetCourse({
+      finalExam: 'Friday, December 12, 2025 at 9am',
+    });
+    const [event] = getFinalsCalendarEvents('gcal', [course]);
+    expect(event).toMatchObject({
+      summary: 'CPSC 3230 Final Exam',
+      start: { dateTime: '2025-12-12T09:00:00', timeZone: 'America/New_York' },
+      end: { dateTime: '2025-12-12T11:00:00', timeZone: 'America/New_York' },
+    });
+    expect(event!.recurrence).toBeUndefined();
   });
 });

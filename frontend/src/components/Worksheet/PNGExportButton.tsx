@@ -83,21 +83,27 @@ const retryWatermark = async (
 };
 
 export default function PNGExportButton() {
-  const { viewedSeason } = useStore(
+  const { viewedSeason, worksheetView } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
+      worksheetView: state.worksheetView,
     })),
   );
+  const isFinals = worksheetView === 'finals';
   const [isExporting, setIsExporting] = useState(false);
 
   const exportPNG = async () => {
     setIsExporting(true);
     try {
-      const calendarElement =
-        document.querySelector<HTMLElement>('.rbc-calendar');
+      const calendarElement = document.querySelector<HTMLElement>(
+        isFinals ? '[data-export-target="finals-calendar"]' : '.rbc-calendar',
+      );
 
-      if (!calendarElement)
-        throw new Error('Calendar not found. Please try again.');
+      if (!calendarElement) {
+        throw new Error(
+          `${isFinals ? 'Finals calendar' : 'Calendar'} not found. Please try again.`,
+        );
+      }
 
       const canvas = await html2canvas(calendarElement, {
         backgroundColor: '#ffffff',
@@ -121,8 +127,13 @@ export default function PNGExportButton() {
       await new Promise<void>((resolve, reject) => {
         finalCanvas.toBlob((blob) => {
           if (blob) {
-            saveFile(blob, `${viewedSeason}_worksheet.png`);
-            toast.success('Calendar exported as PNG!');
+            saveFile(
+              blob,
+              `${viewedSeason}_${isFinals ? 'finals' : 'worksheet'}.png`,
+            );
+            toast.success(
+              `${isFinals ? 'Finals calendar' : 'Calendar'} exported as PNG!`,
+            );
             resolve();
           } else {
             reject(new Error('Failed to export calendar as PNG.'));

@@ -186,7 +186,7 @@ function WorksheetFinals() {
             </p>
           </div>
         ) : (
-          <div className={styles.grid}>
+          <div className={styles.grid} data-export-target="finals-calendar">
             <div className={styles.weekRow}>
               {WEEKDAY_LABELS.map((label) => (
                 <div key={label} className={styles.weekdayLabel}>

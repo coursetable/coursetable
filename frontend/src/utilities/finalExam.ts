@@ -1,4 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
+import type { GCalEvent, ICSEvent } from './calendar';
 import type { SimpleDate } from '../config';
+import type { WorksheetCourse } from '../slices/WorksheetSlice';
 
 // Final exam info comes from the registrar as unstructured free text, e.g.
 // "Friday, December 13, 2024 at 9am". These are the only two known sentinel
@@ -101,4 +104,66 @@ export function getFinalsWeekRange(
     if (end.getTime() < minEnd.getTime()) end = minEnd;
   }
   return { start, end };
+}
+
+// The registrar doesn't publish exam end times (only the start, e.g. "9am"),
+// so we assume Yale's standard final exam length.
+const FINAL_EXAM_DURATION_HOURS = 2;
+
+function pad(n: number) {
+  return n.toString().padStart(2, '0');
+}
+
+/**
+ * Encodes a local wall-clock date/time as a naive ISO string (no real UTC
+ * conversion), the same trick `isoString` in `utilities/calendar.ts` uses:
+ * the timezone is communicated separately (as America/New_York) rather than
+ * baked into this string.
+ */
+function naiveISOString(date: Date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
+}
+
+export function getFinalsCalendarEvents(
+  type: 'gcal',
+  courses: WorksheetCourse[],
+): GCalEvent[];
+export function getFinalsCalendarEvents(
+  type: 'ics',
+  courses: WorksheetCourse[],
+): ICSEvent[];
+export function getFinalsCalendarEvents(
+  type: 'gcal' | 'ics',
+  courses: WorksheetCourse[],
+) {
+  const events: (GCalEvent | ICSEvent)[] = [];
+  for (const course of courses) {
+    if (course.hidden) continue;
+    const start = parseFinalExamDate(course.listing.course.final_exam);
+    if (!start) continue;
+    const end = new Date(start);
+    end.setHours(end.getHours() + FINAL_EXAM_DURATION_HOURS);
+    const summary = `${course.listing.course_code} Final Exam`;
+    const description = `${course.listing.course.title}\nFinal exam`;
+    const startStr = naiveISOString(start);
+    const endStr = naiveISOString(end);
+    if (type === 'gcal') {
+      events.push({
+        id: `coursetablefinals${uuidv4().replace(/-/gu, '')}`,
+        summary,
+        start: { dateTime: startStr, timeZone: 'America/New_York' },
+        end: { dateTime: endStr, timeZone: 'America/New_York' },
+        description,
+      });
+    } else {
+      events.push(`BEGIN:VEVENT
+DESCRIPTION:${description.replaceAll('\n', '\\r\\n')}
+DTEND;TZID=America/New_York:${endStr.replace(/[:-]/gu, '')}
+DTSTART;TZID=America/New_York:${startStr.replace(/[:-]/gu, '')}
+SUMMARY:${summary}
+TRANSP:OPAQUE
+END:VEVENT`);
+    }
+  }
+  return events;
 }
