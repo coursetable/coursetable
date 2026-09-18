@@ -68,9 +68,7 @@
 .button :global(.dropdown-menu) {
   min-width: 20rem !important;
   border: none;
-  box-shadow:
-    0 0 0 1px hsl(218deg 50% 10% / 10%),
-    0 4px 11px hsl(218deg 50% 10% / 10%);
+  box-shadow: var(--shadow-dropdown);
   overflow: auto;
 }
 

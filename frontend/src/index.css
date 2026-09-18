@@ -21,6 +21,8 @@
   --color-icon-focus: #666;
   --color-icon-focus-hover: #3c3c3c;
   --color-shadow: rgb(0 0 0 / 20%);
+  --shadow-dropdown:
+    0 0 0 1px hsl(218deg 50% 10% / 10%), 0 4px 11px hsl(218deg 50% 10% / 10%);
   --color-primary: #468ff2;
   --color-primary-light: #5ca8fa;
   --color-primary-hover: #007bff;
@@ -49,6 +51,8 @@
   --color-surface-hover: #ffffff05;
   --color-surface-active: #ffffff0d;
   --color-border: #303030;
+  --shadow-dropdown:
+    0 0 0 1px rgb(255 255 255 / 10%), 0 4px 16px rgb(0 0 0 / 60%);
   --color-select: #303030;
   --color-hidden: #4d4d4d;
   --color-disabled: #f2f2f21a;
