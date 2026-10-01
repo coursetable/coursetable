@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import confetti from 'canvas-confetti';
 import type { CatalogListing } from '../../queries/api';
@@ -188,6 +189,7 @@ export default function CourseTableGame({
   readonly onClose: () => void;
 }) {
   const searchData = useStore((state) => state.searchData);
+  const hasEvals = useStore((state) => Boolean(state.user?.hasEvals));
   const [phase, setPhase] = useState<Phase>({ kind: 'intro' });
   const [pairs, setPairs] = useState<GamePair[]>([]);
 
@@ -229,11 +231,25 @@ export default function CourseTableGame({
   };
 
   const renderContent = () => {
+    // Workload ratings only come with evals, so without access the game
+    // can never have enough data, no matter how much of the catalog is loaded
+    if (!hasEvals) {
+      return (
+        <div className={styles.fallbackMsg}>
+          <p>This game uses workload ratings from course evaluations.</p>
+          <Link to="/challenge" onClick={onClose}>
+            Complete the challenge to unlock evaluations →
+          </Link>
+        </div>
+      );
+    }
     if (!hasEnoughData) {
       return (
         <div className={styles.fallbackMsg}>
           <p>Browse the catalog first to load course data.</p>
-          <a href="/catalog">Go to catalog →</a>
+          <Link to="/catalog" onClick={onClose}>
+            Go to catalog →
+          </Link>
         </div>
       );
     }
