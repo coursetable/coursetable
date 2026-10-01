@@ -3,7 +3,7 @@
 
 // @ts-check
 
-import { defineConfig } from 'eslint/config';
+import { defineConfig } from '@eslint/config-helpers';
 
 import jcRules from 'eslint-config-jc';
 

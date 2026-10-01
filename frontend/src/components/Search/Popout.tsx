@@ -150,14 +150,16 @@ export function Popout({
       return;
     }
     if (!dropdownRef.current) return;
+    // Offset is always 0 on first paint after opening (reset above on close).
     const dropdownRect = dropdownRef.current.getBoundingClientRect();
-    // Cancel the effect of the existing x-shift
-    const realLeft = dropdownRect.left - dropdownXOffset;
-    const realRight = dropdownRect.right - dropdownXOffset;
-    if (realRight > window.innerWidth)
-      setDropdownXOffset(Math.max(-realLeft, window.innerWidth - realRight));
-    else setDropdownXOffset(0);
-  }, [isComponentVisible, dropdownXOffset, dropdownRef]);
+    if (dropdownRect.right > window.innerWidth) {
+      setDropdownXOffset(
+        Math.max(-dropdownRect.left, window.innerWidth - dropdownRect.right),
+      );
+    } else {
+      setDropdownXOffset(0);
+    }
+  }, [isComponentVisible, dropdownRef]);
 
   const triggerButton = (
     <button

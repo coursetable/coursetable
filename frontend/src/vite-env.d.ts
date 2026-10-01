@@ -5,6 +5,7 @@
 interface ImportMetaEnv extends Readonly<{ [key: string]: string }> {
   readonly VITE_API_ENDPOINT: string;
   readonly VITE_BLOCK_INDEXING?: string;
+  readonly VITE_CARTO_API_KEY: string;
   readonly VITE_DEV_GCAL_API_KEY: string;
   readonly VITE_DEV_GCAL_CLIENT_ID: string;
 }
