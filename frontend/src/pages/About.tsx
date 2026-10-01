@@ -10,6 +10,7 @@ import as from '../images/headshots/alex-schapiro.jpg';
 import az from '../images/headshots/anna-zhang.jpg';
 import ash from '../images/headshots/aryan-sharma.jpg';
 import bx from '../images/headshots/ben-xu.jpg';
+import bh from '../images/headshots/brent-hu.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 import eboug from '../images/headshots/eli-bouganim.jpg';
@@ -67,9 +68,29 @@ function About() {
 
   const current: Person[] = [
     {
+      name: 'Aryan Sharma',
+      image: ash,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/aryans-15',
+        linkedin: 'https://www.linkedin.com/in/aryans15/',
+        website: 'https://aryansharma.com/',
+      },
+    },
+    {
+      name: 'William Feng',
+      image: wf,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/WFeng7',
+        linkedin: 'https://www.linkedin.com/in/william-feng7',
+        website: 'https://wsfeng.dev/',
+      },
+    },
+    {
       name: 'Reyansh Bahl',
       image: rb,
-      role: 'CourseTable Lead',
+      role: 'Past Lead, Advisor',
       links: {
         github: 'https://github.com/reybahl',
         linkedin: 'https://www.linkedin.com/in/reyanshbahl',
@@ -94,26 +115,6 @@ function About() {
       },
     },
     {
-      name: 'Alex Schapiro',
-      image: as,
-      role: 'Past Lead, Advisor',
-      links: {
-        github: 'https://github.com/bearsyankees',
-        linkedin: 'https://www.linkedin.com/in/aschap/',
-        website: 'https://alexschapiro.com/',
-      },
-    },
-    {
-      name: 'Sida Chen',
-      image: sc,
-      role: 'Past Lead, Advisor',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
-        github: 'https://github.com/Josh-Cena/',
-        website: 'https://joshcena.com/',
-      },
-    },
-    {
       name: 'Filippo Fonseca',
       image: ff,
       role: 'Development',
@@ -131,16 +132,6 @@ function About() {
         github: 'https://github.com/michaelcanudas',
         linkedin: 'https://www.linkedin.com/in/michaelcanudas/',
         website: 'https://michaelcanudas.com/',
-      },
-    },
-    {
-      name: 'Aryan Sharma',
-      image: ash,
-      role: 'Development',
-      links: {
-        github: 'https://github.com/aryans-15',
-        linkedin: 'https://www.linkedin.com/in/aryans15/',
-        website: 'https://aryans.dev/',
       },
     },
     {
@@ -164,13 +155,12 @@ function About() {
       },
     },
     {
-      name: 'William Feng',
-      image: wf,
+      name: 'Brent Hu',
+      image: bh,
       role: 'Development',
       links: {
-        github: 'https://github.com/WFeng7',
-        linkedin: 'https://www.linkedin.com/in/william-feng7',
-        website: 'https://wsfeng.dev/',
+        github: 'https://github.com/brtboi',
+        linkedin: 'https://www.linkedin.com/in/brenthu/',
       },
     },
   ];
@@ -186,6 +176,26 @@ function About() {
       name: 'Harry Yu',
       image: hy,
       role: 'Cofounder',
+    },
+    {
+      name: 'Alex Schapiro',
+      image: as,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/bearsyankees',
+        linkedin: 'https://www.linkedin.com/in/aschap/',
+        website: 'https://alexschapiro.com/',
+      },
+    },
+    {
+      name: 'Sida Chen',
+      image: sc,
+      role: 'CourseTable Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
+        github: 'https://github.com/Josh-Cena/',
+        website: 'https://joshcena.com/',
+      },
     },
     {
       name: 'Lucas Huang',
@@ -321,10 +331,6 @@ function About() {
       name: 'Kenny Tung',
       image: kt,
       role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/tungk/',
-        github: 'https://github.com/kentng01/',
-      },
     },
     {
       name: 'Dylan Fernandez de Lara',

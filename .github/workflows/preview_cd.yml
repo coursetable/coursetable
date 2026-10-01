@@ -41,14 +41,12 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Build Frontend
         run: cd frontend && bun run build
-      - name: Install Wrangler CLI
-        run: bun install --global wrangler
       - name: Deploy to Cloudflare Pages
         id: deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_KEY_VALUE }}
         run: |
-          wrangler pages deploy frontend/build --project-name=coursetable --branch=${{ steps.encode_url_branch.outputs.result }}-preview | tee deploy.log
+          bunx wrangler pages deploy frontend/build --project-name=coursetable --branch=${{ steps.encode_url_branch.outputs.result }}-preview | tee deploy.log
           DEPLOY_URL=$(grep -oP 'https://[^\s]+' deploy.log | head -n 1)
           echo "DEPLOY_URL=${DEPLOY_URL}" >> $GITHUB_OUTPUT
       - uses: marocchino/sticky-pull-request-comment@v2

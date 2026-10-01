@@ -40,6 +40,7 @@ Sentry.init({
     'TypeError: cancelled',
     'TypeError: NetworkError when attempting to fetch resource.',
     'TypeError: The network connection was lost.',
+    /Failed to register a ServiceWorker.*(?:aborted|abort)/u,
 
     // These occur with incomplete data
     'SyntaxError: The string did not match the expected pattern.',

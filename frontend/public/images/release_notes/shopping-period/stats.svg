@@ -1,0 +1,27 @@
+<svg viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="100%" height="100%" rx="12" fill="#FDFDFC"/>
+  <line x1="136" y1="30" x2="136" y2="100" stroke="#E5E5E5" stroke-width="1.5"/>
+  <line x1="272" y1="30" x2="272" y2="100" stroke="#E5E5E5" stroke-width="1.5"/>
+  <line x1="408" y1="30" x2="408" y2="100" stroke="#E5E5E5" stroke-width="1.5"/>
+  <line x1="544" y1="30" x2="544" y2="100" stroke="#E5E5E5" stroke-width="1.5"/>
+
+  <text x="68" y="60" text-anchor="middle" font-size="27" font-weight="700" fill="#E58A3C">21M+</text>
+  <text x="68" y="84" text-anchor="middle" font-size="10.5" fill="#666">requests</text>
+  <text x="68" y="98" text-anchor="middle" font-size="10.5" fill="#666">per month</text>
+
+  <text x="204" y="60" text-anchor="middle" font-size="27" font-weight="700" fill="#E58A3C">6,500+</text>
+  <text x="204" y="84" text-anchor="middle" font-size="10.5" fill="#666">undergraduates</text>
+  <text x="204" y="98" text-anchor="middle" font-size="10.5" fill="#666">served</text>
+
+  <text x="340" y="60" text-anchor="middle" font-size="27" font-weight="700" fill="#E58A3C">4,449</text>
+  <text x="340" y="84" text-anchor="middle" font-size="10.5" fill="#666">courses</text>
+  <text x="340" y="98" text-anchor="middle" font-size="10.5" fill="#666">this semester</text>
+
+  <text x="476" y="60" text-anchor="middle" font-size="27" font-weight="700" fill="#E58A3C">1.21 MB</text>
+  <text x="476" y="84" text-anchor="middle" font-size="10.5" fill="#666">gzipped catalog</text>
+  <text x="476" y="98" text-anchor="middle" font-size="10.5" fill="#666">payload</text>
+
+  <text x="612" y="60" text-anchor="middle" font-size="27" font-weight="700" fill="#E58A3C">1</text>
+  <text x="612" y="84" text-anchor="middle" font-size="10.5" fill="#666">self-managed</text>
+  <text x="612" y="98" text-anchor="middle" font-size="10.5" fill="#666">server</text>
+</svg>
