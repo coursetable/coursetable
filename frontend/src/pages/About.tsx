@@ -42,6 +42,7 @@ import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
 import wf from '../images/headshots/william-feng.jpg';
 import yf from '../images/headshots/yavin-fickel.jpg';
+import yz from '../images/headshots/yuanrui-zhao.jpg';
 
 // Link logos
 import githubDark from '../images/link-logos/github-light.png';
@@ -161,6 +162,15 @@ function About() {
       links: {
         github: 'https://github.com/brtboi',
         linkedin: 'https://www.linkedin.com/in/brenthu/',
+      },
+    },
+    {
+      name: 'Yuanrui Zhao',
+      image: yz,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/yuanrui-zhao',
+        linkedin: 'https://www.linkedin.com/in/yuanrui-zhao-7466422a8/',
       },
     },
   ];
