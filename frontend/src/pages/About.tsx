@@ -6,6 +6,7 @@ import { TextComponent } from '../components/Typography';
 // Member headshots
 import ag from '../images/headshots/abhijit-gupta.jpg';
 import ae from '../images/headshots/aidan-evans.jpg';
+import ac from '../images/headshots/alex-castronovo.jpg';
 import as from '../images/headshots/alex-schapiro.jpg';
 import az from '../images/headshots/anna-zhang.jpg';
 import ash from '../images/headshots/aryan-sharma.jpg';
@@ -165,11 +166,22 @@ function About() {
       },
     },
     {
+      name: 'Alex Castronovo',
+      image: ac,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/alexanderjcs',
+        linkedin:
+          'https://www.linkedin.com/in/alexander-castronovo/?isSelfProfile=true',
+        website: 'https://alexcastronovo.com/',
+      },
+    },
+    {
       name: 'Yuanrui Zhao',
       image: yz,
       role: 'Development',
       links: {
-        github: 'https://github.com/yuanrui-zhao',
+        github: 'https://github.com/rayzhao-svg',
         linkedin: 'https://www.linkedin.com/in/yuanrui-zhao-7466422a8/',
       },
     },
