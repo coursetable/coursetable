@@ -1,21 +1,29 @@
 import saveFile from 'file-saver';
 import { useShallow } from 'zustand/react/shallow';
 import ICSIcon from '../../images/ics.svg';
+import { track } from '../../lib/track';
 import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 
 export default function ICSExportButton() {
-  const { viewedSeason, courses } = useStore(
+  const { viewedSeason, courses, worksheets, viewedWorksheetNumber } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       courses: state.courses,
+      worksheets: state.worksheets,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
     })),
   );
 
   const exportICS = () => {
     const events = getCalendarEvents('ics', courses, viewedSeason);
-    // Error already reported
     if (events.length === 0) return;
+    const worksheetName =
+      worksheets?.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
+      (viewedWorksheetNumber === 0
+        ? 'Main Worksheet'
+        : `Worksheet ${viewedWorksheetNumber}`);
+    track('calendar_export', { kind: 'ics', worksheet_name: worksheetName });
     const value = `BEGIN:VCALENDAR
 CALSCALE:GREGORIAN
 VERSION:2.0
