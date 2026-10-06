@@ -100,15 +100,6 @@ function About() {
       },
     },
     {
-      name: 'Neil Song',
-      image: ns,
-      role: 'Past Lead, Advisor',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/neil-song/',
-        github: 'https://github.com/neilsong',
-      },
-    },
-    {
       name: 'Humphrey Xu',
       image: hx,
       role: 'Past Lead, Advisor',
@@ -209,6 +200,15 @@ function About() {
       name: 'Harry Yu',
       image: hy,
       role: 'Cofounder',
+    },
+    {
+      name: 'Neil Song',
+      image: ns,
+      role: 'CourseTable Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
+      },
     },
     {
       name: 'Alex Schapiro',
