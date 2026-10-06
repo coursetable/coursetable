@@ -182,7 +182,8 @@ function About() {
       links: {
         website: 'https://alexcastronovo.com/',
         github: 'https://github.com/alexanderjcs',
-        linkedin: 'https://www.linkedin.com/in/alexander-castronovo/?isSelfProfile=true',
+        linkedin:
+          'https://www.linkedin.com/in/alexander-castronovo/?isSelfProfile=true',
       },
     },
   ];
