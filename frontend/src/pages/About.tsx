@@ -30,6 +30,7 @@ import lt from '../images/headshots/leck-tang.jpg';
 import lz from '../images/headshots/lily-zhou.jpg';
 import lh from '../images/headshots/lucas-huang.jpg';
 import my from '../images/headshots/max-yuan.jpg';
+import mw from '../images/headshots/micah-winesberry.jpg';
 import mc from '../images/headshots/michael-canudas.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import ma from '../images/headshots/murad-avliyakulov.jpg';
@@ -161,6 +162,16 @@ function About() {
       links: {
         github: 'https://github.com/brtboi',
         linkedin: 'https://www.linkedin.com/in/brenthu/',
+      },
+    },
+    {
+      name: 'Micah Winesberry',
+      image: mw,
+      role: 'Development',
+      links: {
+        website: 'https://blue5gd.github.io/Portfolio-Website/',
+        github: 'https://github.com/blue5gd',
+        linkedin: 'https://www.linkedin.com/in/mwinesberry/',
       },
     },
   ];
