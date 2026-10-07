@@ -162,8 +162,8 @@ function About() {
       image: mw,
       role: 'Development',
       links: {
-        website: 'https://blue5gd.github.io/Portfolio-Website/',
-        github: 'https://github.com/blue5gd',
+        website: 'https://blue5gd.github.io/Portfolio/',
+        github: 'https://github.com/Blue5GD',
         linkedin: 'https://www.linkedin.com/in/mwinesberry/',
       },
     },
