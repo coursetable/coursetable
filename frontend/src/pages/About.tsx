@@ -42,6 +42,7 @@ import rb from '../images/headshots/reyansh-bahl.jpg';
 import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
+import soh from '../images/headshots/sophia-hou.jpg';
 import wf from '../images/headshots/william-feng.jpg';
 import yf from '../images/headshots/yavin-fickel.jpg';
 import yz from '../images/headshots/yuanrui-zhao.jpg';
@@ -155,6 +156,15 @@ function About() {
       links: {
         github: 'https://github.com/brtboi',
         linkedin: 'https://www.linkedin.com/in/brenthu/',
+      },
+    },
+    {
+      name: 'Sophia Hou',
+      image: soh,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/cxyerl',
+        linkedin: 'https://www.linkedin.com/in/sophia-hou-a79825210/',
       },
     },
     {
