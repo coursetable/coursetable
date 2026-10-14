@@ -33,6 +33,7 @@ import lh from '../images/headshots/lucas-huang.jpg';
 import my from '../images/headshots/max-yuan.jpg';
 import mw from '../images/headshots/micah-winesberry.jpg';
 import mc from '../images/headshots/michael-canudas.jpg';
+import mliu from '../images/headshots/michael-liu.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import ma from '../images/headshots/murad-avliyakulov.jpg';
 import nk from '../images/headshots/nalin-khanna.jpg';
@@ -165,6 +166,15 @@ function About() {
       links: {
         github: 'https://github.com/cxyerl',
         linkedin: 'https://www.linkedin.com/in/sophia-hou-a79825210/',
+      },
+    },
+    {
+      name: 'Michael Liu',
+      image: mliu,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/michaelcliu-web',
+        linkedin: 'https://www.linkedin.com/in/michael-liu-b78aa5380/',
       },
     },
     {
