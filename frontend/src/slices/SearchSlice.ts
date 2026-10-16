@@ -1,6 +1,7 @@
 import type { SetStateAction } from 'react';
 import type { StateCreator } from 'zustand';
 
+import { trackFilterChange } from '../lib/track';
 import type { CatalogListing } from '../queries/api';
 import { defaultFilters } from '../search/searchConstants';
 import type { Filters } from '../search/searchTypes';
@@ -51,6 +52,7 @@ export const createSearchSlice: StateCreator<Store, [], [], SearchSlice> = (
         typeof value === 'function'
           ? (value as (prev: typeof current) => typeof current)(current)
           : value;
+      trackFilterChange(key, next);
       return {
         searchFilters: { ...state.searchFilters, [key]: next },
         searchTimingStartMs: Date.now(),
@@ -58,10 +60,16 @@ export const createSearchSlice: StateCreator<Store, [], [], SearchSlice> = (
     }),
 
   patchSearchFilters: (partial) =>
-    set((state) => ({
-      searchFilters: { ...state.searchFilters, ...partial },
-      searchTimingStartMs: Date.now(),
-    })),
+    set((state) => {
+      for (const k of Object.keys(partial) as (keyof Filters)[]) {
+        const v = partial[k];
+        if (v !== undefined) trackFilterChange(String(k), v);
+      }
+      return {
+        searchFilters: { ...state.searchFilters, ...partial },
+        searchTimingStartMs: Date.now(),
+      };
+    }),
 
   setSearchData: (data) => set({ searchData: data }),
   setSearchCoursesLoading: (loading) => set({ coursesLoading: loading }),

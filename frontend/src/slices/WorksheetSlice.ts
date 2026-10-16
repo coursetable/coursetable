@@ -7,6 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { CUR_SEASON } from '../config';
 import { seasons as allSeasons } from '../data/catalogSeasons';
 import { useWorksheetInfo } from '../hooks/useFerry';
+import { track } from '../lib/track';
 import type { UserWorksheets } from '../queries/api';
 import {
   type Season,
@@ -156,6 +157,8 @@ export const createWorksheetSlice: StateCreator<
   viewedWorksheetNumber: 0,
   changeViewedPerson(newPerson) {
     set({ viewedWorksheetNumber: 0, viewedPerson: newPerson });
+    if (newPerson !== 'me')
+      track('friend_worksheet_view', { friend_id: newPerson });
   },
   changeViewedSeason(seasonCode) {
     set({ viewedWorksheetNumber: 0, viewedSeason: seasonCode });

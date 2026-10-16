@@ -6,6 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import Spinner from '../../components/Spinner';
 import { academicCalendars } from '../../config';
 import GCalIcon from '../../images/gcal.svg';
+import { track } from '../../lib/track';
 import { useStore } from '../../store';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/course';
@@ -84,10 +85,12 @@ async function withRateLimitRetry<T>(
 function GoogleCalendarButton(): React.JSX.Element {
   const [exporting, setExporting] = useState(false);
   const gapi = useStore((s) => s.gapi);
-  const { viewedSeason, courses } = useStore(
+  const { viewedSeason, courses, worksheets, viewedWorksheetNumber } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       courses: state.courses,
+      worksheets: state.worksheets,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
     })),
   );
   const exportEventsRef = useRef<(() => Promise<void>) | null>(null);
@@ -222,6 +225,15 @@ function GoogleCalendarButton(): React.JSX.Element {
 
       if (failedCount === 0) {
         toast.success('Exported to Google Calendar!');
+        const worksheetName =
+          worksheets?.get(viewedSeason)?.get(viewedWorksheetNumber)?.name ??
+          (viewedWorksheetNumber === 0
+            ? 'Main Worksheet'
+            : `Worksheet ${viewedWorksheetNumber}`);
+        track('calendar_export', {
+          kind: 'gcal',
+          worksheet_name: worksheetName,
+        });
       } else if (failedCount === events.length) {
         toast.error('Failed to export events to Google Calendar');
       } else {
@@ -249,7 +261,14 @@ function GoogleCalendarButton(): React.JSX.Element {
     } finally {
       setExporting(false);
     }
-  }, [courses, gapi, viewedSeason, loginAndExportEvents]);
+  }, [
+    courses,
+    gapi,
+    viewedSeason,
+    viewedWorksheetNumber,
+    worksheets,
+    loginAndExportEvents,
+  ]);
 
   // Store exportEvents in ref so loginAndExportEvents can call it
   exportEventsRef.current = exportEvents;

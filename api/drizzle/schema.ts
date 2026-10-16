@@ -10,6 +10,9 @@ import {
   bigserial,
   serial,
   integer,
+  text,
+  timestamp,
+  jsonb,
 } from 'drizzle-orm/pg-core';
 
 /** Shared by name / email / year / school / major visibility columns. */
@@ -190,5 +193,24 @@ export const savedSearches = pgTable(
     savedSearchesNameUniqueIdx: uniqueIndex(
       'saved_searches_name_unique_idx',
     ).on(table.netId, table.name),
+  }),
+);
+
+export const events = pgTable(
+  'events',
+  {
+    id: bigserial('id', { mode: 'bigint' }).primaryKey().notNull(),
+    userId: text('user_id').notNull(),
+    sessionId: text('session_id').notNull(),
+    eventType: text('event_type').notNull(),
+    ts: timestamp('ts', { withTimezone: true }).notNull().defaultNow(),
+    client: text('client').notNull(),
+    appVersion: text('app_version'),
+    payload: jsonb('payload').notNull().default({}),
+  },
+  (table) => ({
+    eventsUserTsIdx: index('events_user_ts_idx').on(table.userId, table.ts),
+    eventsTypeTsIdx: index('events_type_ts_idx').on(table.eventType, table.ts),
+    eventsSessionIdx: index('events_session_idx').on(table.sessionId),
   }),
 );
