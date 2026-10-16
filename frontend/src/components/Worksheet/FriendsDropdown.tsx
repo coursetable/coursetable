@@ -53,7 +53,10 @@ function OptionWithActionButtons({
   const [isLoading, setIsLoading] = useState(false);
   // Passed from the PopoutSelect
   const { removeFriend } = props.selectProps as unknown as {
-    removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
+    removeFriend: (
+      netId: NetId,
+      action: 'friend' | 'incoming' | 'outgoing',
+    ) => Promise<void>;
   };
   if (props.data.value === 'me') {
     return (
@@ -72,7 +75,7 @@ function OptionWithActionButtons({
             e.preventDefault();
             e.stopPropagation();
             setIsLoading(true);
-            await removeFriend(props.data.value as NetId, false);
+            await removeFriend(props.data.value as NetId, 'friend');
             setIsLoading(false);
           }}
           title="Remove friend"
@@ -89,7 +92,10 @@ function FriendsDropdownDesktop({
 }: {
   readonly options: Option<NetId | 'me'>[];
   readonly viewedPerson: Option<NetId> | null;
-  readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
+  readonly removeFriend: (
+    netId: NetId,
+    action: 'friend' | 'incoming' | 'outgoing',
+  ) => Promise<void>;
 }) {
   const changeViewedPerson = useStore((state) => state.changeViewedPerson);
   return (
@@ -130,7 +136,7 @@ function FriendsDropdown({
       readonly mobile: false;
       readonly removeFriend: (
         netId: NetId,
-        isRequest: boolean,
+        action: 'friend' | 'incoming' | 'outgoing',
       ) => Promise<void>;
     }) {
   const friends = useStore((state) => state.friends);

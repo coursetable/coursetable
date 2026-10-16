@@ -25,13 +25,22 @@ import styles from './AddFriendDropdown.module.css';
 
 const FriendContext = createContext<{
   isFriend: (netId: NetId) => boolean;
-  removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
+  removeFriend: (
+    netId: NetId,
+    action: 'friend' | 'incoming' | 'outgoing',
+  ) => Promise<void>;
 } | null>(null);
+
+type OptionKind =
+  | 'searchResult'
+  | 'incomingRequest'
+  | 'outgoingRequest'
+  | 'alreadyFriend';
 
 interface OptionType {
   value: NetId;
   label: string;
-  type: 'searchResult' | 'incomingRequest';
+  type: OptionKind;
 }
 
 function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
@@ -57,6 +66,47 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
       }
     };
 
+  if (data.type === 'alreadyFriend') {
+    return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+      <div
+        {...innerProps}
+        className={styles.friendOption}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.friendOptionText}>{children}</span>
+        <span className={styles.alreadyAddedLabel}>Already added</span>
+      </div>
+    );
+  }
+
+  if (data.type === 'outgoingRequest') {
+    return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
+      <div
+        {...innerProps}
+        className={styles.friendOption}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.friendOptionText}>{children}</span>
+        {isLoading ? (
+          <Spinner className={styles.spinner} message={undefined} />
+        ) : (
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label="Cancel friend request"
+            onClick={handler((id) => removeFriend(id, 'outgoing'))}
+          >
+            <MdPersonRemove className={styles.removeFriendIcon} />
+          </button>
+        )}
+      </div>
+    );
+  }
+
   if (data.type === 'searchResult') {
     return (
       // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
@@ -70,11 +120,14 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
         {isLoading ? (
           <Spinner className={styles.spinner} message={undefined} />
         ) : (
-          <MdPersonAdd
-            className={styles.addFriendIcon}
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label="Send friend request"
             onClick={handler(requestAddFriend)}
-            title="Send friend request"
-          />
+          >
+            <MdPersonAdd className={styles.addFriendIcon} />
+          </button>
         )}
       </div>
     );
@@ -97,7 +150,7 @@ function OptionWithActionButtons(props: OptionProps<OptionType, false>) {
             type="button"
             className={clsx(styles.iconButton, styles.iconButtonRemove)}
             aria-label="Decline friend request"
-            onClick={handler((id) => removeFriend(id, true))}
+            onClick={handler((id) => removeFriend(id, 'incoming'))}
           >
             <MdPersonRemove className={styles.removeFriendIcon} />
           </button>
@@ -155,10 +208,11 @@ function AddFriendDropdownDesktop({
 }: {
   readonly fullWidth: boolean;
 }) {
-  const { user, friendRequests } = useStore(
+  const { user, friendRequests, outgoingFriendRequests } = useStore(
     useShallow((state) => ({
       user: state.user,
       friendRequests: state.friendRequests,
+      outgoingFriendRequests: state.outgoingFriendRequests,
     })),
   );
   const navigate = useNavigate();
@@ -183,19 +237,23 @@ function AddFriendDropdownDesktop({
         try {
           const data = await searchProfiles(searchText, 20);
           if (cancelled) return;
+          const outgoingSet = new Set(
+            outgoingFriendRequests?.map((r) => r.netId) ?? [],
+          );
           const nextResults =
             data?.profiles
-              .filter(
-                (profile) =>
-                  profile.netId !== user?.netId && !isFriend(profile.netId),
-              )
+              .filter((profile) => profile.netId !== user?.netId)
               .map(
                 (profile): OptionType => ({
                   value: profile.netId,
                   label: profile.displayName
                     ? `${profile.displayName} (${profile.netId})`
                     : profile.netId,
-                  type: 'searchResult',
+                  type: isFriend(profile.netId)
+                    ? 'alreadyFriend'
+                    : outgoingSet.has(profile.netId)
+                      ? 'outgoingRequest'
+                      : 'searchResult',
                 }),
               ) ?? [];
           setSearchResults(nextResults);
@@ -209,7 +267,7 @@ function AddFriendDropdownDesktop({
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [isFriend, searchText, user?.netId]);
+  }, [isFriend, outgoingFriendRequests, searchText, user?.netId]);
   const friendRequestOptions = useMemo(
     (): OptionType[] =>
       friendRequests?.map((request) => ({
@@ -259,7 +317,10 @@ function AddFriendDropdown({
   mobile,
   fullWidth = false,
 }: {
-  readonly removeFriend: (netId: NetId, isRequest: boolean) => Promise<void>;
+  readonly removeFriend: (
+    netId: NetId,
+    action: 'friend' | 'incoming' | 'outgoing',
+  ) => Promise<void>;
   readonly mobile: boolean;
   readonly fullWidth?: boolean;
 }) {
