@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import { Modal } from 'react-bootstrap';
 import confetti from 'canvas-confetti';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { workloadColormap } from '../../utilities/constants';
 import { getWorkloadRatings } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
-import { RatingBubble, SurfaceComponent, TextComponent } from '../Typography';
+import { RatingBubble, TextComponent } from '../Typography';
 import styles from './CourseTableGame.module.css';
 
 const NUM_ROUNDS = 10;
@@ -26,13 +27,40 @@ type Phase =
     }
   | { kind: 'finished'; score: number };
 
-function selectPairs(searchData: CatalogListing[]): GamePair[] {
-  const pool = searchData
-    .filter(
-      (l) => l.school === 'YC' && getWorkloadRatings(l.course, 'stat') !== null,
-    )
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 200);
+// Cross-listed listings share one course, so dedupe by course to avoid
+// pairing a course with itself or counting it twice toward the minimum
+function getEligibleListings(searchData: CatalogListing[]): CatalogListing[] {
+  const seen = new Set<number>();
+  return searchData.filter((l) => {
+    if (l.school !== 'YC' || getWorkloadRatings(l.course, 'stat') === null)
+      return false;
+    if (seen.has(l.course.course_id)) return false;
+    seen.add(l.course.course_id);
+    return true;
+  });
+}
+
+// At least NUM_ROUNDS pairs with distinct workloads must exist for
+// selectPairs to fill every round without repeats
+function hasEnoughPairs(eligible: CatalogListing[]): boolean {
+  if (eligible.length < 20) return false;
+  const workloads = new Set(
+    eligible.map((l) => getWorkloadRatings(l.course, 'stat')),
+  );
+  return workloads.size >= 2;
+}
+
+function shuffle<T>(arr: T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j]!, result[i]!];
+  }
+  return result;
+}
+
+function selectPairs(eligible: CatalogListing[]): GamePair[] {
+  const pool = shuffle(eligible).slice(0, 200);
 
   const pairs: { a: CatalogListing; b: CatalogListing; diff: number }[] = [];
   for (let i = 0; i < pool.length; i++) {
@@ -43,13 +71,15 @@ function selectPairs(searchData: CatalogListing[]): GamePair[] {
       if (diff > 0) pairs.push({ a: pool[i]!, b: pool[j]!, diff });
     }
   }
+  if (pairs.length < NUM_ROUNDS) return [];
 
   pairs.sort((x, y) => y.diff - x.diff);
 
-  const bucketSize = Math.max(1, Math.floor(pairs.length / NUM_ROUNDS));
+  // Split the ranked pairs into NUM_ROUNDS equal buckets (easiest first) and
+  // sample one pair uniformly from each, so difficulty rises every round
+  const bucketSize = Math.floor(pairs.length / NUM_ROUNDS);
   return Array.from({ length: NUM_ROUNDS }, (_, i) => {
-    const offset = Math.floor(Math.random() * Math.min(bucketSize, 5));
-    const idx = Math.min(i * bucketSize + offset, pairs.length - 1);
+    const idx = i * bucketSize + Math.floor(Math.random() * bucketSize);
     const { a, b } = pairs[idx]!;
     return (Math.random() < 0.5 ? [a, b] : [b, a]) as GamePair;
   });
@@ -71,7 +101,7 @@ function CourseCard({
   const cardRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!showConfetti || !cardRef.current) return;
+    if (!showConfetti || !cardRef.current) return undefined;
 
     const canvas = document.createElement('canvas');
     canvas.style.cssText =
@@ -99,16 +129,25 @@ function CourseCard({
     const W = window.innerWidth;
     const H = window.innerHeight;
 
-    void fire({
-      ...opts,
-      angle: 135,
-      origin: { x: rect.left / W, y: rect.top / H },
-    });
-    void fire({
-      ...opts,
-      angle: 45,
-      origin: { x: rect.right / W, y: rect.top / H },
-    })?.then(() => canvas.remove());
+    void Promise.all([
+      fire({
+        ...opts,
+        angle: 135,
+        origin: { x: rect.left / W, y: rect.top / H },
+      }),
+      fire({
+        ...opts,
+        angle: 45,
+        origin: { x: rect.right / W, y: rect.top / H },
+      }),
+    ]).then(() => canvas.remove());
+
+    // Stop the animation and drop the canvas if the round advances or the
+    // game closes mid-burst
+    return () => {
+      fire.reset();
+      canvas.remove();
+    };
   }, [showConfetti]);
 
   const workloadStat = getWorkloadRatings(listing.course, 'stat');
@@ -193,14 +232,11 @@ export default function CourseTableGame({
   const [phase, setPhase] = useState<Phase>({ kind: 'intro' });
   const [pairs, setPairs] = useState<GamePair[]>([]);
 
-  const hasEnoughData =
-    searchData !== null &&
-    searchData.filter(
-      (l) => l.school === 'YC' && getWorkloadRatings(l.course, 'stat') !== null,
-    ).length >= 20;
+  const eligible = searchData ? getEligibleListings(searchData) : [];
+  const hasEnoughData = hasEnoughPairs(eligible);
 
   const startGame = () => {
-    const newPairs = selectPairs(searchData!);
+    const newPairs = selectPairs(eligible);
     setPairs(newPairs);
     setPhase({ kind: 'guessing', roundIndex: 0, score: 0 });
   };
@@ -350,26 +386,15 @@ export default function CourseTableGame({
     );
   };
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [onClose]);
-
   return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-    <div className={styles.overlay} onClick={onClose}>
-      {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role */}
-      <SurfaceComponent
-        elevated
-        className={styles.modal}
-        role="dialog"
-        aria-modal="true"
-        aria-label="This-or-That game"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Modal
+      show
+      onHide={onClose}
+      centered
+      dialogClassName={styles.dialog}
+      aria-label="This-or-That game"
+    >
+      <Modal.Body className={styles.modalBody}>
         <button
           type="button"
           className={styles.closeBtn}
@@ -379,7 +404,7 @@ export default function CourseTableGame({
           ×
         </button>
         {renderContent()}
-      </SurfaceComponent>
-    </div>
+      </Modal.Body>
+    </Modal>
   );
 }
