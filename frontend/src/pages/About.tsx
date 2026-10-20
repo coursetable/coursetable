@@ -209,7 +209,7 @@ function About() {
       },
     },
     {
-      name: 'Eric (Hong Yi) Wang',
+      name: 'Eric Wang',
       image: ew,
       role: 'Development',
       links: {
