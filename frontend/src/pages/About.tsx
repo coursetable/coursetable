@@ -15,6 +15,7 @@ import bh from '../images/headshots/brent-hu.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 import eboug from '../images/headshots/eli-bouganim.jpg';
+import ew from '../images/headshots/eric-wang.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
 import ff from '../images/headshots/filippo-fonseca.jpg';
@@ -205,6 +206,15 @@ function About() {
       links: {
         github: 'https://github.com/rayzhao-svg',
         linkedin: 'https://www.linkedin.com/in/yuanrui-zhao-7466422a8/',
+      },
+    },
+    {
+      name: 'Eric (Hong Yi) Wang',
+      image: ew,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/whyeric',
+        linkedin: 'https://www.linkedin.com/in/hongyi-eric-wang/',
       },
     },
   ];
