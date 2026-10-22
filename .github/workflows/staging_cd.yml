@@ -19,7 +19,7 @@ on:
 
 jobs:
   changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Required permissions
     permissions:
       pull-requests: read
@@ -54,7 +54,7 @@ jobs:
     environment:
       name: Staging
       url: https://staging.coursetable.com
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
