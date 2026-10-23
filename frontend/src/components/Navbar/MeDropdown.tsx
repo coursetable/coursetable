@@ -15,15 +15,20 @@ import {
   FcIdea,
 } from 'react-icons/fc';
 import { useShallow } from 'zustand/react/shallow';
-import CourseTableGame from './CourseTableGame';
 
 import { API_ENDPOINT } from '../../config';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
-import { scrollToTop, useComponentVisible } from '../../utilities/display';
+import {
+  scrollToTop,
+  suspended,
+  useComponentVisible,
+} from '../../utilities/display';
 import { createCatalogLink } from '../../utilities/navigation';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
+
+const CourseTableGame = suspended(() => import('./CourseTableGame'));
 
 function DropdownItem({
   icon: Icon,

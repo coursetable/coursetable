@@ -40,13 +40,17 @@ function getEligibleListings(searchData: CatalogListing[]): CatalogListing[] {
   });
 }
 
-// At least NUM_ROUNDS pairs with distinct workloads must exist for
+// Cards show workloads rounded to one decimal, so compare at that precision;
+// otherwise e.g. 3.04 vs 2.96 would both show 3.0 but still have a "winner"
+function displayedWorkload(listing: CatalogListing): number {
+  return Number(getWorkloadRatings(listing.course, 'stat')!.toFixed(1));
+}
+
+// At least NUM_ROUNDS pairs with distinct displayed workloads must exist for
 // selectPairs to fill every round without repeats
 function hasEnoughPairs(eligible: CatalogListing[]): boolean {
   if (eligible.length < 20) return false;
-  const workloads = new Set(
-    eligible.map((l) => getWorkloadRatings(l.course, 'stat')),
-  );
+  const workloads = new Set(eligible.map(displayedWorkload));
   return workloads.size >= 2;
 }
 
@@ -65,10 +69,10 @@ function selectPairs(eligible: CatalogListing[]): GamePair[] {
   const pairs: { a: CatalogListing; b: CatalogListing; diff: number }[] = [];
   for (let i = 0; i < pool.length; i++) {
     for (let j = i + 1; j < pool.length; j++) {
+      if (displayedWorkload(pool[i]!) === displayedWorkload(pool[j]!)) continue;
       const wa = getWorkloadRatings(pool[i]!.course, 'stat')!;
       const wb = getWorkloadRatings(pool[j]!.course, 'stat')!;
-      const diff = Math.abs(wa - wb);
-      if (diff > 0) pairs.push({ a: pool[i]!, b: pool[j]!, diff });
+      pairs.push({ a: pool[i]!, b: pool[j]!, diff: Math.abs(wa - wb) });
     }
   }
   if (pairs.length < NUM_ROUNDS) return [];
