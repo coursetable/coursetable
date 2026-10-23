@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Collapse } from 'react-bootstrap';
@@ -12,16 +12,23 @@ import {
   FcPuzzle,
   FcNews,
   FcBusinessman,
+  FcIdea,
 } from 'react-icons/fc';
-
 import { useShallow } from 'zustand/react/shallow';
+
 import { API_ENDPOINT } from '../../config';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
-import { scrollToTop, useComponentVisible } from '../../utilities/display';
+import {
+  scrollToTop,
+  suspended,
+  useComponentVisible,
+} from '../../utilities/display';
 import { createCatalogLink } from '../../utilities/navigation';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
+
+const CourseTableGame = suspended(() => import('./CourseTableGame'));
 
 function DropdownItem({
   icon: Icon,
@@ -83,9 +90,11 @@ function DropdownItem({
 function DropdownContent({
   isExpanded,
   setIsExpanded,
+  onOpenGame,
 }: {
   readonly isExpanded: boolean;
   readonly setIsExpanded: (visible: boolean) => void;
+  readonly onOpenGame: () => void;
 }) {
   const { isMobile, isTablet } = useStore(
     useShallow((state) => ({
@@ -144,6 +153,18 @@ function DropdownContent({
               Profile (beta)
             </DropdownItem>
           )}
+          {!isMobile && !isTablet && authStatus === 'authenticated' && (
+            <DropdownItem
+              icon={FcIdea}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(false);
+                onOpenGame();
+              }}
+            >
+              This-Or-That
+            </DropdownItem>
+          )}
           {authStatus === 'authenticated' ? (
             <DropdownItem
               icon={FaSignOutAlt}
@@ -177,6 +198,7 @@ function MeDropdown() {
     useComponentVisible<HTMLButtonElement>(false);
   const user = useStore((state) => state.user);
   const hasName = Boolean(user?.firstName && user.lastName);
+  const [showGame, setShowGame] = useState(false);
   return (
     <div className={clsx(styles.navbarMe, 'align-self-end')}>
       <button
@@ -202,7 +224,9 @@ function MeDropdown() {
       <DropdownContent
         isExpanded={isComponentVisible}
         setIsExpanded={setIsComponentVisible}
+        onOpenGame={() => setShowGame(true)}
       />
+      {showGame && <CourseTableGame onClose={() => setShowGame(false)} />}
     </div>
   );
 }
