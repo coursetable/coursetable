@@ -11,8 +11,9 @@ import { IoPersonOutline } from 'react-icons/io5';
 import type { CatalogListing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
 import {
-  subjects,
   ratingColormap,
+  sectionFullTooltip,
+  subjects,
   workloadColormap,
 } from '../../utilities/constants';
 import {
@@ -22,6 +23,7 @@ import {
   type CourseWithWorkload,
   getProfessorRatings,
   type CourseWithProfRatings,
+  isSectionFull,
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
@@ -116,6 +118,7 @@ export function CourseCode({
   readonly listing: CatalogListing;
   readonly subdueSection: boolean;
 }) {
+  const full = isSectionFull(listing.course);
   const section = listing.course.section
     ? ` ${listing.course.section.padStart(2, '0')}`
     : '';
@@ -143,7 +146,24 @@ export function CourseCode({
         <span>{listing.subject}</span>
       </OverlayTrigger>{' '}
       {listing.number}
-      {subdueSection ? (
+      {full && listing.course.section ? (
+        <OverlayTrigger
+          placement="top"
+          overlay={(props) => (
+            <Tooltip
+              id={`section-full-${listing.course.season_code}-${listing.crn}`}
+              {...props}
+            >
+              <small>{sectionFullTooltip}</small>
+            </Tooltip>
+          )}
+        >
+          <span className={styles.fullSection}>
+            {section}
+            <span className="visually-hidden">, full</span>
+          </span>
+        </OverlayTrigger>
+      ) : subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (
         section

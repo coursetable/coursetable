@@ -7,6 +7,7 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
   fragment CourseModalPrefetchCourseData on courses {
     season_code
     section
+    section_full
     title
     skills
     areas
