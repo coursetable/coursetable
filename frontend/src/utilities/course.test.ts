@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   checkConflict,
+  isSectionFull,
   type ListingWithTimes,
   to12HourTime,
   toRangeTime,
@@ -10,6 +11,7 @@ import {
   toWeekdaysDisplayString,
   toWeekdayStrings,
 } from './course';
+import { CUR_YEAR } from '../config';
 import type { CatalogListing } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
 import type { WorksheetCourse } from '../types/worksheetCourse';
@@ -262,6 +264,41 @@ describe('checkConflict', () => {
     expect(
       checkConflict([makeWorksheetCourse(conflicting)], asCandidate(candidate)),
     ).toEqual([conflicting]);
+  });
+});
+
+describe('isSectionFull', () => {
+  const currentSeason = CUR_YEAR[0]!;
+
+  it('returns true for a full section in the current year', () => {
+    expect(
+      isSectionFull({
+        section_full: true,
+        season_code: currentSeason,
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for a full section outside the current year', () => {
+    expect(
+      isSectionFull({
+        section_full: true,
+        season_code: '202503' as Season,
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false for a section that is not full', () => {
+    expect(
+      isSectionFull({
+        section_full: false,
+        season_code: currentSeason,
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when section_full is omitted', () => {
+    expect(isSectionFull({ season_code: currentSeason })).toBe(false);
   });
 });
 

@@ -10,11 +10,16 @@ import type {
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
 import type { Option } from '../../../search/searchTypes';
 import { useStore } from '../../../store';
-import { extraInfo, subjects } from '../../../utilities/constants';
 import {
-  toWeekdaysDisplayString,
+  extraInfo,
+  sectionFullTooltip,
+  subjects,
+} from '../../../utilities/constants';
+import {
+  isSectionFull,
   to12HourTime,
   toSeasonString,
+  toWeekdaysDisplayString,
   truncatedText,
 } from '../../../utilities/course';
 import { createCourseModalLink } from '../../../utilities/display';
@@ -35,6 +40,7 @@ function SectionLink({
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const [searchParams] = useSearchParams();
+  const full = isSectionFull(section.course);
   const timeString = section.course.course_meetings
     .map(
       (session) =>
@@ -53,11 +59,32 @@ function SectionLink({
       }}
       className={styles.sectionLink}
     >
-      <span title={hasDifferentTitles ? section.course.title : undefined}>
-        <b>{section.course.section.padStart(2, '0')}</b>{' '}
+      <span>
+        {full ? (
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) => (
+              <Tooltip
+                id={`section-full-option-${section.course.season_code}-${section.crn}`}
+                {...props}
+              >
+                <small>{sectionFullTooltip}</small>
+              </Tooltip>
+            )}
+          >
+            <b className={styles.fullSection}>
+              {section.course.section.padStart(2, '0')}
+              <span className="visually-hidden">, full</span>
+            </b>
+          </OverlayTrigger>
+        ) : (
+          <b>{section.course.section.padStart(2, '0')}</b>
+        )}{' '}
         {hasDifferentTitles && (
           <>
-            {truncatedText(section.course.title, 40, '')}
+            <span title={section.course.title}>
+              {truncatedText(section.course.title, 40, '')}
+            </span>
             <br />
           </>
         )}
@@ -82,6 +109,7 @@ function SectionsDropdown({
 }) {
   const hasDifferentTitles =
     new Set(sections.map((section) => section.course.title)).size > 1;
+  const full = isSectionFull(listing.course);
   const sectionsOptions: Map<string, Option> = new Map<string, Option>(
     // @ts-expect-error: TODO it actually works to have a ReactNode as label
     sections.map((section) => [
@@ -105,6 +133,13 @@ function SectionsDropdown({
       clearIcon={false}
       className={styles.sectionsDropdownButton}
       wrapperClassName={styles.sectionsDropdown}
+      tooltipText={full ? sectionFullTooltip : undefined}
+      buttonTextColor={full ? 'var(--color-section-full)' : undefined}
+      ariaLabel={
+        full
+          ? `Section ${listing.course.section.padStart(2, '0')}, full`
+          : undefined
+      }
     >
       <PopoutSelect<Option, false>
         className={styles.sectionsDropdownSelect}

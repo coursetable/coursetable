@@ -436,6 +436,8 @@ export const barChartColors = [
   '#00e800',
 ];
 
+export const sectionFullTooltip = 'This section is full. Updated nightly.';
+
 // The days_of_week field on course_meetings is a bitmask where the ith bit
 // (1 << i) represents whether the course meets on the ith day of the week.
 // For example, if a course meets on Monday, Wednesday, and Friday, the value

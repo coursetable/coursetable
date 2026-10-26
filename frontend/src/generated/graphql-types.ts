@@ -713,6 +713,7 @@ export type Courses = {
   season_code: Scalars['Season']['output'];
   /** Course section. Note that the section number is the same for all cross-listings. */
   section: Scalars['String']['output'];
+  section_full: Scalars['Boolean']['output'];
   /** Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels) */
   skills: Scalars['StringArr']['output'];
   /** Link to the syllabus */
@@ -899,6 +900,7 @@ export type CoursesBoolExp = {
   season: InputMaybe<SeasonsBoolExp>;
   season_code: InputMaybe<StringComparisonExp>;
   section: InputMaybe<StringComparisonExp>;
+  section_full: InputMaybe<BooleanComparisonExp>;
   skills: InputMaybe<JsonbComparisonExp>;
   syllabus_url: InputMaybe<StringComparisonExp>;
   sysem: InputMaybe<BooleanComparisonExp>;
@@ -1085,6 +1087,7 @@ export type CoursesOrderBy = {
   season: InputMaybe<SeasonsOrderBy>;
   season_code: InputMaybe<OrderBy>;
   section: InputMaybe<OrderBy>;
+  section_full: InputMaybe<OrderBy>;
   skills: InputMaybe<OrderBy>;
   syllabus_url: InputMaybe<OrderBy>;
   sysem: InputMaybe<OrderBy>;
@@ -1162,6 +1165,8 @@ export enum CoursesSelectColumn {
   SeasonCode = 'season_code',
   /** column name */
   Section = 'section',
+  /** column name */
+  SectionFull = 'section_full',
   /** column name */
   Skills = 'skills',
   /** column name */
@@ -1367,6 +1372,7 @@ export type CoursesStreamCursorValueInput = {
   season_code: InputMaybe<Scalars['String']['input']>;
   /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<Scalars['String']['input']>;
+  section_full: InputMaybe<Scalars['Boolean']['input']>;
   /** Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels) */
   skills: InputMaybe<Scalars['jsonb']['input']>;
   /** Link to the syllabus */
@@ -3869,6 +3875,7 @@ export type CatalogBySeasonQuery = {
     same_course_id: number;
     season_code: Season;
     section: string;
+    section_full: boolean;
     skills: StringArr;
     sysem: boolean;
     title: string;
@@ -4028,6 +4035,7 @@ export type CourseModalPrefetchCourseDataFragment = {
   __typename?: 'courses';
   season_code: Season;
   section: string;
+  section_full: boolean;
   title: string;
   skills: StringArr;
   areas: StringArr;

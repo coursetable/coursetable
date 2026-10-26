@@ -1,5 +1,6 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
+import { CUR_YEAR } from '../config';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -483,6 +484,15 @@ type CourseWithEnrolled = {
 
 export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
   return listing.school !== 'YC' && listing.school !== 'SU';
+}
+
+export function isSectionFull(course: {
+  section_full?: boolean | null;
+  season_code: Season;
+}): boolean {
+  // Historical seasons keep their last-known fullness forever, so only
+  // surface the indicator for seasons we still update.
+  return course.section_full === true && CUR_YEAR.includes(course.season_code);
 }
 
 export function isDiscussionSection(
