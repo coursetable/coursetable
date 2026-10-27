@@ -57,8 +57,9 @@ const creditColormap = chroma
 const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([12, 20]);
-// TODO: intentionally neutral until we decide how many hours count as heavy
-const classHoursColormap = chroma.scale(['#bdbdbd', '#bdbdbd']);
+const classHoursColormap = chroma
+  .scale(['#63b37b', '#ffeb84', '#f8696b'])
+  .domain([10, 20]);
 
 type ClassHoursEstimate = {
   label: string;
