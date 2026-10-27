@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 import { FaChevronRight } from 'react-icons/fa';
 import { TextComponent } from '../components/Typography';
-import { API_ENDPOINT, CUR_SEASON } from '../config';
+import { API_ENDPOINT, DEFAULT_SEASON } from '../config';
 import { scrollToTop } from '../utilities/display';
 import styles from './FAQ.module.css';
 
@@ -404,28 +404,28 @@ const faqs = [
               <li>
                 For <b>public data</b> in JSON format: go to{' '}
                 <a
-                  href={`${API_ENDPOINT}/api/catalog/public/${CUR_SEASON}`}
+                  href={`${API_ENDPOINT}/api/catalog/public/${DEFAULT_SEASON}`}
                   rel="noreferrer noopener"
                   target="_blank"
                 >
-                  {API_ENDPOINT}/api/catalog/public/{CUR_SEASON}
+                  {API_ENDPOINT}/api/catalog/public/{DEFAULT_SEASON}
                 </a>
-                . Replace {CUR_SEASON} with the season code you want (four-digit
-                year + two-digit season, 01 = spring, 02 = summer, 03 = fall).
-                Press <kbd>Ctrl</kbd> + <kbd>S</kbd> to save the data to a local
-                file.
+                . Replace {DEFAULT_SEASON} with the season code you want
+                (four-digit year + two-digit season, 01 = spring, 02 = summer,
+                03 = fall). Press <kbd>Ctrl</kbd> + <kbd>S</kbd> to save the
+                data to a local file.
               </li>
               <li>
                 For <b>evaluations data</b> in JSON format: go to{' '}
                 <a
-                  href={`${API_ENDPOINT}/api/catalog/evals/${CUR_SEASON}`}
+                  href={`${API_ENDPOINT}/api/catalog/evals/${DEFAULT_SEASON}`}
                   rel="noreferrer noopener"
                   target="_blank"
                 >
-                  {API_ENDPOINT}/api/catalog/evals/{CUR_SEASON}
+                  {API_ENDPOINT}/api/catalog/evals/{DEFAULT_SEASON}
                 </a>
-                . Replace {CUR_SEASON} with the season code you want. (This URL
-                likely doesn't work because the current season doesn't have
+                . Replace {DEFAULT_SEASON} with the season code you want. (This
+                URL likely doesn't work because the current season doesn't have
                 evaluations yet.) Press <kbd>Ctrl</kbd> + <kbd>S</kbd> to save
                 the data to a local file. Note that you must be signed in on
                 CourseTable to access this data.
@@ -433,14 +433,14 @@ const faqs = [
               <li>
                 For <b>all data</b> in CSV format: go to{' '}
                 <a
-                  href={`${API_ENDPOINT}/api/catalog/csv/${CUR_SEASON}.csv`}
+                  href={`${API_ENDPOINT}/api/catalog/csv/${DEFAULT_SEASON}.csv`}
                   rel="noreferrer noopener"
                   target="_blank"
                 >
-                  {API_ENDPOINT}/api/catalog/csv/{CUR_SEASON}.csv
+                  {API_ENDPOINT}/api/catalog/csv/{DEFAULT_SEASON}.csv
                 </a>
-                . Replace {CUR_SEASON} with the season code you want. The CSV
-                should be automatically downloaded.
+                . Replace {DEFAULT_SEASON} with the season code you want. The
+                CSV should be automatically downloaded.
               </li>
             </ul>
           </>
