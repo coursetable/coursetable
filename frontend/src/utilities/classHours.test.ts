@@ -112,6 +112,30 @@ describe('findLatestPastOffering', () => {
     expect(result?.season_code).toBe('202503');
   });
 
+  it('does not fall back to older seasons when the latest had no times', () => {
+    // Mirrors a lab's umbrella listing: TBA recently, but an old offering
+    // listed every lab slot under it
+    const result = findLatestPastOffering(
+      [
+        { ...makeOffering('202601', '1'), course_meetings: [] },
+        makeOffering('201001', '1', MON | TUE | WED | THU | FRI),
+      ],
+      course,
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it('uses another section in the latest season if the matching one is TBA', () => {
+    const result = findLatestPastOffering(
+      [
+        { ...makeOffering('202503', '1'), course_meetings: [] },
+        makeOffering('202503', '2', TUE),
+      ],
+      course,
+    );
+    expect(result?.section).toBe('2');
+  });
+
   it('matches discussion sections only with discussion sections', () => {
     const offerings = [
       makeOffering('202503', '1', MON | WED),

@@ -30,34 +30,45 @@ export function getWeeklyMeetingHours(meetings: Meeting[]): number {
 }
 
 /**
- * Picks the most recent earlier offering to borrow meeting times from. Only
- * offerings of the same kind (lecture vs. discussion section) are considered,
- * since their schedules differ. Within a season, the same section number is
- * preferred, then the lowest section.
+ * Picks an offering from the most recent earlier season to borrow meeting
+ * times from. Only offerings of the same kind (lecture vs. discussion section)
+ * are considered, since their schedules differ. Within that season, the same
+ * section number is preferred, then the lowest section.
+ *
+ * Older seasons are deliberately not searched: if the course had no times last
+ * time either, it's likely a placeholder (e.g. a lab's umbrella listing whose
+ * times live on its lettered sections), and very old offerings sometimes list
+ * every section's times under one course.
  */
 export function findLatestPastOffering(
   offerings: readonly PastOffering[],
   course: { same_course_id: number; season_code: Season; section: string },
 ): PastOffering | undefined {
   const isDiscussion = isDiscussionSection(course);
+  const candidates = offerings.filter(
+    (o) =>
+      o.same_course_id === course.same_course_id &&
+      o.season_code < course.season_code &&
+      isDiscussionSection(o) === isDiscussion,
+  );
+  const latestSeason = candidates.reduce<Season | undefined>(
+    (latest, o) =>
+      latest === undefined || o.season_code > latest ? o.season_code : latest,
+    undefined,
+  );
   const rank = (o: PastOffering) => (o.section === course.section ? 0 : 1);
   let best: PastOffering | undefined = undefined;
-  for (const o of offerings) {
+  for (const o of candidates) {
     if (
-      o.same_course_id !== course.same_course_id ||
-      o.season_code >= course.season_code ||
-      isDiscussionSection(o) !== isDiscussion ||
+      o.season_code !== latestSeason ||
       getWeeklyMeetingHours(o.course_meetings) === 0
     )
       continue;
     if (
       !best ||
-      o.season_code > best.season_code ||
-      (o.season_code === best.season_code &&
-        (rank(o) < rank(best) ||
-          (rank(o) === rank(best) &&
-            o.section.localeCompare(best.section, 'en-US', { numeric: true }) <
-              0)))
+      rank(o) < rank(best) ||
+      (rank(o) === rank(best) &&
+        o.section.localeCompare(best.section, 'en-US', { numeric: true }) < 0)
     )
       best = o;
   }

@@ -1125,7 +1125,6 @@ export const PastCourseMeetingsDocument = gql`
       where: {
         same_course_id: { _in: $sameCourseIds }
         season_code: { _lt: $seasonCode }
-        course_meetings: { days_of_week: { _gt: 0 } }
       }
       distinct_on: [same_course_id, section]
       order_by: [
