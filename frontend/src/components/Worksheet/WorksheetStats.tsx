@@ -59,7 +59,7 @@ const workloadColormap = chroma
   .domain([12, 20]);
 const classHoursColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
-  .domain([10, 20]);
+  .domain([8, 20]);
 
 type ClassHoursEstimate = {
   label: string;
