@@ -1119,3 +1119,126 @@ export type LatestCurrentOfferingQueryResult = Apollo.QueryResult<
   Types.LatestCurrentOfferingQuery,
   Types.LatestCurrentOfferingQueryVariables
 >;
+export const PastCourseMeetingsDocument = gql`
+  query PastCourseMeetings($sameCourseIds: [Int!]!, $seasonCode: String!) {
+    courses(
+      where: {
+        same_course_id: { _in: $sameCourseIds }
+        season_code: { _lt: $seasonCode }
+        course_meetings: { days_of_week: { _gt: 0 } }
+      }
+      distinct_on: [same_course_id, section]
+      order_by: [
+        { same_course_id: asc }
+        { section: asc }
+        { season_code: desc }
+      ]
+    ) {
+      same_course_id
+      season_code
+      section
+      course_meetings {
+        days_of_week
+        start_time
+        end_time
+      }
+    }
+  }
+`;
+
+/**
+ * __usePastCourseMeetingsQuery__
+ *
+ * To run a query within a React component, call `usePastCourseMeetingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePastCourseMeetingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePastCourseMeetingsQuery({
+ *   variables: {
+ *      sameCourseIds: // value for 'sameCourseIds'
+ *      seasonCode: // value for 'seasonCode'
+ *   },
+ * });
+ */
+export function usePastCourseMeetingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    Types.PastCourseMeetingsQuery,
+    Types.PastCourseMeetingsQueryVariables
+  > &
+    (
+      | { variables: Types.PastCourseMeetingsQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    Types.PastCourseMeetingsQuery,
+    Types.PastCourseMeetingsQueryVariables
+  >(PastCourseMeetingsDocument, options);
+}
+export function usePastCourseMeetingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.PastCourseMeetingsQuery,
+    Types.PastCourseMeetingsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    Types.PastCourseMeetingsQuery,
+    Types.PastCourseMeetingsQueryVariables
+  >(PastCourseMeetingsDocument, options);
+}
+// @ts-ignore
+export function usePastCourseMeetingsSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    Types.PastCourseMeetingsQuery,
+    Types.PastCourseMeetingsQueryVariables
+  >,
+): Apollo.UseSuspenseQueryResult<
+  Types.PastCourseMeetingsQuery,
+  Types.PastCourseMeetingsQueryVariables
+>;
+export function usePastCourseMeetingsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.PastCourseMeetingsQuery,
+        Types.PastCourseMeetingsQueryVariables
+      >,
+): Apollo.UseSuspenseQueryResult<
+  Types.PastCourseMeetingsQuery | undefined,
+  Types.PastCourseMeetingsQueryVariables
+>;
+export function usePastCourseMeetingsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.PastCourseMeetingsQuery,
+        Types.PastCourseMeetingsQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    Types.PastCourseMeetingsQuery,
+    Types.PastCourseMeetingsQueryVariables
+  >(PastCourseMeetingsDocument, options);
+}
+export type PastCourseMeetingsQueryHookResult = ReturnType<
+  typeof usePastCourseMeetingsQuery
+>;
+export type PastCourseMeetingsLazyQueryHookResult = ReturnType<
+  typeof usePastCourseMeetingsLazyQuery
+>;
+export type PastCourseMeetingsSuspenseQueryHookResult = ReturnType<
+  typeof usePastCourseMeetingsSuspenseQuery
+>;
+export type PastCourseMeetingsQueryResult = Apollo.QueryResult<
+  Types.PastCourseMeetingsQuery,
+  Types.PastCourseMeetingsQueryVariables
+>;

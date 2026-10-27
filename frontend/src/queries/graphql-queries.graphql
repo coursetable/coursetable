@@ -265,3 +265,26 @@ query LatestCurrentOffering($sameCourseId: Int!, $seasonCodes: [String!]!) {
     }
   }
 }
+
+# Most recent earlier offering of each section, used to estimate class hours for
+# courses that don't have scheduled meeting times yet
+query PastCourseMeetings($sameCourseIds: [Int!]!, $seasonCode: String!) {
+  courses(
+    where: {
+      same_course_id: { _in: $sameCourseIds }
+      season_code: { _lt: $seasonCode }
+      course_meetings: { days_of_week: { _gt: 0 } }
+    }
+    distinct_on: [same_course_id, section]
+    order_by: [{ same_course_id: asc }, { section: asc }, { season_code: desc }]
+  ) {
+    same_course_id
+    season_code
+    section
+    course_meetings {
+      days_of_week
+      start_time
+      end_time
+    }
+  }
+}
