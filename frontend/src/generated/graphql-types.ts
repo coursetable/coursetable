@@ -4233,3 +4233,24 @@ export type LatestCurrentOfferingQuery = {
     listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
   }>;
 };
+
+export type PastCourseMeetingsQueryVariables = Exact<{
+  sameCourseIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+  seasonCode: Scalars['String']['input'];
+}>;
+
+export type PastCourseMeetingsQuery = {
+  __typename?: 'query_root';
+  courses: Array<{
+    __typename?: 'courses';
+    same_course_id: number;
+    season_code: Season;
+    section: string;
+    course_meetings: Array<{
+      __typename?: 'course_meetings';
+      days_of_week: number;
+      start_time: string;
+      end_time: string;
+    }>;
+  }>;
+};

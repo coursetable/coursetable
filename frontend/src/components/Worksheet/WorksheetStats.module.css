@@ -80,6 +80,15 @@
   flex-grow: 0.9;
 }
 
+.hoverHint {
+  cursor: help;
+  text-decoration: underline dotted;
+}
+
+.betaPill {
+  margin-left: 0.35rem;
+}
+
 .infoIcon {
   color: var(--color-primary);
 }
