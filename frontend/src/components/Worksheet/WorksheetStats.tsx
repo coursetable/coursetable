@@ -20,6 +20,7 @@ import {
   toSeasonString,
   toTimesSummary,
 } from '../../utilities/course';
+import { getWeightedWorkload, WORKLOAD_PIVOT } from '../../utilities/workload';
 import SkillBadge from '../SkillBadge';
 
 import styles from './WorksheetStats.module.css';
@@ -172,6 +173,9 @@ export default function WorksheetStats() {
   let courseCnt = 0;
   let credits = 0;
   let workload = 0;
+  let weightedWorkload = 0;
+  let heaviestCourse: { courseCode: string; workload: number } | undefined =
+    undefined;
   let rating = 0;
   let classHours = 0;
   let classHoursCourseCnt = 0;
@@ -231,6 +235,13 @@ export default function WorksheetStats() {
     courseCnt++;
     credits += listing.course.credits ?? 0;
     workload += courseWorkload ?? 0;
+    weightedWorkload += getWeightedWorkload(courseWorkload ?? 0);
+    if (courseWorkload && courseWorkload > (heaviestCourse?.workload ?? 0)) {
+      heaviestCourse = {
+        courseCode: listing.course_code,
+        workload: courseWorkload,
+      };
+    }
     rating += courseRating ?? 0;
     addClassHours(listing);
     skillsAreas.push(
@@ -355,6 +366,63 @@ export default function WorksheetStats() {
                 >
                   <div>
                     <dt>Total workload</dt>
+                    <dd
+                      className={styles.statPill}
+                      style={{
+                        backgroundColor: 'var(--color-primary)',
+                      }}
+                    />
+                  </div>
+                </OverlayTrigger>
+              )}
+              {user?.hasEvals ? (
+                <div>
+                  <dt>
+                    Weighted workload
+                    <NoStatsTip
+                      coursesWithoutRating={coursesWithoutWorkload}
+                      coursesWithRating={coursesWithWorkload}
+                    />
+                  </dt>
+                  <StatPill colorMap={workloadColormap} stat={weightedWorkload}>
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={(props) => (
+                        <Tooltip
+                          {...props}
+                          id="worksheet-stats-weighted-workload-tooltip"
+                        >
+                          <small>
+                            Each course counts as workload × (workload ÷{' '}
+                            {WORKLOAD_PIVOT}), so a typical course (
+                            {WORKLOAD_PIVOT}) counts as itself, lighter courses
+                            count less, and heavier ones more.
+                            {heaviestCourse &&
+                              ` Heaviest: ${heaviestCourse.courseCode} (${heaviestCourse.workload.toFixed(2)}).`}
+                          </small>
+                        </Tooltip>
+                      )}
+                    >
+                      <span className={styles.estimate}>
+                        {weightedWorkload.toFixed(2)}
+                      </span>
+                    </OverlayTrigger>
+                  </StatPill>
+                </div>
+              ) : (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip id="worksheet-stats-weighted-workload-login-tooltip">
+                      <small>
+                        {user ? 'Complete the challenge' : 'Sign in'} to see
+                        ratings
+                      </small>
+                    </Tooltip>
+                  }
+                >
+                  <div>
+                    <dt>Weighted workload</dt>
                     <dd
                       className={styles.statPill}
                       style={{
