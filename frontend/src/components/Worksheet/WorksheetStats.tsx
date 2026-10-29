@@ -375,28 +375,6 @@ export default function WorksheetStats() {
                   </div>
                 </OverlayTrigger>
               )}
-              {/* Own row, so the two workload stats pair up below it */}
-              <div className={clsx(styles.wide, styles.fullRow)}>
-                <dt>Skills & Areas</dt>
-                <dd>
-                  {skillsAreas
-                    .sort((a, b) => a.label.localeCompare(b.label, 'en-US'))
-                    .map((x, i) => (
-                      <OverlayTrigger
-                        key={i}
-                        overlay={
-                          <Tooltip id={`worksheet-stats-skill-${i}-tooltip`}>
-                            {x.courseCode}
-                          </Tooltip>
-                        }
-                      >
-                        <span>
-                          <SkillBadge skill={x.label} />
-                        </span>
-                      </OverlayTrigger>
-                    ))}
-                </dd>
-              </div>
               {user?.hasEvals ? (
                 <div>
                   <dt>
@@ -496,6 +474,27 @@ export default function WorksheetStats() {
                   </div>
                 </OverlayTrigger>
               )}
+              <div className={styles.wide}>
+                <dt>Skills & Areas</dt>
+                <dd>
+                  {skillsAreas
+                    .sort((a, b) => a.label.localeCompare(b.label, 'en-US'))
+                    .map((x, i) => (
+                      <OverlayTrigger
+                        key={i}
+                        overlay={
+                          <Tooltip id={`worksheet-stats-skill-${i}-tooltip`}>
+                            {x.courseCode}
+                          </Tooltip>
+                        }
+                      >
+                        <span>
+                          <SkillBadge skill={x.label} />
+                        </span>
+                      </OverlayTrigger>
+                    ))}
+                </dd>
+              </div>
             </dl>
             {isExoticWorksheet && isMobile && (
               <>
