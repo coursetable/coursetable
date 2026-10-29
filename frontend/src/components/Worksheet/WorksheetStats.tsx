@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
@@ -8,9 +8,8 @@ import type { CatalogListing } from '../../queries/api';
 import { usePastCourseMeetingsQuery } from '../../queries/graphql-queries';
 import { useStore } from '../../store';
 import {
-  findLatestPastOffering,
   getWeeklyMeetingHours,
-  type PastOffering,
+  summarizeClassHours,
 } from '../../utilities/classHours';
 import { ratingColormap } from '../../utilities/constants';
 import {
@@ -21,6 +20,7 @@ import {
   toTimesSummary,
 } from '../../utilities/course';
 import { getWeightedWorkload, WORKLOAD_PIVOT } from '../../utilities/workload';
+import BetaPill from '../BetaPill';
 import SkillBadge from '../SkillBadge';
 
 import styles from './WorksheetStats.module.css';
@@ -61,38 +61,8 @@ const workloadColormap = chroma
 const classHoursColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([8, 20]);
-
-type ClassHoursEstimate = {
-  label: string;
-  pastOffering: PastOffering;
-  hours: number;
-};
-
-// A lecture and its discussion sections share a course code
-const classHoursLabel = (listing: CatalogListing) =>
-  isDiscussionSection(listing.course)
-    ? `${listing.course_code} section ${listing.course.section}`
-    : listing.course_code;
-
-const hasScheduledMeetings = (listing: CatalogListing) =>
-  getWeeklyMeetingHours(listing.course.course_meetings) > 0;
-
-function getClassHours(
-  listing: CatalogListing,
-  pastOfferings: readonly PastOffering[],
-): { hours: number; estimate?: ClassHoursEstimate } | undefined {
-  const { course } = listing;
-  if (hasScheduledMeetings(listing))
-    return { hours: getWeeklyMeetingHours(course.course_meetings) };
-  // No scheduled times yet; borrow them from the last time it was offered
-  const pastOffering = findLatestPastOffering(pastOfferings, course);
-  if (!pastOffering) return undefined;
-  const hours = getWeeklyMeetingHours(pastOffering.course_meetings);
-  return {
-    hours,
-    estimate: { label: classHoursLabel(listing), pastOffering, hours },
-  };
-}
+// Neutral while estimates load, so the color doesn't jump once they arrive
+const pendingColormap = chroma.scale(['#bdbdbd', '#bdbdbd']);
 
 const formatHours = (hours: number) => String(Number(hours.toFixed(2)));
 
@@ -110,12 +80,13 @@ function NoStatsTip({
   readonly coursesWithRating: number;
   readonly missingLabel?: string;
 }) {
+  const id = useId();
   return (
     coursesWithoutRating.length > 0 && (
       <OverlayTrigger
         placement="top"
         overlay={(props) => (
-          <Tooltip {...props} id="worksheet-stats-conflict-tooltip">
+          <Tooltip {...props} id={`worksheet-stats-missing-tooltip-${id}`}>
             <small>
               Computed with {coursesWithRating} course
               {coursesWithRating === 1 ? '' : 's'}.{' '}
@@ -155,18 +126,25 @@ export default function WorksheetStats() {
   const sameCourseIdsWithoutMeetings = [
     ...new Set(
       courses
-        .filter((c) => !c.hidden && !hasScheduledMeetings(c.listing))
+        .filter(
+          (c) =>
+            !c.hidden &&
+            getWeeklyMeetingHours(c.listing.course.course_meetings) === 0,
+        )
         .map((c) => c.listing.course.same_course_id),
     ),
   ];
-  const { data: pastMeetingsData, loading: pastMeetingsLoading } =
-    usePastCourseMeetingsQuery({
-      variables: {
-        sameCourseIds: sameCourseIdsWithoutMeetings,
-        seasonCode: seasonCode ?? '',
-      },
-      skip: !seasonCode || sameCourseIdsWithoutMeetings.length === 0,
-    });
+  const {
+    data: pastMeetingsData,
+    loading: pastMeetingsLoading,
+    error: pastMeetingsError,
+  } = usePastCourseMeetingsQuery({
+    variables: {
+      sameCourseIds: sameCourseIdsWithoutMeetings,
+      seasonCode: seasonCode ?? '',
+    },
+    skip: !seasonCode || sameCourseIdsWithoutMeetings.length === 0,
+  });
   const pastOfferings = pastMeetingsData?.courses ?? [];
   const countedCourseCodes = new Set();
   const countedDiscussionCodes = new Set();
@@ -177,25 +155,11 @@ export default function WorksheetStats() {
   let heaviestCourse: { courseCode: string; workload: number } | undefined =
     undefined;
   let rating = 0;
-  let classHours = 0;
-  let classHoursCourseCnt = 0;
   const skillsAreas: { courseCode: string; label: string }[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
-  const coursesWithoutMeetings: string[] = [];
-  const classHoursEstimates: ClassHoursEstimate[] = [];
-
-  const addClassHours = (listing: CatalogListing) => {
-    classHoursCourseCnt++;
-    const result = getClassHours(listing, pastOfferings);
-    if (!result) {
-      if (!pastMeetingsLoading)
-        coursesWithoutMeetings.push(classHoursLabel(listing));
-      return;
-    }
-    classHours += result.hours;
-    if (result.estimate) classHoursEstimates.push(result.estimate);
-  };
+  // Listings that count toward class hours, after deduplication
+  const classHoursListings: CatalogListing[] = [];
 
   for (const { listing, hidden } of courses) {
     if (hidden) continue;
@@ -214,7 +178,7 @@ export default function WorksheetStats() {
         listing.course.listings.forEach((l) => {
           countedDiscussionCodes.add(l.course_code);
         });
-        addClassHours(listing);
+        classHoursListings.push(listing);
       }
       continue;
     }
@@ -243,7 +207,7 @@ export default function WorksheetStats() {
       };
     }
     rating += courseRating ?? 0;
-    addClassHours(listing);
+    classHoursListings.push(listing);
     skillsAreas.push(
       ...[...listing.course.skills, ...listing.course.areas].map((x) => ({
         courseCode: listing.course_code,
@@ -251,6 +215,11 @@ export default function WorksheetStats() {
       })),
     );
   }
+  const classHours = summarizeClassHours(
+    classHoursListings,
+    pastOfferings,
+    pastMeetingsLoading,
+  );
   const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
   const coursesWithRating = courseCnt - coursesWithoutRating.length;
 
@@ -298,17 +267,24 @@ export default function WorksheetStats() {
                 <dt>
                   Hours in class
                   <NoStatsTip
-                    coursesWithoutRating={coursesWithoutMeetings}
-                    coursesWithRating={
-                      classHoursCourseCnt - coursesWithoutMeetings.length
+                    coursesWithoutRating={classHours.missing}
+                    coursesWithRating={classHours.courseCount}
+                    missingLabel={
+                      pastMeetingsError
+                        ? "meeting times (we couldn't look up past semesters)"
+                        : 'meeting times'
                     }
-                    missingLabel="meeting times"
                   />
                 </dt>
-                <StatPill colorMap={classHoursColormap} stat={classHours}>
+                <StatPill
+                  colorMap={
+                    pastMeetingsLoading ? pendingColormap : classHoursColormap
+                  }
+                  stat={classHours.hours}
+                >
                   {pastMeetingsLoading ? (
                     '…'
-                  ) : classHoursEstimates.length > 0 ? (
+                  ) : classHours.estimates.length > 0 ? (
                     <OverlayTrigger
                       placement="top"
                       overlay={(props) => (
@@ -318,7 +294,7 @@ export default function WorksheetStats() {
                         >
                           <small>
                             Estimated weekly hours.{' '}
-                            {classHoursEstimates.map((e) => (
+                            {classHours.estimates.map((e) => (
                               <React.Fragment key={e.label}>
                                 {e.label} has no meeting times yet, so we used{' '}
                                 {toSeasonString(e.pastOffering.season_code)} (
@@ -330,12 +306,12 @@ export default function WorksheetStats() {
                         </Tooltip>
                       )}
                     >
-                      <span className={styles.estimate}>
-                        ~{formatHours(classHours)}
+                      <span className={styles.hoverHint}>
+                        ~{formatHours(classHours.hours)}
                       </span>
                     </OverlayTrigger>
                   ) : (
-                    formatHours(classHours)
+                    formatHours(classHours.hours)
                   )}
                 </StatPill>
               </div>
@@ -415,7 +391,7 @@ export default function WorksheetStats() {
                 <div>
                   <dt>
                     Weighted workload
-                    <span className={styles.betaPill}>Beta</span>
+                    <BetaPill className={styles.betaPill} />
                     <NoStatsTip
                       coursesWithoutRating={coursesWithoutWorkload}
                       coursesWithRating={coursesWithWorkload}
@@ -442,7 +418,7 @@ export default function WorksheetStats() {
                         </Tooltip>
                       )}
                     >
-                      <span className={styles.estimate}>
+                      <span className={styles.hoverHint}>
                         {weightedWorkload.toFixed(2)}
                       </span>
                     </OverlayTrigger>
@@ -463,7 +439,7 @@ export default function WorksheetStats() {
                   <div>
                     <dt>
                       Weighted workload
-                      <span className={styles.betaPill}>Beta</span>
+                      <BetaPill className={styles.betaPill} />
                     </dt>
                     <dd
                       className={styles.statPill}

@@ -4,7 +4,9 @@ import {
   findLatestPastOffering,
   getWeeklyMeetingHours,
   type PastOffering,
+  summarizeClassHours,
 } from './classHours';
+import type { CatalogListing } from '../queries/api';
 import type { Season } from '../queries/graphql-types';
 
 /** Bitmasks matching `weekdays` in constants.ts (`1 << dayIndex`). */
@@ -145,5 +147,98 @@ describe('findLatestPastOffering', () => {
     expect(
       findLatestPastOffering(offerings, { ...course, section: 'B' })?.section,
     ).toBe('A');
+  });
+});
+
+function makeListing(
+  courseCode: string,
+  section: string,
+  meetings: PastOffering['course_meetings'],
+  sameCourseId = 1,
+): CatalogListing {
+  return {
+    course_code: courseCode,
+    course: {
+      same_course_id: sameCourseId,
+      season_code: '202603' as Season,
+      section,
+      course_meetings: meetings,
+      listings: [{ course_code: courseCode }],
+    },
+  } as unknown as CatalogListing;
+}
+
+const MW_75_MIN = [
+  { days_of_week: MON | WED, start_time: '13:00', end_time: '14:15' },
+];
+
+describe('summarizeClassHours', () => {
+  it('sums scheduled hours', () => {
+    const summary = summarizeClassHours(
+      [
+        makeListing('CPSC 201', '1', MW_75_MIN),
+        makeListing('MATH 225', '1', MW_75_MIN, 2),
+      ],
+      [],
+      false,
+    );
+    expect(summary.hours).toBeCloseTo(5);
+    expect(summary.courseCount).toBe(2);
+    expect(summary.estimates).toHaveLength(0);
+    expect(summary.missing).toHaveLength(0);
+  });
+
+  it('estimates courses without times from last semester', () => {
+    const summary = summarizeClassHours(
+      [makeListing('CPSC 201', '1', [])],
+      [makeOffering('202601', '1')],
+      false,
+    );
+    expect(summary.hours).toBeCloseTo(2.5);
+    expect(summary.estimates.map((e) => e.label)).toEqual(['CPSC 201']);
+    expect(summary.missing).toHaveLength(0);
+  });
+
+  it('reports courses with no times anywhere as missing', () => {
+    const summary = summarizeClassHours(
+      [makeListing('CPSC 201', '1', [])],
+      [],
+      false,
+    );
+    expect(summary.hours).toBe(0);
+    expect(summary.courseCount).toBe(0);
+    expect(summary.missing).toEqual(['CPSC 201']);
+  });
+
+  it("doesn't report missing courses while past times are loading", () => {
+    const summary = summarizeClassHours(
+      [makeListing('CPSC 201', '1', [])],
+      [],
+      true,
+    );
+    expect(summary.missing).toHaveLength(0);
+  });
+
+  it("doesn't report an umbrella listing when its section has times", () => {
+    const summary = summarizeClassHours(
+      [
+        makeListing('CHEM 2220L', '1', []),
+        makeListing('CHEM 2220L', 'J', MW_75_MIN, 2),
+      ],
+      [],
+      false,
+    );
+    expect(summary.hours).toBeCloseTo(2.5);
+    expect(summary.courseCount).toBe(1);
+    expect(summary.missing).toHaveLength(0);
+  });
+
+  it('labels discussion sections with their section', () => {
+    const summary = summarizeClassHours(
+      [makeListing('CPSC 201', 'A', [])],
+      [],
+      false,
+    );
+    expect(summary.missing).toEqual(['CPSC 201 section A']);
   });
 });
