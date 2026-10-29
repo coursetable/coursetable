@@ -342,6 +342,64 @@ export default function WorksheetStats() {
               {user?.hasEvals ? (
                 <div>
                   <dt>
+                    Average rating
+                    <NoStatsTip
+                      coursesWithoutRating={coursesWithoutRating}
+                      coursesWithRating={coursesWithRating}
+                    />
+                  </dt>
+                  <StatPill colorMap={ratingColormap} stat={avgRating}>
+                    {avgRating.toFixed(2)}
+                  </StatPill>
+                </div>
+              ) : (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip id="worksheet-stats-rating-login-tooltip">
+                      <small>
+                        {user ? 'Complete the challenge' : 'Sign in'} to see
+                        ratings
+                      </small>
+                    </Tooltip>
+                  }
+                >
+                  <div>
+                    <dt>Average rating</dt>
+                    <dd
+                      className={styles.statPill}
+                      style={{
+                        backgroundColor: 'var(--color-primary)',
+                      }}
+                    />
+                  </div>
+                </OverlayTrigger>
+              )}
+              {/* Own row, so the two workload stats pair up below it */}
+              <div className={clsx(styles.wide, styles.fullRow)}>
+                <dt>Skills & Areas</dt>
+                <dd>
+                  {skillsAreas
+                    .sort((a, b) => a.label.localeCompare(b.label, 'en-US'))
+                    .map((x, i) => (
+                      <OverlayTrigger
+                        key={i}
+                        overlay={
+                          <Tooltip id={`worksheet-stats-skill-${i}-tooltip`}>
+                            {x.courseCode}
+                          </Tooltip>
+                        }
+                      >
+                        <span>
+                          <SkillBadge skill={x.label} />
+                        </span>
+                      </OverlayTrigger>
+                    ))}
+                </dd>
+              </div>
+              {user?.hasEvals ? (
+                <div>
+                  <dt>
                     Total workload
                     <NoStatsTip
                       coursesWithoutRating={coursesWithoutWorkload}
@@ -438,63 +496,6 @@ export default function WorksheetStats() {
                   </div>
                 </OverlayTrigger>
               )}
-              {user?.hasEvals ? (
-                <div>
-                  <dt>
-                    Average rating
-                    <NoStatsTip
-                      coursesWithoutRating={coursesWithoutRating}
-                      coursesWithRating={coursesWithRating}
-                    />
-                  </dt>
-                  <StatPill colorMap={ratingColormap} stat={avgRating}>
-                    {avgRating.toFixed(2)}
-                  </StatPill>
-                </div>
-              ) : (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={
-                    <Tooltip id="worksheet-stats-rating-login-tooltip">
-                      <small>
-                        {user ? 'Complete the challenge' : 'Sign in'} to see
-                        ratings
-                      </small>
-                    </Tooltip>
-                  }
-                >
-                  <div>
-                    <dt>Average rating</dt>
-                    <dd
-                      className={styles.statPill}
-                      style={{
-                        backgroundColor: 'var(--color-primary)',
-                      }}
-                    />
-                  </div>
-                </OverlayTrigger>
-              )}
-              <div className={styles.wide}>
-                <dt>Skills & Areas</dt>
-                <dd>
-                  {skillsAreas
-                    .sort((a, b) => a.label.localeCompare(b.label, 'en-US'))
-                    .map((x, i) => (
-                      <OverlayTrigger
-                        key={i}
-                        overlay={
-                          <Tooltip id={`worksheet-stats-skill-${i}-tooltip`}>
-                            {x.courseCode}
-                          </Tooltip>
-                        }
-                      >
-                        <span>
-                          <SkillBadge skill={x.label} />
-                        </span>
-                      </OverlayTrigger>
-                    ))}
-                </dd>
-              </div>
             </dl>
             {isExoticWorksheet && isMobile && (
               <>

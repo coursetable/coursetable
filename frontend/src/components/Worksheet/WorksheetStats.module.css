@@ -80,6 +80,10 @@
   flex-grow: 0.9;
 }
 
+.stats dl > .fullRow {
+  width: 100%;
+}
+
 .estimate {
   cursor: help;
   text-decoration: underline dotted;
