@@ -379,6 +379,7 @@ export default function WorksheetStats() {
                 <div>
                   <dt>
                     Weighted workload
+                    <span className={styles.betaPill}>Beta</span>
                     <NoStatsTip
                       coursesWithoutRating={coursesWithoutWorkload}
                       coursesWithRating={coursesWithWorkload}
@@ -393,8 +394,10 @@ export default function WorksheetStats() {
                           id="worksheet-stats-weighted-workload-tooltip"
                         >
                           <small>
-                            Each course counts as workload × (workload ÷{' '}
-                            {WORKLOAD_PIVOT}), so a typical course (
+                            An experimental estimate of how heavy your worksheet
+                            feels: one demanding course weighs more than two
+                            light ones. Each course counts as workload ×
+                            (workload ÷ {WORKLOAD_PIVOT}), so a typical course (
                             {WORKLOAD_PIVOT}) counts as itself, lighter courses
                             count less, and heavier ones more.
                             {heaviestCourse &&
@@ -422,7 +425,10 @@ export default function WorksheetStats() {
                   }
                 >
                   <div>
-                    <dt>Weighted workload</dt>
+                    <dt>
+                      Weighted workload
+                      <span className={styles.betaPill}>Beta</span>
+                    </dt>
                     <dd
                       className={styles.statPill}
                       style={{
