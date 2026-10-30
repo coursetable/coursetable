@@ -1,11 +1,19 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Row, Col, OverlayTrigger, Tooltip, Collapse } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  OverlayTrigger,
+  Tooltip,
+  Popover,
+  Collapse,
+} from 'react-bootstrap';
 import { BsEyeSlash } from 'react-icons/bs';
 import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 
+import buildingCoordinates from '../../../data/buildingCoordinates';
 import type {
   CourseModalOverviewDataQuery,
   PrereqLinkInfoQuery,
@@ -24,10 +32,13 @@ import {
 import {
   createCourseModalLink,
   createProfModalLink,
+  suspended,
 } from '../../../utilities/display';
 import { LinkLikeText } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
+
+const BuildingMapPreview = suspended(() => import('./BuildingMapPreview'));
 
 type CourseInfo = NonNullable<CourseModalOverviewDataQuery['self']>['course'];
 
@@ -371,6 +382,50 @@ function Professors({ course }: { readonly course: CourseInfo }) {
   );
 }
 
+function LocationText({
+  buildingCode,
+  url,
+  children,
+}: {
+  readonly buildingCode: string;
+  readonly url: string | null | undefined;
+  readonly children: string;
+}) {
+  const coords = buildingCoordinates[buildingCode];
+  const content = url ? (
+    <a target="_blank" rel="noopener noreferrer" href={url}>
+      {children}
+      <HiExternalLink size={18} className="ms-1 my-auto" />
+    </a>
+  ) : (
+    // Focusable so keyboard users can open the map popover
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+    <span tabIndex={coords ? 0 : undefined}>{children}</span>
+  );
+  if (!coords) return content;
+  return (
+    <OverlayTrigger
+      placement="top"
+      trigger={['hover', 'focus']}
+      delay={{ show: 250, hide: 0 }}
+      overlay={(props) => (
+        <Popover id={`overview-location-map-${buildingCode}`} {...props}>
+          <Popover.Body className="p-1">
+            <div className={styles.mapContainer}>
+              <BuildingMapPreview lat={coords.lat} lng={coords.lng} />
+            </div>
+            <div className={styles.mapAttribution}>
+              &copy; OpenStreetMap contributors &copy; CARTO
+            </div>
+          </Popover.Body>
+        </Popover>
+      )}
+    >
+      {content}
+    </OverlayTrigger>
+  );
+}
+
 function TimeLocation({
   course,
   hasEvals,
@@ -385,7 +440,6 @@ function TimeLocation({
         const locationTexts = [];
         if (session.location && hasEvals) {
           locationTexts.push(session.location.building.code);
-          // TODO use a tooltip instead
           if (session.location.building.building_name)
             locationTexts.push(`(${session.location.building.building_name})`);
           if (session.location.room) locationTexts.push(session.location.room);
@@ -398,18 +452,12 @@ function TimeLocation({
               <>
                 {' '}
                 at{' '}
-                {session.location.building.url ? (
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={session.location.building.url}
-                  >
-                    {locationTexts.join(' ')}
-                    <HiExternalLink size={18} className="ms-1 my-auto" />
-                  </a>
-                ) : (
-                  locationTexts.join(' ')
-                )}
+                <LocationText
+                  buildingCode={session.location.building.code}
+                  url={session.location.building.url}
+                >
+                  {locationTexts.join(' ')}
+                </LocationText>
               </>
             )}
             {!hasEvals && (

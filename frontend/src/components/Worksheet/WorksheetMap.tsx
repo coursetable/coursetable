@@ -27,18 +27,13 @@ import SeasonDropdown from './SeasonDropdown';
 import WorksheetCalendarList from './WorksheetCalendarList';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import WorksheetStats from './WorksheetStats';
-import { CARTO_API_KEY } from '../../config';
 import buildingCoordinates from '../../data/buildingCoordinates';
 import type { WorksheetCourse } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
+import { basemapAttribution, basemapUrl } from '../../utilities/map';
 import { SurfaceComponent } from '../Typography';
 
 import styles from './WorksheetMap.module.css';
-
-const basemapUrl = (theme: string | undefined) =>
-  `https://{s}.basemaps.cartocdn.com/${
-    theme === 'dark' ? 'dark_all' : 'light_all'
-  }/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`;
 
 type MarkerGroup = {
   code: string;
@@ -561,7 +556,6 @@ function WorksheetMap() {
     });
     return () => observer.disconnect();
   }, []);
-  const tileAttribution = '&copy; OpenStreetMap contributors &copy; CARTO';
 
   return (
     <div className={styles.container}>
@@ -595,7 +589,7 @@ function WorksheetMap() {
                 <TileLayer
                   key={tileUrl}
                   url={tileUrl}
-                  attribution={tileAttribution}
+                  attribution={basemapAttribution}
                   subdomains={['a', 'b', 'c', 'd']}
                   maxZoom={19}
                   eventHandlers={{
