@@ -116,7 +116,7 @@ function MoreButton({
 
 type Tab = {
   readonly label: string;
-  readonly value: 'overview' | 'evals';
+  readonly value: 'overview' | 'evals' | 'notes';
   readonly disabled?: boolean;
 };
 
@@ -174,8 +174,8 @@ export default function ModalHeaderControls({
   setView,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  readonly view: 'overview' | 'evals';
-  readonly setView: (value: 'overview' | 'evals') => void;
+  readonly view: 'overview' | 'evals' | 'notes';
+  readonly setView: (value: 'overview' | 'evals' | 'notes') => void;
 }) {
   return (
     <div className={styles.modalControls}>
@@ -188,6 +188,7 @@ export default function ModalHeaderControls({
             // Don't show eval tab if there are no responses to show
             disabled: !listing.course.evaluation_statistic,
           },
+          { label: 'My Notes', value: 'notes' },
         ]}
         onSelectTab={setView}
         currentTab={view}

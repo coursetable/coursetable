@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
+import NotesPanel from './NotesPanel/NotesPanel';
 import OverviewPanel from './OverviewPanel/OverviewPanel';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useModalHistory } from '../../hooks/useModalHistory';
@@ -35,7 +36,7 @@ function CourseModal({
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
-  const [view, setView] = useState<'overview' | 'evals'>('overview');
+  const [view, setView] = useState<'overview' | 'evals' | 'notes'>('overview');
   const [searchParams] = useSearchParams();
   const { closeModal, navigate } = useModalHistory();
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
@@ -99,14 +100,16 @@ function CourseModal({
           />
         </Modal.Header>
         <Modal.Body>
-          {view === 'overview' ? (
+          {view === 'overview' && (
             <OverviewPanel onNavigation={onNavigation} prefetched={listing} />
-          ) : (
+          )}
+          {view === 'evals' && (
             <EvaluationsPanel
               seasonCode={listing.course.season_code}
               crn={listing.crn}
             />
           )}
+          {view === 'notes' && <NotesPanel listing={listing} />}
         </Modal.Body>
       </Modal>
     </div>
