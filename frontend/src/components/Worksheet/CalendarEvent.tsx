@@ -1,16 +1,20 @@
 import React, {
+  cloneElement,
+  isValidElement,
   useCallback,
   useEffect,
   useId,
   useLayoutEffect,
   useRef,
   useState,
+  type SyntheticEvent,
 } from 'react';
 import clsx from 'clsx';
 import { Modal } from 'react-bootstrap';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import { FaWalking } from 'react-icons/fa';
 import chroma from 'chroma-js';
+import { OverlapStackRows } from './CalendarOverlapStack';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetItemActionsButton from './WorksheetItemActionsButton';
 import { useStore } from '../../store';
@@ -39,9 +43,16 @@ function formatMinutes(minutes: number) {
 export function CalendarEventBody({
   event,
   onWalkModalInteraction,
+  stackPeers,
+  onPickStackCourse,
 }: {
   readonly event: CourseRBCEvent;
   readonly onWalkModalInteraction?: (interaction: WalkModalInteraction) => void;
+  readonly stackPeers?: CourseRBCEvent[];
+  readonly onPickStackCourse?: (
+    picked: CourseRBCEvent,
+    e: SyntheticEvent,
+  ) => void;
 }) {
   const { walkBefore } = event;
   const walkBaseColor = chroma(event.color);
@@ -76,6 +87,10 @@ export function CalendarEventBody({
     : event.title;
 
   const lastMod = event.listing.course.last_updated as string | undefined;
+  const showOverlapStack =
+    stackPeers &&
+    stackPeers.length > 1 &&
+    typeof onPickStackCourse === 'function';
 
   useLayoutEffect(() => {
     if (!walkBefore) {
@@ -194,6 +209,11 @@ export function CalendarEventBody({
     const contentNode = eventContentRef.current;
     if (!contentNode) return undefined;
 
+    if (showOverlapStack) {
+      setHideFromLineIndex(null);
+      return undefined;
+    }
+
     let frame = 0;
     const measureLineHeight = (lineNode: HTMLElement) => {
       const clone = lineNode.cloneNode(true) as HTMLElement;
@@ -266,7 +286,14 @@ export function CalendarEventBody({
       window.cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, [formattedTitle, event.description, event.location, lastMod, isMobile]);
+  }, [
+    formattedTitle,
+    event.description,
+    event.location,
+    lastMod,
+    isMobile,
+    showOverlapStack,
+  ]);
 
   return (
     <div
@@ -308,51 +335,66 @@ export function CalendarEventBody({
           />
         </>
       )}
-      <div ref={eventContentRef} className={styles.eventContent}>
-        <strong
-          data-event-line="true"
-          className={clsx(styles.eventLine, styles.courseCodeText)}
-        >
-          {formattedTitle}
-          {formatSectionSuffix(event.listing.course)}
-        </strong>
-        <div
-          data-event-line="true"
-          className={clsx(
-            styles.eventLine,
-            hideFromLineIndex !== null &&
-              hideFromLineIndex <= 1 &&
-              styles.eventLineHidden,
-          )}
-        >
-          <span className={styles.courseNameText}>{event.description}</span>
-        </div>
-        <small
-          data-event-line="true"
-          className={clsx(
-            styles.eventLine,
-            styles.locationText,
-            hideFromLineIndex !== null &&
-              hideFromLineIndex <= 2 &&
-              styles.eventLineHidden,
-          )}
-        >
-          {event.location}
-        </small>
-        {lastMod && (
-          <div
-            data-event-line="true"
-            className={clsx(
-              styles.eventLine,
-              hideFromLineIndex !== null &&
-                hideFromLineIndex <= 3 &&
-                styles.eventLineHidden,
+      <div
+        ref={eventContentRef}
+        className={clsx(
+          styles.eventContent,
+          showOverlapStack && styles.eventContentStack,
+        )}
+      >
+        {showOverlapStack ? (
+          <OverlapStackRows
+            peers={stackPeers}
+            onPickStackCourse={onPickStackCourse}
+          />
+        ) : (
+          <>
+            <strong
+              data-event-line="true"
+              className={clsx(styles.eventLine, styles.courseCodeText)}
+            >
+              {formattedTitle}
+              {formatSectionSuffix(event.listing.course)}
+            </strong>
+            <div
+              data-event-line="true"
+              className={clsx(
+                styles.eventLine,
+                hideFromLineIndex !== null &&
+                  hideFromLineIndex <= 1 &&
+                  styles.eventLineHidden,
+              )}
+            >
+              <span className={styles.courseNameText}>{event.description}</span>
+            </div>
+            <small
+              data-event-line="true"
+              className={clsx(
+                styles.eventLine,
+                styles.locationText,
+                hideFromLineIndex !== null &&
+                  hideFromLineIndex <= 2 &&
+                  styles.eventLineHidden,
+              )}
+            >
+              {event.location}
+            </small>
+            {lastMod && (
+              <div
+                data-event-line="true"
+                className={clsx(
+                  styles.eventLine,
+                  hideFromLineIndex !== null &&
+                    hideFromLineIndex <= 3 &&
+                    styles.eventLineHidden,
+                )}
+              >
+                <span className={styles.lastUpdatedText}>
+                  Last updated: {new Date(lastMod).toLocaleDateString()}
+                </span>
+              </div>
             )}
-          >
-            <span className={styles.lastUpdatedText}>
-              Last updated: {new Date(lastMod).toLocaleDateString()}
-            </span>
-          </div>
+          </>
         )}
       </div>
     </div>
@@ -615,9 +657,16 @@ function WalkClassDetails({
 function CalendarEvent({
   event,
   onWalkModalInteraction,
+  stackPeers,
+  onPickStackCourse,
 }: {
   readonly event: CourseRBCEvent;
   readonly onWalkModalInteraction?: (interaction: WalkModalInteraction) => void;
+  readonly stackPeers?: CourseRBCEvent[];
+  readonly onPickStackCourse?: (
+    picked: CourseRBCEvent,
+    e: SyntheticEvent,
+  ) => void;
 }) {
   const { listing } = event;
   const isReadonlyWorksheet = useStore((state) =>
@@ -629,6 +678,8 @@ function CalendarEvent({
       <CalendarEventBody
         event={event}
         onWalkModalInteraction={onWalkModalInteraction}
+        stackPeers={stackPeers}
+        onPickStackCourse={onPickStackCourse}
       />
       {!isReadonlyWorksheet && (
         <div className={styles.eventButtons}>
@@ -649,12 +700,48 @@ function CalendarEvent({
   );
 }
 
+export function BigCalendarGhostFocusWrapper({
+  event,
+  children,
+}: React.PropsWithChildren<{ readonly event: CourseRBCEvent }>) {
+  const cluster = event.overlapCluster;
+  if (
+    cluster &&
+    cluster.peers.length > 1 &&
+    cluster.index > 0 &&
+    isValidElement(children)
+  ) {
+    return cloneElement(
+      children as React.ReactElement<{
+        tabIndex?: number;
+        'aria-hidden'?: boolean | 'true' | 'false';
+      }>,
+      { tabIndex: -1, 'aria-hidden': true },
+    );
+  }
+  return children;
+}
+
 export function useEventStyle() {
   const hoverCourse = useStore((state) => state.hoverCourse);
   const isMobile = useStore((state) => state.isMobile);
-  // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
-    (event: CourseRBCEvent) => {
+    (event: CourseRBCEvent, _start: Date, _end: Date, isSelected?: boolean) => {
+      const cluster = event.overlapCluster;
+      const isGhost = cluster && cluster.peers.length > 1 && cluster.index > 0;
+      if (isGhost) {
+        return {
+          style: {
+            visibility: 'hidden' as const,
+            pointerEvents: 'none' as const,
+            borderWidth: 0,
+            backgroundColor: 'transparent',
+            zIndex: 0,
+          },
+          className: 'rbc-event-stacked-ghost',
+        };
+      }
+
       const color = chroma(event.color);
       let backgroundColor = color.alpha(0.85).css();
       let borderColor = color.css();
@@ -670,16 +757,32 @@ export function useEventStyle() {
         }
       }
 
+      const stackedPrimary =
+        cluster && cluster.peers.length > 1 && cluster.index === 0;
+
       const style: React.CSSProperties = {
         backgroundColor,
         borderColor,
-        borderWidth: '2px',
+        borderWidth: stackedPrimary && isSelected ? '0' : '2px',
+        overflow: stackedPrimary ? 'hidden' : undefined,
       };
-      // Hover management is too hard on mobile and not very useful
-      if (isMobile) return { style };
+
+      if (stackedPrimary && isSelected)
+        style.boxShadow = `inset 0 0 0 2px ${borderColor}`;
+
+      if (event.walkBefore && stackedPrimary) style.overflow = 'visible';
+
+      if (isMobile) {
+        return {
+          style,
+          className: stackedPrimary ? 'rbc-event-overlap-primary' : undefined,
+        };
+      }
       if (hoverCourse && hoverCourse === event.listing.crn) style.zIndex = 2;
+      else if (stackedPrimary) style.zIndex = 3;
       return {
         style,
+        className: stackedPrimary ? 'rbc-event-overlap-primary' : undefined,
       };
     },
     [isMobile, hoverCourse],
