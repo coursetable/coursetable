@@ -9,8 +9,6 @@ import {
 import clsx from 'clsx';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import {
   MapContainer,
@@ -23,16 +21,18 @@ import {
 import { useShallow } from 'zustand/react/shallow';
 
 import FriendsDropdown from './FriendsDropdown';
+import { getMarkerIcon } from './mapMarkerIcon';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetCalendarList from './WorksheetCalendarList';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import WorksheetStats from './WorksheetStats';
-import {
-  type MarkerGroup,
-  useLocationGroups,
-} from '../../hooks/useLocationGroups';
 import { useStore } from '../../store';
-import { basemapAttribution, basemapUrl } from '../../utilities/map';
+import {
+  basemapAttribution,
+  basemapUrl,
+  groupCoursesByBuilding,
+  type MarkerGroup,
+} from '../../utilities/map';
 import { SurfaceComponent } from '../Typography';
 
 import styles from './WorksheetMap.module.css';
@@ -43,36 +43,6 @@ const PAN_BOUNDS_PAD = 0.35;
 const MAX_BOUNDS_VISCOSITY = 0.9;
 const ALLOW_ZOOM_OUT_STEPS = 1;
 const INITIAL_RELAX_MS = 1000;
-
-const markerIconCache = new Map<string, L.DivIcon>();
-function getMarkerIcon(variant: string) {
-  const markerImgClass = styles.markerImg ?? '';
-  const markerInnerClass = styles.markerInner ?? '';
-  if (!markerIconCache.has(variant)) {
-    const wrapperClass = clsx(
-      styles.markerIconWrapper,
-      variant.includes('selected') && styles.markerIconSelected,
-      variant.includes('hovered') && styles.markerIconHovered,
-    );
-    const html = `
-      <div class="${wrapperClass}">
-        <img class="${markerImgClass}" src="${markerIcon}" srcset="${markerIcon2x} 2x" alt="" />
-        <span class="${markerInnerClass}"></span>
-      </div>
-    `;
-    markerIconCache.set(
-      variant,
-      L.divIcon({
-        className: styles.markerIconContainer,
-        html,
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-      }),
-    );
-  }
-  return markerIconCache.get(variant)!;
-}
 
 function ResetViewControl({
   initialBoundsRef,
@@ -405,7 +375,10 @@ function WorksheetMap() {
     })),
   );
 
-  const { markers, missing } = useLocationGroups(courses);
+  const { markers, missing } = useMemo(
+    () => groupCoursesByBuilding(courses),
+    [courses],
+  );
   const [highlightedCode, setHighlightedCode] = useState<string | null>(null);
   const highlightTimeout = useRef<number | null>(null);
   const [mapLoading, setMapLoading] = useState(true);

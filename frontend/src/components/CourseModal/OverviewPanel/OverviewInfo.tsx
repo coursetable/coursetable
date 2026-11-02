@@ -5,7 +5,6 @@ import {
   Col,
   OverlayTrigger,
   Tooltip,
-  Overlay,
   Popover,
   Collapse,
 } from 'react-bootstrap';
@@ -22,6 +21,7 @@ import type {
 import { useModalHistory } from '../../../hooks/useModalHistory';
 import { useWorksheetDemand } from '../../../hooks/useWorksheetDemand';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
+import type { Season } from '../../../queries/graphql-types';
 import { useStore } from '../../../store';
 import { schools } from '../../../utilities/constants';
 import {
@@ -40,6 +40,8 @@ import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
 
 const BuildingMapPreview = suspended(() => import('./BuildingMapPreview'));
+
+const MAP_HIDE_DELAY_MS = 200;
 
 type CourseInfo = NonNullable<CourseModalOverviewDataQuery['self']>['course'];
 
@@ -383,33 +385,36 @@ function Professors({ course }: { readonly course: CourseInfo }) {
   );
 }
 
-const HOVER_SHOW_DELAY_MS = 250;
-const HOVER_HIDE_DELAY_MS = 200;
-
 function LocationText({
   buildingCode,
+  seasonCode,
   url,
   children,
 }: {
   readonly buildingCode: string;
+  readonly seasonCode: Season;
   readonly url: string | null | undefined;
   readonly children: string;
 }) {
   const coords = buildingCoordinates[buildingCode];
-  const [show, setShow] = useState(false);
-  const target = useRef<HTMLSpanElement>(null);
-  const timeout = useRef<number | undefined>(undefined);
+  const [showMap, setShowMap] = useState(false);
+  const isOverMap = useRef(false);
+  const hideTimeout = useRef<number | null>(null);
 
-  // The popover is interactive, so hiding is delayed and cancelled when the
-  // pointer or focus moves from the trigger into the popover
-  const setShowDelayed = (next: boolean) => {
-    window.clearTimeout(timeout.current);
-    timeout.current = window.setTimeout(
-      () => setShow(next),
-      next ? HOVER_SHOW_DELAY_MS : HOVER_HIDE_DELAY_MS,
-    );
+  const cancelHide = () => {
+    if (hideTimeout.current) window.clearTimeout(hideTimeout.current);
+    hideTimeout.current = null;
   };
-  useEffect(() => () => window.clearTimeout(timeout.current), []);
+  // Delayed so the cursor can cross the gap between the text and the popover
+  const scheduleHide = () => {
+    cancelHide();
+    hideTimeout.current = window.setTimeout(() => {
+      // Clicking the map blurs the text, which shouldn't close the map
+      if (!isOverMap.current) setShowMap(false);
+    }, MAP_HIDE_DELAY_MS);
+  };
+
+  useEffect(() => cancelHide, []);
 
   const content = url ? (
     <a target="_blank" rel="noopener noreferrer" href={url}>
@@ -423,53 +428,69 @@ function LocationText({
   );
   if (!coords) return content;
   return (
-    <>
-      {/* Hover/focus handlers only drive the popover; the focusable child is
-          the real interactive element */}
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <span
-        ref={target}
-        onMouseEnter={() => setShowDelayed(true)}
-        onMouseLeave={() => setShowDelayed(false)}
-        onFocus={() => setShowDelayed(true)}
-        onBlur={() => setShowDelayed(false)}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape' && show) {
-            window.clearTimeout(timeout.current);
-            setShow(false);
-            e.stopPropagation();
+    // Only closes the popover; the child is the real interactive element
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <span
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape' || !showMap) return;
+        cancelHide();
+        isOverMap.current = false;
+        setShowMap(false);
+        // Otherwise the course modal closes too
+        e.stopPropagation();
+      }}
+    >
+      <OverlayTrigger
+        placement="top"
+        trigger={['hover', 'focus']}
+        delay={{ show: showMap ? 0 : 250, hide: 0 }}
+        show={showMap}
+        onToggle={(nextShow) => {
+          if (nextShow) {
+            cancelHide();
+            setShowMap(true);
+          } else {
+            scheduleHide();
           }
         }}
-      >
-        {content}
-      </span>
-      <Overlay target={target} show={show} placement="top">
-        {(props) => (
+        overlay={(props) => (
           <Popover
             id={`overview-location-map-${buildingCode}`}
             {...props}
-            onMouseEnter={() => setShowDelayed(true)}
-            onMouseLeave={() => setShowDelayed(false)}
+            className={styles.mapPopover}
+            onMouseEnter={() => {
+              isOverMap.current = true;
+              cancelHide();
+            }}
+            onMouseLeave={() => {
+              isOverMap.current = false;
+              scheduleHide();
+            }}
           >
             <Popover.Body className="p-1">
               <BuildingMapPreview
                 buildingCode={buildingCode}
                 lat={coords.lat}
                 lng={coords.lng}
+                seasonCode={seasonCode}
               />
             </Popover.Body>
           </Popover>
         )}
-      </Overlay>
-    </>
+      >
+        {content}
+      </OverlayTrigger>
+    </span>
   );
 }
 
 function TimeLocation({
   course,
+  seasonCode,
   hasEvals,
 }: {
   readonly course: CourseInfo;
+  readonly seasonCode: Season;
   readonly hasEvals: boolean;
 }) {
   return (
@@ -493,6 +514,7 @@ function TimeLocation({
                 at{' '}
                 <LocationText
                   buildingCode={session.location.building.code}
+                  seasonCode={seasonCode}
                   url={session.location.building.url}
                 >
                   {locationTexts.join(' ')}
@@ -554,7 +576,11 @@ function OverviewInfo({
       />
       <Syllabus course={course} sameCourse={sameCourse} />
       <Professors course={course} />
-      <TimeLocation course={course} hasEvals={Boolean(user?.hasEvals)} />
+      <TimeLocation
+        course={course}
+        seasonCode={listing.season_code}
+        hasEvals={Boolean(user?.hasEvals)}
+      />
       <DataField name="Section" value={course.section} />
       <DataField
         name="Info"

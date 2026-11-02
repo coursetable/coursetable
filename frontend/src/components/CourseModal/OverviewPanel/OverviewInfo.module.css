@@ -51,3 +51,8 @@
   margin-bottom: 0;
   padding-left: 1em;
 }
+
+/* Overrides the Bootstrap popover cap, which is narrower than the map */
+.mapPopover {
+  max-width: none;
+}

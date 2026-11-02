@@ -1,14 +1,7 @@
 .map {
-  width: 320px;
-  height: 220px;
+  width: min(320px, calc(100vw - 32px));
+  height: 240px;
   border-radius: 4px;
-}
-
-.otherMarker {
-  fill: #e67e22;
-  fill-opacity: 0.85;
-  stroke: #fff;
-  stroke-width: 2;
 }
 
 .footer {
@@ -19,16 +12,18 @@
   padding: 0.25rem 0.125rem 0;
 }
 
-.caption {
+.attribution {
   font-size: 8px;
   line-height: 1.2;
   text-align: right;
 }
 
-.legendDot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #e67e22;
+:global([data-theme='dark']) .map :global(.leaflet-tooltip) {
+  background: #1f1f1f;
+  border-color: #1f1f1f;
+  color: var(--color-text);
+}
+
+:global([data-theme='dark']) .map :global(.leaflet-tooltip-top::before) {
+  border-top-color: #1f1f1f;
 }
