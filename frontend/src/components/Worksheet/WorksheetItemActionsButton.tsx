@@ -16,6 +16,7 @@ import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
 import { useShallow } from 'zustand/react/shallow';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
+import { track } from '../../lib/track';
 import { updateWorksheetCourses } from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
@@ -183,6 +184,24 @@ export function ColorPickerModal({
               worksheetNumber: viewedWorksheetNumber,
               color: newColor,
             });
+            const chosen = newColor ?? openColorPickerEvent.color;
+            if (chosen !== openColorPickerEvent.color) {
+              const { worksheets } = useStore.getState();
+              const ws = worksheets
+                ?.get(viewedSeason)
+                ?.get(viewedWorksheetNumber);
+              const worksheetName =
+                ws?.name ??
+                (viewedWorksheetNumber === 0
+                  ? 'Main Worksheet'
+                  : `Worksheet ${viewedWorksheetNumber}`);
+              track('worksheet_color', {
+                course_code: openColorPickerEvent.listing.course_code,
+                term: viewedSeason,
+                worksheet_name: worksheetName,
+                color: chosen,
+              });
+            }
             await worksheetsRefresh();
             onClose();
           }}

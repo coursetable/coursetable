@@ -1,5 +1,6 @@
 import { toast } from 'sonner';
 import type { StateCreator } from 'zustand';
+import { track } from '../lib/track';
 import {
   getUserInfo,
   fetchUserWorksheets,
@@ -74,8 +75,10 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
     set({ friendRequests: data?.requests });
   },
   async addFriend(friendNetId: NetId) {
-    if (await baseAddFriend(friendNetId))
+    if (await baseAddFriend(friendNetId)) {
+      track('friend_add', { friend_id: friendNetId });
       toast.info(`Added friend: ${friendNetId}`);
+    }
     await Promise.all([get().friendRefresh(), get().friendReqRefresh()]);
   },
   async removeFriend(friendNetId: NetId, isRequest: boolean) {
@@ -99,6 +102,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
         `You already received a friend request from ${friendNetId}. Go approve the request instead!`,
       );
     } else if (await baseRequestAddFriend(friendNetId)) {
+      track('friend_add', { friend_id: friendNetId });
       toast.info(`Sent friend request: ${friendNetId}`);
     }
   },
