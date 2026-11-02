@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet';
 
 import ModalHeaderControls from './Header/ControlsRow';
 import ModalHeaderInfo from './Header/InfoRow';
-import NotesPanel from './NotesPanel/NotesPanel';
 import OverviewPanel from './OverviewPanel/OverviewPanel';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useModalHistory } from '../../hooks/useModalHistory';
@@ -22,6 +21,8 @@ import styles from './CourseModal.module.css';
 const EvaluationsPanel = suspended(
   () => import('./EvaluationsPanel/EvaluationsPanel'),
 );
+// The notes editor is heavy, so it only loads when the tab opens.
+const NotesPanel = suspended(() => import('./NotesPanel/NotesPanel'));
 
 export type ModalNavigationFunction = ((
   mode: 'push' | 'replace',
@@ -109,7 +110,12 @@ function CourseModal({
               crn={listing.crn}
             />
           )}
-          {view === 'notes' && <NotesPanel listing={listing} />}
+          {view === 'notes' && (
+            <NotesPanel
+              key={`${listing.course.season_code}-${listing.crn}`}
+              listing={listing}
+            />
+          )}
         </Modal.Body>
       </Modal>
     </div>

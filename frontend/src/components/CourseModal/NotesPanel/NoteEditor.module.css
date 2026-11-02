@@ -1,0 +1,66 @@
+.editor {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+}
+
+.editor :global(.ProseMirror) {
+  min-height: 400px;
+  padding: 0.75rem 1rem;
+  outline: none;
+}
+
+.editor :global(.ProseMirror) p {
+  margin: 0 0 0.5rem;
+}
+
+.editor :global(.ProseMirror) ul,
+.editor :global(.ProseMirror) ol {
+  margin: 0 0 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.editor :global(.ProseMirror) li p {
+  margin: 0;
+}
+
+.editor :global(.ProseMirror) p:global(.is-editor-empty):first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.editor :global(.ProseMirror) ul[data-type='taskList'] {
+  padding-left: 0;
+  list-style: none;
+}
+
+.editor :global(.ProseMirror) ul[data-type='taskList'] li {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editor :global(.ProseMirror) ul[data-type='taskList'] li > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.editor :global(.ProseMirror) ul[data-type='taskList'] input {
+  cursor: pointer;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  min-height: 1.5rem;
+  margin-top: 0.25rem;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+}
+
+.statusError {
+  color: var(--color-danger, #dc3545);
+}
