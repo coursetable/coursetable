@@ -5,6 +5,7 @@ import {
   Col,
   OverlayTrigger,
   Tooltip,
+  Overlay,
   Popover,
   Collapse,
 } from 'react-bootstrap';
@@ -382,6 +383,9 @@ function Professors({ course }: { readonly course: CourseInfo }) {
   );
 }
 
+const HOVER_SHOW_DELAY_MS = 250;
+const HOVER_HIDE_DELAY_MS = 200;
+
 function LocationText({
   buildingCode,
   url,
@@ -392,6 +396,21 @@ function LocationText({
   readonly children: string;
 }) {
   const coords = buildingCoordinates[buildingCode];
+  const [show, setShow] = useState(false);
+  const target = useRef<HTMLSpanElement>(null);
+  const timeout = useRef<number | undefined>(undefined);
+
+  // The popover is interactive, so hiding is delayed and cancelled when the
+  // pointer or focus moves from the trigger into the popover
+  const setShowDelayed = (next: boolean) => {
+    window.clearTimeout(timeout.current);
+    timeout.current = window.setTimeout(
+      () => setShow(next),
+      next ? HOVER_SHOW_DELAY_MS : HOVER_HIDE_DELAY_MS,
+    );
+  };
+  useEffect(() => () => window.clearTimeout(timeout.current), []);
+
   const content = url ? (
     <a target="_blank" rel="noopener noreferrer" href={url}>
       {children}
@@ -404,25 +423,45 @@ function LocationText({
   );
   if (!coords) return content;
   return (
-    <OverlayTrigger
-      placement="top"
-      trigger={['hover', 'focus']}
-      delay={{ show: 250, hide: 0 }}
-      overlay={(props) => (
-        <Popover id={`overview-location-map-${buildingCode}`} {...props}>
-          <Popover.Body className="p-1">
-            <div className={styles.mapContainer}>
-              <BuildingMapPreview lat={coords.lat} lng={coords.lng} />
-            </div>
-            <div className={styles.mapAttribution}>
-              &copy; OpenStreetMap contributors &copy; CARTO
-            </div>
-          </Popover.Body>
-        </Popover>
-      )}
-    >
-      {content}
-    </OverlayTrigger>
+    <>
+      {/* Hover/focus handlers only drive the popover; the focusable child is
+          the real interactive element */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <span
+        ref={target}
+        onMouseEnter={() => setShowDelayed(true)}
+        onMouseLeave={() => setShowDelayed(false)}
+        onFocus={() => setShowDelayed(true)}
+        onBlur={() => setShowDelayed(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && show) {
+            window.clearTimeout(timeout.current);
+            setShow(false);
+            e.stopPropagation();
+          }
+        }}
+      >
+        {content}
+      </span>
+      <Overlay target={target} show={show} placement="top">
+        {(props) => (
+          <Popover
+            id={`overview-location-map-${buildingCode}`}
+            {...props}
+            onMouseEnter={() => setShowDelayed(true)}
+            onMouseLeave={() => setShowDelayed(false)}
+          >
+            <Popover.Body className="p-1">
+              <BuildingMapPreview
+                buildingCode={buildingCode}
+                lat={coords.lat}
+                lng={coords.lng}
+              />
+            </Popover.Body>
+          </Popover>
+        )}
+      </Overlay>
+    </>
   );
 }
 
