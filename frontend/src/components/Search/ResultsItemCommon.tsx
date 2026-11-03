@@ -111,12 +111,43 @@ export function CourseInfoPopover({
   );
 }
 
+function FullSectionIndicator({
+  listing,
+  section,
+  badge,
+}: {
+  readonly listing: CatalogListing;
+  readonly section: string;
+  readonly badge: boolean;
+}) {
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={(props) => (
+        <Tooltip
+          id={`section-full-${listing.course.season_code}-${listing.crn}`}
+          {...props}
+        >
+          <small>{sectionFullTooltip}</small>
+        </Tooltip>
+      )}
+    >
+      <span className={badge ? styles.fullBadge : styles.fullSection}>
+        {badge ? 'Full' : section}
+        {!badge && <span className="visually-hidden">, full</span>}
+      </span>
+    </OverlayTrigger>
+  );
+}
+
 export function CourseCode({
   listing,
   subdueSection,
+  showFullBadge = false,
 }: {
   readonly listing: CatalogListing;
   readonly subdueSection: boolean;
+  readonly showFullBadge?: boolean;
 }) {
   const full = isSectionFull(listing.course);
   const section = listing.course.section
@@ -147,22 +178,14 @@ export function CourseCode({
       </OverlayTrigger>{' '}
       {listing.number}
       {full && listing.course.section ? (
-        <OverlayTrigger
-          placement="top"
-          overlay={(props) => (
-            <Tooltip
-              id={`section-full-${listing.course.season_code}-${listing.crn}`}
-              {...props}
-            >
-              <small>{sectionFullTooltip}</small>
-            </Tooltip>
-          )}
-        >
-          <span className={styles.fullSection}>
-            {section}
-            <span className="visually-hidden">, full</span>
-          </span>
-        </OverlayTrigger>
+        <>
+          {showFullBadge && section}
+          <FullSectionIndicator
+            listing={listing}
+            section={section}
+            badge={showFullBadge}
+          />
+        </>
       ) : subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (
