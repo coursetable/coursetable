@@ -256,6 +256,7 @@ export default function MobileSearchForm() {
           <Toggle handle="searchDescription" />
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
+          <Toggle handle="hideFull" />
           <Toggle handle="hideConflicting" />
         </div>
         <div className={styles.uselessBtn}>
