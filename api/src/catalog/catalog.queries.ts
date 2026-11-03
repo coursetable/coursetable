@@ -71,6 +71,7 @@ export type CatalogBySeasonQuery = {
     same_course_id: number;
     season_code: string;
     section: string;
+    section_full: boolean;
     skills: any;
     sysem: boolean;
     title: string;
@@ -201,6 +202,7 @@ export const CatalogBySeasonDocument = gql`
       same_course_id
       season_code
       section
+      section_full
       skills
       sysem
       course_meetings {

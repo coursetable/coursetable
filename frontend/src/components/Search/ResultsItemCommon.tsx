@@ -11,8 +11,9 @@ import { IoPersonOutline } from 'react-icons/io5';
 import type { CatalogListing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
 import {
-  subjects,
   ratingColormap,
+  sectionFullTooltip,
+  subjects,
   workloadColormap,
 } from '../../utilities/constants';
 import {
@@ -22,6 +23,7 @@ import {
   type CourseWithWorkload,
   getProfessorRatings,
   type CourseWithProfRatings,
+  isSectionFull,
   toSeasonString,
   truncatedText,
 } from '../../utilities/course';
@@ -109,13 +111,45 @@ export function CourseInfoPopover({
   );
 }
 
+function FullSectionIndicator({
+  listing,
+  section,
+  badge,
+}: {
+  readonly listing: CatalogListing;
+  readonly section: string;
+  readonly badge: boolean;
+}) {
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={(props) => (
+        <Tooltip
+          id={`section-full-${listing.course.season_code}-${listing.crn}`}
+          {...props}
+        >
+          <small>{sectionFullTooltip}</small>
+        </Tooltip>
+      )}
+    >
+      <span className={badge ? styles.fullBadge : styles.fullSection}>
+        {badge ? 'Full' : section}
+        {!badge && <span className="visually-hidden">, full</span>}
+      </span>
+    </OverlayTrigger>
+  );
+}
+
 export function CourseCode({
   listing,
   subdueSection,
+  showFullBadge = false,
 }: {
   readonly listing: CatalogListing;
   readonly subdueSection: boolean;
+  readonly showFullBadge?: boolean;
 }) {
+  const full = isSectionFull(listing.course);
   const section = listing.course.section
     ? ` ${listing.course.section.padStart(2, '0')}`
     : '';
@@ -143,7 +177,16 @@ export function CourseCode({
         <span>{listing.subject}</span>
       </OverlayTrigger>{' '}
       {listing.number}
-      {subdueSection ? (
+      {full && listing.course.section ? (
+        <>
+          {showFullBadge && section}
+          <FullSectionIndicator
+            listing={listing}
+            section={section}
+            badge={showFullBadge}
+          />
+        </>
+      ) : subdueSection ? (
         <TextComponent type="secondary">{section}</TextComponent>
       ) : (
         section

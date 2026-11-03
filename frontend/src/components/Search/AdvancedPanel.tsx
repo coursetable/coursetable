@@ -219,6 +219,7 @@ function AdvancedPanel() {
     'searchDescription',
     'enableQuist',
     'hideCancelled',
+    'hideFull',
     'hideConflicting',
     'selectBuilding',
   ];
@@ -380,6 +381,7 @@ function AdvancedPanel() {
           <Toggle handle="searchDescription" />
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
+          <Toggle handle="hideFull" />
           <Toggle handle="hideConflicting" />
         </div>
       </div>

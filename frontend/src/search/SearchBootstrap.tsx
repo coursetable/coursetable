@@ -40,6 +40,7 @@ import {
   getProfessorRatings,
   isGraduate,
   isDiscussionSection,
+  isSectionFull,
   sortCourses,
   toLocationsSummary,
   toRangeTime,
@@ -281,6 +282,7 @@ export function SearchBootstrap({
   const searchDescription = useFilterState('searchDescription');
   const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
+  const hideFull = useFilterState('hideFull');
   const hideConflicting = useFilterState('hideConflicting');
   const includeAttributes = useFilterState('includeAttributes');
   const excludeAttributes = useFilterState('excludeAttributes');
@@ -562,6 +564,8 @@ export function SearchBootstrap({
         if (hideCancelled.value && listing.course.extra_info !== 'ACTIVE')
           return false;
 
+        if (hideFull.value && isSectionFull(listing.course)) return false;
+
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
@@ -713,6 +717,7 @@ export function SearchBootstrap({
       enrollBounds,
       numBounds,
       hideCancelled.value,
+      hideFull.value,
       hideConflicting.value,
       getRelevantWorksheetNumber,
       worksheets,

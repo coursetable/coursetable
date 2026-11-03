@@ -52,6 +52,7 @@ export function getFilterFromParams<K extends keyof Filters>(
 
         case 'enableQuist':
         case 'hideCancelled':
+        case 'hideFull':
         case 'hideConflicting':
         case 'searchDescription':
           return handleBooleanFilter(value, fallback);
@@ -199,6 +200,7 @@ function handleSelectFilter<K extends keyof Filters>(
         case 'searchDescription':
         case 'enableQuist':
         case 'hideCancelled':
+        case 'hideFull':
         case 'hideConflicting':
         case 'overallBounds':
         case 'workloadBounds':

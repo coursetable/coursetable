@@ -70,6 +70,7 @@ query catalogBySeason($season: String!) {
     same_course_id
     season_code
     section
+    section_full
     skills
     sysem
     course_meetings {
