@@ -37,7 +37,6 @@ import {
   type WorksheetCourse,
 } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
-import BetaPill from '../BetaPill';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
@@ -526,7 +525,7 @@ function WorksheetCalendarList({
                 label={
                   <span className={styles.walkTimesLabel}>
                     Show walk times
-                    <BetaPill />
+                    <span className={styles.betaPill}>Beta</span>
                   </span>
                 }
                 checked={showWalkingTimes}
