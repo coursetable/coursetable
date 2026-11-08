@@ -114,7 +114,7 @@ function BuildingMapPreview({
   );
 
   return (
-    <>
+    <div className={styles.preview}>
       <MapContainer
         className={styles.map}
         center={[lat, lng]}
@@ -172,7 +172,7 @@ function BuildingMapPreview({
           &copy; OpenStreetMap contributors &copy; CARTO
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -56,3 +56,8 @@
 .mapPopover {
   max-width: none;
 }
+
+.mapContainer {
+  width: min(320px, calc(100vw - 32px));
+  height: 280px;
+}

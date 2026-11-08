@@ -442,6 +442,8 @@ function LocationText({
     >
       <OverlayTrigger
         placement="top"
+        // The map is tall, so open below when there's no room above
+        flip
         trigger={['hover', 'focus']}
         delay={{ show: showMap ? 0 : 250, hide: 0 }}
         show={showMap}
@@ -468,12 +470,16 @@ function LocationText({
             }}
           >
             <Popover.Body className="p-1">
-              <BuildingMapPreview
-                buildingCode={buildingCode}
-                lat={coords.lat}
-                lng={coords.lng}
-                seasonCode={seasonCode}
-              />
+              {/* Fixed size so the popover is positioned correctly while the
+                  map is still loading */}
+              <div className={styles.mapContainer}>
+                <BuildingMapPreview
+                  buildingCode={buildingCode}
+                  lat={coords.lat}
+                  lng={coords.lng}
+                  seasonCode={seasonCode}
+                />
+              </div>
             </Popover.Body>
           </Popover>
         )}

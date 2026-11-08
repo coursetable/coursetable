@@ -1,6 +1,12 @@
+.preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .map {
-  width: min(320px, calc(100vw - 32px));
-  height: 240px;
+  flex: 1;
+  min-height: 0;
   border-radius: 4px;
 }
 
@@ -10,6 +16,11 @@
   justify-content: space-between;
   gap: 0.5rem;
   padding: 0.25rem 0.125rem 0;
+}
+
+.footer > :global(.btn) {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .attribution {
