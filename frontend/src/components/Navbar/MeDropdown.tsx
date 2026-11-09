@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
 import { BsFillPersonFill } from 'react-icons/bs';
-import { FaRegMoon, FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import {
   FcCalendar,
   FcComboChart,
@@ -17,16 +17,16 @@ import {
   FcDownload,
   FcLock,
 } from 'react-icons/fc';
-import { FiSmile } from 'react-icons/fi';
-import { ImSun } from 'react-icons/im';
 
 import { useShallow } from 'zustand/react/shallow';
 import { API_ENDPOINT } from '../../config';
+import yalemojiIcon from '../../images/yalemoji.svg';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import { createCatalogLink } from '../../utilities/navigation';
 import { SurfaceComponent, TextComponent } from '../Typography';
+import DarkModeButton from './DarkModeButton';
 import styles from './MeDropdown.module.css';
 
 const YALEMOJI_URL = 'https://yalemoji.com?ref=ct';
@@ -121,8 +121,6 @@ function DropdownContent({
   const user = useStore((state) => state.user);
   const refreshAuth = useStore((state) => state.refreshAuth);
   const toggleTutorial = useStore((state) => state.toggleTutorial);
-  const theme = useStore((state) => state.theme);
-  const toggleTheme = useStore((state) => state.toggleTheme);
   const userFirstName =
     authStatus === 'authenticated' ? user?.firstName?.trim() : undefined;
   const closeAndScroll = (e: React.MouseEvent) => {
@@ -143,18 +141,6 @@ function DropdownContent({
           collapsing animation */}
         <div>
           <div className={styles.identityHeader}>
-            <button
-              type="button"
-              className={styles.themeToggle}
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            >
-              {theme === 'light' ? (
-                <ImSun size={17} />
-              ) : (
-                <FaRegMoon size={16} />
-              )}
-            </button>
             <a
               className={styles.headerEdit}
               href={YALEMOJI_URL}
@@ -162,7 +148,13 @@ function DropdownContent({
               rel="noreferrer noopener"
               aria-label="Build your YaleMoji"
             >
-              <FiSmile size={17} strokeWidth={1.7} />
+              <img
+                src={yalemojiIcon}
+                alt=""
+                className={styles.headerEditIcon}
+                width={20}
+                height={16}
+              />
             </a>
             <div className={styles.headerInitials} title={fullName}>
               {initials ? (
@@ -180,6 +172,7 @@ function DropdownContent({
           <div className={styles.menuItems}>
             {showMobileNavLinks && (
               <>
+                <DarkModeButton className={styles.dropdownItem} />
                 <DropdownItem
                   icon={FcComboChart}
                   to={createCatalogLink()}

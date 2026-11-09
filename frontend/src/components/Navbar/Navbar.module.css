@@ -38,6 +38,12 @@
   }
 }
 
+.navbarDarkModeBtn {
+  padding-right: 1rem !important;
+  transition: 0.1s;
+  display: flex;
+}
+
 .navbarLinks {
   position: relative;
 }

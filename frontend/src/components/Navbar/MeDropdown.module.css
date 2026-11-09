@@ -121,31 +121,12 @@
   color: var(--color-text-light);
 }
 
-.themeToggle {
-  position: absolute;
-  top: 0.85rem;
-  left: 0.85rem;
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 999px;
-  color: var(--color-text-light);
-  background-color: transparent;
-  transition: opacity 0.1s;
-}
-
-.themeToggle:hover {
-  opacity: 0.75;
-}
-
 .headerEdit {
   position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
-  width: 30px;
-  height: 30px;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
   color: var(--color-text-light);
@@ -155,13 +136,30 @@
 
 .headerEdit:hover {
   color: var(--color-text-light);
-  opacity: 0.75;
+}
+
+.headerEditIcon {
+  display: block;
+  width: 20px;
+  height: auto;
+  opacity: 0.65;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 40%));
+  transition: opacity 0.12s ease, filter 0.12s ease;
+}
+
+.headerEdit:hover .headerEditIcon,
+.headerEdit:focus-visible .headerEditIcon {
+  opacity: 1;
+  filter: drop-shadow(0 1px 3px rgb(0 0 0 / 60%));
+}
+
+[data-theme='dark'] .headerEditIcon {
+  filter: brightness(0);
 }
 
 [data-theme='dark'] .identityHeader,
 [data-theme='dark'] .identityHeader .yalemojiPrompt,
 [data-theme='dark'] .identityHeader .yalemojiPrompt:hover,
-[data-theme='dark'] .identityHeader .themeToggle,
 [data-theme='dark'] .identityHeader .headerEdit,
 [data-theme='dark'] .identityHeader .headerEdit:hover {
   color: var(--color-text-dark);
@@ -184,8 +182,8 @@
   }
 
   .identityHeader {
-    min-height: 118px;
-    border-radius: 16px;
+    min-height: 168px;
+    border-radius: 24px;
   }
 
   .menuItems {

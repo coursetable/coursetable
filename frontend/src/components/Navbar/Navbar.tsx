@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { Nav, Navbar } from 'react-bootstrap';
 import PWAPrompt from 'react-ios-pwa-prompt';
 import AppsDropdown from './AppsDropdown';
+import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
 import { useStore } from '../../store';
@@ -128,6 +129,7 @@ export default function CourseTableNavbar() {
                 onClick={() => setNavExpanded(false)}
                 className={styles.navbarLinks}
               >
+                <DarkModeButton className={styles.navbarDarkModeBtn} />
                 <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
                 <NavbarLink to="/worksheet">
                   <span data-tutorial="worksheet-1">Worksheet</span>
