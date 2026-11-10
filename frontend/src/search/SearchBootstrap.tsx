@@ -45,6 +45,7 @@ import {
   toRangeTime,
   toWeekdayStrings,
 } from '../utilities/course';
+import { saveCatalogSearch } from '../utilities/navigation';
 import {
   buildCatalogSearchParams,
   getFilterFromParams,
@@ -152,14 +153,9 @@ function useSearchUrlSync(
       defaultFilters,
       searchParams,
     );
-    const nextSearch = nextParams.toString();
+    if (nextParams.toString() === searchParams.toString()) return;
 
-    if (nextSearch === searchParams.toString()) return;
-
-    sessionStorage.setItem(
-      'lastCatalogSearch',
-      nextSearch ? `?${nextSearch}` : '',
-    );
+    saveCatalogSearch(nextParams);
     setSearchParams(nextParams);
   }, [
     location.pathname,
