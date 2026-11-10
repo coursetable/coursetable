@@ -486,13 +486,16 @@ export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
   return listing.school !== 'YC' && listing.school !== 'SU';
 }
 
-export function isSectionFull(course: {
+export function isSectionFull(listing: {
   section_full?: boolean | null;
-  season_code: Season;
+  course: { season_code: Season };
 }): boolean {
   // Historical seasons keep their last-known fullness forever, so only
   // surface the indicator for seasons we still update.
-  return course.section_full === true && CUR_YEAR.includes(course.season_code);
+  return (
+    listing.section_full === true &&
+    CUR_YEAR.includes(listing.course.season_code)
+  );
 }
 
 export function isDiscussionSection(

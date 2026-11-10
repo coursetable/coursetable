@@ -71,7 +71,6 @@ export type CatalogBySeasonQuery = {
     same_course_id: number;
     season_code: string;
     section: string;
-    section_full: boolean;
     skills: any;
     sysem: boolean;
     title: string;
@@ -95,6 +94,7 @@ export type CatalogBySeasonQuery = {
       crn: number;
       number: string;
       school: string;
+      section_full: boolean;
       subject: string;
     }>;
     course_meetings: Array<{
@@ -194,6 +194,7 @@ export const CatalogBySeasonDocument = gql`
         crn
         number
         school
+        section_full
         subject
       }
       primary_crn
@@ -202,7 +203,6 @@ export const CatalogBySeasonDocument = gql`
       same_course_id
       season_code
       section
-      section_full
       skills
       sysem
       course_meetings {

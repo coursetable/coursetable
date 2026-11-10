@@ -564,7 +564,7 @@ export function SearchBootstrap({
         if (hideCancelled.value && listing.course.extra_info !== 'ACTIVE')
           return false;
 
-        if (hideFull.value && isSectionFull(listing.course)) return false;
+        if (hideFull.value && isSectionFull(listing)) return false;
 
         if (
           hideConflicting.value &&

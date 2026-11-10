@@ -274,7 +274,7 @@ describe('isSectionFull', () => {
     expect(
       isSectionFull({
         section_full: true,
-        season_code: currentSeason,
+        course: { season_code: currentSeason },
       }),
     ).toBe(true);
   });
@@ -283,7 +283,7 @@ describe('isSectionFull', () => {
     expect(
       isSectionFull({
         section_full: true,
-        season_code: '202503' as Season,
+        course: { season_code: '202503' as Season },
       }),
     ).toBe(false);
   });
@@ -292,13 +292,15 @@ describe('isSectionFull', () => {
     expect(
       isSectionFull({
         section_full: false,
-        season_code: currentSeason,
+        course: { season_code: currentSeason },
       }),
     ).toBe(false);
   });
 
   it('returns false when section_full is omitted', () => {
-    expect(isSectionFull({ season_code: currentSeason })).toBe(false);
+    expect(isSectionFull({ course: { season_code: currentSeason } })).toBe(
+      false,
+    );
   });
 });
 

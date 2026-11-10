@@ -149,7 +149,7 @@ export function CourseCode({
   readonly subdueSection: boolean;
   readonly showFullBadge?: boolean;
 }) {
-  const full = isSectionFull(listing.course);
+  const full = isSectionFull(listing);
   const section = listing.course.section
     ? ` ${listing.course.section.padStart(2, '0')}`
     : '';

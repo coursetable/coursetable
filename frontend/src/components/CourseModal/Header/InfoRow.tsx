@@ -40,7 +40,7 @@ function SectionLink({
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const [searchParams] = useSearchParams();
-  const full = isSectionFull(section.course);
+  const full = isSectionFull(section);
   const timeString = section.course.course_meetings
     .map(
       (session) =>
@@ -109,7 +109,7 @@ function SectionsDropdown({
 }) {
   const hasDifferentTitles =
     new Set(sections.map((section) => section.course.title)).size > 1;
-  const full = isSectionFull(listing.course);
+  const full = isSectionFull(listing);
   const sectionsOptions: Map<string, Option> = new Map<string, Option>(
     // @ts-expect-error: TODO it actually works to have a ReactNode as label
     sections.map((section) => [
