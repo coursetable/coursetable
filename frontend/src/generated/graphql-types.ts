@@ -713,7 +713,6 @@ export type Courses = {
   season_code: Scalars['Season']['output'];
   /** Course section. Note that the section number is the same for all cross-listings. */
   section: Scalars['String']['output'];
-  section_full: Scalars['Boolean']['output'];
   /** Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels) */
   skills: Scalars['StringArr']['output'];
   /** Link to the syllabus */
@@ -900,7 +899,6 @@ export type CoursesBoolExp = {
   season: InputMaybe<SeasonsBoolExp>;
   season_code: InputMaybe<StringComparisonExp>;
   section: InputMaybe<StringComparisonExp>;
-  section_full: InputMaybe<BooleanComparisonExp>;
   skills: InputMaybe<JsonbComparisonExp>;
   syllabus_url: InputMaybe<StringComparisonExp>;
   sysem: InputMaybe<BooleanComparisonExp>;
@@ -1087,7 +1085,6 @@ export type CoursesOrderBy = {
   season: InputMaybe<SeasonsOrderBy>;
   season_code: InputMaybe<OrderBy>;
   section: InputMaybe<OrderBy>;
-  section_full: InputMaybe<OrderBy>;
   skills: InputMaybe<OrderBy>;
   syllabus_url: InputMaybe<OrderBy>;
   sysem: InputMaybe<OrderBy>;
@@ -1165,8 +1162,6 @@ export enum CoursesSelectColumn {
   SeasonCode = 'season_code',
   /** column name */
   Section = 'section',
-  /** column name */
-  SectionFull = 'section_full',
   /** column name */
   Skills = 'skills',
   /** column name */
@@ -1372,7 +1367,6 @@ export type CoursesStreamCursorValueInput = {
   season_code: InputMaybe<Scalars['String']['input']>;
   /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<Scalars['String']['input']>;
-  section_full: InputMaybe<Scalars['Boolean']['input']>;
   /** Skills that the course fulfills (e.g. writing, quantitative reasoning, language levels) */
   skills: InputMaybe<Scalars['jsonb']['input']>;
   /** Link to the syllabus */
@@ -2492,6 +2486,7 @@ export type Listings = {
   season_code: Scalars['Season']['output'];
   /** Course section. Note that the section number is the same for all cross-listings. */
   section: Scalars['String']['output'];
+  section_full: Scalars['Boolean']['output'];
   /** Subject the course is listed under (e.g. "AMST") */
   subject: Scalars['String']['output'];
   time_added: Maybe<Scalars['timestamp']['output']>;
@@ -2538,6 +2533,7 @@ export type ListingsBoolExp = {
   season: InputMaybe<SeasonsBoolExp>;
   season_code: InputMaybe<StringComparisonExp>;
   section: InputMaybe<StringComparisonExp>;
+  section_full: InputMaybe<BooleanComparisonExp>;
   subject: InputMaybe<StringComparisonExp>;
   time_added: InputMaybe<TimestampComparisonExp>;
 };
@@ -2603,6 +2599,7 @@ export type ListingsOrderBy = {
   season: InputMaybe<SeasonsOrderBy>;
   season_code: InputMaybe<OrderBy>;
   section: InputMaybe<OrderBy>;
+  section_full: InputMaybe<OrderBy>;
   subject: InputMaybe<OrderBy>;
   time_added: InputMaybe<OrderBy>;
 };
@@ -2627,6 +2624,8 @@ export enum ListingsSelectColumn {
   SeasonCode = 'season_code',
   /** column name */
   Section = 'section',
+  /** column name */
+  SectionFull = 'section_full',
   /** column name */
   Subject = 'subject',
   /** column name */
@@ -2690,6 +2689,7 @@ export type ListingsStreamCursorValueInput = {
   season_code: InputMaybe<Scalars['String']['input']>;
   /** Course section. Note that the section number is the same for all cross-listings. */
   section: InputMaybe<Scalars['String']['input']>;
+  section_full: InputMaybe<Scalars['Boolean']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject: InputMaybe<Scalars['String']['input']>;
   time_added: InputMaybe<Scalars['timestamp']['input']>;
@@ -3875,7 +3875,6 @@ export type CatalogBySeasonQuery = {
     same_course_id: number;
     season_code: Season;
     section: string;
-    section_full: boolean;
     skills: StringArr;
     sysem: boolean;
     title: string;
@@ -3899,6 +3898,7 @@ export type CatalogBySeasonQuery = {
       crn: Crn;
       number: string;
       school: string;
+      section_full: boolean;
       subject: string;
     }>;
     course_meetings: Array<{
@@ -4028,6 +4028,7 @@ export type CourseModalPrefetchListingDataFragment = {
   __typename?: 'listings';
   crn: Crn;
   course_code: string;
+  section_full: boolean;
   course: { __typename?: 'courses' } & CourseModalPrefetchCourseDataFragment;
 };
 
@@ -4035,7 +4036,6 @@ export type CourseModalPrefetchCourseDataFragment = {
   __typename?: 'courses';
   season_code: Season;
   section: string;
-  section_full: boolean;
   title: string;
   skills: StringArr;
   areas: StringArr;
@@ -4043,7 +4043,12 @@ export type CourseModalPrefetchCourseDataFragment = {
   description: string | null;
   same_course_id: number;
   primary_crn: Crn | null;
-  listings: Array<{ __typename?: 'listings'; crn: Crn; course_code: string }>;
+  listings: Array<{
+    __typename?: 'listings';
+    crn: Crn;
+    course_code: string;
+    section_full: boolean;
+  }>;
   course_professors: Array<{
     __typename?: 'course_professors';
     professor: { __typename?: 'professors'; professor_id: number };
