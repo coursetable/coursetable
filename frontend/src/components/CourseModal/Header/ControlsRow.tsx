@@ -139,7 +139,7 @@ function ViewTabs({
               key={value}
               placement="top"
               overlay={(props) => (
-                <Tooltip {...props} id="popover-disabled-tab">
+                <Tooltip {...props} id={`popover-disabled-${value}`}>
                   {disabledMessage}
                 </Tooltip>
               )}
