@@ -1,0 +1,181 @@
+.overlapStack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.overlapMeasure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.overlapRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  padding: 2px 4px 2px 6px;
+  border: 0;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+  background: var(--overlap-row-bg, rgb(0 0 0 / 12%));
+  border-left: 3px solid var(--overlap-accent, var(--color-border));
+  color: var(--overlap-row-fg, var(--color-text-dark));
+  line-height: 1.2;
+}
+
+.overlapRow:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.overlapRowMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.overlapCode {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overlapTitle {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.92;
+}
+
+.overlapLocation {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin-top: 1px;
+  font-size: 10px;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.overlapMore {
+  align-self: flex-start;
+  margin-top: 1px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgb(0 0 0 / 18%);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.overlapMore:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.overlapPopover {
+  max-width: min(320px, calc(100vw - 24px));
+  z-index: 1080;
+  box-shadow:
+    0 12px 28px rgb(0 0 0 / 18%),
+    0 4px 10px rgb(0 0 0 / 12%);
+}
+
+.overlapPopoverHeader {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.overlapPopoverBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  max-height: min(360px, 70vh);
+  overflow-y: auto;
+}
+
+.overlapPopoverRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgb(0 0 0 / 10%);
+  border-radius: 6px;
+  border-left-width: 4px;
+  border-left-color: var(--pop-accent, var(--color-primary));
+  background: color-mix(
+    in srgb,
+    var(--pop-accent, var(--color-primary)) 14%,
+    var(--color-surface)
+  );
+  color: var(--pop-row-fg, var(--color-text-dark));
+  text-align: left;
+  cursor: pointer;
+}
+
+.overlapPopoverRow:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.overlapPopoverCode {
+  font-size: 0.88rem;
+  font-weight: 700;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.overlapPopoverTitle {
+  font-size: 0.84rem;
+  line-height: 1.25;
+  width: 100%;
+}
+
+.overlapPopoverMeta {
+  font-size: 0.78rem;
+  opacity: 0.88;
+  width: 100%;
+}
+
+:global([data-theme='dark']) .overlapMore {
+  border-color: rgb(255 255 255 / 22%);
+}
+
+:global([data-theme='dark']) .overlapPopoverRow {
+  border-color: rgb(255 255 255 / 16%);
+}

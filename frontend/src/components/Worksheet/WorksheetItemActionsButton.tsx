@@ -15,7 +15,11 @@ import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
 import { useShallow } from 'zustand/react/shallow';
-import { CalendarEventBody, useEventStyle } from './CalendarEvent';
+import {
+  BigCalendarGhostFocusWrapper,
+  CalendarEventBody,
+  useEventStyle,
+} from './CalendarEvent';
 import { updateWorksheetCourses } from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
@@ -365,7 +369,10 @@ function Preview({
         max={end}
         localizer={localizer}
         toolbar={false}
-        components={{ event: CalendarEventBody }}
+        components={{
+          event: CalendarEventBody,
+          eventWrapper: BigCalendarGhostFocusWrapper,
+        }}
         eventPropGetter={eventStyleGetter}
         tooltipAccessor={undefined}
         onNavigate={() => {}}
