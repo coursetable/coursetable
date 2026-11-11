@@ -62,6 +62,7 @@ query catalogBySeason($season: String!) {
       crn
       number
       school
+      section_full
       subject
     }
     primary_crn

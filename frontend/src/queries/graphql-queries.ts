@@ -17,6 +17,7 @@ export const CourseModalPrefetchCourseDataFragmentDoc = gql`
     listings {
       crn
       course_code
+      section_full
     }
     course_professors {
       professor {
@@ -37,6 +38,7 @@ export const CourseModalPrefetchListingDataFragmentDoc = gql`
   fragment CourseModalPrefetchListingData on listings {
     crn
     course_code
+    section_full
     course {
       ...CourseModalPrefetchCourseData
     }

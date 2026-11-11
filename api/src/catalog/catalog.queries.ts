@@ -94,6 +94,7 @@ export type CatalogBySeasonQuery = {
       crn: number;
       number: string;
       school: string;
+      section_full: boolean;
       subject: string;
     }>;
     course_meetings: Array<{
@@ -193,6 +194,7 @@ export const CatalogBySeasonDocument = gql`
         crn
         number
         school
+        section_full
         subject
       }
       primary_crn

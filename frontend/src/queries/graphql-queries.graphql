@@ -90,6 +90,7 @@ query CourseModalOverviewData(
 fragment CourseModalPrefetchListingData on listings {
   crn
   course_code
+  section_full
   course {
     ...CourseModalPrefetchCourseData
   }
@@ -109,6 +110,7 @@ fragment CourseModalPrefetchCourseData on courses {
   listings {
     crn
     course_code
+    section_full
   }
   course_professors {
     professor {
