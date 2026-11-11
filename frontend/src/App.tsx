@@ -36,6 +36,7 @@ const SentryRoutes = Sentry.withSentryReactRouterV7Routing(Routes);
 const Landing = suspended(() => import('./pages/Landing'));
 const About = suspended(() => import('./pages/About'));
 const FAQ = suspended(() => import('./pages/FAQ'));
+const Games = suspended(() => import('./pages/Games'));
 const Privacy = suspended(() => import('./pages/Privacy.mdx'));
 const NotFound = suspended(() => import('./pages/NotFound'));
 const Challenge = suspended(() => import('./pages/Challenge'));
@@ -184,6 +185,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/joinus" element={<Join />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/games" element={<Games />} />
         <Route path="/privacypolicy" element={<Privacy />} />
         <Route path="/u/:netId" element={<UserProfile />} />
 
