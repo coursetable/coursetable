@@ -31,6 +31,7 @@ import { worksheetColors } from '../../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
+  getPersonalBlockConflicts,
   toSeasonString,
   type ListingWithTimes,
 } from '../../utilities/course';
@@ -67,14 +68,14 @@ function CourseConflictIcon({
     const blocks =
       worksheets?.get(listing.course.season_code)?.get(worksheetNumber)
         ?.personalBlocks ?? [];
-    // Existing courses and the course modal only need commitment warnings.
-    const conflicts = checkConflict(
-      inWorksheet || modal ? [] : data,
-      listing,
-      blocks,
-    );
-    if (conflicts.length > 0)
-      return `Conflicts with: ${conflicts.map((conflict) => conflict.course_code).join(', ')}`;
+    const courseConflicts =
+      inWorksheet || modal ? [] : checkConflict(data, listing);
+    const conflictNames = [
+      ...courseConflicts.map((course) => course.course_code),
+      ...getPersonalBlockConflicts(blocks, listing).map((block) => block.title),
+    ];
+    if (conflictNames.length > 0)
+      return `Conflicts with: ${conflictNames.join(', ')}`;
     if (inWorksheet) return undefined;
     if (modal) {
       if (!CUR_YEAR.includes(listing.course.season_code))

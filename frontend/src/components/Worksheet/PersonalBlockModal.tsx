@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
+import { updateWorksheetMetadata } from '../../queries/api';
+import type { Season } from '../../queries/graphql-types';
+import { useStore } from '../../store';
 import {
   personalBlockSchema,
   personalBlocksSchema,
   type PersonalBlock,
-} from '../../../../shared/personalBlock.mjs';
-import { updateWorksheetMetadata } from '../../queries/api';
-import type { Season } from '../../queries/graphql-types';
-import { useStore } from '../../store';
+} from '../../utilities/personalBlock';
 
 function PersonalBlockModal({
   block,
@@ -37,7 +37,7 @@ function PersonalBlockModal({
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
   const validation = personalBlockSchema.safeParse(draft);
 
-  const save = async (action: 'save' | 'delete') => {
+  const updateBlocks = async (action: 'save' | 'delete') => {
     if (saving) return;
 
     let personalBlocks = blocks.filter((item) => item.id !== draft.id);
@@ -94,7 +94,7 @@ function PersonalBlockModal({
       <Form
         onSubmit={(event) => {
           event.preventDefault();
-          void save('save');
+          void updateBlocks('save');
         }}
       >
         <Modal.Body>
@@ -182,7 +182,7 @@ function PersonalBlockModal({
               variant="danger"
               disabled={saving}
               onClick={() => {
-                void save('delete');
+                void updateBlocks('delete');
               }}
             >
               Delete

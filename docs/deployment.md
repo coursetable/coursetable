@@ -49,46 +49,6 @@ Deploys both frontend to Cloudflare pages and backend to production API Docker N
 
 ## Manual deployment
 
-### Releases that change the database schema
-
-Staging CD and Production CD pause both the API and frontend deployments when
-`api/drizzle/schema.ts` changes. This prevents a new frontend from reaching an
-API that does not support its requests. Shared code and root dependency changes
-trigger both builds, and the frontend waits for a successful API deployment and
-health check whenever the API is being deployed.
-
-For the personal-block feature, the schema change adds the non-null JSONB
-`worksheets.personalBlocks` column with an empty-array default. Existing
-worksheets and courses are preserved; saved searches are unchanged. The
-equivalent SQL is in `api/drizzle/personal-blocks.sql`. CI tests that SQL against
-existing data and runs it twice to check that it is safe to repeat.
-
-Use the following rollout order, selecting the same Git revision throughout:
-
-1. Run the **DB Migration** workflow with **Staging** selected. Review any
-   proposed schema changes before proceeding. This workflow runs Drizzle's
-   schema push; SQL files are not applied automatically.
-2. Manually run **Staging CD**, selecting the API and frontend and checking
-   **Database migration has been applied for this revision**. The API must
-   deploy and pass its health check before the frontend can deploy.
-3. Verify existing worksheets and course bookmarks, then create, edit, and
-   delete personal commitments. Reload the page to confirm persistence, check
-   conflict warnings, and confirm friends' worksheets do not expose personal
-   commitments.
-4. After staging verification and maintainer approval, run **DB Migration**
-   with **Production** selected, then manually run **Production CD** with the
-   same selections and migration confirmation.
-5. Repeat the worksheet and commitment smoke checks on production.
-
-Only confirm the migration after it succeeds in the selected environment for
-the revision being deployed. The confirmation does not perform the migration.
-Frontend-only PR previews use the existing staging API; commitment saves cannot
-be tested there until staging has the corresponding database and API changes.
-
-If a frontend rollback is needed, retain the updated API and database column so
-existing commitments remain protected. The pre-feature API can delete a main
-worksheet when its last course is removed, even if it contains commitments.
-
 ### Bootstrapping a new server
 
 - Install [`docker`](https://docs.docker.com/engine/install/ubuntu/)

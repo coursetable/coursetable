@@ -3,13 +3,13 @@ import chroma from 'chroma-js';
 import { and, count, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
+import { personalBlocksSchema } from './personalBlock.js';
 import { getSdk } from './user.queries.js';
 import {
   getNextAvailableWsNumber,
   worksheetListToMap,
   fetchSameCourseIdMappings,
 } from './user.utils.js';
-import { personalBlocksSchema } from '../../../shared/personalBlock.mjs';
 
 import {
   studentBluebookSettings,
@@ -74,7 +74,7 @@ async function updateWorksheetCourse(
       eq(worksheets.season, season),
       eq(worksheets.worksheetNumber, worksheetNumber),
     ),
-    columns: { id: true, personalBlocks: true },
+    columns: { id: true },
   });
   // Only the main worksheet can be implicitly created
   if (!existingMeta && action === 'add' && worksheetNumber === 0) {
@@ -86,10 +86,7 @@ async function updateWorksheetCourse(
         worksheetNumber,
         name: 'Main Worksheet',
       })
-      .returning({
-        id: worksheets.id,
-        personalBlocks: worksheets.personalBlocks,
-      });
+      .returning({ id: worksheets.id });
   }
   if (!existingMeta) return 'WORKSHEET_NOT_FOUND';
   const existing = await db.query.worksheetCourses.findFirst({
@@ -134,15 +131,11 @@ async function updateWorksheetCourse(
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
     // Only implicitly delete the main worksheet if it's empty
-    if (
-      numCoursesInCurWorksheet === 0 &&
-      worksheetNumber === 0 &&
-      existingMeta.personalBlocks.length === 0
-    ) {
+    if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0) {
       await db.delete(worksheets).where(
         and(
           eq(worksheets.id, existingMeta.id),
-          // A commitment may have been saved since existingMeta was read.
+          // Recheck at deletion time to preserve concurrent commitment saves.
           eq(worksheets.personalBlocks, []),
         ),
       );

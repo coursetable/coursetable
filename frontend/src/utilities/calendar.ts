@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import { weekdays } from './constants';
 import { toSeasonString } from './course';
-import type { PersonalBlock } from '../../../shared/personalBlock.mjs';
+import type { PersonalBlock } from './personalBlock';
 import {
   academicCalendars,
   type SimpleDate,

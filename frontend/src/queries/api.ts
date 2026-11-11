@@ -13,10 +13,6 @@ import {
   type Crn,
   type NetId,
 } from './graphql-types';
-import {
-  personalBlocksSchema,
-  type PersonalBlock,
-} from '../../../shared/personalBlock.mjs';
 
 import { API_ENDPOINT } from '../config';
 import type {
@@ -29,6 +25,10 @@ import {
   getCatalogCacheBustToken,
   isCatalogEndpoint,
 } from '../utilities/catalogCache';
+import {
+  personalBlocksSchema,
+  type PersonalBlock,
+} from '../utilities/personalBlock';
 
 // Coalesce identical concurrent worksheet updates (e.g., double-clicks).
 const inflightWorksheetUpdates = new Map<string, Promise<boolean>>();
@@ -384,7 +384,7 @@ export async function updateWorksheetMetadata(
     body,
     breadcrumb: {
       category: 'worksheet',
-      message: `Updating worksheet metadata`,
+      message: `Updating worksheet names`,
     },
     handleErrorCode(err) {
       switch (err) {

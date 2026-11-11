@@ -22,7 +22,6 @@ import {
   ColorPickerModal,
   WorksheetMoveModal,
 } from './WorksheetItemActionsButton';
-import type { PersonalBlock } from '../../../../shared/personalBlock.mjs';
 import { useStore } from '../../store';
 import {
   localizer,
@@ -33,6 +32,7 @@ import {
   type WalkBefore,
 } from '../../utilities/calendar';
 import { getPersonalBlockConflicts } from '../../utilities/course';
+import type { PersonalBlock } from '../../utilities/personalBlock';
 import {
   getBuildingCodeFromLocation,
   getWalkingMinutes,

@@ -1,9 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getPersonalBlockEvents } from './calendar';
-import {
-  personalBlockSchema,
-  personalBlocksSchema,
-} from '../../../shared/personalBlock.mjs';
+import { personalBlockSchema, personalBlocksSchema } from './personalBlock';
 
 const block = {
   id: 'b78d394d-85ec-428b-98bf-49f199d2e346',

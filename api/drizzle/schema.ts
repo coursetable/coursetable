@@ -12,7 +12,7 @@ import {
   serial,
   integer,
 } from 'drizzle-orm/pg-core';
-import type { PersonalBlock } from '../../shared/personalBlock.mjs';
+import type { PersonalBlock } from '../src/user/personalBlock.js';
 
 /** Shared by name / email / year / school / major visibility columns. */
 export const profileVisibilityEnum = pgEnum('profile_visibility', [

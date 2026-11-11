@@ -5,9 +5,6 @@ on:
     branches: [master]
     paths:
       - 'frontend/**'
-      - 'shared/**'
-      - 'package.json'
-      - 'bun.lock'
       - '.github/workflows/preview_cd.yml'
 
 jobs:
@@ -26,12 +23,10 @@ jobs:
       - name: Encode URL Branch
         id: encode_url_branch
         uses: actions/github-script@v7
-        env:
-          HEAD_REF: ${{ github.head_ref }}
         with:
           result-encoding: string
           script: |
-            return process.env.HEAD_REF.replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-17).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
+            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-17).match(/[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
       - uses: dopplerhq/secrets-fetch-action@v1.2.0
         id: doppler
         with:
@@ -54,10 +49,8 @@ jobs:
         run: |
           bunx wrangler pages deploy frontend/build --project-name=coursetable --branch=${{ steps.encode_url_branch.outputs.result }}-preview | tee deploy.log
           DEPLOY_URL=$(grep -oP 'https://[^\s]+' deploy.log | head -n 1)
-          echo "DEPLOY_URL=${DEPLOY_URL}" >> "$GITHUB_OUTPUT"
+          echo "DEPLOY_URL=${DEPLOY_URL}" >> $GITHUB_OUTPUT
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
-            This preview deploys only the frontend and uses the existing staging API. Backend features require the matching API and database migration in staging before they can be tested here.
-
             Thanks for your pull request! The preview of your changes is available at https://${{ steps.encode_url_branch.outputs.result }}-preview.coursetable.pages.dev

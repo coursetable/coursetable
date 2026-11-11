@@ -53,11 +53,6 @@ export default defineConfig(
       ],
       'css-modules/no-unused-class': 'error',
       'css-modules/no-undef-class': 'error',
-      // Both workspaces intentionally import shared modules from the repo root.
-      'import-x/no-relative-packages': [
-        'warn',
-        { ignore: ['^(?:\\.\\./)+shared/'] },
-      ],
       'import-x/no-extraneous-dependencies': [
         'error',
         {

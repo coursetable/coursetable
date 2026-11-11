@@ -6,9 +6,6 @@ on:
     paths:
       - 'frontend/**'
       - 'api/**'
-      - 'shared/**'
-      - 'package.json'
-      - 'bun.lock'
       - '.github/workflows/staging_cd.yml'
 
   workflow_dispatch:
@@ -19,10 +16,6 @@ on:
       frontend:
         description: 'Deploy Frontend'
         type: boolean
-      schema_ready:
-        description: 'Database migration has been applied for this revision'
-        type: boolean
-        default: false
 
 jobs:
   changes:
@@ -47,36 +40,16 @@ jobs:
           filters: |
             api:
               - 'api/**'
-              - 'shared/**'
-              - 'package.json'
-              - 'bun.lock'
               - '.github/workflows/staging_cd.yml'
             frontend:
               - 'frontend/**'
-              - 'shared/**'
-              - 'package.json'
-              - 'bun.lock'
               - '.github/workflows/staging_cd.yml'
             db:
-              - 'api/drizzle/schema.ts'
-
-      - name: Explain required schema rollout
-        if: steps.filter.outputs.db == 'true' && inputs.schema_ready != true
-        run: |
-          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
-          API and frontend deployment paused because the database schema changed.
-          Run **DB Migration** for **Staging** at this revision, then manually run
-          this workflow with **Database migration has been applied for this revision** checked.
-          EOF
+                - 'api/drizzle/schema.ts'
 
   frontend-build-and-deploy:
-    needs: [changes, api-build-and-deploy]
-    if: >-
-      ${{ !cancelled() && needs.changes.result == 'success' &&
-          (needs.changes.outputs.frontend == 'true' || inputs.frontend) &&
-          (needs.changes.outputs.db == 'false' || inputs.schema_ready) &&
-          (needs.api-build-and-deploy.result == 'success' ||
-           needs.api-build-and-deploy.result == 'skipped') }}
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' || inputs.frontend}}
 
     environment:
       name: Staging
@@ -110,9 +83,7 @@ jobs:
 
   api-build-and-deploy:
     needs: changes
-    if: >-
-      ${{ (needs.changes.outputs.api == 'true' || inputs.api) &&
-          (needs.changes.outputs.db == 'false' || inputs.schema_ready) }}
+    if: ${{ ( needs.changes.outputs.api == 'true' || inputs.api ) && needs.changes.outputs.db == 'false'}}
 
     environment:
       name: Staging
@@ -145,8 +116,3 @@ jobs:
         run: ./start.sh -s -o
         env:
           SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
-
-      - name: Verify API is responding before frontend deployment
-        run: |
-          curl --fail --silent --show-error --retry 12 --retry-connrefused \
-            --retry-delay 5 --max-time 10 https://api-staging.coursetable.com/api/ping

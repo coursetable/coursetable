@@ -3,9 +3,6 @@
   "workspaces": {
     "": {
       "name": "coursetable-root",
-      "dependencies": {
-        "zod": "^3.24.1",
-      },
       "devDependencies": {
         "@eslint/config-helpers": "^0.6.0",
         "@graphql-codegen/cli": "^5.0.3",

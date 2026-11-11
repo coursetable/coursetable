@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   checkConflict,
+  getPersonalBlockConflicts,
   type ListingWithTimes,
   to12HourTime,
   toRangeTime,
@@ -326,69 +327,79 @@ describe('personal block conflicts', () => {
     end: '16:00',
   };
 
-  it('finds Tuesday and Thursday conflicts without any worksheet courses', () => {
+  it('finds Tuesday and Thursday conflicts', () => {
     for (const day of [TUE, THU]) {
       expect(
-        checkConflict(
-          [],
+        getPersonalBlockConflicts(
+          [block],
           makeListing({
             daysOfWeek: day,
             startTime: '15:30',
             endTime: '16:30',
           }),
-          [block],
         ),
-      ).toEqual([{ course_code: 'Practice' }]);
+      ).toEqual([block]);
     }
   });
 
   it('ignores other days and separated times', () => {
     expect(
-      checkConflict(
-        [],
-        makeListing({ daysOfWeek: MON, startTime: '15:30', endTime: '16:30' }),
+      getPersonalBlockConflicts(
         [block],
+        makeListing({
+          daysOfWeek: MON,
+          startTime: '15:30',
+          endTime: '16:30',
+        }),
       ),
     ).toEqual([]);
     expect(
-      checkConflict(
-        [],
-        makeListing({ daysOfWeek: TUE, startTime: '16:01', endTime: '17:00' }),
+      getPersonalBlockConflicts(
         [block],
+        makeListing({
+          daysOfWeek: TUE,
+          startTime: '16:01',
+          endTime: '17:00',
+        }),
       ),
     ).toEqual([]);
   });
 
-  it('preserves inclusive endpoints and returns a commitment only once', () => {
+  it('preserves inclusive endpoints and returns each commitment only once', () => {
     const meeting = {
       days_of_week: TUE | THU,
       start_time: '16:00',
       end_time: '17:00',
     };
     expect(
-      checkConflict([], makeListing({ meetings: [meeting, meeting] }), [block]),
-    ).toEqual([{ course_code: 'Practice' }]);
+      getPersonalBlockConflicts(
+        [block],
+        makeListing({ meetings: [meeting, meeting] }),
+      ),
+    ).toEqual([block]);
   });
 
-  it('combines course and personal conflicts', () => {
-    const course = makeListing({
+  it('returns all conflicting blocks without modifying them', () => {
+    const otherBlock = { ...block, id: 'other', title: 'Meeting' };
+    const nonConflicting = { ...block, id: 'monday', days: [1] };
+    const listing = makeListing({
       daysOfWeek: TUE,
       startTime: '15:10',
       endTime: '15:50',
     });
-    expect(
-      checkConflict([makeWorksheetCourse(course)], course, [block]),
-    ).toEqual([course, { course_code: 'Practice' }]);
+    const conflicts = getPersonalBlockConflicts(
+      [block, otherBlock, nonConflicting],
+      listing,
+    );
+    expect(conflicts).toEqual([block, otherBlock]);
+    expect(conflicts[0]).toBe(block);
+    expect(conflicts[1]).toBe(otherBlock);
   });
 
-  it('keeps course conflicts when a commitment is on another day', () => {
-    const course = makeListing({
-      daysOfWeek: MON,
-      startTime: '15:10',
-      endTime: '15:50',
-    });
+  it('returns no conflicts for missing blocks or courses without meeting times', () => {
+    expect(getPersonalBlockConflicts(undefined, makeListing({}))).toEqual([]);
     expect(
-      checkConflict([makeWorksheetCourse(course)], course, [block]),
-    ).toEqual([course]);
+      getPersonalBlockConflicts([block], makeListing({ meetings: [] })),
+    ).toEqual([]);
   });
 });
