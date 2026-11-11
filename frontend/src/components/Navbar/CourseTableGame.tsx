@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Modal } from 'react-bootstrap';
 import confetti from 'canvas-confetti';
+import { toast } from 'sonner';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
 import { workloadColormap } from '../../utilities/constants';
@@ -377,15 +378,39 @@ export default function CourseTableGame({
         </>
       );
     }
+    const { score } = phase;
+    const shareScore = async () => {
+      // The clipboard API is missing on insecure origins and can reject even
+      // when present, so both failure paths land on the same toast
+      try {
+        await navigator.clipboard.writeText(
+          `I scored ${score}/${NUM_ROUNDS} on This-or-That, a CourseTable game. https://coursetable.com`,
+        );
+        toast.success('Copied!');
+      } catch (err) {
+        console.error('Error copying score to clipboard: ', err);
+        toast.error('Failed to copy to clipboard (try manual copy)');
+      }
+    };
+
     return (
       <div className={styles.centerScreen}>
         <div className={styles.gameTitle}>This-or-That</div>
         <div className={styles.gameSubtitleSmall}>game over!</div>
-        <div className={styles.scoreBig}>{phase.score}</div>
+        <div className={styles.scoreBig}>{score}</div>
         <div className={styles.scoreOf}>out of {NUM_ROUNDS}</div>
-        <button type="button" className={styles.playBtn} onClick={startGame}>
-          Play Again
-        </button>
+        <div className={styles.endActions}>
+          <button type="button" className={styles.playBtn} onClick={startGame}>
+            Play Again
+          </button>
+          <button
+            type="button"
+            className={styles.shareBtn}
+            onClick={shareScore}
+          >
+            Share score
+          </button>
+        </div>
       </div>
     );
   };
