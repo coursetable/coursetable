@@ -31,7 +31,7 @@ function Games() {
       id: 'this-or-that',
       title: 'This-or-That',
       description:
-        'Two Yale courses, one question: which one has the heavier workload? Ten rounds against the course evaluations.',
+        'Two Yale courses, one question: which one has the heavier workload? Play ten rounds against course evaluations.',
       icon: GiScales,
       status: 'available',
       cta: 'Play',
@@ -42,7 +42,7 @@ function Games() {
     {
       id: 'placeholder-1',
       title: 'Coming soon',
-      description: 'Another game is in the works.',
+      description: 'Come back soon for more games!',
       icon: GiHourglass,
       status: 'comingSoon',
       cta: 'Not yet available',
@@ -50,7 +50,7 @@ function Games() {
     {
       id: 'placeholder-2',
       title: 'Coming soon',
-      description: 'Another game is in the works.',
+      description: 'Come back soon for more games!',
       icon: GiHourglass,
       status: 'comingSoon',
       cta: 'Not yet available',
