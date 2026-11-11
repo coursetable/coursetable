@@ -108,4 +108,15 @@ describe('collapseFriendCourses', () => {
     );
     expect(result.map((l) => l.crn)).toEqual([3, 5]);
   });
+
+  it('shows the cross-listing that survived filtering', () => {
+    // Friend is in the ECON listing (crn 1); a CPSC search left only the CPSC
+    // cross-listing (crn 2), so that one must be shown
+    const friends = {
+      a: makeFriend('Alice', { 0: [{ crn: 1, sameCourseId: 99 }] }),
+    } as FriendRecord;
+    const numFriends = getNumFriends(friends, sameCourse);
+    const result = collapseFriendCourses([listing(2)], numFriends, friends);
+    expect(result.map((l) => l.crn)).toEqual([2]);
+  });
 });

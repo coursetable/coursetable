@@ -705,7 +705,9 @@ export function SearchBootstrap({
         { key: selectSortBy.value.value, type: sortOrder.value },
         numFriends,
       );
-      // In friends mode, show each course once instead of every section
+      // In friends mode, show each course once instead of every section. This
+      // runs after filtering, so a search for one subject (e.g. CPSC) keeps
+      // that subject's cross-listing even if friends added another one
       setSearchData(
         friendsTaking.value && friends
           ? collapseFriendCourses(sorted, numFriends, friends)
