@@ -175,10 +175,13 @@ function parseSameCourseIdKey(key: string): {
 }
 
 // Fetch the friends that have any course in their main worksheet. Used in
-// search and worksheet expanded list
+// search and worksheet expanded list. With `excludeHidden`, courses a friend
+// has hidden on their main worksheet are skipped too, so the count reflects
+// what friends are actually planning to take.
 export function getNumFriends(
   friends: FriendRecord,
   sameCourseIdToCrns?: { [key: string]: number[] },
+  { excludeHidden = false }: { excludeHidden?: boolean } = {},
 ): NumFriendsReturn {
   // Reverse mapping: CRN -> same_course_id
   const crnToSameCourseId = new Map<number, string>();
@@ -193,6 +196,7 @@ export function getNumFriends(
   for (const [netId, friend] of Object.entries(friends)) {
     for (const [seasonCode, worksheets] of friend.worksheets) {
       for (const course of worksheets.get(0)?.courses ?? []) {
+        if (excludeHidden && course.hidden) continue;
         // Prioritize sameCourseId from course data, then fall back to lookup
         const sameCourseId =
           course.sameCourseId?.toString() ?? crnToSameCourseId.get(course.crn);
@@ -225,6 +229,26 @@ export function getNumFriends(
     }
   }
   return numFriends;
+}
+
+// Show each course once: skip a listing if any of its course codes (its own or
+// a cross-listing's) already appeared earlier in the list. This merges
+// cross-listings and sections that share a code; the first one in sort order
+// is kept.
+export function dedupeByCourseCode<
+  L extends {
+    course: { season_code: Season; listings: { course_code: string }[] };
+  },
+>(listings: L[]): L[] {
+  const seen = new Set<string>();
+  return listings.filter((l) => {
+    const codes = l.course.listings.map(
+      (x) => `${l.course.season_code} ${x.course_code}`,
+    );
+    if (codes.some((c) => seen.has(c))) return false;
+    for (const c of codes) seen.add(c);
+    return true;
+  });
 }
 
 export type CourseWithOverall = Partial<

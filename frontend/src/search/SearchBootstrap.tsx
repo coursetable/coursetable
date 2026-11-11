@@ -35,6 +35,7 @@ import {
   checkConflict,
   getEnrolled,
   getNumFriends,
+  dedupeByCourseCode,
   getOverallRatings,
   getWorkloadRatings,
   getProfessorRatings,
@@ -278,6 +279,7 @@ export function SearchBootstrap({
   const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
   const hideConflicting = useFilterState('hideConflicting');
+  const friendsTaking = useFilterState('friendsTaking');
   const includeAttributes = useFilterState('includeAttributes');
   const excludeAttributes = useFilterState('excludeAttributes');
 
@@ -305,10 +307,14 @@ export function SearchBootstrap({
     })),
   );
 
+  // When "friends are taking" is on, only count courses friends haven't hidden
+  // so the ranking reflects their actual plans
   const numFriends = useMemo(() => {
     if (!friends) return {};
-    return getNumFriends(friends, sameCourseIdToCrns);
-  }, [friends, sameCourseIdToCrns]);
+    return getNumFriends(friends, sameCourseIdToCrns, {
+      excludeHidden: friendsTaking.value,
+    });
+  }, [friends, sameCourseIdToCrns, friendsTaking.value]);
 
   const processedSearchText = useMemo(
     () =>
@@ -570,6 +576,12 @@ export function SearchBootstrap({
         )
           return false;
 
+        if (
+          friendsTaking.value &&
+          !numFriends[`${listing.course.season_code}${listing.crn}`]?.size
+        )
+          return false;
+
         if (selectSubjects.value.length !== 0) {
           // Never show a course that doesn't contain any of the selected
           // subjects, even when it has a cross listing that does
@@ -688,13 +700,15 @@ export function SearchBootstrap({
         });
       });
       // Apply sorting order.
-      setSearchData(
-        sortCourses(
-          filtered,
-          { key: selectSortBy.value.value, type: sortOrder.value },
-          numFriends,
-        ),
+      const sorted = sortCourses(
+        filtered,
+        { key: selectSortBy.value.value, type: sortOrder.value },
+        numFriends,
       );
+      // In friends mode, show each course once instead of every section and
+      // cross-listing. Runs after filtering, so a search for one subject
+      // (e.g. CPSC) keeps that subject's listing.
+      setSearchData(friendsTaking.value ? dedupeByCourseCode(sorted) : sorted);
     },
     [
       processedSeasons,
@@ -710,6 +724,7 @@ export function SearchBootstrap({
       numBounds,
       hideCancelled.value,
       hideConflicting.value,
+      friendsTaking.value,
       getRelevantWorksheetNumber,
       worksheets,
       worksheetInfo,

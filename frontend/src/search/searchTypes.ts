@@ -40,7 +40,8 @@ export type BooleanOptions =
   | 'searchDescription'
   | 'enableQuist'
   | 'hideCancelled'
-  | 'hideConflicting';
+  | 'hideConflicting'
+  | 'friendsTaking';
 
 export type BooleanAttributes = keyof typeof booleanAttributes;
 

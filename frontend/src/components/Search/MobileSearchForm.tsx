@@ -7,7 +7,7 @@ import { scroller } from 'react-scroll';
 import CustomSelect from './CustomSelect';
 import ResultsColumnSort from './ResultsColumnSort';
 import SavedSearchesDropdown from './SavedSearchesDropdown';
-import Toggle from './Toggle';
+import Toggle, { FriendsTakingToggle } from './Toggle';
 import { useSearch } from '../../hooks/useSearch';
 import {
   defaultFilters,
@@ -257,6 +257,7 @@ export default function MobileSearchForm() {
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
           <Toggle handle="hideConflicting" />
+          <FriendsTakingToggle />
         </div>
         <div className={styles.uselessBtn}>
           {/* The form requires a button with type submit in order to
