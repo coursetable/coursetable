@@ -29,7 +29,7 @@
   display: flex;
   flex-flow: row wrap;
   gap: 1em;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
 }
 
@@ -45,7 +45,7 @@
 .stats dt,
 .stats dd {
   margin: 0;
-  padding: 0.5em;
+  padding: 0.45em 0.4em;
   font-weight: 600;
   font-size: 14px;
   flex-grow: 1;
@@ -60,6 +60,7 @@
 }
 
 .stats dt {
+  flex-grow: 3;
   border-radius: 8px 0 0 8px;
 }
 
@@ -78,6 +79,11 @@
 
 .wide {
   flex-grow: 0.9;
+}
+
+.hoverHint {
+  cursor: help;
+  text-decoration: underline dotted;
 }
 
 .infoIcon {

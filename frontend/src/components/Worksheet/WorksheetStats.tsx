@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import clsx from 'clsx';
 import { Button, Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
+import type { CatalogListing } from '../../queries/api';
+import { usePastCourseMeetingsQuery } from '../../queries/graphql-queries';
 import { useStore } from '../../store';
+import {
+  getWeeklyMeetingHours,
+  summarizeClassHours,
+} from '../../utilities/classHours';
 import { ratingColormap } from '../../utilities/constants';
 import {
   getOverallRatings,
@@ -48,6 +54,13 @@ const creditColormap = chroma
 const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([12, 20]);
+const classHoursColormap = chroma
+  .scale(['#63b37b', '#ffeb84', '#f8696b'])
+  .domain([8, 20]);
+// Neutral while estimates load, so the color doesn't jump once they arrive
+const pendingColormap = chroma.scale(['#bdbdbd', '#bdbdbd']);
+
+const formatHours = (hours: number) => String(Number(hours.toFixed(2)));
 
 const formatter = new Intl.ListFormat('en-US', {
   style: 'long',
@@ -57,21 +70,24 @@ const formatter = new Intl.ListFormat('en-US', {
 function NoStatsTip({
   coursesWithoutRating,
   coursesWithRating,
+  missingLabel = 'ratings',
 }: {
   readonly coursesWithoutRating: string[];
   readonly coursesWithRating: number;
+  readonly missingLabel?: string;
 }) {
+  const id = useId();
   return (
     coursesWithoutRating.length > 0 && (
       <OverlayTrigger
         placement="top"
         overlay={(props) => (
-          <Tooltip {...props} id="worksheet-stats-conflict-tooltip">
+          <Tooltip {...props} id={`worksheet-stats-missing-tooltip-${id}`}>
             <small>
               Computed with {coursesWithRating} course
               {coursesWithRating === 1 ? '' : 's'}.{' '}
               {formatter.format(coursesWithoutRating)} ha
-              {coursesWithoutRating.length > 1 ? 've' : 's'} no ratings.
+              {coursesWithoutRating.length > 1 ? 've' : 's'} no {missingLabel}.
             </small>
           </Tooltip>
         )}
@@ -102,7 +118,32 @@ export default function WorksheetStats() {
     })),
   );
   const user = useStore((state) => state.user);
+  const seasonCode = courses[0]?.listing.course.season_code;
+  const sameCourseIdsWithoutMeetings = [
+    ...new Set(
+      courses
+        .filter(
+          (c) =>
+            !c.hidden &&
+            getWeeklyMeetingHours(c.listing.course.course_meetings) === 0,
+        )
+        .map((c) => c.listing.course.same_course_id),
+    ),
+  ];
+  const {
+    data: pastMeetingsData,
+    loading: pastMeetingsLoading,
+    error: pastMeetingsError,
+  } = usePastCourseMeetingsQuery({
+    variables: {
+      sameCourseIds: sameCourseIdsWithoutMeetings,
+      seasonCode: seasonCode ?? '',
+    },
+    skip: !seasonCode || sameCourseIdsWithoutMeetings.length === 0,
+  });
+  const pastOfferings = pastMeetingsData?.courses ?? [];
   const countedCourseCodes = new Set();
+  const countedDiscussionCodes = new Set();
   let courseCnt = 0;
   let credits = 0;
   let workload = 0;
@@ -110,19 +151,35 @@ export default function WorksheetStats() {
   const skillsAreas: { courseCode: string; label: string }[] = [];
   const coursesWithoutRating: string[] = [];
   const coursesWithoutWorkload: string[] = [];
+  // Listings that count toward class hours, after deduplication
+  const classHoursListings: CatalogListing[] = [];
 
   for (const { listing, hidden } of courses) {
+    if (hidden) continue;
     const alreadyCounted = listing.course.listings.some((l) =>
       countedCourseCodes.has(l.course_code),
     );
 
+    // Discussion sections have no ratings or credits, but they still meet, so
+    // they only count toward class hours (one section per course, like below)
+    if (isDiscussionSection(listing.course)) {
+      if (
+        !listing.course.listings.some((l) =>
+          countedDiscussionCodes.has(l.course_code),
+        )
+      ) {
+        listing.course.listings.forEach((l) => {
+          countedDiscussionCodes.add(l.course_code);
+        });
+        classHoursListings.push(listing);
+      }
+      continue;
+    }
+
     // Don't count in one of the following cases:
     // - Cross-listing has been counted
     // - Another section has been counted (we just randomly pick one)
-    // - Is discussion section (no ratings or credits)
-    // - Is hidden
-    if (alreadyCounted || hidden || isDiscussionSection(listing.course))
-      continue;
+    if (alreadyCounted) continue;
 
     // Mark codes as counted, no double counting
     listing.course.listings.forEach((l) => {
@@ -136,6 +193,7 @@ export default function WorksheetStats() {
     credits += listing.course.credits ?? 0;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
+    classHoursListings.push(listing);
     skillsAreas.push(
       ...[...listing.course.skills, ...listing.course.areas].map((x) => ({
         courseCode: listing.course_code,
@@ -143,6 +201,11 @@ export default function WorksheetStats() {
       })),
     );
   }
+  const classHours = summarizeClassHours(
+    classHoursListings,
+    pastOfferings,
+    pastMeetingsLoading,
+  );
   const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
   const coursesWithRating = courseCnt - coursesWithoutRating.length;
 
@@ -184,6 +247,54 @@ export default function WorksheetStats() {
                 <dt>Total credits</dt>
                 <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
+                </StatPill>
+              </div>
+              <div>
+                <dt>
+                  Hours in class
+                  <NoStatsTip
+                    coursesWithoutRating={classHours.missing}
+                    coursesWithRating={classHours.courseCount}
+                    missingLabel={
+                      pastMeetingsError
+                        ? "meeting times (we couldn't look up past semesters)"
+                        : 'meeting times'
+                    }
+                  />
+                </dt>
+                <StatPill
+                  colorMap={
+                    pastMeetingsLoading ? pendingColormap : classHoursColormap
+                  }
+                  stat={classHours.hours}
+                >
+                  {pastMeetingsLoading ? (
+                    '…'
+                  ) : classHours.estimates.length > 0 ? (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={(props) => (
+                        <Tooltip
+                          {...props}
+                          id="worksheet-stats-class-hours-tooltip"
+                        >
+                          <small>
+                            Estimated from a past semester for{' '}
+                            {formatter.format(
+                              classHours.estimates.map((e) => e.label),
+                            )}
+                            .
+                          </small>
+                        </Tooltip>
+                      )}
+                    >
+                      <span className={styles.hoverHint}>
+                        ~{formatHours(classHours.hours)}
+                      </span>
+                    </OverlayTrigger>
+                  ) : (
+                    formatHours(classHours.hours)
+                  )}
                 </StatPill>
               </div>
               {user?.hasEvals ? (
