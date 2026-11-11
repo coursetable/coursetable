@@ -78,7 +78,7 @@ function Games() {
                 className={clsx(styles.card, comingSoon && styles.cardDisabled)}
               >
                 <div className={styles.cardIcon} aria-hidden="true">
-                  <Icon size={32} />
+                  <Icon size={24} />
                 </div>
                 <h2 className={styles.cardTitle}>{game.title}</h2>
                 <TextComponent type="secondary">
