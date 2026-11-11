@@ -13,6 +13,8 @@ import { RatingBubble, TextComponent } from '../Typography';
 import styles from './CourseTableGame.module.css';
 
 const NUM_ROUNDS = 10;
+const ROUND_TIME_MS = 10_000;
+const TIMER_TICK_MS = 100;
 
 type GamePair = [CatalogListing, CatalogListing];
 
@@ -24,7 +26,8 @@ type Phase =
       roundIndex: number;
       score: number;
       correct: boolean;
-      picked: 0 | 1;
+      // Null when the round timed out, so no card was picked
+      picked: 0 | 1 | null;
     }
   | { kind: 'finished'; score: number };
 
@@ -236,6 +239,39 @@ export default function CourseTableGame({
   const hasEvals = useStore((state) => Boolean(state.user?.hasEvals));
   const [phase, setPhase] = useState<Phase>({ kind: 'intro' });
   const [pairs, setPairs] = useState<GamePair[]>([]);
+  // The countdown carries the round it belongs to, so a fresh round renders a
+  // full bar on its first paint instead of flashing the previous round's
+  const [timer, setTimer] = useState({ round: -1, leftMs: ROUND_TIME_MS });
+
+  // Null on the intro, reveal and finish screens, where no clock should run
+  const guessingRound = phase.kind === 'guessing' ? phase.roundIndex : null;
+
+  useEffect(() => {
+    if (guessingRound === null) return undefined;
+    const deadline = Date.now() + ROUND_TIME_MS;
+    const interval = setInterval(() => {
+      const leftMs = Math.max(0, deadline - Date.now());
+      setTimer({ round: guessingRound, leftMs });
+      if (leftMs > 0) return;
+      clearInterval(interval);
+      // Running out of time counts as a wrong answer: reveal the result and
+      // let the player move on with the usual Next button
+      setPhase((prev) =>
+        prev.kind === 'guessing'
+          ? {
+              kind: 'revealed',
+              roundIndex: prev.roundIndex,
+              score: prev.score,
+              correct: false,
+              picked: null,
+            }
+          : prev,
+      );
+    }, TIMER_TICK_MS);
+    // Answering or closing the game makes guessingRound null, which re-runs
+    // this cleanup and stops the clock
+    return () => clearInterval(interval);
+  }, [guessingRound]);
 
   const eligible = searchData ? getEligibleListings(searchData) : [];
   const hasEnoughData = hasEnoughPairs(eligible);
@@ -243,6 +279,7 @@ export default function CourseTableGame({
   const startGame = () => {
     const newPairs = selectPairs(eligible);
     setPairs(newPairs);
+    setTimer({ round: -1, leftMs: ROUND_TIME_MS });
     setPhase({ kind: 'guessing', roundIndex: 0, score: 0 });
   };
 
@@ -302,7 +339,7 @@ export default function CourseTableGame({
           <div className={styles.gameSubtitle}>
             10 comparisons: pick the course with the higher workload rating.
             <br />
-            Gets progressively harder as the game continues.
+            10 seconds a round, and it gets harder as the game continues.
           </div>
           <button type="button" className={styles.playBtn} onClick={startGame}>
             Play
@@ -323,7 +360,8 @@ export default function CourseTableGame({
         const wA = getWorkloadRatings(pair[0].course, 'stat')!;
         const wB = getWorkloadRatings(pair[1].course, 'stat')!;
         const higherIdx: 0 | 1 = wA >= wB ? 0 : 1;
-        if (idx === phase.picked) return phase.correct ? 'correct' : 'wrong';
+        if (phase.picked !== null && idx === phase.picked)
+          return phase.correct ? 'correct' : 'wrong';
 
         return idx === higherIdx ? 'correct' : 'other';
       };
@@ -341,10 +379,20 @@ export default function CourseTableGame({
               }}
             />
           </div>
+          <div className={styles.timerBar}>
+            <div
+              className={styles.timerFill}
+              style={{
+                width: `${((timer.round === roundIndex ? timer.leftMs : ROUND_TIME_MS) / ROUND_TIME_MS) * 100}%`,
+              }}
+            />
+          </div>
           <div className={styles.promptRow}>
             <div />
             <span className={styles.prompt}>
-              Which course has a higher workload?
+              {revealed && phase.picked === null
+                ? "Time's up!"
+                : 'Which course has a higher workload?'}
             </span>
             <button
               type="button"
