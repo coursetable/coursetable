@@ -1124,15 +1124,27 @@ export async function deleteSavedSearch(id: number) {
   });
 }
 
-const courseNoteSchema = z.object({ content: z.string() });
+const courseNotesSchema = z.object({
+  data: z.array(
+    z.object({
+      season: seasonSchema,
+      crn: crnSchema,
+      content: z.string(),
+    }),
+  ),
+});
 
-export async function fetchCourseNote(season: Season, crn: Crn) {
-  const params = new URLSearchParams({ season, crn: String(crn) });
-  return await fetchAPI(`/notes/note?${params.toString()}`, {
-    schema: courseNoteSchema,
+export type CourseNote = z.infer<typeof courseNotesSchema>['data'][number];
+
+export async function fetchCourseNotes(
+  offerings: { season: Season; crn: Crn }[],
+) {
+  return await fetchAPI('/notes/lookup', {
+    body: { offerings },
+    schema: courseNotesSchema,
     breadcrumb: {
       category: 'notes',
-      message: 'Fetching course note',
+      message: 'Fetching course notes',
     },
   });
 }

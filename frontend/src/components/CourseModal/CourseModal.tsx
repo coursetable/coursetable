@@ -9,6 +9,7 @@ import OverviewPanel from './OverviewPanel/OverviewPanel';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useModalHistory } from '../../hooks/useModalHistory';
 import {
+  getCourseNoteCrn,
   toSeasonDate,
   toSeasonString,
   truncatedText,
@@ -27,7 +28,7 @@ const NotesPanel = suspended(() => import('./NotesPanel/NotesPanel'));
 export type ModalNavigationFunction = ((
   mode: 'push' | 'replace',
   l: CourseModalPrefetchListingDataFragment,
-  target: 'evals' | 'overview',
+  target: 'evals' | 'overview' | 'notes',
 ) => void) &
   ((mode: 'pop', l: undefined, target: 'evals' | 'overview') => void) &
   ((mode: 'change-view', l: undefined, target: 'evals' | 'overview') => void);
@@ -62,9 +63,9 @@ function CourseModal({
     } else {
       const nextView =
         // Only actually navigate to evals if the course has evals
-        target === 'evals' && l!.course.evaluation_statistic
-          ? 'evals'
-          : 'overview';
+        target === 'evals' && !l!.course.evaluation_statistic
+          ? 'overview'
+          : target;
       setView(nextView);
       if (
         l!.crn === listing.crn &&
@@ -112,8 +113,9 @@ function CourseModal({
           )}
           {view === 'notes' && (
             <NotesPanel
-              key={`${listing.course.season_code}-${listing.crn}`}
+              key={`${listing.course.season_code}-${getCourseNoteCrn(listing.course)}`}
               listing={listing}
+              onNavigation={onNavigation}
             />
           )}
         </Modal.Body>

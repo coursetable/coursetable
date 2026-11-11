@@ -192,3 +192,25 @@ export const savedSearches = pgTable(
     ).on(table.netId, table.name),
   }),
 );
+
+export const courseNotes = pgTable(
+  'courseNotes',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    // Cross-listed codes share a note, so crn is the course's lowest listing
+    // CRN and not always the listing a student opened. As with wishlistCourses,
+    // we store the exact offering rather than same_course_id, which can change.
+    season: integer('season').notNull(),
+    crn: integer('crn').notNull(),
+    content: varchar('content', { length: 20000 }).notNull(),
+    updatedAt: bigint('updatedAt', { mode: 'number' }).notNull(),
+  },
+  (table) => ({
+    courseNotesUniqueIdx: uniqueIndex('course_notes_unique_idx').on(
+      table.netId,
+      table.season,
+      table.crn,
+    ),
+  }),
+);

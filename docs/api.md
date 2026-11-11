@@ -493,6 +493,59 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 - Body:
   - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
 
+## Course notes
+
+Notes are private to the logged-in student. Cross-listed codes share a note, so `crn` is the lowest CRN among the course's listings.
+
+### `POST` `/api/notes/lookup`
+
+#### Request
+
+- Needs credentials
+- Body:
+  - `offerings`: `array`, 1 to 100 items
+    - `season`: `string`
+    - `crn`: `number`
+
+#### Response
+
+**Status: 200**
+
+- Offerings without a note are omitted
+- Body:
+  - `data`: `array`
+    - `season`: `string`
+    - `crn`: `number`
+    - `content`: `string`
+
+**Status: 400**
+
+- When the request body is invalid
+- Body:
+  - `error`: `"INVALID_REQUEST"`
+
+### `POST` `/api/notes/save`
+
+#### Request
+
+- Needs credentials
+- Body:
+  - `season`: `string`
+  - `crn`: `number`
+  - `content`: `string`, up to 20,000 characters. An empty string deletes the note.
+
+#### Response
+
+**Status: 200**
+
+- No body
+
+**Status: 400**
+
+- When the request body is invalid
+- Body:
+  - `error`: `"INVALID_REQUEST"`
+
 ## Health check
 
 ### `GET` `/api/ping`

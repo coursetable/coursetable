@@ -11,6 +11,16 @@ import type { SortKeys } from '../search/searchTypes';
 import type { WorksheetCourse } from '../slices/WorksheetSlice';
 import type { WishlistItemWithListings } from '../types/wishlist';
 
+/**
+ * The CRN a student's note is stored under. Cross-listed codes share a note, so
+ * every listing of a course must return the same CRN. This is not primary_crn
+ * because Ferry leaves that empty for many courses, and a note must keep the
+ * same key between crawls. The course must have at least one listing.
+ */
+export function getCourseNoteCrn(course: { listings: { crn: Crn }[] }): Crn {
+  return Math.min(...course.listings.map((listing) => listing.crn)) as Crn;
+}
+
 export function truncatedText(
   text: string | null | undefined,
   max: number,
