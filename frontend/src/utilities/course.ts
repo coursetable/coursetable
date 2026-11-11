@@ -231,94 +231,24 @@ export function getNumFriends(
   return numFriends;
 }
 
-// Some course codes are split across several catalog courses with different
-// sameCourseIds (e.g. each section of BENG 3200 is its own course). Merge every
-// listing that has friends and shares a course code (or a friend Set, i.e. a
-// sameCourseId group) in the same season, so friends are counted once per code
-// and all of those listings share one Set.
-export function mergeFriendsByCourseCode<
-  L extends { crn: Crn; course_code: string; course: { season_code: Season } },
->(listings: L[], numFriends: NumFriendsReturn): NumFriendsReturn {
-  const parent = new Map<string, string>();
-  const find = (x: string): string => {
-    let root = x;
-    while (parent.get(root) !== root) root = parent.get(root) ?? root;
-    parent.set(x, root);
-    return root;
-  };
-  const union = (a: string, b: string) => {
-    for (const x of [a, b]) if (!parent.has(x)) parent.set(x, x);
-    parent.set(find(a), find(b));
-  };
-  const setIds = new Map<Set<string>, number>();
-  const crnKeys: `${Season}${Crn}`[] = [];
-  for (const l of listings) {
-    const key = `${l.course.season_code}${l.crn}` as const;
-    const set = numFriends[key];
-    if (!set) continue;
-    let setId = setIds.get(set);
-    if (setId === undefined) {
-      setId = setIds.size;
-      setIds.set(set, setId);
-    }
-    crnKeys.push(key);
-    union(`crn:${key}`, `set:${setId}`);
-    union(`crn:${key}`, `code:${l.course.season_code}:${l.course_code}`);
-  }
-  const merged = new Map<string, Set<string>>();
-  for (const key of crnKeys) {
-    const root = find(`crn:${key}`);
-    let names = merged.get(root);
-    if (!names) {
-      names = new Set();
-      merged.set(root, names);
-    }
-    for (const name of numFriends[key]!) names.add(name);
-  }
-  const result: NumFriendsReturn = { ...numFriends };
-  for (const key of crnKeys) result[key] = merged.get(find(`crn:${key}`))!;
-  return result;
-}
-
-// Collapse sections and cross-listings of the same course into a single row.
-// `getNumFriends` shares one Set across every CRN of a same-course group, so
-// rows with the same Set belong to the same course. Within a group, keep the
-// listing the most friends are directly enrolled in (ties keep the incoming
-// order), and place it where the group first appears.
-export function collapseFriendCourses<
-  L extends { crn: Crn; course: { season_code: Season } },
->(listings: L[], numFriends: NumFriendsReturn, friends: FriendRecord): L[] {
-  const directCounts = new Map<string, number>();
-  for (const friend of Object.values(friends)) {
-    for (const [season, worksheets] of friend.worksheets) {
-      for (const course of worksheets.get(0)?.courses ?? []) {
-        if (course.hidden) continue;
-        const key = `${season}${course.crn}`;
-        directCounts.set(key, (directCounts.get(key) ?? 0) + 1);
-      }
-    }
-  }
-  const groups: L[][] = [];
-  const groupBySet = new Map<Set<string>, L[]>();
-  for (const listing of listings) {
-    const set = numFriends[`${listing.course.season_code}${listing.crn}`];
-    if (!set) {
-      groups.push([listing]);
-      continue;
-    }
-    let group = groupBySet.get(set);
-    if (!group) {
-      group = [];
-      groupBySet.set(set, group);
-      groups.push(group);
-    }
-    group.push(listing);
-  }
-  const count = (l: L) =>
-    directCounts.get(`${l.course.season_code}${l.crn}`) ?? 0;
-  return groups.map((group) =>
-    group.reduce((best, l) => (count(l) > count(best) ? l : best)),
-  );
+// Show each course once: skip a listing if any of its course codes (its own or
+// a cross-listing's) already appeared earlier in the list. This merges
+// cross-listings and sections that share a code; the first one in sort order
+// is kept.
+export function dedupeByCourseCode<
+  L extends {
+    course: { season_code: Season; listings: { course_code: string }[] };
+  },
+>(listings: L[]): L[] {
+  const seen = new Set<string>();
+  return listings.filter((l) => {
+    const codes = l.course.listings.map(
+      (x) => `${l.course.season_code} ${x.course_code}`,
+    );
+    if (codes.some((c) => seen.has(c))) return false;
+    for (const c of codes) seen.add(c);
+    return true;
+  });
 }
 
 export type CourseWithOverall = Partial<

@@ -35,8 +35,7 @@ import {
   checkConflict,
   getEnrolled,
   getNumFriends,
-  collapseFriendCourses,
-  mergeFriendsByCourseCode,
+  dedupeByCourseCode,
   getOverallRatings,
   getWorkloadRatings,
   getProfessorRatings,
@@ -310,7 +309,7 @@ export function SearchBootstrap({
 
   // When "friends are taking" is on, only count courses friends haven't hidden
   // so the ranking reflects their actual plans
-  const baseNumFriends = useMemo(() => {
+  const numFriends = useMemo(() => {
     if (!friends) return {};
     return getNumFriends(friends, sameCourseIdToCrns, {
       excludeHidden: friendsTaking.value,
@@ -346,16 +345,6 @@ export function SearchBootstrap({
     courses: courseData,
     error: courseLoadError,
   } = useCourseData(processedSeasons);
-
-  // In friends mode, also merge sections that share a course code but are
-  // separate catalog courses, so each code is counted and shown once
-  const numFriends = useMemo(() => {
-    if (!friendsTaking.value) return baseNumFriends;
-    const listings = processedSeasons.flatMap((seasonCode: Season) => [
-      ...(courseData[seasonCode]?.data.values() ?? []),
-    ]);
-    return mergeFriendsByCourseCode(listings, baseNumFriends);
-  }, [friendsTaking.value, baseNumFriends, processedSeasons, courseData]);
 
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
@@ -716,14 +705,10 @@ export function SearchBootstrap({
         { key: selectSortBy.value.value, type: sortOrder.value },
         numFriends,
       );
-      // In friends mode, show each course once instead of every section. This
-      // runs after filtering, so a search for one subject (e.g. CPSC) keeps
-      // that subject's cross-listing even if friends added another one
-      setSearchData(
-        friendsTaking.value && friends
-          ? collapseFriendCourses(sorted, numFriends, friends)
-          : sorted,
-      );
+      // In friends mode, show each course once instead of every section and
+      // cross-listing. Runs after filtering, so a search for one subject
+      // (e.g. CPSC) keeps that subject's listing.
+      setSearchData(friendsTaking.value ? dedupeByCourseCode(sorted) : sorted);
     },
     [
       processedSeasons,
@@ -740,7 +725,6 @@ export function SearchBootstrap({
       hideCancelled.value,
       hideConflicting.value,
       friendsTaking.value,
-      friends,
       getRelevantWorksheetNumber,
       worksheets,
       worksheetInfo,
