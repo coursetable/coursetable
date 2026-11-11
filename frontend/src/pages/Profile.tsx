@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { Button, Card, Form, Spinner, Tab, Tabs } from 'react-bootstrap';
@@ -7,6 +12,7 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import { useApolloClient } from '@apollo/client';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
+import GamesSection from '../components/Profile/GamesSection';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { LinkLikeText, TextComponent } from '../components/Typography';
@@ -148,6 +154,7 @@ function Profile() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTabKey = tabParamToActiveKey(searchParams.get('tab'));
+  const { hash } = useLocation();
 
   const handleProfileTabSelect = (key: string | null) => {
     if (key === null || !isProfileTabKey(key)) return;
@@ -198,6 +205,17 @@ function Profile() {
   useEffect(() => {
     if (wishlistError) Sentry.captureException(wishlistError);
   }, [wishlistError]);
+
+  // React Router does not scroll to hash targets on its own, and the navbar
+  // links the games section as /profile#games. The tab content only renders
+  // once the user is loaded, so re-run then, when the target really exists.
+  useEffect(() => {
+    const id = hash.slice(1);
+    if (!id || !currentUser) return;
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, [hash, currentUser]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -651,6 +669,19 @@ function Profile() {
                 </Card.Body>
               </Card>
             </div>
+
+            <Card className={clsx(styles.profileCard, 'mt-3')}>
+              <Card.Body className={styles.cardBody}>
+                <section id="games" className={styles.settingsSection}>
+                  <TextComponent className={styles.settingsSectionTitle}>
+                    Games
+                  </TextComponent>
+                  <div className={styles.settingsSectionFields}>
+                    <GamesSection />
+                  </div>
+                </section>
+              </Card.Body>
+            </Card>
           </div>
         </Tab>
         <Tab eventKey="settings" title="Settings">
