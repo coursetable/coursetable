@@ -5,13 +5,19 @@ import { MdInfoOutline } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { useShallow } from 'zustand/react/shallow';
 import type { CatalogListing } from '../../queries/api';
+import { usePastCourseMeetingsQuery } from '../../queries/graphql-queries';
 import { useStore } from '../../store';
-import { summarizeClassHours } from '../../utilities/classHours';
+import {
+  getWeeklyMeetingHours,
+  summarizeClassHours,
+} from '../../utilities/classHours';
 import { ratingColormap } from '../../utilities/constants';
 import {
   getOverallRatings,
   getWorkloadRatings,
   isDiscussionSection,
+  toSeasonString,
+  toTimesSummary,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
@@ -53,6 +59,8 @@ const workloadColormap = chroma
 const classHoursColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([8, 20]);
+// Neutral while estimates load, so the color doesn't jump once they arrive
+const pendingColormap = chroma.scale(['#bdbdbd', '#bdbdbd']);
 
 const formatHours = (hours: number) => String(Number(hours.toFixed(2)));
 
@@ -112,6 +120,30 @@ export default function WorksheetStats() {
     })),
   );
   const user = useStore((state) => state.user);
+  const seasonCode = courses[0]?.listing.course.season_code;
+  const sameCourseIdsWithoutMeetings = [
+    ...new Set(
+      courses
+        .filter(
+          (c) =>
+            !c.hidden &&
+            getWeeklyMeetingHours(c.listing.course.course_meetings) === 0,
+        )
+        .map((c) => c.listing.course.same_course_id),
+    ),
+  ];
+  const {
+    data: pastMeetingsData,
+    loading: pastMeetingsLoading,
+    error: pastMeetingsError,
+  } = usePastCourseMeetingsQuery({
+    variables: {
+      sameCourseIds: sameCourseIdsWithoutMeetings,
+      seasonCode: seasonCode ?? '',
+    },
+    skip: !seasonCode || sameCourseIdsWithoutMeetings.length === 0,
+  });
+  const pastOfferings = pastMeetingsData?.courses ?? [];
   const countedCourseCodes = new Set();
   const countedDiscussionCodes = new Set();
   let courseCnt = 0;
@@ -171,7 +203,11 @@ export default function WorksheetStats() {
       })),
     );
   }
-  const classHours = summarizeClassHours(classHoursListings);
+  const classHours = summarizeClassHours(
+    classHoursListings,
+    pastOfferings,
+    pastMeetingsLoading,
+  );
   const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
   const coursesWithRating = courseCnt - coursesWithoutRating.length;
 
@@ -221,11 +257,50 @@ export default function WorksheetStats() {
                   <NoStatsTip
                     coursesWithoutRating={classHours.missing}
                     coursesWithRating={classHours.courseCount}
-                    missingLabel="meeting times"
+                    missingLabel={
+                      pastMeetingsError
+                        ? "meeting times (we couldn't look up past semesters)"
+                        : 'meeting times'
+                    }
                   />
                 </dt>
-                <StatPill colorMap={classHoursColormap} stat={classHours.hours}>
-                  {formatHours(classHours.hours)}
+                <StatPill
+                  colorMap={
+                    pastMeetingsLoading ? pendingColormap : classHoursColormap
+                  }
+                  stat={classHours.hours}
+                >
+                  {pastMeetingsLoading ? (
+                    '…'
+                  ) : classHours.estimates.length > 0 ? (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={(props) => (
+                        <Tooltip
+                          {...props}
+                          id="worksheet-stats-class-hours-tooltip"
+                        >
+                          <small>
+                            Estimated weekly hours.{' '}
+                            {classHours.estimates.map((e) => (
+                              <React.Fragment key={e.label}>
+                                {e.label} has no meeting times yet, so we used{' '}
+                                {toSeasonString(e.pastOffering.season_code)} (
+                                {toTimesSummary(e.pastOffering)},{' '}
+                                {formatHours(e.hours)} hrs/week).{' '}
+                              </React.Fragment>
+                            ))}
+                          </small>
+                        </Tooltip>
+                      )}
+                    >
+                      <span className={styles.hoverHint}>
+                        ~{formatHours(classHours.hours)}
+                      </span>
+                    </OverlayTrigger>
+                  ) : (
+                    formatHours(classHours.hours)
+                  )}
                 </StatPill>
               </div>
               {user?.hasEvals ? (
