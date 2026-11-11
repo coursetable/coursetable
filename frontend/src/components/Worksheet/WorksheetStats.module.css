@@ -80,11 +80,6 @@
   flex-grow: 0.9;
 }
 
-.hoverHint {
-  cursor: help;
-  text-decoration: underline dotted;
-}
-
 .infoIcon {
   color: var(--color-primary);
 }
