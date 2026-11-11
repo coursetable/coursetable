@@ -35,6 +35,7 @@ import {
   checkConflict,
   getEnrolled,
   getNumFriends,
+  collapseFriendCourses,
   getOverallRatings,
   getWorkloadRatings,
   getProfessorRatings,
@@ -699,12 +700,16 @@ export function SearchBootstrap({
         });
       });
       // Apply sorting order.
+      const sorted = sortCourses(
+        filtered,
+        { key: selectSortBy.value.value, type: sortOrder.value },
+        numFriends,
+      );
+      // In friends mode, show each course once instead of every section
       setSearchData(
-        sortCourses(
-          filtered,
-          { key: selectSortBy.value.value, type: sortOrder.value },
-          numFriends,
-        ),
+        friendsTaking.value && friends
+          ? collapseFriendCourses(sorted, numFriends, friends)
+          : sorted,
       );
     },
     [
@@ -722,6 +727,7 @@ export function SearchBootstrap({
       hideCancelled.value,
       hideConflicting.value,
       friendsTaking.value,
+      friends,
       getRelevantWorksheetNumber,
       worksheets,
       worksheetInfo,

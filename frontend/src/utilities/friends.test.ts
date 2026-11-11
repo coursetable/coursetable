@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getNumFriends } from './course';
+import { collapseFriendCourses, getNumFriends } from './course';
 import type { FriendRecord } from '../queries/api';
 import type { Crn, NetId, Season } from '../queries/graphql-types';
 
@@ -70,5 +70,42 @@ describe('getNumFriends', () => {
     const result = getNumFriends(friends, { [`${SEASON}-99`]: [1, 2] });
     expect(result[key(1)]).toEqual(new Set(['Alice', 'Bob']));
     expect(result[key(2)]).toBe(result[key(1)]);
+  });
+});
+
+describe('collapseFriendCourses', () => {
+  const listing = (crn: number) => ({
+    crn: crn as Crn,
+    course: { season_code: SEASON },
+  });
+  const sameCourse = { [`${SEASON}-99`]: [1, 2, 3] };
+
+  it('shows each course once, keeping the section friends are in', () => {
+    const friends = {
+      a: makeFriend('Alice', { 0: [{ crn: 2, sameCourseId: 99 }] }),
+    } as FriendRecord;
+    const numFriends = getNumFriends(friends, sameCourse);
+    const result = collapseFriendCourses(
+      [listing(1), listing(2), listing(3), listing(4)],
+      numFriends,
+      friends,
+    );
+    expect(result.map((l) => l.crn)).toEqual([2, 4]);
+  });
+
+  it('picks the section most friends are in and keeps group position', () => {
+    const friends = {
+      a: makeFriend('Alice', { 0: [{ crn: 1, sameCourseId: 99 }] }),
+      b: makeFriend('Bob', { 0: [{ crn: 3, sameCourseId: 99 }] }),
+      c: makeFriend('Cara', { 0: [{ crn: 3, sameCourseId: 99 }] }),
+      d: makeFriend('Dan', { 0: [{ crn: 5 }] }),
+    } as FriendRecord;
+    const numFriends = getNumFriends(friends, sameCourse);
+    const result = collapseFriendCourses(
+      [listing(1), listing(2), listing(3), listing(5)],
+      numFriends,
+      friends,
+    );
+    expect(result.map((l) => l.crn)).toEqual([3, 5]);
   });
 });

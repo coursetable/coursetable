@@ -231,6 +231,47 @@ export function getNumFriends(
   return numFriends;
 }
 
+// Collapse sections and cross-listings of the same course into a single row.
+// `getNumFriends` shares one Set across every CRN of a same-course group, so
+// rows with the same Set belong to the same course. Within a group, keep the
+// listing the most friends are directly enrolled in (ties keep the incoming
+// order), and place it where the group first appears.
+export function collapseFriendCourses<
+  L extends { crn: Crn; course: { season_code: Season } },
+>(listings: L[], numFriends: NumFriendsReturn, friends: FriendRecord): L[] {
+  const directCounts = new Map<string, number>();
+  for (const friend of Object.values(friends)) {
+    for (const [season, worksheets] of friend.worksheets) {
+      for (const course of worksheets.get(0)?.courses ?? []) {
+        if (course.hidden) continue;
+        const key = `${season}${course.crn}`;
+        directCounts.set(key, (directCounts.get(key) ?? 0) + 1);
+      }
+    }
+  }
+  const groups: L[][] = [];
+  const groupBySet = new Map<Set<string>, L[]>();
+  for (const listing of listings) {
+    const set = numFriends[`${listing.course.season_code}${listing.crn}`];
+    if (!set) {
+      groups.push([listing]);
+      continue;
+    }
+    let group = groupBySet.get(set);
+    if (!group) {
+      group = [];
+      groupBySet.set(set, group);
+      groups.push(group);
+    }
+    group.push(listing);
+  }
+  const count = (l: L) =>
+    directCounts.get(`${l.course.season_code}${l.crn}`) ?? 0;
+  return groups.map((group) =>
+    group.reduce((best, l) => (count(l) > count(best) ? l : best)),
+  );
+}
+
 export type CourseWithOverall = Partial<
   Pick<Courses, 'average_rating' | 'average_rating_same_professors'>
 >;
