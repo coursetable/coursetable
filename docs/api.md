@@ -527,7 +527,7 @@ Notes are private to the logged-in student. There is one note per course across 
   - `sameCourseId`: `number`
   - `season`: `string`, the season being viewed
   - `crn`: `number`, the lowest CRN of the offering being viewed
-  - `content`: `string`, a Tiptap JSON document up to 90,000 bytes. An empty string deletes the note.
+  - `content`: `string`, a Tiptap JSON document up to 60,000 bytes. An empty string deletes the note.
 
 `season` and `crn` record where the note was last saved, so it can be reattached if Ferry regroups the course.
 

@@ -23,9 +23,10 @@ import styles from './NoteEditor.module.css';
 
 const MAX_NOTE_LENGTH = 5000;
 const NOTE_LENGTH_WARNING = 4500;
-// Matches the API's cap. Only extreme formatting, such as every character
-// styled differently, can pass it within the 5,000 character limit.
-const MAX_NOTE_BYTES = 90_000;
+// Matches the API's cap, which leaves room for the quote escaping that sending
+// the note inside a JSON body adds. Only extreme formatting, such as every
+// character styled differently, can pass it within the 5,000 character limit.
+const MAX_NOTE_BYTES = 60_000;
 
 const statusLabels: { [status in NoteSaveStatus]: string } = {
   idle: '',

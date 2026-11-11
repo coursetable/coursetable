@@ -14,9 +14,10 @@ const LookupCourseNoteSchema = z.object({
 });
 
 // Notes are Tiptap JSON, which spells out its formatting, so a full 5,000
-// character note can be several times larger than its text. The cap stays under
-// express.json()'s default 100 KB request limit.
-const MAX_NOTE_BYTES = 90_000;
+// character note can be several times larger than its text. The cap leaves room
+// for the quote escaping that embedding it in a JSON body adds, so a note this
+// size still fits express.json()'s default 100 KB request limit.
+const MAX_NOTE_BYTES = 60_000;
 
 function isTiptapDoc(content: string) {
   try {
