@@ -13,7 +13,7 @@ import {
   FcNews,
   FcBusinessman,
 } from 'react-icons/fc';
-import { GiCompanionCube } from 'react-icons/gi';
+import { GiConsoleController } from 'react-icons/gi';
 import { useShallow } from 'zustand/react/shallow';
 
 import { API_ENDPOINT } from '../../config';
@@ -145,9 +145,11 @@ function DropdownContent({
               Profile (beta)
             </DropdownItem>
           )}
-          <DropdownItem icon={GiCompanionCube} to="/games">
-            Games
-          </DropdownItem>
+          {authStatus === 'authenticated' && (
+            <DropdownItem icon={GiConsoleController} to="/games">
+              Games
+            </DropdownItem>
+          )}
           {authStatus === 'authenticated' ? (
             <DropdownItem
               icon={FaSignOutAlt}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 import type { IconType } from 'react-icons';
-import { GiScales, GiMagnifyingGlass, GiCalendar } from 'react-icons/gi';
+import { GiScales, GiConsoleController, GiHourglass } from 'react-icons/gi';
 import { TextComponent } from '../components/Typography';
 import { suspended } from '../utilities/display';
 import styles from './Games.module.css';
@@ -37,34 +37,36 @@ function Games() {
       cta: 'Play',
       play: () => setShowThisOrThat(true),
     },
+    // Deliberately unnamed placeholders: nothing is announced yet, so these
+    // slots say "coming soon" and nothing more
     {
-      id: 'guess-the-course',
-      title: 'Guess the Course',
-      description:
-        'Read a course description with the giveaways blanked out and name the course it belongs to.',
-      icon: GiMagnifyingGlass,
+      id: 'placeholder-1',
+      title: 'Coming soon',
+      description: 'Another game is in the works.',
+      icon: GiHourglass,
       status: 'comingSoon',
-      cta: 'Coming soon',
+      cta: 'Not yet available',
     },
     {
-      id: 'schedule-scramble',
-      title: 'Schedule Scramble',
-      description:
-        'Build the highest-rated conflict-free schedule you can before the clock runs out.',
-      icon: GiCalendar,
+      id: 'placeholder-2',
+      title: 'Coming soon',
+      description: 'Another game is in the works.',
+      icon: GiHourglass,
       status: 'comingSoon',
-      cta: 'Coming soon',
+      cta: 'Not yet available',
     },
   ];
 
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
-      <h1 className={clsx(styles.title, 'mt-5 mb-1')}>Games</h1>
-      <TextComponent type="secondary">
-        <p className={clsx(styles.description, 'mb-4 mx-auto')}>
-          Small games built on top of the Yale course catalog. More on the way.
-        </p>
-      </TextComponent>
+      <h1 className={clsx(styles.title, 'mt-5 mb-4')}>
+        <GiConsoleController
+          className={styles.titleIcon}
+          size={30}
+          aria-hidden="true"
+        />
+        Games
+      </h1>
 
       <ul className={styles.grid}>
         {games.map((game) => {
@@ -78,12 +80,7 @@ function Games() {
                 <div className={styles.cardIcon} aria-hidden="true">
                   <Icon size={32} />
                 </div>
-                <h2 className={styles.cardTitle}>
-                  {game.title}
-                  {comingSoon && (
-                    <span className={styles.badge}>Coming soon</span>
-                  )}
-                </h2>
+                <h2 className={styles.cardTitle}>{game.title}</h2>
                 <TextComponent type="secondary">
                   <p className={styles.cardDescription}>{game.description}</p>
                 </TextComponent>

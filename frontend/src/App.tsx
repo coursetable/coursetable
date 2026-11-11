@@ -176,6 +176,7 @@ function App() {
           <Route path="/graphiql" element={<Graphiql />} />
           <Route path="/login" element={<Landing />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/games" element={<Games />} />
         </Route>
 
         {/* Challenge handles its own auth */}
@@ -185,7 +186,6 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/joinus" element={<Join />} />
         <Route path="/faq" element={<FAQ />} />
-        <Route path="/games" element={<Games />} />
         <Route path="/privacypolicy" element={<Privacy />} />
         <Route path="/u/:netId" element={<UserProfile />} />
 

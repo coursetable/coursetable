@@ -4,17 +4,20 @@
 }
 
 .title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   font-weight: 600;
   font-size: 25px;
   text-align: center;
   transition: color var(--trans-dur);
 }
 
-.description {
-  font-weight: 500;
-  font-size: 15px;
-  text-align: center;
-  max-width: 750px;
+.titleIcon {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  transition: color var(--trans-dur);
 }
 
 .grid {
@@ -60,18 +63,6 @@
   margin: 0.75rem 0 0;
   font-weight: 600;
   font-size: 18px;
-}
-
-.badge {
-  padding: 0.1rem 0.45rem;
-  font-weight: 600;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--color-text-secondary);
-  background-color: var(--color-surface-contrast);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
 }
 
 .cardDescription {
