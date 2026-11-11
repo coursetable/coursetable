@@ -7,14 +7,15 @@
 }
 
 .tabs {
-  width: 220px;
+  max-width: 100%;
   display: flex;
   align-items: end;
 }
 
 .tabButton {
-  width: 50%;
+  width: 110px;
   padding: 0.5em 0;
+  white-space: nowrap;
   border: none;
   border-radius: 8px 8px 0 0;
   background-color: var(--color-surface);

@@ -34,6 +34,8 @@ type BaseFetchOptions = {
     category: string;
   };
   cacheBust?: boolean;
+  /** Keeps the request body out of error reports, for private user text. */
+  sensitiveBody?: boolean;
   /**
    * Receives the parsed error code. If it returns true, the error is considered
    * handled and no further reporting is done. Only HTTP errors can be handled.
@@ -133,6 +135,7 @@ async function fetchAPI(
     handleErrorCode,
     mapHttpError,
     cacheBust,
+    sensitiveBody,
   } = options;
   const payload = JSON.stringify(body);
   const isCatalogRequest = isCatalogEndpoint(endpointSuffix);
@@ -206,7 +209,10 @@ async function fetchAPI(
     Sentry.addBreadcrumb({
       level: 'info',
       ...breadcrumb,
-      message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
+      message:
+        body && !sensitiveBody
+          ? `${breadcrumb.message} ${payload}`
+          : breadcrumb.message,
     });
     Sentry.captureException(err);
     toast.error(
@@ -1115,5 +1121,34 @@ export async function deleteSavedSearch(id: number) {
           return false;
       }
     },
+  });
+}
+
+const courseNoteSchema = z.object({ content: z.string() });
+
+export async function fetchCourseNote(sameCourseId: number) {
+  return await fetchAPI('/notes/lookup', {
+    body: { sameCourseId },
+    schema: courseNoteSchema,
+    breadcrumb: {
+      category: 'notes',
+      message: 'Fetching course note',
+    },
+  });
+}
+
+export async function saveCourseNote(
+  note: { sameCourseId: number; season: Season; crn: Crn },
+  content: string,
+): Promise<boolean> {
+  return await fetchAPI('/notes/save', {
+    body: { ...note, content },
+    sensitiveBody: true,
+    breadcrumb: {
+      category: 'notes',
+      message: 'Saving course note',
+    },
+    // The editor shows its own save status
+    handleErrorCode: () => true,
   });
 }

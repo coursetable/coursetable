@@ -493,6 +493,56 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 - Body:
   - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
 
+## Course notes
+
+Notes are private to the logged-in student. There is one note per course across seasons and sections, keyed by Ferry's `same_course_id`.
+
+### `POST` `/api/notes/lookup`
+
+#### Request
+
+- Needs credentials
+- Body:
+  - `sameCourseId`: `number`
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `content`: `string`, a Tiptap JSON document, or an empty string when there is no note
+
+**Status: 400**
+
+- When the request body is invalid
+- Body:
+  - `error`: `"INVALID_REQUEST"`
+
+### `POST` `/api/notes/save`
+
+#### Request
+
+- Needs credentials
+- Body:
+  - `sameCourseId`: `number`
+  - `season`: `string`, the season being viewed
+  - `crn`: `number`, the lowest CRN of the offering being viewed
+  - `content`: `string`, a Tiptap JSON document up to 60,000 bytes. An empty string deletes the note.
+
+`season` and `crn` record where the note was last saved, so it can be reattached if Ferry regroups the course.
+
+#### Response
+
+**Status: 200**
+
+- No body
+
+**Status: 400**
+
+- When the request body is invalid
+- Body:
+  - `error`: `"INVALID_REQUEST"`
+
 ## Health check
 
 ### `GET` `/api/ping`

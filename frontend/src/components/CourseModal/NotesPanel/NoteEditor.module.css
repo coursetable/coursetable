@@ -1,0 +1,81 @@
+.box {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+}
+
+.box:focus-within {
+  border-color: var(--color-border-control);
+}
+
+.editor :global(.ProseMirror) {
+  min-height: 360px;
+  padding: 0.75rem 1rem;
+  outline: none;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.editor :global(.ProseMirror) p {
+  margin: 0 0 0.5rem;
+}
+
+.editor :global(.ProseMirror) ul,
+.editor :global(.ProseMirror) ol {
+  margin: 0 0 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.editor :global(.ProseMirror) li p {
+  margin: 0;
+}
+
+.editor :global(.ProseMirror) ul ul {
+  list-style: circle;
+}
+
+.editor :global(.ProseMirror) ul ul ul {
+  list-style: square;
+}
+
+/* Typing "- " makes a dashed list; its sub-items keep the dash */
+.editor :global(.ProseMirror) ul:global(.dashed),
+.editor :global(.ProseMirror) ul:global(.dashed) ul {
+  list-style-type: '–  ';
+}
+
+/* An address typed or pasted into a note opens in a new tab when clicked */
+.editor :global(.ProseMirror) a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+/* The same color for a live selection and one kept while a toolbar box has focus */
+.editor :global(.ProseMirror) ::selection,
+.editor :global(.ProseMirror) :global(.kept-selection) {
+  background-color: var(--color-primary-subdued);
+}
+
+.editor :global(.ProseMirror) p:global(.is-editor-empty):first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  min-height: 1.5rem;
+  margin-top: 0.25rem;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+}
+
+.statusError {
+  color: var(--color-danger, #dc3545);
+}

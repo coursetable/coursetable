@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { CUR_YEAR } from '../../../config';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import { useModalHistory } from '../../../hooks/useModalHistory';
+import { useStore } from '../../../store';
 import WishlistToggleButton from '../../Wishlist/WishlistToggleButton';
 import WorksheetToggleButton from '../../Worksheet/WorksheetToggleButton';
 import styles from './ControlsRow.module.css';
@@ -116,8 +117,8 @@ function MoreButton({
 
 type Tab = {
   readonly label: string;
-  readonly value: 'overview' | 'evals';
-  readonly disabled?: boolean;
+  readonly value: 'overview' | 'evals' | 'notes';
+  readonly disabledMessage?: string;
 };
 
 function ViewTabs({
@@ -131,15 +132,15 @@ function ViewTabs({
 }) {
   return (
     <div className={styles.tabs}>
-      {tabs.map(({ label, value, disabled }) => {
-        if (disabled) {
+      {tabs.map(({ label, value, disabledMessage }) => {
+        if (disabledMessage) {
           return (
             <OverlayTrigger
               key={value}
               placement="top"
               overlay={(props) => (
-                <Tooltip {...props} id="popover-disabled-tab">
-                  This course has no evaluations to show.
+                <Tooltip {...props} id={`popover-disabled-${value}`}>
+                  {disabledMessage}
                 </Tooltip>
               )}
             >
@@ -174,9 +175,10 @@ export default function ModalHeaderControls({
   setView,
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
-  readonly view: 'overview' | 'evals';
-  readonly setView: (value: 'overview' | 'evals') => void;
+  readonly view: 'overview' | 'evals' | 'notes';
+  readonly setView: (value: 'overview' | 'evals' | 'notes') => void;
 }) {
+  const user = useStore((state) => state.user);
   return (
     <div className={styles.modalControls}>
       <ViewTabs
@@ -186,7 +188,14 @@ export default function ModalHeaderControls({
             label: 'Evaluations',
             value: 'evals',
             // Don't show eval tab if there are no responses to show
-            disabled: !listing.course.evaluation_statistic,
+            disabledMessage: listing.course.evaluation_statistic
+              ? undefined
+              : 'This course has no evaluations to show.',
+          },
+          {
+            label: 'My Notes',
+            value: 'notes',
+            disabledMessage: user ? undefined : 'Log in to write notes.',
           },
         ]}
         onSelectTab={setView}
