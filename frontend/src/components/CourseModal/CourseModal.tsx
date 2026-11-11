@@ -28,7 +28,7 @@ const NotesPanel = suspended(() => import('./NotesPanel/NotesPanel'));
 export type ModalNavigationFunction = ((
   mode: 'push' | 'replace',
   l: CourseModalPrefetchListingDataFragment,
-  target: 'evals' | 'overview' | 'notes',
+  target: 'evals' | 'overview',
 ) => void) &
   ((mode: 'pop', l: undefined, target: 'evals' | 'overview') => void) &
   ((mode: 'change-view', l: undefined, target: 'evals' | 'overview') => void);
@@ -63,9 +63,9 @@ function CourseModal({
     } else {
       const nextView =
         // Only actually navigate to evals if the course has evals
-        target === 'evals' && !l!.course.evaluation_statistic
-          ? 'overview'
-          : target;
+        target === 'evals' && l!.course.evaluation_statistic
+          ? 'evals'
+          : 'overview';
       setView(nextView);
       if (
         l!.crn === listing.crn &&
@@ -115,7 +115,6 @@ function CourseModal({
             <NotesPanel
               key={`${listing.course.season_code}-${getCourseNoteCrn(listing.course)}`}
               listing={listing}
-              onNavigation={onNavigation}
             />
           )}
         </Modal.Body>

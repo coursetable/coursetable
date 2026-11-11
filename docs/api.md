@@ -495,7 +495,7 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 
 ## Course notes
 
-Notes are private to the logged-in student. Cross-listed codes share a note, so `crn` is the lowest CRN among the course's listings.
+Notes are private to the logged-in student. There is one note per course across seasons and sections, keyed by Ferry's `same_course_id`.
 
 ### `POST` `/api/notes/lookup`
 
@@ -503,20 +503,14 @@ Notes are private to the logged-in student. Cross-listed codes share a note, so 
 
 - Needs credentials
 - Body:
-  - `offerings`: `array`, 1 to 100 items
-    - `season`: `string`
-    - `crn`: `number`
+  - `sameCourseId`: `number`
 
 #### Response
 
 **Status: 200**
 
-- Offerings without a note are omitted
 - Body:
-  - `data`: `array`
-    - `season`: `string`
-    - `crn`: `number`
-    - `content`: `string`
+  - `content`: `string`, a Tiptap JSON document, or an empty string when there is no note
 
 **Status: 400**
 
@@ -530,9 +524,12 @@ Notes are private to the logged-in student. Cross-listed codes share a note, so 
 
 - Needs credentials
 - Body:
-  - `season`: `string`
-  - `crn`: `number`
+  - `sameCourseId`: `number`
+  - `season`: `string`, the season being viewed
+  - `crn`: `number`, the lowest CRN of the offering being viewed
   - `content`: `string`, a Tiptap JSON document up to 90,000 bytes. An empty string deletes the note.
+
+`season` and `crn` record where the note was last saved, so it can be reattached if Ferry regroups the course.
 
 #### Response
 

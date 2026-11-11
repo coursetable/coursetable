@@ -1124,38 +1124,25 @@ export async function deleteSavedSearch(id: number) {
   });
 }
 
-const courseNotesSchema = z.object({
-  data: z.array(
-    z.object({
-      season: seasonSchema,
-      crn: crnSchema,
-      content: z.string(),
-    }),
-  ),
-});
+const courseNoteSchema = z.object({ content: z.string() });
 
-export type CourseNote = z.infer<typeof courseNotesSchema>['data'][number];
-
-export async function fetchCourseNotes(
-  offerings: { season: Season; crn: Crn }[],
-) {
+export async function fetchCourseNote(sameCourseId: number) {
   return await fetchAPI('/notes/lookup', {
-    body: { offerings },
-    schema: courseNotesSchema,
+    body: { sameCourseId },
+    schema: courseNoteSchema,
     breadcrumb: {
       category: 'notes',
-      message: 'Fetching course notes',
+      message: 'Fetching course note',
     },
   });
 }
 
 export async function saveCourseNote(
-  season: Season,
-  crn: Crn,
+  note: { sameCourseId: number; season: Season; crn: Crn },
   content: string,
 ): Promise<boolean> {
   return await fetchAPI('/notes/save', {
-    body: { season, crn, content },
+    body: { ...note, content },
     sensitiveBody: true,
     breadcrumb: {
       category: 'notes',

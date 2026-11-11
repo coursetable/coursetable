@@ -199,9 +199,10 @@ export const courseNotes = pgTable(
   {
     id: serial('id').primaryKey().notNull(),
     netId: varchar('netId', { length: 8 }).notNull(),
-    // Cross-listed codes share a note, so crn is the course's lowest listing
-    // CRN and not always the listing a student opened. As with wishlistCourses,
-    // we store the exact offering rather than same_course_id, which can change.
+    // One note per course across seasons and sections, using Ferry's grouping
+    sameCourseId: integer('sameCourseId').notNull(),
+    // The offering where the note was last saved, so it can be reattached if
+    // Ferry ever regroups the course. crn is the lowest listing CRN.
     season: integer('season').notNull(),
     crn: integer('crn').notNull(),
     // Tiptap JSON. The API caps its size, so the column has no fixed length.
@@ -211,8 +212,7 @@ export const courseNotes = pgTable(
   (table) => ({
     courseNotesUniqueIdx: uniqueIndex('course_notes_unique_idx').on(
       table.netId,
-      table.season,
-      table.crn,
+      table.sameCourseId,
     ),
   }),
 );

@@ -59,11 +59,24 @@ const extensions = [
   NoteShortcuts,
 ];
 
+// Opening the link box on a link selects the whole link first
+function linkDraftFor(editor: Editor): LinkDraft {
+  if (editor.isActive('link')) editor.commands.extendMarkRange('link');
+  const { from, to } = editor.state.selection;
+  return {
+    from,
+    to,
+    href: (editor.getAttributes('link').href as string | undefined) ?? '',
+  };
+}
+
 function NoteEditor({
+  sameCourseId,
   season,
   crn,
   initialContent,
 }: {
+  readonly sameCourseId: number;
   readonly season: Season;
   readonly crn: Crn;
   readonly initialContent: string;
@@ -76,22 +89,14 @@ function NoteEditor({
     () =>
       createNoteSaver({
         initialContent,
-        save: (content) => saveCourseNote(season, crn, content),
+        save: (content) =>
+          saveCourseNote({ sameCourseId, season, crn }, content),
         onStatusChange: setStatus,
       }),
-    [season, crn, initialContent],
+    [sameCourseId, season, crn, initialContent],
   );
 
-  // Opening the link box on a link selects the whole link first
-  const openLinkBox = (target: Editor) => {
-    if (target.isActive('link')) target.commands.extendMarkRange('link');
-    const { from, to } = target.state.selection;
-    setLinkDraft({
-      from,
-      to,
-      href: (target.getAttributes('link').href as string | undefined) ?? '',
-    });
-  };
+  const openLinkBox = (target: Editor) => setLinkDraft(linkDraftFor(target));
 
   const editor = useEditor({
     extensions,
@@ -117,12 +122,12 @@ function NoteEditor({
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        openLinkBox(editor);
+        setLinkDraft(linkDraftFor(editor));
       }
     };
     dom.addEventListener('keydown', onKeyDown);
     return () => dom.removeEventListener('keydown', onKeyDown);
-  });
+  }, [editor]);
 
   // Save pending edits when the tab or modal closes
   useEffect(() => () => saver.flush(), [saver]);
