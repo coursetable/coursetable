@@ -78,7 +78,6 @@ export function findLatestPastOffering(
 
 export type ClassHoursEstimate = {
   label: string;
-  pastOffering: PastOffering;
   hours: number;
 };
 
@@ -141,11 +140,7 @@ export function summarizeClassHours(
     const pastOffering = findLatestPastOffering(pastOfferings, listing.course);
     if (pastOffering) {
       const hours = getWeeklyMeetingHours(pastOffering.course_meetings);
-      summary.estimates.push({
-        label: classHoursLabel(listing),
-        pastOffering,
-        hours,
-      });
+      summary.estimates.push({ label: classHoursLabel(listing), hours });
       summary.hours += hours;
       summary.courseCount++;
       for (const l of listing.course.listings)

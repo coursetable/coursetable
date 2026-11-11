@@ -16,8 +16,6 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   isDiscussionSection,
-  toSeasonString,
-  toTimesSummary,
 } from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
@@ -281,15 +279,11 @@ export default function WorksheetStats() {
                           id="worksheet-stats-class-hours-tooltip"
                         >
                           <small>
-                            Estimated weekly hours.{' '}
-                            {classHours.estimates.map((e) => (
-                              <React.Fragment key={e.label}>
-                                {e.label} has no meeting times yet, so we used{' '}
-                                {toSeasonString(e.pastOffering.season_code)} (
-                                {toTimesSummary(e.pastOffering)},{' '}
-                                {formatHours(e.hours)} hrs/week).{' '}
-                              </React.Fragment>
-                            ))}
+                            Estimated from a past semester for{' '}
+                            {formatter.format(
+                              classHours.estimates.map((e) => e.label),
+                            )}
+                            .
                           </small>
                         </Tooltip>
                       )}
