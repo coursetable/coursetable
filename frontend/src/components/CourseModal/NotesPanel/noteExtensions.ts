@@ -51,8 +51,8 @@ export const DashableBulletList = BulletList.extend({
   },
 });
 
-// The browser hides a selection when focus moves to the toolbar's size or link
-// box, so it is painted as a decoration until the editor has focus again
+// The browser hides a selection when focus moves to the toolbar's size box, so
+// it is painted as a decoration until the editor has focus again
 const keptSelectionKey = new PluginKey<DecorationSet>('keptSelection');
 export const KeepSelectionVisible = Extension.create({
   name: 'keepSelectionVisible',

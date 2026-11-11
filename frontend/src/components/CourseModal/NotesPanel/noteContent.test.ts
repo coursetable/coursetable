@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   clampFontSize,
-  linkLabel,
-  normalizeLinkUrl,
+  isWebLink,
   parseNoteContent,
   stripPastedFontSizes,
 } from './noteContent';
@@ -36,31 +35,18 @@ describe('parseNoteContent', () => {
   });
 });
 
-describe('normalizeLinkUrl', () => {
-  it('adds https:// when missing', () => {
-    expect(normalizeLinkUrl('courses.yale.edu')).toBe(
-      'https://courses.yale.edu/',
-    );
+describe('isWebLink', () => {
+  it('allows http and https addresses', () => {
+    expect(isWebLink('http://example.com/a')).toBe(true);
+    expect(isWebLink('https://courses.yale.edu/')).toBe(true);
   });
 
-  it('keeps http and https links', () => {
-    expect(normalizeLinkUrl(' http://example.com/a ')).toBe(
-      'http://example.com/a',
-    );
-  });
-
-  it('rejects links that could run code or are not web addresses', () => {
+  it('rejects addresses that could run code or are not web addresses', () => {
     // eslint-disable-next-line no-script-url -- checks that these links are rejected
-    expect(normalizeLinkUrl('javascript:alert(1)')).toBeNull();
-    expect(normalizeLinkUrl('mailto:a@b.co')).toBeNull();
-    expect(normalizeLinkUrl('not a link')).toBeNull();
-    expect(normalizeLinkUrl('localhost')).toBeNull();
-  });
-});
-
-describe('linkLabel', () => {
-  it('drops the scheme and trailing slash', () => {
-    expect(linkLabel('https://courses.yale.edu/')).toBe('courses.yale.edu');
+    expect(isWebLink('javascript:alert(1)')).toBe(false);
+    expect(isWebLink('data:text/html,<script></script>')).toBe(false);
+    expect(isWebLink('mailto:a@b.co')).toBe(false);
+    expect(isWebLink('courses.yale.edu')).toBe(false);
   });
 });
 

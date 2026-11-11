@@ -24,11 +24,6 @@ const icons = {
       <path d="M3 5h14M9 10h8M9 15h8M3 9l3 2.5L3 14" />
     </svg>
   ),
-  link: (
-    <svg viewBox="0 0 20 20">
-      <path d="M8.5 11.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5L10 5M11.5 8.5a3.5 3.5 0 0 0-5 0L4 11a3.5 3.5 0 0 0 5 5l1-1" />
-    </svg>
-  ),
   undo: (
     <svg viewBox="0 0 20 20">
       <path d="M6 8H13a4 4 0 0 1 0 8H8M6 8l3-3M6 8l3 3" />
@@ -130,13 +125,7 @@ function FontSizeControl({
   );
 }
 
-function NoteToolbar({
-  editor,
-  onLink,
-}: {
-  readonly editor: Editor;
-  readonly onLink: () => void;
-}) {
+function NoteToolbar({ editor }: { readonly editor: Editor }) {
   const state = useEditorState({
     editor,
     selector: ({ editor: e }) => ({
@@ -146,7 +135,6 @@ function NoteToolbar({
       strike: e.isActive('strike'),
       bullets: e.isActive('bulletList'),
       numbers: e.isActive('orderedList'),
-      link: e.isActive('link'),
       canIndent: e.can().sinkListItem('listItem'),
       canUndo: e.can().undo(),
       canRedo: e.can().redo(),
@@ -207,14 +195,6 @@ function NoteToolbar({
         onClick={() => editor.chain().focus().sinkListItem('listItem').run()}
       >
         {icons.indent}
-      </ToolbarButton>
-      <span className={styles.sep} />
-      <ToolbarButton
-        label="Add link (⌘K)"
-        pressed={state.link}
-        onClick={onLink}
-      >
-        {icons.link}
       </ToolbarButton>
       <span className={styles.sep} />
       <ToolbarButton

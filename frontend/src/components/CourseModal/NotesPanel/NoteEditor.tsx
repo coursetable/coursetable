@@ -1,17 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FontSize, TextStyle } from '@tiptap/extension-text-style';
 import { CharacterCount, Placeholder } from '@tiptap/extensions';
-import { type Editor, EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-import { parseNoteContent, stripPastedFontSizes } from './noteContent';
+import {
+  isWebLink,
+  parseNoteContent,
+  stripPastedFontSizes,
+} from './noteContent';
 import {
   DashableBulletList,
   KeepSelectionVisible,
   ListMarkerClick,
   NoteShortcuts,
 } from './noteExtensions';
-import NoteLinkControls, { type LinkDraft } from './NoteLinkControls';
 import { createNoteSaver, type NoteSaveStatus } from './noteSaver';
 import NoteToolbar from './NoteToolbar';
 import { saveCourseNote } from '../../../queries/api';
@@ -39,13 +42,15 @@ const extensions = [
     codeBlock: false,
     heading: false,
     horizontalRule: false,
+    // A pasted or typed address becomes a link that opens in a new tab. There
+    // is no link editing: removing one is undo, or deleting the text.
     link: {
-      openOnClick: false,
+      openOnClick: true,
       autolink: true,
       defaultProtocol: 'https',
       // Only web links, so a note can never hold a javascript: link
       isAllowedUri: (url, { defaultValidate }) =>
-        /^https?:\/\//iu.test(url) && defaultValidate(url),
+        isWebLink(url) && defaultValidate(url),
       HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' },
     },
   }),
@@ -58,17 +63,6 @@ const extensions = [
   ListMarkerClick,
   NoteShortcuts,
 ];
-
-// Opening the link box on a link selects the whole link first
-function linkDraftFor(editor: Editor): LinkDraft {
-  if (editor.isActive('link')) editor.commands.extendMarkRange('link');
-  const { from, to } = editor.state.selection;
-  return {
-    from,
-    to,
-    href: (editor.getAttributes('link').href as string | undefined) ?? '',
-  };
-}
 
 function NoteEditor({
   sameCourseId,
@@ -83,7 +77,6 @@ function NoteEditor({
 }) {
   const [status, setStatus] = useState<NoteSaveStatus>('idle');
   const [length, setLength] = useState(0);
-  const [linkDraft, setLinkDraft] = useState<LinkDraft | null>(null);
   const [tooLarge, setTooLarge] = useState(false);
   const saver = useMemo(
     () =>
@@ -95,8 +88,6 @@ function NoteEditor({
       }),
     [sameCourseId, season, crn, initialContent],
   );
-
-  const openLinkBox = (target: Editor) => setLinkDraft(linkDraftFor(target));
 
   const editor = useEditor({
     extensions,
@@ -116,35 +107,14 @@ function NoteEditor({
     },
   });
 
-  // ⌘K opens the link box, as in Google Docs
-  useEffect(() => {
-    const { dom } = editor.view;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setLinkDraft(linkDraftFor(editor));
-      }
-    };
-    dom.addEventListener('keydown', onKeyDown);
-    return () => dom.removeEventListener('keydown', onKeyDown);
-  }, [editor]);
-
   // Save pending edits when the tab or modal closes
   useEffect(() => () => saver.flush(), [saver]);
 
   return (
     <>
       <div className={styles.box}>
-        <NoteToolbar editor={editor} onLink={() => openLinkBox(editor)} />
-        <div className={styles.area}>
-          <EditorContent editor={editor} className={styles.editor} />
-          <NoteLinkControls
-            editor={editor}
-            draft={linkDraft}
-            onEdit={() => openLinkBox(editor)}
-            onClose={() => setLinkDraft(null)}
-          />
-        </div>
+        <NoteToolbar editor={editor} />
+        <EditorContent editor={editor} className={styles.editor} />
       </div>
       <div className={styles.footer}>
         {length >= NOTE_LENGTH_WARNING && (

@@ -8,10 +8,6 @@
   border-color: var(--color-border-control);
 }
 
-.area {
-  position: relative;
-}
-
 .editor :global(.ProseMirror) {
   min-height: 360px;
   padding: 0.75rem 1rem;
@@ -48,12 +44,12 @@
   list-style-type: '–  ';
 }
 
-/* Links in a note are edited, not followed, so they keep the text cursor */
+/* An address typed or pasted into a note opens in a new tab when clicked */
 .editor :global(.ProseMirror) a {
   color: var(--color-primary);
   text-decoration: underline;
   text-underline-offset: 2px;
-  cursor: text;
+  cursor: pointer;
 }
 
 /* The same color for a live selection and one kept while a toolbar box has focus */

@@ -30,26 +30,12 @@ export function parseNoteContent(content: string): JSONContent | null {
   };
 }
 
-/** Only web links are allowed, so a note can never hold a javascript: link. */
-export function normalizeLinkUrl(raw: string): string | null {
-  const text = raw.trim();
-  if (!text || /\s/u.test(text)) return null;
-  const withScheme = /^[a-z][a-z\d+.-]*:/iu.test(text)
-    ? text
-    : `https://${text}`;
-  try {
-    const url = new URL(withScheme);
-    if (!['http:', 'https:'].includes(url.protocol)) return null;
-    if (!url.hostname.includes('.')) return null;
-    return url.href;
-  } catch {
-    return null;
-  }
-}
-
-/** A link's address without the scheme or trailing slash, for display. */
-export function linkLabel(href: string) {
-  return href.replace(/^https?:\/\//u, '').replace(/\/$/u, '');
+/**
+ * Only web addresses may become links, so a note can never hold a javascript:
+ * or data: link.
+ */
+export function isWebLink(url: string) {
+  return /^https?:\/\//iu.test(url);
 }
 
 /** Pasted text keeps its formatting, except sizes copied from other sites. */
