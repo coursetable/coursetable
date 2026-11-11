@@ -231,6 +231,55 @@ export function getNumFriends(
   return numFriends;
 }
 
+// Some course codes are split across several catalog courses with different
+// sameCourseIds (e.g. each section of BENG 3200 is its own course). Merge every
+// listing that has friends and shares a course code (or a friend Set, i.e. a
+// sameCourseId group) in the same season, so friends are counted once per code
+// and all of those listings share one Set.
+export function mergeFriendsByCourseCode<
+  L extends { crn: Crn; course_code: string; course: { season_code: Season } },
+>(listings: L[], numFriends: NumFriendsReturn): NumFriendsReturn {
+  const parent = new Map<string, string>();
+  const find = (x: string): string => {
+    let root = x;
+    while (parent.get(root) !== root) root = parent.get(root) ?? root;
+    parent.set(x, root);
+    return root;
+  };
+  const union = (a: string, b: string) => {
+    for (const x of [a, b]) if (!parent.has(x)) parent.set(x, x);
+    parent.set(find(a), find(b));
+  };
+  const setIds = new Map<Set<string>, number>();
+  const crnKeys: `${Season}${Crn}`[] = [];
+  for (const l of listings) {
+    const key = `${l.course.season_code}${l.crn}` as const;
+    const set = numFriends[key];
+    if (!set) continue;
+    let setId = setIds.get(set);
+    if (setId === undefined) {
+      setId = setIds.size;
+      setIds.set(set, setId);
+    }
+    crnKeys.push(key);
+    union(`crn:${key}`, `set:${setId}`);
+    union(`crn:${key}`, `code:${l.course.season_code}:${l.course_code}`);
+  }
+  const merged = new Map<string, Set<string>>();
+  for (const key of crnKeys) {
+    const root = find(`crn:${key}`);
+    let names = merged.get(root);
+    if (!names) {
+      names = new Set();
+      merged.set(root, names);
+    }
+    for (const name of numFriends[key]!) names.add(name);
+  }
+  const result: NumFriendsReturn = { ...numFriends };
+  for (const key of crnKeys) result[key] = merged.get(find(`crn:${key}`))!;
+  return result;
+}
+
 // Collapse sections and cross-listings of the same course into a single row.
 // `getNumFriends` shares one Set across every CRN of a same-course group, so
 // rows with the same Set belong to the same course. Within a group, keep the

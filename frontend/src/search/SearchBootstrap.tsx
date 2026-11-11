@@ -36,6 +36,7 @@ import {
   getEnrolled,
   getNumFriends,
   collapseFriendCourses,
+  mergeFriendsByCourseCode,
   getOverallRatings,
   getWorkloadRatings,
   getProfessorRatings,
@@ -309,7 +310,7 @@ export function SearchBootstrap({
 
   // When "friends are taking" is on, only count courses friends haven't hidden
   // so the ranking reflects their actual plans
-  const numFriends = useMemo(() => {
+  const baseNumFriends = useMemo(() => {
     if (!friends) return {};
     return getNumFriends(friends, sameCourseIdToCrns, {
       excludeHidden: friendsTaking.value,
@@ -345,6 +346,16 @@ export function SearchBootstrap({
     courses: courseData,
     error: courseLoadError,
   } = useCourseData(processedSeasons);
+
+  // In friends mode, also merge sections that share a course code but are
+  // separate catalog courses, so each code is counted and shown once
+  const numFriends = useMemo(() => {
+    if (!friendsTaking.value) return baseNumFriends;
+    const listings = processedSeasons.flatMap((seasonCode: Season) => [
+      ...(courseData[seasonCode]?.data.values() ?? []),
+    ]);
+    return mergeFriendsByCourseCode(listings, baseNumFriends);
+  }, [friendsTaking.value, baseNumFriends, processedSeasons, courseData]);
 
   // If multiple seasons are queried, the season is indicated
   const multiSeasons = processedSeasons.length !== 1;
