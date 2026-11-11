@@ -19,9 +19,31 @@ const LookupCourseNotesSchema = z.object({
   offerings: z.array(OfferingSchema).min(1).max(100),
 });
 
+// Notes are Tiptap JSON, which spells out its formatting, so a full 5,000
+// character note can be several times larger than its text. The cap stays under
+// express.json()'s default 100 KB request limit.
+const MAX_NOTE_BYTES = 90_000;
+
+function isTiptapDoc(content: string) {
+  try {
+    const doc: unknown = JSON.parse(content);
+    return (
+      typeof doc === 'object' &&
+      doc !== null &&
+      (doc as { type?: unknown }).type === 'doc' &&
+      Array.isArray((doc as { content?: unknown }).content)
+    );
+  } catch {
+    return false;
+  }
+}
+
 const SaveCourseNoteSchema = OfferingSchema.extend({
-  // Larger than the editor's limit because Markdown syntax adds characters
-  content: z.string().max(20000),
+  // An empty string deletes the note
+  content: z
+    .string()
+    .refine((content) => Buffer.byteLength(content, 'utf8') <= MAX_NOTE_BYTES)
+    .refine((content) => content === '' || isTiptapDoc(content)),
 });
 
 export const lookupCourseNotes = async (

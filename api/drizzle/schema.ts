@@ -10,6 +10,7 @@ import {
   bigserial,
   serial,
   integer,
+  text,
 } from 'drizzle-orm/pg-core';
 
 /** Shared by name / email / year / school / major visibility columns. */
@@ -203,7 +204,8 @@ export const courseNotes = pgTable(
     // we store the exact offering rather than same_course_id, which can change.
     season: integer('season').notNull(),
     crn: integer('crn').notNull(),
-    content: varchar('content', { length: 20000 }).notNull(),
+    // Tiptap JSON. The API caps its size, so the column has no fixed length.
+    content: text('content').notNull(),
     updatedAt: bigint('updatedAt', { mode: 'number' }).notNull(),
   },
   (table) => ({

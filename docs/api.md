@@ -532,7 +532,7 @@ Notes are private to the logged-in student. Cross-listed codes share a note, so 
 - Body:
   - `season`: `string`
   - `crn`: `number`
-  - `content`: `string`, up to 20,000 characters. An empty string deletes the note.
+  - `content`: `string`, a Tiptap JSON document up to 90,000 bytes. An empty string deletes the note.
 
 #### Response
 

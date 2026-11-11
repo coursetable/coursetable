@@ -1,13 +1,23 @@
-.editor {
+.box {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   color: var(--color-text);
 }
 
+.box:focus-within {
+  border-color: var(--color-border-control);
+}
+
+.area {
+  position: relative;
+}
+
 .editor :global(.ProseMirror) {
-  min-height: 400px;
+  min-height: 360px;
   padding: 0.75rem 1rem;
   outline: none;
+  font-size: 15px;
+  overflow-wrap: anywhere;
 }
 
 .editor :global(.ProseMirror) p {
@@ -24,31 +34,40 @@
   margin: 0;
 }
 
+.editor :global(.ProseMirror) ul ul {
+  list-style: circle;
+}
+
+.editor :global(.ProseMirror) ul ul ul {
+  list-style: square;
+}
+
+/* Typing "- " makes a dashed list; its sub-items keep the dash */
+.editor :global(.ProseMirror) ul:global(.dashed),
+.editor :global(.ProseMirror) ul:global(.dashed) ul {
+  list-style-type: '–  ';
+}
+
+/* Links in a note are edited, not followed, so they keep the text cursor */
+.editor :global(.ProseMirror) a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: text;
+}
+
+/* The same color for a live selection and one kept while a toolbar box has focus */
+.editor :global(.ProseMirror) ::selection,
+.editor :global(.ProseMirror) :global(.kept-selection) {
+  background-color: var(--color-primary-subdued);
+}
+
 .editor :global(.ProseMirror) p:global(.is-editor-empty):first-child::before {
   content: attr(data-placeholder);
   float: left;
   height: 0;
   color: var(--color-text-tertiary);
   pointer-events: none;
-}
-
-.editor :global(.ProseMirror) ul[data-type='taskList'] {
-  padding-left: 0;
-  list-style: none;
-}
-
-.editor :global(.ProseMirror) ul[data-type='taskList'] li {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.editor :global(.ProseMirror) ul[data-type='taskList'] li > div {
-  flex: 1;
-  min-width: 0;
-}
-
-.editor :global(.ProseMirror) ul[data-type='taskList'] input {
-  cursor: pointer;
 }
 
 .footer {
