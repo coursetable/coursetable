@@ -342,6 +342,7 @@ export function CalendarEventBody({
         {lastMod && (
           <div
             data-event-line="true"
+            data-calendar-export-omit=""
             className={clsx(
               styles.eventLine,
               hideFromLineIndex !== null &&
