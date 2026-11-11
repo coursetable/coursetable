@@ -2,14 +2,24 @@ name: DB Migration
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Database environment to migrate'
+        required: true
+        type: choice
+        options:
+          - Staging
+          - Production
+        default: Staging
 
 jobs:
   db-migrate:
     name: Run Drizzle DB migration
+    if: ${{ inputs.environment == 'Staging' || inputs.environment == 'Production' }}
     runs-on: self-hosted
     environment:
-      name: Production
-      url: https://coursetable.com
+      name: ${{ inputs.environment }}
+      url: ${{ inputs.environment == 'Staging' && 'https://staging.coursetable.com' || 'https://coursetable.com' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -17,13 +27,13 @@ jobs:
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           doppler-project: coursetable
-          doppler-config: prod
+          doppler-config: ${{ inputs.environment == 'Staging' && 'prod_staging' || 'prod' }}
           inject-env-vars: true
 
       - name: Set DB_URL
         run: |
           if [ -z "${DB_URL}" ]; then
-            echo "DB_URL=postgresql://${DB_USER}:${DB_ROOT_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" >> $GITHUB_ENV
+            echo "DB_URL=postgresql://${DB_USER}:${DB_ROOT_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" >> "$GITHUB_ENV"
           fi
 
       - name: Run DB migration

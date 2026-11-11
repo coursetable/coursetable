@@ -1,5 +1,6 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
+import type { PersonalBlock } from '../../../shared/personalBlock.mjs';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -121,8 +122,9 @@ export type ListingWithTimes = {
 export function checkConflict(
   worksheetData: WorksheetCourse[],
   listing: ListingWithTimes,
-): CatalogListing[] {
-  const conflicts: CatalogListing[] = [];
+  personalBlocks: PersonalBlock[] = [],
+): Pick<CatalogListing, 'course_code'>[] {
+  const conflicts: Pick<CatalogListing, 'course_code'>[] = [];
   if (!listing.course.course_meetings.length) return conflicts;
   loopWorksheet: for (const {
     listing: worksheetCourse,
@@ -133,15 +135,8 @@ export function checkConflict(
       continue;
     for (const meeting1 of worksheetCourse.course.course_meetings) {
       for (const meeting2 of listing.course.course_meetings) {
-        // Two meetings have no days in common
-        if (!(meeting1.days_of_week & meeting2.days_of_week)) continue;
-        const start1 = toRangeTime(meeting1.start_time);
-        const start2 = toRangeTime(meeting2.start_time);
-        const end1 = toRangeTime(meeting1.end_time);
-        const end2 = toRangeTime(meeting2.end_time);
-        // Conflict exists
         if (
-          !(start1 > end2 || start2 > end1) &&
+          meetingsOverlap(meeting1, meeting2) &&
           !conflicts.includes(worksheetCourse)
         ) {
           conflicts.push(worksheetCourse);
@@ -150,7 +145,38 @@ export function checkConflict(
       }
     }
   }
+  conflicts.push(
+    ...getPersonalBlockConflicts(personalBlocks, listing).map((block) => ({
+      course_code: block.title,
+    })),
+  );
   return conflicts;
+}
+
+type MeetingTime = ListingWithTimes['course']['course_meetings'][number];
+
+function meetingsOverlap(first: MeetingTime, second: MeetingTime) {
+  return (
+    Boolean(first.days_of_week & second.days_of_week) &&
+    toRangeTime(first.start_time) <= toRangeTime(second.end_time) &&
+    toRangeTime(second.start_time) <= toRangeTime(first.end_time)
+  );
+}
+
+export function getPersonalBlockConflicts(
+  blocks: PersonalBlock[],
+  listing: ListingWithTimes,
+): PersonalBlock[] {
+  return blocks.filter((block) => {
+    const blockMeeting = {
+      days_of_week: block.days.reduce((mask, day) => mask | (1 << day), 0),
+      start_time: block.start,
+      end_time: block.end,
+    };
+    return listing.course.course_meetings.some((meeting) =>
+      meetingsOverlap(meeting, blockMeeting),
+    );
+  });
 }
 
 export type NumFriendsReturn = {

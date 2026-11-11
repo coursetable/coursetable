@@ -64,18 +64,25 @@ function CourseConflictIcon({
   );
 
   const warning = useMemo(() => {
-    // If the course is in the worksheet, we never report a conflict
+    const blocks =
+      worksheets?.get(listing.course.season_code)?.get(worksheetNumber)
+        ?.personalBlocks ?? [];
+    // Existing courses and the course modal only need commitment warnings.
+    const conflicts = checkConflict(
+      inWorksheet || modal ? [] : data,
+      listing,
+      blocks,
+    );
+    if (conflicts.length > 0)
+      return `Conflicts with: ${conflicts.map((conflict) => conflict.course_code).join(', ')}`;
     if (inWorksheet) return undefined;
     if (modal) {
       if (!CUR_YEAR.includes(listing.course.season_code))
         return 'This will add to a worksheet of a semester that has already ended.';
       return undefined;
     }
-    const conflicts = checkConflict(data, listing);
-    if (conflicts.length > 0)
-      return `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`;
     return undefined;
-  }, [inWorksheet, modal, listing, data]);
+  }, [inWorksheet, modal, listing, data, worksheets, worksheetNumber]);
 
   return (
     <Fade in={Boolean(warning)}>

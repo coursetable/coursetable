@@ -9,6 +9,7 @@ import {
   worksheetListToMap,
   fetchSameCourseIdMappings,
 } from './user.utils.js';
+import { personalBlocksSchema } from '../../../shared/personalBlock.mjs';
 
 import {
   studentBluebookSettings,
@@ -73,7 +74,7 @@ async function updateWorksheetCourse(
       eq(worksheets.season, season),
       eq(worksheets.worksheetNumber, worksheetNumber),
     ),
-    columns: { id: true },
+    columns: { id: true, personalBlocks: true },
   });
   // Only the main worksheet can be implicitly created
   if (!existingMeta && action === 'add' && worksheetNumber === 0) {
@@ -85,7 +86,10 @@ async function updateWorksheetCourse(
         worksheetNumber,
         name: 'Main Worksheet',
       })
-      .returning({ id: worksheets.id });
+      .returning({
+        id: worksheets.id,
+        personalBlocks: worksheets.personalBlocks,
+      });
   }
   if (!existingMeta) return 'WORKSHEET_NOT_FOUND';
   const existing = await db.query.worksheetCourses.findFirst({
@@ -130,8 +134,19 @@ async function updateWorksheetCourse(
 
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
     // Only implicitly delete the main worksheet if it's empty
-    if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0)
-      await db.delete(worksheets).where(eq(worksheets.id, existingMeta.id));
+    if (
+      numCoursesInCurWorksheet === 0 &&
+      worksheetNumber === 0 &&
+      existingMeta.personalBlocks.length === 0
+    ) {
+      await db.delete(worksheets).where(
+        and(
+          eq(worksheets.id, existingMeta.id),
+          // A commitment may have been saved since existingMeta was read.
+          eq(worksheets.personalBlocks, []),
+        ),
+      );
+    }
   } else {
     if (!existing) return 'NOT_BOOKMARKED';
     await db
@@ -233,6 +248,7 @@ export const getUserWorksheet = async (
       worksheetNumber: true,
       name: true,
       private: true,
+      personalBlocks: true,
     },
     with: {
       courses: {
@@ -310,7 +326,18 @@ const SetPrivateWorksheetSchema = z.object({
   private: z.boolean(),
 });
 
+const SetPersonalBlocksSchema = z.object({
+  action: z.literal('setPersonalBlocks'),
+  season: z
+    .string()
+    .regex(/^\d{6}$/u)
+    .transform(Number),
+  worksheetNumber: z.number().int().min(0),
+  personalBlocks: personalBlocksSchema,
+});
+
 const UpdateWorksheetMetadataSchema = z.union([
+  SetPersonalBlocksSchema,
   AddWorksheetSchema,
   DeleteWorksheetSchema,
   RenameWorksheetSchema,
@@ -331,7 +358,45 @@ export const updateWorksheetMetadata = async (
 
   const { action, season } = bodyParseRes.data;
 
-  if (action === 'add') {
+  if (action === 'setPersonalBlocks') {
+    const { worksheetNumber, personalBlocks } = bodyParseRes.data;
+    if (worksheetNumber === 0) {
+      await db
+        .insert(worksheets)
+        .values({
+          netId,
+          season,
+          worksheetNumber,
+          name: 'Main Worksheet',
+          personalBlocks,
+        })
+        .onConflictDoUpdate({
+          target: [
+            worksheets.netId,
+            worksheets.season,
+            worksheets.worksheetNumber,
+          ],
+          set: { personalBlocks },
+        });
+    } else {
+      const updated = await db
+        .update(worksheets)
+        .set({ personalBlocks })
+        .where(
+          and(
+            eq(worksheets.netId, netId),
+            eq(worksheets.season, season),
+            eq(worksheets.worksheetNumber, worksheetNumber),
+          ),
+        )
+        .returning({ id: worksheets.id });
+      if (!updated.length) {
+        res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+        return;
+      }
+    }
+    res.sendStatus(200);
+  } else if (action === 'add') {
     const { name } = bodyParseRes.data;
 
     const worksheetNumbersRes = await db.query.worksheets.findMany({

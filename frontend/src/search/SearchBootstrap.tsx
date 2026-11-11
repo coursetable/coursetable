@@ -397,7 +397,14 @@ export function SearchBootstrap({
                 getRelevantWorksheetNumber(listing.course.season_code),
                 worksheets,
               ) &&
-              checkConflict(worksheetInfo, listing).length > 0
+              checkConflict(
+                worksheetInfo,
+                listing,
+                worksheets
+                  ?.get(listing.course.season_code)
+                  ?.get(getRelevantWorksheetNumber(listing.course.season_code))
+                  ?.personalBlocks,
+              ).length > 0
             );
           case 'grad':
             return isGraduate(listing);
@@ -570,7 +577,14 @@ export function SearchBootstrap({
             getRelevantWorksheetNumber(listing.course.season_code),
             worksheets,
           ) &&
-          checkConflict(worksheetInfo, listing).length > 0
+          checkConflict(
+            worksheetInfo,
+            listing,
+            worksheets
+              ?.get(listing.course.season_code)
+              ?.get(getRelevantWorksheetNumber(listing.course.season_code))
+              ?.personalBlocks,
+          ).length > 0
         )
           return false;
 

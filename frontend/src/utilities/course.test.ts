@@ -316,3 +316,79 @@ describe('toWeekdayStrings / toWeekdaysDisplayString', () => {
     expect(toWeekdaysDisplayString(MON | WED | FRI)).toBe('MWF');
   });
 });
+
+describe('personal block conflicts', () => {
+  const block = {
+    id: 'b78d394d-85ec-428b-98bf-49f199d2e346',
+    title: 'Practice',
+    days: [2, 4],
+    start: '15:00',
+    end: '16:00',
+  };
+
+  it('finds Tuesday and Thursday conflicts without any worksheet courses', () => {
+    for (const day of [TUE, THU]) {
+      expect(
+        checkConflict(
+          [],
+          makeListing({
+            daysOfWeek: day,
+            startTime: '15:30',
+            endTime: '16:30',
+          }),
+          [block],
+        ),
+      ).toEqual([{ course_code: 'Practice' }]);
+    }
+  });
+
+  it('ignores other days and separated times', () => {
+    expect(
+      checkConflict(
+        [],
+        makeListing({ daysOfWeek: MON, startTime: '15:30', endTime: '16:30' }),
+        [block],
+      ),
+    ).toEqual([]);
+    expect(
+      checkConflict(
+        [],
+        makeListing({ daysOfWeek: TUE, startTime: '16:01', endTime: '17:00' }),
+        [block],
+      ),
+    ).toEqual([]);
+  });
+
+  it('preserves inclusive endpoints and returns a commitment only once', () => {
+    const meeting = {
+      days_of_week: TUE | THU,
+      start_time: '16:00',
+      end_time: '17:00',
+    };
+    expect(
+      checkConflict([], makeListing({ meetings: [meeting, meeting] }), [block]),
+    ).toEqual([{ course_code: 'Practice' }]);
+  });
+
+  it('combines course and personal conflicts', () => {
+    const course = makeListing({
+      daysOfWeek: TUE,
+      startTime: '15:10',
+      endTime: '15:50',
+    });
+    expect(
+      checkConflict([makeWorksheetCourse(course)], course, [block]),
+    ).toEqual([course, { course_code: 'Practice' }]);
+  });
+
+  it('keeps course conflicts when a commitment is on another day', () => {
+    const course = makeListing({
+      daysOfWeek: MON,
+      startTime: '15:10',
+      endTime: '15:50',
+    });
+    expect(
+      checkConflict([makeWorksheetCourse(course)], course, [block]),
+    ).toEqual([course]);
+  });
+});

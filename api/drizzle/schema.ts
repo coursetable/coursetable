@@ -1,5 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import {
+  jsonb,
   pgTable,
   pgEnum,
   boolean,
@@ -11,6 +12,7 @@ import {
   serial,
   integer,
 } from 'drizzle-orm/pg-core';
+import type { PersonalBlock } from '../../shared/personalBlock.mjs';
 
 /** Shared by name / email / year / school / major visibility columns. */
 export const profileVisibilityEnum = pgEnum('profile_visibility', [
@@ -127,6 +129,10 @@ export const worksheets = pgTable(
     netId: varchar('netId', { length: 8 }).notNull(),
     season: integer('season').notNull(),
     worksheetNumber: integer('worksheetNumber').notNull(),
+    personalBlocks: jsonb('personalBlocks')
+      .$type<PersonalBlock[]>()
+      .notNull()
+      .default([]),
     name: varchar('name', { length: 64 }).notNull(),
     private: boolean('private').notNull().default(false),
   },

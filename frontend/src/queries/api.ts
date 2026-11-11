@@ -13,6 +13,11 @@ import {
   type Crn,
   type NetId,
 } from './graphql-types';
+import {
+  personalBlocksSchema,
+  type PersonalBlock,
+} from '../../../shared/personalBlock.mjs';
+
 import { API_ENDPOINT } from '../config';
 import type {
   CatalogBySeasonQuery,
@@ -364,6 +369,11 @@ export async function updateWorksheetMetadata(
         name: string;
       }
     | {
+        action: 'setPersonalBlocks';
+        worksheetNumber: number;
+        personalBlocks: PersonalBlock[];
+      }
+    | {
         action: 'setPrivate';
         worksheetNumber: number;
         private: boolean;
@@ -374,7 +384,7 @@ export async function updateWorksheetMetadata(
     body,
     breadcrumb: {
       category: 'worksheet',
-      message: `Updating worksheet names`,
+      message: `Updating worksheet metadata`,
     },
     handleErrorCode(err) {
       switch (err) {
@@ -786,6 +796,7 @@ const worksheetCourseSchema = z.object({
 
 // Shared schema for worksheet structure
 const worksheetSchema = z.object({
+  personalBlocks: personalBlocksSchema.optional(),
   name: z.string(),
   private: z.boolean().optional(),
   courses: z.array(worksheetCourseSchema),

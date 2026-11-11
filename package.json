@@ -27,6 +27,9 @@
     "frontend",
     "sharp"
   ],
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
   "devDependencies": {
     "@eslint/config-helpers": "^0.6.0",
     "@typescript/native": "npm:typescript@~7.0.2",
