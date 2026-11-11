@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 import type { IconType } from 'react-icons';
-import { GiScales, GiConsoleController, GiHourglass } from 'react-icons/gi';
-import { TextComponent } from '../components/Typography';
-import { suspended } from '../utilities/display';
-import styles from './Games.module.css';
+import { GiScales, GiHourglass } from 'react-icons/gi';
+import { suspended } from '../../utilities/display';
+import { TextComponent } from '../Typography';
+import styles from './GamesSection.module.css';
 
-const CourseTableGame = suspended(
-  () => import('../components/Navbar/CourseTableGame'),
-);
+const CourseTableGame = suspended(() => import('../Navbar/CourseTableGame'));
 
 type GameCard = {
   readonly id: string;
@@ -21,7 +19,7 @@ type GameCard = {
   | { readonly status: 'comingSoon'; readonly play?: never }
 );
 
-function Games() {
+export default function GamesSection() {
   // This-or-That is a modal today; the card opens it in place rather than
   // navigating away, so it keeps behaving the way it already does
   const [showThisOrThat, setShowThisOrThat] = useState(false);
@@ -58,16 +56,7 @@ function Games() {
   ];
 
   return (
-    <div className={clsx(styles.container, 'mx-auto')}>
-      <h1 className={clsx(styles.title, 'mt-5 mb-4')}>
-        <GiConsoleController
-          className={styles.titleIcon}
-          size={30}
-          aria-hidden="true"
-        />
-        Games
-      </h1>
-
+    <>
       <ul className={styles.grid}>
         {games.map((game) => {
           const Icon = game.icon;
@@ -80,7 +69,7 @@ function Games() {
                 <div className={styles.cardIcon} aria-hidden="true">
                   <Icon size={24} />
                 </div>
-                <h2 className={styles.cardTitle}>{game.title}</h2>
+                <h4 className={styles.cardTitle}>{game.title}</h4>
                 <TextComponent type="secondary">
                   <p className={styles.cardDescription}>{game.description}</p>
                 </TextComponent>
@@ -106,8 +95,6 @@ function Games() {
       {showThisOrThat && (
         <CourseTableGame onClose={() => setShowThisOrThat(false)} />
       )}
-    </div>
+    </>
   );
 }
-
-export default Games;

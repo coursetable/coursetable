@@ -146,7 +146,7 @@ function DropdownContent({
             </DropdownItem>
           )}
           {authStatus === 'authenticated' && (
-            <DropdownItem icon={GiConsoleController} to="/games">
+            <DropdownItem icon={GiConsoleController} to="/profile#games">
               Games
             </DropdownItem>
           )}
