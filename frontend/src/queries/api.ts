@@ -13,6 +13,7 @@ import {
   type Crn,
   type NetId,
 } from './graphql-types';
+
 import { API_ENDPOINT } from '../config';
 import type {
   CatalogBySeasonQuery,
@@ -24,6 +25,10 @@ import {
   getCatalogCacheBustToken,
   isCatalogEndpoint,
 } from '../utilities/catalogCache';
+import {
+  personalBlocksSchema,
+  type PersonalBlock,
+} from '../utilities/personalBlock';
 
 // Coalesce identical concurrent worksheet updates (e.g., double-clicks).
 const inflightWorksheetUpdates = new Map<string, Promise<boolean>>();
@@ -362,6 +367,11 @@ export async function updateWorksheetMetadata(
         action: 'rename';
         worksheetNumber: number;
         name: string;
+      }
+    | {
+        action: 'setPersonalBlocks';
+        worksheetNumber: number;
+        personalBlocks: PersonalBlock[];
       }
     | {
         action: 'setPrivate';
@@ -786,6 +796,7 @@ const worksheetCourseSchema = z.object({
 
 // Shared schema for worksheet structure
 const worksheetSchema = z.object({
+  personalBlocks: personalBlocksSchema.optional(),
   name: z.string(),
   private: z.boolean().optional(),
   courses: z.array(worksheetCourseSchema),

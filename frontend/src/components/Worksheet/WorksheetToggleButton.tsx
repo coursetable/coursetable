@@ -31,6 +31,7 @@ import { worksheetColors } from '../../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
+  getPersonalBlockConflicts,
   toSeasonString,
   type ListingWithTimes,
 } from '../../utilities/course';
@@ -64,18 +65,25 @@ function CourseConflictIcon({
   );
 
   const warning = useMemo(() => {
-    // If the course is in the worksheet, we never report a conflict
+    const blocks =
+      worksheets?.get(listing.course.season_code)?.get(worksheetNumber)
+        ?.personalBlocks ?? [];
+    const courseConflicts =
+      inWorksheet || modal ? [] : checkConflict(data, listing);
+    const conflictNames = [
+      ...courseConflicts.map((course) => course.course_code),
+      ...getPersonalBlockConflicts(blocks, listing).map((block) => block.title),
+    ];
+    if (conflictNames.length > 0)
+      return `Conflicts with: ${conflictNames.join(', ')}`;
     if (inWorksheet) return undefined;
     if (modal) {
       if (!CUR_YEAR.includes(listing.course.season_code))
         return 'This will add to a worksheet of a semester that has already ended.';
       return undefined;
     }
-    const conflicts = checkConflict(data, listing);
-    if (conflicts.length > 0)
-      return `Conflicts with: ${conflicts.map((x) => x.course_code).join(', ')}`;
     return undefined;
-  }, [inWorksheet, modal, listing, data]);
+  }, [inWorksheet, modal, listing, data, worksheets, worksheetNumber]);
 
   return (
     <Fade in={Boolean(warning)}>
