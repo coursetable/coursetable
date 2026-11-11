@@ -345,7 +345,22 @@
 }
 
 .fallbackMsg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
   text-align: center;
-  padding: 2.5rem 1rem;
+  padding: 0.5rem 0.25rem;
   color: var(--color-text-secondary);
+}
+
+.fallbackMsg p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* A short message doesn't need the full game width */
+.dialogCompact {
+  width: auto;
+  max-width: 400px !important;
 }

@@ -415,12 +415,15 @@ export default function CourseTableGame({
     );
   };
 
+  // A fallback notice is a couple of lines; don't frame it like the game
+  const compact = !hasEvals || !hasEnoughData;
+
   return (
     <Modal
       show
       onHide={onClose}
       centered
-      dialogClassName={styles.dialog}
+      dialogClassName={clsx(styles.dialog, compact && styles.dialogCompact)}
       aria-label="This-or-That game"
     >
       <Modal.Body className={styles.modalBody}>

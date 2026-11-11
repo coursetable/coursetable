@@ -91,7 +91,7 @@ function Games() {
                 ) : (
                   <button
                     type="button"
-                    className={clsx(styles.cta, 'btn')}
+                    className={clsx(styles.cta, 'btn btn-primary')}
                     onClick={game.play}
                   >
                     {game.cta}

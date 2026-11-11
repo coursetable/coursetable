@@ -45,7 +45,6 @@
 }
 
 .card:hover:not(.cardDisabled) {
-  background-color: var(--color-surface-elevated);
   border-color: var(--color-primary);
 }
 
