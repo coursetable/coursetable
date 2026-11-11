@@ -175,10 +175,13 @@ function parseSameCourseIdKey(key: string): {
 }
 
 // Fetch the friends that have any course in their main worksheet. Used in
-// search and worksheet expanded list
+// search and worksheet expanded list. With `excludeHidden`, courses a friend
+// has hidden on their main worksheet are skipped too, so the count reflects
+// what friends are actually planning to take.
 export function getNumFriends(
   friends: FriendRecord,
   sameCourseIdToCrns?: { [key: string]: number[] },
+  { excludeHidden = false }: { excludeHidden?: boolean } = {},
 ): NumFriendsReturn {
   // Reverse mapping: CRN -> same_course_id
   const crnToSameCourseId = new Map<number, string>();
@@ -193,6 +196,7 @@ export function getNumFriends(
   for (const [netId, friend] of Object.entries(friends)) {
     for (const [seasonCode, worksheets] of friend.worksheets) {
       for (const course of worksheets.get(0)?.courses ?? []) {
+        if (excludeHidden && course.hidden) continue;
         // Prioritize sameCourseId from course data, then fall back to lookup
         const sameCourseId =
           course.sameCourseId?.toString() ?? crnToSameCourseId.get(course.crn);

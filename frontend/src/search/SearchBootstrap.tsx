@@ -278,6 +278,7 @@ export function SearchBootstrap({
   const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
   const hideConflicting = useFilterState('hideConflicting');
+  const friendsTaking = useFilterState('friendsTaking');
   const includeAttributes = useFilterState('includeAttributes');
   const excludeAttributes = useFilterState('excludeAttributes');
 
@@ -305,10 +306,14 @@ export function SearchBootstrap({
     })),
   );
 
+  // When "friends are taking" is on, only count courses friends haven't hidden
+  // so the ranking reflects their actual plans
   const numFriends = useMemo(() => {
     if (!friends) return {};
-    return getNumFriends(friends, sameCourseIdToCrns);
-  }, [friends, sameCourseIdToCrns]);
+    return getNumFriends(friends, sameCourseIdToCrns, {
+      excludeHidden: friendsTaking.value,
+    });
+  }, [friends, sameCourseIdToCrns, friendsTaking.value]);
 
   const processedSearchText = useMemo(
     () =>
@@ -570,6 +575,12 @@ export function SearchBootstrap({
         )
           return false;
 
+        if (
+          friendsTaking.value &&
+          !numFriends[`${listing.course.season_code}${listing.crn}`]?.size
+        )
+          return false;
+
         if (selectSubjects.value.length !== 0) {
           // Never show a course that doesn't contain any of the selected
           // subjects, even when it has a cross listing that does
@@ -710,6 +721,7 @@ export function SearchBootstrap({
       numBounds,
       hideCancelled.value,
       hideConflicting.value,
+      friendsTaking.value,
       getRelevantWorksheetNumber,
       worksheets,
       worksheetInfo,

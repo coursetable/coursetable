@@ -6,7 +6,7 @@ import BooleanAttributeSelect from './BooleanAttributeSelect';
 import CustomSelect from './CustomSelect';
 import { Popout } from './Popout';
 import ResultsColumnSort from './ResultsColumnSort';
-import Toggle from './Toggle';
+import Toggle, { FriendsTakingToggle } from './Toggle';
 import { useSearch } from '../../hooks/useSearch';
 import {
   filterLabels,
@@ -220,6 +220,7 @@ function AdvancedPanel() {
     'enableQuist',
     'hideCancelled',
     'hideConflicting',
+    'friendsTaking',
     'selectBuilding',
   ];
   if (isTablet) {
@@ -381,6 +382,7 @@ function AdvancedPanel() {
           <Toggle handle="enableQuist" />
           <Toggle handle="hideCancelled" />
           <Toggle handle="hideConflicting" />
+          <FriendsTakingToggle />
         </div>
       </div>
     </Popout>
