@@ -118,20 +118,13 @@ export function summarizeClassHours(
   };
   const withoutHours: CatalogListing[] = [];
   const codesWithHours = new Set<string>();
+  // First pass counts only real scheduled times, so that a sibling section's
+  // actual times can suppress a borrowed estimate in the second pass. Doing
+  // both at once would count a lab's umbrella listing (TBA now, timed last
+  // semester) on top of its lettered section's real times.
   for (const listing of listings) {
     const { course } = listing;
-    let hours = getWeeklyMeetingHours(course.course_meetings);
-    if (hours === 0) {
-      const pastOffering = findLatestPastOffering(pastOfferings, course);
-      if (pastOffering) {
-        hours = getWeeklyMeetingHours(pastOffering.course_meetings);
-        summary.estimates.push({
-          label: classHoursLabel(listing),
-          pastOffering,
-          hours,
-        });
-      }
-    }
+    const hours = getWeeklyMeetingHours(course.course_meetings);
     if (hours === 0) {
       withoutHours.push(listing);
       continue;
@@ -140,13 +133,26 @@ export function summarizeClassHours(
     summary.courseCount++;
     for (const l of course.listings) codesWithHours.add(l.course_code);
   }
-  if (pending) return summary;
   for (const listing of withoutHours) {
     // Another section of the same course already has times, e.g. a lab's
     // umbrella listing whose times live on its lettered sections
     if (listing.course.listings.some((l) => codesWithHours.has(l.course_code)))
       continue;
-    summary.missing.push(classHoursLabel(listing));
+    const pastOffering = findLatestPastOffering(pastOfferings, listing.course);
+    if (pastOffering) {
+      const hours = getWeeklyMeetingHours(pastOffering.course_meetings);
+      summary.estimates.push({
+        label: classHoursLabel(listing),
+        pastOffering,
+        hours,
+      });
+      summary.hours += hours;
+      summary.courseCount++;
+      for (const l of listing.course.listings)
+        codesWithHours.add(l.course_code);
+      continue;
+    }
+    if (!pending) summary.missing.push(classHoursLabel(listing));
   }
   return summary;
 }

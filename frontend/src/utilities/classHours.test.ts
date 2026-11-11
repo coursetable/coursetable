@@ -233,6 +233,24 @@ describe('summarizeClassHours', () => {
     expect(summary.missing).toHaveLength(0);
   });
 
+  it("doesn't estimate an umbrella listing when its section has times", () => {
+    // Regression: the past-semester estimate used to bypass the sibling-section
+    // suppression, so the umbrella's borrowed hours were added on top of the
+    // lettered lab section's real hours.
+    const summary = summarizeClassHours(
+      [
+        makeListing('CHEM 2220L', '1', []),
+        makeListing('CHEM 2220L', 'J', MW_75_MIN, 2),
+      ],
+      [makeOffering('202601', '1')],
+      false,
+    );
+    expect(summary.hours).toBeCloseTo(2.5);
+    expect(summary.courseCount).toBe(1);
+    expect(summary.estimates).toHaveLength(0);
+    expect(summary.missing).toHaveLength(0);
+  });
+
   it('labels discussion sections with their section', () => {
     const summary = summarizeClassHours(
       [makeListing('CPSC 201', 'A', [])],
