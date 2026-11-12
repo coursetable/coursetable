@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
+  AttributionControl,
   MapContainer,
   Marker,
   TileLayer,
@@ -150,28 +151,25 @@ function BuildingMapPreview({
             </Marker>
           );
         })}
+        <AttributionControl position="bottomright" prefix={false} />
         <FitBounds bounds={bounds} />
         <InvalidateSizeOnMount />
       </MapContainer>
-      <div className={styles.footer}>
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => {
-            // Match what the pins show: the user's worksheet for this season
-            if (viewedPerson !== 'me') changeViewedPerson('me');
-            if (viewedSeason !== seasonCode) changeViewedSeason(seasonCode);
-            changeWorksheetView('map');
-            closeModal();
-            void navigate('/worksheet');
-          }}
-        >
-          Open worksheet map
-        </Button>
-        <div className={styles.attribution}>
-          &copy; OpenStreetMap contributors &copy; CARTO
-        </div>
-      </div>
+      <Button
+        className={styles.openButton}
+        size="sm"
+        variant="primary"
+        onClick={() => {
+          // Match what the pins show: the user's worksheet for this season
+          if (viewedPerson !== 'me') changeViewedPerson('me');
+          if (viewedSeason !== seasonCode) changeViewedSeason(seasonCode);
+          changeWorksheetView('map');
+          closeModal();
+          void navigate('/worksheet');
+        }}
+      >
+        Open worksheet map
+      </Button>
     </div>
   );
 }

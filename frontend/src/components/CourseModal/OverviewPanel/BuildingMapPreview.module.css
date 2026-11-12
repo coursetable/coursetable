@@ -1,32 +1,26 @@
 .preview {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: 100%;
 }
 
 .map {
-  flex: 1;
-  min-height: 0;
+  height: 100%;
   border-radius: 4px;
 }
 
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.25rem 0.125rem 0;
-}
-
-.footer > :global(.btn) {
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.attribution {
+.map :global(.leaflet-control-attribution) {
   font-size: 8px;
-  line-height: 1.2;
-  text-align: right;
+  line-height: 1.05;
+  padding: 0 3px;
+}
+
+/* Sits above the Leaflet panes and controls */
+.openButton {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 1000;
+  white-space: nowrap;
 }
 
 :global([data-theme='dark']) .map :global(.leaflet-tooltip) {
