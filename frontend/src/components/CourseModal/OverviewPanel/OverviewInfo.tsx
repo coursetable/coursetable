@@ -1,11 +1,19 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Row, Col, OverlayTrigger, Tooltip, Collapse } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  OverlayTrigger,
+  Tooltip,
+  Popover,
+  Collapse,
+} from 'react-bootstrap';
 import { BsEyeSlash } from 'react-icons/bs';
 import { HiExternalLink } from 'react-icons/hi';
 import { IoIosArrowDown } from 'react-icons/io';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 
+import buildingCoordinates from '../../../data/buildingCoordinates';
 import type {
   CourseModalOverviewDataQuery,
   PrereqLinkInfoQuery,
@@ -13,6 +21,7 @@ import type {
 import { useModalHistory } from '../../../hooks/useModalHistory';
 import { useWorksheetDemand } from '../../../hooks/useWorksheetDemand';
 import { usePrereqLinkInfoQuery } from '../../../queries/graphql-queries';
+import type { Season } from '../../../queries/graphql-types';
 import { useStore } from '../../../store';
 import { schools } from '../../../utilities/constants';
 import {
@@ -24,10 +33,15 @@ import {
 import {
   createCourseModalLink,
   createProfModalLink,
+  suspended,
 } from '../../../utilities/display';
 import { LinkLikeText } from '../../Typography';
 import type { ModalNavigationFunction } from '../CourseModal';
 import styles from './OverviewInfo.module.css';
+
+const BuildingMapPreview = suspended(() => import('./BuildingMapPreview'));
+
+const MAP_HIDE_DELAY_MS = 200;
 
 type CourseInfo = NonNullable<CourseModalOverviewDataQuery['self']>['course'];
 
@@ -371,11 +385,118 @@ function Professors({ course }: { readonly course: CourseInfo }) {
   );
 }
 
+function LocationText({
+  buildingCode,
+  seasonCode,
+  url,
+  children,
+}: {
+  readonly buildingCode: string;
+  readonly seasonCode: Season;
+  readonly url: string | null | undefined;
+  readonly children: string;
+}) {
+  const coords = buildingCoordinates[buildingCode];
+  const [showMap, setShowMap] = useState(false);
+  const isOverMap = useRef(false);
+  const hideTimeout = useRef<number | null>(null);
+
+  const cancelHide = () => {
+    if (hideTimeout.current) window.clearTimeout(hideTimeout.current);
+    hideTimeout.current = null;
+  };
+  // Delayed so the cursor can cross the gap between the text and the popover
+  const scheduleHide = () => {
+    cancelHide();
+    hideTimeout.current = window.setTimeout(() => {
+      // Clicking the map blurs the text, which shouldn't close the map
+      if (!isOverMap.current) setShowMap(false);
+    }, MAP_HIDE_DELAY_MS);
+  };
+
+  useEffect(() => cancelHide, []);
+
+  const content = url ? (
+    <a target="_blank" rel="noopener noreferrer" href={url}>
+      {children}
+      <HiExternalLink size={18} className="ms-1 my-auto" />
+    </a>
+  ) : (
+    // Focusable so keyboard users can open the map popover
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+    <span tabIndex={coords ? 0 : undefined}>{children}</span>
+  );
+  if (!coords) return content;
+  return (
+    // Only closes the popover; the child is the real interactive element
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <span
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape' || !showMap) return;
+        cancelHide();
+        isOverMap.current = false;
+        setShowMap(false);
+        // Otherwise the course modal closes too
+        e.stopPropagation();
+      }}
+    >
+      <OverlayTrigger
+        placement="top"
+        // The map is tall, so open below when there's no room above
+        flip
+        trigger={['hover', 'focus']}
+        delay={{ show: showMap ? 0 : 250, hide: 0 }}
+        show={showMap}
+        onToggle={(nextShow) => {
+          if (nextShow) {
+            cancelHide();
+            setShowMap(true);
+          } else {
+            scheduleHide();
+          }
+        }}
+        overlay={(props) => (
+          <Popover
+            id={`overview-location-map-${buildingCode}`}
+            {...props}
+            className={styles.mapPopover}
+            onMouseEnter={() => {
+              isOverMap.current = true;
+              cancelHide();
+            }}
+            onMouseLeave={() => {
+              isOverMap.current = false;
+              scheduleHide();
+            }}
+          >
+            <Popover.Body className="p-1">
+              {/* Fixed size so the popover is positioned correctly while the
+                  map is still loading */}
+              <div className={styles.mapContainer}>
+                <BuildingMapPreview
+                  buildingCode={buildingCode}
+                  lat={coords.lat}
+                  lng={coords.lng}
+                  seasonCode={seasonCode}
+                />
+              </div>
+            </Popover.Body>
+          </Popover>
+        )}
+      >
+        {content}
+      </OverlayTrigger>
+    </span>
+  );
+}
+
 function TimeLocation({
   course,
+  seasonCode,
   hasEvals,
 }: {
   readonly course: CourseInfo;
+  readonly seasonCode: Season;
   readonly hasEvals: boolean;
 }) {
   return (
@@ -385,7 +506,6 @@ function TimeLocation({
         const locationTexts = [];
         if (session.location && hasEvals) {
           locationTexts.push(session.location.building.code);
-          // TODO use a tooltip instead
           if (session.location.building.building_name)
             locationTexts.push(`(${session.location.building.building_name})`);
           if (session.location.room) locationTexts.push(session.location.room);
@@ -398,18 +518,13 @@ function TimeLocation({
               <>
                 {' '}
                 at{' '}
-                {session.location.building.url ? (
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={session.location.building.url}
-                  >
-                    {locationTexts.join(' ')}
-                    <HiExternalLink size={18} className="ms-1 my-auto" />
-                  </a>
-                ) : (
-                  locationTexts.join(' ')
-                )}
+                <LocationText
+                  buildingCode={session.location.building.code}
+                  seasonCode={seasonCode}
+                  url={session.location.building.url}
+                >
+                  {locationTexts.join(' ')}
+                </LocationText>
               </>
             )}
             {!hasEvals && (
@@ -467,7 +582,11 @@ function OverviewInfo({
       />
       <Syllabus course={course} sameCourse={sameCourse} />
       <Professors course={course} />
-      <TimeLocation course={course} hasEvals={Boolean(user?.hasEvals)} />
+      <TimeLocation
+        course={course}
+        seasonCode={listing.season_code}
+        hasEvals={Boolean(user?.hasEvals)}
+      />
       <DataField name="Section" value={course.section} />
       <DataField
         name="Info"
