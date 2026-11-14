@@ -51,6 +51,22 @@
   color: var(--color-text-light);
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  padding: 0;
+  background-size: 100% 100%;
+  background-position: center;
+}
+
+.buttonAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.headerAvatar {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
 }
 
 .meIcon span {
@@ -94,6 +110,14 @@
   justify-content: center;
   color: var(--color-text-light);
   background-color: var(--color-primary);
+
+  /* Keep Yalemoji's square background artwork undistorted. */
+  background-size: 220px 220px;
+  background-position: center;
+}
+
+.identityHeader:has(.headerAvatar) {
+  padding: 2px 1rem;
 }
 
 .headerInitials {
@@ -109,21 +133,31 @@
   transform: scaleX(0.8);
 }
 
-.yalemojiPrompt {
-  margin-top: 0.4rem;
-  color: var(--color-text-light);
+.createYalemoji {
+  margin-top: 0.65rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-primary);
   font-size: 0.78rem;
   font-weight: 600;
+  line-height: 1.2;
   text-decoration: none;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
-.yalemojiPrompt:hover {
-  color: var(--color-text-light);
+.createYalemoji:hover,
+.createYalemoji:focus-visible {
+  background: transparent;
+  color: #fff;
 }
 
 .headerEdit {
   position: absolute;
-  top: 10px;
+  bottom: 10px;
   right: 10px;
   width: 28px;
   height: 28px;
@@ -142,9 +176,9 @@
   display: block;
   width: 20px;
   height: auto;
-  opacity: 0.65;
+  opacity: 1;
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 40%));
-  transition: opacity 0.12s ease, filter 0.12s ease;
+  transition: filter 0.12s ease;
 }
 
 .headerEdit:hover .headerEditIcon,
@@ -153,13 +187,7 @@
   filter: drop-shadow(0 1px 3px rgb(0 0 0 / 60%));
 }
 
-[data-theme='dark'] .headerEditIcon {
-  filter: brightness(0);
-}
-
 [data-theme='dark'] .identityHeader,
-[data-theme='dark'] .identityHeader .yalemojiPrompt,
-[data-theme='dark'] .identityHeader .yalemojiPrompt:hover,
 [data-theme='dark'] .identityHeader .headerEdit,
 [data-theme='dark'] .identityHeader .headerEdit:hover {
   color: var(--color-text-dark);
@@ -186,11 +214,22 @@
     border-radius: 24px;
   }
 
+  .headerAvatar {
+    width: 160px;
+    height: 160px;
+  }
+
   .menuItems {
     padding: 0.55rem 0 0.2rem;
   }
 
   .dropdownItem {
     padding: 0.5rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .createYalemoji {
+    transition: none;
   }
 }

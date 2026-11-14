@@ -1,8 +1,10 @@
 import React from 'react';
 import { Collapse } from 'react-bootstrap';
+import YaleMojiLink from './YaleMojiLink';
 import coursetableLogo from '../../images/apps-panel/coursetable.svg';
 import yaleMenusLogo from '../../images/apps-panel/yale-menus.png';
 import yaleImsLogo from '../../images/apps-panel/yaleims.png';
+import yalemojiLogo from '../../images/apps-panel/yalemoji-waffle.png';
 import yaliesLogo from '../../images/apps-panel/yalies.png';
 import yaleClubsLogo from '../../images/apps-panel/yclubs.svg';
 import yLabsLogo from '../../images/apps-panel/ylabs.png';
@@ -35,24 +37,27 @@ const apps: readonly AppLink[] = [
     color: '#28639b',
   },
   {
-    name: 'Yale Clubs',
-    href: 'https://yaleclubs.io',
-    image: yaleClubsLogo,
-    color: '#438fd1',
+    name: 'YaleMeals',
+    href: 'https://apps.apple.com/us/app/yalemeals/id6755962674',
+    image: yaleMenusLogo,
+    imageShift: 'upMore',
+    imageSize: 'xlarge',
+    color: '#164b78',
   },
   {
-    name: 'y/meets',
+    name: 'ymeets',
     href: 'https://ymeets.com',
     image: yMeetsLogo,
     roundedImage: true,
     color: '#468ff2',
   },
   {
-    name: 'Yale IMs',
-    href: 'https://yaleims.com',
-    image: yaleImsLogo,
-    imageShift: 'up',
-    color: '#e2ad16',
+    name: 'Yalemoji',
+    href: 'https://yalemoji.com?ref=coursetable',
+    image: yalemojiLogo,
+    imageSize: 'large',
+    roundedImage: true,
+    color: '#468ff2',
   },
   {
     name: 'y/labs',
@@ -62,12 +67,17 @@ const apps: readonly AppLink[] = [
     color: '#1678d3',
   },
   {
-    name: 'Yale Meals',
-    href: 'https://apps.apple.com/us/app/yalemeals/id6755962674',
-    image: yaleMenusLogo,
-    imageShift: 'upMore',
-    imageSize: 'xlarge',
-    color: '#164b78',
+    name: 'YaleIMs',
+    href: 'https://yaleims.com',
+    image: yaleImsLogo,
+    imageShift: 'up',
+    color: '#e2ad16',
+  },
+  {
+    name: 'YaleClubs',
+    href: 'https://yaleclubs.io',
+    image: yaleClubsLogo,
+    color: '#438fd1',
   },
 ];
 
@@ -82,6 +92,7 @@ function AppTile({
   readonly app: AppLink;
   readonly onClose: () => void;
 }) {
+  const LinkElement = app.name === 'Yalemoji' ? YaleMojiLink : 'a';
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const targetUrl = new URL(app.href);
     if (
@@ -97,7 +108,7 @@ function AppTile({
   };
 
   return (
-    <a
+    <LinkElement
       className={styles.appTile}
       href={app.href}
       target="_blank"
@@ -128,7 +139,7 @@ function AppTile({
         />
       </span>
       <span>{app.name}</span>
-    </a>
+    </LinkElement>
   );
 }
 

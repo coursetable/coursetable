@@ -21,6 +21,7 @@ import ProfModal from './components/ProfModal/ProfModal';
 import SeoMeta from './components/SeoMeta';
 import Spinner from './components/Spinner';
 import Tutorial from './components/Tutorial';
+import YaleMojiBanner from './components/YaleMojiBanner';
 
 // Popular pages are eagerly fetched
 import Search from './pages/Search';
@@ -152,6 +153,7 @@ function App() {
         // When removing a notice, just remove/comment the text content below.
         // Don't remove this wrapper.
         id={26}
+        fallback={<YaleMojiBanner />}
       >
         Read our <Link to="/releases/spring26">latest release notes</Link>.
       </Notice>

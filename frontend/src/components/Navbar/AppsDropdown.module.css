@@ -104,7 +104,7 @@
   transform: translateY(-5px);
 }
 
-.appIconImgLarge {
+.appIcon .appIconImgLarge {
   width: 40px;
   height: 40px;
 }

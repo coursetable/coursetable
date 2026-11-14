@@ -19,17 +19,19 @@ import {
 } from 'react-icons/fc';
 
 import { useShallow } from 'zustand/react/shallow';
+import DarkModeButton from './DarkModeButton';
+import YaleMojiLink from './YaleMojiLink';
 import { API_ENDPOINT } from '../../config';
+import { useYaleMoji } from '../../hooks/useYaleMoji';
+import { clearYaleMojiCache } from '../../hooks/yalemojiCache';
 import yalemojiIcon from '../../images/yalemoji.svg';
-import { logout } from '../../queries/api';
+import { logout, type YaleMojiAvatar } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import { createCatalogLink } from '../../utilities/navigation';
 import { SurfaceComponent, TextComponent } from '../Typography';
-import DarkModeButton from './DarkModeButton';
 import styles from './MeDropdown.module.css';
 
-const YALEMOJI_URL = 'https://yalemoji.com?ref=ct';
 const NOOP = () => {};
 
 function DropdownItem({
@@ -99,6 +101,8 @@ function DropdownContent({
   setIsExpanded,
   initials,
   fullName,
+  avatar,
+  onAvatarError,
   showMobileNavLinks,
   showInstallAsApp,
   onInstallAsApp,
@@ -107,6 +111,8 @@ function DropdownContent({
   readonly setIsExpanded: (visible: boolean) => void;
   readonly initials: string | undefined;
   readonly fullName: string | undefined;
+  readonly avatar: YaleMojiAvatar | null;
+  readonly onAvatarError: () => void;
   readonly showMobileNavLinks: boolean;
   readonly showInstallAsApp: boolean;
   readonly onInstallAsApp: () => void;
@@ -121,12 +127,13 @@ function DropdownContent({
   const user = useStore((state) => state.user);
   const refreshAuth = useStore((state) => state.refreshAuth);
   const toggleTutorial = useStore((state) => state.toggleTutorial);
-  const userFirstName =
-    authStatus === 'authenticated' ? user?.firstName?.trim() : undefined;
   const closeAndScroll = (e: React.MouseEvent) => {
     setIsExpanded(false);
     scrollToTop(e);
   };
+  const avatarStyle = avatar
+    ? { backgroundImage: `url("${avatar.background_url}")` }
+    : undefined;
 
   return (
     <SurfaceComponent
@@ -140,33 +147,50 @@ function DropdownContent({
         {/* Do not add vertical spacing to this div because it will break
           collapsing animation */}
         <div>
-          <div className={styles.identityHeader}>
-            <a
-              className={styles.headerEdit}
-              href={YALEMOJI_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Build your YaleMoji"
-            >
+          <div className={styles.identityHeader} style={avatarStyle}>
+            {avatar && (
+              <YaleMojiLink
+                className={styles.headerEdit}
+                href="https://yalemoji.com/editor?ref=coursetable"
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label="Edit your Yalemoji"
+                title="Edit your Yalemoji"
+              >
+                <img
+                  src={yalemojiIcon}
+                  alt=""
+                  className={styles.headerEditIcon}
+                  width={20}
+                  height={16}
+                />
+              </YaleMojiLink>
+            )}
+            {avatar ? (
               <img
-                src={yalemojiIcon}
-                alt=""
-                className={styles.headerEditIcon}
-                width={20}
-                height={16}
+                src={avatar.png_url}
+                alt="Your Yalemoji"
+                className={styles.headerAvatar}
+                onError={onAvatarError}
               />
-            </a>
-            <div className={styles.headerInitials} title={fullName}>
-              {initials ? (
-                <span>{initials}</span>
-              ) : (
-                <BsFillPersonFill size={40} />
-              )}
-            </div>
-            {userFirstName && (
-              <span className={styles.yalemojiPrompt}>
-                Hello, {userFirstName}
-              </span>
+            ) : (
+              <div className={styles.headerInitials} title={fullName}>
+                {initials ? (
+                  <span>{initials}</span>
+                ) : (
+                  <BsFillPersonFill size={40} />
+                )}
+              </div>
+            )}
+            {!avatar && (
+              <YaleMojiLink
+                className={styles.createYalemoji}
+                href="https://yalemoji.com/create?ref=coursetable"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Make your Yalemoji
+              </YaleMojiLink>
             )}
           </div>
           <div className={styles.menuItems}>
@@ -278,6 +302,7 @@ function DropdownContent({
                 iconColor="#ed5f5f"
                 onClick={async () => {
                   setIsExpanded(false);
+                  clearYaleMojiCache();
                   await logout();
                   await refreshAuth();
                   window.location.href = '/';
@@ -319,6 +344,10 @@ function MeDropdown({
   const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
   const user = useStore((state) => state.user);
+  const authStatus = useStore((state) => state.authStatus);
+  const { avatar, onAvatarError } = useYaleMoji(
+    authStatus === 'authenticated' ? user?.netId : undefined,
+  );
   const hasName = Boolean(user?.firstName && user.lastName);
   const initials = hasName
     ? `${user!.firstName![0]!}${user!.lastName![0]!}`
@@ -338,13 +367,26 @@ function MeDropdown({
       <button
         type="button"
         className={clsx(
-          hasName ? styles.meIcon : styles.anonIcon,
+          avatar || hasName ? styles.meIcon : styles.anonIcon,
           !showMobileNavLinks && 'm-auto',
         )}
+        style={
+          avatar
+            ? { backgroundImage: `url("${avatar.background_url}")` }
+            : undefined
+        }
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         aria-label="Profile"
+        aria-expanded={isComponentVisible}
       >
-        {hasName ? (
+        {avatar ? (
+          <img
+            src={avatar.png_url}
+            alt=""
+            className={styles.buttonAvatar}
+            onError={onAvatarError}
+          />
+        ) : hasName ? (
           <span title={fullName}>{initials}</span>
         ) : (
           <BsFillPersonFill
@@ -359,6 +401,8 @@ function MeDropdown({
         setIsExpanded={setIsComponentVisible}
         initials={initials}
         fullName={fullName}
+        avatar={avatar}
+        onAvatarError={onAvatarError}
         showMobileNavLinks={showMobileNavLinks}
         showInstallAsApp={showInstallAsApp}
         onInstallAsApp={onInstallAsApp}
