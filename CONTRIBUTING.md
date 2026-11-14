@@ -16,7 +16,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 1. Install [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started)
 
-1. Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) by using the `wsl --install -d Ubuntu-20.04` command.
+1. Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) by using the `wsl --install -d Ubuntu-24.04` command.
 
    If you already have WSL, make sure it is WSL2 by using the `wsl -l -v` command.
 
@@ -44,7 +44,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    After cloning, cd to the repository. Open the repository in VSCode by running the command `code .`.
 
-   > **For Windows**: This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-20.04`. Also, make sure that the bar in the bottom right says `LF` and not `CRLF`.
+   > **For Windows**: This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-24.04`. Also, make sure that the bar in the bottom right says `LF` and not `CRLF`.
 
    Then, install the following extensions:
    - [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) (only needed for Windows)
@@ -52,7 +52,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
    - [GraphQL](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql)
 
-   > **For Windows**: In the Extensions tab in VSCode, you should see a `LOCAL - INSTALLED` section and a `WSL: UBUNTU-20.04 - INSTALLED` section. VSCode separates the extensions you've installed locally on your Windows system and remotely on your WSL Ubuntu system. When installing new extensions, make sure to click `Install in WSL: Ubuntu-20.04`.
+   > **For Windows**: In the Extensions tab in VSCode, you should see a `LOCAL - INSTALLED` section and a `WSL: UBUNTU-24.04 - INSTALLED` section. VSCode separates the extensions you've installed locally on your Windows system and remotely on your WSL Ubuntu system. When installing new extensions, make sure to click `Install in WSL: Ubuntu-24.04`.
 
 1. Install Doppler
 

@@ -83,7 +83,9 @@ app.use(
     // Recommended by the connect-redis documentation.
     store: redisStore,
     resave: false,
-    saveUninitialized: true,
+    // Anonymous requests must not get a session cookie: a Set-Cookie header
+    // makes the public catalog responses uncacheable at the CDN.
+    saveUninitialized: false,
 
     cookie: {
       // Cookie lifetime of one year.

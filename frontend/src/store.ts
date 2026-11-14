@@ -59,6 +59,7 @@ export interface Store
 
 const basePersistKeys: (keyof Store)[] = [
   'authStatus',
+  'user',
   'theme',
   'coursePref',
   'professorPref',

@@ -6,13 +6,16 @@ import { TextComponent } from '../components/Typography';
 // Member headshots
 import ag from '../images/headshots/abhijit-gupta.jpg';
 import ae from '../images/headshots/aidan-evans.jpg';
+import ac from '../images/headshots/alex-castronovo.jpg';
 import as from '../images/headshots/alex-schapiro.jpg';
 import az from '../images/headshots/anna-zhang.jpg';
 import ash from '../images/headshots/aryan-sharma.jpg';
 import bx from '../images/headshots/ben-xu.jpg';
+import bh from '../images/headshots/brent-hu.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 import eboug from '../images/headshots/eli-bouganim.jpg';
+import ew from '../images/headshots/eric-wang.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
 import ff from '../images/headshots/filippo-fonseca.jpg';
@@ -29,7 +32,9 @@ import lt from '../images/headshots/leck-tang.jpg';
 import lz from '../images/headshots/lily-zhou.jpg';
 import lh from '../images/headshots/lucas-huang.jpg';
 import my from '../images/headshots/max-yuan.jpg';
+import mw from '../images/headshots/micah-winesberry.jpg';
 import mc from '../images/headshots/michael-canudas.jpg';
+import mliu from '../images/headshots/michael-liu.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import ma from '../images/headshots/murad-avliyakulov.jpg';
 import nk from '../images/headshots/nalin-khanna.jpg';
@@ -39,8 +44,10 @@ import rb from '../images/headshots/reyansh-bahl.jpg';
 import ss from '../images/headshots/shayna-sragovicz.jpg';
 import sc from '../images/headshots/sida-chen.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpg';
+import soh from '../images/headshots/sophia-hou.jpg';
 import wf from '../images/headshots/william-feng.jpg';
 import yf from '../images/headshots/yavin-fickel.jpg';
+import yz from '../images/headshots/yuanrui-zhao.jpg';
 
 // Link logos
 import githubDark from '../images/link-logos/github-light.png';
@@ -67,15 +74,6 @@ function About() {
 
   const current: Person[] = [
     {
-      name: 'Reyansh Bahl',
-      image: rb,
-      role: 'CourseTable Lead',
-      links: {
-        github: 'https://github.com/reybahl',
-        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
-      },
-    },
-    {
       name: 'Aryan Sharma',
       image: ash,
       role: 'CourseTable Lead',
@@ -86,12 +84,22 @@ function About() {
       },
     },
     {
-      name: 'Neil Song',
-      image: ns,
+      name: 'William Feng',
+      image: wf,
+      role: 'CourseTable Lead',
+      links: {
+        github: 'https://github.com/WFeng7',
+        linkedin: 'https://www.linkedin.com/in/william-feng7',
+        website: 'https://wsfeng.dev/',
+      },
+    },
+    {
+      name: 'Reyansh Bahl',
+      image: rb,
       role: 'Past Lead, Advisor',
       links: {
-        linkedin: 'https://www.linkedin.com/in/neil-song/',
-        github: 'https://github.com/neilsong',
+        github: 'https://github.com/reybahl',
+        linkedin: 'https://www.linkedin.com/in/reyanshbahl',
       },
     },
     {
@@ -144,13 +152,69 @@ function About() {
       },
     },
     {
-      name: 'William Feng',
-      image: wf,
+      name: 'Brent Hu',
+      image: bh,
       role: 'Development',
       links: {
-        github: 'https://github.com/WFeng7',
-        linkedin: 'https://www.linkedin.com/in/william-feng7',
-        website: 'https://wsfeng.dev/',
+        github: 'https://github.com/brtboi',
+        linkedin: 'https://www.linkedin.com/in/brenthu/',
+      },
+    },
+    {
+      name: 'Sophia Hou',
+      image: soh,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/cxyerl',
+        linkedin: 'https://www.linkedin.com/in/sophia-hou-a79825210/',
+      },
+    },
+    {
+      name: 'Michael Liu',
+      image: mliu,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/michaelcliu-web',
+        linkedin: 'https://www.linkedin.com/in/michael-liu-b78aa5380/',
+      },
+    },
+    {
+      name: 'Micah Winesberry',
+      image: mw,
+      role: 'Development',
+      links: {
+        website: 'https://blue5gd.github.io/Portfolio/',
+        github: 'https://github.com/Blue5GD',
+        linkedin: 'https://www.linkedin.com/in/mwinesberry/',
+      },
+    },
+    {
+      name: 'Alex Castronovo',
+      image: ac,
+      role: 'Development',
+      links: {
+        website: 'https://alexcastronovo.com/',
+        github: 'https://github.com/alexanderjcs',
+        linkedin:
+          'https://www.linkedin.com/in/alexander-castronovo/?isSelfProfile=true',
+      },
+    },
+    {
+      name: 'Yuanrui Zhao',
+      image: yz,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/rayzhao-svg',
+        linkedin: 'https://www.linkedin.com/in/yuanrui-zhao-7466422a8/',
+      },
+    },
+    {
+      name: 'Eric Wang',
+      image: ew,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/whyeric',
+        linkedin: 'https://www.linkedin.com/in/hongyi-eric-wang/',
       },
     },
   ];
@@ -166,6 +230,15 @@ function About() {
       name: 'Harry Yu',
       image: hy,
       role: 'Cofounder',
+    },
+    {
+      name: 'Neil Song',
+      image: ns,
+      role: 'CourseTable Lead',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
+      },
     },
     {
       name: 'Alex Schapiro',

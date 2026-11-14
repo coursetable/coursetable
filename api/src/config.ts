@@ -76,14 +76,14 @@ export const SESSION_SECRET = getEnv('SESSION_SECRET');
 // API key for interfacing with the yalies.io API
 export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
 // Optional, server-only key for the YaleMoji avatar service.
-export const {YALEMOJI_API_KEY} = process.env;
+export const { YALEMOJI_API_KEY } = process.env;
 export const YALEMOJI_API_URL =
   process.env.YALEMOJI_API_URL || 'https://www.yalemoji.com';
 
 export const NUM_CHALLENGE_COURSES = 3; // Number of courses to select for the challenge
 // Season to select the challenge from. Note that OCE removes old seasons so
 // you need to keep this new.
-export const CHALLENGE_SEASON = '202303';
+export const CHALLENGE_SEASON = '202503';
 export const MAX_CHALLENGE_REQUESTS = 100; // Maximum number of allowed challenge tries
 
 // Location of statically generated files. This is relative

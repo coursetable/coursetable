@@ -124,7 +124,11 @@ export function checkConflict(
 ): CatalogListing[] {
   const conflicts: CatalogListing[] = [];
   if (!listing.course.course_meetings.length) return conflicts;
-  loopWorksheet: for (const { listing: worksheetCourse } of worksheetData) {
+  loopWorksheet: for (const {
+    listing: worksheetCourse,
+    hidden,
+  } of worksheetData) {
+    if (hidden) continue;
     if (worksheetCourse.course.season_code !== listing.course.season_code)
       continue;
     for (const meeting1 of worksheetCourse.course.course_meetings) {
@@ -170,8 +174,8 @@ function parseSameCourseIdKey(key: string): {
   return { season, sameCourseId };
 }
 
-// Fetch the friends that are also shopping any course. Used in search and
-// worksheet expanded list
+// Fetch the friends that have any course in their main worksheet. Used in
+// search and worksheet expanded list
 export function getNumFriends(
   friends: FriendRecord,
   sameCourseIdToCrns?: { [key: string]: number[] },
@@ -188,21 +192,18 @@ export function getNumFriends(
 
   for (const [netId, friend] of Object.entries(friends)) {
     for (const [seasonCode, worksheets] of friend.worksheets) {
-      for (const w of worksheets.values()) {
-        for (const course of w.courses) {
-          // Prioritize sameCourseId from course data, then fall back to lookup
-          const sameCourseId =
-            course.sameCourseId?.toString() ??
-            crnToSameCourseId.get(course.crn);
-          const key =
-            sameCourseId !== undefined
-              ? `${seasonCode}-${sameCourseId}`
-              : `${seasonCode}-crn-${course.crn}`;
+      for (const course of worksheets.get(0)?.courses ?? []) {
+        // Prioritize sameCourseId from course data, then fall back to lookup
+        const sameCourseId =
+          course.sameCourseId?.toString() ?? crnToSameCourseId.get(course.crn);
+        const key =
+          sameCourseId !== undefined
+            ? `${seasonCode}-${sameCourseId}`
+            : `${seasonCode}-crn-${course.crn}`;
 
-          if (!friendsBySameCourse.has(key))
-            friendsBySameCourse.set(key, new Set());
-          friendsBySameCourse.get(key)!.add(friend.name ?? netId);
-        }
+        if (!friendsBySameCourse.has(key))
+          friendsBySameCourse.set(key, new Set());
+        friendsBySameCourse.get(key)!.add(friend.name ?? netId);
       }
     }
   }

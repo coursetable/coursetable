@@ -1,0 +1,78 @@
+<svg viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="100%" height="100%" rx="12" fill="#FDFDFC"/>
+  <defs>
+    <marker id="arrOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E58A3C"/>
+    </marker>
+    <marker id="arrBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4A7BB5"/>
+    </marker>
+    <marker id="arrGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#999999"/>
+    </marker>
+  </defs>
+
+  <!-- Browser -->
+  <rect x="22" y="78" width="118" height="114" rx="8" fill="none" stroke="#444" stroke-width="1.5"/>
+  <text x="81" y="100" text-anchor="middle" font-size="13" font-weight="600" fill="#333">Browser</text>
+  <text x="81" y="122" text-anchor="middle" font-size="11" fill="#666">catalog + search</text>
+  <text x="81" y="137" text-anchor="middle" font-size="11" fill="#666">(all client-side)</text>
+  <text x="81" y="163" text-anchor="middle" font-size="11" fill="#666">course modals,</text>
+  <text x="81" y="177" text-anchor="middle" font-size="11" fill="#666">worksheets</text>
+
+  <!-- Express API box -->
+  <rect x="262" y="52" width="170" height="160" rx="8" fill="none" stroke="#444" stroke-width="1.5"/>
+  <text x="347" y="72" text-anchor="middle" font-size="13" font-weight="600" fill="#333">API server (Express)</text>
+  <!-- static files sub-box, vertically centered on hot path y=107 -->
+  <rect x="276" y="84" width="142" height="46" rx="6" fill="#E58A3C" fill-opacity="0.12" stroke="#E58A3C" stroke-width="1.3"/>
+  <text x="347" y="103" text-anchor="middle" font-size="11.5" font-weight="600" fill="#B05E1C">static catalog JSON</text>
+  <text x="347" y="119" text-anchor="middle" font-size="10.5" fill="#B05E1C">one file per semester</text>
+  <!-- proxy sub-box, vertically centered on live path y=169 -->
+  <rect x="276" y="146" width="142" height="46" rx="6" fill="#4A7BB5" fill-opacity="0.10" stroke="#4A7BB5" stroke-width="1.3"/>
+  <text x="347" y="165" text-anchor="middle" font-size="11.5" font-weight="600" fill="#2F5787">GraphQL proxy</text>
+  <text x="347" y="181" text-anchor="middle" font-size="10.5" fill="#2F5787">+ user data (auth, worksheets)</text>
+
+  <!-- Hasura: center y = 169, aligned with live path -->
+  <rect x="530" y="148" width="128" height="42" rx="8" fill="none" stroke="#444" stroke-width="1.5"/>
+  <text x="594" y="174" text-anchor="middle" font-size="13" font-weight="600" fill="#333">Hasura</text>
+
+  <!-- Postgres -->
+  <rect x="530" y="226" width="128" height="42" rx="8" fill="none" stroke="#444" stroke-width="1.5"/>
+  <text x="594" y="252" text-anchor="middle" font-size="13" font-weight="600" fill="#333">Postgres</text>
+
+  <!-- Ferry -->
+  <rect x="262" y="262" width="170" height="46" rx="8" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="347" y="282" text-anchor="middle" font-size="13" font-weight="600" fill="#666">Ferry crawler</text>
+  <text x="347" y="298" text-anchor="middle" font-size="10.5" fill="#888">nightly, GitHub Actions</text>
+
+  <!-- Yale APIs -->
+  <rect x="22" y="262" width="118" height="46" rx="8" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="81" y="282" text-anchor="middle" font-size="12.5" font-weight="600" fill="#666">Yale course</text>
+  <text x="81" y="298" text-anchor="middle" font-size="12.5" font-weight="600" fill="#666">&amp; eval APIs</text>
+
+  <!-- HOT PATH: browser edge (140) <-> API container edge (262), aligned to static sub-box center y=107 -->
+  <line x1="140" y1="107" x2="262" y2="107" stroke="#E58A3C" stroke-width="2.6" marker-end="url(#arrOrange)" marker-start="url(#arrOrange)"/>
+  <text x="201" y="96" text-anchor="middle" font-size="11" font-weight="600" fill="#B05E1C">hot path</text>
+  <text x="201" y="124" text-anchor="middle" font-size="10" fill="#B05E1C">GET 202601.json</text>
+  <text x="201" y="137" text-anchor="middle" font-size="10" fill="#B05E1C">cached for 1h</text>
+
+  <!-- LIVE PATH: browser edge (140) -> container edge (262), aligned to proxy sub-box center y=169 -->
+  <line x1="140" y1="169" x2="262" y2="169" stroke="#4A7BB5" stroke-width="2" marker-end="url(#arrBlue)"/>
+  <text x="201" y="160" text-anchor="middle" font-size="11" font-weight="600" fill="#2F5787">live path</text>
+  <!-- container edge (432) -> Hasura edge (530), horizontal at y=169 -->
+  <line x1="432" y1="169" x2="530" y2="169" stroke="#4A7BB5" stroke-width="2" marker-end="url(#arrBlue)"/>
+  <text x="481" y="160" text-anchor="middle" font-size="10" fill="#2F5787">GraphQL</text>
+  <!-- Hasura bottom (190) -> Postgres top (226), vertical at x=594 -->
+  <line x1="594" y1="190" x2="594" y2="226" stroke="#4A7BB5" stroke-width="2" marker-end="url(#arrBlue)"/>
+  <text x="602" y="212" font-size="10" fill="#2F5787">one SQL stmt</text>
+
+  <!-- OFFLINE: Yale edge (140) -> Ferry edge (262), horizontal at y=285 -->
+  <line x1="140" y1="285" x2="262" y2="285" stroke="#999" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrGray)"/>
+  <!-- Ferry corner -> Postgres left edge (530, y=253) -->
+  <line x1="432" y1="278" x2="530" y2="253" stroke="#999" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrGray)"/>
+  <text x="500" y="286" text-anchor="middle" font-size="10" fill="#888">writes courses</text>
+  <!-- Ferry top (262) -> container bottom edge (212), vertical at x=347 -->
+  <line x1="347" y1="262" x2="347" y2="212" stroke="#999" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrGray)"/>
+  <text x="355" y="242" font-size="10" fill="#888">/refresh &#8594; rewrite JSON</text>
+  <text x="201" y="301" text-anchor="middle" font-size="11" font-weight="600" fill="#888">offline, ~3 AM</text>
+</svg>

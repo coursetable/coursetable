@@ -52,6 +52,18 @@ function renderRequestError(requestError: string, navigate: NavigateFunction) {
         </div>
       ),
     };
+  } else if (requestError === 'NO_CHALLENGE_AVAILABLE') {
+    return {
+      errorTitle: 'Challenge unavailable',
+      errorMessage: (
+        <div>
+          The challenge is temporarily unavailable while we refresh our
+          evaluation data. This is on our end, not yours - please{' '}
+          <NavLink to="/feedback">contact us</NavLink> and we'll enable your
+          account manually.
+        </div>
+      ),
+    };
   } else if (requestError === 'MAX_TRIES_REACHED') {
     return {
       errorTitle: 'Max attempts reached!',
@@ -127,8 +139,10 @@ function Challenge() {
   // Max number of attempts allowed
   const [maxTries, setMaxTries] = useState<number | null>(null);
 
-  // Fetch questions on component mount
-  useEffect(() => {
+  const loadChallenge = () => {
+    setResBody(null);
+    setVerifyError(null);
+    setAnswers((prev) => prev.map((a) => ({ ...a, answer: '' })));
     void requestChallenge().then((res) => {
       if (res.status === 'success') {
         setResBody(res.data);
@@ -138,7 +152,10 @@ function Challenge() {
         setRequestError(res.message);
       }
     });
-  }, []);
+  };
+
+  // Fetch questions on component mount
+  useEffect(loadChallenge, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -304,6 +321,14 @@ function Challenge() {
             ))}
             <Button variant="primary" type="submit" className="w-100">
               Submit
+            </Button>
+            <Button
+              variant="primary"
+              type="button"
+              className="w-100 mt-2"
+              onClick={loadChallenge}
+            >
+              A link is broken? Get different courses
             </Button>
           </Form>
         ) : (
