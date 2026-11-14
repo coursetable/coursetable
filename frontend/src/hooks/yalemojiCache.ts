@@ -138,7 +138,10 @@ export function subscribeYaleMoji(
   current.listeners.add(listener);
   listener(current.avatar);
   refreshOnReturn();
-  if (isNew && !current.inflight) {
+  // The banner mounts only after a CourseTable notice is dismissed. If the
+  // profile's earlier lookup failed, let this new subscriber retry it instead
+  // of leaving the banner in an unconfirmed state for the rest of the page.
+  if ((isNew || (!current.avatar && !current.confirmed)) && !current.inflight) {
     if (current.avatar) {
       let timer: ReturnType<typeof setTimeout> | undefined = undefined;
       const schedule = () => {

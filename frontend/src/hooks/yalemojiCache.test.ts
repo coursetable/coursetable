@@ -64,6 +64,50 @@ afterEach(() => {
 });
 
 describe('Yalemoji shared cache and banner eligibility', () => {
+  it('shows the banner when release notes are dismissed after the profile lookup completes', async () => {
+    lookup.mockResolvedValue(null);
+    const { api } = await setup();
+    api.subscribeYaleMoji(netId, vi.fn());
+    await vi.runAllTimersAsync();
+
+    const banner = vi.fn();
+    api.subscribeYaleMojiBanner(netId, banner);
+
+    expect(banner).toHaveBeenLastCalledWith(true);
+    expect(lookup).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries an unavailable profile lookup when dismissal mounts the banner', async () => {
+    lookup.mockResolvedValueOnce(undefined).mockResolvedValueOnce(null);
+    const { api } = await setup();
+    api.subscribeYaleMoji(netId, vi.fn());
+    await vi.runAllTimersAsync();
+
+    const banner = vi.fn();
+    api.subscribeYaleMojiBanner(netId, banner);
+    expect(banner).toHaveBeenLastCalledWith(false);
+    await vi.runAllTimersAsync();
+
+    expect(lookup).toHaveBeenCalledTimes(2);
+    expect(banner).toHaveBeenLastCalledWith(true);
+  });
+
+  it('keeps the banner hidden when the dismissal retry is also unavailable', async () => {
+    lookup.mockResolvedValue(undefined);
+    const { api } = await setup();
+    api.subscribeYaleMoji(netId, vi.fn());
+    await vi.runAllTimersAsync();
+
+    const banner = vi.fn();
+    api.subscribeYaleMojiBanner(netId, banner);
+    await vi.runAllTimersAsync();
+
+    expect(lookup).toHaveBeenCalledTimes(2);
+    expect(banner.mock.calls.every(([visible]) => visible === false)).toBe(
+      true,
+    );
+  });
+
   it('shares the initial lookup across the profile and banner and across remounts', async () => {
     lookup.mockResolvedValue(null);
     const { api } = await setup();
