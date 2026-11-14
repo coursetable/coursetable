@@ -199,14 +199,21 @@
 
 @media (max-width: calc(768px - 0.5px)) {
   .collapseContainerMobileInline {
-    flex-basis: 100%;
-    width: calc(100vw - 1.5rem);
+    flex: 0 0 100%;
+    order: 10;
+    width: 100%;
     position: static;
     margin-top: 0.65rem;
     box-shadow: none;
     border-radius: 0;
     transform: none;
     background-color: transparent !important;
+  }
+
+  .collapseContainerMobileInline:not(
+    :has(:global(.show), :global(.collapsing))
+  ) {
+    display: none;
   }
 
   .identityHeader {

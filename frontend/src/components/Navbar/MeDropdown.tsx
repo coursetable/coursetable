@@ -19,7 +19,6 @@ import {
 } from 'react-icons/fc';
 
 import { useShallow } from 'zustand/react/shallow';
-import DarkModeButton from './DarkModeButton';
 import YaleMojiLink from './YaleMojiLink';
 import { API_ENDPOINT } from '../../config';
 import { useYaleMoji } from '../../hooks/useYaleMoji';
@@ -196,7 +195,6 @@ function DropdownContent({
           <div className={styles.menuItems}>
             {showMobileNavLinks && (
               <>
-                <DarkModeButton className={styles.dropdownItem} />
                 <DropdownItem
                   icon={FcComboChart}
                   to={createCatalogLink()}

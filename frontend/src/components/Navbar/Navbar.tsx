@@ -103,6 +103,7 @@ export default function CourseTableNavbar() {
 
         {isMobile ? (
           <div className={styles.mobileAccountControls}>
+            <DarkModeButton className={styles.mobileDarkModeBtn} />
             <AppsDropdown />
             <MeDropdown
               showMobileNavLinks
