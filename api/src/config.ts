@@ -75,8 +75,15 @@ export const SENTRY_ENVIRONMENT = getEnv('SENTRY_ENVIRONMENT');
 export const SESSION_SECRET = getEnv('SESSION_SECRET');
 // API key for interfacing with the yalies.io API
 export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
-// Optional, server-only key for the YaleMoji avatar service.
-export const { YALEMOJI_API_KEY } = process.env;
+// Server-only key for the YaleMoji avatar service. Optional in dev so local
+// development works without it, required everywhere else.
+export const YALEMOJI_API_KEY = isDev
+  ? process.env.YALEMOJI_API_KEY
+  : getEnv('YALEMOJI_API_KEY');
+// The compose default is an empty string, which getEnv accepts, so an unset
+// key outside dev must fail here instead of silently serving no avatars.
+if (!isDev && !YALEMOJI_API_KEY)
+  throw new Error('env config missing: YALEMOJI_API_KEY');
 export const YALEMOJI_API_URL =
   process.env.YALEMOJI_API_URL || 'https://www.yalemoji.com';
 
