@@ -1,21 +1,24 @@
 .collapseContainer {
-  width: 200px;
+  width: 220px;
   position: absolute;
   top: 56px;
   right: 0;
   z-index: calc(420 + 69);
   box-shadow: 0 2px 6px 0 var(--color-shadow);
-  border-radius: 10px;
+  overflow: hidden;
+  border-radius: 18px;
   transform: translate(0, -10px);
 }
 
 .dropdownItem {
   display: block;
-  margin: 0.75rem 0;
+  margin: 0;
+  padding: 0.42rem 0;
 }
 
 .itemText {
   font-weight: 500;
+  font-size: 1rem;
 }
 
 .dropdownItem:hover .itemText {
@@ -27,11 +30,14 @@
   margin-bottom: auto;
 }
 
+.navbarMeMobileInline {
+  display: contents;
+}
+
 .meIcon,
 .anonIcon {
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
+  width: 38px;
+  height: 38px;
   display: flex;
   transition:
     border-color var(--trans-dur),
@@ -40,10 +46,27 @@
 }
 
 .meIcon {
+  border-radius: 9px;
   background-color: var(--color-primary);
   color: var(--color-text-light);
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  padding: 0;
+  background-size: 100% 100%;
+  background-position: center;
+}
+
+.buttonAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.headerAvatar {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
 }
 
 .meIcon span {
@@ -56,6 +79,7 @@
 }
 
 .anonIcon {
+  border-radius: 50%;
   background-color: var(--color-bg-button);
   color: var(--color-text-secondary);
 }
@@ -73,5 +97,146 @@
 }
 
 .linkIcon {
-  margin-right: 0.5rem;
+  margin-right: 0.75rem;
+}
+
+.identityHeader {
+  position: relative;
+  min-height: 108px;
+  padding: 0.7rem 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-light);
+  background-color: var(--color-primary);
+
+  /* Keep Yalemoji's square background artwork undistorted. */
+  background-size: 220px 220px;
+  background-position: center;
+}
+
+.identityHeader:has(.headerAvatar) {
+  padding: 2px 1rem;
+}
+
+.headerInitials {
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.headerInitials span {
+  font-weight: bold;
+  transform: scaleX(0.8);
+}
+
+.createYalemoji {
+  margin-top: 0.65rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.createYalemoji:hover,
+.createYalemoji:focus-visible {
+  background: transparent;
+  color: #fff;
+}
+
+.headerEdit {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: opacity 0.1s;
+}
+
+.headerEdit:hover {
+  color: var(--color-text-light);
+}
+
+.headerEditIcon {
+  display: block;
+  width: 20px;
+  height: auto;
+  opacity: 1;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 40%));
+  transition: filter 0.12s ease;
+}
+
+.headerEdit:hover .headerEditIcon,
+.headerEdit:focus-visible .headerEditIcon {
+  opacity: 1;
+  filter: drop-shadow(0 1px 3px rgb(0 0 0 / 60%));
+}
+
+[data-theme='dark'] .identityHeader,
+[data-theme='dark'] .identityHeader .headerEdit,
+[data-theme='dark'] .identityHeader .headerEdit:hover {
+  color: var(--color-text-dark);
+}
+
+.menuItems {
+  padding: 0.4rem 1.25rem 0.55rem;
+}
+
+@media (max-width: calc(768px - 0.5px)) {
+  .collapseContainerMobileInline {
+    flex: 0 0 100%;
+    order: 10;
+    width: 100%;
+    position: static;
+    margin-top: 0.65rem;
+    box-shadow: none;
+    border-radius: 0;
+    transform: none;
+    background-color: transparent !important;
+  }
+
+  .collapseContainerMobileInline:not(
+    :has(:global(.show), :global(.collapsing))
+  ) {
+    display: none;
+  }
+
+  .identityHeader {
+    min-height: 168px;
+    border-radius: 24px;
+  }
+
+  .headerAvatar {
+    width: 160px;
+    height: 160px;
+  }
+
+  .menuItems {
+    padding: 0.55rem 0 0.2rem;
+  }
+
+  .dropdownItem {
+    padding: 0.5rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .createYalemoji {
+    transition: none;
+  }
 }

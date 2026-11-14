@@ -8,9 +8,11 @@ const storage = createLocalStorageSlot<number>('lastDismissedBanner');
 function Notice({
   children,
   id,
+  fallback,
 }: {
   readonly children?: React.ReactNode;
   readonly id: number;
+  readonly fallback?: React.ReactNode;
 }) {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
@@ -18,7 +20,8 @@ function Notice({
     if (lastDismissed === id) setVisible(false);
   }, [id]);
 
-  if (!visible || !children) return null;
+  // Full-width CourseTable notices always take precedence over promotions.
+  if (!visible || !children) return fallback ?? null;
   return (
     <div className={styles.banner}>
       <div className={styles.content}>
