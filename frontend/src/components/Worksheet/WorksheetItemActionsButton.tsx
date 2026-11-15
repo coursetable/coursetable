@@ -336,6 +336,8 @@ function Picker({
   );
 }
 
+const PREVIEW_WINDOW_HOURS = 3;
+
 function Preview({
   event,
   color,
@@ -347,13 +349,22 @@ function Preview({
   // Walking-time badges only make sense on the real calendar
   const tempEvent = { ...event, color, walkBefore: undefined };
 
-  const start = new Date(tempEvent.start);
-  if (start.getMinutes() === 0) start.setHours(start.getHours() - 1);
-  start.setMinutes(0);
+  // Hour-aligned window with at least 15 minutes of padding around the block
+  const toHours = (d: Date) => d.getHours() + d.getMinutes() / 60;
+  const padding = 15 / 60;
+  const minHour = Math.max(Math.floor(toHours(tempEvent.start) - padding), 0);
+  const maxHour = Math.max(
+    minHour + PREVIEW_WINDOW_HOURS,
+    Math.ceil(toHours(tempEvent.end) + padding),
+  );
 
-  const end = new Date(tempEvent.end);
-  end.setHours(end.getHours() + 1);
-  end.setMinutes(0);
+  const start = new Date(tempEvent.start);
+  start.setHours(minHour, 0, 0, 0);
+
+  const end = new Date(tempEvent.start);
+  // Hour 24 would roll over to the next day
+  if (maxHour >= 24) end.setHours(23, 59, 0, 0);
+  else end.setHours(maxHour, 0, 0, 0);
 
   return (
     <SurfaceComponent className={styles.eventPreview}>
