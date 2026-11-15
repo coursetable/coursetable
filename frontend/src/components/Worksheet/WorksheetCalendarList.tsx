@@ -468,6 +468,7 @@ function WorksheetCalendarList({
                 <WorksheetCalendarListItem
                   key={viewedSeason + course.crn}
                   listing={course.listing}
+                  color={course.color}
                   hidden={course.hidden ?? false}
                 />
               ))}

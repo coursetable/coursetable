@@ -17,11 +17,13 @@ import styles from './WorksheetCalendarListItem.module.css';
 
 type WorksheetCalendarListItemProps = {
   readonly listing: CatalogListing;
+  readonly color: string;
   readonly hidden: boolean;
 };
 
 export default function WorksheetCalendarListItem({
   listing,
+  color,
   hidden,
 }: WorksheetCalendarListItemProps) {
   const {
@@ -63,9 +65,11 @@ export default function WorksheetCalendarListItem({
       className={clsx(
         styles.listItem,
         isHighlighted && styles.listItemHighlighted,
+        hidden && styles.listItemHidden,
         'py-1',
         'px-2',
       )}
+      style={{ '--course-color': color } as React.CSSProperties}
       onMouseEnter={() => setHoverCourse(listing.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
