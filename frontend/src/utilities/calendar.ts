@@ -324,17 +324,26 @@ export function getCalendarEvents(
 }
 
 /**
- * Generate standalone 9–10am block for a course (ignore real meeting time)
- * Used where only the block's appearance matters (Ex. color picker preview).
+ * A single calendar block for previewing a course (Ex. color picker preview).
+ * Uses the course's first real meeting when it has one, otherwise a 9–10:15am
+ * placeholder so courses without meeting times can still be previewed.
  */
-export function getPlaceholderCalendarEvent(
+export function getPreviewCalendarEvent(
   listing: CatalogListing,
   color: string,
+  season: Season,
 ): CourseRBCEvent {
+  // Hidden courses are skipped by getCalendarEvents, so force visible here
+  const [event] = getCalendarEvents(
+    'rbc',
+    [{ crn: listing.crn, color, listing, hidden: false }],
+    season,
+  );
+  if (event) return event;
   const start = new Date();
   start.setHours(9, 0, 0, 0);
   const end = new Date(start);
-  end.setHours(10);
+  end.setHours(10, 15);
   return {
     kind: 'course',
     title: listing.course_code,

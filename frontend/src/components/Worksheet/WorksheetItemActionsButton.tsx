@@ -344,7 +344,8 @@ function Preview({
   readonly color: string;
 }) {
   const eventStyleGetter = useEventStyle();
-  const tempEvent = { ...event, color };
+  // Walking-time badges only make sense on the real calendar
+  const tempEvent = { ...event, color, walkBefore: undefined };
 
   const start = new Date(tempEvent.start);
   if (start.getMinutes() === 0) start.setHours(start.getHours() - 1);
