@@ -184,7 +184,7 @@ export function ColorPickerModal({
               color: newColor,
             });
             await worksheetsRefresh();
-            onClose();
+            handleClose();
           }}
         >
           Save changes
