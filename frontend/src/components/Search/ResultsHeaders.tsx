@@ -178,7 +178,7 @@ function ResultsHeaders({
             </HeaderCol>
             <HeaderCol
               className={colStyles.friendsCol}
-              tooltip="Number of friends shopping this course"
+              tooltip="Number of friends with this course in their main worksheet"
               tooltipId="results-header-friends-tooltip"
               sortOption="friend"
             >

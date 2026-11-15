@@ -11,6 +11,7 @@
 
 [![Ferry DB Snapshot](https://github.com/coursetable/infra/actions/workflows/ferry_db_snapshot.yml/badge.svg)](https://github.com/coursetable/infra/actions/workflows/ferry_db_snapshot.yml)
 [![User DB Backup](https://github.com/coursetable/infra/actions/workflows/user_db_backup.yml/badge.svg)](https://github.com/coursetable/infra/actions/workflows/user_db_backup.yml)
+[![Greptile: The War on Bugs](https://www.greptile.com/badge.svg)](https://www.greptile.com/?utm_source=oss_badge&utm_medium=readme&utm_campaign=greptile_for_open_source)
 
 Coursetable is made of two big parts:
 
