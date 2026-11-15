@@ -22,20 +22,18 @@
   background: none;
 }
 
-/* The visible color; grows into a semicircle on hover without affecting layout */
+/* The visible color; bulges out on hover without affecting layout */
 .colorTab::before {
   content: '';
   position: absolute;
-  top: 50%;
+  top: 0;
+  bottom: 0;
   left: 0;
   width: 4px;
-  height: 100%;
-  transform: translateY(-50%);
   background-color: var(--course-color);
   transition:
-    width 0.15s ease,
-    height 0.15s ease,
-    border-radius 0.15s ease,
+    width 0.1s ease,
+    border-radius 0.1s ease,
     opacity var(--trans-dur);
 }
 
@@ -51,9 +49,10 @@
 
 .colorTabEditable:hover::before,
 .colorTabEditable:focus-visible::before {
-  width: 14px;
-  height: 28px;
-  border-radius: 0 14px 14px 0;
+  width: 12px;
+
+  /* Elliptical right edge spanning the full height: a gentle bulge */
+  border-radius: 0 100% 100% 0 / 0 50% 50% 0;
   opacity: 1;
   box-shadow: 1px 0 3px rgb(0 0 0 / 25%);
 }

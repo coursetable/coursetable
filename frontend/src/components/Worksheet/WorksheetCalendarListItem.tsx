@@ -86,17 +86,27 @@ export default function WorksheetCalendarListItem({
       {isReadonlyWorksheet ? (
         <span className={styles.colorTab} aria-hidden="true" />
       ) : (
-        <button
-          type="button"
-          className={clsx(styles.colorTab, styles.colorTabEditable)}
-          onClick={() =>
-            setOpenColorPickerEvent(
-              getPreviewCalendarEvent(listing, color, viewedSeason),
-            )
+        <OverlayTrigger
+          placement="left"
+          // Flip to the right when there's no room (e.g. list stacked below)
+          flip
+          overlay={
+            <Tooltip id={`color-tab-${listing.crn}`}>
+              <small>Change color</small>
+            </Tooltip>
           }
-          aria-label={`Change color of ${listing.course_code}`}
-          title="Change color"
-        />
+        >
+          <button
+            type="button"
+            className={clsx(styles.colorTab, styles.colorTabEditable)}
+            onClick={() =>
+              setOpenColorPickerEvent(
+                getPreviewCalendarEvent(listing, color, viewedSeason),
+              )
+            }
+            aria-label={`Change color of ${listing.course_code}`}
+          />
+        </OverlayTrigger>
       )}
       <Link
         to={target}
