@@ -8,6 +8,7 @@ import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
+import { getPlaceholderCalendarEvent } from '../../utilities/calendar';
 import {
   formatSectionSuffix,
   toLocationsSummary,
@@ -35,12 +36,15 @@ export default function WorksheetCalendarListItem({
   } = useWorksheetCalendarListContext();
   const target = useCourseModalLink(listing);
   const setHoverCourse = useStore((state) => state.setHoverCourse);
-  const { viewedPerson, user } = useStore(
-    useShallow((state) => ({
-      viewedPerson: state.viewedPerson,
-      user: state.user,
-    })),
-  );
+  const { viewedPerson, user, isReadonlyWorksheet, setOpenColorPickerEvent } =
+    useStore(
+      useShallow((state) => ({
+        viewedPerson: state.viewedPerson,
+        user: state.user,
+        isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
+        setOpenColorPickerEvent: state.setOpenColorPickerEvent,
+      })),
+    );
   const locationSummary = toLocationsSummary(listing.course, user?.hasEvals);
   const locationDisplay =
     locationSummary === 'TBA' ? 'Location: TBA' : locationSummary;
@@ -73,6 +77,19 @@ export default function WorksheetCalendarListItem({
       onMouseEnter={() => setHoverCourse(listing.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
+      {isReadonlyWorksheet ? (
+        <span className={styles.colorTab} aria-hidden="true" />
+      ) : (
+        <button
+          type="button"
+          className={clsx(styles.colorTab, styles.colorTabEditable)}
+          onClick={() =>
+            setOpenColorPickerEvent(getPlaceholderCalendarEvent(listing, color))
+          }
+          aria-label={`Change color of ${listing.course_code}`}
+          title="Change color"
+        />
+      )}
       <Link
         to={target}
         className={clsx(

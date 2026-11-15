@@ -10,19 +10,56 @@
     color var(--trans-dur);
 }
 
-.listItem::before {
-  content: '';
+.colorTab {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
+  z-index: 2;
   width: 4px;
-  background-color: var(--course-color);
-  transition: opacity var(--trans-dur);
+  padding: 0;
+  border: none;
+  background: none;
 }
 
-.listItemHidden::before {
+/* The visible color; grows into a semicircle on hover without affecting layout */
+.colorTab::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  transform: translateY(-50%);
+  background-color: var(--course-color);
+  transition:
+    width 0.15s ease,
+    height 0.15s ease,
+    border-radius 0.15s ease,
+    opacity var(--trans-dur);
+}
+
+.listItemHidden .colorTab::before {
   opacity: 0.3;
+}
+
+/* Wider invisible hit area so the thin sliver is easy to target */
+.colorTabEditable {
+  width: 10px;
+  cursor: pointer;
+}
+
+.colorTabEditable:hover::before,
+.colorTabEditable:focus-visible::before {
+  width: 14px;
+  height: 28px;
+  border-radius: 0 14px 14px 0;
+  opacity: 1;
+  box-shadow: 1px 0 3px rgb(0 0 0 / 25%);
+}
+
+.colorTabEditable:focus-visible {
+  outline: none;
 }
 
 .listItem:hover {

@@ -323,6 +323,30 @@ export function getCalendarEvents(
   return events;
 }
 
+/**
+ * Generate standalone 9–10am block for a course (ignore real meeting time)
+ * Used where only the block's appearance matters (Ex. color picker preview).
+ */
+export function getPlaceholderCalendarEvent(
+  listing: CatalogListing,
+  color: string,
+): CourseRBCEvent {
+  const start = new Date();
+  start.setHours(9, 0, 0, 0);
+  const end = new Date(start);
+  end.setHours(10);
+  return {
+    kind: 'course',
+    title: listing.course_code,
+    description: listing.course.title,
+    start,
+    end,
+    listing,
+    color,
+    location: '',
+  };
+}
+
 function formatTime(a: Date) {
   const hours = a.getHours();
   const minutes = a.getMinutes();
