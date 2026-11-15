@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   checkConflict,
+  getPersonalBlockConflicts,
   type ListingWithTimes,
   to12HourTime,
   toRangeTime,
@@ -314,5 +315,91 @@ describe('toWeekdayStrings / toWeekdaysDisplayString', () => {
   it('collapses Monday–Friday to M–F', () => {
     expect(toWeekdaysDisplayString(MON | TUE | WED | THU | FRI)).toBe('M–F');
     expect(toWeekdaysDisplayString(MON | WED | FRI)).toBe('MWF');
+  });
+});
+
+describe('personal block conflicts', () => {
+  const block = {
+    id: 'b78d394d-85ec-428b-98bf-49f199d2e346',
+    title: 'Practice',
+    days: [2, 4],
+    start: '15:00',
+    end: '16:00',
+  };
+
+  it('finds Tuesday and Thursday conflicts', () => {
+    for (const day of [TUE, THU]) {
+      expect(
+        getPersonalBlockConflicts(
+          [block],
+          makeListing({
+            daysOfWeek: day,
+            startTime: '15:30',
+            endTime: '16:30',
+          }),
+        ),
+      ).toEqual([block]);
+    }
+  });
+
+  it('ignores other days and separated times', () => {
+    expect(
+      getPersonalBlockConflicts(
+        [block],
+        makeListing({
+          daysOfWeek: MON,
+          startTime: '15:30',
+          endTime: '16:30',
+        }),
+      ),
+    ).toEqual([]);
+    expect(
+      getPersonalBlockConflicts(
+        [block],
+        makeListing({
+          daysOfWeek: TUE,
+          startTime: '16:01',
+          endTime: '17:00',
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('preserves inclusive endpoints and returns each commitment only once', () => {
+    const meeting = {
+      days_of_week: TUE | THU,
+      start_time: '16:00',
+      end_time: '17:00',
+    };
+    expect(
+      getPersonalBlockConflicts(
+        [block],
+        makeListing({ meetings: [meeting, meeting] }),
+      ),
+    ).toEqual([block]);
+  });
+
+  it('returns all conflicting blocks without modifying them', () => {
+    const otherBlock = { ...block, id: 'other', title: 'Meeting' };
+    const nonConflicting = { ...block, id: 'monday', days: [1] };
+    const listing = makeListing({
+      daysOfWeek: TUE,
+      startTime: '15:10',
+      endTime: '15:50',
+    });
+    const conflicts = getPersonalBlockConflicts(
+      [block, otherBlock, nonConflicting],
+      listing,
+    );
+    expect(conflicts).toEqual([block, otherBlock]);
+    expect(conflicts[0]).toBe(block);
+    expect(conflicts[1]).toBe(otherBlock);
+  });
+
+  it('returns no conflicts for missing blocks or courses without meeting times', () => {
+    expect(getPersonalBlockConflicts(undefined, makeListing({}))).toEqual([]);
+    expect(
+      getPersonalBlockConflicts([block], makeListing({ meetings: [] })),
+    ).toEqual([]);
   });
 });
