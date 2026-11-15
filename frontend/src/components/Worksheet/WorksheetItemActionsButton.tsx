@@ -176,6 +176,11 @@ export function ColorPickerModal({
         <Button
           variant="primary"
           onClick={async () => {
+            // Nothing to save; the API rejects updates with no fields
+            if (!newColor || newColor === openColorPickerEvent.color) {
+              handleClose();
+              return;
+            }
             await updateWorksheetCourses({
               action: 'update',
               season: viewedSeason,
