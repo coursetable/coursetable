@@ -16,6 +16,13 @@ import {
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
+// Popper anchors left-placed overlays to the right edge of the page by
+// default, so they jump when the modal's scroll lock hides the scrollbar.
+// Always position from the top-left instead.
+const colorTooltipPopperConfig = {
+  modifiers: [{ name: 'computeStyles', options: { adaptive: false } }],
+};
+
 type WorksheetCalendarListItemProps = {
   readonly listing: CatalogListing;
   readonly color: string;
@@ -88,10 +95,14 @@ export default function WorksheetCalendarListItem({
       ) : (
         <OverlayTrigger
           placement="left"
-          // Flip to the right when there's no room (e.g. list stacked below)
           flip
+          trigger="hover"
+          popperConfig={colorTooltipPopperConfig}
           overlay={
-            <Tooltip id={`color-tab-${listing.crn}`}>
+            <Tooltip
+              id={`color-tab-${listing.crn}`}
+              className={styles.colorTabTooltip}
+            >
               <small>Change color</small>
             </Tooltip>
           }

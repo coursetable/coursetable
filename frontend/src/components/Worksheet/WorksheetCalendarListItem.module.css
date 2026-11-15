@@ -61,6 +61,12 @@
   outline: none;
 }
 
+/* Let the cursor pass through so leaving the bulge also leaves the list item
+   (otherwise the item's mouseleave never fires and the hover highlight sticks) */
+.colorTabTooltip {
+  pointer-events: none;
+}
+
 .listItem:hover {
   background-color: var(--color-primary-subdued);
 }
