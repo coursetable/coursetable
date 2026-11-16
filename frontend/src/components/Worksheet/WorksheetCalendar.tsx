@@ -32,6 +32,7 @@ import {
   type CourseRBCEvent,
   type WalkBefore,
 } from '../../utilities/calendar';
+import { to12HourTime } from '../../utilities/course';
 import type { PersonalBlock } from '../../utilities/personalBlock';
 import {
   getBuildingCodeFromLocation,
@@ -346,7 +347,10 @@ function WorksheetCalendar({
           }}
         >
           {event.kind === 'personal' ? (
-            <strong>{event.title}</strong>
+            <span>
+              <strong>{event.title}</strong> {to12HourTime(event.block.start)}–
+              {to12HourTime(event.block.end)}
+            </span>
           ) : (
             <>
               {hasPersonalBlockConflict(personalBlocks, event) && (
