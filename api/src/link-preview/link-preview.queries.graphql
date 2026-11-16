@@ -5,6 +5,20 @@ query courseMetadata($listingId: Int!) {
     course {
       title
       description
+      season_code
+      credits
+      areas
+      skills
+      course_meetings {
+        days_of_week
+        start_time
+        end_time
+      }
+      course_professors {
+        professor {
+          name
+        }
+      }
     }
   }
 }
