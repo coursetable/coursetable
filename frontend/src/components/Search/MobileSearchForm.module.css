@@ -57,9 +57,9 @@
 }
 
 .booleanToggles {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding: 1rem;
   background-color: var(--color-surface-active);
+  border-radius: 0 0 4px 4px;
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
@@ -113,4 +113,38 @@
 
 .uselessBtn {
   display: none;
+}
+
+.searchForm > .advancedDetails {
+  padding-bottom: 1rem;
+}
+
+.advancedDetails > .advancedSummary {
+  cursor: pointer;
+  font-size: 14px;
+  list-style: none;
+  margin: 0;
+  min-height: 44px;
+}
+
+.advancedSummary::-webkit-details-marker {
+  display: none;
+}
+
+.advancedDetails[open] > .advancedSummary {
+  background-color: var(--color-surface-active);
+  color: var(--color-primary);
+}
+
+.advancedDetails[open] .advancedArrow {
+  transform: rotate(180deg);
+}
+
+.advancedDetails > .advancedContent {
+  position: static;
+  padding: 0.25rem 1rem 0;
+}
+
+.advancedContent > .booleanToggles {
+  margin-inline: -1rem;
 }

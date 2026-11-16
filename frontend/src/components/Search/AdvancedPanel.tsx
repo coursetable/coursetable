@@ -193,6 +193,104 @@ function Slider<K extends NumericFilters>({
   );
 }
 
+export function AdvancedFilterFields({
+  mobile = false,
+  showProfessorRating = false,
+}: {
+  readonly mobile?: boolean;
+  readonly showProfessorRating?: boolean;
+}) {
+  const formLabelId = useId();
+  return (
+    <div className={mobile ? styles.mobileFields : undefined}>
+      <IntersectableSelect
+        id={`${formLabelId}-day`}
+        options={Object.entries(weekdays).map(([day, value]) => ({
+          label: day,
+          value,
+        }))}
+        handle="selectDays"
+        placeholder="All days"
+        unionIntersectionButtonLabel={(isIntersection) =>
+          `Classes that meet on ${isIntersection ? 'all' : 'any'} of the selected days`
+        }
+      />
+      <Slider
+        handle="timeBounds"
+        step={1}
+        marks={mobile ? [84, 144, 204, 264] : [84, 120, 156, 192, 228, 264]}
+        topLabel={(x) => to12HourTime(toRealTime(x))}
+        bottomLabel={(x) => to12HourTime(toRealTime(x))}
+      />
+      <Slider
+        handle="enrollBounds"
+        step={10}
+        marks={[1, 18, 160, 528]}
+        scaleToUniform={(x) => Math.round(toLinear(x))}
+        scaleToReal={(x) => Math.round(toExponential(x))}
+      />
+      {showProfessorRating && <Slider handle="professorBounds" step={0.1} />}
+      <Slider
+        handle="numBounds"
+        step={100}
+        marks={
+          mobile
+            ? [0, 2000, 4000, 6000, 8000, 10000]
+            : [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+        }
+        topLabel={(x) => (x === 0 ? '0' : x === 10000 ? '10000+' : String(x))}
+        bottomLabel={(x) =>
+          x === 0 ? '0' : x === 10000 ? '10k+' : `${x / 1000}k`
+        }
+      />
+      {!mobile && (
+        <IntersectableSelect
+          id={`${formLabelId}-school`}
+          options={schoolsOptions}
+          handle="selectSchools"
+          placeholder="All schools"
+          unionIntersectionButtonLabel={(isIntersection) =>
+            `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
+          }
+        />
+      )}
+      <Select
+        id={`${formLabelId}-credit`}
+        options={credits.map((credit) => ({
+          label: String(credit),
+          value: credit,
+        }))}
+        handle="selectCredits"
+        placeholder="All credits"
+      />
+      <Select
+        id={`${formLabelId}-building`}
+        options={buildingOptions}
+        handle="selectBuilding"
+        placeholder="All buildings"
+      />
+      <IntersectableSelect
+        id={`${formLabelId}-info`}
+        options={courseInfoAttributesOptions}
+        handle="selectCourseInfoAttributes"
+        placeholder="Course information attributes"
+        unionIntersectionButtonLabel={(isIntersection) =>
+          `Classes that contain ${isIntersection ? 'all' : 'any'} of the selected attributes`
+        }
+      />
+      <div className={styles.row}>
+        <div className={styles.label} id={`${formLabelId}-attrs`}>
+          Types:
+        </div>
+        <BooleanAttributeSelect
+          className={styles.select}
+          aria-labelledby={`${formLabelId}-attrs`}
+        />
+      </div>
+    </div>
+  );
+}
+
 function AdvancedPanel() {
   const isTablet = useStore((state) => state.isTablet);
   const formLabelId = useId();
@@ -279,89 +377,7 @@ function AdvancedPanel() {
             />
           </>
         )}
-        <IntersectableSelect
-          id={`${formLabelId}-day`}
-          options={Object.entries(weekdays).map(([day, value]) => ({
-            label: day,
-            value,
-          }))}
-          handle="selectDays"
-          placeholder="All days"
-          unionIntersectionButtonLabel={(isIntersection) =>
-            `Classes that meet on ${isIntersection ? 'all' : 'any'} of the selected days`
-          }
-        />
-        <Slider
-          handle="timeBounds"
-          step={1}
-          marks={[84, 120, 156, 192, 228, 264]}
-          topLabel={(x) => to12HourTime(toRealTime(x))}
-          bottomLabel={(x) => to12HourTime(toRealTime(x))}
-        />
-        <Slider
-          handle="enrollBounds"
-          step={10}
-          marks={[1, 18, 160, 528]}
-          scaleToUniform={(x) => Math.round(toLinear(x))}
-          scaleToReal={(x) => Math.round(toExponential(x))}
-        />
-        {isTablet && <Slider handle="professorBounds" step={0.1} />}
-        <Slider
-          handle="numBounds"
-          step={100}
-          marks={[
-            0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,
-          ]}
-          topLabel={(x) => (x === 0 ? '0' : x === 10000 ? '10000+' : String(x))}
-          bottomLabel={(x) =>
-            x === 0 ? '0' : x === 10000 ? '10k+' : `${x / 1000}k`
-          }
-        />
-        <IntersectableSelect
-          id={`${formLabelId}-school`}
-          options={schoolsOptions}
-          handle="selectSchools"
-          placeholder="All schools"
-          unionIntersectionButtonLabel={(isIntersection) =>
-            `Classes that are offered by ${isIntersection ? 'all' : 'any'} of the selected schools`
-          }
-        />
-        <Select
-          id={`${formLabelId}-credit`}
-          options={credits.map((credit) => ({
-            label: String(credit),
-            value: credit,
-          }))}
-          handle="selectCredits"
-          placeholder="All credits"
-        />
-        <Select
-          id={`${formLabelId}-building`}
-          options={buildingOptions.map((x) => ({
-            label: x.label,
-            value: x.value,
-          }))}
-          handle="selectBuilding"
-          placeholder="All buildings"
-        />
-        <IntersectableSelect
-          id={`${formLabelId}-info`}
-          options={courseInfoAttributesOptions}
-          handle="selectCourseInfoAttributes"
-          placeholder="Course information attributes"
-          unionIntersectionButtonLabel={(isIntersection) =>
-            `Classes that contain ${isIntersection ? 'all' : 'any'} of the selected attributes`
-          }
-        />
-        <div className={styles.row}>
-          <div className={styles.label} id={`${formLabelId}-attrs`}>
-            Types:
-          </div>
-          <BooleanAttributeSelect
-            className={styles.select}
-            aria-labelledby={`${formLabelId}-info`}
-          />
-        </div>
+        <AdvancedFilterFields showProfessorRating={isTablet} />
         <div className={styles.row}>
           {/* Sort by Guts */}
           <div className={styles.label}>

@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Form, InputGroup, Button } from 'react-bootstrap';
+import { IoMdArrowDropdown } from 'react-icons/io';
 import RCSlider from 'rc-slider';
 import { scroller } from 'react-scroll';
 
+import { AdvancedFilterFields } from './AdvancedPanel';
 import CustomSelect from './CustomSelect';
 import ResultsColumnSort from './ResultsColumnSort';
 import SavedSearchesDropdown from './SavedSearchesDropdown';
@@ -28,6 +30,9 @@ import {
 import { useStore } from '../../store';
 import { SurfaceComponent, Input, TextComponent } from '../Typography';
 import styles from './MobileSearchForm.module.css';
+
+// eslint-disable-next-line css-modules/no-unused-class -- Share the desktop dropdown styles.
+import popoutStyles from './Popout.module.css';
 
 type SelectProps<K extends keyof CategoricalFilters> = {
   readonly handle: K;
@@ -252,12 +257,26 @@ export default function MobileSearchForm() {
           <Slider handle="workloadBounds" />
           <Slider handle="professorBounds" />
         </div>
-        <div className={styles.booleanToggles}>
-          <Toggle handle="searchDescription" />
-          <Toggle handle="enableQuist" />
-          <Toggle handle="hideCancelled" />
-          <Toggle handle="hideConflicting" />
-        </div>
+        <details className={styles.advancedDetails}>
+          <summary
+            className={clsx(popoutStyles.button, styles.advancedSummary)}
+          >
+            Advanced filters
+            <IoMdArrowDropdown
+              aria-hidden="true"
+              className={clsx(popoutStyles.arrowIcon, styles.advancedArrow)}
+            />
+          </summary>
+          <div className={clsx(popoutStyles.dropdown, styles.advancedContent)}>
+            <AdvancedFilterFields mobile />
+            <div className={styles.booleanToggles}>
+              <Toggle handle="searchDescription" />
+              <Toggle handle="enableQuist" />
+              <Toggle handle="hideCancelled" />
+              <Toggle handle="hideConflicting" />
+            </div>
+          </div>
+        </details>
         <div className={styles.uselessBtn}>
           {/* The form requires a button with type submit in order to
           process events when someone hits enter to submit. We want

@@ -64,3 +64,23 @@
     font-size: 12px;
   }
 }
+
+.mobileFields .row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  margin-inline: 0;
+}
+
+.mobileFields .select {
+  width: 100%;
+}
+
+.mobileFields .rangeGroup {
+  width: auto;
+  margin-inline: 0.75rem;
+}
+
+.mobileFields .label {
+  font-size: 0.9rem;
+}
