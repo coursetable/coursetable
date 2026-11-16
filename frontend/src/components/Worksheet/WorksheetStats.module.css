@@ -77,8 +77,9 @@
   color: var(--color-text-dark);
 }
 
-.wide {
-  flex-grow: 0.9;
+.stats dl > .wide {
+  /* Spans both columns of the 2x2 grid (2 × 45% + 1em gap) */
+  width: calc(90% + 1em);
 }
 
 .hoverHint {

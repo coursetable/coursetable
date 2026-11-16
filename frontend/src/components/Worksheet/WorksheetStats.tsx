@@ -237,6 +237,42 @@ export default function WorksheetStats() {
               </div>
             )}
             <dl>
+              {user?.hasEvals ? (
+                <div className={styles.wide}>
+                  <dt>
+                    Average rating
+                    <NoStatsTip
+                      coursesWithoutRating={coursesWithoutRating}
+                      coursesWithRating={coursesWithRating}
+                    />
+                  </dt>
+                  <StatPill colorMap={ratingColormap} stat={avgRating}>
+                    {avgRating.toFixed(2)}
+                  </StatPill>
+                </div>
+              ) : (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip id="worksheet-stats-rating-login-tooltip">
+                      <small>
+                        {user ? 'Complete the challenge' : 'Sign in'} to see
+                        ratings
+                      </small>
+                    </Tooltip>
+                  }
+                >
+                  <div className={styles.wide}>
+                    <dt>Average rating</dt>
+                    <dd
+                      className={styles.statPill}
+                      style={{
+                        backgroundColor: 'var(--color-primary)',
+                      }}
+                    />
+                  </div>
+                </OverlayTrigger>
+              )}
               <div>
                 <dt>Total courses</dt>
                 <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
@@ -324,42 +360,6 @@ export default function WorksheetStats() {
                 >
                   <div>
                     <dt>Total workload</dt>
-                    <dd
-                      className={styles.statPill}
-                      style={{
-                        backgroundColor: 'var(--color-primary)',
-                      }}
-                    />
-                  </div>
-                </OverlayTrigger>
-              )}
-              {user?.hasEvals ? (
-                <div>
-                  <dt>
-                    Average rating
-                    <NoStatsTip
-                      coursesWithoutRating={coursesWithoutRating}
-                      coursesWithRating={coursesWithRating}
-                    />
-                  </dt>
-                  <StatPill colorMap={ratingColormap} stat={avgRating}>
-                    {avgRating.toFixed(2)}
-                  </StatPill>
-                </div>
-              ) : (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={
-                    <Tooltip id="worksheet-stats-rating-login-tooltip">
-                      <small>
-                        {user ? 'Complete the challenge' : 'Sign in'} to see
-                        ratings
-                      </small>
-                    </Tooltip>
-                  }
-                >
-                  <div>
-                    <dt>Average rating</dt>
                     <dd
                       className={styles.statPill}
                       style={{
