@@ -1,2 +1,3 @@
 User-agent: *
 Disallow: /thankyou
+Sitemap: https://api.coursetable.com/api/sitemaps/sitemap_index.xml
