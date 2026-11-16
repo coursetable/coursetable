@@ -71,36 +71,31 @@ const RETRY_BACKOFF_MS = 60_000;
 
 let cache: { parsed: ParsedManifest; fetchedAt: number } | null = null;
 let nextRetryAt = 0;
+/** One download shared by preview requests that arrive together. */
+let inflight: Promise<ParsedManifest | null> | null = null;
 
 function setCache(parsed: ParsedManifest, fetchedAt: number): void {
   cache = { parsed, fetchedAt };
   nextRetryAt = fetchedAt + TTL_MS;
 }
 
-function throttleNextRetry(now: number): void {
-  nextRetryAt = now + RETRY_BACKOFF_MS;
+function metadataForPath(
+  parsed: ParsedManifest | null,
+  path: string,
+): ReleaseOgMetadata | null {
+  if (!parsed) return null;
+  if (path === '/releases') return parsed.index;
+  return parsed.byPath.get(path) ?? null;
 }
 
-export async function getReleaseOgMetadata(
-  pathname: string,
-): Promise<ReleaseOgMetadata | null> {
-  const path =
-    pathname.length > 1 && pathname.endsWith('/')
-      ? pathname.slice(0, -1)
-      : pathname;
+/** Wait before the next download, even when nothing has been cached yet. */
+function rememberFailure(): ParsedManifest | null {
+  nextRetryAt = Date.now() + RETRY_BACKOFF_MS;
+  return cache?.parsed ?? null;
+}
 
-  if (path !== '/releases' && !path.startsWith('/releases/')) return null;
-
-  const now = Date.now();
-  if (cache) {
-    if (now - cache.fetchedAt < TTL_MS || now < nextRetryAt) {
-      if (path === '/releases') return cache.parsed.index;
-      return cache.parsed.byPath.get(path) ?? null;
-    }
-  }
-
+async function downloadManifest(): Promise<ParsedManifest | null> {
   const manifestUrl = new URL('/releases-meta.json', FRONTEND_ENDPOINT).href;
-
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     controller.abort();
@@ -115,12 +110,7 @@ export async function getReleaseOgMetadata(
       winston.warn(
         `releases-meta.json HTTP ${String(res.status)} from ${manifestUrl}`,
       );
-      if (cache) {
-        throttleNextRetry(now);
-        if (path === '/releases') return cache.parsed.index;
-        return cache.parsed.byPath.get(path) ?? null;
-      }
-      return null;
+      return rememberFailure();
     }
     const json: unknown = await res.json();
     const parsed = manifestSchema.safeParse(json);
@@ -128,18 +118,11 @@ export async function getReleaseOgMetadata(
       winston.warn(
         `releases-meta.json failed validation: ${parsed.error.message}`,
       );
-      if (cache) {
-        throttleNextRetry(now);
-        if (path === '/releases') return cache.parsed.index;
-        return cache.parsed.byPath.get(path) ?? null;
-      }
-      return null;
+      return rememberFailure();
     }
     const normalized = parseManifest(parsed.data);
-    const fetchedAt = Date.now();
-    setCache(normalized, fetchedAt);
-    if (path === '/releases') return normalized.index;
-    return normalized.byPath.get(path) ?? null;
+    setCache(normalized, Date.now());
+    return normalized;
   } catch (err) {
     const isAbort =
       (err instanceof Error && err.name === 'AbortError') ||
@@ -153,13 +136,33 @@ export async function getReleaseOgMetadata(
     } else {
       winston.warn(`releases-meta.json fetch error: ${String(err)}`);
     }
-    if (cache) {
-      throttleNextRetry(now);
-      if (path === '/releases') return cache.parsed.index;
-      return cache.parsed.byPath.get(path) ?? null;
-    }
-    return null;
+    return rememberFailure();
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+function loadManifest(): Promise<ParsedManifest | null> {
+  inflight ??= downloadManifest().finally(() => {
+    inflight = null;
+  });
+  return inflight;
+}
+
+export async function getReleaseOgMetadata(
+  pathname: string,
+): Promise<ReleaseOgMetadata | null> {
+  const path =
+    pathname.length > 1 && pathname.endsWith('/')
+      ? pathname.slice(0, -1)
+      : pathname;
+
+  if (path !== '/releases' && !path.startsWith('/releases/')) return null;
+
+  const now = Date.now();
+  if (cache && now - cache.fetchedAt < TTL_MS)
+    return metadataForPath(cache.parsed, path);
+  if (now < nextRetryAt) return metadataForPath(cache?.parsed ?? null, path);
+
+  return metadataForPath(await loadManifest(), path);
 }
