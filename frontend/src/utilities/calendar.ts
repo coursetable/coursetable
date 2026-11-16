@@ -216,7 +216,6 @@ export type PersonalBlockRBCEvent = {
   title: string;
   start: Date;
   end: Date;
-  color: string;
   block: PersonalBlock;
 };
 
@@ -255,7 +254,6 @@ export function getPersonalBlockEvents(
         title: block.title,
         start,
         end,
-        color: '#687787',
         block,
       };
     }),

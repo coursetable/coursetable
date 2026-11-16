@@ -115,11 +115,6 @@ function PersonalBlockModal({
                     <Button
                       key={day}
                       type="button"
-                      variant={
-                        draft.days.includes(index + 1)
-                          ? 'primary'
-                          : 'outline-primary'
-                      }
                       className="rounded-circle p-0 flex-shrink-0"
                       style={{
                         width: 44,
@@ -149,33 +144,30 @@ function PersonalBlockModal({
                 )}
               </div>
             </fieldset>
-            <Form.Group controlId="commitment-start" className="mb-3">
-              <Form.Label>Start time</Form.Label>
-              <Form.Control
-                type="time"
-                required
-                value={draft.start}
-                onChange={(event) =>
-                  setDraft({ ...draft, start: event.target.value })
-                }
-              />
-            </Form.Group>
-            <Form.Group controlId="commitment-end" className="mb-3">
-              <Form.Label>End time</Form.Label>
-              <Form.Control
-                type="time"
-                required
-                value={draft.end}
-                onChange={(event) =>
-                  setDraft({ ...draft, end: event.target.value })
-                }
-              />
-              {draft.end <= draft.start && (
-                <Form.Text className="text-danger">
-                  End time must be after start time.
-                </Form.Text>
-              )}
-            </Form.Group>
+            {(['start', 'end'] as const).map((field) => (
+              <Form.Group
+                key={field}
+                controlId={`commitment-${field}`}
+                className="mb-3"
+              >
+                <Form.Label>
+                  {field === 'start' ? 'Start time' : 'End time'}
+                </Form.Label>
+                <Form.Control
+                  type="time"
+                  required
+                  value={draft[field]}
+                  onChange={(event) =>
+                    setDraft({ ...draft, [field]: event.target.value })
+                  }
+                />
+                {field === 'end' && draft.end <= draft.start && (
+                  <Form.Text className="text-danger">
+                    End time must be after start time.
+                  </Form.Text>
+                )}
+              </Form.Group>
+            ))}
           </fieldset>
           {error && (
             <p role="alert" className="text-danger mt-3">

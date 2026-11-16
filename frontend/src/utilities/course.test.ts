@@ -327,42 +327,18 @@ describe('personal block conflicts', () => {
     end: '16:00',
   };
 
-  it('finds Tuesday and Thursday conflicts', () => {
-    for (const day of [TUE, THU]) {
-      expect(
-        getPersonalBlockConflicts(
-          [block],
-          makeListing({
-            daysOfWeek: day,
-            startTime: '15:30',
-            endTime: '16:30',
-          }),
-        ),
-      ).toEqual([block]);
-    }
-  });
-
-  it('ignores other days and separated times', () => {
+  it.each([
+    ['Tuesday overlap', TUE, '15:30', '16:30', true],
+    ['Thursday overlap', THU, '15:30', '16:30', true],
+    ['different day', MON, '15:30', '16:30', false],
+    ['separated times', TUE, '16:01', '17:00', false],
+  ])('%s', (_label, daysOfWeek, startTime, endTime, expected) => {
     expect(
       getPersonalBlockConflicts(
         [block],
-        makeListing({
-          daysOfWeek: MON,
-          startTime: '15:30',
-          endTime: '16:30',
-        }),
+        makeListing({ daysOfWeek, startTime, endTime }),
       ),
-    ).toEqual([]);
-    expect(
-      getPersonalBlockConflicts(
-        [block],
-        makeListing({
-          daysOfWeek: TUE,
-          startTime: '16:01',
-          endTime: '17:00',
-        }),
-      ),
-    ).toEqual([]);
+    ).toEqual(expected ? [block] : []);
   });
 
   it('preserves inclusive endpoints and returns each commitment only once', () => {

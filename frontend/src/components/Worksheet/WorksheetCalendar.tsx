@@ -9,7 +9,6 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
-import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import { createPortal } from 'react-dom';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -470,11 +469,8 @@ function WorksheetCalendar({
             ? eventStyleGetter(event)
             : {
                 style: {
-                  backgroundColor: event.color,
-                  color:
-                    chroma.contrast(event.color, 'white') > 2
-                      ? 'white'
-                      : 'black',
+                  backgroundColor: '#687787',
+                  color: 'white',
                   border: '2px dashed white',
                 },
               }

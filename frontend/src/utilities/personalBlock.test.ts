@@ -15,13 +15,10 @@ describe('personal blocks', () => {
     vi.useRealTimers();
   });
 
-  it('validates and trims titles with optional color', () => {
+  it('validates and trims titles', () => {
     expect(
       personalBlockSchema.parse({ ...block, title: ' Practice ' }),
     ).toEqual(block);
-    expect(
-      personalBlockSchema.safeParse({ ...block, color: '#abcdef' }).success,
-    ).toBe(true);
   });
 
   it.each([
@@ -37,7 +34,6 @@ describe('personal blocks', () => {
     { end: '16:60' },
     { start: '16:00' },
     { start: '17:00' },
-    { color: 'invalid' },
   ])('rejects invalid input: %j', (invalid) => {
     expect(
       personalBlockSchema.safeParse({ ...block, ...invalid }).success,
