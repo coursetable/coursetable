@@ -7,13 +7,18 @@ import {
   type SyntheticEvent,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import { BsExclamationTriangleFill } from 'react-icons/bs';
+import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
+import { createPortal } from 'react-dom';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 import CalendarEvent, {
   type WalkModalInteraction,
   useEventStyle,
 } from './CalendarEvent';
+import PersonalBlockModal from './PersonalBlockModal';
 import {
   ColorPickerModal,
   WorksheetMoveModal,
@@ -22,9 +27,13 @@ import { useStore } from '../../store';
 import {
   localizer,
   getCalendarEvents,
+  getPersonalBlockEvents,
+  hasPersonalBlockConflict,
+  type WorksheetRBCEvent,
   type CourseRBCEvent,
   type WalkBefore,
 } from '../../utilities/calendar';
+import type { PersonalBlock } from '../../utilities/personalBlock';
 import {
   getBuildingCodeFromLocation,
   getWalkingMinutes,
@@ -37,6 +46,7 @@ const WALK_MODAL_CLOSE_SUPPRESSION_MS = 600;
 
 type WorksheetCalendarProps = {
   readonly showWalkingTimes?: boolean;
+  readonly addCommitmentContainer?: HTMLElement | null;
 };
 
 type WalkPair = {
@@ -167,6 +177,7 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
 
 function WorksheetCalendar({
   showWalkingTimes = true,
+  addCommitmentContainer,
 }: WorksheetCalendarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -177,6 +188,11 @@ function WorksheetCalendar({
     isCalendarViewLocked,
     calendarLockStart,
     calendarLockEnd,
+    personalBlocks,
+    isReadonlyWorksheet,
+    worksheetNumber,
+    viewedPerson,
+    user,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
@@ -186,25 +202,50 @@ function WorksheetCalendar({
       isCalendarViewLocked: state.isCalendarViewLocked,
       calendarLockStart: state.calendarLockStart,
       calendarLockEnd: state.calendarLockEnd,
+      personalBlocks: state.worksheetMemo.getIsReadonlyWorksheet(state)
+        ? undefined
+        : state.worksheetMemo
+            .getCurWorksheet(state)
+            .get(state.viewedSeason)
+            ?.get(state.viewedWorksheetNumber)?.personalBlocks,
+      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
+      worksheetNumber: state.viewedWorksheetNumber,
+      viewedPerson: state.viewedPerson,
+      user: state.user,
     })),
   );
+  // Keep an open editor tied to the worksheet it was opened from.
+  const worksheetKey = [
+    user?.netId,
+    viewedPerson,
+    viewedSeason,
+    worksheetNumber,
+    isReadonlyWorksheet,
+  ].join(':');
+  const [editor, setEditor] = useState<{
+    worksheetKey: string;
+    block?: PersonalBlock;
+  } | null>(null);
   const eventStyleGetter = useEventStyle();
-  const allCourses = useMemo(
-    () => getCalendarEvents('rbc', courses, viewedSeason),
-    [courses, viewedSeason],
+  const allEvents = useMemo(
+    (): WorksheetRBCEvent[] => [
+      ...getCalendarEvents('rbc', courses, viewedSeason),
+      ...getPersonalBlockEvents(personalBlocks ?? []),
+    ],
+    [courses, viewedSeason, personalBlocks],
   );
-  const { earliest, latest, parsedCourses } = useMemo(() => {
+  const { earliest, latest, parsedEvents } = useMemo(() => {
     if (isCalendarViewLocked) {
-      const filteredCourses = allCourses.filter((course) => {
-        const courseEndHour = course.end.getHours();
-        const courseEndMinutes = course.end.getMinutes();
-        const courseStartHour = course.start.getHours();
+      const filteredEvents = allEvents.filter((event) => {
+        const eventEndHour = event.end.getHours();
+        const eventEndMinutes = event.end.getMinutes();
+        const eventStartHour = event.start.getHours();
 
         const endsBeforeStart =
-          courseEndHour < calendarLockStart ||
-          (courseEndHour === calendarLockStart && courseEndMinutes === 0);
+          eventEndHour < calendarLockStart ||
+          (eventEndHour === calendarLockStart && eventEndMinutes === 0);
 
-        const startsAfterEnd = courseStartHour >= calendarLockEnd;
+        const startsAfterEnd = eventStartHour >= calendarLockEnd;
 
         return !endsBeforeStart && !startsAfterEnd;
       });
@@ -212,28 +253,28 @@ function WorksheetCalendar({
       return {
         earliest: new Date(0, 0, 0, calendarLockStart),
         latest: new Date(0, 0, 0, calendarLockEnd),
-        parsedCourses: filteredCourses,
+        parsedEvents: filteredEvents,
       };
     }
-    if (allCourses.length === 0) {
+    if (allEvents.length === 0) {
       return {
         earliest: new Date(0, 0, 0, 8),
         latest: new Date(0, 0, 0, 18),
-        parsedCourses: allCourses,
+        parsedEvents: allEvents,
       };
     }
-    const earliest = new Date(allCourses[0]!.start);
-    const latest = new Date(allCourses[0]!.end);
+    const earliest = new Date(allEvents[0]!.start);
+    const latest = new Date(allEvents[0]!.end);
     earliest.setMinutes(0);
     latest.setMinutes(59);
-    for (const c of allCourses) {
+    for (const c of allEvents) {
       if (c.start.getHours() < earliest.getHours())
         earliest.setHours(c.start.getHours());
       if (c.end.getHours() > latest.getHours())
         latest.setHours(c.end.getHours());
     }
-    return { earliest, latest, parsedCourses: allCourses };
-  }, [allCourses, isCalendarViewLocked, calendarLockStart, calendarLockEnd]);
+    return { earliest, latest, parsedEvents: allEvents };
+  }, [allEvents, isCalendarViewLocked, calendarLockStart, calendarLockEnd]);
 
   const [walkBeforeByKey, setWalkBeforeByKey] = useState(
     new Map<string, WalkBefore>(),
@@ -244,22 +285,27 @@ function WorksheetCalendar({
   useEffect(() => {
     let cancelled = false;
     const timeout = window.setTimeout(() => {
-      const computed = buildWalkBeforeMap(parsedCourses);
+      const computed = buildWalkBeforeMap(
+        parsedEvents.filter(
+          (event): event is CourseRBCEvent => event.kind === 'course',
+        ),
+      );
       if (!cancelled) setWalkBeforeByKey(computed);
     }, 0);
     return () => {
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [parsedCourses]);
+  }, [parsedEvents]);
 
   const displayEvents = useMemo(() => {
-    if (!showWalkingTimes || walkBeforeByKey.size === 0) return parsedCourses;
-    return parsedCourses.map((event) => {
+    if (!showWalkingTimes || walkBeforeByKey.size === 0) return parsedEvents;
+    return parsedEvents.map((event) => {
+      if (event.kind === 'personal') return event;
       const walkBefore = walkBeforeByKey.get(eventKey(event));
       return walkBefore ? { ...event, walkBefore } : event;
     });
-  }, [parsedCourses, showWalkingTimes, walkBeforeByKey]);
+  }, [parsedEvents, showWalkingTimes, walkBeforeByKey]);
   const suppressSelectEventUntilRef = useRef(0);
   const walkModalOpenRef = useRef(false);
   const skipNextSelectEventRef = useRef(false);
@@ -292,7 +338,7 @@ function WorksheetCalendar({
   );
   const calendarComponents = useMemo(
     () => ({
-      event: ({ event }: { readonly event: CourseRBCEvent }) => (
+      event: ({ event }: { readonly event: WorksheetRBCEvent }) => (
         <div
           style={{
             display: 'flex',
@@ -300,19 +346,32 @@ function WorksheetCalendar({
             height: '100%',
           }}
         >
-          <CalendarEvent
-            event={event}
-            onWalkModalInteraction={suppressCalendarEventSelection}
-          />
+          {event.kind === 'personal' ? (
+            <strong>{event.title}</strong>
+          ) : (
+            <>
+              {hasPersonalBlockConflict(personalBlocks, event) && (
+                <span title="Conflicts with a personal commitment">
+                  <BsExclamationTriangleFill aria-hidden="true" /> Personal
+                  conflict
+                </span>
+              )}
+              <CalendarEvent
+                event={event}
+                onWalkModalInteraction={suppressCalendarEventSelection}
+              />
+            </>
+          )}
         </div>
       ),
     }),
-    [suppressCalendarEventSelection],
+    [suppressCalendarEventSelection, personalBlocks],
   );
   useEffect(() => {
     if (!selectedEvent) return;
     const hasSelectedEvent = displayEvents.some(
       (event) =>
+        event.kind === 'course' &&
         event.listing.crn === selectedEvent.listing.crn &&
         event.start.getTime() === selectedEvent.start.getTime() &&
         event.end.getTime() === selectedEvent.end.getTime(),
@@ -331,7 +390,12 @@ function WorksheetCalendar({
     [],
   );
   const handleSelectEvent = useCallback(
-    (event: CourseRBCEvent, clickEvent: SyntheticEvent<HTMLElement>) => {
+    (event: WorksheetRBCEvent, clickEvent: SyntheticEvent<HTMLElement>) => {
+      if (event.kind === 'personal') {
+        if (!isReadonlyWorksheet)
+          setEditor({ worksheetKey, block: event.block });
+        return;
+      }
       if (walkModalOpenRef.current) return;
       const { target } = clickEvent;
       if (
@@ -363,18 +427,37 @@ function WorksheetCalendar({
         return prev;
       });
     },
-    [setSearchParams],
+    [setSearchParams, isReadonlyWorksheet, worksheetKey],
   );
   return (
     <>
+      {!isReadonlyWorksheet &&
+        user &&
+        addCommitmentContainer &&
+        createPortal(
+          <Button onClick={() => setEditor({ worksheetKey })}>
+            Add commitment
+          </Button>,
+          addCommitmentContainer,
+        )}
+      {editor?.worksheetKey === worksheetKey && !isReadonlyWorksheet && (
+        <PersonalBlockModal
+          key={`${worksheetKey}-${editor.block?.id ?? 'new'}`}
+          block={editor.block}
+          blocks={personalBlocks ?? []}
+          season={viewedSeason}
+          worksheetNumber={worksheetNumber}
+          onClose={() => setEditor(null)}
+        />
+      )}
       <Calendar
         // Show Mon-Fri
         defaultView="work_week"
         views={['work_week']}
         events={displayEvents}
-        // Earliest course time or 8am if no courses
+        // Include commitments in the visible time range
         min={earliest}
-        // Latest course time or 6pm if no courses
+        // Latest event time or 6pm when empty
         max={latest}
         localizer={localizer}
         toolbar={false}
@@ -382,7 +465,20 @@ function WorksheetCalendar({
         selected={selectedEvent}
         onSelectEvent={handleSelectEvent}
         components={calendarComponents}
-        eventPropGetter={eventStyleGetter}
+        eventPropGetter={(event) =>
+          event.kind === 'course'
+            ? eventStyleGetter(event)
+            : {
+                style: {
+                  backgroundColor: event.color,
+                  color:
+                    chroma.contrast(event.color, 'white') > 2
+                      ? 'white'
+                      : 'black',
+                  border: '2px dashed white',
+                },
+              }
+        }
         tooltipAccessor={undefined}
       />
       <ColorPickerModal onClose={() => setOpenColorPickerEvent(null)} />

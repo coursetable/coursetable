@@ -55,6 +55,8 @@ function Worksheet() {
     })),
   );
   const [expanded, setExpanded] = useState(false);
+  const [addCommitmentContainer, setAddCommitmentContainer] =
+    useState<HTMLDivElement | null>(null);
   const [showWalkingTimes, setShowWalkingTimes] = useState(() => {
     if (typeof window === 'undefined') return true;
     const savedPreference = window.localStorage.getItem(
@@ -126,7 +128,10 @@ function Worksheet() {
         </div>
       )}
       <SurfaceComponent className={styles.calendar}>
-        <WorksheetCalendar showWalkingTimes={showWalkingTimes} />
+        <WorksheetCalendar
+          showWalkingTimes={showWalkingTimes}
+          addCommitmentContainer={addCommitmentContainer}
+        />
         {!isMobile && (
           <div className={styles.calendarControls}>
             <OverlayTrigger
@@ -185,6 +190,7 @@ function Worksheet() {
             showWalkingTimes={showWalkingTimes}
             onShowWalkingTimesChange={setShowWalkingTimes}
           />
+          <div ref={setAddCommitmentContainer} />
         </div>
       )}
       <CalendarLockSettingsModal />
