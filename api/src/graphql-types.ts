@@ -2475,6 +2475,7 @@ export type Listings = {
   season_code: Scalars['String']['output'];
   /** Course section. Note that the section number is the same for all cross-listings. */
   section: Scalars['String']['output'];
+  section_full: Scalars['Boolean']['output'];
   /** Subject the course is listed under (e.g. "AMST") */
   subject: Scalars['String']['output'];
   time_added?: Maybe<Scalars['timestamp']['output']>;
@@ -2521,6 +2522,7 @@ export type Listings_Bool_Exp = {
   season?: InputMaybe<Seasons_Bool_Exp>;
   season_code?: InputMaybe<String_Comparison_Exp>;
   section?: InputMaybe<String_Comparison_Exp>;
+  section_full?: InputMaybe<Boolean_Comparison_Exp>;
   subject?: InputMaybe<String_Comparison_Exp>;
   time_added?: InputMaybe<Timestamp_Comparison_Exp>;
 };
@@ -2586,6 +2588,7 @@ export type Listings_Order_By = {
   season?: InputMaybe<Seasons_Order_By>;
   season_code?: InputMaybe<Order_By>;
   section?: InputMaybe<Order_By>;
+  section_full?: InputMaybe<Order_By>;
   subject?: InputMaybe<Order_By>;
   time_added?: InputMaybe<Order_By>;
 };
@@ -2610,6 +2613,8 @@ export enum Listings_Select_Column {
   SeasonCode = 'season_code',
   /** column name */
   Section = 'section',
+  /** column name */
+  SectionFull = 'section_full',
   /** column name */
   Subject = 'subject',
   /** column name */
@@ -2673,6 +2678,7 @@ export type Listings_Stream_Cursor_Value_Input = {
   season_code?: InputMaybe<Scalars['String']['input']>;
   /** Course section. Note that the section number is the same for all cross-listings. */
   section?: InputMaybe<Scalars['String']['input']>;
+  section_full?: InputMaybe<Scalars['Boolean']['input']>;
   /** Subject the course is listed under (e.g. "AMST") */
   subject?: InputMaybe<Scalars['String']['input']>;
   time_added?: InputMaybe<Scalars['timestamp']['input']>;

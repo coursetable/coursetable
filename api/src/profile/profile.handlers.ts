@@ -20,8 +20,8 @@ import { db } from '../config.js';
 const VisibilitySettingSchema = z.enum(['self', 'friends', 'public']);
 
 const UpdateOwnProfileSchema = z.object({
-  preferredFirstName: z.string().max(256).nullable().optional(),
-  preferredLastName: z.string().max(256).nullable().optional(),
+  preferredFirstName: z.string().trim().max(20).nullable().optional(),
+  preferredLastName: z.string().trim().max(20).nullable().optional(),
   profilePageEnabled: z.boolean().optional(),
   allowAnonymousProfileView: z.boolean().optional(),
   privacy: z
