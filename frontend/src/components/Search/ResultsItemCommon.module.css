@@ -32,12 +32,13 @@
 .fullBadge {
   display: inline-block;
   margin-left: 0.25rem;
-  padding: 0 0.25rem;
+  padding: 0.0625rem 0.3125rem;
   border: 1px solid currentcolor;
   border-radius: 3px;
+  background-color: var(--color-surface);
   color: var(--color-section-full);
-  font-size: 0.625rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   line-height: 1.3;
   vertical-align: 0.08rem;
   white-space: nowrap;
