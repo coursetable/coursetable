@@ -151,6 +151,24 @@ export default function MobileSearchForm() {
   const { filters, coursesLoading, searchData } = useSearch();
   const resetSearchFilters = useStore((state) => state.patchSearchFilters);
   const { searchText, selectSortBy } = filters;
+  const advancedFilterKeys = [
+    'selectDays',
+    'timeBounds',
+    'enrollBounds',
+    'numBounds',
+    'selectCredits',
+    'selectBuilding',
+    'selectCourseInfoAttributes',
+    'includeAttributes',
+    'excludeAttributes',
+    'searchDescription',
+    'enableQuist',
+    'hideCancelled',
+    'hideConflicting',
+  ] as const;
+  const activeAdvancedFilterCount = advancedFilterKeys.filter(
+    (key) => filters[key].isNonEmpty,
+  ).length;
   const scrollToResults = useCallback((event?: React.FormEvent) => {
     if (event) event.preventDefault();
     scroller.scrollTo('catalog', {
@@ -262,6 +280,7 @@ export default function MobileSearchForm() {
             className={clsx(popoutStyles.button, styles.advancedSummary)}
           >
             Advanced filters
+            {activeAdvancedFilterCount > 0 && ` (${activeAdvancedFilterCount})`}
             <IoMdArrowDropdown
               aria-hidden="true"
               className={clsx(popoutStyles.arrowIcon, styles.advancedArrow)}
