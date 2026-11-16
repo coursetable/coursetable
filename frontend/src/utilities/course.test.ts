@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   checkConflict,
+  getCourseNoteCrn,
   type ListingWithTimes,
   to12HourTime,
   toRangeTime,
@@ -314,5 +315,18 @@ describe('toWeekdayStrings / toWeekdaysDisplayString', () => {
   it('collapses Monday–Friday to M–F', () => {
     expect(toWeekdaysDisplayString(MON | TUE | WED | THU | FRI)).toBe('M–F');
     expect(toWeekdaysDisplayString(MON | WED | FRI)).toBe('MWF');
+  });
+});
+
+describe('getCourseNoteCrn', () => {
+  it('uses the only CRN of a single listing', () => {
+    expect(getCourseNoteCrn({ listings: [{ crn: 22222 as Crn }] })).toBe(22222);
+  });
+
+  it('returns the same CRN for any listing order', () => {
+    const first = { crn: 33333 as Crn };
+    const second = { crn: 11111 as Crn };
+    expect(getCourseNoteCrn({ listings: [first, second] })).toBe(11111);
+    expect(getCourseNoteCrn({ listings: [second, first] })).toBe(11111);
   });
 });

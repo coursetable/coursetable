@@ -10,6 +10,7 @@ import {
   bigserial,
   serial,
   integer,
+  text,
 } from 'drizzle-orm/pg-core';
 
 /** Shared by name / email / year / school / major visibility columns. */
@@ -190,5 +191,28 @@ export const savedSearches = pgTable(
     savedSearchesNameUniqueIdx: uniqueIndex(
       'saved_searches_name_unique_idx',
     ).on(table.netId, table.name),
+  }),
+);
+
+export const courseNotes = pgTable(
+  'courseNotes',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    // One note per course across seasons and sections, using Ferry's grouping
+    sameCourseId: integer('sameCourseId').notNull(),
+    // The offering where the note was last saved, so it can be reattached if
+    // Ferry ever regroups the course. crn is the lowest listing CRN.
+    season: integer('season').notNull(),
+    crn: integer('crn').notNull(),
+    // Tiptap JSON. The API caps its size, so the column has no fixed length.
+    content: text('content').notNull(),
+    updatedAt: bigint('updatedAt', { mode: 'number' }).notNull(),
+  },
+  (table) => ({
+    courseNotesUniqueIdx: uniqueIndex('course_notes_unique_idx').on(
+      table.netId,
+      table.sameCourseId,
+    ),
   }),
 );
