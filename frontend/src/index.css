@@ -26,7 +26,7 @@
   --color-primary-hover: #007bff;
   --color-primary-subdued: #468ff24d;
   --color-primary-subdued-2: #468ff226;
-  --color-section-full: #b71f3a;
+  --color-section-full: #c92a45;
   --trans-dur: 0.35s;
 
   /* Bootstrap variables */
@@ -62,7 +62,7 @@
   --color-primary-hover: #007bff;
   --color-primary-subdued: #446491bf;
   --color-primary-subdued-2: #44649140;
-  --color-section-full: #ffb4b4;
+  --color-section-full: #ff7474;
 }
 
 body {
