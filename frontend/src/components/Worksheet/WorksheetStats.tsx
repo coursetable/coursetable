@@ -274,13 +274,13 @@ export default function WorksheetStats() {
                 </OverlayTrigger>
               )}
               <div>
-                <dt>Total courses</dt>
+                <dt>Courses</dt>
                 <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
                   {courseCnt}
                 </StatPill>
               </div>
               <div>
-                <dt>Total credits</dt>
+                <dt>Credits</dt>
                 <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
                 </StatPill>
