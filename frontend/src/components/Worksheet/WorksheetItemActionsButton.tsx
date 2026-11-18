@@ -9,11 +9,12 @@ import {
   DropdownButton,
   Dropdown,
 } from 'react-bootstrap';
-import { FaEllipsisH } from 'react-icons/fa';
+import { FaEllipsisH, FaRegCopy } from 'react-icons/fa';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import { updateWorksheetCourses } from '../../queries/api';
@@ -158,7 +159,14 @@ export function ColorPickerModal({
   };
 
   return (
-    <Modal show onHide={handleClose} centered>
+    <Modal show onHide={handleClose} centered dialogClassName={styles.dialog}>
+      <Modal.Header closeButton className={styles.modalHeader}>
+        <div className={styles.modalTop}>
+          <Modal.Title>
+            <div className={styles.modalTitle}>Change color</div>
+          </Modal.Title>
+        </div>
+      </Modal.Header>
       <Modal.Body className={styles.modalBody}>
         <Picker
           color={newColor ?? openColorPickerEvent.color}
@@ -170,9 +178,6 @@ export function ColorPickerModal({
         />
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
         <Button
           variant="primary"
           onClick={async () => {
@@ -192,7 +197,7 @@ export function ColorPickerModal({
             handleClose();
           }}
         >
-          Save changes
+          Save
         </Button>
       </Modal.Footer>
     </Modal>
@@ -294,21 +299,44 @@ function ColorInput({
     setPrevColor(color);
   }
   return (
-    <Input
-      type="text"
-      value={value}
-      isInvalid={invalid}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-        const newColor = e.target.value;
-        if (chroma.valid(newColor)) {
-          setColor(newColor);
-          setInvalid(false);
-        } else {
-          setInvalid(true);
-        }
-        setValue(newColor);
-      }}
-    />
+    <div className={styles.hexRow}>
+      <Input
+        type="text"
+        className={styles.hexInput}
+        value={value}
+        isInvalid={invalid}
+        onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+          e.target.select();
+        }}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const newColor = e.target.value;
+          if (chroma.valid(newColor)) {
+            setColor(newColor);
+            setInvalid(false);
+          } else {
+            setInvalid(true);
+          }
+          setValue(newColor);
+        }}
+      />
+      <button
+        type="button"
+        className={styles.copyButton}
+        onClick={() => {
+          navigator.clipboard.writeText(color).then(
+            () => {
+              toast.success('Color copied!');
+            },
+            () => {
+              toast.error('Failed to copy color');
+            },
+          );
+        }}
+        aria-label="Copy hex code"
+      >
+        <FaRegCopy />
+      </button>
+    </div>
   );
 }
 
@@ -321,8 +349,8 @@ function Picker({
 }) {
   return (
     <div className={styles.pickerPanel}>
-      <ColorInput color={color} setColor={setColor} />
       <HexColorPicker color={color} onChange={setColor} />
+      <ColorInput color={color} setColor={setColor} />
       <div className={styles.presetColors}>
         {worksheetColors.map((presetColor) => (
           <button
