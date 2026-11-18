@@ -341,7 +341,7 @@ function Picker({
   );
 }
 
-const PREVIEW_WINDOW_HOURS = 3;
+const MIN_PREVIEW_WINDOW = 2;
 
 function Preview({
   event,
@@ -359,7 +359,7 @@ function Preview({
   const padding = 15 / 60;
   const minHour = Math.max(Math.floor(toHours(tempEvent.start) - padding), 0);
   const maxHour = Math.max(
-    minHour + PREVIEW_WINDOW_HOURS,
+    minHour + MIN_PREVIEW_WINDOW,
     Math.ceil(toHours(tempEvent.end) + padding),
   );
 
