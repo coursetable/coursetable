@@ -9,7 +9,8 @@ import {
   DropdownButton,
   Dropdown,
 } from 'react-bootstrap';
-import { FaEllipsisH, FaRegCopy } from 'react-icons/fa';
+import { FaEllipsisH } from 'react-icons/fa';
+import { FaCheck, FaRegCopy } from 'react-icons/fa6';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
@@ -294,6 +295,7 @@ function ColorInput({
   const [invalid, setInvalid] = useState(false);
   const [value, setValue] = useState(color);
   const [prevColor, setPrevColor] = useState(color);
+  const [copied, setCopied] = useState(false);
   if (color !== prevColor) {
     setValue(color);
     setPrevColor(color);
@@ -326,15 +328,17 @@ function ColorInput({
           navigator.clipboard.writeText(color).then(
             () => {
               toast.success('Color copied!');
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
             },
             () => {
               toast.error('Failed to copy color');
             },
           );
         }}
-        aria-label="Copy hex code"
+        aria-label={copied ? 'Copied' : 'Copy hex code'}
       >
-        <FaRegCopy />
+        {copied ? <FaCheck /> : <FaRegCopy />}
       </button>
     </div>
   );
