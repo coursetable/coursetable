@@ -274,20 +274,20 @@ export default function WorksheetStats() {
                 </OverlayTrigger>
               )}
               <div>
-                <dt>Courses</dt>
+                <dt>Total courses</dt>
                 <StatPill colorMap={courseNumberColormap} stat={courseCnt}>
                   {courseCnt}
                 </StatPill>
               </div>
               <div>
-                <dt>Credits</dt>
+                <dt>Total credits</dt>
                 <StatPill colorMap={creditColormap} stat={credits}>
                   {credits}
                 </StatPill>
               </div>
               <div>
                 <dt>
-                  Hours
+                  Total hours
                   <NoStatsTip
                     coursesWithoutRating={classHours.missing}
                     coursesWithRating={classHours.courseCount}
@@ -336,7 +336,7 @@ export default function WorksheetStats() {
               {user?.hasEvals ? (
                 <div>
                   <dt>
-                    Workload
+                    Total workload
                     <NoStatsTip
                       coursesWithoutRating={coursesWithoutWorkload}
                       coursesWithRating={coursesWithWorkload}
@@ -359,7 +359,7 @@ export default function WorksheetStats() {
                   }
                 >
                   <div>
-                    <dt>Workload</dt>
+                    <dt>Total workload</dt>
                     <dd
                       className={styles.statPill}
                       style={{
