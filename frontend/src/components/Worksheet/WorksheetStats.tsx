@@ -60,7 +60,7 @@ const classHoursColormap = chroma
 // Neutral while estimates load, so the color doesn't jump once they arrive
 const pendingColormap = chroma.scale(['#bdbdbd', '#bdbdbd']);
 
-const formatHours = (hours: number) => String(Number(hours.toFixed(2)));
+const formatHours = (hours: number) => String(Number(hours.toFixed(1)));
 
 const formatter = new Intl.ListFormat('en-US', {
   style: 'long',
@@ -247,7 +247,7 @@ export default function WorksheetStats() {
                     />
                   </dt>
                   <StatPill colorMap={ratingColormap} stat={avgRating}>
-                    {avgRating.toFixed(2)}
+                    {avgRating.toFixed(1)}
                   </StatPill>
                 </div>
               ) : (
@@ -343,7 +343,7 @@ export default function WorksheetStats() {
                     />
                   </dt>
                   <StatPill colorMap={workloadColormap} stat={workload}>
-                    {workload.toFixed(2)}
+                    {workload.toFixed(1)}
                   </StatPill>
                 </div>
               ) : (
