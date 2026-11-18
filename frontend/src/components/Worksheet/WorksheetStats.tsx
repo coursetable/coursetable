@@ -336,7 +336,7 @@ export default function WorksheetStats() {
               {user?.hasEvals ? (
                 <div>
                   <dt>
-                    Total workload
+                    Workload
                     <NoStatsTip
                       coursesWithoutRating={coursesWithoutWorkload}
                       coursesWithRating={coursesWithWorkload}
@@ -359,7 +359,7 @@ export default function WorksheetStats() {
                   }
                 >
                   <div>
-                    <dt>Total workload</dt>
+                    <dt>Workload</dt>
                     <dd
                       className={styles.statPill}
                       style={{
