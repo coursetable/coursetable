@@ -540,7 +540,18 @@ function ThemePanel({
           </button>
         ))}
       </div>
-      <div className={styles.themeApply}>
+      <fieldset className={styles.themeApply} aria-label="Apply to all courses">
+        <Button
+          variant="primary"
+          disabled={applying}
+          onClick={async () => {
+            setApplying(true);
+            await onApplyToAll({ includeHidden, overrideCustom });
+            setApplying(false);
+          }}
+        >
+          Apply to all
+        </Button>
         <Form.Check
           type="switch"
           id="theme-include-hidden-switch"
@@ -555,18 +566,7 @@ function ThemePanel({
           checked={overrideCustom}
           onChange={(e) => setOverrideCustom(e.currentTarget.checked)}
         />
-        <Button
-          variant="primary"
-          disabled={applying}
-          onClick={async () => {
-            setApplying(true);
-            await onApplyToAll({ includeHidden, overrideCustom });
-            setApplying(false);
-          }}
-        >
-          Apply to all
-        </Button>
-      </div>
+      </fieldset>
     </section>
   );
 }
