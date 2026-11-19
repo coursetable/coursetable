@@ -129,6 +129,8 @@ export const worksheets = pgTable(
     worksheetNumber: integer('worksheetNumber').notNull(),
     name: varchar('name', { length: 64 }).notNull(),
     private: boolean('private').notNull().default(false),
+    // Null means the default (Classic) theme
+    colorTheme: varchar('colorTheme', { length: 32 }),
   },
   (table) => ({
     worksheetsUniqueIdx: uniqueIndex('worksheets_unique_idx').on(

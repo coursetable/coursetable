@@ -21,11 +21,18 @@ import { HexColorPicker } from 'react-colorful';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
-import { updateWorksheetCourses } from '../../queries/api';
+import {
+  updateWorksheetCourses,
+  updateWorksheetMetadata,
+} from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
-import { isCustomColor, mapColorsToTheme } from '../../utilities/colorTheme';
+import {
+  getColorTheme,
+  isCustomColor,
+  mapColorsToTheme,
+} from '../../utilities/colorTheme';
 import { colorThemes, type ColorThemeId } from '../../utilities/constants';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
@@ -150,33 +157,45 @@ export function ColorPickerModal({
     viewedSeason,
     viewedWorksheetNumber,
     courses,
+    savedThemeId,
     openColorPickerEvent,
-    colorThemeId,
-    setColorThemeId,
   } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       courses: state.courses,
+      savedThemeId: state.worksheets
+        ?.get(state.viewedSeason)
+        ?.get(state.viewedWorksheetNumber)?.colorTheme,
       openColorPickerEvent: state.openColorPickerEvent,
-      colorThemeId: state.colorThemeId,
-      setColorThemeId: state.setColorThemeId,
     })),
   );
   const [newColor, setNewColor] = useState<string | undefined>(undefined);
+  // Unsaved theme choice; falls back to the worksheet's saved theme
+  const [selectedThemeId, setSelectedThemeId] = useState<
+    ColorThemeId | undefined
+  >(undefined);
   const [themePanelOpen, setThemePanelOpen] = useState(false);
 
   if (!openColorPickerEvent) return null;
 
-  // A persisted id may no longer exist if themes are renamed or removed
-  const theme =
-    colorThemes.find((t) => t.id === colorThemeId) ?? colorThemes[0];
+  const theme = getColorTheme(selectedThemeId ?? savedThemeId);
+  const themeChanged = theme.id !== getColorTheme(savedThemeId).id;
 
   const handleClose = () => {
     setNewColor(undefined);
+    setSelectedThemeId(undefined);
     setThemePanelOpen(false);
     onClose();
   };
+
+  const saveTheme = () =>
+    updateWorksheetMetadata({
+      action: 'setColorTheme',
+      season: viewedSeason,
+      worksheetNumber: viewedWorksheetNumber,
+      colorTheme: theme.id,
+    });
 
   const applyThemeToAll = async (options: ApplyThemeOptions) => {
     const targets = courses.filter(
@@ -208,8 +227,9 @@ export function ColorPickerModal({
         })),
       );
       if (!success) return;
-      await worksheetsRefresh();
     }
+    if (themeChanged && !(await saveTheme())) return;
+    if (updates.length > 0 || themeChanged) await worksheetsRefresh();
     toast.success(
       `Applied ${theme.name} to ${targets.length} course${targets.length === 1 ? '' : 's'}`,
     );
@@ -243,19 +263,20 @@ export function ColorPickerModal({
         <Button
           variant="primary"
           onClick={async () => {
-            // Nothing to save; the API rejects updates with no fields
-            if (!newColor || newColor === openColorPickerEvent.color) {
-              handleClose();
-              return;
+            // The API rejects course updates with no fields, so skip unchanged
+            const colorChanged =
+              newColor !== undefined && newColor !== openColorPickerEvent.color;
+            if (colorChanged) {
+              await updateWorksheetCourses({
+                action: 'update',
+                season: viewedSeason,
+                crn: openColorPickerEvent.listing.crn,
+                worksheetNumber: viewedWorksheetNumber,
+                color: newColor,
+              });
             }
-            await updateWorksheetCourses({
-              action: 'update',
-              season: viewedSeason,
-              crn: openColorPickerEvent.listing.crn,
-              worksheetNumber: viewedWorksheetNumber,
-              color: newColor,
-            });
-            await worksheetsRefresh();
+            if (themeChanged) await saveTheme();
+            if (colorChanged || themeChanged) await worksheetsRefresh();
             handleClose();
           }}
         >
@@ -265,7 +286,7 @@ export function ColorPickerModal({
       {themePanelOpen && (
         <ThemePanel
           selectedId={theme.id}
-          onSelect={setColorThemeId}
+          onSelect={setSelectedThemeId}
           onApplyToAll={applyThemeToAll}
           onClose={() => setThemePanelOpen(false)}
         />
@@ -486,10 +507,10 @@ function ThemePanel({
   const [applying, setApplying] = useState(false);
 
   return (
-    <section className={styles.themePanel} aria-label="Color themes">
+    <section className={styles.themePanel} aria-label="Worksheet theme">
       <div className={styles.themePanelHeader}>
-        <span>Themes</span>
-        <CloseButton onClick={onClose} aria-label="Close themes" />
+        <span>Worksheet theme</span>
+        <CloseButton onClick={onClose} aria-label="Close worksheet theme" />
       </div>
       <div className={styles.themeList}>
         {colorThemes.map((theme) => (

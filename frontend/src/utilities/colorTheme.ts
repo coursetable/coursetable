@@ -1,5 +1,17 @@
 import { colorThemes } from './constants';
 
+// Unknown ids (e.g. a theme that was renamed or removed) fall back to Classic
+export function getColorTheme(
+  id: string | null | undefined,
+): (typeof colorThemes)[number] {
+  return colorThemes.find((theme) => theme.id === id) ?? colorThemes[0];
+}
+
+export function randomThemeColor(id: string | null | undefined): string {
+  const { colors } = getColorTheme(id);
+  return colors[Math.floor(Math.random() * colors.length)]!;
+}
+
 // Position of the color within whichever theme contains it, or -1 if custom
 function themeIndexOf(color: string): number {
   const lower = color.toLowerCase();

@@ -368,6 +368,11 @@ export async function updateWorksheetMetadata(
         worksheetNumber: number;
         private: boolean;
       }
+    | {
+        action: 'setColorTheme';
+        worksheetNumber: number;
+        colorTheme: string;
+      }
   ),
 ): Promise<boolean> {
   return await fetchAPI('/user/updateWorksheetMetadata', {
@@ -788,6 +793,8 @@ const worksheetCourseSchema = z.object({
 const worksheetSchema = z.object({
   name: z.string(),
   private: z.boolean().optional(),
+  // Friends' worksheets don't include this
+  colorTheme: z.string().nullable().optional(),
   courses: z.array(worksheetCourseSchema),
 });
 
