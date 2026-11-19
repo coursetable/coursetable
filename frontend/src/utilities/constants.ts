@@ -415,18 +415,92 @@ export const evalQuestionTags = [
   'Professor',
 ];
 
-export const worksheetColors = [
-  '#31a4d4',
-  '#2cafb7',
-  '#26ba9a',
-  '#49be85',
-  '#6cc26f',
-  '#a3b24b',
-  '#daa126',
-  '#df8653',
-  '#ca5f53',
-  '#ba7881',
-];
+// Preset palettes for the worksheet color picker. Each has 10 colors laid out
+// as two rows of 5.
+export const colorThemes = [
+  {
+    id: 'classic',
+    name: 'Classic',
+    colors: [
+      '#31a4d4',
+      '#2cafb7',
+      '#26ba9a',
+      '#49be85',
+      '#6cc26f',
+      '#a3b24b',
+      '#daa126',
+      '#df8653',
+      '#ca5f53',
+      '#ba7881',
+    ],
+  },
+  {
+    id: 'sakura',
+    name: 'Sakura',
+    colors: [
+      '#f7b7c8',
+      '#ef8fa8',
+      '#e06c8a',
+      '#c94f6d',
+      '#a83a52',
+      '#b8d8a8',
+      '#8fbf7f',
+      '#6a9f5b',
+      '#4f8a5b',
+      '#3b6e47',
+    ],
+  },
+  {
+    id: 'ocean',
+    name: 'Ocean',
+    colors: [
+      '#0b3d5c',
+      '#145c80',
+      '#1f7aa3',
+      '#2e98c2',
+      '#56b4d3',
+      '#7fcbe0',
+      '#1a9e8f',
+      '#2fb8a3',
+      '#5ccdb9',
+      '#8ee0cf',
+    ],
+  },
+  {
+    id: 'sunset',
+    name: 'Sunset',
+    colors: [
+      '#5b2a86',
+      '#8a3b8f',
+      '#b84a8c',
+      '#e0607e',
+      '#f07f6a',
+      '#f59e5b',
+      '#f7b84b',
+      '#e86a3a',
+      '#c94b3a',
+      '#9c3a4f',
+    ],
+  },
+  {
+    id: 'pastel',
+    name: 'Pastel',
+    colors: [
+      '#f6c1c1',
+      '#f8d9a8',
+      '#f5eba3',
+      '#c7e8b0',
+      '#a8dcd1',
+      '#a9cdeb',
+      '#c3b8ec',
+      '#e2b8e6',
+      '#f2c4dc',
+      '#d6d2c4',
+    ],
+  },
+] as const;
+
+export type ColorThemeId = (typeof colorThemes)[number]['id'];
 
 export const barChartColors = [
   '#f54242',

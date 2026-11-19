@@ -27,7 +27,7 @@ import {
   type WorksheetNumberOption,
 } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
-import { worksheetColors } from '../../utilities/constants';
+import { colorThemes } from '../../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
@@ -37,6 +37,11 @@ import {
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import styles from './WorksheetToggleButton.module.css';
+
+function randomClassicColor() {
+  const [{ colors }] = colorThemes;
+  return colors[Math.floor(Math.random() * colors.length)]!;
+}
 
 type ListingWithHistoricalInfo = ListingWithTimes & {
   course: ListingWithTimes['course'] & {
@@ -314,8 +319,7 @@ function WorksheetToggleButton({
         season: targetSeason,
         crn: targetCrn,
         worksheetNumber: targetWorksheetNumber,
-        color:
-          worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
+        color: randomClassicColor(),
         hidden: false,
       });
       if (success) await worksheetsRefresh();

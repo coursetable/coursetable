@@ -1,6 +1,7 @@
 import type { StateCreator } from 'zustand';
 import type { Store } from '../store';
 import type { CourseRBCEvent } from '../utilities/calendar';
+import type { ColorThemeId } from '../utilities/constants';
 
 interface CalendarSliceState {
   openColorPickerEvent: CourseRBCEvent | null;
@@ -9,6 +10,7 @@ interface CalendarSliceState {
   calendarLockStart: number;
   calendarLockEnd: number;
   isCalendarLockSettingsOpen: boolean;
+  colorThemeId: ColorThemeId;
 }
 
 interface CalendarSliceActions {
@@ -17,6 +19,7 @@ interface CalendarSliceActions {
   setCalendarViewLocked: (locked: boolean) => void;
   setCalendarLockRange: (start: number, end: number) => void;
   setCalendarLockSettingsOpen: (open: boolean) => void;
+  setColorThemeId: (id: ColorThemeId) => void;
 }
 
 export interface CalendarSlice
@@ -45,5 +48,9 @@ export const createCalendarSlice: StateCreator<Store, [], [], CalendarSlice> = (
   },
   setCalendarLockSettingsOpen(open) {
     set({ isCalendarLockSettingsOpen: open });
+  },
+  colorThemeId: 'classic',
+  setColorThemeId(id) {
+    set({ colorThemeId: id });
   },
 });

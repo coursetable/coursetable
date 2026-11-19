@@ -61,8 +61,20 @@
 .pickerPanel {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
   width: 200px;
+}
+
+.pickerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pickerDivider {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  opacity: 1;
 }
 
 .pickerPanel :global(.react-colorful) {
@@ -118,6 +130,117 @@
 
 .copyButton:hover {
   color: var(--color-text);
+}
+
+.themeSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  border: solid 2px var(--color-border-control);
+  border-radius: 8px;
+  background-color: var(--color-select);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  text-align: left;
+  transition:
+    border-color 0.1s,
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.themeSelector:hover {
+  border-color: hsl(0deg 0% 70%);
+}
+
+.themeSelectorName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.themeSelectorChevron {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+/* Sits left of the modal; .dialog lets .modal-content overflow */
+.themePanel {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 12px);
+  width: max-content;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.themePanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-weight: 550;
+}
+
+.themeList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.themeOption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: none;
+  color: var(--color-text);
+  font-size: 0.875rem;
+  text-align: left;
+  transition:
+    background-color 0.1s,
+    border-color 0.1s;
+}
+
+.themeOption:hover {
+  background-color: var(--color-surface-active);
+}
+
+/* Matches react-select's default selected-option blue (season/worksheet dropdowns) */
+.themeOptionSelected {
+  border-color: #2684ff;
+}
+
+.themeSwatches {
+  display: flex;
+  gap: 4px;
+}
+
+.themeSwatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+/* No room beside the modal, so cover it instead */
+@media (max-width: calc(992px - 0.5px)) {
+  .themePanel {
+    inset: 0;
+    width: auto;
+    max-height: none;
+
+    /* Above react-colorful's pointers, which go up to z-index 3 */
+    z-index: 4;
+  }
 }
 
 .eventPreview {

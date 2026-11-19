@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
+import clsx from 'clsx';
 import {
+  CloseButton,
   Overlay,
   Popover,
   Tooltip,
@@ -10,7 +12,7 @@ import {
   Dropdown,
 } from 'react-bootstrap';
 import { FaEllipsisH } from 'react-icons/fa';
-import { FaCheck, FaRegCopy } from 'react-icons/fa6';
+import { FaCheck, FaChevronLeft, FaRegCopy } from 'react-icons/fa6';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
@@ -22,7 +24,7 @@ import { updateWorksheetCourses } from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
-import { worksheetColors } from '../../utilities/constants';
+import { colorThemes, type ColorThemeId } from '../../utilities/constants';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
 
@@ -142,20 +144,33 @@ export function ColorPickerModal({
   readonly onClose: () => void;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber, openColorPickerEvent } =
-    useStore(
-      useShallow((state) => ({
-        viewedSeason: state.viewedSeason,
-        viewedWorksheetNumber: state.viewedWorksheetNumber,
-        openColorPickerEvent: state.openColorPickerEvent,
-      })),
-    );
+  const {
+    viewedSeason,
+    viewedWorksheetNumber,
+    openColorPickerEvent,
+    colorThemeId,
+    setColorThemeId,
+  } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      openColorPickerEvent: state.openColorPickerEvent,
+      colorThemeId: state.colorThemeId,
+      setColorThemeId: state.setColorThemeId,
+    })),
+  );
   const [newColor, setNewColor] = useState<string | undefined>(undefined);
+  const [themePanelOpen, setThemePanelOpen] = useState(false);
 
   if (!openColorPickerEvent) return null;
 
+  // A persisted id may no longer exist if themes are renamed or removed
+  const theme =
+    colorThemes.find((t) => t.id === colorThemeId) ?? colorThemes[0];
+
   const handleClose = () => {
     setNewColor(undefined);
+    setThemePanelOpen(false);
     onClose();
   };
 
@@ -172,6 +187,10 @@ export function ColorPickerModal({
         <Picker
           color={newColor ?? openColorPickerEvent.color}
           setColor={setNewColor}
+          presetColors={theme.colors}
+          themeName={theme.name}
+          themePanelOpen={themePanelOpen}
+          onToggleThemePanel={() => setThemePanelOpen((open) => !open)}
         />
         <Preview
           event={openColorPickerEvent}
@@ -201,6 +220,13 @@ export function ColorPickerModal({
           Save
         </Button>
       </Modal.Footer>
+      {themePanelOpen && (
+        <ThemePanel
+          selectedId={theme.id}
+          onSelect={setColorThemeId}
+          onClose={() => setThemePanelOpen(false)}
+        />
+      )}
     </Modal>
   );
 }
@@ -347,29 +373,99 @@ function ColorInput({
 function Picker({
   color,
   setColor,
+  presetColors,
+  themeName,
+  themePanelOpen,
+  onToggleThemePanel,
 }: {
   readonly color: string;
   readonly setColor: (newColor: string) => void;
+  readonly presetColors: readonly string[];
+  readonly themeName: string;
+  readonly themePanelOpen: boolean;
+  readonly onToggleThemePanel: () => void;
 }) {
   return (
     <div className={styles.pickerPanel}>
-      <HexColorPicker color={color} onChange={setColor} />
-      <ColorInput color={color} setColor={setColor} />
-      <div className={styles.presetColors}>
-        {worksheetColors.map((presetColor) => (
-          <button
-            type="button"
-            key={presetColor}
-            className={styles.presetColor}
-            style={{ background: presetColor }}
-            onClick={() => {
-              setColor(presetColor);
-            }}
-            aria-label={`Set color to ${presetColor}`}
-          />
-        ))}
+      <div className={styles.pickerSection}>
+        <HexColorPicker color={color} onChange={setColor} />
+        <ColorInput color={color} setColor={setColor} />
+      </div>
+      <hr className={styles.pickerDivider} />
+      <div className={styles.pickerSection}>
+        <div className={styles.presetColors}>
+          {presetColors.map((presetColor) => (
+            <button
+              type="button"
+              key={presetColor}
+              className={styles.presetColor}
+              style={{ background: presetColor }}
+              onClick={() => {
+                setColor(presetColor);
+              }}
+              aria-label={`Set color to ${presetColor}`}
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          className={styles.themeSelector}
+          onClick={onToggleThemePanel}
+          aria-expanded={themePanelOpen}
+          aria-label={`Color theme: ${themeName}`}
+        >
+          <FaChevronLeft className={styles.themeSelectorChevron} />
+          <span className={styles.themeSelectorName}>{themeName}</span>
+        </button>
       </div>
     </div>
+  );
+}
+
+function ThemePanel({
+  selectedId,
+  onSelect,
+  onClose,
+}: {
+  readonly selectedId: ColorThemeId;
+  readonly onSelect: (id: ColorThemeId) => void;
+  readonly onClose: () => void;
+}) {
+  return (
+    <section className={styles.themePanel} aria-label="Color themes">
+      <div className={styles.themePanelHeader}>
+        <span>Themes</span>
+        <CloseButton onClick={onClose} aria-label="Close themes" />
+      </div>
+      <div className={styles.themeList}>
+        {colorThemes.map((theme) => (
+          <button
+            type="button"
+            key={theme.id}
+            className={clsx(
+              styles.themeOption,
+              theme.id === selectedId && styles.themeOptionSelected,
+            )}
+            onClick={() => onSelect(theme.id)}
+            aria-pressed={theme.id === selectedId}
+          >
+            <span>{theme.name}</span>
+            <span className={styles.themeSwatches}>
+              {/* Every other color gives a spread of both rows */}
+              {theme.colors
+                .filter((_, i) => i % 2 === 0)
+                .map((c) => (
+                  <span
+                    key={c}
+                    className={styles.themeSwatch}
+                    style={{ background: c }}
+                  />
+                ))}
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
   );
 }
 
