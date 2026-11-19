@@ -498,6 +498,41 @@ export const colorThemes = [
       '#d6d2c4',
     ],
   },
+  {
+    // Shades of Yale blue, light to dark
+    id: 'bowwowwow',
+    name: 'Bow Wow Wow',
+    colors: [
+      '#7fa9d9',
+      '#5d90cc',
+      '#3f78bd',
+      '#286dc0',
+      '#1f5ca8',
+      '#174b8f',
+      '#0f4079',
+      '#00356b',
+      '#002d5c',
+      '#00264d',
+    ],
+  },
+  {
+    // Light end stays dark enough for white text, dark end stays visible in
+    // dark mode
+    id: 'greyscale',
+    name: 'Greyscale',
+    colors: [
+      '#a3a3a3',
+      '#989898',
+      '#8c8c8c',
+      '#808080',
+      '#747474',
+      '#686868',
+      '#5d5d5d',
+      '#525252',
+      '#474747',
+      '#3d3d3d',
+    ],
+  },
 ] as const;
 
 export type ColorThemeId = (typeof colorThemes)[number]['id'];

@@ -195,9 +195,9 @@
 
 .themeOption {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   width: 100%;
   padding: 0.5rem 0.625rem;
   border: 2px solid var(--color-border);
@@ -240,7 +240,7 @@
 }
 
 /* No room beside the modal, so cover it instead */
-@media (max-width: calc(992px - 0.5px)) {
+@media (max-width: calc(1200px - 0.5px)) {
   .themePanel {
     inset: 0;
     width: auto;
