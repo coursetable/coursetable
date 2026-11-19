@@ -10,6 +10,7 @@ import {
   Button,
   DropdownButton,
   Dropdown,
+  Form,
 } from 'react-bootstrap';
 import { FaEllipsisH } from 'react-icons/fa';
 import { FaCheck, FaChevronLeft, FaRegCopy } from 'react-icons/fa6';
@@ -24,6 +25,7 @@ import { updateWorksheetCourses } from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
+import { isCustomColor, mapColorsToTheme } from '../../utilities/colorTheme';
 import { colorThemes, type ColorThemeId } from '../../utilities/constants';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
@@ -147,6 +149,7 @@ export function ColorPickerModal({
   const {
     viewedSeason,
     viewedWorksheetNumber,
+    courses,
     openColorPickerEvent,
     colorThemeId,
     setColorThemeId,
@@ -154,6 +157,7 @@ export function ColorPickerModal({
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
+      courses: state.courses,
       openColorPickerEvent: state.openColorPickerEvent,
       colorThemeId: state.colorThemeId,
       setColorThemeId: state.setColorThemeId,
@@ -172,6 +176,44 @@ export function ColorPickerModal({
     setNewColor(undefined);
     setThemePanelOpen(false);
     onClose();
+  };
+
+  const applyThemeToAll = async (options: ApplyThemeOptions) => {
+    const targets = courses.filter(
+      (course) =>
+        (options.includeHidden || !course.hidden) &&
+        (options.overrideCustom || !isCustomColor(course.color)),
+    );
+    const colorMap = mapColorsToTheme(
+      targets.map((course) => course.color),
+      theme.colors,
+    );
+    const updates = targets
+      .map((course) => ({
+        course,
+        color: colorMap.get(course.color.toLowerCase())!,
+      }))
+      .filter(
+        ({ course, color }) =>
+          course.color.toLowerCase() !== color.toLowerCase(),
+      );
+    if (updates.length > 0) {
+      const success = await updateWorksheetCourses(
+        updates.map(({ course, color }) => ({
+          action: 'update' as const,
+          season: viewedSeason,
+          crn: course.crn,
+          worksheetNumber: viewedWorksheetNumber,
+          color,
+        })),
+      );
+      if (!success) return;
+      await worksheetsRefresh();
+    }
+    toast.success(
+      `Applied ${theme.name} to ${targets.length} course${targets.length === 1 ? '' : 's'}`,
+    );
+    handleClose();
   };
 
   return (
@@ -224,6 +266,7 @@ export function ColorPickerModal({
         <ThemePanel
           selectedId={theme.id}
           onSelect={setColorThemeId}
+          onApplyToAll={applyThemeToAll}
           onClose={() => setThemePanelOpen(false)}
         />
       )}
@@ -422,15 +465,26 @@ function Picker({
   );
 }
 
+type ApplyThemeOptions = {
+  includeHidden: boolean;
+  overrideCustom: boolean;
+};
+
 function ThemePanel({
   selectedId,
   onSelect,
+  onApplyToAll,
   onClose,
 }: {
   readonly selectedId: ColorThemeId;
   readonly onSelect: (id: ColorThemeId) => void;
+  readonly onApplyToAll: (options: ApplyThemeOptions) => Promise<void>;
   readonly onClose: () => void;
 }) {
+  const [includeHidden, setIncludeHidden] = useState(false);
+  const [overrideCustom, setOverrideCustom] = useState(false);
+  const [applying, setApplying] = useState(false);
+
   return (
     <section className={styles.themePanel} aria-label="Color themes">
       <div className={styles.themePanelHeader}>
@@ -464,6 +518,33 @@ function ThemePanel({
             </span>
           </button>
         ))}
+      </div>
+      <div className={styles.themeApply}>
+        <Form.Check
+          type="switch"
+          id="theme-include-hidden-switch"
+          label="Include hidden courses"
+          checked={includeHidden}
+          onChange={(e) => setIncludeHidden(e.currentTarget.checked)}
+        />
+        <Form.Check
+          type="switch"
+          id="theme-override-custom-switch"
+          label="Override custom colors"
+          checked={overrideCustom}
+          onChange={(e) => setOverrideCustom(e.currentTarget.checked)}
+        />
+        <Button
+          variant="primary"
+          disabled={applying}
+          onClick={async () => {
+            setApplying(true);
+            await onApplyToAll({ includeHidden, overrideCustom });
+            setApplying(false);
+          }}
+        >
+          Apply to all
+        </Button>
       </div>
     </section>
   );
