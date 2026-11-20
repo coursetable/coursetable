@@ -92,7 +92,6 @@ async function updateWorksheetCourse(
           worksheets.season,
           worksheets.worksheetNumber,
         ],
-        // Reuse a concurrently created worksheet without changing its metadata.
         set: { worksheetNumber },
       })
       .returning({ id: worksheets.id });
@@ -141,13 +140,14 @@ async function updateWorksheetCourse(
     const numCoursesInCurWorksheet = courseCountRes[0]?.courseCount ?? 0;
     // Only implicitly delete the main worksheet if it's empty
     if (numCoursesInCurWorksheet === 0 && worksheetNumber === 0) {
-      await db.delete(worksheets).where(
-        and(
-          eq(worksheets.id, existingMeta.id),
-          // Recheck at deletion time to preserve concurrent commitment saves.
-          eq(worksheets.personalBlocks, []),
-        ),
-      );
+      await db
+        .delete(worksheets)
+        .where(
+          and(
+            eq(worksheets.id, existingMeta.id),
+            eq(worksheets.personalBlocks, []),
+          ),
+        );
     }
   } else {
     if (!existing) return 'NOT_BOOKMARKED';

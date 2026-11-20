@@ -225,10 +225,9 @@ export function hasPersonalBlockConflict(
   blocks: PersonalBlock[] = [],
   event: Pick<CourseRBCEvent, 'start' | 'end'>,
 ): boolean {
-  const start = toRangeTime(
-    `${event.start.getHours()}:${event.start.getMinutes()}`,
-  );
-  const end = toRangeTime(`${event.end.getHours()}:${event.end.getMinutes()}`);
+  const toRange = (date: Date) => date.getHours() * 12 + date.getMinutes() / 5;
+  const start = toRange(event.start);
+  const end = toRange(event.end);
   return blocks.some(
     (block) =>
       block.days.includes(event.start.getDay()) &&

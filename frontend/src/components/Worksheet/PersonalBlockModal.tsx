@@ -9,6 +9,8 @@ import {
   type PersonalBlock,
 } from '../../utilities/personalBlock';
 
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
 function PersonalBlockModal({
   block,
   blocks,
@@ -110,8 +112,10 @@ function PersonalBlockModal({
             <fieldset className="mb-3">
               <legend className="fs-6">Weekdays</legend>
               <div className="d-flex gap-2">
-                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(
-                  (day, index) => (
+                {WEEKDAYS.map((day, index) => {
+                  const value = index + 1;
+                  const selected = draft.days.includes(value);
+                  return (
                     <Button
                       key={day}
                       type="button"
@@ -119,29 +123,29 @@ function PersonalBlockModal({
                       style={{
                         width: 44,
                         height: 44,
-                        color: draft.days.includes(index + 1)
+                        color: selected
                           ? 'var(--color-text-dark)'
                           : 'var(--color-text)',
-                        backgroundColor: draft.days.includes(index + 1)
+                        backgroundColor: selected
                           ? 'var(--color-primary)'
                           : 'var(--color-surface)',
                         border: '1px solid var(--color-primary)',
                       }}
                       aria-label={day}
-                      aria-pressed={draft.days.includes(index + 1)}
+                      aria-pressed={selected}
                       onClick={() =>
                         setDraft({
                           ...draft,
-                          days: draft.days.includes(index + 1)
-                            ? draft.days.filter((value) => value !== index + 1)
-                            : [...draft.days, index + 1],
+                          days: selected
+                            ? draft.days.filter((d) => d !== value)
+                            : [...draft.days, value],
                         })
                       }
                     >
                       {day.slice(0, 3)}
                     </Button>
-                  ),
-                )}
+                  );
+                })}
               </div>
             </fieldset>
             {(['start', 'end'] as const).map((field) => (

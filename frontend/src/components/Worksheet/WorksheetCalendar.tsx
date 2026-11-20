@@ -214,7 +214,6 @@ function WorksheetCalendar({
       user: state.user,
     })),
   );
-  // Keep an open editor tied to the worksheet it was opened from.
   const worksheetKey = [
     user?.netId,
     viewedPerson,
@@ -458,9 +457,7 @@ function WorksheetCalendar({
         defaultView="work_week"
         views={['work_week']}
         events={displayEvents}
-        // Include commitments in the visible time range
         min={earliest}
-        // Latest event time or 6pm when empty
         max={latest}
         localizer={localizer}
         toolbar={false}

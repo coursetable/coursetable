@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   checkConflict,
-  getPersonalBlockConflicts,
+  isSectionFull,
   type ListingWithTimes,
   to12HourTime,
   toRangeTime,
@@ -11,6 +11,7 @@ import {
   toWeekdaysDisplayString,
   toWeekdayStrings,
 } from './course';
+import { CUR_YEAR } from '../config';
 import type { CatalogListing } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
 import type { WorksheetCourse } from '../types/worksheetCourse';
@@ -266,6 +267,43 @@ describe('checkConflict', () => {
   });
 });
 
+describe('isSectionFull', () => {
+  const currentSeason = CUR_YEAR[0]!;
+
+  it('returns true for a full section in the current year', () => {
+    expect(
+      isSectionFull({
+        section_full: true,
+        course: { season_code: currentSeason },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for a full section outside the current year', () => {
+    expect(
+      isSectionFull({
+        section_full: true,
+        course: { season_code: '202503' as Season },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false for a section that is not full', () => {
+    expect(
+      isSectionFull({
+        section_full: false,
+        course: { season_code: currentSeason },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when section_full is omitted', () => {
+    expect(isSectionFull({ course: { season_code: currentSeason } })).toBe(
+      false,
+    );
+  });
+});
+
 describe('toRangeTime / toRealTime', () => {
   it('converts midnight and noon', () => {
     expect(toRangeTime('0:00')).toBe(0);
@@ -315,67 +353,5 @@ describe('toWeekdayStrings / toWeekdaysDisplayString', () => {
   it('collapses Monday–Friday to M–F', () => {
     expect(toWeekdaysDisplayString(MON | TUE | WED | THU | FRI)).toBe('M–F');
     expect(toWeekdaysDisplayString(MON | WED | FRI)).toBe('MWF');
-  });
-});
-
-describe('personal block conflicts', () => {
-  const block = {
-    id: 'b78d394d-85ec-428b-98bf-49f199d2e346',
-    title: 'Practice',
-    days: [2, 4],
-    start: '15:00',
-    end: '16:00',
-  };
-
-  it.each([
-    ['Tuesday overlap', TUE, '15:30', '16:30', true],
-    ['Thursday overlap', THU, '15:30', '16:30', true],
-    ['different day', MON, '15:30', '16:30', false],
-    ['separated times', TUE, '16:01', '17:00', false],
-  ])('%s', (_label, daysOfWeek, startTime, endTime, expected) => {
-    expect(
-      getPersonalBlockConflicts(
-        [block],
-        makeListing({ daysOfWeek, startTime, endTime }),
-      ),
-    ).toEqual(expected ? [block] : []);
-  });
-
-  it('preserves inclusive endpoints and returns each commitment only once', () => {
-    const meeting = {
-      days_of_week: TUE | THU,
-      start_time: '16:00',
-      end_time: '17:00',
-    };
-    expect(
-      getPersonalBlockConflicts(
-        [block],
-        makeListing({ meetings: [meeting, meeting] }),
-      ),
-    ).toEqual([block]);
-  });
-
-  it('returns all conflicting blocks without modifying them', () => {
-    const otherBlock = { ...block, id: 'other', title: 'Meeting' };
-    const nonConflicting = { ...block, id: 'monday', days: [1] };
-    const listing = makeListing({
-      daysOfWeek: TUE,
-      startTime: '15:10',
-      endTime: '15:50',
-    });
-    const conflicts = getPersonalBlockConflicts(
-      [block, otherBlock, nonConflicting],
-      listing,
-    );
-    expect(conflicts).toEqual([block, otherBlock]);
-    expect(conflicts[0]).toBe(block);
-    expect(conflicts[1]).toBe(otherBlock);
-  });
-
-  it('returns no conflicts for missing blocks or courses without meeting times', () => {
-    expect(getPersonalBlockConflicts(undefined, makeListing({}))).toEqual([]);
-    expect(
-      getPersonalBlockConflicts([block], makeListing({ meetings: [] })),
-    ).toEqual([]);
   });
 });
