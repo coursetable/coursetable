@@ -65,8 +65,46 @@
   transform: scale(1.15);
 }
 
-.button :global(.dropdown-menu) {
-  min-width: 20rem !important;
+.exportCalendarDropdown :global(.dropdown-menu) {
+  box-sizing: border-box;
+  width: 20rem;
+  max-width: min(20rem, calc(100vw - 1.5rem));
+  min-width: 20rem;
+  max-height: none;
+  height: auto;
+  overflow: visible;
+  padding: 0;
+}
+
+.exportCalendarDropdown :global(.dropdown-item) {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  border-radius: 0;
+}
+
+.exportCalendarDropdown :global(.dropdown-item) button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.55rem 1rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  border-radius: 0;
+}
+
+.exportCalendarDropdown :global(.dropdown-item):hover,
+.exportCalendarDropdown :global(.dropdown-item):focus-within {
+  background-color: var(--color-surface-hover);
+}
+
+.exportCalendarDropdown :global(.dropdown-item) button:hover,
+.exportCalendarDropdown :global(.dropdown-item) button:focus-visible {
+  color: inherit;
 }
 
 .importRow {
