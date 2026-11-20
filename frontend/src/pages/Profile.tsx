@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { Button, Card, Form, Spinner, Tab, Tabs } from 'react-bootstrap';
@@ -12,7 +7,6 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import { useApolloClient } from '@apollo/client';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
-import GamesSection from '../components/Profile/GamesSection';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { LinkLikeText, TextComponent } from '../components/Typography';
@@ -40,6 +34,7 @@ const PROFILE_TAB_KEYS = [
   'overview',
   'settings',
   'wishlist',
+  'tutorial',
   'advanced',
 ] as const;
 type ProfileTabKey = (typeof PROFILE_TAB_KEYS)[number];
@@ -52,6 +47,7 @@ function tabParamToActiveKey(tabParam: string | null): ProfileTabKey {
   if (tabParam === 'overview') return 'overview';
   if (tabParam === 'settings') return 'settings';
   if (tabParam === 'wishlist') return 'wishlist';
+  if (tabParam === 'tutorial') return 'tutorial';
   if (tabParam === 'advanced') return 'advanced';
   return 'overview';
 }
@@ -60,6 +56,7 @@ function activeKeyToTabParam(key: ProfileTabKey): string | null {
   if (key === 'overview') return null;
   if (key === 'settings') return 'settings';
   if (key === 'wishlist') return 'wishlist';
+  if (key === 'tutorial') return 'tutorial';
   return 'advanced';
 }
 
@@ -161,7 +158,6 @@ function Profile() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTabKey = tabParamToActiveKey(searchParams.get('tab'));
-  const { hash, key: locationKey } = useLocation();
 
   const handleProfileTabSelect = (key: string | null) => {
     if (key === null || !isProfileTabKey(key)) return;
@@ -212,14 +208,6 @@ function Profile() {
   useEffect(() => {
     if (wishlistError) Sentry.captureException(wishlistError);
   }, [wishlistError]);
-
-  useEffect(() => {
-    const id = hash.slice(1);
-    if (!id || !currentUser) return;
-    document
-      .getElementById(id)
-      ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }, [hash, locationKey, currentUser]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -673,19 +661,6 @@ function Profile() {
                 </Card.Body>
               </Card>
             </div>
-
-            <Card className={clsx(styles.profileCard, 'mt-3')}>
-              <Card.Body className={styles.cardBody}>
-                <section id="games" className={styles.settingsSection}>
-                  <TextComponent className={styles.settingsSectionTitle}>
-                    Games
-                  </TextComponent>
-                  <div className={styles.settingsSectionFields}>
-                    <GamesSection />
-                  </div>
-                </section>
-              </Card.Body>
-            </Card>
           </div>
         </Tab>
         <Tab eventKey="settings" title="Settings">
@@ -879,32 +854,42 @@ function Profile() {
             </Card>
           </div>
         </Tab>
+        <Tab eventKey="tutorial" title="Tutorial">
+          <div className={styles.tabContent}>
+            <Card className={styles.profileCard}>
+              <Card.Body className={styles.cardBody}>
+                <h3 className={styles.sectionTitle}>Tutorial</h3>
+                <div className={styles.settingsRow}>
+                  <div className={styles.settingText}>
+                    <TextComponent>Replay the tutorial</TextComponent>
+                    <TextComponent type="secondary">
+                      {isMobile || isTablet
+                        ? 'The tutorial walks through the catalog and worksheet, and is only available on desktop.'
+                        : 'Walks you through the catalog and worksheet again.'}
+                    </TextComponent>
+                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className={styles.settingsButton}
+                    disabled={isMobile || isTablet}
+                    onClick={() => {
+                      toggleTutorial(true);
+                      void navigate(createCatalogLink());
+                    }}
+                  >
+                    Start tutorial
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+        </Tab>
         <Tab eventKey="advanced" title="Advanced">
           <div className={styles.tabContent}>
             <Card className={styles.profileCard}>
               <Card.Body className={styles.cardBody}>
                 <h3 className={styles.sectionTitle}>Advanced Settings</h3>
-                {!isMobile && !isTablet && (
-                  <div className={styles.settingsRow}>
-                    <div className={styles.settingText}>
-                      <TextComponent>Replay the tutorial</TextComponent>
-                      <TextComponent type="secondary">
-                        Walks you through the catalog and worksheet again.
-                      </TextComponent>
-                    </div>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      className={styles.settingsButton}
-                      onClick={() => {
-                        toggleTutorial(true);
-                        void navigate(createCatalogLink());
-                      }}
-                    >
-                      Start tutorial
-                    </Button>
-                  </div>
-                )}
                 <div className={styles.settingsRow}>
                   <div className={styles.settingText}>
                     <TextComponent>Clear cached catalog data</TextComponent>

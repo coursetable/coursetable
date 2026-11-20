@@ -118,11 +118,11 @@ function DropdownContent({
           </DropdownItem>
           {authStatus === 'authenticated' && (
             <DropdownItem icon={FcBusinessman} to="/profile">
-              Profile (beta)
+              Profile
             </DropdownItem>
           )}
           {authStatus === 'authenticated' && (
-            <DropdownItem icon={GiConsoleController} to="/profile#games">
+            <DropdownItem icon={GiConsoleController} to="/games">
               Games
             </DropdownItem>
           )}

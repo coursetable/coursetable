@@ -82,3 +82,29 @@
 .cardDisabled:hover {
   border-style: dashed;
 }
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.header {
+  font-weight: 600;
+  font-size: 25px;
+  margin: 0 0 1.5rem;
+  text-align: center;
+  transition: color var(--trans-dur);
+}
+
+.panel {
+  background-color: var(--color-surface);
+  transition:
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.cardBody {
+  padding: 1.5rem;
+}
