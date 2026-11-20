@@ -145,8 +145,6 @@ function Profile() {
     useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingSettings, setSavingSettings] = useState(false);
-  // Last settings the server confirmed, to fall back on if a save fails and
-  // the state can't be re-read either
   const lastConfirmed = useRef<ProfileSettings | null>(null);
   const [revokingEvals, setRevokingEvals] = useState(false);
   const [revokeArmed, setRevokeArmed] = useState(false);
@@ -360,8 +358,6 @@ function Profile() {
         applySettings(updated);
         return;
       }
-      // Offline, both requests fail; without this the control would keep
-      // showing a change the server never accepted
       const stored = (await getMyProfile()) ?? lastConfirmed.current;
       if (stored) applySettings(stored);
     } finally {
