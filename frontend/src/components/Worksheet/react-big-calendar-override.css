@@ -88,6 +88,16 @@
   z-index: 2;
 }
 
+.rbc-day-slot .rbc-event:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.rbc-day-slot .rbc-event.rbc-event-overlap-primary .rbc-event-content {
+  overflow: hidden;
+  word-break: normal;
+}
+
 .rbc-event-label {
   display: none !important;
 }

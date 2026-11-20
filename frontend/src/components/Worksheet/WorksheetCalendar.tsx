@@ -11,6 +11,7 @@ import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 import CalendarEvent, {
+  BigCalendarGhostFocusWrapper,
   type WalkModalInteraction,
   useEventStyle,
 } from './CalendarEvent';
@@ -25,6 +26,9 @@ import {
   type CourseRBCEvent,
   type WalkBefore,
 } from '../../utilities/calendar';
+import stackConcurrentSlotLayout, {
+  attachOverlapClusters,
+} from '../../utilities/calendarStackLayout';
 import {
   getBuildingCodeFromLocation,
   getWalkingMinutes,
@@ -34,6 +38,23 @@ import './react-big-calendar-override.css';
 const MAX_WALK_GAP_MINUTES = 30;
 const WALK_MODAL_SELECT_SUPPRESSION_MS = 350;
 const WALK_MODAL_CLOSE_SUPPRESSION_MS = 600;
+
+const RBC_EVENT_WRAP_STYLE = {
+  display: 'flex' as const,
+  flexDirection: 'column' as const,
+  height: '100%',
+};
+
+function promoteWalkBeforeToStackedPrimaries(events: CourseRBCEvent[]) {
+  for (const e of events) {
+    const cluster = e.overlapCluster;
+    if (!cluster || cluster.peers.length < 2) continue;
+    const [primary] = cluster.peers;
+    if (!primary || primary.walkBefore) continue;
+    const donor = cluster.peers.find((p) => p.walkBefore);
+    if (donor?.walkBefore) primary.walkBefore = donor.walkBefore;
+  }
+}
 
 type WorksheetCalendarProps = {
   readonly showWalkingTimes?: boolean;
@@ -254,11 +275,16 @@ function WorksheetCalendar({
   }, [parsedCourses]);
 
   const displayEvents = useMemo(() => {
-    if (!showWalkingTimes || walkBeforeByKey.size === 0) return parsedCourses;
-    return parsedCourses.map((event) => {
-      const walkBefore = walkBeforeByKey.get(eventKey(event));
-      return walkBefore ? { ...event, walkBefore } : event;
-    });
+    const withWalk =
+      showWalkingTimes && walkBeforeByKey.size > 0
+        ? parsedCourses.map((event) => {
+            const walkBefore = walkBeforeByKey.get(eventKey(event));
+            return walkBefore ? { ...event, walkBefore } : event;
+          })
+        : parsedCourses;
+    const clustered = attachOverlapClusters(withWalk);
+    promoteWalkBeforeToStackedPrimaries(clustered);
+    return clustered;
   }, [parsedCourses, showWalkingTimes, walkBeforeByKey]);
   const suppressSelectEventUntilRef = useRef(0);
   const walkModalOpenRef = useRef(false);
@@ -290,24 +316,66 @@ function WorksheetCalendar({
     },
     [armSelectSuppression],
   );
+  const openCourseModal = useCallback(
+    (course: CourseRBCEvent) => {
+      setSearchParams((prev) => {
+        prev.set(
+          'course-modal',
+          `${course.listing.course.season_code}-${course.listing.crn}`,
+        );
+        return prev;
+      });
+    },
+    [setSearchParams],
+  );
+  const handlePickFromStack = useCallback(
+    (picked: CourseRBCEvent, clickEvent: SyntheticEvent) => {
+      clickEvent.stopPropagation();
+      if (walkModalOpenRef.current) return;
+      if (Date.now() < suppressSelectEventUntilRef.current) return;
+      setSelectedEvent(picked);
+      openCourseModal(picked);
+    },
+    [openCourseModal],
+  );
+  const calendarSelected = useMemo(() => {
+    if (!selectedEvent) return null;
+    const { overlapCluster } = selectedEvent;
+    if (!overlapCluster || overlapCluster.peers.length < 2)
+      return selectedEvent;
+    return overlapCluster.peers[0] ?? selectedEvent;
+  }, [selectedEvent]);
   const calendarComponents = useMemo(
     () => ({
-      event: ({ event }: { readonly event: CourseRBCEvent }) => (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-          }}
-        >
-          <CalendarEvent
-            event={event}
-            onWalkModalInteraction={suppressCalendarEventSelection}
-          />
-        </div>
-      ),
+      eventWrapper: BigCalendarGhostFocusWrapper,
+      event({ event }: { readonly event: CourseRBCEvent }) {
+        const cluster = event.overlapCluster;
+        if (cluster && cluster.peers.length > 1 && cluster.index > 0)
+          return <div style={RBC_EVENT_WRAP_STYLE} aria-hidden />;
+
+        if (cluster && cluster.peers.length > 1 && cluster.index === 0) {
+          return (
+            <div style={RBC_EVENT_WRAP_STYLE}>
+              <CalendarEvent
+                event={event}
+                stackPeers={cluster.peers}
+                onPickStackCourse={handlePickFromStack}
+                onWalkModalInteraction={suppressCalendarEventSelection}
+              />
+            </div>
+          );
+        }
+        return (
+          <div style={RBC_EVENT_WRAP_STYLE}>
+            <CalendarEvent
+              event={event}
+              onWalkModalInteraction={suppressCalendarEventSelection}
+            />
+          </div>
+        );
+      },
     }),
-    [suppressCalendarEventSelection],
+    [handlePickFromStack, suppressCalendarEventSelection],
   );
   useEffect(() => {
     if (!selectedEvent) return;
@@ -355,19 +423,13 @@ function WorksheetCalendar({
         return;
       }
       setSelectedEvent(event);
-      setSearchParams((prev) => {
-        prev.set(
-          'course-modal',
-          `${event.listing.course.season_code}-${event.listing.crn}`,
-        );
-        return prev;
-      });
+      openCourseModal(event);
     },
-    [setSearchParams],
+    [openCourseModal],
   );
   return (
     <>
-      <Calendar
+      <Calendar<CourseRBCEvent>
         // Show Mon-Fri
         defaultView="work_week"
         views={['work_week']}
@@ -379,10 +441,11 @@ function WorksheetCalendar({
         localizer={localizer}
         toolbar={false}
         showCurrentTimeIndicator
-        selected={selectedEvent}
+        selected={calendarSelected}
         onSelectEvent={handleSelectEvent}
         components={calendarComponents}
         eventPropGetter={eventStyleGetter}
+        dayLayoutAlgorithm={stackConcurrentSlotLayout}
         tooltipAccessor={undefined}
       />
       <ColorPickerModal onClose={() => setOpenColorPickerEvent(null)} />
