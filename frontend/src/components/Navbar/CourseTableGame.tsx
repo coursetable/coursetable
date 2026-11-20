@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { Modal } from 'react-bootstrap';
 import confetti from 'canvas-confetti';
+import chroma from 'chroma-js';
 import { toast } from 'sonner';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
@@ -15,6 +16,8 @@ import styles from './CourseTableGame.module.css';
 const NUM_ROUNDS = 10;
 const ROUND_TIME_MS = 10_000;
 const TIMER_TICK_MS = 100;
+
+const timerColormap = chroma.scale(['#f8696b', '#ffeb84']).domain([0, 0.4]);
 
 type GamePair = [CatalogListing, CatalogListing];
 
@@ -332,9 +335,9 @@ export default function CourseTableGame({
           <div className={styles.gameTitle}>This-or-That</div>
           <div className={styles.gameSubtitleSmall}>a CourseTable game</div>
           <div className={styles.gameSubtitle}>
-            10 comparisons: pick the course with the higher workload rating.
-            <br />
-            10 seconds a round, and it gets harder as the game continues.
+            Pick the course with the higher workload rating. Think fast; you
+            only have ten seconds! There are 10 rounds, and later ones get
+            harder.
           </div>
           <button type="button" className={styles.playBtn} onClick={startGame}>
             Play
@@ -360,6 +363,9 @@ export default function CourseTableGame({
 
         return idx === higherIdx ? 'correct' : 'other';
       };
+      const timerLeft =
+        (timer.round === roundIndex ? timer.leftMs : ROUND_TIME_MS) /
+        ROUND_TIME_MS;
 
       return (
         <>
@@ -378,7 +384,11 @@ export default function CourseTableGame({
             <div
               className={styles.timerFill}
               style={{
-                width: `${((timer.round === roundIndex ? timer.leftMs : ROUND_TIME_MS) / ROUND_TIME_MS) * 100}%`,
+                width: `${timerLeft * 100}%`,
+                backgroundColor:
+                  timerLeft > 0.4
+                    ? 'var(--color-primary)'
+                    : timerColormap(timerLeft).css(),
               }}
             />
           </div>

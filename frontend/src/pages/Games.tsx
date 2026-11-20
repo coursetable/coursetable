@@ -30,7 +30,7 @@ export default function Games() {
       id: 'this-or-that',
       title: 'This-or-That',
       description:
-        'Two Yale courses, one question: which one has the heavier workload? Play ten rounds against course evaluations.',
+        'Can you figure out which of two Yale courses has the heavier workload?',
       icon: GiScales,
       status: 'available',
       cta: 'Play',
