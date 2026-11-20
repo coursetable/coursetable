@@ -11,12 +11,17 @@ import {
 } from './user.utils.js';
 
 import {
+  colorThemes,
   studentBluebookSettings,
   worksheetCourses,
   worksheets,
   wishlistCourses,
 } from '../../drizzle/schema.js';
+import { ensureColorThemesSeeded } from '../colorThemes/colorThemes.utils.js';
 import { db, graphqlClient } from '../config.js';
+
+// Position in the worksheet's theme; null for a custom color
+const ColorIndexSchema = z.number().int().min(0).max(9).nullable();
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
   z.object({
@@ -28,6 +33,7 @@ const UpdateWorksheetCourseReqItemSchema = z.intersection(
     z.object({
       action: z.literal('add'),
       color: z.string().refine((val) => chroma.valid(val)),
+      colorIndex: ColorIndexSchema.optional(),
       hidden: z.boolean(),
     }),
     z.object({
@@ -46,6 +52,7 @@ const UpdateWorksheetCourseReqItemSchema = z.intersection(
         .string()
         .refine((val) => chroma.valid(val))
         .optional(),
+      colorIndex: ColorIndexSchema.optional(),
       hidden: z.boolean().optional(),
     }),
   ]),
@@ -57,16 +64,17 @@ const UpdateWorksheetCoursesReqBodySchema = z.union([
 ]);
 
 async function updateWorksheetCourse(
-  {
-    action,
-    season,
-    crn,
-    worksheetNumber,
-    color,
-    hidden,
-  }: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
+  body: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
   netId: string,
 ): Promise<string | undefined> {
+  const { action, season, crn, worksheetNumber, color, hidden } = body;
+  // A color sent without a position (e.g. from an older client) is custom
+  const colorIndex =
+    'colorIndex' in body && body.colorIndex !== undefined
+      ? body.colorIndex
+      : color === undefined
+        ? undefined
+        : null;
   let existingMeta = await db.query.worksheets.findFirst({
     where: and(
       eq(worksheets.netId, netId),
@@ -105,6 +113,7 @@ async function updateWorksheetCourse(
         worksheetId: existingMeta.id,
         crn,
         color,
+        colorIndex,
         hidden,
       })
       .onConflictDoNothing({
@@ -136,7 +145,7 @@ async function updateWorksheetCourse(
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      .set({ color, hidden })
+      .set({ color, colorIndex, hidden })
       .where(
         and(
           eq(worksheetCourses.worksheetId, existingMeta.id),
@@ -225,6 +234,7 @@ export const getUserWorksheet = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
+  await ensureColorThemesSeeded(netId);
   const userWorksheets = await db.query.worksheets.findMany({
     where: eq(worksheets.netId, netId),
     columns: {
@@ -233,13 +243,14 @@ export const getUserWorksheet = async (
       worksheetNumber: true,
       name: true,
       private: true,
-      colorTheme: true,
+      colorThemeId: true,
     },
     with: {
       courses: {
         columns: {
           crn: true,
           color: true,
+          colorIndex: true,
           hidden: true,
         },
       },
@@ -315,7 +326,7 @@ const SetColorThemeWorksheetSchema = z.object({
   action: z.literal('setColorTheme'),
   season: z.string().transform((val) => parseInt(val, 10)),
   worksheetNumber: z.number().int().min(0),
-  colorTheme: z.string().max(32),
+  colorThemeId: z.number().int().positive(),
 });
 
 const UpdateWorksheetMetadataSchema = z.union([
@@ -419,11 +430,23 @@ export const updateWorksheetMetadata = async (
     }
     res.sendStatus(200);
   } else if (action === 'setColorTheme') {
-    const { worksheetNumber, colorTheme } = bodyParseRes.data;
+    const { worksheetNumber, colorThemeId } = bodyParseRes.data;
+
+    const theme = await db.query.colorThemes.findFirst({
+      where: and(
+        eq(colorThemes.id, colorThemeId),
+        eq(colorThemes.netId, netId),
+      ),
+      columns: { id: true },
+    });
+    if (!theme) {
+      res.status(400).json({ error: 'THEME_NOT_FOUND' });
+      return;
+    }
 
     const updatedWorksheets = await db
       .update(worksheets)
-      .set({ colorTheme })
+      .set({ colorThemeId })
       .where(
         and(
           eq(worksheets.netId, netId),
