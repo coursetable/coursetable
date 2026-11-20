@@ -247,7 +247,9 @@ function Tutorial() {
         </Button>
       }
       prevButton={
-        currentStep === 0 ? null : (
+        currentStep === 0 ? (
+          <span />
+        ) : (
           <Button
             className={styles.prevButton}
             style={{

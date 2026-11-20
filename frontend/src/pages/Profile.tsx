@@ -34,7 +34,6 @@ const PROFILE_TAB_KEYS = [
   'overview',
   'settings',
   'wishlist',
-  'tutorial',
   'advanced',
 ] as const;
 type ProfileTabKey = (typeof PROFILE_TAB_KEYS)[number];
@@ -47,7 +46,6 @@ function tabParamToActiveKey(tabParam: string | null): ProfileTabKey {
   if (tabParam === 'overview') return 'overview';
   if (tabParam === 'settings') return 'settings';
   if (tabParam === 'wishlist') return 'wishlist';
-  if (tabParam === 'tutorial') return 'tutorial';
   if (tabParam === 'advanced') return 'advanced';
   return 'overview';
 }
@@ -56,7 +54,6 @@ function activeKeyToTabParam(key: ProfileTabKey): string | null {
   if (key === 'overview') return null;
   if (key === 'settings') return 'settings';
   if (key === 'wishlist') return 'wishlist';
-  if (key === 'tutorial') return 'tutorial';
   return 'advanced';
 }
 
@@ -854,17 +851,17 @@ function Profile() {
             </Card>
           </div>
         </Tab>
-        <Tab eventKey="tutorial" title="Tutorial">
+        <Tab eventKey="advanced" title="Advanced">
           <div className={styles.tabContent}>
             <Card className={styles.profileCard}>
               <Card.Body className={styles.cardBody}>
-                <h3 className={styles.sectionTitle}>Tutorial</h3>
+                <h3 className={styles.sectionTitle}>Advanced Settings</h3>
                 <div className={styles.settingsRow}>
                   <div className={styles.settingText}>
                     <TextComponent>Replay the tutorial</TextComponent>
                     <TextComponent type="secondary">
                       {isMobile || isTablet
-                        ? 'The tutorial walks through the catalog and worksheet, and is only available on desktop.'
+                        ? 'The tutorial covers the catalog and worksheet, and is only available on desktop.'
                         : 'Walks you through the catalog and worksheet again.'}
                     </TextComponent>
                   </div>
@@ -881,15 +878,6 @@ function Profile() {
                     Start tutorial
                   </Button>
                 </div>
-              </Card.Body>
-            </Card>
-          </div>
-        </Tab>
-        <Tab eventKey="advanced" title="Advanced">
-          <div className={styles.tabContent}>
-            <Card className={styles.profileCard}>
-              <Card.Body className={styles.cardBody}>
-                <h3 className={styles.sectionTitle}>Advanced Settings</h3>
                 <div className={styles.settingsRow}>
                   <div className={styles.settingText}>
                     <TextComponent>Clear cached catalog data</TextComponent>
