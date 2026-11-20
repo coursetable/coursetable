@@ -897,7 +897,7 @@ function Profile() {
                   </Button>
                 </div>
                 {currentUser.hasEvals && (
-                  <div className={clsx(styles.settingsRow, styles.dangerRow)}>
+                  <div className={styles.settingsRow}>
                     <div className={styles.settingText}>
                       <TextComponent>Revoke evaluations access</TextComponent>
                       <TextComponent type="secondary">

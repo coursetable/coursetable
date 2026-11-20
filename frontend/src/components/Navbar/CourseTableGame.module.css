@@ -351,14 +351,8 @@
   font-size: 2.75rem;
   font-weight: 700;
   line-height: 1;
-  margin: 0.25rem 0 0.1rem;
+  margin: 0.25rem 0 1rem;
   color: var(--color-primary);
-}
-
-.scoreOf {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 1rem;
 }
 
 .fallbackMsg {
@@ -378,5 +372,5 @@
 
 .dialogCompact {
   width: auto;
-  max-width: 400px !important;
+  max-width: 440px !important;
 }

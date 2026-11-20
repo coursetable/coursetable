@@ -238,6 +238,7 @@ export default function CourseTableGame({
   const hasEvals = useStore((state) => Boolean(state.user?.hasEvals));
   const [phase, setPhase] = useState<Phase>({ kind: 'intro' });
   const [pairs, setPairs] = useState<GamePair[]>([]);
+  const [results, setResults] = useState<boolean[]>([]);
   const [timer, setTimer] = useState({ round: -1, leftMs: ROUND_TIME_MS });
 
   const guessingRound = phase.kind === 'guessing' ? phase.roundIndex : null;
@@ -271,6 +272,7 @@ export default function CourseTableGame({
   const startGame = () => {
     const newPairs = selectPairs(eligible);
     setPairs(newPairs);
+    setResults([]);
     setTimer({ round: -1, leftMs: ROUND_TIME_MS });
     setPhase({ kind: 'guessing', roundIndex: 0, score: 0 });
   };
@@ -289,6 +291,7 @@ export default function CourseTableGame({
     if (phase.kind !== 'revealed') return;
     const { roundIndex, score, correct } = phase;
     const newScore = score + (correct ? 1 : 0);
+    setResults((prev) => [...prev, correct]);
     if (roundIndex === NUM_ROUNDS - 1) {
       setPhase({ kind: 'finished', score: newScore });
     } else {
@@ -421,8 +424,11 @@ export default function CourseTableGame({
     const { score } = phase;
     const shareScore = async () => {
       try {
+        const grid = results
+          .map((c) => (c ? '\u{1F7E9}' : '\u{1F7E5}'))
+          .join('');
         await navigator.clipboard.writeText(
-          `I scored ${score}/${NUM_ROUNDS} on This-or-That, a CourseTable game. https://coursetable.com`,
+          `I scored ${score}/${NUM_ROUNDS} on This-or-That, a CourseTable game.\n${grid}\nhttps://coursetable.com`,
         );
         toast.success('Copied!');
       } catch (err) {
@@ -435,8 +441,9 @@ export default function CourseTableGame({
       <div className={styles.centerScreen}>
         <div className={styles.gameTitle}>This-or-That</div>
         <div className={styles.gameSubtitleSmall}>game over!</div>
-        <div className={styles.scoreBig}>{score}</div>
-        <div className={styles.scoreOf}>out of {NUM_ROUNDS}</div>
+        <div className={styles.scoreBig}>
+          {score}/{NUM_ROUNDS}
+        </div>
         <div className={styles.endActions}>
           <button type="button" className={styles.playBtn} onClick={startGame}>
             Play Again
@@ -453,7 +460,11 @@ export default function CourseTableGame({
     );
   };
 
-  const compact = !hasEvals || !hasEnoughData;
+  const compact =
+    !hasEvals ||
+    !hasEnoughData ||
+    phase.kind === 'intro' ||
+    phase.kind === 'finished';
 
   return (
     <Modal
