@@ -685,7 +685,9 @@ function Profile() {
         <Tab eventKey="settings" title="Settings">
           <div className={styles.tabContent}>
             <Card className={clsx(styles.profileCard, 'mb-3')}>
-              <Card.Body className={styles.cardBody}>
+              <Card.Body
+                className={clsx(styles.cardBody, styles.settingsCardBody)}
+              >
                 {!privacyDraft ? (
                   <TextComponent type="secondary">
                     Loading profile settings...

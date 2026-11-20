@@ -309,8 +309,13 @@
 
 .settingsActions {
   margin-top: 1rem;
+  margin-bottom: 1.4rem;
   display: flex;
   justify-content: flex-start;
+}
+
+.settingsCardBody {
+  padding-bottom: 2.5rem;
 }
 
 .dangerRow {
