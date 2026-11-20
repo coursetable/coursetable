@@ -3,8 +3,6 @@
   max-width: 860px !important;
 }
 
-/* A translucent primary tint layered over the themed surface, so light and
-   dark both get the same depth without hardcoding either one's colors */
 .dialog :global(.modal-content) {
   background:
     radial-gradient(
@@ -19,8 +17,6 @@
   overflow: hidden;
 }
 
-/* Decorative plaque strip along the top edge. It is a flex item of
-   .modal-content, so it sits above the body and never has text over it */
 .dialog :global(.modal-content)::before {
   content: '';
   flex: 0 0 4px;
@@ -73,8 +69,6 @@
   transition: width var(--trans-dur);
 }
 
-/* Per-round countdown. Deliberately separate from .progressBar, which tracks
-   how far through the ten rounds the player is */
 .timerBar {
   height: 6px;
   background: var(--color-surface-contrast);
@@ -301,7 +295,7 @@
   justify-content: center;
 }
 
-/* Intro and finish screens, framed as a plaque */
+/* Intro and finish screens */
 .centerScreen {
   text-align: center;
   padding: 1.5rem 1.25rem;
@@ -409,7 +403,6 @@
   font-size: 0.95rem;
 }
 
-/* A short message doesn't need the full game width */
 .dialogCompact {
   width: auto;
   max-width: 400px !important;

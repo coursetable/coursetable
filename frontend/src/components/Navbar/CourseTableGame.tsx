@@ -26,7 +26,6 @@ type Phase =
       roundIndex: number;
       score: number;
       correct: boolean;
-      // Null when the round timed out, so no card was picked
       picked: 0 | 1 | null;
     }
   | { kind: 'finished'; score: number };
@@ -239,11 +238,8 @@ export default function CourseTableGame({
   const hasEvals = useStore((state) => Boolean(state.user?.hasEvals));
   const [phase, setPhase] = useState<Phase>({ kind: 'intro' });
   const [pairs, setPairs] = useState<GamePair[]>([]);
-  // The countdown carries the round it belongs to, so a fresh round renders a
-  // full bar on its first paint instead of flashing the previous round's
   const [timer, setTimer] = useState({ round: -1, leftMs: ROUND_TIME_MS });
 
-  // Null on the intro, reveal and finish screens, where no clock should run
   const guessingRound = phase.kind === 'guessing' ? phase.roundIndex : null;
 
   useEffect(() => {
@@ -254,8 +250,6 @@ export default function CourseTableGame({
       setTimer({ round: guessingRound, leftMs });
       if (leftMs > 0) return;
       clearInterval(interval);
-      // Running out of time counts as a wrong answer: reveal the result and
-      // let the player move on with the usual Next button
       setPhase((prev) =>
         prev.kind === 'guessing'
           ? {
@@ -268,8 +262,6 @@ export default function CourseTableGame({
           : prev,
       );
     }, TIMER_TICK_MS);
-    // Answering or closing the game makes guessingRound null, which re-runs
-    // this cleanup and stops the clock
     return () => clearInterval(interval);
   }, [guessingRound]);
 
@@ -428,8 +420,6 @@ export default function CourseTableGame({
     }
     const { score } = phase;
     const shareScore = async () => {
-      // The clipboard API is missing on insecure origins and can reject even
-      // when present, so both failure paths land on the same toast
       try {
         await navigator.clipboard.writeText(
           `I scored ${score}/${NUM_ROUNDS} on This-or-That, a CourseTable game. https://coursetable.com`,
@@ -463,7 +453,6 @@ export default function CourseTableGame({
     );
   };
 
-  // A fallback notice is a couple of lines; don't frame it like the game
   const compact = !hasEvals || !hasEnoughData;
 
   return (

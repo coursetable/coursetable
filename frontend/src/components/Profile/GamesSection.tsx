@@ -20,8 +20,6 @@ type GameCard = {
 );
 
 export default function GamesSection() {
-  // This-or-That is a modal today; the card opens it in place rather than
-  // navigating away, so it keeps behaving the way it already does
   const [showThisOrThat, setShowThisOrThat] = useState(false);
 
   const games: GameCard[] = [
@@ -35,8 +33,6 @@ export default function GamesSection() {
       cta: 'Play',
       play: () => setShowThisOrThat(true),
     },
-    // Deliberately unnamed placeholders: nothing is announced yet, so these
-    // slots say "coming soon" and nothing more
     {
       id: 'placeholder-1',
       title: 'Coming soon',
@@ -74,8 +70,6 @@ export default function GamesSection() {
                   <p className={styles.cardDescription}>{game.description}</p>
                 </TextComponent>
                 {comingSoon ? (
-                  // Not a button: a coming-soon card is not actionable, so it
-                  // stays out of the tab order entirely
                   <p className={styles.ctaPlaceholder}>{game.cta}</p>
                 ) : (
                   <button

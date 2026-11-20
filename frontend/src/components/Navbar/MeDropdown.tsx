@@ -9,18 +9,15 @@ import {
   FcInfo,
   FcQuestions,
   FcFeedback,
-  FcPuzzle,
   FcNews,
   FcBusinessman,
 } from 'react-icons/fc';
 import { GiConsoleController } from 'react-icons/gi';
-import { useShallow } from 'zustand/react/shallow';
 
 import { API_ENDPOINT } from '../../config';
 import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
-import { createCatalogLink } from '../../utilities/navigation';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
 
@@ -88,15 +85,8 @@ function DropdownContent({
   readonly isExpanded: boolean;
   readonly setIsExpanded: (visible: boolean) => void;
 }) {
-  const { isMobile, isTablet } = useStore(
-    useShallow((state) => ({
-      isMobile: state.isMobile,
-      isTablet: state.isTablet,
-    })),
-  );
   const authStatus = useStore((state) => state.authStatus);
   const refreshAuth = useStore((state) => state.refreshAuth);
-  const toggleTutorial = useStore((state) => state.toggleTutorial);
 
   return (
     <SurfaceComponent
@@ -126,20 +116,6 @@ function DropdownContent({
           <DropdownItem icon={FcNews} to="/releases">
             Release notes
           </DropdownItem>
-          {/* Try tutorial only on desktop */}
-          {!isMobile && !isTablet && authStatus === 'authenticated' && (
-            <DropdownItem
-              icon={FcPuzzle}
-              to={createCatalogLink()}
-              onClick={(e) => {
-                e.stopPropagation();
-                scrollToTop(e);
-                toggleTutorial(true);
-              }}
-            >
-              Tutorial
-            </DropdownItem>
-          )}
           {authStatus === 'authenticated' && (
             <DropdownItem icon={FcBusinessman} to="/profile">
               Profile (beta)

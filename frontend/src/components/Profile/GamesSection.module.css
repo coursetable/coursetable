@@ -1,5 +1,3 @@
-/* Lives inside a profile card, so the grid tracks the card's width instead of
-   a fixed page container: three cards while they fit, then two, then one */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
@@ -71,8 +69,6 @@
     background-color var(--trans-dur);
 }
 
-/* Grayed out, but kept above the contrast floor in both themes: text stays on
-   --color-text-tertiary rather than fading the whole card with opacity */
 .cardDisabled {
   background-color: var(--color-surface-contrast);
   cursor: not-allowed;

@@ -33,6 +33,7 @@ import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';
+import { createCatalogLink } from '../utilities/navigation';
 import styles from './Profile.module.css';
 
 const PROFILE_TAB_KEYS = [
@@ -77,6 +78,9 @@ function nameFieldPlaceholders(
 }
 
 const selectProfileStore = (state: Store) => ({
+  isMobile: state.isMobile,
+  isTablet: state.isTablet,
+  toggleTutorial: state.toggleTutorial,
   user: state.user,
   userRefresh: state.userRefresh,
   worksheets: state.worksheets,
@@ -119,6 +123,9 @@ const visibilityOptions: {
 function Profile() {
   const navigate = useNavigate();
   const {
+    isMobile,
+    isTablet,
+    toggleTutorial,
     user: currentUser,
     userRefresh,
     worksheets,
@@ -154,7 +161,7 @@ function Profile() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTabKey = tabParamToActiveKey(searchParams.get('tab'));
-  const { hash } = useLocation();
+  const { hash, key: locationKey } = useLocation();
 
   const handleProfileTabSelect = (key: string | null) => {
     if (key === null || !isProfileTabKey(key)) return;
@@ -206,16 +213,13 @@ function Profile() {
     if (wishlistError) Sentry.captureException(wishlistError);
   }, [wishlistError]);
 
-  // React Router does not scroll to hash targets on its own, and the navbar
-  // links the games section as /profile#games. The tab content only renders
-  // once the user is loaded, so re-run then, when the target really exists.
   useEffect(() => {
     const id = hash.slice(1);
     if (!id || !currentUser) return;
     document
       .getElementById(id)
       ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }, [hash, currentUser]);
+  }, [hash, locationKey, currentUser]);
 
   useEffect(() => {
     if (!worksheets) return;
@@ -880,6 +884,27 @@ function Profile() {
             <Card className={styles.profileCard}>
               <Card.Body className={styles.cardBody}>
                 <h3 className={styles.sectionTitle}>Advanced Settings</h3>
+                {!isMobile && !isTablet && (
+                  <div className={styles.settingsRow}>
+                    <div className={styles.settingText}>
+                      <TextComponent>Replay the tutorial</TextComponent>
+                      <TextComponent type="secondary">
+                        Walks you through the catalog and worksheet again.
+                      </TextComponent>
+                    </div>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className={styles.settingsButton}
+                      onClick={() => {
+                        toggleTutorial(true);
+                        void navigate(createCatalogLink());
+                      }}
+                    >
+                      Start tutorial
+                    </Button>
+                  </div>
+                )}
                 <div className={styles.settingsRow}>
                   <div className={styles.settingText}>
                     <TextComponent>Clear cached catalog data</TextComponent>
