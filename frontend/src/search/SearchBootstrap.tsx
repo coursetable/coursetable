@@ -40,11 +40,13 @@ import {
   getProfessorRatings,
   isGraduate,
   isDiscussionSection,
+  isSectionFull,
   sortCourses,
   toLocationsSummary,
   toRangeTime,
   toWeekdayStrings,
 } from '../utilities/course';
+import { saveCatalogSearch } from '../utilities/navigation';
 import {
   buildCatalogSearchParams,
   getFilterFromParams,
@@ -152,14 +154,9 @@ function useSearchUrlSync(
       defaultFilters,
       searchParams,
     );
-    const nextSearch = nextParams.toString();
+    if (nextParams.toString() === searchParams.toString()) return;
 
-    if (nextSearch === searchParams.toString()) return;
-
-    sessionStorage.setItem(
-      'lastCatalogSearch',
-      nextSearch ? `?${nextSearch}` : '',
-    );
+    saveCatalogSearch(nextParams);
     setSearchParams(nextParams);
   }, [
     location.pathname,
@@ -281,6 +278,7 @@ export function SearchBootstrap({
   const searchDescription = useFilterState('searchDescription');
   const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
+  const hideFull = useFilterState('hideFull');
   const hideConflicting = useFilterState('hideConflicting');
   const includeAttributes = useFilterState('includeAttributes');
   const excludeAttributes = useFilterState('excludeAttributes');
@@ -562,6 +560,8 @@ export function SearchBootstrap({
         if (hideCancelled.value && listing.course.extra_info !== 'ACTIVE')
           return false;
 
+        if (hideFull.value && isSectionFull(listing)) return false;
+
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
@@ -713,6 +713,7 @@ export function SearchBootstrap({
       enrollBounds,
       numBounds,
       hideCancelled.value,
+      hideFull.value,
       hideConflicting.value,
       getRelevantWorksheetNumber,
       worksheets,

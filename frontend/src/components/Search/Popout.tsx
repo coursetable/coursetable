@@ -30,6 +30,7 @@ type Props = {
   readonly dataTutorial?: number;
   readonly Icon?: React.JSX.Element;
   readonly tooltipText?: string;
+  readonly buttonTextColor?: string;
   readonly fullWidth?: boolean;
 };
 
@@ -101,6 +102,7 @@ export function Popout({
   dataTutorial,
   Icon,
   tooltipText,
+  buttonTextColor,
   fullWidth,
 }: Props) {
   const tooltipId = useId();
@@ -161,11 +163,17 @@ export function Popout({
     }
   }, [isComponentVisible, dropdownRef]);
 
+  const baseButtonStyle = buttonStyles(isComponentVisible);
+
   const triggerButton = (
     <button
       type="button"
       onClick={() => setIsComponentVisible(!isComponentVisible)}
-      style={buttonStyles(isComponentVisible)}
+      style={
+        buttonTextColor
+          ? { ...baseButtonStyle, color: buttonTextColor }
+          : baseButtonStyle
+      }
       ref={toggleRef}
       className={clsx(
         className,

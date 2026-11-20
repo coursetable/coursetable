@@ -1,5 +1,6 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
+import { CUR_YEAR } from '../config';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -174,8 +175,8 @@ function parseSameCourseIdKey(key: string): {
   return { season, sameCourseId };
 }
 
-// Fetch the friends that are also shopping any course. Used in search and
-// worksheet expanded list
+// Fetch the friends that have any course in their main worksheet. Used in
+// search and worksheet expanded list
 export function getNumFriends(
   friends: FriendRecord,
   sameCourseIdToCrns?: { [key: string]: number[] },
@@ -192,21 +193,18 @@ export function getNumFriends(
 
   for (const [netId, friend] of Object.entries(friends)) {
     for (const [seasonCode, worksheets] of friend.worksheets) {
-      for (const w of worksheets.values()) {
-        for (const course of w.courses) {
-          // Prioritize sameCourseId from course data, then fall back to lookup
-          const sameCourseId =
-            course.sameCourseId?.toString() ??
-            crnToSameCourseId.get(course.crn);
-          const key =
-            sameCourseId !== undefined
-              ? `${seasonCode}-${sameCourseId}`
-              : `${seasonCode}-crn-${course.crn}`;
+      for (const course of worksheets.get(0)?.courses ?? []) {
+        // Prioritize sameCourseId from course data, then fall back to lookup
+        const sameCourseId =
+          course.sameCourseId?.toString() ?? crnToSameCourseId.get(course.crn);
+        const key =
+          sameCourseId !== undefined
+            ? `${seasonCode}-${sameCourseId}`
+            : `${seasonCode}-crn-${course.crn}`;
 
-          if (!friendsBySameCourse.has(key))
-            friendsBySameCourse.set(key, new Set());
-          friendsBySameCourse.get(key)!.add(friend.name ?? netId);
-        }
+        if (!friendsBySameCourse.has(key))
+          friendsBySameCourse.set(key, new Set());
+        friendsBySameCourse.get(key)!.add(friend.name ?? netId);
       }
     }
   }
@@ -483,6 +481,18 @@ type CourseWithEnrolled = {
 
 export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
   return listing.school !== 'YC' && listing.school !== 'SU';
+}
+
+export function isSectionFull(listing: {
+  section_full?: boolean | null;
+  course: { season_code: Season };
+}): boolean {
+  // Historical seasons keep their last-known fullness forever, so only
+  // surface the indicator for seasons we still update.
+  return (
+    listing.section_full === true &&
+    CUR_YEAR.includes(listing.course.season_code)
+  );
 }
 
 export function isDiscussionSection(

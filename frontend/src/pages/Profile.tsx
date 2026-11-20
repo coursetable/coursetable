@@ -711,7 +711,7 @@ function Profile() {
                           <Form.Label>Preferred first name</Form.Label>
                           <Form.Control
                             value={preferredFirstNameInput}
-                            maxLength={256}
+                            maxLength={20}
                             onChange={(event) =>
                               setPreferredFirstNameInput(event.target.value)
                             }
@@ -725,7 +725,7 @@ function Profile() {
                           <Form.Label>Preferred last name</Form.Label>
                           <Form.Control
                             value={preferredLastNameInput}
-                            maxLength={256}
+                            maxLength={20}
                             onChange={(event) =>
                               setPreferredLastNameInput(event.target.value)
                             }
