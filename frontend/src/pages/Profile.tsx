@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
@@ -110,6 +110,12 @@ const visibilityOptions: {
   { value: 'self', label: 'Only me' },
 ];
 
+type ProfileSettings = {
+  profilePageEnabled: boolean;
+  allowAnonymousProfileView: boolean;
+  privacy: ProfilePrivacy;
+};
+
 function Profile() {
   const navigate = useNavigate();
   const {
@@ -139,6 +145,9 @@ function Profile() {
     useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingSettings, setSavingSettings] = useState(false);
+  // Last settings the server confirmed, to fall back on if a save fails and
+  // the state can't be re-read either
+  const lastConfirmed = useRef<ProfileSettings | null>(null);
   const [revokingEvals, setRevokingEvals] = useState(false);
   const [revokeArmed, setRevokeArmed] = useState(false);
   const [revokeConfirmed, setRevokeConfirmed] = useState(false);
@@ -190,6 +199,7 @@ function Profile() {
       setPrivacyDraft(data.privacy);
       setProfilePageEnabled(data.profilePageEnabled);
       setAllowAnonymousProfileView(data.allowAnonymousProfileView);
+      lastConfirmed.current = data;
       const { first, last } = nameFieldPlaceholders(data, currentUser);
       setPlaceholderFirstName(first);
       setPlaceholderLastName(last);
@@ -331,10 +341,11 @@ function Profile() {
     }
   };
 
-  const applySettings = (updated: MyProfile) => {
-    setPrivacyDraft(updated.privacy);
-    setProfilePageEnabled(updated.profilePageEnabled);
-    setAllowAnonymousProfileView(updated.allowAnonymousProfileView);
+  const applySettings = (settings: ProfileSettings) => {
+    setPrivacyDraft(settings.privacy);
+    setProfilePageEnabled(settings.profilePageEnabled);
+    setAllowAnonymousProfileView(settings.allowAnonymousProfileView);
+    lastConfirmed.current = settings;
   };
 
   const saveSetting = async (patch: {
@@ -349,7 +360,9 @@ function Profile() {
         applySettings(updated);
         return;
       }
-      const stored = await getMyProfile();
+      // Offline, both requests fail; without this the control would keep
+      // showing a change the server never accepted
+      const stored = (await getMyProfile()) ?? lastConfirmed.current;
       if (stored) applySettings(stored);
     } finally {
       setSavingSettings(false);
