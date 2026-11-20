@@ -15,6 +15,7 @@ import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import { resetCatalogCache } from '../ferry/ferryCatalogCache';
 import { useFerry, useWorksheetInfo } from '../hooks/useFerry';
 import { useWishlist } from '../hooks/useWishlist';
+import { track } from '../lib/track';
 import {
   getMyProfile,
   revokeEvaluationsAccess,
@@ -348,6 +349,15 @@ function Profile() {
         privacy: privacyDraft,
       });
       if (!updated) return;
+      track('profile_update', {
+        profile_page_enabled: updated.profilePageEnabled,
+        allow_anonymous_profile_view: updated.allowAnonymousProfileView,
+        preferred_name_set: Boolean(
+          updated.preferredFirstName?.trim() ||
+          updated.preferredLastName?.trim(),
+        ),
+        privacy: updated.privacy,
+      });
       setPreferredFirstNameInput(updated.preferredFirstName ?? '');
       setPreferredLastNameInput(updated.preferredLastName ?? '');
       setPrivacyDraft(updated.privacy);

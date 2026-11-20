@@ -19,7 +19,8 @@ import { CUR_YEAR } from '../../config';
 import { seasons } from '../../data/catalogSeasons';
 import type { LatestCurrentOfferingQuery } from '../../generated/graphql-types';
 import { useWorksheetInfo } from '../../hooks/useFerry';
-import { updateWorksheetCourses } from '../../queries/api';
+import { track } from '../../lib/track';
+import { type CatalogListing, updateWorksheetCourses } from '../../queries/api';
 import { LatestCurrentOfferingDocument } from '../../queries/graphql-queries';
 import type { Season } from '../../queries/graphql-types';
 import {
@@ -318,7 +319,34 @@ function WorksheetToggleButton({
           worksheetColors[Math.floor(Math.random() * worksheetColors.length)]!,
         hidden: false,
       });
-      if (success) await worksheetsRefresh();
+      if (success) {
+        const courseCode =
+          useStore.getState().courses.find((c) => c.crn === targetCrn)?.listing
+            .course_code ??
+          ('course_code' in listing
+            ? (listing as CatalogListing).course_code
+            : String(targetCrn));
+        const ws = worksheets?.get(targetSeason)?.get(targetWorksheetNumber);
+        const worksheetName =
+          ws?.name ??
+          (targetWorksheetNumber === 0
+            ? 'Main Worksheet'
+            : `Worksheet ${targetWorksheetNumber}`);
+        if (inWorksheet) {
+          track('worksheet_remove', {
+            course_code: courseCode,
+            term: targetSeason,
+            worksheet_name: worksheetName,
+          });
+        } else {
+          track('worksheet_add', {
+            course_code: courseCode,
+            term: targetSeason,
+            worksheet_name: worksheetName,
+          });
+        }
+        await worksheetsRefresh();
+      }
     },
     [
       inWorksheet,
@@ -326,9 +354,7 @@ function WorksheetToggleButton({
       confirmAddLatestOffering,
       getRelevantWorksheetNumber,
       resolveWorksheetNumberForSeason,
-      listing.crn,
-      listing.course.season_code,
-      listing.course.same_course_id,
+      listing,
       selectedWorksheet,
       worksheets,
       worksheetsRefresh,
