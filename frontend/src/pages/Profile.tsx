@@ -27,6 +27,7 @@ import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
 import { createCourseModalLink } from '../utilities/display';
+import { createCatalogLink } from '../utilities/navigation';
 import styles from './Profile.module.css';
 
 const PROFILE_TAB_KEYS = [
@@ -71,6 +72,9 @@ function nameFieldPlaceholders(
 }
 
 const selectProfileStore = (state: Store) => ({
+  isMobile: state.isMobile,
+  isTablet: state.isTablet,
+  toggleTutorial: state.toggleTutorial,
   user: state.user,
   userRefresh: state.userRefresh,
   worksheets: state.worksheets,
@@ -113,6 +117,9 @@ const visibilityOptions: {
 function Profile() {
   const navigate = useNavigate();
   const {
+    isMobile,
+    isTablet,
+    toggleTutorial,
     user: currentUser,
     userRefresh,
     worksheets,
@@ -851,6 +858,28 @@ function Profile() {
                 <h3 className={styles.sectionTitle}>Advanced Settings</h3>
                 <div className={styles.settingsRow}>
                   <div className={styles.settingText}>
+                    <TextComponent>Replay the tutorial</TextComponent>
+                    <TextComponent type="secondary">
+                      {isMobile || isTablet
+                        ? 'The tutorial covers the catalog and worksheet, and is only available on desktop.'
+                        : 'Walks you through the catalog and worksheet again.'}
+                    </TextComponent>
+                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className={styles.settingsButton}
+                    disabled={isMobile || isTablet}
+                    onClick={() => {
+                      toggleTutorial(true);
+                      void navigate(createCatalogLink());
+                    }}
+                  >
+                    Start tutorial
+                  </Button>
+                </div>
+                <div className={styles.settingsRow}>
+                  <div className={styles.settingText}>
                     <TextComponent>Clear cached catalog data</TextComponent>
                     <TextComponent type="secondary">
                       Forces a re-fetch of the catalog if your browser cached an
@@ -868,7 +897,7 @@ function Profile() {
                   </Button>
                 </div>
                 {currentUser.hasEvals && (
-                  <div className={clsx(styles.settingsRow, styles.dangerRow)}>
+                  <div className={styles.settingsRow}>
                     <div className={styles.settingText}>
                       <TextComponent>Revoke evaluations access</TextComponent>
                       <TextComponent type="secondary">
