@@ -285,6 +285,42 @@ export default function WorksheetStats() {
                   {credits}
                 </StatPill>
               </div>
+              {user?.hasEvals ? (
+                <div>
+                  <dt>
+                    Workload
+                    <NoStatsTip
+                      coursesWithoutRating={coursesWithoutWorkload}
+                      coursesWithRating={coursesWithWorkload}
+                    />
+                  </dt>
+                  <StatPill colorMap={workloadColormap} stat={workload}>
+                    {workload.toFixed(1)}
+                  </StatPill>
+                </div>
+              ) : (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip id="worksheet-stats-workload-login-tooltip">
+                      <small>
+                        {user ? 'Complete the challenge' : 'Sign in'} to see
+                        ratings
+                      </small>
+                    </Tooltip>
+                  }
+                >
+                  <div>
+                    <dt>Workload</dt>
+                    <dd
+                      className={styles.statPill}
+                      style={{
+                        backgroundColor: 'var(--color-primary)',
+                      }}
+                    />
+                  </div>
+                </OverlayTrigger>
+              )}
               <div>
                 <dt>
                   Total hours
@@ -333,42 +369,6 @@ export default function WorksheetStats() {
                   )}
                 </StatPill>
               </div>
-              {user?.hasEvals ? (
-                <div>
-                  <dt>
-                    Workload
-                    <NoStatsTip
-                      coursesWithoutRating={coursesWithoutWorkload}
-                      coursesWithRating={coursesWithWorkload}
-                    />
-                  </dt>
-                  <StatPill colorMap={workloadColormap} stat={workload}>
-                    {workload.toFixed(1)}
-                  </StatPill>
-                </div>
-              ) : (
-                <OverlayTrigger
-                  placement="top"
-                  overlay={
-                    <Tooltip id="worksheet-stats-workload-login-tooltip">
-                      <small>
-                        {user ? 'Complete the challenge' : 'Sign in'} to see
-                        ratings
-                      </small>
-                    </Tooltip>
-                  }
-                >
-                  <div>
-                    <dt>Workload</dt>
-                    <dd
-                      className={styles.statPill}
-                      style={{
-                        backgroundColor: 'var(--color-primary)',
-                      }}
-                    />
-                  </div>
-                </OverlayTrigger>
-              )}
               <div className={styles.wide}>
                 <dt>Skills & Areas</dt>
                 <dd>
