@@ -371,3 +371,55 @@
   width: auto;
   max-width: 440px !important;
 }
+
+@media (max-width: calc(768px - 0.5px)) {
+  .dialog {
+    width: calc(100vw - 1rem);
+    max-width: none !important;
+    margin: 0.5rem auto;
+  }
+
+  .dialogCompact {
+    max-width: none !important;
+  }
+
+  .modalBody {
+    padding: 1rem 0.75rem;
+  }
+
+  .closeBtn {
+    top: 0.4rem;
+    right: 0.4rem;
+  }
+
+  .cardsRow {
+    flex-direction: column;
+  }
+
+  .vsLabel {
+    justify-content: center;
+  }
+
+  .courseCard {
+    padding: 0.75rem;
+  }
+
+  .promptRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .prompt {
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  .gameTitle {
+    font-size: 1.35rem;
+  }
+
+  .scoreBig {
+    font-size: 2.25rem;
+  }
+}

@@ -93,11 +93,14 @@ export default function CourseTableNavbar() {
         />
         {/* Logo in top left and random underneath */}
         <div className={styles.navLogoWrapper}>
-          <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
-            <NavLink to="/">
-              <Logo icon={false} />
-            </NavLink>
-          </Nav>
+          <div className={styles.navLogoRow}>
+            <Nav className={clsx(styles.navLogo, 'navbar-brand')}>
+              <NavLink to="/">
+                <Logo icon={false} />
+              </NavLink>
+            </Nav>
+            {isMobile && <DarkModeButton className={styles.navLogoDarkMode} />}
+          </div>
           {showCatalogSearch && <RandomButton />}
         </div>
         {showCatalogSearch && <NavbarCatalogSearch />}
@@ -122,7 +125,9 @@ export default function CourseTableNavbar() {
               onClick={() => setNavExpanded(false)}
               className={styles.navbarLinks}
             >
-              <DarkModeButton className={styles.navbarDarkModeBtn} />
+              {!isMobile && (
+                <DarkModeButton className={styles.navbarDarkModeBtn} />
+              )}
               <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>
@@ -150,6 +155,9 @@ export default function CourseTableNavbar() {
                     Feedback
                   </a>
                   <NavbarLink to="/releases">Release notes</NavbarLink>
+                  {authStatus === 'authenticated' && (
+                    <NavbarLink to="/games">Games</NavbarLink>
+                  )}
                   {isIOSNotInstalled && (
                     <button
                       type="button"
