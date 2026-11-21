@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
@@ -113,6 +113,12 @@ const visibilityOptions: {
   { value: 'self', label: 'Only me' },
 ];
 
+type ProfileSettings = {
+  profilePageEnabled: boolean;
+  allowAnonymousProfileView: boolean;
+  privacy: ProfilePrivacy;
+};
+
 function Profile() {
   const navigate = useNavigate();
   const {
@@ -142,6 +148,8 @@ function Profile() {
   const [allowAnonymousProfileView, setAllowAnonymousProfileView] =
     useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
+  const lastConfirmed = useRef<ProfileSettings | null>(null);
   const [revokingEvals, setRevokingEvals] = useState(false);
   const [revokeArmed, setRevokeArmed] = useState(false);
   const [revokeConfirmed, setRevokeConfirmed] = useState(false);
@@ -193,6 +201,7 @@ function Profile() {
       setPrivacyDraft(data.privacy);
       setProfilePageEnabled(data.profilePageEnabled);
       setAllowAnonymousProfileView(data.allowAnonymousProfileView);
+      lastConfirmed.current = data;
       const { first, last } = nameFieldPlaceholders(data, currentUser);
       setPlaceholderFirstName(first);
       setPlaceholderLastName(last);
@@ -333,6 +342,32 @@ function Profile() {
     }
   };
 
+  const applySettings = (settings: ProfileSettings) => {
+    setPrivacyDraft(settings.privacy);
+    setProfilePageEnabled(settings.profilePageEnabled);
+    setAllowAnonymousProfileView(settings.allowAnonymousProfileView);
+    lastConfirmed.current = settings;
+  };
+
+  const saveSetting = async (patch: {
+    profilePageEnabled?: boolean;
+    allowAnonymousProfileView?: boolean;
+    privacy?: Partial<ProfilePrivacy>;
+  }) => {
+    setSavingSettings(true);
+    try {
+      const updated = await updateMyProfile(patch);
+      if (updated) {
+        applySettings(updated);
+        return;
+      }
+      const stored = (await getMyProfile()) ?? lastConfirmed.current;
+      if (stored) applySettings(stored);
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
   const handleSaveProfileSettings = async () => {
     if (!privacyDraft) return;
     setSavingProfile(true);
@@ -346,21 +381,15 @@ function Profile() {
           preferredLastNameInput.trim().length > 0
             ? preferredLastNameInput.trim()
             : null,
-        profilePageEnabled,
-        allowAnonymousProfileView,
-        privacy: privacyDraft,
       });
       if (!updated) return;
       setPreferredFirstNameInput(updated.preferredFirstName ?? '');
       setPreferredLastNameInput(updated.preferredLastName ?? '');
-      setPrivacyDraft(updated.privacy);
-      setProfilePageEnabled(updated.profilePageEnabled);
-      setAllowAnonymousProfileView(updated.allowAnonymousProfileView);
       const { first, last } = nameFieldPlaceholders(updated, currentUser);
       setPlaceholderFirstName(first);
       setPlaceholderLastName(last);
       await Promise.all([userRefresh(), friendRefresh(), friendReqRefresh()]);
-      toast.success('Profile settings updated.');
+      toast.success('Preferred name updated.');
     } finally {
       setSavingProfile(false);
     }
@@ -665,7 +694,9 @@ function Profile() {
         <Tab eventKey="settings" title="Settings">
           <div className={styles.tabContent}>
             <Card className={clsx(styles.profileCard, 'mb-3')}>
-              <Card.Body className={styles.cardBody}>
+              <Card.Body
+                className={clsx(styles.cardBody, styles.settingsCardBody)}
+              >
                 {!privacyDraft ? (
                   <TextComponent type="secondary">
                     Loading profile settings...
@@ -712,6 +743,15 @@ function Profile() {
                         </Form.Group>
                       </div>
                     </section>
+                    <div className={styles.settingsActions}>
+                      <Button
+                        variant="primary"
+                        onClick={handleSaveProfileSettings}
+                        disabled={savingProfile}
+                      >
+                        {savingProfile ? 'Saving...' : 'Save preferred name'}
+                      </Button>
+                    </div>
                     <section className={styles.settingsSection}>
                       <TextComponent className={styles.settingsSectionTitle}>
                         Profile page
@@ -720,13 +760,19 @@ function Profile() {
                         type="secondary"
                         className={styles.visibilityDisclaimer}
                       >
-                        Shareable URL:{' '}
-                        <Link to={`/u/${currentUser.netId}`}>
-                          /u/{currentUser.netId}
-                        </Link>
-                        . Turning the profile page off makes that URL show “page
-                        not found” for everyone. Field visibility below still
-                        applies for signed-in viewers when the page is on.
+                        {profilePageEnabled ? (
+                          <>
+                            Your shareable URL is{' '}
+                            <Link to={`/u/${currentUser.netId}`}>
+                              /u/{currentUser.netId}
+                            </Link>
+                            {allowAnonymousProfileView
+                              ? '. Anyone can view it.'
+                              : '. Only signed-in CourseTable users can view it.'}
+                          </>
+                        ) : (
+                          'Your profile page is private.'
+                        )}
                       </TextComponent>
                       <Form.Check
                         type="switch"
@@ -734,10 +780,12 @@ function Profile() {
                         className="mb-2"
                         label="Show my profile page"
                         checked={profilePageEnabled}
+                        disabled={savingSettings}
                         onChange={(event) => {
                           const on = event.target.checked;
                           setProfilePageEnabled(on);
                           if (!on) setAllowAnonymousProfileView(false);
+                          void saveSetting({ profilePageEnabled: on });
                         }}
                       />
                       <Form.Check
@@ -746,10 +794,12 @@ function Profile() {
                         className="mb-2"
                         label="Allow logged-out visitors to view my profile page"
                         checked={allowAnonymousProfileView}
-                        disabled={!profilePageEnabled}
-                        onChange={(event) =>
-                          setAllowAnonymousProfileView(event.target.checked)
-                        }
+                        disabled={!profilePageEnabled || savingSettings}
+                        onChange={(event) => {
+                          const on = event.target.checked;
+                          setAllowAnonymousProfileView(on);
+                          void saveSetting({ allowAnonymousProfileView: on });
+                        }}
                       />
                     </section>
                     <section className={styles.settingsSection}>
@@ -794,10 +844,14 @@ function Profile() {
                                     checked={
                                       privacyDraft[value] === option.value
                                     }
+                                    disabled={savingSettings}
                                     onChange={() => {
                                       setPrivacyDraft({
                                         ...privacyDraft,
                                         [value]: option.value,
+                                      });
+                                      void saveSetting({
+                                        privacy: { [value]: option.value },
                                       });
                                     }}
                                   />
@@ -808,15 +862,6 @@ function Profile() {
                         ))}
                       </div>
                     </section>
-                    <div className={styles.settingsActions}>
-                      <Button
-                        variant="primary"
-                        onClick={handleSaveProfileSettings}
-                        disabled={savingProfile}
-                      >
-                        {savingProfile ? 'Saving...' : 'Save profile settings'}
-                      </Button>
-                    </div>
                   </>
                 )}
               </Card.Body>

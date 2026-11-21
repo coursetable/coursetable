@@ -59,6 +59,10 @@
   color: rgb(255 98 98);
 }
 
+.fullSection {
+  color: var(--color-section-full);
+}
+
 .modalTop {
   width: calc(100% - 1rem);
   display: flex;
