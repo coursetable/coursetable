@@ -14,6 +14,7 @@ import { createPortal } from 'react-dom';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 import CalendarEvent, {
+  CalendarEventLines,
   type WalkModalInteraction,
   useEventStyle,
 } from './CalendarEvent';
@@ -32,7 +33,6 @@ import {
   type CourseRBCEvent,
   type WalkBefore,
 } from '../../utilities/calendar';
-import { to12HourTime } from '../../utilities/course';
 import type { PersonalBlock } from '../../utilities/personalBlock';
 import {
   getBuildingCodeFromLocation,
@@ -346,10 +346,14 @@ function WorksheetCalendar({
           }}
         >
           {event.kind === 'personal' ? (
-            <span>
-              <strong>{event.title}</strong> {to12HourTime(event.block.start)}–
-              {to12HourTime(event.block.end)}
-            </span>
+            <CalendarEventLines
+              title={event.title}
+              subtitle={
+                event.block.updatedAt === undefined
+                  ? undefined
+                  : `Last updated: ${new Date(event.block.updatedAt).toLocaleDateString()}`
+              }
+            />
           ) : (
             <>
               {hasPersonalBlockConflict(personalBlocks, event) && (

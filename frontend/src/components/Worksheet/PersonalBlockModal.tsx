@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { updateWorksheetMetadata } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
 import { useStore } from '../../store';
@@ -47,7 +47,7 @@ function PersonalBlockModal({
       if (!validation.success) return;
       const blocksValidation = personalBlocksSchema.safeParse([
         ...personalBlocks,
-        validation.data,
+        { ...validation.data, updatedAt: new Date().toISOString() },
       ]);
       if (!blocksValidation.success) {
         setError(
@@ -111,67 +111,58 @@ function PersonalBlockModal({
             </Form.Group>
             <fieldset className="mb-3">
               <legend className="fs-6">Weekdays</legend>
-              <div className="d-flex gap-2">
+              <div className="d-flex flex-wrap gap-3">
                 {WEEKDAYS.map((day, index) => {
                   const value = index + 1;
-                  const selected = draft.days.includes(value);
                   return (
-                    <Button
+                    <Form.Check
                       key={day}
-                      type="button"
-                      className="rounded-circle p-0 flex-shrink-0"
-                      style={{
-                        width: 44,
-                        height: 44,
-                        color: selected
-                          ? 'var(--color-text-dark)'
-                          : 'var(--color-text)',
-                        backgroundColor: selected
-                          ? 'var(--color-primary)'
-                          : 'var(--color-surface)',
-                        border: '1px solid var(--color-primary)',
-                      }}
-                      aria-label={day}
-                      aria-pressed={selected}
-                      onClick={() =>
+                      inline
+                      type="checkbox"
+                      id={`commitment-day-${value}`}
+                      label={day.slice(0, 3)}
+                      className="m-0"
+                      checked={draft.days.includes(value)}
+                      onChange={(event) =>
                         setDraft({
                           ...draft,
-                          days: selected
-                            ? draft.days.filter((d) => d !== value)
-                            : [...draft.days, value],
+                          days: event.target.checked
+                            ? [...draft.days, value]
+                            : draft.days.filter((d) => d !== value),
                         })
                       }
-                    >
-                      {day.slice(0, 3)}
-                    </Button>
+                    />
                   );
                 })}
               </div>
             </fieldset>
-            {(['start', 'end'] as const).map((field) => (
-              <Form.Group
-                key={field}
-                controlId={`commitment-${field}`}
-                className="mb-3"
-              >
-                <Form.Label>
-                  {field === 'start' ? 'Start time' : 'End time'}
-                </Form.Label>
-                <Form.Control
-                  type="time"
-                  required
-                  value={draft[field]}
-                  onChange={(event) =>
-                    setDraft({ ...draft, [field]: event.target.value })
-                  }
-                />
-                {field === 'end' && draft.end <= draft.start && (
-                  <Form.Text className="text-danger">
-                    End time must be after start time.
-                  </Form.Text>
-                )}
-              </Form.Group>
-            ))}
+            <Row className="mb-3">
+              {(['start', 'end'] as const).map((field) => (
+                <Form.Group
+                  key={field}
+                  as={Col}
+                  xs={6}
+                  controlId={`commitment-${field}`}
+                >
+                  <Form.Label>
+                    {field === 'start' ? 'Start time' : 'End time'}
+                  </Form.Label>
+                  <Form.Control
+                    type="time"
+                    required
+                    value={draft[field]}
+                    onChange={(event) =>
+                      setDraft({ ...draft, [field]: event.target.value })
+                    }
+                  />
+                </Form.Group>
+              ))}
+              {draft.end <= draft.start && (
+                <Form.Text className="text-danger">
+                  End time must be after start time.
+                </Form.Text>
+              )}
+            </Row>
           </fieldset>
           {error && (
             <p role="alert" className="text-danger mt-3">

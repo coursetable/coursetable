@@ -9,6 +9,7 @@ export const personalBlockSchema = z
     days: z.array(z.number().int().min(1).max(5)).min(1).max(5),
     start: timeSchema,
     end: timeSchema,
+    updatedAt: z.string().datetime().optional(),
   })
   .refine((block) => block.start < block.end, {
     message: 'End time must be after start time',
