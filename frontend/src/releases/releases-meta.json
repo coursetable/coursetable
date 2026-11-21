@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "index": {
+    "title": "Release notes | CourseTable",
+    "description": "Updates, features, and technical write-ups from the CourseTable team.",
+    "image": "/favicon.png"
+  },
+  "entries": [
+    {
+      "path": "/releases/shopping-period",
+      "listTitle": "Surviving Shopping Period",
+      "title": "How CourseTable Survives Shopping Period",
+      "summary": "A high-level tour of CourseTable's architecture and how we keep the site alive during peak traffic.",
+      "date": "2026-07-11",
+      "image": "/favicon.png"
+    },
+    {
+      "path": "/releases/spring26",
+      "listTitle": "2025 + Spring 2026 Release",
+      "title": "CourseTable 2025 + Spring 2026 Release Notes",
+      "summary": "Discover the latest features and improvements in our 2025 + Spring 2026 update.",
+      "date": "2026-04-27",
+      "image": "/favicon.png"
+    },
+    {
+      "path": "/releases/fall24",
+      "listTitle": "Fall 2024 Release",
+      "title": "CourseTable 24 Fall/Winter Release Notes",
+      "summary": "Discover the latest features and improvements in our Fall 2024 update.",
+      "date": "2025-01-12",
+      "image": "/favicon.png"
+    },
+    {
+      "path": "/releases/spring24",
+      "listTitle": "Spring 2024 Release",
+      "title": "CourseTable 24 Spring/Summer Release Notes",
+      "summary": "Discover the latest features and improvements in our Spring 2024 update.",
+      "date": "2024-08-26",
+      "image": "/favicon.png"
+    },
+    {
+      "path": "/releases/link-preview",
+      "listTitle": "Link preview release recap",
+      "title": "Optimizing Bot Traffic Handling for Link Previews: a Long Journey",
+      "summary": "Our recent effort to make social media links display a preview card.",
+      "date": "2024-07-24",
+      "image": "/favicon.png"
+    },
+    {
+      "path": "/releases/quist",
+      "listTitle": "Quist Release",
+      "title": "Introducing Quist, a new query language for CourseTable",
+      "summary": "Introducing Quist: our new language for advanced queries.",
+      "date": "2024-02-23",
+      "image": "/favicon.png"
+    },
+    {
+      "path": "/releases/fall23",
+      "listTitle": "Fall 2023 Release",
+      "title": "CourseTable 23Fall/Winter Release Notes",
+      "summary": "Discover the latest features and improvements in our Fall 2023 update.",
+      "date": "2024-01-21",
+      "image": "/favicon.png"
+    }
+  ]
+}

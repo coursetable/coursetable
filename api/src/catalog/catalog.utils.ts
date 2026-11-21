@@ -18,6 +18,18 @@ const exists = (p: string) =>
     () => false,
   );
 
+/** `sitemap_YYYYSS.xml` — higher season code (more recent term) sorts first. */
+const SITEMAP_SEASON_FILENAME = /^sitemap_(?<season>\d{6})\.xml$/u;
+
+function compareSeasonSitemapFiles(a: string, b: string): number {
+  const sa = SITEMAP_SEASON_FILENAME.exec(a)?.groups?.season;
+  const sb = SITEMAP_SEASON_FILENAME.exec(b)?.groups?.season;
+  if (!sa && !sb) return a.localeCompare(b);
+  if (!sa) return 1;
+  if (!sb) return -1;
+  return Number(sb) - Number(sa);
+}
+
 function transformCourseToSitemapListings(
   course: CatalogBySeasonQuery['courses'][number],
 ): SitemapListing[] {
@@ -68,15 +80,17 @@ async function generateSeasonSitemap(
 
 export async function generateSitemapIndex(): Promise<void> {
   await fs.mkdir(SITEMAP_DIR, { recursive: true });
-  const sitemapFiles = await fs.readdir(SITEMAP_DIR);
-  const sitemapUrls = sitemapFiles
+  const sitemapFiles = (await fs.readdir(SITEMAP_DIR))
     .filter(
       (file) =>
         file.startsWith('sitemap_') &&
         file.endsWith('.xml') &&
         file !== 'sitemap_index.xml',
     )
-    .map((file) => `https://api.coursetable.com/api/sitemaps/${file}`);
+    .sort(compareSeasonSitemapFiles);
+  const sitemapUrls = sitemapFiles.map(
+    (file) => `https://api.coursetable.com/api/sitemaps/${file}`,
+  );
 
   const links = sitemapUrls.map((url) => ({ url }));
 
