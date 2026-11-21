@@ -17,6 +17,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { searchProfiles } from '../../queries/api';
 import type { NetId } from '../../queries/graphql-types';
 import { useStore } from '../../store';
+import { PeopleYaleMoji } from '../PeopleYaleMoji';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
@@ -241,6 +242,12 @@ function AddFriendDropdownDesktop({
             : 'No results found'
         }
         onInputChange={setSearchText}
+        formatOptionLabel={(option) => (
+          <span className={styles.friendIdentity}>
+            <PeopleYaleMoji netId={option.value} />
+            <span>{option.label}</span>
+          </span>
+        )}
         onChange={(option) => {
           if (!option) return;
           void navigate(`/u/${option.value}`);

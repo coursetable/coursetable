@@ -39,6 +39,14 @@
 .friendOptionText {
   flex-grow: 1;
   text-align: left;
+  min-width: 0;
+  padding-right: 48px;
+}
+
+.friendIdentity {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
 }
 
 .spinner {

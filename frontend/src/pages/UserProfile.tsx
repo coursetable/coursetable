@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Card } from 'react-bootstrap';
-import { BsFillPersonFill } from 'react-icons/bs';
+import { YaleMojiImage } from '../components/PeopleYaleMoji';
 
 import { TextComponent } from '../components/Typography';
 import {
@@ -74,22 +74,10 @@ function UserProfile() {
     <div className={clsx(styles.container, 'mx-auto')}>
       {profile ? (
         <div className={styles.headerContainer}>
-          <div
-            className={clsx(
-              profile.visible.name
-                ? styles.profileAvatar
-                : styles.profileAvatarAnon,
-            )}
-          >
-            {profile.visible.name && profile.firstName && profile.lastName ? (
-              <span>
-                {profile.firstName[0]!}
-                {profile.lastName[0]!}
-              </span>
-            ) : (
-              <BsFillPersonFill size={20} />
-            )}
-          </div>
+          <YaleMojiImage
+            avatar={profile.yalemoji ?? null}
+            className={styles.profileAvatar}
+          />
           <h1 className={styles.profileHeader}>
             {profile.displayName ?? profile.netId}
           </h1>

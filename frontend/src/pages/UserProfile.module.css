@@ -7,6 +7,7 @@
 
 .headerContainer {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
@@ -19,29 +20,11 @@
   margin: 0;
 }
 
-.profileAvatar,
-.profileAvatarAnon {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .profileAvatar {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-}
-
-.profileAvatar span {
-  font-weight: bold;
-  transform: scaleX(0.8);
-}
-
-.profileAvatarAnon {
-  background-color: var(--color-bg-button);
-  color: var(--color-text-secondary);
+  display: block;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
 }
 
 .profileCard {

@@ -48,7 +48,35 @@
   position: relative;
 }
 
+.accountControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobileAccountControls {
+  display: contents;
+}
+
+.mobileDarkModeBtn {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+}
+
 @media (max-width: calc(768px - 0.5px)) {
+  .navbar {
+    align-items: center !important;
+    column-gap: 0.65rem;
+  }
+
+  .navLogo {
+    margin-right: 0;
+  }
+
   .navbarLinks {
     align-items: start;
     padding-top: 0.5rem;
