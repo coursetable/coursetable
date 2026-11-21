@@ -13,7 +13,13 @@ import {
   Form,
 } from 'react-bootstrap';
 import { FaEllipsisH } from 'react-icons/fa';
-import { FaCheck, FaChevronLeft, FaRegCopy } from 'react-icons/fa6';
+import {
+  FaCheck,
+  FaChevronLeft,
+  FaPlus,
+  FaRegClone,
+  FaRegCopy,
+} from 'react-icons/fa6';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
@@ -22,18 +28,22 @@ import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
 import {
+  createColorTheme,
+  deleteColorTheme,
+  updateColorTheme,
   updateWorksheetCourses,
   updateWorksheetMetadata,
+  type ColorTheme,
 } from '../../queries/api';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
 import {
-  getColorTheme,
-  isCustomColor,
-  mapColorsToTheme,
+  applyTheme,
+  fallbackTheme,
+  getWorksheetTheme,
 } from '../../utilities/colorTheme';
-import { colorThemes, type ColorThemeId } from '../../utilities/constants';
+import { toSeasonString } from '../../utilities/course';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
 
@@ -147,6 +157,8 @@ function WorksheetItemActionsButton({
   );
 }
 
+type PickedColor = { color: string; colorIndex: number | null };
+
 export function ColorPickerModal({
   onClose,
 }: {
@@ -158,6 +170,7 @@ export function ColorPickerModal({
     viewedWorksheetNumber,
     courses,
     savedThemeId,
+    colorThemes,
     openColorPickerEvent,
   } = useStore(
     useShallow((state) => ({
@@ -166,24 +179,29 @@ export function ColorPickerModal({
       courses: state.courses,
       savedThemeId: state.worksheets
         ?.get(state.viewedSeason)
-        ?.get(state.viewedWorksheetNumber)?.colorTheme,
+        ?.get(state.viewedWorksheetNumber)?.colorThemeId,
+      colorThemes: state.colorThemes,
       openColorPickerEvent: state.openColorPickerEvent,
     })),
   );
-  const [newColor, setNewColor] = useState<string | undefined>(undefined);
+  const [picked, setPicked] = useState<PickedColor | undefined>(undefined);
   // Unsaved theme choice; falls back to the worksheet's saved theme
-  const [selectedThemeId, setSelectedThemeId] = useState<
-    ColorThemeId | undefined
-  >(undefined);
+  const [selectedThemeId, setSelectedThemeId] = useState<number | undefined>(
+    undefined,
+  );
   const [themePanelOpen, setThemePanelOpen] = useState(false);
 
   if (!openColorPickerEvent) return null;
 
-  const theme = getColorTheme(selectedThemeId ?? savedThemeId);
-  const themeChanged = theme.id !== getColorTheme(savedThemeId).id;
+  const course = courses.find(
+    (c) => c.listing.crn === openColorPickerEvent.listing.crn,
+  );
+  const theme = getWorksheetTheme(colorThemes, selectedThemeId ?? savedThemeId);
+  const themeChanged =
+    theme.id !== getWorksheetTheme(colorThemes, savedThemeId).id;
 
   const handleClose = () => {
-    setNewColor(undefined);
+    setPicked(undefined);
     setSelectedThemeId(undefined);
     setThemePanelOpen(false);
     onClose();
@@ -194,47 +212,34 @@ export function ColorPickerModal({
       action: 'setColorTheme',
       season: viewedSeason,
       worksheetNumber: viewedWorksheetNumber,
-      colorTheme: theme.id,
+      colorThemeId: theme.id,
     });
 
   const applyThemeToAll = async (options: ApplyThemeOptions) => {
-    const targets = courses.filter(
-      (course) =>
-        (options.includeHidden || !course.hidden) &&
-        (options.overrideCustom || !isCustomColor(course.color)),
-    );
-    const colorMap = mapColorsToTheme(
-      targets.map((course) => course.color),
-      theme.colors,
-    );
-    const updates = targets
-      .map((course) => ({
-        course,
-        color: colorMap.get(course.color.toLowerCase())!,
-      }))
-      .filter(
-        ({ course, color }) =>
-          course.color.toLowerCase() !== color.toLowerCase(),
-      );
-    if (updates.length > 0) {
-      const success = await updateWorksheetCourses(
-        updates.map(({ course, color }) => ({
+    const targets = courses.filter((c) => options.includeHidden || !c.hidden);
+    const recolored = applyTheme(targets, theme.colors, options.overrideCustom);
+    const updates = targets.flatMap((c, i) => {
+      const { color, colorIndex } = recolored[i]!;
+      if (color === c.color && colorIndex === c.colorIndex) return [];
+      return [
+        {
           action: 'update' as const,
           season: viewedSeason,
-          crn: course.crn,
+          crn: c.crn,
           worksheetNumber: viewedWorksheetNumber,
           color,
-        })),
-      );
-      if (!success) return;
-    }
+          colorIndex,
+        },
+      ];
+    });
+    if (updates.length > 0 && !(await updateWorksheetCourses(updates))) return;
     if (themeChanged && !(await saveTheme())) return;
     if (updates.length > 0 || themeChanged) await worksheetsRefresh();
-    toast.success(
-      `Applied ${theme.name} to ${targets.length} course${targets.length === 1 ? '' : 's'}`,
-    );
+    toast.success(`Applied ${theme.name}`);
     handleClose();
   };
+
+  const color = picked?.color ?? openColorPickerEvent.color;
 
   return (
     <Modal show onHide={handleClose} centered dialogClassName={styles.dialog}>
@@ -247,17 +252,14 @@ export function ColorPickerModal({
       </Modal.Header>
       <Modal.Body className={styles.modalBody}>
         <Picker
-          color={newColor ?? openColorPickerEvent.color}
-          setColor={setNewColor}
+          color={color}
+          onPick={setPicked}
           presetColors={theme.colors}
           themeName={theme.name}
           themePanelOpen={themePanelOpen}
           onToggleThemePanel={() => setThemePanelOpen((open) => !open)}
         />
-        <Preview
-          event={openColorPickerEvent}
-          color={newColor ?? openColorPickerEvent.color}
-        />
+        <Preview event={openColorPickerEvent} color={color} />
       </Modal.Body>
       <Modal.Footer>
         <Button
@@ -265,14 +267,16 @@ export function ColorPickerModal({
           onClick={async () => {
             // The API rejects course updates with no fields, so skip unchanged
             const colorChanged =
-              newColor !== undefined && newColor !== openColorPickerEvent.color;
+              picked !== undefined &&
+              (picked.color !== course?.color ||
+                picked.colorIndex !== course.colorIndex);
             if (colorChanged) {
               await updateWorksheetCourses({
                 action: 'update',
                 season: viewedSeason,
                 crn: openColorPickerEvent.listing.crn,
                 worksheetNumber: viewedWorksheetNumber,
-                color: newColor,
+                ...picked,
               });
             }
             if (themeChanged) await saveTheme();
@@ -285,7 +289,8 @@ export function ColorPickerModal({
       </Modal.Footer>
       {themePanelOpen && (
         <ThemePanel
-          selectedId={theme.id}
+          themes={colorThemes ?? [fallbackTheme]}
+          selectedTheme={theme}
           onSelect={setSelectedThemeId}
           onApplyToAll={applyThemeToAll}
           onClose={() => setThemePanelOpen(false)}
@@ -303,6 +308,7 @@ export function WorksheetMoveModal({
   const {
     viewedSeason,
     viewedWorksheetNumber,
+    courses,
     worksheetsRefresh,
     changeViewedWorksheetNumber,
     openWorksheetMoveEvent,
@@ -310,6 +316,7 @@ export function WorksheetMoveModal({
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
+      courses: state.courses,
       worksheetsRefresh: state.worksheetsRefresh,
       changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
       openWorksheetMoveEvent: state.openWorksheetMoveEvent,
@@ -340,6 +347,10 @@ export function WorksheetMoveModal({
       crn: event.listing.crn,
       worksheetNumber: newWorksheetNumber,
       color: event.color,
+      // Keep its slot so the course follows the new worksheet's theme
+      colorIndex:
+        courses.find((c) => c.listing.crn === event.listing.crn)?.colorIndex ??
+        null,
       hidden: false,
     });
 
@@ -436,37 +447,39 @@ function ColorInput({
 
 function Picker({
   color,
-  setColor,
+  onPick,
   presetColors,
   themeName,
   themePanelOpen,
   onToggleThemePanel,
 }: {
   readonly color: string;
-  readonly setColor: (newColor: string) => void;
+  readonly onPick: (picked: PickedColor) => void;
   readonly presetColors: readonly string[];
   readonly themeName: string;
   readonly themePanelOpen: boolean;
   readonly onToggleThemePanel: () => void;
 }) {
+  // Anything not picked from the theme's presets is a custom color
+  const pickCustom = (newColor: string) =>
+    onPick({ color: newColor, colorIndex: null });
   return (
     <div className={styles.pickerPanel}>
       <div className={styles.pickerSection}>
-        <HexColorPicker color={color} onChange={setColor} />
-        <ColorInput color={color} setColor={setColor} />
+        <HexColorPicker color={color} onChange={pickCustom} />
+        <ColorInput color={color} setColor={pickCustom} />
       </div>
       <hr className={styles.pickerDivider} />
       <div className={styles.pickerSection}>
         <div className={styles.presetColors}>
-          {presetColors.map((presetColor) => (
+          {presetColors.map((presetColor, i) => (
             <button
               type="button"
-              key={presetColor}
+              // Themes may repeat a color
+              key={i}
               className={styles.presetColor}
               style={{ background: presetColor }}
-              onClick={() => {
-                setColor(presetColor);
-              }}
+              onClick={() => onPick({ color: presetColor, colorIndex: i })}
               aria-label={`Set color to ${presetColor}`}
             />
           ))}
@@ -491,83 +504,354 @@ type ApplyThemeOptions = {
   overrideCustom: boolean;
 };
 
+// Matches the API's limit
+const MAX_THEMES = 20;
+
+type ThemeDraft = {
+  readonly id?: number;
+  readonly name: string;
+  readonly colors: readonly string[];
+};
+
+function ThemeOption({
+  theme,
+  selected,
+  onSelect,
+  onEdit,
+  onCopy,
+}: {
+  readonly theme: ColorTheme;
+  readonly selected: boolean;
+  readonly onSelect: () => void;
+  readonly onEdit: () => void;
+  readonly onCopy?: () => Promise<void>;
+}) {
+  return (
+    <div className={styles.themeOptionRow}>
+      <button
+        type="button"
+        className={clsx(
+          styles.themeOption,
+          styles.themeOptionWithAction,
+          selected && styles.themeOptionSelected,
+        )}
+        onClick={onSelect}
+        aria-pressed={selected}
+      >
+        <span className={styles.themeOptionName}>{theme.name}</span>
+        <span className={styles.themeSwatches}>
+          {/* Every other color gives a spread of both rows */}
+          {theme.colors
+            .filter((_, i) => i % 2 === 0)
+            .map((c, i) => (
+              <span
+                // Themes may repeat a color
+                key={i}
+                className={styles.themeSwatch}
+                style={{ background: c }}
+              />
+            ))}
+        </span>
+      </button>
+      {/* The default theme can't be edited, only copied */}
+      {theme.isDefault ? (
+        onCopy && (
+          <button
+            type="button"
+            className={styles.themeActionButton}
+            onClick={onCopy}
+            aria-label={`Copy ${theme.name}`}
+          >
+            <FaRegClone />
+          </button>
+        )
+      ) : (
+        <button
+          type="button"
+          className={styles.themeActionButton}
+          onClick={onEdit}
+          aria-label={`Edit ${theme.name}`}
+        >
+          <MdEdit />
+        </button>
+      )}
+    </div>
+  );
+}
+
 function ThemePanel({
-  selectedId,
+  themes,
+  selectedTheme,
   onSelect,
   onApplyToAll,
   onClose,
 }: {
-  readonly selectedId: ColorThemeId;
-  readonly onSelect: (id: ColorThemeId) => void;
+  readonly themes: readonly ColorTheme[];
+  readonly selectedTheme: ColorTheme;
+  readonly onSelect: (id: number) => void;
   readonly onApplyToAll: (options: ApplyThemeOptions) => Promise<void>;
   readonly onClose: () => void;
 }) {
+  const { worksheets, colorThemesRefresh, worksheetsRefresh } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      colorThemesRefresh: state.colorThemesRefresh,
+      worksheetsRefresh: state.worksheetsRefresh,
+    })),
+  );
   const [includeHidden, setIncludeHidden] = useState(false);
   const [overrideCustom, setOverrideCustom] = useState(false);
   const [applying, setApplying] = useState(false);
+  const [copying, setCopying] = useState(false);
+  const [draft, setDraft] = useState<ThemeDraft | null>(null);
+
+  const canAdd = themes.length < MAX_THEMES && !copying;
+
+  const copyTheme = async (name: string, colors: readonly string[]) => {
+    setCopying(true);
+    const created = await createColorTheme(`${name} (copy)`.slice(0, 32), [
+      ...colors,
+    ]);
+    if (created) await colorThemesRefresh();
+    setCopying(false);
+    setDraft(null);
+  };
+
+  // Labels for the worksheets (in any season) that use a theme
+  const worksheetsUsing = (id: number) =>
+    [...(worksheets ?? [])].flatMap(([season, seasonWorksheets]) =>
+      [...seasonWorksheets.values()]
+        .filter((ws) => ws.colorThemeId === id)
+        .map((ws) => `${ws.name} (${toSeasonString(season)})`),
+    );
+
+  const title = draft
+    ? draft.id === undefined
+      ? 'New theme'
+      : 'Edit theme'
+    : 'Worksheet theme';
 
   return (
-    <section className={styles.themePanel} aria-label="Worksheet theme">
+    <section className={styles.themePanel} aria-label={title}>
       <div className={styles.themePanelHeader}>
-        <span>Worksheet theme</span>
+        <span>{title}</span>
         <CloseButton onClick={onClose} aria-label="Close worksheet theme" />
       </div>
-      <div className={styles.themeList}>
-        {colorThemes.map((theme) => (
+      {draft ? (
+        <ThemeEditor
+          key={draft.id ?? 'new'}
+          draft={draft}
+          usedBy={draft.id === undefined ? [] : worksheetsUsing(draft.id)}
+          canCopy={canAdd}
+          onCopy={copyTheme}
+          onCancel={() => setDraft(null)}
+          onSaved={async (saved) => {
+            await colorThemesRefresh();
+            onSelect(saved.id);
+            setDraft(null);
+          }}
+          onDeleted={async () => {
+            // The API reset worksheets that used it to the default theme
+            await Promise.all([colorThemesRefresh(), worksheetsRefresh()]);
+            setDraft(null);
+          }}
+        />
+      ) : (
+        <>
+          <div className={styles.themePanelBody}>
+            <div className={styles.themeList}>
+              {themes.map((theme) => (
+                <ThemeOption
+                  key={theme.id}
+                  theme={theme}
+                  selected={theme.id === selectedTheme.id}
+                  onSelect={() => onSelect(theme.id)}
+                  onEdit={() => setDraft(theme)}
+                  onCopy={
+                    canAdd
+                      ? () => copyTheme(theme.name, theme.colors)
+                      : undefined
+                  }
+                />
+              ))}
+            </div>
+            {canAdd && (
+              <button
+                type="button"
+                className={clsx(styles.themeOption, styles.themeNew)}
+                // Start from whatever theme is selected
+                onClick={() =>
+                  setDraft({ name: '', colors: selectedTheme.colors })
+                }
+              >
+                <FaPlus />
+                New theme
+              </button>
+            )}
+          </div>
+          <fieldset
+            className={styles.themeApply}
+            aria-label="Apply to all courses"
+          >
+            <Button
+              variant="primary"
+              disabled={applying}
+              onClick={async () => {
+                setApplying(true);
+                await onApplyToAll({ includeHidden, overrideCustom });
+                setApplying(false);
+              }}
+            >
+              Apply to all
+            </Button>
+            <Form.Check
+              type="switch"
+              id="theme-include-hidden-switch"
+              label="Include hidden courses"
+              checked={includeHidden}
+              onChange={(e) => setIncludeHidden(e.currentTarget.checked)}
+            />
+            <Form.Check
+              type="switch"
+              id="theme-override-custom-switch"
+              label="Override custom colors"
+              checked={overrideCustom}
+              onChange={(e) => setOverrideCustom(e.currentTarget.checked)}
+            />
+          </fieldset>
+        </>
+      )}
+    </section>
+  );
+}
+
+function ThemeEditor({
+  draft,
+  usedBy,
+  canCopy,
+  onCopy,
+  onCancel,
+  onSaved,
+  onDeleted,
+}: {
+  readonly draft: ThemeDraft;
+  readonly usedBy: readonly string[];
+  readonly canCopy: boolean;
+  readonly onCopy: (name: string, colors: readonly string[]) => Promise<void>;
+  readonly onCancel: () => void;
+  readonly onSaved: (theme: ColorTheme) => Promise<void>;
+  readonly onDeleted: () => Promise<void>;
+}) {
+  const [name, setName] = useState(draft.name);
+  const [colors, setColors] = useState(draft.colors);
+  const [activeSlot, setActiveSlot] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  const setSlotColor = (color: string) => {
+    setColors((prev) => prev.map((c, i) => (i === activeSlot ? color : c)));
+  };
+  // The API only accepts #rrggbb
+  const normalizedColors = () => colors.map((c) => chroma(c).hex('rgb'));
+
+  const save = async () => {
+    setBusy(true);
+    const saved =
+      draft.id === undefined
+        ? await createColorTheme(name.trim(), normalizedColors())
+        : await updateColorTheme(draft.id, name.trim(), normalizedColors());
+    if (saved) await onSaved(saved);
+    setBusy(false);
+  };
+
+  const remove = async (id: number) => {
+    setBusy(true);
+    if (await deleteColorTheme(id)) await onDeleted();
+    setBusy(false);
+  };
+
+  return (
+    <>
+      <div className={clsx(styles.themePanelBody, styles.themeEditor)}>
+        <Input
+          type="text"
+          placeholder="Theme name"
+          aria-label="Theme name"
+          maxLength={32}
+          value={name}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setName(e.target.value)
+          }
+        />
+        <div className={styles.presetColors}>
+          {colors.map((c, i) => (
+            <button
+              type="button"
+              // Slots are positional and may repeat a color
+              key={i}
+              className={clsx(
+                styles.presetColor,
+                i === activeSlot && styles.presetColorActive,
+              )}
+              style={{ background: c }}
+              onClick={() => setActiveSlot(i)}
+              aria-label={`Edit color ${i + 1}`}
+              aria-pressed={i === activeSlot}
+            />
+          ))}
+        </div>
+        <HexColorPicker color={colors[activeSlot]} onChange={setSlotColor} />
+        <ColorInput color={colors[activeSlot]!} setColor={setSlotColor} />
+      </div>
+      {confirmingDelete && (
+        <p className={styles.themeDeleteWarning}>
+          {usedBy.length > 0
+            ? `Used by ${usedBy.join(', ')}. Those worksheets will switch to Classic and their courses keep their current colors.`
+            : 'Delete this theme?'}
+        </p>
+      )}
+      <div className={styles.themeEditorFooter}>
+        {draft.id !== undefined && (
+          <>
+            <button
+              type="button"
+              className={clsx(styles.textButton, styles.dangerText)}
+              disabled={busy}
+              onClick={() => {
+                if (confirmingDelete) void remove(draft.id!);
+                else setConfirmingDelete(true);
+              }}
+            >
+              {confirmingDelete ? 'Confirm' : 'Delete'}
+            </button>
+            <button
+              type="button"
+              className={styles.textButton}
+              disabled={busy || !canCopy}
+              onClick={() => onCopy(name.trim() || draft.name, colors)}
+            >
+              Copy
+            </button>
+          </>
+        )}
+        <div className={styles.themeEditorActions}>
           <button
             type="button"
-            key={theme.id}
-            className={clsx(
-              styles.themeOption,
-              theme.id === selectedId && styles.themeOptionSelected,
-            )}
-            onClick={() => onSelect(theme.id)}
-            aria-pressed={theme.id === selectedId}
+            className={styles.textButton}
+            onClick={onCancel}
           >
-            <span>{theme.name}</span>
-            <span className={styles.themeSwatches}>
-              {/* Every other color gives a spread of both rows */}
-              {theme.colors
-                .filter((_, i) => i % 2 === 0)
-                .map((c) => (
-                  <span
-                    key={c}
-                    className={styles.themeSwatch}
-                    style={{ background: c }}
-                  />
-                ))}
-            </span>
+            Cancel
           </button>
-        ))}
+          <Button
+            variant="primary"
+            disabled={busy || !name.trim()}
+            onClick={save}
+          >
+            Save
+          </Button>
+        </div>
       </div>
-      <fieldset className={styles.themeApply} aria-label="Apply to all courses">
-        <Button
-          variant="primary"
-          disabled={applying}
-          onClick={async () => {
-            setApplying(true);
-            await onApplyToAll({ includeHidden, overrideCustom });
-            setApplying(false);
-          }}
-        >
-          Apply to all
-        </Button>
-        <Form.Check
-          type="switch"
-          id="theme-include-hidden-switch"
-          label="Include hidden courses"
-          checked={includeHidden}
-          onChange={(e) => setIncludeHidden(e.currentTarget.checked)}
-        />
-        <Form.Check
-          type="switch"
-          id="theme-override-custom-switch"
-          label="Override custom colors"
-          checked={overrideCustom}
-          onChange={(e) => setOverrideCustom(e.currentTarget.checked)}
-        />
-      </fieldset>
-    </section>
+    </>
   );
 }
 

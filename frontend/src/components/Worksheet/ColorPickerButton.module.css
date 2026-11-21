@@ -165,14 +165,17 @@
   color: var(--color-text-secondary);
 }
 
-/* Sits left of the modal; .dialog lets .modal-content overflow */
+/* Sits left of the modal at its full height; .dialog lets .modal-content
+   overflow */
 .themePanel {
   position: absolute;
   top: 0;
+  bottom: 0;
   right: calc(100% + 12px);
+  display: flex;
+  flex-direction: column;
   width: max-content;
-  max-height: 100%;
-  overflow-y: auto;
+  max-width: 300px;
   padding: 1rem;
   background-color: var(--color-surface);
   border-radius: 8px;
@@ -187,10 +190,24 @@
   font-weight: 550;
 }
 
+/* Scrolls on its own so the header and footer stay in place */
+.themePanelBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .themeList {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.themeOptionRow {
+  position: relative;
 }
 
 .themeOption {
@@ -213,6 +230,43 @@
 
 .themeOption:hover {
   background-color: var(--color-surface-active);
+}
+
+.themeOptionName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Room for the edit or copy button */
+.themeOptionWithAction {
+  padding-right: 2.25rem;
+}
+
+.themeActionButton {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: flex;
+  padding: 0.25rem;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  transform: translateY(-50%);
+  transition: color 0.1s;
+}
+
+.themeActionButton:hover {
+  color: var(--color-text);
+}
+
+.themeNew {
+  flex-shrink: 0;
+  justify-content: center;
+  gap: 0.5rem;
+  border-style: dashed;
+  color: var(--color-text-secondary);
 }
 
 /* Matches react-select's default selected-option blue (season/worksheet dropdowns) */
@@ -244,15 +298,88 @@
   border-radius: 4px;
 }
 
+.themeEditor {
+  width: 250px;
+}
+
+.themeEditor :global(.react-colorful) {
+  flex-shrink: 0;
+  width: 100%;
+  height: 160px;
+}
+
+/* Inset so the scroll container doesn't clip it. On a pseudo-element because
+   index.css clears box-shadow on click-focused buttons */
+.presetColorActive {
+  position: relative;
+}
+
+.presetColorActive::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 2px #2684ff,
+    inset 0 0 0 4px var(--color-surface);
+}
+
+/* Wraps to the editor's width instead of widening the panel */
+.themeDeleteWarning {
+  width: 0;
+  min-width: 100%;
+  margin: 1rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.themeEditorFooter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.themeEditorActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.textButton {
+  padding: 0.375rem 0.5rem;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  transition: color 0.1s;
+}
+
+.textButton:hover {
+  color: var(--color-text);
+}
+
+.dangerText,
+.dangerText:hover {
+  color: var(--bs-danger);
+}
+
 /* No room beside the modal, so cover it instead */
 @media (max-width: calc(1200px - 0.5px)) {
   .themePanel {
     inset: 0;
     width: auto;
-    max-height: none;
+    max-width: none;
 
     /* Above react-colorful's pointers, which go up to z-index 3 */
     z-index: 4;
+  }
+
+  .themeEditor {
+    width: auto;
   }
 }
 

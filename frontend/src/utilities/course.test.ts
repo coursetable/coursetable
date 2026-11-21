@@ -57,6 +57,7 @@ function makeWorksheetCourse(
   return {
     crn: listing.crn,
     color: '#ffffff',
+    colorIndex: null,
     listing,
     hidden,
   };

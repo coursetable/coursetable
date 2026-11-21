@@ -27,7 +27,10 @@ import {
   type WorksheetNumberOption,
 } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
-import { randomThemeColor } from '../../utilities/colorTheme';
+import {
+  getWorksheetTheme,
+  randomThemeColor,
+} from '../../utilities/colorTheme';
 import {
   isInWorksheet,
   checkConflict,
@@ -141,14 +144,19 @@ function WorksheetToggleButton({
   readonly modal: boolean;
   readonly inWorksheet?: boolean;
 }) {
-  const { worksheets, worksheetsRefresh, getRelevantWorksheetNumber } =
-    useStore(
-      useShallow((state) => ({
-        worksheets: state.worksheets,
-        worksheetsRefresh: state.worksheetsRefresh,
-        getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
-      })),
-    );
+  const {
+    worksheets,
+    colorThemes,
+    worksheetsRefresh,
+    getRelevantWorksheetNumber,
+  } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      colorThemes: state.colorThemes,
+      worksheetsRefresh: state.worksheetsRefresh,
+      getRelevantWorksheetNumber: state.getRelevantWorksheetNumber,
+    })),
+  );
   const client = useApolloClient();
   const pendingLatestChoiceRef = useRef<
     ((choice: 'latest' | 'historical' | 'cancel') => void) | null
@@ -314,8 +322,12 @@ function WorksheetToggleButton({
         season: targetSeason,
         crn: targetCrn,
         worksheetNumber: targetWorksheetNumber,
-        color: randomThemeColor(
-          worksheets?.get(targetSeason)?.get(targetWorksheetNumber)?.colorTheme,
+        ...randomThemeColor(
+          getWorksheetTheme(
+            colorThemes,
+            worksheets?.get(targetSeason)?.get(targetWorksheetNumber)
+              ?.colorThemeId,
+          ),
         ),
         hidden: false,
       });
@@ -332,6 +344,7 @@ function WorksheetToggleButton({
       listing.course.same_course_id,
       selectedWorksheet,
       worksheets,
+      colorThemes,
       worksheetsRefresh,
     ],
   );

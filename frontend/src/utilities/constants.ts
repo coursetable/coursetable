@@ -417,125 +417,20 @@ export const evalQuestionTags = [
 
 // Preset palettes for the worksheet color picker. Each has 10 colors laid out
 // as two rows of 5.
-export const colorThemes = [
-  {
-    id: 'classic',
-    name: 'Classic',
-    colors: [
-      '#31a4d4',
-      '#2cafb7',
-      '#26ba9a',
-      '#49be85',
-      '#6cc26f',
-      '#a3b24b',
-      '#daa126',
-      '#df8653',
-      '#ca5f53',
-      '#ba7881',
-    ],
-  },
-  {
-    id: 'sakura',
-    name: 'Sakura',
-    colors: [
-      '#f7b7c8',
-      '#ef8fa8',
-      '#e06c8a',
-      '#c94f6d',
-      '#a83a52',
-      '#b8d8a8',
-      '#8fbf7f',
-      '#6a9f5b',
-      '#4f8a5b',
-      '#3b6e47',
-    ],
-  },
-  {
-    id: 'ocean',
-    name: 'Ocean',
-    colors: [
-      '#0b3d5c',
-      '#145c80',
-      '#1f7aa3',
-      '#2e98c2',
-      '#56b4d3',
-      '#7fcbe0',
-      '#1a9e8f',
-      '#2fb8a3',
-      '#5ccdb9',
-      '#8ee0cf',
-    ],
-  },
-  {
-    id: 'sunset',
-    name: 'Sunset',
-    colors: [
-      '#5b2a86',
-      '#8a3b8f',
-      '#b84a8c',
-      '#e0607e',
-      '#f07f6a',
-      '#f59e5b',
-      '#f7b84b',
-      '#e86a3a',
-      '#c94b3a',
-      '#9c3a4f',
-    ],
-  },
-  {
-    id: 'pastel',
-    name: 'Pastel',
-    colors: [
-      '#f6c1c1',
-      '#f8d9a8',
-      '#f5eba3',
-      '#c7e8b0',
-      '#a8dcd1',
-      '#a9cdeb',
-      '#c3b8ec',
-      '#e2b8e6',
-      '#f2c4dc',
-      '#d6d2c4',
-    ],
-  },
-  {
-    // Shades of Yale blue, light to dark
-    id: 'bowwowwow',
-    name: 'Bow Wow Wow',
-    colors: [
-      '#7fa9d9',
-      '#5d90cc',
-      '#3f78bd',
-      '#286dc0',
-      '#1f5ca8',
-      '#174b8f',
-      '#0f4079',
-      '#00356b',
-      '#002d5c',
-      '#00264d',
-    ],
-  },
-  {
-    // Light end stays dark enough for white text, dark end stays visible in
-    // dark mode
-    id: 'greyscale',
-    name: 'Greyscale',
-    colors: [
-      '#a3a3a3',
-      '#989898',
-      '#8c8c8c',
-      '#808080',
-      '#747474',
-      '#686868',
-      '#5d5d5d',
-      '#525252',
-      '#474747',
-      '#3d3d3d',
-    ],
-  },
-] as const;
-
-export type ColorThemeId = (typeof colorThemes)[number]['id'];
+// Used until the user's own themes load, and for imported worksheets. The API
+// seeds each user with a copy (colorThemes.utils.ts); keep the two in sync.
+export const classicColors = [
+  '#31a4d4',
+  '#2cafb7',
+  '#26ba9a',
+  '#49be85',
+  '#6cc26f',
+  '#a3b24b',
+  '#daa126',
+  '#df8653',
+  '#ca5f53',
+  '#ba7881',
+];
 
 export const barChartColors = [
   '#f54242',

@@ -75,12 +75,13 @@ export function useWorksheetInfo(
           : worksheetNumber(seasonCode),
       );
       if (!worksheet) continue;
-      for (const { crn, color, hidden } of worksheet.courses) {
+      for (const { crn, color, colorIndex, hidden } of worksheet.courses) {
         const listing = courses[seasonCode]!.data.get(crn);
         if (listing) {
           dataReturn.push({
             crn,
             color,
+            colorIndex: colorIndex ?? null,
             listing,
             hidden,
           });

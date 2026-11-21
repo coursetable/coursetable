@@ -47,6 +47,7 @@ type CourseImportAction = {
   worksheetNumber: number;
   action: 'add';
   color: string;
+  colorIndex: number | null;
   hidden: boolean;
 };
 
@@ -71,6 +72,7 @@ function buildCourseImports(
       worksheetNumber: targetWorksheetNumber,
       action: 'add',
       color: course.color,
+      colorIndex: course.colorIndex,
       hidden: course.hidden ?? false,
     });
   }

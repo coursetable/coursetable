@@ -336,7 +336,7 @@ export function getPreviewCalendarEvent(
   // Hidden courses are skipped by getCalendarEvents, so force visible here
   const [event] = getCalendarEvents(
     'rbc',
-    [{ crn: listing.crn, color, listing, hidden: false }],
+    [{ crn: listing.crn, color, colorIndex: null, listing, hidden: false }],
     season,
   );
   if (event) return event;
