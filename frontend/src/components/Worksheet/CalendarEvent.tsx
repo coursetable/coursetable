@@ -36,6 +36,27 @@ function formatMinutes(minutes: number) {
   return `${rounded} minute${rounded === 1 ? '' : 's'}`;
 }
 
+export function CalendarEventLines({
+  title,
+  subtitle,
+}: {
+  readonly title: string;
+  readonly subtitle?: string;
+}) {
+  return (
+    <div className={styles.eventContent}>
+      <strong className={clsx(styles.eventLine, styles.courseCodeText)}>
+        {title}
+      </strong>
+      {subtitle !== undefined && (
+        <div className={styles.eventLine}>
+          <span className={styles.lastUpdatedText}>{subtitle}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function CalendarEventBody({
   event,
   onWalkModalInteraction,
