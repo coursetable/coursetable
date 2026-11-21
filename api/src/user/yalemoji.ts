@@ -1,6 +1,6 @@
 import { isDev, YALEMOJI_API_KEY, YALEMOJI_API_URL } from '../config.js';
 
-type YaleMojiAvatar = {
+export type YaleMojiAvatar = {
   version: number;
   png_url: string;
   svg_url: string;
@@ -17,6 +17,32 @@ function isAssetUrl(value: unknown): value is string {
   }
 }
 
+function isAvatar(
+  avatar: Partial<YaleMojiAvatar> | null | undefined,
+): avatar is YaleMojiAvatar {
+  return Boolean(
+    avatar &&
+    Number.isSafeInteger(avatar.version) &&
+    avatar.version! >= 1 &&
+    isAssetUrl(avatar.png_url) &&
+    isAssetUrl(avatar.svg_url) &&
+    isAssetUrl(avatar.background_url),
+  );
+}
+
+function apiOrigin() {
+  const origin = new URL(YALEMOJI_API_URL);
+  const local = ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname);
+  if (
+    origin.username ||
+    origin.password ||
+    (origin.protocol !== 'https:' &&
+      !(origin.protocol === 'http:' && local && isDev))
+  )
+    throw new Error('Invalid YaleMoji API URL');
+  return origin;
+}
+
 // Adapted from Yalies. Only the backend sends the app key; the browser gets
 // public, opaque asset URLs. Missing avatars and outages fall back to initials.
 export async function getYaleMojiAvatar(
@@ -25,15 +51,7 @@ export async function getYaleMojiAvatar(
   // Only null confirms a missing avatar; outages must not trigger the banner.
   if (!YALEMOJI_API_KEY || !/^[a-z][a-z\d]*$/iu.test(netId)) return undefined;
   try {
-    const origin = new URL(YALEMOJI_API_URL);
-    const local = ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname);
-    if (
-      origin.username ||
-      origin.password ||
-      (origin.protocol !== 'https:' &&
-        !(origin.protocol === 'http:' && local && isDev))
-    )
-      throw new Error('Invalid YaleMoji API URL');
+    const origin = apiOrigin();
 
     const response = await fetch(
       new URL(
@@ -51,16 +69,7 @@ export async function getYaleMojiAvatar(
     const { avatar } = (await response.json()) as {
       avatar?: Partial<YaleMojiAvatar>;
     };
-    if (
-      !avatar ||
-      typeof avatar.version !== 'number' ||
-      !Number.isSafeInteger(avatar.version) ||
-      avatar.version < 1 ||
-      !isAssetUrl(avatar.png_url) ||
-      !isAssetUrl(avatar.svg_url) ||
-      !isAssetUrl(avatar.background_url)
-    )
-      throw new Error('Invalid YaleMoji avatar response');
+    if (!isAvatar(avatar)) throw new Error('Invalid YaleMoji avatar response');
 
     return {
       version: avatar.version,
@@ -71,6 +80,46 @@ export async function getYaleMojiAvatar(
   } catch {
     console.warn(
       '[YaleMoji] Avatar lookup unavailable; using profile initials.',
+    );
+    return undefined;
+  }
+}
+
+// The upstream lookup endpoint accepts at most 100 NetIDs per request.
+export async function getYaleMojiAvatars(
+  netids: string[],
+): Promise<{ [key: string]: YaleMojiAvatar | null } | undefined> {
+  if (
+    !YALEMOJI_API_KEY ||
+    netids.length > 100 ||
+    netids.some((id) => !/^[a-z][a-z\d]*$/iu.test(id))
+  )
+    return undefined;
+  const ids = [...new Set(netids.map((id) => id.toLowerCase()))];
+  if (!ids.length) return {};
+  try {
+    const response = await fetch(new URL('/api/v1/lookup', apiOrigin()), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${YALEMOJI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ netids: ids }),
+      signal: AbortSignal.timeout(3000),
+      redirect: 'error',
+    });
+    if (!response.ok) throw new Error(`YaleMoji status ${response.status}`);
+    const { users } = (await response.json()) as {
+      users?: { [key: string]: Partial<YaleMojiAvatar> | null };
+    };
+    if (!users || ids.some((id) => users[id] !== null && !isAvatar(users[id])))
+      throw new Error('Invalid YaleMoji batch response');
+    return Object.fromEntries(
+      ids.map((id) => [id, users[id] as YaleMojiAvatar | null]),
+    );
+  } catch {
+    console.warn(
+      '[YaleMoji] Batch lookup unavailable; using the default avatar.',
     );
     return undefined;
   }

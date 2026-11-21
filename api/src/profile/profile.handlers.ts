@@ -16,6 +16,7 @@ import {
   studentFriends,
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
+import { getYaleMojiAvatar } from '../user/yalemoji.js';
 
 const VisibilitySettingSchema = z.enum(['self', 'friends', 'public']);
 
@@ -224,7 +225,11 @@ export const getSharedProfile = async (
 
   const relation = await getRelation(viewerNetId, targetNetId);
 
-  res.json(buildSharedProfileResponse(profile, relation));
+  const yalemoji = await getYaleMojiAvatar(targetNetId);
+  res.json({
+    ...buildSharedProfileResponse(profile, relation),
+    yalemoji: yalemoji ?? null,
+  });
 };
 
 export const updateOwnProfile = async (

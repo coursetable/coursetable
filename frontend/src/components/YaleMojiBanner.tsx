@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react';
+import { FaTimes } from 'react-icons/fa';
 import YaleMojiLink from './Navbar/YaleMojiLink';
 import { subscribeYaleMojiBanner } from '../hooks/yalemojiCache';
 import { useStore } from '../store';
+import { useLocalStorageState } from '../utilities/browserStorage';
 import styles from './YaleMojiBanner.module.css';
 
+const BANNER_ID = 1;
+
 export default function YaleMojiBanner() {
+  const [lastDismissed, setLastDismissed] = useLocalStorageState(
+    'lastDismissedYalemojiBanner',
+    0,
+  );
   const authStatus = useStore((state) => state.authStatus);
   const netId = useStore((state) => state.user?.netId);
   const [loaded, setLoaded] = useState(false);
@@ -31,6 +39,7 @@ export default function YaleMojiBanner() {
   }, [authStatus, netId]);
 
   const open =
+    lastDismissed !== BANNER_ID &&
     authStatus === 'authenticated' &&
     Boolean(netId) &&
     loaded &&
@@ -47,13 +56,20 @@ export default function YaleMojiBanner() {
             rel="noopener noreferrer"
             tabIndex={open ? 0 : -1}
           >
-            <span className={styles.description}>
-              Your personalized Yale avatar
-            </span>
+            <span>Your avatar across Yale</span>
             <span className={styles.action}>
               Make your Yalemoji <span aria-hidden="true">↗</span>
             </span>
           </YaleMojiLink>
+          <button
+            type="button"
+            className={styles.closeButton}
+            aria-label="Dismiss Yalemoji banner"
+            tabIndex={open ? 0 : -1}
+            onClick={() => setLastDismissed(BANNER_ID)}
+          >
+            <FaTimes size={10} />
+          </button>
         </div>
       </div>
     </div>

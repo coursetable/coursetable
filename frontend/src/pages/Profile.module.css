@@ -7,10 +7,18 @@
 
 .headerContainer {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
+}
+
+.profileActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .profileHeader {
@@ -20,41 +28,11 @@
   margin: 0;
 }
 
-.profileAvatar,
-.profileAvatarAnon {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    border-color var(--trans-dur),
-    background-color var(--trans-dur),
-    color var(--trans-dur);
-}
-
 .profileAvatar {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-}
-
-.profileAvatar span {
-  font-weight: bold;
-  transform: scaleX(0.8);
-}
-
-.profileAvatarAnon {
-  background-color: var(--color-bg-button);
-  color: var(--color-text-secondary);
-}
-
-[data-theme='dark'] .profileAvatarAnon {
-  background-color: #525252;
-}
-
-[data-theme='dark'] .profileAvatar {
-  color: var(--color-text-dark);
+  display: block;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
 }
 
 .profileCard {
@@ -202,7 +180,7 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 0.25rem;
   padding: 0.5rem 0.75rem;
   margin: -0.25rem 0;
@@ -402,4 +380,11 @@
   .friendItem .friendActions {
     align-self: flex-end;
   }
+}
+
+.friendIdentityText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
 }

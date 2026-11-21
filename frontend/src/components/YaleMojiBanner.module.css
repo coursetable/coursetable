@@ -29,15 +29,17 @@
 }
 
 .content {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 38px;
-  padding: 0 16px;
+  padding: 0 40px;
 }
 
 .link {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 10px;
@@ -78,10 +80,30 @@
   }
 }
 
-@media (max-width: 480px) {
-  .description {
-    display: none;
-  }
+.closeButton {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background: rgb(255 255 255 / 15%);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -34,8 +34,7 @@
   display: contents;
 }
 
-.meIcon,
-.anonIcon {
+.meIcon {
   width: 38px;
   height: 38px;
   display: flex;
@@ -43,9 +42,6 @@
     border-color var(--trans-dur),
     background-color var(--trans-dur),
     color var(--trans-dur);
-}
-
-.meIcon {
   border-radius: 9px;
   background-color: var(--color-primary);
   color: var(--color-text-light);
@@ -69,27 +65,13 @@
   object-fit: contain;
 }
 
-.meIcon span {
-  font-weight: bold;
-  transform: scaleX(0.8);
+.headerAvatar.headerAvatarFallback {
+  width: 42px;
+  height: 42px;
 }
 
 .meIcon:hover {
   color: var(--color-text-light);
-}
-
-.anonIcon {
-  border-radius: 50%;
-  background-color: var(--color-bg-button);
-  color: var(--color-text-secondary);
-}
-
-.anonIcon:hover {
-  color: var(--color-primary);
-}
-
-[data-theme='dark'] .anonIcon {
-  background-color: #525252;
 }
 
 [data-theme='dark'] .meIcon {
@@ -120,77 +102,122 @@
   padding: 2px 1rem;
 }
 
-.headerInitials {
-  min-height: 42px;
-  display: grid;
-  place-items: center;
-  font-size: 2.2rem;
-  line-height: 1;
+[data-theme='dark'] .identityHeader {
+  color: var(--color-text-dark);
 }
 
-.headerInitials span {
+.profileLink {
+  color: inherit;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  border-radius: 12px;
+}
+
+.profileLink:hover {
+  color: inherit;
+}
+
+.headerInitials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.profileAvatarFrame {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.identityHeader:has(.profileLink) {
+  cursor: pointer;
+}
+
+.profileLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.navInitials {
   font-weight: bold;
   transform: scaleX(0.8);
 }
 
-.createYalemoji {
-  margin-top: 0.65rem;
-  padding: 0.4rem 0.85rem;
-  border: 1px solid #fff;
-  border-radius: 999px;
-  background: #fff;
-  color: var(--color-primary);
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.2;
-  text-decoration: none;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+.profileLink .headerAvatar {
+  transition: transform 160ms ease;
 }
 
-.createYalemoji:hover,
-.createYalemoji:focus-visible {
-  background: transparent;
-  color: #fff;
+.identityHeader:hover .headerAvatar,
+.profileLink:focus-visible .headerAvatar {
+  transform: translateY(-4px) scale(1.025);
 }
 
-.headerEdit {
+.profileLink:active .headerAvatar {
+  transform: scale(0.96);
+}
+
+.profileLink:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.profileLabel {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  color: var(--color-text-light);
-  text-decoration: none;
-  transition: opacity 0.1s;
+  bottom: 2px;
+  left: 50%;
+  transform: translate(-50%, 4px);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: transparent;
+  backdrop-filter: blur(12px);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
 }
 
-.headerEdit:hover {
-  color: var(--color-text-light);
+.profileLabelText {
+  color: #172638;
 }
 
-.headerEditIcon {
-  display: block;
-  width: 20px;
-  height: auto;
+.profileLink:has(.headerAvatarFallback) .profileLabel {
+  bottom: -24px;
   opacity: 1;
-  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 40%));
-  transition: filter 0.12s ease;
+  transform: translate(-50%, 0);
 }
 
-.headerEdit:hover .headerEditIcon,
-.headerEdit:focus-visible .headerEditIcon {
+.profileLink:has(.headerAvatarFallback) .profileLabelText {
+  color: inherit;
+}
+
+.identityHeader:hover .headerAvatarFallback,
+.profileLink:focus-visible .headerAvatarFallback {
+  transform: none;
+}
+
+.profileLink:has(.headerAvatarFallback):focus-visible .profileLabelText,
+.identityHeader:hover
+  .profileLink:has(.headerAvatarFallback)
+  .profileLabelText {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.identityHeader:hover .profileLabel,
+.profileLink:focus-visible .profileLabel {
   opacity: 1;
-  filter: drop-shadow(0 1px 3px rgb(0 0 0 / 60%));
-}
-
-[data-theme='dark'] .identityHeader,
-[data-theme='dark'] .identityHeader .headerEdit,
-[data-theme='dark'] .identityHeader .headerEdit:hover {
-  color: var(--color-text-dark);
+  transform: translate(-50%, 0);
 }
 
 .menuItems {
@@ -226,6 +253,11 @@
     height: 160px;
   }
 
+  .profileLabel {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
   .menuItems {
     padding: 0.55rem 0 0.2rem;
   }
@@ -236,7 +268,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .createYalemoji {
+  .profileLink .headerAvatar,
+  .profileLabel {
     transition: none;
+  }
+
+  .identityHeader:hover .headerAvatar,
+  .profileLink:focus-visible .headerAvatar,
+  .profileLink:active .headerAvatar {
+    transform: none;
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
@@ -13,25 +13,31 @@ import {
   FcFeedback,
   FcPuzzle,
   FcNews,
-  FcBusinessman,
   FcDownload,
   FcLock,
 } from 'react-icons/fc';
 
 import { useShallow } from 'zustand/react/shallow';
-import YaleMojiLink from './YaleMojiLink';
 import { API_ENDPOINT } from '../../config';
 import { useYaleMoji } from '../../hooks/useYaleMoji';
 import { clearYaleMojiCache } from '../../hooks/yalemojiCache';
-import yalemojiIcon from '../../images/yalemoji.svg';
-import { logout, type YaleMojiAvatar } from '../../queries/api';
+import { logout, type UserInfo, type YaleMojiAvatar } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import { createCatalogLink } from '../../utilities/navigation';
+import { YaleMojiImage } from '../PeopleYaleMoji';
 import { SurfaceComponent, TextComponent } from '../Typography';
 import styles from './MeDropdown.module.css';
 
 const NOOP = () => {};
+
+function getInitials(user: UserInfo | undefined) {
+  const first = user?.firstName?.trim()[0];
+  const last = user?.lastName?.trim()[0];
+  return first && last
+    ? `${first}${last}`.toUpperCase()
+    : user?.netId.slice(0, 2).toUpperCase();
+}
 
 function DropdownItem({
   icon: Icon,
@@ -98,8 +104,6 @@ function DropdownItem({
 function DropdownContent({
   isExpanded,
   setIsExpanded,
-  initials,
-  fullName,
   avatar,
   onAvatarError,
   showMobileNavLinks,
@@ -108,14 +112,13 @@ function DropdownContent({
 }: {
   readonly isExpanded: boolean;
   readonly setIsExpanded: (visible: boolean) => void;
-  readonly initials: string | undefined;
-  readonly fullName: string | undefined;
   readonly avatar: YaleMojiAvatar | null;
   readonly onAvatarError: () => void;
   readonly showMobileNavLinks: boolean;
   readonly showInstallAsApp: boolean;
   readonly onInstallAsApp: () => void;
 }) {
+  const navigate = useNavigate();
   const { isMobile, isTablet } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -134,6 +137,26 @@ function DropdownContent({
     ? { backgroundImage: `url("${avatar.background_url}")` }
     : undefined;
 
+  const identityAvatar = avatar ? (
+    <YaleMojiImage
+      avatar={avatar}
+      className={styles.headerAvatar}
+      trimPadding={false}
+      onAvatarError={onAvatarError}
+    />
+  ) : (
+    <span
+      className={clsx(
+        styles.headerAvatar,
+        styles.headerAvatarFallback,
+        styles.headerInitials,
+      )}
+      aria-hidden="true"
+    >
+      {getInitials(user)}
+    </span>
+  );
+
   return (
     <SurfaceComponent
       elevated
@@ -147,49 +170,59 @@ function DropdownContent({
           collapsing animation */}
         <div>
           <div className={styles.identityHeader} style={avatarStyle}>
-            {avatar && (
-              <YaleMojiLink
-                className={styles.headerEdit}
-                href="https://yalemoji.com/editor?ref=coursetable"
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label="Edit your Yalemoji"
-                title="Edit your Yalemoji"
+            {authStatus === 'authenticated' ? (
+              <NavLink
+                to="/profile"
+                className={styles.profileLink}
+                aria-label="Edit Profile"
+                onClick={async (event) => {
+                  if (
+                    event.button !== 0 ||
+                    event.metaKey ||
+                    event.ctrlKey ||
+                    event.shiftKey ||
+                    event.altKey
+                  )
+                    return;
+                  event.preventDefault();
+                  const image =
+                    event.currentTarget.firstElementChild?.firstElementChild;
+                  if (
+                    image &&
+                    typeof image.animate === 'function' &&
+                    !window.matchMedia('(prefers-reduced-motion: reduce)')
+                      .matches
+                  ) {
+                    try {
+                      await image.animate(
+                        [
+                          {
+                            transform: window.getComputedStyle(image).transform,
+                          },
+                          { transform: 'translateY(0) scale(0.96)' },
+                        ],
+                        { duration: 120, easing: 'ease-out' },
+                      ).finished;
+                    } catch {
+                      /* An interrupted animation must not prevent navigation. */
+                    }
+                  }
+                  setIsExpanded(false);
+                  scrollToTop(event);
+                  void navigate('/profile');
+                }}
               >
-                <img
-                  src={yalemojiIcon}
-                  alt=""
-                  className={styles.headerEditIcon}
-                  width={20}
-                  height={16}
-                />
-              </YaleMojiLink>
-            )}
-            {avatar ? (
-              <img
-                src={avatar.png_url}
-                alt="Your Yalemoji"
-                className={styles.headerAvatar}
-                onError={onAvatarError}
-              />
+                <span className={styles.profileAvatarFrame}>
+                  {identityAvatar}
+                  <span className={styles.profileLabel}>
+                    <span className={styles.profileLabelText}>
+                      Edit Profile
+                    </span>
+                  </span>
+                </span>
+              </NavLink>
             ) : (
-              <div className={styles.headerInitials} title={fullName}>
-                {initials ? (
-                  <span>{initials}</span>
-                ) : (
-                  <BsFillPersonFill size={40} />
-                )}
-              </div>
-            )}
-            {!avatar && (
-              <YaleMojiLink
-                className={styles.createYalemoji}
-                href="https://yalemoji.com/create?ref=coursetable"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Make your Yalemoji
-              </YaleMojiLink>
+              identityAvatar
             )}
           </div>
           <div className={styles.menuItems}>
@@ -284,16 +317,6 @@ function DropdownContent({
                 Tutorial
               </DropdownItem>
             )}
-            {authStatus === 'authenticated' && (
-              <DropdownItem
-                icon={FcBusinessman}
-                to="/profile"
-                onClick={showMobileNavLinks ? closeAndScroll : undefined}
-                hideIcon={showMobileNavLinks}
-              >
-                Profile (beta)
-              </DropdownItem>
-            )}
             {authStatus === 'authenticated' ? (
               <DropdownItem
                 icon={FaSignOutAlt}
@@ -347,9 +370,7 @@ function MeDropdown({
     authStatus === 'authenticated' ? user?.netId : undefined,
   );
   const hasName = Boolean(user?.firstName && user.lastName);
-  const initials = hasName
-    ? `${user!.firstName![0]!}${user!.lastName![0]!}`
-    : undefined;
+  const initials = getInitials(user);
   const fullName = hasName
     ? `${user!.firstName!} ${user!.lastName!}`
     : undefined;
@@ -364,41 +385,33 @@ function MeDropdown({
     >
       <button
         type="button"
-        className={clsx(
-          avatar || hasName ? styles.meIcon : styles.anonIcon,
-          !showMobileNavLinks && 'm-auto',
-        )}
+        className={clsx(styles.meIcon, !showMobileNavLinks && 'm-auto')}
         style={
           avatar
             ? { backgroundImage: `url("${avatar.background_url}")` }
             : undefined
         }
         onClick={() => setIsComponentVisible(!isComponentVisible)}
+        title={fullName}
         aria-label="Profile"
         aria-expanded={isComponentVisible}
       >
         {avatar ? (
-          <img
-            src={avatar.png_url}
-            alt=""
+          <YaleMojiImage
+            avatar={avatar}
             className={styles.buttonAvatar}
-            onError={onAvatarError}
+            trimPadding={false}
+            onAvatarError={onAvatarError}
           />
-        ) : hasName ? (
-          <span title={fullName}>{initials}</span>
+        ) : initials ? (
+          <span className={styles.navInitials}>{initials}</span>
         ) : (
-          <BsFillPersonFill
-            className="m-auto"
-            size={20}
-            color={isComponentVisible ? '#007bff' : undefined}
-          />
+          <BsFillPersonFill size={20} />
         )}
       </button>
       <DropdownContent
         isExpanded={isComponentVisible}
         setIsExpanded={setIsComponentVisible}
-        initials={initials}
-        fullName={fullName}
         avatar={avatar}
         onAvatarError={onAvatarError}
         showMobileNavLinks={showMobileNavLinks}

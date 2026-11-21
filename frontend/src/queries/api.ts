@@ -609,6 +609,35 @@ export const yaleMojiAvatarSchema = z.object({
 
 export type YaleMojiAvatar = z.infer<typeof yaleMojiAvatarSchema>;
 
+export async function fetchYaleMojiImage(src: string) {
+  const response = await fetch(
+    `${API_ENDPOINT}/api/yalemoji/image?${new URLSearchParams({ src })}`,
+    { credentials: 'include', signal: AbortSignal.timeout(7000) },
+  );
+  if (!response.ok) throw new Error('Yalemoji image unavailable');
+  return response.blob();
+}
+
+// Optional people-list avatars must not interrupt friend search with toasts.
+export async function getYaleMojiAvatars(netids: string[]) {
+  try {
+    const response = await fetch(`${API_ENDPOINT}/api/user/yalemoji/lookup`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ netids }),
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!response.ok) return undefined;
+    const result = z
+      .object({ users: z.record(yaleMojiAvatarSchema.nullable()) })
+      .safeParse(await response.json());
+    return result.success ? result.data.users : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 // Optional avatars should never show an error toast or block sign-in.
 export async function getYaleMojiAvatar(
   netId: NetId,
@@ -724,6 +753,7 @@ export function revokeEvaluationsAccess() {
 
 const sharedProfileSchema = z.object({
   netId: netIdSchema,
+  yalemoji: yaleMojiAvatarSchema.nullable().optional(),
   relation: z.union([
     z.literal('self'),
     z.literal('friend'),

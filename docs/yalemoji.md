@@ -2,10 +2,18 @@
 
 CourseTable uses the same avatar lookup as Yalies. The profile button and identity
 header show the signed-in user's Yalemoji and its saved background. Users without
-an avatar, with a failed image, or during a service outage see their initials.
+an avatar, with a failed image, or during a service outage see Yalemoji's default
+avatar.
 Returning from a Yalemoji visit refreshes the avatar after creating or editing it.
-The identity header shows a “Make your Yalemoji” button without an avatar and an
-edit icon in the bottom-right corner with one. Avatars fill the header at 104px
+Without an avatar, the identity header shows name initials and a persistent
+Profile label; it has no Make your Yalemoji button. Its
+avatar links to the same `/profile` destination as the former Profile (beta) menu
+item. Hover anywhere in the identity header (or keyboard focus on the avatar) lifts
+and slightly enlarges the face and reveals a blurred, translucent Profile label.
+The label uses dark text over a transparent backdrop blur, with no painted
+white background or drop shadow. Clicking shrinks it briefly before opening the
+profile; reduced-motion preferences skip the animation. The separate edit icon
+and Profile (beta) menu item have been removed. Avatars fill the header at 104px
 on desktop and 160px on mobile, with an undistorted square background tile.
 
 After page load, a slide-down banner invites authenticated users with a confirmed
@@ -71,3 +79,59 @@ banner. Cached avatars persist across reloads and refresh five seconds after pag
 load; an uncached avatar loads immediately. Focus and visibility changes refresh
 only after following a Yalemoji link. Logout clears the cache, and a failed lookup
 preserves the previous avatar.
+
+## Friends and friend search
+
+Friend lists (desktop and mobile), friend search results, and incoming requests
+show a transparent Yalemoji in a compact 32px slot to the left of the name. These rows render only
+`png_url`, without the saved background, and fall back to Yalemoji's default
+avatar (`https://www.yalemoji.com/assets/default-avatar.png?v=3`) when the avatar
+is missing or fails to load. Names and friend actions remain usable
+during an avatar-service outage.
+
+`POST /api/user/yalemoji/lookup` requires a CourseTable session and accepts
+`{ netids: string[] }`, with at most 100 valid NetIDs. It calls Yalemoji's
+`POST /api/v1/lookup` server-side and validates the returned avatars. The response
+is `{ users: { [netid]: avatar | null } }`; unavailable lookups return 503 and
+responses use `Cache-Control: private, no-store`.
+
+Rows mounted together share batches of up to 100, with duplicate lookups shared
+between menus. Successful and confirmed-missing results are cached in memory
+for five minutes. Reopening a menu after expiry refreshes those avatars; failed
+lookups preserve the previous avatar and can retry on a later mount.
+
+Transparent image padding is measured per asset and removed on canvas before
+rendering, so the visible character fills the slot without increasing row
+height. The default avatar is trimmed the same way. Public, allowlisted image reads
+use `/api/yalemoji/image?src=...` because the public storage bucket does not
+allow cross-origin canvas reads. This endpoint only accepts the Yalemoji asset
+bucket and the default avatar URL, follows no redirects, and sends no API key.
+Cropped images are shared in a bounded memory cache by immutable source URL.
+If cropping is unavailable (for example on an older browser or during a proxy
+outage), the original public image still renders. Image reads reject redirects,
+unapproved URLs, non-PNG responses, and streams larger than 2 MiB.
+
+Shared `/u/:netId` profiles and the signed-in user's profile header use the same
+trimmed image renderer with the default Yalemoji fallback. Their 80px faces sit centered above the profile heading. Shared-profile responses include optional `yalemoji`
+metadata only after the existing profile visibility checks, including anonymous
+view restrictions. The navbar and identity header use the same renderer while
+preserving their existing sizes, backgrounds, and edit/create actions. The
+navbar button and identity header keep the original untrimmed image scale;
+padding trim applies
+to profile faces and people lists, including the profile Friends card.
+
+The identity header's profile link covers the full header with a pointer cursor;
+there is no separate Make your Yalemoji action inside it. The
+compact navbar button uses name initials (or NetID initials if needed) when no
+Yalemoji is set. Profile pages and people lists retain the default-avatar fallback.
+
+The Yalemoji banner reads “Your avatar across Yale” with the Make your Yalemoji
+link and a small X (10px icon, 28px touch target). Dismissal uses the existing
+`useLocalStorageState` utility with a separate `lastDismissedYalemojiBanner`
+version ID, following the release-notice pattern. Dismissal persists across
+navigation, reloads, logout, and later visits in the same browser. It does not
+affect release notices or sync across browsers/devices. The banner can return
+only when its version ID is intentionally changed or site storage is cleared,
+and still requires a confirmed missing avatar. Active release notices continue
+to take priority. If storage is blocked, dismissal lasts only while the banner
+component stays mounted.
