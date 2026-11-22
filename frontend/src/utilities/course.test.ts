@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   checkConflict,
-  getCourseNoteCrn,
+  isSectionFull,
   type ListingWithTimes,
   to12HourTime,
   toRangeTime,
@@ -11,6 +11,7 @@ import {
   toWeekdaysDisplayString,
   toWeekdayStrings,
 } from './course';
+import { CUR_YEAR } from '../config';
 import type { CatalogListing } from '../queries/api';
 import type { Crn, Season } from '../queries/graphql-types';
 import type { WorksheetCourse } from '../types/worksheetCourse';
@@ -266,6 +267,43 @@ describe('checkConflict', () => {
   });
 });
 
+describe('isSectionFull', () => {
+  const currentSeason = CUR_YEAR[0]!;
+
+  it('returns true for a full section in the current year', () => {
+    expect(
+      isSectionFull({
+        section_full: true,
+        course: { season_code: currentSeason },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for a full section outside the current year', () => {
+    expect(
+      isSectionFull({
+        section_full: true,
+        course: { season_code: '202503' as Season },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false for a section that is not full', () => {
+    expect(
+      isSectionFull({
+        section_full: false,
+        course: { season_code: currentSeason },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when section_full is omitted', () => {
+    expect(isSectionFull({ course: { season_code: currentSeason } })).toBe(
+      false,
+    );
+  });
+});
+
 describe('toRangeTime / toRealTime', () => {
   it('converts midnight and noon', () => {
     expect(toRangeTime('0:00')).toBe(0);
@@ -315,18 +353,5 @@ describe('toWeekdayStrings / toWeekdaysDisplayString', () => {
   it('collapses Monday–Friday to M–F', () => {
     expect(toWeekdaysDisplayString(MON | TUE | WED | THU | FRI)).toBe('M–F');
     expect(toWeekdaysDisplayString(MON | WED | FRI)).toBe('MWF');
-  });
-});
-
-describe('getCourseNoteCrn', () => {
-  it('uses the only CRN of a single listing', () => {
-    expect(getCourseNoteCrn({ listings: [{ crn: 22222 as Crn }] })).toBe(22222);
-  });
-
-  it('returns the same CRN for any listing order', () => {
-    const first = { crn: 33333 as Crn };
-    const second = { crn: 11111 as Crn };
-    expect(getCourseNoteCrn({ listings: [first, second] })).toBe(11111);
-    expect(getCourseNoteCrn({ listings: [second, first] })).toBe(11111);
   });
 });
