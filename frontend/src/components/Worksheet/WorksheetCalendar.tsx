@@ -7,10 +7,8 @@ import {
   type SyntheticEvent,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import { Calendar } from 'react-big-calendar';
-import { createPortal } from 'react-dom';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useShallow } from 'zustand/react/shallow';
 import CalendarEvent, {
@@ -18,7 +16,6 @@ import CalendarEvent, {
   type WalkModalInteraction,
   useEventStyle,
 } from './CalendarEvent';
-import PersonalBlockModal from './PersonalBlockModal';
 import {
   ColorPickerModal,
   WorksheetMoveModal,
@@ -46,7 +43,7 @@ const WALK_MODAL_CLOSE_SUPPRESSION_MS = 600;
 
 type WorksheetCalendarProps = {
   readonly showWalkingTimes?: boolean;
-  readonly addCommitmentContainer?: HTMLElement | null;
+  readonly onEditCommitment?: (block?: PersonalBlock) => void;
 };
 
 type WalkPair = {
@@ -177,7 +174,7 @@ function buildWalkBeforeMap(events: CourseRBCEvent[]): Map<string, WalkBefore> {
 
 function WorksheetCalendar({
   showWalkingTimes = true,
-  addCommitmentContainer,
+  onEditCommitment,
 }: WorksheetCalendarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -189,10 +186,6 @@ function WorksheetCalendar({
     calendarLockStart,
     calendarLockEnd,
     personalBlocks,
-    isReadonlyWorksheet,
-    worksheetNumber,
-    viewedPerson,
-    user,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
@@ -208,23 +201,8 @@ function WorksheetCalendar({
             .getCurWorksheet(state)
             .get(state.viewedSeason)
             ?.get(state.viewedWorksheetNumber)?.personalBlocks,
-      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
-      worksheetNumber: state.viewedWorksheetNumber,
-      viewedPerson: state.viewedPerson,
-      user: state.user,
     })),
   );
-  const worksheetKey = [
-    user?.netId,
-    viewedPerson,
-    viewedSeason,
-    worksheetNumber,
-    isReadonlyWorksheet,
-  ].join(':');
-  const [editor, setEditor] = useState<{
-    worksheetKey: string;
-    block?: PersonalBlock;
-  } | null>(null);
   const eventStyleGetter = useEventStyle();
   const allEvents = useMemo(
     (): WorksheetRBCEvent[] => [
@@ -398,8 +376,7 @@ function WorksheetCalendar({
   const handleSelectEvent = useCallback(
     (event: WorksheetRBCEvent, clickEvent: SyntheticEvent<HTMLElement>) => {
       if (event.kind === 'personal') {
-        if (!isReadonlyWorksheet)
-          setEditor({ worksheetKey, block: event.block });
+        onEditCommitment?.(event.block);
         return;
       }
       if (walkModalOpenRef.current) return;
@@ -433,29 +410,10 @@ function WorksheetCalendar({
         return prev;
       });
     },
-    [setSearchParams, isReadonlyWorksheet, worksheetKey],
+    [setSearchParams, onEditCommitment],
   );
   return (
     <>
-      {!isReadonlyWorksheet &&
-        user &&
-        addCommitmentContainer &&
-        createPortal(
-          <Button onClick={() => setEditor({ worksheetKey })}>
-            Add commitment
-          </Button>,
-          addCommitmentContainer,
-        )}
-      {editor?.worksheetKey === worksheetKey && !isReadonlyWorksheet && (
-        <PersonalBlockModal
-          key={`${worksheetKey}-${editor.block?.id ?? 'new'}`}
-          block={editor.block}
-          blocks={personalBlocks ?? []}
-          season={viewedSeason}
-          worksheetNumber={worksheetNumber}
-          onClose={() => setEditor(null)}
-        />
-      )}
       <Calendar
         // Show Mon-Fri
         defaultView="work_week"
