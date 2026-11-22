@@ -14,7 +14,6 @@ function NotesPanel({
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
   const [note, setNote] = useState<LoadedNote>('loading');
-  // One note per course across seasons and sections, using Ferry's grouping
   const sameCourseId = listing.course.same_course_id;
 
   useEffect(() => {
@@ -28,7 +27,6 @@ function NotesPanel({
   }, [sameCourseId]);
 
   if (note === 'loading') return <Spinner message="Loading your note..." />;
-  // The editor stays closed so a failed load can't overwrite the saved note
   if (note === 'failed') return <p>Couldn't load your note.</p>;
 
   return (

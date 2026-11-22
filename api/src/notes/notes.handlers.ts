@@ -5,18 +5,12 @@ import z from 'zod';
 import { courseNotes } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 
-// Numbers must stay numbers: form posts can only send strings, so this also
-// stops cross-site forms from writing notes with a student's cookies.
 const SameCourseIdSchema = z.number().int().positive();
 
 const LookupCourseNoteSchema = z.object({
   sameCourseId: SameCourseIdSchema,
 });
 
-// Notes are Tiptap JSON, which spells out its formatting, so a full 5,000
-// character note can be several times larger than its text. The cap leaves room
-// for the quote escaping that embedding it in a JSON body adds, so a note this
-// size still fits express.json()'s default 100 KB request limit.
 const MAX_NOTE_BYTES = 60_000;
 
 function isTiptapDoc(content: string) {
@@ -35,13 +29,11 @@ function isTiptapDoc(content: string) {
 
 const SaveCourseNoteSchema = z.object({
   sameCourseId: SameCourseIdSchema,
-  // The offering being viewed, kept so the note can be reattached later
   season: z
     .string()
     .regex(/^\d{6}$/u)
     .transform((val) => parseInt(val, 10)),
   crn: z.number().int().positive(),
-  // An empty string deletes the note
   content: z
     .string()
     .refine((content) => Buffer.byteLength(content, 'utf8') <= MAX_NOTE_BYTES)

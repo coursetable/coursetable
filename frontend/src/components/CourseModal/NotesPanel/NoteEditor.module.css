@@ -38,13 +38,11 @@
   list-style: square;
 }
 
-/* Typing "- " makes a dashed list; its sub-items keep the dash */
 .editor :global(.ProseMirror) ul:global(.dashed),
 .editor :global(.ProseMirror) ul:global(.dashed) ul {
   list-style-type: '–  ';
 }
 
-/* An address typed or pasted into a note opens in a new tab when clicked */
 .editor :global(.ProseMirror) a {
   color: var(--color-primary);
   text-decoration: underline;
@@ -52,7 +50,6 @@
   cursor: pointer;
 }
 
-/* The same color for a live selection and one kept while a toolbar box has focus */
 .editor :global(.ProseMirror) ::selection,
 .editor :global(.ProseMirror) :global(.kept-selection) {
   background-color: var(--color-primary-subdued);

@@ -23,9 +23,6 @@ import styles from './NoteEditor.module.css';
 
 const MAX_NOTE_LENGTH = 5000;
 const NOTE_LENGTH_WARNING = 4500;
-// Matches the API's cap, which leaves room for the quote escaping that sending
-// the note inside a JSON body adds. Only extreme formatting, such as every
-// character styled differently, can pass it within the 5,000 character limit.
 const MAX_NOTE_BYTES = 60_000;
 
 const statusLabels: { [status in NoteSaveStatus]: string } = {
@@ -43,13 +40,10 @@ const extensions = [
     codeBlock: false,
     heading: false,
     horizontalRule: false,
-    // A pasted or typed address becomes a link that opens in a new tab. There
-    // is no link editing: removing one is undo, or deleting the text.
     link: {
       openOnClick: true,
       autolink: true,
       defaultProtocol: 'https',
-      // Only web links, so a note can never hold a javascript: link
       isAllowedUri: (url, { defaultValidate }) =>
         isWebLink(url) && defaultValidate(url),
       HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' },
@@ -108,7 +102,6 @@ function NoteEditor({
     },
   });
 
-  // Save pending edits when the tab or modal closes
   useEffect(() => () => saver.flush(), [saver]);
 
   return (

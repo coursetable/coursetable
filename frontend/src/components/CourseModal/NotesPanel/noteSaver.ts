@@ -2,10 +2,6 @@ import debounce from 'lodash.debounce';
 
 export type NoteSaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
-/**
- * Debounces note saves and runs one at a time. If the note changes while a save
- * is running, the newest content is saved next.
- */
 export function createNoteSaver({
   initialContent,
   save,

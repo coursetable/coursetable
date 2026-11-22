@@ -22,7 +22,6 @@ import styles from './CourseModal.module.css';
 const EvaluationsPanel = suspended(
   () => import('./EvaluationsPanel/EvaluationsPanel'),
 );
-// The notes editor is heavy, so it only loads when the tab opens.
 const NotesPanel = suspended(() => import('./NotesPanel/NotesPanel'));
 
 export type ModalNavigationFunction = ((

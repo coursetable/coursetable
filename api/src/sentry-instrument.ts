@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/node';
 
 import { isDev, SENTRY_DSN, SENTRY_ENVIRONMENT } from './config.js';
 
-// Sentry attaches request bodies to events, but notes are private student text.
 function removeNoteBody<T extends Sentry.Event>(event: T): T {
   if (event.request?.url?.includes('/api/notes/')) delete event.request.data;
   return event;

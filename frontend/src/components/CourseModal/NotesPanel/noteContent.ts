@@ -8,10 +8,6 @@ export function clampFontSize(size: number) {
   return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, Math.round(size)));
 }
 
-/**
- * Notes are stored as Tiptap JSON. Anything else is older plain text, which is
- * shown as one paragraph per line.
- */
 export function parseNoteContent(content: string): JSONContent | null {
   if (!content) return null;
   try {
@@ -30,15 +26,10 @@ export function parseNoteContent(content: string): JSONContent | null {
   };
 }
 
-/**
- * Only web addresses may become links, so a note can never hold a javascript:
- * or data: link.
- */
 export function isWebLink(url: string) {
   return /^https?:\/\//iu.test(url);
 }
 
-/** Pasted text keeps its formatting, except sizes copied from other sites. */
 export function stripPastedFontSizes(html: string) {
   return html.replace(/font-size\s*:[^;"']*;?\s*/giu, '');
 }

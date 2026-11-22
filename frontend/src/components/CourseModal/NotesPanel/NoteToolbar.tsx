@@ -57,7 +57,6 @@ function ToolbarButton({
       title={label}
       aria-pressed={pressed}
       disabled={disabled}
-      // Keeps the note's selection while the button is pressed
       onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
     >
@@ -73,7 +72,6 @@ function FontSizeControl({
   readonly editor: Editor;
   readonly size: number | null;
 }) {
-  // What is typed in the box, while it has focus
   const [draft, setDraft] = useState<string | null>(null);
 
   const apply = (value: number) => {

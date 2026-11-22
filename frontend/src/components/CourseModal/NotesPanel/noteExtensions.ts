@@ -6,7 +6,6 @@ import { type Editor, Extension, wrappingInputRule } from '@tiptap/react';
 
 import { DEFAULT_FONT_SIZE } from './noteContent';
 
-// Runs before the normal undo, so it only removes the latest auto-conversion
 export const NoteShortcuts = Extension.create({
   name: 'noteShortcuts',
   priority: 1000,
@@ -18,10 +17,6 @@ export const NoteShortcuts = Extension.create({
   },
 });
 
-/**
- * Typing "- " makes a dashed list and "* " a bullet list. Neither joins a list
- * just above, so a new list always starts on its own.
- */
 export const DashableBulletList = BulletList.extend({
   addAttributes() {
     return {
@@ -51,8 +46,6 @@ export const DashableBulletList = BulletList.extend({
   },
 });
 
-// The browser hides a selection when focus moves to the toolbar's size box, so
-// it is painted as a decoration until the editor has focus again
 const keptSelectionKey = new PluginKey<DecorationSet>('keptSelection');
 export const KeepSelectionVisible = Extension.create({
   name: 'keepSelectionVisible',
@@ -91,10 +84,6 @@ export const KeepSelectionVisible = Extension.create({
   },
 });
 
-/**
- * A click on a bullet, number or the space beside it puts the cursor at the end
- * of that line, as in Google Docs, instead of before its first letter.
- */
 export const ListMarkerClick = Extension.create({
   name: 'listMarkerClick',
   addProseMirrorPlugins() {
@@ -106,7 +95,6 @@ export const ListMarkerClick = Extension.create({
               const target = event.target as HTMLElement;
               if (event.button !== 0 || event.shiftKey) return false;
               if (!['LI', 'UL', 'OL'].includes(target.tagName)) return false;
-              // The innermost item line at the clicked height, left of its text
               const line = [...view.dom.querySelectorAll('li > p')]
                 .filter((p) => {
                   const r = p.getBoundingClientRect();
@@ -137,11 +125,6 @@ export const ListMarkerClick = Extension.create({
   },
 });
 
-/**
- * List buttons work on the current line and never join a neighbouring list.
- * The active kind turns the line back into text; the other kind switches the
- * list; the bullet button turns a dashed list into bullets.
- */
 export function toggleNoteList(
   editor: Editor,
   kind: 'bulletList' | 'orderedList',
@@ -182,7 +165,6 @@ function sizeOf(marks: readonly Mark[]) {
   return size ? Math.round(parseFloat(size)) : DEFAULT_FONT_SIZE;
 }
 
-/** The size at the cursor, or null when the selection mixes sizes. */
 export function selectedFontSize(editor: Editor): number | null {
   const { state } = editor;
   const { from, to, empty, $from } = state.selection;

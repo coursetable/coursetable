@@ -34,7 +34,6 @@ type BaseFetchOptions = {
     category: string;
   };
   cacheBust?: boolean;
-  /** Keeps the request body out of error reports, for private user text. */
   sensitiveBody?: boolean;
   /**
    * Receives the parsed error code. If it returns true, the error is considered
@@ -1148,7 +1147,6 @@ export async function saveCourseNote(
       category: 'notes',
       message: 'Saving course note',
     },
-    // The editor shows its own save status
     handleErrorCode: () => true,
   });
 }
