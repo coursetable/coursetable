@@ -99,10 +99,11 @@ function PersonalBlockModal({
         <Modal.Body>
           <fieldset disabled={saving}>
             <Form.Group controlId="commitment-title" className="mb-3">
-              <Form.Label>Title</Form.Label>
               <Form.Control
                 required
                 maxLength={100}
+                aria-label="Commitment title"
+                placeholder="Enter commitment title..."
                 value={draft.title}
                 onChange={(event) =>
                   setDraft({ ...draft, title: event.target.value })
