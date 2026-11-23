@@ -11,10 +11,6 @@ export const NoteShortcuts = Extension.create({
   },
 });
 
-/**
- * List buttons work on the current line and never join a neighbouring list.
- * The active kind turns the line back into text; the other kind switches it.
- */
 export function toggleNoteList(
   editor: Editor,
   kind: 'bulletList' | 'orderedList',

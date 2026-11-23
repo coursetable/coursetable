@@ -11,20 +11,5 @@
   display: inline-grid;
   place-items: center;
   width: 32px;
-  color: var(--color-text-secondary);
-}
-
-.btn svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentcolor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.btn[aria-pressed='true'] {
-  background: var(--color-primary-subdued-2);
-  color: var(--color-primary);
+  text-decoration: none;
 }
