@@ -15,21 +15,7 @@ export default function YaleMojiBanner() {
   );
   const authStatus = useStore((state) => state.authStatus);
   const netId = useStore((state) => state.user?.netId);
-  const [loaded, setLoaded] = useState(false);
   const [eligibleNetId, setEligibleNetId] = useState<typeof netId>();
-
-  useEffect(() => {
-    let frame = 0;
-    const onLoad = () => {
-      frame = requestAnimationFrame(() => setLoaded(true));
-    };
-    if (document.readyState === 'complete') onLoad();
-    else window.addEventListener('load', onLoad, { once: true });
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('load', onLoad);
-    };
-  }, []);
 
   useEffect(() => {
     if (authStatus !== 'authenticated' || !netId) return undefined;
@@ -42,7 +28,6 @@ export default function YaleMojiBanner() {
     lastDismissed !== BANNER_ID &&
     authStatus === 'authenticated' &&
     Boolean(netId) &&
-    loaded &&
     eligibleNetId === netId;
 
   return (
