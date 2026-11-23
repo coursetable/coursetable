@@ -42,6 +42,7 @@ const Challenge = suspended(() => import('./pages/Challenge'));
 const NeedsLogin = suspended(() => import('./pages/NeedsLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const Join = suspended(() => import('./pages/Join'));
+const Games = suspended(() => import('./pages/Games'));
 const Profile = suspended(() => import('./pages/Profile'));
 const UserProfile = suspended(() => import('./pages/UserProfile'));
 const ReleaseNotes = suspended(() => import('./pages/releases/releases'));
@@ -175,6 +176,7 @@ function App() {
           <Route path="/graphiql" element={<Graphiql />} />
           <Route path="/login" element={<Landing />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/games" element={<Games />} />
         </Route>
 
         {/* Challenge handles its own auth */}

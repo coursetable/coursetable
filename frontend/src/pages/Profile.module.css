@@ -318,12 +318,6 @@
   padding-bottom: 2.5rem;
 }
 
-.dangerRow {
-  border-top: 1px solid var(--color-border);
-  margin-top: 1rem;
-  padding-top: 1rem;
-}
-
 .wishlistIntro {
   display: block;
   margin-bottom: 1.75rem;

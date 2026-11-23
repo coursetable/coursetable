@@ -38,6 +38,21 @@
   }
 }
 
+.navLogoRow {
+  display: flex;
+  align-items: center;
+}
+
+.navLogoRow .navLogo {
+  margin-right: 0.6rem;
+}
+
+.navLogoDarkMode {
+  display: flex;
+  padding: 0 !important;
+  transition: 0.1s;
+}
+
 .navbarDarkModeBtn {
   padding-right: 1rem !important;
   transition: 0.1s;
