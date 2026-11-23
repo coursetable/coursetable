@@ -557,13 +557,18 @@ function ThemePanel({
     setDraft(null);
   };
 
-  // Labels for the worksheets (in any season) that use a theme
+  // The worksheets (in any season, newest first) that use a theme
   const worksheetsUsing = (id: number) =>
-    [...(worksheets ?? [])].flatMap(([season, seasonWorksheets]) =>
-      [...seasonWorksheets.values()]
-        .filter((ws) => ws.colorThemeId === id)
-        .map((ws) => `${ws.name} (${toSeasonString(season)})`),
-    );
+    [...(worksheets ?? [])]
+      .sort(([a], [b]) => b.localeCompare(a))
+      .flatMap(([season, seasonWorksheets]) =>
+        [...seasonWorksheets]
+          .filter(([, ws]) => ws.colorThemeId === id)
+          .map(([worksheetNumber, ws]) => ({
+            key: `${season}-${worksheetNumber}`,
+            label: `${toSeasonString(season)} – ${ws.name}`,
+          })),
+      );
 
   const title = draft
     ? draft.id === undefined
@@ -638,7 +643,7 @@ function ThemeEditor({
   onDeleted,
 }: {
   readonly draft: ThemeDraft;
-  readonly usedBy: readonly string[];
+  readonly usedBy: readonly { key: string; label: string }[];
   readonly canCopy: boolean;
   readonly onCopy: (name: string, colors: readonly string[]) => Promise<void>;
   readonly onCancel: () => void;
@@ -715,13 +720,49 @@ function ThemeEditor({
         <HexColorPicker color={colors[activeSlot]} onChange={setSlotColor} />
         <ColorInput color={colors[activeSlot]!} setColor={setSlotColor} />
       </div>
-      {confirmingDelete && (
-        <p className={styles.themeDeleteWarning}>
-          {usedBy.length > 0
-            ? `Used by ${usedBy.join(', ')}. Those worksheets will switch to Classic and their courses keep their current colors.`
-            : 'Delete this theme?'}
-        </p>
-      )}
+      {confirmingDelete &&
+        (usedBy.length > 0 ? (
+          // Covers the editor so the affected worksheets can't be missed
+          <div
+            className={styles.themeDeleteOverlay}
+            role="alertdialog"
+            aria-labelledby="theme-delete-title"
+          >
+            <div id="theme-delete-title" className={styles.themePanelHeader}>
+              Delete {draft.name}?
+            </div>
+            <div className={styles.themeDeleteBody}>
+              <p>This theme is used by the following worksheets:</p>
+              <ul>
+                {usedBy.map(({ key, label }) => (
+                  <li key={key}>{label}</li>
+                ))}
+              </ul>
+              <p>All courses will keep their current colors.</p>
+            </div>
+            <div className={styles.themeEditorFooter}>
+              <div className={styles.themeEditorActions}>
+                <button
+                  type="button"
+                  className={styles.textButton}
+                  disabled={busy}
+                  onClick={() => setConfirmingDelete(false)}
+                >
+                  Cancel
+                </button>
+                <Button
+                  variant="danger"
+                  disabled={busy}
+                  onClick={() => remove(draft.id!)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className={styles.themeDeleteWarning}>Delete this theme?</p>
+        ))}
       <div className={styles.themeEditorFooter}>
         {draft.id !== undefined && (
           <>
