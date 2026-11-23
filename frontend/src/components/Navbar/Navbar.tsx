@@ -122,8 +122,6 @@ export default function CourseTableNavbar() {
           {!isMobile && (
             <Navbar.Collapse
               id="basic-navbar-nav"
-              // It must have height exactly equal to its children otherwise on
-              // desktop it won't align to the top
               className={styles.navbarCollapse}
             >
               <Nav

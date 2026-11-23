@@ -43,12 +43,9 @@ function apiOrigin() {
   return origin;
 }
 
-// Adapted from Yalies. Only the backend sends the app key; the browser gets
-// public, opaque asset URLs. Missing avatars and outages fall back to initials.
 export async function getYaleMojiAvatar(
   netId: string,
 ): Promise<YaleMojiAvatar | null | undefined> {
-  // Only null confirms a missing avatar; outages must not trigger the banner.
   if (!YALEMOJI_API_KEY || !/^[a-z][a-z\d]*$/iu.test(netId)) return undefined;
   try {
     const origin = apiOrigin();
@@ -85,7 +82,6 @@ export async function getYaleMojiAvatar(
   }
 }
 
-// The upstream lookup endpoint accepts at most 100 NetIDs per request.
 export async function getYaleMojiAvatars(
   netids: string[],
 ): Promise<{ [key: string]: YaleMojiAvatar | null } | undefined> {

@@ -20,7 +20,6 @@ function Notice({
     if (lastDismissed === id) setVisible(false);
   }, [id]);
 
-  // Full-width CourseTable notices always take precedence over promotions.
   if (!visible || !children) return fallback ?? null;
   return (
     <div className={styles.banner}>

@@ -10,32 +10,12 @@ import {
   updateWishlistCourses,
   getUserWishlist,
 } from './user.handlers.js';
-import { yaleMojiImageUrl, fetchYaleMojiImageBytes } from './yalemoji-image.js';
 import { getYaleMojiAvatar, getYaleMojiAvatars } from './yalemoji.js';
 import { authBasic } from '../auth/auth.handlers.js';
 
 export default (app: express.Express): void => {
   app.use('/api/user/*', authBasic);
   app.get('/api/user/info', asyncHandler(getUserInfo));
-  // Public, allowlisted assets also support anonymous profile views. GCS assets
-  // do not send CORS headers, so they cannot be measured directly on canvas.
-  app.get(
-    '/api/yalemoji/image',
-    asyncHandler(async (req, res) => {
-      res.set('Cache-Control', 'no-store');
-      const url = yaleMojiImageUrl(req.query.src);
-      if (!url) {
-        res.status(400).json({ error: 'INVALID_REQUEST' });
-        return;
-      }
-      try {
-        const bytes = await fetchYaleMojiImageBytes(url);
-        res.set('Cache-Control', 'public, max-age=300').type('png').send(bytes);
-      } catch {
-        res.status(503).json({ error: 'Yalemoji image unavailable' });
-      }
-    }),
-  );
   app.get(
     '/api/user/yalemoji',
     asyncHandler(async (req, res) => {

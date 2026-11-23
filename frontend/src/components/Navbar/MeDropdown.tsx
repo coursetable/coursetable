@@ -141,7 +141,6 @@ function DropdownContent({
     <YaleMojiImage
       avatar={avatar}
       className={styles.headerAvatar}
-      trimPadding={false}
       onAvatarError={onAvatarError}
     />
   ) : (
@@ -203,9 +202,7 @@ function DropdownContent({
                         ],
                         { duration: 120, easing: 'ease-out' },
                       ).finished;
-                    } catch {
-                      /* An interrupted animation must not prevent navigation. */
-                    }
+                    } catch {}
                   }
                   setIsExpanded(false);
                   scrollToTop(event);
@@ -400,7 +397,6 @@ function MeDropdown({
           <YaleMojiImage
             avatar={avatar}
             className={styles.buttonAvatar}
-            trimPadding={false}
             onAvatarError={onAvatarError}
           />
         ) : initials ? (

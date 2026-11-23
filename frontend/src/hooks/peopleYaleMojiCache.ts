@@ -22,7 +22,6 @@ async function flush() {
     for (const id of batch) {
       const entry = entries.get(id)!;
       entry.pending = false;
-      // Outages preserve the last good avatar and retry on a later mount.
       if (!users || !Object.hasOwn(users, id)) continue;
       entry.avatar = users[id] ?? null;
       entry.expires = Date.now() + CACHE_MS;
@@ -31,7 +30,6 @@ async function flush() {
   }
 }
 
-// All rows mounted in a render share a lookup, including across both dropdowns.
 export function subscribePeopleYaleMoji(netId: string, listener: Listener) {
   const id = netId.toLowerCase();
   let entry = entries.get(id);

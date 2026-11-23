@@ -17,8 +17,6 @@ type Entry = {
   cancelDelay?: () => void;
 };
 
-// This cache lives for the document, so route changes and multiple profile
-// buttons share both the avatar and the initial refresh.
 const entries = new Map<NetId, Entry>();
 let returningFromYaleMoji = false;
 let listeningForReturn = false;
@@ -50,12 +48,9 @@ function refresh(netid: NetId, entry: Entry): Promise<void> {
           STORAGE_KEY,
           JSON.stringify({ netid, avatar: entry.avatar }),
         );
-      } catch {
-        /* Keep the in-memory cache when storage is unavailable. */
-      }
+      } catch {}
       entry.listeners.forEach((listener) => listener(entry.avatar));
     } catch {
-      /* Keep the last avatar on network failures. */
     } finally {
       entry.inflight = undefined;
     }
@@ -72,16 +67,12 @@ function refreshOnReturn() {
   try {
     returningFromYaleMoji ||=
       window.sessionStorage.getItem(RETURN_KEY) === 'true';
-  } catch {
-    /* The in-memory flag still works without storage. */
-  }
+  } catch {}
   if (!returningFromYaleMoji) return;
   returningFromYaleMoji = false;
   try {
     window.sessionStorage.removeItem(RETURN_KEY);
-  } catch {
-    /* Storage may be disabled. */
-  }
+  } catch {}
   activeEntries.forEach(([netid, entry]) => {
     void refresh(netid, entry);
   });
@@ -90,16 +81,12 @@ function refreshOnReturn() {
 export function markYaleMojiVisit() {
   returningFromYaleMoji = true;
   entries.forEach((entry) => {
-    // A visit invalidates the previous missing-avatar result. Only a new
-    // successful API response can make the banner eligible again.
     entry.confirmed = false;
     entry.listeners.forEach((listener) => listener(entry.avatar));
   });
   try {
     window.sessionStorage.setItem(RETURN_KEY, 'true');
-  } catch {
-    /* The in-memory flag covers new-tab visits. */
-  }
+  } catch {}
 }
 
 export function clearYaleMojiCache() {
@@ -109,9 +96,7 @@ export function clearYaleMojiCache() {
   try {
     window.localStorage.removeItem(STORAGE_KEY);
     window.sessionStorage.removeItem(RETURN_KEY);
-  } catch {
-    /* Storage may be disabled. */
-  }
+  } catch {}
 }
 
 export function subscribeYaleMoji(
@@ -138,9 +123,6 @@ export function subscribeYaleMoji(
   current.listeners.add(listener);
   listener(current.avatar);
   refreshOnReturn();
-  // The banner mounts only after a CourseTable notice is dismissed. If the
-  // profile's earlier lookup failed, let this new subscriber retry it instead
-  // of leaving the banner in an unconfirmed state for the rest of the page.
   if ((isNew || (!current.avatar && !current.confirmed)) && !current.inflight) {
     if (current.avatar) {
       let timer: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -168,7 +150,6 @@ export function subscribeYaleMoji(
       void refresh(netid, current);
     }
   }
-  // Delayed refreshes survive unmounts during navigation.
   return () => {
     current.listeners.delete(listener);
   };

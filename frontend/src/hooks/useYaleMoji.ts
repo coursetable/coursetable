@@ -14,9 +14,6 @@ export function useYaleMoji(netId: NetId | undefined) {
 
   useEffect(() => {
     if (!netId) {
-      // Drop the persisted avatar only once auth has resolved to logged-out.
-      // While it is still 'loading'/'initializing' there is no netId yet, and
-      // clearing then would wipe the cache before anything could read it.
       if (authStatus === 'unauthenticated') clearYaleMojiCache();
       return undefined;
     }

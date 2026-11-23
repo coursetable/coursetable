@@ -92,8 +92,6 @@
   justify-content: center;
   color: var(--color-text-light);
   background-color: var(--color-primary);
-
-  /* Keep Yalemoji's square background artwork undistorted. */
   background-size: 220px 220px;
   background-position: center;
 }

@@ -609,16 +609,6 @@ export const yaleMojiAvatarSchema = z.object({
 
 export type YaleMojiAvatar = z.infer<typeof yaleMojiAvatarSchema>;
 
-export async function fetchYaleMojiImage(src: string) {
-  const response = await fetch(
-    `${API_ENDPOINT}/api/yalemoji/image?${new URLSearchParams({ src })}`,
-    { credentials: 'include', signal: AbortSignal.timeout(7000) },
-  );
-  if (!response.ok) throw new Error('Yalemoji image unavailable');
-  return response.blob();
-}
-
-// Optional people-list avatars must not interrupt friend search with toasts.
 export async function getYaleMojiAvatars(netids: string[]) {
   try {
     const response = await fetch(`${API_ENDPOINT}/api/user/yalemoji/lookup`, {
@@ -638,7 +628,6 @@ export async function getYaleMojiAvatars(netids: string[]) {
   }
 }
 
-// Optional avatars should never show an error toast or block sign-in.
 export async function getYaleMojiAvatar(
   netId: NetId,
 ): Promise<YaleMojiAvatar | null | undefined> {
