@@ -1,20 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FontSize, TextStyle } from '@tiptap/extension-text-style';
 import { CharacterCount, Placeholder } from '@tiptap/extensions';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-import {
-  isWebLink,
-  parseNoteContent,
-  stripPastedFontSizes,
-} from './noteContent';
-import {
-  DashableBulletList,
-  KeepSelectionVisible,
-  ListMarkerClick,
-  NoteShortcuts,
-} from './noteExtensions';
+import { isWebLink, parseNoteContent } from './noteContent';
+import { NoteShortcuts } from './noteExtensions';
 import { createNoteSaver, type NoteSaveStatus } from './noteSaver';
 import NoteToolbar from './NoteToolbar';
 import { saveCourseNote } from '../../../queries/api';
@@ -35,7 +25,6 @@ const statusLabels: { [status in NoteSaveStatus]: string } = {
 const extensions = [
   StarterKit.configure({
     blockquote: false,
-    bulletList: false,
     code: false,
     codeBlock: false,
     heading: false,
@@ -49,13 +38,8 @@ const extensions = [
       HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' },
     },
   }),
-  DashableBulletList,
-  TextStyle,
-  FontSize,
   Placeholder.configure({ placeholder: 'Add a note…' }),
   CharacterCount.configure({ limit: MAX_NOTE_LENGTH }),
-  KeepSelectionVisible,
-  ListMarkerClick,
   NoteShortcuts,
 ];
 
@@ -87,9 +71,7 @@ function NoteEditor({
   const editor = useEditor({
     extensions,
     content: parseNoteContent(initialContent),
-    editorProps: {
-      transformPastedHTML: stripPastedFontSizes,
-    },
+    editorProps: {},
     onCreate({ editor: created }) {
       setLength(created.storage.characterCount.characters());
     },
@@ -110,7 +92,7 @@ function NoteEditor({
         <NoteToolbar editor={editor} />
         <EditorContent editor={editor} className={styles.editor} />
       </div>
-      <div className={styles.footer}>
+      <div className="d-flex justify-content-end gap-3 mt-1 small text-body-tertiary">
         {length >= NOTE_LENGTH_WARNING && (
           <span>
             {length.toLocaleString()} / {MAX_NOTE_LENGTH.toLocaleString()}{' '}
@@ -118,9 +100,7 @@ function NoteEditor({
           </span>
         )}
         <output
-          className={
-            tooLarge || status === 'error' ? styles.statusError : undefined
-          }
+          className={tooLarge || status === 'error' ? 'text-danger' : undefined}
         >
           {tooLarge
             ? 'Too much formatting to save. Remove some to keep saving.'

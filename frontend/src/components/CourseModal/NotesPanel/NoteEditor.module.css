@@ -38,21 +38,11 @@
   list-style: square;
 }
 
-.editor :global(.ProseMirror) ul:global(.dashed),
-.editor :global(.ProseMirror) ul:global(.dashed) ul {
-  list-style-type: '–  ';
-}
-
 .editor :global(.ProseMirror) a {
   color: var(--color-primary);
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
-}
-
-.editor :global(.ProseMirror) ::selection,
-.editor :global(.ProseMirror) :global(.kept-selection) {
-  background-color: var(--color-primary-subdued);
 }
 
 .editor :global(.ProseMirror) p:global(.is-editor-empty):first-child::before {
@@ -61,18 +51,4 @@
   height: 0;
   color: var(--color-text-tertiary);
   pointer-events: none;
-}
-
-.footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  min-height: 1.5rem;
-  margin-top: 0.25rem;
-  color: var(--color-text-tertiary);
-  font-size: 13px;
-}
-
-.statusError {
-  color: var(--color-danger, #dc3545);
 }

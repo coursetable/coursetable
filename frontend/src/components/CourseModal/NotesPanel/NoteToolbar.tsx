@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import clsx from 'clsx';
 import { type Editor, useEditorState } from '@tiptap/react';
 
-import { clampFontSize, DEFAULT_FONT_SIZE } from './noteContent';
-import { selectedFontSize, toggleNoteList } from './noteExtensions';
+import { toggleNoteList } from './noteExtensions';
 import styles from './NoteToolbar.module.css';
 
 const icons = {
@@ -52,7 +51,7 @@ function ToolbarButton({
   return (
     <button
       type="button"
-      className={styles.btn}
+      className={clsx('btn btn-sm', styles.btn)}
       aria-label={label}
       title={label}
       aria-pressed={pressed}
@@ -62,64 +61,6 @@ function ToolbarButton({
     >
       {children}
     </button>
-  );
-}
-
-function FontSizeControl({
-  editor,
-  size,
-}: {
-  readonly editor: Editor;
-  readonly size: number | null;
-}) {
-  const [draft, setDraft] = useState<string | null>(null);
-
-  const apply = (value: number) => {
-    const next = clampFontSize(value);
-    const chain = editor.chain().focus();
-    if (next === DEFAULT_FONT_SIZE) chain.unsetFontSize().run();
-    else chain.setFontSize(`${next}px`).run();
-    setDraft(null);
-  };
-  const base = () => {
-    const typed = parseInt(draft ?? '', 10);
-    return typed || size || DEFAULT_FONT_SIZE;
-  };
-
-  return (
-    <span className={styles.size}>
-      <ToolbarButton label="Smaller text" onClick={() => apply(base() - 1)}>
-        −
-      </ToolbarButton>
-      <input
-        className={styles.sizeInput}
-        type="text"
-        inputMode="numeric"
-        aria-label="Text size"
-        title="Text size"
-        value={draft ?? (size === null ? '' : String(size))}
-        onFocus={(e) => {
-          setDraft(e.target.value);
-          e.target.select();
-        }}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={() => setDraft(null)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            const typed = parseInt(draft ?? '', 10);
-            if (typed) apply(typed);
-            else setDraft(null);
-          } else if (e.key === 'Escape') {
-            setDraft(null);
-            editor.commands.focus();
-          }
-        }}
-      />
-      <ToolbarButton label="Bigger text" onClick={() => apply(base() + 1)}>
-        +
-      </ToolbarButton>
-    </span>
   );
 }
 
@@ -136,14 +77,11 @@ function NoteToolbar({ editor }: { readonly editor: Editor }) {
       canIndent: e.can().sinkListItem('listItem'),
       canUndo: e.can().undo(),
       canRedo: e.can().redo(),
-      size: selectedFontSize(e),
     }),
   });
 
   return (
     <div className={styles.bar} role="toolbar" aria-label="Formatting">
-      <FontSizeControl editor={editor} size={state.size} />
-      <span className={styles.sep} />
       <ToolbarButton
         label="Bold (⌘B)"
         pressed={state.bold}
@@ -156,23 +94,23 @@ function NoteToolbar({ editor }: { readonly editor: Editor }) {
         pressed={state.italic}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
-        <span className={styles.italic}>I</span>
+        <i>I</i>
       </ToolbarButton>
       <ToolbarButton
         label="Underline (⌘U)"
         pressed={state.underline}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
       >
-        <span className={styles.underline}>U</span>
+        <u>U</u>
       </ToolbarButton>
       <ToolbarButton
         label="Strikethrough (⌘⇧X)"
         pressed={state.strike}
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
-        <span className={styles.strike}>S</span>
+        <s>S</s>
       </ToolbarButton>
-      <span className={styles.sep} />
+      <span className="vr mx-1" />
       <ToolbarButton
         label="Bulleted list"
         pressed={state.bullets}
@@ -194,7 +132,7 @@ function NoteToolbar({ editor }: { readonly editor: Editor }) {
       >
         {icons.indent}
       </ToolbarButton>
-      <span className={styles.sep} />
+      <span className="vr mx-1" />
       <ToolbarButton
         label="Undo (⌘Z)"
         disabled={!state.canUndo}
