@@ -2,16 +2,13 @@
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  color: #fff;
-  background:
-    radial-gradient(
-      ellipse at 20% 30%,
-      rgb(255 255 255 / 22%),
-      transparent 55%
-    ),
-    radial-gradient(ellipse at 80% 70%, rgb(40 180 170 / 24%), transparent 55%),
-    linear-gradient(110deg, #6497cd, #70b1c6, #73c7c1);
-  background-size: 150% 150%;
+  color: white;
+  background: linear-gradient(
+    90deg,
+    rgb(68 103 196) 0%,
+    rgb(75 127 192) 50%,
+    rgb(99 166 208) 100%
+  );
   transition:
     grid-template-rows 360ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 240ms ease;
@@ -20,7 +17,6 @@
 .banner[data-open='true'] {
   grid-template-rows: 1fr;
   opacity: 1;
-  animation: drift 16s ease-in-out infinite alternate;
 }
 
 .clip {
@@ -33,7 +29,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
+  min-height: 3em;
   padding: 0 40px;
 }
 
@@ -45,8 +41,7 @@
   gap: 10px;
   padding: 8px 0;
   color: inherit;
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 0.9em;
   text-decoration: none;
 }
 
@@ -57,27 +52,7 @@
 .action {
   font-weight: 700;
   text-decoration: underline;
-  text-decoration-color: rgb(255 255 255 / 50%);
-  text-underline-offset: 3px;
-}
-
-.link:hover .action {
-  text-decoration-color: currentcolor;
-}
-
-.link:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
-
-@keyframes drift {
-  from {
-    background-position: 0% 50%;
-  }
-
-  to {
-    background-position: 100% 50%;
-  }
+  text-underline-offset: 0.12em;
 }
 
 .closeButton {
@@ -101,6 +76,7 @@
   background: rgb(255 255 255 / 15%);
 }
 
+.link:focus-visible,
 .closeButton:focus-visible {
   outline: 2px solid currentcolor;
   outline-offset: 2px;
@@ -109,9 +85,5 @@
 @media (prefers-reduced-motion: reduce) {
   .banner {
     transition: none;
-  }
-
-  .banner[data-open='true'] {
-    animation: none;
   }
 }
