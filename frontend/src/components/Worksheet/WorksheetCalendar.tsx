@@ -18,6 +18,7 @@ import {
   ColorPickerModal,
   WorksheetMoveModal,
 } from './WorksheetItemActionsButton';
+import { useColorPickerPreview } from '../../slices/CalendarSlice';
 import { useStore } from '../../store';
 import {
   localizer,
@@ -169,8 +170,9 @@ function WorksheetCalendar({
   showWalkingTimes = true,
 }: WorksheetCalendarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  // Shows the color picker's unsaved changes
+  const { courses } = useColorPickerPreview();
   const {
-    courses,
     viewedSeason,
     setOpenColorPickerEvent,
     setOpenWorksheetMoveEvent,
@@ -179,7 +181,6 @@ function WorksheetCalendar({
     calendarLockEnd,
   } = useStore(
     useShallow((state) => ({
-      courses: state.courses,
       viewedSeason: state.viewedSeason,
       setOpenColorPickerEvent: state.setOpenColorPickerEvent,
       setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,

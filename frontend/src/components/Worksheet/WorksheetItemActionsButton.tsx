@@ -28,14 +28,11 @@ import {
   updateWorksheetMetadata,
   type ColorTheme,
 } from '../../queries/api';
+import { useColorPickerPreview } from '../../slices/CalendarSlice';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
-import {
-  applyTheme,
-  fallbackTheme,
-  getWorksheetTheme,
-} from '../../utilities/colorTheme';
+import { type CourseColor, fallbackTheme } from '../../utilities/colorTheme';
 import { toSeasonString } from '../../utilities/course';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
@@ -150,8 +147,6 @@ function WorksheetItemActionsButton({
   );
 }
 
-type PickedColor = { color: string; colorIndex: number | null };
-
 export function ColorPickerModal({
   onClose,
 }: {
@@ -162,49 +157,33 @@ export function ColorPickerModal({
     viewedSeason,
     viewedWorksheetNumber,
     courses,
-    savedThemeId,
     colorThemes,
     openColorPickerEvent,
+    updateColorPickerDraft,
   } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       courses: state.courses,
-      savedThemeId: state.worksheets
-        ?.get(state.viewedSeason)
-        ?.get(state.viewedWorksheetNumber)?.colorThemeId,
       colorThemes: state.colorThemes,
       openColorPickerEvent: state.openColorPickerEvent,
+      updateColorPickerDraft: state.updateColorPickerDraft,
     })),
   );
-  const [picked, setPicked] = useState<PickedColor | undefined>(undefined);
-  // Unsaved theme choice; falls back to the worksheet's saved theme
-  const [selectedThemeId, setSelectedThemeId] = useState<number | undefined>(
-    undefined,
-  );
+  // Unsaved changes live in the store so the worksheet behind can preview them
+  const preview = useColorPickerPreview();
   const [themePanelOpen, setThemePanelOpen] = useState(false);
 
   if (!openColorPickerEvent) return null;
 
   const { crn } = openColorPickerEvent.listing;
-  const course = courses.find((c) => c.crn === crn);
-  const theme = getWorksheetTheme(colorThemes, selectedThemeId ?? savedThemeId);
-  const themeChanged =
-    theme.id !== getWorksheetTheme(colorThemes, savedThemeId).id;
-  const current = picked ?? {
-    color: openColorPickerEvent.color,
-    colorIndex: course?.colorIndex ?? null,
-  };
-  // A theme color follows the selected theme, so it previews as the new one
-  const color =
-    current.colorIndex === null
-      ? current.color
-      : theme.colors[current.colorIndex]!;
+  const { theme, themeChanged } = preview;
+  const { color, colorIndex } = preview.courses.find((c) => c.crn === crn) ??
+    preview.picked ?? { color: openColorPickerEvent.color, colorIndex: null };
 
   const handleClose = () => {
-    setPicked(undefined);
-    setSelectedThemeId(undefined);
     setThemePanelOpen(false);
+    // Also discards the draft
     onClose();
   };
 
@@ -217,15 +196,8 @@ export function ColorPickerModal({
     });
 
   const save = async () => {
-    // Switching themes recolors every course that uses a theme color
-    const recolored = themeChanged
-      ? applyTheme(courses, theme.colors)
-      : courses;
     const updates = courses.flatMap((c, i) => {
-      const next =
-        c.crn === crn
-          ? { color, colorIndex: current.colorIndex }
-          : recolored[i]!;
+      const next = preview.courses[i]!;
       // The API rejects course updates with no fields, so skip unchanged
       if (next.color === c.color && next.colorIndex === c.colorIndex) return [];
       return [
@@ -234,7 +206,8 @@ export function ColorPickerModal({
           season: viewedSeason,
           crn: c.crn,
           worksheetNumber: viewedWorksheetNumber,
-          ...next,
+          color: next.color,
+          colorIndex: next.colorIndex,
         },
       ];
     });
@@ -256,8 +229,8 @@ export function ColorPickerModal({
       <Modal.Body className={styles.modalBody}>
         <Picker
           color={color}
-          colorIndex={current.colorIndex}
-          onPick={setPicked}
+          colorIndex={colorIndex}
+          onPick={(picked) => updateColorPickerDraft({ picked })}
           presetColors={theme.colors}
           themeName={theme.name}
           themePanelOpen={themePanelOpen}
@@ -274,7 +247,7 @@ export function ColorPickerModal({
         <ThemePanel
           themes={colorThemes ?? [fallbackTheme]}
           selectedTheme={theme}
-          onSelect={setSelectedThemeId}
+          onSelect={(themeId) => updateColorPickerDraft({ themeId })}
           onClose={() => setThemePanelOpen(false)}
         />
       )}
@@ -438,7 +411,7 @@ function Picker({
 }: {
   readonly color: string;
   readonly colorIndex: number | null;
-  readonly onPick: (picked: PickedColor) => void;
+  readonly onPick: (picked: CourseColor) => void;
   readonly presetColors: readonly string[];
   readonly themeName: string;
   readonly themePanelOpen: boolean;

@@ -32,6 +32,7 @@ import {
   updateWorksheetMetadata,
 } from '../../queries/api';
 import type { Crn, Season } from '../../queries/graphql-types';
+import { useColorPickerPreview } from '../../slices/CalendarSlice';
 import {
   useWorksheetNumberOptions,
   type WorksheetCourse,
@@ -101,8 +102,9 @@ function WorksheetCalendarList({
   showWalkingTimes = true,
   onShowWalkingTimesChange,
 }: WorksheetCalendarListProps) {
+  // Shows the color picker's unsaved changes
+  const { courses } = useColorPickerPreview();
   const {
-    courses,
     viewedSeason,
     viewedWorksheetNumber,
     isReadonlyWorksheet,
@@ -115,7 +117,6 @@ function WorksheetCalendarList({
     user,
   } = useStore(
     useShallow((state) => ({
-      courses: state.courses,
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
