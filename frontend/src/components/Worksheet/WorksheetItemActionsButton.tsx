@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   CloseButton,
@@ -569,13 +569,13 @@ function ThemePanel({
     ? draft.id === undefined
       ? 'New theme'
       : 'Edit theme'
-    : 'Worksheet theme';
+    : 'Themes';
 
   return (
     <section className={styles.themePanel} aria-label={title}>
       <div className={styles.themePanelHeader}>
         <span>{title}</span>
-        <CloseButton onClick={onClose} aria-label="Close worksheet theme" />
+        <CloseButton onClick={onClose} aria-label="Close themes" />
       </div>
       {draft ? (
         <ThemeEditor
@@ -646,6 +646,12 @@ function ThemeEditor({
   readonly onDeleted: () => Promise<void>;
 }) {
   const [name, setName] = useState(draft.name);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const isNew = draft.id === undefined;
+  // Ready to name a new theme right away
+  useEffect(() => {
+    if (isNew) nameInputRef.current?.focus();
+  }, [isNew]);
   const [colors, setColors] = useState(draft.colors);
   const [activeSlot, setActiveSlot] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -659,10 +665,12 @@ function ThemeEditor({
 
   const save = async () => {
     setBusy(true);
+    // Matches the placeholder
+    const savedName = name.trim() || 'My theme';
     const saved =
       draft.id === undefined
-        ? await createColorTheme(name.trim(), normalizedColors())
-        : await updateColorTheme(draft.id, name.trim(), normalizedColors());
+        ? await createColorTheme(savedName, normalizedColors())
+        : await updateColorTheme(draft.id, savedName, normalizedColors());
     if (saved) await onSaved(saved);
     setBusy(false);
   };
@@ -678,9 +686,10 @@ function ThemeEditor({
       <div className={clsx(styles.themePanelBody, styles.themeEditor)}>
         <Input
           type="text"
-          placeholder="Theme name"
+          placeholder="My theme"
           aria-label="Theme name"
           maxLength={32}
+          ref={nameInputRef}
           value={name}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setName(e.target.value)
@@ -744,11 +753,7 @@ function ThemeEditor({
           >
             Cancel
           </button>
-          <Button
-            variant="primary"
-            disabled={busy || !name.trim()}
-            onClick={save}
-          >
+          <Button variant="primary" disabled={busy} onClick={save}>
             Save
           </Button>
         </div>
