@@ -7,25 +7,40 @@ import type { NetId } from '../queries/graphql-types';
 
 const STORAGE_KEY = 'coursetable-yalemoji';
 const RETURN_KEY = 'coursetable-yalemoji-return';
-const REFRESH_DELAY_MS = 5000;
+
 type Listener = (avatar: YaleMojiAvatar | null) => void;
 type Entry = {
   avatar: YaleMojiAvatar | null;
   confirmed: boolean;
   listeners: Set<Listener>;
   inflight?: Promise<void>;
-  cancelDelay?: () => void;
 };
 
 const entries = new Map<NetId, Entry>();
-let returningFromYaleMoji = false;
 let listeningForReturn = false;
+
+function read(key: string, session = false): string | null {
+  try {
+    return (session ? sessionStorage : localStorage).getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function write(key: string, value: string | null, session = false) {
+  try {
+    const store = session ? sessionStorage : localStorage;
+    if (value === null) store.removeItem(key);
+    else store.setItem(key, value);
+  } catch {}
+}
 
 function readCachedAvatar(netid: NetId): YaleMojiAvatar | null {
   try {
-    const cached = JSON.parse(
-      window.localStorage.getItem(STORAGE_KEY) || 'null',
-    ) as { netid?: unknown; avatar?: unknown } | null;
+    const cached = JSON.parse(read(STORAGE_KEY) || 'null') as {
+      netid?: unknown;
+      avatar?: unknown;
+    } | null;
     if (cached?.netid !== netid) return null;
     const result = yaleMojiAvatarSchema.safeParse(cached.avatar);
     return result.success ? result.data : null;
@@ -35,68 +50,39 @@ function readCachedAvatar(netid: NetId): YaleMojiAvatar | null {
 }
 
 function refresh(netid: NetId, entry: Entry): Promise<void> {
-  entry.cancelDelay?.();
   if (entry.inflight) return entry.inflight;
   entry.inflight = (async () => {
-    try {
-      const avatar = await getYaleMojiAvatar(netid);
-      if (entries.get(netid) !== entry || avatar === undefined) return;
-      entry.avatar = avatar;
-      entry.confirmed = true;
-      try {
-        window.localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({ netid, avatar: entry.avatar }),
-        );
-      } catch {}
-      entry.listeners.forEach((listener) => listener(entry.avatar));
-    } catch {
-    } finally {
-      entry.inflight = undefined;
-    }
+    const avatar = await getYaleMojiAvatar(netid).catch(() => undefined);
+    entry.inflight = undefined;
+    if (entries.get(netid) !== entry || avatar === undefined) return;
+    entry.avatar = avatar;
+    entry.confirmed = true;
+    write(STORAGE_KEY, JSON.stringify({ netid, avatar }));
+    entry.listeners.forEach((listener) => listener(avatar));
   })();
   return entry.inflight;
 }
 
 function refreshOnReturn() {
-  if (document.visibilityState === 'hidden') return;
-  const activeEntries = Array.from(entries).filter(
-    ([, entry]) => entry.listeners.size > 0,
-  );
-  if (!activeEntries.length) return;
-  try {
-    returningFromYaleMoji ||=
-      window.sessionStorage.getItem(RETURN_KEY) === 'true';
-  } catch {}
-  if (!returningFromYaleMoji) return;
-  returningFromYaleMoji = false;
-  try {
-    window.sessionStorage.removeItem(RETURN_KEY);
-  } catch {}
-  activeEntries.forEach(([netid, entry]) => {
-    void refresh(netid, entry);
+  if (read(RETURN_KEY, true) !== 'true') return;
+  write(RETURN_KEY, null, true);
+  entries.forEach((entry, netid) => {
+    if (entry.listeners.size > 0) void refresh(netid, entry);
   });
 }
 
 export function markYaleMojiVisit() {
-  returningFromYaleMoji = true;
+  write(RETURN_KEY, 'true', true);
   entries.forEach((entry) => {
     entry.confirmed = false;
     entry.listeners.forEach((listener) => listener(entry.avatar));
   });
-  try {
-    window.sessionStorage.setItem(RETURN_KEY, 'true');
-  } catch {}
 }
 
 export function clearYaleMojiCache() {
-  entries.forEach((entry) => entry.cancelDelay?.());
   entries.clear();
-  returningFromYaleMoji = false;
-  try {
-    window.localStorage.removeItem(STORAGE_KEY);
-    window.sessionStorage.removeItem(RETURN_KEY);
-  } catch {}
+  write(STORAGE_KEY, null);
+  write(RETURN_KEY, null, true);
 }
 
 export function subscribeYaleMoji(
@@ -105,12 +91,9 @@ export function subscribeYaleMoji(
 ): () => void {
   if (!listeningForReturn) {
     window.addEventListener('focus', refreshOnReturn);
-    window.addEventListener('pageshow', refreshOnReturn);
-    document.addEventListener('visibilitychange', refreshOnReturn);
     listeningForReturn = true;
   }
   let entry = entries.get(netid);
-  const isNew = !entry;
   if (!entry) {
     entry = {
       avatar: readCachedAvatar(netid),
@@ -122,34 +105,7 @@ export function subscribeYaleMoji(
   const current = entry;
   current.listeners.add(listener);
   listener(current.avatar);
-  refreshOnReturn();
-  if ((isNew || (!current.avatar && !current.confirmed)) && !current.inflight) {
-    if (current.avatar) {
-      let timer: ReturnType<typeof setTimeout> | undefined = undefined;
-      const schedule = () => {
-        const navigation = performance.getEntriesByType('navigation')[0] as
-          | PerformanceNavigationTiming
-          | undefined;
-        const elapsed = navigation?.loadEventEnd
-          ? performance.now() - navigation.loadEventEnd
-          : 0;
-        timer = setTimeout(
-          () => {
-            void refresh(netid, current);
-          },
-          Math.max(0, REFRESH_DELAY_MS - elapsed),
-        );
-      };
-      current.cancelDelay = () => {
-        clearTimeout(timer);
-        window.removeEventListener('load', schedule);
-      };
-      if (document.readyState === 'complete') schedule();
-      else window.addEventListener('load', schedule, { once: true });
-    } else {
-      void refresh(netid, current);
-    }
-  }
+  if (!current.confirmed) void refresh(netid, current);
   return () => {
     current.listeners.delete(listener);
   };
@@ -159,24 +115,8 @@ export function subscribeYaleMojiBanner(
   netid: NetId,
   listener: (visible: boolean) => void,
 ): () => void {
-  const notify = () => {
+  return subscribeYaleMoji(netid, () => {
     const entry = entries.get(netid);
     listener(Boolean(entry?.confirmed) && entry?.avatar === null);
-  };
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === STORAGE_KEY) {
-      const avatar = readCachedAvatar(netid);
-      const entry = entries.get(netid);
-      if (avatar && entry) {
-        entry.avatar = avatar;
-        entry.listeners.forEach((subscriber) => subscriber(avatar));
-      }
-    }
-  };
-  window.addEventListener('storage', onStorage);
-  const unsubscribe = subscribeYaleMoji(netid, notify);
-  return () => {
-    unsubscribe();
-    window.removeEventListener('storage', onStorage);
-  };
+  });
 }
