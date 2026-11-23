@@ -374,6 +374,8 @@ export async function updateWorksheetMetadata(
         action: 'setColorTheme';
         worksheetNumber: number;
         colorThemeId: number;
+        // Recolored for the new theme; saved together with it
+        courses: { crn: Crn; color: string; colorIndex: number | null }[];
       }
   ),
 ): Promise<boolean> {

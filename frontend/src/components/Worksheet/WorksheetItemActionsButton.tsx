@@ -187,33 +187,35 @@ export function ColorPickerModal({
     onClose();
   };
 
-  const saveTheme = () =>
-    updateWorksheetMetadata({
-      action: 'setColorTheme',
+  const save = async () => {
+    const changed = preview.courses.flatMap(({ crn, color, colorIndex }, i) =>
+      color === courses[i]!.color && colorIndex === courses[i]!.colorIndex
+        ? []
+        : { crn, color, colorIndex },
+    );
+    const worksheet = {
       season: viewedSeason,
       worksheetNumber: viewedWorksheetNumber,
-      colorThemeId: theme.id,
-    });
-
-  const save = async () => {
-    const updates = courses.flatMap((c, i) => {
-      const next = preview.courses[i]!;
-      // The API rejects course updates with no fields, so skip unchanged
-      if (next.color === c.color && next.colorIndex === c.colorIndex) return [];
-      return [
-        {
-          action: 'update' as const,
-          season: viewedSeason,
-          crn: c.crn,
-          worksheetNumber: viewedWorksheetNumber,
-          color: next.color,
-          colorIndex: next.colorIndex,
-        },
-      ];
-    });
-    if (updates.length > 0 && !(await updateWorksheetCourses(updates))) return;
-    if (themeChanged && !(await saveTheme())) return;
-    if (updates.length > 0 || themeChanged) await worksheetsRefresh();
+    };
+    // A theme change saves the recolored courses with it in one request.
+    // Otherwise only the open course can have changed.
+    const saved = themeChanged
+      ? await updateWorksheetMetadata({
+          action: 'setColorTheme',
+          ...worksheet,
+          colorThemeId: theme.id,
+          courses: changed,
+        })
+      : changed.length === 0 ||
+        (await updateWorksheetCourses(
+          changed.map((c) => ({
+            action: 'update' as const,
+            ...worksheet,
+            ...c,
+          })),
+        ));
+    if (!saved) return;
+    if (themeChanged || changed.length > 0) await worksheetsRefresh();
     handleClose();
   };
 

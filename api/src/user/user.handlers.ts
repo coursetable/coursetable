@@ -327,6 +327,14 @@ const SetColorThemeWorksheetSchema = z.object({
   season: z.string().transform((val) => parseInt(val, 10)),
   worksheetNumber: z.number().int().min(0),
   colorThemeId: z.number().int().positive(),
+  // Courses recolored for the new theme, saved together with it
+  courses: z.array(
+    z.object({
+      crn: z.number(),
+      color: z.string().refine((val) => chroma.valid(val)),
+      colorIndex: ColorIndexSchema,
+    }),
+  ),
 });
 
 const UpdateWorksheetMetadataSchema = z.union([
@@ -430,7 +438,7 @@ export const updateWorksheetMetadata = async (
     }
     res.sendStatus(200);
   } else if (action === 'setColorTheme') {
-    const { worksheetNumber, colorThemeId } = bodyParseRes.data;
+    const { worksheetNumber, colorThemeId, courses } = bodyParseRes.data;
 
     const theme = await db.query.colorThemes.findFirst({
       where: and(
@@ -444,19 +452,39 @@ export const updateWorksheetMetadata = async (
       return;
     }
 
-    const updatedWorksheets = await db
-      .update(worksheets)
-      .set({ colorThemeId })
-      .where(
-        and(
-          eq(worksheets.netId, netId),
-          eq(worksheets.season, season),
-          eq(worksheets.worksheetNumber, worksheetNumber),
+    // One transaction, so the worksheet never ends up with the new theme but
+    // the old colors (or the reverse)
+    const updated = await db.transaction(async (tx) => {
+      const [worksheet] = await tx
+        .update(worksheets)
+        .set({ colorThemeId })
+        .where(
+          and(
+            eq(worksheets.netId, netId),
+            eq(worksheets.season, season),
+            eq(worksheets.worksheetNumber, worksheetNumber),
+          ),
+        )
+        .returning({ id: worksheets.id });
+      if (!worksheet) return false;
+      // A course that's no longer in the worksheet just matches nothing
+      await Promise.all(
+        courses.map(({ crn, color, colorIndex }) =>
+          tx
+            .update(worksheetCourses)
+            .set({ color, colorIndex })
+            .where(
+              and(
+                eq(worksheetCourses.worksheetId, worksheet.id),
+                eq(worksheetCourses.crn, crn),
+              ),
+            ),
         ),
-      )
-      .returning({ worksheetNumber: worksheets.worksheetNumber });
+      );
+      return true;
+    });
 
-    if (updatedWorksheets.length === 0) {
+    if (!updated) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }
