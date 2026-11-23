@@ -199,13 +199,7 @@ export const courseNotes = pgTable(
   {
     id: serial('id').primaryKey().notNull(),
     netId: varchar('netId', { length: 8 }).notNull(),
-    // One note per course across seasons and sections, using Ferry's grouping
     sameCourseId: integer('sameCourseId').notNull(),
-    // The offering where the note was last saved, so it can be reattached if
-    // Ferry ever regroups the course. crn is the lowest listing CRN.
-    season: integer('season').notNull(),
-    crn: integer('crn').notNull(),
-    // Tiptap JSON. The API caps its size, so the column has no fixed length.
     content: text('content').notNull(),
     updatedAt: bigint('updatedAt', { mode: 'number' }).notNull(),
   },

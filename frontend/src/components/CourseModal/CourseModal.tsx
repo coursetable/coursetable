@@ -9,7 +9,6 @@ import OverviewPanel from './OverviewPanel/OverviewPanel';
 import type { CourseModalPrefetchListingDataFragment } from '../../generated/graphql-types';
 import { useModalHistory } from '../../hooks/useModalHistory';
 import {
-  getCourseNoteCrn,
   toSeasonDate,
   toSeasonString,
   truncatedText,
@@ -111,10 +110,7 @@ function CourseModal({
             />
           )}
           {view === 'notes' && (
-            <NotesPanel
-              key={`${listing.course.season_code}-${getCourseNoteCrn(listing.course)}`}
-              listing={listing}
-            />
+            <NotesPanel key={listing.course.same_course_id} listing={listing} />
           )}
         </Modal.Body>
       </Modal>

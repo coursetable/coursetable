@@ -29,11 +29,6 @@ function isTiptapDoc(content: string) {
 
 const SaveCourseNoteSchema = z.object({
   sameCourseId: SameCourseIdSchema,
-  season: z
-    .string()
-    .regex(/^\d{6}$/u)
-    .transform((val) => parseInt(val, 10)),
-  crn: z.number().int().positive(),
   content: z
     .string()
     .refine((content) => Buffer.byteLength(content, 'utf8') <= MAX_NOTE_BYTES)
@@ -78,16 +73,16 @@ export const saveCourseNote = async (
     return;
   }
 
-  const { sameCourseId, season, crn, content } = bodyParseRes.data;
+  const { sameCourseId, content } = bodyParseRes.data;
 
   if (content) {
     const updatedAt = Date.now();
     await db
       .insert(courseNotes)
-      .values({ netId, sameCourseId, season, crn, content, updatedAt })
+      .values({ netId, sameCourseId, content, updatedAt })
       .onConflictDoUpdate({
         target: [courseNotes.netId, courseNotes.sameCourseId],
-        set: { season, crn, content, updatedAt },
+        set: { content, updatedAt },
       });
   } else {
     await db

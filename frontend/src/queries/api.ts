@@ -1137,11 +1137,11 @@ export async function fetchCourseNote(sameCourseId: number) {
 }
 
 export async function saveCourseNote(
-  note: { sameCourseId: number; season: Season; crn: Crn },
+  sameCourseId: number,
   content: string,
 ): Promise<boolean> {
   return await fetchAPI('/notes/save', {
-    body: { ...note, content },
+    body: { sameCourseId, content },
     sensitiveBody: true,
     breadcrumb: {
       category: 'notes',

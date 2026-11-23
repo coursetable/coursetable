@@ -12,10 +12,6 @@ import type { SortKeys } from '../search/searchTypes';
 import type { WorksheetCourse } from '../slices/WorksheetSlice';
 import type { WishlistItemWithListings } from '../types/wishlist';
 
-export function getCourseNoteCrn(course: { listings: { crn: Crn }[] }): Crn {
-  return Math.min(...course.listings.map((listing) => listing.crn)) as Crn;
-}
-
 export function truncatedText(
   text: string | null | undefined,
   max: number,

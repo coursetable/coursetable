@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import NoteEditor from './NoteEditor';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import { fetchCourseNote } from '../../../queries/api';
-import { getCourseNoteCrn } from '../../../utilities/course';
 import Spinner from '../../Spinner';
 
 type LoadedNote = { content: string } | 'loading' | 'failed';
@@ -30,12 +29,7 @@ function NotesPanel({
   if (note === 'failed') return <p>Couldn't load your note.</p>;
 
   return (
-    <NoteEditor
-      sameCourseId={sameCourseId}
-      season={listing.course.season_code}
-      crn={getCourseNoteCrn(listing.course)}
-      initialContent={note.content}
-    />
+    <NoteEditor sameCourseId={sameCourseId} initialContent={note.content} />
   );
 }
 

@@ -8,7 +8,6 @@ import { NoteShortcuts } from './noteExtensions';
 import { createNoteSaver, type NoteSaveStatus } from './noteSaver';
 import NoteToolbar from './NoteToolbar';
 import { saveCourseNote } from '../../../queries/api';
-import type { Crn, Season } from '../../../queries/graphql-types';
 import styles from './NoteEditor.module.css';
 
 const MAX_NOTE_LENGTH = 5000;
@@ -45,13 +44,9 @@ const extensions = [
 
 function NoteEditor({
   sameCourseId,
-  season,
-  crn,
   initialContent,
 }: {
   readonly sameCourseId: number;
-  readonly season: Season;
-  readonly crn: Crn;
   readonly initialContent: string;
 }) {
   const [status, setStatus] = useState<NoteSaveStatus>('idle');
@@ -61,11 +56,10 @@ function NoteEditor({
     () =>
       createNoteSaver({
         initialContent,
-        save: (content) =>
-          saveCourseNote({ sameCourseId, season, crn }, content),
+        save: (content) => saveCourseNote(sameCourseId, content),
         onStatusChange: setStatus,
       }),
-    [sameCourseId, season, crn, initialContent],
+    [sameCourseId, initialContent],
   );
 
   const editor = useEditor({
