@@ -10,7 +10,6 @@ import {
   Button,
   DropdownButton,
   Dropdown,
-  Form,
 } from 'react-bootstrap';
 import { FaEllipsisH } from 'react-icons/fa';
 import { FaCheck, FaChevronLeft, FaPlus, FaRegCopy } from 'react-icons/fa6';
@@ -187,12 +186,20 @@ export function ColorPickerModal({
 
   if (!openColorPickerEvent) return null;
 
-  const course = courses.find(
-    (c) => c.listing.crn === openColorPickerEvent.listing.crn,
-  );
+  const { crn } = openColorPickerEvent.listing;
+  const course = courses.find((c) => c.crn === crn);
   const theme = getWorksheetTheme(colorThemes, selectedThemeId ?? savedThemeId);
   const themeChanged =
     theme.id !== getWorksheetTheme(colorThemes, savedThemeId).id;
+  const current = picked ?? {
+    color: openColorPickerEvent.color,
+    colorIndex: course?.colorIndex ?? null,
+  };
+  // A theme color follows the selected theme, so it previews as the new one
+  const color =
+    current.colorIndex === null
+      ? current.color
+      : theme.colors[current.colorIndex]!;
 
   const handleClose = () => {
     setPicked(undefined);
@@ -209,31 +216,33 @@ export function ColorPickerModal({
       colorThemeId: theme.id,
     });
 
-  const applyThemeToAll = async (options: ApplyThemeOptions) => {
-    const targets = courses.filter((c) => options.includeHidden || !c.hidden);
-    const recolored = applyTheme(targets, theme.colors, options.overrideCustom);
-    const updates = targets.flatMap((c, i) => {
-      const { color, colorIndex } = recolored[i]!;
-      if (color === c.color && colorIndex === c.colorIndex) return [];
+  const save = async () => {
+    // Switching themes recolors every course that uses a theme color
+    const recolored = themeChanged
+      ? applyTheme(courses, theme.colors)
+      : courses;
+    const updates = courses.flatMap((c, i) => {
+      const next =
+        c.crn === crn
+          ? { color, colorIndex: current.colorIndex }
+          : recolored[i]!;
+      // The API rejects course updates with no fields, so skip unchanged
+      if (next.color === c.color && next.colorIndex === c.colorIndex) return [];
       return [
         {
           action: 'update' as const,
           season: viewedSeason,
           crn: c.crn,
           worksheetNumber: viewedWorksheetNumber,
-          color,
-          colorIndex,
+          ...next,
         },
       ];
     });
     if (updates.length > 0 && !(await updateWorksheetCourses(updates))) return;
     if (themeChanged && !(await saveTheme())) return;
     if (updates.length > 0 || themeChanged) await worksheetsRefresh();
-    toast.success(`Applied ${theme.name}`);
     handleClose();
   };
-
-  const color = picked?.color ?? openColorPickerEvent.color;
 
   return (
     <Modal show onHide={handleClose} centered dialogClassName={styles.dialog}>
@@ -247,6 +256,7 @@ export function ColorPickerModal({
       <Modal.Body className={styles.modalBody}>
         <Picker
           color={color}
+          colorIndex={current.colorIndex}
           onPick={setPicked}
           presetColors={theme.colors}
           themeName={theme.name}
@@ -256,28 +266,7 @@ export function ColorPickerModal({
         <Preview event={openColorPickerEvent} color={color} />
       </Modal.Body>
       <Modal.Footer>
-        <Button
-          variant="primary"
-          onClick={async () => {
-            // The API rejects course updates with no fields, so skip unchanged
-            const colorChanged =
-              picked !== undefined &&
-              (picked.color !== course?.color ||
-                picked.colorIndex !== course.colorIndex);
-            if (colorChanged) {
-              await updateWorksheetCourses({
-                action: 'update',
-                season: viewedSeason,
-                crn: openColorPickerEvent.listing.crn,
-                worksheetNumber: viewedWorksheetNumber,
-                ...picked,
-              });
-            }
-            if (themeChanged) await saveTheme();
-            if (colorChanged || themeChanged) await worksheetsRefresh();
-            handleClose();
-          }}
-        >
+        <Button variant="primary" onClick={save}>
           Save
         </Button>
       </Modal.Footer>
@@ -286,7 +275,6 @@ export function ColorPickerModal({
           themes={colorThemes ?? [fallbackTheme]}
           selectedTheme={theme}
           onSelect={setSelectedThemeId}
-          onApplyToAll={applyThemeToAll}
           onClose={() => setThemePanelOpen(false)}
         />
       )}
@@ -441,6 +429,7 @@ function ColorInput({
 
 function Picker({
   color,
+  colorIndex,
   onPick,
   presetColors,
   themeName,
@@ -448,6 +437,7 @@ function Picker({
   onToggleThemePanel,
 }: {
   readonly color: string;
+  readonly colorIndex: number | null;
   readonly onPick: (picked: PickedColor) => void;
   readonly presetColors: readonly string[];
   readonly themeName: string;
@@ -471,10 +461,14 @@ function Picker({
               type="button"
               // Themes may repeat a color
               key={i}
-              className={styles.presetColor}
+              className={clsx(
+                styles.presetColor,
+                i === colorIndex && styles.presetColorActive,
+              )}
               style={{ background: presetColor }}
               onClick={() => onPick({ color: presetColor, colorIndex: i })}
               aria-label={`Set color to ${presetColor}`}
+              aria-pressed={i === colorIndex}
             />
           ))}
         </div>
@@ -492,11 +486,6 @@ function Picker({
     </div>
   );
 }
-
-type ApplyThemeOptions = {
-  includeHidden: boolean;
-  overrideCustom: boolean;
-};
 
 // Matches the API's limit
 const MAX_THEMES = 20;
@@ -564,13 +553,11 @@ function ThemePanel({
   themes,
   selectedTheme,
   onSelect,
-  onApplyToAll,
   onClose,
 }: {
   readonly themes: readonly ColorTheme[];
   readonly selectedTheme: ColorTheme;
   readonly onSelect: (id: number) => void;
-  readonly onApplyToAll: (options: ApplyThemeOptions) => Promise<void>;
   readonly onClose: () => void;
 }) {
   const { worksheets, colorThemesRefresh, worksheetsRefresh } = useStore(
@@ -580,9 +567,6 @@ function ThemePanel({
       worksheetsRefresh: state.worksheetsRefresh,
     })),
   );
-  const [includeHidden, setIncludeHidden] = useState(false);
-  const [overrideCustom, setOverrideCustom] = useState(false);
-  const [applying, setApplying] = useState(false);
   const [copying, setCopying] = useState(false);
   const [draft, setDraft] = useState<ThemeDraft | null>(null);
 
@@ -638,65 +622,32 @@ function ThemePanel({
           }}
         />
       ) : (
-        <>
-          <div className={styles.themePanelBody}>
-            <div className={styles.themeList}>
-              {themes.map((theme) => (
-                <ThemeOption
-                  key={theme.id}
-                  theme={theme}
-                  selected={theme.id === selectedTheme.id}
-                  onSelect={() => onSelect(theme.id)}
-                  onEdit={() => setDraft(theme)}
-                />
-              ))}
-              {canAdd && (
-                <button
-                  type="button"
-                  className={clsx(styles.themeOption, styles.themeNew)}
-                  // Start from whatever theme is selected
-                  onClick={() =>
-                    setDraft({ name: '', colors: selectedTheme.colors })
-                  }
-                >
-                  <FaPlus />
-                  New theme
-                </button>
-              )}
-            </div>
+        <div className={styles.themePanelBody}>
+          <div className={styles.themeList}>
+            {themes.map((theme) => (
+              <ThemeOption
+                key={theme.id}
+                theme={theme}
+                selected={theme.id === selectedTheme.id}
+                onSelect={() => onSelect(theme.id)}
+                onEdit={() => setDraft(theme)}
+              />
+            ))}
+            {canAdd && (
+              <button
+                type="button"
+                className={clsx(styles.themeOption, styles.themeNew)}
+                // Start from whatever theme is selected
+                onClick={() =>
+                  setDraft({ name: '', colors: selectedTheme.colors })
+                }
+              >
+                <FaPlus />
+                New theme
+              </button>
+            )}
           </div>
-          <fieldset
-            className={styles.themeApply}
-            aria-label="Apply to all courses"
-          >
-            <Button
-              variant="primary"
-              className={styles.themeApplyButton}
-              disabled={applying}
-              onClick={async () => {
-                setApplying(true);
-                await onApplyToAll({ includeHidden, overrideCustom });
-                setApplying(false);
-              }}
-            >
-              Apply to all
-            </Button>
-            <Form.Check
-              type="switch"
-              id="theme-include-hidden-switch"
-              label="Include hidden courses"
-              checked={includeHidden}
-              onChange={(e) => setIncludeHidden(e.currentTarget.checked)}
-            />
-            <Form.Check
-              type="switch"
-              id="theme-override-custom-switch"
-              label="Override custom colors"
-              checked={overrideCustom}
-              onChange={(e) => setOverrideCustom(e.currentTarget.checked)}
-            />
-          </fieldset>
-        </>
+        </div>
       )}
     </section>
   );

@@ -29,50 +29,13 @@ describe('getWorksheetTheme', () => {
 
 describe('applyTheme', () => {
   it('keeps each course in its slot', () => {
-    expect(
-      applyTheme([{ color: '#aaaaaa', colorIndex: 3 }], colors, false),
-    ).toEqual([{ color: colors[3], colorIndex: 3 }]);
+    expect(applyTheme([{ color: '#aaaaaa', colorIndex: 3 }], colors)).toEqual([
+      { color: colors[3], colorIndex: 3 },
+    ]);
   });
 
-  it('leaves custom colors alone unless overriding', () => {
+  it('leaves custom colors alone', () => {
     const course = { color: '#123456', colorIndex: null };
-    expect(applyTheme([course], colors, false)).toEqual([course]);
-  });
-
-  it('spreads custom colors across unused slots', () => {
-    const result = applyTheme(
-      [
-        { color: '#aaaaaa', colorIndex: 0 },
-        { color: '#123456', colorIndex: null },
-        { color: '#654321', colorIndex: null },
-      ],
-      colors,
-      true,
-    );
-    const slots = result.map((c) => c.colorIndex);
-    expect(slots[0]).toBe(0);
-    expect(new Set(slots).size).toBe(3);
-  });
-
-  it('keeps courses that shared a custom color matched', () => {
-    const [a, b] = applyTheme(
-      [
-        { color: '#123456', colorIndex: null },
-        { color: '#123456'.toUpperCase(), colorIndex: null },
-      ],
-      colors,
-      true,
-    );
-    expect(a).toEqual(b);
-  });
-
-  it('reuses slots when every slot is taken', () => {
-    const full = colors.map((_, i) => ({ color: '#aaaaaa', colorIndex: i }));
-    const [custom] = applyTheme(
-      [{ color: '#123456', colorIndex: null }, ...full],
-      colors,
-      true,
-    );
-    expect(custom!.colorIndex).not.toBeNull();
+    expect(applyTheme([course], colors)).toEqual([course]);
   });
 });
